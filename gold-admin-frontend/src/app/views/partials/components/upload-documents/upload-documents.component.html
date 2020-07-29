@@ -4,7 +4,7 @@
             <div class="col-2 form-label ">
                 <label class="kt-padding-l-10">Outstanding Loan Amount</label>
             </div>
-            <div class="col-4">
+            <div class="col">
                 <input type="text" formControlName="outstandingLoanAmount" class="form-control "
                     [class.isError]="controls.outstandingLoanAmount.touched && controls.outstandingLoanAmount.invalid"
                     placeholder="Outstanding">
@@ -17,34 +17,37 @@
 
         </div>
         <div class="row kt-padding-t-15 kt-padding-b-20 justify-content-around">
-            <div class="col-4 form-label" *ngIf="showLoanFlag">
+            <div class="col form-label" *ngIf="showLoanFlag">
                 <label class="kt-padding-l-10">Loan Agreement Copy</label>
             </div>
-            <div class="col-4 form-label" *ngIf="showLoanTransferFlag || showLoanFlag">
+            <div class="col form-label" *ngIf="showLoanTransferFlag || showLoanFlag">
                 <label class="kt-padding-l-10 kt-padding-r-25">Pawn Ticket/Copy of Pledge</label>
                 <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
             </div>
-            <div class="col-4 form-label" *ngIf="showLoanFlag">
+            <div class="col form-label" *ngIf="showLoanFlag">
                 <label class="kt-padding-l-10">Scheme Confirmation Copy</label>
             </div>
-            <div class="col-4 form-label" *ngIf="showLoanTransferFlag">
+            <div class="col form-label" *ngIf="showLoanTransferFlag">
                 <label class="kt-padding-l-10">Signed Cheque Copy</label>
             </div>
-            <div class="col-4 form-label" *ngIf="showLoanTransferFlag">
+            <div class="col form-label" *ngIf="showLoanTransferFlag">
                 <label class="kt-padding-l-10">Declaration Copy</label>
             </div>
-            <div class="col-4 form-label" *ngIf="showScrapAcknowledgementFlag">
+            <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
                 <label class="kt-padding-l-10">Processing Charges</label>
             </div>
-            <div class="col-4 form-label" *ngIf="showScrapAcknowledgementFlag">
+            <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
                 <label class="kt-padding-l-10">Standard Deduction %</label>
             </div>
-            <div class="col-4 form-label" *ngIf="showScrapAcknowledgementFlag">
+            <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
+                <label class="kt-padding-l-10">Customer confirmation Status</label>
+            </div>
+            <div class="col form-label" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
                 <label class="kt-padding-l-10">Customer Confirmation for melting ornament(Jewellery) </label>
             </div>
         </div>
         <div class="row justify-content-between" *ngIf="isEdit">
-            <div class="col-4" *ngIf="showLoanFlag">
+            <div class="col" *ngIf="showLoanFlag">
                 <div class="input-group mb-3 w-80"
                     [class.isError]="controls.loanAgreementCopy.touched && controls.loanAgreementCopy.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
@@ -61,7 +64,7 @@
                 <mat-error *ngIf="controls.loanAgreementCopy.touched && controls.loanAgreementCopy.invalid">Field
                     Required</mat-error>
             </div>
-            <div class="col-4" *ngIf="showLoanTransferFlag || showLoanFlag">
+            <div class="col" *ngIf="showLoanTransferFlag || showLoanFlag">
                 <div class="input-group mb-3 w-80"
                     [class.isError]="controls.pawnCopy.touched && controls.pawnCopy.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
@@ -75,7 +78,7 @@
                 </div>
                 <mat-error *ngIf="controls.pawnCopy.touched && controls.pawnCopy.invalid">Field Required</mat-error>
             </div>
-            <div class="col-4" *ngIf="showLoanFlag">
+            <div class="col" *ngIf="showLoanFlag">
                 <div class="input-group mb-3 w-80"
                     [class.isError]="controls.schemeConfirmationCopy.touched && controls.schemeConfirmationCopy.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
@@ -93,7 +96,7 @@
                     Required</mat-error>
 
             </div>
-            <div class="col-4" *ngIf="showLoanTransferFlag">
+            <div class="col" *ngIf="showLoanTransferFlag">
                 <div class="input-group mb-3 w-80"
                     [class.isError]="controls.signedCheque.touched && controls.signedCheque.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
@@ -108,7 +111,7 @@
                 <mat-error *ngIf="controls.signedCheque.touched && controls.signedCheque.invalid">Field Required
                 </mat-error>
             </div>
-            <div class="col-4" *ngIf="showLoanTransferFlag">
+            <div class="col" *ngIf="showLoanTransferFlag">
                 <div class="input-group mb-3 w-80"
                     [class.isError]="controls.declaration.touched && controls.declaration.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
@@ -122,14 +125,14 @@
                 <mat-error *ngIf="controls.declaration.touched && controls.declaration.invalid">Field Required
                 </mat-error>
             </div>
-            <div class="col-4" *ngIf="showScrapAcknowledgementFlag">
+            <div class="col" *ngIf="showScrapAcknowledgementFlag">
                 <input type="text" formControlName="processingCharges" class="form-control "
                     [class.isError]="controls.processingCharges.touched && controls.processingCharges.invalid"
                     placeholder="Processing Charges" readonly>
                 <mat-error *ngIf="controls.processingCharges.touched && controls.processingCharges.invalid">
                     Field Required</mat-error>
             </div>
-            <div class="col-4" *ngIf="showScrapAcknowledgementFlag">
+            <div class="col" *ngIf="showScrapAcknowledgementFlag">
                 <select class="form-control" formControlName="standardDeduction"
                     [class.isError]="controls.standardDeduction.touched && controls.standardDeduction.invalid">
                     <option value="" [disabled]="true" [selected]="true">Select Standard Deduction</option>
@@ -141,7 +144,20 @@
                     <span *ngIf="controls.standardDeduction.errors?.required">Field Required</span>
                 </mat-error>
             </div>
-            <div class="col-4" *ngIf="showScrapAcknowledgementFlag">
+            <div class="col" *ngIf="showScrapAcknowledgementFlag">
+                <select class="form-control" formControlName="customerConfirmationStatus"
+                    [class.isError]="controls.customerConfirmationStatus.touched && controls.customerConfirmationStatus.invalid">
+                    <option value="" [disabled]="true" [selected]="true">Select Customer confirmation Status</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="incomplete">Incomplete</option>
+                </select>
+                <mat-error
+                    *ngIf="controls.customerConfirmationStatus.touched && controls.customerConfirmationStatus.invalid">
+                    <span *ngIf="controls.customerConfirmationStatus.errors?.required">Field
+                        Required</span>
+                </mat-error>
+            </div>
+            <div class="col" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
                 <div class="input-group mb-3 w-80"
                     [class.isError]="controls.customerConfirmation.touched && controls.customerConfirmation.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
@@ -321,9 +337,39 @@
 
                 </div>
             </div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag"></div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag"></div>
             <div class="col" *ngIf="showScrapAcknowledgementFlag">
+                <input type="text" formControlName="processingCharges" class="form-control "
+                    [class.isError]="controls.processingCharges.touched && controls.processingCharges.invalid"
+                    placeholder="Processing Charges" readonly>
+                <mat-error *ngIf="controls.processingCharges.touched && controls.processingCharges.invalid">
+                    Field Required</mat-error>
+            </div>
+            <div class="col" *ngIf="showScrapAcknowledgementFlag">
+                <select class="form-control" formControlName="standardDeduction"
+                    [class.isError]="controls.standardDeduction.touched && controls.standardDeduction.invalid">
+                    <option value="" [disabled]="true" [selected]="true">Select Standard Deduction</option>
+                    <option [value]="sd.standardDeduction" *ngFor="let sd of standardDeductionArr">
+                        {{sd.standardDeduction}}
+                    </option>
+                </select>
+                <mat-error *ngIf="controls.standardDeduction.touched && controls.standardDeduction.invalid">
+                    <span *ngIf="controls.standardDeduction.errors?.required">Field Required</span>
+                </mat-error>
+            </div>
+            <div class="col" *ngIf="showScrapAcknowledgementFlag">
+                <select class="form-control" formControlName="customerConfirmationStatus"
+                    [class.isError]="controls.customerConfirmationStatus.touched && controls.customerConfirmationStatus.invalid">
+                    <option value="" [disabled]="true" [selected]="true">Select Customer confirmation Status</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="incomplete">Incomplete</option>
+                </select>
+                <mat-error
+                    *ngIf="controls.customerConfirmationStatus.touched && controls.customerConfirmationStatus.invalid">
+                    <span *ngIf="controls.customerConfirmationStatus.errors?.required">Field
+                        Required</span>
+                </mat-error>
+            </div>
+            <div class="col" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
                 <div class="row">
                     <div class="col-10 position-relative">
                         <div class="img-container width" *ngIf="!controls?.customerConfirmationImage?.value">

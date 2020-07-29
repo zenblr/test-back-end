@@ -30,13 +30,6 @@ export class ScrapApplicationFormService {
     );
   }
 
-  acknowledgementSubmit(details, scrapId): Observable<any> {
-    let data = { ...details, ...scrapId }
-    return this.http.post(`/api/scrap/scrap-process/acknowledgement-details`, data).pipe(
-      map(res => res)
-    );
-  }
-
   submitOrnaments(scrapOrnaments, finalScrapAmount, scrapIds): Observable<any> {
     let data = {
       scrapOrnaments: scrapOrnaments,
@@ -44,6 +37,20 @@ export class ScrapApplicationFormService {
       scrapId: scrapIds.scrapId,
     }
     return this.http.post(`/api/scrap/scrap-process/ornaments-details`, data).pipe(
+      map(res => res)
+    );
+  }
+
+  acknowledgementSubmit(details, scrapId): Observable<any> {
+    let data = { ...details, ...scrapId }
+    return this.http.post(`/api/scrap/scrap-process/acknowledgement-details`, data).pipe(
+      map(res => res)
+    );
+  }
+
+  submitMeltingOrnaments(scrapOrnament, eligibleScrapAmount, scrapId): Observable<any> {
+    let data = { ...scrapOrnament, eligibleScrapAmount: eligibleScrapAmount, ...scrapId }
+    return this.http.post(`/api/scrap/scrap-process/ornaments-melting-details`, data).pipe(
       map(res => res)
     );
   }

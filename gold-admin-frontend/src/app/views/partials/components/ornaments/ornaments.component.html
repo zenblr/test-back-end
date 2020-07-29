@@ -12,7 +12,7 @@
             </ng-template>
             <div class="row justify-content-around" [formGroupName]="idx">
                 <div class="col-9 kt-padding-l-45">
-                    <div class="row justify-content-around">
+                    <div class="row justify-content-around" *ngIf="!meltingOrnament">
                         <div class="col-6">
                             <div class="row">
                                 <div class="col-4 form-label">
@@ -189,7 +189,11 @@
                             <div class="col-6">
                                 <div class="row kt-margin-t-15">
                                     <div class="col-4 form-label">
-                                        <label class="my-auto mandatory text-color">Ornament Image(with XRF machine
+                                        <label class="my-auto mandatory text-color" *ngIf="meltingOrnament">Ornament
+                                            Image(with XRF
+                                            machine purity reading))</label>
+                                        <label class="my-auto mandatory text-color" *ngIf="!meltingOrnament">Ornament
+                                            Image(with XRF machine
                                             reading)</label>
                                     </div>
                                     <div class="col-4 form-label">
@@ -221,7 +225,26 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-6" *ngIf="meltingOrnament">
+                                <div class="row kt-margin-t-15">
+                                    <div class="col-4 form-label">
+                                        <label class="text-color mandatory kt-padding-l-10">Purity Reading(XRF
+                                            machine)</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" placeholder="90 %"
+                                            formControlName="purityReading" numbersOnly
+                                            [class.isError]="ornament.controls.purityReading.touched && ornament.controls.purityReading.invalid"
+                                            (blur)="calculateMeltingScrapAmount(idx)">
+                                        <mat-error
+                                            *ngIf="ornament.controls.purityReading.touched && ornament.controls.purityReading.invalid">
+                                            <span *ngIf="ornament.controls.purityReading.errors?.required">Field
+                                                Required</span>
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6" *ngIf="!meltingOrnament">
                                 <div class="row kt-margin-t-15">
                                     <div class="col-4 form-label">
                                         <label class="text-color mandatory kt-padding-l-10">Approx Purity Reading(XRF
@@ -263,7 +286,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-6" *ngIf="meltingOrnament">
+                                <div class="row kt-margin-t-15">
+                                    <div class="col-4 form-label kt-padding-l-10">
+                                        <label class="text-color mandatory my-auto">Final Scrap Amount</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" placeholder="100.00"
+                                            formControlName="finalScrapAmountAfterMelting" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6" *ngIf="!meltingOrnament">
                                 <div class="row kt-margin-t-15">
                                     <div class="col-4 form-label kt-padding-l-10">
                                         <label class="text-color mandatory my-auto">Scrap Amount</label>
@@ -271,6 +305,29 @@
                                     <div class="col-8">
                                         <input type="text" class="form-control" placeholder="100.00"
                                             formControlName="scrapAmount" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="meltingOrnament">
+                            <div class="col-6">
+                                <div class="row kt-margin-t-15">
+                                    <div class="col-4 form-label">
+                                        <label for="" class="text-color mandatory my-auto">Customer Confirmation</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <select class="form-control" formControlName="customerConfirmation"
+                                            [class.isError]="ornament.controls.customerConfirmation.touched && ornament.controls.customerConfirmation.invalid">
+                                            <option value="" [disabled]="true" [selected]="true">Select Customer
+                                                Confirmation</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                        <mat-error
+                                            *ngIf="ornament.controls.customerConfirmation.touched && ornament.controls.customerConfirmation.invalid">
+                                            <span *ngIf="ornament.controls.customerConfirmation.errors?.required">Field
+                                                Required</span>
+                                        </mat-error>
                                     </div>
                                 </div>
                             </div>
@@ -554,4 +611,4 @@
         <kt-button [value]="'Next'" [type]="'button'" (click)="nextAction()"></kt-button>
     </div>
 </div>
-<button (click)="addmore()" class="addmore" [disabled]="disable">+ Add More</button>
+<button (click)="addmore()" class="addmore" [disabled]="disable" [hidden]="meltingOrnament">+ Add More</button>

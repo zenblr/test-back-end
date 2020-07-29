@@ -20,9 +20,19 @@
                         </div>
                     </mat-tab>
                     <mat-tab label="Customer Acknowledgment" [disabled]="disabled[2]">
-                        <kt-upload-documents [scrapIds]="scrapIds" [loanDocumnets]="customerDetail"
+                        <kt-upload-documents [scrapIds]="scrapIds" [acknowledgmentDocuments]="customerDetail"
                             [totalAmt]="totalAmount" [showButton]="showButton">
                         </kt-upload-documents>
+                    </mat-tab>
+                    <mat-tab label="Melting Ornaments" [disabled]="disabled[3]">
+                        <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0"
+                            style="padding:0px !important">
+                            <kt-ornaments [action]="action" (next)="next($event)" [disable]="disabledForm"
+                                [meltingDetails]="customerDetail" (finaltotalAmt)="finalScrapAmount($event)"
+                                [scrapIds]="scrapIds" [ornamentType]="ornamentType" [showButton]="showButton"
+                                [meltingOrnament]="true">
+                            </kt-ornaments>
+                        </div>
                     </mat-tab>
                     <!-- <mat-tab label="Final Interest Calculator" [disabled]="disabled[3]">
                         <kt-interest-calculator (next)="next($event)" [disable]="disabledForm" [action]="action"

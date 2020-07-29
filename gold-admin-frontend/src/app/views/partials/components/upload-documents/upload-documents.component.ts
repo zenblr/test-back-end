@@ -25,6 +25,7 @@ export class UploadDocumentsComponent implements OnInit {
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() stage: EventEmitter<any> = new EventEmitter();
   @Input() loanDocumnets
+  @Input() acknowledgmentDocuments;
   @Input() masterAndLoanIds;
   @Input() scrapIds;
   @Input() loanTransfer
@@ -55,6 +56,7 @@ export class UploadDocumentsComponent implements OnInit {
   isEdit: boolean;
   standardDeductionArr: any;
   globalValue: any;
+  showCustomerConfirmationFlag: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -116,6 +118,22 @@ export class UploadDocumentsComponent implements OnInit {
         this.isEdit = false
       }
     }
+
+    if (changes.acknowledgmentDocuments && changes.acknowledgmentDocuments.currentValue) {
+      let documents = changes.acknowledgmentDocuments.currentValue.customerScrapAcknowledgement
+
+      if (documents && documents.customerConfirmation.length) {
+        this.documentsForm.patchValue({
+          processingCharges: documents.processingCharges,
+          standardDeduction: documents.standardDeduction,
+          customerConfirmation: documents.customerConfirmation[0],
+          customerConfirmationImage: documents.customerConfirmation[0],
+        })
+        this.pdfCheck();
+        // this.isEdit = false
+      }
+    }
+
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
       let documents = changes.loanTransfer.currentValue.masterLoan.loanTransfer
       if (documents && documents.declaration) {
@@ -173,6 +191,18 @@ export class UploadDocumentsComponent implements OnInit {
 
   ngAfterViewInit() {
     this.globalSettingService.globalSetting$.subscribe(global => this.globalValue = global);
+
+    this.documentsForm.controls['customerConfirmationStatus'].valueChanges.subscribe((val) => {
+      if (val == 'confirmed') {
+        this.showCustomerConfirmationFlag = true;
+        this.documentsForm.controls.customerConfirmation.setValidators(Validators.required),
+          this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
+      } else {
+        this.showCustomerConfirmationFlag = false;
+        this.documentsForm.controls.customerConfirmation.setValidators([]),
+          this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
+      }
+    });
   }
 
   initForm() {
@@ -197,7 +227,8 @@ export class UploadDocumentsComponent implements OnInit {
       standardDeduction: [''],
       customerConfirmation: [],
       customerConfirmationImage: [],
-      customerConfirmationImageName: []
+      customerConfirmationImageName: [],
+      customerConfirmationStatus: [],
     })
     this.validation()
   }
@@ -221,8 +252,8 @@ export class UploadDocumentsComponent implements OnInit {
         this.documentsForm.controls.processingCharges.updateValueAndValidity()
       this.documentsForm.controls.standardDeduction.setValidators(Validators.required),
         this.documentsForm.controls.standardDeduction.updateValueAndValidity()
-      this.documentsForm.controls.customerConfirmation.setValidators(Validators.required),
-        this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
+      this.documentsForm.controls.customerConfirmationStatus.setValidators(Validators.required),
+        this.documentsForm.controls.customerConfirmationStatus.updateValueAndValidity()
     } else {
       this.documentsForm.controls.loanAgreementCopy.setValidators(Validators.required),
         this.documentsForm.controls.loanAgreementCopy.updateValueAndValidity()
@@ -360,7 +391,7 @@ export class UploadDocumentsComponent implements OnInit {
       return
     }
 
-    // loan 
+    // loan
     if (!this.isEdit) {
       this.next.emit(7)
       return

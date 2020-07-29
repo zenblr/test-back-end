@@ -29,6 +29,7 @@ export class ScrapApplicationFormComponent implements OnInit {
   scrapIds: any;
   ornamentType = [];
   finalLoanAmt: any;
+  finalScrapAmt: any;
   fullAmount: any = 0;
   showButton: boolean = true;
   approvalFrom: boolean = false;
@@ -118,6 +119,10 @@ export class ScrapApplicationFormComponent implements OnInit {
 
   finalLoanAmount(event) {
     this.finalLoanAmt = event
+  }
+
+  finalScrapAmount(event) {
+    this.finalScrapAmt = event
   }
 
   accountHolder(event) {
