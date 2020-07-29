@@ -1840,6 +1840,8 @@ exports.getDetailsForPrint = async (req, res, next) => {
         }
         customerLoanDetail.customerAddress = customerAddress
     }
+    var d = new Date(customerLoanDetail.customer.customerKycPersonal.dateOfBirth)
+    dateOfBirth = d.getDate() + "-" + d.getMonth() + 1 + "-" + d.getFullYear();
     //console.log(customerLoanDetail.customerLoan[1])
     let customerUnsecureLoanData = [];
     if (customerLoanDetail.isUnsecuredSchemeApplied) {
@@ -1880,8 +1882,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
         "width": "8.27in"
     }
 
-    var d = new Date(customerLoanDetail.customer.customerKycPersonal.dateOfBirth)
-    dateOfBirth = d.getDate() + "-" + d.getMonth() + 1 + "-" + d.getFullYear();
+   
 
     var customerSecureLoanData = await [{
         partnerName: customerLoanDetail.customerLoan[0].partner.name,
