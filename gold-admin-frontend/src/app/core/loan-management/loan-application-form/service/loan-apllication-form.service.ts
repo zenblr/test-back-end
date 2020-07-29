@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map, tap,catchError } from 'rxjs/operators';
 import printJS from 'print-js';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class LoanApplicationFormService {
   finalLoanAmount = new BehaviorSubject(0)
   finalLoanAmount$ = this.finalLoanAmount.asObservable()
 
-  constructor(public http: HttpClient) { }
+  constructor(public http: HttpClient, private toastr: ToastrService) { }
 
   customerDetails(id): Observable<any> {
     return this.http.get(`/api/loan-process/customer-loan-details/${id}`).pipe(
@@ -157,6 +158,17 @@ export class LoanApplicationFormService {
           printJS({ printable: base64, type: 'pdf', base64: true })
         }
       }))
+  }
+
+  applyLoanFromPartRelease(data): Observable<any> {
+    return this.http.get(`/api/jewellery-release/apply-loan/${data.customerUniqueId}?partReleaseId=${data.partReleaseId}`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    )
   }
 
 }

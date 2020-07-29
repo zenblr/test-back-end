@@ -76,12 +76,17 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         this.getTransferLoanDetailsToApplyLoan()
       }
 
+      if (res.partReleaseId && res.customerUniqueId) {
+        this.controls.customerUniqueId.patchValue(res.customerUniqueId)
+        this.getPartReleaseCustomerDetails(res.partReleaseId)
+      }
+
     })
 
   }
 
   ngOnInit() {
-    
+
   }
 
   initForm() {
@@ -97,6 +102,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       loanId: [],
       masterLoanId: [],
       panImage: [],
+      partReleaseId: []
     })
   }
 
@@ -127,7 +133,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.basicForm.disable()
       this.ref.detectChanges()
     }
-    
+
 
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
       this.controls.customerId.patchValue(changes.loanTransfer.currentValue.customer.id)
@@ -135,7 +141,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.currentDate = new Date(changes.loanTransfer.currentValue.loanPersonalDetail.startDate)
       this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
       this.basicForm.patchValue(changes.loanTransfer.currentValue.customer)
-      if(changes.loanTransfer.currentValue.masterLoan.loanTransfer.loanTransferStatusForBM == 'approved'){
+      if (changes.loanTransfer.currentValue.masterLoan.loanTransfer.loanTransferStatusForBM == 'approved') {
         this.disable = true
       }
     }
@@ -149,6 +155,36 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         this.ref.detectChanges()
       }
     )
+  }
+
+  getPartReleaseCustomerDetails(partReleaseId) {
+    const params = {
+      partReleaseId: partReleaseId,
+      customerUniqueId: this.controls.customerUniqueId.value
+    }
+    if (this.controls.customerUniqueId.valid) {
+      this.loanApplicationFormService.applyLoanFromPartRelease(params).pipe(map(res => {
+        console.log(res)
+        if (res.loanCurrentStage) {
+          let stage = res.loanCurrentStage
+
+          stage = Number(stage) - 1;
+          this.next.emit(stage)
+          this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
+          if (stage >= 1) {
+            this.apiHit.emit(res.loanId)
+          }
+          if (res.totalEligibleAmt)
+            this.totalEligibleAmt.emit(res.totalEligibleAmt)
+          if (res.finalLoanAmount)
+            this.finalLoanAmount.emit(res.finalLoanAmount)
+        } else {
+          this.customerDetail = res.customerData
+          this.basicForm.patchValue(this.customerDetail)
+          this.basicForm.patchValue({ customerId: this.customerDetail.id, partReleaseId: res.partReleaseId })
+        }
+      })).subscribe()
+    }
   }
 
   getTransferLoanDetailsToApplyLoan() {
@@ -182,7 +218,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   getCustomerDetailsForTransfer() {
-    
+
     if (this.controls.customerUniqueId.valid) {
       this.loanTransferFormService.getCustomerDetailsForTransfer(this.controls.customerUniqueId.value).pipe(
         map(res => {
@@ -247,7 +283,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
 
-  
+
 
   get controls() {
     return this.basicForm.controls
@@ -255,11 +291,11 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
 
   nextAction() {
 
-    if(this.disable){
+    if (this.disable) {
       this.next.emit(1)
-      return 
+      return
     }
-  
+
     if (this.basicForm.invalid) {
       this.basicForm.markAllAsTouched();
       return

@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { PartReleaseApprovalService } from '../../../../../core/funds-approvals/jewellery-release-approval/part-release-approval/services/part-release-approval.service';
 import { ToastrService } from 'ngx-toastr';
 import { map } from 'rxjs/operators';
+import { PartReleaseFinalService } from '../../../../../core/funds-approvals/jewellery-release-final/part-release-final/services/part-release-final.service';
 
 @Component({
   selector: 'kt-update-status',
@@ -13,11 +14,14 @@ import { map } from 'rxjs/operators';
 export class UpdateStatusComponent implements OnInit {
 
   updateStatusForm: FormGroup
-  status = ['pending', 'completed', 'rejected']
+  amountStatus = ['completed', 'pending', 'rejected']
+  partReleaseStatus = ['released', 'pending']
+  jewelleryReleaseFinal: boolean;
 
   constructor(
     private fb: FormBuilder,
     private partReleaseApprovalService: PartReleaseApprovalService,
+    private partReleaseFinalService: PartReleaseFinalService,
     private toastr: ToastrService,
     public dialogRef: MatDialogRef<UpdateStatusComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -25,7 +29,7 @@ export class UpdateStatusComponent implements OnInit {
 
   ngOnInit() {
     this.initForm()
-    this.patchForm(this.data.value)
+    if (this.data.value) this.patchForm(this.data.value)
   }
 
   initForm() {
@@ -40,7 +44,15 @@ export class UpdateStatusComponent implements OnInit {
       penalInterest: ['', [Validators.required]],
       payableAmount: ['', [Validators.required]],
       amountStatus: ['', [Validators.required]],
+      partReleaseStatus: ['', [Validators.required]],
+      appraiserReason: ['', [Validators.required]]
     })
+
+    if (this.data.name === 'jewelleryReleaseFinal') {
+      this.controls.amountStatus.disable()
+    } else {
+      this.controls.partReleaseStatus.disable()
+    }
   }
 
   patchForm(data) {
@@ -55,7 +67,7 @@ export class UpdateStatusComponent implements OnInit {
 
     for (const key in this.controls) {
       if (this.controls.hasOwnProperty(key)) {
-        if (!(key == 'amountStatus' || key == 'partReleaseId')) this.controls[key].disable()
+        if (!(key == 'amountStatus' || key == 'partReleaseId' || key == 'partReleaseStatus' || key == 'appraiserReason')) this.controls[key].disable()
       }
     }
   }
@@ -76,14 +88,44 @@ export class UpdateStatusComponent implements OnInit {
     }
   }
 
+  commentValidation(event) {
+    if (this.data.name == 'jewelleryReleaseFinal') {
+      if (event.target.value != 'released') {
+        this.setAppraiserReason()
+      } else {
+        this.resetAppraiserReason()
+      }
+    }
+  }
+
+  setAppraiserReason() {
+    this.controls.appraiserReason.reset()
+    this.updateStatusForm.controls.appraiserReason.setValidators([Validators.required])
+    this.updateStatusForm.controls.appraiserReason.updateValueAndValidity()
+  }
+
+  resetAppraiserReason() {
+    this.updateStatusForm.controls.appraiserReason.reset()
+    this.updateStatusForm.controls.appraiserReason.clearValidators()
+    this.updateStatusForm.controls.appraiserReason.updateValueAndValidity()
+  }
+
   submit() {
     if (this.updateStatusForm.invalid) return this.updateStatusForm.markAllAsTouched()
 
     console.log(this.updateStatusForm.value)
-    this.partReleaseApprovalService.updateAmountStatus(this.updateStatusForm.value).pipe(map(res => {
-      if (res) this.toastr.success('Status Updated Successfully')
-      this.dialogRef.close(true)
-    })).subscribe()
+
+    if (this.data.name === 'jewelleryReleaseFinal') {
+      this.partReleaseFinalService.upateStatus(this.updateStatusForm.value).pipe(map(res => {
+        if (res) this.toastr.success('Status Updated Successfully')
+        this.dialogRef.close(true)
+      })).subscribe()
+    } else {
+      this.partReleaseApprovalService.updateAmountStatus(this.updateStatusForm.value).pipe(map(res => {
+        if (res) this.toastr.success('Status Updated Successfully')
+        this.dialogRef.close(true)
+      })).subscribe()
+    }
 
 
   }

@@ -129,7 +129,10 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="offset-1 col-4 form-label">
-                                        <mat-label>Total Payable Amount</mat-label>
+                                        <mat-label>Total
+                                            <span *ngIf="data.name == 'jewelleryReleaseFinal'">Paid</span>
+                                            <span *ngIf="data.name != 'jewelleryReleaseFinal'">Payable</span>
+                                            Amount</mat-label>
                                     </div>
                                     <div class="col-7">
                                         <input class="form-control" formControlName="payableAmount"
@@ -143,7 +146,7 @@
                             </div>
                         </div>
 
-                        <div class="row kt-margin-b-15">
+                        <div *ngIf="data.name != 'jewelleryReleaseFinal'" class="row kt-margin-b-15">
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-4 form-label">
@@ -153,11 +156,57 @@
                                         <select class="form-control" formControlName="amountStatus"
                                             [class.isError]="controls.amountStatus.touched && controls.amountStatus.invalid">
                                             <option value="" disabled selected>Select Status</option>
-                                            <option *ngFor="let stat of status" [value]="stat"> {{stat | titlecase}}
+                                            <option *ngFor="let stat of amountStatus" [value]="stat">
+                                                {{stat | titlecase}}
                                             </option>
                                         </select>
                                         <mat-error
                                             *ngIf="controls.amountStatus.touched && controls.amountStatus.errors?.required">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="data.name == 'jewelleryReleaseFinal'" class="row kt-margin-b-15">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <mat-label>Status</mat-label>
+                                    </div>
+                                    <div class="col-7">
+                                        <select class="form-control" formControlName="partReleaseStatus"
+                                            (change)="commentValidation($event)"
+                                            [class.isError]="controls.partReleaseStatus.touched && controls.partReleaseStatus.invalid">
+                                            <option value="" disabled selected>Select Status</option>
+                                            <option *ngFor="let stat of partReleaseStatus" [value]="stat">
+                                                {{stat | titlecase}}
+                                            </option>
+                                        </select>
+                                        <mat-error
+                                            *ngIf="controls.partReleaseStatus.touched && controls.partReleaseStatus.errors?.required">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div *ngIf="controls.partReleaseStatus.value != 'released'" class="col-6">
+                                <div class="row">
+                                    <div class="offset-1 col-4 form-label">
+                                        <mat-label>Reason</mat-label>
+                                    </div>
+                                    <div class="col-7">
+                                        <textarea class="form-control" formControlName="appraiserReason"
+                                            [class.isError]="controls.appraiserReason.touched && controls.appraiserReason.invalid"
+                                            placeholder="Reason for {{controls.partReleaseStatus.value | titlecase}}"></textarea>
+                                        <!-- <mat-form-field class="example-full-width">
+                                            <textarea matInput formControlName="appraiserReason"
+                                                placeholder="Reason for {{controls.partReleaseStatus.value | titlecase}}"></textarea>
+                                        </mat-form-field> -->
+                                        <mat-error
+                                            *ngIf="controls.appraiserReason.touched && controls.appraiserReason.errors?.required">
                                             Required field
                                         </mat-error>
                                     </div>
