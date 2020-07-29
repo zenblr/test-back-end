@@ -6,6 +6,7 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 const check = require("../../lib/checkLib");
 const action = require('../../utils/partReleaseHistory');
 const loanFunction = require('../../utils/loanFunction');
+const { getCustomerLoanId,interestAmountCalculation } = require('../../utils/interestCalculation');
 
 
 exports.ornamentsDetails = async (req, res, next) => {
@@ -152,31 +153,6 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
 
     ornamentsWeightInfo.outstandingAmount = Math.round(ornamentsWeightInfo.outstandingAmount);
     return ornamentsWeightInfo;
-}
-
-async function interestAmountCalculation(masterLoanId,customerLoanId) {
-    // let intrest = await loanFunction(masterLoanId,customerLoanId);
-    return {masterLoanId,customerLoanId}
-}
-
-async function getCustomerLoanId(masterLoanId) {
-    let loanData = await models.customerLoanMaster.findOne({
-        where:{id:masterLoanId},
-        include:[{
-            model: models.customerLoan,
-            as: 'customerLoan',
-            attributes: ['id','loanType']
-        }]
-    });
-    let loan = {}
-    await loanData.customerLoan.map((data) => {
-        if(data.loanType == "secured"){
-            loan.secured = data.id;
-        }else{
-            loan.unsecured = data.id
-        }
-    });
-    return loan
 }
 
 async function getornamentLoanInfo(masterLoanId, ornamentWeight,customerLoanId) {
