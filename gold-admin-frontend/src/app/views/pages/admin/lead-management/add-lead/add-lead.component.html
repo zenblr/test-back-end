@@ -163,7 +163,7 @@
                                 <label class="text-color font-weight-500">PAN / FORM 60 </label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="panType">
+                                <select class="form-control" formControlName="panType" (change)='remove()'>
                                     <option value="" selected>Select</option>
                                     <option value="pan">PAN</option>
                                     <option value="form60">FORM 60</option>
