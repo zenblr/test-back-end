@@ -2,7 +2,7 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
-const { customerDetails, scrapBasicDeatils, acknowledgementDetails, scrapBankDetails, scrapOrnmanetDetails, scrapAppraiserRating, scrapBmRating, scrapOpsTeamRating, singleScrapDetails, scrapDocuments, addPackageImagesForScrap} =
+const { customerDetails, scrapBasicDeatils, acknowledgementDetails, scrapBankDetails, scrapOrnmanetDetails, scrapAppraiserRating, scrapBmRating, scrapOpsTeamRating, singleScrapDetails, scrapDocuments, addPackageImagesForScrap, scrapOrnmanetMeltingDetails} =
   require('../../controllers/scrap/customerScrapProcess/customerScrapProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
 
 const checkAuth = require('../../middleware/checkAuth'); // IMPORTING CHECKAUTH MIDDLEWARE
@@ -18,6 +18,8 @@ route.post('/acknowledgement-details', checkAuth, wrapper(acknowledgementDetails
 route.post('/bank-details', checkAuth, wrapper(scrapBankDetails)); // ADD CUSTOMER ACKNOWLEDGEMENT DETAIL
 
 route.post('/ornaments-details', checkAuth, wrapper(scrapOrnmanetDetails)); // ADD CUSTOMER ORNAMENT DETAIL
+
+route.post('/ornaments-melting-details', checkAuth, wrapper(scrapOrnmanetMeltingDetails)); // ADD CUSTOMER ORNAMENT DETAIL
 
 route.post('/scrap-documents', checkAuth, wrapper(scrapDocuments))// ADD scrap documents
 

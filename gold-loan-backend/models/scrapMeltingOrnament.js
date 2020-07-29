@@ -1,18 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
-    const CustomerScrapOrnamentsDetail = sequelize.define('customerScrapOrnamentsDetail', {
+    const ScrapMeltingOrnament = sequelize.define('scrapMeltingOrnament', {
         // attributes
         scrapId: {
             type: DataTypes.INTEGER,
             field: 'scrap_id',
             allowNull: false
-        },
-        ornamentTypeId: {
-            type: DataTypes.INTEGER,
-            field: 'ornament_type_id'
-        },
-        quantity: {
-            type: DataTypes.INTEGER,
-            field: 'quantity'
         },
         grossWeight: {
             type: DataTypes.FLOAT,
@@ -30,13 +22,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'karat'
         },
-        approxPurityReading: {
+        purityReading: {
             type: DataTypes.INTEGER,
-            field: 'approx_purity_reading'
-        },
-        ornamentImage: {
-            type: DataTypes.TEXT,
-            field: 'ornament_image'
+            field: 'purity_reading'
         },
         ornamentImageWithWeight: {
             type: DataTypes.TEXT,
@@ -46,13 +34,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'ornament_image_with_xrf_machine_reading'
         },
-        ltvAmount: {
-            type: DataTypes.FLOAT,
-            field: 'ltv_amount'
-        },
-        scrapAmount: {
-            type: DataTypes.FLOAT,
-            field: 'scrap_amount'
+        customerConfirmation: {
+            type: DataTypes.ENUM,
+            field: 'customer_confirmation',
+            values: ['yes', 'no']
         },
         createdBy: {
             type: DataTypes.INTEGER,
@@ -69,19 +54,16 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'scrap_customer_scrap_ornaments_detail',
+        tableName: 'scrap_melting_ornament',
     });
 
 
-    CustomerScrapOrnamentsDetail.associate = function (models) {
-        CustomerScrapOrnamentsDetail.belongsTo(models.customerScrap, { foreignKey: 'scrapId', as: 'scrap' });
+    ScrapMeltingOrnament.associate = function (models) {
+        ScrapMeltingOrnament.belongsTo(models.customerScrap, { foreignKey: 'scrapId', as: 'scrap' });
 
-        CustomerScrapOrnamentsDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
-        CustomerScrapOrnamentsDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
-
-        CustomerScrapOrnamentsDetail.belongsTo(models.ornamentType, { foreignKey: 'ornamentTypeId', as: 'ornamentType' });
-
+        ScrapMeltingOrnament.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        ScrapMeltingOrnament.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
-    return CustomerScrapOrnamentsDetail;
+    return ScrapMeltingOrnament;
 }

@@ -11,11 +11,15 @@ module.exports = (sequelize, DataTypes) => {
         }
     },
         {
-            freezeTableName: true,
+            freezeTableName: true, 
             allowNull: false,   
             tableName: 'scrap_customer_scrap_packet',
         },
     )
+
+    CustomerScrapPacket.associate = function (models) {
+
+    }
 
     return CustomerScrapPacket;
 

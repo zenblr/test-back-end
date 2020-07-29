@@ -62,6 +62,17 @@ exports.readDeductionDetails = async (req, res, next) => {
     }
 }
 
+exports.readAllDeductionDetails = async (req, res, next) => {
+
+    let deductionDetails = await models.standardDeduction.findAll({ where: { isActive: true } });
+
+    if(!deductionDetails){
+        return res.status(404).json({ message: 'Data not found' });
+    }else{
+        return res.status(200).json({ deductionDetails });
+    }
+}
+
 exports.getByDeductionId = async (req, res, next) => {
 
     const deductionId = req.params.id;

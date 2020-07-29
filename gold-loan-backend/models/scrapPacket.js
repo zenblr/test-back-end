@@ -46,8 +46,8 @@ module.exports = (sequelize, DataTypes) => {
         ScrapPacket.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         ScrapPacket.hasMany(models.scrapPacketOrnament, { foreignKey: 'packetId', as: 'scrapPacketOrnament' });
 
-        ScrapPacket.belongsToMany(models.customerScrapPackageDetails, { through: models.customerScrapPacket });
-        
+        // ScrapPacket.belongsToMany(models.customerScrapPackageDetails, { through: models.customerScrapPacket });
+        ScrapPacket.belongsToMany(models.customerScrapPackageDetails, {as: 'ScrapPacket',  foreignKey: 'packetId', through: models.customerScrapPacket });
     }
 
     ScrapPacket.addPacket =

@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         paymentType: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'payment_type',
         },
         bankName: {
@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         acNumber: {
             type: DataTypes.STRING,
             field: 'ac_number',
+        },
+        ifscCode: {
+            type: DataTypes.STRING,
+            field: 'ifsc_code',
         },
         passbookProof: {
             type: DataTypes.ARRAY(DataTypes.TEXT),

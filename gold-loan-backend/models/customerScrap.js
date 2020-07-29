@@ -84,6 +84,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'final_scrap_amount'
         },
+        finalScrapAmountAfterMelting: {
+            type: DataTypes.FLOAT,
+            field: 'final_scrap_amount_after_melting'
+        },
+        eligibleScrapAmount: {
+            type: DataTypes.FLOAT,
+            field: 'eligible_scrap_amount'
+        },
         customerScrapCurrentStage: {
             type: DataTypes.ENUM,
             field: 'customer_scrap_current_stage',
@@ -97,6 +105,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'is_scrap_submitted',
             defaultValue: false
+        },
+        isDisbursed: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_disbursed',
+            defaultValue: false
+        },
+        disbursementAmount: {
+            type: DataTypes.FLOAT,
+            field: 'disbursement_amount'
         },
         internalBranchId: {
             type: DataTypes.INTEGER,
@@ -144,43 +161,35 @@ module.exports = (sequelize, DataTypes) => {
         if (values.scrapOrnamentsDetail) {
             for (let i = 0; i < values.scrapOrnamentsDetail.length; i++) {
 
-                if (values.scrapOrnamentsDetail[i].ornamentImage) {
+                if (values.scrapOrnamentsDetail[i].ornamentImage && values.scrapOrnamentsDetail[i].ornamentImage != 0 ) {
                     let ornamentImage = [];
-                    for (image of values.scrapOrnamentsDetail[i].ornamentImage) {
-                        image = process.env.BASE_URL + image;
+                    // for (image of values.scrapOrnamentsDetail[i].ornamentImage) {
+                        image = process.env.BASE_URL + values.scrapOrnamentsDetail[i].ornamentImage;
                         ornamentImage.push(image);
-                    }
+                    // }
                     values.scrapOrnamentsDetail[i].ornamentImage = ornamentImage;
                 }
 
-                if (values.scrapOrnamentsDetail[i].imageOne) {
-                    let imageOne = [];
-                    for (image of values.scrapOrnamentsDetail[i].imageOne) {
-                        image = process.env.BASE_URL + image;
-                        imageOne.push(image);
-                    }
-                    values.scrapOrnamentsDetail[i].imageOne = imageOne;
+                if (values.scrapOrnamentsDetail[i].ornamentImageWithWeight && values.scrapOrnamentsDetail[i].ornamentImageWithWeight != 0) {
+                    let ornamentImageWithWeight = [];
+                    // for (image of values.scrapOrnamentsDetail[i].ornamentImageWithWeight) {
+                        image = process.env.BASE_URL + values.scrapOrnamentsDetail[i].ornamentImageWithWeight;
+                        ornamentImageWithWeight.push(image);
+                    // }
+                    values.scrapOrnamentsDetail[i].ornamentImageWithWeight = ornamentImageWithWeight;
                 }
-                if (values.scrapOrnamentsDetail[i].imageTwo) {
-                    let imageTwo = [];
-                    for (image of values.scrapOrnamentsDetail[i].imageTwo) {
-                        image = process.env.BASE_URL + image;
-                        imageTwo.push(image);
-                    }
-                    values.scrapOrnamentsDetail[i].imageTwo = imageTwo;
-                }
-                if (values.scrapOrnamentsDetail[i].imageThree) {
-                    let imageThree = [];
-                    for (image of values.scrapOrnamentsDetail[i].imageThree) {
-                        image = process.env.BASE_URL + image;
-                        imageThree.push(image);
-                    }
-                    values.scrapOrnamentsDetail[i].imageThree = imageThree;
+                if (values.scrapOrnamentsDetail[i].ornamentImageWithXrfMachineReading && values.scrapOrnamentsDetail[i].ornamentImageWithXrfMachineReading != 0) {
+                    let ornamentImageWithXrfMachineReading = [];
+                    // for (image of values.scrapOrnamentsDetail[i].ornamentImageWithXrfMachineReading) {
+                        image = process.env.BASE_URL + values.scrapOrnamentsDetail[i].ornamentImageWithXrfMachineReading;
+                        ornamentImageWithXrfMachineReading.push(image);
+                    // }
+                    values.scrapOrnamentsDetail[i].ornamentImageWithXrfMachineReading = ornamentImageWithXrfMachineReading;
                 }
             }
         }
 
-        if(values.scrapBankDetails){
+        if(values.scrapBankDetails && values.scrapBankDetails.passbookProof.length != 0){
             let passbookProof = [];
             for (image of values.scrapBankDetails.passbookProof) {
                 image = process.env.BASE_URL + image;
@@ -189,15 +198,7 @@ module.exports = (sequelize, DataTypes) => {
             values.scrapBankDetails.passbookProof = passbookProof;
         }
 
-        if(values.customerScrapAcknowledgement){
-            let xrfMachineReading = [];
-            for (image of values.customerScrapAcknowledgement.xrfMachineReading) {
-                image = process.env.BASE_URL + image;
-                xrfMachineReading.push(image);
-            }
-            values.customerScrapAcknowledgement.xrfMachineReading = xrfMachineReading;
-        }
-        if(values.customerScrapAcknowledgement){
+        if(values.customerScrapAcknowledgement && values.customerScrapAcknowledgement.customerConfirmation != 0){
             let customerConfirmation = [];
             for (image of values.customerScrapAcknowledgement.customerConfirmation) {
                 image = process.env.BASE_URL + image;
@@ -206,25 +207,25 @@ module.exports = (sequelize, DataTypes) => {
             values.customerScrapAcknowledgement.customerConfirmation = customerConfirmation;
         }
 
-        if(values.scrapDocument){
+        if(values.scrapDocument && values.scrapDocument.purchaseVoucher != 0){
             let purchaseVoucher = [];
-            for (image of values.customerScrapAcknowledgement.purchaseVoucher) {
+            for (image of values.scrapDocument.purchaseVoucher) {
                 image = process.env.BASE_URL + image;
                 purchaseVoucher.push(image);
             }
             values.scrapDocument.purchaseVoucher = purchaseVoucher;
         }
-        if(values.scrapDocument){
+        if(values.scrapDocument && values.scrapDocument.purchaseInvoice != 0){
             let purchaseInvoice = [];
-            for (image of values.customerScrapAcknowledgement.purchaseInvoice) {
+            for (image of values.scrapDocument.purchaseInvoice) {
                 image = process.env.BASE_URL + image;
                 purchaseInvoice.push(image);
             }
             values.scrapDocument.purchaseInvoice = purchaseInvoice;
         }
-        if(values.scrapDocument){
+        if(values.scrapDocument && values.scrapDocument.saleInvoice != 0){
             let saleInvoice = [];
-            for (image of values.customerScrapAcknowledgement.saleInvoice) {
+            for (image of values.scrapDocument.saleInvoice) {
                 image = process.env.BASE_URL + image;
                 saleInvoice.push(image);
             }

@@ -34,6 +34,8 @@ exports.uploadFile =
             destination = `public/uploads/holiday/`
         } else if(fileFor == "acknowledgement"){
             destination = `public/uploads/acknowledgement/${scrapId}/`
+        }else if(fileFor == "ornaments"){
+            destination = `public/uploads/ornaments/${scrapId}/`
         } else {
             return res.status(422).json({ message: 'reason not found' });
         }

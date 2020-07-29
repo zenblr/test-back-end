@@ -39,11 +39,9 @@ module.exports = (sequelize, DataTypes) => {
     CustomerScrapPackageDetails.associate = function (models) {
         CustomerScrapPackageDetails.belongsTo(models.customerScrap, { foreignKey: 'scrapId', as: 'customerScrap' });
 
-        // CustomerScrapPackageDetails.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
-
         // CustomerScrapPackageDetails.hasMany(models.customerLoanPacket, { foreignKey: 'customerLoanPackageDetailsId', as: 'customerLoanPacket' });
     
-        CustomerScrapPackageDetails.belongsToMany(models.scrapPacket, { through: models.customerScrapPacket });
+        CustomerScrapPackageDetails.belongsToMany(models.scrapPacket, {as: 'CustomerScrapPackageDetail',  foreignKey: 'customerScrapPackageDetailId', through: models.customerScrapPacket });
 
     }
 

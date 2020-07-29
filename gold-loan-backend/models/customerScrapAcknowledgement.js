@@ -6,13 +6,13 @@ module.exports = (sequelize, DataTypes) => {
             field: 'scrap_id',
             allowNull: false
         },
-        approxPurityReading: {
+        processingCharges: {
             type: DataTypes.FLOAT,
-            field: 'approx_purity_reading',
+            field: 'processing_charges',
         },
-        xrfMachineReading: {
-            type: DataTypes.ARRAY(DataTypes.TEXT),
-            field: 'xrf_machine_reading'
+        standardDeduction: {
+            type: DataTypes.FLOAT,
+            field: 'standard_deduction'
         },
         customerConfirmation: {
             type: DataTypes.ARRAY(DataTypes.TEXT),

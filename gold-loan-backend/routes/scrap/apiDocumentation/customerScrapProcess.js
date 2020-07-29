@@ -77,12 +77,14 @@
  *           properties:
  *             scrapId:
  *               type: integer
- *             approxPurityReading:
- *               type: integer
- *             xrfMachineReading:
- *               type: string
+ *             processingCharges:
+ *               type: number
+ *             standardDeduction:
+ *               type: number
  *             customerConfirmation:
- *               type: string
+ *               type: array
+ *               items: 
+ *                type: string
  *         required:
  *           - scrapId
  *           - approxPurityReading
@@ -91,6 +93,60 @@
  *     responses:
  *       200:
  *         description: acknowledgement details added successfully
+ *       404:
+ *         description: Data not found.
+ * /scrap/scrap-process/ornaments-melting-details:
+ *   post:
+ *     tags:
+ *       -  Customer scrap Process
+ *     name: add ornaments melting details for scrap
+ *     summary: To add ornaments melting details for scrap
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             scrapId:
+ *               type: integer
+ *             grossWeight:
+ *               type: number
+ *             netWeight:
+ *               type: number
+ *             deductionWeight:
+ *               type: number
+ *             karat:
+ *               type: number
+ *             purityReading:
+ *               type: number
+ *             customerConfirmation:
+ *               type: string
+ *             finalScrapAmountAfterMelting:
+ *               type: number
+ *             eligibleScrapAmount:
+ *               type: number
+ *             ornamentImageWithWeight:
+ *               type: string
+ *             ornamentImageWithXrfMachineReading:
+ *               type: string
+ *         required:
+ *           - scrapId
+ *           - grossWeight
+ *           - netWeight
+ *           - deductionWeight
+ *           - karat
+ *           - purityReading
+ *           - finalScrapAmountAfterMelting
+ *           - eligibleScrapAmount
+ *           - ornamentImageWithWeight
+ *           - ornamentImageWithXrfMachineReading
+ *     responses:
+ *       200:
+ *         description: ornaments melting details added successfully
  *       404:
  *         description: Data not found.
  * /scrap/scrap-process/bank-details:
@@ -115,16 +171,18 @@
  *               type: string
  *             bankName:
  *               type: string
- *             accountNumber:
+ *             acNumber:
  *               type: string
  *             ifscCode:
  *               type: string
- *             bankBranchName:
+ *             bankBranch:
  *               type: string
- *             accountHolderName:
+ *             acHolderName:
  *               type: string
  *             passbookProof:
- *               type: string
+ *               type: array
+ *               items: 
+ *                type: string
  *         required:
  *           - scrapId
  *           - paymentType
@@ -175,16 +233,14 @@
  *                    type: number
  *                   karat:
  *                    type: number
- *                   purity:
+ *                   approxPurityReading:
  *                    type: number
  *                   ornamentImage:
- *                    type: array
- *                    items: 
- *                     type: string
+ *                    type: string
+ *                   ornamentImageWithWeight:
+ *                    type: string
  *                   ornamentImageWithXrfMachineReading:
- *                    type: array
- *                    items: 
- *                     type: string
+ *                    type: string
  *                   ltvAmount:
  *                    type: number
  *                   scrapAmount:
@@ -232,6 +288,52 @@
  *     responses:
  *       200:
  *         description: appraiser rating added successfully
+ *       404:
+ *         description: Data not found.
+ * /scrap/scrap-process/add-packet-images:
+ *   post:
+ *     tags:
+ *       -  Customer scrap Process
+ *     name: add packet image for scrap
+ *     summary: To add packet image for scrap
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             scrapId:
+ *               type: integer
+ *             emptyPacketWithRefiningOrnament:
+ *               type: string
+ *             sealedPacketWithWeight:
+ *               type: string
+ *             sealedPacketWithCustomer:
+ *               type: string
+ *             packetOrnamentArray:
+ *                type: array
+ *                items:
+ *                  type: object  
+ *                  properties:
+ *                   packetId:
+ *                    type: integer
+ *                   packetName:
+ *                    type: string
+ *         required:
+ *           - scrapId
+ *           - paymentType
+ *           - bankName
+ *           - accountNumber
+ *           - ifscCode
+ *           - bankBranchName
+ *           - accountHolderName
+ *     responses:
+ *       200:
+ *         description: bank details added successfully
  *       404:
  *         description: Data not found.
  * /scrap/scrap-process/bm-rating:
@@ -327,11 +429,17 @@
  *             scrapId:
  *               type: integer
  *             purchaseVoucher:
- *               type: string
+ *               type: array
+ *               items: 
+ *                type: string
  *             purchaseInvoice:
- *               type: string
+ *               type: array
+ *               items: 
+ *                type: string
  *             saleInvoice:
- *               type: string
+ *               type: array
+ *               items: 
+ *                type: string
  *         required:
  *           - scrapId
  *           - purchaseVoucher
