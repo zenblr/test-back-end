@@ -162,6 +162,7 @@ async function getornamentLoanInfo(masterLoanId, ornamentWeight,customerLoanId) 
 
 exports.ornamentsAmountDetails = async (req, res, next) => {
     let { masterLoanId, ornamentId } = req.body;
+    let amount ={};
     let whereSelectedOrmenemts = { id: { [Op.in]: ornamentId }, isActive: true };
     let whereOtherOrmenemts = { id: { [Op.notIn]: ornamentId }, isActive: true };
     let loanData = await getLoanDetails(masterLoanId);
@@ -170,8 +171,13 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
     let otherOrnaments = await ornementsDetails(masterLoanId, whereOtherOrmenemts);
     let ornamentWeight = await getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanData);
     let loanInfo = await getornamentLoanInfo(masterLoanId, ornamentWeight,customerLoanId);
-    let data = await interestAmountCalculation(masterLoanId,customerLoanId);
-    return res.status(200).json({ message: 'success', ornamentWeight, loanInfo,data });
+    if(customerLoanId.secured){
+        amount.secured = await interestAmountCalculation(masterLoanId,customerLoanId.secured);
+    }
+    if(customerLoanId.unsecured){
+        amount.unSecured = await interestAmountCalculation(masterLoanId,customerLoanId.unsecured);
+    }
+    return res.status(200).json({ message: 'success', ornamentWeight, loanInfo,amount });
 }
 
 exports.ornamentsPartRelease = async (req, res, next) => {

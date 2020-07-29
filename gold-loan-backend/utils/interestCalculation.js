@@ -44,7 +44,7 @@ let getCustomerLoanDetails = async (loanId) => {
     return loanData;
 }
 
-let interestAmountCalculation = async (masterLoanId, loanData) => {
+let interestAmountCalculation = async (masterLoanId, id) => {
     let daysCount;
     let intrest;
     let checkMonths;
@@ -57,9 +57,9 @@ let interestAmountCalculation = async (masterLoanId, loanData) => {
     penalIntrestPercent = 7 / 100;
     let globalSettings = await getGlobalSetting();
     let loan = await getLoanDetails(masterLoanId);
-    intrest = await models.customerLoanInterest.findOne({ where: { emiStatus: { [Op.in]: ["paid"] }, loanId: loanData.secured }, order: [['emiDueDate', 'DESC']], attributes: ['emiReceivedDate', 'emiDueDate'] });
+    intrest = await models.customerLoanInterest.findOne({ where: { emiStatus: { [Op.in]: ["paid"] }, loanId: id }, order: [['emiDueDate', 'DESC']], attributes: ['emiReceivedDate', 'emiDueDate'] });
     if (intrest == null) {
-        firstIntrest = await models.customerLoanInterest.findOne({ where: { loanId: loanData.secured }, order: [['emiDueDate', 'ASC']], attributes: ['emiDueDate'] });
+        firstIntrest = await models.customerLoanInterest.findOne({ where: { loanId: id }, order: [['emiDueDate', 'ASC']], attributes: ['emiDueDate'] });
         let intrestStart = moment(firstIntrest.emiDueDate);
         daysCount = currentDate.diff(intrestStart, 'days');
         if (daysCount != 0) {
@@ -82,7 +82,7 @@ let interestAmountCalculation = async (masterLoanId, loanData) => {
             }
         }
     }
-    return { masterLoanId, loanData, intrest, daysCount, amount, checkMonths }
+    return amount 
 }
 
 
