@@ -36,7 +36,6 @@ module.exports = (sequelize, DataTypes) => {
         appraiserId: {
             type: DataTypes.INTEGER,
             field: 'appraiser_id',
-            allowNull: false
         },
         isActive: {
             type: DataTypes.BOOLEAN,
@@ -57,6 +56,9 @@ module.exports = (sequelize, DataTypes) => {
         
         packet.belongsTo(models.internalBranch, { foreignKey: 'internalUserBranch', as: 'internalBranch' });
         packet.hasMany(models.packetOrnament, { foreignKey: 'packetId', as: 'packetOrnament' });
+
+        packet.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
+
 
         packet.belongsToMany(models.customerLoanPackageDetails, { through: models.customerLoanPacket });
 
