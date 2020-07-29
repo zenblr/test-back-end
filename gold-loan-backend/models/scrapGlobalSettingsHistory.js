@@ -1,29 +1,24 @@
 module.exports = (sequelize, DataTypes) => {
-    const GlobalSettingHistory = sequelize.define('globalSettingHistory', {
+    const ScrapGlobalSettingHistory = sequelize.define('scrapGlobalSettingHistory', {
         // attributes
         ltvGoldValue: {
             type: DataTypes.STRING,
             field: 'ltv_gold_value',
             allowNull: false,
         },
-        minimumLoanAmountAllowed: {
-            type: DataTypes.STRING,
-            field: 'minimum_loan_amount_allowed',
-            allowNull: false,
-        },
-        minimumTopUpAmount: {
-            type: DataTypes.STRING,
-            field: 'minimum_topup_amount',
-            allowNull: false,
-        },
-        gracePeriodDays: {
-            type: DataTypes.STRING,
-            field: 'grace_period_days',
-            allowNull: false,
-        },
         cashTransactionLimit: {
             type: DataTypes.STRING,
             field: 'cash_transaction_limit',
+            allowNull: false,
+        },
+        processingChargesFixed: {
+            type: DataTypes.STRING,
+            field: 'processing_charges_fixed',
+            allowNull: false,
+        },
+        processingChargesInPercent: {
+            type: DataTypes.STRING,
+            field: 'processing_charges_in_percent',
             allowNull: false,
         },
         gst: {
@@ -44,14 +39,13 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         freezeTableName: true,
         allowNull: false,
-        tableName: 'loan_global_setting_history',
+        tableName: 'scrap_global_setting_history',
     });
 
-    GlobalSettingHistory.associate = function(models) {
-        GlobalSettingHistory.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
-        GlobalSettingHistory.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
-
+    ScrapGlobalSettingHistory.associate = function(models) {
+        ScrapGlobalSettingHistory.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        ScrapGlobalSettingHistory.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
-    return GlobalSettingHistory;
+    return ScrapGlobalSettingHistory;
 }

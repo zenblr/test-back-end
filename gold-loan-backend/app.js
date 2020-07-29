@@ -10,7 +10,7 @@ const swaggerUi = require("swagger-ui-express");
 
 //importing swagger file
 const swagger = require('./swagger');
-
+const scrapSwagger = require('./scrapSwagger')
 // api logger middleware.
 const apiLogger = require("./middleware/apiLogger");
 
@@ -26,6 +26,9 @@ var app = express();
 
 //swagger _setup
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swagger.swaggerSpec));
+
+app.use('/scrap/api-docs', swaggerUi.serve, swaggerUi.setup(scrapSwagger.swaggerSpec));
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
