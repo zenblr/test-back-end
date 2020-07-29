@@ -1013,12 +1013,11 @@ exports.loanOpsTeamRating = async (req, res, next) => {
                 let dateChnage = await disbursementOfLoanTransfer(masterLoanId);
                 for (let a = 0; a < dateChnage.securedInterest.length; a++) {
                     let updateDate = dateChnage.securedInterest[a].emiDueDate
-                    await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.securedInterest[a].id } })
-                }
+                    await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.securedInterest[a].id },transaction: t })                }
                 if (dateChnage.isUnSecured == true) {
                     for (let a = 0; a < dateChnage.unsecuredInterest.length; a++) {
                         let updateDate = dateChnage.unsecuredInterest[a].emiDueDate
-                        await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.unsecuredInterest[a].id } })
+                        await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.unsecuredInterest[a].id },transaction: t })
                     }}
                 let customerLoanId = [];
                 for (const loan of loanMaster.customerLoan) {
