@@ -438,7 +438,11 @@ exports.generateInterestTable = async (req, res, next) => {
     }
 
     interestTable.forEach(amount => {
+        if(isUnsecuredSchemeApplied){
         totalInterestAmount += amount.totalAmount
+        }else{
+        totalInterestAmount += Number(amount.securedInterestAmount)
+        }
     });
 
     return res.status(200).json({ data: { interestTable, totalInterestAmount } })
