@@ -125,9 +125,21 @@ export class LoanApplicationFormService {
     )
   }
 
-  calculateFinalInterestTable(data):Observable<any>{
-    return this.http.post('/api/loan-process/generate-interest-table',data).pipe(
-      map(res=> res)
+  calculateFinalInterestTable(data): Observable<any> {
+    return this.http.post('/api/loan-process/generate-interest-table', data).pipe(
+      map(res => res)
+    )
+  }
+
+  unsecuredTableGenration(form, paymentFrequency, tenure): Observable<any> {
+    let data = {
+      unsecuredSchemeAmount: form.unsecuredSchemeAmount,
+      unsecuredSchemeId: form.unsecuredSchemeName,
+      paymentFrequency: paymentFrequency,
+      tenure: tenure
+    }
+    return this.http.post('/api/loan-process/generate-unsecured-interest-table', data).pipe(
+      map(res => res)
     )
   }
 

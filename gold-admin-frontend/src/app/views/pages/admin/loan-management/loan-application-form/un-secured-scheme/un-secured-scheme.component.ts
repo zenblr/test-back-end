@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { LoanApplicationFormService } from '../../../../../../core/loan-management';
 
 
 @Component({
@@ -22,6 +23,7 @@ export class UnSecuredSchemeComponent implements OnInit {
     public fb: FormBuilder,
     public dialogRef: MatDialogRef<UnSecuredSchemeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    public loanService:LoanApplicationFormService
   ) { }
 
   ngOnInit() {
@@ -30,7 +32,7 @@ export class UnSecuredSchemeComponent implements OnInit {
     this.details = this.data.unsecuredSchemeForm
     this.unsecuredSchemes = this.details.unsecuredScheme.schemes
     this.seletedScheme = this.unsecuredSchemes.filter(scheme => { return scheme.id == this.controls.unsecuredSchemeName.value })
-    console.log(this.details)
+    console.log(this.data)
   }
 
   initForm() {
@@ -95,16 +97,19 @@ export class UnSecuredSchemeComponent implements OnInit {
   }
 
   calculate() {
-    if (this.isUnsecuredSchemeChanged) {
-      this.unSecuredInterestAmount = (this.details.unsecuredSchemeAmount *
-        (this.controls.unsecuredSchemeInterest.value * 12 / 100)) * this.details.paymentType
-        / 360
+    // if (this.isUnsecuredSchemeChanged) {
+      // this.unSecuredInterestAmount = (this.details.unsecuredSchemeAmount *
+      //   (this.controls.unsecuredSchemeInterest.value * 12 / 100)) * this.details.paymentType
+      //   / 360
       this.isUnsecuredSchemeChanged = false;
       this.genrateTable()
-    }
+    // }
   }
 
   genrateTable() {
+    
+    this.loanService.unsecuredTableGenration(this.unsecuredSchemeForm.value,this.details.paymentType,this.details.tenure).subscribe()
+    return
     let tempIndex = 0;
     for (let index = 0; index < this.details.tenure; index++) {
       if ((index + 1) % this.colJoin == 0) {

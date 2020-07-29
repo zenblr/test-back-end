@@ -103,9 +103,6 @@ export class InterestCalculatorComponent implements OnInit {
       }
     }
 
-    if (changes.fullAmount) {
-      console.log(changes.fullAmount)
-    }
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         if (changes.details.currentValue && changes.details.currentValue) {
@@ -127,8 +124,9 @@ export class InterestCalculatorComponent implements OnInit {
             this.finalInterestForm.controls.loanStartDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
           }
           this.selectedScheme = finalLoan.scheme
+          this.paymentFrequency = finalLoan.scheme.schemeInterest
           let temp = []
-          this.getIntrest()
+          // this.getIntrest()
 
           finalLoan.customerLoanInterest.forEach(interset => {
             var data = {
@@ -142,14 +140,14 @@ export class InterestCalculatorComponent implements OnInit {
           });
           if (finalLoan.masterLoan.isUnsecuredSchemeApplied) {
             // this.unSecuredSchemeCheck(finalLoan.masterLoan.unsecuredLoanAmount, (finalLoan.scheme.maximumPercentageAllowed / 100), 'edit')
-            this.selectedUnsecuredscheme.push(finalLoan.unsecuredLoan.scheme)
+            this.selectedUnsecuredscheme = finalLoan.unsecuredLoan.scheme
             this.finalInterestForm.patchValue({ unsecuredSchemeId: finalLoan.unsecuredLoan.scheme.id })
             for (let index = 0; index < temp.length; index++) {
               temp[index].unsecuredInterestAmount = finalLoan.unsecuredLoan.customerLoanInterest[index].interestAmount
               temp[index].totalAmount = Number(temp[index].securedInterestAmount) +
                 Number(temp[index].unsecuredInterestAmount)
             }
-            this.getIntrest()
+            // this.getIntrest()
 
           }
 
@@ -174,17 +172,12 @@ export class InterestCalculatorComponent implements OnInit {
     if (this.controls.finalLoanAmount.valid) {
       this.partnerService.getPartnerBySchemeAmount(Math.floor(this.controls.finalLoanAmount.value)).subscribe(res => {
         this.partnerList = res.data;
-        // if (this.controls.schemeId.value && this.details) {
-        //   this.details = ''
-        //   this.returnScheme()
-        // } else {
-          this.getSchemes()
-        // }
+        this.returnScheme()
       })
     }
   }
 
-  getSchemes() {
+  reset() {
     this.dateOfPayment = []
     this.schemesList = []
     this.controls.schemeId.reset()
@@ -192,7 +185,12 @@ export class InterestCalculatorComponent implements OnInit {
     this.controls.totalFinalInterestAmt.reset()
     this.controls.paymentFrequency.reset()
     this.controls.processingCharge.reset()
-    this.returnScheme()
+    this.selectedScheme=''
+  }
+
+  partnerReset(){
+    this.controls.partnerId.reset();
+    this.reset()
   }
 
   returnScheme() {
@@ -215,7 +213,7 @@ export class InterestCalculatorComponent implements OnInit {
       tenure: [null, [Validators.required]],
       loanStartDate: [this.currentDate],
       loanEndDate: [, [Validators.required]],
-      paymentFrequency: ['', [Validators.required]],
+      paymentFrequency: [null, [Validators.required]],
       totalFinalInterestAmt: [],
       unsecuredInterestRate: [],
       interestRate: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
@@ -254,7 +252,7 @@ export class InterestCalculatorComponent implements OnInit {
   scheme() {
     this.filterScheme()
     this.amountValidation()
-    this.getIntrest()
+    // this.getIntrest()
   }
 
   amountValidation() {
@@ -332,8 +330,14 @@ export class InterestCalculatorComponent implements OnInit {
           }
           this.controls.processingCharge.patchValue(res.data.processingCharge)
           this.paymentFrequency = res.data.securedScheme.schemeInterest;
+          this.controls.paymentFrequency.reset()
         }
 
+        
+      },err=>{
+        if(err.error.message == "No Unsecured Scheme Availabe"){
+          this.controls.finalLoanAmount.setErrors({ noDefaultScheme: true })
+        }
       })
 
 
@@ -599,6 +603,7 @@ export class InterestCalculatorComponent implements OnInit {
       this.next.emit(4)
       return
     }
+
 
     if (this.finalInterestForm.invalid) {
       this.finalInterestForm.markAllAsTouched()
