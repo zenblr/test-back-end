@@ -251,6 +251,10 @@ exports.checkForLoanType = async (req, res, next) => {
         }]
     })
 
+    if(securedScheme.isSplitAtBeginning){
+        
+    }
+
     let secureSchemeMaximumAmtAllowed = (securedScheme.maximumPercentageAllowed / 100)
 
     let securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
@@ -310,7 +314,7 @@ exports.checkForLoanType = async (req, res, next) => {
             return res.status(200).json({ data: { unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme } })
 
         } else {
-            return res.status(200).json({ message: "No Unsecured Scheme Availabe" })
+            return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
         }
     }
     else {
@@ -395,13 +399,13 @@ exports.generateInterestTable = async (req, res, next) => {
     let totalInterestAmount = 0;
 
     // secure interest calculation
-    let securedInterestAmount = await ((Number(securedLoanAmount) * (Number(interestRate) * 12 / 100)) * Number(paymentFrequency)
-        / 360).toFixed(2)
+    let securedInterestAmount = await interestCalcultaion(securedLoanAmount, interestRate, paymentFrequency)
+
 
     // unsecure interest calculation
     if (isUnsecuredSchemeApplied) {
-        var unsecuredInterestAmount = await ((Number(unsecuredLoanAmount) * (Number(unsecuredInterestRate) * 12 / 100)) * Number(paymentFrequency)
-            / 360).toFixed(2)
+        var unsecuredInterestAmount = await interestCalcultaion(unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency)
+
     }
 
     // generate Table
@@ -437,6 +441,52 @@ exports.generateInterestTable = async (req, res, next) => {
     });
 
     return res.status(200).json({ data: { interestTable, totalInterestAmount } })
+}
+
+// FUNCTION FOR unsecure table generation
+
+exports.unsecuredTableGeneration = async (req, res, next) => {
+    let { unsecuredSchemeAmount, unsecuredSchemeId, paymentFrequency, tenure } = req.body
+    console.log(req.body)
+    let interestTable = []
+    var unsecuredInterestRate = await models.schemeInterest.findOne({
+        where: { days: paymentFrequency, schemeId: unsecuredSchemeId },
+        attributes: ['interestRate'],
+    })
+
+    var unsecuredInterestAmount = await interestCalcultaion(unsecuredSchemeAmount, unsecuredInterestRate.interestRate, paymentFrequency)
+
+    let length = (tenure * 30) / paymentFrequency
+    console.log(length)
+    for (let index = 0; index < Number(length); index++) {
+        let date = new Date()
+        let data = {
+            emiDueDate: moment(new Date(date.setDate(date.getDate() + (paymentFrequency * (index + 1)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
+            paymentType: paymentFrequency,
+            unsecuredInterestAmount: unsecuredInterestAmount,
+        }
+        interestTable.push(data)
+    }
+
+    if (!Number.isInteger(length)) {
+        const lastElementOfTable = interestTable[interestTable.length - 1]
+
+        let unsecure = (unsecuredInterestAmount / Math.ceil(length)).toFixed(2)
+        lastElementOfTable.unsecuredInterestAmount = unsecure
+
+
+    }
+
+    return res.status(200).json({ data: { interestTable } })
+
+}
+
+
+// interest calculation
+async function interestCalcultaion(amount, interestRate, paymentFrequency) {
+    let interest = ((Number(amount) * (Number(interestRate) * 12 / 100)) * Number(paymentFrequency)
+        / 360).toFixed(2)
+    return interest
 }
 
 //FUNCTION for final loan calculator
@@ -1234,7 +1284,12 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             },
             {
                 model: models.scheme,
-                as: 'scheme'
+                as: 'scheme',
+                include: [{
+                    model: models.schemeInterest,
+                    as: 'schemeInterest',
+                    attributes: ['schemeId', 'days']
+                }]
             },
             {
                 model: models.customerLoan,
