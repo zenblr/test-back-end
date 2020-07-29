@@ -64,10 +64,10 @@
                                         <mat-label>Principal OutStanding Amount</mat-label>
                                     </div>
                                     <div class="col-7">
-                                        <input class="form-control" formControlName="principalOutStandingAmount"
-                                            [class.isError]="controls.principalOutStandingAmount.touched && controls.principalOutStandingAmount.invalid">
+                                        <input class="form-control" formControlName="outstandingAmount"
+                                            [class.isError]="controls.outstandingAmount.touched && controls.outstandingAmount.invalid">
                                         <mat-error
-                                            *ngIf="controls.principalOutStandingAmount.touched && controls.principalOutStandingAmount.errors?.required">
+                                            *ngIf="controls.outstandingAmount.touched && controls.outstandingAmount.errors?.required">
                                             Required field
                                         </mat-error>
                                     </div>

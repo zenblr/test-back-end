@@ -6,11 +6,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'action_name',
             allowNull: false,
         },
-        description:{
+        description: {
             type: DataTypes.TEXT,
             field: 'description'
         },
-        entityId:{
+        entityId: {
             type: DataTypes.INTEGER,
             field: 'entity_id',
             allowNull: false,
@@ -27,10 +27,10 @@ module.exports = (sequelize, DataTypes) => {
     });
 
 
-    Permission.associate = function(models) {
+    Permission.associate = function (models) {
         Permission.belongsTo(models.entity, { foreignKey: 'entityId', as: 'entity' });
-        Permission.belongsToMany(models.role,{through: models.rolePermission});
-        Permission.hasMany(models.permissionSystemInfo,{foreignKey:'permissionId', as:'systemInfo'});
+        Permission.belongsToMany(models.role, { through: models.rolePermission });
+        Permission.hasMany(models.permissionSystemInfo, { foreignKey: 'permissionId', as: 'systemInfo' });
     }
 
     return Permission;
