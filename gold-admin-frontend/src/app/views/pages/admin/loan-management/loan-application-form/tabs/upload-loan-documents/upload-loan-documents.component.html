@@ -22,7 +22,7 @@
             </div>
             <div class="col-4 form-label">
                 <label class="kt-padding-l-10 kt-padding-r-25">Pawn Ticket/Copy of Pledge</label>
-                <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
+                <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()" *ngIf="!show"></kt-button>
             </div>
             <div class="col-4 form-label" *ngIf="!show">
                 <label class="kt-padding-l-10">Scheme Confirmation Copy</label>
@@ -122,11 +122,12 @@
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
-                        <!-- <div class="position-relative edit-width"
-                            *ngIf="isEdit && controls?.loanAgreementCopyImage?.value">
+
+                        <div class="edit-width">
                             <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-                                (click)="editImages('loanAgreementCopy');">
-                        </div> -->
+                                *ngIf="isEdit && controls?.pawnCopyImage?.value"
+                                (click)="editImages('pawnCopy');">
+                        </div>
 
                         <div class="" *ngIf="controls?.loanAgreementCopyImage?.value">
                             <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
@@ -140,6 +141,9 @@
                                     height="250" width="290" scrolling="no" *ngIf="pdf.loanAgreementCopy"></iframe>
                             </div>
                         </div>
+                        <img src="../../../../../assets/media/icons/edit.svg"
+                            *ngIf="isEdit && controls?.loanAgreementCopyImage?.value" alt=""
+                            class="kt-pointer edit-icon" (click)="editImages('loanAgreementCopy');">
                     </div>
                 </div>
 
@@ -152,11 +156,11 @@
                                 class="placeholder-image">
                         </div>
 
-                        <!-- <div class="position-relative edit-width">
+                        <div class="edit-width">
                             <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
                                 *ngIf="isEdit && controls?.pawnCopyImage?.value"
                                 (click)="editImages('pawnCopy');">
-                        </div> -->
+                        </div>
 
 
                         <div class="" *ngIf="controls?.pawnCopyImage?.value">
@@ -185,7 +189,7 @@
                                 class="placeholder-image">
                         </div>
 
-                        <!-- <div class="position-relative edit-width">
+                        <!-- <div class="edit-width">
                             <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
                                 *ngIf="isEdit && controls?.schemeConfirmationCopyImage?.value"
                                 (click)="editImages('schemeConfirmationCopy');">

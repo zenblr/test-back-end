@@ -19,7 +19,7 @@ exports.addOccupation = async (req, res, next) => {
 // read ocuupation
 exports.readOccupation = async (req, res, next) => {
 
-    let readOccupation = await models.occupation.findAll({ where: { isActive: true } })
+    let readOccupation = await models.occupation.findAll({ where: { isActive: true }, order: [["updatedAt", "DESC"]] })
     if (!readOccupation[0]) {
         return res.status(404).json({ message: 'data not found' })
     }

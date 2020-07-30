@@ -5,6 +5,8 @@ const Op = Sequelize.Op;
 const { paginationWithFromTo } = require("../../utils/pagination");
 const check = require("../../lib/checkLib");
 const action = require('../../utils/partReleaseHistory');
+const loanFunction = require('../../utils/loanFunction');
+const { getCustomerLoanId,interestAmountCalculation,getGlobalSetting,getLoanDetails } = require('../../utils/interestCalculation');
 
 
 exports.ornamentsDetails = async (req, res, next) => {
@@ -69,17 +71,6 @@ async function getGoldRate() {
     return goldRate.goldRate;
 }
 
-async function getLoanDetails(masterLoanId) {
-    let loanData = await models.customerLoanMaster.findOne({
-        where: { id: masterLoanId }
-    })
-    return loanData;
-}
-
-async function getGlobalSetting() {
-    let globalSettings = await models.globalSetting.getGlobalSetting();
-    return globalSettings;
-}
 
 async function ornementsDetails(masterLoanId, whereBlock) {
     let ornaments = await models.customerLoanMaster.findOne({
@@ -153,7 +144,7 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
     return ornamentsWeightInfo;
 }
 
-async function getornamentLoanInfo(masterLoanId, ornamentWeight) {
+async function getornamentLoanInfo(masterLoanId, ornamentWeight,customerLoanId) {
     let loanData = await models.customerLoan.findAll({ where: { masterLoanId }, attributes: ['loanUniqueId'] });
     let loanAmountData = await models.customerLoanMaster.findOne({ where: { id: masterLoanId }, attributes: ['finalLoanAmount'] });
     let loanDetails = {
@@ -163,6 +154,7 @@ async function getornamentLoanInfo(masterLoanId, ornamentWeight) {
         penalInterest: 0,
         totalPayableAmount: 0,
     }
+    //calculate value here
     loanDetails.totalPayableAmount = ornamentWeight.releaseAmount;
     loanDetails.finalLoanAmount = loanAmountData.finalLoanAmount;
     return loanDetails;
@@ -170,14 +162,22 @@ async function getornamentLoanInfo(masterLoanId, ornamentWeight) {
 
 exports.ornamentsAmountDetails = async (req, res, next) => {
     let { masterLoanId, ornamentId } = req.body;
+    let amount ={};
     let whereSelectedOrmenemts = { id: { [Op.in]: ornamentId }, isActive: true };
     let whereOtherOrmenemts = { id: { [Op.notIn]: ornamentId }, isActive: true };
     let loanData = await getLoanDetails(masterLoanId);
+    let customerLoanId =  await getCustomerLoanId(masterLoanId);
     let requestedOrnaments = await ornementsDetails(masterLoanId, whereSelectedOrmenemts);
     let otherOrnaments = await ornementsDetails(masterLoanId, whereOtherOrmenemts);
     let ornamentWeight = await getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanData);
-    let loanInfo = await getornamentLoanInfo(masterLoanId, ornamentWeight);
-    return res.status(200).json({ message: 'success', ornamentWeight, loanInfo });
+    let loanInfo = await getornamentLoanInfo(masterLoanId, ornamentWeight,customerLoanId);
+    if(customerLoanId.secured){
+        amount.secured = await interestAmountCalculation(masterLoanId,customerLoanId.secured);
+    }
+    if(customerLoanId.unsecured){
+        amount.unSecured = await interestAmountCalculation(masterLoanId,customerLoanId.unsecured);
+    }
+    return res.status(200).json({ message: 'success', ornamentWeight, loanInfo,amount });
 }
 
 exports.ornamentsPartRelease = async (req, res, next) => {
@@ -235,7 +235,7 @@ exports.getPartReleaseList = async (req, res, next) => {
     let includeArray = [{
         model: models.customerLoanMaster,
         as: 'masterLoan',
-        attributes: ['customerId', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
+        attributes: ['customerId','outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
         include: [
             {
                 model: models.customer,
@@ -362,7 +362,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         model: models.customerLoanMaster,
         as: 'masterLoan',
         subQuery: false,
-        attributes: ['id', 'customerId', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
+        attributes: ['id','outstandingAmount', 'customerId', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
         include: [
             {
                 model: models.customer,
