@@ -81,6 +81,8 @@
  *               type: number
  *             standardDeduction:
  *               type: number
+ *             customerConfirmationStatus:
+ *               type: string
  *             customerConfirmation:
  *               type: array
  *               items: 
@@ -132,6 +134,8 @@
  *             ornamentImageWithWeight:
  *               type: string
  *             ornamentImageWithXrfMachineReading:
+ *               type: string
+ *             ornamentImage:
  *               type: string
  *         required:
  *           - scrapId
@@ -469,4 +473,32 @@
  *     responses:
  *       200:
  *          description: success.
+ * /scrap/scrap-process/applied-scrap-details:
+ *   get:
+ *     tags:
+ *       -  Customer scrap Process
+ *     name: read scrap details
+ *     summary: To read scrap details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
+ *     responses:
+ *       200:
+ *          description: scrap details fetch successfully
+ *       404:
+ *          description: no scrap details found
  */

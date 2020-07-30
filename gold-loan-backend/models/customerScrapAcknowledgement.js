@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'standard_deduction'
         },
+        customerConfirmationStatus: {
+            type: DataTypes.ENUM,
+            field: 'customer_confirmation_status',
+            values: ['confirmed', 'incomplete'],
+        },
         customerConfirmation: {
             type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'customer_confirmation',

@@ -2,7 +2,7 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
-const { customerDetails, scrapBasicDeatils, acknowledgementDetails, scrapBankDetails, scrapOrnmanetDetails, scrapAppraiserRating, scrapBmRating, scrapOpsTeamRating, singleScrapDetails, scrapDocuments, addPackageImagesForScrap, scrapOrnmanetMeltingDetails} =
+const { customerDetails, scrapBasicDeatils, acknowledgementDetails, scrapBankDetails, scrapOrnmanetDetails, scrapAppraiserRating, scrapBmRating, scrapOpsTeamRating, singleScrapDetails, scrapDocuments, addPackageImagesForScrap, scrapOrnmanetMeltingDetails, disbursementOfScrapBankDetails, disbursementOfScrapAmount, appliedScrapDetails} =
   require('../../controllers/scrap/customerScrapProcess/customerScrapProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
 
 const checkAuth = require('../../middleware/checkAuth'); // IMPORTING CHECKAUTH MIDDLEWARE
@@ -10,6 +10,8 @@ const checkAuth = require('../../middleware/checkAuth'); // IMPORTING CHECKAUTH 
 route.get('/single-scrap', checkAuth, wrapper(singleScrapDetails)); // ADD OPERATIONAL TEAM RATING
 
 route.get('/customer-scrap-details/:customerUniqueId', checkAuth, wrapper(customerDetails)); // FETCH CUSTOMER DETAILS
+
+route.get('/disbursement-bank-detail',checkAuth, wrapper(disbursementOfScrapBankDetails)); // FETCH DISBURSEMENT OF SCRAP BANK DETAILS
 
 route.post('/basic-details', checkAuth, wrapper(scrapBasicDeatils)); // ADD CUSTOMER BASIC DETAIL
 
@@ -30,5 +32,9 @@ route.post('/appraiser-rating', checkAuth, wrapper(scrapAppraiserRating)); // AD
 route.post('/bm-rating', checkAuth, wrapper(scrapBmRating)); // ADD BM RATING DETAIL
 
 route.post('/ops-rating', checkAuth, wrapper(scrapOpsTeamRating)); // ADD OPERATIONAL TEAM RATING
+
+route.post('/scrap-disbursement', checkAuth, wrapper(disbursementOfScrapAmount)); // DISBURSEMENT OF SCRAP AMOUNT
+
+route.get('/applied-scrap-details', checkAuth, wrapper(appliedScrapDetails)); // FETCH APLLIED LOAN DETAILS
 
 module.exports = route; // EXPORTING ALL ROUTES
