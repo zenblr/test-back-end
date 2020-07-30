@@ -370,7 +370,7 @@ async function processingChargeSecuredScheme(amount, securedScheme, unsecuredSch
             processingCharge += unsecuredScheme.processingChargeFixed
         }
     }
-    return processingCharge;
+    return Number(processingCharge.toFixed(2))
 }
 
 // FUNCTION for interest
