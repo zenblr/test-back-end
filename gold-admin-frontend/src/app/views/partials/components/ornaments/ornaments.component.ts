@@ -35,6 +35,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() totalAmt: EventEmitter<any> = new EventEmitter();
   @Output() finaltotalAmt: EventEmitter<any> = new EventEmitter();
   @Output() fullAmt: EventEmitter<any> = new EventEmitter();
+  @Output() finalScrapAmount: EventEmitter<any> = new EventEmitter();
+  @Output() accountHolderName: EventEmitter<any> = new EventEmitter();
   @Input() masterAndLoanIds
   @Input() scrapIds
   @Input() ornamentType
@@ -694,11 +696,15 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       if (this.meltingOrnament) {
         this.scrapApplicationFormService.submitMeltingOrnaments(this.OrnamentsData.value[0], this.totalAmount, this.scrapIds).pipe(
           map(res => {
+            res.ornamentsArr = [];
+            res.ornamentsArr.push(res.ornaments);
             let array = this.OrnamentsData.controls
             for (let index = 0; index < array.length; index++) {
               const controls = this.OrnamentsData.at(index) as FormGroup;
-              controls.controls.id.patchValue(res.ornaments[index].id)
+              controls.controls.id.patchValue(res.ornamentsArr[index].id)
             }
+            this.finalScrapAmount.emit(res.eligibleScrapAmount);
+            this.accountHolderName.emit(`${res.firstName} ${res.lastName}`)
             let stage = res.scrapCurrentStage
             stage = Number(stage) - 1;
             this.next.emit(stage)

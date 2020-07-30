@@ -67,9 +67,9 @@ export class ScrapApplicationFormService {
     )
   }
 
-  submitBank(details, masterAndLoanIds): Observable<any> {
-    let data = { ...details, ...masterAndLoanIds }
-    return this.http.post(`/api/loan-process/bank-details`, data).pipe(
+  submitBank(details, scrapIds): Observable<any> {
+    let data = { ...details, ...scrapIds }
+    return this.http.post(`/api/scrap/scrap-process/bank-details`, data).pipe(
       map(res => res)
     )
   }

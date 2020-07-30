@@ -4,6 +4,7 @@ import { SharedService } from '../../../../core/shared/services/shared.service';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { LoanApplicationFormService } from '../../../../core/loan-management';
+import { ScrapApplicationFormService } from '../../../../core/scrap-management';
 import { Router } from '@angular/router';
 
 @Component({
@@ -21,6 +22,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   @Input() disable
   @Input() action
   @Input() finalLoanAmt
+  @Input() finalScrapAmt
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Input() showButton
   @Input() accountHolderName
@@ -34,6 +36,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     public fb: FormBuilder,
     public sharedService: SharedService,
     public loanFormService: LoanApplicationFormService,
+    public scrapApplicationFormService: ScrapApplicationFormService,
     private router: Router
   ) {
     this.initForm()
@@ -42,8 +45,6 @@ export class BankDetailsComponent implements OnInit, OnChanges {
 
   ngOnInit() {
   }
-
-
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.details) {
@@ -56,10 +57,13 @@ export class BankDetailsComponent implements OnInit, OnChanges {
           // this.bankForm.controls.passbookProofImageName.patchValue(passbookProofImage[0].passbookProof.originalname)
           this.ref.markForCheck()
         }
+        if (changes.details.currentValue && changes.details.currentValue.scrapBankDetails) {
+          this.bankForm.patchValue(changes.details.currentValue.scrapBankDetails)
+          this.ref.markForCheck()
+        }
         if (changes.details.currentValue) {
           let name = changes.details.currentValue.customer.firstName + " " + changes.details.currentValue.customer.lastName
           this.bankForm.patchValue({ accountHolderName: name })
-
         }
       }
     }
@@ -74,6 +78,14 @@ export class BankDetailsComponent implements OnInit, OnChanges {
         this.controls.paymentType.disable()
       }
     }
+
+    if (changes.finalScrapAmt) {
+      if (Number(changes.finalScrapAmt.currentValue) > 200000) {
+        this.controls.paymentType.patchValue('bank')
+        this.controls.paymentType.disable()
+      }
+    }
+
     if (this.disable) {
       this.bankForm.disable()
     }
@@ -124,11 +136,18 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       var name = event.target.files[0].name
       var ext = name.split('.')
       if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-        const params = {
-          reason: 'loan',
-          masterLoanId: this.masterAndLoanIds.masterLoanId
+        let params;
+        if (this.scrapIds) {
+          params = {
+            reason: 'customerPasbookDetails',
+            scrapId: this.scrapIds.scrapId
+          }
+        } else {
+          params = {
+            reason: 'loan',
+            masterLoanId: this.masterAndLoanIds.masterLoanId
+          }
         }
-
         this.sharedService.uploadFile(event.target.files[0], params).pipe(
           map(res => {
             this.passbookImg.push(res.uploadFile.URL);
@@ -194,14 +213,25 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     this.controls.paymentType.enable()
     data = this.bankForm.value
 
-    this.loanFormService.submitBank(data, this.masterAndLoanIds).pipe(
-      map(res => {
-        if (Number(this.finalLoanAmt) > 200000) {
-          this.controls.paymentType.disable()
-
-        }
-        this.next.emit(5)
-      })).subscribe()
+    if (this.scrapIds) {
+      this.scrapApplicationFormService.submitBank(data, this.scrapIds).pipe(
+        map(res => {
+          if (Number(this.finalScrapAmt) > 200000) {
+            this.controls.paymentType.disable()
+          }
+          let stage = res.scrapCurrentStage
+          stage = Number(stage) - 1;
+          this.next.emit(stage)
+        })).subscribe()
+    } else {
+      this.loanFormService.submitBank(data, this.masterAndLoanIds).pipe(
+        map(res => {
+          if (Number(this.finalLoanAmt) > 200000) {
+            this.controls.paymentType.disable()
+          }
+          this.next.emit(5)
+        })).subscribe()
+    }
   }
 
 }

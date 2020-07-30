@@ -27,7 +27,7 @@
                         <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0"
                             style="padding:0px !important">
                             <kt-ornaments [action]="action" (next)="next($event)" [disable]="disabledForm"
-                                [meltingDetails]="customerDetail" (finaltotalAmt)="finalScrapAmount($event)"
+                                [meltingDetails]="customerDetail" (finalScrapAmount)="finalScrapAmount($event)"
                                 [scrapIds]="scrapIds" [ornamentType]="ornamentType" [showButton]="showButton"
                                 [meltingOrnament]="true" [processingCharges]="processingCharges">
                             </kt-ornaments>
@@ -35,7 +35,7 @@
                     </mat-tab>
                     <mat-tab label="Bank Details" [disabled]="disabled[4]">
                         <kt-bank-details [action]="action" [scrapIds]="scrapIds"
-                            [details]="customerDetail" [disable]="disabledForm" [finalLoanAmt]="finalLoanAmt"
+                            [details]="customerDetail" [disable]="disabledForm" [finalScrapAmt]="finalScrapAmt"
                             (next)="next($event)" [showButton]="showButton" [accountHolderName]="accountHolderName">
                         </kt-bank-details>
                     </mat-tab>
