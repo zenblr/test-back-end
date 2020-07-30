@@ -1,9 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef, Input, EventEmitter, Output, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { SharedService } from '../../../../../../../core/shared/services/shared.service';
+import { SharedService } from '../../../../core/shared/services/shared.service';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
+import { LoanApplicationFormService } from '../../../../core/loan-management';
 import { Router } from '@angular/router';
 
 @Component({
@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 export class BankDetailsComponent implements OnInit, OnChanges {
 
   @Input() masterAndLoanIds
+  @Input() scrapIds
   @ViewChild('passbook', { static: false }) passbook
   @Input() details;
   @Output() bankFormEmit: EventEmitter<any> = new EventEmitter();
@@ -55,16 +56,16 @@ export class BankDetailsComponent implements OnInit, OnChanges {
           // this.bankForm.controls.passbookProofImageName.patchValue(passbookProofImage[0].passbookProof.originalname)
           this.ref.markForCheck()
         }
-        if(changes.details.currentValue){
-          let name = changes.details.currentValue.customer.firstName +" "+changes.details.currentValue.customer.lastName
-          this.bankForm.patchValue({accountHolderName:name})
+        if (changes.details.currentValue) {
+          let name = changes.details.currentValue.customer.firstName + " " + changes.details.currentValue.customer.lastName
+          this.bankForm.patchValue({ accountHolderName: name })
 
         }
       }
     }
 
     if (changes.accountHolderName && changes.accountHolderName.currentValue) {
-      this.bankForm.patchValue({accountHolderName:changes.accountHolderName.currentValue})
+      this.bankForm.patchValue({ accountHolderName: changes.accountHolderName.currentValue })
     }
 
     if (changes.finalLoanAmt) {
@@ -87,7 +88,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       accountType: [],
       accountHolderName: [, [Validators.required, Validators.pattern("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")]],
       bankBranchName: [, [Validators.required]],
-      passbookProof: [[],[Validators.required]],
+      passbookProof: [[], [Validators.required]],
       passbookProofImage: [[]],
       passbookProofImageName: ['']
     })
@@ -154,10 +155,10 @@ export class BankDetailsComponent implements OnInit, OnChanges {
 
   removeImages(index) {
     //console.log(index)
-    this.passbookImgId .splice(index, 1);
-    this.passbookImg.splice(index,1)
-    this.bankForm.get('passbookProof').patchValue(this.passbookImgId );
-    this.bankForm.get('passbookProofImage').patchValue(this.passbookImg );
+    this.passbookImgId.splice(index, 1);
+    this.passbookImg.splice(index, 1)
+    this.bankForm.get('passbookProof').patchValue(this.passbookImgId);
+    this.bankForm.get('passbookProofImage').patchValue(this.passbookImg);
     this.bankForm.get('passbookProofImageName').patchValue('');
     this.ref.detectChanges();
   }

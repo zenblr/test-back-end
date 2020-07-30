@@ -285,6 +285,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       group.controls.netWeight.patchValue(deductionWeight.toFixed(2));
       // this.finalNetWeight(index)
       this.calculateLtvAmount(index)
+      this.calculateScrapAmount(index)
+      this.calculateMeltingScrapAmount(index)
     }
   }
 

@@ -33,17 +33,17 @@
                             </kt-ornaments>
                         </div>
                     </mat-tab>
+                    <mat-tab label="Bank Details" [disabled]="disabled[4]">
+                        <kt-bank-details [action]="action" [scrapIds]="scrapIds"
+                            [details]="customerDetail" [disable]="disabledForm" [finalLoanAmt]="finalLoanAmt"
+                            (next)="next($event)" [showButton]="showButton" [accountHolderName]="accountHolderName">
+                        </kt-bank-details>
+                    </mat-tab>
                     <!-- <mat-tab label="Final Interest Calculator" [disabled]="disabled[3]">
                         <kt-interest-calculator (next)="next($event)" [disable]="disabledForm" [action]="action"
                             (finalLoanAmount)="finalLoanAmount($event)" [totalAmt]="totalAmount"
                             [fullAmount]="fullAmount" [details]="customerDetail" [masterAndLoanIds]="masterAndLoanIds">
                         </kt-interest-calculator>
-                    </mat-tab>
-                    <mat-tab label="Bank Details" [disabled]="disabled[4]">
-                        <kt-bank-details [action]="action" [masterAndLoanIds]="masterAndLoanIds"
-                            [details]="customerDetail" [disable]="disabledForm" [finalLoanAmt]="finalLoanAmt"
-                            (next)="next($event)">
-                        </kt-bank-details>
                     </mat-tab>
                     <mat-tab label="Loan Status Approval" [disabled]="disabled[5]">
                         <kt-approval [action]="action" [disable]="disabledForm" [details]="customerDetail"

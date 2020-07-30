@@ -73,6 +73,7 @@ import { BasicDetailsComponent } from "./components/basic-details/basic-details.
 import { UploadDocumentsComponent } from "./components/upload-documents/upload-documents.component";
 import { UserClassificationComponent } from "./components/user-classification/user-classification.component";
 import { UplodPreviewImageComponent } from "./components/uplod-preview-image/uplod-preview-image.component";
+import { BankDetailsComponent } from "./components/bank-details/bank-details.component";
 
 import { NgSelectModule } from "@ng-select/ng-select";
 import { UserReviewComponent } from "../pages/admin/kyc-settings/tabs/user-review/user-review.component";
@@ -151,7 +152,8 @@ import { GlobalSettingsComponent } from './components/global-settings/global-set
 		PdfViewerComponent,
 		ImageFunctionalityDialogComponent,
 		DropdownComponent,
-		GlobalSettingsComponent
+		GlobalSettingsComponent,
+		BankDetailsComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -218,7 +220,8 @@ import { GlobalSettingsComponent } from './components/global-settings/global-set
 
 		AngularImageViewerModule,
 		DropdownComponent,
-		GlobalSettingsComponent
+		GlobalSettingsComponent,
+		BankDetailsComponent
 	],
 	imports: [
 		PdfViewerModule,
