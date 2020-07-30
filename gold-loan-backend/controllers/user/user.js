@@ -351,13 +351,14 @@ exports.getAppraiser = async (req, res, next) => {
     // })
     // let branchId = logedInUser.internalBranches[0].id
     let branchId = req.userData.internalBranchId
+    let { internalBranchId } = req.query
 
     let getAppraiserList = await models.user.findAll({
         where: { isActive: true },
         attributes: ['id', 'firstName', 'lastName'],
         include: [{
             model: models.internalBranch,
-            where: { id: branchId }
+            where: { id: internalBranchId }
         }, {
             model: models.userType,
             as: 'Usertype',
