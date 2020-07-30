@@ -232,13 +232,6 @@ exports.getPartReleaseList = async (req, res, next) => {
     const searchQuery = {
         isActive: true
     }
-    let internalBranchId = req.userData.internalBranchId
-    let internalBranchWhere;
-    if (req.userData.userTypeId != 4) {
-        internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
-    } else {
-        internalBranchWhere = { isActive: true }
-    }
     let includeArray = [{
         model: models.customerLoanMaster,
         as: 'masterLoan',
@@ -247,7 +240,6 @@ exports.getPartReleaseList = async (req, res, next) => {
             {
                 model: models.customer,
                 as: 'customer',
-                where:internalBranchWhere,
                 attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
             },
             {
@@ -366,14 +358,6 @@ exports.partReleaseApprovedList = async (req, res, next) => {
     if (req.userData.userTypeId != 4) {
         appriserSearch.appraiserId = userId;
     }
-
-    let internalBranchId = req.userData.internalBranchId
-    let internalBranchWhere;
-    if (req.userData.userTypeId != 4) {
-        internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
-    } else {
-        internalBranchWhere = { isActive: true }
-    }
     let includeArray = [{
         model: models.customerLoanMaster,
         as: 'masterLoan',
@@ -383,7 +367,6 @@ exports.partReleaseApprovedList = async (req, res, next) => {
             {
                 model: models.customer,
                 as: 'customer',
-                where: internalBranchWhere,
                 attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
             },
             {
