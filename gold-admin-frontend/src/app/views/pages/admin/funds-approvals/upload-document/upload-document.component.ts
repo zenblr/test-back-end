@@ -94,6 +94,9 @@ export class UploadDocumentComponent implements OnInit {
   }
 
   preview(value) {
+    // if (typeof value == 'object') {
+    //   value = value[0]
+    // }
     var ext = value.split('.')
     if (ext[ext.length - 1] == 'pdf') {
 
@@ -105,6 +108,7 @@ export class UploadDocumentComponent implements OnInit {
         },
         width: "80%"
       })
+
     } else {
       this.dialog.open(ImagePreviewDialogComponent, {
         data: {
