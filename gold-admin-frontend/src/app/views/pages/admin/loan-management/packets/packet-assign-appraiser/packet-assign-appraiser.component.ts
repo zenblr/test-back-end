@@ -60,7 +60,9 @@ export class PacketAssignAppraiserComponent implements OnInit {
 
   getAllAppraiser() {
     this.appraiserService.getAllAppraiser().subscribe(res => {
-      this.appraisers = res.data;
+      // const allAppraiser = res.data;
+      // this.appraisers = allAppraiser.filter(e => e.internalBranches[0].id == 2)
+      this.appraisers = res.data
     })
   }
 
@@ -68,7 +70,8 @@ export class PacketAssignAppraiserComponent implements OnInit {
     if (this.packetForm.invalid) return this.packetForm.markAllAsTouched()
 
     const packetIdArr = this.controls.multiselect.value.multiSelect.map(e => e.id)
-    this.controls.packetId.patchValue(packetIdArr)
+    this.packetForm.patchValue({ packetId: packetIdArr })
+
     console.log(this.packetForm.value)
 
     this.packetsService.assignAppraiserToPacket(this.packetForm.value).pipe(map(res => {
