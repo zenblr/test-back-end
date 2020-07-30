@@ -82,7 +82,7 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO UPDATE PACKET
     packet.updatePacket =
-        (id, packetUniqueId,internalUserBranch, modifiedBy) => packet.update({ packetUniqueId,internalUserBranch, modifiedBy }, { where: { id, isActive: true, packetAssigned: false } });
+        (id, packetUniqueId,internalUserBranch, modifiedBy, appraiserId) => packet.update({ packetUniqueId,internalUserBranch, modifiedBy, appraiserId }, { where: { id, isActive: true, packetAssigned: false } });
 
     // FUNCTION TO REMOVE PACKET
     packet.removePacket =
