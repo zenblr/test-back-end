@@ -59,7 +59,8 @@ export class PacketAssignAppraiserComponent implements OnInit {
   }
 
   getAllAppraiser() {
-    this.appraiserService.getAllAppraiser().subscribe(res => {
+    const internalBranchId = this.data.packetData[0].internalUserBranch
+    this.appraiserService.getAllAppraiser(internalBranchId).subscribe(res => {
       // const allAppraiser = res.data;
       // this.appraisers = allAppraiser.filter(e => e.internalBranches[0].id == 2)
       this.appraisers = res.data

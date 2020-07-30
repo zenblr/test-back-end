@@ -115,8 +115,10 @@ export class AssignPacketsComponent implements OnInit {
   }
 
   getAllAppraiser() {
-    this.appraiserService.getAllAppraiser().subscribe(res => {
-      this.appraisers = res.data;
-    })
+    if (this.data.packetData && this.data.packetData.internalUserBranch)
+
+      this.appraiserService.getAllAppraiser(this.data.packetData.internalUserBranch).subscribe(res => {
+        this.appraisers = res.data;
+      })
   }
 }

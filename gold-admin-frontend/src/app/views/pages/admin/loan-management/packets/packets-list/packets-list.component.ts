@@ -177,11 +177,12 @@ export class PacketsListComponent implements OnInit {
   assignAppraiser() {
     // console.log(this.selection.selected)
 
-    const { isAssignAppraiserValid, isBranchSame, isSelectionEmpty } = this.checkForSameBranch()
+    const { isAssignAppraiserValid, isBranchSame, isSelectionEmpty, isUsed } = this.checkForSameBranch()
 
     if (!isAssignAppraiserValid) {
       if (isSelectionEmpty) this.toastr.error('Select atleast 1 packet')
       if (!isBranchSame) this.toastr.error('Select packets from same branch')
+      if (!isUsed) this.toastr.error('A packet has already been used')
       return
     }
 
@@ -203,9 +204,9 @@ export class PacketsListComponent implements OnInit {
 
     console.log(isUsed)
 
-    const isAssignAppraiserValid = !(isSelectionEmpty) && isBranchSame ? true : false
+    const isAssignAppraiserValid = !(isSelectionEmpty) && isBranchSame && isUsed ? true : false
 
-    return { isAssignAppraiserValid, isBranchSame, isSelectionEmpty }
+    return { isAssignAppraiserValid, isBranchSame, isSelectionEmpty, isUsed }
   }
 
 
