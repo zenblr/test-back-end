@@ -5,9 +5,9 @@
                 <mat-tab-group [(selectedIndex)]="selected" (selectedTabChange)="next($event)">
                     <mat-tab label="Basic Details" [disabled]="disabled[0]">
                         <kt-basic-details [action]="action" (apiHit)="editId($event)" [scrapDetails]="customerDetail"
-                            [disable]="disabledForm" (id)="scrap($event)" (next)="next($event)"
-                            (totalEligibleAmt)="totalEligibleAmt($event)" [showButton]="showButton"
-                            (scrapStage)="stage($event)">
+                            [disable]="disabledForm" (id)="scrap($event)" (finalScrapAmount)="finalScrapAmount($event)"
+                            (next)="next($event)" (totalEligibleAmt)="totalEligibleAmt($event)"
+                            [showButton]="showButton" (scrapStage)="stage($event)">
                         </kt-basic-details>
                     </mat-tab>
                     <mat-tab label="Ornaments" [disabled]="disabled[1]">
@@ -34,9 +34,9 @@
                         </div>
                     </mat-tab>
                     <mat-tab label="Bank Details" [disabled]="disabled[4]">
-                        <kt-bank-details [action]="action" [scrapIds]="scrapIds"
-                            [details]="customerDetail" [disable]="disabledForm" [finalScrapAmt]="finalScrapAmt"
-                            (next)="next($event)" [showButton]="showButton" [accountHolderName]="accountHolderName">
+                        <kt-bank-details [action]="action" [scrapIds]="scrapIds" [details]="customerDetail"
+                            [disable]="disabledForm" [finalScrapAmt]="finalScrapAmt" (next)="next($event)"
+                            [showButton]="showButton" [accountHolderName]="accountHolderName">
                         </kt-bank-details>
                     </mat-tab>
                     <!-- <mat-tab label="Final Interest Calculator" [disabled]="disabled[3]">

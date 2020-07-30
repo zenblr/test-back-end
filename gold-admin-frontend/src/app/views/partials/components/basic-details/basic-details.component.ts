@@ -37,6 +37,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   @Output() scrapStage: EventEmitter<any> = new EventEmitter();
   @Output() apiHit: EventEmitter<any> = new EventEmitter();
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
+  @Output() finalScrapAmount: EventEmitter<any> = new EventEmitter();
   @Input() loanTransfer
   @Input() showButton
 
@@ -304,10 +305,12 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
             if (stage >= 1) {
               this.apiHit.emit(res.scrapId);
             }
-            if (res.finalScrapAmount)
+            if (res.finalScrapAmount) {
               this.totalEligibleAmt.emit(res.totalEligibleAmt);
-            // if (res.finalLoanAmount)
-            //   this.finalLoanAmount.emit(res.finalLoanAmount);
+            }
+            if (res.finalScrapAmount) {
+              this.finalScrapAmount.emit(res.finalScrapAmount);
+            }
           } else {
             this.customerDetail = res.customerData;
             this.basicForm.patchValue(this.customerDetail);
