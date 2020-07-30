@@ -350,7 +350,7 @@ exports.getAppraiser = async (req, res, next) => {
     //     include: [models.internalBranch]
     // })
     // let branchId = logedInUser.internalBranches[0].id
-    let branchId = req.userData.internalBranchId
+    // let branchId = req.userData.internalBranchId
     let { internalBranchId } = req.query
 
     let getAppraiserList = await models.user.findAll({
