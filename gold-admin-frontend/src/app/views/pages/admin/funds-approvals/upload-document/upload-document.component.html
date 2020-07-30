@@ -45,15 +45,18 @@
                                 </div> -->
 
                                 <div class="" *ngIf="controls?.documentsImage?.value">
-                                    <div class="d-inline-block img-container width kt-margin-r-15 position-relative"
-                                        (click)="preview(controls?.documentsImage?.value)">
-                                        <img class="fetched-image" [src]="controls?.documentsImage?.value"
-                                            *ngIf="!pdf.documents">
+                                    <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
+                                        <img (click)="preview(controls?.documentsImage?.value)" class="fetched-image"
+                                            [src]="controls?.documentsImage?.value" *ngIf="!pdf.documents">
 
-                                        <img class="edit-icon" src="../../../../../assets/media/icons/edit.svg"
-                                            *ngIf="pdf.documents" (click)="preview(controls?.documents.value)">
-                                        <iframe [src]="controls?.documentsImage.value | safe : 'resourceUrl'"
-                                            height="250" width="290" scrolling="no" *ngIf="pdf.documents"></iframe>
+                                        <!-- <img class="edit-icon" src="../../../../../assets/media/icons/edit.svg"
+                                            *ngIf="pdf.documents" (click)="preview(controls?.documents.value)"> -->
+
+                                        <div (click)="preview(controls?.documents.value)">
+                                            <iframe (click)="preview(controls?.documents.value)"
+                                                [src]="controls?.documentsImage.value | safe : 'resourceUrl'"
+                                                height="250" width="290" scrolling="no" *ngIf="pdf.documents"></iframe>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

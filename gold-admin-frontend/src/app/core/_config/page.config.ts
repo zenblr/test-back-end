@@ -312,6 +312,11 @@ export class PageConfig {
 				},
 				"transfer-loan-list": {
 					page: { title: "Transfer Loan List", desc: "" },
+				},
+				"loan-transfer": {
+					id: {
+						page: { title: "Loan Transfer", desc: "" },
+					}
 				}
 			}
 		},
