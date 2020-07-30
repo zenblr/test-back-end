@@ -14,8 +14,12 @@ export class AppraiserService {
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
-  getAllAppraiser(): Observable<any> {
-    return this.http.get(`/api/user/appraiser-list`).pipe(
+  getAllAppraiser(internalBranchId?): Observable<any> {
+    const reqParams: any = {}
+    if (internalBranchId) {
+      reqParams.internalBranchId = internalBranchId
+    }
+    return this.http.get(`/api/user/appraiser-list`, { params: reqParams }).pipe(
       map(res => res)
     )
   }
