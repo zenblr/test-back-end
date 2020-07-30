@@ -5,7 +5,6 @@ import { PartnerService } from '../../../../../core/user-management/partner/serv
 import { map, catchError, finalize } from 'rxjs/operators';
 import { LoanSettingsService } from '../../../../../core/loan-setting';
 import { ToastrService } from 'ngx-toastr';
-import { min } from 'moment';
 
 @Component({
   selector: 'kt-add-scheme',
