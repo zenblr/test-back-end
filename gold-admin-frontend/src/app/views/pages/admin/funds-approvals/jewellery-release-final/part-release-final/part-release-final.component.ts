@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
 import { merge, Subject, Subscription } from 'rxjs';
-import { tap, takeUntil, skip, distinctUntilChanged } from 'rxjs/operators';
+import { tap, takeUntil, skip, distinctUntilChanged, map } from 'rxjs/operators';
 import { PartReleaseFinalService } from '../../../../../../core/funds-approvals/jewellery-release-final/part-release-final/services/part-release-final.service';
 import { MatPaginator, MatDialog } from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
@@ -10,6 +10,7 @@ import { OrnamentsComponent } from '../../../loan-management/loan-application-fo
 import { AssignAppraiserComponent } from '../../../user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
 import { PartReleaseFinalDatasource } from '../../../../../../core/funds-approvals/jewellery-release-final/part-release-final/datasources/part-release-final.datasource';
 import { UpdateStatusComponent } from '../../update-status/update-status.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-part-release-final',
@@ -19,7 +20,7 @@ import { UpdateStatusComponent } from '../../update-status/update-status.compone
 export class PartReleaseFinalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'releaseDate', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'updateStatus', 'assignAppraiser'];
+  displayedColumns = ['customerId', 'loanId', 'appointmentDate', 'appointmentTime', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'releaseDate', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPaidAmount', 'status', 'ornaments', 'updateStatus',];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -31,6 +32,7 @@ export class PartReleaseFinalComponent implements OnInit {
     private dataTableService: DataTableService,
     private partReleaseFinalService: PartReleaseFinalService,
     public dialog: MatDialog,
+    private router: Router,
     private toastr: ToastrService,
     private layoutUtilsService: LayoutUtilsService,
   ) { }
@@ -58,7 +60,7 @@ export class PartReleaseFinalComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // this.dataSource.getPartReleaseList(1, 25, this.searchValue);
+    this.dataSource.getPartReleaseList(1, 25, this.searchValue);
   }
 
   ngOnDestroy() {
@@ -76,20 +78,21 @@ export class PartReleaseFinalComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.getDepositList(from, to, this.searchValue);
+    this.dataSource.getPartReleaseList(from, to, this.searchValue);
   }
 
-  ornamentsDetails() {
+  ornamentsDetails(item) {
     this.dialog.open(OrnamentsComponent, {
       data: {
-        modal: true
+        modal: true,
+        modalData: item
       },
       width: '90%'
     })
   }
 
-  assign(item) {
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', customer: item.customer, id: item.customerId }, width: '500px' });
+  updateStatus(item?) {
+    const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'edit', value: item, name: 'jewelleryReleaseFinal' }, width: 'auto' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
@@ -97,17 +100,20 @@ export class PartReleaseFinalComponent implements OnInit {
     });
   }
 
-  updateAppraiser(item) {
-
+  updateDocument(item) {
+    this.router.navigate([`admin/funds-approvals/upload-document/${item.id}`])
   }
 
-  updateStatus(item) {
-    const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'edit', value: item }, width: 'auto' });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        // this.loadPage();
-      }
-    });
+  newLoan(item) {
+    const params = {
+      customerUniqueId: item.masterLoan.customer.customerUniqueId,
+      partReleaseId: item.id
+    }
+    // this.partReleaseFinalService.applyLoan(params).pipe(map(res => {
+    //   if (res) {
+    this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerUniqueId: params.customerUniqueId, partReleaseId: params.partReleaseId } })
+    //   }
+    // })).subscribe()
   }
 
 }

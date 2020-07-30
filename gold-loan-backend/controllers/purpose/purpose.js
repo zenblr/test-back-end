@@ -26,11 +26,11 @@ exports.getPurpose = async (req, res, next) => {
 
         let whereCondition;
         if (getAll == "true") {
-            whereCondition = {where: { isActive: true }, order: [['id', 'DESC']] }
+            whereCondition = {where: { isActive: true }, order: [["updatedAt", "DESC"]] }
         } else if (getAll == "false") {
-            whereCondition = { where: { isActive: true }, order: [['id', 'DESC']] }
+            whereCondition = { where: { isActive: true }, order: [["updatedAt", "DESC"]] }
         } else if (getAll == undefined) {
-            whereCondition = { where: { isActive: true },order: [['id', 'DESC']] }
+            whereCondition = { where: { isActive: true },order: [["updatedAt", "DESC"]] }
         }
         let allPurpose = await models.purpose.findAll(whereCondition)
         return res.status(200).json({ data: allPurpose, count: allPurpose.length })

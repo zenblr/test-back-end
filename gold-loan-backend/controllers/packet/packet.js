@@ -42,7 +42,7 @@ exports.viewPacket = async (req, res, next) => {
                 "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
                 "$internalBranch.name$": {
                     [Op.iLike]: search + "%",
-                  },
+                },
                 packetUniqueId: { [Op.iLike]: search + '%' },
             },
         }],
@@ -172,3 +172,20 @@ exports.deletePacket = async (req, res, next) => {
     }
     return res.status(200).json({ message: "packet deleted successfully" });
 };
+
+
+//FUNCTION TO ASSIGN APPRAISER
+exports.assignAppraiser = async (req, res) => {
+    console.log(req.body)
+    const { packetId, appraiserId } = req.body;
+    let modifiedBy = req.userData.id;
+
+
+    const packet = await models.packet.update({ appraiserId, modifiedBy }, { where: { id: { [Op.in]: packetId} } })
+    //console.log(packet)
+    if (packet.length === 0){
+        return res.status(404).json({ message: "Appraiser not assigned to packet" });
+    }else {
+        return res.status(200).json({ message: "Appraiser assigned to packet" });
+    }
+}

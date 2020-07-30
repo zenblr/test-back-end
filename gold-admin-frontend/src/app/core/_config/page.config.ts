@@ -151,6 +151,12 @@ export class PageConfig {
 				"full-release-final": {
 					page: { title: "Full Release Final Process", desc: "" },
 				},
+				"upload-document": {
+					page: { title: "Upload Document", desc: "" },
+					id: {
+						page: { title: "Upload Document", desc: "" },
+					}
+				},
 			},
 			repayment: {
 				monthly: {

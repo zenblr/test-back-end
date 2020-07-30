@@ -1,11 +1,13 @@
 {
     "development": {
         "username": "postgres",
-        "password": "Nimap@123",
-        "database": "gold",
+        "password": "nimap@123",
+        "database": "gold_master_live_scheme",
         "host": "127.0.0.1",
+        "port": "6432",
         "dialect": "postgres",
-        "operatorsAliases": false
+        "operatorsAliases": false,
+        "logging": false
     },
     "test": {
         "username": "postgres",

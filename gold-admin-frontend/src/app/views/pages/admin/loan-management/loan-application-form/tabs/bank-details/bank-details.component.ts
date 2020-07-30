@@ -87,7 +87,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       accountType: [],
       accountHolderName: [, [Validators.required, Validators.pattern("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")]],
       bankBranchName: [, [Validators.required]],
-      passbookProof: [[]],
+      passbookProof: [[],[Validators.required]],
       passbookProofImage: [[]],
       passbookProofImageName: ['']
     })
@@ -153,9 +153,13 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   }
 
   removeImages(index) {
-    this.passbookImg.splice(index, 1);
-    this.bankForm.get('passbookProof').patchValue(this.passbookImg);
-    this.bankForm.get('passbookProofImage').patchValue('');
+    //console.log(index)
+    this.passbookImgId .splice(index, 1);
+    this.passbookImg.splice(index,1)
+    this.bankForm.get('passbookProof').patchValue(this.passbookImgId );
+    this.bankForm.get('passbookProofImage').patchValue(this.passbookImg );
+    this.bankForm.get('passbookProofImageName').patchValue('');
+    this.ref.detectChanges();
   }
 
   get controls() {

@@ -15,6 +15,7 @@ import { FullReleaseApprovalComponent } from './jewellery-release-approval/full-
 import { PartReleaseFinalComponent } from './jewellery-release-final/part-release-final/part-release-final.component';
 import { FullReleaseFinalComponent } from './jewellery-release-final/full-release-final/full-release-final.component';
 import { UpdateStatusComponent } from './update-status/update-status.component';
+import { UploadDocumentComponent } from './upload-document/upload-document.component';
 
 const routes = [
   {
@@ -40,11 +41,15 @@ const routes = [
   {
     path: 'full-release-final',
     component: FullReleaseFinalComponent
+  },
+  {
+    path: 'upload-document/:id',
+    component: UploadDocumentComponent
   }
 ]
 
 @NgModule({
-  declarations: [DepositListComponent, TopUpApprovalComponent, PartReleaseApprovalComponent, FullReleaseApprovalComponent, PartReleaseFinalComponent, FullReleaseFinalComponent, UpdateStatusComponent],
+  declarations: [DepositListComponent, TopUpApprovalComponent, PartReleaseApprovalComponent, FullReleaseApprovalComponent, PartReleaseFinalComponent, FullReleaseFinalComponent, UpdateStatusComponent, UploadDocumentComponent],
   imports: [
     CommonModule,
     HttpClientModule,

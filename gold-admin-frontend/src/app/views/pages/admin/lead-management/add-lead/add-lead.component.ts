@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 // material
 import { DialogData } from '../../../material/popups-and-modals/dialog/dialog.component';
@@ -50,7 +50,8 @@ export class AddLeadComponent implements OnInit {
     private fb: FormBuilder,
     private leadService: LeadService,
     private dialog: MatDialog,
-    private leadSourceService: LeadSourceService
+    private leadSourceService: LeadSourceService,
+    private ref: ChangeDetectorRef
   ) {
     this.details = this.sharedService.getDataFromStorage()
     console.log(this.details)
@@ -424,6 +425,15 @@ export class AddLeadComponent implements OnInit {
       this.controls.comment.updateValueAndValidity()
       this.showCommentBox = false
     }
+    this.scrollToBottom()
+  }
+
+  scrollToBottom() {
+    setTimeout(() => {
+      var container = document.getElementById('container')
+      container.scrollTop = container.scrollHeight + 100
+    })
+    // this.ref.detectChanges()
   }
 
   closeModal() {

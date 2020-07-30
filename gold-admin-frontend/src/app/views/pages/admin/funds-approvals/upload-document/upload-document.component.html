@@ -1,0 +1,70 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <!-- <kt-upload-loan-documentss></kt-upload-loan-documentss> -->
+
+        <div class="row justify-content-around" [formGroup]="documentsForm">
+            <div class="col-12">
+
+                <div class="row kt-padding-t-15 kt-padding-b-20">
+                    <div class="col-4 form-label">
+                        <label class="kt-padding-l-10">Customer Acknowledgement Copy</label>
+                    </div>
+                </div>
+                <div class="row justify-content-between">
+                    <div class="col-4">
+                        <div class="input-group mb-3 w-80"
+                            [class.isError]="controls.documents.touched && controls.documents.invalid">
+                            <input type="text" class="form-control" placeholder="Select File"
+                                aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
+                                formControlName="documentsName" />
+                            <div class="input-group-append">
+                                <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                    (click)="documents.click()">Attach</span>
+                            </div>
+                            <input type="file" class="d-none" #documents (change)="fileUpload($event,'documents')">
+
+
+                        </div>
+                        <mat-error *ngIf="controls.documents.touched && controls.documents.invalid">
+                            Field
+                            Required</mat-error>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-10 ">
+                                <div class="img-container width" *ngIf="!controls?.documents?.value">
+                                    <img src="../../../../../../../assets/media/icons/image-placeholder.png"
+                                        class="placeholder-image">
+                                </div>
+                                <!-- <div class="position-relative edit-width"
+                                    *ngIf="isEdit && controls?.documentsImage?.value">
+                                    <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
+                                        (click)="editImages('documents');">
+                                </div> -->
+
+                                <div class="" *ngIf="controls?.documentsImage?.value">
+                                    <div class="d-inline-block img-container width kt-margin-r-15 position-relative"
+                                        (click)="preview(controls?.documentsImage?.value)">
+                                        <img class="fetched-image" [src]="controls?.documentsImage?.value"
+                                            *ngIf="!pdf.documents">
+
+                                        <img class="edit-icon" src="../../../../../assets/media/icons/edit.svg"
+                                            *ngIf="pdf.documents" (click)="preview(controls?.documents.value)">
+                                        <iframe [src]="controls?.documentsImage.value | safe : 'resourceUrl'"
+                                            height="250" width="290" scrolling="no" *ngIf="pdf.documents"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-11 text-right kt-padding-t-15">
+                <kt-button [type]="'button'" [value]="'Save'" (click)="save()"></kt-button>
+            </div>
+        </div>
+
+    </kt-portlet-body>
+</kt-portlet>

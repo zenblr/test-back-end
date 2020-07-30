@@ -5,11 +5,14 @@ import { map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { PaymentDialogComponent } from '../payment-dialog/payment-dialog.component';
+import { ToastrService } from 'ngx-toastr';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'kt-part-release',
   templateUrl: './part-release.component.html',
-  styleUrls: ['./part-release.component.scss']
+  styleUrls: ['./part-release.component.scss'],
+  providers: [TitleCasePipe]
 })
 export class PartReleaseComponent implements OnInit {
 
@@ -29,7 +32,9 @@ export class PartReleaseComponent implements OnInit {
     private route: ActivatedRoute,
     private jewelleryReleaseService: JewelleryReleaseService,
     private dialog: MatDialog,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private toastr: ToastrService,
+    private titleCasePipe: TitleCasePipe
   ) { }
 
   ngOnInit() {
@@ -120,7 +125,23 @@ export class PartReleaseComponent implements OnInit {
     this.showPaymentConfirmation = false
   }
 
-  pay() { }
+  pay() {
+    const ornamnentIds = this.selectedOrnaments.map(e => e.id)
+    let payObject = {
+      ornamentId: ornamnentIds,
+      masterLoanId: Number(this.id),
+      // releaseAmount: this.totalSelectedOrnamentDetails.ornamentWeight.releaseAmount,
+      interestAmount: this.totalSelectedOrnamentDetails.loanInfo.interestAmount,
+      penalInterest: this.totalSelectedOrnamentDetails.loanInfo.penalInterest,
+      payableAmount: this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount,
+    }
+    Object.assign(payObject, this.paymentValue, this.totalSelectedOrnamentDetails.ornamentWeight)
+    console.log(payObject)
+
+    this.jewelleryReleaseService.partReleasePayment(payObject).pipe(map(res => {
+      if (res) this.toastr.success(this.titleCasePipe.transform(res['message']))
+    })).subscribe()
+  }
 
   cancelPayment() {
     this.showPaymentConfirmation = false
@@ -183,10 +204,6 @@ export class PartReleaseComponent implements OnInit {
     }
 
     temp = filterImage.filter(el => el != '')
-
-    if (typeof value == 'object') {
-      value = value[0]
-    }
     let index = temp.indexOf(value)
     this.dialog.open(ImagePreviewDialogComponent, {
       data: {
@@ -199,6 +216,9 @@ export class PartReleaseComponent implements OnInit {
 
   choosePaymentMethod() {
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
+      data: {
+        value: this.paymentValue ? this.paymentValue : { paidAmount: this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount }
+      },
       width: '500px'
     })
 

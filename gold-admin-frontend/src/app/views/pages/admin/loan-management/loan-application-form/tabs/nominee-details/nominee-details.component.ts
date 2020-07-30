@@ -57,7 +57,7 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
   initForm() {
     this.nominee = this.fb.group({
       nomineeName: [, [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
-      nomineeAge: [, Validators.required],
+      nomineeAge: [, [Validators.required,Validators.max(100)]],
       relationship: [, [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
       nomineeType: ["major"],
       guardianName: [, [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],

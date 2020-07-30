@@ -16,17 +16,17 @@ exports.schemeValidation = [
     .exists()
     .withMessage('amount end is required'),
 
-  body('interestRateThirtyDaysMonthly')
-    .exists()
-    .withMessage('interest rate for 30 Days Monthly  is required'),
+  // body('interestRateThirtyDaysMonthly')
+  //   .exists()
+  //   .withMessage('interest rate for 30 Days Monthly  is required'),
 
-  body('interestRateNinetyDaysMonthly')
-    .exists()
-    .withMessage('interest rate for 90 Days Monthly  is required'),
+  // body('interestRateNinetyDaysMonthly')
+  //   .exists()
+  //   .withMessage('interest rate for 90 Days Monthly  is required'),
 
-  body('interestRateOneHundredEightyDaysMonthly')
-    .exists()
-    .withMessage('interest rate for 180 Days Monthly  is required'),
+  // body('interestRateOneHundredEightyDaysMonthly')
+  //   .exists()
+  //   .withMessage('interest rate for 180 Days Monthly  is required'),
 
     body('processingChargeFixed')
     .exists()

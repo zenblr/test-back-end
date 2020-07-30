@@ -13,18 +13,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'scheme_amount_end'
         },
-        interestRateThirtyDaysMonthly: {
-            type: DataTypes.FLOAT,
-            field: 'interest_rate_thirty_days_monthly'
-        },
-        interestRateNinetyDaysMonthly: {
-            type: DataTypes.FLOAT,
-            field: 'interest_rate_ninety_days_monthly'
-        },
-        interestRateOneHundredEightyDaysMonthly: {
-            type: DataTypes.FLOAT,
-            field: 'interest_rate_one_hundred_eighty_days_monthly'
-        },
         processingChargeFixed: {
             type: DataTypes.FLOAT,
             field: 'processing_charge_fixed'
@@ -76,7 +64,9 @@ module.exports = (sequelize, DataTypes) => {
     )
     Scheme.associate = function (models) {
 
-        Scheme.belongsToMany(models.partner, { through: models.partnerScheme })
+        Scheme.belongsToMany(models.partner, { through: models.partnerScheme });
+
+        Scheme.hasMany(models.schemeInterest, { foreignKey: 'schemeId', as: 'schemeInterest' })
 
     }
     return Scheme;

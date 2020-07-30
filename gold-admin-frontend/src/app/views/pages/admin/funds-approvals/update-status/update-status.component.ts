@@ -1,6 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { PartReleaseApprovalService } from '../../../../../core/funds-approvals/jewellery-release-approval/part-release-approval/services/part-release-approval.service';
+import { ToastrService } from 'ngx-toastr';
+import { map } from 'rxjs/operators';
+import { PartReleaseFinalService } from '../../../../../core/funds-approvals/jewellery-release-final/part-release-final/services/part-release-final.service';
 
 @Component({
   selector: 'kt-update-status',
@@ -10,35 +14,63 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 export class UpdateStatusComponent implements OnInit {
 
   updateStatusForm: FormGroup
-  status = [{ id: 1, name: 'pending' }, { id: 2, name: 'complete' }, { id: 3, name: 'rejected' }]
+  amountStatus = ['completed', 'pending', 'rejected']
+  partReleaseStatus = ['released', 'pending']
+  jewelleryReleaseFinal: boolean;
 
   constructor(
     private fb: FormBuilder,
+    private partReleaseApprovalService: PartReleaseApprovalService,
+    private partReleaseFinalService: PartReleaseFinalService,
+    private toastr: ToastrService,
     public dialogRef: MatDialogRef<UpdateStatusComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) { }
 
   ngOnInit() {
     this.initForm()
-    this.patchForm(this.data.value)
+    if (this.data.value) this.patchForm(this.data.value)
   }
 
   initForm() {
     this.updateStatusForm = this.fb.group({
-      customerId: ['', [Validators.required]],
-      loanId: ['', [Validators.required]],
+      partReleaseId: [],
+      customerId: [, [Validators.required]],
+      loanId: [, [Validators.required]],
       loanAmount: ['', [Validators.required]],
-      principalOutStandingAmount: ['', [Validators.required]],
-      ornamentReleaseAmount: ['', [Validators.required]],
+      outstandingAmount: ['', [Validators.required]],
+      releaseAmount: ['', [Validators.required]],
       interestAmount: ['', [Validators.required]],
       penalInterest: ['', [Validators.required]],
-      totalPayableAmount: ['', [Validators.required]],
-      partReleaseAmountStatus: ['', [Validators.required]],
+      payableAmount: ['', [Validators.required]],
+      amountStatus: ['', [Validators.required]],
+      partReleaseStatus: ['', [Validators.required]],
+      appraiserReason: ['', [Validators.required]]
     })
+
+    if (this.data.name === 'jewelleryReleaseFinal') {
+      this.controls.amountStatus.disable()
+    } else {
+      this.controls.partReleaseStatus.disable()
+    }
   }
 
   patchForm(data) {
     this.updateStatusForm.patchValue(data)
+    const loanIdArr = data.masterLoan.customerLoan.map(e => e.loanUniqueId)
+    this.updateStatusForm.patchValue({
+      partReleaseId: data.id,
+      customerId: data.masterLoan.loanPersonalDetail.customerUniqueId,
+      loanAmount: data.masterLoan.finalLoanAmount,
+      outstandingAmount: data.masterLoan.outstandingAmount,
+      loanId: loanIdArr.join(', ')
+    })
+
+    for (const key in this.controls) {
+      if (this.controls.hasOwnProperty(key)) {
+        if (!(key == 'amountStatus' || key == 'partReleaseId' || key == 'partReleaseStatus' || key == 'appraiserReason')) this.controls[key].disable()
+      }
+    }
   }
 
   get controls() {
@@ -57,10 +89,43 @@ export class UpdateStatusComponent implements OnInit {
     }
   }
 
+  commentValidation(event) {
+    if (this.data.name == 'jewelleryReleaseFinal') {
+      if (event.target.value != 'released') {
+        this.setAppraiserReason()
+      } else {
+        this.resetAppraiserReason()
+      }
+    }
+  }
+
+  setAppraiserReason() {
+    this.controls.appraiserReason.reset()
+    this.updateStatusForm.controls.appraiserReason.setValidators([Validators.required])
+    this.updateStatusForm.controls.appraiserReason.updateValueAndValidity()
+  }
+
+  resetAppraiserReason() {
+    this.updateStatusForm.controls.appraiserReason.reset()
+    this.updateStatusForm.controls.appraiserReason.clearValidators()
+    this.updateStatusForm.controls.appraiserReason.updateValueAndValidity()
+  }
+
   submit() {
-    if (this.updateStatusForm.invalid) {
-      this.updateStatusForm.markAllAsTouched()
-      return
+    if (this.updateStatusForm.invalid) return this.updateStatusForm.markAllAsTouched()
+
+    console.log(this.updateStatusForm.value)
+
+    if (this.data.name === 'jewelleryReleaseFinal') {
+      this.partReleaseFinalService.upateStatus(this.updateStatusForm.value).pipe(map(res => {
+        if (res) this.toastr.success('Status Updated Successfully')
+        this.dialogRef.close(true)
+      })).subscribe()
+    } else {
+      this.partReleaseApprovalService.updateAmountStatus(this.updateStatusForm.value).pipe(map(res => {
+        if (res) this.toastr.success('Status Updated Successfully')
+        this.dialogRef.close(true)
+      })).subscribe()
     }
 
 

@@ -130,7 +130,7 @@
                                 </div>
                                 <div class="col-4 form-label">
                                     <label *ngIf="ornament.controls.weightMachineZeroWeight.value"
-                                        class="my-auto text-primary text-center kt-padding-l-15 kt-pointer"
+                                        class="my-auto text-primary text-center kt-padding-l-15 kt-pointer "
                                         (click)="preview(ornament.controls.weightMachineZeroWeightData.value,idx)">View
                                         Image</label>
                                     <mat-error class="kt-padding-l-10"
@@ -161,7 +161,7 @@
                         <div class="col-6">
                             <div class="row kt-margin-t-15">
                                 <div class="col-4 form-label">
-                                    <label class="my-auto text-color ">With Ornament</label>
+                                    <label class="my-auto text-color  ">With Ornament</label>
                                 </div>
                                 <div class="col-4 form-label">
                                     <label *ngIf="ornament.controls.withOrnamentWeight.value"
@@ -177,8 +177,9 @@
                                 <div class="col-4 text-right min-height-attach">
                                     <input type="file" #withOrnamentWeight class="d-none"
                                         (change)="uploadFile(idx,$event,'withOrnamentWeight')">
-                                    <kt-button *ngIf="!ornament.controls.withOrnamentWeight.value && !disable" [type]="'button'"
-                                        [value]="'Attach'" (click)="webcam(idx,$event,'withOrnamentWeightData')">
+                                    <kt-button *ngIf="!ornament.controls.withOrnamentWeight.value && !disable"
+                                        [type]="'button'" [value]="'Attach'"
+                                        (click)="webcam(idx,$event,'withOrnamentWeightData')">
                                     </kt-button>
                                     <div class="form-label">
                                         <label *ngIf="ornament.controls.withOrnamentWeight.value && !disable"
@@ -384,7 +385,8 @@
                             (click)="preview(ornament.controls.ornamentImageData.value,idx)">
                     </div>
                     <div class="form-label">
-                        <label *ngIf="!ornament.controls.ornamentImage.value" class="my-auto m-auto pt-2">Upload
+                        <label *ngIf="!ornament.controls.ornamentImage.value"
+                            class="my-auto m-auto pt-2 mandatory ">Upload
                             Ornaments
                             Image</label>
                         <label *ngIf="ornament.controls.ornamentImage.value && !disable"
@@ -428,4 +430,4 @@
         <kt-button [value]="'Next'" [type]="'button'" (click)="nextAction()"></kt-button>
     </div>
 </div>
-<button (click)="addmore()" class="addmore" [disabled]="disable">+ Add More</button>
+<button *ngIf="showAddMoreBtn" (click)="addmore()" class="addmore" [disabled]="disable">+ Add More</button>

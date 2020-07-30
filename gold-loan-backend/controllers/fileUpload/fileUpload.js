@@ -13,6 +13,7 @@ exports.uploadFile =
         const partReleaseId = req.query.partReleaseId;
         const customerId = req.query.customerId;
         const partnerId = req.query.partnerId;
+        const scrapId = req.query.scrapId;
         let destination;
         if (fileFor == "user") {
             destination = `public/uploads/user/`
@@ -34,7 +35,11 @@ exports.uploadFile =
             destination = `public/uploads/holiday/`
         } else if (fileFor == "partRelease") {
             destination = `public/uploads/partRelease/${partReleaseId}/`;
-        }else {
+        } else if (fileFor == "acknowledgement") {
+            destination = `public/uploads/acknowledgement/${scrapId}/`
+        } else if (fileFor == "ornaments") {
+            destination = `public/uploads/ornaments/${scrapId}/`
+        } else {
             return res.status(422).json({ message: 'reason not found' });
         }
         if (process.env.FILE_TO_AWS == 'true') {
@@ -45,32 +50,33 @@ exports.uploadFile =
             });
             const s3 = new AWS.S3({ accessKeyId: `${process.env.Accessid}`, secretAccessKey: `${process.env.Secretkey}` });
             const upload = multer({
-                storage: multerS3({ s3,
+                storage: multerS3({
+                    s3,
                     acl: 'public-read',
                     bucket: process.env.Bucket,
                     contentType: multerS3.AUTO_CONTENT_TYPE,
                     key(req, file, cb) {
                         const extArray = file.originalname.split('.');
                         const extension = extArray[extArray.length - 1];
-                        cb(null,`${destination}${Date.now()}.${extension}`);
+                        cb(null, `${destination}${Date.now()}.${extension}`);
                     },
                 }),
             });
             const uploadFilesToS3 = upload.array('avatar');
-            await uploadFilesToS3(req, res, async(err) => {
+            await uploadFilesToS3(req, res, async (err) => {
                 if (err) {
                     return res.status(422).json(err);
-                    }
+                }
                 let data = Object.assign(req.files[0], { URL: req.files[0].location });
                 data.url = data.key;
-                let uploadFile = await models.fileUpload.create({filename:data.key,mimetype:data.mimetype,encoding:data.encoding,originalname:data.originalname,url:data.url,path:data.url,userId:req.userData.id});
-                    if (!uploadFile) {
-                        return res.status(422).json({message: 'Error while uploading file!'});
-                    } else {
-                        return res.status(200).json({uploadFile});
-                    }
+                let uploadFile = await models.fileUpload.create({ filename: data.key, mimetype: data.mimetype, encoding: data.encoding, originalname: data.originalname, url: data.url, path: data.url, userId: req.userData.id });
+                if (!uploadFile) {
+                    return res.status(422).json({ message: 'Error while uploading file!' });
+                } else {
+                    return res.status(200).json({ uploadFile });
+                }
             });
-        }else{
+        } else {
             const storage = multer.diskStorage({
                 filename: (req, file, cb) => {
                     const extArray = file.originalname.split('.');
@@ -87,7 +93,7 @@ exports.uploadFile =
                 let pathToadd = destination.replace('public/', '');
                 req.file.path = pathToadd + req.file.filename;
                 req.file.url = req.file.destination + req.file.filename;
-    
+
                 req.file['userId'] = req.userData.id
                 let uploadFile = await models.fileUpload.create(req.file);
                 if (!uploadFile) {

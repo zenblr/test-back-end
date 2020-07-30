@@ -447,7 +447,7 @@ mat-header-row {
 	justify-content: center;
 	overflow: hidden;
 	position: relative;
-	cursor: pointer;
+	// cursor: pointer;
 
 	.fetched-image {
 		width: 100%;
@@ -719,6 +719,13 @@ mat-header-row {
 
 .ng-dropdown-panel .ng-dropdown-header{
 	border: unset !important;
+}
+
+.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+	border-color: #454d67 !important;
+}
+.mat-radio-button.mat-accent .mat-radio-inner-circle {
+	background-color: #454d67 !important;
 }
 
 
