@@ -53,6 +53,7 @@ export class UploadDocumentsComponent implements OnInit {
   showScrapAcknowledgementFlag = false;
   url: string;
   buttonName: string;
+  buttonValue = 'Next';
   isEdit: boolean;
   standardDeductionArr: any;
   globalValue: any;
@@ -118,7 +119,6 @@ export class UploadDocumentsComponent implements OnInit {
         this.isEdit = false
       }
     }
-
     if (changes.acknowledgmentDocuments && changes.acknowledgmentDocuments.currentValue) {
       let documents = changes.acknowledgmentDocuments.currentValue.customerScrapAcknowledgement
 
@@ -128,12 +128,12 @@ export class UploadDocumentsComponent implements OnInit {
           standardDeduction: documents.standardDeduction,
           customerConfirmation: documents.customerConfirmation[0],
           customerConfirmationImage: documents.customerConfirmation[0],
+          customerConfirmationStatus: documents.customerConfirmationStatus
         })
         this.pdfCheck();
-        // this.isEdit = false
+        this.isEdit = false
       }
     }
-
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
       let documents = changes.loanTransfer.currentValue.masterLoan.loanTransfer
       if (documents && documents.declaration) {
@@ -194,11 +194,18 @@ export class UploadDocumentsComponent implements OnInit {
 
     this.documentsForm.controls['customerConfirmationStatus'].valueChanges.subscribe((val) => {
       if (val == 'confirmed') {
+        this.buttonValue = 'Next';
         this.showCustomerConfirmationFlag = true;
         this.documentsForm.controls.customerConfirmation.setValidators(Validators.required),
           this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
       } else {
+        this.buttonValue = 'Save';
         this.showCustomerConfirmationFlag = false;
+        this.documentsForm.patchValue({
+          customerConfirmation: [],
+          customerConfirmationImage: [],
+          customerConfirmationImageName: []
+        })
         this.documentsForm.controls.customerConfirmation.setValidators([]),
           this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
       }

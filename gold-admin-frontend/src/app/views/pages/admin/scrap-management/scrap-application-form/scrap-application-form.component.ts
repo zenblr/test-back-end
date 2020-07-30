@@ -36,6 +36,7 @@ export class ScrapApplicationFormComponent implements OnInit {
   accountHolderName: any;
   scrapStage: any;
   ornamentDetails: any;
+  processingCharges: any;
 
   constructor(
     public ref: ChangeDetectorRef,
@@ -67,6 +68,7 @@ export class ScrapApplicationFormComponent implements OnInit {
       this.scrapIds = { scrapId: res.customerScrap.id }
       this.scrapStage = this.customerDetail.customerScrapCurrentStage
       this.ornamentDetails = res.customerScrap.ornamentType
+      this.processingCharges = res.customerScrap.customerScrapAcknowledgement.processingCharges
       console.log(this.scrapStage)
       // this.totalAmount = res.data.totalEligibleAmt
       if (this.url == "packet-image-upload") {

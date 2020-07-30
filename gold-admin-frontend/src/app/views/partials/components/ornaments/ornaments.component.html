@@ -331,6 +331,17 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-6" *ngIf="ornament.controls.customerConfirmation.value == 'no'">
+                                <div class="row kt-margin-t-15">
+                                    <div class="col-4 form-label kt-padding-l-10">
+                                        <label class="text-color mandatory my-auto">Processing Charges</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" placeholder="1000"
+                                            formControlName="processingCharges" readonly>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <ng-template #loanOrnaments>
@@ -608,7 +619,7 @@
 </div>
 <div class="row" *ngIf="showButton">
     <div class="text-right py-3 col-12">
-        <kt-button [value]="'Next'" [type]="'button'" (click)="nextAction()"></kt-button>
+        <kt-button [value]="buttonValue" [type]="'button'" (click)="nextAction()"></kt-button>
     </div>
 </div>
 <button (click)="addmore()" class="addmore" [disabled]="disable" [hidden]="meltingOrnament">+ Add More</button>

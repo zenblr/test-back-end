@@ -40,6 +40,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() ornamentType
   @Input() showButton
   @Input() meltingOrnament
+  @Input() processingCharges
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
   @ViewChild('stoneTouch', { static: false }) stoneTouch: ElementRef
@@ -62,6 +63,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   purityTestPath: any = [];
   purityTestImg: any = [];
   fullAmount: number;
+  buttonValue = 'Next';
 
   constructor(
     public fb: FormBuilder,
@@ -162,6 +164,10 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     if (changes.scrapIds) {
       this.validation(0);
     }
+    if (changes.meltingOrnament) {
+      const matTabHeader = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
+      matTabHeader.style.display = 'none';
+    }
     if (this.disable) {
       this.ornamentsForm.disable()
     }
@@ -216,6 +222,19 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         }
       }
     })
+
+    const controls = this.OrnamentsData.at(0) as FormGroup;
+    controls.controls['customerConfirmation'].valueChanges.subscribe((val) => {
+      if (this.meltingOrnament && val && this.processingCharges) {
+        if (val == 'no') {
+          controls.controls.processingCharges.patchValue(this.processingCharges);
+          this.buttonValue = 'Pay Now';
+        } else {
+          controls.controls.processingCharges.patchValue([]);
+          this.buttonValue = 'Next';
+        }
+      }
+    });
   }
 
   get OrnamentsData() {
@@ -321,6 +340,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       purityReading: [],
       customerConfirmation: [],
       finalScrapAmountAfterMelting: [],
+      processingCharges: [],
     }))
     this.createImageArray()
     this.selected = this.OrnamentsData.length;
