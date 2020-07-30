@@ -211,7 +211,7 @@ module.exports = (sequelize, DataTypes) => {
                 image = process.env.BASE_URL + image;
                 passbookProof.push(image);
             }
-            values.scrapBankDetails.passbookProof = passbookProof;
+            values.scrapBankDetails.passbookProofImage = passbookProof;
         }
 
         if (values.customerScrapAcknowledgement && values.customerScrapAcknowledgement.customerConfirmation != 0) {
