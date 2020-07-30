@@ -501,4 +501,79 @@
  *          description: scrap details fetch successfully
  *       404:
  *          description: no scrap details found
+ * /scrap/scrap-process/disbursement-bank-detail:
+ *   get:
+ *     tags:
+ *       - Customer scrap Process
+ *     summary: To read disbursement bank detail by customer scrap Id
+ *     parameters:
+ *     - name: "scrapId"
+ *       in: "query"
+ *       description: "Id of bank detail scrap Id to read"
+ *       required: true
+ *       type: string
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: bank detail fetch successfully.
+ *       404:
+ *         description: no bank detail found
+ * /scrap/scrap-process/scrap-disbursement:
+ *   post:
+ *     tags:
+ *       -  Customer scrap Process
+ *     name:  add disbursement detail for scrap
+ *     summary: To add disbursement detail for scrap
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             scrapId:
+ *               type: integer
+ *             scrapAmount:
+ *               type: number
+ *             transactionId:
+ *               type: number
+ *             date:
+ *               type: string
+ *             paymentMode:
+ *               type: string
+ *             acHolderName:
+ *               type: string
+ *             acNumber:
+ *               type: string
+ *             bankName:
+ *               type: string
+ *             bankBranch:
+ *               type: string
+ *             ifscCode:
+ *               type: string
+ *             disbursementStatus:
+ *               type: string
+ *         required:
+ *           - scrapId
+ *           - scrapAmount
+ *           - transactionId
+ *           - date
+ *           - paymentMode
+ *           - acHolderName
+ *           - acNumber
+ *           - bankName
+ *           - bankBranch
+ *           - ifscCode
+ *           - disbursementStatus
+ *     responses:
+ *       200:
+ *         description: disbursement detail added successfully
+ *       404:
+ *         description: Data not found.
  */

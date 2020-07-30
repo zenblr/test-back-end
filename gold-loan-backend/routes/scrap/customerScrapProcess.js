@@ -2,7 +2,7 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
-const { customerDetails, scrapBasicDeatils, acknowledgementDetails, scrapBankDetails, scrapOrnmanetDetails, scrapAppraiserRating, scrapBmRating, scrapOpsTeamRating, singleScrapDetails, scrapDocuments, addPackageImagesForScrap, scrapOrnmanetMeltingDetails, disbursementOfScrapBankDetails, disbursementOfScrapAmount, appliedScrapDetails} =
+const { customerDetails, scrapBasicDeatils, acknowledgementDetails, scrapBankDetails, scrapOrnmanetDetails, scrapAppraiserRating, scrapBmRating, scrapOpsTeamRating, singleScrapDetails, scrapDocuments, addPackageImagesForScrap, scrapOrnmanetMeltingDetails, disbursementOfScrapBankDetails, disbursementOfScrapAmount, appliedScrapDetails, getScrapDetails, getSingleScrapInCustomerManagment} =
   require('../../controllers/scrap/customerScrapProcess/customerScrapProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
 
 const checkAuth = require('../../middleware/checkAuth'); // IMPORTING CHECKAUTH MIDDLEWARE
@@ -36,5 +36,9 @@ route.post('/ops-rating', checkAuth, wrapper(scrapOpsTeamRating)); // ADD OPERAT
 route.post('/scrap-disbursement', checkAuth, wrapper(disbursementOfScrapAmount)); // DISBURSEMENT OF SCRAP AMOUNT
 
 route.get('/applied-scrap-details', checkAuth, wrapper(appliedScrapDetails)); // FETCH APLLIED LOAN DETAILS
+
+route.get('/scrap-details', checkAuth, wrapper(getScrapDetails)); // FETCH APLLIED LOAN DETAILS
+
+route.get('/single-scrap-customer', checkAuth, wrapper(getSingleScrapInCustomerManagment))//customer-managment single loan
 
 module.exports = route; // EXPORTING ALL ROUTES
