@@ -37,6 +37,7 @@ import { UploadLoanDocumentsComponent } from './loan-application-form/tabs/uploa
 import { LoanTransferComponent } from './loan-transfer/loan-transfer.component';
 import { LoanTransferListComponent } from './loan-transfer-list/loan-transfer-list.component';
 import { ViewPacketLogComponent } from './packets/view-packet-log/view-packet-log.component';
+import { PacketAssignAppraiserComponent } from './packets/packet-assign-appraiser/packet-assign-appraiser.component';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -118,6 +119,7 @@ const rout: Routes = [
     LoanTransferComponent,
     LoanTransferListComponent,
     ViewPacketLogComponent,
+    PacketAssignAppraiserComponent,
   ],
   imports: [
     CommonModule,
@@ -149,7 +151,8 @@ const rout: Routes = [
     UpdateLocationComponent,
     OrnamentsComponent,
     UserReviewComponent,
-    ViewPacketLogComponent
+    ViewPacketLogComponent,
+    PacketAssignAppraiserComponent
   ]
 })
 export class LoanManagementModule { }

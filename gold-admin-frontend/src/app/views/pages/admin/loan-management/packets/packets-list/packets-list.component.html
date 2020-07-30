@@ -4,6 +4,21 @@
 
         <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'hidden'}">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
+                <ng-container matColumnDef="select">
+                    <mat-header-cell *matHeaderCellDef class="mat-column-checkbox">
+                        <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+                        </mat-checkbox>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row" class="mat-column-checkbox">
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null" (change)="checkForSameBranch()"
+                            [checked]="selection.isSelected(row)">
+                        </mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="packetUniqueId">
                     <mat-header-cell *matHeaderCellDef>Packet ID</mat-header-cell>
                     <mat-cell *matCellDef="let role">{{role.packetUniqueId | uppercase}}</mat-cell>
@@ -14,6 +29,16 @@
                     <mat-cell *matCellDef="let role">
                         <span *ngIf="role.internalBranch">
                             {{role.internalBranch.name | titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="appraiserName">
+                    <mat-header-cell *matHeaderCellDef>Appraiser</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.appraiser">
+                            {{role.appraiser.firstName | titlecase}} &nbsp;
+                            {{role.appraiser.lastName | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
