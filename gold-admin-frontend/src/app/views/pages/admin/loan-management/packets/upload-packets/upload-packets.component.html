@@ -2,7 +2,7 @@
     <!-- {{url != 'view-loan'}} {{url}} -->
     <form class="row justify-content-center" action="" [formGroup]="packetInfo" (submit)="addmore()" #form="ngForm">
         <div class="col-2">
-            <select class="form-control packet-dropdown" formControlName="packetId"
+            <select class="form-control packet-dropdown mandatory " formControlName="packetId"
                 [class.isError]="packetInfo.controls.packetId.invalid && packetInfo.controls.packetId.touched">
                 <option value=null [selected]="true">Select Packet</option>
                 <option [value]="packet.id" [disabled]="packet.disabled"
@@ -20,7 +20,7 @@
         <div class="col-5">
             <div class="row">
                 <div class="offset-1 col-4 form-label">
-                    <label for="">Ornament Type</label>
+                    <label for="" class="mandatory ">Ornament Type</label>
                 </div>
                 <div class="col-7">
                     <kt-multi-select-search formControlName="ornamentType" [items]="ornamentTypeData" [multiple]="true"
@@ -81,7 +81,7 @@
         <img *ngIf="packetImg.controls.emptyPacketWithNoOrnamentImage.value && url != 'view-loan'"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
             (click)="webcam('emptyPacketWithNoOrnament','emptyPacketWithNoOrnamentImage')">
-        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packet(s) with all ornaments</label>
+        <label class="text-center w-100 font-weight-500 pacekts-label text-gray mandatory ">Empty Packet(s) with all ornaments</label>
         <div>
             <mat-error
                 *ngIf="packetImg.controls.emptyPacketWithNoOrnament.touched && packetImg.controls.emptyPacketWithNoOrnament.invalid">
@@ -100,7 +100,7 @@
         <img *ngIf="packetImg.controls.sealingPacketWithWeightImage.value && url != 'view-loan'"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
             (click)="webcam('sealingPacketWithWeight','sealingPacketWithWeightImage')">
-        <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Sealed Packet(s) with weight</label>
+        <label class="text-center w-100 font-weight-500 pacekts-label text-gray mandatory "> Sealed Packet(s) with weight</label>
         <div>
             <mat-error
                 *ngIf="packetImg.controls.sealingPacketWithWeight.touched && packetImg.controls.sealingPacketWithWeight.invalid">
@@ -119,7 +119,7 @@
         <img *ngIf="packetImg.controls.sealingPacketWithCustomer.value && url != 'view-loan'"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
             (click)="webcam('sealingPacketWithCustomer','sealingPacketWithCustomerImage')">
-        <label class="text-center w-100 font-weight-500 pacekts-label text-gray"> Sealed packet(s) with customer</label>
+        <label class="text-center w-100 font-weight-500 pacekts-label text-gray mandatory "> Sealed packet(s) with customer</label>
         <div>
             <mat-error
                 *ngIf="packetImg.controls.sealingPacketWithCustomer.touched && packetImg.controls.sealingPacketWithCustomer.invalid">

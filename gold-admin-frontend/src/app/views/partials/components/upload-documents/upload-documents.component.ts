@@ -367,27 +367,9 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   ExportAsPdf() {
-    var someJSONdata = [
-      {
-        field1: 'John Doe',
-        value1: 'john@doe.com',
-        field2: '111-111-1111',
-        value2: 'text'
-      },
-      {
-        field1: 'Barry Allen',
-        value1: 'barry@flash.com',
-        field2: '222-222-2222',
-        value2: 'text'
-      },
-      {
-        field1: 'Cool Dude',
-        value1: 'cool@dude.com',
-        field2: '333-333-3333',
-        value2: 'text'
-      }
-    ]
-    printJS('print', 'html')
+    this.loanService.getPdf(this.masterAndLoanIds.masterLoanId).subscribe(res=>{
+
+    })
   }
 
   save() {

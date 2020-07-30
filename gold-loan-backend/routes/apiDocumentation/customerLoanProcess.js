@@ -23,6 +23,36 @@
  *       404:
  *         description: no customer details found
  * 
+ * /loan-process/check-loan-type:
+ *   post:
+ *     tags:
+ *       - Customer Loan Process
+ *     summary: To get loan type
+ *     parameters:
+ *     - name: body
+ *       in: body
+ *       description: "To check the loan type"
+ *       required: true
+ *       schema:
+ *          type: object
+ *          properties:
+ *           loanAmount:
+ *              type: string 
+ *           securedSchemeId:
+ *              type: string
+ *           fullAmount:
+ *              type: string
+ *           partnerId:
+ *              type: string
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: customer details fetch successfully.
+ *       
+ * 
  * /loan-process/apply-for-loan:
  *   post:
  *     tags:
@@ -530,4 +560,23 @@
  *     responses:
  *       200:
  *          description: success
+ * /loan-process/get-print-details:
+ *   get:
+ *     tags: 
+ *       -  Customer Loan Process
+ *     name: print loan details
+ *     summary: To print loan details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "customerLoanId"
+ *       in: "query"
+ *       description: "Id of customer loan Id"
+ *       type: "string"
+ *       required: true
+ *     responses:
+ *       200:
+ *          description: success.
  */

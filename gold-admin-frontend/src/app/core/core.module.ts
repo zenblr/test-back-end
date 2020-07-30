@@ -30,6 +30,7 @@ import { IndianCurrencyFormatPipe } from './_base/layout/pipes/indian-currency-f
 import { TruncatePipe } from './_base/layout/pipes/truncate-text.pipe';
 import { RemoveCommaPipe } from './_base/layout/pipes/remove-comma.pipe';
 import { WeightDirective } from './_base/layout/directives/weight.directive';
+import { Time24to12Pipe } from './_base/layout/pipes/time24to12.pipe';
 
 @NgModule({
 	imports: [CommonModule],
@@ -58,6 +59,7 @@ import { WeightDirective } from './_base/layout/directives/weight.directive';
 		TruncatePipe,
 		RemoveCommaPipe,
 		WeightDirective,
+		Time24to12Pipe,
 	],
 	exports: [
 		// directives
@@ -84,6 +86,7 @@ import { WeightDirective } from './_base/layout/directives/weight.directive';
 		IndianCurrencyFormatPipe,
 		TruncatePipe,
 		RemoveCommaPipe,
+		Time24to12Pipe
 	],
 	providers: [AuthService, ExcelService, PdfService],
 })

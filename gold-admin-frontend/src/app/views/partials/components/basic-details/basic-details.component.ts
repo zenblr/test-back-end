@@ -81,6 +81,12 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         this.controls.customerUniqueId.patchValue(res.transferLoanCustomerID)
         this.getTransferLoanDetailsToApplyLoan()
       }
+
+      if (res.partReleaseId && res.customerUniqueId) {
+        this.controls.customerUniqueId.patchValue(res.customerUniqueId)
+        this.getPartReleaseCustomerDetails(res.partReleaseId)
+      }
+
     })
   }
 
@@ -88,6 +94,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     if (this.url != 'scrap-buying-application-form') {
       this.getPurposeInfo();
     }
+
   }
 
   initForm() {
@@ -104,6 +111,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       scrapId: [],
       masterLoanId: [],
       panImage: [],
+      partReleaseId: []
     })
   }
 
@@ -144,6 +152,8 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.basicForm.disable()
       this.ref.detectChanges()
     }
+
+
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
       this.controls.customerId.patchValue(changes.loanTransfer.currentValue.customer.id)
       this.basicForm.patchValue(changes.loanTransfer.currentValue.loanPersonalDetail)
@@ -163,6 +173,36 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         this.ref.detectChanges()
       }
     )
+  }
+
+  getPartReleaseCustomerDetails(partReleaseId) {
+    const params = {
+      partReleaseId: partReleaseId,
+      customerUniqueId: this.controls.customerUniqueId.value
+    }
+    if (this.controls.customerUniqueId.valid) {
+      this.loanApplicationFormService.applyLoanFromPartRelease(params).pipe(map(res => {
+        console.log(res)
+        if (res.loanCurrentStage) {
+          let stage = res.loanCurrentStage
+
+          stage = Number(stage) - 1;
+          this.next.emit(stage)
+          this.id.emit({ loanId: res.loanId, masterLoanId: res.masterLoanId })
+          if (stage >= 1) {
+            this.apiHit.emit(res.loanId)
+          }
+          if (res.totalEligibleAmt)
+            this.totalEligibleAmt.emit(res.totalEligibleAmt)
+          if (res.finalLoanAmount)
+            this.finalLoanAmount.emit(res.finalLoanAmount)
+        } else {
+          this.customerDetail = res.customerData
+          this.basicForm.patchValue(this.customerDetail)
+          this.basicForm.patchValue({ customerId: this.customerDetail.id, partReleaseId: res.partReleaseId })
+        }
+      })).subscribe()
+    }
   }
 
   getTransferLoanDetailsToApplyLoan() {
@@ -282,11 +322,14 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
+
+
   get controls() {
     return this.basicForm.controls
   }
 
   nextAction() {
+
     if (this.disable) {
       this.next.emit(1)
       return

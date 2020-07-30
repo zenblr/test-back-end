@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap,catchError } from 'rxjs/operators';
+import printJS from 'print-js';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,7 @@ export class LoanApplicationFormService {
   finalLoanAmount = new BehaviorSubject(0)
   finalLoanAmount$ = this.finalLoanAmount.asObservable()
 
-  constructor(public http: HttpClient) { }
+  constructor(public http: HttpClient, private toastr: ToastrService) { }
 
   customerDetails(id): Observable<any> {
     return this.http.get(`/api/loan-process/customer-loan-details/${id}`).pipe(
@@ -25,7 +27,18 @@ export class LoanApplicationFormService {
       map(res => res)
     )
   }
-  
+
+  checkForLoanType(data): Observable<any> {
+    return this.http.post(`/api/loan-process/check-loan-type`, data).pipe(
+      map(res => res)
+    )
+  }
+
+  getInterest(data): Observable<any> {
+    return this.http.post(`/api/loan-process/interest-rate`, data).pipe(
+      map(res => res)
+    )
+  }
 
   basicSubmit(details): Observable<any> {
     return this.http.post(`/api/loan-process/basic-details`, details).pipe(
@@ -40,13 +53,13 @@ export class LoanApplicationFormService {
     )
   }
 
-  submitOrnaments(loanOrnaments, totalEligibleAmt, masterAndLoanIds,fullAmount): Observable<any> {
+  submitOrnaments(loanOrnaments, totalEligibleAmt, masterAndLoanIds, fullAmount): Observable<any> {
     let data = {
       loanOrnaments: loanOrnaments,
       totalEligibleAmt: totalEligibleAmt,
       loanId: masterAndLoanIds.loanId,
       masterLoanId: masterAndLoanIds.masterLoanId,
-      fullAmount:fullAmount
+      fullAmount: fullAmount
     }
     return this.http.post(`/api/loan-process/ornaments-details`, data).pipe(
       map(res => res)
@@ -110,6 +123,53 @@ export class LoanApplicationFormService {
     let data = { ...details, ...masterAndLoanIds }
     return this.http.post(`/api/loan-process/loan-documents`, data).pipe(
       map(res => res)
+    )
+  }
+
+  calculateFinalInterestTable(data): Observable<any> {
+    return this.http.post('/api/loan-process/generate-interest-table', data).pipe(
+      map(res => res)
+    )
+  }
+
+  unsecuredTableGenration(form, paymentFrequency, tenure): Observable<any> {
+    let data = {
+      unsecuredSchemeAmount: form.unsecuredSchemeAmount,
+      unsecuredSchemeId: form.unsecuredSchemeName,
+      paymentFrequency: paymentFrequency,
+      tenure: tenure
+    }
+    return this.http.post('/api/loan-process/generate-unsecured-interest-table', data).pipe(
+      map(res => res)
+    )
+  }
+
+  getPdf(id): Observable<any> {
+    return this.http.get(`/api/loan-process/get-print-details?customerLoanId=${id}`,
+    { responseType: "arraybuffer" }
+    ).pipe(
+      tap(res => {
+        if (res) {
+          var binary = '';
+          var bytes = new Uint8Array(res);
+          var len = bytes.byteLength;
+          for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+          }
+          let base64 = (window.btoa(binary));
+          printJS({ printable: base64, type: 'pdf', base64: true })
+        }
+      }))
+  }
+
+  applyLoanFromPartRelease(data): Observable<any> {
+    return this.http.get(`/api/jewellery-release/apply-loan/${data.customerUniqueId}?partReleaseId=${data.partReleaseId}`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
     )
   }
 

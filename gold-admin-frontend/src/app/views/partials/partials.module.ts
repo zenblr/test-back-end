@@ -250,7 +250,8 @@ import { GlobalSettingsComponent } from './components/global-settings/global-set
 		PdfViewerComponent,
 		ImagePreviewDialogComponent,
 		ImageFunctionalityDialogComponent,
-		OrnamentsComponent
+		OrnamentsComponent,
+		WebcamDialogComponent
 	],
 })
 export class PartialsModule {

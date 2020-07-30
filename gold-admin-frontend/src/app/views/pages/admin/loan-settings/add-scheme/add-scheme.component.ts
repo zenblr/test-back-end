@@ -1,11 +1,10 @@
 import { Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { LoanSettingsService } from '../../../../../core/loan-setting';
 import { ToastrService } from 'ngx-toastr';
-import { min } from 'moment';
 
 @Component({
   selector: 'kt-add-scheme',
@@ -57,9 +56,9 @@ export class AddSchemeComponent implements OnInit {
       schemeName: ['', [Validators.required]],
       schemeAmountStart: ['', [Validators.required, Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,5})?(?![\\d.])')]],
       schemeAmountEnd: ['', [Validators.required, Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,5})?(?![\\d.])')]],
-      interestRateThirtyDaysMonthly: ['', Validators.required],
-      interestRateNinetyDaysMonthly: ['', Validators.required],
-      interestRateOneHundredEightyDaysMonthly: ['', Validators.required],
+      // interestRateThirtyDaysMonthly: ['', Validators.required],
+      // interestRateNinetyDaysMonthly: ['', Validators.required],
+      // interestRateOneHundredEightyDaysMonthly: ['', Validators.required],
       // interestRateThirtyDaysAnnually: [''],
       // interestRateNinetyDaysAnnually: [''],
       // interestRateOneHundredEightyDaysAnnually: [''],
@@ -70,14 +69,20 @@ export class AddSchemeComponent implements OnInit {
       maximumPercentageAllowed: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       penalInterest: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       isDefault: [false],
+      isSplitAtBeginning: [false],
+      // numberOfDays1: [, [Validators.required]],
+      // numberOfDays2: [, [Validators.required]],
+      // numberOfDays3: [, [Validators.required]],
       isTopUp: [false],
-      isSplitAtBeginning:[false]
+      schemeInterest: this.fb.array([]),
     })
 
     this.csvForm = this.fb.group({
       partnerId: ['', Validators.required],
       csv: ['', Validators.required]
     })
+
+    this.initSlabArray()
   }
 
   fromAndToValidation() {
@@ -102,7 +107,7 @@ export class AddSchemeComponent implements OnInit {
 
   submit() {
     if (this.tabGroup.selectedIndex == 0) {
-      console.log(this.fillingForm.value);
+      // console.log(this.fillingForm.value);
 
       if (this.fillingForm.invalid) {
         this.fillingForm.markAllAsTouched()
@@ -115,14 +120,37 @@ export class AddSchemeComponent implements OnInit {
       let toValue = this.fillingForm.get('schemeAmountEnd').value * 100000;
       toValue = +(toValue);
       Math.ceil(toValue);
-      console.log(fromValue, toValue)
+      // console.log(fromValue, toValue)
       this.fillingForm.patchValue({ schemeAmountStart: fromValue, schemeAmountEnd: toValue });
 
-      console.log(this.fillingForm.value);
+      // console.log(this.fillingForm.value);
 
       let partnerArray = [];
       partnerArray.push(this.fillingForm.get('partnerId').value);
       this.fillingForm.patchValue({ partnerId: partnerArray });
+
+      // let obj1 = {
+      //   days: this.fillingForm.controls.numberOfDays1.value,
+      //   interestRate: this.fillingForm.controls.interestRateThirtyDaysMonthly.value
+      // }
+      // let obj2 = {
+      //   days: this.fillingForm.controls.numberOfDays2.value,
+      //   interestRate: this.fillingForm.controls.interestRateNinetyDaysMonthly.value
+      // }
+      // let obj3 = {
+      //   days: this.fillingForm.controls.numberOfDays3.value,
+      //   interestRate: this.fillingForm.controls.interestRateOneHundredEightyDaysMonthly.value
+      // }
+
+      // let schemeInterestArr = []
+      // schemeInterestArr.push(obj1, obj2, obj3)
+      // Array.prototype.push.apply(schemeInterestArr, this.schemeInterest.value)
+
+      // Object.assign(this.fillingForm.value, { schemeInterest: schemeInterestArr })
+
+
+      console.log(this.fillingForm.value)
+
 
       this.laonSettingService.saveScheme(this.fillingForm.value).pipe(
         map((res) => {
@@ -172,9 +200,44 @@ export class AddSchemeComponent implements OnInit {
       this.fillingForm.controls.isDefault.patchValue(event);
     }
   }
+
   setAsTopUpAllowed(event) {
     if (this.fillingForm.controls.schemeType.valid && this.fillingForm.controls.schemeType.value == 'secured') {
       this.fillingForm.controls.isTopUp.patchValue(event);
     }
+  }
+
+  get schemeInterest(): FormArray {
+    return this.fillingForm.controls.schemeInterest as FormArray
+  }
+
+  newSlabRate(): FormGroup {
+    return this.fb.group({
+      days: null,
+      interestRate: null
+    })
+  }
+
+  initSlabArray() {
+    for (let index = 0; index < 3; index++) {
+      this.schemeInterest.push(this.newSlabRate())
+    }
+  }
+
+  addSlabRate() {
+    this.schemeInterest.push(this.newSlabRate())
+    this.scrollToBottom()
+  }
+
+  removeSlabRate() {
+    this.schemeInterest.removeAt(this.schemeInterest.length - 1)
+    this.scrollToBottom()
+  }
+
+  scrollToBottom() {
+    setTimeout(() => {
+      var container = document.getElementById('container')
+      container.scrollTop = container.scrollHeight
+    })
   }
 }

@@ -141,7 +141,6 @@ const rout: Routes = [
     AssignPacketsComponent,
     DeleteEntityDialogComponent,
     UnSecuredSchemeComponent,
-    WebcamDialogComponent,
     UpdateLocationComponent,
     UserReviewComponent,
     ViewPacketLogComponent

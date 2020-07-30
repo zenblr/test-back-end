@@ -122,4 +122,29 @@
  *         description: avalable packet details fetch successfully
  *       404:
  *         description: no packet details found  
+ * /packet/assign-appraiser:
+ *   put:
+ *     tags: 
+ *       - Packet
+ *     summary: To assign appraiser
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *              packetId:
+ *                type:array
+ *              appraiserId:
+ *                type:integer
+ *         required:
+ *           - data
+ *           - appraiserId
+ *     responses:
+ *       200:
+ *          description: success.
  */

@@ -22,7 +22,7 @@
             </div>
             <div class="col form-label" *ngIf="showLoanTransferFlag || showLoanFlag">
                 <label class="kt-padding-l-10 kt-padding-r-25">Pawn Ticket/Copy of Pledge</label>
-                <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
+                <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()" *ngIf="!show"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showLoanFlag">
                 <label class="kt-padding-l-10">Scheme Confirmation Copy</label>
@@ -153,24 +153,28 @@
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
-                        <!-- <div class="position-relative edit-width"
-                            *ngIf="isEdit && controls?.loanAgreementCopyImage?.value">
+
+                        <div class="edit-width">
                             <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-                                (click)="editImages('loanAgreementCopy');">
-                        </div> -->
+                                *ngIf="isEdit && controls?.pawnCopyImage?.value"
+                                (click)="editImages('pawnCopy');">
+                        </div>
 
                         <div class="" *ngIf="controls?.loanAgreementCopyImage?.value">
-                            <div class="d-inline-block img-container width kt-margin-r-15 position-relative"
-                                (click)="preview(controls?.loanAgreementCopyImage?.value)">
-                                <img class="fetched-image" [src]="controls?.loanAgreementCopyImage?.value"
-                                    *ngIf="!pdf.loanAgreementCopy">
+                            <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
+                                <img (click)="preview(controls?.loanAgreementCopyImage?.value)" class="fetched-image"
+                                    [src]="controls?.loanAgreementCopyImage?.value" *ngIf="!pdf.loanAgreementCopy">
 
                                 <img class="edit-icon" src="../../../../../assets/media/icons/edit.svg"
-                                    *ngIf="pdf.loanAgreementCopy" (click)="preview(controls?.loanAgreementCopy.value)">
+                                    *ngIf="isEdit && controls?.loanAgreementCopyImage?.value"
+                                    (click)="editImages('loanAgreementCopy')">
                                 <iframe [src]="controls?.loanAgreementCopyImage.value | safe : 'resourceUrl'"
                                     height="250" width="290" scrolling="no" *ngIf="pdf.loanAgreementCopy"></iframe>
                             </div>
                         </div>
+                        <img src="../../../../../assets/media/icons/edit.svg"
+                            *ngIf="isEdit && controls?.loanAgreementCopyImage?.value" alt=""
+                            class="kt-pointer edit-icon" (click)="editImages('loanAgreementCopy');">
                     </div>
                 </div>
 
@@ -183,21 +187,20 @@
                                 class="placeholder-image">
                         </div>
 
-                        <!-- <div class="position-relative edit-width">
+                        <div class="edit-width">
                             <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
                                 *ngIf="isEdit && controls?.pawnCopyImage?.value"
                                 (click)="editImages('pawnCopy');">
-                        </div> -->
+                        </div>
 
 
                         <div class="" *ngIf="controls?.pawnCopyImage?.value">
-                            <div class="d-inline-block img-container width kt-margin-r-15 position-relative"
-                                (click)="preview(controls?.pawnCopyImage?.value)">
-                                <img class="fetched-image" [src]="controls?.pawnCopyImage?.value" *ngIf="!pdf.pawnCopy">
+                            <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
+                                <img (click)="preview(controls?.pawnCopyImage?.value)" class="fetched-image"
+                                    [src]="controls?.pawnCopyImage?.value" *ngIf="!pdf.pawnCopy">
 
-                                <img class="edit-icon" src="../../../../../assets/media/icons/edit.svg"
-                                    (click)="preview(controls?.pawnCopy.value)"
-                                    *ngIf="isEdit && controls?.pawnCopyImage?.value">
+                                <img class="edit-icon kt-pointer" src="../../../../../assets/media/icons/edit.svg"
+                                    (click)="editImages('pawnCopy')" *ngIf="isEdit && controls?.pawnCopyImage?.value">
                                 <iframe [src]="controls?.pawnCopyImage?.value | safe : 'resourceUrl'" height="250"
                                     width="290" scrolling="no" *ngIf="pdf.pawnCopy" class="position-relative"></iframe>
                                 <!-- <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.pawnCopy"
@@ -217,16 +220,16 @@
                                 class="placeholder-image">
                         </div>
 
-                        <!-- <div class="position-relative edit-width">
+                        <!-- <div class="edit-width">
                             <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
                                 *ngIf="isEdit && controls?.schemeConfirmationCopyImage?.value"
                                 (click)="editImages('schemeConfirmationCopy');">
                         </div> -->
 
                         <div class="" *ngIf="controls?.schemeConfirmationCopyImage?.value">
-                            <div class="d-inline-block img-container width kt-margin-r-15 position-relative"
-                                (click)="preview(controls?.schemeConfirmationCopyImage?.value)">
-                                <img class="fetched-image" [src]="controls?.schemeConfirmationCopyImage?.value"
+                            <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
+                                <img (click)="preview(controls?.schemeConfirmationCopyImage?.value)"
+                                    class="fetched-image" [src]="controls?.schemeConfirmationCopyImage?.value"
                                     *ngIf="!pdf.schemeConfirmationCopy">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     class="kt-pointer edit-icon"

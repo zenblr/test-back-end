@@ -8,9 +8,11 @@ const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATIO
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 const moment = require('moment');
 
+var pdf = require("pdf-creator-node"); // PDF CREATOR PACKAGE
+var fs = require('fs');
 let { sendMessageLoanIdGeneration } = require('../../utils/SMS')
 
-const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory')
+const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory');
 
 //  FUNCTION FOR GET CUSTOMER DETAILS AFTER ENTER UNIQUE ID DONE
 exports.customerDetails = async (req, res, next) => {
@@ -85,7 +87,7 @@ exports.customerDetails = async (req, res, next) => {
 //FUNCTION fot submitting basic details DONE
 exports.loanBasicDeatils = async (req, res, next) => {
 
-    let { customerId, customerUniqueId, kycStatus, startDate, purpose, masterLoanId,partReleaseId } = req.body
+    let { customerId, customerUniqueId, kycStatus, startDate, purpose, masterLoanId, partReleaseId } = req.body
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let stageId = await models.loanStage.findOne({ where: { name: 'applying' } })
@@ -93,7 +95,7 @@ exports.loanBasicDeatils = async (req, res, next) => {
     if (masterLoanId != null) {
         let customerLoanMaster = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } });
         if (customerLoanMaster.loanTransferId != null) {
-            let transferLoan = await models.customerLoanTransfer.findOne({where:{ id: customerLoanMaster.loanTransferId }});
+            let transferLoan = await models.customerLoanTransfer.findOne({ where: { id: customerLoanMaster.loanTransferId } });
             if (transferLoan.isLoanApplied == false) {
                 await sequelize.transaction(async t => {
                     let loan = await models.customerLoan.findOne({ where: { masterLoanId } });
@@ -106,7 +108,7 @@ exports.loanBasicDeatils = async (req, res, next) => {
         }
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanMaster.id, loanType: 'secured' } })
         if (!check.isEmpty(customerLoanMaster)) {
-            return res.status(200).json({ message: 'success',loanstage: stageId, loanId: loanId.id, masterLoanId: customerLoanMaster.id, loanCurrentStage: '2' })
+            return res.status(200).json({ message: 'success', loanstage: stageId, loanId: loanId.id, masterLoanId: customerLoanMaster.id, loanCurrentStage: '2' })
         }
     }
 
@@ -120,8 +122,8 @@ exports.loanBasicDeatils = async (req, res, next) => {
 
         await models.customerLoanPersonalDetail.create({ loanId: loan.id, masterLoanId: masterLoan.id, customerUniqueId, startDate, purpose, kycStatus, createdBy, modifiedBy }, { transaction: t });
 
-        if(partReleaseId){
-            await models.partRelease.update({isLoanCreated:true,newLoanId:masterLoan.id},{where:{id:partReleaseId},transaction: t });
+        if (partReleaseId) {
+            await models.partRelease.update({ isLoanCreated: true, newLoanId: masterLoan.id }, { where: { id: partReleaseId }, transaction: t });
         }
         return loan
     })
@@ -228,6 +230,268 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
         return res.status(200).json({ message: 'success', loanId, masterLoanId, loanCurrentStage: '4', totalEligibleAmt, ornaments: loanData, loanTransferData })
     }
 
+}
+
+// amount validation and check its a secured scheme aur unsecured scheme
+exports.checkForLoanType = async (req, res, next) => {
+    let { loanAmount, securedSchemeId, fullAmount, partnerId } = req.body
+    let processingCharge = 0;
+    let unsecuredScheme
+
+    let securedScheme = await models.scheme.findOne({
+        where: { id: securedSchemeId },
+        // attributes: ['id'],
+        order: [
+            [models.schemeInterest, 'days', 'asc']
+        ],
+        include: [{
+            model: models.schemeInterest,
+            as: 'schemeInterest',
+            attributes: ['days', 'interestRate']
+        }]
+    })
+
+    if(securedScheme.isSplitAtBeginning){
+        
+        fullAmount = loanAmount       //During split at the beginning consider loan amount as full amount 
+    }
+
+    let secureSchemeMaximumAmtAllowed = (securedScheme.maximumPercentageAllowed / 100)
+
+    let securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
+
+
+    if (loanAmount > securedLoanAmount) {
+        var unsecuredAmount = Math.round(loanAmount - securedLoanAmount)
+
+        unsecuredScheme = await models.partner.findOne({
+            where: { id: partnerId },
+            // attributes: ['id'],
+            order: [
+                [models.scheme, 'id', 'asc'],
+                [models.scheme, models.schemeInterest, 'days', 'asc']
+            ],
+            include: [
+                {
+                    model: models.scheme,
+                    // attributes: ['id', 'default'],
+                    where: {
+                        isActive: true,
+                        schemeType: 'unsecured',
+                        [Op.and]: {
+                            schemeAmountStart: { [Op.lte]: unsecuredAmount },
+                            schemeAmountEnd: { [Op.gte]: unsecuredAmount },
+                        }
+                    },
+                    include: [
+                        {
+                            model: models.schemeInterest,
+                            as: 'schemeInterest',
+                            attributes: ['days', 'interestRate']
+                        }
+                    ]
+                }
+            ]
+        })
+        let unsecured = unsecuredScheme.schemes
+        var unsecuredSchemeApplied;
+
+        var defaultUnsecuredScheme = unsecuredScheme.schemes.filter(scheme => { return scheme.default })
+        let defaultFind = await selectScheme(defaultUnsecuredScheme, securedScheme)
+
+        if (!check.isEmpty(defaultFind)) {
+            unsecuredSchemeApplied = defaultFind[0]
+        } else {
+            let checkScheme = await selectScheme(unsecured, securedScheme)
+            unsecuredSchemeApplied = checkScheme[0]
+        }
+
+
+        if (unsecuredSchemeApplied && (securedScheme.isSplitAtBeginning ||
+            Number(loanAmount) <= Math.round(fullAmount * (securedLoanAmount + (unsecuredSchemeApplied.maximumPercentageAllowed / 100))))) {
+
+            processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
+
+            return res.status(200).json({ data: { unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme } })
+
+        } else {
+            return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
+        }
+    }
+    else {
+
+        processingCharge = await processingChargeSecuredScheme(loanAmount, securedScheme, undefined, undefined)
+        return res.status(200).json({ data: { securedScheme, processingCharge, securedScheme } })
+
+    }
+}
+
+
+async function selectScheme(unsecured, scheme) {
+    let unsecuredArray = [];
+    for (let i = 0; i < unsecured.length; i++) {
+        let unsec = unsecured[i];
+        let schemeInterest = unsec.schemeInterest;
+        if (schemeInterest.length != scheme.schemeInterest.length) {
+            continue;
+        }
+        let isMached = true;
+        for (let j = 0; j < schemeInterest.length; j++) {
+            let schemeIntUnSec = schemeInterest[j];
+            let schemeInt = scheme.schemeInterest[j];
+
+            if (schemeIntUnSec.days != schemeInt.days) {
+                isMached = false;
+                break;
+            }
+        }
+        if (isMached) {
+            unsecuredArray.push(unsec);
+        }
+    }
+    return unsecuredArray
+}
+
+//common FUNCTION for secure processing charge
+async function processingChargeSecuredScheme(amount, securedScheme, unsecuredScheme, unsecuredAmount) {
+    let processingCharge = 0
+    var processingChargePercent = (amount * securedScheme.processingChargePercent) / 100
+    if (processingChargePercent > parseFloat(securedScheme.processingChargeFixed)) {
+        processingCharge += processingChargePercent
+    } else {
+        processingCharge += securedScheme.processingChargeFixed
+    }
+
+    if (unsecuredScheme) {
+        let processingChargePercentUnsecure = (unsecuredAmount * unsecuredScheme.processingChargePercent) / 100
+        if (processingChargePercentUnsecure > parseFloat(unsecuredScheme.processingChargeFixed)) {
+            processingCharge += processingChargePercentUnsecure
+        } else {
+            processingCharge += unsecuredScheme.processingChargeFixed
+        }
+    }
+    return processingCharge;
+}
+
+// FUNCTION for interest
+exports.interestRate = async (req, res, next) => {
+    let { securedSchemeId, unsecuredSchemeId, paymentFrequency } = req.body
+
+    let securedinterestRate = await models.schemeInterest.findOne({
+        where: { days: paymentFrequency, schemeId: securedSchemeId },
+        attributes: ['interestRate'],
+    })
+
+    if (unsecuredSchemeId) {
+        var unsecuredinterestRate = await models.schemeInterest.findOne({
+            where: { days: paymentFrequency, schemeId: unsecuredSchemeId },
+            attributes: ['interestRate'],
+        })
+    }
+
+    return res.status(200).json({ data: { securedinterestRate, unsecuredinterestRate } })
+}
+
+// Function to generate Interest Table
+
+exports.generateInterestTable = async (req, res, next) => {
+    let { securedLoanAmount, interestRate, unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency, isUnsecuredSchemeApplied, tenure } = req.body
+    let interestTable = []
+    let totalInterestAmount = 0;
+
+    // secure interest calculation
+    let securedInterestAmount = await interestCalcultaion(securedLoanAmount, interestRate, paymentFrequency)
+
+
+    // unsecure interest calculation
+    if (isUnsecuredSchemeApplied) {
+        var unsecuredInterestAmount = await interestCalcultaion(unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency)
+
+    }
+
+    // generate Table
+    let length = (tenure * 30) / paymentFrequency
+    console.log(length)
+    for (let index = 0; index < Number(length); index++) {
+        let date = new Date()
+        let data = {
+            emiDueDate: moment(new Date(date.setDate(date.getDate() + (paymentFrequency * (index + 1)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
+            paymentType: paymentFrequency,
+            securedInterestAmount: securedInterestAmount,
+            unsecuredInterestAmount: unsecuredInterestAmount,
+            totalAmount: Number(securedInterestAmount) + Number(unsecuredInterestAmount)
+        }
+        interestTable.push(data)
+    }
+
+    if (!Number.isInteger(length)) {
+        const lastElementOfTable = interestTable[interestTable.length - 1]
+        let secure = (securedInterestAmount / Math.ceil(length)).toFixed(2)
+        lastElementOfTable.securedInterestAmount = secure
+
+        if (isUnsecuredSchemeApplied) {
+            let unsecure = (unsecuredInterestAmount / Math.ceil(length)).toFixed(2)
+            lastElementOfTable.unsecuredInterestAmount = unsecure
+            lastElementOfTable.totalAmount = Number(lastElementOfTable.securedInterestAmount) + Number(lastElementOfTable.unsecuredInterestAmount)
+        }
+
+    }
+
+    interestTable.forEach(amount => {
+        if(isUnsecuredSchemeApplied){
+        totalInterestAmount += amount.totalAmount
+        }else{
+        totalInterestAmount += Number(amount.securedInterestAmount)
+        }
+    });
+
+    return res.status(200).json({ data: { interestTable, totalInterestAmount } })
+}
+
+// FUNCTION FOR unsecure table generation
+
+exports.unsecuredTableGeneration = async (req, res, next) => {
+    let { unsecuredSchemeAmount, unsecuredSchemeId, paymentFrequency, tenure } = req.body
+    console.log(req.body)
+    let interestTable = []
+    var unsecuredInterestRate = await models.schemeInterest.findOne({
+        where: { days: paymentFrequency, schemeId: unsecuredSchemeId },
+        attributes: ['interestRate'],
+    })
+
+    var unsecuredInterestAmount = await interestCalcultaion(unsecuredSchemeAmount, unsecuredInterestRate.interestRate, paymentFrequency)
+
+    let length = (tenure * 30) / paymentFrequency
+    console.log(length)
+    for (let index = 0; index < Number(length); index++) {
+        let date = new Date()
+        let data = {
+            emiDueDate: moment(new Date(date.setDate(date.getDate() + (paymentFrequency * (index + 1)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
+            paymentType: paymentFrequency,
+            unsecuredInterestAmount: unsecuredInterestAmount,
+        }
+        interestTable.push(data)
+    }
+
+    if (!Number.isInteger(length)) {
+        const lastElementOfTable = interestTable[interestTable.length - 1]
+
+        let unsecure = (unsecuredInterestAmount / Math.ceil(length)).toFixed(2)
+        lastElementOfTable.unsecuredInterestAmount = unsecure
+
+
+    }
+
+    return res.status(200).json({ data: { interestTable } })
+
+}
+
+
+// interest calculation
+async function interestCalcultaion(amount, interestRate, paymentFrequency) {
+    let interest = ((Number(amount) * (Number(interestRate) * 12 / 100)) * Number(paymentFrequency)
+        / 360).toFixed(2)
+    return interest
 }
 
 //FUNCTION for final loan calculator
@@ -750,7 +1014,15 @@ exports.loanOpsTeamRating = async (req, res, next) => {
             // loan transfer changes complete
             if (loanMaster.isLoanTransfer == true) {
                 let stageIdTransfer = await models.loanStage.findOne({ where: { name: 'disbursed' }, transaction: t })
-
+                let dateChnage = await disbursementOfLoanTransfer(masterLoanId);
+                for (let a = 0; a < dateChnage.securedInterest.length; a++) {
+                    let updateDate = dateChnage.securedInterest[a].emiDueDate
+                    await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.securedInterest[a].id },transaction: t })                }
+                if (dateChnage.isUnSecured == true) {
+                    for (let a = 0; a < dateChnage.unsecuredInterest.length; a++) {
+                        let updateDate = dateChnage.unsecuredInterest[a].emiDueDate
+                        await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.unsecuredInterest[a].id },transaction: t })
+                    }}
                 let customerLoanId = [];
                 for (const loan of loanMaster.customerLoan) {
                     customerLoanId.push(loan.id);
@@ -773,6 +1045,42 @@ exports.loanOpsTeamRating = async (req, res, next) => {
 
         return res.status(200).json({ message: 'success' })
     }
+}
+
+async function disbursementOfLoanTransfer(masterLoanId){
+    let checkLoan = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        order: [[models.customerLoan, 'id', 'asc']],
+        include: [{
+            model: models.customerLoan,
+            as: 'customerLoan',
+        }]
+    });
+    let securedLoanId;
+    let unsecuredLoanId;
+    if (checkLoan.isUnsecuredSchemeApplied == true) {
+        securedLoanId = checkLoan.customerLoan[0].id;
+        unsecuredLoanId = checkLoan.customerLoan[1].id;
+    } else {
+        securedLoanId = checkLoan.customerLoan[0].id;
+    }
+    let Loan = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        attributes: ['paymentFrequency', 'processingCharge', 'isUnsecuredSchemeApplied'],
+        include: [{
+            model: models.customerLoanInterest,
+            as: 'customerLoanInterest',
+            where: { isActive: true, loanId: securedLoanId }
+        }]
+    });
+    let securedInterest  = await getInterestTable(masterLoanId, securedLoanId, Loan);
+    let unsecuredInterest;
+    let isUnSecured = false;
+    if (Loan.isUnsecuredSchemeApplied == true) {
+        isUnSecured = true;
+        unsecuredInterest = await getInterestTable(masterLoanId, unsecuredLoanId, Loan);
+    }
+    return {securedInterest,unsecuredInterest,isUnSecured}
 }
 
 //FUNCTION for disbursement
@@ -978,6 +1286,10 @@ exports.getSingleLoanDetails = async (req, res, next) => {
 
     let customerLoan = await models.customerLoan.findOne({
         where: { id: customerLoanId },
+        order: [
+            [models.scheme, 'id', 'asc'],
+            [models.scheme, models.schemeInterest, 'days', 'asc']
+        ],
         // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
         include: [
             {
@@ -1025,7 +1337,12 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             },
             {
                 model: models.scheme,
-                as: 'scheme'
+                as: 'scheme',
+                include: [{
+                    model: models.schemeInterest,
+                    as: 'schemeInterest',
+                    attributes: ['schemeId', 'days']
+                }]
             },
             {
                 model: models.customerLoan,
@@ -1365,7 +1682,7 @@ exports.getLoanDetails = async (req, res, next) => {
         {
             model: models.partRelease,
             as: 'partRelease',
-            attributes:  ['amountStatus','partReleaseStatus'] 
+            attributes: ['amountStatus', 'partReleaseStatus']
         },
     ]
 
@@ -1438,5 +1755,210 @@ exports.getAssignAppraiserCustomer = async (req, res, next) => {
 
 //FUNCTION FOR PRINT DETAILS
 exports.getDetailsForPrint = async (req, res, next) => {
+    let { customerLoanId } = req.query
+    let includeArray = [
+        {
+            model: models.customerLoan,
+            as: 'customerLoan',
+            attributes: ['id', 'loanUniqueId', 'loanAmount', 'interestRate', 'loanType', 'unsecuredLoanId', 'partnerId', 'schemeId'],
+            include: [
+                {
+                    model: models.scheme,
+                    as: 'scheme',
+                    attributes: ['penalInterest', 'schemeName']
+                }, {
+                    model: models.partner,
+                    as: 'partner',
+                    attributes: ['name']
+                },
+            ]
+        },
+        {
+            model: models.customerLoanBankDetail,
+            as: 'loanBankDetail',
+            attributes: ['accountHolderName', 'accountNumber', 'ifscCode', 'passbookProof']
+        },
+        {
+            model: models.customerLoanNomineeDetail,
+            as: 'loanNomineeDetail',
+            attributes: ['nomineeName', 'nomineeAge', 'relationship']
+        },
+        {
+            model: models.customer,
+            as: 'customer',
+            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber'],
+            include: [
+                {
+                    model: models.customerKycPersonalDetail,
+                    as: 'customerKycPersonal',
+                    attributes: ['dateOfBirth']
+                },
+                {
+                    model: models.customerKycAddressDetail,
+                    as: 'customerKycAddress',
+                    attributes: ['address', 'pinCode'],
+                    include: [
+                        {
+                            model: models.state,
+                            as: 'state',
+                            attributes: ['name']
+                        }, {
+                            model: models.city,
+                            as: 'city',
+                            attributes: ['name']
+                        }]
+                }
+            ]
+        },
+        {
+            model: models.customerLoanOrnamentsDetail,
+            as: 'loanOrnamentsDetail',
+            attributes: ['quantity', 'grossWeight', 'netWeight', 'deductionWeight', 'purityTest'],
+            include: [
+                {
+                    model: models.ornamentType,
+                    as: "ornamentType",
+                    attributes: ['name']
+                }
+            ]
+        }
+
+    ]
+
+    let customerLoanDetail = await models.customerLoanMaster.findOne({
+        where: { id: customerLoanId },
+        order: [
+            [models.customerLoan, 'id', 'asc'],
+        ],
+        attributes: ['id', 'tenure', 'loanStartDate', 'loanEndDate', 'isUnsecuredSchemeApplied'],
+        include: includeArray
+    });
+
+    let ornaments = [];
+    if (customerLoanDetail.loanOrnamentsDetail.length != 0) {
+        for (let ornamentsDetail of customerLoanDetail.loanOrnamentsDetail) {
+            ornaments.push({
+                name: ornamentsDetail.ornamentType.name,
+                quantity: ornamentsDetail.quantity,
+                grossWeight: ornamentsDetail.grossWeight,
+                netWeight: ornamentsDetail.netWeight,
+                deductionWeight: ornamentsDetail.deductionWeight
+            })
+        }
+        customerLoanDetail.ornamentType = ornaments;
+    }
+
+    let customerAddress = []
+    if (customerLoanDetail.customer.length != 0) {
+        for (let address of customerLoanDetail.customer.customerKycAddress) {
+            customerAddress.push({
+                address: address.address,
+                pinCode: address.pinCode,
+                state: address.state.name,
+                city: address.city.name
+            })
+        }
+        customerLoanDetail.customerAddress = customerAddress
+    }
+    var d = new Date(customerLoanDetail.customer.customerKycPersonal.dateOfBirth)
+    dateOfBirth = d.getDate() + "-" + d.getMonth() + 1 + "-" + d.getFullYear();
+    //console.log(customerLoanDetail.customerLoan[1])
+    let customerUnsecureLoanData = [];
+    if (customerLoanDetail.isUnsecuredSchemeApplied) {
+        var html = fs.readFileSync("./templates/acknowledge-unsecure-template.html", 'utf8');
+        customerUnsecureLoanData = await [{
+            Name: customerLoanDetail.customer.firstName + " " + customerLoanDetail.customer.lastName,
+            dob: dateOfBirth,
+            contactNumber: customerLoanDetail.customer.mobileNumber,
+            start_Date: customerLoanDetail.loanStartDate,
+            customerAddress: `${customerLoanDetail.customerAddress[0].address},${customerLoanDetail.customerAddress[0].pinCode},${customerLoanDetail.customerAddress[0].state},${customerLoanDetail.customerAddress[0].city}`,
+            customerId: customerLoanDetail.customer.customerUniqueId,
+            loanTenure: customerLoanDetail.tenure,
+            end_Date: customerLoanDetail.loanEndDate,
+            //accountNumber: customerLoan.loanBankDetail.accountNumber,
+            //bankName: customerLoan.loanBankDetail.accountHolderName,
+            //ifscCode: customerLoan.loanBankDetail.ifscCode,
+            loanNumber: customerLoanDetail.customerLoan[1].loanUniqueId,
+            loanAmount: customerLoanDetail.customerLoan[1].loanAmount,
+            loanScheme: customerLoanDetail.customerLoan[1].scheme.schemeName,
+            penalCharges: customerLoanDetail.customerLoan[1].scheme.penalInterest,
+            interestRate: customerLoanDetail.customerLoan[1].interestRate,
+        }]
+        //console.log(customerUnsecureLoanData)
+    } else {
+        var html = fs.readFileSync("./templates/acknowledge-template.html", 'utf8');
+    }
+    var options = {
+        format: "A4",
+        orientation: "portrait",
+        border: "1mm",
+        "header": {
+            "height": "2mm",
+        },
+        "footer": {
+            "height": "2mm",
+        },
+        "height": "11.69in",
+        "width": "8.27in"
+    }
+
+   
+
+    var customerSecureLoanData = await [{
+        partnerName: customerLoanDetail.customerLoan[0].partner.name,
+        Name: customerLoanDetail.customer.firstName + " " + customerLoanDetail.customer.lastName,
+        dob: dateOfBirth,
+        contactNumber: customerLoanDetail.customer.mobileNumber,
+        nomineeDetails: `${customerLoanDetail.loanNomineeDetail[0].nomineeName}, ${customerLoanDetail.loanNomineeDetail[0].nomineeAge}, ${customerLoanDetail.loanNomineeDetail[0].relationship}`,
+        start_Date: customerLoanDetail.loanStartDate,
+        customerAddress: `${customerLoanDetail.customerAddress[0].address},${customerLoanDetail.customerAddress[0].pinCode},${customerLoanDetail.customerAddress[0].state},${customerLoanDetail.customerAddress[0].city}`,
+        interestRate: customerLoanDetail.customerLoan[0].interestRate,
+        customerId: customerLoanDetail.customer.customerUniqueId,
+        loanNumber: customerLoanDetail.customerLoan[0].loanUniqueId,
+        loanAmount: customerLoanDetail.customerLoan[0].loanAmount,
+        loanTenure: customerLoanDetail.tenure,
+        end_Date: customerLoanDetail.loanEndDate,
+        loanScheme: customerLoanDetail.customerLoan[0].scheme.schemeName,
+        penalCharges: customerLoanDetail.customerLoan[0].scheme.penalInterest,
+        accountNumber: customerLoanDetail.loanBankDetail.accountNumber,
+        bankName: customerLoanDetail.loanBankDetail.accountHolderName,
+        ifscCode: customerLoanDetail.loanBankDetail.ifscCode,
+        ornamentTypes: customerLoanDetail.ornamentType[0].name,
+        quantity: customerLoanDetail.ornamentType[0].quantity,
+        grossWeight: customerLoanDetail.ornamentType[0].grossWeight,
+        deduction: customerLoanDetail.ornamentType[0].deductionWeight,
+        netWeight: customerLoanDetail.ornamentType[0].netWeight,
+
+    }];
+    //console.log(customerSecureLoanData)
+
+    let fileName = await `AcknowledgeOFPledge${Date.now()}`;
+    document = await {
+        html: html,
+        data: {
+            bootstrapCss: `${process.env.URL}/bootstrap.css`,
+            jqueryJs: `${process.env.URL}/jquery-slim.min.js`,
+            popperJs: `${process.env.URL}/popper.min.js`,
+            bootstrapJs: `${process.env.URL}/bootstrap.js`,
+            customerLoanDetail: customerSecureLoanData,
+            customerUnsecureLoanDetail: customerUnsecureLoanData
+        },
+        path: `./public/uploads/pdf/${fileName}.pdf`
+    };
+    let createPdf = await pdf.create(document, options);
+    if (createPdf) {
+        fs.readFile(`./public/uploads/pdf/${fileName}.pdf`, function (err, data) {
+            let stat = fs.statSync(`./public/uploads/pdf/${fileName}.pdf`);
+            res.setHeader('Content-Length', stat.size);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=${fileName}.pdf`);
+            res.send(data);
+            if (fs.existsSync(`./public/uploads/pdf/${fileName}.pdf`)) {
+                fs.unlinkSync(`./public/uploads/pdf/${fileName}.pdf`);
+            }
+        });
+    }
+
+
 
 }
