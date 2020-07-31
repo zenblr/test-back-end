@@ -15,7 +15,8 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td scope="row" class="rating-title">Loan Application Form</td>
+                            <td scope="row" class="rating-title">
+                                {{scrapIds ? 'Scrap Application Form' : 'Loan Application Form'}}</td>
                             <td class="rating-cce text-center">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
                                     [ngClass]="{'cursor-not-allowed':((stage !=1 && stage !=6) || this.disable )}"
@@ -46,8 +47,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td scope="row" class="rating-title">Gold Valuation
-                            </td>
+                            <td scope="row" class="rating-title">Gold Valuation</td>
                             <td class="rating-cce text-center">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
                                     [ngClass]="{'cursor-not-allowed':((stage !=1 && stage !=6) || this.disable)}"
@@ -79,9 +79,22 @@
                         </tr>
 
                         <tr>
-                            <td scope="row" class="rating-title">Final Status
+                            <td scope="row" class="rating-title">Final Status</td>
+                            <td class="rating-cce" *ngIf="scrapIds">
+                                <select class="form-control " formControlName="scrapStatusForAppraiser"
+                                    (change)="clearAppraiser();statusAppraiser()"
+                                    [class.isError]="controls.scrapStatusForAppraiser.invalid && controls.scrapStatusForAppraiser.touched">
+                                    <option value=null [disabled]="true" [selected]="true">Select Status</option>
+                                    <option [value]="status.value" [disabled]="checkforApprovalAppraiser(status)"
+                                        *ngFor="let status of appraiser">
+                                        {{status.name | titlecase}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="controls.scrapStatusForAppraiser.invalid && controls.scrapStatusForAppraiser.touched">
+                                    Field Required</mat-error>
                             </td>
-                            <td class="rating-cce">
+                            <td class="rating-cce" *ngIf="!scrapIds">
                                 <select class="form-control " formControlName="loanStatusForAppraiser"
                                     (change)="clearAppraiser();statusAppraiser()"
                                     [class.isError]="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
@@ -104,7 +117,7 @@
                                         *ngFor="let status of branchManager">
                                         {{status.name | titlecase}}</option>
                                 </select>
-                               
+
                                 <mat-error *ngIf="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
                                     Field
                                     Required</mat-error>
@@ -162,8 +175,8 @@
             </div>
         </div>
 
-        <div class="row justify-content-center "
-            *ngIf="controls.loanStatusForAppraiser.value && controls.loanStatusForAppraiser.value != 'approved'">
+        <div class="row justify-content-center " *ngIf="(controls.loanStatusForAppraiser.value && controls.loanStatusForAppraiser.value != 'approved' ||
+            controls.scrapStatusForAppraiser.value && controls.scrapStatusForAppraiser.value != 'approved')">
             <div class="col-7">
                 <div class="row">
                     <div class="col-4">
@@ -192,7 +205,8 @@
             </div>
         </div>
         <div class="row justify-content-center "
-            *ngIf="controls.reasons.value && controls.reasons.value == 'Other' && controls.loanStatusForAppraiser.value != 'approved'">
+            *ngIf="(controls.reasons.value && controls.reasons.value == 'Other' && controls.loanStatusForAppraiser.value != 'approved' ||
+            controls.reasons.value && controls.reasons.value == 'Other' && controls.scrapStatusForAppraiser.value != 'approved')">
             <div class="col-7">
                 <mat-form-field class="w-100">
 

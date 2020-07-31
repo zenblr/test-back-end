@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { Router } from '@angular/router';
 import { LoanApplicationFormService } from '../../../../core/loan-management';
+import { ScrapApplicationFormService } from '../../../../core/scrap-management';
 import { map } from 'rxjs/operators';
 import { Location } from '@angular/common'
 import { CustomerClassificationService } from '../../../../core/kyc-settings/services/customer-classification.service';
@@ -46,6 +47,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     private ref: ChangeDetectorRef,
     public router: Router,
     public loanFormService: LoanApplicationFormService,
+    public scrapApplicationFormService: ScrapApplicationFormService,
     public location: Location,
     private custClassificationService: CustomerClassificationService,
 
@@ -97,6 +99,41 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
+  disableScrapForm(stage) {
+    this.stage = stage
+    if (stage == 6 || stage == 1) {
+      this.controls.scrapStatusForBM.disable()
+      this.viewBMForm = false;
+      this.viewOpertaionalForm = false;
+
+    } else if (stage == 2) {
+      this.controls.loanStatusForAppraiser.disable()
+      this.viewBMForm = false;
+      this.viewOpertaionalForm = false;
+
+    } else if (stage == 3) {
+      this.controls.loanStatusForAppraiser.disable()
+      this.viewBMForm = true;
+      this.viewOpertaionalForm = false;
+
+    } else if (stage == 8) {
+      this.controls.loanStatusForAppraiser.disable()
+      this.controls.loanStatusForBM.disable()
+      this.viewBMForm = true;
+
+    } else if (stage == 7) {
+      this.controls.loanStatusForAppraiser.disable()
+      this.controls.loanStatusForBM.disable()
+      this.viewOpertaionalForm = true;
+      this.viewBMForm = true;
+
+    } else {
+      this.approvalForm.disable()
+      this.viewOpertaionalForm = true;
+      this.viewBMForm = true;
+    }
+  }
+
   initForm() {
     this.approvalForm = this.fb.group({
       applicationFormForAppraiser: [false],
@@ -112,11 +149,20 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       goldValuationForOperatinalTeam: [false],
       loanStatusForOperatinalTeam: ['pending'],
       commentByOperatinalTeam: [''],
-
       scrapStatusForAppraiser: [, Validators.required],
       scrapStatusForBM: [],
       scrapStatusForOperatinalTeam: ['pending'],
     })
+    this.validation();
+  }
+
+  validation() {
+    if (this.scrapIds) {
+      this.approvalForm.controls.scrapStatusForAppraiser.setValidators(Validators.required),
+        this.approvalForm.controls.scrapStatusForAppraiser.updateValueAndValidity()
+      this.approvalForm.controls.loanStatusForAppraiser.setValidators([]),
+        this.approvalForm.controls.loanStatusForAppraiser.updateValueAndValidity()
+    }
   }
 
   get controls() {
@@ -183,7 +229,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     if (changes.scrapStage && changes.scrapStage.currentValue) {
-      this.disableForm(changes.scrapStage.currentValue)
+      this.disableScrapForm(changes.scrapStage.currentValue)
     }
 
     if (changes.disable && changes.disable.currentValue) {
