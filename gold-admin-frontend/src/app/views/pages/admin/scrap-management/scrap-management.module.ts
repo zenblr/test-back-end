@@ -44,6 +44,10 @@ const routes: Routes = [
         component: ScrapApplicationFormComponent
       },
       {
+        path: 'packet-image-upload/:id',
+        component: ScrapApplicationFormComponent
+      },
+      {
         path: 'packets',
         component: PacketsListComponent
       },

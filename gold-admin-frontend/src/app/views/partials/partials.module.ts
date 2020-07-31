@@ -75,6 +75,7 @@ import { UserClassificationComponent } from "./components/user-classification/us
 import { UplodPreviewImageComponent } from "./components/uplod-preview-image/uplod-preview-image.component";
 import { BankDetailsComponent } from "./components/bank-details/bank-details.component";
 import { ApprovalComponent } from "./components/approval/approval.component";
+import { UploadPacketsComponent } from "./components/upload-packets/upload-packets.component";
 
 import { NgSelectModule } from "@ng-select/ng-select";
 import { UserReviewComponent } from "../pages/admin/kyc-settings/tabs/user-review/user-review.component";
@@ -156,6 +157,7 @@ import { GlobalSettingsComponent } from './components/global-settings/global-set
 		GlobalSettingsComponent,
 		BankDetailsComponent,
 		ApprovalComponent,
+		UploadPacketsComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -225,6 +227,7 @@ import { GlobalSettingsComponent } from './components/global-settings/global-set
 		GlobalSettingsComponent,
 		BankDetailsComponent,
 		ApprovalComponent,
+		UploadPacketsComponent,
 	],
 	imports: [
 		PdfViewerModule,

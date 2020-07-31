@@ -1,12 +1,12 @@
 import { Component, OnInit, ElementRef, AfterViewInit, ViewChild, Input, OnChanges, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, EventEmitter, Output } from '@angular/core';
-import { SharedService } from '../../../../../../core/shared/services/shared.service';
+import { SharedService } from '../../../../core/shared/services/shared.service';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
-import { PacketsService } from '../../../../../../core/loan-management';
+import { PacketsService } from '../../../../core/loan-management';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { LayoutUtilsService } from '../../../../../../core/_base/crud';
-import { WebcamDialogComponent } from '../../../kyc-settings/webcam-dialog/webcam-dialog.component';
+import { LayoutUtilsService } from '../../../../core/_base/crud';
+import { WebcamDialogComponent } from '../../../pages/admin/kyc-settings/webcam-dialog/webcam-dialog.component';
 import { MatDialog } from '@angular/material';
 
 @Component({
@@ -19,7 +19,9 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
   @Input() viewpacketsDetails;
   @Input() masterAndLoanIds;
+  @Input() scrapIds
   @Input() loanStage
+  @Input() scrapStage
   @Input() showButton
   @ViewChild('form', { static: false }) form;
   @ViewChild('emptyPacketWithNoOrnament', { static: false }) emptyPacketWithNoOrnament: ElementRef
@@ -101,7 +103,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.getPacketsDetails()
     // this.masterAndLoanIds = this.route.snapshot.params.id
 
-    
+
 
   }
 

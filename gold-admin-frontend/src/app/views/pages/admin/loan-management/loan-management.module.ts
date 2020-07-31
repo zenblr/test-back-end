@@ -14,7 +14,6 @@ import { FinalInterestAmountComponent } from './loan-calculator/tabs/final-inter
 import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../../core/_base/crud';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { UploadPacketsComponent } from './packets/upload-packets/upload-packets.component';
 import { AppliedLoanComponent } from './applied-loan/applied-loan.component';
 import { PacketsListComponent } from './packets/packets-list/packets-list.component';
 import { AssignPacketsComponent } from './packets/assign-packets/assign-packets.component';
@@ -95,7 +94,6 @@ const rout: Routes = [
     LoanApplicationFormComponent,
     NomineeDetailsComponent,
     FinalInterestAmountComponent,
-    UploadPacketsComponent,
     AppliedLoanComponent,
     PacketsListComponent,
     AssignPacketsComponent,
