@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'loan_amount'
         },
+        outstandingAmount: {
+            type: DataTypes.FLOAT,
+            field: 'outstanding_amount'
+        },
         schemeId: {
             type: DataTypes.INTEGER,
             field: 'scheme_id'
