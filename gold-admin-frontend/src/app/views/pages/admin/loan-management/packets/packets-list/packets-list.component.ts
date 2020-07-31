@@ -122,7 +122,6 @@ export class PacketsListComponent implements OnInit {
   }
 
   editPacket(role) {
-    console.log(role)
     const dialogRef = this.dialog.open(AssignPacketsComponent,
       {
         data: { packetData: role, action: 'edit' },
@@ -145,7 +144,6 @@ export class PacketsListComponent implements OnInit {
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        console.log(res);
         this.packetsService.deletePacket(role.id).subscribe(successDelete => {
           this.toastr.success(_deleteMessage);
           this.loadPackets();
@@ -159,17 +157,20 @@ export class PacketsListComponent implements OnInit {
 
   isAllSelected(): boolean {
     const numSelected = this.selection.selected.length;
-    const numRows = this.leadsResult.length;
+    const totalAssignableLeads = this.leadsResult.filter(e => e.packetAssigned === false)
+    const numRows = totalAssignableLeads.length;
     return numSelected === numRows;
   }
 
   masterToggle() {
-    if (this.selection.selected.length === this.leadsResult.length) {
+    const totalAssignableLeads = this.leadsResult.filter(e => e.packetAssigned === false)
+    if (this.selection.selected.length === totalAssignableLeads.length) {
       this.selection.clear();
     } else {
-      this.leadsResult.forEach((row) =>
-        this.selection.select(row)
-      );
+      this.leadsResult.forEach((row) => {
+        if (!row.packetAssigned)
+          this.selection.select(row)
+      });
       this.checkForSameBranch()
     }
   }
@@ -193,6 +194,7 @@ export class PacketsListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(res => {
       if (res) this.loadPackets();
       this.packetsService.buttonValue.next(false);
+      this.selection.clear()
     });
   }
 
@@ -201,8 +203,6 @@ export class PacketsListComponent implements OnInit {
     const isBranchSame = selectedPackets.every(e => e.internalUserBranch === selectedPackets[0].internalUserBranch)
     const isSelectionEmpty = this.selection.isEmpty()
     const isUsed = selectedPackets.every(e => e.packetAssigned === false)
-
-    console.log(isUsed)
 
     const isAssignAppraiserValid = !(isSelectionEmpty) && isBranchSame && isUsed ? true : false
 

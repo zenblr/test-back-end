@@ -31,6 +31,7 @@ import { TruncatePipe } from './_base/layout/pipes/truncate-text.pipe';
 import { RemoveCommaPipe } from './_base/layout/pipes/remove-comma.pipe';
 import { WeightDirective } from './_base/layout/directives/weight.directive';
 import { Time24to12Pipe } from './_base/layout/pipes/time24to12.pipe';
+import { MAT_DATE_LOCALE } from '@angular/material';
 
 @NgModule({
 	imports: [CommonModule],
@@ -88,6 +89,8 @@ import { Time24to12Pipe } from './_base/layout/pipes/time24to12.pipe';
 		RemoveCommaPipe,
 		Time24to12Pipe
 	],
-	providers: [AuthService, ExcelService, PdfService],
+	providers: [AuthService, ExcelService, PdfService,
+		{ provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
+	],
 })
 export class CoreModule { }
