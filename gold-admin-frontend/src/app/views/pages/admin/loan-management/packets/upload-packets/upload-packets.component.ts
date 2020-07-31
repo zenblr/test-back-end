@@ -41,6 +41,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   splicedPackets: any[] = []
   ornamentId: any;
   @Output() next: EventEmitter<any> = new EventEmitter();
+  buttonName: string;
 
   constructor(
     private sharedService: SharedService,
@@ -54,6 +55,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     private ref: ChangeDetectorRef,
     private dilaog: MatDialog
   ) {
+    this.buttonName = 'save'
     this.url = this.router.url.split('/')[3]
     this.initForm()
     this.packetImg = this.fb.group({
@@ -91,6 +93,8 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
           this.pushPackets()
         });
         this.url = 'view-loan'
+        this.buttonName = 'next'
+
       }
     }
   }
@@ -101,7 +105,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.getPacketsDetails()
     // this.masterAndLoanIds = this.route.snapshot.params.id
 
-    
+
 
   }
 

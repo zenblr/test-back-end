@@ -123,11 +123,7 @@
                                 class="placeholder-image">
                         </div>
 
-                        <div class="edit-width">
-                            <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-                                *ngIf="isEdit && controls?.pawnCopyImage?.value"
-                                (click)="editImages('pawnCopy');">
-                        </div>
+                        
 
                         <div class="" *ngIf="controls?.loanAgreementCopyImage?.value">
                             <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
@@ -141,9 +137,6 @@
                                     height="250" width="290" scrolling="no" *ngIf="pdf.loanAgreementCopy"></iframe>
                             </div>
                         </div>
-                        <img src="../../../../../assets/media/icons/edit.svg"
-                            *ngIf="isEdit && controls?.loanAgreementCopyImage?.value" alt=""
-                            class="kt-pointer edit-icon" (click)="editImages('loanAgreementCopy');">
                     </div>
                 </div>
 
@@ -156,11 +149,7 @@
                                 class="placeholder-image">
                         </div>
 
-                        <div class="edit-width">
-                            <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-                                *ngIf="isEdit && controls?.pawnCopyImage?.value"
-                                (click)="editImages('pawnCopy');">
-                        </div>
+                       
 
 
                         <div class="" *ngIf="controls?.pawnCopyImage?.value">
@@ -283,6 +272,6 @@
         </div>
     </div>
     <div class="col-11 text-right kt-padding-t-15" *ngIf="showButton">
-        <kt-button [type]="'button'" [value]="'Next'" (click)="save(buttonName)"></kt-button>
+        <kt-button [type]="'button'" [value]="buttonName" (click)="save(buttonName)"></kt-button>
     </div>
 </div>
