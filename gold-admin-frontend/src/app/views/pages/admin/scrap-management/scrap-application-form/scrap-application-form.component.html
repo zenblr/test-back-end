@@ -39,18 +39,12 @@
                             [showButton]="showButton" [accountHolderName]="accountHolderName">
                         </kt-bank-details>
                     </mat-tab>
-                    <!-- <mat-tab label="Final Interest Calculator" [disabled]="disabled[3]">
-                        <kt-interest-calculator (next)="next($event)" [disable]="disabledForm" [action]="action"
-                            (finalLoanAmount)="finalLoanAmount($event)" [totalAmt]="totalAmount"
-                            [fullAmount]="fullAmount" [details]="customerDetail" [masterAndLoanIds]="masterAndLoanIds">
-                        </kt-interest-calculator>
-                    </mat-tab>
-                    <mat-tab label="Loan Status Approval" [disabled]="disabled[5]">
-                        <kt-approval [action]="action" [disable]="disabledForm" [details]="customerDetail"
-                            [masterAndLoanIds]="masterAndLoanIds">
+                    <mat-tab label="Scrap Status Approval" [disabled]="disabled[5]">
+                        <kt-approval [action]="action" [disable]="approvalFrom" [scrapDetails]="customerDetail"
+                            [scrapIds]="scrapIds" [scrapStage]="scrapStage" (ornamentType)="ornaments($event)">
                         </kt-approval>
                     </mat-tab>
-                    <mat-tab label="Packets" *ngIf="url == 'packet-image-upload' || url == 'view-loan'">
+                    <!-- <mat-tab label="Packets" *ngIf="url == 'packet-image-upload' || url == 'view-scrap'">
                         <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab"
                             style="padding:0px !important">
                             <kt-upload-packets [viewpacketsDetails]="customerDetail" [ornamentType]="customerDetail"
@@ -58,7 +52,7 @@
                             </kt-upload-packets>
                         </div>
                     </mat-tab>
-                    <mat-tab label="Upload Documents" *ngIf="url == 'packet-image-upload' || url == 'view-loan'">
+                    <mat-tab label="Upload Documents" *ngIf="url == 'packet-image-upload' || url == 'view-scrap'">
                         <kt-upload-documents [masterAndLoanIds]="masterAndLoanIds"
                             [loanDocumnets]="customerDetail"></kt-upload-documents>
                     </mat-tab> -->

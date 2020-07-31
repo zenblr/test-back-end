@@ -1,12 +1,12 @@
 import { Component, OnInit, Output, EventEmitter, Input, AfterViewInit, OnChanges, ChangeDetectorRef, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormGroupDirective } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { SharedService } from '../../../../../../../core/shared/services/shared.service';
+import { SharedService } from '../../../../core/shared/services/shared.service';
 import { Router } from '@angular/router';
-import { LoanApplicationFormService } from '../../../../../../../core/loan-management';
+import { LoanApplicationFormService } from '../../../../core/loan-management';
 import { map } from 'rxjs/operators';
 import { Location } from '@angular/common'
-import { CustomerClassificationService } from '../../../../../../../core/kyc-settings/services/customer-classification.service';
+import { CustomerClassificationService } from '../../../../core/kyc-settings/services/customer-classification.service';
 
 @Component({
   selector: 'kt-approval',
@@ -16,9 +16,12 @@ import { CustomerClassificationService } from '../../../../../../../core/kyc-set
 export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() disable
   @Input() masterAndLoanIds
+  @Input() scrapIds
   @Input() invalid;
   @Input() details;
+  @Input() scrapDetails;
   @Input() loanStage
+  @Input() scrapStage
   // @Output() approvalFormEmit: EventEmitter<any> = new EventEmitter<any>();
   // appraiser = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }, { value: 'rejected', name: 'rejected' }];
   // branchManager = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }, { value: 'incomplete', name: 'incomplete' }];
@@ -108,11 +111,14 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       applicationFormForOperatinalTeam: [false],
       goldValuationForOperatinalTeam: [false],
       loanStatusForOperatinalTeam: ['pending'],
-      commentByOperatinalTeam: ['']
+      commentByOperatinalTeam: [''],
+
+      scrapStatusForAppraiser: [, Validators.required],
+      scrapStatusForBM: [],
+      scrapStatusForOperatinalTeam: ['pending'],
     })
-
-
   }
+
   get controls() {
     return this.approvalForm.controls
   }
@@ -145,8 +151,39 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
 
+    if (changes.scrapDetails && changes.scrapDetails.currentValue) {
+      if (changes.action.currentValue == 'edit') {
+
+        this.approvalForm.patchValue(changes.scrapDetails.currentValue)
+        this.approvalForm.patchValue({ commentByAppraiser: changes.scrapDetails.currentValue.commentByAppraiser })
+        if (changes.scrapDetails.currentValue.commentByAppraiser) {
+          this.approvalForm.patchValue({ reasons: changes.scrapDetails.currentValue.commentByAppraiser })
+          let temp = this.reasons.filter(reason => {
+            return reason.description == changes.scrapDetails.currentValue.commentByAppraiser
+          })
+
+          if (!temp.length) {
+            this.approvalForm.patchValue({ reasons: "Other" })
+          } else {
+            this.approvalForm.patchValue({ reasons: changes.scrapDetails.currentValue.commentByAppraiser })
+          }
+        }
+        this.approvalForm.controls.scrapStatusForBM.patchValue(changes.scrapDetails.currentValue.scrapStatusForBM)
+        this.approvalForm.controls.scrapStatusForBM.patchValue(changes.scrapDetails.currentValue.scrapStatusForBM)
+        console.log(this.approvalForm.value)
+        // this.statusAppraiser()
+        // this.statusBM()
+        this.ref.detectChanges()
+
+      }
+    }
+
     if (changes.loanStage && changes.loanStage.currentValue) {
       this.disableForm(changes.loanStage.currentValue.id)
+    }
+
+    if (changes.scrapStage && changes.scrapStage.currentValue) {
+      this.disableForm(changes.scrapStage.currentValue)
     }
 
     if (changes.disable && changes.disable.currentValue) {
@@ -237,7 +274,6 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     this.controls.commentByAppraiser.updateValueAndValidity()
   }
 
-
   patchReason() {
     this.resetAppraiser()
     if (this.controls.reasons.value == 'Other') {
@@ -291,7 +327,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     } else if (this.stage == 7) {
       this.loanFormService.opsRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
         map(res => {
-          if (this.approvalForm.controls.loanStatusForOperatinalTeam.value == 'approved'){
+          if (this.approvalForm.controls.loanStatusForOperatinalTeam.value == 'approved') {
             this.disableForm(4)
             this.stage = 4
             this.disbursal.emit(4)

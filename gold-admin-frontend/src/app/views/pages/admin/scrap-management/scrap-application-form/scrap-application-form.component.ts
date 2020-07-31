@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ScrapApplicationFormService } from "../../../../../core/scrap-management";
+import { ScrapApplicationFormService } from '../../../../../core/scrap-management';
 import { map, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { OrnamentsService } from '../../../../../core/masters/ornaments/services/ornaments.service';
@@ -66,19 +66,19 @@ export class ScrapApplicationFormComponent implements OnInit {
       this.action = 'edit'
       this.customerDetail = res.customerScrap
       this.scrapIds = { scrapId: res.customerScrap.id }
-      this.scrapStage = this.customerDetail.customerScrapCurrentStage
+      this.scrapStage = this.customerDetail.scrapStageId
       this.ornamentDetails = res.customerScrap.ornamentType
       this.processingCharges = res.customerScrap.customerScrapAcknowledgement.processingCharges
       console.log(this.scrapStage)
       // this.totalAmount = res.data.totalEligibleAmt
-      if (this.url == "packet-image-upload") {
+      if (this.url == 'packet-image-upload') {
         if (this.customerDetail.loanPacketDetails.length) {
           this.selected = 8;
         } else {
           this.selected = 6;
         }
         this.disabledForm = true;
-      } else if (this.url == "view-loan") {
+      } else if (this.url == 'view-scrap') {
         this.disabledForm = true;
         this.showButton = false;
         this.approvalFrom = true;
@@ -138,7 +138,7 @@ export class ScrapApplicationFormComponent implements OnInit {
 
   ornaments(event) {
     this.ornamentDetails = event
-    this.scrapStage.id = 3;
+    this.scrapStage = 3;
     this.showButton = true;
     this.disabledForm = true;
     setTimeout(() => {
@@ -147,7 +147,7 @@ export class ScrapApplicationFormComponent implements OnInit {
   }
 
   disbursal(event) {
-    this.scrapStage.id = event;
+    this.scrapStage = event;
     setTimeout(() => {
       this.next(8)
     }, 500)
@@ -162,7 +162,7 @@ export class ScrapApplicationFormComponent implements OnInit {
             this.disabled[index] = false;
           }
         }
-        this.scrapStage = this.customerDetail.customerScrapCurrentStage
+        this.scrapStage = this.customerDetail.scrapStageId
         this.selected = 2;
       }),
       catchError(err => {
@@ -184,7 +184,7 @@ export class ScrapApplicationFormComponent implements OnInit {
     }
     if (this.selected < 7) {
       for (let index = 0; index < this.disabled.length; index++) {
-        if (this.url != "view-loan" && this.url != 'packet-image-upload') {
+        if (this.url != 'view-scrap' && this.url != 'packet-image-upload') {
           if (this.selected >= index) {
             this.disabled[index] = false
           } else {
