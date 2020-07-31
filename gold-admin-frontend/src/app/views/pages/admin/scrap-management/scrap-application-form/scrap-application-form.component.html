@@ -20,7 +20,7 @@
                         </div>
                     </mat-tab>
                     <mat-tab label="Customer Acknowledgment" [disabled]="disabled[2]">
-                        <kt-upload-documents [scrapIds]="scrapIds" (next)="next($event)"
+                        <kt-upload-documents [scrapIds]="scrapIds" (next)="next($event)" [totalAmt]="totalAmount"
                             [acknowledgmentDocuments]="customerDetail" [showButton]="showButton"></kt-upload-documents>
                     </mat-tab>
                     <mat-tab label="Melting Ornaments" [disabled]="disabled[3]">
@@ -39,7 +39,9 @@
                             [showButton]="showButton" [accountHolderName]="accountHolderName">
                         </kt-bank-details>
                     </mat-tab>
-                    <mat-tab label="Scrap Status Approval" [disabled]="disabled[5]">
+                    <mat-tab label="Scrap Status Approval" [disabled]="disabled[5]" *ngIf="scrapStage?.id == 6 || scrapStage?.id == 8 || scrapStage?.id ==1 || scrapStage?.id == 3 || 
+                        (url == 'view-loan' && scrapStage?.id ==6) || (url == 'view-loan' && scrapStage?.id == 8) || 
+                        (url == 'view-loan' && scrapStage?.id == 1) || (url == 'view-loan' && scrapStage?.id == 3)">
                         <kt-approval [action]="action" [disable]="approvalFrom" [scrapDetails]="customerDetail"
                             [scrapIds]="scrapIds" [scrapStage]="scrapStage" (ornamentType)="ornaments($event)">
                         </kt-approval>

@@ -68,21 +68,21 @@
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)"
                                         [ngClass]="{'cursor-not-allowed':  !permission.addAppraiserRating}"
-                                        class="primary-button">{{item?.scrapStage.name | uppercase}}</button>
+                                        class="primary-button">{{item?.scrapStage.stageName | uppercase}}</button>
                                 </div>
                             </div>
                             <div *ngIf="item?.scrapStage.id == 2">
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)"
                                         [ngClass]="{'cursor-not-allowed': !permission.addBmRating}"
-                                        class="primary-button">{{item?.scrapStage.name | uppercase}}</button>
+                                        class="primary-button">{{item?.scrapStage.stageName | uppercase}}</button>
                                 </div>
                             </div>
                             <div *ngIf="item?.scrapStage.id == 7">
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)"
                                         [ngClass]="{'cursor-not-allowed': !permission.addOpsRating}"
-                                        class="primary-button">{{item?.scrapStage.name | uppercase}}</button>
+                                        class="primary-button">{{item?.scrapStage.stageName | uppercase}}</button>
                                 </div>
                             </div>
                             <div *ngIf="item?.scrapStage.id == 3">
@@ -109,7 +109,7 @@
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)"
                                         [ngClass]="{'cursor-not-allowed': !permission.uploadDocuments}"
-                                        class="primary-button">{{item?.scrapStage.name | uppercase}}</button>
+                                        class="primary-button">{{item?.scrapStage.stageName | uppercase}}</button>
                                 </div>
                             </div>
                         </div>
@@ -125,21 +125,13 @@
                     </mat-cell>
                 </ng-container>
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-
                 <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
             </mat-table>
-
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
-            <!-- Message for empty data  -->
             <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
         </div>
-
-        <!-- start: BOTTOM -->
         <div class="mat-table__bottom">
-            <!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
             <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
-            <!-- MATERIAL PAGINATOR | Binded to dasources -->
-            <!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
             <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
                 [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
         </div>

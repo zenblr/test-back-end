@@ -33,6 +33,7 @@ export class AppliedScrapComponent implements OnInit {
   searchValue = '';
   permission: any;
   filter$ = new Subject();
+  
   constructor(
     public dialog: MatDialog,
     private appliedScrapService: AppliedScrapService,
@@ -134,15 +135,15 @@ export class AppliedScrapComponent implements OnInit {
   }
 
   navigate(scrap) {
-    this.router.navigate(['/admin/scrap-management/scrap-buying-application-form', scrap.customerId])
+    this.router.navigate(['/admin/scrap-management/scrap-buying-application-form', scrap.id])
   }
 
   packetImageUpload(scrap) {
-    this.router.navigate(['/admin/scrap-management/packet-image-upload', scrap.customerId])
+    this.router.navigate(['/admin/scrap-management/packet-image-upload', scrap.id])
   }
 
   viewScrap(scrap) {
-    this.router.navigate(['/admin/scrap-management/view-scrap', scrap.customerId])
+    this.router.navigate(['/admin/scrap-management/view-scrap', scrap.id])
   }
 
 }

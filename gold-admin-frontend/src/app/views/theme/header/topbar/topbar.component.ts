@@ -50,7 +50,7 @@ import { LoanDisbursementService } from '../../../../core/account/loan-disbursem
 import { ShopService, ShoppingCartService, OrdersService } from '../../../../core/broker';
 import { OccupationService } from '../../../../core/masters/occupation/services/occupation.service';
 import { StandardDeductionService } from '../../../../core/masters/standard-deduction/service/standard-deduction.service';
-import { ScrapPacketsService } from '../../../../core/scrap-management/scrap-packets';
+import { ScrapPacketsService, AppliedScrapService } from '../../../../core/scrap-management';
 
 @Component({
 	selector: "kt-topbar",
@@ -148,6 +148,7 @@ export class TopbarComponent implements OnInit {
 		private occupationService: OccupationService,
 		private standardDeductionService: StandardDeductionService,
 		private scrapPacketsService: ScrapPacketsService,
+		private appliedScrap: AppliedScrapService,
 	) {
 
 		this.router.events.subscribe(val => {
@@ -662,6 +663,13 @@ export class TopbarComponent implements OnInit {
 			this.filterName = 'packets';
 			this.filterWidth = '400px';
 		}
+		if (this.path == "applied-scrap") {
+			this.showfilter = true;
+			this.filterWidth = "600px"
+			this.filterName = "loan"
+			this.showInput = true;
+			this.listType = "approval";
+		}
 	}
 
 	action(event: Event) {
@@ -851,6 +859,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "applied-loan") {
 			this.appliedLoan.applyFilter.next(data)
+		}
+		if (this.path == "applied-scrap") {
+			this.appliedScrap.applyFilter.next(data)
 		}
 		if (location.href.includes('/broker/orders')) {
 			this.ordersService.applyFilter.next(data)

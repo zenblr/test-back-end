@@ -30,7 +30,7 @@ export class UploadDocumentsComponent implements OnInit {
   @Input() scrapIds;
   @Input() loanTransfer
   @Input() showButton
-  @Input() totalAmt = 0;
+  @Input() totalAmt;
   @ViewChild('loanAgreementCopy', { static: false }) loanAgreementCopy
   @ViewChild('pawnCopy', { static: false }) pawnCopy
   @ViewChild('schemeConfirmationCopy', { static: false }) schemeConfirmationCopy
@@ -131,7 +131,7 @@ export class UploadDocumentsComponent implements OnInit {
           customerConfirmationStatus: documents.customerConfirmationStatus
         })
         this.pdfCheck();
-        this.isEdit = false
+        // this.isEdit = false
       }
     }
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {

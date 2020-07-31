@@ -543,13 +543,13 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       case 'ornamentImageWithWeightData':
         controls.controls.ornamentImageWithWeight.patchValue(id);
         controls.controls.ornamentImageWithWeightData.patchValue(url);
-        this.ornamentImageWithWeight.nativeElement.value = '';
+        if (this.ornamentImageWithWeight) this.ornamentImage.nativeElement.value = '';
         this.images[index].ornamentImageWithWeight = url;
         break;
       case 'ornamentImageWithXrfMachineReadingData':
         controls.controls.ornamentImageWithXrfMachineReading.patchValue(id);
         controls.controls.ornamentImageWithXrfMachineReadingData.patchValue(url);
-        this.ornamentImageWithXrfMachineReading.nativeElement.value = '';
+        if (this.ornamentImageWithXrfMachineReading) this.ornamentImage.nativeElement.value = '';
         this.images[index].ornamentImageWithXrfMachineReading = url;
         break;
     }

@@ -106,23 +106,23 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       this.viewBMForm = false;
       this.viewOpertaionalForm = false;
 
-    } else if (stage == 2) {
-      this.controls.loanStatusForAppraiser.disable()
+    } else if (stage == 3) {
+      this.controls.scrapStatusForAppraiser.disable()
       this.viewBMForm = false;
       this.viewOpertaionalForm = false;
 
-    } else if (stage == 3) {
-      this.controls.loanStatusForAppraiser.disable()
+    } else if (stage == 2) {
+      this.controls.scrapStatusForAppraiser.disable()
       this.viewBMForm = true;
       this.viewOpertaionalForm = false;
 
     } else if (stage == 8) {
-      this.controls.loanStatusForAppraiser.disable()
+      this.controls.scrapStatusForAppraiser.disable()
       this.controls.loanStatusForBM.disable()
       this.viewBMForm = true;
 
     } else if (stage == 7) {
-      this.controls.loanStatusForAppraiser.disable()
+      this.controls.scrapStatusForAppraiser.disable()
       this.controls.loanStatusForBM.disable()
       this.viewOpertaionalForm = true;
       this.viewBMForm = true;
@@ -149,7 +149,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       goldValuationForOperatinalTeam: [false],
       loanStatusForOperatinalTeam: ['pending'],
       commentByOperatinalTeam: [''],
-      scrapStatusForAppraiser: [, Validators.required],
+      scrapStatusForAppraiser: [],
       scrapStatusForBM: [],
       scrapStatusForOperatinalTeam: ['pending'],
     })
@@ -229,11 +229,15 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     if (changes.scrapStage && changes.scrapStage.currentValue) {
-      this.disableScrapForm(changes.scrapStage.currentValue)
+      this.disableScrapForm(changes.scrapStage.currentValue.id)
     }
 
     if (changes.disable && changes.disable.currentValue) {
       this.approvalForm.disable()
+    }
+
+    if (changes.scrapIds) {
+      this.validation();
     }
   }
 
@@ -290,15 +294,26 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   statusAppraiser() {
-
-    if (this.controls.loanStatusForAppraiser.value != 'approved') {
-      this.controls.reasons.setValidators(Validators.required);
-      this.controls.reasons.updateValueAndValidity()
+    if(this.scrapIds) {
+      if (this.controls.scrapStatusForAppraiser.value != 'approved') {
+        this.controls.reasons.setValidators(Validators.required);
+        this.controls.reasons.updateValueAndValidity()
+      } else {
+        this.controls.reasons.clearValidators();
+        this.controls.reasons.updateValueAndValidity();
+        this.controls.reasons.markAsUntouched()
+        this.resetAppraiser()
+      }
     } else {
-      this.controls.reasons.clearValidators();
-      this.controls.reasons.updateValueAndValidity();
-      this.controls.reasons.markAsUntouched()
-      this.resetAppraiser()
+      if (this.controls.loanStatusForAppraiser.value != 'approved') {
+        this.controls.reasons.setValidators(Validators.required);
+        this.controls.reasons.updateValueAndValidity()
+      } else {
+        this.controls.reasons.clearValidators();
+        this.controls.reasons.updateValueAndValidity();
+        this.controls.reasons.markAsUntouched()
+        this.resetAppraiser()
+      }
     }
   }
 
@@ -365,33 +380,63 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       this.approvalForm.markAllAsTouched()
       return
     }
-    if (this.stage == 2) {
-      this.loanFormService.bmRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
-        map(res => {
-          this.router.navigate(['/admin/loan-management/applied-loan'])
-        })).subscribe()
-    } else if (this.stage == 7) {
-      this.loanFormService.opsRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
-        map(res => {
-          if (this.approvalForm.controls.loanStatusForOperatinalTeam.value == 'approved') {
-            this.disableForm(4)
-            this.stage = 4
-            this.disbursal.emit(4)
-          }
-          this.router.navigate(['/admin/loan-management/applied-loan'])
-        })).subscribe()
-    } else if (this.stage == 1 || this.stage == 6) {
-      // this.approvalForm.controls.commentByAppraiser.patchValue(this.controls.reasons.value)
-      this.loanFormService.applyForLoan(this.approvalForm.value, this.masterAndLoanIds).pipe(
-        map(res => {
-          if (this.approvalForm.controls.loanStatusForAppraiser.value == 'approved') {
-            this.disableForm(3)
-            this.stage = 3
-            this.ornamentType.emit(res.ornamentType)
-          } else {
+    if (this.scrapIds) {
+      if (this.stage == 2) {
+        this.loanFormService.bmRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
+          map(res => {
             this.router.navigate(['/admin/loan-management/applied-loan'])
-          }
-        })).subscribe()
+          })).subscribe()
+      } else if (this.stage == 7) {
+        this.loanFormService.opsRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
+          map(res => {
+            if (this.approvalForm.controls.loanStatusForOperatinalTeam.value == 'approved') {
+              this.disableForm(4)
+              this.stage = 4
+              this.disbursal.emit(4)
+            }
+            this.router.navigate(['/admin/loan-management/applied-loan'])
+          })).subscribe()
+      } else if (this.stage == 1 || this.stage == 6) {
+        this.scrapApplicationFormService.appraiserRating(this.approvalForm.value, this.scrapIds).pipe(
+          map(res => {
+            if (this.approvalForm.controls.scrapStatusForAppraiser.value == 'approved') {
+              this.disableScrapForm(2)
+              this.stage = 2
+              this.ornamentType.emit(res.ornamentType)
+            } else {
+              this.router.navigate(['/admin/scrap-management/applied-scrap'])
+            }
+          })).subscribe();
+      }
+    } else {
+      if (this.stage == 2) {
+        this.loanFormService.bmRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
+          map(res => {
+            this.router.navigate(['/admin/loan-management/applied-loan'])
+          })).subscribe()
+      } else if (this.stage == 7) {
+        this.loanFormService.opsRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
+          map(res => {
+            if (this.approvalForm.controls.loanStatusForOperatinalTeam.value == 'approved') {
+              this.disableForm(4)
+              this.stage = 4
+              this.disbursal.emit(4)
+            }
+            this.router.navigate(['/admin/loan-management/applied-loan'])
+          })).subscribe()
+      } else if (this.stage == 1 || this.stage == 6) {
+        // this.approvalForm.controls.commentByAppraiser.patchValue(this.controls.reasons.value)
+        this.loanFormService.applyForLoan(this.approvalForm.value, this.masterAndLoanIds).pipe(
+          map(res => {
+            if (this.approvalForm.controls.loanStatusForAppraiser.value == 'approved') {
+              this.disableForm(3)
+              this.stage = 3
+              this.ornamentType.emit(res.ornamentType)
+            } else {
+              this.router.navigate(['/admin/loan-management/applied-loan'])
+            }
+          })).subscribe()
+      }
     }
   }
 

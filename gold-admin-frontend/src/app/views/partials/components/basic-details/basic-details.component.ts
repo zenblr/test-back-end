@@ -79,8 +79,13 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
           this.basicForm.controls.purpose.updateValueAndValidity();
         }
       } else {
-        this.controls.customerUniqueId.patchValue(res.transferLoanCustomerID)
-        this.getTransferLoanDetailsToApplyLoan()
+        if (this.url == 'scrap-buying-application-form') {
+          this.basicForm.controls.purpose.clearValidators();
+          this.basicForm.controls.purpose.updateValueAndValidity();
+        } else {
+          this.controls.customerUniqueId.patchValue(res.transferLoanCustomerID)
+          this.getTransferLoanDetailsToApplyLoan()
+        }
       }
 
       if (res.partReleaseId && res.customerUniqueId) {
@@ -153,8 +158,6 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.basicForm.disable()
       this.ref.detectChanges()
     }
-
-
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
       this.controls.customerId.patchValue(changes.loanTransfer.currentValue.customer.id)
       this.basicForm.patchValue(changes.loanTransfer.currentValue.loanPersonalDetail)
@@ -324,8 +327,6 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       ).subscribe();
     }
   }
-
-
 
   get controls() {
     return this.basicForm.controls

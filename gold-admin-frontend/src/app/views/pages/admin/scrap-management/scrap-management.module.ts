@@ -40,6 +40,10 @@ const routes: Routes = [
         component: ScrapApplicationFormComponent
       },
       {
+        path: 'scrap-buying-application-form/:id',
+        component: ScrapApplicationFormComponent
+      },
+      {
         path: 'packets',
         component: PacketsListComponent
       },
