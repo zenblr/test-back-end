@@ -989,7 +989,3 @@ exports.getSingleScrapInCustomerManagment = async (req, res, next) => {
 
 }
 
-
-
-
-
