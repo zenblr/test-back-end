@@ -57,7 +57,11 @@
                                     class="col-4 heading bg-secondary kt-padding-t-20 kt-padding-b-20 border-right border-left-radius">
                                     Payment Frequency
                                 </div>
-                                <div
+                                <div *ngFor="let item of schemeDeatils.schemeInterest; index as i; last as l"
+                                    class="col bg-secondary heading text-center kt-padding-t-20 kt-padding-b-20 border-right"
+                                    [class.border-right-radius]="l">
+                                    {{item.days}} Days</div>
+                                <!-- <div
                                     class="col bg-secondary heading text-center kt-padding-t-20 kt-padding-b-20 border-right">
                                     {{schemeDeatils.schemeInterest[0].days}} Days</div>
                                 <div
@@ -66,29 +70,22 @@
                                 <div
                                     class="col bg-secondary heading text-center kt-padding-t-20 kt-padding-b-20 border-right-radius">
                                     {{schemeDeatils.schemeInterest[2].days}} Days
-                                </div>
+                                </div> -->
                             </div>
                             <div class="row">
                                 <div class="col-4 heading kt-padding-t-20 kt-padding-b-20 border-right">Rate of
                                     Interest(% /
                                     Monthly)</div>
-                                <div class="col text-center kt-padding-t-20 kt-padding-b-20 border-right">
+                                <div *ngFor="let item of schemeDeatils.schemeInterest; index as i; last as l"
+                                    class="col text-center kt-padding-t-20 kt-padding-b-20" [class.border-right]="!l">
+                                    {{item.interestRate}}</div>
+                                <!-- <div class="col text-center kt-padding-t-20 kt-padding-b-20 border-right">
                                     {{schemeDeatils.schemeInterest[0].interestRate}}</div>
                                 <div class="col text-center kt-padding-t-20 kt-padding-b-20 border-right">
                                     {{schemeDeatils.schemeInterest[1].interestRate}}</div>
                                 <div class="col text-center kt-padding-t-20 kt-padding-b-20">
-                                    {{schemeDeatils.schemeInterest[2].interestRate}}</div>
+                                    {{schemeDeatils.schemeInterest[2].interestRate}}</div> -->
                             </div>
-                            <!-- <div class="row ">
-                            <div class="col-4 heading kt-padding-t-20 kt-padding-b-20 border-right">Rate of Interest(% /
-                                Annually)</div>
-                            <div class="col text-center kt-padding-t-20 kt-padding-b-20 border-right">
-                                {{schemeDeatils.interestRateThirtyDaysAnnually}}</div>
-                            <div class="col text-center kt-padding-t-20 kt-padding-b-20 border-right">
-                                {{schemeDeatils.interestRateNinetyDaysAnnually}}</div>
-                            <div class="col text-center kt-padding-t-20 kt-padding-b-20">
-                                {{schemeDeatils.interestRateOneHundredEightyDaysAnnually}}</div>
-                        </div> -->
                         </div>
 
                         <div class="col-12">

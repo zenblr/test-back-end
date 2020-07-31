@@ -42,7 +42,7 @@ exports.viewPacket = async (req, res, next) => {
                 "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
                 "$internalBranch.name$": {
                     [Op.iLike]: search + "%",
-                  },
+                },
                 packetUniqueId: { [Op.iLike]: search + '%' },
             },
         }],
@@ -70,6 +70,10 @@ exports.viewPacket = async (req, res, next) => {
             as: 'internalBranch',
             where: { isActive: true },
             attributes: ['id', 'internalBranchUniqueId', 'name']
+        },
+        {
+            model: models.user,
+            as: 'appraiser'
         }
     ];
 
@@ -111,7 +115,7 @@ exports.availablePacket = async (req, res, next) => {
     }
 
     let availablePacketDetails = await models.packet.findAll({
-        where: { isActive: true, packetAssigned: false, internalUserBranch: { [Op.in]: internalBranchId } },
+        where: { isActive: true, packetAssigned: false ,internalUserBranch: { [Op.in]: internalBranchId },appraiserId: data.id},
     });
     if (availablePacketDetails.length === 0) {
         res.status(200).json({ message: 'no packet details found', data: [] });
@@ -148,10 +152,10 @@ exports.assignPacket = async (req, res, next) => {
 // FUNCTION TO UPDATE PACKET
 exports.changePacket = async (req, res, next) => {
     let id = req.params.id;
-    let { packetUniqueId, internalUserBranch } = req.body;
+    let { packetUniqueId, internalUserBranch ,appraiserId } = req.body;
     let modifiedBy = req.userData.id;
 
-    let packet = await models.packet.updatePacket(id, packetUniqueId, internalUserBranch, modifiedBy);
+    let packet = await models.packet.updatePacket(id, packetUniqueId, internalUserBranch, modifiedBy, appraiserId);
 
     if (packet[0] == 0) {
         return res.status(404).json({ message: "packet not update" });
@@ -172,3 +176,20 @@ exports.deletePacket = async (req, res, next) => {
     }
     return res.status(200).json({ message: "packet deleted successfully" });
 };
+
+
+//FUNCTION TO ASSIGN APPRAISER
+exports.assignAppraiser = async (req, res) => {
+    console.log(req.body)
+    const { packetId, appraiserId } = req.body;
+    let modifiedBy = req.userData.id;
+
+
+    const packet = await models.packet.update({ appraiserId, modifiedBy }, { where: { id: { [Op.in]: packetId } } })
+    //console.log(packet)
+    if (packet.length === 0) {
+        return res.status(404).json({ message: "Appraiser not assigned to packet" });
+    } else {
+        return res.status(200).json({ message: "Appraiser assigned to packet" });
+    }
+}

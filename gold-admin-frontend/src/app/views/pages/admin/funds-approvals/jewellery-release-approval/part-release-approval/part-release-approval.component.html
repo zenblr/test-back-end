@@ -12,7 +12,7 @@
 
                 <ng-container matColumnDef="loanStartDate">
                     <mat-header-cell *matHeaderCellDef>Loan Start Date</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.masterLoan.loanStartDate}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.masterLoan.loanStartDate | date:'mediumDate'}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="customerId">
@@ -32,17 +32,20 @@
 
                 <ng-container matColumnDef="loanEndDate">
                     <mat-header-cell *matHeaderCellDef>Loan End Date</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.masterLoan.loanStartDate}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.masterLoan.loanEndDate | date:'mediumDate'}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="tenure">
                     <mat-header-cell *matHeaderCellDef>Tenure</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.masterLoan.tenure}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.masterLoan.tenure}}&nbsp;
+                        <span *ngIf="item.masterLoan.tenure != 1">Months</span>
+                        <span *ngIf="item.masterLoan.tenure == 1">Month</span>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="principalAmount">
                     <mat-header-cell *matHeaderCellDef>Principal Outstanding Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let item">-</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.masterLoan.outstandingAmount}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="releaseDate">
@@ -126,24 +129,6 @@
                         </button> -->
                     </mat-cell>
                 </ng-container>
-
-                <!-- <ng-container matColumnDef="assignAppraiser">
-                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell *matCellDef="let role" class="kt-pointer">
-                        <div [ngStyle]="{'display': 'inherit'}">
-                            <button style="width: 120px;" class="apply-kyc" (click)="assign(role)">Assign
-                                Appraiser</button>
-                        </div>
-                        <div [ngStyle]="{'display': 'inherit'}">
-                            <button style="width: 120px;" class="apply-kyc" (click)="updateAppraiser(role)"
-                               >Update Appraiser
-                            </button>
-                        </div>
-                    </mat-cell>
-                </ng-container> -->
-
-
 
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>

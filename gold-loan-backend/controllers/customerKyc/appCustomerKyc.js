@@ -15,7 +15,7 @@ exports.submitAppKyc = async (req, res, next) => {
     let createdBy = req.userData.id;
 
     let { customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address } = req.body
-    let date = new Date(dateOfBirth)
+    var date = dateOfBirth.split("-").reverse().join("-");
 
     let status = await models.status.findOne({ where: { statusName: "confirm" } })
     if (check.isEmpty(status)) {
@@ -38,9 +38,9 @@ exports.submitAppKyc = async (req, res, next) => {
 
     let kycInfo = await sequelize.transaction(async t => {
 
-        let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy }, { transaction: t })
+        let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerKycCurrentStage: '4', customerId: getCustomerInfo.id, createdBy, modifiedBy }, { transaction: t })
 
-        await models.customerKycPersonalDetail.create({
+        let abcd = await models.customerKycPersonalDetail.create({
             customerId: getCustomerInfo.id,
             customerKycId: customerKycAdd.id,
             firstName: getCustomerInfo.firstName,
@@ -72,7 +72,7 @@ exports.submitAppKyc = async (req, res, next) => {
             addressArray.push(address[i])
         }
 
-        await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
+        let data = await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
         return customerKycAdd
     })
 

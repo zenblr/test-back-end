@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { PacketsService } from '../../../../../../core/loan-management';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
+import { AppraiserService } from '../../../../../../core/user-management/appraiser';
 
 @Component({
   selector: 'kt-assign-packets',
@@ -15,6 +16,7 @@ export class AssignPacketsComponent implements OnInit {
   title: string;
   branches = [];
   details: any;
+  appraisers: any;
 
   constructor(
     public dialogRef: MatDialogRef<AssignPacketsComponent>,
@@ -22,7 +24,8 @@ export class AssignPacketsComponent implements OnInit {
     private fb: FormBuilder,
     private toastr: ToastrService,
     private packetsService: PacketsService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private appraiserService: AppraiserService
   ) {
     this.details = this.sharedService.getDataFromStorage()
   }
@@ -39,6 +42,7 @@ export class AssignPacketsComponent implements OnInit {
       // this.isMandatory = true
 
     } else if (this.data.action == 'edit') {
+      this.getAllAppraiser()
       this.title = 'Edit Packet'
       // this.isMandatory = true
       // this.getPartnerById(this.data.partnerId);
@@ -51,6 +55,7 @@ export class AssignPacketsComponent implements OnInit {
       id: [],
       packetUniqueId: ['', [Validators.required]],
       internalUserBranch: ['', [Validators.required]],
+      appraiserId: []
     })
   }
 
@@ -71,6 +76,9 @@ export class AssignPacketsComponent implements OnInit {
     const packetUniqueId = this.packetForm.get('packetUniqueId').value;
     // console.log(packetUniqueId.toLowerCase());
     this.packetForm.controls.packetUniqueId.patchValue(packetUniqueId.toLowerCase());
+    if (this.controls.appraiserId.value) {
+      this.packetForm.patchValue({ appraiserId: Number(this.controls.appraiserId.value) })
+    }
     const partnerData = this.packetForm.value;
     const id = this.controls.id.value;
 
@@ -104,5 +112,13 @@ export class AssignPacketsComponent implements OnInit {
     this.packetsService.getInternalBranhces().subscribe(res => {
       this.branches = res.data;
     });
+  }
+
+  getAllAppraiser() {
+    if (this.data.packetData && this.data.packetData.internalUserBranch)
+
+      this.appraiserService.getAllAppraiser(this.data.packetData.internalUserBranch).subscribe(res => {
+        this.appraisers = res.data;
+      })
   }
 }

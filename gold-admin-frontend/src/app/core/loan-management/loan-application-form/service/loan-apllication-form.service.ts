@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, tap,catchError } from 'rxjs/operators';
+import printJS from 'print-js';
 import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
@@ -27,6 +28,17 @@ export class LoanApplicationFormService {
     )
   }
 
+  checkForLoanType(data): Observable<any> {
+    return this.http.post(`/api/loan-process/check-loan-type`, data).pipe(
+      map(res => res)
+    )
+  }
+
+  getInterest(data): Observable<any> {
+    return this.http.post(`/api/loan-process/interest-rate`, data).pipe(
+      map(res => res)
+    )
+  }
 
   basicSubmit(details): Observable<any> {
     return this.http.post(`/api/loan-process/basic-details`, details).pipe(
@@ -112,6 +124,42 @@ export class LoanApplicationFormService {
     return this.http.post(`/api/loan-process/loan-documents`, data).pipe(
       map(res => res)
     )
+  }
+
+  calculateFinalInterestTable(data): Observable<any> {
+    return this.http.post('/api/loan-process/generate-interest-table', data).pipe(
+      map(res => res)
+    )
+  }
+
+  unsecuredTableGenration(form, paymentFrequency, tenure): Observable<any> {
+    let data = {
+      unsecuredSchemeAmount: form.unsecuredSchemeAmount,
+      unsecuredSchemeId: form.unsecuredSchemeName,
+      paymentFrequency: paymentFrequency,
+      tenure: tenure
+    }
+    return this.http.post('/api/loan-process/generate-unsecured-interest-table', data).pipe(
+      map(res => res)
+    )
+  }
+
+  getPdf(id): Observable<any> {
+    return this.http.get(`/api/loan-process/get-print-details?customerLoanId=${id}`,
+    { responseType: "arraybuffer" }
+    ).pipe(
+      tap(res => {
+        if (res) {
+          var binary = '';
+          var bytes = new Uint8Array(res);
+          var len = bytes.byteLength;
+          for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+          }
+          let base64 = (window.btoa(binary));
+          printJS({ printable: base64, type: 'pdf', base64: true })
+        }
+      }))
   }
 
   applyLoanFromPartRelease(data): Observable<any> {

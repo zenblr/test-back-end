@@ -7,6 +7,7 @@ import { ToastrComponent } from '../../../../../partials/components/toastr/toast
 import { PartnerService } from '../../../../../../core/user-management/partner/services/partner.service';
 import { AppraiserService } from '../../../../../../core/user-management/appraiser';
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'kt-assign-appraiser',
@@ -43,6 +44,7 @@ export class AssignAppraiserComponent implements OnInit {
   startTime: string;
   endTime: string;
   addStartTime: string;
+  internalBranchId: any;
 
   constructor(
     public dialogRef: MatDialogRef<AssignAppraiserComponent>,
@@ -56,7 +58,8 @@ export class AssignAppraiserComponent implements OnInit {
 
   ngOnInit() {
     // this.getCustomer()
-    this.getAllAppraiser();
+    this.getUserDetails()
+    // this.getAllAppraiser();
     this.formInitialize();
     this.setForm()
   }
@@ -81,6 +84,7 @@ export class AssignAppraiserComponent implements OnInit {
 
       if (this.data.customer) {
         this.appraiserForm.patchValue({ customerName: this.data.customer.firstName + ' ' + this.data.customer.lastName })
+        if (this.data.customer.customerUniqueId) this.controls.customerUniqueId.patchValue(this.data.customer.customerUniqueId)
       }
       if (this.data.partReleaseId)
         this.appraiserForm.controls.partReleaseId.patchValue(this.data.partReleaseId)
@@ -106,8 +110,16 @@ export class AssignAppraiserComponent implements OnInit {
     });
   }
 
+  getUserDetails() {
+    this.sharedService.getUserDetailsFromStorage().pipe(map(res => {
+      // console.log(res)
+      this.internalBranchId = res.userDetails.internalBranchId
+      this.getAllAppraiser()
+    })).subscribe()
+  }
+
   getAllAppraiser() {
-    this.appraiserService.getAllAppraiser().subscribe(res => {
+    this.appraiserService.getAllAppraiser(this.internalBranchId).subscribe(res => {
       this.appraisers = res.data;
     })
   }

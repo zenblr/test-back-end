@@ -5,7 +5,7 @@
     <div>
         <div class="kt-form">
             <form [formGroup]="leadForm">
-                <div class="kt-portlet__body lead-form">
+                <div class="kt-portlet__body lead-form" id="container">
 
                     <div class="kt-portlet__body-progress">
                         <mat-spinner [diameter]="20"></mat-spinner>
@@ -163,7 +163,7 @@
                                 <label class="text-color font-weight-500">PAN / FORM 60 </label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="panType">
+                                <select class="form-control" formControlName="panType" (change)='remove()'>
                                     <option value="" selected>Select</option>
                                     <option value="pan">PAN</option>
                                     <option value="form60">FORM 60</option>

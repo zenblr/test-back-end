@@ -5,10 +5,10 @@
 		margin-top: -65px;
 		margin-left: -7px;
 	}
-	.edit-width {
-		min-width: 230px;
-		max-width: 250px;
-	}
+	// .edit-width {
+	// 	min-width: 230px;
+	// 	max-width: 250px;
+	// }
 
 	.w-80 {
 		width: 80% !important;
@@ -21,5 +21,13 @@
 		z-index: 2;
 	}
 	
+	.edit-icon:hover{
+		background-color: red !important;
+		.edit-width {
+			min-width: 230px;
+			max-width: 250px;
+			z-index: 999 !important;
+			}
+	}
 	
 }

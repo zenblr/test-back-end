@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'internal_user_branch'
         },
+        appraiserId: {
+            type: DataTypes.INTEGER,
+            field: 'appraiser_id',
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -52,6 +56,9 @@ module.exports = (sequelize, DataTypes) => {
         
         packet.belongsTo(models.internalBranch, { foreignKey: 'internalUserBranch', as: 'internalBranch' });
         packet.hasMany(models.packetOrnament, { foreignKey: 'packetId', as: 'packetOrnament' });
+
+        packet.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
+
 
         packet.belongsToMany(models.customerLoanPackageDetails, { through: models.customerLoanPacket });
 
@@ -75,7 +82,7 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO UPDATE PACKET
     packet.updatePacket =
-        (id, packetUniqueId,internalUserBranch, modifiedBy) => packet.update({ packetUniqueId,internalUserBranch, modifiedBy }, { where: { id, isActive: true, packetAssigned: false } });
+        (id, packetUniqueId,internalUserBranch, modifiedBy, appraiserId) => packet.update({ packetUniqueId,internalUserBranch, modifiedBy, appraiserId }, { where: { id, isActive: true, packetAssigned: false } });
 
     // FUNCTION TO REMOVE PACKET
     packet.removePacket =
