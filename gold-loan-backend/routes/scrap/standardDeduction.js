@@ -2,6 +2,8 @@ const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
 const { readDeductionDetails, getByDeductionId, updateDeduction, deleteDeduction, addDeduction, readAllDeductionDetails } = require('../../controllers/scrap/standardDeduction/standardDeduction'); // IMPORTING LOAN PROCESS FUNCTIONS
+const checkRolePermission = require('../../middleware/checkRolesPermissions');
+
 
 const { scrapDeductionValidation } = require('../../validations/scrap/scrapDeduction');
 

@@ -26,7 +26,6 @@ exports.addScrapPacket = async (req, res, next) => {
 
 //  FUNCTION FOR VIEW PACKET
 exports.viewScrapPacket = async (req, res, next) => {
-    try{
         let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
@@ -87,10 +86,7 @@ exports.viewScrapPacket = async (req, res, next) => {
     });
 
     return res.status(200).json({ message: 'packet details fetch successfully', packetDetails, count: count });
-    }catch(err){
-        console.log(err);
-    }
-    
+
 }
 
 //  FUNCTION FOR GET AVAILABLE PACKET

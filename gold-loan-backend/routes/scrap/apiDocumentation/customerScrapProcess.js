@@ -175,13 +175,13 @@
  *               type: string
  *             bankName:
  *               type: string
- *             acNumber:
+ *             accountNumber:
  *               type: string
  *             ifscCode:
  *               type: string
- *             bankBranch:
+ *             bankBranchName:
  *               type: string
- *             acHolderName:
+ *             accountHolderName:
  *               type: string
  *             passbookProof:
  *               type: array
