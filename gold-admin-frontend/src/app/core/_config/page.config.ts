@@ -334,6 +334,9 @@ export class PageConfig {
 				'packets': {
 					page: { title: "Packets", desc: "" },
 				},
+				"applied-scrap": {
+					page: { title: "Applied Scrap", desc: "" },
+				},
 				"global-settings": {
 					page: { title: "Global Settings", desc: "" },
 				},

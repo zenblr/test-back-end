@@ -458,7 +458,7 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-01.svg",
 							page: "/admin/scrap-management",
-							permission: !this.modulesArr.includes(3),
+							// permission: !this.modulesArr.includes(3),
 						},
 						{
 							title: "Settings",
@@ -785,7 +785,7 @@ export class MenuConfig {
 							title: "Scrap Buying Application Form",
 							root: true,
 							src: "assets/media/aside-icons/icons-01.svg",
-							page: "/admin/scrap-management/scrap-application-form",
+							page: "/admin/scrap-management/scrap-buying-application-form",
 							permission: false,
 						},
 						{
@@ -794,6 +794,13 @@ export class MenuConfig {
 							src: "assets/media/aside-icons/icons-01.svg",
 							page: "/admin/scrap-management/packets",
 							permission: false,
+						},
+						{
+							title: "Applied Scrap",
+							root: true,
+							src: "assets/media/aside-icons/icons-01.svg",
+							page: "/admin/scrap-management/applied-scrap",
+							permission: false
 						},
 						{
 							title: "Settings",
