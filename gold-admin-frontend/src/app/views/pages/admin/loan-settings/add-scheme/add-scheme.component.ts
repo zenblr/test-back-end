@@ -213,8 +213,8 @@ export class AddSchemeComponent implements OnInit {
 
   newSlabRate(): FormGroup {
     return this.fb.group({
-      days: null,
-      interestRate: null
+      days: [null, [Validators.required]],
+      interestRate: [null, [Validators.required]]
     })
   }
 

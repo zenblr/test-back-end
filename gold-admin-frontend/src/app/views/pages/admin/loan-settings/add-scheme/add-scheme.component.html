@@ -239,10 +239,13 @@
                         </div> -->
 
                         <div class="row justify-content-end form-label">
-                            <label *ngIf="schemeInterest.length > 3" class="kt-pointer mr-4" (click)="removeSlabRate()">
+                            <label *ngIf="schemeInterest.length > 3"
+                                class="kt-pointer mr-4 kt-link kt-link--brand kt-font-bolder"
+                                (click)="removeSlabRate()">
                                 Remove
                                 Slab </label>&nbsp;&nbsp;
-                            <label class="kt-pointer mr-4" (click)="addSlabRate()"> Add Slab </label>
+                            <label class="kt-pointer mr-4 kt-link kt-link--brand kt-font-bolder"
+                                (click)="addSlabRate()"> Add Slab </label>
                         </div>
 
                         <!-- Form Array -->
@@ -266,6 +269,7 @@
                                             </div>
                                             <div>
                                                 <input type="number" class="form-control"
+                                                    [class.isError]="slab.touched && slab.invalid"
                                                     formControlName="interestRate">
                                             </div>
                                         </div>
