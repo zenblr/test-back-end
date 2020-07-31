@@ -50,7 +50,7 @@
                             <div class="col-8">
                                 <select class="form-control" formControlName="appraiserId"
                                     [class.isError]="controls.appraiserId.touched && controls.appraiserId.invalid">
-                                    <option value="" [disabled]="true" [selected]="true"> Select Branch
+                                    <option value="" [disabled]="true" [selected]="true"> Select Appraiser
                                     </option>
                                     <option *ngFor="let appraiser of appraisers" [value]="appraiser.id">
                                         {{appraiser.firstName | titlecase}}&nbsp;{{appraiser.lastName | titlecase}}
