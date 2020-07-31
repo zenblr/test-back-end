@@ -16,7 +16,8 @@ let getCustomerLoanId = async (masterLoanId) => {
         include: [{
             model: models.customerLoan,
             as: 'customerLoan',
-            attributes: ['id', 'loanType']
+            attributes: ['id', 'loanType'],
+            where:{isActive:true}
         }]
     });
     let loan = {}
@@ -33,6 +34,17 @@ let getCustomerLoanId = async (masterLoanId) => {
 let getLoanDetails = async (masterLoanId) => {
     let loanData = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId }
+    })
+    return loanData;
+}
+
+let getSchemeDetails = async (schemeId) => {
+    let loanData = await models.scheme.findOne({
+        where: { id: schemeId },
+        include:[{
+            model: models.schemeInterest,
+            as: 'schemeInterest'
+        }]
     })
     return loanData;
 }
@@ -54,9 +66,11 @@ let interestAmountCalculation = async (masterLoanId, id) => {
         interest: 0,
         penalInterest: 0
     }
-    penalIntrestPercent = 7 / 100;
     let globalSettings = await getGlobalSetting();
-    let loan = await getLoanDetails(masterLoanId);
+    let masterLona = await getLoanDetails(masterLoanId);
+    let loan = await getCustomerLoanDetails(id);
+    let schemeData = await getSchemeDetails(loan.schemeId);
+    penalIntrestPercent = schemeData.penalInterest / 100;
     intrest = await models.customerLoanInterest.findOne({ where: { emiStatus: { [Op.in]: ["paid"] }, loanId: id }, order: [['emiDueDate', 'DESC']], attributes: ['emiReceivedDate', 'emiDueDate'] });
     if (intrest == null) {
         firstIntrest = await models.customerLoanInterest.findOne({ where: { loanId: id }, order: [['emiDueDate', 'ASC']], attributes: ['emiDueDate'] });
@@ -64,7 +78,7 @@ let interestAmountCalculation = async (masterLoanId, id) => {
         daysCount = currentDate.diff(intrestStart, 'days');
         if (daysCount != 0) {
             if (globalSettings.gracePeriodDays < daysCount) {
-                amount.penalInterest = Number(loan.finalLoanAmount) * penalIntrestPercent / 360 * daysCount;
+                amount.penalInterest = Number(loan.loanAmount) * penalIntrestPercent / 360 * daysCount;
             }
         }
     } else {
@@ -75,10 +89,10 @@ let interestAmountCalculation = async (masterLoanId, id) => {
         if (daysCount != 0) {
             if (checkMonths != 0) {
                 if (globalSettings.gracePeriodDays < daysCount) {
-                    amount.penalInterest = Number(loan.finalLoanAmount) * penalIntrestPercent / 360 * daysCount;
+                    amount.penalInterest = Number(loan.loanAmount) * penalIntrestPercent / 360 * daysCount;
                 }
             } else {
-                amount.interest = Number(loan.finalLoanAmount) * (15.96 / 100) / 360 * daysCount;
+                amount.interest = Number(loan.loanAmount) * (15.96 / 100) / 360 * daysCount;
             }
         }
     }
@@ -90,5 +104,6 @@ module.exports = {
     getCustomerLoanId: getCustomerLoanId,
     interestAmountCalculation, interestAmountCalculation,
     getGlobalSetting: getGlobalSetting,
-    getLoanDetails: getLoanDetails
+    getLoanDetails: getLoanDetails,
+    getSchemeDetails:getSchemeDetails
 }

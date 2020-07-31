@@ -144,7 +144,7 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
     return ornamentsWeightInfo;
 }
 
-async function getornamentLoanInfo(masterLoanId, ornamentWeight,customerLoanId) {
+async function getornamentLoanInfo(masterLoanId, ornamentWeight,amount) {
     let loanData = await models.customerLoan.findAll({ where: { masterLoanId }, attributes: ['loanUniqueId'] });
     let loanAmountData = await models.customerLoanMaster.findOne({ where: { id: masterLoanId }, attributes: ['finalLoanAmount'] });
     let loanDetails = {
@@ -154,8 +154,14 @@ async function getornamentLoanInfo(masterLoanId, ornamentWeight,customerLoanId) 
         penalInterest: 0,
         totalPayableAmount: 0,
     }
+    loanDetails.interestAmount = amount.secured.interest;
+    loanDetails.penalInterest = amount.secured.penalInterest;
+    if(amount.unSecured){
+        loanDetails.interestAmount = loanDetails.interestAmount + amount.unSecured.interest;
+        loanDetails.penalInterest = loanDetails.penalInterest + amount.unSecured.penalInterest;
+    }
     //calculate value here
-    loanDetails.totalPayableAmount = ornamentWeight.releaseAmount;
+    loanDetails.totalPayableAmount = ornamentWeight.releaseAmount + loanDetails.penalInterest + loanDetails.interestAmount;
     loanDetails.finalLoanAmount = loanAmountData.finalLoanAmount;
     return loanDetails;
 }
@@ -170,14 +176,14 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
     let requestedOrnaments = await ornementsDetails(masterLoanId, whereSelectedOrmenemts);
     let otherOrnaments = await ornementsDetails(masterLoanId, whereOtherOrmenemts);
     let ornamentWeight = await getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanData);
-    let loanInfo = await getornamentLoanInfo(masterLoanId, ornamentWeight,customerLoanId);
     if(customerLoanId.secured){
         amount.secured = await interestAmountCalculation(masterLoanId,customerLoanId.secured);
     }
     if(customerLoanId.unsecured){
         amount.unSecured = await interestAmountCalculation(masterLoanId,customerLoanId.unsecured);
     }
-    return res.status(200).json({ message: 'success', ornamentWeight, loanInfo,amount });
+    let loanInfo = await getornamentLoanInfo(masterLoanId, ornamentWeight,amount);
+    return res.status(200).json({ message: 'success', ornamentWeight, loanInfo });
 }
 
 exports.ornamentsPartRelease = async (req, res, next) => {
