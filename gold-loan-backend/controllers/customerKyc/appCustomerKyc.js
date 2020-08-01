@@ -120,6 +120,6 @@ exports.getAssignedCustomer = async (req, res, next) => {
     })
 
 
-    return res.status(200).json({ message: getAppraisal })
+    return res.status(200).json({ message: 'message', data: getAppraisal })
 
 }
