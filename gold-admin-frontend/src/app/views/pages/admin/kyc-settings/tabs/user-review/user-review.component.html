@@ -33,7 +33,7 @@
                                     <label [class.mandatory]="viewOnly"
                                         [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
                                         (click)="userType != 5 && webcam()" class=" text-primary"
-                                        style="font-weight: 600;">Change Profile
+                                        style="font-weight: 600;">Upload Profile
                                         Picture</label>
                                 </div>
                             </div>
@@ -634,7 +634,7 @@
                                 <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
                                     formControlName="dateOfBirth" (dateChange)="ageValidation()"
                                     [class.isError]="customerKycPersonal.controls.dateOfBirth.touched && customerKycPersonal.controls.dateOfBirth.invalid"
-                                    readonly placeholder="4/5/2020" [max]="maxDate" />
+                                    readonly placeholder="MM/DD/YYYY" [max]="maxDate" />
                                 <mat-datepicker #picker></mat-datepicker>
 
                                 <mat-error

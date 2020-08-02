@@ -39,6 +39,31 @@
                         </div>
 
                     </div>
+
+                    <ng-container *ngIf="data.action == 'edit'">
+
+                        <div *ngIf="data.packetData && data.packetData.appraiserId"
+                            class="row justify-content-center kt-margin-t-10">
+                            <div class="col-4 form-label">
+                                <label class="kt-padding-l-10 mandatory">Appraiser</label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-control" formControlName="appraiserId"
+                                    [class.isError]="controls.appraiserId.touched && controls.appraiserId.invalid">
+                                    <option value="" [disabled]="true" [selected]="true"> Select Branch
+                                    </option>
+                                    <option *ngFor="let appraiser of appraisers" [value]="appraiser.id">
+                                        {{appraiser.firstName | titlecase}}&nbsp;{{appraiser.lastName | titlecase}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="controls.appraiserId.touched && controls.appraiserId.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+
+                        </div>
+                    </ng-container>
                 </div>
             </div>
         </form>

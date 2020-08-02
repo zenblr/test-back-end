@@ -87,7 +87,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
             let customerKycReview = await models.customer.findOne({
                 where: { id: KycStage.customerId },
                 attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage'],
-                include: [ {
+                include: [{
                     model: models.customerKycPersonalDetail,
                     as: 'customerKycPersonal',
                     attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
@@ -130,7 +130,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let kyc = await sequelize.transaction(async (t) => {
 
-        let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, customerKycCurrentStage: "2" },{transaction: t})
+        let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, customerKycCurrentStage: "2" }, { transaction: t })
 
         await models.customer.update({ panCardNumber: panCardNumber, panType, panImage }, { where: { id: getCustomerInfo.id }, transaction: t })
 
@@ -142,7 +142,7 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
             panCardNumber: panCardNumber,
             createdBy,
             modifiedBy
-        }, {transaction: t});
+        }, { transaction: t });
         return customerKycAdd
     })
     return res.status(200).json({
@@ -192,7 +192,7 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
             identityTypeId: identityTypeId,
             identityProofNumber: identityProofNumber,
             modifiedBy: modifiedBy
-        }, { where: { id: customerKycId }, transaction: t });
+        }, { where: { customerId: customerId }, transaction: t });
 
         await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "3" }, { where: { customerId }, transaction: t });
         await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
@@ -236,7 +236,7 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
             spouseName: spouseName,
             signatureProof: signatureProof,
             modifiedBy: modifiedBy
-        }, { where: { id: customerKycId }, transaction: t });
+        }, { where: { customerId: customerId }, transaction: t });
 
         await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
 
@@ -244,7 +244,7 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
     let customerKycReview = await models.customer.findOne({
         where: { id: customerId },
         attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage'],
-        include: [ {
+        include: [{
             model: models.customerKycPersonalDetail,
             as: 'customerKycPersonal',
             attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
@@ -369,10 +369,10 @@ exports.appliedKyc = async (req, res, next) => {
                 "$customer.customer_unique_id$": { [Op.iLike]: search + "%" },
                 "$customer.customerAssignAppraiser.appraiser.first_name$": {
                     [Op.iLike]: search + "%",
-                  },
-                  "$customer.customerAssignAppraiser.appraiser.last_name$": {
+                },
+                "$customer.customerAssignAppraiser.appraiser.last_name$": {
                     [Op.iLike]: search + "%",
-                  },
+                },
                 kyc_status: sequelize.where(
                     sequelize.cast(sequelize.col("customer.kyc_status"), "varchar"),
                     {
@@ -408,13 +408,13 @@ exports.appliedKyc = async (req, res, next) => {
         assignAppraiser = { appraiserId: req.userData.id }
     }
 
-    if(req.userData.userTypeId == 6){
+    if (req.userData.userTypeId == 6) {
         customerKycClassification = {
-            kycStatusFromCce: { [Op.in]: [ "approved", 'pending', 'incomplete', 'rejected'] },
+            kycStatusFromCce: { [Op.in]: ["approved", 'pending', 'incomplete', 'rejected'] },
         }
-    }else{
+    } else {
         customerKycClassification = {
-            kycStatusFromCce: { [Op.in]: [ 'approved'] },
+            kycStatusFromCce: { [Op.in]: ['approved'] },
         }
     }
 
