@@ -56,6 +56,27 @@
                             </kt-upload-packets>
                         </div>
                     </mat-tab>
+                    <mat-tab label="Scrap Status Approval"
+                        *ngIf="scrapStage?.id == 2 || (url == 'view-loan' && scrapStage?.id == 2)"
+                        [disabled]="disabled[6]">
+                        <kt-approval [action]="action" [disable]="approvalFrom" [details]="customerDetail"
+                            [scrapIds]="scrapIds" [scrapStage]="scrapStage">
+                        </kt-approval>
+                    </mat-tab>
+                    <mat-tab label="Upload Documents"
+                        *ngIf="scrapStage?.id == 8 || scrapStage?.id == 7 || scrapStage?.id == 4 || url == 'view-loan'">
+                        <kt-upload-documents [scrapIds]="scrapIds" (next)="next($event)"
+                            [loanDocumnets]="customerDetail" [showButton]="showButton"></kt-upload-documents>
+                    </mat-tab>
+                    <mat-tab label="Scrap Status Approval"
+                        *ngIf="scrapStage?.id == 7 || scrapStage?.id == 4 || (url == 'view-loan' && scrapStage?.id == 7) || (url == 'view-loan' && scrapStage?.id == 4) || (url == 'view-loan' && scrapStage?.id == 5)">
+                        <kt-approval [action]="action" [disable]="approvalFrom" [details]="customerDetail"
+                            [scrapIds]="scrapIds" [scrapStage]="scrapStage" (disbursal)="disbursal($event)">
+                        </kt-approval>
+                    </mat-tab>
+                    <mat-tab label="Disbursement" *ngIf="scrapStage?.id == 4 ">
+                        <kt-disburse [scrapIds]="scrapIds"></kt-disburse>
+                    </mat-tab>
                 </mat-tab-group>
             </div>
         </div>

@@ -20,7 +20,6 @@ import { AssignPacketsComponent } from './packets/assign-packets/assign-packets.
 import { InterestCalculatorComponent } from './loan-application-form/tabs/interest-calculator/interest-calculator.component';
 import { DeleteEntityDialogComponent } from '../../../partials/content/crud';
 import { LoanDetailsComponent } from './loan-details/loan-details.component';
-import { DisburseComponent } from './loan-application-form/tabs/disburse/disburse.component';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { UnSecuredSchemeComponent } from './loan-application-form/un-secured-scheme/un-secured-scheme.component';
 import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dialog.component';
@@ -100,7 +99,6 @@ const rout: Routes = [
     AssignPacketsComponent,
     InterestCalculatorComponent,
     LoanDetailsComponent,
-    DisburseComponent,
     UnSecuredSchemeComponent,
     PacketTrackingComponent,
     UpdateLocationComponent,

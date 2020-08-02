@@ -1,10 +1,10 @@
 import { Component, OnInit, Inject, Input, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { AppliedLoanService } from '../../../../../../../core/loan-management';
+import { AppliedLoanService } from '../../../../core/loan-management';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
+import { GlobalSettingService } from '../../../../core/global-setting/services/global-setting.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,8 +13,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./disburse.component.scss']
 })
 export class DisburseComponent implements OnInit {
-
   @Input() masterAndLoanIds
+  @Input() scrapIds
   currentDate = new Date()
   disburseForm: FormGroup
   details: any;
