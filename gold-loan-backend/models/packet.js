@@ -75,7 +75,7 @@ module.exports = (sequelize, DataTypes) => {
     // FUNCTION TO ADD PACKET
     packet.addPacket =
         (packetUniqueId, createdBy, modifiedBy, internalUserBranch,barcodeNumber) => packet.create({
-            packetUniqueId, createdBy, modifiedBy,internalUserBranch, packetAssigned: false, isActive: true,barcodeNumber
+            packetUniqueId, createdBy, modifiedBy,internalUserBranch, packetAssigned: false, isActive: true, barcodeNumber
         });
 
     // FUNCTION TO ASSIGN PACKET
@@ -86,7 +86,7 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO UPDATE PACKET
     packet.updatePacket =
-        (id, packetUniqueId,internalUserBranch, modifiedBy, appraiserId) => packet.update({ packetUniqueId,internalUserBranch, modifiedBy, appraiserId }, { where: { id, isActive: true, packetAssigned: false } });
+        (id, packetUniqueId,internalUserBranch, modifiedBy, appraiserId,barcodeNumber) => packet.update({ packetUniqueId,internalUserBranch, modifiedBy, appraiserId, barcodeNumber }, { where: { id, isActive: true, packetAssigned: false } });
 
     // FUNCTION TO REMOVE PACKET
     packet.removePacket =
