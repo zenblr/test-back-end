@@ -1,10 +1,12 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { PacketsService } from '../../../../../../core/loan-management';
+import { PacketsService } from '../../../../../../core/loan-management/packet/services/packets.service';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { AppraiserService } from '../../../../../../core/user-management/appraiser';
+
+import { map, catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'kt-assign-packets',
@@ -12,11 +14,15 @@ import { AppraiserService } from '../../../../../../core/user-management/apprais
   styleUrls: ['./assign-packets.component.scss']
 })
 export class AssignPacketsComponent implements OnInit {
+
+  @ViewChild('tabGroup', { static: false }) tabGroup;
   packetForm: FormGroup;
   title: string;
   branches = [];
   details: any;
   appraisers: any;
+  csvForm: FormGroup;
+  file: any;
 
   constructor(
     public dialogRef: MatDialogRef<AssignPacketsComponent>,
@@ -25,7 +31,8 @@ export class AssignPacketsComponent implements OnInit {
     private toastr: ToastrService,
     private packetsService: PacketsService,
     private sharedService: SharedService,
-    private appraiserService: AppraiserService
+    private appraiserService: AppraiserService,
+    private ref: ChangeDetectorRef
   ) {
     this.details = this.sharedService.getDataFromStorage()
   }
@@ -57,6 +64,11 @@ export class AssignPacketsComponent implements OnInit {
       internalUserBranch: ['', [Validators.required]],
       appraiserId: []
     })
+
+    this.csvForm = this.fb.group({
+      internalUserBranch: ['', [Validators.required]],
+      csv: ['', Validators.required]
+    })
   }
 
   action(event) {
@@ -68,40 +80,74 @@ export class AssignPacketsComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.packetForm.invalid) {
-      this.packetForm.markAllAsTouched()
+    console.log(this.tabGroup.selectedIndex)
+    if (this.tabGroup.selectedIndex == 0) {
+      if (this.packetForm.invalid) {
+        this.packetForm.markAllAsTouched()
+        return
+      }
+      // console.log(this.packetForm.value);
+      const packetUniqueId = this.packetForm.get('packetUniqueId').value;
+      // console.log(packetUniqueId.toLowerCase());
+      this.packetForm.controls.packetUniqueId.patchValue(packetUniqueId.toLowerCase());
+      if (this.controls.appraiserId.value) {
+        this.packetForm.patchValue({ appraiserId: Number(this.controls.appraiserId.value) })
+      }
+      const partnerData = this.packetForm.value;
+      const id = this.controls.id.value;
+
+      if (this.data.action == 'edit') {
+        this.packetsService.updatePacket(id, partnerData).subscribe(res => {
+          // console.log(res);
+          if (res) {
+            const msg = 'Packet Updated Sucessfully';
+            this.toastr.success(msg);
+            this.dialogRef.close(true);
+          }
+        });
+
+      } else {
+        this.packetsService.addPacket(partnerData).subscribe(res => {
+          // console.log(res);
+          if (res) {
+            const msg = 'Packet Added Successfully';
+            this.toastr.success(msg);
+            this.dialogRef.close(true);
+          }
+        });
+      }
+    } else 
+    if (this.tabGroup.selectedIndex == 1) {
+      if (this.csvForm.invalid) {
+        this.csvForm.markAllAsTouched()
+        return
+      }
+      var fb = new FormData()
+      fb.append('packetcsv', this.file)
+      fb.append('internalUserBranch', this.csvForm.controls.internalUserBranch.value)
+      console.log(fb)
+      this.packetsService.uplaodCSV(fb).pipe(
+        map((res) => {
+          this.toastr.success('Packets Created Sucessfully');
+          this.dialogRef.close(res);
+        }), catchError(err => {
+
+          this.ref.detectChanges();
+          throw (err)
+        })).subscribe()
+    }
+  }
+
+  getFileInfo(event) {
+    this.file = event.target.files[0];
+    var ext = event.target.files[0].name.split('.');
+    if (ext[ext.length - 1] != 'csv') {
+      this.toastr.error('Please upload csv file');
+      this.csvForm.controls.csv.markAsTouched()
       return
     }
-    // console.log(this.packetForm.value);
-    const packetUniqueId = this.packetForm.get('packetUniqueId').value;
-    // console.log(packetUniqueId.toLowerCase());
-    this.packetForm.controls.packetUniqueId.patchValue(packetUniqueId.toLowerCase());
-    if (this.controls.appraiserId.value) {
-      this.packetForm.patchValue({ appraiserId: Number(this.controls.appraiserId.value) })
-    }
-    const partnerData = this.packetForm.value;
-    const id = this.controls.id.value;
+    this.csvForm.get('csv').patchValue(event.target.files[0].name);
 
-    if (this.data.action == 'edit') {
-      this.packetsService.updatePacket(id, partnerData).subscribe(res => {
-        // console.log(res);
-        if (res) {
-          const msg = 'Packet Updated Sucessfully';
-          this.toastr.success(msg);
-          this.dialogRef.close(true);
-        }
-      });
-
-    } else {
-      this.packetsService.addPacket(partnerData).subscribe(res => {
-        // console.log(res);
-        if (res) {
-          const msg = 'Packet Added Successfully';
-          this.toastr.success(msg);
-          this.dialogRef.close(true);
-        }
-      });
-    }
   }
 
   get controls() {

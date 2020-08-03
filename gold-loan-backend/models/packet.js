@@ -37,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'appraiser_id',
         },
+        barcodeNumber: {
+            type: DataTypes.STRING,
+            field: 'barcode_number',
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -70,8 +74,8 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO ADD PACKET
     packet.addPacket =
-        (packetUniqueId, createdBy, modifiedBy, internalUserBranch) => packet.create({
-            packetUniqueId, createdBy, modifiedBy,internalUserBranch, packetAssigned: false, isActive: true
+        (packetUniqueId, createdBy, modifiedBy, internalUserBranch,barcodeNumber) => packet.create({
+            packetUniqueId, createdBy, modifiedBy,internalUserBranch, packetAssigned: false, isActive: true,barcodeNumber
         });
 
     // FUNCTION TO ASSIGN PACKET

@@ -59,11 +59,6 @@
                     <mat-cell *matCellDef="let item">{{item.masterLoan.outstandingAmount }}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="releaseDate">
-                    <mat-header-cell *matHeaderCellDef>Release Date</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.releaseDate | date:'mediumDate'}}</mat-cell>
-                </ng-container>
-
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
                     <mat-cell *matCellDef="let item"
@@ -131,7 +126,7 @@
                                 (click)="updateDocument(item)">Upload
                                 Documents
                             </button>
-                            <button *ngIf="item.documents" style="width: 130px;" class="apply-kyc"
+                            <button *ngIf="item.documents && !item.newLoanId" style="width: 130px;" class="apply-kyc"
                                 (click)="newLoan(item)">New Loan
                             </button>
                         </ng-container>

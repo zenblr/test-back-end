@@ -96,11 +96,13 @@ exports.uploadFile =
 
                 req.file['userId'] = req.userData.id
                 let uploadFile = await models.fileUpload.create(req.file);
+
                 if (!uploadFile) {
                     res.status(400).json({ message: 'Error while uploading file!' })
                 } else {
                     res.status(200).json({
                         uploadFile
+
                     });
                 }
             });
