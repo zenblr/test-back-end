@@ -242,8 +242,8 @@ export class AddSchemeComponent implements OnInit {
   }
 
   daysValidation(index: number) {
-    let currentSlab;
-    let previousSlab;
+    let currentSlab; let previousSlab;
+
     if (index) {
       currentSlab = this.schemeInterest.at(index)
       previousSlab = this.schemeInterest.at(index - 1)
@@ -251,14 +251,13 @@ export class AddSchemeComponent implements OnInit {
 
     if (!currentSlab && !previousSlab) return
 
-    const previousSlabValue = previousSlab.controls.days.value
-    const currentSlabValue = currentSlab.controls.days.value
+    const previousSlabControls = previousSlab.controls
+    const currentSlabControls = currentSlab.controls
 
-    if (previousSlabValue >= currentSlabValue) {
-      currentSlab.controls.days.setErrors({ 'incorrect': true })
-      console.log(currentSlab)
+    if (previousSlabControls.days.value >= currentSlabControls.days.value) {
+      currentSlabControls.days.setErrors({ 'incorrect': true })
     } else {
-      currentSlab.controls.days.setErrors(null)
+      currentSlabControls.days.setErrors(null)
     }
 
     console.log(currentSlab, previousSlab)
