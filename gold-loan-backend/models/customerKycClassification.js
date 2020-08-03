@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
         kycRatingFromCce: {
             type: DataTypes.INTEGER,
             field: 'kyc_rating_from_cce',
-            allowNull: false
         },
         kycStatusFromCce: {
             type: DataTypes.ENUM,
