@@ -263,13 +263,14 @@
                                         <div [formGroupName]="idx">
                                             <div>
                                                 <mat-form-field class="example-full-width">
-                                                    <input type="number" matInput formControlName="days">
+                                                    <input class="input" type="number" matInput formControlName="days"
+                                                        (blur)="daysValidation(idx)" min="0">
                                                     <span matSuffix>&nbsp; Days</span>
                                                 </mat-form-field>
                                             </div>
                                             <div>
-                                                <input type="number" class="form-control"
-                                                    [class.isError]="slab.touched && slab.invalid"
+                                                <input type="number" class="form-control" min="0" step="any"
+                                                    [class.isError]="slab.get('interestRate').touched && slab.get('interestRate').invalid"
                                                     formControlName="interestRate">
                                             </div>
                                         </div>

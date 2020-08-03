@@ -213,8 +213,8 @@ export class AddSchemeComponent implements OnInit {
 
   newSlabRate(): FormGroup {
     return this.fb.group({
-      days: [null, [Validators.required]],
-      interestRate: [null, [Validators.required]]
+      days: [null, [Validators.required, Validators.min(0)]],
+      interestRate: [null, [Validators.required, Validators.min(0)]]
     })
   }
 
@@ -240,4 +240,28 @@ export class AddSchemeComponent implements OnInit {
       container.scrollTop = container.scrollHeight
     })
   }
+
+  daysValidation(index: number) {
+    let currentSlab;
+    let previousSlab;
+    if (index) {
+      currentSlab = this.schemeInterest.at(index)
+      previousSlab = this.schemeInterest.at(index - 1)
+    }
+
+    if (!currentSlab && !previousSlab) return
+
+    const previousSlabValue = previousSlab.controls.days.value
+    const currentSlabValue = currentSlab.controls.days.value
+
+    if (previousSlabValue >= currentSlabValue) {
+      currentSlab.controls.days.setErrors({ 'incorrect': true })
+      console.log(currentSlab)
+    } else {
+      currentSlab.controls.days.setErrors(null)
+    }
+
+    console.log(currentSlab, previousSlab)
+  }
+
 }
