@@ -93,6 +93,10 @@ import { AdminComponent } from './admin.component';
 						path: 'funds-approvals',
 						loadChildren: () => import('./funds-approvals/funds-approvals.module').then(m => m.FundsApprovalsModule)
 					},
+					{
+						path: 'global-map',
+						loadChildren: () => import('./global-map/global-map.module').then(m => m.GlobalMapModule)
+					},
 					{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 					{ path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
 				]

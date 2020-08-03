@@ -2,24 +2,20 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { Subscription, merge, Subject, from } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
-import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
-import { PacketTrackingDatasource, PacketTrackingService } from '../../../../../../core/loan-management'
-import { AssignPacketsComponent } from '../assign-packets/assign-packets.component';
-import { LayoutUtilsService } from '../../../../../../core/_base/crud';
+import { DataTableService } from '../../../../../../../../core/shared/services/data-table.service';
+import { PacketsDatasource, PacketsService } from '../../../../../../../../core/loan-management'
+import { LayoutUtilsService } from '../../../../../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { UpdateLocationComponent } from '../update-location/update-location.component';
-import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.component';
-import { Router } from '@angular/router';
 
 @Component({
-  selector: 'kt-packet-tracking',
-  templateUrl: './packet-tracking.component.html',
-  styleUrls: ['./packet-tracking.component.scss']
+  selector: 'kt-location',
+  templateUrl: './location.component.html',
+  styleUrls: ['./location.component.scss']
 })
-export class PacketTrackingComponent implements OnInit {
-  dataSource: PacketTrackingDatasource;
-  displayedColumns = [ 'customerID', 'loanId','customerName','loanAmount','packetUniqueId','internalBranch','currentLocation', 'actions'];
+export class LocationComponent implements OnInit {
+  dataSource: PacketsDatasource;
+  displayedColumns = ['packetUniqueId', 'internalBranch', 'customerID', 'loanId', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -34,20 +30,13 @@ export class PacketTrackingComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private packetTrackingService: PacketTrackingService,
+    private packetsService: PacketsService,
     private dataTableService: DataTableService,
     private layoutUtilsService: LayoutUtilsService,
     private toastr: ToastrService,
-    private ngxPermissionService: NgxPermissionsService,
-    private router:Router
+    private ngxPermissionService: NgxPermissionsService
   ) {
-    this.packetTrackingService.openModal$.pipe(
-      map(res => {
-        if (res) {
-          this.assignPackets();
-        }
-      }),
-      takeUntil(this.destroy$)).subscribe();
+    
   }
 
   ngOnInit() {
@@ -72,7 +61,7 @@ export class PacketTrackingComponent implements OnInit {
       });
 
     // Init DataSource
-    this.dataSource = new PacketTrackingDatasource(this.packetTrackingService);
+    this.dataSource = new PacketsDatasource(this.packetsService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
@@ -106,47 +95,7 @@ export class PacketTrackingComponent implements OnInit {
     this.dataSource.loadpackets(this.searchValue, from, to);
   }
 
-  assignPackets() {
-    // console.log(event);
-    const dialogRef = this.dialog.open(AssignPacketsComponent, {
-      data: { action: 'add' },
-      width: '400px'
-    });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        this.loadPackets();
-      }
-      this.packetTrackingService.openModal.next(false);
-    });
-  }
-
-  updatePacket(packet) {
-    console.log(packet)
-    const dialogRef = this.dialog.open(UpdateLocationComponent,
-      {
-        data: { packetData: packet, action: 'edit' },
-        width: '400px'
-      });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        this.loadPackets();
-      }
-    });
-  }
-
-  viewPacketLog(packet) {
-    console.log(packet)
-    const dialogRef = this.dialog.open(ViewPacketLogComponent,
-      {
-        data: { packetData: packet, action: 'edit' },
-        width: '80%',
-      });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        this.loadPackets();
-      }
-    });
-  }
+  
 
   deletePacket(_item) {
     const role = _item;
@@ -159,7 +108,7 @@ export class PacketTrackingComponent implements OnInit {
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         console.log(res);
-        this.packetTrackingService.deletePacket(role.id).subscribe(successDelete => {
+        this.packetsService.deletePacket(role.id).subscribe(successDelete => {
           this.toastr.success(_deleteMessage);
           this.loadPackets();
         },
@@ -172,8 +121,6 @@ export class PacketTrackingComponent implements OnInit {
     });
   }
 
-  viewLocation(packet){
-    this.router.navigate(['/admin/loan-management/view-location'])
-  }
 
 }
+
