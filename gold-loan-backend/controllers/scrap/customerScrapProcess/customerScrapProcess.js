@@ -198,7 +198,6 @@ exports.scrapBankDetails = async (req, res, next) => {
 
 //FUNCTION for submitting ornament details  DONE
 exports.scrapOrnmanetDetails = async (req, res, next) => {
-    try {
         let { scrapOrnaments, finalScrapAmount, scrapId } = req.body
         let allOrnmanets = []
         let createdBy = req.userData.id;
@@ -215,7 +214,6 @@ exports.scrapOrnmanetDetails = async (req, res, next) => {
         if (checkOrnaments.length == 0) {
             let scrapData = await sequelize.transaction(async t => {
                 await models.customerScrap.update({ customerScrapCurrentStage: '3', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
-                console.log(allOrnmanets);
                 let createdOrnaments = await models.customerScrapOrnamentsDetail.bulkCreate(allOrnmanets, { returning: true }, { transaction: t });
 
                 await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
@@ -234,24 +232,19 @@ exports.scrapOrnmanetDetails = async (req, res, next) => {
                 await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
 
                 await models.customerScrapOrnamentsDetail.destroy({ where: { scrapId: scrapId }, transaction: t });
-                console.log(allOrnmanets);
-                let createdOrnaments = await models.customerScrapOrnamentsDetail.bulkCreate(allOrnmanets, { returning: true }, { transaction: t });
+                // let createdOrnaments = await models.customerScrapOrnamentsDetail.bulkCreate(allOrnmanets, { returning: true }, { transaction: t });
 
-                // let createdOrnaments = []
-                // for (let purityTestData of allOrnmanets) {
-                //     delete purityTestData.id;
-                //     var ornaments = await models.customerScrapOrnamentsDetail.create(purityTestData, { transaction: t });
-                //     createdOrnaments.push(ornaments)
-                // }
+                let createdOrnaments = []
+                for (let purityTestData of allOrnmanets) {
+                    delete purityTestData.id;
+                    var ornaments = await models.customerScrapOrnamentsDetail.create(purityTestData, { transaction: t });
+                    createdOrnaments.push(ornaments)
+                }
+
                 return createdOrnaments;
             })
             return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData });
         }
-    } catch (err) {
-        console.log(err);
-    }
-
-
 }
 
 //FUNCTION for submitting ornament details  DONE
@@ -536,7 +529,12 @@ exports.singleScrapDetails = async (req, res, next) => {
 
     let customerScrap = await models.customerScrap.findOne({
         where: { id: scrapId },
-        include: [{
+        include: [{ 
+                model: models.scrapStage,
+                as: 'scrapStage',
+                attributes: ['id', 'stageName']
+        },
+        {
             model: models.customer,
             as: 'customer',
             attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'email', 'kycStatus']
@@ -811,7 +809,12 @@ exports.appliedScrapDetails = async (req, res, next) => {
             model: models.customer,
             as: 'customer',
             where: internalBranchWhere,
-            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'customerUniqueId']
+            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'customerUniqueId', 'mobileNumber']
+        },
+        {
+            model: models.customerScrapPersonalDetail,
+            as: 'scrapPersonalDetail',
+            attributes: ['startDate']
         }];
 
 
