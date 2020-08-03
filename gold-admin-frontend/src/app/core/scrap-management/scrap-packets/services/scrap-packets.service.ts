@@ -13,14 +13,14 @@ export class ScrapPacketsService {
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
-  uploadPackets(packetImages, masterLoanId): Observable<any> {
-    let data = { ...packetImages, ...masterLoanId }
-    return this.http.post(`/api/loan-process/add-packet-images/`, data).pipe(
+  uploadPackets(packetImages, scrapId): Observable<any> {
+    let data = { ...packetImages, ...scrapId }
+    return this.http.post(`/api/scrap/scrap-process/add-packet-images/`, data).pipe(
       map(res => res)
     );
   }
 
-  getPacketsAvailable(): Observable<any> {
+  getScrapPacketsAvailable(): Observable<any> {
     return this.http.get(`/api/scrap/packet/available-packet`).pipe(
       map(res => res)
     );

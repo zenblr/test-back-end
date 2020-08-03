@@ -238,7 +238,7 @@
                                         <input type="text" class="form-control" placeholder="90 %"
                                             formControlName="purityReading" numbersOnly
                                             [class.isError]="ornament.controls.purityReading.touched && ornament.controls.purityReading.invalid"
-                                            (blur)="calculateMeltingScrapAmount(idx)">
+                                            (input)="calculateMeltingScrapAmount(idx)">
                                         <mat-error
                                             *ngIf="ornament.controls.purityReading.touched && ornament.controls.purityReading.invalid">
                                             <span *ngIf="ornament.controls.purityReading.errors?.required">Field
@@ -257,7 +257,7 @@
                                         <input type="text" class="form-control" placeholder="90 %"
                                             formControlName="approxPurityReading" numbersOnly
                                             [class.isError]="ornament.controls.approxPurityReading.touched && ornament.controls.approxPurityReading.invalid"
-                                            (blur)="calculateScrapAmount(idx)">
+                                            (input)="calculateScrapAmount(idx)">
                                         <mat-error
                                             *ngIf="ornament.controls.approxPurityReading.touched && ornament.controls.approxPurityReading.invalid">
                                             <span *ngIf="ornament.controls.approxPurityReading.errors?.required">Field

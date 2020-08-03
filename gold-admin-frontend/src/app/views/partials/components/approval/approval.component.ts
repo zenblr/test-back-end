@@ -400,8 +400,8 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
         this.scrapApplicationFormService.appraiserRating(this.approvalForm.value, this.scrapIds).pipe(
           map(res => {
             if (this.approvalForm.controls.scrapStatusForAppraiser.value == 'approved') {
-              this.disableScrapForm(2)
-              this.stage = 2
+              this.disableScrapForm(3)
+              this.stage = 3
               this.ornamentType.emit(res.ornamentType)
             } else {
               this.router.navigate(['/admin/scrap-management/applied-scrap'])

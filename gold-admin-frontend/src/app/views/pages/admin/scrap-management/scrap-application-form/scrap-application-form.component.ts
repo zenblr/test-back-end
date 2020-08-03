@@ -72,9 +72,8 @@ export class ScrapApplicationFormComponent implements OnInit {
         this.processingCharges = res.customerScrap.customerScrapAcknowledgement.processingCharges
       }
       console.log(this.scrapStage)
-      // this.totalAmount = res.data.totalEligibleAmt
       if (this.url == 'packet-image-upload') {
-        if (this.customerDetail.loanPacketDetails.length) {
+        if (this.customerDetail.scrapPacketDetails.length) {
           this.selected = 8;
         } else {
           this.selected = 6;
@@ -140,7 +139,7 @@ export class ScrapApplicationFormComponent implements OnInit {
 
   ornaments(event) {
     this.ornamentDetails = event
-    this.scrapStage.id = 2;
+    this.scrapStage.id = 3;
     this.showButton = true;
     this.disabledForm = true;
     setTimeout(() => {

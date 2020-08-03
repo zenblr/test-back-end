@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map, tap,catchError } from 'rxjs/operators';
+import { map, tap, catchError } from 'rxjs/operators';
 import printJS from 'print-js';
 import { ToastrService } from 'ngx-toastr';
 
@@ -64,23 +64,23 @@ export class ScrapApplicationFormService {
     )
   }
 
-  appraiserRating(details, masterAndLoanIds): Observable<any> {
-    let data = { ...details, ...masterAndLoanIds }
+  appraiserRating(details, scrapIds): Observable<any> {
+    let data = { ...details, ...scrapIds }
     return this.http.post(`/api/scrap/scrap-process/appraiser-rating`, data).pipe(
       map(res => res)
     )
   }
 
-  bmRating(details, masterAndLoanIds): Observable<any> {
-    let data = { ...details, ...masterAndLoanIds }
-    return this.http.post(`/api/loan-process/bm-rating`, data).pipe(
+  bmRating(details, scrapIds): Observable<any> {
+    let data = { ...details, ...scrapIds }
+    return this.http.post(`/api/scrap/scrap-process/bm-rating`, data).pipe(
       map(res => res)
     )
   }
 
-  opsRating(details, masterAndLoanIds): Observable<any> {
-    let data = { ...details, ...masterAndLoanIds }
-    return this.http.post(`/api/loan-process/ops-rating`, data).pipe(
+  opsRating(details, scrapIds): Observable<any> {
+    let data = { ...details, ...scrapIds }
+    return this.http.post(`/api/scrap/scrap-process/ops-rating`, data).pipe(
       map(res => res),
     )
   }

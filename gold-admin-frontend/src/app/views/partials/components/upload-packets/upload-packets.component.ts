@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { LayoutUtilsService } from '../../../../core/_base/crud';
 import { WebcamDialogComponent } from '../../../pages/admin/kyc-settings/webcam-dialog/webcam-dialog.component';
 import { MatDialog } from '@angular/material';
+import { ScrapPacketsService } from '../../../../core/scrap-management';
 
 @Component({
   selector: 'kt-upload-packets',
@@ -16,8 +17,8 @@ import { MatDialog } from '@angular/material';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges {
-
   @Input() viewpacketsDetails;
+  @Input() viewScrapPacketsDetails;
   @Input() masterAndLoanIds;
   @Input() scrapIds
   @Input() loanStage
@@ -49,6 +50,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     private ele: ElementRef,
     public fb: FormBuilder,
     private packetService: PacketsService,
+    private scrapPacketsService: ScrapPacketsService,
     private route: ActivatedRoute,
     private router: Router,
     private toast: ToastrService,
@@ -68,7 +70,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       packetOrnamentArray: this.fb.array([])
     })
   }
-
 
   ngOnChanges(change: SimpleChanges) {
     if (change.ornamentType && change.ornamentType.currentValue) {
@@ -95,16 +96,31 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         this.url = 'view-loan'
       }
     }
+
+    if (change.viewScrapPacketsDetails && change.viewScrapPacketsDetails.currentValue) {
+      let packet = change.viewScrapPacketsDetails.currentValue.scrapPacketDetails[0]
+      if (packet) {
+        this.packetImg.patchValue(packet)
+        console.log(packet.CustomerScrapPackageDetail)
+        packet.CustomerScrapPackageDetail.forEach(ele => {
+          this.packetsName = ele.packetUniqueId;
+          this.pushPackets()
+        });
+        this.url = 'view-scrap'
+      }
+    }
+
+    if (this.scrapIds) {
+      this.validation();
+    }
   }
 
-
-
   ngOnInit() {
-    this.getPacketsDetails()
-    // this.masterAndLoanIds = this.route.snapshot.params.id
-
-
-
+    if (this.scrapIds) {
+      this.getScrapPacketsDetails();
+    } else {
+      this.getPacketsDetails();
+    }
   }
 
   initForm() {
@@ -112,6 +128,13 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       ornamentType: [null, Validators.required],
       packetId: [null, Validators.required],
     })
+  }
+
+  validation() {
+    if (this.scrapIds) {
+      this.packetInfo.controls.ornamentType.setValidators([]),
+        this.packetInfo.controls.ornamentType.updateValueAndValidity()
+    }
   }
 
   get packets() {
@@ -137,8 +160,16 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     // this.packetsDetails.map(ele => ele.disabled = false)
   }
 
-  ngAfterViewInit() {
+  getScrapPacketsDetails() {
+    this.scrapPacketsService.getScrapPacketsAvailable().pipe(
+      map(res => {
+        this.packetsDetails = res.data;
+        this.ref.detectChanges();
+      })
+    ).subscribe();
   }
+
+  ngAfterViewInit() { }
 
   addmore() {
     if (this.packetInfo.invalid) {
@@ -146,12 +177,11 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       return;
     }
 
-    if (this.url != 'view-loan')
+    if (this.url != 'view-loan' && this.url != 'view-scrap') {
       this.removePackets()
+    }
 
     this.pushPackets()
-
-
 
     setTimeout(() => {
       this.clearData = false;
@@ -159,6 +189,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       this.ref.detectChanges();
     })
   }
+
   pushPackets() {
     this.packets.push(this.fb.group({
       packetId: [this.controls.packetId.value],
@@ -168,8 +199,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     }))
   }
 
-
-
   removeSelectedPacketsData(idx) {
     console.log(this.packets.controls[idx])
     let packetIndex = this.splicedPackets.findIndex(packet => {
@@ -178,25 +207,27 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.packetsDetails.push(this.splicedPackets[packetIndex])
     this.splicedPackets.splice(packetIndex, 1)
     this.packets.controls.splice(idx, 1)
-    let temp = this.ornamentTypeData;
-    this.ornamentTypeData = []
-    for (let ornamnetsIdIndex = 0; ornamnetsIdIndex < this.ornamentId.length; ornamnetsIdIndex++) {
-      for (let ornamnetsIndex = 0; ornamnetsIndex < this.splicedOrnaments.length; ornamnetsIndex++) {
-        console.log(this.splicedOrnaments[ornamnetsIndex].id == this.ornamentId[ornamnetsIdIndex])
-        if (this.splicedOrnaments[ornamnetsIndex].id == this.ornamentId[ornamnetsIdIndex]) {
-          temp.push(this.splicedOrnaments[ornamnetsIndex])
-          this.splicedOrnaments.splice(ornamnetsIndex, 1)
-          // this.ornamentId.splice(ornamnetsIdIndex, 1)
-          // ornamnetsIndex = 0;
+
+    if (!this.scrapIds) {
+      let temp = this.ornamentTypeData;
+      this.ornamentTypeData = []
+      for (let ornamnetsIdIndex = 0; ornamnetsIdIndex < this.ornamentId.length; ornamnetsIdIndex++) {
+        for (let ornamnetsIndex = 0; ornamnetsIndex < this.splicedOrnaments.length; ornamnetsIndex++) {
+          console.log(this.splicedOrnaments[ornamnetsIndex].id == this.ornamentId[ornamnetsIdIndex])
+          if (this.splicedOrnaments[ornamnetsIndex].id == this.ornamentId[ornamnetsIdIndex]) {
+            temp.push(this.splicedOrnaments[ornamnetsIndex])
+            this.splicedOrnaments.splice(ornamnetsIndex, 1)
+            // this.ornamentId.splice(ornamnetsIdIndex, 1)
+            // ornamnetsIndex = 0;
+          }
         }
       }
+
+      setTimeout(() => {
+        console.log(temp)
+        this.ornamentTypeData = temp;
+      }, 200)
     }
-
-    setTimeout(() => {
-      console.log(temp)
-      this.ornamentTypeData = temp;
-    }, 200)
-
   }
 
   clear() {
@@ -232,32 +263,32 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.splicedPackets.push(this.packetsDetails[index])
     this.packetsDetails.splice(index, 1)
 
-    let ornamentTypeObject = this.controls.ornamentType.value.multiSelect
-    this.ornamentName = ornamentTypeObject.map(e => e.name).toString();
-    this.ornamentId = ornamentTypeObject.map(e => e.id)
-    var selectedOrnaments = this.ornamentTypeData.filter((val) => {
-      return ornamentTypeObject.indexOf(val) != -1;
-    });
+    if (!this.scrapIds) {
+      let ornamentTypeObject = this.controls.ornamentType.value.multiSelect
+      this.ornamentName = ornamentTypeObject.map(e => e.name).toString();
+      this.ornamentId = ornamentTypeObject.map(e => e.id)
+      var selectedOrnaments = this.ornamentTypeData.filter((val) => {
+        return ornamentTypeObject.indexOf(val) != -1;
+      });
 
-    var temp = this.ornamentTypeData
-    this.ornamentTypeData = [];
-    console.log(selectedOrnaments);
-    selectedOrnaments.forEach(selectedornament => {
-      var index = temp.findIndex(ornament => {
-        return selectedornament.id == ornament.id
+      var temp = this.ornamentTypeData
+      this.ornamentTypeData = [];
+      console.log(selectedOrnaments);
+      selectedOrnaments.forEach(selectedornament => {
+        var index = temp.findIndex(ornament => {
+          return selectedornament.id == ornament.id
+        })
+        this.splicedOrnaments.push(temp[index])
+        temp.splice(index, 1)
       })
-      this.splicedOrnaments.push(temp[index])
-      temp.splice(index, 1)
-    })
-    setTimeout(() => {
 
-      this.ornamentTypeData = temp;
-    }, 500)
-    console.log(this.ornamentTypeData)
+      setTimeout(() => {
+        this.ornamentTypeData = temp;
+      }, 500)
+      console.log(this.ornamentTypeData)
+    }
+
     this.clearData = true;
-
-
-    // this.packetsDetails.splice(index, 1)
   }
 
   save() {
@@ -272,26 +303,41 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       return
     }
     const _title = 'Save Packet';
-    const _description = 'Are you sure ,you want to save packets?';
+    const _description = 'Are you sure, you want to save packets?';
     const _waitDesciption = 'Packet is saving...';
     const _deleteMessage = `Packet has been saved`;
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.packetService.uploadPackets(this.packetImg.value, this.masterAndLoanIds).pipe(
-          map(res => {
-            this.toast.success(res.message)
-            // this.url = 'view-loan'
-            // this.next.emit(7)
-            this.router.navigate(['/admin/loan-management/applied-loan'])
-          }),
-          catchError(err => {
-            if (err.error.message && err.error.message == 'Packets has been already assign') {
-              this.next.emit(7)
-            }
-            throw (err)
-          })
-        ).subscribe()
+        if (this.scrapIds) {
+          this.scrapPacketsService.uploadPackets(this.packetImg.value, this.scrapIds).pipe(
+            map(res => {
+              this.toast.success(res.message);
+              this.router.navigate(['/admin/scrap-management/applied-scrap']);
+            }),
+            catchError(err => {
+              if (err.error.message && err.error.message == 'Packets has been already assign') {
+                this.next.emit(7);
+              }
+              throw (err);
+            })
+          ).subscribe();
+        } else {
+          this.packetService.uploadPackets(this.packetImg.value, this.masterAndLoanIds).pipe(
+            map(res => {
+              this.toast.success(res.message)
+              // this.url = 'view-loan'
+              // this.next.emit(7)
+              this.router.navigate(['/admin/loan-management/applied-loan'])
+            }),
+            catchError(err => {
+              if (err.error.message && err.error.message == 'Packets has been already assign') {
+                this.next.emit(7)
+              }
+              throw (err)
+            })
+          ).subscribe()
+        }
       }
     });
 
@@ -324,9 +370,17 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        const params = {
-          reason: 'loan',
-          masterLoanId: this.masterAndLoanIds.masterLoanId
+        let params;
+        if (this.scrapIds) {
+          params = {
+            reason: 'scrap',
+            scrapId: this.scrapIds.scrapId
+          }
+        } else {
+          params = {
+            reason: 'loan',
+            masterLoanId: this.masterAndLoanIds.masterLoanId
+          }
         }
         this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
           console.log(res)
