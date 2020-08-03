@@ -902,7 +902,7 @@ exports.getScrapDetails = async (req, res, next) => {
     if (scrapDetails.length === 0) {
         return res.status(200).json([]);
     } else {
-        return res.status(200).json({ message: 'Loan details fetch successfully', data: scrapDetails, count: count.length });
+        return res.status(200).json({ message: 'Scrap details fetch successfully', data: scrapDetails, count: count.length });
     }
 }
 

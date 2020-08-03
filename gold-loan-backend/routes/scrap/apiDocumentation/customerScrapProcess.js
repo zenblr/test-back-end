@@ -85,7 +85,7 @@
  *               type: string
  *             customerConfirmation:
  *               type: array
- *               items: 
+ *               items:
  *                type: string
  *         required:
  *           - scrapId
@@ -185,7 +185,7 @@
  *               type: string
  *             passbookProof:
  *               type: array
- *               items: 
+ *               items:
  *                type: string
  *         required:
  *           - scrapId
@@ -223,7 +223,7 @@
  *             scrapOrnaments:
  *                type: array
  *                items:
- *                  type: object  
+ *                  type: object
  *                  properties:
  *                   ornamentTypeId:
  *                    type: integer
@@ -321,7 +321,7 @@
  *             packetOrnamentArray:
  *                type: array
  *                items:
- *                  type: object  
+ *                  type: object
  *                  properties:
  *                   packetId:
  *                    type: integer
@@ -434,15 +434,15 @@
  *               type: integer
  *             purchaseVoucher:
  *               type: array
- *               items: 
+ *               items:
  *                type: string
  *             purchaseInvoice:
  *               type: array
- *               items: 
+ *               items:
  *                type: string
  *             saleInvoice:
  *               type: array
- *               items: 
+ *               items:
  *                type: string
  *         required:
  *           - scrapId
@@ -456,7 +456,7 @@
  *         description: Data not found.
  * /scrap/scrap-process/single-scrap:
  *   get:
- *     tags: 
+ *     tags:
  *       -  Customer scrap Process
  *     name: read loan details
  *     summary: To read scrap details
@@ -576,4 +576,48 @@
  *         description: disbursement detail added successfully
  *       404:
  *         description: Data not found.
+ * /scrap/scrap-process/scrap-details:
+ *   get:
+ *     tags:
+ *       -  Customer scrap Process
+ *     name: read scrap details
+ *     summary: To read scrap details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
+ *     responses:
+ *       200:
+ *          description: success.
+ * /scrap/scrap-process/single-scrap-customer:
+ *   get:
+ *     tags:
+ *       -  Customer scrap Process
+ *     name: read single scrap details
+ *     summary: To read single scrap details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "customerScrapId"
+ *       in: "query"
+ *       description: "Scrap Id"
+ *       type: "number"
+ *     responses:
+ *       200:
+ *          description: success.
  */
