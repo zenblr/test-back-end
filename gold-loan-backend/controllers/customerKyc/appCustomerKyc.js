@@ -73,6 +73,9 @@ exports.submitAppKyc = async (req, res, next) => {
         }
 
         let data = await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
+
+        await models.customerKycClassification.create({ customerId, customerKycId: customerKycAdd.id, kycStatusFromCce: "pending", cceId: createdBy }, { transaction: t })
+
         return customerKycAdd
     })
 
@@ -96,6 +99,15 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 as: 'customer',
                 attributes: { exclude: ['customerUniqueId', 'internalBranchId', 'password', 'createdBy', 'modifiedBy', 'createdAt', 'updatedAt', 'isActive', 'lastLogin'] },
                 include: [
+                    {
+                        model: models.customerKyc,
+                        as: "customerKyc",
+                        attributes: ['id']
+                    },
+                    {
+                        model: models.customerKycClassification,
+                        as: "customerKycClassification",
+                    },
                     {
                         model: models.state,
                         as: 'state'
