@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
         packet.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         packet.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
         packet.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
-        
+
         packet.belongsTo(models.internalBranch, { foreignKey: 'internalUserBranch', as: 'internalBranch' });
         packet.hasMany(models.packetOrnament, { foreignKey: 'packetId', as: 'packetOrnament' });
 
@@ -68,14 +68,14 @@ module.exports = (sequelize, DataTypes) => {
 
         // packet.belongsToMany(models.ornamentType, { through: models.packetOrnament });
 
-        
-        
+
+
     }
 
     // FUNCTION TO ADD PACKET
     packet.addPacket =
-        (packetUniqueId, createdBy, modifiedBy, internalUserBranch,barcodeNumber) => packet.create({
-            packetUniqueId, createdBy, modifiedBy,internalUserBranch, packetAssigned: false, isActive: true,barcodeNumber
+        (packetUniqueId, barcodeNumber, createdBy, modifiedBy, internalUserBranch, barcodeNumber) => packet.create({
+            packetUniqueId, barcodeNumber, createdBy, modifiedBy, internalUserBranch, packetAssigned: false, isActive: true, barcodeNumber
         });
 
     // FUNCTION TO ASSIGN PACKET
@@ -86,7 +86,7 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO UPDATE PACKET
     packet.updatePacket =
-        (id, packetUniqueId,internalUserBranch, modifiedBy, appraiserId) => packet.update({ packetUniqueId,internalUserBranch, modifiedBy, appraiserId }, { where: { id, isActive: true, packetAssigned: false } });
+        (id, packetUniqueId, barcodeNumber, internalUserBranch, modifiedBy, appraiserId) => packet.update({ packetUniqueId, barcodeNumber, internalUserBranch, modifiedBy, appraiserId }, { where: { id, isActive: true, packetAssigned: false } });
 
     // FUNCTION TO REMOVE PACKET
     packet.removePacket =
