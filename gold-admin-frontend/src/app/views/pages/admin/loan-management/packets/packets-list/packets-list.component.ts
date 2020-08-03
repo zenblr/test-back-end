@@ -17,7 +17,7 @@ import { PacketAssignAppraiserComponent } from '../packet-assign-appraiser/packe
 })
 export class PacketsListComponent implements OnInit {
   dataSource: PacketsDatasource;
-  displayedColumns = ['select', 'packetUniqueId', 'internalBranch', 'appraiserName', 'customerID', 'loanId', 'actions'];
+  displayedColumns = ['select', 'packetUniqueId', 'barcode', 'internalBranch', 'appraiserName', 'customerID', 'loanId', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
