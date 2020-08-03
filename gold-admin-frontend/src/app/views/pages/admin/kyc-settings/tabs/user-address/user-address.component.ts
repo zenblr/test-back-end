@@ -64,7 +64,7 @@ export class UserAddressComponent implements OnInit {
         this.fb.group({
           addressType: ['permanent'],
           addressProofTypeId: ['', [Validators.required]],
-          addressProofNumber: [],
+          addressProofNumber: ['', [Validators.required]],
           address: ['', [Validators.required]],
           stateId: [this.customerDetails.stateId, [Validators.required]],
           cityId: [this.customerDetails.cityId, [Validators.required]],
@@ -76,7 +76,7 @@ export class UserAddressComponent implements OnInit {
         this.fb.group({
           addressType: ['residential'],
           addressProofTypeId: ['', [Validators.required]],
-          addressProofNumber: [],
+          addressProofNumber: ['', [Validators.required]],
           address: ['', [Validators.required]],
           stateId: ['', [Validators.required]],
           cityId: ['', [Validators.required]],

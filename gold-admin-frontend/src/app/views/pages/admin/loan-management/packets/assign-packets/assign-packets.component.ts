@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ChangeDetectorRef, AfterViewInit, ChangeDetectionStrategy, ElementRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -11,9 +11,10 @@ import { map, catchError } from 'rxjs/operators';
 @Component({
   selector: 'kt-assign-packets',
   templateUrl: './assign-packets.component.html',
-  styleUrls: ['./assign-packets.component.scss']
+  styleUrls: ['./assign-packets.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AssignPacketsComponent implements OnInit {
+export class AssignPacketsComponent implements OnInit, AfterViewInit {
 
   @ViewChild('tabGroup', { static: false }) tabGroup;
   packetForm: FormGroup;
@@ -32,7 +33,8 @@ export class AssignPacketsComponent implements OnInit {
     private packetsService: PacketsService,
     private sharedService: SharedService,
     private appraiserService: AppraiserService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private ele: ElementRef
   ) {
     this.details = this.sharedService.getDataFromStorage()
   }
@@ -43,17 +45,22 @@ export class AssignPacketsComponent implements OnInit {
     this.setForm();
   }
 
+
   setForm() {
     if (this.data.action == 'add') {
       this.title = 'Add New Packet'
-      // this.isMandatory = true
-
     } else if (this.data.action == 'edit') {
       this.getAllAppraiser()
       this.title = 'Edit Packet'
-      // this.isMandatory = true
-      // this.getPartnerById(this.data.partnerId);
       this.packetForm.patchValue(this.data.packetData);
+    }
+  }
+
+  ngAfterViewInit(): void {
+    if (this.data.action == 'edit') {
+      const matLabel = this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement
+      matLabel.style.display = "none"
+      this.ref.detectChanges()
     }
   }
 
@@ -117,26 +124,26 @@ export class AssignPacketsComponent implements OnInit {
           }
         });
       }
-    } else 
-    if (this.tabGroup.selectedIndex == 1) {
-      if (this.csvForm.invalid) {
-        this.csvForm.markAllAsTouched()
-        return
-      }
-      var fb = new FormData()
-      fb.append('packetcsv', this.file)
-      fb.append('internalUserBranch', this.csvForm.controls.internalUserBranch.value)
-      console.log(fb)
-      this.packetsService.uplaodCSV(fb).pipe(
-        map((res) => {
-          this.toastr.success('Packets Created Sucessfully');
-          this.dialogRef.close(res);
-        }), catchError(err => {
+    } else
+      if (this.tabGroup.selectedIndex == 1) {
+        if (this.csvForm.invalid) {
+          this.csvForm.markAllAsTouched()
+          return
+        }
+        var fb = new FormData()
+        fb.append('packetcsv', this.file)
+        fb.append('internalUserBranch', this.csvForm.controls.internalUserBranch.value)
+        console.log(fb)
+        this.packetsService.uplaodCSV(fb).pipe(
+          map((res) => {
+            this.toastr.success('Packets Created Sucessfully');
+            this.dialogRef.close(res);
+          }), catchError(err => {
 
-          this.ref.detectChanges();
-          throw (err)
-        })).subscribe()
-    }
+            this.ref.detectChanges();
+            throw (err)
+          })).subscribe()
+      }
   }
 
   getFileInfo(event) {
@@ -158,6 +165,7 @@ export class AssignPacketsComponent implements OnInit {
   getInternalBranhces() {
     this.packetsService.getInternalBranhces().subscribe(res => {
       this.branches = res.data;
+      this.ref.detectChanges()
     });
   }
 
