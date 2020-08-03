@@ -62,7 +62,8 @@ export class AssignPacketsComponent implements OnInit {
       id: [],
       packetUniqueId: ['', [Validators.required]],
       internalUserBranch: ['', [Validators.required]],
-      appraiserId: []
+      appraiserId: [],
+      barcodeNumber: ['', [Validators.required]]
     })
 
     this.csvForm = this.fb.group({

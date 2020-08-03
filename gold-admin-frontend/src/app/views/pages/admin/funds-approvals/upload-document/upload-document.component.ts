@@ -43,9 +43,9 @@ export class UploadDocumentComponent implements OnInit {
   initForm() {
     this.documentsForm = this.fb.group({
       partReleaseId: [],
-      documents: [],
+      documents: [, [Validators.required]],
       documentsName: [],
-      documentsImage: []
+      documentsImage: [, [Validators.required]]
     })
   }
 
@@ -94,15 +94,16 @@ export class UploadDocumentComponent implements OnInit {
   }
 
   preview(value) {
-    // if (typeof value == 'object') {
-    //   value = value[0]
-    // }
-    var ext = value.split('.')
+    let file = value
+    if (typeof file == 'object') {
+      file = file[0]
+    }
+    var ext = file.split('.')
     if (ext[ext.length - 1] == 'pdf') {
 
       this.dialog.open(PdfViewerComponent, {
         data: {
-          pdfSrc: value,
+          pdfSrc: file,
           page: 1,
           showAll: true
         },
@@ -112,7 +113,7 @@ export class UploadDocumentComponent implements OnInit {
     } else {
       this.dialog.open(ImagePreviewDialogComponent, {
         data: {
-          images: [value],
+          images: [file],
           index: 0
         },
         width: "auto"
@@ -121,7 +122,12 @@ export class UploadDocumentComponent implements OnInit {
 
   }
 
+  editImages(ref) {
+    this[ref].nativeElement.click()
+  }
+
   save() {
+    if (this.documentsForm.invalid) return this.toastr.error('Upload Customer Acknowledgement')
     this.partReleaseFinalService.uploadDocument(this.documentsForm.value).pipe(
       map(res => {
         this.toastr.success(res['message'])
