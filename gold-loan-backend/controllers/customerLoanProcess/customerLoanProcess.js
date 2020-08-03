@@ -508,7 +508,7 @@ exports.loanFinalLoan = async (req, res, next) => {
         interestTable[i]['modifiedBy'] = modifiedBy
         interestTable[i]['loanId'] = loanId
         interestTable[i]['interestAmount'] = interestTable[i].securedInterestAmount
-        interestTable[i]['balanceAmount'] = interestTable[i].securedInterestAmount
+        interestTable[i]['outstandingInterest'] = interestTable[i].securedInterestAmount
         interestTable[i]['masterLoanId'] = masterLoanId
         interestData.push(interestTable[i])
     }
@@ -545,7 +545,7 @@ exports.loanFinalLoan = async (req, res, next) => {
                     interestTable[i]['modifiedBy'] = modifiedBy
                     interestTable[i]['loanId'] = unsecuredLoan.id
                     interestTable[i]['interestAmount'] = interestTable[i].unsecuredInterestAmount
-                    interestTable[i]['balanceAmount'] = interestTable[i].unsecuredInterestAmount
+                    interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                     interestTable[i]['masterLoanId'] = masterLoanId
                     newUnsecuredInterestData.push(interestTable[i])
                 }
@@ -596,7 +596,7 @@ exports.loanFinalLoan = async (req, res, next) => {
                     interestTable[i]['modifiedBy'] = modifiedBy
                     interestTable[i]['loanId'] = getUnsecuredLoanId.unsecuredLoanId
                     interestTable[i]['interestAmount'] = interestTable[i].unsecuredInterestAmount
-                    interestTable[i]['balanceAmount'] = interestTable[i].unsecuredInterestAmount
+                    interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                     interestTable[i]['masterLoanId'] = masterLoanId
                     unsecuredInterestData.push(interestTable[i])
                 }
@@ -620,7 +620,7 @@ exports.loanFinalLoan = async (req, res, next) => {
                         interestTable[i]['modifiedBy'] = modifiedBy
                         interestTable[i]['loanId'] = unsecuredLoan.id
                         interestTable[i]['interestAmount'] = interestTable[i].unsecuredInterestAmount
-                        interestTable[i]['balanceAmount'] = interestTable[i].unsecuredInterestAmount
+                        interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                         interestTable[i]['masterLoanId'] = masterLoanId
                         newUnsecuredInterestData.push(interestTable[i])
                     }

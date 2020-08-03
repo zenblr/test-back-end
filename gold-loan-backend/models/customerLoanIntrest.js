@@ -19,10 +19,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'interest_amount',
         },
-        balanceAmount: {
-            type: DataTypes.FLOAT,
-            field: 'balance_amount',
-        },
         paidAmount: {
             type: DataTypes.FLOAT,
             field: 'paid_amount',
