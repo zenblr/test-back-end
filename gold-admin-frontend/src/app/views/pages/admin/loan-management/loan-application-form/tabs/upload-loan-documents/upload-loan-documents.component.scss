@@ -1,4 +1,14 @@
 :host {
+	.iframeWrapper{
+		display:inline-block;
+		position:relative;
+	  }
+	  
+	  .iframeWrapper iframe{
+		vertical-align:top;
+		pointer-events: none;
+	  }
+	  
 	iframe {
 		pointer-events: none;
 		display: block;
@@ -21,13 +31,13 @@
 		z-index: 2;
 	}
 	
-	.edit-icon:hover{
-		background-color: red !important;
-		.edit-width {
-			min-width: 230px;
-			max-width: 250px;
-			z-index: 999 !important;
-			}
-	}
+	// .edit-icon:hover{
+	// 	background-color: red !important;
+	// 	.edit-width {
+	// 		min-width: 230px;
+	// 		max-width: 250px;
+	// 		z-index: 999 !important;
+	// 		}
+	// }
 	
 }

@@ -1,5 +1,5 @@
 <!-- <kt-modal-header *ngIf="!viewOnly" [title]='"KYC Details"' (action)="action()"></kt-modal-header> -->
-<div class="kt-padding-l-10">
+<div class="kt-padding-l-10 kt-padding-r-10" style="background: #fff">
     <mat-tab-group [formGroup]="ornamentsForm" class="position-relative" [(selectedIndex)]="selected">
         <mat-tab formArrayName="ornamentData" *ngFor="let ornament of OrnamentsData.controls;index as idx">
             <ng-template mat-tab-label>
@@ -338,7 +338,7 @@
                         </div>
 
                     </div>
-                    <div class="row">
+                    <div class="row kt-margin-b-15">
 
 
                         <!-- <div class="col-6">

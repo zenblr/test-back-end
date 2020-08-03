@@ -156,7 +156,8 @@
                                         <select class="form-control" formControlName="amountStatus"
                                             [class.isError]="controls.amountStatus.touched && controls.amountStatus.invalid">
                                             <option value="" disabled selected>Select Status</option>
-                                            <option *ngFor="let stat of amountStatus" [value]="stat">
+                                            <option *ngFor="let stat of amountStatus" [disabled]="stat == 'pending'"
+                                                [value]="stat">
                                                 {{stat | titlecase}}
                                             </option>
                                         </select>

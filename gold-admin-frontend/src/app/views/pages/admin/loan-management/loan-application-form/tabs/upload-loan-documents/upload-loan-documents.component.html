@@ -123,7 +123,11 @@
                                 class="placeholder-image">
                         </div>
 
-                        
+                        <!-- <div class="edit-width">
+                            <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
+                                *ngIf="isEdit && controls?.pawnCopyImage?.value"
+                                (click)="editImages('pawnCopy');">
+                        </div> -->
 
                         <div class="" *ngIf="controls?.loanAgreementCopyImage?.value">
                             <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
@@ -133,10 +137,15 @@
                                 <img class="edit-icon" src="../../../../../assets/media/icons/edit.svg"
                                     *ngIf="isEdit && controls?.loanAgreementCopyImage?.value"
                                     (click)="editImages('loanAgreementCopy')">
-                                <iframe [src]="controls?.loanAgreementCopyImage.value | safe : 'resourceUrl'"
-                                    height="250" width="290" scrolling="no" *ngIf="pdf.loanAgreementCopy"></iframe>
+                                <div class="iframeWrapper" (click)="preview(controls?.loanAgreementCopyImage?.value)">
+                                    <iframe [src]="controls?.loanAgreementCopyImage.value | safe : 'resourceUrl'"
+                                        height="250" width="290" scrolling="no" *ngIf="pdf.loanAgreementCopy"></iframe>
+                                </div>
                             </div>
                         </div>
+                        <!-- <img src="../../../../../assets/media/icons/edit.svg"
+                            *ngIf="isEdit && controls?.loanAgreementCopyImage?.value" alt=""
+                            class="kt-pointer edit-icon" (click)="editImages('loanAgreementCopy');"> -->
                     </div>
                 </div>
 
@@ -149,7 +158,11 @@
                                 class="placeholder-image">
                         </div>
 
-                       
+                        <!-- <div class="edit-width">
+                            <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
+                                *ngIf="isEdit && controls?.pawnCopyImage?.value"
+                                (click)="editImages('pawnCopy');">
+                        </div> -->
 
 
                         <div class="" *ngIf="controls?.pawnCopyImage?.value">
@@ -159,8 +172,11 @@
 
                                 <img class="edit-icon kt-pointer" src="../../../../../assets/media/icons/edit.svg"
                                     (click)="editImages('pawnCopy')" *ngIf="isEdit && controls?.pawnCopyImage?.value">
-                                <iframe [src]="controls?.pawnCopyImage?.value | safe : 'resourceUrl'" height="250"
-                                    width="290" scrolling="no" *ngIf="pdf.pawnCopy" class="position-relative"></iframe>
+                                <div class="iframeWrapper" (click)="preview(controls?.pawnCopyImage?.value)">
+                                    <iframe [src]="controls?.pawnCopyImage?.value | safe : 'resourceUrl'" height="250"
+                                        width="290" scrolling="no" *ngIf="pdf.pawnCopy"
+                                        class="position-relative"></iframe>
+                                </div>
                                 <!-- <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.pawnCopy"
                                     [pdfSrc]="controls?.pawnCopyImage.value"
                                     (click)="preview(controls?.pawnCopyImage.value)"></kt-pdf-viewer> -->
@@ -193,9 +209,12 @@
                                     class="kt-pointer edit-icon"
                                     *ngIf="isEdit && controls?.schemeConfirmationCopyImage?.value"
                                     (click)="editImages('schemeConfirmationCopy');">
-                                <iframe *ngIf="pdf.schemeConfirmationCopy"
-                                    [src]="controls?.schemeConfirmationCopyImage?.value | safe : 'resourceUrl'"
-                                    height="250" width="290" scrolling="no"></iframe>
+                                <div class="iframeWrapper"
+                                    (click)="preview(controls?.schemeConfirmationCopyImage?.value)">
+                                    <iframe *ngIf="pdf.schemeConfirmationCopy"
+                                        [src]="controls?.schemeConfirmationCopyImage?.value | safe : 'resourceUrl'"
+                                        height="250" width="290" scrolling="no"></iframe>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -224,9 +243,11 @@
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     *ngIf="isEdit && controls?.signedChequeImage?.value" class="kt-pointer edit-icon"
                                     (click)="editImages('signedCheque');">
-                                <iframe *ngIf="pdf.signedCheque"
-                                    [src]="controls?.signedChequeImage?.value | safe : 'resourceUrl'" height="250"
-                                    width="290" scrolling="no"></iframe>
+                                <div class="iframeWrapper" (click)="preview(controls?.signedChequeImage?.value)">
+                                    <iframe *ngIf="pdf.signedCheque"
+                                        [src]="controls?.signedChequeImage?.value | safe : 'resourceUrl'" height="250"
+                                        width="290" scrolling="no"></iframe>
+                                </div>
                                 <!-- <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.signedCheque"
                                     [pdfSrc]="controls?.signedChequeImage.value"
                                     (click)="preview(controls?.signedChequeImage.value)"></kt-pdf-viewer> -->
@@ -259,9 +280,11 @@
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     class="kt-pointer edit-icon" *ngIf="isEdit && controls?.declarationCopyImage?.value"
                                     (click)="editImages('declaration');">
-                                <iframe *ngIf="pdf.declaration"
-                                    [src]="controls?.declarationCopyImage?.value | safe : 'resourceUrl'" height="250"
-                                    width="290" scrolling="no"></iframe>
+                                <div class="iframeWrapper" (click)="preview(controls?.declarationCopyImage?.value)">
+                                    <iframe *ngIf="pdf.declaration"
+                                        [src]="controls?.declarationCopyImage?.value | safe : 'resourceUrl'"
+                                        height="250" width="290" scrolling="no"></iframe>
+                                </div>
 
                             </div>
                         </div>

@@ -48,7 +48,7 @@
 
                 <ng-container matColumnDef="tenure">
                     <mat-header-cell *matHeaderCellDef>Tenure</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.masterLoan.tenure}}
+                    <mat-cell *matCellDef="let item">{{item.masterLoan.tenure}}&nbsp;
                         <span *ngIf="item.masterLoan.tenure == 1">Month</span>
                         <span *ngIf="item.masterLoan.tenure != 1">Months</span>
                     </mat-cell>
@@ -57,11 +57,6 @@
                 <ng-container matColumnDef="principalAmount">
                     <mat-header-cell *matHeaderCellDef>Principal Outstanding Amount</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.masterLoan.outstandingAmount }}</mat-cell>
-                </ng-container>
-
-                <ng-container matColumnDef="releaseDate">
-                    <mat-header-cell *matHeaderCellDef>Release Date</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.releaseDate | date:'mediumDate'}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="status">
@@ -91,22 +86,22 @@
                         <div>Net Weight</div>
                         <div>(Remaining Ornament)</div>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.remainingNetWeight}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.remainingNetWeight}} gm</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="netWeightReleaseOrnament">
                     <mat-header-cell *matHeaderCellDef>
                         <div>Net Weight</div>
                         <div>(Release Ornament)</div>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.releaseNetWeight}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.releaseNetWeight}} gm</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="totalDeductionWeight">
                     <mat-header-cell *matHeaderCellDef>Total Deduction Weight</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.releaseDeductionWeight}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.releaseDeductionWeight}} gm</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="totalGrossWeight">
                     <mat-header-cell *matHeaderCellDef>Total Gross Weight</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.releaseGrossWeight}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.releaseGrossWeight}} gm</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="ornaments">
@@ -131,7 +126,7 @@
                                 (click)="updateDocument(item)">Upload
                                 Documents
                             </button>
-                            <button *ngIf="item.documents" style="width: 130px;" class="apply-kyc"
+                            <button *ngIf="item.documents && !item.newLoanId" style="width: 130px;" class="apply-kyc"
                                 (click)="newLoan(item)">New Loan
                             </button>
                         </ng-container>
