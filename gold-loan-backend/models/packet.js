@@ -74,10 +74,9 @@ module.exports = (sequelize, DataTypes) => {
 
     // FUNCTION TO ADD PACKET
     packet.addPacket =
-        (packetUniqueId, barcodeNumber, createdBy, modifiedBy, internalUserBranch, barcodeNumber) => packet.create({
-            packetUniqueId, barcodeNumber, createdBy, modifiedBy, internalUserBranch, packetAssigned: false, isActive: true, barcodeNumber
+        (packetUniqueId, barcodeNumber, createdBy, modifiedBy, internalUserBranch) => packet.create({
+            packetUniqueId, createdBy, modifiedBy, internalUserBranch, packetAssigned: false, isActive: true, barcodeNumber
         });
-
     // FUNCTION TO ASSIGN PACKET
     packet.assignPacket =
         (customerId, loanId, modifiedBy, id) => packet.update({
