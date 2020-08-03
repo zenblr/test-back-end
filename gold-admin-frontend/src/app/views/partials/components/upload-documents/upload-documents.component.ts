@@ -25,6 +25,7 @@ export class UploadDocumentsComponent implements OnInit {
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() stage: EventEmitter<any> = new EventEmitter();
   @Input() loanDocumnets
+  @Input() scrapDocuments
   @Input() acknowledgmentDocuments;
   @Input() masterAndLoanIds;
   @Input() scrapIds;
@@ -38,18 +39,25 @@ export class UploadDocumentsComponent implements OnInit {
   @ViewChild('declaration', { static: false }) declaration
   @ViewChild('xrfMachineReading', { static: false }) xrfMachineReading
   @ViewChild('customerConfirmation', { static: false }) customerConfirmation
+  @ViewChild('purchaseVoucher', { static: false }) purchaseVoucher
+  @ViewChild('purchaseInvoice', { static: false }) purchaseInvoice
+  @ViewChild('saleInvoice', { static: false }) saleInvoice
   pdf = {
     loanAgreementCopy: false,
     pawnCopy: false,
     schemeConfirmationCopy: false,
     signedCheque: false,
     declaration: false,
-    customerConfirmation: false
+    customerConfirmation: false,
+    purchaseVoucher: false,
+    purchaseInvoice: false,
+    saleInvoice: false
   }
   documentsForm: FormGroup
   show: boolean;
   showLoanFlag = false;
   showLoanTransferFlag = false;
+  showScrapFlag = false;
   showScrapAcknowledgementFlag = false;
   url: string;
   buttonName: string;
@@ -121,7 +129,6 @@ export class UploadDocumentsComponent implements OnInit {
     }
     if (changes.acknowledgmentDocuments && changes.acknowledgmentDocuments.currentValue) {
       let documents = changes.acknowledgmentDocuments.currentValue.customerScrapAcknowledgement
-
       if (documents && documents.customerConfirmation.length) {
         this.documentsForm.patchValue({
           processingCharges: documents.processingCharges,
@@ -129,6 +136,24 @@ export class UploadDocumentsComponent implements OnInit {
           customerConfirmation: documents.customerConfirmation[0],
           customerConfirmationImage: documents.customerConfirmation[0],
           customerConfirmationStatus: documents.customerConfirmationStatus
+        })
+        this.pdfCheck();
+        // this.isEdit = false
+      }
+    }
+    if (changes.scrapDocuments && changes.scrapDocuments.currentValue) {
+      this.showLoanFlag = false;
+      this.showScrapFlag = true;
+      this.validation();
+      let documents = changes.scrapDocuments.currentValue.scrapDocument
+      if (documents) {
+        this.documentsForm.patchValue({
+          purchaseVoucher: documents.purchaseVoucherImage[0],
+          purchaseVoucherImage: documents.purchaseVoucherImage[0],
+          purchaseInvoice: documents.purchaseInvoiceImage[0],
+          purchaseInvoiceImage: documents.purchaseInvoiceImage[0],
+          saleInvoice: documents.saleInvoiceImage[0],
+          saleInvoiceImage: documents.saleInvoiceImage[0],
         })
         this.pdfCheck();
         // this.isEdit = false
@@ -230,12 +255,23 @@ export class UploadDocumentsComponent implements OnInit {
       loanAgreementCopyImage: [],
       pawnCopyImage: [],
       schemeConfirmationCopyImage: [],
+      //acknowledgment
       processingCharges: [],
       standardDeduction: [''],
       customerConfirmation: [],
       customerConfirmationImage: [],
       customerConfirmationImageName: [],
       customerConfirmationStatus: [],
+      //scrap
+      purchaseVoucher: [],
+      purchaseVoucherImage: [],
+      purchaseVoucherImageName: [],
+      purchaseInvoice: [],
+      purchaseInvoiceImage: [],
+      purchaseInvoiceImageName: [],
+      saleInvoice: [],
+      saleInvoiceImage: [],
+      saleInvoiceImageName: [],
     })
     this.validation()
   }
@@ -261,6 +297,15 @@ export class UploadDocumentsComponent implements OnInit {
         this.documentsForm.controls.standardDeduction.updateValueAndValidity()
       this.documentsForm.controls.customerConfirmationStatus.setValidators(Validators.required),
         this.documentsForm.controls.customerConfirmationStatus.updateValueAndValidity()
+    } else if (this.showScrapFlag) {
+      this.documentsForm.controls.pawnCopy.setValidators([]),
+        this.documentsForm.controls.pawnCopy.updateValueAndValidity()
+      this.documentsForm.controls.loanAgreementCopy.setValidators([]),
+        this.documentsForm.controls.loanAgreementCopy.updateValueAndValidity()
+      this.documentsForm.controls.schemeConfirmationCopy.setValidators([]),
+        this.documentsForm.controls.schemeConfirmationCopy.updateValueAndValidity()
+      this.documentsForm.controls.purchaseVoucher.setValidators(Validators.required),
+        this.documentsForm.controls.purchaseVoucher.updateValueAndValidity()
     } else {
       this.documentsForm.controls.loanAgreementCopy.setValidators(Validators.required),
         this.documentsForm.controls.loanAgreementCopy.updateValueAndValidity()
@@ -284,7 +329,12 @@ export class UploadDocumentsComponent implements OnInit {
       || ext[ext.length - 1] == 'jpeg' || ext[ext.length - 1] == 'pdf') {
       const controls = this.documentsForm.controls;
       let params;
-      if (this.scrapIds) {
+      if (this.showScrapAcknowledgementFlag) {
+        params = {
+          reason: 'acknowledgement',
+          scrapId: this.scrapIds.scrapId
+        }
+      } else if (this.showScrapFlag) {
         params = {
           reason: 'acknowledgement',
           scrapId: this.scrapIds.scrapId
@@ -321,6 +371,18 @@ export class UploadDocumentsComponent implements OnInit {
             controls.customerConfirmation.patchValue([res.uploadFile.path])
             controls.customerConfirmationImageName.patchValue(res.uploadFile.originalname)
             controls.customerConfirmationImage.patchValue(res.uploadFile.URL)
+          } else if (value == 'purchaseVoucher') {
+            controls.purchaseVoucher.patchValue([res.uploadFile.path])
+            controls.purchaseVoucherImageName.patchValue(res.uploadFile.originalname)
+            controls.purchaseVoucherImage.patchValue(res.uploadFile.URL)
+          } else if (value == 'purchaseInvoice') {
+            controls.purchaseInvoice.patchValue([res.uploadFile.path])
+            controls.purchaseInvoiceImageName.patchValue(res.uploadFile.originalname)
+            controls.purchaseInvoiceImage.patchValue(res.uploadFile.URL)
+          } else if (value == 'saleInvoice') {
+            controls.saleInvoice.patchValue([res.uploadFile.path])
+            controls.saleInvoiceImageName.patchValue(res.uploadFile.originalname)
+            controls.saleInvoiceImage.patchValue(res.uploadFile.URL)
           }
           if (ext[ext.length - 1] == 'pdf') {
             this.pdf[value] = true
@@ -367,7 +429,7 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   ExportAsPdf() {
-    this.loanService.getPdf(this.masterAndLoanIds.masterLoanId).subscribe(res=>{
+    this.loanService.getPdf(this.masterAndLoanIds.masterLoanId).subscribe(res => {
 
     })
   }
@@ -411,6 +473,12 @@ export class UploadDocumentsComponent implements OnInit {
             this.stage.emit(res.scrapCurrentStage)
             this.next.emit(stage)
           }
+        })).subscribe();
+    } else if (this.showScrapFlag) {
+      this.scrapApplicationFormService.uploadDocuments(this.documentsForm.value, this.scrapIds).pipe(
+        map(res => {
+          this.toastr.success(res.message)
+          this.router.navigate(['/admin/scrap-management/applied-scrap'])
         })).subscribe();
     } else {
       this.loanService.uploadDocuments(this.documentsForm.value, this.masterAndLoanIds).pipe(

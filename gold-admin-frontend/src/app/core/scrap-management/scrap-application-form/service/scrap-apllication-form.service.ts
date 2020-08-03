@@ -91,6 +91,13 @@ export class ScrapApplicationFormService {
     )
   }
 
+  uploadDocuments(details, scrapIds): Observable<any> {
+    let data = { ...details, ...scrapIds }
+    return this.http.post(`/api/scrap/scrap-process/scrap-documents`, data).pipe(
+      map(res => res)
+    )
+  }
+
   checkForLoanType(data): Observable<any> {
     return this.http.post(`/api/loan-process/check-loan-type`, data).pipe(
       map(res => res)
@@ -105,13 +112,6 @@ export class ScrapApplicationFormService {
 
   updateLoan(id, data): Observable<any> {
     return this.http.put(`/api/loan-process/change-loan-detail/${id}`, data).pipe(
-      map(res => res)
-    )
-  }
-
-  uploadDocuments(details, masterAndLoanIds): Observable<any> {
-    let data = { ...details, ...masterAndLoanIds }
-    return this.http.post(`/api/loan-process/loan-documents`, data).pipe(
       map(res => res)
     )
   }

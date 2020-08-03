@@ -118,12 +118,12 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
 
     } else if (stage == 8) {
       this.controls.scrapStatusForAppraiser.disable()
-      this.controls.loanStatusForBM.disable()
+      this.controls.scrapStatusForBM.disable()
       this.viewBMForm = true;
 
     } else if (stage == 7) {
       this.controls.scrapStatusForAppraiser.disable()
-      this.controls.loanStatusForBM.disable()
+      this.controls.scrapStatusForBM.disable()
       this.viewOpertaionalForm = true;
       this.viewBMForm = true;
 
@@ -217,8 +217,6 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
         this.approvalForm.controls.scrapStatusForBM.patchValue(changes.scrapDetails.currentValue.scrapStatusForBM)
         this.approvalForm.controls.scrapStatusForBM.patchValue(changes.scrapDetails.currentValue.scrapStatusForBM)
         console.log(this.approvalForm.value)
-        // this.statusAppraiser()
-        // this.statusBM()
         this.ref.detectChanges()
 
       }
@@ -294,7 +292,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   statusAppraiser() {
-    if(this.scrapIds) {
+    if (this.scrapIds) {
       if (this.controls.scrapStatusForAppraiser.value != 'approved') {
         this.controls.reasons.setValidators(Validators.required);
         this.controls.reasons.updateValueAndValidity()
@@ -349,15 +347,28 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   statusBM() {
-    if (this.controls.loanStatusForBM.value != 'approved' && this.controls.loanStatusForBM.value != 'pending') {
-      this.controls.commentByBM.setValidators(Validators.required);
-      this.controls.commentByBM.updateValueAndValidity()
+    if (this.scrapIds) {
+      if (this.controls.scrapStatusForBM.value != 'approved' && this.controls.scrapStatusForBM.value != 'pending') {
+        this.controls.commentByBM.setValidators(Validators.required);
+        this.controls.commentByBM.updateValueAndValidity()
+      } else {
+        this.controls.commentByBM.reset();
+        this.controls.commentByBM.clearValidators();
+        this.controls.commentByBM.updateValueAndValidity();
+        this.controls.commentByBM.markAsUntouched()
+        this.resetBM()
+      }
     } else {
-      this.controls.commentByBM.reset();
-      this.controls.commentByBM.clearValidators();
-      this.controls.commentByBM.updateValueAndValidity();
-      this.controls.commentByBM.markAsUntouched()
-      this.resetBM()
+      if (this.controls.loanStatusForBM.value != 'approved' && this.controls.loanStatusForBM.value != 'pending') {
+        this.controls.commentByBM.setValidators(Validators.required);
+        this.controls.commentByBM.updateValueAndValidity()
+      } else {
+        this.controls.commentByBM.reset();
+        this.controls.commentByBM.clearValidators();
+        this.controls.commentByBM.updateValueAndValidity();
+        this.controls.commentByBM.markAsUntouched()
+        this.resetBM()
+      }
     }
     this.ref.markForCheck()
   }
@@ -382,19 +393,19 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     }
     if (this.scrapIds) {
       if (this.stage == 2) {
-        this.loanFormService.bmRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
+        this.scrapApplicationFormService.bmRating(this.approvalForm.value, this.scrapIds).pipe(
           map(res => {
-            this.router.navigate(['/admin/loan-management/applied-loan'])
+            this.router.navigate(['/admin/scrap-management/applied-scrap'])
           })).subscribe()
       } else if (this.stage == 7) {
-        this.loanFormService.opsRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
+        this.scrapApplicationFormService.opsRating(this.approvalForm.value, this.scrapIds).pipe(
           map(res => {
-            if (this.approvalForm.controls.loanStatusForOperatinalTeam.value == 'approved') {
+            if (this.approvalForm.controls.scrapStatusForOperatinalTeam.value == 'approved') {
               this.disableForm(4)
               this.stage = 4
               this.disbursal.emit(4)
             }
-            this.router.navigate(['/admin/loan-management/applied-loan'])
+            this.router.navigate(['/admin/scrap-management/applied-scrap'])
           })).subscribe()
       } else if (this.stage == 1 || this.stage == 6) {
         this.scrapApplicationFormService.appraiserRating(this.approvalForm.value, this.scrapIds).pipe(

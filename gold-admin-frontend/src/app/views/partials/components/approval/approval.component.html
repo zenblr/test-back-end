@@ -108,7 +108,22 @@
                                     *ngIf="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
                                     Field Required</mat-error>
                             </td>
-                            <td class="rating-bm" *ngIf="viewBMForm || url == 'view-loan'">
+                            <td class="rating-bm" *ngIf="scrapIds && (viewBMForm || url == 'view-loan')">
+                                <select class="form-control" formControlName="scrapStatusForBM"
+                                    (change)="resetBM();statusBM()"
+                                    [class.isError]="controls.scrapStatusForBM.invalid && controls.scrapStatusForBM.touched">
+                                    <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
+                                    <option [value]="status.value" [disabled]="checkforApprovalBM(status)"
+                                        *ngFor="let status of branchManager">
+                                        {{status.name | titlecase}}</option>
+                                </select>
+
+                                <mat-error
+                                    *ngIf="controls.scrapStatusForBM.invalid && controls.scrapStatusForBM.touched">
+                                    Field
+                                    Required</mat-error>
+                            </td>
+                            <td class="rating-bm" *ngIf="!scrapIds && (viewBMForm || url == 'view-loan')">
                                 <select class="form-control" formControlName="loanStatusForBM"
                                     (change)="resetBM();statusBM()"
                                     [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
@@ -142,12 +157,16 @@
             </div>
         </div>
 
-        <div class="row justify-content-center"
-            *ngIf="stage == 7 && controls.loanStatusForBM.value == 'incomplete' && controls.commentByBM.value">
+        <div class="row justify-content-center" *ngIf="(stage == 7 && controls.loanStatusForBM.value == 'incomplete' && controls.commentByBM.value) ||
+            (stage == 7 && controls.scrapStatusForBM.value == 'incomplete' && controls.commentByBM.value)">
             <div class="col-7">
                 <div class="row">
                     <div class="col-4">
-                        <label for="">Reason for {{controls.loanStatusForBM.value | titlecase}} <br> (Branch
+                        <label for="" *ngIf="controls?.loanStatusForBM?.value">Reason for
+                            {{controls.loanStatusForBM.value | titlecase}} <br> (Branch
+                            Manager)</label>
+                        <label for="" *ngIf="controls?.scrapStatusForBM?.value">Reason for
+                            {{controls.scrapStatusForBM.value | titlecase}} <br> (Branch
                             Manager)</label>
                     </div>
                     <div class="col-8 kt-padding-10">
@@ -219,10 +238,10 @@
             </div>
         </div>
         <div class="row justify-content-center "
-            *ngIf="stage == 5 && controls.loanStatusForBM.value != 'pending' && controls.loanStatusForBM.value != 'approved'">
+            *ngIf="(stage == 5 && controls.loanStatusForBM.value != 'pending' && controls.loanStatusForBM.value != 'approved') ||
+            (stage == 5 && controls.scrapStatusForBM.value != 'pending' && controls.scrapStatusForBM.value != 'approved')">
             <div class="col-8">
                 <mat-form-field class="w-100">
-
                     <textarea cols="4" rows="3" matInput formControlName="commentByBM"
                         placeholder="Reason By Branch Manager"></textarea>
                     <mat-error>Field Required
