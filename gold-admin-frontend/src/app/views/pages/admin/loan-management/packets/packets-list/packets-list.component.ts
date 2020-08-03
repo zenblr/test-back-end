@@ -17,7 +17,7 @@ import { PacketAssignAppraiserComponent } from '../packet-assign-appraiser/packe
 })
 export class PacketsListComponent implements OnInit {
   dataSource: PacketsDatasource;
-  displayedColumns = ['select', 'packetUniqueId', 'internalBranch', 'appraiserName', 'customerID', 'loanId', 'actions'];
+  displayedColumns = ['select', 'packetUniqueId', 'barcode', 'internalBranch', 'appraiserName', 'customerID', 'loanId', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -111,7 +111,7 @@ export class PacketsListComponent implements OnInit {
   addPackets() {
     const dialogRef = this.dialog.open(AssignPacketsComponent, {
       data: { action: 'add' },
-      width: '400px'
+      width: '600px'
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -125,7 +125,7 @@ export class PacketsListComponent implements OnInit {
     const dialogRef = this.dialog.open(AssignPacketsComponent,
       {
         data: { packetData: role, action: 'edit' },
-        width: '400px'
+        width: '600px'
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
