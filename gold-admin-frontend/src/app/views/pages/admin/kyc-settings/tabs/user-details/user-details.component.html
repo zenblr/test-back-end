@@ -126,7 +126,7 @@
 							<label class="mandatory  text-color font-weight-500">PAN / FORM 60 </label>
 						</div>
 						<div class="col-8">
-							<select class="form-control" formControlName="panType">
+							<select class="form-control" formControlName="panType" (change)='remove()'>
 								<option value=null selected disabled>Select</option>
 								<option value="pan">PAN</option>
 								<option value="form60">FORM 60</option>
@@ -207,9 +207,9 @@
 						</div> -->
 					</div>
 
-					<div class="row kt-margin-t-20 kt-margin-b-20" *ngIf="controls.panType.value">
+					<div class="row kt-margin-t-20 kt-margin-b-20" *ngIf="controls.panType.value" >
 						<div class="col offset-4">
-							<div class="img-container">
+							<div class="img-container" *ngIf="!controls.panImg.value">
 								<img *ngIf="!controls.panImg.value" class=""
 									src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
 								<img class="fetched-image" *ngIf="controls.panImg.value" [src]="controls.panImg.value"

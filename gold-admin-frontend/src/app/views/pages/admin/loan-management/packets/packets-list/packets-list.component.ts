@@ -111,7 +111,7 @@ export class PacketsListComponent implements OnInit {
   addPackets() {
     const dialogRef = this.dialog.open(AssignPacketsComponent, {
       data: { action: 'add' },
-      width: '400px'
+      width: '600px'
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -125,7 +125,7 @@ export class PacketsListComponent implements OnInit {
     const dialogRef = this.dialog.open(AssignPacketsComponent,
       {
         data: { packetData: role, action: 'edit' },
-        width: '400px'
+        width: '600px'
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
