@@ -11,7 +11,7 @@ const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB
 //  FUNCTION FOR ADD PACKET
 exports.addPacket = async (req, res, next) => {
 
-    let { packetUniqueId, internalUserBranch } = req.body;
+    let { packetUniqueId, internalUserBranch,barcodeNumber } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
 
@@ -21,7 +21,7 @@ exports.addPacket = async (req, res, next) => {
         return res.status(400).json({ message: `This packet Id is already exist` })
     }
     let packetAdded = await models.packet.addPacket(
-        packetUniqueId, createdBy, modifiedBy, internalUserBranch);
+        packetUniqueId, createdBy, modifiedBy, internalUserBranch,barcodeNumber);
     res.status(201).json({ message: 'you adeed packet successfully' });
 }
 
@@ -152,10 +152,10 @@ exports.assignPacket = async (req, res, next) => {
 // FUNCTION TO UPDATE PACKET
 exports.changePacket = async (req, res, next) => {
     let id = req.params.id;
-    let { packetUniqueId, internalUserBranch ,appraiserId } = req.body;
+    let { packetUniqueId, internalUserBranch ,appraiserId ,barcodeNumber} = req.body;
     let modifiedBy = req.userData.id;
 
-    let packet = await models.packet.updatePacket(id, packetUniqueId, internalUserBranch, modifiedBy, appraiserId);
+    let packet = await models.packet.updatePacket(id, packetUniqueId, internalUserBranch, modifiedBy, appraiserId,barcodeNumber);
 
     if (packet[0] == 0) {
         return res.status(404).json({ message: "packet not update" });
