@@ -114,7 +114,7 @@ exports.loanTransferDocuments = async (req, res, next) => {
 
 exports.loanTransferAppraiserRating = async (req, res, next) => {
 
-    let { loanTransferStatusForAppraiser, loanId, masterLoanId } = req.body
+    let { loanTransferStatusForAppraiser,reasonByAppraiser, loanId, masterLoanId } = req.body
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
 
@@ -132,10 +132,14 @@ exports.loanTransferAppraiserRating = async (req, res, next) => {
                     await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.APPRAISER_RATING_APPROVED, createdBy, modifiedBy }, { transaction: t })
                     return res.status(200).json({ message: 'success', masterLoanId, loanId, loanCurrentStage:'4' })
                 } else if (loanTransferStatusForAppraiser == "pending") {
-                    await models.customerLoanTransfer.update({ loanTransferStatusForAppraiser, modifiedBy,loanTransferCurrentStage: '3' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
+                    await models.customerLoanTransfer.update({ loanTransferStatusForAppraiser,reasonByAppraiser, modifiedBy,loanTransferCurrentStage: '3' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                     await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.APPRAISER_RATING_PENDING, createdBy, modifiedBy }, { transaction: t })
                     return res.status(200).json({ message: 'success', masterLoanId, loanId,loanCurrentStage:'3' })
-                } 
+                } else if (loanTransferStatusForAppraiser == "rejected") {
+                    await models.customerLoanTransfer.update({ loanTransferStatusForAppraiser,reasonByAppraiser, modifiedBy,loanTransferCurrentStage: '3' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
+                    await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.APPRAISER_RATING_REJECTED, createdBy, modifiedBy }, { transaction: t })
+                    return res.status(200).json({ message: 'success', masterLoanId, loanId,loanCurrentStage:'3' })
+                }
             } else {
                 return res.status(400).json({ message: 'You cannot change status for this customer' })
             }
@@ -224,7 +228,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 include: [{
                     model: models.customerLoanTransfer,
                     as: "loanTransfer",
-                    attributes:['id','transferredLoanId','loanTransferStatusForAppraiser','disbursedLoanAmount','transactionId','loanTransferStatusForBM','reasonByBM','pawnTicket','signedCheque','declaration','outstandingLoanAmount','loanTransferCurrentStage','isLoanApplied']
+                    attributes:['id','transferredLoanId','reasonByAppraiser','loanTransferStatusForAppraiser','disbursedLoanAmount','transactionId','loanTransferStatusForBM','reasonByBM','pawnTicket','signedCheque','declaration','outstandingLoanAmount','loanTransferCurrentStage','isLoanApplied']
                 }]
             },
             {

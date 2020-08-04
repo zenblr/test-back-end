@@ -8,4 +8,5 @@ module.exports = {
     LOAN_DISBURSEMENT: "Paid the outstanding loan amount to the existing loan company",
     APPRAISER_RATING_APPROVED: "Loan transfer approved by Appraiser",
     APPRAISER_RATING_PENDING : "Loan transfer status changed to incomplete by Appraiser",
+    APPRAISER_RATING_REJECTED : "Loan transfer status changed to rejected by Appraiser",
 }
