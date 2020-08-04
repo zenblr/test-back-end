@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         scrapUniqieId: {
             type: DataTypes.STRING,
-            field: 'scrap_uniqie_id'
+            field: 'scrap_unique_id'
         },
         applicationFormForAppraiser: {
             type: DataTypes.BOOLEAN,
@@ -154,6 +154,7 @@ module.exports = (sequelize, DataTypes) => {
         CustomerScrap.hasOne(models.customerScrapDocument, { foreignKey: "scrapId", as: "scrapDocument" });
         CustomerScrap.hasMany(models.customerScrapPackageDetails, { foreignKey: 'scrapId', as: 'scrapPacketDetails' });
         CustomerScrap.hasMany(models.scrapPacket, { foreignKey: 'scrapId', as: 'scrapPacket' });
+        CustomerScrap.hasOne(models.customerScrapDisbursement, {foreignKey: 'scrapId', as: 'scrapDisbursement'})
     }
 
     CustomerScrap.prototype.toJSON = function () {
@@ -246,6 +247,24 @@ module.exports = (sequelize, DataTypes) => {
                 saleInvoice.push(image);
             }
             values.scrapDocument.saleInvoice = saleInvoice;
+        }
+        if(values.scrapPacketDetails ){
+            console.log(values.scrapPacketDetails);
+            for(let data of values.scrapPacketDetails){
+                if(data.emptyPacketWithRefiningOrnament){
+                    let packetData = process.env.BASE_URL + data.emptyPacketWithRefiningOrnament;
+                    data.emptyPacketWithNoOrnamentImage = packetData;
+                }
+                if(data.sealedPacketWithWeight){
+                    let packetData = process.env.BASE_URL + data.sealedPacketWithWeight;
+                    data.sealingPacketWithWeightImage = packetData;
+                }
+                if(data.sealedPacketWithCustomer){
+                    let packetData = process.env.BASE_URL + data.sealedPacketWithCustomer;
+                    data.sealingPacketWithCustomerImage = packetData;
+                }
+            }
+            
         }
 
         return values;
