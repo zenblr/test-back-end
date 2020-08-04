@@ -21,7 +21,18 @@
                 </div>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-6" *ngIf="scrapIds">
+            <div class="row justify-content-center kt-margin-t-10">
+                <div class="col-4 form-label">
+                    <label class="kt-padding-l-10 mandatory">Date & Time</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" formControlName="date"
+                        value="{{currentDate| date:'medium'}}" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="col-6" *ngIf="!scrapIds">
             <div class="row justify-content-center kt-margin-t-10">
                 <div class="col-4 form-label">
                     <label class="kt-padding-l-10 mandatory">Secured Scheme</label>
@@ -31,8 +42,17 @@
                 </div>
             </div>
         </div>
-
-        <div class="col-6">
+        <div class="col-6" *ngIf="scrapIds">
+            <div class="row justify-content-center kt-margin-t-10">
+                <div class="col-4 form-label">
+                    <label class="kt-padding-l-10 mandatory">Scrap Amount</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" formControlName="scrapAmount">
+                </div>
+            </div>
+        </div>
+        <div class="col-6" *ngIf="!scrapIds">
             <div class="row justify-content-center kt-margin-t-10">
                 <div class="col-4 form-label">
                     <label class="kt-padding-l-10 mandatory">Loan Amount</label>
@@ -42,15 +62,30 @@
                 </div>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-6" *ngIf="scrapIds">
+            <div class="row justify-content-center kt-margin-t-10">
+                <div class="col-4 form-label">
+                    <label class="kt-padding-l-10 mandatory">Transaction Id</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" formControlName="transactionId"
+                        [class.isError]="controls.transactionId.invalid &&  controls.transactionId.touched">
+                    <mat-error *ngIf="controls.transactionId.touched && controls.transactionId.errors?.required">
+                        Required field
+                    </mat-error>
+                </div>
+            </div>
+        </div>
+        <div class="col-6" *ngIf="!scrapIds">
             <div class="row justify-content-center kt-margin-t-10">
                 <div class="col-4 form-label">
                     <label class="kt-padding-l-10 mandatory">Transaction Id</label>
                 </div>
                 <div class="col-8">
                     <input type="text" class="form-control" formControlName="securedTransactionId"
-                    [class.isError]="controls.securedTransactionId.invalid &&  controls.securedTransactionId.touched">
-                    <mat-error *ngIf="controls.securedTransactionId.touched && controls.securedTransactionId.errors?.required">
+                        [class.isError]="controls.securedTransactionId.invalid &&  controls.securedTransactionId.touched">
+                    <mat-error
+                        *ngIf="controls.securedTransactionId.touched && controls.securedTransactionId.errors?.required">
                         Required field
                     </mat-error>
                 </div>
@@ -76,7 +111,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6"*ngIf="details?.isUnsecuredSchemeApplied">
+        <div class="col-6" *ngIf="details?.isUnsecuredSchemeApplied">
             <div class="row justify-content-center kt-margin-t-10">
                 <div class="col-4 form-label">
                     <label class="kt-padding-l-10 mandatory">Transaction Id</label>
@@ -84,13 +119,14 @@
                 <div class="col-8">
                     <input type="text" class="form-control" formControlName="unsecuredTransactionId"
                         [class.isError]="controls.unsecuredTransactionId.invalid &&  controls.unsecuredTransactionId.touched">
-                    <mat-error *ngIf="controls.unsecuredTransactionId.touched && controls.unsecuredTransactionId.errors?.required">
+                    <mat-error
+                        *ngIf="controls.unsecuredTransactionId.touched && controls.unsecuredTransactionId.errors?.required">
                         Required field
                     </mat-error>
                 </div>
             </div>
         </div>
-        
+
         <!-- <div class="col-6">
             <div class="row justify-content-center kt-margin-t-10">
                 <div class="col-4 form-label">

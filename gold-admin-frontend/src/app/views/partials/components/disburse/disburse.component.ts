@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, Input, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AppliedLoanService } from '../../../../core/loan-management';
+import { AppliedScrapService } from '../../../../core/scrap-management';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { GlobalSettingService } from '../../../../core/global-setting/services/global-setting.service';
@@ -19,11 +20,13 @@ export class DisburseComponent implements OnInit {
   disburseForm: FormGroup
   details: any;
   globalValue: any;
+
   constructor(
     public dialogRef: MatDialogRef<DisburseComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     public loanService: AppliedLoanService,
+    public appliedScrapService: AppliedScrapService,
     public toast: ToastrService,
     public globalSettingService: GlobalSettingService,
     public router: Router
@@ -33,18 +36,19 @@ export class DisburseComponent implements OnInit {
       this.globalValue = res;
     })
     this.initForm()
-
   }
 
-  ngOnInit() {
-
-  }
+  ngOnInit() { }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.masterAndLoanIds && changes.masterAndLoanIds.currentValue) {
       this.disburseForm.patchValue(this.masterAndLoanIds)
       this.getBankDetails()
-
+    }
+    if (changes.scrapIds && changes.scrapIds.currentValue) {
+      this.disburseForm.patchValue(this.scrapIds)
+      this.getScrapBankDetails()
+      this.validation()
     }
   }
 
@@ -72,9 +76,23 @@ export class DisburseComponent implements OnInit {
       unsecuredSchemeName: [],
       securedLoanAmount: [],
       securedLoanId: [],
-      unsecuredLoanId: []
+      unsecuredLoanId: [],
+      scrapId: [],
+      scrapAmount: [],
+      transactionId: [],
     })
     this.disableSchemeRelatedField()
+  }
+
+  validation() {
+    if (this.scrapIds) {
+      this.disburseForm.controls.securedTransactionId.setValidators([]),
+        this.disburseForm.controls.securedTransactionId.updateValueAndValidity()
+      this.disburseForm.controls.unsecuredTransactionId.setValidators([]),
+        this.disburseForm.controls.unsecuredTransactionId.updateValueAndValidity()
+      this.disburseForm.controls.transactionId.setValidators(Validators.required),
+        this.disburseForm.controls.transactionId.updateValueAndValidity()
+    }
   }
 
   disableSchemeRelatedField() {
@@ -114,6 +132,24 @@ export class DisburseComponent implements OnInit {
     })
   }
 
+  getScrapBankDetails() {
+    console.log(this.scrapIds)
+    this.appliedScrapService.getScrapBankDetails(this.scrapIds.scrapId).subscribe(res => {
+      if (Object.keys(res.data).length) {
+        this.details = res.data
+        this.patchValue(res.data.paymentType)
+        this.disburseForm.patchValue(res.data)
+        this.disburseForm.patchValue({ scrapAmount: res.data.finalScrapAmount })
+        if (Number(this.globalValue.cashTransactionLimit) < Number(this.disburseForm.controls.scrapAmount.value)) {
+          this.disburseForm.controls.paymentMode.patchValue('bank')
+          this.disburseForm.controls.paymentMode.disable()
+          return
+        }
+        this.disburseForm.controls.paymentMode.patchValue(res.data.paymentType)
+      }
+    })
+  }
+
   formDisable() {
     this.controls.loanAmount.disable()
     this.controls.ifscCode.disable()
@@ -123,8 +159,6 @@ export class DisburseComponent implements OnInit {
     this.controls.accountNumber.disable()
     this.controls.passbookStatementChequeId.disable()
     this.controls.passbookImgName.disable()
-
-
   }
 
   formEnable() {
@@ -136,13 +170,12 @@ export class DisburseComponent implements OnInit {
     this.controls.accountNumber.enable()
     this.controls.passbookStatementChequeId.enable()
     this.controls.passbookImgName.enable()
-
-
   }
 
   get controls() {
     return this.disburseForm.controls
   }
+
   action(event) {
     if (event) {
       this.submit()
@@ -152,26 +185,41 @@ export class DisburseComponent implements OnInit {
   }
 
   submit() {
-
     if (this.disburseForm.invalid) {
       this.disburseForm.markAllAsTouched()
       return
     }
     this.formEnable()
     this.enableSchemeRelatedField()
-    this.loanService.disburse(this.disburseForm.value).pipe(
-      map(res => {
-        this.toast.success(res.message)
-        this.router.navigate(['/admin/loan-management/applied-loan'])
-      }),
-      catchError(err => {
-        if (err.error.message)
-          this.toast.error(err.error.message);
-        throw err
-      }), finalize(() => {
-        this.formDisable()
-        this.disableSchemeRelatedField()
-      })).subscribe()
+    if (this.scrapIds) {
+      this.appliedScrapService.disburse(this.disburseForm.value).pipe(
+        map(res => {
+          this.toast.success(res.message)
+          this.router.navigate(['/admin/scrap-management/applied-scrap'])
+        }),
+        catchError(err => {
+          if (err.error.message)
+            this.toast.error(err.error.message);
+          throw err
+        }), finalize(() => {
+          this.formDisable()
+          this.disableSchemeRelatedField()
+        })).subscribe()
+    } else {
+      this.loanService.disburse(this.disburseForm.value).pipe(
+        map(res => {
+          this.toast.success(res.message)
+          this.router.navigate(['/admin/loan-management/applied-loan'])
+        }),
+        catchError(err => {
+          if (err.error.message)
+            this.toast.error(err.error.message);
+          throw err
+        }), finalize(() => {
+          this.formDisable()
+          this.disableSchemeRelatedField()
+        })).subscribe()
+    }
   }
 
   generateOTP() {

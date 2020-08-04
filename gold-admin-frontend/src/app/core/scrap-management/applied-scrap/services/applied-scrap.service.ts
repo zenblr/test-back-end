@@ -28,7 +28,7 @@ export class AppliedScrapService {
   }
 
   disburse(details): Observable<any> {
-    return this.http.post(`/api/loan-process/disbursement-of-loan`, details).pipe(
+    return this.http.post(`/api/scrap/scrap-process/scrap-disbursement`, details).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message) {
@@ -38,8 +38,8 @@ export class AppliedScrapService {
       }))
   }
 
-  getBankDetails(loanId, masterLoanId): Observable<any> {
-    return this.http.get(`/api/loan-process/disbursement-loan-bank-detail?loanId=${loanId}&masterLoanId=${masterLoanId}`).pipe(
+  getScrapBankDetails(scrapId): Observable<any> {
+    return this.http.get(`/api/scrap/scrap-process/disbursement-bank-detail?scrapId=${scrapId}`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message) {
