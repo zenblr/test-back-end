@@ -374,15 +374,28 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   statusOT() {
-    if (this.controls.loanStatusForOperatinalTeam.value != 'approved' && this.controls.loanStatusForOperatinalTeam.value != 'pending') {
-      this.controls.commentByOperatinalTeam.setValidators(Validators.required);
-      this.controls.commentByOperatinalTeam.updateValueAndValidity()
+    if (this.scrapIds) {
+      if (this.controls.scrapStatusForOperatinalTeam.value != 'approved' && this.controls.scrapStatusForOperatinalTeam.value != 'pending') {
+        this.controls.commentByOperatinalTeam.setValidators(Validators.required);
+        this.controls.commentByOperatinalTeam.updateValueAndValidity()
+      } else {
+        this.controls.commentByOperatinalTeam.reset();
+        this.controls.commentByOperatinalTeam.clearValidators();
+        this.controls.commentByOperatinalTeam.updateValueAndValidity();
+        this.controls.commentByOperatinalTeam.markAsUntouched()
+        this.resetOT()
+      }
     } else {
-      this.controls.commentByOperatinalTeam.reset();
-      this.controls.commentByOperatinalTeam.clearValidators();
-      this.controls.commentByOperatinalTeam.updateValueAndValidity();
-      this.controls.commentByOperatinalTeam.markAsUntouched()
-      this.resetOT()
+      if (this.controls.loanStatusForOperatinalTeam.value != 'approved' && this.controls.loanStatusForOperatinalTeam.value != 'pending') {
+        this.controls.commentByOperatinalTeam.setValidators(Validators.required);
+        this.controls.commentByOperatinalTeam.updateValueAndValidity()
+      } else {
+        this.controls.commentByOperatinalTeam.reset();
+        this.controls.commentByOperatinalTeam.clearValidators();
+        this.controls.commentByOperatinalTeam.updateValueAndValidity();
+        this.controls.commentByOperatinalTeam.markAsUntouched()
+        this.resetOT()
+      }
     }
   }
 
@@ -401,7 +414,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
         this.scrapApplicationFormService.opsRating(this.approvalForm.value, this.scrapIds).pipe(
           map(res => {
             if (this.approvalForm.controls.scrapStatusForOperatinalTeam.value == 'approved') {
-              this.disableForm(4)
+              this.disableScrapForm(4)
               this.stage = 4
               this.disbursal.emit(4)
             }

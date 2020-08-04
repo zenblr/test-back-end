@@ -86,10 +86,12 @@ export class UploadDocumentsComponent implements OnInit {
     this.url = (this.router.url.split("/")[3]).split("?")[0]
     if (this.url == "loan-transfer") {
       this.showLoanTransferFlag = true;
-    } else if (this.url == "scrap-buying-application-form") {
-      this.showScrapAcknowledgementFlag = true;
-      this.getStandardDeduction();
-    } else {
+    }
+    // else if (this.url == "scrap-buying-application-form") {
+    //   this.showScrapAcknowledgementFlag = true;
+    //   this.getStandardDeduction();
+    // } 
+    else {
       this.showLoanFlag = true;
     }
     if (this.url == "view-loan") {
@@ -128,6 +130,10 @@ export class UploadDocumentsComponent implements OnInit {
       }
     }
     if (changes.acknowledgmentDocuments && changes.acknowledgmentDocuments.currentValue) {
+      this.showLoanFlag = false;
+      this.showScrapAcknowledgementFlag = true;
+      this.getStandardDeduction();
+      this.validation();
       let documents = changes.acknowledgmentDocuments.currentValue.customerScrapAcknowledgement
       if (documents && documents.customerConfirmation.length) {
         this.documentsForm.patchValue({
@@ -148,12 +154,12 @@ export class UploadDocumentsComponent implements OnInit {
       let documents = changes.scrapDocuments.currentValue.scrapDocument
       if (documents) {
         this.documentsForm.patchValue({
-          purchaseVoucher: documents.purchaseVoucherImage[0],
-          purchaseVoucherImage: documents.purchaseVoucherImage[0],
-          purchaseInvoice: documents.purchaseInvoiceImage[0],
-          purchaseInvoiceImage: documents.purchaseInvoiceImage[0],
-          saleInvoice: documents.saleInvoiceImage[0],
-          saleInvoiceImage: documents.saleInvoiceImage[0],
+          purchaseVoucher: documents.purchaseVoucher[0],
+          purchaseVoucherImage: documents.purchaseVoucher[0],
+          purchaseInvoice: documents.purchaseInvoice[0],
+          purchaseInvoiceImage: documents.purchaseInvoice[0],
+          saleInvoice: documents.saleInvoice[0],
+          saleInvoiceImage: documents.saleInvoice[0],
         })
         this.pdfCheck();
         // this.isEdit = false

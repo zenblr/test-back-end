@@ -137,7 +137,21 @@
                                     Field
                                     Required</mat-error>
                             </td>
-                            <td class="rating-bm" *ngIf="viewOpertaionalForm || url == 'view-loan'">
+                            <td class="rating-bm" *ngIf="scrapIds && (viewOpertaionalForm || url == 'view-loan')">
+                                <select class="form-control" formControlName="scrapStatusForOperatinalTeam"
+                                    (change)="resetOT();statusOT()"
+                                    [class.isError]="controls.scrapStatusForOperatinalTeam.invalid && controls.scrapStatusForOperatinalTeam.touched">
+                                    <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
+                                    <option [value]="status.value" [disabled]="checkforApprovalOT(status)"
+                                        *ngFor="let status of branchManager">
+                                        {{status.name | titlecase}}</option>
+                                </select>
+                                <mat-error
+                                    *ngIf="controls.scrapStatusForOperatinalTeam.invalid && controls.scrapStatusForOperatinalTeam.touched">
+                                    Field
+                                    Required</mat-error>
+                            </td>
+                            <td class="rating-bm" *ngIf="!scrapIds && (viewOpertaionalForm || url == 'view-loan')">
                                 <select class="form-control" formControlName="loanStatusForOperatinalTeam"
                                     (change)="resetOT();statusOT()"
                                     [class.isError]="controls.loanStatusForOperatinalTeam.invalid && controls.loanStatusForOperatinalTeam.touched">
@@ -173,24 +187,26 @@
                         <label for="">{{controls.commentByBM.value }}</label>
                     </div>
                 </div>
-
             </div>
         </div>
 
         <div class="row justify-content-center"
-            *ngIf="(stage == 7 || stage == 5) && controls.loanStatusForOperatinalTeam.value == 'incomplete' && controls.commentByOperatinalTeam.value">
+            *ngIf="((stage == 7 || stage == 5) && controls.loanStatusForOperatinalTeam.value == 'incomplete' && controls.commentByOperatinalTeam.value) ||
+            ((stage == 7 || stage == 5) && controls.scrapStatusForOperatinalTeam.value == 'incomplete' && controls.commentByOperatinalTeam.value)">
             <div class="col-7">
                 <div class="row">
                     <div class="col-4">
-                        <label for="">Reason for {{controls.loanStatusForOperatinalTeam.value | titlecase}}<br>
+                        <label for="" *ngIf="controls?.loanStatusForOperatinalTeam?.value">Reason for
+                            {{controls.loanStatusForOperatinalTeam.value | titlecase}}<br>
                             (Operational Team)</label>
-
+                        <label for="" *ngIf="controls?.scrapStatusForOperatinalTeam?.value">Reason for
+                            {{controls.scrapStatusForOperatinalTeam.value | titlecase}}<br>
+                            (Operational Team)</label>
                     </div>
                     <div class="col-8 kt-padding-10">
                         <label for="">{{controls.commentByOperatinalTeam.value }}</label>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -250,7 +266,8 @@
             </div>
         </div>
         <div class="row justify-content-center "
-            *ngIf="stage == 8 && controls.loanStatusForOperatinalTeam.value != 'pending' && controls.loanStatusForOperatinalTeam.value != 'approved'">
+            *ngIf="(stage == 8 && controls.loanStatusForOperatinalTeam.value != 'pending' && controls.loanStatusForOperatinalTeam.value != 'approved') ||
+            (stage == 8 && controls.scrapStatusForOperatinalTeam.value != 'pending' && controls.scrapStatusForOperatinalTeam.value != 'approved')">
             <div class=" col-8">
                 <mat-form-field class="w-100">
 
