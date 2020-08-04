@@ -99,11 +99,16 @@ let interestAmountCalculation = async (masterLoanId, id) => {
     return amount 
 }
 
+let test = async (loanId) => {
+    console.log(loanId)
+}
+
 
 module.exports = {
     getCustomerLoanId: getCustomerLoanId,
     interestAmountCalculation, interestAmountCalculation,
     getGlobalSetting: getGlobalSetting,
     getLoanDetails: getLoanDetails,
-    getSchemeDetails:getSchemeDetails
+    getSchemeDetails:getSchemeDetails,
+    test:test
 }

@@ -405,6 +405,10 @@ exports.partReleaseApprovedList = async (req, res, next) => {
                 attributes: ['firstName', 'lastName', 'mobileNumber']
             }
         ]
+    },{
+            model: models.customerLoanMaster,
+            as: 'newLoan',
+            attributes: ['loanStatusForAppraiser'],
     }]
     let partRelease = await models.partRelease.findAll({
         where: searchQuery,
