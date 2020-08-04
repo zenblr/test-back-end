@@ -41,6 +41,8 @@ exports.uploadFile =
                 destination = `public/uploads/scrap/ornaments/${scrapId}/`
             }else if(fileFor == "customerPasbookDetails"){
                 destination = `public/uploads/scrap/customerPasbookDetails/${scrapId}/`
+            }else if(fileFor == "customerDocumentDetails"){
+                destination = `public/uploads/scrap/customerDocumentDetails/${scrapId}/`
             } else {
                 return res.status(422).json({ message: 'reason not found' });
             }

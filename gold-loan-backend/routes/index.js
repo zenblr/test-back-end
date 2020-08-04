@@ -170,6 +170,9 @@ router.use('/scrap/packet', scrapPacket);
 const customerScrapProcess = require('./scrap/customerScrapProcess'); // customer scrap process
 router.use('/scrap/scrap-process', customerScrapProcess);
 
+const scrapCustomerManagement = require('./scrap/customerManagement'); // customer scrap process
+router.use('/scrap/customer', scrapCustomerManagement);
+
 const scrapGlobalSettings = require('./scrap/scrapGlobalSettings'); // customer scrap process
 router.use('/scrap/global-setting', scrapGlobalSettings);
 

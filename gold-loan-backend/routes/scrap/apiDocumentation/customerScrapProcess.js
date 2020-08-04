@@ -312,11 +312,11 @@
  *           properties:
  *             scrapId:
  *               type: integer
- *             emptyPacketWithRefiningOrnament:
+ *             emptyPacketWithNoOrnament:
  *               type: string
- *             sealedPacketWithWeight:
+ *             sealingPacketWithWeight:
  *               type: string
- *             sealedPacketWithCustomer:
+ *             sealingPacketWithCustomer:
  *               type: string
  *             packetOrnamentArray:
  *                type: array
@@ -547,13 +547,13 @@
  *               type: string
  *             paymentMode:
  *               type: string
- *             acHolderName:
+ *             accountHolderName:
  *               type: string
- *             acNumber:
+ *             accountNumber:
  *               type: string
  *             bankName:
  *               type: string
- *             bankBranch:
+ *             bankBranchName:
  *               type: string
  *             ifscCode:
  *               type: string
