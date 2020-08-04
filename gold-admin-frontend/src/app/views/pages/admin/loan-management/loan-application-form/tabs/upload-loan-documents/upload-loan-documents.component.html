@@ -35,8 +35,8 @@
             </div>
         </div>
         <div class="row justify-content-between" *ngIf="isEdit">
-            <div class="col-4" *ngIf="!show">
-                <div class="input-group mb-3 w-80"
+            <div class="col-4 mb-3" *ngIf="!show">
+                <div class="input-group  w-80"
                     [class.isError]="controls.loanAgreementCopy.touched && controls.loanAgreementCopy.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="loanAgreementImageName" />
@@ -52,9 +52,8 @@
                 <mat-error *ngIf="controls.loanAgreementCopy.touched && controls.loanAgreementCopy.invalid">Field
                     Required</mat-error>
             </div>
-            <div class="col-4">
-                <div class="input-group mb-3 w-80"
-                    [class.isError]="controls.pawnCopy.touched && controls.pawnCopy.invalid">
+            <div class="col-4 mb-3">
+                <div class="input-group  w-80" [class.isError]="controls.pawnCopy.touched && controls.pawnCopy.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="pawnCopyImageName" />
                     <div class="input-group-append">
@@ -66,8 +65,8 @@
                 </div>
                 <mat-error *ngIf="controls.pawnCopy.touched && controls.pawnCopy.invalid">Field Required</mat-error>
             </div>
-            <div class="col-4" *ngIf="!show">
-                <div class="input-group mb-3 w-80"
+            <div class="col-4 mb-3" *ngIf="!show">
+                <div class="input-group  w-80"
                     [class.isError]="controls.schemeConfirmationCopy.touched && controls.schemeConfirmationCopy.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="schemeConfirmationCopyImageName" />
@@ -84,8 +83,8 @@
                     Required</mat-error>
 
             </div>
-            <div class="col-4" *ngIf="show">
-                <div class="input-group mb-3 w-80"
+            <div class="col-4 mb-3" *ngIf="show">
+                <div class="input-group  w-80"
                     [class.isError]="controls.signedCheque.touched && controls.signedCheque.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="signedChequeImageName" />
@@ -99,8 +98,8 @@
                 <mat-error *ngIf="controls.signedCheque.touched && controls.signedCheque.invalid">Field Required
                 </mat-error>
             </div>
-            <div class="col-4" *ngIf="show">
-                <div class="input-group mb-3 w-80"
+            <div class="col-4 mb-3" *ngIf="show">
+                <div class="input-group  w-80"
                     [class.isError]="controls.declaration.touched && controls.declaration.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="declarationCopyImageName" />
@@ -236,10 +235,9 @@
                         </div> -->
 
                         <div class="" *ngIf="controls?.signedChequeImage?.value">
-                            <div class="d-inline-block img-container width kt-margin-r-15 position-relative"
-                                (click)="preview(controls?.signedChequeImage?.value)">
+                            <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
                                 <img class="fetched-image" [src]="controls?.signedChequeImage?.value"
-                                    *ngIf="!pdf.signedCheque">
+                                    *ngIf="!pdf.signedCheque" (click)="preview(controls?.signedChequeImage?.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     *ngIf="isEdit && controls?.signedChequeImage?.value" class="kt-pointer edit-icon"
                                     (click)="editImages('signedCheque');">
@@ -273,10 +271,9 @@
 
 
                         <div class="" *ngIf="controls?.declarationCopyImage?.value">
-                            <div class="d-inline-block img-container width kt-margin-r-15 position-relative"
-                                (click)="preview(controls?.declarationCopyImage?.value)">
+                            <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
                                 <img class="fetched-image" [src]="controls?.declarationCopyImage?.value"
-                                    *ngIf="!pdf.declaration">
+                                    *ngIf="!pdf.declaration" (click)="preview(controls?.declarationCopyImage?.value)">
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     class="kt-pointer edit-icon" *ngIf="isEdit && controls?.declarationCopyImage?.value"
                                     (click)="editImages('declaration');">

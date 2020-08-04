@@ -9,7 +9,7 @@
         flex: 0 0 9% !important;
     }
     .mat-column-loanId{
-        flex: 0 0 9% !important;
+        flex: 0 0 7% !important;
     }
     .mat-column-mobile{
         flex: 0 0 9% !important;
@@ -22,6 +22,12 @@
         flex: 0 0 16% !important;
     }
     .mat-column-action{
-        flex: 0 0 10% !important;
+        flex: 0 0 11% !important;
+    }
+    .mat-column-bmStatus{
+        flex: 0 0 7% !important;
+    }
+    .btn-width {
+        width: 115px !important;
     }
 }
