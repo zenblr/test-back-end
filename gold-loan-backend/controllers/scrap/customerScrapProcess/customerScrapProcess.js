@@ -337,12 +337,12 @@ exports.scrapAppraiserRating = async (req, res, next) => {
             // let loanDetail = await models.customerLoan.findOne({ where: { id: loanId }, transaction: t })
 
             //loan Id generation
-            if (ornament.scrapUniqieId == null) {
-                var scrapUniqieId = null;
+            if (ornament.scrapUniqueId == null) {
+                var scrapUniqueId = null;
                 //secured loan Id
-                scrapUniqieId = `SCRAP${Math.floor(1000 + Math.random() * 9000)}`;
+                scrapUniqueId = `SCRAP${Math.floor(1000 + Math.random() * 9000)}`;
 
-                await models.customerScrap.update({ scrapUniqieId: scrapUniqieId }, { where: { id: scrapId }, transaction: t })
+                await models.customerScrap.update({ scrapUniqueId: scrapUniqueId }, { where: { id: scrapId }, transaction: t })
             }
 
         } else {
@@ -841,7 +841,7 @@ exports.appliedScrapDetails = async (req, res, next) => {
             order: [
                 ["updatedAt", "DESC"]
             ],
-            attributes: ['id', 'customerId', 'scrapUniqieId', 'scrapStatusForAppraiser', 'scrapStatusForBM', 'scrapStatusForOperatinalTeam', 'finalScrapAmountAfterMelting', 'eligibleScrapAmount', 'customerScrapCurrentStage', 'scrapStageId', 'isScrapSubmitted', 'isDisbursed'],
+            attributes: ['id', 'customerId', 'scrapUniqueId', 'scrapStatusForAppraiser', 'scrapStatusForBM', 'scrapStatusForOperatinalTeam', 'finalScrapAmountAfterMelting', 'eligibleScrapAmount', 'customerScrapCurrentStage', 'scrapStageId', 'isScrapSubmitted', 'isDisbursed'],
             offset: offset,
             limit: pageSize,
     

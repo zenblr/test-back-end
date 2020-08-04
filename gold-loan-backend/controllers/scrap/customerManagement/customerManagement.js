@@ -132,7 +132,7 @@ exports.getScrapDetailCustomerManagement = async (req, res, next) => {
         subQuery: false,
         include: associateModel,
         order: [["updatedAt", "DESC"]],
-        attributes: ['id', 'customerId', 'scrapUniqieId', 'finalScrapAmount', 'finalScrapAmountAfterMelting', 'eligibleScrapAmount', 'disbursementAmount'],
+        attributes: ['id', 'customerId', 'scrapUniqueId', 'finalScrapAmount', 'finalScrapAmountAfterMelting', 'eligibleScrapAmount', 'disbursementAmount'],
         offset: offset,
         limit: pageSize
     });
@@ -193,7 +193,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
             as: 'customerScrap',
             where: { scrapStageId: stageId.id },
             required: true,
-            attributes: ['id', 'customerId', 'scrapUniqieId', 'scrapStageId', 'finalScrapAmountAfterMelting']
+            attributes: ['id', 'customerId', 'scrapUniqueId', 'scrapStageId', 'finalScrapAmountAfterMelting']
         },
         {
             model: models.state,
@@ -266,7 +266,7 @@ exports.getsingleCustomerManagement = async (req, res) => {
                 as: 'customerScrap',
                 where: { scrapStageId: stageId.id },
                 required: true,
-                attributes: ['id', 'customerId', 'scrapUniqieId', 'finalScrapAmountAfterMelting', 'scrapStageId'],
+                attributes: ['id', 'customerId', 'scrapUniqueId', 'finalScrapAmountAfterMelting', 'scrapStageId'],
                 include: {
                     model: models.customerScrapPersonalDetail,
                     as: 'scrapPersonalDetail',

@@ -53,7 +53,7 @@ exports.viewScrapPacket = async (req, res, next) => {
             required: false,
             as: 'customerScrap',
             where: { isActive: true },
-            attributes: ['id', 'scrapUniqieId']
+            attributes: ['id', 'scrapUniqueId']
         },
         {
             model: models.customer,

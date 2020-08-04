@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'customer_id',
             allowNull: false
         },
-        scrapUniqieId: {
+        scrapUniqueId: {
             type: DataTypes.STRING,
             field: 'scrap_unique_id'
         },
