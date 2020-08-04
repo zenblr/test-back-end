@@ -111,7 +111,7 @@ export function hljsLanguages(): HighlightLanguage[] {
 		FormsModule,
 		ReactiveFormsModule,
 		AgmCoreModule.forRoot({
-			apiKey: 'AIzaSyDjXD71h3mA6_g0s27spZfEup9onPbqHZc',
+			apiKey: 'AIzaSyAxRpruuBm-e5L-et6Wd7uP77LoCcaliMc',
 			libraries: ['places']
 		  }),
 	],

@@ -55,4 +55,8 @@ export class ViewLocationComponent implements OnInit {
     })
   }
 
+  getMapReport(){
+    
+  }
+
 }

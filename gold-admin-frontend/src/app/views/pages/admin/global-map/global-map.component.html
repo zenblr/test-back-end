@@ -21,10 +21,10 @@
                     </div>
                     <div class="col-9">
                         <agm-map [latitude]='latitude' [longitude]='longitude' [zoom]="15" [fitBounds]="true">
-                            <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.lat" [longitude]="m.lng"
+                            <!-- <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.lat" [longitude]="m.lng"
                                 [markerDraggable]="m.draggable" (markerClick)="clickedMarker(m.lat, m.lng, i)"
                                 [agmFitBounds]="true">
-                            </agm-marker>
+                            </agm-marker> -->
                         </agm-map>
                     </div>
                 </div>
