@@ -196,6 +196,12 @@ export class MenuConfig {
 											permission: !this.permissionsArr.includes('viewHoliday'),
 											page: "/admin/holidays"
 										},
+										{
+											title: "Standard Deduction",
+											root: true,
+											permission: false,
+											page: "/admin/masters/standard-deduction"
+										},
 									],
 								},
 							],
@@ -452,6 +458,13 @@ export class MenuConfig {
 							src: "assets/media/aside-icons/icons-24.svg",
 							page: "/admin/emi-management",
 							permission: !this.modulesArr.includes(2),
+						},
+						{
+							title: "Scrap Management",
+							root: true,
+							src: "assets/media/aside-icons/icons-01.svg",
+							page: "/admin/scrap-management",
+							// permission: !this.modulesArr.includes(3),
 						},
 						{
 							title: "Settings",
@@ -764,6 +777,57 @@ export class MenuConfig {
 							title: "Log Out",
 							src: "assets/media/aside-icons/icons-12.svg",
 							permission: !(this.userType === 2 || this.userType === 3),
+						},
+					],
+					scrapMgmtItems: [
+						{
+							title: "Scrap Buying Calculator",
+							root: true,
+							src: "assets/media/aside-icons/icons-01.svg",
+							page: "/admin/scrap-management/scrap-buying-calculator",
+							permission: false,
+						},
+						{
+							title: "Scrap Buying Application Form",
+							root: true,
+							src: "assets/media/aside-icons/icons-01.svg",
+							page: "/admin/scrap-management/scrap-buying-application-form",
+							permission: false,
+						},
+						{
+							title: "Packet",
+							root: true,
+							src: "assets/media/aside-icons/icons-01.svg",
+							page: "/admin/scrap-management/packets",
+							permission: false,
+						},
+						{
+							title: "Applied Scrap",
+							root: true,
+							src: "assets/media/aside-icons/icons-01.svg",
+							page: "/admin/scrap-management/applied-scrap",
+							permission: false
+						},
+						{
+							title: "Settings",
+							root: true,
+							bullet: 'dot',
+							src: "assets/media/aside-icons/icons-03.svg",
+							permission: false,
+							submenu: [
+								{
+									title: "Global Settings",
+									page: "/admin/scrap-management/global-settings",
+									permission: false
+								},
+							]
+						},
+						{
+							title: 'Back',
+							root: true,
+							src: "assets/media/aside-icons/icons-21.svg",
+							page: "/admin/dashboard",
+							permission: false,
 						},
 					],
 				},

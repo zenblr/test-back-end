@@ -175,4 +175,8 @@ export class AppliedKycComponent implements OnInit {
     console.log(loan)
     this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerID: loan.customer.customerUniqueId } })
   }
+
+  applyScrapBuy(item) {
+    this.router.navigate(['/admin/scrap-management/scrap-buying-application-form/'], { queryParams: { customerID: item.customer.customerUniqueId } })
+  }
 }

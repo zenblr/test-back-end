@@ -1,0 +1,292 @@
+<div class="container">
+    <form [formGroup]="approvalForm">
+        <div class="row justify-content-center">
+            <div class="table-div" [ngStyle]="{'width':'viewBMForm'?'800px':'600px'}">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Field</th>
+                            <th scope="col" class="text-center">Appraiser</th>
+                            <th scope="col" class="text-center" *ngIf="viewBMForm || url == 'view-loan'">Branch Manager
+                            </th>
+                            <th scope="col" class="text-center" *ngIf="viewOpertaionalForm || url == 'view-loan'">
+                                Operational Team</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td scope="row" class="rating-title">
+                                {{scrapIds ? 'Scrap Buying Application Form' : 'Loan Application Form'}}</td>
+                            <td class="rating-cce text-center">
+                                <img src="../../../../../../../assets/media/icons/correct.svg"
+                                    [ngClass]="{'cursor-not-allowed':((stage !=1 && stage !=6) || this.disable )}"
+                                    *ngIf="controls.applicationFormForAppraiser.value"
+                                    (click)="approvalOfAppraiser(false,'form')">
+                                <img src="../../../../../../../assets/media/icons/incorrect.svg"
+                                    [ngClass]="{'cursor-not-allowed':( (stage !=1 && stage !=6) || this.disable )}"
+                                    *ngIf="!controls.applicationFormForAppraiser.value"
+                                    (click)="approvalOfAppraiser(true,'form')">
+                            </td>
+                            <td class="rating-bm text-center" *ngIf="viewBMForm || url == 'view-loan'">
+                                <img src="../../../../../../../assets/media/icons/correct.svg"
+                                    [ngClass]="{'cursor-not-allowed':(stage !=2 || this.disable)}"
+                                    *ngIf="controls.applicationFormForBM.value" (click)="approvalOfBM(false,'form')">
+                                <img src="../../../../../../../assets/media/icons/incorrect.svg"
+                                    [ngClass]="{'cursor-not-allowed':(stage !=2 || this.disable)}"
+                                    *ngIf="!controls.applicationFormForBM.value" (click)="approvalOfBM(true,'form')">
+                            </td>
+                            <td class="rating-bm text-center" *ngIf="viewOpertaionalForm || url == 'view-loan'">
+                                <img src="../../../../../../../assets/media/icons/correct.svg"
+                                    [ngClass]="{'cursor-not-allowed':(stage !=7 || this.disable)}"
+                                    *ngIf="controls.applicationFormForOperatinalTeam.value"
+                                    (click)="approvalOfOperational(false,'form')">
+                                <img src="../../../../../../../assets/media/icons/incorrect.svg"
+                                    [ngClass]="{'cursor-not-allowed':(stage !=7 || this.disable)}"
+                                    *ngIf="!controls.applicationFormForOperatinalTeam.value"
+                                    (click)="approvalOfOperational(true,'form')">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td scope="row" class="rating-title">Gold Valuation</td>
+                            <td class="rating-cce text-center">
+                                <img src="../../../../../../../assets/media/icons/correct.svg"
+                                    [ngClass]="{'cursor-not-allowed':((stage !=1 && stage !=6) || this.disable)}"
+                                    *ngIf="controls.goldValuationForAppraiser.value"
+                                    (click)="approvalOfAppraiser(false,'gold')">
+                                <img src="../../../../../../../assets/media/icons/incorrect.svg"
+                                    [ngClass]="{'cursor-not-allowed':((stage !=1 && stage !=6) || this.disable)}"
+                                    *ngIf="!controls.goldValuationForAppraiser.value"
+                                    (click)="approvalOfAppraiser(true,'gold')">
+                            </td>
+                            <td class="rating-bm text-center" *ngIf="viewBMForm || url == 'view-loan'">
+                                <img src="../../../../../../../assets/media/icons/correct.svg"
+                                    [ngClass]="{'cursor-not-allowed':(stage !=2 || this.disable )}"
+                                    *ngIf="controls.goldValuationForBM.value" (click)="approvalOfBM(false,'gold')">
+                                <img src="../../../../../../../assets/media/icons/incorrect.svg"
+                                    [ngClass]="{'cursor-not-allowed':(stage !=2 || this.disable)}"
+                                    *ngIf="!controls.goldValuationForBM.value" (click)="approvalOfBM(true,'gold')">
+                            </td>
+                            <td class="rating-bm text-center" *ngIf="viewOpertaionalForm || url == 'view-loan'">
+                                <img src="../../../../../../../assets/media/icons/correct.svg"
+                                    [ngClass]="{'cursor-not-allowed':(stage !=7 || this.disable )}"
+                                    *ngIf="controls.goldValuationForOperatinalTeam.value"
+                                    (click)="approvalOfOperational(false,'gold')">
+                                <img src="../../../../../../../assets/media/icons/incorrect.svg"
+                                    [ngClass]="{'cursor-not-allowed':(stage !=7 || this.disable)}"
+                                    *ngIf="!controls.goldValuationForOperatinalTeam.value"
+                                    (click)="approvalOfOperational(true,'gold')">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td scope="row" class="rating-title">Final Status</td>
+                            <td class="rating-cce" *ngIf="scrapIds">
+                                <select class="form-control " formControlName="scrapStatusForAppraiser"
+                                    (change)="clearAppraiser();statusAppraiser()"
+                                    [class.isError]="controls.scrapStatusForAppraiser.invalid && controls.scrapStatusForAppraiser.touched">
+                                    <option value=null [disabled]="true" [selected]="true">Select Status</option>
+                                    <option [value]="status.value" [disabled]="checkforApprovalAppraiser(status)"
+                                        *ngFor="let status of appraiser">
+                                        {{status.name | titlecase}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="controls.scrapStatusForAppraiser.invalid && controls.scrapStatusForAppraiser.touched">
+                                    Field Required</mat-error>
+                            </td>
+                            <td class="rating-cce" *ngIf="!scrapIds">
+                                <select class="form-control " formControlName="loanStatusForAppraiser"
+                                    (change)="clearAppraiser();statusAppraiser()"
+                                    [class.isError]="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
+                                    <option value=null [disabled]="true" [selected]="true">Select Status</option>
+                                    <option [value]="status.value" [disabled]="checkforApprovalAppraiser(status)"
+                                        *ngFor="let status of appraiser">
+                                        {{status.name | titlecase}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
+                                    Field Required</mat-error>
+                            </td>
+                            <td class="rating-bm" *ngIf="scrapIds && (viewBMForm || url == 'view-loan')">
+                                <select class="form-control" formControlName="scrapStatusForBM"
+                                    (change)="resetBM();statusBM()"
+                                    [class.isError]="controls.scrapStatusForBM.invalid && controls.scrapStatusForBM.touched">
+                                    <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
+                                    <option [value]="status.value" [disabled]="checkforApprovalBM(status)"
+                                        *ngFor="let status of branchManager">
+                                        {{status.name | titlecase}}</option>
+                                </select>
+
+                                <mat-error
+                                    *ngIf="controls.scrapStatusForBM.invalid && controls.scrapStatusForBM.touched">
+                                    Field
+                                    Required</mat-error>
+                            </td>
+                            <td class="rating-bm" *ngIf="!scrapIds && (viewBMForm || url == 'view-loan')">
+                                <select class="form-control" formControlName="loanStatusForBM"
+                                    (change)="resetBM();statusBM()"
+                                    [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
+                                    <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
+                                    <option [value]="status.value" [disabled]="checkforApprovalBM(status)"
+                                        *ngFor="let status of branchManager">
+                                        {{status.name | titlecase}}</option>
+                                </select>
+
+                                <mat-error *ngIf="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
+                                    Field
+                                    Required</mat-error>
+                            </td>
+                            <td class="rating-bm" *ngIf="scrapIds && (viewOpertaionalForm || url == 'view-loan')">
+                                <select class="form-control" formControlName="scrapStatusForOperatinalTeam"
+                                    (change)="resetOT();statusOT()"
+                                    [class.isError]="controls.scrapStatusForOperatinalTeam.invalid && controls.scrapStatusForOperatinalTeam.touched">
+                                    <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
+                                    <option [value]="status.value" [disabled]="checkforApprovalOT(status)"
+                                        *ngFor="let status of branchManager">
+                                        {{status.name | titlecase}}</option>
+                                </select>
+                                <mat-error
+                                    *ngIf="controls.scrapStatusForOperatinalTeam.invalid && controls.scrapStatusForOperatinalTeam.touched">
+                                    Field
+                                    Required</mat-error>
+                            </td>
+                            <td class="rating-bm" *ngIf="!scrapIds && (viewOpertaionalForm || url == 'view-loan')">
+                                <select class="form-control" formControlName="loanStatusForOperatinalTeam"
+                                    (change)="resetOT();statusOT()"
+                                    [class.isError]="controls.loanStatusForOperatinalTeam.invalid && controls.loanStatusForOperatinalTeam.touched">
+                                    <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
+                                    <option [value]="status.value" [disabled]="checkforApprovalOT(status)"
+                                        *ngFor="let status of branchManager">
+                                        {{status.name | titlecase}}</option>
+                                </select>
+                                <mat-error
+                                    *ngIf="controls.loanStatusForOperatinalTeam.invalid && controls.loanStatusForOperatinalTeam.touched">
+                                    Field
+                                    Required</mat-error>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row justify-content-center" *ngIf="(stage == 7 && controls.loanStatusForBM.value == 'incomplete' && controls.commentByBM.value) ||
+            (stage == 7 && controls.scrapStatusForBM.value == 'incomplete' && controls.commentByBM.value)">
+            <div class="col-7">
+                <div class="row">
+                    <div class="col-4">
+                        <label for="" *ngIf="controls?.loanStatusForBM?.value">Reason for
+                            {{controls.loanStatusForBM.value | titlecase}} <br> (Branch
+                            Manager)</label>
+                        <label for="" *ngIf="controls?.scrapStatusForBM?.value">Reason for
+                            {{controls.scrapStatusForBM.value | titlecase}} <br> (Branch
+                            Manager)</label>
+                    </div>
+                    <div class="col-8 kt-padding-10">
+                        <label for="">{{controls.commentByBM.value }}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center"
+            *ngIf="((stage == 7 || stage == 5) && controls.loanStatusForOperatinalTeam.value == 'incomplete' && controls.commentByOperatinalTeam.value) ||
+            ((stage == 7 || stage == 5) && controls.scrapStatusForOperatinalTeam.value == 'incomplete' && controls.commentByOperatinalTeam.value)">
+            <div class="col-7">
+                <div class="row">
+                    <div class="col-4">
+                        <label for="" *ngIf="controls?.loanStatusForOperatinalTeam?.value">Reason for
+                            {{controls.loanStatusForOperatinalTeam.value | titlecase}}<br>
+                            (Operational Team)</label>
+                        <label for="" *ngIf="controls?.scrapStatusForOperatinalTeam?.value">Reason for
+                            {{controls.scrapStatusForOperatinalTeam.value | titlecase}}<br>
+                            (Operational Team)</label>
+                    </div>
+                    <div class="col-8 kt-padding-10">
+                        <label for="">{{controls.commentByOperatinalTeam.value }}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center " *ngIf="(controls.loanStatusForAppraiser.value && controls.loanStatusForAppraiser.value != 'approved' ||
+            controls.scrapStatusForAppraiser.value && controls.scrapStatusForAppraiser.value != 'approved')">
+            <div class="col-7">
+                <div class="row">
+                    <div class="col-4">
+                        <label for="">Choose a reason</label>
+                    </div>
+                    <div class="col-8">
+                        <select class="form-control" placeholder="reason for Incomplete" (change)="patchReason()"
+                            formControlName="reasons"
+                            [class.isError]="controls.reasons.touched && controls.reasons.invalid">
+                            <option value='' selected disabled>Choose a reason </option>
+                            <option [value]="reason.description" *ngFor="let reason of reasons">
+                                {{reason.description}}
+                            </option>
+                        </select>
+                        <mat-error *ngIf="controls.reasons.touched && controls.reasons.invalid">Field
+                            Required</mat-error>
+                        <!-- <mat-form-field class="w-100 kt-margin-t-20"
+                    *ngIf="cceControls.reasonForOther.value == 'Other'">
+                    <textarea matInput formControlName="reasonFromCce"
+                        placeholder="Reason for {{ cceControls.kycStatusFromCce.value }}"></textarea>
+                    <mat-error>Field Required</mat-error>
+
+                </mat-form-field> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center "
+            *ngIf="(controls.reasons.value && controls.reasons.value == 'Other' && controls.loanStatusForAppraiser.value != 'approved' ||
+            controls.reasons.value && controls.reasons.value == 'Other' && controls.scrapStatusForAppraiser.value != 'approved')">
+            <div class="col-7">
+                <mat-form-field class="w-100">
+
+                    <textarea cols="4" rows="3" matInput formControlName="commentByAppraiser"
+                        placeholder="Reason By Appraiser"></textarea>
+                    <mat-error>Field
+                        Required</mat-error>
+                </mat-form-field>
+
+            </div>
+        </div>
+        <div class="row justify-content-center "
+            *ngIf="(stage == 5 && controls.loanStatusForBM.value != 'pending' && controls.loanStatusForBM.value != 'approved') ||
+            (stage == 5 && controls.scrapStatusForBM.value != 'pending' && controls.scrapStatusForBM.value != 'approved')">
+            <div class="col-8">
+                <mat-form-field class="w-100">
+                    <textarea cols="4" rows="3" matInput formControlName="commentByBM"
+                        placeholder="Reason By Branch Manager"></textarea>
+                    <mat-error>Field Required
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row justify-content-center "
+            *ngIf="(stage == 8 && controls.loanStatusForOperatinalTeam.value != 'pending' && controls.loanStatusForOperatinalTeam.value != 'approved') ||
+            (stage == 8 && controls.scrapStatusForOperatinalTeam.value != 'pending' && controls.scrapStatusForOperatinalTeam.value != 'approved')">
+            <div class=" col-8">
+                <mat-form-field class="w-100">
+
+                    <textarea cols="4" rows="3" matInput formControlName="commentByOperatinalTeam"
+                        placeholder="Reason By Operational Team"></textarea>
+                    <mat-error>Field Required
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+
+
+
+    </form>
+</div>
+<div class="row py-3" *ngIf="!disable">
+    <div class="col-12 text-center">
+        <kt-button [value]="'Submit'" [type]="'button'" (click)=" applyForm()"></kt-button>
+        <span class="kt-padding-10"></span>
+        <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancel()"></kt-button>
+    </div>
+</div>
