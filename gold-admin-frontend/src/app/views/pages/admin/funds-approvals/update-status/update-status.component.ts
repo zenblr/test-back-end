@@ -45,7 +45,7 @@ export class UpdateStatusComponent implements OnInit {
       payableAmount: ['', [Validators.required]],
       amountStatus: ['', [Validators.required]],
       partReleaseStatus: ['', [Validators.required]],
-      appraiserReason: ['', [Validators.required]]
+      appraiserReason: ['']
     })
 
     if (this.data.name === 'jewelleryReleaseFinal') {

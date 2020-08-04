@@ -70,21 +70,21 @@
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label class="mandatory kt-padding-l-10">Appointment</label>
+                                <label class="mandatory kt-padding-l-10">Appointment Date</label>
                             </div>
 
                             <div class="col-8">
                                 <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
                                     formControlName="appoinmentDate"
                                     [class.isError]="controls.appoinmentDate.touched && controls.appoinmentDate.invalid"
-                                    readonly placeholder="4/5/2020" [min]="currentDate"
+                                    readonly placeholder="DD/MM/YYYY" [min]="currentDate"
                                     (dateChange)="setMinimumStartTime($event)">
                                 <mat-datepicker #picker></mat-datepicker>
                             </div>
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label class="mandatory kt-padding-l-10">Time</label>
+                                <label class="mandatory kt-padding-l-10">Appointment Time</label>
                             </div>
 
                             <div class="col-4">

@@ -176,3 +176,48 @@ exports.updateRating = async (req, res, next) => {
     return res.status(400).json({ message: `You do not have authority.` })
 
 }
+
+
+exports.updateRatingAppraiserOrCce = async (req, res, next) => {
+    let { customerId, customerKycId } = req.body;
+
+    let customerRating = await models.customerKycClassification.findOne({ where: { customerId } })
+    if (check.isEmpty(customerRating)) {
+        return res.status(400).json({ message: `This customer rating is not available` })
+    }
+
+    let user = await models.user.findOne({ where: { id: req.userData.id } });
+
+    let { kycRatingFromCce, kycStatusFromCce, reasonFromCce } = req.body
+    let cceId = req.userData.id
+
+    if (customerRating.kycStatusFromCce == "approved") {
+        return res.status(400).json({ message: `You cannot change status from approved` })
+    }
+    if (kycStatusFromCce !== "approved") {
+        if (reasonFromCce.length == 0) {
+            return res.status(400).json({ message: `If you are not approved the customer kyc you have to give a reason.` })
+        }
+        await sequelize.transaction(async (t) => {
+            await models.customerKyc.update(
+                { cceVerifiedBy: cceId, isKycSubmitted: true },
+                { where: { customerId: customerId }, transaction: t })
+
+            await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
+        });
+        return res.status(200).json({ message: 'success' })
+    } else {
+        if ((kycRatingFromCce == 1 || kycRatingFromCce == 2 || kycRatingFromCce == 3) && kycStatusFromCce == "approved") {
+            return res.status(400).json({ message: `Please check rating.` })
+        }
+        reasonFromCce = ""
+        await sequelize.transaction(async (t) => {
+            await models.customerKyc.update(
+                { isVerifiedByCce: true, cceVerifiedBy: cceId, isKycSubmitted: true },
+                { where: { customerId: customerId }, transaction: t })
+
+            await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
+        });
+        return res.status(200).json({ message: 'success' })
+    }
+}

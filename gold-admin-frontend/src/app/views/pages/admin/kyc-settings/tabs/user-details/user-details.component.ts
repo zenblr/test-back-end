@@ -270,4 +270,10 @@ export class UserDetailsComponent implements OnInit {
     ).subscribe();
   }
 
+  remove() {
+    this.controls.form60.patchValue(null)
+    this.controls.panImage.patchValue(null)
+    this.controls.panImg.patchValue(null)
+  }
+
 }

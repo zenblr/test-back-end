@@ -128,6 +128,9 @@ router.use('/assign-appraiser', assignAppraiser);
 const packet = require('./packet');
 router.use('/packet', packet)
 
+const uploadPacket = require('./uploadPackets');  //upload Packets List 
+router.use('/upload-packets-file',uploadPacket)
+
 const ratingReason = require('./ratingReason');
 router.use('/rating-reason', ratingReason)
 

@@ -18,7 +18,7 @@
                                         <input type="file" accept="image/png, image/jpeg" #files class="d-none"
                                             (input)="getFileInfo($event,'profile')" />
                                         <label (click)="webcam();" class="kt-pointer text-primary mandatory"
-                                            style="font-weight: 600;">Change Profile
+                                            style="font-weight: 600;">Upload Profile
                                             Picture</label>
                                     </div>
                                 </div>
@@ -39,7 +39,7 @@
                                         <input type="text" class="form-control" [matDatepicker]="picker"
                                             (click)="picker.open()" formControlName="dateOfBirth"
                                             [class.isError]="controls.dateOfBirth.touched && controls.dateOfBirth.invalid"
-                                            readonly placeholder="MM/DD/YYYY" [max]="minDate"
+                                            readonly placeholder="DD/MM/YYYY" [max]="minDate"
                                             (dateChange)="ageValidation()">
                                         <!-- <mat-datepicker-toggle matSuffix [for]="picker">
                                             <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
