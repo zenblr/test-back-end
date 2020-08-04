@@ -48,11 +48,6 @@
                     <mat-cell *matCellDef="let item">{{item.masterLoan.outstandingAmount}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="releaseDate">
-                    <mat-header-cell *matHeaderCellDef>Release Date</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.releaseDate | date:'mediumDate'}}</mat-cell>
-                </ng-container>
-
                 <ng-container matColumnDef="partReleaseAmountStatus">
                     <mat-header-cell *matHeaderCellDef>Part Release Amount Status</mat-header-cell>
                     <mat-cell

@@ -97,6 +97,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.showAddMoreBtn = false
       this.disable = true
       this.modalView.details.currentValue.loanOrnamentsDetail = this.data.modalData
+      this.getOrnamentType()
       this.ngOnChanges(this.modalView)
     }
   }
@@ -107,6 +108,15 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.karatArr = res.data;
       })
     ).subscribe()
+  }
+
+  getOrnamentType() {
+    this.ornamentTypeService.getOrnamentType(1, -1, '').pipe(
+      map(res => {
+        console.log(res);
+        this.ornamentType = res.data;
+      })
+    ).subscribe();
   }
 
   initForm() {
@@ -628,10 +638,15 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       value = value[0]
     }
     let index = temp.indexOf(value)
+    let isModal = false
+    if (this.data.modal) {
+      isModal = true
+    }
     this.dilaog.open(ImagePreviewDialogComponent, {
       data: {
         images: temp,
-        index: index
+        index: index,
+        modal: isModal
       },
       width: "auto"
     })

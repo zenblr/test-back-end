@@ -123,15 +123,9 @@ export class UserClassificationComponent implements OnInit {
       customerKycId: [this.customerDetails.customerKycId, [Validators.required]],
       kycRatingFromCce: ['', [Validators.required]],
       kycRatingFromBM: [false, [Validators.required]],
-      // behaviourRatingCce: ['', [Validators.required]],
-      // idProofRatingCce: ['', [Validators.required]],
-      // addressProofRatingCce: ['', [Validators.required]],
       kycStatusFromCce: ['', [Validators.required]],
       reasonFromCce: [],
       reasonForOther: [''],
-      // behaviourRatingVerifiedByBm: [false, [Validators.required]],
-      // idProofRatingVerifiedByBm: [false, [Validators.required]],
-      // addressProofRatingVerifiedBm: [false, [Validators.required]],
       kycStatusFromOperationalTeam: ['pending', [Validators.required]],
       reasonFromOperationalTeam: ['']
     })
