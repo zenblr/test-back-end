@@ -92,8 +92,13 @@ app.use(function (err, req, res, next) {
     res.status(500).send({ message: "something went wrong" });
 });
 
-cron.schedule(' * * * * *', async function () {
-    await interest.test('1');
-  })
+// cron.schedule(' * * * * *', async function () {
+//     await interest.test('1');
+// })
+
+// cron.schedule('*/2 * * * * *', async function () {
+//     console.log('a')
+//     // await interest.penal('1');
+// })
 
 module.exports = app;
