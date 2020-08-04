@@ -390,6 +390,10 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         controls.controls.ornamentImageWithXrfMachineReading.updateValueAndValidity()
       controls.controls.ltvPercent.setValidators([]),
         controls.controls.ltvPercent.updateValueAndValidity()
+      controls.controls.ornamentImage.setValidators([]),
+        controls.controls.ornamentImage.updateValueAndValidity()
+      controls.controls.ornamentImageData.setValidators([]),
+        controls.controls.ornamentImageData.updateValueAndValidity()
       if (this.meltingOrnament) {
         controls.controls.purityReading.setValidators(Validators.required),
           controls.controls.purityReading.updateValueAndValidity()
@@ -553,13 +557,13 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       case 'ornamentImageWithWeightData':
         controls.controls.ornamentImageWithWeight.patchValue(id);
         controls.controls.ornamentImageWithWeightData.patchValue(url);
-        if (this.ornamentImageWithWeight) this.ornamentImage.nativeElement.value = '';
+        if (this.ornamentImageWithWeight) this.ornamentImageWithWeight.nativeElement.value = '';
         this.images[index].ornamentImageWithWeight = url;
         break;
       case 'ornamentImageWithXrfMachineReadingData':
         controls.controls.ornamentImageWithXrfMachineReading.patchValue(id);
         controls.controls.ornamentImageWithXrfMachineReadingData.patchValue(url);
-        if (this.ornamentImageWithXrfMachineReading) this.ornamentImage.nativeElement.value = '';
+        if (this.ornamentImageWithXrfMachineReading) this.ornamentImageWithXrfMachineReading.nativeElement.value = '';
         this.images[index].ornamentImageWithXrfMachineReading = url;
         break;
     }
@@ -709,22 +713,24 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     }
     if (this.scrapIds) {
       if (this.meltingOrnament) {
-        this.scrapApplicationFormService.submitMeltingOrnaments(this.OrnamentsData.value[0], this.totalAmount, this.scrapIds).pipe(
-          map(res => {
-            res.ornamentsArr = [];
-            res.ornamentsArr.push(res.ornaments);
-            let array = this.OrnamentsData.controls
-            for (let index = 0; index < array.length; index++) {
-              const controls = this.OrnamentsData.at(index) as FormGroup;
-              controls.controls.id.patchValue(res.ornamentsArr[index].id)
-            }
-            this.finalScrapAmount.emit(res.eligibleScrapAmount);
-            this.accountHolderName.emit(`${res.firstName} ${res.lastName}`)
-            let stage = res.scrapCurrentStage
-            stage = Number(stage) - 1;
-            this.next.emit(stage)
-          })
-        ).subscribe();
+        if (this.buttonValue == 'Next') {
+          this.scrapApplicationFormService.submitMeltingOrnaments(this.OrnamentsData.value[0], this.totalAmount, this.scrapIds).pipe(
+            map(res => {
+              res.ornamentsArr = [];
+              res.ornamentsArr.push(res.ornaments);
+              let array = this.OrnamentsData.controls
+              for (let index = 0; index < array.length; index++) {
+                const controls = this.OrnamentsData.at(index) as FormGroup;
+                controls.controls.id.patchValue(res.ornamentsArr[index].id)
+              }
+              this.finalScrapAmount.emit(res.eligibleScrapAmount);
+              this.accountHolderName.emit(`${res.firstName} ${res.lastName}`)
+              let stage = res.scrapCurrentStage
+              stage = Number(stage) - 1;
+              this.next.emit(stage)
+            })
+          ).subscribe();
+        }
       } else {
         this.scrapApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.scrapIds).pipe(
           map(res => {

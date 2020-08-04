@@ -32,6 +32,10 @@ export class UploadDocumentsComponent implements OnInit {
   @Input() loanTransfer
   @Input() showButton
   @Input() totalAmt;
+  @Input() showLoanFlag;
+  @Input() showLoanTransferFlag;
+  @Input() showScrapFlag;
+  @Input() showScrapAcknowledgementFlag;
   @ViewChild('loanAgreementCopy', { static: false }) loanAgreementCopy
   @ViewChild('pawnCopy', { static: false }) pawnCopy
   @ViewChild('schemeConfirmationCopy', { static: false }) schemeConfirmationCopy
@@ -55,10 +59,6 @@ export class UploadDocumentsComponent implements OnInit {
   }
   documentsForm: FormGroup
   show: boolean;
-  showLoanFlag = false;
-  showLoanTransferFlag = false;
-  showScrapFlag = false;
-  showScrapAcknowledgementFlag = false;
   url: string;
   buttonName: string;
   buttonValue = 'Next';
@@ -84,16 +84,11 @@ export class UploadDocumentsComponent implements OnInit {
     public globalSettingService: GlobalSettingService,
   ) {
     this.url = (this.router.url.split("/")[3]).split("?")[0]
-    if (this.url == "loan-transfer") {
-      this.showLoanTransferFlag = true;
-    }
-    // else if (this.url == "scrap-buying-application-form") {
-    //   this.showScrapAcknowledgementFlag = true;
-    //   this.getStandardDeduction();
-    // } 
-    else {
-      this.showLoanFlag = true;
-    }
+    // if (this.url == "loan-transfer") {
+    //   this.show = true
+    // } else {
+    //   this.show = false
+    // }
     if (this.url == "view-loan") {
       this.isEdit = false
     } else {
@@ -109,7 +104,6 @@ export class UploadDocumentsComponent implements OnInit {
       }
     })
     this.initForm()
-    console.log(this.url);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -130,10 +124,6 @@ export class UploadDocumentsComponent implements OnInit {
       }
     }
     if (changes.acknowledgmentDocuments && changes.acknowledgmentDocuments.currentValue) {
-      this.showLoanFlag = false;
-      this.showScrapAcknowledgementFlag = true;
-      this.getStandardDeduction();
-      this.validation();
       let documents = changes.acknowledgmentDocuments.currentValue.customerScrapAcknowledgement
       if (documents && documents.customerConfirmation.length) {
         this.documentsForm.patchValue({
@@ -148,9 +138,6 @@ export class UploadDocumentsComponent implements OnInit {
       }
     }
     if (changes.scrapDocuments && changes.scrapDocuments.currentValue) {
-      this.showLoanFlag = false;
-      this.showScrapFlag = true;
-      this.validation();
       let documents = changes.scrapDocuments.currentValue.scrapDocument
       if (documents) {
         this.documentsForm.patchValue({
@@ -217,7 +204,12 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    if (this.showScrapAcknowledgementFlag) {
+      this.getStandardDeduction();
+    }
+    if (this.showLoanFlag || this.showLoanTransferFlag || this.showScrapFlag || this.showScrapAcknowledgementFlag) {
+      this.validation()
+    }
   }
 
   ngAfterViewInit() {
@@ -306,13 +298,9 @@ export class UploadDocumentsComponent implements OnInit {
     } else if (this.showScrapFlag) {
       this.documentsForm.controls.pawnCopy.setValidators([]),
         this.documentsForm.controls.pawnCopy.updateValueAndValidity()
-      this.documentsForm.controls.loanAgreementCopy.setValidators([]),
-        this.documentsForm.controls.loanAgreementCopy.updateValueAndValidity()
-      this.documentsForm.controls.schemeConfirmationCopy.setValidators([]),
-        this.documentsForm.controls.schemeConfirmationCopy.updateValueAndValidity()
       this.documentsForm.controls.purchaseVoucher.setValidators(Validators.required),
         this.documentsForm.controls.purchaseVoucher.updateValueAndValidity()
-    } else {
+    } else if (this.showLoanFlag) {
       this.documentsForm.controls.loanAgreementCopy.setValidators(Validators.required),
         this.documentsForm.controls.loanAgreementCopy.updateValueAndValidity()
       this.documentsForm.controls.schemeConfirmationCopy.setValidators(Validators.required),
@@ -342,7 +330,7 @@ export class UploadDocumentsComponent implements OnInit {
         }
       } else if (this.showScrapFlag) {
         params = {
-          reason: 'acknowledgement',
+          reason: 'customerDocumentDetails',
           scrapId: this.scrapIds.scrapId
         }
       } else {
@@ -472,14 +460,16 @@ export class UploadDocumentsComponent implements OnInit {
           }
         })).subscribe()
     } else if (this.url == 'scrap-buying-application-form') {
-      this.scrapApplicationFormService.acknowledgementSubmit(this.documentsForm.value, this.scrapIds).pipe(
-        map(res => {
-          if (res.scrapCurrentStage) {
-            let stage = Number(res.scrapCurrentStage) - 1
-            this.stage.emit(res.scrapCurrentStage)
-            this.next.emit(stage)
-          }
-        })).subscribe();
+      if (this.buttonValue == 'Next') {
+        this.scrapApplicationFormService.acknowledgementSubmit(this.documentsForm.value, this.scrapIds).pipe(
+          map(res => {
+            if (res.scrapCurrentStage) {
+              let stage = Number(res.scrapCurrentStage) - 1
+              this.stage.emit(res.scrapCurrentStage)
+              this.next.emit(stage)
+            }
+          })).subscribe();
+      }
     } else if (this.showScrapFlag) {
       this.scrapApplicationFormService.uploadDocuments(this.documentsForm.value, this.scrapIds).pipe(
         map(res => {

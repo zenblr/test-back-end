@@ -331,6 +331,11 @@ export class PageConfig {
 						page: { title: "Scrap Buying Application Form", desc: "" },
 					}
 				},
+				"packet-image-upload": {
+					id: {
+						page: { title: "PACKET IMAGE UPLOAD", desc: "" },
+					},
+				},
 				'view-Scrap': {
 					id: {
 						page: { title: "View Scrap Application Form", desc: "" },

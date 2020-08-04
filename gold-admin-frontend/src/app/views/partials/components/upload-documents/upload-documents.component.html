@@ -22,7 +22,7 @@
             </div>
             <div class="col form-label" *ngIf="showLoanTransferFlag || showLoanFlag">
                 <label class="kt-padding-l-10 kt-padding-r-25">Pawn Ticket/Copy of Pledge</label>
-                <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()" *ngIf="!show"></kt-button>
+                <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()" *ngIf="showLoanFlag"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showLoanFlag">
                 <label class="kt-padding-l-10">Scheme Confirmation Copy</label>
@@ -453,11 +453,11 @@
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
-                        <div class="edit-width">
+                        <!-- <div class="edit-width">
                             <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
                                 *ngIf="isEdit && controls?.purchaseVoucherImage?.value"
                                 (click)="editImages('purchaseVoucher');">
-                        </div>
+                        </div> -->
                         <div class="" *ngIf="controls?.purchaseVoucherImage?.value">
                             <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
                                 <img (click)="preview(controls?.purchaseVoucherImage?.value)" class="fetched-image"

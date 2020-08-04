@@ -28,6 +28,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() disable
   @Input() details;
   @Input() scrapDetails;
+  @Input() scrapIds
   @Input() invalid
   @Input() action;
   @Output() next: EventEmitter<any> = new EventEmitter();
@@ -97,10 +98,9 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngOnInit() {
-    if (this.url != 'scrap-buying-application-form') {
+    if (!(this.url == 'scrap-buying-application-form' || this.scrapIds)) {
       this.getPurposeInfo();
     }
-
   }
 
   initForm() {
@@ -111,7 +111,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       startDate: [this.currentDate],
       customerId: [, Validators.required],
       kycStatus: [],
-      purpose: ["", Validators.required],
+      purpose: ['', Validators.required],
       panType: [],
       loanId: [],
       scrapId: [],

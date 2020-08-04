@@ -1,5 +1,5 @@
 <!-- <kt-modal-header *ngIf="!viewOnly" [title]='"KYC Details"' (action)="action()"></kt-modal-header> -->
-<div class="kt-padding-l-10">
+<div class="kt-padding-l-10 kt-padding-r-10" style="background: #fff">
     <mat-tab-group [formGroup]="ornamentsForm" class="position-relative" [(selectedIndex)]="selected">
         <mat-tab formArrayName="ornamentData" *ngFor="let ornament of OrnamentsData.controls;index as idx">
             <ng-template mat-tab-label>
@@ -11,7 +11,7 @@
 
             </ng-template>
             <div class="row justify-content-around" [formGroupName]="idx">
-                <div class="col-9 kt-padding-l-45">
+                <div [ngClass]="scrapIds ? 'col-11' : 'col-9 kt-padding-l-45'">
                     <div class="row justify-content-around" *ngIf="!meltingOrnament">
                         <div class="col-6">
                             <div class="row">
@@ -575,7 +575,7 @@
                         </div>
                     </ng-template>
                 </div>
-                <div class="col-3 ">
+                <div class="col-3" *ngIf="!scrapIds">
                     <input type="file" #ornamentImage class="d-none"
                         (change)="uploadFile(idx,$event,'ornamentImageData')">
                     <div class="img-container height220 kt-pointer" *ngIf="!ornament.controls.ornamentImageData.value"
@@ -634,4 +634,5 @@
         <kt-button [value]="buttonValue" [type]="'button'" (click)="nextAction()"></kt-button>
     </div>
 </div>
-<button *ngIf="showAddMoreBtn" (click)="addmore()" class="addmore" [disabled]="disable" [hidden]="meltingOrnament">+ Add More</button>
+<button *ngIf="showAddMoreBtn" (click)="addmore()" class="addmore" [disabled]="disable" [hidden]="meltingOrnament">+ Add
+    More</button>
