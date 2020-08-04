@@ -57,6 +57,7 @@ route.post('/loan-documents', checkAuth, wrapper(loanDocuments))// ADD loan docu
 
 route.get('/get-print-details', checkAuth, wrapper(getDetailsForPrint)); //Print details
 
+// backoffice app 
 route.post('/loan-request', checkAuth, wrapper(loanRequest)); //apply loan for backoffice app 
 
 module.exports = route; // EXPORTING ALL ROUTES
