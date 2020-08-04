@@ -37,6 +37,9 @@ import { UploadLoanDocumentsComponent } from './loan-application-form/tabs/uploa
 import { LoanTransferComponent } from './loan-transfer/loan-transfer.component';
 import { LoanTransferListComponent } from './loan-transfer-list/loan-transfer-list.component';
 import { ViewPacketLogComponent } from './packets/view-packet-log/view-packet-log.component';
+import { ViewLocationComponent } from './packets/view-location/view-location.component';
+import { AgmCoreModule } from '@agm/core';
+import { LocationComponent } from './packets/view-location/tabs/location/location.component';
 import { PacketAssignAppraiserComponent } from './packets/packet-assign-appraiser/packet-assign-appraiser.component';
 const rout: Routes = [
   {
@@ -90,6 +93,10 @@ const rout: Routes = [
   {
     path: 'transfer-loan-list',
     component: LoanTransferListComponent
+  },
+  {
+    path: 'view-location',
+    component: ViewLocationComponent,
   }
 ]
 
@@ -119,6 +126,8 @@ const rout: Routes = [
     LoanTransferComponent,
     LoanTransferListComponent,
     ViewPacketLogComponent,
+    ViewLocationComponent,
+    LocationComponent,
     PacketAssignAppraiserComponent,
   ],
   imports: [
@@ -129,7 +138,8 @@ const rout: Routes = [
     ReactiveFormsModule,
     FormsModule,
     PartialsModule,
-    CoreModule
+    CoreModule,
+    AgmCoreModule,
   ],
   providers: [
     InterceptService,

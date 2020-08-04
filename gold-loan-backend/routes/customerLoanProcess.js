@@ -2,10 +2,12 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
-const { addPackageImagesForLoan, disbursementOfLoanAmount,interestRate,generateInterestTable,unsecuredTableGeneration,
-  disbursementOfLoanBankDetails, getLoanDetails, getSingleLoanDetails, appliedLoanDetails, customerDetails, loanBmRating, loanOpsTeamRating,checkForLoanType,
-  loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getAssignAppraiserCustomer, getSingleLoanInCustomerManagment, getDetailsForPrint } =
+const { addPackageImagesForLoan, disbursementOfLoanAmount, interestRate, generateInterestTable, unsecuredTableGeneration,
+  disbursementOfLoanBankDetails, getLoanDetails, getSingleLoanDetails, appliedLoanDetails, customerDetails, loanBmRating, loanOpsTeamRating, checkForLoanType,
+  loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getAssignAppraiserCustomer, getSingleLoanInCustomerManagment, getDetailsForPrint, } =
   require('../controllers/customerLoanProcess/customerLoanProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
+
+const { loanRequest } = require('../controllers/customerLoanProcess/customerLoanProcessForApp')
 
 const checkAuth = require('../middleware/checkAuth'); // IMPORTING CHECK AUTH MIDDLEWARE
 
@@ -15,13 +17,13 @@ route.post('/nominee-details', checkAuth, wrapper(loanNomineeDetails)); // ADD C
 
 route.post('/ornaments-details', checkAuth, wrapper(loanOrnmanetDetails)); // ADD CUSTOMER BANK DETAIL
 
-route.post('/check-loan-type',checkAuth,wrapper(checkForLoanType)) // amount validation and check for loan type
+route.post('/check-loan-type', checkAuth, wrapper(checkForLoanType)) // amount validation and check for loan type
 
-route.post('/interest-rate',checkAuth,wrapper(interestRate)) // return interest for secure and unsecure
+route.post('/interest-rate', checkAuth, wrapper(interestRate)) // return interest for secure and unsecure
 
-route.post('/generate-interest-table',checkAuth,wrapper(generateInterestTable)) //main table generation
+route.post('/generate-interest-table', checkAuth, wrapper(generateInterestTable)) //main table generation
 
-route.post('/generate-unsecured-interest-table',checkAuth,wrapper(unsecuredTableGeneration)) // unsecured interestTable 
+route.post('/generate-unsecured-interest-table', checkAuth, wrapper(unsecuredTableGeneration)) // unsecured interestTable 
 
 route.post('/final-loan-details', checkAuth, wrapper(loanFinalLoan)); // ADD CUSTOMER BANK DETAIL
 
@@ -54,5 +56,7 @@ route.get('/assign-appraiser-customer', checkAuth, wrapper(getAssignAppraiserCus
 route.post('/loan-documents', checkAuth, wrapper(loanDocuments))// ADD loan documents
 
 route.get('/get-print-details', checkAuth, wrapper(getDetailsForPrint)); //Print details
+
+route.post('/loan-request', checkAuth, wrapper(loanRequest)); //apply loan for backoffice app 
 
 module.exports = route; // EXPORTING ALL ROUTES

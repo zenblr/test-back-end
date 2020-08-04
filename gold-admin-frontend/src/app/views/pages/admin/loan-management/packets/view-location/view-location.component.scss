@@ -1,0 +1,16 @@
+:host{
+    agm-map{ 
+        height:60vh; 
+        padding-bottom: 30px;
+    }
+    .pos {
+        position   : absolute;
+        top        : 20px;
+        right      : 30px;
+        font-weight: 500;
+        font-size  : 14px;
+         z-index: 100 !important; 
+         letter-spacing: 1.1px;
+    }
+
+}

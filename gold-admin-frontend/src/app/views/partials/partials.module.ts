@@ -54,6 +54,9 @@ import { PortletModule } from "./content/general/portlet/portlet.module";
 import { ErrorComponent } from "./content/general/error/error.component";
 // Extra module
 import { WidgetModule } from "./content/widgets/widget.module";
+// map
+import { AgmCoreModule } from '@agm/core';
+
 // SVG inline
 import { InlineSVGModule } from "ng-inline-svg";
 import { CartComponent } from "./layout/topbar/cart/cart.component";
@@ -242,6 +245,8 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
 		PortletModule,
 		WidgetModule,
 		NgxPermissionsModule.forChild(),
+
+		AgmCoreModule,
 
 		AngularMaterialModule,
 		// ng-bootstrap modules
