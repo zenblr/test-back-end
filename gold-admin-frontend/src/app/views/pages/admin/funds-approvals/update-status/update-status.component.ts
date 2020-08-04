@@ -66,6 +66,12 @@ export class UpdateStatusComponent implements OnInit {
       loanId: loanIdArr.join(', ')
     })
 
+    if (!data.appraiserReason) {
+      this.updateStatusForm.patchValue({
+        partReleaseStatus: ''
+      })
+    }
+
     for (const key in this.controls) {
       if (this.controls.hasOwnProperty(key)) {
         if (!(key == 'amountStatus' || key == 'partReleaseId' || key == 'partReleaseStatus' || key == 'appraiserReason')) this.controls[key].disable()

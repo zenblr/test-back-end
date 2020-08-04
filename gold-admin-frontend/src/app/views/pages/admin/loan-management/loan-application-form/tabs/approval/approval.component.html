@@ -104,7 +104,7 @@
                                         *ngFor="let status of branchManager">
                                         {{status.name | titlecase}}</option>
                                 </select>
-                               
+
                                 <mat-error *ngIf="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
                                     Field
                                     Required</mat-error>
@@ -146,7 +146,7 @@
         </div>
 
         <div class="row justify-content-center"
-            *ngIf="(stage == 7 || stage == 5) && controls.loanStatusForOperatinalTeam.value == 'incomplete' && controls.commentByOperatinalTeam.value">
+            *ngIf="(stage == 7 || stage == 2) && controls.loanStatusForOperatinalTeam.value == 'incomplete' && controls.commentByOperatinalTeam.value">
             <div class="col-7">
                 <div class="row">
                     <div class="col-4">
@@ -205,7 +205,7 @@
             </div>
         </div>
         <div class="row justify-content-center "
-            *ngIf="stage == 5 && controls.loanStatusForBM.value != 'pending' && controls.loanStatusForBM.value != 'approved'">
+            *ngIf="stage == 2 && controls.loanStatusForBM.value != 'pending' && controls.loanStatusForBM.value != 'approved'">
             <div class="col-8">
                 <mat-form-field class="w-100">
 
@@ -217,7 +217,7 @@
             </div>
         </div>
         <div class="row justify-content-center "
-            *ngIf="stage == 8 && controls.loanStatusForOperatinalTeam.value != 'pending' && controls.loanStatusForOperatinalTeam.value != 'approved'">
+            *ngIf="stage == 7 && controls.loanStatusForOperatinalTeam.value != 'pending' && controls.loanStatusForOperatinalTeam.value != 'approved'">
             <div class=" col-8">
                 <mat-form-field class="w-100">
 
