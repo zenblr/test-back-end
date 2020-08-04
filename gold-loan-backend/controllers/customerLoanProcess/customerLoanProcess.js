@@ -1549,7 +1549,7 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
 }
 
 //  FUNCTION FOR GET APPLIED LOAN DETAILS
-exports.appliedLoanDetails = async (req, res, next) => {
+exports.    appliedLoanDetails = async (req, res, next) => {
     let { schemeId, appraiserApproval, bmApproval, loanStageId, operatinalTeamApproval } = req.query
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);

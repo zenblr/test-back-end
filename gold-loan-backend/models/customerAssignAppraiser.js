@@ -59,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
 
     CustomerAssignAppraiser.prototype.toJSON = function () {
         var values = Object.assign({}, this.get());
-        if (values.customer.panImage) {
+        if (values.customer) {
             values.customer.panImg = baseUrlConfig.BASEURL + values.customer.panImage;
         }
         return values;

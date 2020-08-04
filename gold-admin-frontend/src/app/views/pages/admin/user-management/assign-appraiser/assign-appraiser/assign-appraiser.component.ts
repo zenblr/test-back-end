@@ -211,8 +211,8 @@ export class AssignAppraiserComponent implements OnInit {
   }
 
   setStartTime(event) {
-    this.startTime = event
-    this.ref.detectChanges
+    this.startTime = event;
+    this.ref.detectChanges()
   }
 
   convertTime24To12(timeString) {
@@ -241,9 +241,13 @@ export class AssignAppraiserComponent implements OnInit {
     var daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
     if (daysDifference > 0) {
       this.addStartTime = null
+      this.controls.startTime.reset()
+      this.controls.endTime.reset()
     } else {
       this.minStartTime()
+
     }
+
   }
 
 
