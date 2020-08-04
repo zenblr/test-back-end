@@ -190,4 +190,16 @@ export class LeadManagementComponent implements OnInit {
       }
     });
   }
+
+  updateAppraiser(item) {
+    item.customer = {firstName:item.firstName,lastName:item.lastName}
+    item.customer.customerUniqueId = item.customerUniqueId
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit',from: 'lead', appraiser: item.customerAssignAppraiser, customer: item.customer,id:item.id }, width: '500px' });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadLeadsPage();
+      }
+    });
+  }
+
 }

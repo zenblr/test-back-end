@@ -60,6 +60,7 @@ import { NgHttpLoaderModule } from 'ng-http-loader';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
+import { AgmCoreModule } from '@agm/core';
 // tslint:disable-next-line:class-name
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 	wheelSpeed: 0.5,
@@ -109,6 +110,10 @@ export function hljsLanguages(): HighlightLanguage[] {
 		NgSelectModule,
 		FormsModule,
 		ReactiveFormsModule,
+		AgmCoreModule.forRoot({
+			apiKey: 'AIzaSyDjXD71h3mA6_g0s27spZfEup9onPbqHZc',
+			libraries: ['places']
+		  }),
 	],
 	exports: [],
 	providers: [

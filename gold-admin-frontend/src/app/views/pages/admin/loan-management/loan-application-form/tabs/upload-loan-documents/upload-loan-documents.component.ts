@@ -87,6 +87,7 @@ export class UploadLoanDocumentsComponent implements OnInit {
       let documents = changes.loanDocumnets.currentValue.customerLoanDocument
 
       if (documents && documents.pawnCopyImage.length) {
+        this.buttonName = 'next'
         this.documentsForm.patchValue({
           pawnCopyImage: documents.pawnCopyImage[0],
           schemeConfirmationCopyImage: documents.schemeConfirmationCopyImage[0],
