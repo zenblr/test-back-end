@@ -95,12 +95,10 @@ export class UploadDocumentsComponent implements OnInit {
       this.isEdit = true
     }
     this.ngxPermission.permissions$.subscribe(res => {
-      if (this.url == "loan-transfer" && res.loanTransferRating) {
-        this.buttonName = 'next';
-      } else if (this.url == "scrap-buying-application-form") {
-        this.buttonName = 'next';
+      if ((this.url == "loan-transfer" && res.loanTransferRating)|| this.url == "scrap-buying-application-form") {
+        this.buttonValue = 'next';
       } else {
-        this.buttonName = 'save';
+        this.buttonValue = 'save';
       }
     })
     this.initForm()
