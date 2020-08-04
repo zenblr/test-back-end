@@ -17,7 +17,7 @@ let getCustomerLoanId = async (masterLoanId) => {
             model: models.customerLoan,
             as: 'customerLoan',
             attributes: ['id', 'loanType'],
-            where:{isActive:true}
+            where: { isActive: true }
         }]
     });
     let loan = {}
@@ -41,7 +41,7 @@ let getLoanDetails = async (masterLoanId) => {
 let getSchemeDetails = async (schemeId) => {
     let loanData = await models.scheme.findOne({
         where: { id: schemeId },
-        include:[{
+        include: [{
             model: models.schemeInterest,
             as: 'schemeInterest'
         }]
@@ -96,11 +96,16 @@ let interestAmountCalculation = async (masterLoanId, id) => {
             }
         }
     }
-    return amount 
+    return amount
 }
 
 let test = async (loanId) => {
     console.log(loanId)
+}
+
+let penal = async (loanId) => {
+    console.log(loanId)
+
 }
 
 
@@ -109,6 +114,7 @@ module.exports = {
     interestAmountCalculation, interestAmountCalculation,
     getGlobalSetting: getGlobalSetting,
     getLoanDetails: getLoanDetails,
-    getSchemeDetails:getSchemeDetails,
-    test:test
+    getSchemeDetails: getSchemeDetails,
+    test: test,
+    penal: penal
 }
