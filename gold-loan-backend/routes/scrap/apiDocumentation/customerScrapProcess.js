@@ -81,9 +81,11 @@
  *               type: number
  *             standardDeduction:
  *               type: number
+ *             customerConfirmationStatus:
+ *               type: string
  *             customerConfirmation:
  *               type: array
- *               items: 
+ *               items:
  *                type: string
  *         required:
  *           - scrapId
@@ -133,6 +135,8 @@
  *               type: string
  *             ornamentImageWithXrfMachineReading:
  *               type: string
+ *             ornamentImage:
+ *               type: string
  *         required:
  *           - scrapId
  *           - grossWeight
@@ -171,17 +175,17 @@
  *               type: string
  *             bankName:
  *               type: string
- *             acNumber:
+ *             accountNumber:
  *               type: string
  *             ifscCode:
  *               type: string
- *             bankBranch:
+ *             bankBranchName:
  *               type: string
- *             acHolderName:
+ *             accountHolderName:
  *               type: string
  *             passbookProof:
  *               type: array
- *               items: 
+ *               items:
  *                type: string
  *         required:
  *           - scrapId
@@ -219,7 +223,7 @@
  *             scrapOrnaments:
  *                type: array
  *                items:
- *                  type: object  
+ *                  type: object
  *                  properties:
  *                   ornamentTypeId:
  *                    type: integer
@@ -308,16 +312,16 @@
  *           properties:
  *             scrapId:
  *               type: integer
- *             emptyPacketWithRefiningOrnament:
+ *             emptyPacketWithNoOrnament:
  *               type: string
- *             sealedPacketWithWeight:
+ *             sealingPacketWithWeight:
  *               type: string
- *             sealedPacketWithCustomer:
+ *             sealingPacketWithCustomer:
  *               type: string
  *             packetOrnamentArray:
  *                type: array
  *                items:
- *                  type: object  
+ *                  type: object
  *                  properties:
  *                   packetId:
  *                    type: integer
@@ -430,15 +434,15 @@
  *               type: integer
  *             purchaseVoucher:
  *               type: array
- *               items: 
+ *               items:
  *                type: string
  *             purchaseInvoice:
  *               type: array
- *               items: 
+ *               items:
  *                type: string
  *             saleInvoice:
  *               type: array
- *               items: 
+ *               items:
  *                type: string
  *         required:
  *           - scrapId
@@ -452,7 +456,7 @@
  *         description: Data not found.
  * /scrap/scrap-process/single-scrap:
  *   get:
- *     tags: 
+ *     tags:
  *       -  Customer scrap Process
  *     name: read loan details
  *     summary: To read scrap details
@@ -466,6 +470,153 @@
  *       description: "Id of customer scrap Id"
  *       type: "string"
  *       required: true
+ *     responses:
+ *       200:
+ *          description: success.
+ * /scrap/scrap-process/applied-scrap-details:
+ *   get:
+ *     tags:
+ *       -  Customer scrap Process
+ *     name: read scrap details
+ *     summary: To read scrap details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
+ *     responses:
+ *       200:
+ *          description: scrap details fetch successfully
+ *       404:
+ *          description: no scrap details found
+ * /scrap/scrap-process/disbursement-bank-detail:
+ *   get:
+ *     tags:
+ *       - Customer scrap Process
+ *     summary: To read disbursement bank detail by customer scrap Id
+ *     parameters:
+ *     - name: "scrapId"
+ *       in: "query"
+ *       description: "Id of bank detail scrap Id to read"
+ *       required: true
+ *       type: string
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: bank detail fetch successfully.
+ *       404:
+ *         description: no bank detail found
+ * /scrap/scrap-process/scrap-disbursement:
+ *   post:
+ *     tags:
+ *       -  Customer scrap Process
+ *     name:  add disbursement detail for scrap
+ *     summary: To add disbursement detail for scrap
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             scrapId:
+ *               type: integer
+ *             scrapAmount:
+ *               type: number
+ *             transactionId:
+ *               type: number
+ *             date:
+ *               type: string
+ *             paymentMode:
+ *               type: string
+ *             accountHolderName:
+ *               type: string
+ *             accountNumber:
+ *               type: string
+ *             bankName:
+ *               type: string
+ *             bankBranchName:
+ *               type: string
+ *             ifscCode:
+ *               type: string
+ *             disbursementStatus:
+ *               type: string
+ *         required:
+ *           - scrapId
+ *           - scrapAmount
+ *           - transactionId
+ *           - date
+ *           - paymentMode
+ *           - acHolderName
+ *           - acNumber
+ *           - bankName
+ *           - bankBranch
+ *           - ifscCode
+ *           - disbursementStatus
+ *     responses:
+ *       200:
+ *         description: disbursement detail added successfully
+ *       404:
+ *         description: Data not found.
+ * /scrap/scrap-process/scrap-details:
+ *   get:
+ *     tags:
+ *       -  Customer scrap Process
+ *     name: read scrap details
+ *     summary: To read scrap details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
+ *     responses:
+ *       200:
+ *          description: success.
+ * /scrap/scrap-process/single-scrap-customer:
+ *   get:
+ *     tags:
+ *       -  Customer scrap Process
+ *     name: read single scrap details
+ *     summary: To read single scrap details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "customerScrapId"
+ *       in: "query"
+ *       description: "Scrap Id"
+ *       type: "number"
  *     responses:
  *       200:
  *          description: success.

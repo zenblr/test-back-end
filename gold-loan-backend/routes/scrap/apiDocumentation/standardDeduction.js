@@ -28,21 +28,6 @@
 *         description: Data found
 *       404:
 *         description: Data not found
-* /scrap/standard-deduction/all-standard-deduction:
-*   get:
-*     tags:
-*       - Standard deduction
-*     name: Read standard deduction
-*     summary: To read standard deduction without pagination
-*     security:
-*       - bearerAuth: []
-*     consumes:
-*       - application/json
-*     responses:
-*       200:
-*         description: Data found
-*       404:
-*         description: Data not found
 *   post:
 *     tags:
 *       - Standard deduction
@@ -64,6 +49,21 @@
 *         description: standard deduction created
 *       422:
 *         description: standard deduction not created
+* /scrap/standard-deduction/all-standard-deduction:
+*   get:
+*     tags:
+*       - Standard deduction
+*     name: Read standard deduction
+*     summary: To read standard deduction without pagination
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     responses:
+*       200:
+*         description: Data found
+*       404:
+*         description: Data not found
 * /scrap/standard-deduction/{id}:
 *   get:
 *     tags:

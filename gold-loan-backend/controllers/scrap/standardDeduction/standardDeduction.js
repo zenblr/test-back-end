@@ -8,19 +8,20 @@ const check = require("../../../lib/checkLib"); // IMPORTING CHECKLIB
 const moment = require('moment');
 
 exports.addDeduction = async (req, res, next) => {
-    let { standardDeduction } = req.body;
+        let { standardDeduction } = req.body;
 
-    let createdBy = req.userData.id;
-    let modifiedBy = req.userData.id;
+        let createdBy = req.userData.id;
+        let modifiedBy = req.userData.id;
+    
+        const deduction = await models.standardDeduction.create(
+            { standardDeduction, createdBy, modifiedBy, isActive: true },
+        );
+        if(deduction){
+            return res.status(200).json({ message: `Standard deduction created` });
+        }else{
+            return res.status(404).json({ message: `Data not found` });
+        }
 
-    const deduction = await models.standardDeduction.create(
-        { standardDeduction, createdBy, modifiedBy, isActive: true },
-    );
-    if(deduction){
-        return res.status(200).json({ message: `Standard deduction created` });
-    }else{
-        return res.status(404).json({ message: `Data not found` });
-    }
 }
 
 
