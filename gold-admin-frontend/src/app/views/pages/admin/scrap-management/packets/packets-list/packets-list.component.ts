@@ -8,6 +8,8 @@ import { AddPacketsComponent } from '../add-packets/add-packets.component';
 import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { SelectionModel } from '@angular/cdk/collections';
+import { AssignAppraiserPacketsComponent } from '../assign-appraiser-packets/assign-appraiser-packets.component';
 
 @Component({
   selector: 'kt-packets-list',
@@ -16,10 +18,11 @@ import { NgxPermissionsService } from 'ngx-permissions';
 })
 export class PacketsListComponent implements OnInit {
   dataSource: ScrapPacketsDatasource;
-  displayedColumns = ['packetUniqueId', 'internalBranch', 'customerID', 'scrapId', 'actions'];
+  displayedColumns = ['select', 'packetUniqueId', 'internalBranch', 'appraiserName','customerID', 'scrapId', 'actions'];
   packetsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
+  selection = new SelectionModel<any>(true, []);
   private subscriptions: Subscription[] = [];
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
@@ -33,11 +36,11 @@ export class PacketsListComponent implements OnInit {
     private ngxPermissionService: NgxPermissionsService
   ) {
     this.scrapPacketsService.openModal$.pipe(
-      map(res => {
-        if (res) {
-          this.assignPackets();
-        }
-      }),
+      map(res => { if (res) this.assignPackets() }),
+      takeUntil(this.destroy$)).subscribe();
+
+    this.scrapPacketsService.buttonValue$.pipe(
+      map(res => { if (res) this.assignAppraiser() }),
       takeUntil(this.destroy$)).subscribe();
   }
 
@@ -133,5 +136,53 @@ export class PacketsListComponent implements OnInit {
           });
       }
     });
+  }
+
+  isAllSelected(): boolean {
+    const numSelected = this.selection.selected.length;
+    const totalAssignablePackets = this.packetsResult.filter(e => e.packetAssigned === false)
+    const numRows = totalAssignablePackets.length;
+    return numSelected === numRows;
+  }
+
+  masterToggle() {
+    const totalAssignablePackets = this.packetsResult.filter(e => e.packetAssigned === false)
+    if (this.selection.selected.length === totalAssignablePackets.length) {
+      this.selection.clear();
+    } else {
+      this.packetsResult.forEach((row) => {
+        if (!row.packetAssigned)
+          this.selection.select(row)
+      });
+      this.checkForSameBranch()
+    }
+  }
+
+  assignAppraiser() {
+    const { isAssignAppraiserValid, isBranchSame, isSelectionEmpty, isUsed } = this.checkForSameBranch()
+    if (!isAssignAppraiserValid) {
+      if (isSelectionEmpty) this.toastr.error('Select atleast 1 packet')
+      if (!isBranchSame) this.toastr.error('Select packets from same branch')
+      if (!isUsed) this.toastr.error('A packet has already been used')
+      return
+    }
+    const dialogRef = this.dialog.open(AssignAppraiserPacketsComponent, {
+      data: { action: 'add', packetData: this.selection.selected },
+      width: '500px'
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) this.loadPackets();
+      this.scrapPacketsService.buttonValue.next(false);
+      this.selection.clear()
+    });
+  }
+
+  checkForSameBranch() {
+    const selectedPackets = this.selection.selected
+    const isBranchSame = selectedPackets.every(e => e.internalUserBranch === selectedPackets[0].internalUserBranch)
+    const isSelectionEmpty = this.selection.isEmpty()
+    const isUsed = selectedPackets.every(e => e.packetAssigned === false)
+    const isAssignAppraiserValid = !(isSelectionEmpty) && isBranchSame && isUsed ? true : false
+    return { isAssignAppraiserValid, isBranchSame, isSelectionEmpty, isUsed }
   }
 }

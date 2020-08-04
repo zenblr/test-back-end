@@ -11,6 +11,9 @@ export class ScrapPacketsService {
   openModal = new BehaviorSubject<any>(false);
   openModal$ = this.openModal.asObservable();
 
+  buttonValue = new BehaviorSubject<any>(false);
+  buttonValue$ = this.buttonValue.asObservable();
+
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   uploadPackets(packetImages, scrapId): Observable<any> {
@@ -72,5 +75,26 @@ export class ScrapPacketsService {
 
   getInternalBranhces(): Observable<any> {
     return this.http.get<any>(`api/internal-branch`);
+  }
+
+  assignAppraiserToPacket(data): Observable<any> {
+    return this.http.put<any>(`api/scrap/packet/assign-appraiser`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
+  uplaodCSV(data): Observable<any> {
+    return this.http.post('api/upload-packets-file', data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message)
+        throw (err)
+      }))
   }
 }

@@ -660,6 +660,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "packets") {
 			this.dataSourceHeader();
+			this.rightButton = true;
+			this.value2 = "Assign Appraiser";
+			this.type2 = "button";
 			this.value1 = "Add Packets";
 			this.permissionType = "packetAdd";
 			this.showfilter = true;
@@ -784,9 +787,6 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'standard-deduction') {
 			this.standardDeductionService.openModal.next(true);
 		}
-		if (this.path == "packets") {
-			this.scrapPacketsService.openModal.next(true);
-		}
 	}
 
 	download() {
@@ -817,6 +817,10 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "packet") {
 			if (value == 'Add Packet') this.packetService.openModal.next(true);
 			if (value == 'Assign Appraiser') this.packetService.buttonValue.next(true);
+		}
+		if (this.path == "packets") {
+			if (value == 'Add Packets') this.scrapPacketsService.openModal.next(true);
+			if (value == 'Assign Appraiser') this.scrapPacketsService.buttonValue.next(true);
 		}
 	}
 

@@ -16,6 +16,7 @@ import { ScrapCalculatorComponent } from './scrap-calculator/scrap-calculator.co
 import { ScrapApplicationFormComponent } from './scrap-application-form/scrap-application-form.component';
 import { PacketsListComponent } from './packets/packets-list/packets-list.component';
 import { AddPacketsComponent } from './packets/add-packets/add-packets.component';
+import { AssignAppraiserPacketsComponent } from './packets/assign-appraiser-packets/assign-appraiser-packets.component';
 import { AppliedScrapComponent } from './applied-scrap/applied-scrap.component';
 import { GlobalSettingsComponent } from './global-settings/global-settings.component';
 import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dialog.component';
@@ -71,6 +72,7 @@ const routes: Routes = [
     ScrapApplicationFormComponent,
     PacketsListComponent,
     AddPacketsComponent,
+    AssignAppraiserPacketsComponent,
     AppliedScrapComponent,
     GlobalSettingsComponent,
   ],
@@ -100,6 +102,7 @@ const routes: Routes = [
   entryComponents: [
     DeleteEntityDialogComponent,
     AddPacketsComponent,
+    AssignAppraiserPacketsComponent,
     WebcamDialogComponent,
     UserReviewComponent
   ]

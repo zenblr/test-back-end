@@ -144,7 +144,8 @@
         <div class="col-6">
             <div class="row justify-content-center kt-margin-t-10">
                 <div class="col-4 form-label">
-                    <label class="kt-padding-l-10 mandatory">Loan Status</label>
+                    <label class="kt-padding-l-10 mandatory" *ngIf="scrapIds">Scrap Status</label>
+                    <label class="kt-padding-l-10 mandatory" *ngIf="!scrapIds">Loan Status</label>
                 </div>
                 <div class="col-8">
                     <input type="text" class="form-control" formControlName="disbursementStatus"
