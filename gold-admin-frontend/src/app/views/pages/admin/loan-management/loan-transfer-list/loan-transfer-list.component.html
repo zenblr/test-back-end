@@ -37,7 +37,9 @@
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
                         <button class="apply-kyc"
-                            *ngIf="!loan?.isLoanSubmitted && loan?.loanTransfer?.loanTransferCurrentStage == '6' && permission.loanApplicationAdd && !loan.loanStatusForAppraiser"
+                            *ngIf="!loan?.isLoanSubmitted && loan?.loanTransfer?.loanTransferCurrentStage == '6' && permission.loanApplicationAdd
+                            
+                            "
                             (click)="applyLoan(loan)">Apply Loan</button></mat-cell>
                 </ng-container>
 
