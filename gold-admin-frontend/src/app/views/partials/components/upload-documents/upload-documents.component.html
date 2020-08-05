@@ -74,8 +74,7 @@
                     Required</mat-error>
             </div>
             <div class="col mb-3" *ngIf="showLoanTransferFlag || showLoanFlag">
-                <div class="input-group w-80"
-                    [class.isError]="controls.pawnCopy.touched && controls.pawnCopy.invalid">
+                <div class="input-group w-80" [class.isError]="controls.pawnCopy.touched && controls.pawnCopy.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="pawnCopyImageName" />
                     <div class="input-group-append">
@@ -134,11 +133,11 @@
                 <mat-error *ngIf="controls.declaration.touched && controls.declaration.invalid">Field Required
                 </mat-error>
             </div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag"></div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag"></div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag"></div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
-                <div class="input-group mb-3 w-80"
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
+                <div class="input-group w-80"
                     [class.isError]="controls.customerConfirmation.touched && controls.customerConfirmation.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="customerConfirmationImageName" />
@@ -153,8 +152,8 @@
                     Required
                 </mat-error>
             </div>
-            <div class="col" *ngIf="showScrapFlag">
-                <div class="input-group mb-3 w-80"
+            <div class="col mb-3" *ngIf="showScrapFlag">
+                <div class="input-group w-80"
                     [class.isError]="controls.purchaseVoucher.touched && controls.purchaseVoucher.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="purchaseVoucherImageName" />
@@ -167,8 +166,8 @@
                 <mat-error *ngIf="controls.purchaseVoucher.touched && controls.purchaseVoucher.invalid">Field Required
                 </mat-error>
             </div>
-            <div class="col" *ngIf="showScrapFlag">
-                <div class="input-group mb-3 w-80"
+            <div class="col mb-3" *ngIf="showScrapFlag">
+                <div class="input-group w-80"
                     [class.isError]="controls.purchaseInvoice.touched && controls.purchaseInvoice.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="schemeConfirmationCopyImageName" />
@@ -184,8 +183,8 @@
                     Required</mat-error>
 
             </div>
-            <div class="col" *ngIf="showScrapFlag">
-                <div class="input-group mb-3 w-80"
+            <div class="col mb-3" *ngIf="showScrapFlag">
+                <div class="input-group w-80"
                     [class.isError]="controls.saleInvoice.touched && controls.saleInvoice.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="schemeConfirmationCopyImageName" />

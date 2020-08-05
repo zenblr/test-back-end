@@ -140,8 +140,9 @@
                                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
                                             (click)="passbook.click()">Attach</span>
                                     </div>
-                                    <input type="file" class="d-none" accept="image/png, image/jpeg" #passbook
-                                        (input)="getFileInfo($event)">
+                                    <input type="file" class="d-none"
+                                        accept="{{scrapIds ? 'image/png, image/jpeg, .pdf' : 'image/png, image/jpeg'}}"
+                                        #passbook (input)="getFileInfo($event)">
                                     <mat-error *ngIf="controls.passbookProof.touched && controls.passbookProof.invalid">
                                         Required field
                                     </mat-error>
