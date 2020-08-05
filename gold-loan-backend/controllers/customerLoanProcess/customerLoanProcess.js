@@ -1820,14 +1820,14 @@ exports.getAssignAppraiserCustomer = async (req, res, next) => {
         let singleCustomer = extend(data[i].dataValues);
         if(singleCustomer.customer.masterLoan.length > 1){
             let customer = extend(singleCustomer.customer.dataValues);
-            let masterLoans = customer.masterLoan;
+            let masterLoans =  customer.masterLoan.slice();
             delete singleCustomer.customer;
-            singleCustomer['customer']=customer;
             for(let j=0; j<masterLoans.length; j++){
                 let masterLoan = extend(masterLoans[j].dataValues);
+                singleCustomer['customer']={...customer};
                 delete singleCustomer.customer.masterLoan;
-                singleCustomer.customer['masterLoan']=[masterLoan];
-                tempData.push(singleCustomer);
+                singleCustomer.customer['masterLoan']=[masterLoan];//.slice();
+                tempData.push({...singleCustomer});
             }
         }else{
             tempData.push(singleCustomer);
