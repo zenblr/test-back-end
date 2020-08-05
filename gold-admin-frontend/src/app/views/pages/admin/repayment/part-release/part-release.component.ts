@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { JewelleryReleaseService } from '../../../../../core/repayment/jewellery-release/services/jewellery-release.service';
 import { map } from 'rxjs/operators';
@@ -34,7 +34,8 @@ export class PartReleaseComponent implements OnInit {
     private dialog: MatDialog,
     private ref: ChangeDetectorRef,
     private toastr: ToastrService,
-    private titleCasePipe: TitleCasePipe
+    private titleCasePipe: TitleCasePipe,
+    private ele: ElementRef
   ) { }
 
   ngOnInit() {
@@ -111,13 +112,23 @@ export class PartReleaseComponent implements OnInit {
       console.log(res);
       if (res) {
         this.totalSelectedOrnamentDetails = res
+        this.scrollToBottom()
       }
     })).subscribe()
 
   }
 
+  scrollToBottom() {
+    setTimeout(() => {
+      let view = this.ele.nativeElement.querySelector('#container') as HTMLElement
+      view.scrollIntoView({ behavior: "smooth", block: "end" })
+    }, 500)
+  }
+
+
   proceed() {
     this.showPaymentConfirmation = true
+    this.scrollToBottom()
   }
 
   cancelRelease() {
@@ -140,6 +151,7 @@ export class PartReleaseComponent implements OnInit {
 
     this.jewelleryReleaseService.partReleasePayment(payObject).pipe(map(res => {
       if (res) this.toastr.success(this.titleCasePipe.transform(res['message']))
+      this.router.navigate(['/admin/funds-approvals/part-release-approval'])
     })).subscribe()
   }
 
