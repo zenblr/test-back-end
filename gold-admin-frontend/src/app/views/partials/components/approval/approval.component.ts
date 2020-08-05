@@ -181,7 +181,6 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
             let temp = this.reasons.filter(reason => {
               return reason.description == changes.details.currentValue.masterLoan.commentByAppraiser
             })
-
             if (!temp.length) {
               this.approvalForm.patchValue({ reasons: "Other" })
             } else {
