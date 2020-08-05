@@ -688,20 +688,20 @@ export class UserReviewComponent implements OnInit {
       this.identityIdArray.splice(index, 1)
       this.identityFileNameArray.splice(index, 1)
       this.reviewForm.patchValue({ identityProof: this.identityIdArray });
-      this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray});
+      this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray });
     } else if (type == 'residential') {
       this.addressImageArray2.splice(index, 1)
       this.addressIdArray2.splice(index, 1)
       this.addressFileNameArray2.splice(index, 1)
       this.customerKycAddressTwo.patchValue({ addressProof: this.addressIdArray2 });
-      this.customerKycAddressTwo.patchValue({ addressProofFileName: this.addressFileNameArray2});
+      this.customerKycAddressTwo.patchValue({ addressProofFileName: this.addressFileNameArray2 });
 
     } else if (type == 'permanent') {
       this.addressImageArray1.splice(index, 1)
       this.addressIdArray1.splice(index, 1)
-      this.addressFileNameArray1.splice(index,1)
+      this.addressFileNameArray1.splice(index, 1)
       this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 });
-      this.customerKycAddressOne.patchValue({ addressProofFileName:this.addressFileNameArray1});
+      this.customerKycAddressOne.patchValue({ addressProofFileName: this.addressFileNameArray1 });
     }
     else if (type == 'signature') {
       this.data.customerKycReview.customerKycPersonal.signatureProofImg = ''
@@ -739,21 +739,21 @@ export class UserReviewComponent implements OnInit {
             this.identityFileNameArray.push(event.target.files[0].name)
             console.log(this.identityFileNameArray)
             this.customerKycPersonal.patchValue({ identityProof: this.identityIdArray })
-            this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length-1] });
+            this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
           } else
             if (type == 'permanent' && this.addressImageArray1.length < 2) {
               this.addressImageArray1.push(res.uploadFile.URL)
               this.addressIdArray1.push(res.uploadFile.path)
               this.addressFileNameArray1.push(event.target.files[0].name)
               this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 })
-              this.customerKycAddressOne.patchValue({ addressProofFileName:this.addressFileNameArray1 [this.addressFileNameArray1.length-1] });
+              this.customerKycAddressOne.patchValue({ addressProofFileName: this.addressFileNameArray1[this.addressFileNameArray1.length - 1] });
             } else
               if (type == 'residential' && this.addressImageArray2.length < 2) {
                 this.addressImageArray2.push(res.uploadFile.URL)
                 this.addressIdArray2.push(res.uploadFile.path)
                 this.addressFileNameArray2.push(event.target.files[0].name)
                 this.customerKycAddressTwo.patchValue({ addressProof: this.addressIdArray2 })
-                this.customerKycAddressTwo.patchValue({ addressProofFileName: this.addressFileNameArray2[this.addressFileNameArray2.length-1]});
+                this.customerKycAddressTwo.patchValue({ addressProofFileName: this.addressFileNameArray2[this.addressFileNameArray2.length - 1] });
               } else
                 if (type == "signature") {
                   this.data.customerKycReview.customerKycPersonal.signatureProofImg = res.uploadFile.URL;
@@ -843,21 +843,56 @@ export class UserReviewComponent implements OnInit {
     // })
   }
 
-  checkForAadhar() {
-    if (this.customerKycAddressOne.controls.addressProofTypeId.value == 2) {
-      this.addressImageArray1 = [];
-      this.addressIdArray1 = [];
-      Array.prototype.push.apply(this.addressImageArray1, this.identityImageArray)
-      Array.prototype.push.apply(this.addressIdArray1, this.identityIdArray)
-      this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 });
-      this.customerKycAddressOne.patchValue({ addressProofNumber: this.reviewForm.controls.identityProofNumber.value });
-    } else {
-      this.addressImageArray1 = [];
-      this.addressIdArray1 = [];;
-      this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 });
-      this.customerKycAddressOne.patchValue({ addressProofNumber: '' });
+  checkForAadhar(key) {
+    switch (key) {
+      case 'permanent':
+        if (this.customerKycAddressOne.controls.addressProofTypeId.value == 2) {
+          this.addressImageArray1 = [];
+          this.addressIdArray1 = [];
+          Array.prototype.push.apply(this.addressImageArray1, this.identityImageArray)
+          Array.prototype.push.apply(this.addressIdArray1, this.identityIdArray)
+          this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 });
+          this.customerKycAddressOne.patchValue({ addressProofNumber: this.reviewForm.controls.identityProofNumber.value });
+          this.addressFileNameArray1 = this.identityFileNameArray
+          this.customerKycAddressOne.patchValue({ addressProofFileName: this.addressFileNameArray1[this.addressFileNameArray1.length - 1] });
+
+        } else {
+          this.addressImageArray1 = [];
+          this.addressIdArray1 = [];;
+          this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 });
+          this.customerKycAddressOne.patchValue({ addressProofNumber: '' });
+          this.addressFileNameArray1 = []
+          this.customerKycAddressOne.patchValue({ addressProofFileName: this.addressFileNameArray1 });
+        }
+        break;
+
+      case 'residential':
+        if (this.customerKycAddressTwo.controls.addressProofTypeId.value == 2) {
+          this.addressImageArray2 = [];
+          this.addressIdArray2 = [];
+          Array.prototype.push.apply(this.addressImageArray2, this.identityImageArray)
+          Array.prototype.push.apply(this.addressIdArray2, this.identityIdArray)
+          this.customerKycAddressTwo.patchValue({ addressProof: this.addressIdArray2 });
+          this.customerKycAddressTwo.patchValue({ addressProofNumber: this.reviewForm.controls.identityProofNumber.value });
+          this.addressFileNameArray2 = this.identityFileNameArray
+          this.customerKycAddressTwo.patchValue({ addressProofFileName: this.addressFileNameArray2[this.addressFileNameArray2.length - 1] });
+        } else {
+          this.addressImageArray2 = [];
+          this.addressIdArray2 = [];;
+          this.customerKycAddressTwo.patchValue({ addressProof: this.addressIdArray2 });
+          this.customerKycAddressTwo.patchValue({ addressProofNumber: '' });
+          this.addressFileNameArray2 = []
+          this.customerKycAddressTwo.patchValue({ addressProofNumber: this.addressFileNameArray2 });
+
+        }
+        break;
+
+      default:
+        break;
     }
+
   }
+
 
   checkOccupation(event) {
     if (event.target.value == 'null') {

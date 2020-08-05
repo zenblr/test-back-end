@@ -330,7 +330,7 @@
                             </div>
                             <div class="col-7 kt-margin-t-20">
                                 <select formControlName="addressProofTypeId" class="form-control"
-                                    (change)="checkForAadhar()"
+                                    (change)="checkForAadhar('permanent')"
                                     [class.isError]="customerKycAddressOne.controls.addressProofTypeId.touched && customerKycAddressOne.controls.addressProofTypeId.invalid">
                                     <option value="" selected disabled> Select Proof
                                     </option>
@@ -519,6 +519,7 @@
                             </div>
                             <div class="col-7 kt-margin-t-20">
                                 <select formControlName="addressProofTypeId" class="form-control"
+                                    (change)="checkForAadhar('residential')"
                                     [class.isError]="customerKycAddressTwo.controls.addressProofTypeId.touched && customerKycAddressTwo.controls.addressProofTypeId.invalid">
                                     <option value="" selected disabled> Select Proof
                                     </option>

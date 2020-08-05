@@ -121,10 +121,9 @@ export class PartReleaseComponent implements OnInit {
     setTimeout(() => {
       let view = this.ele.nativeElement.querySelector('#container') as HTMLElement
       view.scrollIntoView({ behavior: "smooth", block: "end" })
-      // let container = document.getElementById('container')
-      // container.scrollTop = container.scrollHeight + 100
     }, 500)
   }
+
 
   proceed() {
     this.showPaymentConfirmation = true
