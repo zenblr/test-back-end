@@ -395,12 +395,15 @@ exports.interestRate = async (req, res, next) => {
 // Function to generate Interest Table
 
 exports.generateInterestTable = async (req, res, next) => {
-    let { securedLoanAmount, interestRate, unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency, isUnsecuredSchemeApplied, tenure } = req.body
+    let { securedLoanAmount, interestRate, unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency, isUnsecuredSchemeApplied, tenure, unsecuredSchemeId, schemeId } = req.body
     let interestTable = []
     let totalInterestAmount = 0;
 
     // secure interest calculation
     let securedInterestAmount = await interestCalcultaion(securedLoanAmount, interestRate, paymentFrequency)
+    let securedScheme = await model.scheme.findOne({
+        where: { id: schemeId }
+    })
 
 
     // unsecure interest calculation
@@ -445,7 +448,7 @@ exports.generateInterestTable = async (req, res, next) => {
         }
     });
 
-    return res.status(200).json({ data: { interestTable, totalInterestAmount } })
+    return res.status(200).json({ data: { interestTable, totalInterestAmount, securedScheme } })
 }
 
 // FUNCTION FOR unsecure table generation
@@ -1549,7 +1552,7 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
 }
 
 //  FUNCTION FOR GET APPLIED LOAN DETAILS
-exports.    appliedLoanDetails = async (req, res, next) => {
+exports.appliedLoanDetails = async (req, res, next) => {
     let { schemeId, appraiserApproval, bmApproval, loanStageId, operatinalTeamApproval } = req.query
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
@@ -1777,45 +1780,67 @@ exports.getLoanDetails = async (req, res, next) => {
 
 //FUNCTION FOR GET ASSIGN APPRAISER CUSTOMER LIST 
 exports.getAssignAppraiserCustomer = async (req, res, next) => {
-    let { search, offset, pageSize } = paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
-    let id = req.userData.id;
+    try {
+        let { search, offset, pageSize } = paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
+        let id = req.userData.id;
 
-    let query = {}
-    let searchQuery = {
-        [Op.and]: [query, {
-            [Op.or]: {
-                "$customer.first_name$": { [Op.iLike]: search + '%' },
-                "$customer.last_name$": { [Op.iLike]: search + '%' },
-                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-            },
-        }],
-        appraiserId: id
-    };
+        let query = {}
+        let searchQuery = {
+            [Op.and]: [query, {
+                [Op.or]: {
+                    "$customer.first_name$": { [Op.iLike]: search + '%' },
+                    "$customer.last_name$": { [Op.iLike]: search + '%' },
+                    "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+                },
+            }],
+            appraiserId: id
+        };
 
-    let includeArray = [{
-        model: models.customer,
-        as: 'customer',
-        attributes: ['id', 'firstName', 'lastName']
-    }]
+        let includeArray = [{
+            model: models.customer,
+            as: 'customer',
+            // attributes: ['id', 'firstName', 'lastName'],
+            // required:false,
+            subQuery: false,
+            // include: {
+            //     model: models.customerLoanMaster,
+            //     as: "masterLoan",
+            // }
+        }]
 
-    let data = await models.customerAssignAppraiser.findAll({
-        where: searchQuery,
-        include: includeArray,
-        order: [
-            ['id', 'DESC']
-        ],
-        offset: offset,
-        limit: pageSize
-    })
 
-    let count = await models.customerAssignAppraiser.findAll({
-        where: searchQuery,
-        include: includeArray,
-    });
-    if (data.length === 0) {
-        return res.status(200).json([]);
-    } else {
-        return res.status(200).json({ message: 'success', data: data, count: count.length })
+
+        let data = await models.customerAssignAppraiser.findAll({
+            where: searchQuery,
+            include: includeArray,
+            order: [
+                ['id', 'DESC']
+            ],
+            // offset: offset,
+            // limit: pageSize
+        })
+
+        let customerId = data.map(el => el.customerId)
+        console.log(customerId)
+        let customerLoan = await models.customer.findOne({
+            where: { id: { [Op.in]: customerId } },
+            include:[{
+                model: models.customerLoanMaster,
+                as: "masterLoan",
+            }]
+        })
+        // let count = await models.customerAssignAppraiser.findAll({
+        //     where: searchQuery,
+        //     include: includeArray,
+        // });
+        if (data.length === 0) {
+            return res.status(200).json([]);
+        } else {
+            return res.status(200).json({ message: 'success', data: customerLoan })
+        }
+    }
+    catch (err) {
+        console.log(err)
     }
 }
 
