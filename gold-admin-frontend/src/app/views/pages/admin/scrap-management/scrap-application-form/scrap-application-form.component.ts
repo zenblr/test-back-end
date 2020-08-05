@@ -68,7 +68,7 @@ export class ScrapApplicationFormComponent implements OnInit {
       this.scrapIds = { scrapId: res.customerScrap.id }
       this.scrapStage = this.customerDetail.scrapStage
       this.ornamentDetails = res.customerScrap.ornamentType
-      if(res.customerScrap.customerScrapAcknowledgement) {
+      if (res.customerScrap.customerScrapAcknowledgement) {
         this.processingCharges = res.customerScrap.customerScrapAcknowledgement.processingCharges
       }
       console.log(this.scrapStage)
@@ -79,6 +79,9 @@ export class ScrapApplicationFormComponent implements OnInit {
           this.selected = 6;
         }
         this.disabledForm = true;
+        for (let index = 0; index < this.disabled.length; index++) {
+          this.disabled[index] = false;
+        }
       } else if (this.url == 'view-scrap') {
         this.disabledForm = true;
         this.showButton = false;
@@ -148,7 +151,7 @@ export class ScrapApplicationFormComponent implements OnInit {
   }
 
   disbursal(event) {
-    this.scrapStage = event;
+    this.scrapStage.id = event;
     setTimeout(() => {
       this.next(8)
     }, 500)
