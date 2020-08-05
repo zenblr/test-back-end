@@ -7,6 +7,7 @@ const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATIO
 
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 const moment = require('moment');
+const extend = require('extend')
 
 var pdf = require("pdf-creator-node"); // PDF CREATOR PACKAGE
 var fs = require('fs');
@@ -1814,6 +1815,26 @@ exports.getAssignAppraiserCustomer = async (req, res, next) => {
         limit: pageSize
     })
 
+    let tempData=[]
+    for (let i = 0; i < data.length; i++) {
+        let singleCustomer = extend(data[i].dataValues);
+        if(singleCustomer.customer.masterLoan.length > 1){
+            let customer = extend(singleCustomer.customer.dataValues);
+            let masterLoans = customer.masterLoan;
+            delete singleCustomer.customer;
+            singleCustomer['customer']=customer;
+            for(let j=0; j<masterLoans.length; j++){
+                let masterLoan = extend(masterLoans[j].dataValues);
+                delete singleCustomer.customer.masterLoan;
+                singleCustomer.customer['masterLoan']=[masterLoan];
+                tempData.push(singleCustomer);
+            }
+        }else{
+            tempData.push(singleCustomer);
+        }
+
+    }
+    data=tempData;
 
     let count = await models.customerAssignAppraiser.findAll({
         where: searchQuery,
