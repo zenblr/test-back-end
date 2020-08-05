@@ -42,6 +42,10 @@ import { AdminComponent } from './admin.component';
 						loadChildren: () => import('./loan-management/loan-management.module').then(m => m.LoanManagementModule)
 					},
 					{
+						path: 'scrap-management',
+						loadChildren: () => import('./scrap-management/scrap-management.module').then(m => m.ScrapManagementModule)
+					},
+					{
 						path: 'upload-data',
 						loadChildren: () => import('./upload-data/upload-data.module').then(m => m.UploadDataModule),
 					},
@@ -92,6 +96,10 @@ import { AdminComponent } from './admin.component';
 					{
 						path: 'funds-approvals',
 						loadChildren: () => import('./funds-approvals/funds-approvals.module').then(m => m.FundsApprovalsModule)
+					},
+					{
+						path: 'global-map',
+						loadChildren: () => import('./global-map/global-map.module').then(m => m.GlobalMapModule)
 					},
 					{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 					{ path: '**', redirectTo: 'dashboard', pathMatch: 'full' }

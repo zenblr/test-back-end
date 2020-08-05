@@ -138,7 +138,7 @@
                             <div *ngxPermissionsOnly="['EMIDetailsView']" (click)="viewOrder(element.id)"
                                 class="kt-pointer"> View</div>
                             <div *ngxPermissionsOnly="['EMIDetailsView']"
-                                [ngStyle]="{'display':element.orderemistatus.id == 4 ? 'block':'none'}"
+                                [ngStyle]="{'display':element.orderemistatus.id == 4 && element.emiAmount != null ? 'block':'none'}"
                                 (click)="printCancellationReceipt(element)" class="kt-pointer">&nbsp;| Print EMI Receipt
                             </div>
                         </div>

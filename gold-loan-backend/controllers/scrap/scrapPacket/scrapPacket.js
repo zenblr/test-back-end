@@ -26,7 +26,6 @@ exports.addScrapPacket = async (req, res, next) => {
 
 //  FUNCTION FOR VIEW PACKET
 exports.viewScrapPacket = async (req, res, next) => {
-    try{
         let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
@@ -38,6 +37,7 @@ exports.viewScrapPacket = async (req, res, next) => {
         [Op.and]: [query, {
             [Op.or]: {
                 "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+                "$customerScrap.scrap_unique_id$": { [Op.iLike]: search + '%' },
                 "$internalBranch.name$": {
                     [Op.iLike]: search + "%",
                   },
@@ -53,7 +53,7 @@ exports.viewScrapPacket = async (req, res, next) => {
             required: false,
             as: 'customerScrap',
             where: { isActive: true },
-            attributes: ['id', 'scrapUniqieId']
+            attributes: ['id', 'scrapUniqueId']
         },
         {
             model: models.customer,
@@ -68,6 +68,11 @@ exports.viewScrapPacket = async (req, res, next) => {
             as: 'internalBranch',
             where: { isActive: true },
             attributes: ['id', 'internalBranchUniqueId', 'name']
+        },
+        {
+            model: models.user,
+            as: 'appraiser',
+            attributes: ['id', 'userUniqueId', 'firstName', 'lastName', 'mobileNumber', 'email']
         }
     ];
 
@@ -87,10 +92,7 @@ exports.viewScrapPacket = async (req, res, next) => {
     });
 
     return res.status(200).json({ message: 'packet details fetch successfully', packetDetails, count: count });
-    }catch(err){
-        console.log(err);
-    }
-    
+
 }
 
 //  FUNCTION FOR GET AVAILABLE PACKET
@@ -109,7 +111,7 @@ exports.availableScrapPacket = async (req, res, next) => {
     }
 
     let availablePacketDetails = await models.scrapPacket.findAll({
-        where: { isActive: true, packetAssigned: false, internalUserBranchId: { [Op.in]: internalBranchId } },
+        where: { isActive: true, packetAssigned: false, internalUserBranchId: { [Op.in]: internalBranchId }, appraiserId: data.id },
     });
     if (availablePacketDetails.length === 0) {
         res.status(200).json({ message: 'no packet details found', data: [] });
@@ -145,16 +147,15 @@ exports.availableScrapPacket = async (req, res, next) => {
 // FUNCTION TO UPDATE PACKET
 exports.changePacket = async (req, res, next) => {
         let id = req.params.id;
-        let { packetUniqueId, internalUserBranchId } = req.body;
+        let { packetUniqueId, internalUserBranchId, appraiserId } = req.body;
         let modifiedBy = req.userData.id;
     
-        let packet = await models.scrapPacket.updatePacket(id, packetUniqueId, internalUserBranchId, modifiedBy);
+        let packet = await models.scrapPacket.updatePacket(id, packetUniqueId, internalUserBranchId, modifiedBy, appraiserId);
     
         if (packet[0] === 0) {
             return res.status(404).json({ message: "packet not updated" });
         }
         return res.status(200).json({ message: "packet updated successfully" });
-
 };
 
 // FUNCTION TO REMOVE PACKET
@@ -168,3 +169,19 @@ exports.deletePacket = async (req, res, next) => {
         }
         return res.status(200).json({ message: "packet deleted successfully" });   
 };
+
+//FUNCTION TO ASSIGN APPRAISER
+exports.scrapAssignAppraiser = async (req, res) => {
+        const { packetId, appraiserId } = req.body;
+        console.log(packetId, appraiserId);
+        let modifiedBy = req.userData.id;
+    
+        const packet = await models.scrapPacket.update({ appraiserId, modifiedBy }, { where: { id: { [Op.in]: packetId } } })
+        //console.log(packet)
+        if (packet.length === 0) {
+            return res.status(404).json({ message: "Appraiser not assigned to packet" });
+        } else {
+            return res.status(200).json({ message: "Appraiser assigned to packet" });
+        }
+
+}

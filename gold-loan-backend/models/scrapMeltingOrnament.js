@@ -34,6 +34,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'ornament_image_with_xrf_machine_reading'
         },
+        ornamentImage: {
+            type: DataTypes.TEXT,
+            field: 'ornament_image'
+        },
         customerConfirmation: {
             type: DataTypes.ENUM,
             field: 'customer_confirmation',

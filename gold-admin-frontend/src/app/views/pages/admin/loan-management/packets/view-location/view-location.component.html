@@ -1,0 +1,68 @@
+<kt-portlet>
+    <kt-portlet-body >
+        <mat-tab-group class="position-relative">
+            <mat-tab label="Map">
+                <div class="row kt-padding-10 justify-content-center kt-margin-bottom-20-mobile">
+                    <form [formGroup]="mapReport">
+                        <mat-form-field class="mat-form-field-fluid">
+                            <input (dateChange)="getMapReport()" matInput [matDatepicker]="picker" placeholder="Select Date"
+                                formControlName="mapDate" (click)="picker.open()" readonly />
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                    </form>
+                </div>
+                <agm-map [latitude]='latitude' [longitude]='longitude' [zoom]="15" [fitBounds]="true" >
+                 <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.lat" [longitude]="m.lng" 
+                    [markerDraggable]="m.draggable" (markerClick)="clickedMarker(m.lat, m.lng, i)" [agmFitBounds]="true">
+                    <agm-info-window [isOpen]="m.isVisible">
+                        <!-- <span *ngIf="!infoToggle[i]">
+                            <strong>{{m.userName}}</strong>&nbsp; | &nbsp;
+                            <strong *ngIf="m.checkOutTime == ''">{{m.checkInTime | customDate:'0':'hh:mm a'}}</strong>
+                            <strong *ngIf="m.checkOutTime != ''">
+                                {{m.checkOutTime | customDate:'0':'hh:mm a'}}</strong>
+                        </span>
+                        <div class="font">
+                            <span *ngIf="infoToggle[i]" style="z-index: 999">
+                                <strong>{{m.userName}}</strong><br>
+                                <span><small>Date:
+                                        {{m.checkInTime | customDate:'0':'dd-MMM-yyyy'}}
+                                    </small>
+                                </span><br>
+                                <span>
+                                    <small>Punched
+                                        In:
+                                        {{m.checkInTime | date:'shortTime'}}</small>
+                                </span><br>
+                                <span [ngStyle]="{'display': (m.checkOutTime != '') ? 'block' : 'none'}">
+                                    <small>Punched out:
+                                        {{m.checkOutTime | date:'shortTime'}}</small>
+                                </span>
+                                <span [ngStyle]="{'display': (m.checkOutTime == '')? 'block' : 'none'}">
+                                    <small>Punched out: NA</small>
+                                </span><br>
+                                <small *ngIf="address">Last Location:</small><br>
+                                <small class="w-25 text-wrap">{{address}}</small>
+                            </span>
+    
+                        </div> -->
+                    </agm-info-window>
+                </agm-marker>
+                </agm-map>
+            </mat-tab>
+            <mat-tab label="Location">
+                <div class="row kt-padding-10 justify-content-center kt-margin-bottom-20-mobile">
+                    <form class="pos">
+                        <mat-form-field class="mat-form-field-fluid">
+                            <input (dateChange)="getMapReport()" matInput [matDatepicker]="picker1" placeholder="Select Date"
+                                (click)="picker.open()" readonly />
+                            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                            <mat-datepicker #picker1></mat-datepicker>
+                        </mat-form-field>
+                    </form>
+                </div>
+                <kt-location></kt-location>
+            </mat-tab>
+        </mat-tab-group>
+    </kt-portlet-body>
+</kt-portlet>

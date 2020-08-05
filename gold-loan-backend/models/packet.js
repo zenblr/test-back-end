@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
         packet.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         packet.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
         packet.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
-        
+
         packet.belongsTo(models.internalBranch, { foreignKey: 'internalUserBranch', as: 'internalBranch' });
         packet.hasMany(models.packetOrnament, { foreignKey: 'packetId', as: 'packetOrnament' });
 
@@ -68,8 +68,8 @@ module.exports = (sequelize, DataTypes) => {
 
         // packet.belongsToMany(models.ornamentType, { through: models.packetOrnament });
 
-        
-        
+
+
     }
 
     // FUNCTION TO ADD PACKET
@@ -77,7 +77,6 @@ module.exports = (sequelize, DataTypes) => {
         (packetUniqueId, createdBy, modifiedBy, internalUserBranch,barcodeNumber) => packet.create({
             packetUniqueId, createdBy, modifiedBy,internalUserBranch, packetAssigned: false, isActive: true, barcodeNumber
         });
-
     // FUNCTION TO ASSIGN PACKET
     packet.assignPacket =
         (customerId, loanId, modifiedBy, id) => packet.update({

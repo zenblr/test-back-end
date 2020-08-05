@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'internal_user_branch_id'
         },
+        appraiserId: {
+            type: DataTypes.INTEGER,
+            field: 'appraiser_id',
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -45,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
         ScrapPacket.belongsTo(models.internalBranch, { foreignKey: 'internalUserBranchId', as: 'internalBranch' });
         ScrapPacket.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         ScrapPacket.hasMany(models.scrapPacketOrnament, { foreignKey: 'packetId', as: 'scrapPacketOrnament' });
+        ScrapPacket.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
 
         // ScrapPacket.belongsToMany(models.customerScrapPackageDetails, { through: models.customerScrapPacket });
         ScrapPacket.belongsToMany(models.customerScrapPackageDetails, {as: 'ScrapPacket',  foreignKey: 'packetId', through: models.customerScrapPacket });

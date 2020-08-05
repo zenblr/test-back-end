@@ -370,7 +370,7 @@ async function processingChargeSecuredScheme(amount, securedScheme, unsecuredSch
             processingCharge += unsecuredScheme.processingChargeFixed
         }
     }
-    return Number(processingCharge.toFixed(2))
+    return Number(processingCharge.toFixed(2));
 }
 
 // FUNCTION for interest
@@ -462,7 +462,6 @@ exports.unsecuredTableGeneration = async (req, res, next) => {
     var unsecuredInterestAmount = await interestCalcultaion(unsecuredSchemeAmount, unsecuredInterestRate.interestRate, paymentFrequency)
 
     let length = (tenure * 30) / paymentFrequency
-    console.log(length)
     for (let index = 0; index < Number(length); index++) {
         let date = new Date()
         let data = {
@@ -508,7 +507,7 @@ exports.loanFinalLoan = async (req, res, next) => {
         interestTable[i]['modifiedBy'] = modifiedBy
         interestTable[i]['loanId'] = loanId
         interestTable[i]['interestAmount'] = interestTable[i].securedInterestAmount
-        interestTable[i]['balanceAmount'] = interestTable[i].securedInterestAmount
+        interestTable[i]['outstandingInterest'] = interestTable[i].securedInterestAmount
         interestTable[i]['masterLoanId'] = masterLoanId
         interestData.push(interestTable[i])
     }
@@ -545,7 +544,7 @@ exports.loanFinalLoan = async (req, res, next) => {
                     interestTable[i]['modifiedBy'] = modifiedBy
                     interestTable[i]['loanId'] = unsecuredLoan.id
                     interestTable[i]['interestAmount'] = interestTable[i].unsecuredInterestAmount
-                    interestTable[i]['balanceAmount'] = interestTable[i].unsecuredInterestAmount
+                    interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                     interestTable[i]['masterLoanId'] = masterLoanId
                     newUnsecuredInterestData.push(interestTable[i])
                 }
@@ -596,7 +595,7 @@ exports.loanFinalLoan = async (req, res, next) => {
                     interestTable[i]['modifiedBy'] = modifiedBy
                     interestTable[i]['loanId'] = getUnsecuredLoanId.unsecuredLoanId
                     interestTable[i]['interestAmount'] = interestTable[i].unsecuredInterestAmount
-                    interestTable[i]['balanceAmount'] = interestTable[i].unsecuredInterestAmount
+                    interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                     interestTable[i]['masterLoanId'] = masterLoanId
                     unsecuredInterestData.push(interestTable[i])
                 }
@@ -620,7 +619,7 @@ exports.loanFinalLoan = async (req, res, next) => {
                         interestTable[i]['modifiedBy'] = modifiedBy
                         interestTable[i]['loanId'] = unsecuredLoan.id
                         interestTable[i]['interestAmount'] = interestTable[i].unsecuredInterestAmount
-                        interestTable[i]['balanceAmount'] = interestTable[i].unsecuredInterestAmount
+                        interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                         interestTable[i]['masterLoanId'] = masterLoanId
                         newUnsecuredInterestData.push(interestTable[i])
                     }
@@ -1550,7 +1549,7 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
 }
 
 //  FUNCTION FOR GET APPLIED LOAN DETAILS
-exports.appliedLoanDetails = async (req, res, next) => {
+exports.    appliedLoanDetails = async (req, res, next) => {
     let { schemeId, appraiserApproval, bmApproval, loanStageId, operatinalTeamApproval } = req.query
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);

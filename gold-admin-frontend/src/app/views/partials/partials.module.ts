@@ -54,6 +54,9 @@ import { PortletModule } from "./content/general/portlet/portlet.module";
 import { ErrorComponent } from "./content/general/error/error.component";
 // Extra module
 import { WidgetModule } from "./content/widgets/widget.module";
+// map
+import { AgmCoreModule } from '@agm/core';
+
 // SVG inline
 import { InlineSVGModule } from "ng-inline-svg";
 import { CartComponent } from "./layout/topbar/cart/cart.component";
@@ -69,8 +72,14 @@ import { FilteredDataComponent } from './components/filtered-data/filtered-data.
 // spinner
 import { UplodDataImageComponent } from "./components/uplod-data-image/uplod-data-image.component";
 import { ImagePreviewDialogComponent } from "./components/image-preview-dialog/image-preview-dialog.component";
+import { BasicDetailsComponent } from "./components/basic-details/basic-details.component";
+import { UploadDocumentsComponent } from "./components/upload-documents/upload-documents.component";
 import { UserClassificationComponent } from "./components/user-classification/user-classification.component";
 import { UplodPreviewImageComponent } from "./components/uplod-preview-image/uplod-preview-image.component";
+import { BankDetailsComponent } from "./components/bank-details/bank-details.component";
+import { ApprovalComponent } from "./components/approval/approval.component";
+import { UploadPacketsComponent } from "./components/upload-packets/upload-packets.component";
+import { DisburseComponent } from "./components/disburse/disburse.component";
 
 import { NgSelectModule } from "@ng-select/ng-select";
 import { UserReviewComponent } from "../pages/admin/kyc-settings/tabs/user-review/user-review.component";
@@ -81,7 +90,7 @@ import { AssignAppraiserComponent } from '../pages/admin/user-management/assign-
 import { WebcamModule } from "ngx-webcam";
 import { WebcamDialogComponent } from '../pages/admin/kyc-settings/webcam-dialog/webcam-dialog.component';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
-import { OrnamentsComponent } from '../pages/admin/loan-management/loan-application-form/tabs/ornaments/ornaments.component';
+import { OrnamentsComponent } from './components/ornaments/ornaments.component';
 import { ImageFunctionalityDialogComponent } from './components/image-functionality-dialog/image-functionality-dialog.component';
 
 import { PdfViewerModule } from 'ng2-pdf-viewer';
@@ -89,6 +98,8 @@ import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component
 
 import { AngularImageViewerModule } from 'angular-x-image-viewer';
 import { DropdownComponent } from './components/dropdown/dropdown.component';
+
+import { GlobalSettingsComponent } from './components/global-settings/global-settings.component';
 
 @NgModule({
 	declarations: [
@@ -123,50 +134,39 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
 		UserProfile2Component,
 		UserProfile3Component,
 		CartComponent,
-
 		ErrorComponent,
-
 		ToastrComponent,
-
 		ButtonComponent,
-
 		FilterComponent,
-
 		SearchComponent,
-
 		ModalHeaderComponent,
-
 		ModalFooterComponent,
-
 		UplodDataImageComponent,
-
 		ImagePreviewDialogComponent,
-
 		LoanSchemeComponent,
-
+		BasicDetailsComponent,
+		UploadDocumentsComponent,
 		UserClassificationComponent,
-
 		UplodPreviewImageComponent,
-
 		UserReviewComponent,
 		AssignAppraiserComponent,
 		WebcamDialogComponent,
-
 		FilteredDataComponent,
-
 		MultiSelectSearchComponent,
-
 		AssignAppraiserComponent,
 		OrnamentsComponent,
 		PdfViewerComponent,
 		ImageFunctionalityDialogComponent,
 		DropdownComponent,
-
+		GlobalSettingsComponent,
+		BankDetailsComponent,
+		ApprovalComponent,
+		UploadPacketsComponent,
+		DisburseComponent,
 	],
 	exports: [
 		WidgetModule,
 		PortletModule,
-
 		ScrollTopComponent,
 		NoticeComponent,
 		ActionNotificationComponent,
@@ -210,6 +210,8 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
 		UplodDataImageComponent,
 		ImagePreviewDialogComponent,
 		LoanSchemeComponent,
+		BasicDetailsComponent,
+		UploadDocumentsComponent,
 		UserClassificationComponent,
 		UplodPreviewImageComponent,
 		UserReviewComponent,
@@ -227,7 +229,11 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
 
 		AngularImageViewerModule,
 		DropdownComponent,
-
+		GlobalSettingsComponent,
+		BankDetailsComponent,
+		ApprovalComponent,
+		UploadPacketsComponent,
+		DisburseComponent,
 	],
 	imports: [
 		PdfViewerModule,
@@ -242,6 +248,8 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
 		PortletModule,
 		WidgetModule,
 		NgxPermissionsModule.forChild(),
+
+		AgmCoreModule,
 
 		AngularMaterialModule,
 		// ng-bootstrap modules

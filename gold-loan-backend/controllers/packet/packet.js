@@ -11,7 +11,7 @@ const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB
 //  FUNCTION FOR ADD PACKET
 exports.addPacket = async (req, res, next) => {
 
-    let { packetUniqueId, internalUserBranch,barcodeNumber } = req.body;
+    let { packetUniqueId, barcodeNumber, internalUserBranch } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
 
@@ -20,8 +20,13 @@ exports.addPacket = async (req, res, next) => {
     if (!check.isEmpty(packetExist)) {
         return res.status(400).json({ message: `This packet Id is already exist` })
     }
+    let barcodeExist = await models.packet.findOne({ where: { barcodeNumber } })
+
+    if (!check.isEmpty(barcodeExist)) {
+        return res.status(400).json({ message: `This barcode number is already exist` })
+    }
     let packetAdded = await models.packet.addPacket(
-        packetUniqueId, createdBy, modifiedBy, internalUserBranch,barcodeNumber);
+        packetUniqueId, barcodeNumber, createdBy, modifiedBy, internalUserBranch);
     res.status(201).json({ message: 'you adeed packet successfully' });
 }
 
@@ -115,7 +120,7 @@ exports.availablePacket = async (req, res, next) => {
     }
 
     let availablePacketDetails = await models.packet.findAll({
-        where: { isActive: true, packetAssigned: false ,internalUserBranch: { [Op.in]: internalBranchId },appraiserId: data.id},
+        where: { isActive: true, packetAssigned: false, internalUserBranch: { [Op.in]: internalBranchId }, appraiserId: data.id },
     });
     if (availablePacketDetails.length === 0) {
         res.status(200).json({ message: 'no packet details found', data: [] });

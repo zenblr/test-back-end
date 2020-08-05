@@ -19,14 +19,18 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'interest_amount',
         },
-        balanceAmount: {
-            type: DataTypes.FLOAT,
-            field: 'balance_amount',
-        },
         paidAmount: {
             type: DataTypes.FLOAT,
             field: 'paid_amount',
             defaultValue: 0
+        },
+        interestAccrual:{
+            type: DataTypes.FLOAT,
+            field: 'interest_accrual',
+        },
+        outstandingInterest:{
+            type: DataTypes.FLOAT,
+            field: 'outstanding_interest',
         },
         emiReceivedDate: {
             type: DataTypes.DATEONLY,
@@ -36,6 +40,18 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'panel_interest',
             defaultValue: 0
+        },
+        PenalAccrual:{
+            type: DataTypes.FLOAT,
+            field: 'Penal_accrual',
+        },
+        penalOutstanding:{
+            type: DataTypes.FLOAT,
+            field: 'penal_outstanding',
+        },
+        penalPaid:{
+            type: DataTypes.FLOAT,
+            field: 'penal_paid',
         },
         emiStatus: {
             type: DataTypes.ENUM,

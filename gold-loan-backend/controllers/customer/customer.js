@@ -235,6 +235,9 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     }],
     isActive: true,
   };
+
+
+
   let includeArray = [{
     model: models.customerKyc,
     as: "customerKyc",
@@ -263,8 +266,18 @@ exports.getAllCustomersForLead = async (req, res, next) => {
   {
     model: models.lead,
     as: "lead",
-    attributes: ['id', 'leadName']
-  }
+    attributes: ['id', 'leadName'],
+  },
+  {
+    model: models.customerAssignAppraiser,
+    as: "customerAssignAppraiser",
+    include:[{
+      model : models.user,
+      as : "appraiser",
+      attributes:['id','firstName','lastName']
+    }]
+  },
+
   ]
   let internalBranchId = req.userData.internalBranchId
   if (req.userData.userTypeId != 4) {

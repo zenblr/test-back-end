@@ -7,13 +7,13 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
-
+const cron = require('node-cron');
 //importing swagger file
 const swagger = require('./swagger');
 const scrapSwagger = require('./scrapSwagger')
 // api logger middleware.
 const apiLogger = require("./middleware/apiLogger");
-
+const interest = require("./utils/interestCalculation");
 //customer api logger middleware
 const customerApiLogger = require("./middleware/customerApiLogger");
 
@@ -91,5 +91,14 @@ app.use(function (err, req, res, next) {
 app.use(function (err, req, res, next) {
     res.status(500).send({ message: "something went wrong" });
 });
+
+// cron.schedule(' * * * * *', async function () {
+//     await interest.test('1');
+// })
+
+// cron.schedule('*/2 * * * * *', async function () {
+//     console.log('a')
+//     // await interest.penal('1');
+// })
 
 module.exports = app;

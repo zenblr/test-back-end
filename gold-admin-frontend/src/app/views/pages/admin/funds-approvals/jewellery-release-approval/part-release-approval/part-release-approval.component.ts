@@ -8,7 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { AssignAppraiserComponent } from '../../../user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
 import { PartReleaseApprovalService } from '../../../../../../core/funds-approvals/jewellery-release-approval/part-release-approval/services/part-release-approval.service';
-import { OrnamentsComponent } from '../../../loan-management/loan-application-form/tabs/ornaments/ornaments.component';
+import { OrnamentsComponent } from '../../../../../partials/components/ornaments/ornaments.component';
 import { UpdateStatusComponent } from '../../update-status/update-status.component';
 
 @Component({
