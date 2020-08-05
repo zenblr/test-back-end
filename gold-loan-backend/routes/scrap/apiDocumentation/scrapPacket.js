@@ -18,10 +18,13 @@
  *           properties:
  *             packetUniqueId:
  *               type: string
+ *             barcodeNumber:
+ *               type: integer
  *             internalUserBranchId:
  *               type: integer
  *         required:
  *           - packetUniqueId
+ *           - barcodeNumber
  *           - internalUserBranchId
  *     responses:
  *       201:
@@ -75,6 +78,8 @@
  *           properties:
  *             packetUniqueId:
  *               type: string
+ *             barcodeNumber:
+ *               type: integer
  *             internalUserBranchId:
  *               type: integer
  *         required:
@@ -116,7 +121,7 @@
  *       200:
  *         description: avalable packet details fetch successfully
  *       404:
- *         description: no packet details found  
+ *         description: no packet details found
  * /scrap/packet/assign-appraiser:
  *   put:
  *     tags:
@@ -134,7 +139,7 @@
  *           properties:
  *             packetId:
  *               type: array
- *               items: 
+ *               items:
  *                type: integer
  *             appraiserId:
  *               type: integer

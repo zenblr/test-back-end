@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'appraiser_id',
         },
+        barcodeNumber: {
+            type: DataTypes.STRING,
+            field: 'barcode_number',
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -52,16 +56,16 @@ module.exports = (sequelize, DataTypes) => {
         ScrapPacket.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
 
         // ScrapPacket.belongsToMany(models.customerScrapPackageDetails, { through: models.customerScrapPacket });
-        ScrapPacket.belongsToMany(models.customerScrapPackageDetails, {as: 'ScrapPacket',  foreignKey: 'packetId', through: models.customerScrapPacket });
+        ScrapPacket.belongsToMany(models.customerScrapPackageDetails, { as: 'ScrapPacket', foreignKey: 'packetId', through: models.customerScrapPacket });
     }
 
     ScrapPacket.addPacket =
-    (packetUniqueId, createdBy, modifiedBy, internalUserBranchId) => ScrapPacket.create({
-        packetUniqueId, createdBy, modifiedBy,internalUserBranchId, packetAssigned: false, isActive: true
-    });
+        (packetUniqueId, createdBy, modifiedBy, internalUserBranchId) => ScrapPacket.create({
+            packetUniqueId, createdBy, modifiedBy, internalUserBranchId, packetAssigned: false, isActive: true
+        });
 
     ScrapPacket.updatePacket =
-        (id, packetUniqueId,internalUserBranchId, modifiedBy) => ScrapPacket.update({ packetUniqueId,internalUserBranchId, modifiedBy }, { where: { id, isActive: true, packetAssigned: false } });
+        (id, packetUniqueId, internalUserBranchId, modifiedBy) => ScrapPacket.update({ packetUniqueId, internalUserBranchId, modifiedBy }, { where: { id, isActive: true, packetAssigned: false } });
 
 
     return ScrapPacket;
