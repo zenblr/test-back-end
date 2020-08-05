@@ -312,7 +312,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
             processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
-            return res.status(200).json({ data: { unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme } })
+            return res.status(200).json({ data: { unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme,isUnsecuredSchemeApplied:true } })
 
         } else {
             return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
@@ -321,7 +321,7 @@ exports.checkForLoanType = async (req, res, next) => {
     else {
 
         processingCharge = await processingChargeSecuredScheme(loanAmount, securedScheme, undefined, undefined)
-        return res.status(200).json({ data: { securedScheme, processingCharge, securedScheme } })
+        return res.status(200).json({ data: { securedScheme, processingCharge,isUnsecuredSchemeApplied:false } })
 
     }
 }
@@ -401,7 +401,7 @@ exports.generateInterestTable = async (req, res, next) => {
 
     // secure interest calculation
     let securedInterestAmount = await interestCalcultaion(securedLoanAmount, interestRate, paymentFrequency)
-    let securedScheme = await model.scheme.findOne({
+    let securedScheme = await models.scheme.findOne({
         where: { id: schemeId }
     })
 
@@ -409,7 +409,10 @@ exports.generateInterestTable = async (req, res, next) => {
     // unsecure interest calculation
     if (isUnsecuredSchemeApplied) {
         var unsecuredInterestAmount = await interestCalcultaion(unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency)
-
+        var unsecuredScheme = await models.scheme.findOne({
+            where: { id: unsecuredSchemeId }
+        })
+    
     }
 
     // generate Table
@@ -448,7 +451,7 @@ exports.generateInterestTable = async (req, res, next) => {
         }
     });
 
-    return res.status(200).json({ data: { interestTable, totalInterestAmount, securedScheme } })
+    return res.status(200).json({ data: { interestTable, totalInterestAmount, securedScheme,unsecuredScheme } })
 }
 
 // FUNCTION FOR unsecure table generation
