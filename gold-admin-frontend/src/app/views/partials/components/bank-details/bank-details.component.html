@@ -142,10 +142,10 @@
                                     </div>
                                     <input type="file" class="d-none" accept="image/png, image/jpeg" #passbook
                                         (input)="getFileInfo($event)">
-                                    <mat-error *ngIf="controls.passbookProof.touched && controls.passbookProof.invalid">
-                                        Required field
-                                    </mat-error>
-                                </div>
+                                    </div>
+                                        <mat-error *ngIf="controls.passbookProof.touched && controls.passbookProof.invalid">
+                                            Required field
+                                        </mat-error>
                             </div>
                         </div>
                         <div class="row kt-margin-b-20">

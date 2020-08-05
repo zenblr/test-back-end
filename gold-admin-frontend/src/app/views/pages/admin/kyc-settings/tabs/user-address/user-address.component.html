@@ -305,10 +305,13 @@
                                                     <input type="text" class="form-control" placeholder="Select"
                                                         aria-label="Recipient's username"
                                                         aria-describedby="basic-addon2" readonly
+                                                        [class.isError]="addressForm.controls.addressProofFileName.invalid && addressForm.controls.addressProofFileName.touched"
                                                         formControlName="addressProofFileName">
                                                     <div class="input-group-append">
                                                         <span class="input-group-text bg kt-pointer font-weight"
-                                                            id="basic-addon2" (click)="permanent.click()"
+                                                            [class.cursor-not-allowed]="addressForm.controls.addressProofTypeId.value == 2"
+                                                            id="basic-addon2"
+                                                            (click)="addressForm.controls.addressProofTypeId.value != 2 && permanent.click()"
                                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                                     </div>
                                                 </div>
@@ -325,10 +328,14 @@
                                                     <input type="text" class="form-control" placeholder="Select"
                                                         aria-label="Recipient's username"
                                                         aria-describedby="basic-addon2" readonly
+                                                        [class.isError]="addressForm.controls.addressProofFileName.invalid && addressForm.controls.addressProofFileName.touched"
                                                         formControlName="addressProofFileName">
                                                     <div class="input-group-append">
-                                                        <span class="input-group-text bg kt-pointer font-weight"
-                                                            id="basic-addon2" (click)="residential.click()"
+                                                        <span
+                                                            [class.cursor-not-allowed]="sameAdd || addressForm.controls.addressProofTypeId.value == 2"
+                                                            class="input-group-text bg kt-pointer font-weight"
+                                                            id="basic-addon2"
+                                                            (click)="addressForm.controls.addressProofTypeId.value != 2 && !sameAdd && residential.click()"
                                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                                     </div>
                                                 </div>
@@ -369,7 +376,8 @@
                                                             <!-- <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                                                 class="kt-pointer edit-icon"
                                                                 (click)="editImages(idx, 'residential');"> -->
-                                                            <img src="../../../../../assets/media/icons/cancel.svg"
+                                                            <img *ngIf="!sameAdd && addressForm.controls.addressProofTypeId.value != 2"
+                                                                src="../../../../../assets/media/icons/cancel.svg"
                                                                 alt="" class="kt-pointer remove-icon"
                                                                 (click)="removeImages(idx, 'residential');">
                                                         </div>
@@ -387,7 +395,8 @@
                                                             <!-- <img src="../../../../../assets/media/icons/dit.svg" alt=""
                                                                 class="kt-pointer edit-icon"
                                                             (click)="editImages(idx, 'permanent');"> -->
-                                                            <img src="../../../../../assets/media/icons/cancel.svg"
+                                                            <img *ngIf="addressForm.controls.addressProofTypeId.value != 2"
+                                                                src="../../../../../assets/media/icons/cancel.svg"
                                                                 alt="" class="kt-pointer remove-icon"
                                                                 (click)="removeImages(idx, 'permanent');">
                                                         </div>
