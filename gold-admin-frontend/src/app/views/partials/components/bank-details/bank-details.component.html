@@ -130,22 +130,22 @@
                                 <label class="mandatory kt-padding-l-10">Upload Passbook / Bank Statement / Cancel
                                     Cheque</label>
                             </div>
-                            <div class="col-6">
-                                <div class="input-group mb-3">
+                            <div class="col-6 mb-3">
+                                <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Select File"
                                         aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
-                                        formControlName="passbookProofImageName" />
-                                    <div class="input-group-append"
-                                        [class.isError]="controls.passbookProof.touched && controls.passbookProof.errors?.required">
+                                        formControlName="passbookProofImageName"
+                                        [class.isError]="controls.passbookProof.touched && controls.passbookProof.errors?.required" />
+                                    <div class="input-group-append">
                                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
                                             (click)="passbook.click()">Attach</span>
                                     </div>
                                     <input type="file" class="d-none" accept="image/png, image/jpeg" #passbook
                                         (input)="getFileInfo($event)">
+                                    <mat-error *ngIf="controls.passbookProof.touched && controls.passbookProof.invalid">
+                                        Required field
+                                    </mat-error>
                                 </div>
-                                <mat-error *ngIf="controls.passbookProof.touched && controls.passbookProof.invalid">
-                                    Required field
-                                </mat-error>
                             </div>
                         </div>
                         <div class="row kt-margin-b-20">
