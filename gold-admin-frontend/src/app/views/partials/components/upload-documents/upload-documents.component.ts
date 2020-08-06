@@ -424,8 +424,10 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   ExportAsPdf() {
-    if (this.scrapIds) {
-      this.scrapApplicationFormService.getPdf(this.scrapIds.scrapId).subscribe()
+    if (this.showScrapAcknowledgementFlag) {
+      this.scrapApplicationFormService.getCustomerAcknowledgementPdf(this.scrapIds.scrapId).subscribe()
+    } else if (this.showScrapFlag) {
+      this.scrapApplicationFormService.getPurchaseVoucherPdf(this.scrapIds.scrapId).subscribe()
     } else {
       this.loanService.getPdf(this.masterAndLoanIds.masterLoanId).subscribe()
     }
