@@ -130,7 +130,7 @@ let getAllDetailsOfCustomerLoan = async (customerLoanId) =>{
     let loanData = await models.customerLoan.findOne({
         where:{id:customerLoanId},
         order:[[models.customerLoanInterest,'id','asc']],
-        attributes:['id','loanAmount','outstandingAmount','currentSlab','currentInterestRate','penalInterestLastReceivedDate'],
+        attributes:['id','masterLoanId','loanAmount','outstandingAmount','currentSlab','currentInterestRate','penalInterestLastReceivedDate'],
         include:[{
             model:models.customerLoanSlabRate,
             as:'slab',
