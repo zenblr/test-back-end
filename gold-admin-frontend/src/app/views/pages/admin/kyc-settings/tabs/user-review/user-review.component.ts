@@ -622,6 +622,9 @@ export class UserReviewComponent implements OnInit {
       return;
     }
 
+    // this.customerKycAddressOne.enable()
+    // this.customerKycAddressTwo.enable()
+// 
     this.userBankService.kycSubmit(data).pipe(
       map(res => {
         this.next.emit(true);
@@ -855,7 +858,8 @@ export class UserReviewComponent implements OnInit {
           this.customerKycAddressOne.patchValue({ addressProofNumber: this.reviewForm.controls.identityProofNumber.value });
           this.addressFileNameArray1 = this.identityFileNameArray
           this.customerKycAddressOne.patchValue({ addressProofFileName: this.addressFileNameArray1[this.addressFileNameArray1.length - 1] });
-
+          // this.customerKycAddressOne.controls.addressProofFileName.disable()
+          // this.customerKycAddressOne.controls.addressProofNumber.disable()
         } else {
           this.addressImageArray1 = [];
           this.addressIdArray1 = [];;
@@ -863,6 +867,8 @@ export class UserReviewComponent implements OnInit {
           this.customerKycAddressOne.patchValue({ addressProofNumber: '' });
           this.addressFileNameArray1 = []
           this.customerKycAddressOne.patchValue({ addressProofFileName: this.addressFileNameArray1 });
+          // this.customerKycAddressOne.controls.addressProofFileName.enable()
+          // this.customerKycAddressOne.controls.addressProofNumber.enable()
         }
         break;
 
@@ -876,6 +882,8 @@ export class UserReviewComponent implements OnInit {
           this.customerKycAddressTwo.patchValue({ addressProofNumber: this.reviewForm.controls.identityProofNumber.value });
           this.addressFileNameArray2 = this.identityFileNameArray
           this.customerKycAddressTwo.patchValue({ addressProofFileName: this.addressFileNameArray2[this.addressFileNameArray2.length - 1] });
+          // this.customerKycAddressTwo.controls.addressProofFileName.disable()
+          // this.customerKycAddressTwo.controls.addressProofNumber.disable()
         } else {
           this.addressImageArray2 = [];
           this.addressIdArray2 = [];;
@@ -883,7 +891,8 @@ export class UserReviewComponent implements OnInit {
           this.customerKycAddressTwo.patchValue({ addressProofNumber: '' });
           this.addressFileNameArray2 = []
           this.customerKycAddressTwo.patchValue({ addressProofNumber: this.addressFileNameArray2 });
-
+          // this.customerKycAddressTwo.controls.addressProofFileName.enable()
+          // this.customerKycAddressTwo.controls.addressProofNumber.enable()
         }
         break;
 
