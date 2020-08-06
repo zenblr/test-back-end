@@ -447,8 +447,9 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
               this.disableForm(4)
               this.stage = 4
               this.disbursal.emit(4)
-            }
+            }else{
             this.router.navigate(['/admin/loan-management/applied-loan'])
+            }
           })).subscribe()
       } else if (this.stage == 1 || this.stage == 6) {
         // this.approvalForm.controls.commentByAppraiser.patchValue(this.controls.reasons.value)

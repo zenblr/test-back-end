@@ -15,7 +15,7 @@
                             style="padding:0px !important">
                             <kt-ornaments [action]="action" (next)="next($event)" [disable]="disabledForm"
                                 [details]="customerDetail" (totalAmt)="total($event)" [scrapIds]="scrapIds"
-                                [ornamentType]="ornamentType" [showButton]="showButton">
+                                [ornamentType]="ornamentType" [karatArr]="karatArr" [showButton]="showButton">
                             </kt-ornaments>
                         </div>
                     </mat-tab>
@@ -29,7 +29,8 @@
                             style="padding:0px !important">
                             <kt-ornaments [action]="action" (next)="next($event)" [disable]="disabledForm"
                                 [meltingDetails]="customerDetail" (finalScrapAmount)="finalScrapAmount($event)"
-                                [scrapIds]="scrapIds" [ornamentType]="ornamentType" [showButton]="showButton"
+                                [scrapIds]="scrapIds" [ornamentType]="ornamentType" [karatArr]="karatArr"
+                                [customerConfirmationArr]="customerConfirmationArr" [showButton]="showButton"
                                 [meltingOrnament]="true" [processingCharges]="processingCharges">
                             </kt-ornaments>
                         </div>
