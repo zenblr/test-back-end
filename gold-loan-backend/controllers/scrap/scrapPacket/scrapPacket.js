@@ -8,11 +8,14 @@ const check = require("../../../lib/checkLib"); // IMPORTING CHECKLIB
 
 //  FUNCTION FOR ADD PACKET
 exports.addScrapPacket = async (req, res, next) => {
-
     let { packetUniqueId, barcodeNumber, internalUserBranchId } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
 
+    if(!barcodeNumber){
+        let date = Date.now();
+        barcodeNumber = date.toString();
+    }
     let packetExist = await models.scrapPacket.findOne({ where: { packetUniqueId, isActive: true } });
 
     if (!check.isEmpty(packetExist)) {
@@ -23,11 +26,10 @@ exports.addScrapPacket = async (req, res, next) => {
     if (!check.isEmpty(barcodeExist)) {
         return res.status(400).json({ message: `This barcode number already exist` })
     }
-
+    console.log(packetUniqueId, barcodeNumber, createdBy, modifiedBy, internalUserBranchId);
     let packetAdded = await models.scrapPacket.addPacket(
         packetUniqueId, barcodeNumber, createdBy, modifiedBy, internalUserBranchId);
-    res.status(201).json({ message: 'you adeed packet successfully' });
-    console.log(packetAdded)
+    res.status(201).json({ message: 'you adeed packet successfully' }); 
 }
 
 //  FUNCTION FOR VIEW PACKET
@@ -155,6 +157,11 @@ exports.changePacket = async (req, res, next) => {
     let id = req.params.id;
     let { packetUniqueId, barcodeNumber, internalUserBranchId, appraiserId } = req.body;
     let modifiedBy = req.userData.id;
+
+    if(!barcodeNumber){
+        let date = Date.now();
+        barcodeNumber = date.toString();
+    }
 
     let packet = await models.scrapPacket.updatePacket(id, packetUniqueId, barcodeNumber, internalUserBranchId, modifiedBy, appraiserId);
 

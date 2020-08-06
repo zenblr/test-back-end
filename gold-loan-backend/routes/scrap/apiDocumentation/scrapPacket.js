@@ -19,7 +19,7 @@
  *             packetUniqueId:
  *               type: string
  *             barcodeNumber:
- *               type: integer
+ *               type: string
  *             internalUserBranchId:
  *               type: integer
  *         required:
@@ -79,7 +79,7 @@
  *             packetUniqueId:
  *               type: string
  *             barcodeNumber:
- *               type: integer
+ *               type: string
  *             internalUserBranchId:
  *               type: integer
  *         required:
