@@ -26,7 +26,7 @@ export class LoanApplicationFormComponent implements OnInit {
   Ornaments: any;
   action: any;
   customerDetail: any;
-  disabled = [false, true, true, true, true, true];
+  disabled = [false, true, true, true, true, true,true,true];
   masterAndLoanIds: any;
   ornamentType = [];
   finalLoanAmt: any;
@@ -82,6 +82,9 @@ export class LoanApplicationFormComponent implements OnInit {
           this.selected = 6;
         }
         this.disabledForm = true;
+        for (let index = 0; index < this.disabled.length; index++) {
+          this.disabled[index] = false;
+        }
       } else if (this.url == "view-loan") {
         this.disabledForm = true;
         this.showButton = false;

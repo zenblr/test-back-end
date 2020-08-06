@@ -157,10 +157,10 @@ exports.assignPacket = async (req, res, next) => {
 // FUNCTION TO UPDATE PACKET
 exports.changePacket = async (req, res, next) => {
     let id = req.params.id;
-    let { packetUniqueId, barcodeNumber, internalUserBranch, appraiserId } = req.body;
+    let { packetUniqueId, internalUserBranch ,appraiserId ,barcodeNumber} = req.body;
     let modifiedBy = req.userData.id;
 
-    let packet = await models.packet.updatePacket(id, packetUniqueId, barcodeNumber, internalUserBranch, modifiedBy, appraiserId);
+    let packet = await models.packet.updatePacket(id, packetUniqueId, internalUserBranch, modifiedBy, appraiserId,barcodeNumber);
 
     if (packet[0] == 0) {
         return res.status(404).json({ message: "packet not update" });

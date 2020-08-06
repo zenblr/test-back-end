@@ -37,6 +37,9 @@ export class PageConfig {
 				occupation: {
 					page: { title: "Occupations", desc: "" },
 				},
+				'standard-deduction': {
+					page: { title: "Standard Deduction", desc: "" },
+				},
 			},
 			"global-settings": {
 				page: { title: "Global Settings", desc: "" },
@@ -272,7 +275,6 @@ export class PageConfig {
 					id: {
 						page: { title: "Loan Details", desc: "" },
 					}
-
 				},
 			},
 			"loan-management": {
@@ -318,6 +320,36 @@ export class PageConfig {
 						page: { title: "Loan Transfer", desc: "" },
 					}
 				}
+			},
+			"scrap-management": {
+				"scrap-buying-calculator": {
+					page: { title: "Scrap Buying Calculator", desc: "" },
+				},
+				"scrap-buying-application-form": {
+					page: { title: "Scrap Buying Application Form", desc: "" },
+					id: {
+						page: { title: "Scrap Buying Application Form", desc: "" },
+					}
+				},
+				"packet-image-upload": {
+					id: {
+						page: { title: "PACKET IMAGE UPLOAD", desc: "" },
+					},
+				},
+				'view-Scrap': {
+					id: {
+						page: { title: "View Scrap Application Form", desc: "" },
+					}
+				},
+				'packets': {
+					page: { title: "Packets", desc: "" },
+				},
+				"applied-scrap": {
+					page: { title: "Applied Scrap", desc: "" },
+				},
+				"global-settings": {
+					page: { title: "Global Settings", desc: "" },
+				},
 			}
 		},
 		'broker': {

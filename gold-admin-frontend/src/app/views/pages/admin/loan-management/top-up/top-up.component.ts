@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
-import { OrnamentsComponent } from '../loan-application-form/tabs/ornaments/ornaments.component';
+import { OrnamentsComponent } from '../../../../partials/components/ornaments/ornaments.component';
 
 @Component({
   selector: 'kt-top-up',

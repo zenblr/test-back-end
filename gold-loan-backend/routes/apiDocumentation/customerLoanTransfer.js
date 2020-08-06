@@ -113,6 +113,8 @@
  *               type: integer
  *             loanTransferStatusForAppraiser:
  *               type: string
+ *             reasonByAppraiser:
+ *               type: string
  *     security:
  *       - bearerAuth: []
  *     consumes:

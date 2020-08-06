@@ -1,0 +1,85 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="row">
+            <div class="col-12">
+                <mat-tab-group [(selectedIndex)]="selected" (selectedTabChange)="next($event)">
+                    <mat-tab label="Basic Details" [disabled]="disabled[0]">
+                        <kt-basic-details [action]="action" (apiHit)="editId($event)" [scrapDetails]="customerDetail"
+                            [disable]="disabledForm" (id)="scrap($event)" (finalScrapAmount)="finalScrapAmount($event)"
+                            (next)="next($event)" (totalEligibleAmt)="totalEligibleAmt($event)"
+                            [showButton]="showButton" (scrapStage)="stage($event)" [scrapIds]="scrapIds">
+                        </kt-basic-details>
+                    </mat-tab>
+                    <mat-tab label="Ornaments" [disabled]="disabled[1]">
+                        <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0"
+                            style="padding:0px !important">
+                            <kt-ornaments [action]="action" (next)="next($event)" [disable]="disabledForm"
+                                [details]="customerDetail" (totalAmt)="total($event)" [scrapIds]="scrapIds"
+                                [ornamentType]="ornamentType" [showButton]="showButton">
+                            </kt-ornaments>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Customer Acknowledgment" [disabled]="disabled[2]">
+                        <kt-upload-documents [scrapIds]="scrapIds" (next)="next($event)" [totalAmt]="totalAmount"
+                            [acknowledgmentDocuments]="customerDetail" [showButton]="showButton"
+                            [showScrapAcknowledgementFlag]="true"></kt-upload-documents>
+                    </mat-tab>
+                    <mat-tab label="Melting Ornaments" [disabled]="disabled[3]">
+                        <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0"
+                            style="padding:0px !important">
+                            <kt-ornaments [action]="action" (next)="next($event)" [disable]="disabledForm"
+                                [meltingDetails]="customerDetail" (finalScrapAmount)="finalScrapAmount($event)"
+                                [scrapIds]="scrapIds" [ornamentType]="ornamentType" [showButton]="showButton"
+                                [meltingOrnament]="true" [processingCharges]="processingCharges">
+                            </kt-ornaments>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Bank Details" [disabled]="disabled[4]">
+                        <kt-bank-details [action]="action" [scrapIds]="scrapIds" [details]="customerDetail"
+                            [disable]="disabledForm" [finalScrapAmt]="finalScrapAmt" (next)="next($event)"
+                            [showButton]="showButton" [accountHolderName]="accountHolderName">
+                        </kt-bank-details>
+                    </mat-tab>
+                    <mat-tab label="Scrap Status Approval" [disabled]="disabled[5]" *ngIf="scrapStage?.id == 6 || scrapStage?.id == 8 || scrapStage?.id == 1 || scrapStage?.id == 3 || 
+                        (url == 'view-scrap' && scrapStage?.id == 6) || (url == 'view-scrap' && scrapStage?.id == 8) || 
+                        (url == 'view-scrap' && scrapStage?.id == 1) || (url == 'view-scrap' && scrapStage?.id == 3)">
+                        <kt-approval [action]="action" [disable]="approvalFrom" [scrapDetails]="customerDetail"
+                            [scrapIds]="scrapIds" [scrapStage]="scrapStage" (ornamentType)="ornaments($event)">
+                        </kt-approval>
+                    </mat-tab>
+                    <mat-tab label="Packets" [disabled]="disabled[5]"
+                        *ngIf="scrapStage?.id != 6 && scrapStage?.id != 1 && scrapStage?.id && scrapStage?.id != 9">
+                        <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab"
+                            style="padding:0px !important">
+                            <kt-upload-packets [viewScrapPacketsDetails]="customerDetail" [scrapIds]="scrapIds"
+                                (next)="next($event)" [scrapStage]="scrapStage" [showButton]="showButton">
+                            </kt-upload-packets>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Scrap Status Approval"
+                        *ngIf="scrapStage?.id == 2 || (url == 'view-scrap' && scrapStage?.id == 2)"
+                        [disabled]="disabled[6]">
+                        <kt-approval [action]="action" [disable]="approvalFrom" [scrapDetails]="customerDetail"
+                            [scrapIds]="scrapIds" [scrapStage]="scrapStage">
+                        </kt-approval>
+                    </mat-tab>
+                    <mat-tab label="Upload Documents" [disabled]="disabled[6]"
+                        *ngIf="scrapStage?.id == 8 || scrapStage?.id == 7 || scrapStage?.id == 4 || (scrapStage?.id == 8 || url =='view-scrap') || (scrapStage?.id == 7 || url =='view-scrap') || (scrapStage?.id == 4 || url =='view-scrap')">
+                        <kt-upload-documents [scrapIds]="scrapIds" (next)="next($event)"
+                            [scrapDocuments]="customerDetail" [showButton]="showButton" [showScrapFlag]="true">
+                        </kt-upload-documents>
+                    </mat-tab>
+                    <mat-tab label="Scrap Status Approval" [disabled]="disabled[7]"
+                        *ngIf="scrapStage?.id == 7 || scrapStage?.id == 4 || (url == 'view-scrap' && scrapStage?.id == 7) || (url == 'view-scrap' && scrapStage?.id == 4) || (url == 'view-scrap' && scrapStage?.id == 5)">
+                        <kt-approval [action]="action" [disable]="approvalFrom" [scrapDetails]="customerDetail"
+                            [scrapIds]="scrapIds" [scrapStage]="scrapStage" (disbursal)="disbursal($event)">
+                        </kt-approval>
+                    </mat-tab>
+                    <mat-tab label="Disbursement" *ngIf="scrapStage?.id == 4 ">
+                        <kt-disburse [scrapIds]="scrapIds"></kt-disburse>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

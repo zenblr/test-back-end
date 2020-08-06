@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { UpdateLocationComponent } from '../update-location/update-location.component';
 import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-packet-tracking',
@@ -37,7 +38,8 @@ export class PacketTrackingComponent implements OnInit {
     private dataTableService: DataTableService,
     private layoutUtilsService: LayoutUtilsService,
     private toastr: ToastrService,
-    private ngxPermissionService: NgxPermissionsService
+    private ngxPermissionService: NgxPermissionsService,
+    private router:Router
   ) {
     this.packetTrackingService.openModal$.pipe(
       map(res => {
@@ -170,5 +172,8 @@ export class PacketTrackingComponent implements OnInit {
     });
   }
 
+  viewLocation(packet){
+    this.router.navigate(['/admin/loan-management/view-location'])
+  }
 
 }

@@ -37,7 +37,7 @@
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
                         <button class="apply-kyc"
-                            *ngIf="!loan?.isLoanSubmitted && loan?.loanTransfer?.loanTransferCurrentStage == '6' && permission.loanApplicationAdd"
+                            *ngIf="!loan?.isLoanSubmitted && loan?.loanTransfer?.loanTransferCurrentStage == '6' && permission.loanApplicationAdd && !loan.loanStatusForAppraiser"
                             (click)="applyLoan(loan)">Apply Loan</button></mat-cell>
                 </ng-container>
 
@@ -66,15 +66,19 @@
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
                         <div *ngIf="!loan?.loanTransfer?.isLoanDisbursed">
-                            <button class="primary-button" *ngIf="loan?.loanTransfer?.loanTransferCurrentStage == '3'"
-                            (click)="navigate(loan)">Appraiser Rating</button>
-                        <button class="primary-button" *ngIf="loan?.loanTransfer?.loanTransferCurrentStage == '4'"
-                            (click)="navigate(loan)">B.M Rating</button>
-                        <button class="warning-button" *ngIf="loan?.loanTransfer?.loanTransferCurrentStage == '5'"
-                            (click)="navigate(loan)">Disbursement</button>
-    
+                            <button class="primary-button btn-width"
+                                *ngIf="loan?.loanTransfer?.loanTransferCurrentStage == '3'"
+                                (click)="navigate(loan)">Appraiser Rating</button>
+                            <button class="primary-button btn-width"
+                                *ngIf="loan?.loanTransfer?.loanTransferCurrentStage == '4'" (click)="navigate(loan)">B.M
+                                Rating</button>
+                            <button class="warning-button btn-width"
+                                *ngIf="loan?.loanTransfer?.loanTransferCurrentStage == '5'"
+                                (click)="navigate(loan)">Disbursement</button>
                         </div>
-                        <button class="green-button" *ngIf="loan?.loanTransfer?.isLoanDisbursed">DISBURSED</button>
+                        <div *ngIf="loan?.loanTransfer?.isLoanDisbursed">
+                            <button class="green-button btn-width">DISBURSED</button>
+                        </div>
                     </mat-cell>
                 </ng-container>
 
