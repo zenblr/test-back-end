@@ -4,7 +4,7 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
-
+const extend = require('extend')
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 const moment = require('moment');
 
@@ -312,7 +312,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
             processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
-            return res.status(200).json({ data: { unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme } })
+            return res.status(200).json({ data: { unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme, isUnsecuredSchemeApplied: true } })
 
         } else {
             return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
@@ -321,7 +321,7 @@ exports.checkForLoanType = async (req, res, next) => {
     else {
 
         processingCharge = await processingChargeSecuredScheme(loanAmount, securedScheme, undefined, undefined)
-        return res.status(200).json({ data: { securedScheme, processingCharge, securedScheme } })
+        return res.status(200).json({ data: { securedScheme, processingCharge, isUnsecuredSchemeApplied: false } })
 
     }
 }
@@ -395,17 +395,32 @@ exports.interestRate = async (req, res, next) => {
 // Function to generate Interest Table
 
 exports.generateInterestTable = async (req, res, next) => {
-    let { securedLoanAmount, interestRate, unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency, isUnsecuredSchemeApplied, tenure } = req.body
+    let { securedLoanAmount, interestRate, unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency, isUnsecuredSchemeApplied, tenure, unsecuredSchemeId, schemeId,partnerId } = req.body
     let interestTable = []
     let totalInterestAmount = 0;
 
+    // partner
+    let partner = await models.partner.findOne({
+        where: { id: partnerId },
+        attributes: ['name']
+    })
+
     // secure interest calculation
     let securedInterestAmount = await interestCalcultaion(securedLoanAmount, interestRate, paymentFrequency)
+    let securedScheme = await models.scheme.findOne({
+        where: { id: schemeId },
+        attributes: ['schemeName']
+    })
 
-
+    let unsecuredInterestAmount = 0;
     // unsecure interest calculation
     if (isUnsecuredSchemeApplied) {
-        var unsecuredInterestAmount = await interestCalcultaion(unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency)
+        unsecuredInterestAmount = await interestCalcultaion(unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency)
+        var unsecuredScheme = await models.scheme.findOne({
+            where: { id: unsecuredSchemeId },
+            attributes: ['schemeName']
+
+        })
 
     }
 
@@ -445,7 +460,7 @@ exports.generateInterestTable = async (req, res, next) => {
         }
     });
 
-    return res.status(200).json({ data: { interestTable, totalInterestAmount } })
+    return res.status(200).json({ data: { interestTable, totalInterestAmount, securedScheme, unsecuredScheme, interestRate, unsecuredInterestRate,isUnsecuredSchemeApplied,partner } })
 }
 
 // FUNCTION FOR unsecure table generation
@@ -1549,7 +1564,7 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
 }
 
 //  FUNCTION FOR GET APPLIED LOAN DETAILS
-exports.    appliedLoanDetails = async (req, res, next) => {
+exports.appliedLoanDetails = async (req, res, next) => {
     let { schemeId, appraiserApproval, bmApproval, loanStageId, operatinalTeamApproval } = req.query
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
@@ -1775,11 +1790,9 @@ exports.getLoanDetails = async (req, res, next) => {
     }
 }
 
-//FUNCTION FOR GET ASSIGN APPRAISER CUSTOMER LIST 
 exports.getAssignAppraiserCustomer = async (req, res, next) => {
     let { search, offset, pageSize } = paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
     let id = req.userData.id;
-
     let query = {}
     let searchQuery = {
         [Op.and]: [query, {
@@ -1791,15 +1804,19 @@ exports.getAssignAppraiserCustomer = async (req, res, next) => {
         }],
         appraiserId: id
     };
-
     let includeArray = [{
         model: models.customer,
         as: 'customer',
-        attributes: ['id', 'firstName', 'lastName']
+        attributes: ['id', 'firstName', 'lastName', 'customerUniqueId'],
+        subQuery: false,
+        include: {
+            model: models.customerLoanMaster,
+            as: "masterLoan",
+        }
     }]
-
     let data = await models.customerAssignAppraiser.findAll({
         where: searchQuery,
+        subQuery: false,
         include: includeArray,
         order: [
             ['id', 'DESC']
@@ -1808,15 +1825,38 @@ exports.getAssignAppraiserCustomer = async (req, res, next) => {
         limit: pageSize
     })
 
+    let tempData = []
+    for (let i = 0; i < data.length; i++) {
+        let singleCustomer = extend(data[i].dataValues);
+        if (singleCustomer.customer.masterLoan.length > 1) {
+            let customer = extend(singleCustomer.customer.dataValues);
+            let masterLoans = customer.masterLoan;
+            delete singleCustomer.customer;
+            singleCustomer['customer'] = customer;
+            for (let j = 0; j < masterLoans.length; j++) {
+                let masterLoan = extend(masterLoans[j].dataValues);
+                delete singleCustomer.customer.masterLoan;
+                singleCustomer.customer['masterLoan'] = [masterLoan];
+                tempData.push(singleCustomer);
+            }
+        } else {
+            tempData.push(singleCustomer);
+        }
+
+    }
+    data = tempData;
+
     let count = await models.customerAssignAppraiser.findAll({
         where: searchQuery,
+        subQuery: false,
         include: includeArray,
     });
     if (data.length === 0) {
         return res.status(200).json([]);
     } else {
-        return res.status(200).json({ message: 'success', data: data, count: count.length })
+        return res.status(200).json({ message: 'success', data, count: count.length })
     }
+
 }
 
 //FUNCTION FOR PRINT DETAILS
