@@ -420,6 +420,14 @@ export class UploadDocumentsComponent implements OnInit {
     this[value].nativeElement.click()
   }
 
+  removeImages(value) {
+    console.log(value)
+    this.controls.customerConfirmation.patchValue('')
+    this.controls.customerConfirmationImageName.patchValue('')
+    this.controls.customerConfirmationImage.patchValue('')
+    this.ref.detectChanges();
+  }
+
   ExportAsPdf() {
     if (this.scrapIds) {
       this.scrapApplicationFormService.getPdf(this.scrapIds.scrapId).subscribe()

@@ -4,6 +4,7 @@ import { ScrapApplicationFormService } from '../../../../../core/scrap-managemen
 import { map, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { OrnamentsService } from '../../../../../core/masters/ornaments/services/ornaments.service';
+import { KaratDetailsService } from '../../../../../core/loan-setting/karat-details/services/karat-details.service';
 
 @Component({
   selector: 'kt-scrap-application-form',
@@ -28,6 +29,8 @@ export class ScrapApplicationFormComponent implements OnInit {
   disabled = [false, true, true, true, true, true];
   scrapIds: any;
   ornamentType = [];
+  karatArr = [];
+  customerConfirmationArr = [];
   finalLoanAmt: any;
   finalScrapAmt: any;
   fullAmount: any = 0;
@@ -45,6 +48,7 @@ export class ScrapApplicationFormComponent implements OnInit {
     public toast: ToastrService,
     public route: ActivatedRoute,
     public ornamentTypeService: OrnamentsService,
+    public karatService: KaratDetailsService,
   ) {
     this.url = this.router.url.split('/')[3]
     this.id = this.route.snapshot.params.id
@@ -100,6 +104,8 @@ export class ScrapApplicationFormComponent implements OnInit {
 
   ngOnInit() {
     this.getOrnamentType();
+    this.getKarat()
+    this.getcustomerConfirmation();
   }
 
   getOrnamentType() {
@@ -109,6 +115,28 @@ export class ScrapApplicationFormComponent implements OnInit {
         this.ornamentType = res.data;
       })
     ).subscribe();
+  }
+
+  getKarat() {
+    this.karatService.getAllKaratDetails().pipe(
+      map(res => {
+        this.karatArr = res.data;
+        this.ref.detectChanges();
+      })
+    ).subscribe()
+  }
+
+  getcustomerConfirmation() {
+    this.customerConfirmationArr = [
+      {
+        "name": "Yes",
+        "value": "yes"
+      },
+      {
+        "name": "No",
+        "value": "no"
+      }
+    ];
   }
 
   scrap(event) {

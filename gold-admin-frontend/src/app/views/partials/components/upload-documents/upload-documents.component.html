@@ -429,9 +429,12 @@
                                 (click)="preview(controls?.customerConfirmationImage?.value)">
                                 <img class="fetched-image" [src]="controls?.customerConfirmationImage?.value"
                                     *ngIf="!pdf.customerConfirmation">
-                                <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                <!-- <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     *ngIf="isEdit && controls?.customerConfirmationImage?.value"
-                                    class="kt-pointer edit-icon" (click)="editImages('customerConfirmation');">
+                                    class="kt-pointer edit-icon" (click)="editImages('customerConfirmation');"> -->
+                                <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                    *ngIf="isEdit && controls?.customerConfirmationImage?.value"
+                                    class="kt-pointer remove-icon" (click)="removeImages('customerConfirmation');">
                                 <iframe *ngIf="pdf.customerConfirmation"
                                     [src]="controls?.customerConfirmationImage?.value | safe : 'resourceUrl'"
                                     height="250" width="290" scrolling="no"></iframe>

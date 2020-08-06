@@ -55,7 +55,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   width: number = 0
   ornamentsForm: FormGroup;
   images: any = [];
-  karatArr: any
+  @Input() karatArr
+  @Input() customerConfirmationArr
   purityBasedDeduction: number;
   ltvPercent = [];
   url: string
@@ -134,6 +135,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.ornamentType) {
       this.ornamentType = changes.ornamentType.currentValue
+    }
+    if (changes.karatArr) {
+      this.karatArr = changes.karatArr.currentValue
+    }
+    if (changes.customerConfirmationArr) {
+      this.customerConfirmationArr = changes.customerConfirmationArr.currentValue
     }
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
@@ -698,8 +705,18 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   nextAction() {
     if (this.disable) {
-      this.next.emit(3)
-      return
+      if (this.scrapIds) {
+        if (this.meltingOrnament) {
+          this.next.emit(4)
+          return
+        } else {
+          this.next.emit(2)
+          return
+        }
+      } else {
+        this.next.emit(3)
+        return
+      }
     }
     if (this.ornamentsForm.invalid) {
       let array = this.OrnamentsData.controls

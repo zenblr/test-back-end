@@ -312,6 +312,8 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- {{ornament.controls.customerConfirmation.value | json}} -->
+                        <!-- {{ornament.controls.customerConfirmation.value == customerConfirmation.value}} -->
                         <div class="row" *ngIf="meltingOrnament">
                             <div class="col-6">
                                 <div class="row kt-margin-t-15">
@@ -323,8 +325,13 @@
                                             [class.isError]="ornament.controls.customerConfirmation.touched && ornament.controls.customerConfirmation.invalid">
                                             <option value="" [disabled]="true" [selected]="true">Select Customer
                                                 Confirmation</option>
-                                            <option value="yes">Yes</option>
-                                            <option value="no">No</option>
+                                            <!-- <option value="yes">Yes</option>
+                                            <option value="no">No</option> -->
+                                            <option [value]="customerConfirmation.value"
+                                                *ngFor="let customerConfirmation of customerConfirmationArr"
+                                                [selected]="ornament.controls.customerConfirmation.value == customerConfirmation.value">
+                                                {{customerConfirmation?.name}}
+                                            </option>
                                         </select>
                                         <mat-error
                                             *ngIf="ornament.controls.customerConfirmation.touched && ornament.controls.customerConfirmation.invalid">
