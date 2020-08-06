@@ -85,39 +85,76 @@ exports.submitAppKyc = async (req, res, next) => {
 
 }
 
-// exports.editAppKyc = async (req, res, next) => {
-//     let modifiedBy = req.userData.id;
-//     let createdBy = req.userData.id;
+exports.editAppKyc = async (req, res, next) =>  {
 
-//     let { customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address, customerKycId } = req.body
-//     var date = dateOfBirth.split("-").reverse().join("-");
+    let { customerId, customerKycId, customerKycPersonal, customerKycAddress, customerKycBank } = req.body;
+    let { kycRatingFromCce, kycStatusFromCce, reasonFromCce } = req.body
+    let cceId = req.userData.id
+    let modifiedBy = req.userData.id;
+    let createdBy = req.userData.id;
 
+    let customerRating = await models.customerKycClassification.findOne({ where: { customerId } })
 
-//         // let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerKycCurrentStage: '4', customerId: getCustomerInfo.id, createdBy, modifiedBy }, { transaction: t })
-//         let modifiedBy = req.userData.id;
-//         customerKycPersonal['modifiedBy'] = modifiedBy;
-//         customerKycPersonal['dateOfBirth'] = date;
-    
-//         let addressArray = []
-//         for (let i = 0; i < customerKycAddress.length; i++) {
-    
-//             customerKycAddress[i]['modifiedBy'] = modifiedBy
-//             addressArray.push(customerKycAddress[i])
-//         }
-    
-//         await sequelize.transaction(async (t) => {
-//             let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
-    
-//             await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });
-    
-//             await models.customerKycAddressDetail.bulkCreate(addressArray, { updateOnDuplicate: ["addressType", "address", "stateId", "cityId", "pinCode", "addressProofTypeId", "addressProof", "addressProofNumber", "modifiedBy"] }, { transaction: t })
-    
-    
-//         })
-    
-//         return res.status(200).json({ message: `successful` })
+    if (customerRating.kycStatusFromCce == "approved") {
+        return res.status(400).json({ message: `You cannot change status from approved` })
+    }
 
-// }
+    // let findCustomerKyc = await models.customerKyc.findOne({ where: { id: customerKycId } })
+    // if (check.isEmpty(findCustomerKyc)) {
+    //     return res.status(404).json({ message: "This customer kyc detailes is not filled." });
+    // }
+    customerKycPersonal['modifiedBy'] = modifiedBy
+
+    let addressArray = []
+    for (let i = 0; i < customerKycAddress.length; i++) {
+
+        customerKycAddress[i]['modifiedBy'] = modifiedBy
+        addressArray.push(customerKycAddress[i])
+    }
+
+    await sequelize.transaction(async (t) => {
+        let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
+
+        await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });
+
+        await models.customerKycAddressDetail.bulkCreate(addressArray, { updateOnDuplicate: ["addressType", "address", "stateId", "cityId", "pinCode", "addressProofTypeId", "addressProof", "addressProofNumber", "modifiedBy"] }, { transaction: t })
+
+        await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
+
+    })
+    // let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
+
+    // let KycClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId } })
+
+    if (kycStatusFromCce !== "approved") {
+        if (reasonFromCce.length == 0) {
+            return res.status(400).json({ message: `If you are not approved the customer kyc you have to give a reason.` })
+        }
+        await sequelize.transaction(async (t) => {
+            await models.customerKyc.update(
+                { cceVerifiedBy: cceId, isKycSubmitted: true },
+                { where: { customerId: customerId }, transaction: t })
+
+            await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
+        });
+        return res.status(200).json({ message: 'success' })
+    } else {
+        if ((kycRatingFromCce == 1 || kycRatingFromCce == 2 || kycRatingFromCce == 3) && kycStatusFromCce == "approved") {
+            return res.status(400).json({ message: `Please check rating.` })
+        }
+        reasonFromCce = ""
+        await sequelize.transaction(async (t) => {
+            await models.customerKyc.update(
+                { isVerifiedByCce: true, cceVerifiedBy: cceId, isKycSubmitted: true },
+                { where: { customerId: customerId }, transaction: t })
+
+            await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
+        });
+        return res.status(200).json({ message: 'success' })
+    }
+    // console.log(KycClassification);
+
+}
 
 exports.getAssignedCustomer = async (req, res, next) => {
     const id = req.userData.id
