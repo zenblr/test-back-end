@@ -184,4 +184,7 @@ router.use('/scrap/global-setting', scrapGlobalSettings);
 const standardDeduction = require('./scrap/standardDeduction'); // customer scrap process
 router.use('/scrap/standard-deduction', standardDeduction);
 
+const scrapUploadPacket = require('./scrap/uploadScrapPackets');  //upload Packets List 
+router.use('/scrap/upload-packets-file',scrapUploadPacket)
+
 module.exports = router;

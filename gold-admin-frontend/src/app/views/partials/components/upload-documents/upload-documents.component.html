@@ -44,6 +44,7 @@
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
                 <label class="kt-padding-l-10">Customer Confirmation for melting ornament(Jewellery) </label>
+                <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showScrapFlag">
                 <label class="kt-padding-l-10">Purchase Voucher</label>
@@ -74,8 +75,7 @@
                     Required</mat-error>
             </div>
             <div class="col mb-3" *ngIf="showLoanTransferFlag || showLoanFlag">
-                <div class="input-group w-80"
-                    [class.isError]="controls.pawnCopy.touched && controls.pawnCopy.invalid">
+                <div class="input-group w-80" [class.isError]="controls.pawnCopy.touched && controls.pawnCopy.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="pawnCopyImageName" />
                     <div class="input-group-append">
@@ -134,11 +134,11 @@
                 <mat-error *ngIf="controls.declaration.touched && controls.declaration.invalid">Field Required
                 </mat-error>
             </div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag"></div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag"></div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag"></div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
-                <div class="input-group mb-3 w-80"
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
+                <div class="input-group w-80"
                     [class.isError]="controls.customerConfirmation.touched && controls.customerConfirmation.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="customerConfirmationImageName" />
@@ -153,8 +153,8 @@
                     Required
                 </mat-error>
             </div>
-            <div class="col" *ngIf="showScrapFlag">
-                <div class="input-group mb-3 w-80"
+            <div class="col mb-3" *ngIf="showScrapFlag">
+                <div class="input-group w-80"
                     [class.isError]="controls.purchaseVoucher.touched && controls.purchaseVoucher.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="purchaseVoucherImageName" />
@@ -167,8 +167,8 @@
                 <mat-error *ngIf="controls.purchaseVoucher.touched && controls.purchaseVoucher.invalid">Field Required
                 </mat-error>
             </div>
-            <div class="col" *ngIf="showScrapFlag">
-                <div class="input-group mb-3 w-80"
+            <div class="col mb-3" *ngIf="showScrapFlag">
+                <div class="input-group w-80"
                     [class.isError]="controls.purchaseInvoice.touched && controls.purchaseInvoice.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="schemeConfirmationCopyImageName" />
@@ -184,8 +184,8 @@
                     Required</mat-error>
 
             </div>
-            <div class="col" *ngIf="showScrapFlag">
-                <div class="input-group mb-3 w-80"
+            <div class="col mb-3" *ngIf="showScrapFlag">
+                <div class="input-group w-80"
                     [class.isError]="controls.saleInvoice.touched && controls.saleInvoice.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="schemeConfirmationCopyImageName" />
@@ -429,9 +429,12 @@
                                 (click)="preview(controls?.customerConfirmationImage?.value)">
                                 <img class="fetched-image" [src]="controls?.customerConfirmationImage?.value"
                                     *ngIf="!pdf.customerConfirmation">
-                                <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                <!-- <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     *ngIf="isEdit && controls?.customerConfirmationImage?.value"
-                                    class="kt-pointer edit-icon" (click)="editImages('customerConfirmation');">
+                                    class="kt-pointer edit-icon" (click)="editImages('customerConfirmation');"> -->
+                                <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                    *ngIf="isEdit && controls?.customerConfirmationImage?.value"
+                                    class="kt-pointer remove-icon" (click)="removeImages('customerConfirmation');">
                                 <iframe *ngIf="pdf.customerConfirmation"
                                     [src]="controls?.customerConfirmationImage?.value | safe : 'resourceUrl'"
                                     height="250" width="290" scrolling="no"></iframe>

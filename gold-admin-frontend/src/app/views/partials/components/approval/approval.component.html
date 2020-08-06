@@ -191,8 +191,8 @@
         </div>
 
         <div class="row justify-content-center"
-            *ngIf="((stage == 7 || stage == 5) && controls.loanStatusForOperatinalTeam.value == 'incomplete' && controls.commentByOperatinalTeam.value) ||
-            ((stage == 7 || stage == 5) && controls.scrapStatusForOperatinalTeam.value == 'incomplete' && controls.commentByOperatinalTeam.value)">
+            *ngIf="((stage == 7 || stage == 2) && controls.loanStatusForOperatinalTeam.value == 'incomplete' && controls.commentByOperatinalTeam.value) ||
+            ((stage == 7 || stage == 2) && controls.scrapStatusForOperatinalTeam.value == 'incomplete' && controls.commentByOperatinalTeam.value)">
             <div class="col-7">
                 <div class="row">
                     <div class="col-4">
@@ -240,22 +240,20 @@
             </div>
         </div>
         <div class="row justify-content-center "
-            *ngIf="(controls.reasons.value && controls.reasons.value == 'Other' && controls.loanStatusForAppraiser.value != 'approved' ||
-            controls.reasons.value && controls.reasons.value == 'Other' && controls.scrapStatusForAppraiser.value != 'approved')">
+            *ngIf="(controls.reasons.value && controls.reasons.value == 'Other' && controls.loanStatusForAppraiser.value != 'approved') &&
+            (controls.reasons.value && controls.reasons.value == 'Other' && controls.scrapStatusForAppraiser.value != 'approved')">
             <div class="col-7">
                 <mat-form-field class="w-100">
-
                     <textarea cols="4" rows="3" matInput formControlName="commentByAppraiser"
                         placeholder="Reason By Appraiser"></textarea>
                     <mat-error>Field
                         Required</mat-error>
                 </mat-form-field>
-
             </div>
         </div>
         <div class="row justify-content-center "
-            *ngIf="(stage == 5 && controls.loanStatusForBM.value != 'pending' && controls.loanStatusForBM.value != 'approved') ||
-            (stage == 5 && controls.scrapStatusForBM.value != 'pending' && controls.scrapStatusForBM.value != 'approved')">
+            *ngIf="(stage == 2 && controls.loanStatusForBM.value != 'pending' && controls.loanStatusForBM.value != 'approved') &&
+            (stage == 2 && controls.scrapStatusForBM.value != 'pending' && controls.scrapStatusForBM.value != 'approved')">
             <div class="col-8">
                 <mat-form-field class="w-100">
                     <textarea cols="4" rows="3" matInput formControlName="commentByBM"
@@ -266,11 +264,10 @@
             </div>
         </div>
         <div class="row justify-content-center "
-            *ngIf="(stage == 8 && controls.loanStatusForOperatinalTeam.value != 'pending' && controls.loanStatusForOperatinalTeam.value != 'approved') ||
-            (stage == 8 && controls.scrapStatusForOperatinalTeam.value != 'pending' && controls.scrapStatusForOperatinalTeam.value != 'approved')">
+            *ngIf="(stage == 7 && controls.loanStatusForOperatinalTeam.value != 'pending' && controls.loanStatusForOperatinalTeam.value != 'approved') &&
+            (stage == 7 && controls.scrapStatusForOperatinalTeam.value != 'pending' && controls.scrapStatusForOperatinalTeam.value != 'approved')">
             <div class=" col-8">
                 <mat-form-field class="w-100">
-
                     <textarea cols="4" rows="3" matInput formControlName="commentByOperatinalTeam"
                         placeholder="Reason By Operational Team"></textarea>
                     <mat-error>Field Required
@@ -278,9 +275,6 @@
                 </mat-form-field>
             </div>
         </div>
-
-
-
     </form>
 </div>
 <div class="row py-3" *ngIf="!disable">

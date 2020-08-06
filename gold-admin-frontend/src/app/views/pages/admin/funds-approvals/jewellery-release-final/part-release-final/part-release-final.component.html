@@ -126,8 +126,8 @@
                                 (click)="updateDocument(item)">Upload
                                 Documents
                             </button>
-                            <button *ngIf="item.documents && !item.newLoanId" style="width: 130px;" class="apply-kyc"
-                                (click)="newLoan(item)">New Loan
+                            <button *ngIf="item.documents && !(item.newLoan && item.newLoan.loanStatusForAppraiser)"
+                                style="width: 130px;" class="apply-kyc" (click)="newLoan(item)">New Loan
                             </button>
                         </ng-container>
 
