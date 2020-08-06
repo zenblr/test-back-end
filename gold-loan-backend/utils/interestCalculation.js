@@ -104,7 +104,24 @@ let test = async (loanId) => {
 }
 
 let penal = async (loanId) => {
-    console.log(loanId)
+
+    let stage = await models.loanStage.findOne({ where: { name: 'disbursed' } })
+    let loan = await models.customerLoanMaster.findAll({
+        where: { isActive: true, loanStageId: stage.id },
+        include: [{
+            model: models.customerLoan,
+            as: 'customerLoan'
+        }]
+    })
+
+    for (let i = 0; i < loan.length; i++) {
+        console.log('master', loan[i].id)
+        let customerLoan = loan[i].customerLoan
+        for (let j = 0; j < customerLoan.length; j++) {
+            console.log('customerLoan', customerLoan[j].id)
+        }
+    }
+
 
 }
 
