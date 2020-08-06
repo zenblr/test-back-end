@@ -12,6 +12,8 @@ router.use('/user', user);
 const customer = require('./customer'); //Customer Route
 router.use('/customer', customer);
 
+const leadNewRquest = require('./leadNewRequest'); //leadNewRquest Route
+router.use('/lead-new-request', leadNewRquest);
 
 const city = require('./city'); //City Route
 router.use('/city', city);
@@ -129,7 +131,7 @@ const packet = require('./packet');
 router.use('/packet', packet)
 
 const uploadPacket = require('./uploadPackets');  //upload Packets List 
-router.use('/upload-packets-file',uploadPacket)
+router.use('/upload-packets-file', uploadPacket)
 
 const ratingReason = require('./ratingReason');
 router.use('/rating-reason', ratingReason)
@@ -156,13 +158,13 @@ const globalSetting = require('./globalSettings');
 router.use('/global-setting', globalSetting)
 
 const singleSignOn = require('./singleSignOn');
-router.use('/single-sign-on',singleSignOn);
+router.use('/single-sign-on', singleSignOn);
 
 const customerLoanTransfer = require('./customerLoanTransfer');
-router.use('/loan-transfer',customerLoanTransfer);
+router.use('/loan-transfer', customerLoanTransfer);
 
 const jewelleryRelese = require('./jewelleryRelease');
-router.use('/jewellery-release',jewelleryRelese);
+router.use('/jewellery-release', jewelleryRelese);
 
 const quickPay = require('./quickPay');
 router.use('/quick-pay', quickPay);
