@@ -4,7 +4,7 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
-
+const extend = require('extend')
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 const moment = require('moment');
 
@@ -312,7 +312,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
             processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
-            return res.status(200).json({ data: { unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme,isUnsecuredSchemeApplied:true } })
+            return res.status(200).json({ data: { unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme, isUnsecuredSchemeApplied: true } })
 
         } else {
             return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
@@ -321,7 +321,7 @@ exports.checkForLoanType = async (req, res, next) => {
     else {
 
         processingCharge = await processingChargeSecuredScheme(loanAmount, securedScheme, undefined, undefined)
-        return res.status(200).json({ data: { securedScheme, processingCharge,isUnsecuredSchemeApplied:false } })
+        return res.status(200).json({ data: { securedScheme, processingCharge, isUnsecuredSchemeApplied: false } })
 
     }
 }
@@ -395,24 +395,33 @@ exports.interestRate = async (req, res, next) => {
 // Function to generate Interest Table
 
 exports.generateInterestTable = async (req, res, next) => {
-    let { securedLoanAmount, interestRate, unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency, isUnsecuredSchemeApplied, tenure, unsecuredSchemeId, schemeId } = req.body
+    let { securedLoanAmount, interestRate, unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency, isUnsecuredSchemeApplied, tenure, unsecuredSchemeId, schemeId,partnerId } = req.body
     let interestTable = []
     let totalInterestAmount = 0;
+
+    // partner
+    let partner = await models.partner.findOne({
+        where: { id: partnerId },
+        attributes: ['name']
+    })
 
     // secure interest calculation
     let securedInterestAmount = await interestCalcultaion(securedLoanAmount, interestRate, paymentFrequency)
     let securedScheme = await models.scheme.findOne({
-        where: { id: schemeId }
+        where: { id: schemeId },
+        attributes: ['schemeName']
     })
 
-
+    let unsecuredInterestAmount = 0;
     // unsecure interest calculation
     if (isUnsecuredSchemeApplied) {
-        var unsecuredInterestAmount = await interestCalcultaion(unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency)
+        unsecuredInterestAmount = await interestCalcultaion(unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency)
         var unsecuredScheme = await models.scheme.findOne({
-            where: { id: unsecuredSchemeId }
+            where: { id: unsecuredSchemeId },
+            attributes: ['schemeName']
+
         })
-    
+
     }
 
     // generate Table
@@ -451,7 +460,7 @@ exports.generateInterestTable = async (req, res, next) => {
         }
     });
 
-    return res.status(200).json({ data: { interestTable, totalInterestAmount, securedScheme,unsecuredScheme } })
+    return res.status(200).json({ data: { interestTable, totalInterestAmount, securedScheme, unsecuredScheme, interestRate, unsecuredInterestRate,isUnsecuredSchemeApplied,partner } })
 }
 
 // FUNCTION FOR unsecure table generation
@@ -1781,7 +1790,6 @@ exports.getLoanDetails = async (req, res, next) => {
     }
 }
 
-//FUNCTION FOR GET ASSIGN APPRAISER CUSTOMER LIST 
 exports.getAssignAppraiserCustomer = async (req, res, next) => {
     let { search, offset, pageSize } = paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
     let id = req.userData.id;
@@ -1817,6 +1825,26 @@ exports.getAssignAppraiserCustomer = async (req, res, next) => {
         limit: pageSize
     })
 
+    let tempData = []
+    for (let i = 0; i < data.length; i++) {
+        let singleCustomer = extend(data[i].dataValues);
+        if (singleCustomer.customer.masterLoan.length > 1) {
+            let customer = extend(singleCustomer.customer.dataValues);
+            let masterLoans = customer.masterLoan;
+            delete singleCustomer.customer;
+            singleCustomer['customer'] = customer;
+            for (let j = 0; j < masterLoans.length; j++) {
+                let masterLoan = extend(masterLoans[j].dataValues);
+                delete singleCustomer.customer.masterLoan;
+                singleCustomer.customer['masterLoan'] = [masterLoan];
+                tempData.push(singleCustomer);
+            }
+        } else {
+            tempData.push(singleCustomer);
+        }
+
+    }
+    data = tempData;
 
     let count = await models.customerAssignAppraiser.findAll({
         where: searchQuery,
