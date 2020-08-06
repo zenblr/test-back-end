@@ -43,6 +43,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() showButton
   @Input() meltingOrnament
   @Input() processingCharges
+  @Input() karatArr
+  @Input() customerConfirmationArr
+  @Input() karatFlag
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
   @ViewChild('stoneTouch', { static: false }) stoneTouch: ElementRef
@@ -55,8 +58,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   width: number = 0
   ornamentsForm: FormGroup;
   images: any = [];
-  @Input() karatArr
-  @Input() customerConfirmationArr
   purityBasedDeduction: number;
   ltvPercent = [];
   url: string
@@ -92,7 +93,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnInit() {
     console.log(this.data.modal)
     this.url = this.router.url.split('/')[3]
-    this.getKarat()
+    if (!this.karatFlag) {
+      this.getKarat()
+    }
     this.initForm()
     if (this.data && this.data.modal) {
       this.showAddMoreBtn = false

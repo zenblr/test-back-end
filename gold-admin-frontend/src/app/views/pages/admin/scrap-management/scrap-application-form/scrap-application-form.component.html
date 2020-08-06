@@ -15,14 +15,16 @@
                             style="padding:0px !important">
                             <kt-ornaments [action]="action" (next)="next($event)" [disable]="disabledForm"
                                 [details]="customerDetail" (totalAmt)="total($event)" [scrapIds]="scrapIds"
-                                [ornamentType]="ornamentType" [karatArr]="karatArr" [showButton]="showButton">
+                                [ornamentType]="ornamentType" [karatArr]="karatArr" [showButton]="showButton"
+                                [karatFlag]="true">
                             </kt-ornaments>
                         </div>
                     </mat-tab>
                     <mat-tab label="Customer Acknowledgment" [disabled]="disabled[2]">
                         <kt-upload-documents [scrapIds]="scrapIds" (next)="next($event)" [totalAmt]="totalAmount"
                             [acknowledgmentDocuments]="customerDetail" [showButton]="showButton"
-                            [showScrapAcknowledgementFlag]="true"></kt-upload-documents>
+                            [showScrapAcknowledgementFlag]="true" [standardDeductionArr]="standardDeductionArr">
+                        </kt-upload-documents>
                     </mat-tab>
                     <mat-tab label="Melting Ornaments" [disabled]="disabled[3]">
                         <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0"
@@ -31,7 +33,7 @@
                                 [meltingDetails]="customerDetail" (finalScrapAmount)="finalScrapAmount($event)"
                                 [scrapIds]="scrapIds" [ornamentType]="ornamentType" [karatArr]="karatArr"
                                 [customerConfirmationArr]="customerConfirmationArr" [showButton]="showButton"
-                                [meltingOrnament]="true" [processingCharges]="processingCharges">
+                                [meltingOrnament]="true" [processingCharges]="processingCharges" [karatFlag]="true">
                             </kt-ornaments>
                         </div>
                     </mat-tab>
