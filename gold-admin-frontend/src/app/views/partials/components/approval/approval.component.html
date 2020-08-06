@@ -240,8 +240,8 @@
             </div>
         </div>
         <div class="row justify-content-center "
-            *ngIf="((controls.reasons.value && controls.reasons.value == 'Other' && controls.loanStatusForAppraiser.value != 'approved') &&
-            (controls.reasons.value && controls.reasons.value == 'Other' && controls.scrapStatusForAppraiser.value != 'approved'))">
+            *ngIf="(controls.reasons.value && controls.reasons.value == 'Other' && controls.loanStatusForAppraiser.value != 'approved') &&
+            (controls.reasons.value && controls.reasons.value == 'Other' && controls.scrapStatusForAppraiser.value != 'approved')">
             <div class="col-7">
                 <mat-form-field class="w-100">
                     <textarea cols="4" rows="3" matInput formControlName="commentByAppraiser"

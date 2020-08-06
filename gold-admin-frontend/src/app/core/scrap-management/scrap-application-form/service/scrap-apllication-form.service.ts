@@ -135,7 +135,7 @@ export class ScrapApplicationFormService {
   }
 
   getPdf(id): Observable<any> {
-    return this.http.get(`/api/loan-process/get-print-details?customerLoanId=${id}`,
+    return this.http.get(`/api/scrap/scrap-process/get-customer-acknowledgement?scrapId=${id}`,
       { responseType: "arraybuffer" }
     ).pipe(
       tap(res => {

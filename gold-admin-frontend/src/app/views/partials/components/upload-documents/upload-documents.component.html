@@ -44,6 +44,7 @@
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
                 <label class="kt-padding-l-10">Customer Confirmation for melting ornament(Jewellery) </label>
+                <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showScrapFlag">
                 <label class="kt-padding-l-10">Purchase Voucher</label>

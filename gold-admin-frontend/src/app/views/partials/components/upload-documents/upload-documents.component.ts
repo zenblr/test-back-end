@@ -147,7 +147,7 @@ export class UploadDocumentsComponent implements OnInit {
           saleInvoiceImage: documents.saleInvoice[0],
         })
         this.pdfCheck();
-        // this.isEdit = false
+        this.isEdit = false
       }
     }
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
@@ -421,9 +421,11 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   ExportAsPdf() {
-    this.loanService.getPdf(this.masterAndLoanIds.masterLoanId).subscribe(res => {
-
-    })
+    if (this.scrapIds) {
+      this.scrapApplicationFormService.getPdf(this.scrapIds.scrapId).subscribe()
+    } else {
+      this.loanService.getPdf(this.masterAndLoanIds.masterLoanId).subscribe()
+    }
   }
 
   save() {
