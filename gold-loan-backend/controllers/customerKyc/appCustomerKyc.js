@@ -85,6 +85,40 @@ exports.submitAppKyc = async (req, res, next) => {
 
 }
 
+// exports.editAppKyc = async (req, res, next) => {
+//     let modifiedBy = req.userData.id;
+//     let createdBy = req.userData.id;
+
+//     let { customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address, customerKycId } = req.body
+//     var date = dateOfBirth.split("-").reverse().join("-");
+
+
+//         // let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerKycCurrentStage: '4', customerId: getCustomerInfo.id, createdBy, modifiedBy }, { transaction: t })
+//         let modifiedBy = req.userData.id;
+//         customerKycPersonal['modifiedBy'] = modifiedBy;
+//         customerKycPersonal['dateOfBirth'] = date;
+    
+//         let addressArray = []
+//         for (let i = 0; i < customerKycAddress.length; i++) {
+    
+//             customerKycAddress[i]['modifiedBy'] = modifiedBy
+//             addressArray.push(customerKycAddress[i])
+//         }
+    
+//         await sequelize.transaction(async (t) => {
+//             let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
+    
+//             await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });
+    
+//             await models.customerKycAddressDetail.bulkCreate(addressArray, { updateOnDuplicate: ["addressType", "address", "stateId", "cityId", "pinCode", "addressProofTypeId", "addressProof", "addressProofNumber", "modifiedBy"] }, { transaction: t })
+    
+    
+//         })
+    
+//         return res.status(200).json({ message: `successful` })
+
+// }
+
 exports.getAssignedCustomer = async (req, res, next) => {
     const id = req.userData.id
     let getAppraisal = await models.customerAssignAppraiser.findAll({
