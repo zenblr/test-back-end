@@ -253,7 +253,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 	logout() {
 		this.auth.logout().pipe(map(
 			res => {
-				localStorage.clear();
+				localStorage.removeItem('UserDetails');
 				this.cookieService.deleteAll();
 				this.sharedService.role.next(null);
 				this.router.navigate(['/auth/login']);
