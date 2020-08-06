@@ -225,9 +225,27 @@ export class MenuConfig {
 						{
 							title: "Lead Management",
 							root: true,
+							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-05.svg",
 							page: "/admin/lead-management",
 							permission: !(this.permissionsArr.includes('leadManagmentView')),
+							submenu: [
+								{
+									title: "All Leads",
+									page: "/admin/lead-management",
+									permission: !this.permissionsArr.includes('leadManagmentView'),
+								},
+								{
+									title: "New Requests",
+									page: "/admin/lead-management/new-requests",
+									permission: false,
+								},
+								{
+									title: "My Requests",
+									page: "/admin/lead-management/my-requests",
+									permission: false,
+								},
+							],
 						},
 						{
 							title: "Customer Setting",

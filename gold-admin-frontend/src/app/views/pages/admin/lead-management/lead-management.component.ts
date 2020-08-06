@@ -10,6 +10,7 @@ import { LeadManagementDatasource } from '../../../../core/lead-management/datas
 import { LeadService } from '../../../../core/lead-management/services/lead.service';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { AssignAppraiserComponent } from '../user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
+import { NewRequestAddComponent } from './new-request-add/new-request-add.component';
 
 @Component({
   selector: 'kt-lead-management',
@@ -19,7 +20,7 @@ import { AssignAppraiserComponent } from '../user-management/assign-appraiser/as
 export class LeadManagementComponent implements OnInit {
 
   dataSource: LeadManagementDatasource;
-  displayedColumns = ['fullName', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kycStatus', 'kyc', 'actions', 'view', 'appraiser'];
+  displayedColumns = ['fullName', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kycStatus', 'kyc', 'actions', 'view', 'appraiser', 'menu'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   queryParamsData = {
@@ -182,7 +183,7 @@ export class LeadManagementComponent implements OnInit {
 
   assign(item) {
     // this.router.navigate(['/admin/user-management/redirect-assign-appraiser'])
-    item.customer = {firstName:item.firstName,lastName:item.lastName}
+    item.customer = { firstName: item.firstName, lastName: item.lastName }
     const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', from: 'lead', customer: item.customer, id: item.id }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -192,9 +193,19 @@ export class LeadManagementComponent implements OnInit {
   }
 
   updateAppraiser(item) {
-    item.customer = {firstName:item.firstName,lastName:item.lastName}
+    item.customer = { firstName: item.firstName, lastName: item.lastName }
     item.customer.customerUniqueId = item.customerUniqueId
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit',from: 'lead', appraiser: item.customerAssignAppraiser, customer: item.customer,id:item.id }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit', from: 'lead', appraiser: item.customerAssignAppraiser, customer: item.customer, id: item.id }, width: '500px' });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadLeadsPage();
+      }
+    });
+  }
+
+  newRequest(loan) {
+    console.log(loan)
+    const dialogRef = this.dialog.open(NewRequestAddComponent, { data: { action: 'add', leadData: loan }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadLeadsPage();

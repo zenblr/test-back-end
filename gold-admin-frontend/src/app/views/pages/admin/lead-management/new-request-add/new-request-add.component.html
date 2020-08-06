@@ -1,0 +1,91 @@
+<kt-portlet>
+    <kt-modal-header [title]='title' (action)="action($event)"></kt-modal-header>
+
+    <kt-portlet-body>
+        <div class="kt-form">
+            <form [formGroup]="requestForm">
+                <div class="kt-portlet__body">
+
+                    <div class="row kt-margin-b-15">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-4 form-label">
+                                    <mat-label>Customer ID</mat-label>
+                                </div>
+                                <div class="col-8">
+                                    <input class="form-control" formControlName="customerUniqueId"
+                                        [class.isError]="controls.customerUniqueId.touched && controls.customerUniqueId.invalid">
+                                    <mat-error
+                                        *ngIf="controls.customerUniqueId.touched && controls.customerUniqueId.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row kt-margin-b-15">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-4 form-label">
+                                    <mat-label>Customer Name</mat-label>
+                                </div>
+                                <div class="col-8">
+                                    <input class="form-control" formControlName="customerName"
+                                        [class.isError]="controls.customerName.touched && controls.customerName.invalid">
+                                    <mat-error
+                                        *ngIf="controls.customerName.touched && controls.customerName.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row kt-margin-b-15">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-4 form-label">
+                                    <mat-label>Mobile Number</mat-label>
+                                </div>
+                                <div class="col-8">
+                                    <input class="form-control" formControlName="mobileNumber"
+                                        [class.isError]="controls.mobileNumber.touched && controls.mobileNumber.invalid">
+                                    <mat-error
+                                        *ngIf="controls.mobileNumber.touched && controls.mobileNumber.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row kt-margin-b-15">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-4 form-label">
+                                    <mat-label>Product</mat-label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-control" formControlName="moduleId"
+                                        [class.isError]="controls.moduleId.touched && controls.moduleId.invalid">
+                                        <option value="" selected disabled>Select Product</option>
+                                        <option *ngFor="let item of modules" [value]="item.id">
+                                            {{item.moduleName | titlecase}}
+                                        </option>
+                                    </select>
+                                    <mat-error *ngIf="controls.moduleId.touched && controls.moduleId.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <kt-modal-footer (action)="action($event)" [value]="data.action == 'add' ? 'Add' : 'Update'">
+                    </kt-modal-footer>
+                </div>
+            </form>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

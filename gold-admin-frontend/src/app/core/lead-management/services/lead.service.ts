@@ -108,4 +108,43 @@ export class LeadService {
     return this.http.get<any>(`api/internal-branch?from=1&to=-1`);
   }
 
+  newRequestAdd(data): Observable<any> {
+    return this.http.post<any>(`/api/lead-new-request`, data).pipe(map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message)
+        throw (err)
+      })
+    );
+  }
+
+  getNewRequests(data): Observable<any> {
+    const reqParams: any = {};
+    if (data && data.from) {
+      reqParams.from = data.from;
+    }
+    if (data && data.to) {
+      reqParams.to = data.to;
+    }
+    if (data && data.search) {
+      reqParams.search = data.search;
+    }
+
+    return this.http.get<any>(`api/lead-new-request/view-all`, { params: reqParams })
+      .pipe(map(res => res),
+        catchError(err => {
+          if (err.error.message) this.toastr.error(err.error.message)
+          throw (err)
+        })
+      );
+  }
+
+  newRequestUpdate(data): Observable<any> {
+    return this.http.post<any>(`/api/lead-new-request`, data).pipe(map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message)
+        throw (err)
+      })
+    );
+  }
+
 }

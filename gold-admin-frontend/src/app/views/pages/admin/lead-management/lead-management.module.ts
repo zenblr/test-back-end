@@ -13,25 +13,20 @@ import { AngularMaterialModule } from '../../angular-material/angular-material.m
 import { HttpUtilsService, TypesUtilsService, LayoutUtilsService, InterceptService } from '../../../../core/_base/crud';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MAT_SNACK_BAR_DATA, MatDialogRef } from '@angular/material';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { NewRequestAddComponent } from './new-request-add/new-request-add.component';
+import { NewRequestListComponent } from './new-request-list/new-request-list.component';
+import { MyRequestComponent } from './my-request/my-request.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: LeadManagementComponent,
-    children: [
-      // {
-      //   path: '',
-      //   redirectTo: 'upload-banner',
-      //   pathMatch: 'full'
-      // },
-    ]
-  }
+  { path: '', component: LeadManagementComponent },
+  { path: 'new-requests', component: NewRequestListComponent },
+  { path: 'my-requests', component: MyRequestComponent },
 ]
 
 @NgModule({
   declarations: [
-    LeadManagementComponent, 
-    AddLeadComponent
+    LeadManagementComponent,
+    AddLeadComponent, NewRequestAddComponent, NewRequestListComponent, MyRequestComponent
   ],
   imports: [
     CommonModule,
@@ -65,7 +60,8 @@ const routes: Routes = [
     LayoutUtilsService
   ],
   entryComponents: [
-    AddLeadComponent
+    AddLeadComponent,
+    NewRequestAddComponent
   ]
 })
 export class LeadManagementModule { }

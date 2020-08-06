@@ -6,7 +6,7 @@ import { BaseDataSource } from '../../_base/crud';
 import { BehaviorSubject, of } from 'rxjs';
 import { LeadService } from '../services/lead.service';
 
-export class LeadManagementDatasource extends BaseDataSource {
+export class NewRequestDatasource extends BaseDataSource {
 
     private loadingSubject = new BehaviorSubject<boolean>(false);
     private isPreloadTextViewedSubject = new BehaviorSubject<boolean>(true);
@@ -18,12 +18,10 @@ export class LeadManagementDatasource extends BaseDataSource {
         super();
     }
 
-    loadLeads(data) {
+    getNewRequests(data) {
         this.loadingSubject.next(true);
 
-        // this.entitySubject.next(this.leads); // delete this
-
-        this.leadService.getAllLeads(data)
+        this.leadService.getNewRequests(data)
             .pipe(
                 map(
                     report => {
