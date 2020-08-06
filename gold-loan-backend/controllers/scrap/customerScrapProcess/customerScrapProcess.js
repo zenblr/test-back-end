@@ -3,11 +3,12 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const paginationFUNC = require('../../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
-
 const check = require("../../../lib/checkLib"); // IMPORTING CHECKLIB 
 const moment = require('moment');
+var pdf = require("pdf-creator-node"); // PDF CREATOR PACKAGE
+var fs = require('fs');
 
-const { BASIC_DETAILS_SUBMIT, CUSTOMER_ACKNOWLEDGEMENT, ORNAMENTES_DETAILS, ORNAMENTES_MELTING_DETAILS, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, SCRAP_DOCUMENTS, SCRAP_DISBURSEMENT } = require('../../../utils/customerScrapHistory')
+const { BASIC_DETAILS_SUBMIT, CUSTOMER_ACKNOWLEDGEMENT, ORNAMENTES_DETAILS, ORNAMENTES_MELTING_DETAILS, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, SCRAP_DOCUMENTS, SCRAP_DISBURSEMENT, PROCESS_COMPLETED } = require('../../../utils/customerScrapHistory')
 
 //  FUNCTION FOR GET CUSTOMER DETAILS AFTER ENTER UNIQUE ID DONE
 exports.customerDetails = async (req, res, next) => {
@@ -1007,3 +1008,104 @@ exports.getSingleScrapInCustomerManagment = async (req, res, next) => {
 
 }
 
+exports.quickPay = async (req, res, next ) =>{
+    let {scrapId, paymentMode, bankName, bankBranch, transactionId, chequeNumber, depositAmount, depositDate} = req.body;
+
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+
+    let stageId = await models.scrapStage.findOne({ where: { stageName: 'completed' } });
+
+    if (paymentMode == 'cash') {
+        let quickPay = await sequelize.transaction(async t => {
+            let customerQuickPay = await models.scrapQuickPay.create({ scrapId, paymentMode, depositAmount, depositDate, createdBy, modifiedBy }, { transaction: t });
+            await models.customerScrap.update({ scrapStageId: stageId.id, customerScrapCurrentStage: "4", modifiedBy  }, { where: { id: scrapId }, transaction: t });
+            await models.customerScrapHistory.create({ scrapId, action: PROCESS_COMPLETED, modifiedBy }, { transaction: t });
+
+            return customerQuickPay
+        });
+        return res.status(200).json({ message: "success", quickPay });
+    } else if (paymentMode == 'cheque') {
+        let quickPay = await sequelize.transaction(async t => {
+            
+            let customerQuickPay = await models.scrapQuickPay.create({ scrapId, paymentMode, depositAmount, depositDate, chequeNumber, bankName, bankBranch, createdBy, modifiedBy}, { transaction: t });
+            await models.customerScrap.update({ scrapStageId: stageId.id, customerScrapCurrentStage: "4", modifiedBy  }, { where: { id: scrapId }, transaction: t });
+            await models.customerScrapHistory.create({ scrapId, action: PROCESS_COMPLETED, modifiedBy }, { transaction: t });
+            return customerQuickPay
+
+        });
+        return res.status(200).json({ message: "success", quickPay });
+    } else if (paymentMode == 'bankTransfer') {
+        let quickPay = await sequelize.transaction(async t => {
+            
+            let customerQuickPay = await models.scrapQuickPay.create({ scrapId, paymentMode, depositAmount, depositDate, transactionId, bankName, bankBranch, createdBy, modifiedBy }, { transaction: t })
+            await models.customerScrap.update({ scrapStageId: stageId.id, customerScrapCurrentStage: "4", modifiedBy  }, { where: { id: scrapId }, transaction: t });
+            await models.customerScrapHistory.create({ scrapId, action: PROCESS_COMPLETED, modifiedBy }, { transaction: t });
+            return customerQuickPay
+        });
+        return res.status(200).json({ message: "success", quickPay });
+    } else {
+        return res.status(400).json({ message: 'invalid paymentType' });
+    }
+}
+
+exports.pringCustomerAcknowledgement = async (req, res) => {
+
+    let { scrapId } = req.query;
+    let customerScrap = await models.customerScrap.findOne({
+        where: { id: scrapId },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        
+    });
+   
+
+    var html = fs.readFileSync("./templates/scrap-customer-acknowledgement-templet.html", 'utf8');
+
+    var options = {
+        format: "A4",
+        orientation: "portrait",
+        border: "1mm",
+        "header": {
+            "height": "2mm",
+
+        },
+        "footer": {
+            "height": "2mm",
+        },
+        "height": "11.69in",
+        "width": "8.27in"
+    }
+    let acknowledgementData = await [{
+        scrapUniqueId: customerScrap.scrapUniqueId,
+        
+    }]
+    let emiData = [];
+
+    let fileName = await `customerAcknowledgement${Date.now()}`;
+    document = await {
+        html: html,
+        data: {
+            bootstrapCss: `${process.env.URL}/bootstrap.css`,
+            jqueryJs: `${process.env.URL}/jquery-slim.min.js`,
+            popperJs: `${process.env.URL}/popper.min.js`,
+            bootstrapJs: `${process.env.URL}/bootstrap.js`,
+            acknowledgementData: acknowledgementData,
+        },
+        path: `./public/uploads/pdf/${fileName}.pdf`,
+        timeout: '60000'
+    };
+    let createPdf = await pdf.create(document, options);
+    if (createPdf) {
+        fs.readFile(`./public/uploads/pdf/${fileName}.pdf`, function (err, data) {
+            let stat = fs.statSync(`./public/uploads/pdf/${fileName}.pdf`);
+            res.setHeader('Content-Length', stat.size);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=${fileName}.pdf`);
+            res.send(data);
+            if (fs.existsSync(`./public/uploads/pdf/${fileName}.pdf`)) {
+                fs.unlinkSync(`./public/uploads/pdf/${fileName}.pdf`);
+            }
+        });
+    }
+   
+}

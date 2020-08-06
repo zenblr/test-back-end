@@ -196,7 +196,7 @@ module.exports = (sequelize, DataTypes) => {
                 let data = {};
                 data.path = values.meltingOrnament.ornamentImageWithXrfMachineReading;
                 data.URL = process.env.BASE_URL + values.meltingOrnament.ornamentImageWithXrfMachineReading;
-                values.meltingOrnament.ornamentXrfMachineReadingData = data;
+                values.meltingOrnament.ornamentImageWithXrfMachineReadingData = data;
             }
             if(values.meltingOrnament.ornamentImage){
                 let data = {};
@@ -216,12 +216,12 @@ module.exports = (sequelize, DataTypes) => {
         }
 
         if (values.customerScrapAcknowledgement && values.customerScrapAcknowledgement.customerConfirmation != 0) {
-            let customerConfirmation = [];
+            let customerConfirmationImage = [];
             for (image of values.customerScrapAcknowledgement.customerConfirmation) {
-                image = process.env.BASE_URL + image;
-                customerConfirmation.push(image);
+                imageData = process.env.BASE_URL + image;
+                customerConfirmationImage.push(imageData);
             }
-            values.customerScrapAcknowledgement.customerConfirmation = customerConfirmation;
+            values.customerScrapAcknowledgement.customerConfirmationImage = customerConfirmationImage;
         }
 
         if (values.scrapDocument && values.scrapDocument.purchaseVoucher != 0) {
