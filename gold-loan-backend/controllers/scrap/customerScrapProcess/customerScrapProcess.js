@@ -3,11 +3,12 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const paginationFUNC = require('../../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
-
 const check = require("../../../lib/checkLib"); // IMPORTING CHECKLIB 
 const moment = require('moment');
+var pdf = require("pdf-creator-node"); // PDF CREATOR PACKAGE
+var fs = require('fs');
 
-const { BASIC_DETAILS_SUBMIT, CUSTOMER_ACKNOWLEDGEMENT, ORNAMENTES_DETAILS, ORNAMENTES_MELTING_DETAILS, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, SCRAP_DOCUMENTS, SCRAP_DISBURSEMENT } = require('../../../utils/customerScrapHistory')
+const { BASIC_DETAILS_SUBMIT, CUSTOMER_ACKNOWLEDGEMENT, ORNAMENTES_DETAILS, ORNAMENTES_MELTING_DETAILS, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, SCRAP_DOCUMENTS, SCRAP_DISBURSEMENT, PROCESS_COMPLETED } = require('../../../utils/customerScrapHistory')
 
 //  FUNCTION FOR GET CUSTOMER DETAILS AFTER ENTER UNIQUE ID DONE
 exports.customerDetails = async (req, res, next) => {
@@ -198,53 +199,53 @@ exports.scrapBankDetails = async (req, res, next) => {
 
 //FUNCTION for submitting ornament details  DONE
 exports.scrapOrnmanetDetails = async (req, res, next) => {
-        let { scrapOrnaments, finalScrapAmount, scrapId } = req.body
-        let allOrnmanets = []
-        let createdBy = req.userData.id;
-        let modifiedBy = req.userData.id;
-        for (let i = 0; i < scrapOrnaments.length; i++) {
-            scrapOrnaments[i]['createdBy'] = createdBy
-            scrapOrnaments[i]['modifiedBy'] = modifiedBy
-            scrapOrnaments[i]['scrapId'] = scrapId
+    let { scrapOrnaments, finalScrapAmount, scrapId } = req.body
+    let allOrnmanets = []
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+    for (let i = 0; i < scrapOrnaments.length; i++) {
+        scrapOrnaments[i]['createdBy'] = createdBy
+        scrapOrnaments[i]['modifiedBy'] = modifiedBy
+        scrapOrnaments[i]['scrapId'] = scrapId
 
-            allOrnmanets.push(scrapOrnaments[i])
-        }
+        allOrnmanets.push(scrapOrnaments[i])
+    }
 
-        let checkOrnaments = await models.customerScrapOrnamentsDetail.findAll({ where: { scrapId: scrapId } });
-        if (checkOrnaments.length == 0) {
-            let scrapData = await sequelize.transaction(async t => {
-                await models.customerScrap.update({ customerScrapCurrentStage: '3', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
-                let createdOrnaments = await models.customerScrapOrnamentsDetail.bulkCreate(allOrnmanets, { returning: true }, { transaction: t });
+    let checkOrnaments = await models.customerScrapOrnamentsDetail.findAll({ where: { scrapId: scrapId } });
+    if (checkOrnaments.length == 0) {
+        let scrapData = await sequelize.transaction(async t => {
+            await models.customerScrap.update({ customerScrapCurrentStage: '3', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
+            let createdOrnaments = await models.customerScrapOrnamentsDetail.bulkCreate(allOrnmanets, { returning: true }, { transaction: t });
 
-                await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
+            await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
 
-                return createdOrnaments
-            })
-            return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData })
-        } else {
+            return createdOrnaments
+        })
+        return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData })
+    } else {
 
-            // let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
-            let scrapData = await sequelize.transaction(async t => {
-                // if (loanSubmitted.isLoanSubmitted == false) {
-                await models.customerScrap.update({ customerScrapCurrentStage: '3', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
-                // }
+        // let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
+        let scrapData = await sequelize.transaction(async t => {
+            // if (loanSubmitted.isLoanSubmitted == false) {
+            await models.customerScrap.update({ customerScrapCurrentStage: '3', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
+            // }
 
-                await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
+            await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
 
-                await models.customerScrapOrnamentsDetail.destroy({ where: { scrapId: scrapId }, transaction: t });
-                // let createdOrnaments = await models.customerScrapOrnamentsDetail.bulkCreate(allOrnmanets, { returning: true }, { transaction: t });
+            await models.customerScrapOrnamentsDetail.destroy({ where: { scrapId: scrapId }, transaction: t });
+            // let createdOrnaments = await models.customerScrapOrnamentsDetail.bulkCreate(allOrnmanets, { returning: true }, { transaction: t });
 
-                let createdOrnaments = []
-                for (let purityTestData of allOrnmanets) {
-                    delete purityTestData.id;
-                    var ornaments = await models.customerScrapOrnamentsDetail.create(purityTestData, { transaction: t });
-                    createdOrnaments.push(ornaments)
-                }
+            let createdOrnaments = []
+            for (let purityTestData of allOrnmanets) {
+                delete purityTestData.id;
+                var ornaments = await models.customerScrapOrnamentsDetail.create(purityTestData, { transaction: t });
+                createdOrnaments.push(ornaments)
+            }
 
-                return createdOrnaments;
-            })
-            return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData });
-        }
+            return createdOrnaments;
+        })
+        return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData });
+    }
 }
 
 //FUNCTION for submitting ornament details  DONE
@@ -525,85 +526,85 @@ exports.scrapDocuments = async (req, res, next) => {
 }
 
 exports.singleScrapDetails = async (req, res, next) => {
-        const { scrapId } = req.query;
+    const { scrapId } = req.query;
 
-        let customerScrap = await models.customerScrap.findOne({
-            where: { id: scrapId },
-            include: [{ 
-                    model: models.scrapStage,
-                    as: 'scrapStage',
-                    attributes: ['id', 'stageName']
-            },
+    let customerScrap = await models.customerScrap.findOne({
+        where: { id: scrapId },
+        include: [{
+            model: models.scrapStage,
+            as: 'scrapStage',
+            attributes: ['id', 'stageName']
+        },
+        {
+            model: models.customer,
+            as: 'customer',
+            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'email', 'kycStatus']
+        },
+        {
+            model: models.customerScrapPersonalDetail,
+            as: 'scrapPersonalDetail',
+            attributes: ['scrapId', 'startDate', 'kycStatus']
+        },
+        {
+            model: models.customerScrapBankDetails,
+            as: 'scrapBankDetails',
+            attributes: ['scrapId', 'paymentType', 'bankName', ['bank_branch', 'bankBranchName'], ['ac_number', 'accountNumber'], ['ac_holder_name', 'accountHolderName'], 'ifscCode', 'passbookProof', 'createdBy', 'modifiedBy']
+        },
+        {
+            model: models.customerAcknowledgement,
+            as: 'customerScrapAcknowledgement',
+            attributes: ['scrapId', 'processingCharges', 'standardDeduction', 'customerConfirmation', 'customerConfirmationStatus']
+        },
+        {
+            model: models.customerScrapDocument,
+            as: 'scrapDocument',
+            attributes: ['scrapId', 'purchaseVoucher', 'purchaseInvoice', 'saleInvoice']
+        },
+        {
+            model: models.customerScrapOrnamentsDetail,
+            as: 'scrapOrnamentsDetail',
+            include:
             {
-                model: models.customer,
-                as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'email', 'kycStatus']
+                model: models.ornamentType,
+                as: "ornamentType",
+                // attributes: ['name', 'id']
             },
-            {
-                model: models.customerScrapPersonalDetail,
-                as: 'scrapPersonalDetail',
-                attributes: ['scrapId', 'startDate', 'kycStatus']
-            },
-            {
-                model: models.customerScrapBankDetails,
-                as: 'scrapBankDetails',
-                attributes: ['scrapId', 'paymentType', 'bankName', ['bank_branch', 'bankBranchName'], ['ac_number', 'accountNumber'], ['ac_holder_name', 'accountHolderName'], 'ifscCode', 'passbookProof', 'createdBy', 'modifiedBy']
-            },
-            {
-                model: models.customerAcknowledgement,
-                as: 'customerScrapAcknowledgement',
-                attributes: ['scrapId', 'processingCharges', 'standardDeduction', 'customerConfirmation', 'customerConfirmationStatus']
-            },
-            {
-                model: models.customerScrapDocument,
-                as: 'scrapDocument',
-                attributes: ['scrapId', 'purchaseVoucher', 'purchaseInvoice', 'saleInvoice']
-            },
-            {
-                model: models.customerScrapOrnamentsDetail,
-                as: 'scrapOrnamentsDetail',
-                include:
-                {
-                    model: models.ornamentType,
-                    as: "ornamentType",
-                    // attributes: ['name', 'id']
-                },
-                attributes: ['id', 'scrapId', 'ornamentTypeId', 'quantity', 'grossWeight', 'netWeight', 'deductionWeight', 'karat', 'approxPurityReading', 'ornamentImage', 'ornamentImageWithWeight', 'ornamentImageWithXrfMachineReading', 'ltvAmount', 'ltvAmount', 'scrapAmount']
-            },
-            {
-                model: models.scrapMeltingOrnament,
-                as: 'meltingOrnament',
-                attributes: ['id', 'scrapId', 'grossWeight', 'netWeight', 'deductionWeight', 'karat', 'purityReading', 'ornamentImageWithWeight', 'ornamentImageWithXrfMachineReading', 'ornamentImage', 'customerConfirmation']
-            },
-            {
-                model: models.customerScrapPackageDetails,
-                as: 'scrapPacketDetails',
-                attributes: ['scrapId','emptyPacketWithRefiningOrnament', 'sealedPacketWithWeight', 'sealedPacketWithCustomer'],
-                include: [{
-                    model: models.scrapPacket,
-                    as: 'CustomerScrapPackageDetail',
-                    // include: [{
-                    //     model: models.scrapPacketOrnament,
-                    //     as: 'scrapPacketOrnament',
-                        // include: [{
-                        //     model: models.ornamentType,
-                        //     as: 'ornamentType'
-                        // }]
-                    // }]
-                }]
-            },]
-        });
-    
-        let ornamentTypesss = [];
-        if (customerScrap.scrapOrnamentsDetail.length != 0) {
-            for (let ornamentsDetail of customerScrap.scrapOrnamentsDetail) {
-                ornamentTypesss.push({ ornamentType: ornamentsDetail.ornamentType, id: ornamentsDetail.id })
-            }
-            customerScrap.dataValues.ornamentType = ornamentTypesss;
+            attributes: ['id', 'scrapId', 'ornamentTypeId', 'quantity', 'grossWeight', 'netWeight', 'deductionWeight', 'karat', 'approxPurityReading', 'ornamentImage', 'ornamentImageWithWeight', 'ornamentImageWithXrfMachineReading', 'ltvAmount', 'ltvAmount', 'scrapAmount']
+        },
+        {
+            model: models.scrapMeltingOrnament,
+            as: 'meltingOrnament',
+            attributes: ['id', 'scrapId', 'grossWeight', 'netWeight', 'deductionWeight', 'karat', 'purityReading', 'ornamentImageWithWeight', 'ornamentImageWithXrfMachineReading', 'ornamentImage', 'customerConfirmation']
+        },
+        {
+            model: models.customerScrapPackageDetails,
+            as: 'scrapPacketDetails',
+            attributes: ['scrapId', 'emptyPacketWithRefiningOrnament', 'sealedPacketWithWeight', 'sealedPacketWithCustomer'],
+            include: [{
+                model: models.scrapPacket,
+                as: 'CustomerScrapPackageDetail',
+                // include: [{
+                //     model: models.scrapPacketOrnament,
+                //     as: 'scrapPacketOrnament',
+                // include: [{
+                //     model: models.ornamentType,
+                //     as: 'ornamentType'
+                // }]
+                // }]
+            }]
+        },]
+    });
+
+    let ornamentTypesss = [];
+    if (customerScrap.scrapOrnamentsDetail.length != 0) {
+        for (let ornamentsDetail of customerScrap.scrapOrnamentsDetail) {
+            ornamentTypesss.push({ ornamentType: ornamentsDetail.ornamentType, id: ornamentsDetail.id })
         }
-    
-        return res.status(200).json({ customerScrap })
-    
+        customerScrap.dataValues.ornamentType = ornamentTypesss;
+    }
+
+    return res.status(200).json({ customerScrap })
+
 }
 
 //  FUNCTION FOR ADD PACKAGE IMAGES
@@ -639,7 +640,7 @@ exports.addPackageImagesForScrap = async (req, res, next) => {
 
             await models.customerScrap.update({ scrapStageId: stageId.id, modifiedBy }, { where: { id: scrapId }, transaction: t })
 
-            let scrapPacket = await models.customerScrapPackageDetails.create({ scrapId, emptyPacketWithRefiningOrnament: emptyPacketWithNoOrnament, sealedPacketWithWeight: sealingPacketWithWeight , sealedPacketWithCustomer: sealingPacketWithCustomer, createdBy, modifiedBy }, { transaction: t });
+            let scrapPacket = await models.customerScrapPackageDetails.create({ scrapId, emptyPacketWithRefiningOrnament: emptyPacketWithNoOrnament, sealedPacketWithWeight: sealingPacketWithWeight, sealedPacketWithCustomer: sealingPacketWithCustomer, createdBy, modifiedBy }, { transaction: t });
 
             let packetMapping = []
             for (single of packetOrnamentArray) {
@@ -684,7 +685,7 @@ exports.disbursementOfScrapBankDetails = async (req, res, next) => {
     let createdBy = req.userData.id;
     let userBankDetails = await models.customerScrapBankDetails.findOne({
         where: { scrapId: scrapId },
-        attributes: ['paymentType', 'bankName', ['bank_branch', 'bankBranchName'],['ac_holder_name', 'accountHolderName'] ,['ac_number', 'accountNumber'], 'ifscCode']
+        attributes: ['paymentType', 'bankName', ['bank_branch', 'bankBranchName'], ['ac_holder_name', 'accountHolderName'], ['ac_number', 'accountNumber'], 'ifscCode']
     });
     let scrapbrokerId = await models.userInternalBranch.findOne({ where: { userId: createdBy } });
     let brokerBankDetails = await models.internalBranch.findOne({
@@ -748,115 +749,115 @@ exports.disbursementOfScrapAmount = async (req, res, next) => {
 
 //  FUNCTION FOR GET APPLIED LOAN DETAILS
 exports.appliedScrapDetails = async (req, res, next) => {
-        let stage = await models.scrapStage.findOne({
-            where: { stageName: 'applying' }
-        })
-    
-        let { appraiserApproval, bmApproval, scrapStageId, operatinalTeamApproval } = req.query
-        let { search, offset, pageSize } =
-            paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
-    
-        let query = {};
-    
-        if (appraiserApproval) {
-            appraiserApproval = req.query.appraiserApproval.split(",");
-            query.scrapStatusForAppraiser = appraiserApproval
-        }
-        if (bmApproval) {
-            bmApproval = req.query.bmApproval.split(",");
-            query.scrapStatusForBM = bmApproval
-        }
-        if (operatinalTeamApproval) {
-            operatinalTeamApproval = req.query.operatinalTeamApproval.split(",");
-            query.scrapStatusForOperatinalTeam = operatinalTeamApproval
-        }
-        if (scrapStageId) {
-            scrapStageId = req.query.scrapStageId.split(",");
-            query.scrapStageId = scrapStageId;
-        }
-    
-    
-        let searchQuery = {
-            [Op.and]: [query, {
-                [Op.or]: {
-                    "$customer.first_name$": { [Op.iLike]: search + '%' },
-                    "$customer.last_name$": { [Op.iLike]: search + '%' },
-                    "$customer.mobile_number$": { [Op.iLike]: search + '%' },
-                    "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
-                    "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-    
-                    appraiser_status: sequelize.where(
-                        sequelize.cast(sequelize.col("customerScrap.scrap_status_for_appraiser"), "varchar"),
-                        {
-                            [Op.iLike]: search + "%",
-                        }
-                    ),
-                    bm_status: sequelize.where(
-                        sequelize.cast(sequelize.col("customerScrap.scrap_status_for_bm"), "varchar"),
-                        {
-                            [Op.iLike]: search + "%",
-                        }
-                    ),
-                    operatinal_team_status: sequelize.where(
-                        sequelize.cast(sequelize.col("customerScrap.scrap_status_for_operatinal_team"), "varchar"),
-                        {
-                            [Op.iLike]: search + "%",
-                        }
-                    )
-                },
-            }],
-            scrapStageId: { [Op.notIn]: [stage.id] },
-            isActive: true
-        };
-        let internalBranchId = req.userData.internalBranchId
-        let internalBranchWhere;
-        if (req.userData.userTypeId != 4) {
-            internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
-        } else {
-            internalBranchWhere = { isActive: true }
-        }
-    
-        let associateModel =
-            [{
-                model: models.scrapStage,
-                as: 'scrapStage',
-                attributes: ['id', 'stageName']
-            }, {
-                model: models.customer,
-                as: 'customer',
-                where: internalBranchWhere,
-                attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'customerUniqueId', 'mobileNumber']
+    let stage = await models.scrapStage.findOne({
+        where: { stageName: 'applying' }
+    })
+
+    let { appraiserApproval, bmApproval, scrapStageId, operatinalTeamApproval } = req.query
+    let { search, offset, pageSize } =
+        paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
+
+    let query = {};
+
+    if (appraiserApproval) {
+        appraiserApproval = req.query.appraiserApproval.split(",");
+        query.scrapStatusForAppraiser = appraiserApproval
+    }
+    if (bmApproval) {
+        bmApproval = req.query.bmApproval.split(",");
+        query.scrapStatusForBM = bmApproval
+    }
+    if (operatinalTeamApproval) {
+        operatinalTeamApproval = req.query.operatinalTeamApproval.split(",");
+        query.scrapStatusForOperatinalTeam = operatinalTeamApproval
+    }
+    if (scrapStageId) {
+        scrapStageId = req.query.scrapStageId.split(",");
+        query.scrapStageId = scrapStageId;
+    }
+
+
+    let searchQuery = {
+        [Op.and]: [query, {
+            [Op.or]: {
+                "$customer.first_name$": { [Op.iLike]: search + '%' },
+                "$customer.last_name$": { [Op.iLike]: search + '%' },
+                "$customer.mobile_number$": { [Op.iLike]: search + '%' },
+                "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
+                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+
+                appraiser_status: sequelize.where(
+                    sequelize.cast(sequelize.col("customerScrap.scrap_status_for_appraiser"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
+                bm_status: sequelize.where(
+                    sequelize.cast(sequelize.col("customerScrap.scrap_status_for_bm"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
+                operatinal_team_status: sequelize.where(
+                    sequelize.cast(sequelize.col("customerScrap.scrap_status_for_operatinal_team"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                )
             },
-            {
-                model: models.customerScrapPersonalDetail,
-                as: 'scrapPersonalDetail',
-                attributes: ['startDate']
-            }];
-    
-    
-        let appliedScrapDetails = await models.customerScrap.findAll({
-            where: searchQuery,
-            subQuery: false,
-            include: associateModel,
-            order: [
-                ["updatedAt", "DESC"]
-            ],
-            attributes: ['id', 'customerId', 'scrapUniqueId', 'scrapStatusForAppraiser', 'scrapStatusForBM', 'scrapStatusForOperatinalTeam', 'finalScrapAmountAfterMelting', 'eligibleScrapAmount', 'customerScrapCurrentStage', 'scrapStageId', 'isScrapSubmitted', 'isDisbursed'],
-            offset: offset,
-            limit: pageSize,
-    
-        });
-        let count = await models.customerScrap.findAll({
-            where: searchQuery,
-            subQuery: false,
-            include: associateModel,
-        });
-    
-        if (appliedScrapDetails.length === 0) {
-            return res.status(200).json([]);
-        } else {
-            return res.status(200).json({ message: 'Applied scrap details fetch successfully', appliedScrapDetails, count: count.length });
-        }
+        }],
+        scrapStageId: { [Op.notIn]: [stage.id] },
+        isActive: true
+    };
+    let internalBranchId = req.userData.internalBranchId
+    let internalBranchWhere;
+    if (req.userData.userTypeId != 4) {
+        internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+    } else {
+        internalBranchWhere = { isActive: true }
+    }
+
+    let associateModel =
+        [{
+            model: models.scrapStage,
+            as: 'scrapStage',
+            attributes: ['id', 'stageName']
+        }, {
+            model: models.customer,
+            as: 'customer',
+            where: internalBranchWhere,
+            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'customerUniqueId', 'mobileNumber']
+        },
+        {
+            model: models.customerScrapPersonalDetail,
+            as: 'scrapPersonalDetail',
+            attributes: ['startDate']
+        }];
+
+
+    let appliedScrapDetails = await models.customerScrap.findAll({
+        where: searchQuery,
+        subQuery: false,
+        include: associateModel,
+        order: [
+            ["updatedAt", "DESC"]
+        ],
+        attributes: ['id', 'customerId', 'scrapUniqueId', 'scrapStatusForAppraiser', 'scrapStatusForBM', 'scrapStatusForOperatinalTeam', 'finalScrapAmountAfterMelting', 'eligibleScrapAmount', 'customerScrapCurrentStage', 'scrapStageId', 'isScrapSubmitted', 'isDisbursed'],
+        offset: offset,
+        limit: pageSize,
+
+    });
+    let count = await models.customerScrap.findAll({
+        where: searchQuery,
+        subQuery: false,
+        include: associateModel,
+    });
+
+    if (appliedScrapDetails.length === 0) {
+        return res.status(200).json([]);
+    } else {
+        return res.status(200).json({ message: 'Applied scrap details fetch successfully', appliedScrapDetails, count: count.length });
+    }
 
 }
 
@@ -1007,3 +1008,104 @@ exports.getSingleScrapInCustomerManagment = async (req, res, next) => {
 
 }
 
+exports.quickPay = async (req, res, next) => {
+    let { scrapId, paymentMode, bankName, bankBranch, transactionId, chequeNumber, depositAmount, depositDate } = req.body;
+
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+
+    let stageId = await models.scrapStage.findOne({ where: { stageName: 'completed' } });
+
+    if (paymentMode == 'cash') {
+        let quickPay = await sequelize.transaction(async t => {
+            let customerQuickPay = await models.scrapQuickPay.create({ scrapId, paymentMode, depositAmount, depositDate, createdBy, modifiedBy }, { transaction: t });
+            await models.customerScrap.update({ scrapStageId: stageId.id, customerScrapCurrentStage: "4", modifiedBy }, { where: { id: scrapId }, transaction: t });
+            await models.customerScrapHistory.create({ scrapId, action: PROCESS_COMPLETED, modifiedBy }, { transaction: t });
+
+            return customerQuickPay
+        });
+        return res.status(200).json({ message: "success", quickPay });
+    } else if (paymentMode == 'cheque') {
+        let quickPay = await sequelize.transaction(async t => {
+
+            let customerQuickPay = await models.scrapQuickPay.create({ scrapId, paymentMode, depositAmount, depositDate, chequeNumber, bankName, bankBranch, createdBy, modifiedBy }, { transaction: t });
+            await models.customerScrap.update({ scrapStageId: stageId.id, customerScrapCurrentStage: "4", modifiedBy }, { where: { id: scrapId }, transaction: t });
+            await models.customerScrapHistory.create({ scrapId, action: PROCESS_COMPLETED, modifiedBy }, { transaction: t });
+            return customerQuickPay
+
+        });
+        return res.status(200).json({ message: "success", quickPay });
+    } else if (paymentMode == 'bankTransfer') {
+        let quickPay = await sequelize.transaction(async t => {
+
+            let customerQuickPay = await models.scrapQuickPay.create({ scrapId, paymentMode, depositAmount, depositDate, transactionId, bankName, bankBranch, createdBy, modifiedBy }, { transaction: t })
+            await models.customerScrap.update({ scrapStageId: stageId.id, customerScrapCurrentStage: "4", modifiedBy }, { where: { id: scrapId }, transaction: t });
+            await models.customerScrapHistory.create({ scrapId, action: PROCESS_COMPLETED, modifiedBy }, { transaction: t });
+            return customerQuickPay
+        });
+        return res.status(200).json({ message: "success", quickPay });
+    } else {
+        return res.status(400).json({ message: 'invalid paymentType' });
+    }
+}
+
+exports.printCustomerAcknowledgement = async (req, res) => {
+
+    let { scrapId } = req.query;
+    let customerScrap = await models.customerScrap.findOne({
+        where: { id: scrapId },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+
+    });
+
+
+    var html = fs.readFileSync("./templates/scrap-customer-acknowledgement-templet.html", 'utf8');
+
+    var options = {
+        format: "A4",
+        orientation: "portrait",
+        border: "1mm",
+        "header": {
+            "height": "2mm",
+
+        },
+        "footer": {
+            "height": "2mm",
+        },
+        "height": "11.69in",
+        "width": "8.27in"
+    }
+    let acknowledgementData = await [{
+        scrapUniqueId: customerScrap.scrapUniqueId,
+
+    }]
+    let emiData = [];
+
+    let fileName = await `customerAcknowledgement${Date.now()}`;
+    document = await {
+        html: html,
+        data: {
+            bootstrapCss: `${process.env.URL}/bootstrap.css`,
+            jqueryJs: `${process.env.URL}/jquery-slim.min.js`,
+            popperJs: `${process.env.URL}/popper.min.js`,
+            bootstrapJs: `${process.env.URL}/bootstrap.js`,
+            acknowledgementData: acknowledgementData,
+        },
+        path: `./public/uploads/pdf/${fileName}.pdf`,
+        timeout: '60000'
+    };
+    let createPdf = await pdf.create(document, options);
+    if (createPdf) {
+        fs.readFile(`./public/uploads/pdf/${fileName}.pdf`, function (err, data) {
+            let stat = fs.statSync(`./public/uploads/pdf/${fileName}.pdf`);
+            res.setHeader('Content-Length', stat.size);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=${fileName}.pdf`);
+            res.send(data);
+            if (fs.existsSync(`./public/uploads/pdf/${fileName}.pdf`)) {
+                fs.unlinkSync(`./public/uploads/pdf/${fileName}.pdf`);
+            }
+        });
+    }
+
+}

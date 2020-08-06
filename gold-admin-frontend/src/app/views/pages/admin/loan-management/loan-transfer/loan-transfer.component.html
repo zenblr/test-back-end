@@ -9,9 +9,11 @@
                             [showButton]="showButton" [disable]="disabledForm"></kt-basic-details>
                     </mat-tab>
                     <mat-tab label="Upload Documents" [disabled]="disabled[1]">
-                        <kt-upload-documents [masterAndLoanIds]="masterAndLoanIds" (stage)="stage($event)" [showButton]="showButton" [loanTransfer]="laonTransferDetails" (next)="next($event)" [showLoanTransferFlag]="true"></kt-upload-documents>
+                        <kt-upload-documents [masterAndLoanIds]="masterAndLoanIds" (stage)="stage($event)"
+                            [showButton]="showButton" [loanTransfer]="laonTransferDetails" (next)="next($event)"
+                            [showLoanTransferFlag]="true"></kt-upload-documents>
                     </mat-tab>
-                    <mat-tab label="Loan Trasnfer Approval" [formGroup]="approvalForm" [disabled]="disabled[2]">
+                    <mat-tab label="Loan Transfer Approval" [formGroup]="approvalForm" [disabled]="disabled[2]">
                         <!-- <div *ngIf="loanTransferStage == '3' || loanTransferStage == '4' || loanTransferStage == '5'">
                             <div class="row justify-content-center">
                                 <div class="col-6">

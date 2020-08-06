@@ -95,7 +95,7 @@ export class UploadDocumentsComponent implements OnInit {
       this.isEdit = true
     }
     this.ngxPermission.permissions$.subscribe(res => {
-      if ((this.url == "loan-transfer" && res.loanTransferRating)|| this.url == "scrap-buying-application-form") {
+      if ((this.url == "loan-transfer" && res.loanTransferRating) || this.url == "scrap-buying-application-form") {
         this.buttonValue = 'next';
       } else {
         this.buttonValue = 'save';
@@ -127,7 +127,7 @@ export class UploadDocumentsComponent implements OnInit {
         this.documentsForm.patchValue({
           processingCharges: documents.processingCharges,
           standardDeduction: documents.standardDeduction,
-          customerConfirmation: documents.customerConfirmation[0],
+          customerConfirmation: documents.customerConfirmation,
           customerConfirmationImage: documents.customerConfirmation[0],
           customerConfirmationStatus: documents.customerConfirmationStatus
         })
@@ -147,7 +147,7 @@ export class UploadDocumentsComponent implements OnInit {
           saleInvoiceImage: documents.saleInvoice[0],
         })
         this.pdfCheck();
-        // this.isEdit = false
+        this.isEdit = false
       }
     }
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
@@ -421,9 +421,11 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   ExportAsPdf() {
-    this.loanService.getPdf(this.masterAndLoanIds.masterLoanId).subscribe(res => {
-
-    })
+    if (this.scrapIds) {
+      this.scrapApplicationFormService.getPdf(this.scrapIds.scrapId).subscribe()
+    } else {
+      this.loanService.getPdf(this.masterAndLoanIds.masterLoanId).subscribe()
+    }
   }
 
   save() {
@@ -458,16 +460,14 @@ export class UploadDocumentsComponent implements OnInit {
           }
         })).subscribe()
     } else if (this.url == 'scrap-buying-application-form') {
-      if (this.buttonValue == 'Next') {
-        this.scrapApplicationFormService.acknowledgementSubmit(this.documentsForm.value, this.scrapIds).pipe(
-          map(res => {
-            if (res.scrapCurrentStage) {
-              let stage = Number(res.scrapCurrentStage) - 1
-              this.stage.emit(res.scrapCurrentStage)
-              this.next.emit(stage)
-            }
-          })).subscribe();
-      }
+      this.scrapApplicationFormService.acknowledgementSubmit(this.documentsForm.value, this.scrapIds).pipe(
+        map(res => {
+          if (res.scrapCurrentStage) {
+            let stage = Number(res.scrapCurrentStage) - 1
+            this.stage.emit(res.scrapCurrentStage)
+            this.next.emit(stage)
+          }
+        })).subscribe();
     } else if (this.showScrapFlag) {
       this.scrapApplicationFormService.uploadDocuments(this.documentsForm.value, this.scrapIds).pipe(
         map(res => {

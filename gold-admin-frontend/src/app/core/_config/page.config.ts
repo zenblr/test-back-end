@@ -316,6 +316,7 @@ export class PageConfig {
 					page: { title: "Transfer Loan List", desc: "" },
 				},
 				"loan-transfer": {
+					page: { title: "Loan Transfer", desc: "" },
 					id: {
 						page: { title: "Loan Transfer", desc: "" },
 					}
