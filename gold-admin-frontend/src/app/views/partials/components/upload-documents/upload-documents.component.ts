@@ -36,6 +36,7 @@ export class UploadDocumentsComponent implements OnInit {
   @Input() showLoanTransferFlag;
   @Input() showScrapFlag;
   @Input() showScrapAcknowledgementFlag;
+  @Input() standardDeductionArr
   @ViewChild('loanAgreementCopy', { static: false }) loanAgreementCopy
   @ViewChild('pawnCopy', { static: false }) pawnCopy
   @ViewChild('schemeConfirmationCopy', { static: false }) schemeConfirmationCopy
@@ -63,7 +64,6 @@ export class UploadDocumentsComponent implements OnInit {
   buttonName: string;
   buttonValue = 'Next';
   isEdit: boolean;
-  standardDeductionArr: any;
   globalValue: any;
   showCustomerConfirmationFlag: boolean;
 
@@ -80,7 +80,6 @@ export class UploadDocumentsComponent implements OnInit {
     private el: ElementRef,
     private renderer: Renderer,
     private ngxPermission: NgxPermissionsService,
-    private standardDeductionService: StandardDeductionService,
     public globalSettingService: GlobalSettingService,
   ) {
     this.url = (this.router.url.split("/")[3]).split("?")[0]
@@ -105,6 +104,9 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (changes.standardDeductionArr && changes.standardDeductionArr) {
+      this.standardDeductionArr = changes.standardDeductionArr.currentValue
+    }
     if (changes.loanDocumnets && changes.loanDocumnets.currentValue) {
       let documents = changes.loanDocumnets.currentValue.customerLoanDocument
 
@@ -132,7 +134,11 @@ export class UploadDocumentsComponent implements OnInit {
           customerConfirmationStatus: documents.customerConfirmationStatus
         })
         this.pdfCheck();
-        // this.isEdit = false
+        if (changes.acknowledgmentDocuments.currentValue.scrapStatusForAppraiser == 'approved') {
+          this.isEdit = false
+          this.documentsForm.disable()
+          this.ref.detectChanges()
+        }
       }
     }
     if (changes.scrapDocuments && changes.scrapDocuments.currentValue) {
@@ -202,9 +208,6 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.showScrapAcknowledgementFlag) {
-      this.getStandardDeduction();
-    }
     if (this.showLoanFlag || this.showLoanTransferFlag || this.showScrapFlag || this.showScrapAcknowledgementFlag) {
       this.validation()
     }
@@ -304,14 +307,6 @@ export class UploadDocumentsComponent implements OnInit {
       this.documentsForm.controls.schemeConfirmationCopy.setValidators(Validators.required),
         this.documentsForm.controls.schemeConfirmationCopy.updateValueAndValidity()
     }
-  }
-
-  getStandardDeduction() {
-    this.standardDeductionService.getAllStandardDeductions().pipe(
-      map(res => {
-        this.standardDeductionArr = res.deductionDetails;
-      })
-    ).subscribe()
   }
 
   fileUpload(event, value) {
@@ -470,10 +465,14 @@ export class UploadDocumentsComponent implements OnInit {
     } else if (this.url == 'scrap-buying-application-form') {
       this.scrapApplicationFormService.acknowledgementSubmit(this.documentsForm.value, this.scrapIds).pipe(
         map(res => {
-          if (res.scrapCurrentStage) {
-            let stage = Number(res.scrapCurrentStage) - 1
-            this.stage.emit(res.scrapCurrentStage)
-            this.next.emit(stage)
+          if (this.buttonValue == 'Next') {
+            if (res.scrapCurrentStage) {
+              let stage = Number(res.scrapCurrentStage) - 1
+              this.stage.emit(res.scrapCurrentStage)
+              this.next.emit(stage)
+            }
+          } else {
+            this.router.navigate(['/admin/scrap-management/applied-scrap'])
           }
         })).subscribe();
     } else if (this.showScrapFlag) {
