@@ -620,4 +620,23 @@
  *     responses:
  *       200:
  *          description: success.
+ * /scrap/scrap-process/get-customer-acknowledgement:
+ *   get:
+ *     tags: 
+ *       -  Customer scrap Process
+ *     name: print customer acknowledgement
+ *     summary: To print customer acknowledgement
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "scrapId"
+ *       in: "query"
+ *       description: "Id of customer scrap Id"
+ *       type: "string"
+ *       required: true
+ *     responses:
+ *       200:
+ *          description: success.
  */

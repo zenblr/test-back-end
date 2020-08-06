@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'appraiser_id',
         },
+        barcodeNumber: {
+            type: DataTypes.STRING,
+            field: 'barcode_number',
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
