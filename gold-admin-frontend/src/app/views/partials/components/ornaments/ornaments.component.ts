@@ -106,6 +106,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.karatService.getAllKaratDetails().pipe(
       map(res => {
         this.karatArr = res.data;
+        this.ref.detectChanges();
       })
     ).subscribe()
   }
@@ -171,6 +172,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       if (changes.action.currentValue == 'edit') {
         let array = [];
         if (changes.meltingDetails.currentValue.meltingOrnament) {
+          changes.meltingDetails.currentValue.meltingOrnament.finalScrapAmountAfterMelting = changes.meltingDetails.currentValue.finalScrapAmountAfterMelting;
           array = [changes.meltingDetails.currentValue.meltingOrnament]
         }
         for (let index = 0; index < array.length; index++) {

@@ -11,5 +11,5 @@ module.exports = {
     PACKET_IMAGES: "Add packet image",
     SCRAP_DOCUMENTS: "Add scrap document",
     SCRAP_DISBURSEMENT: "scrap disbursement",
-
+    PROCESS_COMPLETED: "scrap quick Pay Process omplete"
 }

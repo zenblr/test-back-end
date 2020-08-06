@@ -159,6 +159,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.ref.detectChanges()
     }
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
+      this.basicForm.controls.purpose.disable()
       this.controls.customerId.patchValue(changes.loanTransfer.currentValue.customer.id)
       this.basicForm.patchValue(changes.loanTransfer.currentValue.loanPersonalDetail)
       this.currentDate = new Date(changes.loanTransfer.currentValue.loanPersonalDetail.startDate)
@@ -308,7 +309,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
             if (stage >= 1) {
               this.apiHit.emit(res.scrapId);
             }
-            if (res.finalScrapAmount) {
+            if (res.totalEligibleAmt) {
               this.totalEligibleAmt.emit(res.totalEligibleAmt);
             }
             if (res.finalScrapAmount) {
@@ -368,7 +369,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
           stage = Number(stage) - 1;
           this.next.emit(stage)
           this.id.emit({ scrapId: res.scrapId })
-          this.scrapStage.emit(res.scrapCurrentStage)
+          this.scrapStage.emit(res.scrapStage)
         }), catchError(err => {
           this.toast.error(err.error.message)
           throw err

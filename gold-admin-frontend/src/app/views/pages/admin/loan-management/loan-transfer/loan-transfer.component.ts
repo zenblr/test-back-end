@@ -5,6 +5,9 @@ import { map } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LoanTransferService } from '../../../../../core/loan-management/loan-transfer/services/loan-transfer.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { NgxPermissionsService } from 'ngx-permissions';
+import { ToastrService } from 'ngx-toastr';
+import { Location } from "@angular/common";
 
 @Component({
   selector: 'kt-loan-transfer',
@@ -27,6 +30,8 @@ export class LoanTransferComponent implements OnInit {
   loanTransferStage: any;
   appraiserOrCCE: { value: string; name: string; }[];
   disabledForm: boolean;
+  permission: any;
+
   constructor(
     private custClassificationService: CustomerClassificationService,
     private sharedService: SharedService,
@@ -34,8 +39,14 @@ export class LoanTransferComponent implements OnInit {
     private loanTransferService: LoanTransferService,
     private rout: ActivatedRoute,
     private router: Router,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private ngxPermission:NgxPermissionsService,
+    private toast:ToastrService,
+    private location:Location
   ) {
+    this.ngxPermission.permissions$.subscribe(res => {
+      this.permission = res
+    })
     this.getReasonsList()
     this.id = this.rout.snapshot.params.id;;
     if (this.id) {
@@ -46,6 +57,8 @@ export class LoanTransferComponent implements OnInit {
       this.appraiserOrCCE = res.apprsiserOrCCE
 
     })
+
+
 
   }
 
@@ -58,6 +71,10 @@ export class LoanTransferComponent implements OnInit {
           let stage = res.data.masterLoan.loanTransfer.loanTransferCurrentStage;
           this.next(Number(stage) - 1);
           if (stage == '4') {
+            if(!this.permission.loanTransferRating){
+              this.toast.error('Access Denied')
+              this.location.back()
+            }
             this.selected = 2
             this.approvalForm.controls.loanTransferStatusForAppraiser.disable()
             this.approvalForm.controls.reasonByAppraiser.disable()
@@ -140,7 +157,7 @@ export class LoanTransferComponent implements OnInit {
   initForms() {
     this.approvalForm = this.fb.group({
       loanTransferStatusForBM: ['pending', Validators.required],
-      loanTransferStatusForAppraiser: ['pending', Validators.required],
+      loanTransferStatusForAppraiser: ['', Validators.required],
       reasonByBM: ['', Validators.required],
       reasonByAppraiser: ['', Validators.required],
       reason: ['', Validators.required]
