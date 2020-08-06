@@ -99,8 +99,68 @@ let interestAmountCalculation = async (masterLoanId, id) => {
     return amount
 }
 
-let test = async (loanId) => {
-    console.log(loanId)
+let getAllCustomerLoanId = async () => {
+    let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
+    let masterLona = await models.customerLoanMaster.findAll({
+        where: {
+            isActive: true,
+            loanStageId: stageId.id,
+            "$partRelease$": null
+        },
+        attributes:['id'],
+        include: [
+            {
+                model: models.partRelease,
+                as: 'partRelease',
+                attributes: ['amountStatus']
+            },{
+                model: models.customerLoan,
+                as: 'customerLoan',
+                attributes:['id']
+            }],
+    });
+    let customerLoanId=[];
+    for(const masterLoanData of masterLona){
+        await masterLoanData.customerLoan.map((data) => {customerLoanId.push(data.id)});
+    }
+    return customerLoanId
+}
+
+let getAllDetailsOfCustomerLoan = async (customerLoanId) =>{
+    let loanData = await models.customerLoan.findOne({
+        where:{id:customerLoanId},
+        order:[[models.customerLoanInterest,'id','asc']],
+        attributes:['id','loanAmount','outstandingAmount','currentSlab','currentInterestRate','penalInterestLastReceivedDate'],
+        include:[{
+            model:models.customerLoanSlabRate,
+            as:'slab',
+            attributes:['days','interestRate']
+        },{
+            model:models.customerLoanMaster,
+            as:'masterLoan',
+            attributes:['tenure','loanStartDate','loanEndDate','processingCharge','totalFinalInterestAmt','outstandingAmount']
+        },{
+            model:models.customerLoanInterest,
+            as:'customerLoanInterest',
+            attributes: { exclude: [ 'createdAt', 'createdBy', 'modifiedBy','updatedAt'] },
+        },{
+            model:models.scheme,
+            as:'scheme',
+            attributes: { exclude: [ 'createdAt', 'updatedAt'] },
+        }]
+    })
+    return loanData;
+}
+
+let calculationData = async () =>{
+    let customerLoanId = await getAllCustomerLoanId();
+    let loanInfo = [];
+    for(const id of customerLoanId){
+        let info = await getAllDetailsOfCustomerLoan(id);
+        loanInfo.push(info);
+    }
+    let noOfDaysInYear = 360
+    return {noOfDaysInYear,loanInfo};
 }
 
 let penal = async (loanId) => {
@@ -132,6 +192,8 @@ module.exports = {
     getGlobalSetting: getGlobalSetting,
     getLoanDetails: getLoanDetails,
     getSchemeDetails: getSchemeDetails,
-    test: test,
+    getAllCustomerLoanId: getAllCustomerLoanId,
+    getAllDetailsOfCustomerLoan:getAllDetailsOfCustomerLoan,
+    calculationData:calculationData,
     penal: penal
 }
