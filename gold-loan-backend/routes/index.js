@@ -182,4 +182,7 @@ router.use('/scrap/global-setting', scrapGlobalSettings);
 const standardDeduction = require('./scrap/standardDeduction'); // customer scrap process
 router.use('/scrap/standard-deduction', standardDeduction);
 
+const interestCalculation = require('./interestCalculation'); 
+router.use('/calculation', interestCalculation);
+
 module.exports = router;
