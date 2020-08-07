@@ -536,6 +536,14 @@
  *       in: "query"
  *       description: "Pagination ending point"
  *       type: "string"
+ *     - name: "appraiserApproval"
+ *       in: "query"
+ *       description: "appraiser approval"
+ *       type: "string"
+ *     - name: "scrapStageId"
+ *       in: "query"
+ *       description: "scrap stage id"
+ *       type: "integer"
  *     responses:
  *       200:
  *          description: scrap details fetch successfully
@@ -698,4 +706,18 @@
  *     responses:
  *       200:
  *          description: success.
+ * /scrap/scrap-process/get-scrap-status:
+ *   get:
+ *     tags:
+ *       - Customer scrap Process
+ *     summary: To read all scrap status
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: bank detail fetch successfully.
+ *       404:
+ *         description: no bank detail found
  */

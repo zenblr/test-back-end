@@ -12,63 +12,63 @@ const { BASIC_DETAILS_SUBMIT, CUSTOMER_ACKNOWLEDGEMENT, ORNAMENTES_DETAILS, ORNA
 
 //  FUNCTION FOR GET CUSTOMER DETAILS AFTER ENTER UNIQUE ID DONE
 exports.customerDetails = async (req, res, next) => {
-    let customerUniqueId = req.params.customerUniqueId;
-    let reqId = req.userData.id;
-    let getAppraiserId = await models.customerAssignAppraiser.findOne({ where: { customerUniqueId } })
-
-    if (check.isEmpty(getAppraiserId)) {
-        return res.status(400).json({ message: 'This customer Did not assign in to anyone' })
-    }
-    if (reqId != getAppraiserId.appraiserId) {
-        return res.status(400).json({ message: `This customer is not assign to you` })
-    }
-
-    let customerData = await models.customer.findOne({
-        where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
-        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
-
-    })
-
-    let customerScrapStage = await models.customerScrap.findOne({
-        where: { customerId: customerData.id, isScrapSubmitted: false },
-        include: [{
-            model: models.customer,
-            as: 'customer'
-        }]
-    });
-
-    let incompleteStageId = await models.scrapStage.findOne({where: {stageName: "incomplete"}});
-
-    if (!check.isEmpty(customerScrapStage)) {
-
-        if(customerScrapStage.scrapStageId == incompleteStageId.id){
-            res.status(200).json({ message: 'customer details fetch successfully', customerData }); 
+        let customerUniqueId = req.params.customerUniqueId;
+        let reqId = req.userData.id;
+        let getAppraiserId = await models.customerAssignAppraiser.findOne({ where: { customerUniqueId } })
+    
+        if (check.isEmpty(getAppraiserId)) {
+            return res.status(400).json({ message: 'This customer Did not assign in to anyone' })
         }
-
-        const firstName = customerScrapStage.customer.firstName
-        const lastName = customerScrapStage.customer.lastName
-
-        let customerCurrentStage = customerScrapStage.customerScrapCurrentStage
-        // let scrapId = await models.customerScrap.findOne({ where: { masterLoanId: customerScrapStage.id } })
-        if (customerCurrentStage == '2') {
-            return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
-        } else if (customerCurrentStage == '3') {
-            return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
-        } else if (customerCurrentStage == '4') {
-            return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage, finalScrapAmount: customerScrapStage.finalScrapAmount })
-        } else if (customerCurrentStage == '5') {
-            return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
-        } else if (customerCurrentStage == '6') {
-            return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
+        if (reqId != getAppraiserId.appraiserId) {
+            return res.status(400).json({ message: `This customer is not assign to you` })
         }
-    }
-
-    if (!customerData) {
-        res.status(404).json({ message: 'no customer details found' });
-    } else {
-        res.status(200).json({ message: 'customer details fetch successfully', customerData });
-    }
-
+    
+        let customerData = await models.customer.findOne({
+            where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
+            attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
+    
+        })
+    
+        let customerScrapStage = await models.customerScrap.findOne({
+            where: { customerId: customerData.id, isScrapSubmitted: false },
+            include: [{
+                model: models.customer,
+                as: 'customer'
+            }]
+        });
+    
+        let incompleteStageId = await models.scrapStage.findOne({where: {stageName: "incomplete"}});
+        console.log(incompleteStageId);
+        if (!check.isEmpty(customerScrapStage)) {
+    
+            if(customerScrapStage.scrapStageId == incompleteStageId.id){
+                res.status(200).json({ message: 'customer details fetch successfully', customerData }); 
+            }
+    
+            const firstName = customerScrapStage.customer.firstName
+            const lastName = customerScrapStage.customer.lastName
+    
+            let customerCurrentStage = customerScrapStage.customerScrapCurrentStage
+            // let scrapId = await models.customerScrap.findOne({ where: { masterLoanId: customerScrapStage.id } })
+            if (customerCurrentStage == '2') {
+                return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
+            } else if (customerCurrentStage == '3') {
+                return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
+            } else if (customerCurrentStage == '4') {
+                return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage, finalScrapAmount: customerScrapStage.finalScrapAmount })
+            } else if (customerCurrentStage == '5') {
+                return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
+            } else if (customerCurrentStage == '6') {
+                return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
+            }
+        }
+    
+        if (!customerData) {
+            res.status(404).json({ message: 'no customer details found' });
+        } else {
+            res.status(200).json({ message: 'customer details fetch successfully', customerData });
+        }
+    
 }
 
 exports.scrapBasicDeatils = async (req, res, next) => {
@@ -116,7 +116,7 @@ exports.acknowledgementDetails = async (req, res, next) => {
                     await models.customerAcknowledgement.create({ scrapId, processingCharges, standardDeduction, customerConfirmation, customerConfirmationStatus, createdBy, modifiedBy }, { transaction: t })
                     return scrap
                 })
-                return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '4' })
+                return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '4', processingCharges })
             } else {
                 // let scrapSubmitted = await models.customerScrap.findOne({ where: { id: scrapId } })
                 let scrapData = await sequelize.transaction(async t => {
@@ -129,7 +129,7 @@ exports.acknowledgementDetails = async (req, res, next) => {
                     await models.customerAcknowledgement.update({ scrapId, processingCharges, standardDeduction, customerConfirmation, customerConfirmationStatus, modifiedBy }, { where: { scrapId: scrapId }, transaction: t })
                     return scrap
                 })
-                return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '4' })
+                return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '4', processingCharges })
     
             }
         } else {
@@ -907,7 +907,11 @@ exports.getScrapDetails = async (req, res, next) => {
             model: models.customer,
             as: 'customer',
             where: internalBranchWhere,
-            attributes: { exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive', 'password'] }
+            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName']
+        },{
+            model: models.customerScrapDisbursement,
+            as: 'scrapDisbursement',
+            attributes: ['scrapId', 'date', 'scrapAmount']
         }
     ]
 
@@ -916,7 +920,7 @@ exports.getScrapDetails = async (req, res, next) => {
         subQuery: false,
         include: associateModel,
         order: [["updatedAt", "DESC"]],
-        attributes: { exclude: ['createdBy', 'modifiedBy', 'createdAt', 'updatedAt'] },
+        attributes: ['id', 'customerId', 'scrapUniqueId'],
         offset: offset,
         limit: pageSize
     });
@@ -1173,4 +1177,16 @@ exports.printPurchaseVoucher = async (req, res) => {
             });
         }
     
+}
+
+exports.getScrapStatus = async (req, res) =>{
+
+    let scrapStatus = await models.scrapStage.findAll({ where: { isActive: true },
+        attributes: ['id', 'stageName'] });
+
+    if(!scrapStatus){
+        return res.status(404).json({ message: "Data not found" });
+    }else{
+        return res.status(200).json({ scrapStatus });
+    }
 }

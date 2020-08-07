@@ -228,7 +228,7 @@ module.exports = (sequelize, DataTypes) => {
                 image = process.env.BASE_URL + image;
                 purchaseVoucher.push(image);
             }
-            values.scrapDocument.purchaseVoucher = purchaseVoucher;
+            values.scrapDocument.purchaseVoucherImage = purchaseVoucher;
         }
         if (values.scrapDocument && values.scrapDocument.purchaseInvoice != null) {
             let purchaseInvoice = [];
@@ -236,7 +236,7 @@ module.exports = (sequelize, DataTypes) => {
                 image = process.env.BASE_URL + image;
                 purchaseInvoice.push(image);
             }
-            values.scrapDocument.purchaseInvoice = purchaseInvoice;
+            values.scrapDocument.purchaseInvoiceImage = purchaseInvoice;
         }
         if (values.scrapDocument && values.scrapDocument.saleInvoice != null) {
             let saleInvoice = [];
@@ -244,7 +244,7 @@ module.exports = (sequelize, DataTypes) => {
                 image = process.env.BASE_URL + image;
                 saleInvoice.push(image);
             }
-            values.scrapDocument.saleInvoice = saleInvoice;
+            values.scrapDocument.saleInvoiceImage = saleInvoice;
         }
         if(values.scrapPacketDetails ){
             for(let data of values.scrapPacketDetails){
