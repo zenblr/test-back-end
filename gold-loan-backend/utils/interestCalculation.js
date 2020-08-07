@@ -183,6 +183,7 @@ let calculationData = async () => {
     return { noOfDaysInYear, gracePeriodDays, loanInfo };
 }
 
+//cron for daily interest calculation
 let cronForDailyPenalInterest = async () => {
     let info = await calculationData();
     let data = info.loanInfo
