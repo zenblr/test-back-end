@@ -183,42 +183,6 @@ let calculationData = async () => {
     return { noOfDaysInYear, gracePeriodDays, loanInfo };
 }
 
-//cron for daily interest calculation
-let cronForDailyPenalInterest = async () => {
-    let info = await calculationData();
-    let data = info.loanInfo
-    let { gracePeriodDays, noOfDaysInYear } = info
-    for (let i = 0; i < data.length; i++) {
-        let penal = (data[i].scheme.penalInterest / 100)
-        let dataInfo = await getInterestTableOfSingleLoan(data[i].id)
-        //due date from db
-        let dueDateFromDb = dataInfo[0].emiDueDate
-        const dueDate = moment(dueDateFromDb);
-        //current date
-        let inDate = moment(moment.utc(moment(new Date())).toDate()).format('YYYY-MM-DD');
-        const currentDate = moment(inDate);
-        //diff between current and last emiDueDate date
-        let daysCount = currentDate.diff(dueDateFromDb, 'days');
-        if (currentDate > dueDate) {
-            if (daysCount > gracePeriodDays) {
-                var penelInterest
-                //last penal paid date
-                var lastPenalPaid = moment(data[i].penalInterestLastReceivedDate)
-                if (data[i].penalInterestLastReceivedDate == null) {
-                    penelInterest = Number((((data[i].outstandingAmount * penal) / noOfDaysInYear) * daysCount).toFixed(2))
-                } else {
-                    //diff between current and last penal paid date
-                    daysCount = currentDate.diff(lastPenalPaid, 'days');
-                    penelInterest = Number((((data[i].outstandingAmount * penal) / noOfDaysInYear) * daysCount).toFixed(2))
-                }
-                console.log(penelInterest, data[i].id, daysCount)
-                await models.customerLoanInterest.update({ PenalAccrual: penelInterest }, { where: { id: dataInfo[0].id } })
-            }
-        }
-    }
-}
-
-
 let checkPaidInterest = async (loanId, masterLaonId) => {
     let checkDailyAmount = await models.customerLoanInterest.findOne({
         where: { loanId: loanId, masterLoanId: masterLaonId, emiStatus: 'paid' },
@@ -321,6 +285,12 @@ let getPendingNoOfDaysInterest = async (loanId, date) => {
     return pendingNoOfDaysInterest;
 }
 
+let penal = async (loanId) => {
+    console.log(loanId)
+
+}
+
+//cron for daily interest calculation
 let dailyIntrestCalculation = async (date) => {
     let data = await calculationData();
     let loanInfo = data.loanInfo;
@@ -382,9 +352,40 @@ let dailyIntrestCalculation = async (date) => {
     return "success";
 }
 
-let penal = async (loanId) => {
-    console.log(loanId)
 
+//cron for daily penal interest calculation
+let cronForDailyPenalInterest = async () => {
+    let info = await calculationData();
+    let data = info.loanInfo
+    let { gracePeriodDays, noOfDaysInYear } = info
+    for (let i = 0; i < data.length; i++) {
+        let penal = (data[i].scheme.penalInterest / 100)
+        let dataInfo = await getInterestTableOfSingleLoan(data[i].id)
+        //due date from db
+        let dueDateFromDb = dataInfo[0].emiDueDate
+        const dueDate = moment(dueDateFromDb);
+        //current date
+        let inDate = moment(moment.utc(moment(new Date())).toDate()).format('YYYY-MM-DD');
+        const currentDate = moment(inDate);
+        //diff between current and last emiDueDate date
+        let daysCount = currentDate.diff(dueDateFromDb, 'days');
+        if (currentDate > dueDate) {
+            if (daysCount > gracePeriodDays) {
+                var penelInterest
+                //last penal paid date
+                var lastPenalPaid = moment(data[i].penalInterestLastReceivedDate)
+                if (data[i].penalInterestLastReceivedDate == null) {
+                    penelInterest = Number((((data[i].outstandingAmount * penal) / noOfDaysInYear) * daysCount).toFixed(2))
+                } else {
+                    //diff between current and last penal paid date
+                    daysCount = currentDate.diff(lastPenalPaid, 'days');
+                    penelInterest = Number((((data[i].outstandingAmount * penal) / noOfDaysInYear) * daysCount).toFixed(2))
+                }
+                console.log(penelInterest, data[i].id, daysCount)
+                await models.customerLoanInterest.update({ PenalAccrual: penelInterest }, { where: { id: dataInfo[0].id } })
+            }
+        }
+    }
 }
 
 
