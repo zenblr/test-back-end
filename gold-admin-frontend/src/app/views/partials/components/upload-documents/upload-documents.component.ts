@@ -65,6 +65,7 @@ export class UploadDocumentsComponent implements OnInit {
   buttonName: string;
   buttonValue = 'Next';
   isEdit: boolean;
+  isAcknowlegementEdit = true;
   globalValue: any;
   showCustomerConfirmationFlag: boolean;
 
@@ -132,14 +133,18 @@ export class UploadDocumentsComponent implements OnInit {
           standardDeduction: documents.standardDeduction,
           customerConfirmation: documents.customerConfirmationImage[0],
           customerConfirmationImage: documents.customerConfirmationImage[0],
+          customerConfirmationArr: documents.customerConfirmation,
           customerConfirmationStatus: documents.customerConfirmationStatus
         })
         this.pdfCheck();
         if (changes.acknowledgmentDocuments.currentValue.scrapStatusForAppraiser == 'approved') {
+          this.isAcknowlegementEdit = false
           this.isEdit = false
           this.documentsForm.disable()
-          this.ref.detectChanges()
+        } else {
+          this.isAcknowlegementEdit = true
         }
+        this.ref.detectChanges()
       }
     }
     if (changes.scrapDocuments && changes.scrapDocuments.currentValue) {
@@ -229,6 +234,7 @@ export class UploadDocumentsComponent implements OnInit {
     this.globalSettingService.globalSetting$.subscribe(global => this.globalValue = global);
 
     this.documentsForm.controls['customerConfirmationStatus'].valueChanges.subscribe((val) => {
+      this.isAcknowlegementEdit = false
       if (val == 'confirmed') {
         this.buttonValue = 'Next';
         this.showCustomerConfirmationFlag = true;
@@ -240,7 +246,8 @@ export class UploadDocumentsComponent implements OnInit {
         this.documentsForm.patchValue({
           customerConfirmation: null,
           customerConfirmationImage: null,
-          customerConfirmationImageName: null
+          customerConfirmationImageName: null,
+          customerConfirmationArr: null
         })
         this.documentsForm.controls.customerConfirmation.setValidators([]),
           this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
@@ -272,6 +279,7 @@ export class UploadDocumentsComponent implements OnInit {
       customerConfirmation: [],
       customerConfirmationImage: [],
       customerConfirmationImageName: [],
+      customerConfirmationArr: [],
       customerConfirmationStatus: [],
       //scrap
       purchaseVoucher: [],
@@ -469,6 +477,10 @@ export class UploadDocumentsComponent implements OnInit {
           }
         })).subscribe()
     } else if (this.url == 'scrap-buying-application-form') {
+      console.log(this.documentsForm.value)
+      if (this.controls.customerConfirmationArr.value && this.controls.customerConfirmationArr.value.length) {
+        this.controls['customerConfirmation'].patchValue(this.controls.customerConfirmationArr.value)
+      }
       this.scrapApplicationFormService.acknowledgementSubmit(this.documentsForm.value, this.scrapIds).pipe(
         map(res => {
           if (this.buttonValue == 'Next') {
