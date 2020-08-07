@@ -79,7 +79,7 @@
                         </kt-upload-documents>
                     </mat-tab>
 
-                    <mat-tab label="Loan Status Approval" [disabled]="disabled[7]"
+                    <mat-tab label="Loan Status Approval" [disabled]="false"
                         *ngIf="loanStage?.id == 7 || loanStage?.id == 4 || (url == 'view-loan' && loanStage?.id == 7) || (url == 'view-loan' && loanStage?.id == 4) || (url == 'view-loan' && loanStage?.id == 5)">
                         <kt-approval [action]="action" [disable]="approvalFrom" [details]="customerDetail"
                             [masterAndLoanIds]="masterAndLoanIds" [loanStage]="loanStage"
