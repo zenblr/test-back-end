@@ -35,9 +35,16 @@ exports.customerDetails = async (req, res, next) => {
             model: models.customer,
             as: 'customer'
         }]
-    })
+    });
+
+    let incompleteStageId = await models.scrapStage.findOne({where: {stageName: "incomplete"}});
 
     if (!check.isEmpty(customerScrapStage)) {
+
+        if(customerScrapStage.scrapStageId == incompleteStageId.id){
+            res.status(200).json({ message: 'customer details fetch successfully', customerData }); 
+        }
+
         const firstName = customerScrapStage.customer.firstName
         const lastName = customerScrapStage.customer.lastName
 
@@ -52,8 +59,6 @@ exports.customerDetails = async (req, res, next) => {
         } else if (customerCurrentStage == '5') {
             return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
         } else if (customerCurrentStage == '6') {
-            return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
-        } else if (customerCurrentStage == '7') {
             return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
         }
     }
@@ -95,68 +100,70 @@ exports.scrapBasicDeatils = async (req, res, next) => {
 
 //FUNCTION for submitting nominee details  DONE
 exports.acknowledgementDetails = async (req, res, next) => {
-    let { processingCharges, standardDeduction, customerConfirmationStatus, customerConfirmation, scrapId } = req.body;
-    let createdBy = req.userData.id;
-    let modifiedBy = req.userData.id;
-    if (customerConfirmationStatus == "confirmed") {
-        let checkAcknowledgement = await models.customerAcknowledgement.findOne({ where: { scrapId } });
-
-        if (check.isEmpty(checkAcknowledgement)) {
-            let scrapData = await sequelize.transaction(async t => {
-
-                let scrap = await models.customerScrap.update({ customerScrapCurrentStage: '4', modifiedBy }, { where: { id: scrapId }, transaction: t })
-
-                await models.customerScrapHistory.create({ scrapId, action: CUSTOMER_ACKNOWLEDGEMENT, modifiedBy }, { transaction: t });
-
-                await models.customerAcknowledgement.create({ scrapId, processingCharges, standardDeduction, customerConfirmation, customerConfirmationStatus, createdBy, modifiedBy }, { transaction: t })
-                return scrap
-            })
-            return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '4' })
+        let { processingCharges, standardDeduction, customerConfirmationStatus, customerConfirmation, scrapId } = req.body;
+        let createdBy = req.userData.id;
+        let modifiedBy = req.userData.id;
+        if (customerConfirmationStatus == "confirmed") {
+            let checkAcknowledgement = await models.customerAcknowledgement.findOne({ where: { scrapId } });
+    
+            if (check.isEmpty(checkAcknowledgement)) {
+                let scrapData = await sequelize.transaction(async t => {
+    
+                    let scrap = await models.customerScrap.update({ customerScrapCurrentStage: '4', modifiedBy }, { where: { id: scrapId }, transaction: t })
+    
+                    await models.customerScrapHistory.create({ scrapId, action: CUSTOMER_ACKNOWLEDGEMENT, modifiedBy }, { transaction: t });
+    
+                    await models.customerAcknowledgement.create({ scrapId, processingCharges, standardDeduction, customerConfirmation, customerConfirmationStatus, createdBy, modifiedBy }, { transaction: t })
+                    return scrap
+                })
+                return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '4' })
+            } else {
+                // let scrapSubmitted = await models.customerScrap.findOne({ where: { id: scrapId } })
+                let scrapData = await sequelize.transaction(async t => {
+    
+                    // if (loanSubmitted.isLoanSubmitted == false) {
+                    var scrap = await models.customerScrap.update({ customerScrapCurrentStage: '4', modifiedBy }, { where: { id: scrapId }, transaction: t })
+                    // }
+                    await models.customerScrapHistory.create({ scrapId, action: CUSTOMER_ACKNOWLEDGEMENT, modifiedBy }, { transaction: t });
+    
+                    await models.customerAcknowledgement.update({ scrapId, processingCharges, standardDeduction, customerConfirmation, customerConfirmationStatus, modifiedBy }, { where: { scrapId: scrapId }, transaction: t })
+                    return scrap
+                })
+                return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '4' })
+    
+            }
         } else {
-            // let scrapSubmitted = await models.customerScrap.findOne({ where: { id: scrapId } })
-            let scrapData = await sequelize.transaction(async t => {
-
-                // if (loanSubmitted.isLoanSubmitted == false) {
-                var scrap = await models.customerScrap.update({ customerScrapCurrentStage: '4', modifiedBy }, { where: { id: scrapId }, transaction: t })
-                // }
-                await models.customerScrapHistory.create({ scrapId, action: CUSTOMER_ACKNOWLEDGEMENT, modifiedBy }, { transaction: t });
-
-                await models.customerAcknowledgement.update({ scrapId, processingCharges, standardDeduction, customerConfirmation, customerConfirmationStatus, modifiedBy }, { where: { scrapId: scrapId }, transaction: t })
-                return scrap
-            })
-            return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '4' })
-
+            let checkAcknowledgement = await models.customerAcknowledgement.findOne({ where: { scrapId } });
+            let incompleteStageId = await models.scrapStage.findOne({where: {stageName: "incomplete"}});
+    
+            if (check.isEmpty(checkAcknowledgement)) {
+                let scrapData = await sequelize.transaction(async t => {
+    
+                    let scrap = await models.customerScrap.update({ customerScrapCurrentStage: '3',scrapStageId: incompleteStageId.id, modifiedBy }, { where: { id: scrapId }, transaction: t })
+    
+                    await models.customerScrapHistory.create({ scrapId, action: CUSTOMER_ACKNOWLEDGEMENT, modifiedBy }, { transaction: t });
+    
+                    await models.customerAcknowledgement.create({ scrapId, processingCharges, standardDeduction, customerConfirmationStatus,customerConfirmation, createdBy, modifiedBy }, { transaction: t });
+                    return scrap
+                })
+                return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '3' })
+            } else {
+                // let scrapSubmitted = await models.customerScrap.findOne({ where: { id: scrapId } })
+                let scrapData = await sequelize.transaction(async t => {
+    
+                    // if (loanSubmitted.isLoanSubmitted == false) {
+                    var scrap = await models.customerScrap.update({ customerScrapCurrentStage: '3',scrapStageId: incompleteStageId.id, modifiedBy }, { where: { id: scrapId }, transaction: t })
+                    // }
+                    await models.customerScrapHistory.create({ scrapId, action: CUSTOMER_ACKNOWLEDGEMENT, modifiedBy }, { transaction: t });
+    
+                    await models.customerAcknowledgement.update({ scrapId, processingCharges, standardDeduction, customerConfirmationStatus,customerConfirmation, modifiedBy }, { where: { scrapId: scrapId }, transaction: t });
+                    return scrap
+                })
+                return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '3' })
+    
+            }
         }
-    } else {
-        let checkAcknowledgement = await models.customerAcknowledgement.findOne({ where: { scrapId } });
-
-        if (check.isEmpty(checkAcknowledgement)) {
-            let scrapData = await sequelize.transaction(async t => {
-
-                let scrap = await models.customerScrap.update({ customerScrapCurrentStage: '4', modifiedBy }, { where: { id: scrapId }, transaction: t })
-
-                await models.customerScrapHistory.create({ scrapId, action: CUSTOMER_ACKNOWLEDGEMENT, modifiedBy }, { transaction: t });
-
-                await models.customerAcknowledgement.create({ scrapId, processingCharges, standardDeduction, customerConfirmationStatus, createdBy, modifiedBy }, { transaction: t })
-                return scrap
-            })
-            return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '4' })
-        } else {
-            // let scrapSubmitted = await models.customerScrap.findOne({ where: { id: scrapId } })
-            let scrapData = await sequelize.transaction(async t => {
-
-                // if (loanSubmitted.isLoanSubmitted == false) {
-                var scrap = await models.customerScrap.update({ customerScrapCurrentStage: '4', modifiedBy }, { where: { id: scrapId }, transaction: t })
-                // }
-                await models.customerScrapHistory.create({ scrapId, action: CUSTOMER_ACKNOWLEDGEMENT, modifiedBy }, { transaction: t });
-
-                await models.customerAcknowledgement.update({ scrapId, processingCharges, standardDeduction, customerConfirmationStatus, modifiedBy }, { where: { scrapId: scrapId }, transaction: t })
-                return scrap
-            })
-            return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '4' })
-
-        }
-    }
+    
 }
 
 //FUNCTION for scrap bank details DONE
@@ -1108,4 +1115,62 @@ exports.printCustomerAcknowledgement = async (req, res) => {
         });
     }
 
+}
+
+exports.printPurchaseVoucher = async (req, res) => {
+        let { scrapId } = req.query;
+        let customerScrap = await models.customerScrap.findOne({
+            where: { id: scrapId },
+            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        });
+    
+        var html = fs.readFileSync("./templates/scrap-purchase-voucher.html", 'utf8');
+    
+        var options = {
+            format: "A4",
+            orientation: "portrait",
+            border: "1mm",
+            "header": {
+                "height": "2mm",
+    
+            },
+            "footer": {
+                "height": "2mm",
+            },
+            "height": "11.69in",
+            "width": "8.27in"
+        }
+        let purchaseVoucher = await [{
+            scrapUniqueId: customerScrap.scrapUniqueId,
+    
+        }]
+        let emiData = [];
+    
+        let fileName = await `purchaseVoucher${Date.now()}`;
+        document = await {
+            html: html,
+            data: {
+                bootstrapCss: `${process.env.URL}/bootstrap.css`,
+                jqueryJs: `${process.env.URL}/jquery-slim.min.js`,
+                popperJs: `${process.env.URL}/popper.min.js`,
+                bootstrapJs: `${process.env.URL}/bootstrap.js`,
+                purchaseVoucher: purchaseVoucher,
+            },
+            path: `./public/uploads/pdf/${fileName}.pdf`,
+            timeout: '60000'
+        };
+        let createPdf = await pdf.create(document, options);
+        if (createPdf) {
+            fs.readFile(`./public/uploads/pdf/${fileName}.pdf`, function (err, data) {
+                let stat = fs.statSync(`./public/uploads/pdf/${fileName}.pdf`);
+                res.setHeader('Content-Length', stat.size);
+                res.setHeader('Content-Type', 'application/pdf');
+                res.setHeader('Content-Disposition', `attachment; filename=${fileName}.pdf`);
+                res.send(data);
+                if (fs.existsSync(`./public/uploads/pdf/${fileName}.pdf`)) {
+                    fs.unlinkSync(`./public/uploads/pdf/${fileName}.pdf`);
+                }
+            });
+        }
+    
 }

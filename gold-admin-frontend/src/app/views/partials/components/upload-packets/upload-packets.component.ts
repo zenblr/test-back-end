@@ -122,6 +122,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
           this.pushPackets()
         });
         this.url = 'view-scrap'
+        this.buttonName = 'next'
       }
     }
 
@@ -323,7 +324,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
   save() {
 
-    if (this.url == 'view-loan') {
+    if (this.url == 'view-loan' || this.url == 'view-scrap') {
       this.next.emit(6)
       return
     }

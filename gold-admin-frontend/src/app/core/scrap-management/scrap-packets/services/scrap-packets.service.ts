@@ -89,7 +89,7 @@ export class ScrapPacketsService {
   }
 
   uplaodCSV(data): Observable<any> {
-    return this.http.post('api/upload-packets-file', data).pipe(
+    return this.http.post('api/scrap/upload-packets-file', data).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
