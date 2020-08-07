@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         interestAmount: {
             type: DataTypes.FLOAT,
             field: 'interest_amount',
+            defaultValue: 0
         },
         createdBy: {
             type: DataTypes.INTEGER,
