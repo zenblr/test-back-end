@@ -305,7 +305,7 @@ export class InterestCalculatorComponent implements OnInit {
 
       //rbi guidelines check
       let rbiLoanPercent = (this.globalValue.ltvGoldValue / 100)
-      if (amt > this.fullAmount * rbiLoanPercent) {
+      if (amt > Math.round(this.fullAmount * rbiLoanPercent)) {
         this.controls.finalLoanAmount.setErrors({ rbi: true })
         return
       } else {

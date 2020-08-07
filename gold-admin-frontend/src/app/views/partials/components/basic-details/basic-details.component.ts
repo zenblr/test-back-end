@@ -159,6 +159,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.ref.detectChanges()
     }
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
+      this.basicForm.controls.purpose.disable()
       this.controls.customerId.patchValue(changes.loanTransfer.currentValue.customer.id)
       this.basicForm.patchValue(changes.loanTransfer.currentValue.loanPersonalDetail)
       this.currentDate = new Date(changes.loanTransfer.currentValue.loanPersonalDetail.startDate)

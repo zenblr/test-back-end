@@ -43,6 +43,18 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'unsecured_loan_id'
         },
+        currentSlab: {
+            type: DataTypes.STRING,
+            field: 'current_slab'
+        },
+        currentInterestRate: {
+            type: DataTypes.STRING,
+            field: 'current_interest_rate'
+        },
+        penalInterestLastReceivedDate:{
+            type: DataTypes.DATE,
+            field: 'penal_interest_last_received_date'
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
