@@ -10,7 +10,7 @@ const moment = require("moment");
 
 // add internal branch
 
-exports.calculation = async (req, res) => {
+exports.interestCalculation = async (req, res) => {
     let data;
     let { date } = req.body;
     if(date){
