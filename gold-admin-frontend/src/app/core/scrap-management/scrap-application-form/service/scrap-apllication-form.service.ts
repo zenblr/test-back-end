@@ -134,8 +134,26 @@ export class ScrapApplicationFormService {
     )
   }
 
-  getPdf(id): Observable<any> {
+  getCustomerAcknowledgementPdf(id): Observable<any> {
     return this.http.get(`/api/scrap/scrap-process/get-customer-acknowledgement?scrapId=${id}`,
+      { responseType: "arraybuffer" }
+    ).pipe(
+      tap(res => {
+        if (res) {
+          var binary = '';
+          var bytes = new Uint8Array(res);
+          var len = bytes.byteLength;
+          for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+          }
+          let base64 = (window.btoa(binary));
+          printJS({ printable: base64, type: 'pdf', base64: true })
+        }
+      }))
+  }
+
+  getPurchaseVoucherPdf(id): Observable<any> {
+    return this.http.get(`/api/scrap/scrap-process/get-purchase-voucher?scrapId=${id}`,
       { responseType: "arraybuffer" }
     ).pipe(
       tap(res => {
