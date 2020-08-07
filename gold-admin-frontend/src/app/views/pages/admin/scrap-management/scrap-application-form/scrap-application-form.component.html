@@ -34,7 +34,8 @@
                                 [meltingDetails]="customerDetail" (finalScrapAmount)="finalScrapAmount($event)"
                                 [scrapIds]="scrapIds" [ornamentType]="ornamentType" [karatArr]="karatArr"
                                 [customerConfirmationArr]="customerConfirmationArr" [showButton]="showButton"
-                                [meltingOrnament]="true" [processingCharges]="processingCharges" [karatFlag]="true">
+                                [meltingOrnament]="true" [processingCharges]="processingCharges" [karatFlag]="true"
+                                (accountHolderName)="accountHolder($event)">
                             </kt-ornaments>
                         </div>
                     </mat-tab>

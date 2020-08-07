@@ -337,9 +337,9 @@ export class PageConfig {
 						page: { title: "PACKET IMAGE UPLOAD", desc: "" },
 					},
 				},
-				'view-Scrap': {
+				'view-scrap': {
 					id: {
-						page: { title: "View Scrap Application Form", desc: "" },
+						page: { title: "View Scrap Buying Application Form", desc: "" },
 					}
 				},
 				'packets': {
