@@ -676,6 +676,12 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.listType = "approval";
 		}
+		if (this.path == 'new-requests') {
+			this.showInput = true;
+		}
+		if (this.path == 'my-requests') {
+			this.showInput = true;
+		}
 	}
 
 	action(event: Event) {
