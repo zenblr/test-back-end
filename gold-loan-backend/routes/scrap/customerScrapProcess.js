@@ -2,7 +2,7 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
-const { customerDetails, scrapBasicDeatils, acknowledgementDetails, scrapBankDetails, scrapOrnmanetDetails, scrapAppraiserRating, scrapBmRating, scrapOpsTeamRating, singleScrapDetails, scrapDocuments, addPackageImagesForScrap, scrapOrnmanetMeltingDetails, disbursementOfScrapBankDetails, disbursementOfScrapAmount, appliedScrapDetails, getScrapDetails, getSingleScrapInCustomerManagment, quickPay, printCustomerAcknowledgement } =
+const { customerDetails, scrapBasicDeatils, acknowledgementDetails, scrapBankDetails, scrapOrnmanetDetails, scrapAppraiserRating, scrapBmRating, scrapOpsTeamRating, singleScrapDetails, scrapDocuments, addPackageImagesForScrap, scrapOrnmanetMeltingDetails, disbursementOfScrapBankDetails, disbursementOfScrapAmount, appliedScrapDetails, getScrapDetails, getSingleScrapInCustomerManagment, quickPay, printCustomerAcknowledgement, printPurchaseVoucher } =
   require('../../controllers/scrap/customerScrapProcess/customerScrapProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
 const checkRolePermission = require('../../middleware/checkRolesPermissions');
 
@@ -46,5 +46,7 @@ route.get('/single-scrap-customer', checkAuth, wrapper(getSingleScrapInCustomerM
 route.post('/quick-pay', checkAuth, wrapper(quickPay)); // DISBURSEMENT OF SCRAP AMOUNT
 
 route.get('/get-customer-acknowledgement', checkAuth, wrapper(printCustomerAcknowledgement)); //Print details
+
+route.get('/get-purchase-voucher', checkAuth, wrapper(printPurchaseVoucher)); //Print details
 
 module.exports = route; // EXPORTING ALL ROUTES
