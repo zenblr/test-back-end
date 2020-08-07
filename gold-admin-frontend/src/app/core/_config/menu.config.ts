@@ -809,6 +809,13 @@ export class MenuConfig {
 							permission: false
 						},
 						{
+							title: "Scrap Buying List",
+							root: true,
+							src: "assets/media/aside-icons/icons-01.svg",
+							page: "/admin/scrap-management/scrap-buying",
+							permission: false
+						},
+						{
 							title: "Settings",
 							root: true,
 							bullet: 'dot',

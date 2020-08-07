@@ -21,6 +21,7 @@ import { AppliedScrapComponent } from './applied-scrap/applied-scrap.component';
 import { GlobalSettingsComponent } from './global-settings/global-settings.component';
 import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dialog.component';
 import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
+import { BuyingListComponent } from './buying-list/buying-list.component';
 
 const routes: Routes = [
   {
@@ -61,6 +62,10 @@ const routes: Routes = [
         component: AppliedScrapComponent
       },
       {
+        path: 'scrap-buying',
+        component: BuyingListComponent
+      },
+      {
         path: 'global-settings',
         component: GlobalSettingsComponent
       },
@@ -79,6 +84,7 @@ const routes: Routes = [
     AssignAppraiserPacketsComponent,
     AppliedScrapComponent,
     GlobalSettingsComponent,
+    BuyingListComponent,
   ],
   imports: [
     CommonModule,
