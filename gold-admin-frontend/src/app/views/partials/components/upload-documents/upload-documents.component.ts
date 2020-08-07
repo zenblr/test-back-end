@@ -24,6 +24,7 @@ import printJS from 'print-js';
 export class UploadDocumentsComponent implements OnInit {
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() stage: EventEmitter<any> = new EventEmitter();
+  @Output() processingChrgs: EventEmitter<any> = new EventEmitter();
   @Input() loanDocumnets
   @Input() scrapDocuments
   @Input() acknowledgmentDocuments;
@@ -88,7 +89,7 @@ export class UploadDocumentsComponent implements OnInit {
     // } else {
     //   this.show = false
     // }
-    if (this.url == "view-loan") {
+    if (this.url == "view-loan" || this.url == "view-scrap") {
       this.isEdit = false
     } else {
       this.isEdit = true
@@ -125,12 +126,12 @@ export class UploadDocumentsComponent implements OnInit {
     }
     if (changes.acknowledgmentDocuments && changes.acknowledgmentDocuments.currentValue) {
       let documents = changes.acknowledgmentDocuments.currentValue.customerScrapAcknowledgement
-      if (documents && documents.customerConfirmation.length) {
+      if (documents) {
         this.documentsForm.patchValue({
           processingCharges: documents.processingCharges,
           standardDeduction: documents.standardDeduction,
-          customerConfirmation: documents.customerConfirmation,
-          customerConfirmationImage: documents.customerConfirmation[0],
+          customerConfirmation: documents.customerConfirmationImage[0],
+          customerConfirmationImage: documents.customerConfirmationImage[0],
           customerConfirmationStatus: documents.customerConfirmationStatus
         })
         this.pdfCheck();
@@ -143,27 +144,28 @@ export class UploadDocumentsComponent implements OnInit {
     }
     if (changes.scrapDocuments && changes.scrapDocuments.currentValue) {
       let documents = changes.scrapDocuments.currentValue.scrapDocument
-      if (documents) {
+      if (documents && documents.purchaseVoucherImage.length) {
         if (documents.purchaseVoucher) {
           this.documentsForm.patchValue({
-            purchaseVoucher: documents.purchaseVoucher[0],
-            purchaseVoucherImage: documents.purchaseVoucher[0],
+            purchaseVoucher: documents.purchaseVoucherImage[0],
+            purchaseVoucherImage: documents.purchaseVoucherImage[0],
           })
         }
         if (documents.purchaseInvoice) {
           this.documentsForm.patchValue({
-            purchaseInvoice: documents.purchaseInvoice[0],
-            purchaseInvoiceImage: documents.purchaseInvoice[0],
+            purchaseInvoice: documents.purchaseInvoiceImage[0],
+            purchaseInvoiceImage: documents.purchaseInvoiceImage[0],
           })
         }
         if (documents.saleInvoice) {
           this.documentsForm.patchValue({
-            saleInvoice: documents.saleInvoice[0],
-            saleInvoiceImage: documents.saleInvoice[0],
+            saleInvoice: documents.saleInvoiceImage[0],
+            saleInvoiceImage: documents.saleInvoiceImage[0],
           })
         }
         this.pdfCheck();
         this.isEdit = false
+        this.ref.detectChanges();
       }
     }
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
@@ -474,6 +476,7 @@ export class UploadDocumentsComponent implements OnInit {
               let stage = Number(res.scrapCurrentStage) - 1
               this.stage.emit(res.scrapCurrentStage)
               this.next.emit(stage)
+              this.processingChrgs.emit(res.processingCharges)
             }
           } else {
             this.router.navigate(['/admin/scrap-management/applied-scrap'])
