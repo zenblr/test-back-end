@@ -125,12 +125,12 @@
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="row" *ngIf="!details?.masterLoan?.applicationFormForAppraiser">
+                        <div class="row">
                             <div class="col-4 form-label">
                                 <label class="mandatory kt-padding-l-10">Upload Passbook / Bank Statement / Cancel
                                     Cheque</label>
                             </div>
-                            <div class="col-6 mb-3">
+                            <div class="col-6 mb-3" *ngIf="!details?.masterLoan?.applicationFormForAppraiser">
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Select File"
                                         aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
@@ -142,10 +142,10 @@
                                     </div>
                                     <input type="file" class="d-none" accept="image/png, image/jpeg" #passbook
                                         (input)="getFileInfo($event)">
-                                    </div>
-                                        <mat-error *ngIf="controls.passbookProof.touched && controls.passbookProof.invalid">
-                                            Required field
-                                        </mat-error>
+                                </div>
+                                <mat-error *ngIf="controls.passbookProof.touched && controls.passbookProof.invalid">
+                                    Required field
+                                </mat-error>
                             </div>
                         </div>
                         <div class="row kt-margin-b-20">
