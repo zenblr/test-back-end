@@ -144,14 +144,24 @@ export class UploadDocumentsComponent implements OnInit {
     if (changes.scrapDocuments && changes.scrapDocuments.currentValue) {
       let documents = changes.scrapDocuments.currentValue.scrapDocument
       if (documents) {
-        this.documentsForm.patchValue({
-          purchaseVoucher: documents.purchaseVoucher[0],
-          purchaseVoucherImage: documents.purchaseVoucher[0],
-          purchaseInvoice: documents.purchaseInvoice[0],
-          purchaseInvoiceImage: documents.purchaseInvoice[0],
-          saleInvoice: documents.saleInvoice[0],
-          saleInvoiceImage: documents.saleInvoice[0],
-        })
+        if (documents.purchaseVoucher) {
+          this.documentsForm.patchValue({
+            purchaseVoucher: documents.purchaseVoucher[0],
+            purchaseVoucherImage: documents.purchaseVoucher[0],
+          })
+        }
+        if (documents.purchaseInvoice) {
+          this.documentsForm.patchValue({
+            purchaseInvoice: documents.purchaseInvoice[0],
+            purchaseInvoiceImage: documents.purchaseInvoice[0],
+          })
+        }
+        if (documents.saleInvoice) {
+          this.documentsForm.patchValue({
+            saleInvoice: documents.saleInvoice[0],
+            saleInvoiceImage: documents.saleInvoice[0],
+          })
+        }
         this.pdfCheck();
         this.isEdit = false
       }
@@ -226,9 +236,9 @@ export class UploadDocumentsComponent implements OnInit {
         this.buttonValue = 'Save';
         this.showCustomerConfirmationFlag = false;
         this.documentsForm.patchValue({
-          customerConfirmation: [],
-          customerConfirmationImage: [],
-          customerConfirmationImageName: []
+          customerConfirmation: null,
+          customerConfirmationImage: null,
+          customerConfirmationImageName: null
         })
         this.documentsForm.controls.customerConfirmation.setValidators([]),
           this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
@@ -413,14 +423,6 @@ export class UploadDocumentsComponent implements OnInit {
 
   editImages(value) {
     this[value].nativeElement.click()
-  }
-
-  removeImages(value) {
-    console.log(value)
-    this.controls.customerConfirmation.patchValue('')
-    this.controls.customerConfirmationImageName.patchValue('')
-    this.controls.customerConfirmationImage.patchValue('')
-    this.ref.detectChanges();
   }
 
   ExportAsPdf() {
