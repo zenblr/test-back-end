@@ -672,9 +672,9 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "applied-scrap") {
 			this.showfilter = true;
 			this.filterWidth = "600px"
-			this.filterName = "loan"
+			this.filterName = "appliedScrap"
 			this.showInput = true;
-			this.listType = "approval";
+			this.listType = "approval,scrapStatus";
 		}
 	}
 

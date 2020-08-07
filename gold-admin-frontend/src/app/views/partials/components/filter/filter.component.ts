@@ -61,6 +61,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	cities = [];
 	approvalStatus: any = [];
 	permissions: any;
+	scrapStatusList: any;
 
 	constructor(
 		private fb: FormBuilder,
@@ -143,6 +144,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 							break;
 						case 'leadStatus':
 							this.getLeadStatus();
+						case 'scrapStatus':
+							this.scrapStatus();
 					}
 				}
 			}
@@ -170,7 +173,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			cceStatus: [''],
 			packets: [''],
 			scheme: [''],
-			leadStatus: ['']
+			leadStatus: [''],
+			scrapStatus: [''],
 		});
 
 		this.filterForm.valueChanges.subscribe((val) => {
@@ -250,6 +254,10 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			if (controls['leadStatus'].value && (controls['leadStatus'].value.multiSelect && controls['leadStatus'].value.multiSelect.length)) {
 				this.filterObject.data.leadStatus = controls['leadStatus'].value.multiSelect.map(e => e.id).toString();
 				this.filterObject.list.leadStatus = controls['leadStatus'].value.multiSelect;
+			}
+			if (controls['scrapStatus'].value && (controls['scrapStatus'].value.multiSelect && controls['scrapStatus'].value.multiSelect.length)) {
+				this.filterObject.data.scrapStatus = controls['scrapStatus'].value.multiSelect.map(e => e.id).toString();
+				this.filterObject.list.scrapStatus = controls['scrapStatus'].value.multiSelect;
 			}
 			if (controls['cceStatus'].value && (controls['cceStatus'].value.multiSelect && controls['cceStatus'].value.multiSelect.length)) {
 				this.filterObject.data.cceStatus = controls['cceStatus'].value.multiSelect.map(e => e.value).toString();
@@ -340,6 +348,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'leadStatus':
 				this.controls['leadStatus'].value.multiSelect.splice(index, 1);
 				break;
+			case 'scrapStatus':
+				this.controls['scrapStatus'].value.multiSelect.splice(index, 1);
+				break;
 			default:
 				break;
 		}
@@ -355,6 +366,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			kycStatus: this.filterForm.controls['kycStatus'].value,
 			cceStatus: this.filterForm.controls['cceStatus'].value,
 			leadStatus: this.filterForm.controls['leadStatus'].value,
+			scrapStatus: this.filterForm.controls['scrapStatus'].value,
+
 		});
 		setTimeout(() => {
 			this.applyFilter();
@@ -399,6 +412,12 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	status() {
 		this.sharedService.getStatus().subscribe((res) => {
 			this.approvalStatus = res;
+		});
+	}
+
+	scrapStatus() {
+		this.sharedService.getScrapStatus().subscribe((res) => {
+			this.scrapStatusList = res.scrapStatus;
 		});
 	}
 
