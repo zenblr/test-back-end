@@ -6,7 +6,7 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 const check = require("../../lib/checkLib");
 const action = require('../../utils/partReleaseHistory');
 const loanFunction = require('../../utils/loanFunction');
-const { getCustomerLoanId,interestAmountCalculation,getGlobalSetting,getLoanDetails } = require('../../utils/interestCalculation');
+const { getCustomerLoanId, interestAmountCalculation, getGlobalSetting, getLoanDetails } = require('../../utils/interestCalculation');
 
 
 exports.ornamentsDetails = async (req, res, next) => {
@@ -144,7 +144,7 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
     return ornamentsWeightInfo;
 }
 
-async function getornamentLoanInfo(masterLoanId, ornamentWeight,amount) {
+async function getornamentLoanInfo(masterLoanId, ornamentWeight, amount) {
     let loanData = await models.customerLoan.findAll({ where: { masterLoanId }, attributes: ['loanUniqueId'] });
     let loanAmountData = await models.customerLoanMaster.findOne({ where: { id: masterLoanId }, attributes: ['finalLoanAmount'] });
     let loanDetails = {
@@ -156,7 +156,7 @@ async function getornamentLoanInfo(masterLoanId, ornamentWeight,amount) {
     }
     loanDetails.interestAmount = amount.secured.interest;
     loanDetails.penalInterest = amount.secured.penalInterest;
-    if(amount.unSecured){
+    if (amount.unSecured) {
         loanDetails.interestAmount = loanDetails.interestAmount + amount.unSecured.interest;
         loanDetails.penalInterest = loanDetails.penalInterest + amount.unSecured.penalInterest;
     }
@@ -168,21 +168,21 @@ async function getornamentLoanInfo(masterLoanId, ornamentWeight,amount) {
 
 exports.ornamentsAmountDetails = async (req, res, next) => {
     let { masterLoanId, ornamentId } = req.body;
-    let amount ={};
+    let amount = {};
     let whereSelectedOrmenemts = { id: { [Op.in]: ornamentId }, isActive: true };
     let whereOtherOrmenemts = { id: { [Op.notIn]: ornamentId }, isActive: true };
     let loanData = await getLoanDetails(masterLoanId);
-    let customerLoanId =  await getCustomerLoanId(masterLoanId);
+    let customerLoanId = await getCustomerLoanId(masterLoanId);
     let requestedOrnaments = await ornementsDetails(masterLoanId, whereSelectedOrmenemts);
     let otherOrnaments = await ornementsDetails(masterLoanId, whereOtherOrmenemts);
     let ornamentWeight = await getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanData);
-    if(customerLoanId.secured){
-        amount.secured = await interestAmountCalculation(masterLoanId,customerLoanId.secured);
+    if (customerLoanId.secured) {
+        amount.secured = await interestAmountCalculation(masterLoanId, customerLoanId.secured);
     }
-    if(customerLoanId.unsecured){
-        amount.unSecured = await interestAmountCalculation(masterLoanId,customerLoanId.unsecured);
+    if (customerLoanId.unsecured) {
+        amount.unSecured = await interestAmountCalculation(masterLoanId, customerLoanId.unsecured);
     }
-    let loanInfo = await getornamentLoanInfo(masterLoanId, ornamentWeight,amount);
+    let loanInfo = await getornamentLoanInfo(masterLoanId, ornamentWeight, amount);
     return res.status(200).json({ message: 'success', ornamentWeight, loanInfo });
 }
 
@@ -235,13 +235,41 @@ exports.getPartReleaseList = async (req, res, next) => {
         req.query.from,
         req.query.to
     );
+    let query = {};
     const searchQuery = {
+        [Op.and]: [query, {
+            [Op.or]: {
+                release_gross_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("release_gross_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                amount_status: sequelize.where(
+                    sequelize.cast(sequelize.col("amount_status"), "varchar"), { [Op.iLike]: search + "%" }),
+                release_deduction_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("release_deduction_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                release_net_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("release_net_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                release_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("release_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                payable_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("payable_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                interest_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("interest_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                penal_interest: sequelize.where(
+                    sequelize.cast(sequelize.col("penal_interest"), "varchar"), { [Op.iLike]: search + "%" }),
+                remaining_net_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("remaining_net_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                "$masterLoan.loanPersonalDetail.customer_unique_id$": { [Op.iLike]: search + "%" },
+                "$masterLoan.outstanding_amount$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.outstanding_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                "$masterLoan.tenure$":sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"),{ [Op.iLike]:search + "%" }),
+                "$masterLoan.final_loan_amount$": { [Op.iLike]:search + "%" },
+                "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" }
+            },
+        }],
         isActive: true
     }
     let includeArray = [{
         model: models.customerLoanMaster,
         as: 'masterLoan',
-        attributes: ['customerId','outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
+        attributes: ['customerId', 'outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
         include: [
             {
                 model: models.customer,
@@ -284,11 +312,13 @@ exports.getPartReleaseList = async (req, res, next) => {
         order: [["updatedAt", "DESC"]],
         offset: offset,
         limit: pageSize,
+        subQuery: false,
         include: includeArray
     })
 
     let count = await models.partRelease.findAll({
         where: searchQuery,
+        subQuery: false,
         include: includeArray
     })
 
@@ -356,7 +386,35 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         req.query.to
     );
     let userId = req.userData.id;
+    let query = {};
     const searchQuery = {
+        [Op.and]: [query, {
+            [Op.or]: {
+                release_gross_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("release_gross_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                amount_status: sequelize.where(
+                    sequelize.cast(sequelize.col("amount_status"), "varchar"), { [Op.iLike]: search + "%" }),
+                release_deduction_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("release_deduction_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                release_net_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("release_net_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                release_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("release_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                payable_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("payable_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                interest_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("interest_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                penal_interest: sequelize.where(
+                    sequelize.cast(sequelize.col("penal_interest"), "varchar"), { [Op.iLike]: search + "%" }),
+                remaining_net_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("remaining_net_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                "$masterLoan.loanPersonalDetail.customer_unique_id$": { [Op.iLike]: search + "%" },
+                "$masterLoan.outstanding_amount$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.outstanding_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                "$masterLoan.tenure$":sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"),{ [Op.iLike]:search + "%" }),
+                "$masterLoan.final_loan_amount$": { [Op.iLike]:search + "%" },
+                "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" }
+            },
+        }],
         isActive: true,
         amountStatus: "completed"
     }
@@ -368,7 +426,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         model: models.customerLoanMaster,
         as: 'masterLoan',
         subQuery: false,
-        attributes: ['id','outstandingAmount', 'customerId', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
+        attributes: ['id', 'outstandingAmount', 'customerId', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
         include: [
             {
                 model: models.customer,
@@ -391,7 +449,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
     }, {
         model: models.partReleaseAppraiser,
         as: 'appraiserData',
-        where:appriserSearch,
+        where: appriserSearch,
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         include: [
             {
@@ -405,10 +463,10 @@ exports.partReleaseApprovedList = async (req, res, next) => {
                 attributes: ['firstName', 'lastName', 'mobileNumber']
             }
         ]
-    },{
-            model: models.customerLoanMaster,
-            as: 'newLoan',
-            attributes: ['loanStatusForAppraiser'],
+    }, {
+        model: models.customerLoanMaster,
+        as: 'newLoan',
+        attributes: ['loanStatusForAppraiser'],
     }]
     let partRelease = await models.partRelease.findAll({
         where: searchQuery,
@@ -422,6 +480,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
 
     let count = await models.partRelease.findAll({
         where: searchQuery,
+        subQuery: false,
         include: includeArray
     })
 
@@ -566,20 +625,20 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
         let customerCurrentStage = customerLoanStage.customerLoanCurrentStage
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanStage.id, loanType: 'secured' } })
         if (customerCurrentStage == '2') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage,partReleaseId })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId })
         } else if (customerCurrentStage == '3') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage,partReleaseId })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId })
         } else if (customerCurrentStage == '4') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt,partReleaseId })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt, partReleaseId })
         } else if (customerCurrentStage == '5') {
             return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount, firstName, lastName, partReleaseId })
         } else if (customerCurrentStage == '6') {
-            return res.status(200).json({ message: 'success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage,partReleaseId })
+            return res.status(200).json({ message: 'success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage, partReleaseId })
         }
     }
     if (!customerData) {
         res.status(404).json({ message: 'no customer details found' });
     } else {
-        res.status(200).json({ message: 'customer details fetch successfully', customerData,partReleaseId });
+        res.status(200).json({ message: 'customer details fetch successfully', customerData, partReleaseId });
     }
 }
