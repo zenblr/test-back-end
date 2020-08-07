@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { RolesService } from '../../../../../core/user-management/roles';
 import { catchError, map } from 'rxjs/operators';
-import { LeadService } from '../../../../../core/lead-management/services/lead.service';
+import { NewRequestService } from '../../../../../core/lead-management/services/new-request.service';
 
 @Component({
   selector: 'kt-new-request-add',
@@ -21,8 +21,8 @@ export class NewRequestAddComponent implements OnInit {
     private fb: FormBuilder,
     private toastr: ToastrService,
     private roleService: RolesService,
-    private leadService: LeadService,
     public dialogRef: MatDialogRef<NewRequestAddComponent>,
+    private newRequestService: NewRequestService,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) { }
 
@@ -44,12 +44,16 @@ export class NewRequestAddComponent implements OnInit {
 
   initForm() {
     this.requestForm = this.fb.group({
+      id: [],
       customerId: [],
       customerName: [],
       customerUniqueId: [],
       mobileNumber: [],
       moduleId: ['', [Validators.required]]
     })
+    this.requestForm.controls.customerName.disable()
+    this.requestForm.controls.customerUniqueId.disable()
+    this.requestForm.controls.mobileNumber.disable()
   }
 
   setForm() {
@@ -93,17 +97,17 @@ export class NewRequestAddComponent implements OnInit {
     if (this.requestForm.invalid) return this.requestForm.markAllAsTouched()
 
     if (this.data.action == 'add') {
-      this.leadService.newRequestAdd(this.requestForm.value).pipe(map(res => {
+      this.newRequestService.newRequestAdd(this.requestForm.value).pipe(map(res => {
         if (res) {
           this.toastr.success(res.message)
-          this.dialogRef.close()
+          this.dialogRef.close(true)
         }
       })).subscribe()
     } else {
-      this.leadService.newRequestUpdate(this.requestForm.value).pipe(map(res => {
+      this.newRequestService.newRequestUpdate(this.requestForm.value).pipe(map(res => {
         if (res) {
           this.toastr.success(res.message)
-          this.dialogRef.close()
+          this.dialogRef.close(true)
         }
       })).subscribe()
     }

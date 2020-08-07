@@ -1,9 +1,8 @@
 <kt-portlet>
     <kt-modal-header [title]='title' (action)="action($event)"></kt-modal-header>
-
     <kt-portlet-body>
         <div class="kt-form">
-            <form [formGroup]="requestForm">
+            <form [formGroup]="appraiserForm">
                 <div class="kt-portlet__body">
 
                     <div class="row kt-margin-b-15">
@@ -47,13 +46,13 @@
                         <div class="col-12">
                             <div class="row">
                                 <div class="col-4 form-label">
-                                    <label class="mandatory">Mobile Number</label>
+                                    <label class="mandatory">Product</label>
                                 </div>
                                 <div class="col-8">
-                                    <input class="form-control" formControlName="mobileNumber"
-                                        [class.isError]="controls.mobileNumber.touched && controls.mobileNumber.invalid">
-                                    <mat-error
-                                        *ngIf="controls.mobileNumber.touched && controls.mobileNumber.errors?.required">
+                                    <input style="text-transform: capitalize" class="form-control"
+                                        formControlName="module"
+                                        [class.isError]="controls.module.touched && controls.module.invalid">
+                                    <mat-error *ngIf="controls.module.touched && controls.module.errors?.required">
                                         Required field
                                     </mat-error>
                                 </div>
@@ -65,17 +64,19 @@
                         <div class="col-12">
                             <div class="row">
                                 <div class="col-4 form-label">
-                                    <label class="mandatory">Product</label>
+                                    <label class="mandatory">Appraiser</label>
                                 </div>
                                 <div class="col-8">
-                                    <select class="form-control" formControlName="moduleId"
-                                        [class.isError]="controls.moduleId.touched && controls.moduleId.invalid">
-                                        <option value="" selected disabled>Select Product</option>
-                                        <option *ngFor="let item of modules" [value]="item.id">
-                                            {{item.moduleName | titlecase}}
+                                    <select class="form-control" name="" id="" formControlName="appraiserId"
+                                        [class.isError]="controls.appraiserId.touched && controls.appraiserId.invalid">
+                                        <option [selected]="true" [disabled]="true" value=null>Select Appraiser</option>
+                                        <option *ngFor="let appraiser of appraisers" [value]="appraiser.id">
+                                            {{appraiser.firstName | titlecase}}&nbsp;{{appraiser.lastName | titlecase}}
                                         </option>
                                     </select>
-                                    <mat-error *ngIf="controls.moduleId.touched && controls.moduleId.errors?.required">
+
+                                    <mat-error
+                                        *ngIf="controls.appraiserId.touched && controls.appraiserId.errors?.required">
                                         Required field
                                     </mat-error>
                                 </div>
@@ -83,7 +84,7 @@
                         </div>
                     </div>
 
-                    <kt-modal-footer (action)="action($event)" [value]="data.action == 'add' ? 'Add' : 'Update'">
+                    <kt-modal-footer (action)="action($event)" [value]="data.action == 'add' ? 'Assign' : 'Update'">
                     </kt-modal-footer>
                 </div>
             </form>

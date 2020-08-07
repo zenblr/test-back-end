@@ -9,6 +9,8 @@ import { SharedService } from '../../../../../core/shared/services/shared.servic
 import { Router } from '@angular/router';
 import { Subscription, Subject, merge } from 'rxjs';
 import { AssignAppraiserComponent } from '../../user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
+import { NewRequestAssignAppraiserComponent } from '../new-request-assign-appraiser/new-request-assign-appraiser.component';
+import { NewRequestService } from '../../../../../core/lead-management/services/new-request.service';
 
 @Component({
   selector: 'kt-new-request-list',
@@ -37,12 +39,9 @@ export class NewRequestListComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private leadService: LeadService,
+    private newRequestService: NewRequestService,
     private dataTableService: DataTableService,
-    private router: Router,
-    private sharedService: SharedService
-  ) {
-  }
+  ) { }
 
   ngOnInit() {
 
@@ -60,7 +59,7 @@ export class NewRequestListComponent implements OnInit {
       });
 
     // Init DataSource
-    this.dataSource = new NewRequestDatasource(this.leadService);
+    this.dataSource = new NewRequestDatasource(this.newRequestService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
@@ -102,8 +101,8 @@ export class NewRequestListComponent implements OnInit {
   }
 
   assignAppraiser(item) {
-    item.customer = { firstName: item.firstName, lastName: item.lastName }
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', from: 'lead', customer: item.customer, id: item.id }, width: '500px' });
+    // item.customer = { firstName: item.firstName, lastName: item.lastName }
+    const dialogRef = this.dialog.open(NewRequestAssignAppraiserComponent, { data: { action: 'add', requestData: item }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
@@ -112,9 +111,9 @@ export class NewRequestListComponent implements OnInit {
   }
 
   updateAppraiser(item) {
-    item.customer = { firstName: item.firstName, lastName: item.lastName }
-    item.customer.customerUniqueId = item.customerUniqueId
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit', from: 'lead', appraiser: item.customerAssignAppraiser, customer: item.customer, id: item.id }, width: '500px' });
+    // item.customer = { firstName: item.firstName, lastName: item.lastName }
+    // item.customer.customerUniqueId = item.customerUniqueId
+    const dialogRef = this.dialog.open(NewRequestAssignAppraiserComponent, { data: { action: 'edit', requestData: item }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();

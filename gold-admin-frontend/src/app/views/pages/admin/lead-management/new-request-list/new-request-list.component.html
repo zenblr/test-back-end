@@ -30,7 +30,8 @@
                 <ng-container matColumnDef="update">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let row">
-                        <button style="width: 120px;" class="apply-kyc" (click)="editProduct(row)">
+                        <button style="width: 120px;" class="apply-kyc" (click)="editProduct(row)"
+                            *ngIf="!row.isAssigned">
                             Update
                         </button>
                     </mat-cell>
@@ -41,13 +42,13 @@
                     <mat-cell *matCellDef="let row">
                         <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserAdd']">
                             <button style="width: 120px;" class="apply-kyc" (click)="assignAppraiser(row)"
-                                *ngIf="row.customer.kycStatus == 'approved' && row.customerKycClassification?.kycStatusFromCce == 'approved' && !row.customer.customerAssignAppraiser">Assign
+                                *ngIf="!row.isAssigned">Assign
                                 Appraiser</button>
                         </div>
                         <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserEdit']">
 
                             <button style="width: 120px;" class="apply-kyc" (click)="updateAppraiser(row)"
-                                *ngIf="row.customer.kycStatus == 'approved' && row.customerKycClassification?.kycStatusFromCce == 'approved' && row.customer.customerAssignAppraiser">Update
+                                *ngIf="row.isAssigned">Update
                                 Appraiser</button>
                         </div>
                     </mat-cell>

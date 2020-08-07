@@ -51,7 +51,7 @@ export class LeadManagementComponent implements OnInit {
     private leadService: LeadService,
     private dataTableService: DataTableService,
     private router: Router,
-    private sharedService: SharedService
+    private sharedService: SharedService,
   ) {
     this.leadService.openModal$.pipe(
       map(res => {
@@ -204,12 +204,9 @@ export class LeadManagementComponent implements OnInit {
   }
 
   newRequest(loan) {
-    console.log(loan)
     const dialogRef = this.dialog.open(NewRequestAddComponent, { data: { action: 'add', leadData: loan }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        this.loadLeadsPage();
-      }
+      if (res) this.router.navigate(['/admin/lead-management/new-requests'])
     });
   }
 

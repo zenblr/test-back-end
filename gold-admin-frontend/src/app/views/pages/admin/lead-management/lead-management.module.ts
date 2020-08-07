@@ -16,6 +16,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NewRequestAddComponent } from './new-request-add/new-request-add.component';
 import { NewRequestListComponent } from './new-request-list/new-request-list.component';
 import { MyRequestComponent } from './my-request/my-request.component';
+import { NewRequestAssignAppraiserComponent } from './new-request-assign-appraiser/new-request-assign-appraiser.component';
 
 const routes: Routes = [
   { path: '', component: LeadManagementComponent },
@@ -26,7 +27,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     LeadManagementComponent,
-    AddLeadComponent, NewRequestAddComponent, NewRequestListComponent, MyRequestComponent
+    AddLeadComponent, NewRequestAddComponent, NewRequestListComponent, MyRequestComponent, NewRequestAssignAppraiserComponent
   ],
   imports: [
     CommonModule,
@@ -61,7 +62,8 @@ const routes: Routes = [
   ],
   entryComponents: [
     AddLeadComponent,
-    NewRequestAddComponent
+    NewRequestAddComponent,
+    NewRequestAssignAppraiserComponent
   ]
 })
 export class LeadManagementModule { }

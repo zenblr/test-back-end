@@ -7,7 +7,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { LeadService } from '../services/lead.service';
 import { NewRequestService } from '../services/new-request.service';
 
-export class NewRequestDatasource extends BaseDataSource {
+export class MyRequestDatasource extends BaseDataSource {
 
     private loadingSubject = new BehaviorSubject<boolean>(false);
     private isPreloadTextViewedSubject = new BehaviorSubject<boolean>(true);
@@ -19,10 +19,10 @@ export class NewRequestDatasource extends BaseDataSource {
         super();
     }
 
-    getNewRequests(data) {
+    getMyRequests(data) {
         this.loadingSubject.next(true);
 
-        this.newRequestService.getNewRequests(data)
+        this.newRequestService.getMyRequests(data)
             .pipe(
                 map(
                     report => {
