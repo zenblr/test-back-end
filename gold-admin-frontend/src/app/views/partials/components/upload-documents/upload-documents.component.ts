@@ -96,7 +96,7 @@ export class UploadDocumentsComponent implements OnInit {
       this.isEdit = true
     }
     this.ngxPermission.permissions$.subscribe(res => {
-      if ((this.url == "loan-transfer" && (res.loanTransferAppraiserRating || res.loanTransferRating)) || this.url == "scrap-buying-application-form" || this.url == "view-loan") {
+      if ((this.url == "loan-transfer" && (res.loanTransferAppraiserRating || res.loanTransferRating)) || this.url == "scrap-buying-application-form" || this.url == "view-loan" || this.url == "view-scrap") {
         this.buttonValue = 'next';
       } else {
         this.buttonValue = 'save';
