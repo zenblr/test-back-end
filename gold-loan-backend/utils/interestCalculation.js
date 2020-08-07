@@ -130,7 +130,7 @@ let getAllDetailsOfCustomerLoan = async (customerLoanId) =>{
     let loanData = await models.customerLoan.findOne({
         where:{id:customerLoanId},
         order:[[models.customerLoanInterest,'id','asc']],
-        attributes:['id','masterLoanId','loanAmount','outstandingAmount','currentSlab','currentInterestRate','penalInterestLastReceivedDate'],
+        attributes:['id','masterLoanId','selectedSlab','loanAmount','outstandingAmount','currentSlab','currentInterestRate','penalInterestLastReceivedDate'],
         include:[{
             model:models.customerLoanSlabRate,
             as:'slab',
@@ -163,6 +163,171 @@ let calculationData = async () =>{
     return {noOfDaysInYear,loanInfo};
 }
 
+let checkPaidInterest = async (loanId,masterLaonId) =>{
+    let checkDailyAmount = await models.customerLoanInterest.findOne({
+        where:{loanId:loanId,masterLoanId:masterLaonId,emiStatus:'paid'},
+        order:[['emiReceivedDate','DESC']]
+    })
+    return checkDailyAmount
+}
+
+let getInterestOfSelectedMonth = async (loanId,currentMonth,currentYear) =>{
+    let getMonthInterest = await models.customerLoanInterest.findAll({
+        where: {
+            [Op.and]: [
+              sequelize.where(sequelize.fn("date_part",'MONTH', sequelize.col('emi_due_date')), currentMonth),
+              sequelize.where(sequelize.fn("date_part",'YEAR', sequelize.col('emi_due_date')), currentYear),
+              {loanId:loanId}
+            ]
+          },
+        order:[['emiDueDate','ASC']]
+    })
+
+    return getMonthInterest
+}
+
+let getFirstInterest = async (loanId,masterLaonId) =>{
+    let firstInterest = await models.customerLoanInterest.findOne({
+        where:{loanId:loanId,masterLoanId:masterLaonId},
+        order:[['emiDueDate','ASC']]
+    })
+    return firstInterest
+}
+
+let calculation = async (noOfDays,interestRate,loanAmount,paidAmount) => {
+    let oneDayInterest = interestRate / 30;
+    let oneDayAmount = loanAmount * (oneDayInterest/100);
+    let amount = oneDayAmount * noOfDays;
+    let totalAmount = (Math.round(amount * 100) / 100) - paidAmount;
+    if(totalAmount < 0){
+        return 0
+    }else{
+        return totalAmount;
+    }
+}
+
+let newSlabRateInterestCalcultaion = async (loanAmount, interestRate, paymentFrequency,tenure) =>{
+    let amount = ((Number(loanAmount) * (Number(interestRate) * 12 / 100)) * Number(paymentFrequency)
+        / 360).toFixed(2);
+    let length = (tenure * 30) / paymentFrequency
+    return {amount,length}
+}
+
+let getStepUpslab = async (loanId,noOfDys) => {
+    let stepUpSlab = await models.customerLoanSlabRate.findOne({
+        where:{loanId:loanId,days:{[Op.gte]:noOfDys}},
+        attributes:['days','interestRate'],
+        order:[['days','ASC']]
+    });
+    if(!stepUpSlab){
+        stepUpSlab = await models.customerLoanSlabRate.findOne({
+            where:{loanId:loanId},
+            attributes:['days','interestRate'],
+            order:[['days','DESC']]
+        });
+        return stepUpSlab;
+    }else{
+        return stepUpSlab;
+    }
+}
+
+let getLastInterest = async (loanId,masterLaonId) =>{
+    let lastInterest = await models.customerLoanInterest.findOne({
+        where:{loanId:loanId,masterLoanId:masterLaonId},
+        order:[['emiDueDate','DESC']],
+        attributes:['id','paidAmount']
+    });
+    return lastInterest;
+}
+
+let getAllNotPaidInterest = async (loanId) =>{
+    let allNotPaidInterest = await models.customerLoanInterest.findAll({
+        where:{loanId:loanId,emiStatus:{[Op.notIn]:['paid']}},
+        attributes:['id','paidAmount']
+    });
+    return allNotPaidInterest;
+}
+
+let getAllInterestLessThanDate = async (loanId,date) =>{
+    let allInterestLessThanDate = await models.customerLoanInterest.findAll({
+        where:{loanId:loanId,emiDueDate:{[Op.lte]:date,},emiStatus:{[Op.notIn]:['paid']}},
+        attributes:['id','paidAmount']
+    });
+    return allInterestLessThanDate;
+}
+
+let getPendingNoOfDaysInterest = async (loanId,date) =>{
+    let pendingNoOfDaysInterest = await models.customerLoanInterest.findOne({
+        where:{loanId:loanId,emiDueDate:{[Op.gt]:date,},emiStatus:{[Op.notIn]:['paid']}},
+        attributes:['id','paidAmount'],
+        order:[['emiDueDate','ASC']]
+    });
+    return pendingNoOfDaysInterest;
+}
+
+
+
+let dailyIntrestCalculation = async (date) => {
+    let data = await calculationData();
+    let loanInfo = data.loanInfo;
+    let currentDate = moment(date);
+    await sequelize.transaction(async t => {
+    for(const loan of loanInfo){
+        let lastPaidEmi = await checkPaidInterest(loan.id,loan.masterLoanId);
+        if(!lastPaidEmi){
+            let loanStartDate = moment(loan.masterLoan.loanStartDate);
+            let noOfDays = currentDate.diff(loanStartDate, 'days');
+            if(noOfDays > loan.currentSlab){
+                //scenario 2 
+                let stepUpSlab = await getStepUpslab(loan.id,noOfDays);
+                let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount,stepUpSlab.interestRate,loan.selectedSlab,loan.masterLoan.tenure);
+                let allInterest =  await getAllNotPaidInterest(loan.id)//get all interest
+                let interestLessThanDate = await getAllInterestLessThanDate(loan.id,date);
+                //update interestAccrual & interest amount
+                for(const interestData of interestLessThanDate){
+                    let outstandingInterest = interest.amount - interestData.paidAmount;
+                    await models.customerLoanInterest.update({interestAmount:interest.amount,outstandingInterest,interestAccrual:interest.amount},{where:{id:interestData.id,emiStatus:{[Op.notIn]:['paid']}},transaction: t});
+                }
+                if(allInterest.length != interestLessThanDate.length){
+                    let pendingNoOfDays =  noOfDays - (interestLessThanDate.length * loan.selectedSlab);
+                    if(pendingNoOfDays > 0){
+                        let oneDayInterest = stepUpSlab.interestRate / 30;
+                        let oneDayAmount = loan.outstandingAmount * (oneDayInterest/100);
+                        let pendingDaysAmount = pendingNoOfDays * oneDayAmount;
+                        let nextInterest = await getPendingNoOfDaysInterest(loan.id,date);
+                        if(nextInterest){
+                            let amount = pendingDaysAmount - nextInterest.paidAmount;
+                             await models.customerLoanInterest.update({interestAccrual:amount},{where:{id:nextInterest.id,emiStatus:{[Op.notIn]:['paid']}},transaction: t});
+                        }
+                    }
+                }
+                //update all interest amount
+                for(const interestData of allInterest){
+                    let outstandingInterest = interest.amount - interestData.paidAmount;
+                    await models.customerLoanInterest.update({interestAmount:interest.amount,outstandingInterest},{where:{id:interestData.id,emiStatus:{[Op.notIn]:['paid']}},transaction: t});
+                }
+                //update last interest if changed
+                if (!Number.isInteger(interest.length)) {
+                    let oneMonthAmount = interest.amount / masterLoan.tenure;
+                    let amount = oneMonthAmount * Math.ceil(interest.length).toFixed(2);
+                    let lastInterest = await getLastInterest(loan.id,loan.masterLoanId)
+                    let outstandingInterest = amount - lastInterest.paidAmount
+                    await models.customerLoanInterest.update({interestAmount:amount,outstandingInterest},{where:{id:lastInterest.id,emiStatus:{[Op.notIn]:['paid']}},transaction: t});
+                }
+            }else{ 
+                // scenario 1
+                let firstInterest =await getFirstInterest(loan.id,loan.masterLoanId);
+                let amount = await calculation (noOfDays,loan.currentInterestRate,loan.outstandingAmount,firstInterest.paidAmount);
+                
+                    await models.customerLoanInterest.update({interestAccrual:amount},{where:{id:firstInterest.id},transaction: t});
+                
+            }
+        }
+    }
+});
+    return "success";
+}
+
 let penal = async (loanId) => {
     console.log(loanId)
 
@@ -178,5 +343,6 @@ module.exports = {
     getAllCustomerLoanId: getAllCustomerLoanId,
     getAllDetailsOfCustomerLoan:getAllDetailsOfCustomerLoan,
     calculationData:calculationData,
+    dailyIntrestCalculation:dailyIntrestCalculation,
     penal: penal
 }
