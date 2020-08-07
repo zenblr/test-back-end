@@ -30,7 +30,8 @@
                     <mat-header-cell *matHeaderCellDef>Scrap Amount</mat-header-cell>
                     <mat-cell *matCellDef="let item" class="d-block">
                         <div class="currency">
-                            {{item?.eligibleScrapAmount | indianCurrencyFormat}}</div>
+                            {{item?.eligibleScrapAmount ? (item?.eligibleScrapAmount | indianCurrencyFormat) : '-'}}
+                        </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="appraisalApproval">
@@ -38,7 +39,7 @@
                     <mat-cell *matCellDef="let item">
                         <span
                             [ngClass]="item?.scrapStatusForAppraiser == 'pending' ? 'text-warning' :item?.scrapStatusForAppraiser == 'approved' ? 'text-success' : 'text-danger'">
-                            {{item?.scrapStatusForAppraiser | titlecase}}
+                            {{item?.scrapStage?.id == 10 ? '-'  : item?.scrapStatusForAppraiser | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -47,7 +48,7 @@
                     <mat-cell *matCellDef="let item">
                         <span
                             [ngClass]="item?.scrapStatusForBM == 'pending' ? 'text-warning' :item?.scrapStatusForBM == 'approved' ? 'text-success' : 'text-danger'">
-                            {{item?.scrapStatusForBM | titlecase}}
+                            {{item?.scrapStage?.id == 10 ? '-'  : item?.scrapStatusForBM | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -56,7 +57,7 @@
                     <mat-cell *matCellDef="let item">
                         <span
                             [ngClass]="item?.scrapStatusForOperatinalTeam == 'pending' ? 'text-warning' :item?.scrapStatusForOperatinalTeam == 'approved' ? 'text-success' : 'text-danger'">
-                            {{item?.scrapStatusForOperatinalTeam | titlecase}}
+                            {{item?.scrapStage?.id == 10 ? '-'  : item?.scrapStatusForOperatinalTeam | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -64,35 +65,35 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let item">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div *ngIf="item?.scrapStage.id == 1">
+                            <div *ngIf="item?.scrapStage?.id == 1">
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)"
                                         [ngClass]="{'cursor-not-allowed':  !permission.addAppraiserRating}"
-                                        class="primary-button">{{item?.scrapStage.stageName | uppercase}}</button>
+                                        class="primary-button">{{item?.scrapStage?.stageName | uppercase}}</button>
                                 </div>
                             </div>
-                            <div *ngIf="item?.scrapStage.id == 2">
+                            <div *ngIf="item?.scrapStage?.id == 2">
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)"
                                         [ngClass]="{'cursor-not-allowed': !permission.addBmRating}"
-                                        class="primary-button">{{item?.scrapStage.stageName | uppercase}}</button>
+                                        class="primary-button">{{item?.scrapStage?.stageName | uppercase}}</button>
                                 </div>
                             </div>
-                            <div *ngIf="item?.scrapStage.id == 7">
+                            <div *ngIf="item?.scrapStage?.id == 7">
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)"
                                         [ngClass]="{'cursor-not-allowed': !permission.addOpsRating}"
-                                        class="primary-button">{{item?.scrapStage.stageName | uppercase}}</button>
+                                        class="primary-button">{{item?.scrapStage?.stageName | uppercase}}</button>
                                 </div>
                             </div>
-                            <div *ngIf="item?.scrapStage.id == 3">
+                            <div *ngIf="item?.scrapStage?.id == 3">
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)" class="red-button"
                                         [ngClass]="{'cursor-not-allowed':!permission.assignPacket}">Assign
                                         Packet</button>
                                 </div>
                             </div>
-                            <div *ngIf="item?.scrapStage.id == 4">
+                            <div *ngIf="item?.scrapStage?.id == 4">
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)"
                                         [ngClass]="{'cursor-not-allowed':!permission.loanDisbursement}"
@@ -100,16 +101,22 @@
                                         Amount</button>
                                 </div>
                             </div>
-                            <div *ngIf="item?.scrapStage.id == 5">
+                            <div *ngIf="item?.scrapStage?.id == 5">
                                 <div class="kt-pointer">
                                     <button class="warning-button">Disbursed</button>
                                 </div>
                             </div>
-                            <div *ngIf="item?.scrapStage.id == 8">
+                            <div *ngIf="item?.scrapStage?.id == 8">
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)"
                                         [ngClass]="{'cursor-not-allowed': !permission.uploadDocuments}"
-                                        class="primary-button">{{item?.scrapStage.stageName | uppercase}}</button>
+                                        class="primary-button">{{item?.scrapStage?.stageName | uppercase}}</button>
+                                </div>
+                            </div>
+                            <div *ngIf="item?.scrapStage?.id == 10">
+                                <div class="kt-pointer">
+                                    <button (click)="editScrap(item)"
+                                        class="primary-button">{{item?.scrapStage?.stageName | titlecase}}</button>
                                 </div>
                             </div>
                         </div>
@@ -118,8 +125,7 @@
                 <ng-container matColumnDef="view">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let item">
-                        <span (click)="viewScrap(item)" class="kt-pointer"
-                            *ngxPermissionsOnly="['loanDetailsView','appliedLoanView']">
+                        <span (click)="viewScrap(item)" class="kt-pointer">
                             View
                         </span>
                     </mat-cell>

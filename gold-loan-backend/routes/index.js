@@ -140,11 +140,14 @@ router.use('/holiday-master', holidayMaster)
 const uploadHolidayMaster = require('./uploadHolidayMaster'); // upload holiday list master
 router.use('/upload-holiday-master', uploadHolidayMaster)
 
-const purpose = require('./purpose'); // upload holiday list master
+const purpose = require('./purpose'); // upload purpose list master
 router.use('/purpose', purpose)
 
-const ornamentType = require('./ornamentType'); // upload holiday list master
+const ornamentType = require('./ornamentType'); // upload ornamentType list master
 router.use('/ornament-type', ornamentType)
+
+const otherCharges = require('./loanOtherChargesMaster'); // upload otherCharges list master
+router.use('/other-charges', otherCharges)
 
 const lead = require('./lead');
 router.use('/lead', lead)
@@ -184,5 +187,7 @@ router.use('/scrap/standard-deduction', standardDeduction);
 
 const interestCalculation = require('./interestCalculation'); 
 router.use('/calculation', interestCalculation);
+const scrapUploadPacket = require('./scrap/uploadScrapPackets');  //upload Packets List 
+router.use('/scrap/upload-packets-file',scrapUploadPacket)
 
 module.exports = router;

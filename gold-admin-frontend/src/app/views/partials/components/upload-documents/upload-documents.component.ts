@@ -36,6 +36,7 @@ export class UploadDocumentsComponent implements OnInit {
   @Input() showLoanTransferFlag;
   @Input() showScrapFlag;
   @Input() showScrapAcknowledgementFlag;
+  @Input() standardDeductionArr
   @ViewChild('loanAgreementCopy', { static: false }) loanAgreementCopy
   @ViewChild('pawnCopy', { static: false }) pawnCopy
   @ViewChild('schemeConfirmationCopy', { static: false }) schemeConfirmationCopy
@@ -63,7 +64,6 @@ export class UploadDocumentsComponent implements OnInit {
   buttonName: string;
   buttonValue = 'Next';
   isEdit: boolean;
-  standardDeductionArr: any;
   globalValue: any;
   showCustomerConfirmationFlag: boolean;
 
@@ -80,7 +80,6 @@ export class UploadDocumentsComponent implements OnInit {
     private el: ElementRef,
     private renderer: Renderer,
     private ngxPermission: NgxPermissionsService,
-    private standardDeductionService: StandardDeductionService,
     public globalSettingService: GlobalSettingService,
   ) {
     this.url = (this.router.url.split("/")[3]).split("?")[0]
@@ -95,7 +94,7 @@ export class UploadDocumentsComponent implements OnInit {
       this.isEdit = true
     }
     this.ngxPermission.permissions$.subscribe(res => {
-      if ((this.url == "loan-transfer" && res.loanTransferRating)|| this.url == "scrap-buying-application-form") {
+      if ((this.url == "loan-transfer" && (res.loanTransferAppraiserRating || res.loanTransferRating)) || this.url == "scrap-buying-application-form" || this.url == "view-loan") {
         this.buttonValue = 'next';
       } else {
         this.buttonValue = 'save';
@@ -105,6 +104,9 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (changes.standardDeductionArr && changes.standardDeductionArr) {
+      this.standardDeductionArr = changes.standardDeductionArr.currentValue
+    }
     if (changes.loanDocumnets && changes.loanDocumnets.currentValue) {
       let documents = changes.loanDocumnets.currentValue.customerLoanDocument
 
@@ -119,6 +121,7 @@ export class UploadDocumentsComponent implements OnInit {
         })
         this.pdfCheck();
         this.isEdit = false
+        this.buttonValue = 'Next'
       }
     }
     if (changes.acknowledgmentDocuments && changes.acknowledgmentDocuments.currentValue) {
@@ -127,27 +130,43 @@ export class UploadDocumentsComponent implements OnInit {
         this.documentsForm.patchValue({
           processingCharges: documents.processingCharges,
           standardDeduction: documents.standardDeduction,
-          customerConfirmation: documents.customerConfirmation[0],
+          customerConfirmation: documents.customerConfirmation,
           customerConfirmationImage: documents.customerConfirmation[0],
           customerConfirmationStatus: documents.customerConfirmationStatus
         })
         this.pdfCheck();
-        // this.isEdit = false
+        if (changes.acknowledgmentDocuments.currentValue.scrapStatusForAppraiser == 'approved') {
+          this.isEdit = false
+          this.documentsForm.disable()
+          this.ref.detectChanges()
+        }
       }
     }
     if (changes.scrapDocuments && changes.scrapDocuments.currentValue) {
       let documents = changes.scrapDocuments.currentValue.scrapDocument
       if (documents) {
-        this.documentsForm.patchValue({
-          purchaseVoucher: documents.purchaseVoucher[0],
-          purchaseVoucherImage: documents.purchaseVoucher[0],
-          purchaseInvoice: documents.purchaseInvoice[0],
-          purchaseInvoiceImage: documents.purchaseInvoice[0],
-          saleInvoice: documents.saleInvoice[0],
-          saleInvoiceImage: documents.saleInvoice[0],
-        })
+        if (documents.purchaseVoucher) {
+          this.documentsForm.patchValue({
+            purchaseVoucher: documents.purchaseVoucher[0],
+            purchaseVoucherImage: documents.purchaseVoucher[0],
+          })
+        }
+        if (documents.purchaseInvoice) {
+          this.documentsForm.patchValue({
+            purchaseInvoice: documents.purchaseInvoice[0],
+            purchaseInvoiceImage: documents.purchaseInvoice[0],
+          })
+        }
+        if (documents.saleInvoice) {
+          this.documentsForm.patchValue({
+            saleInvoice: documents.saleInvoice[0],
+            saleInvoiceImage: documents.saleInvoice[0],
+          })
+        }
         this.pdfCheck();
-        // this.isEdit = false
+        this.isEdit = false
+        this.buttonValue = 'Next'
+
       }
     }
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
@@ -166,7 +185,9 @@ export class UploadDocumentsComponent implements OnInit {
         if (documents.loanTransferStatusForAppraiser == 'approved') {
           this.isEdit = false
           this.documentsForm.disable()
-          this.ref.detectChanges()
+          this.buttonValue = 'Next'
+          this.ref.detectChanges();
+
         }
       }
     }
@@ -202,9 +223,6 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.showScrapAcknowledgementFlag) {
-      this.getStandardDeduction();
-    }
     if (this.showLoanFlag || this.showLoanTransferFlag || this.showScrapFlag || this.showScrapAcknowledgementFlag) {
       this.validation()
     }
@@ -212,25 +230,27 @@ export class UploadDocumentsComponent implements OnInit {
 
   ngAfterViewInit() {
     this.globalSettingService.globalSetting$.subscribe(global => this.globalValue = global);
+    if (this.url == "scrap-buying-application-form") {
 
-    this.documentsForm.controls['customerConfirmationStatus'].valueChanges.subscribe((val) => {
-      if (val == 'confirmed') {
-        this.buttonValue = 'Next';
-        this.showCustomerConfirmationFlag = true;
-        this.documentsForm.controls.customerConfirmation.setValidators(Validators.required),
-          this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
-      } else {
-        this.buttonValue = 'Save';
-        this.showCustomerConfirmationFlag = false;
-        this.documentsForm.patchValue({
-          customerConfirmation: [],
-          customerConfirmationImage: [],
-          customerConfirmationImageName: []
-        })
-        this.documentsForm.controls.customerConfirmation.setValidators([]),
-          this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
-      }
-    });
+      this.documentsForm.controls['customerConfirmationStatus'].valueChanges.subscribe((val) => {
+        if (val == 'confirmed') {
+          this.buttonValue = 'Next';
+          this.showCustomerConfirmationFlag = true;
+          this.documentsForm.controls.customerConfirmation.setValidators(Validators.required),
+            this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
+        } else {
+          this.buttonValue = 'Save';
+          this.showCustomerConfirmationFlag = false;
+          this.documentsForm.patchValue({
+            customerConfirmation: [],
+            customerConfirmationImage: [],
+            customerConfirmationImageName: []
+          })
+          this.documentsForm.controls.customerConfirmation.setValidators([]),
+            this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
+        }
+      });
+    }
   }
 
   initForm() {
@@ -304,14 +324,6 @@ export class UploadDocumentsComponent implements OnInit {
       this.documentsForm.controls.schemeConfirmationCopy.setValidators(Validators.required),
         this.documentsForm.controls.schemeConfirmationCopy.updateValueAndValidity()
     }
-  }
-
-  getStandardDeduction() {
-    this.standardDeductionService.getAllStandardDeductions().pipe(
-      map(res => {
-        this.standardDeductionArr = res.deductionDetails;
-      })
-    ).subscribe()
   }
 
   fileUpload(event, value) {
@@ -421,9 +433,13 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   ExportAsPdf() {
-    this.loanService.getPdf(this.masterAndLoanIds.masterLoanId).subscribe(res => {
-
-    })
+    if (this.showScrapAcknowledgementFlag) {
+      this.scrapApplicationFormService.getCustomerAcknowledgementPdf(this.scrapIds.scrapId).subscribe()
+    } else if (this.showScrapFlag) {
+      this.scrapApplicationFormService.getPurchaseVoucherPdf(this.scrapIds.scrapId).subscribe()
+    } else {
+      this.loanService.getPdf(this.masterAndLoanIds.masterLoanId).subscribe()
+    }
   }
 
   save() {
@@ -458,16 +474,18 @@ export class UploadDocumentsComponent implements OnInit {
           }
         })).subscribe()
     } else if (this.url == 'scrap-buying-application-form') {
-      if (this.buttonValue == 'Next') {
-        this.scrapApplicationFormService.acknowledgementSubmit(this.documentsForm.value, this.scrapIds).pipe(
-          map(res => {
+      this.scrapApplicationFormService.acknowledgementSubmit(this.documentsForm.value, this.scrapIds).pipe(
+        map(res => {
+          if (this.buttonValue == 'Next') {
             if (res.scrapCurrentStage) {
               let stage = Number(res.scrapCurrentStage) - 1
               this.stage.emit(res.scrapCurrentStage)
               this.next.emit(stage)
             }
-          })).subscribe();
-      }
+          } else {
+            this.router.navigate(['/admin/scrap-management/applied-scrap'])
+          }
+        })).subscribe();
     } else if (this.showScrapFlag) {
       this.scrapApplicationFormService.uploadDocuments(this.documentsForm.value, this.scrapIds).pipe(
         map(res => {

@@ -43,10 +43,13 @@
                 <label class="kt-padding-l-10">Customer confirmation Status</label>
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
-                <label class="kt-padding-l-10">Customer Confirmation for melting ornament(Jewellery) </label>
+                <label class="kt-padding-l-10 kt-padding-r-25">Customer Confirmation for melting ornament(Jewellery)
+                </label>
+                <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showScrapFlag">
-                <label class="kt-padding-l-10">Purchase Voucher</label>
+                <label class="kt-padding-l-10 kt-padding-r-25">Purchase Voucher</label>
+                <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showScrapFlag">
                 <label class="kt-padding-l-10">Original Purchase Invoice</label>
@@ -74,8 +77,7 @@
                     Required</mat-error>
             </div>
             <div class="col mb-3" *ngIf="showLoanTransferFlag || showLoanFlag">
-                <div class="input-group w-80"
-                    [class.isError]="controls.pawnCopy.touched && controls.pawnCopy.invalid">
+                <div class="input-group w-80" [class.isError]="controls.pawnCopy.touched && controls.pawnCopy.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="pawnCopyImageName" />
                     <div class="input-group-append">
@@ -134,11 +136,11 @@
                 <mat-error *ngIf="controls.declaration.touched && controls.declaration.invalid">Field Required
                 </mat-error>
             </div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag"></div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag"></div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag"></div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
-                <div class="input-group mb-3 w-80"
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
+                <div class="input-group w-80"
                     [class.isError]="controls.customerConfirmation.touched && controls.customerConfirmation.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="customerConfirmationImageName" />
@@ -153,8 +155,8 @@
                     Required
                 </mat-error>
             </div>
-            <div class="col" *ngIf="showScrapFlag">
-                <div class="input-group mb-3 w-80"
+            <div class="col mb-3" *ngIf="showScrapFlag">
+                <div class="input-group w-80"
                     [class.isError]="controls.purchaseVoucher.touched && controls.purchaseVoucher.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="purchaseVoucherImageName" />
@@ -167,8 +169,8 @@
                 <mat-error *ngIf="controls.purchaseVoucher.touched && controls.purchaseVoucher.invalid">Field Required
                 </mat-error>
             </div>
-            <div class="col" *ngIf="showScrapFlag">
-                <div class="input-group mb-3 w-80"
+            <div class="col mb-3" *ngIf="showScrapFlag">
+                <div class="input-group w-80"
                     [class.isError]="controls.purchaseInvoice.touched && controls.purchaseInvoice.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="schemeConfirmationCopyImageName" />
@@ -184,8 +186,8 @@
                     Required</mat-error>
 
             </div>
-            <div class="col" *ngIf="showScrapFlag">
-                <div class="input-group mb-3 w-80"
+            <div class="col mb-3" *ngIf="showScrapFlag">
+                <div class="input-group w-80"
                     [class.isError]="controls.saleInvoice.touched && controls.saleInvoice.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
                         aria-describedby="basic-addon2" readonly formControlName="schemeConfirmationCopyImageName" />
@@ -412,36 +414,28 @@
             </div>
             <div class="col" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
                 <div class="row">
-                    <div class="col-10 position-relative">
+                    <div class="col-10">
                         <div class="img-container width" *ngIf="!controls?.customerConfirmationImage?.value">
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
-
-                        <!-- <div class="position-relative edit-width">
-                                <img src="../../../../../assets/media/icons/edit.svg" alt=""
-                                    *ngIf="isEdit && controls?.customerConfirmationImage?.value"
-                                    class="kt-pointer edit-icon" (click)="editImages('customerConfirmation');">
-                            </div> -->
-
                         <div class="" *ngIf="controls?.customerConfirmationImage?.value">
-                            <div class="d-inline-block img-container width kt-margin-r-15 position-relative"
-                                (click)="preview(controls?.customerConfirmationImage?.value)">
-                                <img class="fetched-image" [src]="controls?.customerConfirmationImage?.value"
+                            <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
+                                <img (click)="preview(controls?.customerConfirmationImage?.value)" class="fetched-image"
+                                    [src]="controls?.customerConfirmationImage?.value"
                                     *ngIf="!pdf.customerConfirmation">
-                                <img src="../../../../../assets/media/icons/edit.svg" alt=""
-                                    *ngIf="isEdit && controls?.customerConfirmationImage?.value"
-                                    class="kt-pointer edit-icon" (click)="editImages('customerConfirmation');">
-                                <iframe *ngIf="pdf.customerConfirmation"
-                                    [src]="controls?.customerConfirmationImage?.value | safe : 'resourceUrl'"
-                                    height="250" width="290" scrolling="no"></iframe>
-                                <!-- <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.customerConfirmation"
-                                        [pdfSrc]="controls?.customerConfirmationImage.value"
-                                        (click)="preview(controls?.customerConfirmationImage.value)"></kt-pdf-viewer> -->
+                                <img class="edit-icon kt-pointer" src="../../../../../assets/media/icons/edit.svg"
+                                    (click)="editImages('customerConfirmation')"
+                                    *ngIf="isEdit && controls?.customerConfirmationImage?.value">
+                                <div class="iframeWrapper"
+                                    (click)="preview(controls?.customerConfirmationImage?.value)">
+                                    <iframe [src]="controls?.customerConfirmationImage?.value | safe : 'resourceUrl'"
+                                        height="250" width="290" scrolling="no" *ngIf="pdf.customerConfirmation"
+                                        class="position-relative"></iframe>
+                                </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
             <div class="col" *ngIf="showScrapFlag">
@@ -451,11 +445,6 @@
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
-                        <!-- <div class="edit-width">
-                            <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
-                                *ngIf="isEdit && controls?.purchaseVoucherImage?.value"
-                                (click)="editImages('purchaseVoucher');">
-                        </div> -->
                         <div class="" *ngIf="controls?.purchaseVoucherImage?.value">
                             <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
                                 <img (click)="preview(controls?.purchaseVoucherImage?.value)" class="fetched-image"
@@ -463,9 +452,11 @@
                                 <img class="edit-icon kt-pointer" src="../../../../../assets/media/icons/edit.svg"
                                     (click)="editImages('purchaseVoucher')"
                                     *ngIf="isEdit && controls?.purchaseVoucherImage?.value">
-                                <iframe [src]="controls?.purchaseVoucherImage?.value | safe : 'resourceUrl'"
-                                    height="250" width="290" scrolling="no" *ngIf="pdf.purchaseVoucher"
-                                    class="position-relative"></iframe>
+                                <div class="iframeWrapper" (click)="preview(controls?.purchaseVoucherImage?.value)">
+                                    <iframe [src]="controls?.purchaseVoucherImage?.value | safe : 'resourceUrl'"
+                                        height="250" width="290" scrolling="no" *ngIf="pdf.purchaseVoucher"
+                                        class="position-relative"></iframe>
+                                </div>
                             </div>
                         </div>
                     </div>

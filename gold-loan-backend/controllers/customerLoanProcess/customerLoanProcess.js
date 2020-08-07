@@ -4,10 +4,9 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
-
+const extend = require('extend')
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 const moment = require('moment');
-const extend = require('extend')
 
 var pdf = require("pdf-creator-node"); // PDF CREATOR PACKAGE
 var fs = require('fs');
@@ -314,7 +313,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
             processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
-            return res.status(200).json({ data: { unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme } })
+            return res.status(200).json({ data: { unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme, isUnsecuredSchemeApplied: true } })
 
         } else {
             return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
@@ -323,7 +322,7 @@ exports.checkForLoanType = async (req, res, next) => {
     else {
 
         processingCharge = await processingChargeSecuredScheme(loanAmount, securedScheme, undefined, undefined)
-        return res.status(200).json({ data: { securedScheme, processingCharge, securedScheme } })
+        return res.status(200).json({ data: { securedLoanAmount:loanAmount,securedScheme, processingCharge, isUnsecuredSchemeApplied: false, unsecuredAmount:0 } })
 
     }
 }
@@ -397,20 +396,32 @@ exports.interestRate = async (req, res, next) => {
 // Function to generate Interest Table
 
 exports.generateInterestTable = async (req, res, next) => {
-    let { securedLoanAmount, interestRate, unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency, isUnsecuredSchemeApplied, tenure, unsecuredSchemeId, schemeId } = req.body
+    let { securedLoanAmount, interestRate, unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency, isUnsecuredSchemeApplied, tenure, unsecuredSchemeId, schemeId, partnerId } = req.body
     let interestTable = []
     let totalInterestAmount = 0;
+
+    // partner
+    let partner = await models.partner.findOne({
+        where: { id: partnerId },
+        attributes: ['name']
+    })
 
     // secure interest calculation
     let securedInterestAmount = await interestCalcultaion(securedLoanAmount, interestRate, paymentFrequency)
     let securedScheme = await models.scheme.findOne({
-        where: { id: schemeId }
+        where: { id: schemeId },
+        attributes: ['schemeName']
     })
 
-
+    let unsecuredInterestAmount = 0;
     // unsecure interest calculation
     if (isUnsecuredSchemeApplied) {
-        var unsecuredInterestAmount = await interestCalcultaion(unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency)
+        unsecuredInterestAmount = await interestCalcultaion(unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency)
+        var unsecuredScheme = await models.scheme.findOne({
+            where: { id: unsecuredSchemeId },
+            attributes: ['schemeName']
+
+        })
 
     }
 
@@ -450,7 +461,7 @@ exports.generateInterestTable = async (req, res, next) => {
         }
     });
 
-    return res.status(200).json({ data: { interestTable, totalInterestAmount, securedScheme } })
+    return res.status(200).json({ data: { interestTable, totalInterestAmount, securedScheme, unsecuredScheme, interestRate, unsecuredInterestRate, isUnsecuredSchemeApplied, partner } })
 }
 
 // FUNCTION FOR unsecure table generation
@@ -834,26 +845,24 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
     let loanDetails = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } });
 
     let getPackets = await models.customerLoanPackageDetails.findAll({ where: { masterLoanId: masterLoanId } })
-    if (!check.isEmpty(getPackets)) {
-        return res.status(400).json({ message: `Packets has been already assign` })
-    }
 
-    if (loanDetails !== null && loanDetails.loanStatusForAppraiser === 'approved') {
+    let packetArray = await packetOrnamentArray.map(ele => {
+        return ele.packetId
+    })
+    let packetUpdateArray = await packetArray.map(ele => {
+        let obj = {}
+        obj.id = ele;
+        obj.customerId = loanDetails.customerId;
+        obj.loanId = loanId;
+        obj.masterLoanId = masterLoanId;
+        obj.modifiedBy = modifiedBy
+        obj.packetAssigned = true;
+        return obj
+    })
+
+    if (check.isEmpty(getPackets)) {
 
         //FOR PACKET UPDATE
-        let packetArray = await packetOrnamentArray.map(ele => {
-            return ele.packetId
-        })
-        let packetUpdateArray = await packetArray.map(ele => {
-            let obj = {}
-            obj.id = ele;
-            obj.customerId = loanDetails.customerId;
-            obj.loanId = loanId;
-            obj.masterLoanId = masterLoanId;
-            obj.modifiedBy = modifiedBy
-            obj.packetAssigned = true;
-            return obj
-        })
 
         await sequelize.transaction(async (t) => {
             let stageId = await models.loanStage.findOne({ where: { name: 'bm rating' }, transaction: t })
@@ -892,11 +901,64 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
 
         })
 
-        return res.status(200).json({ message: `Packets added successfully` })
 
-    } else {
-        res.status(404).json({ message: 'Given loan id is not proper' })
     }
+    else {
+        await sequelize.transaction(async (t) => {
+            let stageId = await models.loanStage.findOne({ where: { name: 'bm rating' }, transaction: t })
+
+            await models.customerLoanMaster.update({ loanStageId: stageId.id, modifiedBy }, { where: { id: masterLoanId }, transaction: t })
+
+            let loanPacket = await models.customerLoanPackageDetails.update({ loanId, masterLoanId, emptyPacketWithNoOrnament, sealingPacketWithWeight, sealingPacketWithCustomer, createdBy, modifiedBy }, { where: { masterLoanId: masterLoanId }, transaction: t })
+
+
+            let previousSelectedPacket = await models.packet.findAll({ where: { masterLoanId: masterLoanId } })
+
+
+            let packetId = previousSelectedPacket.map(ele => ele.id)
+
+            let x = await models.customerLoanPacket.destroy({ where: { customerLoanPackageDetailId: getPackets[0].id }, transaction: t })
+
+            let y = await models.packetOrnament.destroy({ where: { packetId: { [Op.in]: packetId } }, transaction: t })
+
+
+            let z = await models.packet.update({ customerId: null, loanId: null, masterLoanId: null, packetAssigned: false }, {
+                where: { id: { [Op.in]: packetId } }, transaction: t
+            })
+
+            let packetMapping = []
+            for (single of packetOrnamentArray) {
+                let entry = {}
+                entry['customerLoanPackageDetailId'] = getPackets[0].id
+                entry['packetId'] = single.packetId
+                packetMapping.push(entry)
+            }
+
+            await models.customerLoanPacket.bulkCreate(packetMapping, { transaction: t })
+
+            let ornamentPacketData = [];
+            for (let x of packetOrnamentArray) {
+                for (let singleOrnamentId of x.ornamentsId) {
+                    let pushData = {}
+                    pushData['packetId'] = Number(x.packetId)
+                    pushData['ornamentTypeId'] = Number(singleOrnamentId)
+                    ornamentPacketData.push(pushData)
+                }
+            }
+            console.log(ornamentPacketData)
+            await models.packetOrnament.bulkCreate(ornamentPacketData, { transaction: t })
+
+            console.log(packetUpdateArray)
+            await models.packet.bulkCreate(packetUpdateArray, {
+                updateOnDuplicate: ["customerId", "loanId", "masterLoanId", "modifiedBy", "packetAssigned"]
+            }, { transaction: t })
+
+            await models.customerLoanHistory.create({ loanId, masterLoanId, action: PACKET_IMAGES, modifiedBy }, { transaction: t });
+        })
+        
+
+    }
+    return res.status(200).json({ message: `Packets added successfully` })
 }
 
 //FUNCTION FOR BM RATING
@@ -1780,7 +1842,6 @@ exports.getLoanDetails = async (req, res, next) => {
     }
 }
 
-//FUNCTION FOR GET ASSIGN APPRAISER CUSTOMER LIST 
 exports.getAssignAppraiserCustomer = async (req, res, next) => {
     let { search, offset, pageSize } = paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
     let id = req.userData.id;

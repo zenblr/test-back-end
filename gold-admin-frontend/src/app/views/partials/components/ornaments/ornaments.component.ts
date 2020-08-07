@@ -43,6 +43,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() showButton
   @Input() meltingOrnament
   @Input() processingCharges
+  @Input() karatArr
+  @Input() customerConfirmationArr
+  @Input() karatFlag
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
   @ViewChild('stoneTouch', { static: false }) stoneTouch: ElementRef
@@ -55,7 +58,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   width: number = 0
   ornamentsForm: FormGroup;
   images: any = [];
-  karatArr: any
   purityBasedDeduction: number;
   ltvPercent = [];
   url: string
@@ -91,7 +93,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnInit() {
     console.log(this.data.modal)
     this.url = this.router.url.split('/')[3]
-    this.getKarat()
+    if (!this.karatFlag) {
+      this.getKarat()
+    }
     this.initForm()
     if (this.data && this.data.modal) {
       this.showAddMoreBtn = false
@@ -106,6 +110,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.karatService.getAllKaratDetails().pipe(
       map(res => {
         this.karatArr = res.data;
+        this.ref.detectChanges();
       })
     ).subscribe()
   }
@@ -133,6 +138,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.ornamentType) {
       this.ornamentType = changes.ornamentType.currentValue
+    }
+    if (changes.karatArr) {
+      this.karatArr = changes.karatArr.currentValue
+    }
+    if (changes.customerConfirmationArr) {
+      this.customerConfirmationArr = changes.customerConfirmationArr.currentValue
     }
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
@@ -171,6 +182,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       if (changes.action.currentValue == 'edit') {
         let array = [];
         if (changes.meltingDetails.currentValue.meltingOrnament) {
+          changes.meltingDetails.currentValue.meltingOrnament.finalScrapAmountAfterMelting = changes.meltingDetails.currentValue.finalScrapAmountAfterMelting;
           array = [changes.meltingDetails.currentValue.meltingOrnament]
         }
         for (let index = 0; index < array.length; index++) {
@@ -696,8 +708,18 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   nextAction() {
     if (this.disable) {
-      this.next.emit(3)
-      return
+      if (this.scrapIds) {
+        if (this.meltingOrnament) {
+          this.next.emit(4)
+          return
+        } else {
+          this.next.emit(2)
+          return
+        }
+      } else {
+        this.next.emit(3)
+        return
+      }
     }
     if (this.ornamentsForm.invalid) {
       let array = this.OrnamentsData.controls

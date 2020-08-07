@@ -196,7 +196,7 @@ module.exports = (sequelize, DataTypes) => {
                 let data = {};
                 data.path = values.meltingOrnament.ornamentImageWithXrfMachineReading;
                 data.URL = process.env.BASE_URL + values.meltingOrnament.ornamentImageWithXrfMachineReading;
-                values.meltingOrnament.ornamentXrfMachineReadingData = data;
+                values.meltingOrnament.ornamentImageWithXrfMachineReadingData = data;
             }
             if(values.meltingOrnament.ornamentImage){
                 let data = {};
@@ -205,8 +205,7 @@ module.exports = (sequelize, DataTypes) => {
                 values.meltingOrnament.ornamentImageData = data;
             }
         }
-
-        if (values.scrapBankDetails && values.scrapBankDetails.passbookProof.length != 0) {
+        if (values.scrapBankDetails && values.scrapBankDetails.passbookProof != null) {
             let passbookProof = [];
             for (image of values.scrapBankDetails.passbookProof) {
                 image = process.env.BASE_URL + image;
@@ -214,17 +213,16 @@ module.exports = (sequelize, DataTypes) => {
             }
             values.scrapBankDetails.passbookProofImage = passbookProof;
         }
-
-        if (values.customerScrapAcknowledgement && values.customerScrapAcknowledgement.customerConfirmation != 0) {
-            let customerConfirmation = [];
+        if (values.customerScrapAcknowledgement && values.customerScrapAcknowledgement.customerConfirmation != null) {
+            let customerConfirmationImage = [];
             for (image of values.customerScrapAcknowledgement.customerConfirmation) {
-                image = process.env.BASE_URL + image;
-                customerConfirmation.push(image);
+                imageData = process.env.BASE_URL + image;
+                customerConfirmationImage.push(imageData);
             }
-            values.customerScrapAcknowledgement.customerConfirmation = customerConfirmation;
+            values.customerScrapAcknowledgement.customerConfirmationImage = customerConfirmationImage;
         }
 
-        if (values.scrapDocument && values.scrapDocument.purchaseVoucher != 0) {
+        if (values.scrapDocument && values.scrapDocument.purchaseVoucher != null) {
             let purchaseVoucher = [];
             for (image of values.scrapDocument.purchaseVoucher) {
                 image = process.env.BASE_URL + image;
@@ -232,7 +230,7 @@ module.exports = (sequelize, DataTypes) => {
             }
             values.scrapDocument.purchaseVoucher = purchaseVoucher;
         }
-        if (values.scrapDocument && values.scrapDocument.purchaseInvoice != 0) {
+        if (values.scrapDocument && values.scrapDocument.purchaseInvoice != null) {
             let purchaseInvoice = [];
             for (image of values.scrapDocument.purchaseInvoice) {
                 image = process.env.BASE_URL + image;
@@ -240,7 +238,7 @@ module.exports = (sequelize, DataTypes) => {
             }
             values.scrapDocument.purchaseInvoice = purchaseInvoice;
         }
-        if (values.scrapDocument && values.scrapDocument.saleInvoice != 0) {
+        if (values.scrapDocument && values.scrapDocument.saleInvoice != null) {
             let saleInvoice = [];
             for (image of values.scrapDocument.saleInvoice) {
                 image = process.env.BASE_URL + image;
@@ -249,7 +247,6 @@ module.exports = (sequelize, DataTypes) => {
             values.scrapDocument.saleInvoice = saleInvoice;
         }
         if(values.scrapPacketDetails ){
-            console.log(values.scrapPacketDetails);
             for(let data of values.scrapPacketDetails){
                 if(data.emptyPacketWithRefiningOrnament){
                     let packetData = process.env.BASE_URL + data.emptyPacketWithRefiningOrnament;

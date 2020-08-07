@@ -175,18 +175,19 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
 
         this.approvalForm.patchValue(changes.details.currentValue.masterLoan)
         this.approvalForm.patchValue({ commentByAppraiser: changes.details.currentValue.masterLoan.commentByAppraiser })
-        if (changes.details.currentValue.masterLoan.commentByAppraiser) {
-          this.approvalForm.patchValue({ reasons: changes.details.currentValue.masterLoan.commentByAppraiser })
-          let temp = this.reasons.filter(reason => {
-            return reason.description == changes.details.currentValue.masterLoan.commentByAppraiser
-          })
-
-          if (!temp.length) {
-            this.approvalForm.patchValue({ reasons: "Other" })
-          } else {
+        setTimeout(() => {
+          if (changes.details.currentValue.masterLoan.commentByAppraiser) {
             this.approvalForm.patchValue({ reasons: changes.details.currentValue.masterLoan.commentByAppraiser })
+            let temp = this.reasons.filter(reason => {
+              return reason.description == changes.details.currentValue.masterLoan.commentByAppraiser
+            })
+            if (!temp.length) {
+              this.approvalForm.patchValue({ reasons: "Other" })
+            } else {
+              this.approvalForm.patchValue({ reasons: changes.details.currentValue.masterLoan.commentByAppraiser })
+            }
           }
-        }
+        })
         this.approvalForm.controls.loanStatusForBM.patchValue(changes.details.currentValue.masterLoan.loanStatusForBM)
         this.approvalForm.controls.loanStatusForBM.patchValue(changes.details.currentValue.masterLoan.loanStatusForBM)
         console.log(this.approvalForm.value)
@@ -287,6 +288,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       map(res => {
         console.log(res)
         this.reasons = res.data;
+        this.ref.detectChanges()
       })
     ).subscribe()
   }
@@ -417,8 +419,9 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
               this.disableScrapForm(4)
               this.stage = 4
               this.disbursal.emit(4)
+            } else {
+              this.router.navigate(['/admin/scrap-management/applied-scrap'])
             }
-            this.router.navigate(['/admin/scrap-management/applied-scrap'])
           })).subscribe()
       } else if (this.stage == 1 || this.stage == 6) {
         this.scrapApplicationFormService.appraiserRating(this.approvalForm.value, this.scrapIds).pipe(
@@ -445,8 +448,9 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
               this.disableForm(4)
               this.stage = 4
               this.disbursal.emit(4)
+            } else {
+              this.router.navigate(['/admin/loan-management/applied-loan'])
             }
-            this.router.navigate(['/admin/loan-management/applied-loan'])
           })).subscribe()
       } else if (this.stage == 1 || this.stage == 6) {
         // this.approvalForm.controls.commentByAppraiser.patchValue(this.controls.reasons.value)
