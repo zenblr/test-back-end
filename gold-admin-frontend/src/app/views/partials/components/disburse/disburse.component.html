@@ -21,6 +21,7 @@
                 </div>
             </div>
         </div>
+        <div class="col-6"></div>
         <div class="col-6" *ngIf="scrapIds">
             <div class="row justify-content-center kt-margin-t-10">
                 <div class="col-4 form-label">
@@ -42,16 +43,6 @@
                 </div>
             </div>
         </div>
-        <div class="col-6" *ngIf="scrapIds">
-            <div class="row justify-content-center kt-margin-t-10">
-                <div class="col-4 form-label">
-                    <label class="kt-padding-l-10 mandatory">Scrap Amount</label>
-                </div>
-                <div class="col-8">
-                    <input type="text" class="form-control" formControlName="scrapAmount">
-                </div>
-            </div>
-        </div>
         <div class="col-6" *ngIf="!scrapIds">
             <div class="row justify-content-center kt-margin-t-10">
                 <div class="col-4 form-label">
@@ -62,6 +53,17 @@
                 </div>
             </div>
         </div>
+        <div class="col-6" *ngIf="scrapIds">
+            <div class="row justify-content-center kt-margin-t-10">
+                <div class="col-4 form-label">
+                    <label class="kt-padding-l-10 mandatory">Scrap Amount</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" formControlName="scrapAmount">
+                </div>
+            </div>
+        </div>
+        
         <div class="col-6" *ngIf="scrapIds">
             <div class="row justify-content-center kt-margin-t-10">
                 <div class="col-4 form-label">
@@ -91,6 +93,7 @@
                 </div>
             </div>
         </div>
+        <div class="col-6"></div>
         <div class="col-6" *ngIf="details?.isUnsecuredSchemeApplied">
             <div class="row justify-content-center kt-margin-t-10">
                 <div class="col-4 form-label">
@@ -126,6 +129,7 @@
                 </div>
             </div>
         </div>
+        <div class="col-6"></div>
 
         <!-- <div class="col-6">
             <div class="row justify-content-center kt-margin-t-10">
@@ -157,6 +161,7 @@
                 </div>
             </div>
         </div>
+        <div class="col-6"></div>
         <!-- <div class="row justify-content-center kt-margin-t-10" *ngIf="controls.paymentMode.value == 'bank'">
                         <div class="col-4 form-label">
                             <label class="kt-padding-l-10 mandatory">Acknowledgement OTP</label>
@@ -200,6 +205,7 @@
                 </div>
             </div>
         </div>
+        <div class="col-6"></div>
         <div class="col-6">
 
             <div class="row kt-padding-t-15">

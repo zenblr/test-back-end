@@ -84,7 +84,7 @@ exports.getAllNewRequest = async (req, res, next) => {
     if (allRequest.length === 0) {
         return res.status(404).json({ message: `Data not found`, data: [] })
     } else {
-        return res.status(200).json({ message: `Fetched all request successfully`, allRequest,count: count })
+        return res.status(200).json({ message: `Fetched all request successfully`, data:allRequest,count: count })
     }
 }
 
@@ -160,6 +160,6 @@ exports.getAssignedRequest = async (req, res) => {
     if (allRequest.length === 0) {
         return res.status(404).json({ message: `Data not found`, data: [] })
     } else {
-        return res.status(200).json({ message: `Fetched all request successfully`, allRequest,count: count })
+        return res.status(200).json({ message: `Fetched all request successfully`, data:allRequest,count: count })
     }
 }
