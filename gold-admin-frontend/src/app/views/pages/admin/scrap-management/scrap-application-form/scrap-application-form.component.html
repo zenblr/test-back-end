@@ -74,7 +74,7 @@
                             [scrapDocuments]="customerDetail" [showButton]="showButton" [showScrapFlag]="true">
                         </kt-upload-documents>
                     </mat-tab>
-                    <mat-tab label="Scrap Status Approval" [disabled]="disabled[7]"
+                    <mat-tab label="Scrap Status Approval" [disabled]="false"
                         *ngIf="scrapStage?.id == 7 || scrapStage?.id == 4 || (url == 'view-scrap' && scrapStage?.id == 7) || (url == 'view-scrap' && scrapStage?.id == 4) || (url == 'view-scrap' && scrapStage?.id == 5)">
                         <kt-approval [action]="action" [disable]="approvalFrom" [scrapDetails]="customerDetail"
                             [scrapIds]="scrapIds" [scrapStage]="scrapStage" (disbursal)="disbursal($event)">

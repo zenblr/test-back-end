@@ -153,6 +153,46 @@
  *         description: ornaments melting details added successfully
  *       404:
  *         description: Data not found.
+ * /scrap/scrap-process/quick-pay:
+ *   post:
+ *     tags:
+ *       -  Customer scrap Process
+ *     name: quick pay to the customer
+ *     summary: quick pay to the customer
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             scrapId:
+ *               type: integer
+ *             paymentMode:
+ *               type: string
+ *             bankName:
+ *               type: string
+ *             bankBranch:
+ *               type: string
+ *             transactionId:
+ *               type: string
+ *             chequeNumber:
+ *               type: string
+ *             depositAmount:
+ *               type: number
+ *             depositDate:
+ *               type: string
+ *         required:
+ *           - scrapId
+ *           - paymentMode
+ *     responses:
+ *       200:
+ *         description: quickPayment done successfully
+ *       404:
+ *         description: Data not found.
  * /scrap/scrap-process/bank-details:
  *   post:
  *     tags:
@@ -626,6 +666,25 @@
  *       -  Customer scrap Process
  *     name: print customer acknowledgement
  *     summary: To print customer acknowledgement
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "scrapId"
+ *       in: "query"
+ *       description: "Id of customer scrap Id"
+ *       type: "string"
+ *       required: true
+ *     responses:
+ *       200:
+ *          description: success.
+ * /scrap/scrap-process/get-purchase-voucher:
+ *   get:
+ *     tags: 
+ *       -  Customer scrap Process
+ *     name: print purchase voucher
+ *     summary: To print purchase voucher
  *     security:
  *       - bearerAuth: []
  *     consumes:

@@ -96,7 +96,7 @@ export class UploadDocumentsComponent implements OnInit {
       this.isEdit = true
     }
     this.ngxPermission.permissions$.subscribe(res => {
-      if ((this.url == "loan-transfer" && res.loanTransferRating) || this.url == "scrap-buying-application-form") {
+      if ((this.url == "loan-transfer" && (res.loanTransferAppraiserRating || res.loanTransferRating)) || this.url == "scrap-buying-application-form" || this.url == "view-loan") {
         this.buttonValue = 'next';
       } else {
         this.buttonValue = 'save';
@@ -123,6 +123,7 @@ export class UploadDocumentsComponent implements OnInit {
         })
         this.pdfCheck();
         this.isEdit = false
+        this.buttonValue = 'Next'
       }
     }
     if (changes.acknowledgmentDocuments && changes.acknowledgmentDocuments.currentValue) {
@@ -171,6 +172,7 @@ export class UploadDocumentsComponent implements OnInit {
         this.pdfCheck();
         this.isEdit = false
         this.ref.detectChanges();
+        this.buttonValue = 'Next'
       }
     }
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
@@ -189,7 +191,9 @@ export class UploadDocumentsComponent implements OnInit {
         if (documents.loanTransferStatusForAppraiser == 'approved') {
           this.isEdit = false
           this.documentsForm.disable()
-          this.ref.detectChanges()
+          this.buttonValue = 'Next'
+          this.ref.detectChanges();
+
         }
       }
     }
@@ -232,27 +236,26 @@ export class UploadDocumentsComponent implements OnInit {
 
   ngAfterViewInit() {
     this.globalSettingService.globalSetting$.subscribe(global => this.globalValue = global);
-
-    this.documentsForm.controls['customerConfirmationStatus'].valueChanges.subscribe((val) => {
-      this.isAcknowlegementEdit = false
-      if (val == 'confirmed') {
-        this.buttonValue = 'Next';
-        this.showCustomerConfirmationFlag = true;
-        this.documentsForm.controls.customerConfirmation.setValidators(Validators.required),
-          this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
-      } else {
-        this.buttonValue = 'Save';
-        this.showCustomerConfirmationFlag = false;
-        this.documentsForm.patchValue({
-          customerConfirmation: null,
-          customerConfirmationImage: null,
-          customerConfirmationImageName: null,
-          customerConfirmationArr: null
-        })
-        this.documentsForm.controls.customerConfirmation.setValidators([]),
-          this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
-      }
-    });
+    if (this.url == "scrap-buying-application-form") {
+      this.documentsForm.controls['customerConfirmationStatus'].valueChanges.subscribe((val) => {
+        if (val == 'confirmed') {
+          this.buttonValue = 'Next';
+          this.showCustomerConfirmationFlag = true;
+          this.documentsForm.controls.customerConfirmation.setValidators(Validators.required),
+            this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
+        } else {
+          this.buttonValue = 'Save';
+          this.showCustomerConfirmationFlag = false;
+          this.documentsForm.patchValue({
+            customerConfirmation: [],
+            customerConfirmationImage: [],
+            customerConfirmationImageName: []
+          })
+          this.documentsForm.controls.customerConfirmation.setValidators([]),
+            this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
+        }
+      });
+    }
   }
 
   initForm() {
