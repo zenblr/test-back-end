@@ -18,7 +18,7 @@ import { AssignAppraiserPacketsComponent } from '../assign-appraiser-packets/ass
 })
 export class PacketsListComponent implements OnInit {
   dataSource: ScrapPacketsDatasource;
-  displayedColumns = ['select', 'packetUniqueId', 'internalBranch', 'appraiserName', 'customerID', 'scrapId', 'actions'];
+  displayedColumns = ['select', 'packetUniqueId', 'barcode', 'internalBranch', 'appraiserName', 'customerID', 'scrapId', 'actions'];
   packetsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
