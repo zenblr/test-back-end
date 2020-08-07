@@ -429,7 +429,8 @@
                                 <img class="edit-icon kt-pointer" src="../../../../../assets/media/icons/edit.svg"
                                     (click)="editImages('customerConfirmation')"
                                     *ngIf="isEdit && controls?.customerConfirmationImage?.value">
-                                <input type="file" class="d-none" #customerConfirmation *ngIf="isAcknowlegementEdit">
+                                <input type="file" class="d-none" #customerConfirmation
+                                    (change)="fileUpload($event,'customerConfirmation')" *ngIf="isAcknowlegementEdit">
                                 <div class="iframeWrapper"
                                     (click)="preview(controls?.customerConfirmationImage?.value)">
                                     <iframe [src]="controls?.customerConfirmationImage?.value | safe : 'resourceUrl'"
