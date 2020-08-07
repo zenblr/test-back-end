@@ -13,7 +13,7 @@ const swagger = require('./swagger');
 const scrapSwagger = require('./scrapSwagger')
 // api logger middleware.
 const apiLogger = require("./middleware/apiLogger");
-const { cronForDailyPenalInterest } = require("./utils/interestCalculation");
+const { cronForDailyPenalInterest, dailyIntrestCalculation } = require("./utils/interestCalculation");
 //customer api logger middleware
 const customerApiLogger = require("./middleware/customerApiLogger");
 
@@ -98,8 +98,12 @@ app.use(function (err, req, res, next) {
 // })
 
 cron.schedule('0 1 * * *', async function () {
-    await cronForDailyPenalInterest();
     let date = moment()
+
+    await dailyIntrestCalculation(date);
+    await models.cronRun.create({ date: date, type: 'Interest' })
+
+    await cronForDailyPenalInterest();
     await models.cronRun.create({ date: date, type: 'penal Interest' })
 })
 
