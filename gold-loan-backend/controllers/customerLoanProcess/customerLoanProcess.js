@@ -322,7 +322,7 @@ exports.checkForLoanType = async (req, res, next) => {
     else {
 
         processingCharge = await processingChargeSecuredScheme(loanAmount, securedScheme, undefined, undefined)
-        return res.status(200).json({ data: { securedLoanAmount:loanAmount,securedScheme, processingCharge, isUnsecuredSchemeApplied: false, unsecuredAmount:0 } })
+        return res.status(200).json({ data: { securedLoanAmount: loanAmount, securedScheme, processingCharge, isUnsecuredSchemeApplied: false, unsecuredAmount: 0 } })
 
     }
 }
@@ -955,7 +955,7 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
 
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: PACKET_IMAGES, modifiedBy }, { transaction: t });
         })
-        
+
 
     }
     return res.status(200).json({ message: `Packets added successfully` })
@@ -2119,4 +2119,22 @@ exports.getDetailsForPrint = async (req, res, next) => {
 
 
 
+}
+
+
+exports.getLoanOrnaments = async (req, res, next) => {
+    let { masterLoanId } = req.query;
+
+    let getLoanOrnaments = await models.customerLoanOrnamentsDetail.findAll({
+        where: { masterLoanId },
+        attributes:[],
+        include: [
+            {
+                model: models.ornamentType,
+                as: "ornamentType"
+            }
+        ]
+    })
+
+    return res.status(200).json({ data: getLoanOrnaments })
 }

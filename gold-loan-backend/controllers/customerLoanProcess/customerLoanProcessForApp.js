@@ -47,7 +47,6 @@ exports.loanRequest = async (req, res, next) => {
 
                 // ornaments
                 let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
-                let loanData = await sequelize.transaction(async t => {
                     if (loanSubmitted.isLoanSubmitted == false) {
                         await models.customerLoanMaster.update({ customerLoanCurrentStage: '4', modifiedBy, totalEligibleAmt, fullAmount }, { where: { id: masterLoanId }, transaction: t })
                     }
@@ -63,8 +62,6 @@ exports.loanRequest = async (req, res, next) => {
                         var ornaments = await models.customerLoanOrnamentsDetail.create(purityTestData, { transaction: t });
                         createdOrnaments.push(ornaments)
                     }
-                    return createdOrnaments
-                })
 
             } else {
                 let masterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, internalBranchId: req.userData.internalBranchId, fullAmount, totalEligibleAmt, createdBy, modifiedBy }, { transaction: t })

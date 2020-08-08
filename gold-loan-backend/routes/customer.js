@@ -5,7 +5,7 @@ const { wrapper } = require('../utils/errorWrap')
 const validationError = require('../middleware/validationError');
 const { customerValidation, customerUpdateValidation } = require('../validations/customer');
 
-const { addCustomer, editCustomer, deactivateCustomer, getAllCustomersForLead, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, getCustomerUniqueId, getAllCustomerForCustomerManagement, getsingleCustomerManagement } = require('../controllers/customer/customer')
+const { getOtp, addCustomer, editCustomer, deactivateCustomer, getAllCustomersForLead, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, getCustomerUniqueId, getAllCustomerForCustomerManagement, getsingleCustomerManagement } = require('../controllers/customer/customer')
 const checkAuth = require('../middleware/checkAuth');
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
@@ -17,6 +17,8 @@ const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetai
     readFeedBack, addFeedBack } = require('../controllers/customer/customerApp')
 
 //customer
+router.get('/get-otp', checkAuth, wrapper(getOtp))
+
 router.post('/', customerValidation, validationError, checkAuth, checkRolePermission, wrapper(addCustomer));
 
 router.post('/send-register-otp', checkAuth, registerCustomerSendOtp);
