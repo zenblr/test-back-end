@@ -22,7 +22,7 @@ export class LoanTransferService {
     );
   }
 
-  getCustomerDetailsForTransfer(id):Observable<any> {
+  getCustomerDetailsForTransfer(id): Observable<any> {
     return this.http.get(`/api/loan-transfer/${id}`).pipe(
       map(res => res),
       catchError(err => {
@@ -42,7 +42,7 @@ export class LoanTransferService {
         throw (err)
       })
     );
-    
+
   }
 
   uploadDocuments(details, masterAndLoanIds): Observable<any> {
@@ -62,11 +62,11 @@ export class LoanTransferService {
     let data = { ...details, ...masterAndLoanIds }
     return this.http.post(`/api/loan-transfer/bm-rating`, data).pipe(
       map(res => res),
-      catchError(err => {
-        if (err.error.message)
-          this.toastr.error(err.error.message)
-        throw (err)
-      })
+      // catchError(err => {
+      //   if (err.error.message)
+      //     this.toastr.error(err.error.message)
+      //   throw (err)
+      // })
     );
   }
 
@@ -82,7 +82,7 @@ export class LoanTransferService {
     );
   }
 
-  
+
 
   disbursal(details, masterAndLoanIds): Observable<any> {
     let data = { ...details, ...masterAndLoanIds }
