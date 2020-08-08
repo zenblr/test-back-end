@@ -6,7 +6,7 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 const check = require("../../lib/checkLib");
 const action = require('../../utils/partReleaseHistory');
 const loanFunction = require('../../utils/loanFunction');
-const { getCustomerLoanId, interestAmountCalculation, getGlobalSetting, getLoanDetails } = require('../../utils/interestCalculation');
+const { getCustomerLoanId, interestAmountCalculation, getGlobalSetting, getLoanDetails } = require('../../utils/loanFunction');
 
 
 exports.ornamentsDetails = async (req, res, next) => {
