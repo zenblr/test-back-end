@@ -518,16 +518,20 @@ exports.scrapDocuments = async (req, res, next) => {
 
         })
 
-        return res.status(200).json({ message: 'success', scrapId })
+        return res.status(200).json({ message: 'Documents added successfully', scrapId })
     } else {
+        console.log("err");
         let scrapData = await sequelize.transaction(async t => {
+            let stageId = await models.scrapStage.findOne({ where: { stageName: 'OPS team rating' }, transaction: t })
 
             await models.customerScrapDocument.update({ purchaseVoucher, purchaseInvoice, saleInvoice, modifiedBy }, { where: { scrapId: scrapId }, transaction: t })
+
+            await models.customerScrap.update({ scrapStageId: stageId.id, modifiedBy }, { where: { id: scrapId }, transaction: t })
 
             await models.customerScrapHistory.create({ scrapId, action: SCRAP_DOCUMENTS, modifiedBy }, { transaction: t });
 
         })
-        return res.status(200).json({ message: 'success', scrapId })
+        return res.status(200).json({ message: 'Documents added successfully', scrapId })
     }
 
 }
@@ -616,123 +620,126 @@ exports.singleScrapDetails = async (req, res, next) => {
 
 //  FUNCTION FOR ADD PACKAGE IMAGES
 exports.addPackageImagesForScrap = async (req, res, next) => {
-        let { scrapId, emptyPacketWithNoOrnament, sealingPacketWithWeight, sealingPacketWithCustomer, packetOrnamentArray } = req.body;
-        let createdBy = req.userData.id;
-        let modifiedBy = req.userData.id;
-        let scrapDetails = await models.customerScrap.findOne({ where: { id: scrapId } });
+    let { scrapId, emptyPacketWithNoOrnament, sealingPacketWithWeight, sealingPacketWithCustomer, packetOrnamentArray } = req.body;
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+    let scrapDetails = await models.customerScrap.findOne({ where: { id: scrapId } });
 
-        let getPackets = await models.customerScrapPackageDetails.findAll({ where: { scrapId: scrapId } });
+    let getPackets = await models.customerScrapPackageDetails.findAll({ where: { scrapId: scrapId } });
 
-        let packetArray = await packetOrnamentArray.map(ele => {
-            return ele.packetId
+    let packetArray = await packetOrnamentArray.map(ele => {
+        return ele.packetId
+    })
+    let packetUpdateArray = await packetArray.map(ele => {
+        let obj = {}
+        obj.id = Number(ele);
+        obj.customerId = scrapDetails.customerId;
+        obj.scrapId = scrapId;
+        obj.modifiedBy = modifiedBy
+        obj.packetAssigned = true;
+        return obj
+    })
+
+    if (check.isEmpty(getPackets)) {
+
+        await sequelize.transaction(async (t) => {
+            let stageId = await models.scrapStage.findOne({ where: { stageName: 'bm rating' }, transaction: t })
+
+            await models.customerScrap.update({ scrapStageId: stageId.id, modifiedBy }, { where: { id: scrapId }, transaction: t })
+
+            let scrapPacket = await models.customerScrapPackageDetails.create({ scrapId, emptyPacketWithRefiningOrnament: emptyPacketWithNoOrnament, sealedPacketWithWeight: sealingPacketWithWeight, sealedPacketWithCustomer: sealingPacketWithCustomer, createdBy, modifiedBy }, { transaction: t })
+
+            let packetMapping = []
+            for (single of packetOrnamentArray) {
+                let entry = {}
+                entry['customerScrapPackageDetailId'] = scrapPacket.id
+                entry['packetId'] = single.packetId
+                packetMapping.push(entry)
+            }
+
+            await models.customerScrapPacket.bulkCreate(packetMapping, { transaction: t })
+
+            // let ornamentPacketData = [];
+            // for (let x of packetOrnamentArray) {
+            //     for (let singleOrnamentId of x.ornamentsId) {
+            //         let pushData = {}
+            //         pushData['packetId'] = Number(x.packetId)
+            //         pushData['ornamentTypeId'] = Number(singleOrnamentId)
+            //         ornamentPacketData.push(pushData)
+            //     }
+            // }
+            // console.log(ornamentPacketData)
+            // await models.packetOrnament.bulkCreate(ornamentPacketData, { transaction: t })
+
+            await models.scrapPacket.bulkCreate(packetUpdateArray, {
+                updateOnDuplicate: ["customerId", "scrapId", "modifiedBy", "packetAssigned"]
+            }, { transaction: t })
+
+            await models.customerScrapHistory.create({ scrapId, action: PACKET_IMAGES, modifiedBy }, { transaction: t });
+
         })
-        let packetUpdateArray = await packetArray.map(ele => {
-            let obj = {}
-            obj.id = ele;
-            obj.customerId = scrapDetails.customerId;
-            obj.scrapId = scrapId;
-            obj.modifiedBy = modifiedBy
-            obj.packetAssigned = true;
-            return obj
-        })
+    } else {
+        await sequelize.transaction(async (t) => {
+            let stageId = await models.scrapStage.findOne({ where: { stageName: 'bm rating' }, transaction: t })
 
-        if (check.isEmpty(getPackets)) {
+            await models.customerScrap.update({ scrapStageId: stageId.id, modifiedBy }, { where: { id: scrapId }, transaction: t })
 
-            await sequelize.transaction(async (t) => {
-                let stageId = await models.scrapStage.findOne({ where: { stageName: 'bm rating' }, transaction: t })
+            let loanPacket = await models.customerScrapPackageDetails.update({ emptyPacketWithRefiningOrnament: emptyPacketWithNoOrnament, sealedPacketWithWeight: sealingPacketWithWeight, sealedPacketWithCustomer: sealingPacketWithCustomer, modifiedBy }, { where: { scrapId: scrapId }, transaction: t })
 
-                await models.customerScrap.update({ scrapStageId: stageId.id, modifiedBy }, { where: { id: scrapId }, transaction: t })
+            let previousSelectedPacket = await models.scrapPacket.findAll({ where: { scrapId: scrapId } });
 
-                let scrapPacket = await models.customerScrapPackageDetails.create({ scrapId, emptyPacketWithRefiningOrnament: emptyPacketWithNoOrnament, sealedPacketWithWeight: sealingPacketWithWeight, sealedPacketWithCustomer: sealingPacketWithCustomer, createdBy, modifiedBy }, { transaction: t })
+            let packetId = previousSelectedPacket.map(ele => ele.id)
 
-                let packetMapping = []
-                for (single of packetOrnamentArray) {
-                    let entry = {}
-                    entry['customerScrapPackageDetailId'] = scrapPacket.id
-                    entry['packetId'] = single.packetId
-                    packetMapping.push(entry)
-                }
+            let x = await models.customerScrapPacket.destroy({ where: { customerScrapPackageDetailId: getPackets[0].id }, transaction: t })
 
-                await models.customerScrapPacket.bulkCreate(packetMapping, { transaction: t })
+            // let y = await models.packetOrnament.destroy({ where: { packetId: { [Op.in]: packetId } }, transaction: t })
 
-                // let ornamentPacketData = [];
-                // for (let x of packetOrnamentArray) {
-                //     for (let singleOrnamentId of x.ornamentsId) {
-                //         let pushData = {}
-                //         pushData['packetId'] = Number(x.packetId)
-                //         pushData['ornamentTypeId'] = Number(singleOrnamentId)
-                //         ornamentPacketData.push(pushData)
-                //     }
-                // }
-                // console.log(ornamentPacketData)
-                // await models.packetOrnament.bulkCreate(ornamentPacketData, { transaction: t })
-
-                await models.scrapPacket.bulkCreate(packetUpdateArray, {
-                    updateOnDuplicate: ["customerId", "scrapId", "modifiedBy", "packetAssigned"]
-                }, { transaction: t })
-
-                await models.customerScrapHistory.create({ scrapId, action: PACKET_IMAGES, modifiedBy }, { transaction: t });
-
-            })
-        } else {
-            await sequelize.transaction(async (t) => {
-                let stageId = await models.scrapStage.findOne({ where: { stageName: 'bm rating' }, transaction: t })
-
-                await models.customerScrap.update({ scrapStageId: stageId.id, modifiedBy }, { where: { id: scrapId }, transaction: t })
-
-                let loanPacket = await models.customerScrapPackageDetails.update({ emptyPacketWithRefiningOrnament: emptyPacketWithNoOrnament, sealedPacketWithWeight: sealingPacketWithWeight, sealedPacketWithCustomer: sealingPacketWithCustomer, modifiedBy }, { where: { scrapId: scrapId }, transaction: t })
-
-                let previousSelectedPacket = await models.scrapPacket.findAll({ where: { scrapId: scrapId } });
-
-                let packetId = previousSelectedPacket.map(ele => ele.id)
-
-                let x = await models.customerScrapPacket.destroy({ where: { customerScrapPackageDetailId: getPackets[0].id }, transaction: t })
-
-                // let y = await models.packetOrnament.destroy({ where: { packetId: { [Op.in]: packetId } }, transaction: t })
-
-                let z = await models.scrapPacket.update({ customerId: null, scrapId: null, packetAssigned: false }, {
-                    where: { id: { [Op.in]: packetId } }, transaction: t
-                })
-
-                let packetMapping = []
-                for (single of packetOrnamentArray) {
-                    let entry = {}
-                    entry['customerScrapPackageDetailId'] = getPackets[0].id
-                    entry['packetId'] = single.packetId
-                    packetMapping.push(entry)
-                }
-
-                for(let ele of packetMapping){
-                await models.customerScrapPacket.create({customerScrapPackageDetailId: ele.customerScrapPackageDetailId, packetId: ele.packetId}, { transaction: t });
-
-                }
-
-                // let ornamentPacketData = [];
-                // for (let x of packetOrnamentArray) {
-                //     for (let singleOrnamentId of x.ornamentsId) {
-                //         let pushData = {}
-                //         pushData['packetId'] = Number(x.packetId)
-                //         pushData['ornamentTypeId'] = Number(singleOrnamentId)
-                //         ornamentPacketData.push(pushData)
-                //     }
-                // }
-                // console.log(ornamentPacketData)
-                // await models.packetOrnament.bulkCreate(ornamentPacketData, { transaction: t })
-
-                for( let ele of packetUpdateArray){
-                    await models.scrapPacket.update({id: ele.id,
-                        customerId: ele.customerId,scrapId: ele.scrapId,modifiedBy: ele.modifiedBy,packetAssigned: true}
-                    ,{where: { id: { [Op.in]: packetId } }, transaction: t });
-                }
-                // await models.scrapPacket.bulkCreate(packetUpdateArray, {
-                //     updateOnDuplicate: ["customerId", "scrapId", "modifiedBy", "packetAssigned"]
-                // }, { transaction: t });
-
-                await models.customerScrapHistory.create({ scrapId, action: PACKET_IMAGES, modifiedBy }, { transaction: t });
+            let z = await models.scrapPacket.update({ customerId: null, scrapId: null, packetAssigned: false }, {
+                where: { id: { [Op.in]: packetId } }, transaction: t
             })
 
-        }
-        return res.status(200).json({ message: `Packets added successfully` });
+            let packetMapping = []
+            for (single of packetOrnamentArray) {
+                let entry = {}
+                entry['customerScrapPackageDetailId'] = getPackets[0].id
+                entry['packetId'] = single.packetId
+                packetMapping.push(entry)
+            }
+
+            for (let ele of packetMapping) {
+                await models.customerScrapPacket.create({ customerScrapPackageDetailId: ele.customerScrapPackageDetailId, packetId: ele.packetId }, { transaction: t });
+
+            }
+
+            // let ornamentPacketData = [];
+            // for (let x of packetOrnamentArray) {
+            //     for (let singleOrnamentId of x.ornamentsId) {
+            //         let pushData = {}
+            //         pushData['packetId'] = Number(x.packetId)
+            //         pushData['ornamentTypeId'] = Number(singleOrnamentId)
+            //         ornamentPacketData.push(pushData)
+            //     }
+            // }
+            // console.log(ornamentPacketData)
+            // await models.packetOrnament.bulkCreate(ornamentPacketData, { transaction: t })
+
+            for (let ele of packetUpdateArray) {
+                await models.scrapPacket.update({
+                    customerId: ele.customerId, scrapId: ele.scrapId, modifiedBy: ele.modifiedBy, packetAssigned: true
+                }
+                    , { where: { id: { [Op.in]: packetId } }, transaction: t });
+            }
+
+            // console.log(packetUpdateArray);
+            // await models.scrapPacket.bulkCreate(packetUpdateArray, {
+            //     updateOnDuplicate: ["customerId", "scrapId", "modifiedBy", "packetAssigned"]
+            // }, { transaction: t });
+
+            await models.customerScrapHistory.create({ scrapId, action: PACKET_IMAGES, modifiedBy }, { transaction: t });
+        })
+
+    }
+    return res.status(200).json({ message: `Packets added successfully` });
 
 }
 

@@ -40,6 +40,9 @@ export class PageConfig {
 				'standard-deduction': {
 					page: { title: "Standard Deduction", desc: "" },
 				},
+				'other-charges': {
+					page: { title: "Other Charges", desc: "" },
+				}
 			},
 			"global-settings": {
 				page: { title: "Global Settings", desc: "" },

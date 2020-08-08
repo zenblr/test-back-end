@@ -119,7 +119,7 @@
                                             <tr>
                                                 <td scope="row" class="rating-title">Final Loan Transfer Status
                                                 </td>
-                                                <td class="rating-bm"
+                                                <td class="rating-bm px-4"
                                                     *ngIf="loanTransferStage == '3' || loanTransferStage == '4' || loanTransferStage == '5'">
                                                     <!-- <select class="form-control "
                                                         formControlName="loanStatusForAppraiser"
@@ -141,7 +141,7 @@
                                                         (change)="clearAppraiser();statusAppraiser()"
                                                         [class.isError]="approvalForm.controls.loanTransferStatusForAppraiser.touched && this.approvalForm.controls.loanTransferStatusForAppraiser.invalid"
                                                         formControlName="loanTransferStatusForAppraiser">
-                                                        <option value="pending">Select Status</option>
+                                                        <option value="">Select Status</option>
                                                         <option [value]="manager.value"
                                                             *ngFor="let manager of appraiserOrCCE">
                                                             {{manager.name | titlecase}}</option>
@@ -190,18 +190,18 @@
 
                             <ng-container
                                 *ngIf="laonTransferDetails && (loanTransferStage == '3' || loanTransferStage == '4' || loanTransferStage == '5')">
-                                <div class="row justify-content-center mb-3"
+                                <div class="row justify-content-center mb-3" style="width: 600px; margin:auto"
                                     *ngIf="laonTransferDetails.masterLoan.loanTransfer.loanTransferStatusForBM == 'incomplete' && laonTransferDetails.masterLoan.loanTransfer.reasonByBM">
-                                    <div class="col-7">
+                                    <div class="col-12">
                                         <div class="row">
-                                            <div class="col-4">
-                                                <label for="">Reason for
+                                            <div class="col-6 pl-0">
+                                                <label style="font-weight: 400;" for="">Reason for
                                                     {{laonTransferDetails.masterLoan.loanTransfer.loanTransferStatusForBM | titlecase}}
                                                     <br>
                                                     (Branch
                                                     Manager)</label>
                                             </div>
-                                            <div class="col-8 kt-padding-10">
+                                            <div class="col-6 kt-padding-10">
                                                 <label
                                                     for="">{{ laonTransferDetails.masterLoan.loanTransfer.reasonByBM }}</label>
                                             </div>
@@ -212,14 +212,14 @@
 
                             <div
                                 *ngIf="loanTransferStage == '3' || loanTransferStage == '4' || loanTransferStage == '5'">
-                                <div class="row justify-content-center "
+                                <div class="row justify-content-center " style="width: 600px; margin:auto"
                                     *ngIf="approvalForm.controls.loanTransferStatusForAppraiser.value && approvalForm.controls.loanTransferStatusForAppraiser.value != 'approved'">
-                                    <div class="col-7">
+                                    <div class="col-12">
                                         <div class="row">
-                                            <div class="col-4">
-                                                <label for="">Choose a reason</label>
+                                            <div class="col-6 pl-0">
+                                                <label style="font-weight: 400;" for="">Choose a reason</label>
                                             </div>
-                                            <div class="col-8">
+                                            <div class="col-6 pr-0">
                                                 <select name="" id="" class="form-control" formControlName="reason"
                                                     (change)="patchValue('reasonByAppraiser')"
                                                     [class.isError]="approvalForm.controls.reason.invalid && approvalForm.controls.reason.touched">
@@ -235,7 +235,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-7">
+                                    <div class="col-12">
                                         <div class="row justify-content-center "
                                             *ngIf="approvalForm.controls.reason.value == 'Other'">
                                             <!-- <div class="col-7"> -->
@@ -253,14 +253,14 @@
                             </div>
 
                             <div *ngIf="loanTransferStage == '4' || loanTransferStage == '5'">
-                                <div class="row justify-content-center "
+                                <div class="row justify-content-center " style="width: 600px; margin: auto;"
                                     *ngIf="approvalForm.controls.loanTransferStatusForBM.value !='pending' && approvalForm.controls.loanTransferStatusForBM.value != 'approved'">
-                                    <div class="col-7">
+                                    <div class="col-12">
                                         <div class="row">
-                                            <div class="col-4">
-                                                <label for="">Choose a reason</label>
+                                            <div class="col-6 pl-0">
+                                                <label style="font-weight: 400;" for="">Choose a reason</label>
                                             </div>
-                                            <div class="col-8">
+                                            <div class="col-6 pr-0">
                                                 <select name="" id="" class="form-control" formControlName="reason"
                                                     (change)="patchValue('reasonByBM')"
                                                     [class.isError]="approvalForm.controls.reason.invalid && approvalForm.controls.reason.touched">
@@ -276,7 +276,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-7">
+                                    <div class="col-12">
                                         <div class="row justify-content-center "
                                             *ngIf="approvalForm.controls.reason.value == 'Other'">
                                             <!-- <div class="col-7"> -->
