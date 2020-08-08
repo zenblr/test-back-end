@@ -109,6 +109,7 @@ exports.loanRequest = async (req, res, next) => {
                 interestTable[i]['interestAmount'] = interestTable[i].securedInterestAmount
                 interestTable[i]['outstandingInterest'] = interestTable[i].securedInterestAmount
                 interestTable[i]['masterLoanId'] = masterLoanId
+                interestTable[i]['interestRate'] = interestRate
                 interestData.push(interestTable[i])
             }
 
@@ -145,6 +146,7 @@ exports.loanRequest = async (req, res, next) => {
                             interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                             interestTable[i]['masterLoanId'] = masterLoanId
                             interestTable[i]['interestRate'] = interestRate
+                            interestTable[i]['interestRate'] = unsecuredInterestRate
                             
                             newUnsecuredInterestData.push(interestTable[i])
                         }
@@ -220,6 +222,7 @@ exports.loanRequest = async (req, res, next) => {
                                 interestTable[i]['interestAmount'] = interestTable[i].unsecuredInterestAmount
                                 interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                                 interestTable[i]['masterLoanId'] = masterLoanId
+                                interestTable[i]['interestRate'] = unsecuredInterestRate
                                 newUnsecuredInterestData.push(interestTable[i])
                             }
 
