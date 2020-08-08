@@ -43,12 +43,6 @@ exports.loanRequest = async (req, res, next) => {
             // nominee
             await models.customerLoanNomineeDetail.update({ nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship, createdBy, modifiedBy }, { where: { masterLoanId: masterLoanId }, transaction: t })
 
-            // ornaments
-            let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
-            if (loanSubmitted.isLoanSubmitted == false) {
-                await models.customerLoanMaster.update({ customerLoanCurrentStage: '4', modifiedBy, totalEligibleAmt, fullAmount }, { where: { id: masterLoanId }, transaction: t })
-            }
-
             await models.customerLoanOrnamentsDetail.destroy({ where: { masterLoanId: masterLoanId }, transaction: t });
             // let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { transaction: t });
 
