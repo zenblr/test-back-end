@@ -250,14 +250,17 @@ module.exports = (sequelize, DataTypes) => {
             for(let data of values.scrapPacketDetails){
                 if(data.emptyPacketWithRefiningOrnament){
                     let packetData = process.env.BASE_URL + data.emptyPacketWithRefiningOrnament;
+                    data.emptyPacketWithNoOrnament = data.emptyPacketWithRefiningOrnament
                     data.emptyPacketWithNoOrnamentImage = packetData;
                 }
                 if(data.sealedPacketWithWeight){
                     let packetData = process.env.BASE_URL + data.sealedPacketWithWeight;
+                    data.sealingPacketWithWeight =  data.sealedPacketWithWeight
                     data.sealingPacketWithWeightImage = packetData;
                 }
                 if(data.sealedPacketWithCustomer){
                     let packetData = process.env.BASE_URL + data.sealedPacketWithCustomer;
+                    data.sealingPacketWithCustomer = data.sealedPacketWithCustomer
                     data.sealingPacketWithCustomerImage = packetData;
                 }
             }
