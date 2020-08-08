@@ -43,8 +43,7 @@
                 <label class="kt-padding-l-10">Customer confirmation Status</label>
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
-                <label class="kt-padding-l-10 kt-padding-r-25">Customer Confirmation for melting ornament(Jewellery)
-                </label>
+                <label class="kt-padding-l-10 kt-padding-r-25">Customer Confirmation(Melting)</label>
                 <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showScrapFlag">
@@ -56,6 +55,83 @@
             </div>
             <div class="col form-label" *ngIf="showScrapFlag">
                 <label class="kt-padding-l-10">Sale Invoice(In case of a registered dealer)</label>
+            </div>
+        </div>
+        <div class="row justify-content-between" *ngIf="showScrapAcknowledgementFlag">
+            <div class="col" *ngIf="showScrapAcknowledgementFlag">
+                <input type="text" formControlName="processingCharges" class="form-control "
+                    [class.isError]="controls.processingCharges.touched && controls.processingCharges.invalid"
+                    placeholder="Processing Charges" readonly>
+                <mat-error *ngIf="controls.processingCharges.touched && controls.processingCharges.invalid">
+                    Field Required</mat-error>
+            </div>
+            <div class="col" *ngIf="showScrapAcknowledgementFlag">
+                <select class="form-control" formControlName="standardDeduction"
+                    [class.isError]="controls.standardDeduction.touched && controls.standardDeduction.invalid">
+                    <option value="" [disabled]="true" [selected]="controls.standardDeduction.value == '' ||
+                            controls.standardDeduction.value == null">Select Standard Deduction</option>
+                    <option [value]="sd.standardDeduction" *ngFor="let sd of standardDeductionArr">
+                        {{sd.standardDeduction}}
+                    </option>
+                </select>
+                <mat-error *ngIf="controls.standardDeduction.touched && controls.standardDeduction.invalid">
+                    <span *ngIf="controls.standardDeduction.errors?.required">Field Required</span>
+                </mat-error>
+            </div>
+            <div class="col" *ngIf="showScrapAcknowledgementFlag">
+                <select class="form-control" formControlName="customerConfirmationStatus"
+                    [class.isError]="controls.customerConfirmationStatus.touched && controls.customerConfirmationStatus.invalid">
+                    <option value="" [disabled]="true" [selected]="true">Select Customer confirmation Status</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="incomplete">Incomplete</option>
+                </select>
+                <mat-error
+                    *ngIf="controls.customerConfirmationStatus.touched && controls.customerConfirmationStatus.invalid">
+                    <span *ngIf="controls.customerConfirmationStatus.errors?.required">Field
+                        Required</span>
+                </mat-error>
+            </div>
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag && isEdit">
+                <div class="input-group w-80"
+                    [class.isError]="controls.customerConfirmation.touched && controls.customerConfirmation.invalid">
+                    <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
+                        aria-describedby="basic-addon2" readonly formControlName="customerConfirmationImageName" />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                            (click)="customerConfirmation.click()">Attach</span>
+                    </div>
+                    <input type="file" class="d-none" #customerConfirmation
+                        (change)="fileUpload($event,'customerConfirmation')">
+                </div>
+                <mat-error *ngIf="controls.customerConfirmation.touched && controls.customerConfirmation.invalid">Field
+                    Required
+                </mat-error>
+            </div>
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag && !isEdit">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="img-container width" *ngIf="!controls?.customerConfirmationImage?.value">
+                            <img src="../../../../../../../assets/media/icons/image-placeholder.png"
+                                class="placeholder-image">
+                        </div>
+                        <div class="" *ngIf="controls?.customerConfirmationImage?.value">
+                            <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
+                                <img (click)="preview(controls?.customerConfirmationImage?.value)" class="fetched-image"
+                                    [src]="controls?.customerConfirmationImage?.value"
+                                    *ngIf="!pdf.customerConfirmation">
+                                <img class="edit-icon kt-pointer" src="../../../../../assets/media/icons/edit.svg"
+                                    (click)="editImages('customerConfirmation')"
+                                    *ngIf="isEdit && controls?.customerConfirmationImage?.value">
+                                <div class="iframeWrapper"
+                                    (click)="preview(controls?.customerConfirmationImage?.value)">
+                                    <iframe [src]="controls?.customerConfirmationImage?.value | safe : 'resourceUrl'"
+                                        height="250" width="290" scrolling="no" *ngIf="pdf.customerConfirmation"
+                                        class="position-relative"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row justify-content-between" *ngIf="isEdit">
@@ -134,25 +210,6 @@
                     <input type="file" class="d-none" #declaration (change)="fileUpload($event,'declaration')">
                 </div>
                 <mat-error *ngIf="controls.declaration.touched && controls.declaration.invalid">Field Required
-                </mat-error>
-            </div>
-            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
-            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
-            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
-            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
-                <div class="input-group w-80"
-                    [class.isError]="controls.customerConfirmation.touched && controls.customerConfirmation.invalid">
-                    <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
-                        aria-describedby="basic-addon2" readonly formControlName="customerConfirmationImageName" />
-                    <div class="input-group-append">
-                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                            (click)="customerConfirmation.click()">Attach</span>
-                    </div>
-                    <input type="file" class="d-none" #customerConfirmation
-                        (change)="fileUpload($event,'customerConfirmation')">
-                </div>
-                <mat-error *ngIf="controls.customerConfirmation.touched && controls.customerConfirmation.invalid">Field
-                    Required
                 </mat-error>
             </div>
             <div class="col mb-3" *ngIf="showScrapFlag">
@@ -380,40 +437,10 @@
 
                 </div>
             </div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag">
-                <input type="text" formControlName="processingCharges" class="form-control "
-                    [class.isError]="controls.processingCharges.touched && controls.processingCharges.invalid"
-                    placeholder="Processing Charges" readonly>
-                <mat-error *ngIf="controls.processingCharges.touched && controls.processingCharges.invalid">
-                    Field Required</mat-error>
-            </div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag">
-                <select class="form-control" formControlName="standardDeduction"
-                    [class.isError]="controls.standardDeduction.touched && controls.standardDeduction.invalid">
-                    <option value="" [disabled]="true" [selected]="controls.standardDeduction.value == '' ||
-                    controls.standardDeduction.value == null">Select Standard Deduction</option>
-                    <option [value]="sd.standardDeduction" *ngFor="let sd of standardDeductionArr">
-                        {{sd.standardDeduction}}
-                    </option>
-                </select>
-                <mat-error *ngIf="controls.standardDeduction.touched && controls.standardDeduction.invalid">
-                    <span *ngIf="controls.standardDeduction.errors?.required">Field Required</span>
-                </mat-error>
-            </div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag">
-                <select class="form-control" formControlName="customerConfirmationStatus"
-                    [class.isError]="controls.customerConfirmationStatus.touched && controls.customerConfirmationStatus.invalid">
-                    <option value="" [disabled]="true" [selected]="true">Select Customer confirmation Status</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="incomplete">Incomplete</option>
-                </select>
-                <mat-error
-                    *ngIf="controls.customerConfirmationStatus.touched && controls.customerConfirmationStatus.invalid">
-                    <span *ngIf="controls.customerConfirmationStatus.errors?.required">Field
-                        Required</span>
-                </mat-error>
-            </div>
-            <div class="col" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
+            <div class="col" *ngIf="showScrapAcknowledgementFlag"></div>
+            <div class="col" *ngIf="showScrapAcknowledgementFlag"></div>
+            <div class="col" *ngIf="showScrapAcknowledgementFlag"></div>
+            <div class="col" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag && isEdit">
                 <div class="row">
                     <div class="col-10">
                         <div class="img-container width" *ngIf="!controls?.customerConfirmationImage?.value">
@@ -428,8 +455,6 @@
                                 <img class="edit-icon kt-pointer" src="../../../../../assets/media/icons/edit.svg"
                                     (click)="editImages('customerConfirmation')"
                                     *ngIf="isEdit && controls?.customerConfirmationImage?.value">
-                                <input type="file" class="d-none" #customerConfirmation
-                                    (change)="fileUpload($event,'customerConfirmation')">
                                 <div class="iframeWrapper"
                                     (click)="preview(controls?.customerConfirmationImage?.value)">
                                     <iframe [src]="controls?.customerConfirmationImage?.value | safe : 'resourceUrl'"
