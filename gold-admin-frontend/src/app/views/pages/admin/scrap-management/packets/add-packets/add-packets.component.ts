@@ -14,7 +14,7 @@ import { map, catchError } from 'rxjs/operators';
 })
 export class AddPacketsComponent implements OnInit {
   @ViewChild('tabGroup', { static: false }) tabGroup;
-
+  tabIndex: number = 0;
   packetForm: FormGroup;
   csvForm: FormGroup;
   title: string;
@@ -81,6 +81,10 @@ export class AddPacketsComponent implements OnInit {
     } else if (!event) {
       this.dialogRef.close();
     }
+  }
+
+  selectedIndex(event) {
+    this.tabIndex = event;
   }
 
   onSubmit() {

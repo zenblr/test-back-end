@@ -354,6 +354,9 @@ export class PageConfig {
 				"applied-scrap": {
 					page: { title: "Applied Scrap", desc: "" },
 				},
+				"scrap-buying": {
+					page: { title: "Scrap Buying List", desc: "" },
+				},
 				"global-settings": {
 					page: { title: "Global Settings", desc: "" },
 				},

@@ -144,6 +144,31 @@
         </div>
 
 
+        <!-- Applied Scrap -->
+        <div class="kt-portlet__body" *ngIf="filterName == 'appliedScrap'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col">
+                <label>By Appraiser Status</label>
+                <kt-multi-select-search formControlName="appraiserStatus" [items]="approvalStatus.apprsiserOrCCE"
+                  [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'Appraiser Status'">
+                </kt-multi-select-search>
+              </div>
+              <div class="col">
+                <label>By Scrap Status</label>
+                <kt-multi-select-search formControlName="scrapStatus" [items]="scrapStatusList" [multiple]="true"
+                  [bindLabel]="'stageName'" [isClear]="clearData" [placeholder]="'Scrap Status'">
+                </kt-multi-select-search>
+              </div>
+              <div class="col-2 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+
         <!-- packets -->
         <div class="kt-portlet__body" *ngIf="filterName == 'packets'">
           <form class="kt-form" [formGroup]="filterForm">

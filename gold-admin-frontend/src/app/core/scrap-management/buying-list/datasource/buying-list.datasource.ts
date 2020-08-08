@@ -2,9 +2,9 @@ import { catchError, finalize } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
 import { BaseDataSource } from '../../../_base/crud';
 import { BehaviorSubject, of } from 'rxjs';
-import { AppliedScrapService } from '../services/applied-scrap.service';
+import { BuyingListService } from '../services/buying-list.service';
 
-export class AppliedScrapDatasource extends BaseDataSource {
+export class BuyingListDatasource extends BaseDataSource {
 
     private loadingSubject = new BehaviorSubject<boolean>(false);
     private isPreloadTextViewedSubject = new BehaviorSubject<boolean>(true);
@@ -12,18 +12,18 @@ export class AppliedScrapDatasource extends BaseDataSource {
     public loading$ = this.loadingSubject.asObservable();
     public isPreloadTextViewed$ = this.isPreloadTextViewedSubject.asObservable();
 
-    constructor(private appliedScrapService: AppliedScrapService) {
+    constructor(private buyingListService: BuyingListService) {
         super();
     }
 
-    loadAppliedScraps(data) {
+    loadList(from, to, search) {
         this.loadingSubject.next(true);
-        this.appliedScrapService.getAppliedScraps(data)
+        this.buyingListService.getList(from, to, search)
             .pipe(
                 map(
-                    loan => {
-                        this.paginatorTotalSubject.next(loan.count);
-                        this.entitySubject.next(loan.appliedScrapDetails);
+                    report => {
+                        this.paginatorTotalSubject.next(report.count);
+                        this.entitySubject.next(report.data);
                     }
                 ),
                 catchError(() => of([])),
