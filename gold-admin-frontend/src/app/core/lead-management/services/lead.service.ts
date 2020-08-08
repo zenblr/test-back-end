@@ -108,4 +108,6 @@ export class LeadService {
     return this.http.get<any>(`api/internal-branch?from=1&to=-1`);
   }
 
+
+
 }

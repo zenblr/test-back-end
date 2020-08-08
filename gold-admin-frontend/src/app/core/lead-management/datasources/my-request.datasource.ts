@@ -5,8 +5,9 @@ import { map } from 'rxjs/operators';
 import { BaseDataSource } from '../../_base/crud';
 import { BehaviorSubject, of } from 'rxjs';
 import { LeadService } from '../services/lead.service';
+import { NewRequestService } from '../services/new-request.service';
 
-export class LeadManagementDatasource extends BaseDataSource {
+export class MyRequestDatasource extends BaseDataSource {
 
     private loadingSubject = new BehaviorSubject<boolean>(false);
     private isPreloadTextViewedSubject = new BehaviorSubject<boolean>(true);
@@ -14,16 +15,14 @@ export class LeadManagementDatasource extends BaseDataSource {
     public loading$ = this.loadingSubject.asObservable();
     public isPreloadTextViewed$ = this.isPreloadTextViewedSubject.asObservable();
 
-    constructor(private leadService: LeadService) {
+    constructor(private newRequestService: NewRequestService) {
         super();
     }
 
-    loadLeads(data) {
+    getMyRequests(data) {
         this.loadingSubject.next(true);
 
-        // this.entitySubject.next(this.leads); // delete this
-
-        this.leadService.getAllLeads(data)
+        this.newRequestService.getMyRequests(data)
             .pipe(
                 map(
                     report => {

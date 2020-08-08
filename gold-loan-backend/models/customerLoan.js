@@ -35,6 +35,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'interest_rate'
         },
+        selectedSlab:{
+            type: DataTypes.STRING,
+            field: 'selected_slab'
+        },
         loanType: {
             type: DataTypes.STRING,
             field: 'loan_type'
