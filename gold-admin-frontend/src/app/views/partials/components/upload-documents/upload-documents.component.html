@@ -139,8 +139,7 @@
             <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
             <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
             <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
-            <div class="col mb-3"
-                *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
                 <div class="input-group w-80"
                     [class.isError]="controls.customerConfirmation.touched && controls.customerConfirmation.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
@@ -174,7 +173,7 @@
                 <div class="input-group w-80"
                     [class.isError]="controls.purchaseInvoice.touched && controls.purchaseInvoice.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
-                        aria-describedby="basic-addon2" readonly formControlName="schemeConfirmationCopyImageName" />
+                        aria-describedby="basic-addon2" readonly formControlName="purchaseInvoiceImageName" />
                     <div class="input-group-append">
                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
                             (click)="purchaseInvoice.click()">Attach</span>
@@ -191,7 +190,7 @@
                 <div class="input-group w-80"
                     [class.isError]="controls.saleInvoice.touched && controls.saleInvoice.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
-                        aria-describedby="basic-addon2" readonly formControlName="schemeConfirmationCopyImageName" />
+                        aria-describedby="basic-addon2" readonly formControlName="saleInvoiceImageName" />
                     <div class="input-group-append">
                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
                             (click)="saleInvoice.click()">Attach</span>

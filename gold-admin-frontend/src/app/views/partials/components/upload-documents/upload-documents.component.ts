@@ -39,6 +39,7 @@ export class UploadDocumentsComponent implements OnInit {
   @Input() showScrapAcknowledgementFlag;
   @Input() standardDeductionArr
   @Input() loanStage
+  @Input() scrapStage
   @ViewChild('loanAgreementCopy', { static: false }) loanAgreementCopy
   @ViewChild('pawnCopy', { static: false }) pawnCopy
   @ViewChild('schemeConfirmationCopy', { static: false }) schemeConfirmationCopy
@@ -110,9 +111,14 @@ export class UploadDocumentsComponent implements OnInit {
     if (changes.standardDeductionArr && changes.standardDeductionArr) {
       this.standardDeductionArr = changes.standardDeductionArr.currentValue
     }
-
     if (changes.loanStage && changes.loanStage.currentValue) {
       if (changes.loanStage.currentValue.id != 8) {
+        this.isEdit = false
+        this.buttonValue = 'Next'
+      }
+    }
+    if (changes.scrapStage && changes.scrapStage.currentValue) {
+      if (changes.scrapStage.currentValue.id != 8) {
         this.isEdit = false
         this.buttonValue = 'Next'
       }
@@ -130,7 +136,6 @@ export class UploadDocumentsComponent implements OnInit {
           schemeConfirmationCopy: documents.schemeConfirmationCopy,
         })
         this.pdfCheck();
-        
       }
     }
     if (changes.acknowledgmentDocuments && changes.acknowledgmentDocuments.currentValue) {
@@ -160,25 +165,23 @@ export class UploadDocumentsComponent implements OnInit {
       if (documents && documents.purchaseVoucherImage.length) {
         if (documents.purchaseVoucher) {
           this.documentsForm.patchValue({
-            purchaseVoucher: documents.purchaseVoucherImage[0],
+            purchaseVoucher: documents.purchaseVoucher,
             purchaseVoucherImage: documents.purchaseVoucherImage[0],
           })
         }
         if (documents.purchaseInvoice) {
           this.documentsForm.patchValue({
-            purchaseInvoice: documents.purchaseInvoiceImage[0],
+            purchaseInvoice: documents.purchaseInvoice,
             purchaseInvoiceImage: documents.purchaseInvoiceImage[0],
           })
         }
         if (documents.saleInvoice) {
           this.documentsForm.patchValue({
-            saleInvoice: documents.saleInvoiceImage[0],
+            saleInvoice: documents.saleInvoice,
             saleInvoiceImage: documents.saleInvoiceImage[0],
           })
         }
         this.pdfCheck();
-        
-        this.ref.detectChanges();
       }
     }
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
