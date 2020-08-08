@@ -186,7 +186,7 @@ exports.calculationData = async () => {
 exports.checkPaidInterest = async (loanId, masterLaonId) => {
     let checkDailyAmount = await models.customerLoanInterest.findOne({
         where: { loanId: loanId, masterLoanId: masterLaonId, emiStatus: 'paid' },
-        order: [['emiReceivedDate', 'DESC']]
+        order: [['emiDueDate', 'DESC']]
     })
     return checkDailyAmount
 }
