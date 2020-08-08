@@ -5,7 +5,7 @@ const Op = Sequelize.Op;
 const check = require("../lib/checkLib");
 const moment = require("moment");
 
-let { getGlobalSetting, getCustomerLoanId, getLoanDetails, getSchemeDetails, getCustomerLoanDetails, interestAmountCalculation, getAllCustomerLoanId, getAllDetailsOfCustomerLoan, getInterestTableOfSingleLoan, calculationData, checkPaidInterest, getInterestOfSelectedMonth, getFirstInterest, calculation, newSlabRateInterestCalcultaion, getStepUpslab } = require('./loanFunction')
+let {  getInterestTableOfSingleLoan, calculationData, checkPaidInterest, getFirstInterest, calculation, newSlabRateInterestCalcultaion, getStepUpslab } = require('./loanFunction')
 
 //cron for daily interest calculation
 exports.dailyIntrestCalculation = async (date) => {
