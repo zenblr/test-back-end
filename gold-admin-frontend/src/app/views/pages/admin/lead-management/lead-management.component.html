@@ -4,7 +4,7 @@
 
     <kt-portlet-body>
 
-        <div class="mat-table__wrapper">
+        <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'auto'}">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="fullName">
@@ -123,11 +123,26 @@
                     <mat-cell *matCellDef="let lead">
                         <ng-container *ngIf="lead.status.id == '1'">
                             <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserEdit']">
-                                <button (click)="assign(lead)" *ngIf="!lead?.customerAssignAppraiser" class="apply-kyc">Assign Appraiser</button>
-                                <button (click)="updateAppraiser(lead)"  *ngIf="lead?.customerAssignAppraiser" class="apply-kyc">Update Appraiser</button>
+                                <button (click)="assign(lead)" *ngIf="!lead?.customerAssignAppraiser"
+                                    class="apply-kyc">Assign Appraiser</button>
+                                <button (click)="updateAppraiser(lead)" *ngIf="lead?.customerAssignAppraiser"
+                                    class="apply-kyc">Update Appraiser</button>
                             </div>
                         </ng-container>
 
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="menu">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+
+                        <button mat-button [matMenuTriggerFor]="menu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu" xPosition="before">
+                            <button mat-menu-item (click)="newRequest(loan)">New Request</button>
+                        </mat-menu>
                     </mat-cell>
                 </ng-container>
 

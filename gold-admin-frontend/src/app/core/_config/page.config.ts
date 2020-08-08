@@ -123,6 +123,12 @@ export class PageConfig {
 			},
 			"lead-management": {
 				page: { title: "All Leads", desc: "" },
+				"new-requests": {
+					page: { title: "New Requests", desc: "" },
+				},
+				"my-requests": {
+					page: { title: "My Requests", desc: "" },
+				}
 			},
 			"account": {
 				"loan-disbursement": {

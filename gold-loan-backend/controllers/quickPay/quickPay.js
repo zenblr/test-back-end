@@ -181,3 +181,10 @@ exports.payableAmount = async (req, res, next) => {
 
 
 }
+
+//CALCULATE PAYABLE AMOUNT
+exports.payableAmountForCustomer = async (req, res, next) => {
+
+    let { masterLoanId } = req.query
+}
+

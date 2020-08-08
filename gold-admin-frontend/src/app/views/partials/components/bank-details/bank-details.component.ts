@@ -29,6 +29,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   bankForm: FormGroup;
   passbookImg: any = [];
   passbookImgId: any = []
+  passbookImgFileName: any = []
   url: any;
   constructor(
     public toastr: ToastrService,
@@ -152,9 +153,10 @@ export class BankDetailsComponent implements OnInit, OnChanges {
           map(res => {
             this.passbookImg.push(res.uploadFile.URL);
             this.passbookImgId.push(res.uploadFile.path);
+            this.passbookImgFileName.push(res.uploadFile.originalname)
             this.bankForm.patchValue({ passbookProofImage: this.passbookImg });
             this.bankForm.patchValue({ passbookProof: this.passbookImgId });
-            this.bankForm.get('passbookProofImageName').patchValue(event.target.files[0].name);
+            this.bankForm.patchValue({ passbookProofImageName: this.passbookImgFileName[this.passbookImgFileName.length - 1] });
             this.ref.detectChanges();
           }), catchError(err => {
             // this.toastr.error(err.error.message);
@@ -176,9 +178,10 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     //console.log(index)
     this.passbookImgId.splice(index, 1);
     this.passbookImg.splice(index, 1)
+    this.passbookImgFileName.splice(index, 1)
     this.bankForm.get('passbookProof').patchValue(this.passbookImgId);
     this.bankForm.get('passbookProofImage').patchValue(this.passbookImg);
-    this.bankForm.get('passbookProofImageName').patchValue('');
+    this.bankForm.get('passbookProofImageName').patchValue(this.passbookImgFileName[this.passbookImgFileName.length - 1]);
     this.ref.detectChanges();
   }
 
