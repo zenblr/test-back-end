@@ -136,11 +136,11 @@
                 <mat-error *ngIf="controls.declaration.touched && controls.declaration.invalid">Field Required
                 </mat-error>
             </div>
-            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag && !isAcknowlegementEdit"></div>
-            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag && !isAcknowlegementEdit"></div>
-            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag && !isAcknowlegementEdit"></div>
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
+            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
             <div class="col mb-3"
-                *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag && !isAcknowlegementEdit">
+                *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
                 <div class="input-group w-80"
                     [class.isError]="controls.customerConfirmation.touched && controls.customerConfirmation.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
@@ -430,7 +430,7 @@
                                     (click)="editImages('customerConfirmation')"
                                     *ngIf="isEdit && controls?.customerConfirmationImage?.value">
                                 <input type="file" class="d-none" #customerConfirmation
-                                    (change)="fileUpload($event,'customerConfirmation')" *ngIf="isAcknowlegementEdit">
+                                    (change)="fileUpload($event,'customerConfirmation')">
                                 <div class="iframeWrapper"
                                     (click)="preview(controls?.customerConfirmationImage?.value)">
                                     <iframe [src]="controls?.customerConfirmationImage?.value | safe : 'resourceUrl'"

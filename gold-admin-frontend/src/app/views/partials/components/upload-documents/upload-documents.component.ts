@@ -65,7 +65,7 @@ export class UploadDocumentsComponent implements OnInit {
   buttonName: string;
   buttonValue = 'Next';
   isEdit: boolean;
-  isAcknowlegementEdit = true;
+  // isAcknowlegementEdit = true;
   globalValue: any;
   showCustomerConfirmationFlag: boolean;
 
@@ -139,11 +139,11 @@ export class UploadDocumentsComponent implements OnInit {
         })
         this.pdfCheck();
         if (changes.acknowledgmentDocuments.currentValue.scrapStatusForAppraiser == 'approved') {
-          this.isAcknowlegementEdit = false
+          // this.isAcknowlegementEdit = false
           this.isEdit = false
           this.documentsForm.disable()
         } else {
-          this.isAcknowlegementEdit = true
+          // this.isAcknowlegementEdit = true
         }
         this.ref.detectChanges()
       }
@@ -236,7 +236,7 @@ export class UploadDocumentsComponent implements OnInit {
 
   ngAfterViewInit() {
     this.globalSettingService.globalSetting$.subscribe(global => this.globalValue = global);
-    if (this.url == "scrap-buying-application-form") {
+    if (this.url == "scrap-buying-application-form" || this.url == "view-scrap") {
       this.documentsForm.controls['customerConfirmationStatus'].valueChanges.subscribe((val) => {
         if (val == 'confirmed') {
           this.buttonValue = 'Next';
