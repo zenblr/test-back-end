@@ -22,6 +22,8 @@ import { OccupationAddComponent } from './occupation/occupation-add/occupation-a
 import { OccupationListComponent } from './occupation/occupation-list/occupation-list.component';
 import { StandardDeductionListComponent } from './standard-deduction/standard-deduction-list/standard-deduction-list.component';
 import { AddStandardDeductionComponent } from './standard-deduction/add-standard-deduction/add-standard-deduction.component';
+import { OtherChargesAddComponent } from './other-charges/other-charges-add/other-charges-add.component';
+import { OtherChargesListComponent } from './other-charges/other-charges-list/other-charges-list.component';
 
 const routes: Routes = [
   {
@@ -52,6 +54,10 @@ const routes: Routes = [
     path: 'standard-deduction',
     component: StandardDeductionListComponent
   },
+  {
+    path: 'other-charges',
+    component: OtherChargesListComponent
+  }
 ]
 
 @NgModule({
@@ -70,6 +76,8 @@ const routes: Routes = [
     OccupationListComponent,
     StandardDeductionListComponent,
     AddStandardDeductionComponent,
+    OtherChargesListComponent,
+    OtherChargesAddComponent,
   ],
   imports: [
     CommonModule,
@@ -102,6 +110,7 @@ const routes: Routes = [
     LeadSourceAddComponent,
     OccupationAddComponent,
     AddStandardDeductionComponent,
+    OtherChargesAddComponent,
   ]
 })
 export class MastersModule { }
