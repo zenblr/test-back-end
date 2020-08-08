@@ -322,7 +322,7 @@ exports.checkForLoanType = async (req, res, next) => {
     else {
 
         processingCharge = await processingChargeSecuredScheme(loanAmount, securedScheme, undefined, undefined)
-        return res.status(200).json({ data: { securedLoanAmount:loanAmount,securedScheme, processingCharge, isUnsecuredSchemeApplied: false, unsecuredAmount:0 } })
+        return res.status(200).json({ data: { securedLoanAmount: loanAmount, securedScheme, processingCharge, isUnsecuredSchemeApplied: false, unsecuredAmount: 0 } })
 
     }
 }
@@ -525,6 +525,7 @@ exports.loanFinalLoan = async (req, res, next) => {
         interestTable[i]['interestAmount'] = interestTable[i].securedInterestAmount
         interestTable[i]['outstandingInterest'] = interestTable[i].securedInterestAmount
         interestTable[i]['masterLoanId'] = masterLoanId
+        interestTable[i]['interestRate'] = interestRate
         interestData.push(interestTable[i])
     }
 
@@ -562,6 +563,7 @@ exports.loanFinalLoan = async (req, res, next) => {
                     interestTable[i]['interestAmount'] = interestTable[i].unsecuredInterestAmount
                     interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                     interestTable[i]['masterLoanId'] = masterLoanId
+                    interestTable[i]['interestRate'] = unsecuredInterestRate
                     newUnsecuredInterestData.push(interestTable[i])
                 }
                 let unsecuredSlab = await getSchemeSlab(unsecuredSchemeId, unsecuredLoan.id)
@@ -955,7 +957,7 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
 
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: PACKET_IMAGES, modifiedBy }, { transaction: t });
         })
-        
+
 
     }
     return res.status(200).json({ message: `Packets added successfully` })
@@ -2119,4 +2121,22 @@ exports.getDetailsForPrint = async (req, res, next) => {
 
 
 
+}
+
+
+exports.getLoanOrnaments = async (req, res, next) => {
+    let { masterLoanId } = req.query;
+
+    let getLoanOrnaments = await models.customerLoanOrnamentsDetail.findAll({
+        where: { masterLoanId },
+        attributes:[],
+        include: [
+            {
+                model: models.ornamentType,
+                as: "ornamentType"
+            }
+        ]
+    })
+
+    return res.status(200).json({ data: getLoanOrnaments })
 }
