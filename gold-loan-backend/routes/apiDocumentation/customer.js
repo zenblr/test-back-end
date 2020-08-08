@@ -1,5 +1,20 @@
 /**
  * @swagger
+ * /customer/get-otp:
+ *   get:
+ *     tags:
+ *       - Get-otp
+ *     name: Customer-otp-api
+ *     summary: To read otp
+ *     security:
+ *       - bearerAuth: [] 
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *      200:
+ *        description: Success
+ *      404:
+ *        description: Internal server error.
  * /customer/send-register-otp:
  *   post:
  *     tags:

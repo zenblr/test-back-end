@@ -31,11 +31,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'scheme_id'
         },
+        penalInterest: {
+            type: DataTypes.FLOAT,
+            field: 'penal_interest_rate'
+        },
         interestRate: {
             type: DataTypes.STRING,
             field: 'interest_rate'
         },
-        selectedSlab:{
+        selectedSlab: {
             type: DataTypes.STRING,
             field: 'selected_slab'
         },
@@ -55,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'current_interest_rate'
         },
-        penalInterestLastReceivedDate:{
+        penalInterestLastReceivedDate: {
             type: DataTypes.DATE,
             field: 'penal_interest_last_received_date'
         },
@@ -98,7 +102,7 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.hasMany(models.customerLoanSlabRate, { foreignKey: 'loanId', as: 'slab' });
 
 
-        
+
 
         // customerLoan.belongsTo(models.loanStage, { foreignKey: 'loanStageId', as: 'loanStage' });
 

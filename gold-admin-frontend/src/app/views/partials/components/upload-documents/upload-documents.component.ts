@@ -38,6 +38,7 @@ export class UploadDocumentsComponent implements OnInit {
   @Input() showScrapFlag;
   @Input() showScrapAcknowledgementFlag;
   @Input() standardDeductionArr
+  @Input() loanStage
   @ViewChild('loanAgreementCopy', { static: false }) loanAgreementCopy
   @ViewChild('pawnCopy', { static: false }) pawnCopy
   @ViewChild('schemeConfirmationCopy', { static: false }) schemeConfirmationCopy
@@ -109,6 +110,13 @@ export class UploadDocumentsComponent implements OnInit {
     if (changes.standardDeductionArr && changes.standardDeductionArr) {
       this.standardDeductionArr = changes.standardDeductionArr.currentValue
     }
+
+    if (changes.loanStage && changes.loanStage.currentValue) {
+      if (changes.loanStage.currentValue.id != 8) {
+        this.isEdit = false
+        this.buttonValue = 'Next'
+      }
+    }
     if (changes.loanDocumnets && changes.loanDocumnets.currentValue) {
       let documents = changes.loanDocumnets.currentValue.customerLoanDocument
 
@@ -117,13 +125,12 @@ export class UploadDocumentsComponent implements OnInit {
           pawnCopyImage: documents.pawnCopyImage[0],
           schemeConfirmationCopyImage: documents.schemeConfirmationCopyImage[0],
           loanAgreementCopyImage: documents.loanAgreementCopyImage[0],
-          loanAgreementCopy: documents.loanAgreementCopyImage[0],
-          pawnCopy: documents.pawnCopyImage[0],
-          schemeConfirmationCopy: documents.schemeConfirmationCopyImage[0],
+          loanAgreementCopy: documents.loanAgreementCopy,
+          pawnCopy: documents.pawnCopy,
+          schemeConfirmationCopy: documents.schemeConfirmationCopy,
         })
         this.pdfCheck();
-        this.isEdit = false
-        this.buttonValue = 'Next'
+        
       }
     }
     if (changes.acknowledgmentDocuments && changes.acknowledgmentDocuments.currentValue) {
@@ -170,9 +177,8 @@ export class UploadDocumentsComponent implements OnInit {
           })
         }
         this.pdfCheck();
-        this.isEdit = false
+        
         this.ref.detectChanges();
-        this.buttonValue = 'Next'
       }
     }
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
@@ -191,7 +197,6 @@ export class UploadDocumentsComponent implements OnInit {
         if (documents.loanTransferStatusForAppraiser == 'approved') {
           this.isEdit = false
           this.documentsForm.disable()
-          this.buttonValue = 'Next'
           this.ref.detectChanges();
 
         }
