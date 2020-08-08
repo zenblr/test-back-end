@@ -4,9 +4,9 @@
         <button (click)="viewLocation('hi')">tracking</button>
         <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
-                <ng-container matColumnDef="packetUniqueId">
-                    <mat-header-cell *matHeaderCellDef>Packet ID</mat-header-cell>
-                    <mat-cell *matCellDef="let packet">{{packet.packetUniqueId | uppercase}}</mat-cell>
+                <ng-container matColumnDef="userName">
+                    <mat-header-cell *matHeaderCellDef>User Name</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">{{packet.userName | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="internalBranch">
@@ -18,7 +18,7 @@
                     </mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="customerID">
+                <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
                         <span *ngIf="packet.customer">
@@ -61,14 +61,12 @@
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <button (click)="ornaments(packet)" class="btn-transparent kt-margin-r-15"
-                               >View Packets</button>
-                            <button (click)="updatePacket(packet)" class="btn-transparent kt-margin-r-15"
-                               >Update Location</button>
-                            <button (click)="viewPacketLog(loan)" class="btn-transparent"
-                                >View Log</button>
-                                <button (click)="viewLocation(loan)" class="btn-transparent"
-                                >View Location</button>
+                        <button (click)="ornaments(packet)" class="btn-transparent kt-margin-r-15">View Packets</button>
+                        <button (click)="updatePacket(packet)" class="btn-transparent kt-margin-r-15">Update
+                            Location</button>
+                        <button (click)="viewPacketLog(packet)" class="btn-transparent kt-margin-r-15">View Log</button>
+                        <button (click)="viewLocation(packet)" class="btn-transparent kt-margin-r-15">View
+                            Location</button>
                     </mat-cell>
                 </ng-container>
 

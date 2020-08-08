@@ -19,7 +19,7 @@ import { Router } from '@angular/router';
 })
 export class PacketTrackingComponent implements OnInit {
   dataSource: PacketTrackingDatasource;
-  displayedColumns = [ 'customerID', 'loanId','customerName','loanAmount','packetUniqueId','internalBranch','currentLocation', 'actions'];
+  displayedColumns = ['userName', 'customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -39,7 +39,7 @@ export class PacketTrackingComponent implements OnInit {
     private layoutUtilsService: LayoutUtilsService,
     private toastr: ToastrService,
     private ngxPermissionService: NgxPermissionsService,
-    private router:Router
+    private router: Router
   ) {
     this.packetTrackingService.openModal$.pipe(
       map(res => {
@@ -172,8 +172,12 @@ export class PacketTrackingComponent implements OnInit {
     });
   }
 
-  viewLocation(packet){
+  viewLocation(packet) {
     this.router.navigate(['/admin/loan-management/view-location'])
+  }
+
+  ornaments(packet) {
+
   }
 
 }
