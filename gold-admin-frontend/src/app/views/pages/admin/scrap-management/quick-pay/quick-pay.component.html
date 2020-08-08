@@ -1,0 +1,194 @@
+<kt-portlet>
+    <kt-modal-header [title]='title' (action)="action($event)"></kt-modal-header>
+    <div class="kt-portlet__body position-relative">
+        <form [formGroup]="quickPayForm" *ngIf="quickPayForm">
+            <div class="row kt-margin-l-25 kt-margin-r-30">
+                <div class="col-12 justify-content-center">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-4 form-label">
+                                    <label class="mandatory kt-padding-l-10">Payment Mode</label>
+                                </div>
+                                <div class="col-6">
+                                    <select formControlName="paymentMode" class="form-control"
+                                        (change)="setValidation($event)"
+                                        [class.isError]="controls.paymentMode.touched && controls.paymentMode.invalid">
+                                        <option value="">Select Payment Type</option>
+                                        <option value="cash">CASH</option>
+                                        <option value="bankTransfer">IMPS/NEFT/RTGS</option>
+                                        <option value="cheque">CHEQUE</option>
+                                    </select>
+                                    <div *ngIf="controls.paymentMode.touched && controls.paymentMode.invalid">
+                                        <mat-error *ngIf="controls.paymentMode.errors?.required">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="controls.paymentMode.value != 'cash'">
+                        <div class="row kt-margin-t-15">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label class="text-color mandatory kt-padding-l-10">Bank Name</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" placeholder="State Bank"
+                                            formControlName="bankName"
+                                            [class.isError]="controls.bankName.touched && controls.bankName.invalid">
+                                        <mat-error
+                                            *ngIf="controls.bankName.errors?.required && controls.bankName.touched">
+                                            Required field
+                                        </mat-error>
+                                        <mat-error
+                                            *ngIf="controls.bankName.errors?.pattern && controls.bankName.touched">
+                                            Invalid Input
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label class="text-color mandatory kt-padding-l-10">Bank Branch Name</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" placeholder="Andheri"
+                                            formControlName="bankBranch"
+                                            [class.isError]="controls.bankBranch.touched && controls.bankBranch.invalid">
+                                        <mat-error
+                                            *ngIf="controls.bankBranch.errors?.required && controls.bankBranch.touched">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row kt-margin-t-15">
+                            <div class="col-6"
+                                *ngIf="controls.paymentMode.value != 'cheque' || controls.paymentMode.value == 'bankTransfer'">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label class="text-color mandatory kt-padding-l-10">Transaction ID</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control text-uppercase" placeholder="IFSC0000XXX"
+                                            formControlName="transactionId"
+                                            [class.isError]="controls.transactionId.touched && controls.transactionId.invalid">
+                                        <mat-error
+                                            *ngIf="controls.transactionId.errors?.required && controls.transactionId.touched">
+                                            Required field
+                                        </mat-error>
+                                        <mat-error
+                                            *ngIf="controls.transactionId.errors?.pattern && controls.transactionId.touched">
+                                            Invalid Input
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6" *ngIf="controls.paymentMode.value == 'cheque'">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label class="text-color mandatory kt-padding-l-10">Cheque Number</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control text-uppercase" placeholder="IFSC0000XXX"
+                                            formControlName="chequeNumber" maxlength="11"
+                                            [class.isError]="controls.chequeNumber.touched && controls.chequeNumber.invalid">
+                                        <mat-error
+                                            *ngIf="controls.chequeNumber.errors?.required && controls.chequeNumber.touched">
+                                            Required field
+                                        </mat-error>
+                                        <mat-error
+                                            *ngIf="controls.chequeNumber.errors?.pattern && controls.chequeNumber.touched">
+                                            Invalid Input
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label class="text-color mandatory kt-padding-l-10">Date & Time</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" formControlName="depositDate"
+                                            value="{{currentDate| date:'medium'}}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row kt-margin-t-15">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label class="text-color mandatory kt-padding-l-10">Deposit Amount</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" placeholder="1050"
+                                            formControlName="depositAmount"
+                                            [class.isError]="controls.depositAmount.touched && controls.depositAmount.invalid"
+                                            readonly>
+                                        <mat-error
+                                            *ngIf="controls.depositAmount.errors?.required && controls.depositAmount.touched">
+                                            Required field
+                                        </mat-error>
+                                        <mat-error
+                                            *ngIf="controls.depositAmount.errors?.pattern && controls.depositAmount.touched">
+                                            <small>Invalid Input</small>
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="controls.paymentMode.value == 'cash'">
+                        <div class="row kt-margin-t-15">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label class="text-color mandatory kt-padding-l-10">Date & Time</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" formControlName="depositDate"
+                                            value="{{currentDate| date:'medium'}}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label class="text-color mandatory kt-padding-l-10">Deposit Amount</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" placeholder="1050"
+                                            formControlName="depositAmount"
+                                            [class.isError]="controls.depositAmount.touched && controls.depositAmount.invalid"
+                                            readonly>
+                                        <mat-error
+                                            *ngIf="controls.depositAmount.errors?.required && controls.depositAmount.touched">
+                                            Required field
+                                        </mat-error>
+                                        <mat-error
+                                            *ngIf="controls.depositAmount.errors?.pattern && controls.depositAmount.touched">
+                                            <small>Invalid Input</small>
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <kt-portlet-footer>
+        <div class="p-3">
+            <kt-modal-footer (action)="action($event)" [value]="'Confirm'">
+            </kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</kt-portlet>
