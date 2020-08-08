@@ -1,8 +1,10 @@
 const models = require('../../models');
 const check = require('../../lib/checkLib');
+const extend = require('extend')
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
+const _ = require('lodash');
 
 //FUNCTION TO ADD NEW REQUEST 
 exports.addLeadNewRequest = async (req, res, next) => {
@@ -15,24 +17,22 @@ exports.addLeadNewRequest = async (req, res, next) => {
         return res.status(400).json({ message: 'This Lead Request already Exists' });
     }
     let LeadNewRequest = await models.leadNewRequest.create({ customerId, moduleId, createdBy, modifiedBy })
-    return res.status(200).json({ message: `Request Created` })
+    return res.status(201).json({ message: `Request Created` })
 }
 
 //FUNCTION TO UPDATE NEW REQUEST
 exports.updateLeadNewRequest = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let id = req.params.id;
-    let { moduleId,customerId } = req.body;
-    let requestExist = await models.leadNewRequest.findOne({ where: { moduleId: moduleId ,customerId: customerId} })
+    let { moduleId, customerId } = req.body;
+    let requestExist = await models.leadNewRequest.findOne({ where: { moduleId: moduleId, customerId: customerId } })
 
     if (!check.isEmpty(requestExist)) {
         return res.status(400).json({ message: 'This Lead Request already Exists' });
-    }else{
-        let LeadNewRequest = await models.leadNewRequest.update({ moduleId, modifiedBy }, { where: { id, isAssigned: false } })
-        return res.status(200).json({ message: `Request updated` })
     }
+    let LeadNewRequest = await models.leadNewRequest.update({ moduleId, modifiedBy }, { where: { id, isAssigned: false } })
+    return res.status(200).json({ message: `Request updated` })
 
-   
 }
 //FUNCTION TO VIEW ALL REQUESTS
 exports.getAllNewRequest = async (req, res, next) => {
@@ -89,9 +89,9 @@ exports.getAllNewRequest = async (req, res, next) => {
 
 
     if (allRequest.length === 0) {
-        return res.status(404).json({ message: `Data not found`, data: [] })
+        return res.status(404).json([])
     } else {
-        return res.status(200).json({ message: `Fetched all request successfully`, data:allRequest,count: count })
+        return res.status(200).json({ message: `Fetched all request successfully`, data: allRequest, count: count })
     }
 }
 
@@ -158,15 +158,24 @@ exports.getAssignedRequest = async (req, res) => {
         limit: pageSize,
     });
 
-    let count = await models.leadNewRequest.count({
+    let data = await _.chain(allRequest)
+        .groupBy("customerId")
+        .map((value, key) => ({ customerId: key, users: value }))
+        .value()
+
+    let allCount = await models.leadNewRequest.findAll({
         where: searchQuery,
         subQuery: false,
         include: associateModel,
     });
+    let count = await _.chain(allCount)
+        .groupBy("customerId")
+        .map((value, key) => ({ customerId: key, users: value }))
+        .value()
 
     if (allRequest.length === 0) {
-        return res.status(404).json({ message: `Data not found`, data: [] })
+        return res.status(404).json([])
     } else {
-        return res.status(200).json({ message: `Fetched all request successfully`, data:allRequest,count: count })
+        return res.status(200).json({ message: `Fetched all request successfully`, data: data, count: count.length })
     }
 }

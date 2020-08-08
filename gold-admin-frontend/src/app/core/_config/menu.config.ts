@@ -202,6 +202,12 @@ export class MenuConfig {
 											permission: false,
 											page: "/admin/masters/standard-deduction"
 										},
+										{
+											title: "Other Charges",
+											root: true,
+											permission: false,
+											page: "/admin/masters/other-charges"
+										},
 									],
 								},
 							],

@@ -17,6 +17,21 @@ exports.getOtherCharges = async (req, res, next) => {
     if (req.query.from == 1 && req.query.to == -1) {
         let allOtherCharges = await models.loanOtherChargesMaster.findAll();
         return res.status(200).json({ data: allOtherCharges });
+    } else {
+
+        let whereCondition;
+        if (getAll == "true") {
+            whereCondition = { order: [["updatedAt", "DESC"]] }
+        } else if (getAll == "false") {
+            whereCondition = { order: [["updatedAt", "DESC"]] }
+        } else if (getAll == undefined) {
+            whereCondition = { order: [["updatedAt", "DESC"]] }
+        }
+        let allOtherCharges = await models.loanOtherChargesMaster.findAll(whereCondition)
+        if (allOtherCharges.length === 0){
+            return res.status(200).json([])
+        }
+            return res.status(200).json({ data: allOtherCharges, count: allOtherCharges.length })
     }
 
 }
