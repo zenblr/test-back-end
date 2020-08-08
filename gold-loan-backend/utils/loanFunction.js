@@ -1,6 +1,294 @@
-const check = require('../lib/checkLib');
-let models = require('../models')
+const models = require('../models');
+const sequelize = models.sequelize;
+const Sequelize = models.Sequelize;
+const Op = Sequelize.Op;
+const check = require("../lib/checkLib");
+const moment = require("moment");
 
+exports.getGlobalSetting = async () => {
+    let globalSettings = await models.globalSetting.getGlobalSetting();
+    return globalSettings;
+}
+
+exports.getCustomerLoanId = async (masterLoanId) => {
+    let loanData = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        include: [{
+            model: models.customerLoan,
+            as: 'customerLoan',
+            attributes: ['id', 'loanType'],
+            where: { isActive: true }
+        }]
+    });
+    let loan = {}
+    await loanData.customerLoan.map((data) => {
+        if (data.loanType == "secured") {
+            loan.secured = data.id;
+        } else {
+            loan.unsecured = data.id
+        }
+    });
+    return loan
+}
+
+exports.getLoanDetails = async (masterLoanId) => {
+    let loanData = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId }
+    })
+    return loanData;
+}
+
+exports.getSchemeDetails = async (schemeId) => {
+    let loanData = await models.scheme.findOne({
+        where: { id: schemeId },
+        include: [{
+            model: models.schemeInterest,
+            as: 'schemeInterest'
+        }]
+    })
+    return loanData;
+}
+
+exports.getCustomerLoanDetails = async (loanId) => {
+    let loanData = await models.customerLoan.findOne({
+        where: { id: loanId }
+    })
+    return loanData;
+}
+
+exports.interestAmountCalculation = async (masterLoanId, id) => {
+    let daysCount;
+    let intrest;
+    let checkMonths;
+    let firstIntrest;
+    let currentDate = moment();
+    let amount = {
+        interest: 0,
+        penalInterest: 0
+    }
+    let globalSettings = await getGlobalSetting();
+    let masterLona = await getLoanDetails(masterLoanId);
+    let loan = await getCustomerLoanDetails(id);
+    let schemeData = await getSchemeDetails(loan.schemeId);
+    penalIntrestPercent = schemeData.penalInterest / 100;
+    intrest = await models.customerLoanInterest.findOne({ where: { emiStatus: { [Op.in]: ["paid"] }, loanId: id }, order: [['emiDueDate', 'DESC']], attributes: ['emiReceivedDate', 'emiDueDate'] });
+    if (intrest == null) {
+        firstIntrest = await models.customerLoanInterest.findOne({ where: { loanId: id }, order: [['emiDueDate', 'ASC']], attributes: ['emiDueDate'] });
+        let intrestStart = moment(firstIntrest.emiDueDate);
+        daysCount = currentDate.diff(intrestStart, 'days');
+        if (daysCount != 0) {
+            if (globalSettings.gracePeriodDays < daysCount) {
+                amount.penalInterest = Number(loan.loanAmount) * penalIntrestPercent / 360 * daysCount;
+            }
+        }
+    } else {
+        let lastPaid = moment(intrest.emiDueDate);
+        checkMonths = currentDate.diff(lastPaid, "months");
+        daysCount = currentDate.diff(lastPaid, 'days');
+
+        if (daysCount != 0) {
+            if (checkMonths != 0) {
+                if (globalSettings.gracePeriodDays < daysCount) {
+                    amount.penalInterest = Number(loan.loanAmount) * penalIntrestPercent / 360 * daysCount;
+                }
+            } else {
+                amount.interest = Number(loan.loanAmount) * (15.96 / 100) / 360 * daysCount;
+            }
+        }
+    }
+    return amount
+}
+
+exports.getAllCustomerLoanId = async () => {
+    let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
+    let masterLona = await models.customerLoanMaster.findAll({
+        order: [
+            [models.customerLoan, 'id', 'asc']
+        ],
+        where: {
+            isActive: true,
+            loanStageId: stageId.id,
+            "$partRelease$": null
+        },
+        attributes: ['id'],
+        include: [
+            {
+                model: models.partRelease,
+                as: 'partRelease',
+                attributes: ['amountStatus']
+            }, {
+                model: models.customerLoan,
+                as: 'customerLoan',
+                attributes: ['id']
+            }],
+    });
+    let customerLoanId = [];
+    for (const masterLoanData of masterLona) {
+        await masterLoanData.customerLoan.map((data) => { customerLoanId.push(data.id) });
+    }
+    return customerLoanId
+}
+
+exports.getAllDetailsOfCustomerLoan = async (customerLoanId) => {
+    let loanData = await models.customerLoan.findOne({
+        where: { id: customerLoanId },
+        order: [
+            ['id', 'asc'],
+            [models.customerLoanInterest, 'id', 'asc'],
+        ],
+        attributes: ['id', 'masterLoanId', 'selectedSlab', 'loanAmount', 'outstandingAmount', 'currentSlab', 'currentInterestRate', 'penalInterestLastReceivedDate'],
+        include: [{
+            model: models.customerLoanSlabRate,
+            as: 'slab',
+            attributes: ['days', 'interestRate']
+        }, {
+            model: models.customerLoanMaster,
+            as: 'masterLoan',
+            attributes: ['tenure', 'loanStartDate', 'loanEndDate', 'processingCharge', 'totalFinalInterestAmt', 'outstandingAmount']
+        }, {
+            model: models.customerLoanInterest,
+            as: 'customerLoanInterest',
+            attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'updatedAt'] },
+        }, {
+            model: models.scheme,
+            as: 'scheme',
+            attributes: { exclude: ['createdAt', 'updatedAt'] },
+        }]
+    })
+    return loanData;
+}
+
+exports.getInterestTableOfSingleLoan = async (customerLoanId) => {
+    let data = await models.customerLoanInterest.findAll({
+        where: {
+            loanId: customerLoanId,
+            emiStatus: { [Op.notIn]: ['paid'] },
+        },
+        order: [['id', 'asc']],
+        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+    })
+    return data
+}
+
+exports.calculationData = async () => {
+    let customerLoanId = await getAllCustomerLoanId();
+    let loanInfo = [];
+    for (const id of customerLoanId) {
+        let info = await getAllDetailsOfCustomerLoan(id);
+        loanInfo.push(info);
+    }
+    let noOfDaysInYear = 360
+    let global = await models.globalSetting.findAll()
+    let { gracePeriodDays } = global[0]
+    return { noOfDaysInYear, gracePeriodDays, loanInfo };
+}
+
+exports.checkPaidInterest = async (loanId, masterLaonId) => {
+    let checkDailyAmount = await models.customerLoanInterest.findOne({
+        where: { loanId: loanId, masterLoanId: masterLaonId, emiStatus: 'paid' },
+        order: [['emiReceivedDate', 'DESC']]
+    })
+    return checkDailyAmount
+}
+
+exports.getInterestOfSelectedMonth = async (loanId, currentMonth, currentYear) => {
+    let getMonthInterest = await models.customerLoanInterest.findAll({
+        where: {
+            [Op.and]: [
+                sequelize.where(sequelize.fn("date_part", 'MONTH', sequelize.col('emi_due_date')), currentMonth),
+                sequelize.where(sequelize.fn("date_part", 'YEAR', sequelize.col('emi_due_date')), currentYear),
+                { loanId: loanId }
+            ]
+        },
+        order: [['emiDueDate', 'ASC']]
+    })
+
+    return getMonthInterest
+}
+
+exports.getFirstInterest = async (loanId, masterLaonId) => {
+    let firstInterest = await models.customerLoanInterest.findOne({
+        where: { loanId: loanId, masterLoanId: masterLaonId },
+        order: [['emiDueDate', 'ASC']]
+    })
+    return firstInterest
+}
+
+exports.calculation = async (noOfDays, interestRate, loanAmount, paidAmount) => {
+    let oneDayInterest = interestRate / 30;
+    let oneDayAmount = loanAmount * (oneDayInterest / 100);
+    let amount = oneDayAmount * noOfDays;
+    let totalAmount = (Math.round(amount * 100) / 100) - paidAmount;
+    if (totalAmount < 0) {
+        return 0
+    } else {
+        return totalAmount;
+    }
+}
+
+exports.newSlabRateInterestCalcultaion = async (loanAmount, interestRate, paymentFrequency, tenure) => {
+    let amount = ((Number(loanAmount) * (Number(interestRate) * 12 / 100)) * Number(paymentFrequency)
+        / 360).toFixed(2);
+    let length = (tenure * 30) / paymentFrequency
+    return { amount, length }
+}
+
+exports.getStepUpslab = async (loanId, noOfDys) => {
+    let stepUpSlab = await models.customerLoanSlabRate.findOne({
+        where: { loanId: loanId, days: { [Op.gte]: noOfDys } },
+        attributes: ['days', 'interestRate'],
+        order: [['days', 'ASC']]
+    });
+    if (!stepUpSlab) {
+        stepUpSlab = await models.customerLoanSlabRate.findOne({
+            where: { loanId: loanId },
+            attributes: ['days', 'interestRate'],
+            order: [['days', 'DESC']]
+        });
+        return stepUpSlab;
+    } else {
+        return stepUpSlab;
+    }
+}
+
+exports.getLastInterest = async (loanId, masterLaonId) => {
+    let lastInterest = await models.customerLoanInterest.findOne({
+        where: { loanId: loanId, masterLoanId: masterLaonId },
+        order: [['emiDueDate', 'DESC']],
+        attributes: ['id', 'paidAmount']
+    });
+    return lastInterest;
+}
+
+exports.getAllNotPaidInterest = async (loanId) => {
+    let allNotPaidInterest = await models.customerLoanInterest.findAll({
+        where: { loanId: loanId, emiStatus: { [Op.notIn]: ['paid'] } },
+        attributes: ['id', 'paidAmount']
+    });
+    return allNotPaidInterest;
+}
+
+exports.getAllInterestLessThanDate = async (loanId, date) => {
+    let allInterestLessThanDate = await models.customerLoanInterest.findAll({
+        where: { loanId: loanId, emiDueDate: { [Op.lte]: date, }, emiStatus: { [Op.notIn]: ['paid'] } },
+        attributes: ['id', 'paidAmount']
+    });
+    return allInterestLessThanDate;
+}
+
+exports.getPendingNoOfDaysInterest = async (loanId, date) => {
+    let pendingNoOfDaysInterest = await models.customerLoanInterest.findOne({
+        where: { loanId: loanId, emiDueDate: { [Op.gt]: date, }, emiStatus: { [Op.notIn]: ['paid'] } },
+        attributes: ['id', 'paidAmount'],
+        order: [['emiDueDate', 'ASC']]
+    });
+    return pendingNoOfDaysInterest;
+}
+
+let penal = async (loanId) => {
+    console.log(loanId)
+
+}
 
 exports.mergeInterestTable = async (masterLoanId) => {
 

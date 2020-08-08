@@ -13,7 +13,7 @@ const swagger = require('./swagger');
 const scrapSwagger = require('./scrapSwagger')
 // api logger middleware.
 const apiLogger = require("./middleware/apiLogger");
-const { cronForDailyPenalInterest, dailyIntrestCalculation } = require("./utils/interestCalculation");
+const { cronForDailyPenalInterest, dailyIntrestCalculation } = require("./utils/interestCron");
 //customer api logger middleware
 const customerApiLogger = require("./middleware/customerApiLogger");
 
