@@ -568,6 +568,7 @@ exports.loanFinalLoan = async (req, res, next) => {
                 await models.customerLoanMaster.update({ customerLoanCurrentStage: '5', totalFinalInterestAmt, finalLoanAmount, outstandingAmount: finalLoanAmount, securedLoanAmount, unsecuredLoanAmount, tenure, loanStartDate, loanEndDate, paymentFrequency, processingCharge, isUnsecuredSchemeApplied }, { where: { id: masterLoanId }, transaction: t })
 
                 var unsecuredLoan = await models.customerLoan.create({ customerId: checkFinalLoan.customerId, masterLoanId, partnerId, loanAmount: unsecuredLoanAmount, outstandingAmount: unsecuredLoanAmount, schemeId: unsecuredSchemeId, interestRate: unsecuredInterestRate, currentSlab: paymentFrequency, selectedSlab: paymentFrequency, currentInterestRate: unsecuredInterestRate, penalInterest: unsecuredPenel.penalInterest, loanType: "unsecured", createdBy, modifiedBy }, { transaction: t })
+
                 let newUnsecuredInterestData = []
                 for (let i = 0; i < interestTable.length; i++) {
                     interestTable[i]['createdBy'] = createdBy
@@ -628,6 +629,7 @@ exports.loanFinalLoan = async (req, res, next) => {
                     interestTable[i]['interestAmount'] = interestTable[i].unsecuredInterestAmount
                     interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                     interestTable[i]['masterLoanId'] = masterLoanId
+                    interestTable[i]['interestRate'] = unsecuredInterestRate
                     unsecuredInterestData.push(interestTable[i])
                 }
 
@@ -652,6 +654,7 @@ exports.loanFinalLoan = async (req, res, next) => {
                         interestTable[i]['interestAmount'] = interestTable[i].unsecuredInterestAmount
                         interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                         interestTable[i]['masterLoanId'] = masterLoanId
+                        interestTable[i]['interestRate'] = unsecuredInterestRate
                         newUnsecuredInterestData.push(interestTable[i])
                     }
 
@@ -964,9 +967,13 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
             let a = await models.packetOrnament.bulkCreate(ornamentPacketData, { transaction: t })
 
             console.log(packetUpdateArray)
-            await models.packet.bulkCreate(packetUpdateArray, {
-                updateOnDuplicate: ["customerId", "loanId", "masterLoanId", "modifiedBy", "packetAssigned"]
-            }, { transaction: t })
+            for (let i = 0; i < packetUpdateArray.length; i++) {
+                var b = await models.packet.update({ customerId: packetUpdateArray[i].customerId, loanId: packetUpdateArray[i].loanId, masterLoanId: packetUpdateArray[i].masterLoanId, modifiedBy: packetUpdateArray[i].modifiedBy, packetAssigned: packetUpdateArray[i].packetAssigned }, { where: { id: packetUpdateArray[i].id }, transaction: t })
+            }
+
+            // await models.packet.bulkCreate(packetUpdateArray, {
+            //     updateOnDuplicate: ["customerId", "loanId", "masterLoanId", "modifiedBy", "packetAssigned"]
+            // }, { transaction: t })
 
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: PACKET_IMAGES, modifiedBy }, { transaction: t });
         })
