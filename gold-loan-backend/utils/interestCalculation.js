@@ -343,7 +343,7 @@ let dailyIntrestCalculation = async (date) => {
                     let firstInterest = await getFirstInterest(loan.id, loan.masterLoanId);
                     let amount = await calculation(noOfDays, loan.currentInterestRate, loan.outstandingAmount, firstInterest.paidAmount);
 
-                    await models.customerLoanInterest.update({ interestAccrual: amount }, { where: { id: firstInterest.id }, transaction: t });
+                    await models.customerLoanInterest.update({ interestAccrual: amount }, { where: { id: firstInterest.id },emiStatus: { [Op.notIn]: ['paid'] }, transaction: t });
 
                 }
             }
