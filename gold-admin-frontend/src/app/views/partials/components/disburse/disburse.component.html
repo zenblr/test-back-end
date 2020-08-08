@@ -93,7 +93,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6"></div>
+        <div class="col-6" *ngIf="!scrapIds"></div>
         <div class="col-6" *ngIf="details?.isUnsecuredSchemeApplied">
             <div class="row justify-content-center kt-margin-t-10">
                 <div class="col-4 form-label">

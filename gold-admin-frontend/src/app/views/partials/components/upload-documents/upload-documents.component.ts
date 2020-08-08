@@ -24,6 +24,7 @@ import printJS from 'print-js';
 export class UploadDocumentsComponent implements OnInit {
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() stage: EventEmitter<any> = new EventEmitter();
+  @Output() processingChrgs: EventEmitter<any> = new EventEmitter();
   @Input() loanDocumnets
   @Input() scrapDocuments
   @Input() acknowledgmentDocuments;
@@ -64,6 +65,7 @@ export class UploadDocumentsComponent implements OnInit {
   buttonName: string;
   buttonValue = 'Next';
   isEdit: boolean;
+  // isAcknowlegementEdit = true;
   globalValue: any;
   showCustomerConfirmationFlag: boolean;
 
@@ -88,13 +90,13 @@ export class UploadDocumentsComponent implements OnInit {
     // } else {
     //   this.show = false
     // }
-    if (this.url == "view-loan") {
+    if (this.url == "view-loan" || this.url == "view-scrap") {
       this.isEdit = false
     } else {
       this.isEdit = true
     }
     this.ngxPermission.permissions$.subscribe(res => {
-      if ((this.url == "loan-transfer" && (res.loanTransferAppraiserRating || res.loanTransferRating)) || this.url == "scrap-buying-application-form" || this.url == "view-loan") {
+      if ((this.url == "loan-transfer" && (res.loanTransferAppraiserRating || res.loanTransferRating)) || this.url == "scrap-buying-application-form" || this.url == "view-loan" || this.url == "view-scrap") {
         this.buttonValue = 'next';
       } else {
         this.buttonValue = 'save';
@@ -126,47 +128,51 @@ export class UploadDocumentsComponent implements OnInit {
     }
     if (changes.acknowledgmentDocuments && changes.acknowledgmentDocuments.currentValue) {
       let documents = changes.acknowledgmentDocuments.currentValue.customerScrapAcknowledgement
-      if (documents && documents.customerConfirmation.length) {
+      if (documents) {
         this.documentsForm.patchValue({
           processingCharges: documents.processingCharges,
           standardDeduction: documents.standardDeduction,
-          customerConfirmation: documents.customerConfirmation,
-          customerConfirmationImage: documents.customerConfirmation[0],
+          customerConfirmation: documents.customerConfirmationImage[0],
+          customerConfirmationImage: documents.customerConfirmationImage[0],
+          customerConfirmationArr: documents.customerConfirmation,
           customerConfirmationStatus: documents.customerConfirmationStatus
         })
         this.pdfCheck();
         if (changes.acknowledgmentDocuments.currentValue.scrapStatusForAppraiser == 'approved') {
+          // this.isAcknowlegementEdit = false
           this.isEdit = false
           this.documentsForm.disable()
-          this.ref.detectChanges()
+        } else {
+          // this.isAcknowlegementEdit = true
         }
+        this.ref.detectChanges()
       }
     }
     if (changes.scrapDocuments && changes.scrapDocuments.currentValue) {
       let documents = changes.scrapDocuments.currentValue.scrapDocument
-      if (documents) {
+      if (documents && documents.purchaseVoucherImage.length) {
         if (documents.purchaseVoucher) {
           this.documentsForm.patchValue({
-            purchaseVoucher: documents.purchaseVoucher[0],
-            purchaseVoucherImage: documents.purchaseVoucher[0],
+            purchaseVoucher: documents.purchaseVoucherImage[0],
+            purchaseVoucherImage: documents.purchaseVoucherImage[0],
           })
         }
         if (documents.purchaseInvoice) {
           this.documentsForm.patchValue({
-            purchaseInvoice: documents.purchaseInvoice[0],
-            purchaseInvoiceImage: documents.purchaseInvoice[0],
+            purchaseInvoice: documents.purchaseInvoiceImage[0],
+            purchaseInvoiceImage: documents.purchaseInvoiceImage[0],
           })
         }
         if (documents.saleInvoice) {
           this.documentsForm.patchValue({
-            saleInvoice: documents.saleInvoice[0],
-            saleInvoiceImage: documents.saleInvoice[0],
+            saleInvoice: documents.saleInvoiceImage[0],
+            saleInvoiceImage: documents.saleInvoiceImage[0],
           })
         }
         this.pdfCheck();
         this.isEdit = false
+        this.ref.detectChanges();
         this.buttonValue = 'Next'
-
       }
     }
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
@@ -230,8 +236,7 @@ export class UploadDocumentsComponent implements OnInit {
 
   ngAfterViewInit() {
     this.globalSettingService.globalSetting$.subscribe(global => this.globalValue = global);
-    if (this.url == "scrap-buying-application-form") {
-
+    if (this.url == "scrap-buying-application-form" || this.url == "view-scrap") {
       this.documentsForm.controls['customerConfirmationStatus'].valueChanges.subscribe((val) => {
         if (val == 'confirmed') {
           this.buttonValue = 'Next';
@@ -277,6 +282,7 @@ export class UploadDocumentsComponent implements OnInit {
       customerConfirmation: [],
       customerConfirmationImage: [],
       customerConfirmationImageName: [],
+      customerConfirmationArr: [],
       customerConfirmationStatus: [],
       //scrap
       purchaseVoucher: [],
@@ -474,6 +480,10 @@ export class UploadDocumentsComponent implements OnInit {
           }
         })).subscribe()
     } else if (this.url == 'scrap-buying-application-form') {
+      console.log(this.documentsForm.value)
+      if (this.controls.customerConfirmationArr.value && this.controls.customerConfirmationArr.value.length) {
+        this.controls['customerConfirmation'].patchValue(this.controls.customerConfirmationArr.value)
+      }
       this.scrapApplicationFormService.acknowledgementSubmit(this.documentsForm.value, this.scrapIds).pipe(
         map(res => {
           if (this.buttonValue == 'Next') {
@@ -481,6 +491,7 @@ export class UploadDocumentsComponent implements OnInit {
               let stage = Number(res.scrapCurrentStage) - 1
               this.stage.emit(res.scrapCurrentStage)
               this.next.emit(stage)
+              this.processingChrgs.emit(res.processingCharges)
             }
           } else {
             this.router.navigate(['/admin/scrap-management/applied-scrap'])

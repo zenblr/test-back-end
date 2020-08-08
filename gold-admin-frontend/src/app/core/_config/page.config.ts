@@ -343,9 +343,9 @@ export class PageConfig {
 						page: { title: "PACKET IMAGE UPLOAD", desc: "" },
 					},
 				},
-				'view-Scrap': {
+				'view-scrap': {
 					id: {
-						page: { title: "View Scrap Application Form", desc: "" },
+						page: { title: "View Scrap Buying Application Form", desc: "" },
 					}
 				},
 				'packets': {
@@ -353,6 +353,9 @@ export class PageConfig {
 				},
 				"applied-scrap": {
 					page: { title: "Applied Scrap", desc: "" },
+				},
+				"scrap-buying": {
+					page: { title: "Scrap Buying List", desc: "" },
 				},
 				"global-settings": {
 					page: { title: "Global Settings", desc: "" },

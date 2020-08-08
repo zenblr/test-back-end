@@ -3,14 +3,13 @@
     <!-- <kt-portlet-body> -->
     <div class="kt-portlet__body position-relative" id="container">
         <div class="text-right">
-            <a href="../../../../../assets/media/files/packetList.csv" download="packetList.csv"
-                *ngIf="tabGroup.selectedIndex">
+            <a href="../../../../../assets/media/files/packetList.csv" download="packetList.csv" *ngIf="tabIndex">
                 <span class="text-primary csv_pos">
                     <img src="../../../../../assets/media/icons/download.svg" alt="download" height="20"> Download
                     Sample CSV </span>
             </a>
         </div>
-        <mat-tab-group #tabGroup>
+        <mat-tab-group #tabGroup (selectedIndexChange)="selectedIndex($event)">
             <mat-tab label="By Filling Form">
                 <form [formGroup]="packetForm">
                     <div class="row ">

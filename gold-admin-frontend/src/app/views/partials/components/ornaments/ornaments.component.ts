@@ -233,9 +233,15 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.fullAmount = 0;
         if (this.scrapIds) {
           if (this.meltingOrnament) {
-            this.OrnamentsData.value.forEach(element => {
-              this.totalAmount += Number(element.finalScrapAmountAfterMelting);
-            });
+            if (this.disable) {
+              this.OrnamentsData.getRawValue().forEach(element => {
+                this.totalAmount += Number(element.finalScrapAmountAfterMelting);
+              });
+            } else {
+              this.OrnamentsData.value.forEach(element => {
+                this.totalAmount += Number(element.finalScrapAmountAfterMelting);
+              });
+            }
             this.totalAmount = Math.round(this.totalAmount)
             this.finaltotalAmt.emit(this.totalAmount)
           } else {
