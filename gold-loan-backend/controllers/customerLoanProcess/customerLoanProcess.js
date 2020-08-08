@@ -1077,11 +1077,16 @@ exports.loanDocuments = async (req, res, next) => {
     } else {
         let loanData = await sequelize.transaction(async t => {
 
-            await models.customerLoanDocument.update({ loanAgreementCopy, pawnCopy, schemeConfirmationCopy, modifiedBy }, { where: { masterLoanId: masterLoanId }, transaction: t })
+            let stageId = await models.loanStage.findOne({ where: { name: 'OPS team rating' }, transaction: t })
 
-            await models.customerLoanHistory.create({ loanId, masterLoanId, action: LOAN_DOCUMENTS, modifiedBy }, { transaction: t });
+            await models.customerLoanMaster.update({ loanStageId: stageId.id, modifiedBy }, { where: { id: masterLoanId }, transaction: t })
 
-            return loan
+
+           let x = await models.customerLoanDocument.update({ loanAgreementCopy:loanAgreementCopy, pawnCopy:pawnCopy, schemeConfirmationCopy:schemeConfirmationCopy, modifiedBy:modifiedBy }, { where: { id: checkDocument.id }, transaction: t })
+
+           let y =  await models.customerLoanHistory.create({ loanId, masterLoanId, action: LOAN_DOCUMENTS, modifiedBy }, { transaction: t });
+
+            // return loan
         })
         return res.status(200).json({ message: 'success', masterLoanId, loanId })
 
