@@ -79,4 +79,8 @@ export class BuyingListComponent implements OnInit {
   newScrap(item) {
     this.router.navigate(['/admin/scrap-management/scrap-buying-application-form/'], { queryParams: { customerID: item.customer.customerUniqueId } })
   }
+
+  viewScrap(item) {
+    this.router.navigate(['/admin/scrap-management/view-scrap', item.id])
+  }
 }
