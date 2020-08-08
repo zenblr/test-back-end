@@ -859,7 +859,7 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
     })
     let packetUpdateArray = await packetArray.map(ele => {
         let obj = {}
-        obj.id = ele;
+        obj.id = Number(ele);
         obj.customerId = loanDetails.customerId;
         obj.loanId = loanId;
         obj.masterLoanId = masterLoanId;
@@ -954,7 +954,7 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
                 }
             }
             console.log(ornamentPacketData)
-            await models.packetOrnament.bulkCreate(ornamentPacketData, { transaction: t })
+            let a = await models.packetOrnament.bulkCreate(ornamentPacketData, { transaction: t })
 
             console.log(packetUpdateArray)
             await models.packet.bulkCreate(packetUpdateArray, {
