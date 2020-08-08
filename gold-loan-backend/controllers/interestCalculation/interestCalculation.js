@@ -6,7 +6,7 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const _ = require('lodash');
 const moment = require('moment')
-const { dailyIntrestCalculation } = require('../../utils/interestCalculation');
+const { dailyIntrestCalculation } = require('../../utils/interestCron');
 
 
 // add internal branch
