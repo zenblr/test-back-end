@@ -16,8 +16,26 @@ export class AppliedScrapService {
     private http: HttpClient, private toastr: ToastrService
   ) { }
 
-  getAppliedScraps(search, from, to): Observable<any> {
-    return this.http.get(`/api/scrap/scrap-process/applied-scrap-details?search=${search}&from=${from}&to=${to}`).pipe(
+  getAppliedScraps(event): Observable<any> {
+    const reqParams: any = {};
+    if (event && event.from) {
+      reqParams.from = event.from;
+    }
+    if (event && event.to) {
+      reqParams.to = event.to;
+    }
+    if (event && event.search) {
+      reqParams.search = event.search;
+    }
+    if (event && event.appraiserApproval) {
+      reqParams.appraiserApproval = event.appraiserApproval;
+    }
+    if (event && event.scrapStage) {
+      reqParams.scrapStageId = event.scrapStage;
+    }
+    return this.http.get(`/api/scrap/scrap-process/applied-scrap-details`, {
+      params: reqParams,
+    }).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message) {

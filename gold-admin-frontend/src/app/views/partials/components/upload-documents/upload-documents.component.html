@@ -139,7 +139,8 @@
             <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
             <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
             <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag"></div>
-            <div class="col mb-3" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
+            <div class="col mb-3"
+                *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
                 <div class="input-group w-80"
                     [class.isError]="controls.customerConfirmation.touched && controls.customerConfirmation.invalid">
                     <input type="text" class="form-control" placeholder="Select File" aria-label="Recipient's username"
@@ -390,7 +391,8 @@
             <div class="col" *ngIf="showScrapAcknowledgementFlag">
                 <select class="form-control" formControlName="standardDeduction"
                     [class.isError]="controls.standardDeduction.touched && controls.standardDeduction.invalid">
-                    <option value="" [disabled]="true" [selected]="true">Select Standard Deduction</option>
+                    <option value="" [disabled]="true" [selected]="controls.standardDeduction.value == '' ||
+                    controls.standardDeduction.value == null">Select Standard Deduction</option>
                     <option [value]="sd.standardDeduction" *ngFor="let sd of standardDeductionArr">
                         {{sd.standardDeduction}}
                     </option>
@@ -427,6 +429,8 @@
                                 <img class="edit-icon kt-pointer" src="../../../../../assets/media/icons/edit.svg"
                                     (click)="editImages('customerConfirmation')"
                                     *ngIf="isEdit && controls?.customerConfirmationImage?.value">
+                                <input type="file" class="d-none" #customerConfirmation
+                                    (change)="fileUpload($event,'customerConfirmation')">
                                 <div class="iframeWrapper"
                                     (click)="preview(controls?.customerConfirmationImage?.value)">
                                     <iframe [src]="controls?.customerConfirmationImage?.value | safe : 'resourceUrl'"

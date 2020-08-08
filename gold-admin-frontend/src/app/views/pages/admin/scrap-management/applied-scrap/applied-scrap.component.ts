@@ -24,8 +24,8 @@ export class AppliedScrapComponent implements OnInit {
     from: 1,
     to: 25,
     search: '',
-    cceStatus: '',
-    kycStatus: '',
+    appraiserApproval: '',
+    scrapStage: '',
   }
   destroy$ = new Subject();
   private subscriptions: Subscription[] = [];
@@ -33,7 +33,7 @@ export class AppliedScrapComponent implements OnInit {
   searchValue = '';
   permission: any;
   filter$ = new Subject();
-  
+
   constructor(
     public dialog: MatDialog,
     private appliedScrapService: AppliedScrapService,
@@ -83,7 +83,7 @@ export class AppliedScrapComponent implements OnInit {
       this.leadsResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
-    this.dataSource.loadAppliedScraps(this.searchValue, 1, 25);
+    this.dataSource.loadAppliedScraps(this.queryParamsData);
   }
 
   ngOnDestroy() {
@@ -101,14 +101,17 @@ export class AppliedScrapComponent implements OnInit {
   loadAppliedScrapsPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
-    let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
-    let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
-
-    this.dataSource.loadAppliedScraps(this.searchValue, from, to);
+    this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
+    this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
+    this.queryParamsData.search = this.searchValue
+    this.dataSource.loadAppliedScraps(this.queryParamsData);
   }
 
   applyFilter(data) {
     console.log(data)
+    this.queryParamsData.appraiserApproval = data.data.appraiserStatus;
+    this.queryParamsData.scrapStage = data.data.scrapStatus;
+    this.dataSource.loadAppliedScraps(this.queryParamsData);
     this.filteredDataList = data.list
   }
 
