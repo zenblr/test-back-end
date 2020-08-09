@@ -7,9 +7,11 @@
                         <tr>
                             <th scope="col">Field</th>
                             <th scope="col" class="text-center">Appraiser</th>
-                            <th scope="col" class="text-center" *ngIf="viewBMForm || url == 'view-loan'">Branch Manager
+                            <th scope="col" class="text-center"
+                                *ngIf="viewBMForm || url == 'view-loan' || url == 'view-scrap'">Branch Manager
                             </th>
-                            <th scope="col" class="text-center" *ngIf="viewOpertaionalForm || url == 'view-loan'">
+                            <th scope="col" class="text-center"
+                                *ngIf="viewOpertaionalForm || url == 'view-loan' || url == 'view-scrap'">
                                 Operational Team</th>
                         </tr>
                     </thead>
@@ -27,7 +29,8 @@
                                     *ngIf="!controls.applicationFormForAppraiser.value"
                                     (click)="approvalOfAppraiser(true,'form')">
                             </td>
-                            <td class="rating-bm text-center" *ngIf="viewBMForm || url == 'view-loan'">
+                            <td class="rating-bm text-center"
+                                *ngIf="viewBMForm || url == 'view-loan' || url == 'view-scrap'">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
                                     [ngClass]="{'cursor-not-allowed':(stage !=2 || this.disable)}"
                                     *ngIf="controls.applicationFormForBM.value" (click)="approvalOfBM(false,'form')">
@@ -35,7 +38,8 @@
                                     [ngClass]="{'cursor-not-allowed':(stage !=2 || this.disable)}"
                                     *ngIf="!controls.applicationFormForBM.value" (click)="approvalOfBM(true,'form')">
                             </td>
-                            <td class="rating-bm text-center" *ngIf="viewOpertaionalForm || url == 'view-loan'">
+                            <td class="rating-bm text-center"
+                                *ngIf="viewOpertaionalForm || url == 'view-loan' || url == 'view-scrap'">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
                                     [ngClass]="{'cursor-not-allowed':(stage !=7 || this.disable)}"
                                     *ngIf="controls.applicationFormForOperatinalTeam.value"
@@ -58,7 +62,8 @@
                                     *ngIf="!controls.goldValuationForAppraiser.value"
                                     (click)="approvalOfAppraiser(true,'gold')">
                             </td>
-                            <td class="rating-bm text-center" *ngIf="viewBMForm || url == 'view-loan'">
+                            <td class="rating-bm text-center"
+                                *ngIf="viewBMForm || url == 'view-loan' || url == 'view-scrap'">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
                                     [ngClass]="{'cursor-not-allowed':(stage !=2 || this.disable )}"
                                     *ngIf="controls.goldValuationForBM.value" (click)="approvalOfBM(false,'gold')">
@@ -66,7 +71,8 @@
                                     [ngClass]="{'cursor-not-allowed':(stage !=2 || this.disable)}"
                                     *ngIf="!controls.goldValuationForBM.value" (click)="approvalOfBM(true,'gold')">
                             </td>
-                            <td class="rating-bm text-center" *ngIf="viewOpertaionalForm || url == 'view-loan'">
+                            <td class="rating-bm text-center"
+                                *ngIf="viewOpertaionalForm || url == 'view-loan' || url == 'view-scrap'">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
                                     [ngClass]="{'cursor-not-allowed':(stage !=7 || this.disable )}"
                                     *ngIf="controls.goldValuationForOperatinalTeam.value"
@@ -108,7 +114,7 @@
                                     *ngIf="controls.loanStatusForAppraiser.invalid && controls.loanStatusForAppraiser.touched">
                                     Field Required</mat-error>
                             </td>
-                            <td class="rating-bm" *ngIf="scrapIds && (viewBMForm || url == 'view-loan')">
+                            <td class="rating-bm" *ngIf="scrapIds && (viewBMForm || url == 'view-scrap')">
                                 <select class="form-control" formControlName="scrapStatusForBM"
                                     (change)="resetBM();statusBM()"
                                     [class.isError]="controls.scrapStatusForBM.invalid && controls.scrapStatusForBM.touched">
@@ -137,7 +143,7 @@
                                     Field
                                     Required</mat-error>
                             </td>
-                            <td class="rating-bm" *ngIf="scrapIds && (viewOpertaionalForm || url == 'view-loan')">
+                            <td class="rating-bm" *ngIf="scrapIds && (viewOpertaionalForm || url == 'view-scrap')">
                                 <select class="form-control" formControlName="scrapStatusForOperatinalTeam"
                                     (change)="resetOT();statusOT()"
                                     [class.isError]="controls.scrapStatusForOperatinalTeam.invalid && controls.scrapStatusForOperatinalTeam.touched">
@@ -189,7 +195,7 @@
             </div>
         </div>
         <div class="row justify-content-center"
-            *ngIf="((stage == 6 || stage == 2 || stage == 1) && controls.loanStatusForOperatinalTeam.value == 'incomplete') ||
+            *ngIf="((stage == 6 || stage == 2 || stage == 1) && controls.loanStatusForOperatinalTeam.value == 'incomplete' && controls.commentByOperatinalTeam.value) ||
             ((stage == 6 || stage == 2 || stage == 1) && controls.scrapStatusForOperatinalTeam.value == 'incomplete' && controls.commentByOperatinalTeam.value)">
             <div class="col-7">
                 <div class="row">
