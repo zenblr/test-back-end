@@ -194,10 +194,10 @@
             <div class="col-7">
                 <div class="row">
                     <div class="col-4">
-                        <label for="" *ngIf="controls?.loanStatusForOperatinalTeam?.value">Reason for
+                        <label for="" *ngIf="controls?.loanStatusForOperatinalTeam?.value == 'incomplete'">Reason for
                             {{controls.loanStatusForOperatinalTeam.value | titlecase}}<br>
                             (Operational Team)</label>
-                        <label for="" *ngIf="controls?.scrapStatusForOperatinalTeam?.value">Reason for
+                        <label for="" *ngIf="controls?.scrapStatusForOperatinalTeam?.value == 'incomplete'">Reason for
                             {{controls.scrapStatusForOperatinalTeam.value | titlecase}}<br>
                             (Operational Team)</label>
                     </div>
