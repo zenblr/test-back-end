@@ -360,6 +360,9 @@ export class PageConfig {
 				"scrap-buying": {
 					page: { title: "Scrap Buying List", desc: "" },
 				},
+				"customer-management": {
+					page: { title: "Customer Management", desc: "" },
+				},
 				"global-settings": {
 					page: { title: "Global Settings", desc: "" },
 				},

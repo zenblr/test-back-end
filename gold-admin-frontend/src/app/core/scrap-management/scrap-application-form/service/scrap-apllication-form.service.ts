@@ -85,51 +85,9 @@ export class ScrapApplicationFormService {
     )
   }
 
-  getLoanDataById(id: number): Observable<any> {
-    return this.http.get(`/api/loan-process/single-loan?customerLoanId=${id}`).pipe(
-      map(res => res)
-    )
-  }
-
   uploadDocuments(details, scrapIds): Observable<any> {
     let data = { ...details, ...scrapIds }
     return this.http.post(`/api/scrap/scrap-process/scrap-documents`, data).pipe(
-      map(res => res)
-    )
-  }
-
-  checkForLoanType(data): Observable<any> {
-    return this.http.post(`/api/loan-process/check-loan-type`, data).pipe(
-      map(res => res)
-    )
-  }
-
-  getInterest(data): Observable<any> {
-    return this.http.post(`/api/loan-process/interest-rate`, data).pipe(
-      map(res => res)
-    )
-  }
-
-  updateLoan(id, data): Observable<any> {
-    return this.http.put(`/api/loan-process/change-loan-detail/${id}`, data).pipe(
-      map(res => res)
-    )
-  }
-
-  calculateFinalInterestTable(data): Observable<any> {
-    return this.http.post('/api/loan-process/generate-interest-table', data).pipe(
-      map(res => res)
-    )
-  }
-
-  unsecuredTableGenration(form, paymentFrequency, tenure): Observable<any> {
-    let data = {
-      unsecuredSchemeAmount: form.unsecuredSchemeAmount,
-      unsecuredSchemeId: form.unsecuredSchemeName,
-      paymentFrequency: paymentFrequency,
-      tenure: tenure
-    }
-    return this.http.post('/api/loan-process/generate-unsecured-interest-table', data).pipe(
       map(res => res)
     )
   }
@@ -170,14 +128,9 @@ export class ScrapApplicationFormService {
       }))
   }
 
-  applyLoanFromPartRelease(data): Observable<any> {
-    return this.http.get(`/api/jewellery-release/apply-loan/${data.customerUniqueId}?partReleaseId=${data.partReleaseId}`).pipe(
-      map(res => res),
-      catchError(err => {
-        if (err.error.message)
-          this.toastr.error(err.error.message);
-        throw (err);
-      })
+  quickPay(details): Observable<any> {
+    return this.http.post(`/api/scrap/scrap-process/quick-pay`, details).pipe(
+      map(res => res)
     )
   }
 }

@@ -44,6 +44,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
 
   currentDate: any = new Date();
   url: string;
+  scrapUrl: string;
 
   constructor(
     private fb: FormBuilder,
@@ -62,6 +63,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   ) {
     this.initForm()
     this.url = (this.router.url.split("/")[3]).split("?")[0]
+    this.scrapUrl = (this.router.url.split("/")[2]).split("?")[0];
   }
 
   ngAfterViewInit() {

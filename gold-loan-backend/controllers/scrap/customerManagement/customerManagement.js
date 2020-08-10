@@ -85,7 +85,7 @@ exports.getScrapDetailCustomerManagement = async (req, res, next) => {
             model: models.customer,
             as: 'customer',
             where: internalBranchWhere,
-            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName']
+            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panCardNumber']
         },
         {
             model: models.customerScrapPersonalDetail,
@@ -215,7 +215,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
 
     let allCustomers = await models.customer.findAll({
         where: searchQuery,
-        attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'email', 'panImage', 'stateId', 'cityId', 'pinCode'],
+        attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panCardNumber', 'email', 'panImage', 'stateId', 'cityId', 'pinCode'],
         order: [["id", "DESC"]],
         offset: offset,
         subQuery: false,

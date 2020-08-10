@@ -249,10 +249,10 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         console.log(temp)
         this.ornamentTypeData = temp;
       }, 200)
+    }
 
-      if (this.packets.length === 0) {
-        this.packetImg.reset()
-      }
+    if (this.packets.length === 0) {
+      this.packetImg.reset()
     }
   }
 

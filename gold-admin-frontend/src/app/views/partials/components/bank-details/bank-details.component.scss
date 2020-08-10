@@ -1,0 +1,19 @@
+:host {
+	.iframeWrapper{
+		display:inline-block;
+		position:relative;
+	  }
+	  
+	  .iframeWrapper iframe{
+		vertical-align:top;
+		pointer-events: none;
+	  }
+	  
+	iframe {
+		pointer-events: none;
+		display: block;
+		margin-top: -65px;
+		margin-left: -7px;
+	}
+	
+}
