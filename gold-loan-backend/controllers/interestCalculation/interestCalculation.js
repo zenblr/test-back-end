@@ -6,7 +6,7 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const _ = require('lodash');
 const moment = require('moment')
-const { dailyIntrestCalculation } = require('../../utils/interestCalculation');
+const { dailyIntrestCalculation } = require('../../utils/interestCron');
 
 
 // add internal branch
@@ -21,6 +21,74 @@ exports.interestCalculation = async (req, res) => {
         data = await dailyIntrestCalculation(date);
     }
     return res.status(200).json(data);
+}
+
+exports.app = async (req, res) => {
+    // let data = [{
+    //     "id": 6,
+    //     "customerId": 32,
+    //     "moduleId": 1,
+    //     "appraiserId": 86,
+    //     "isAssigned": true,
+    //     "customer": {
+    //         "id": 32,
+    //     },
+    //     "module": {
+    //         "id": 1,
+    //         "moduleName": "gold loan"
+    //     }
+    // },
+    // {
+    //     "id": 5,
+    //     "customerId": 32,
+    //     "moduleId": 3,
+    //     "appraiserId": 86,
+    //     "isAssigned": true,
+    //     "customer": {
+    //         "id": 32,
+    //     },
+    //     "module": {
+    //         "id": 3,
+    //         "moduleName": "scrap gold"
+    //     }
+    // },
+    // {
+    //     "id": 4,
+    //     "customerId": 43,
+    //     "moduleId": 1,
+    //     "appraiserId": 86,
+    //     "isAssigned": true,
+    //     "customer": {
+    //         "id": 43,
+    //     },
+    //     "module": {
+    //         "id": 1,
+    //         "moduleName": "gold loan"
+    //     }
+    // },
+    // {
+    //     "id": 3,
+    //     "customerId": 42,
+    //     "moduleId": 3,
+    //     "appraiserId": 86,
+    //     "isAssigned": true,
+    //     "customer": {
+    //         "id": 42,
+    //     },
+    //     "module": {
+    //         "id": 3,
+    //         "moduleName": "scrap gold"
+    //     }
+    // }
+    // ]
+
+    // let abc = await _.chain(data)
+    //     .groupBy("customerId")
+    //     .map((value, key) => ({ customerId: key, users: value }))
+    //     .value()
+
+    return res.status(200).json({ data:[] })
+
 }
 
 // async function getPenal(info) {

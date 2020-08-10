@@ -21,6 +21,9 @@ import { AppliedScrapComponent } from './applied-scrap/applied-scrap.component';
 import { GlobalSettingsComponent } from './global-settings/global-settings.component';
 import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dialog.component';
 import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
+import { BuyingListComponent } from './buying-list/buying-list.component';
+import { QuickPayComponent } from './quick-pay/quick-pay.component';
+import { CustomerManagementComponent } from './customer-management/customer-management.component';
 
 const routes: Routes = [
   {
@@ -61,6 +64,14 @@ const routes: Routes = [
         component: AppliedScrapComponent
       },
       {
+        path: 'scrap-buying',
+        component: BuyingListComponent
+      },
+      {
+        path: 'customer-management',
+        component: CustomerManagementComponent
+      },
+      {
         path: 'global-settings',
         component: GlobalSettingsComponent
       },
@@ -79,6 +90,9 @@ const routes: Routes = [
     AssignAppraiserPacketsComponent,
     AppliedScrapComponent,
     GlobalSettingsComponent,
+    BuyingListComponent,
+    CustomerManagementComponent,
+    QuickPayComponent,
   ],
   imports: [
     CommonModule,
@@ -108,7 +122,8 @@ const routes: Routes = [
     AddPacketsComponent,
     AssignAppraiserPacketsComponent,
     WebcamDialogComponent,
-    UserReviewComponent
+    UserReviewComponent,
+    QuickPayComponent,
   ]
 })
 export class ScrapManagementModule { }

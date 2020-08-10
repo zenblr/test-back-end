@@ -37,6 +37,10 @@ export class SharedService {
 		return of({ apprsiserOrCCE: this.appraiserOrCCE, bm: this.branchManager })
 	}
 
+	getScrapStatus(): Observable<any> {
+		return this.http.get(`/api/scrap/scrap-process/get-scrap-status`);
+	}
+
 	getStates(): Observable<any> {
 		return this.http.get(`/api/state`);
 	}

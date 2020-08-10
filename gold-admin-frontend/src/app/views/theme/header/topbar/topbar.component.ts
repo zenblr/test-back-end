@@ -51,6 +51,7 @@ import { ShopService, ShoppingCartService, OrdersService } from '../../../../cor
 import { OccupationService } from '../../../../core/masters/occupation/services/occupation.service';
 import { StandardDeductionService } from '../../../../core/masters/standard-deduction/service/standard-deduction.service';
 import { ScrapPacketsService, AppliedScrapService } from '../../../../core/scrap-management';
+import { OtherChargesService } from '../../../../core/masters/other-charges/service/other-charges.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -149,6 +150,7 @@ export class TopbarComponent implements OnInit {
 		private standardDeductionService: StandardDeductionService,
 		private scrapPacketsService: ScrapPacketsService,
 		private appliedScrap: AppliedScrapService,
+		private otherChargesService:OtherChargesService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -403,6 +405,12 @@ export class TopbarComponent implements OnInit {
 			this.type2 = "button";
 			this.rightButton = true;
 			this.permissionType = "addPurpose";
+		}
+		if (this.path == "other-charges") {
+			this.value2 = "Add Other Charges";
+			this.type2 = "button";
+			this.rightButton = true;
+			//this.permissionType = "addOtherCharges";
 		}
 		if (this.path == "lead-source") {
 			this.value1 = "Add Lead Source";
@@ -672,9 +680,9 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "applied-scrap") {
 			this.showfilter = true;
 			this.filterWidth = "600px"
-			this.filterName = "loan"
+			this.filterName = "appliedScrap"
 			this.showInput = true;
-			this.listType = "approval";
+			this.listType = "approval,scrapStatus";
 		}
 		if (this.path == 'new-requests') {
 			this.showInput = true;
@@ -777,6 +785,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'purposes') {
 			this.purposeService.openModal.next(true)
+		}
+		if (this.path == 'other-charges'){
+			this.otherChargesService.openModal.next(true);
 		}
 		if (this.path == 'lead-source') {
 			this.leadSourceService.openModal.next(true)

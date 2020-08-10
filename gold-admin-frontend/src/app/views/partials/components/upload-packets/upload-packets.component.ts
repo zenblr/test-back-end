@@ -92,6 +92,13 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       }
     }
 
+    if (change.scrapStage && change.scrapStage.currentValue) {
+      if (change.scrapStage.currentValue.id != 3) {
+        this.url = 'view-scrap'
+        this.buttonName = 'next'
+      }
+    }
+
     if (change.viewpacketsDetails && change.viewpacketsDetails.currentValue) {
       let packet = change.viewpacketsDetails.currentValue.loanPacketDetails[0]
       if (packet) {
@@ -116,13 +123,14 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       let packet = change.viewScrapPacketsDetails.currentValue.scrapPacketDetails[0]
       if (packet) {
         this.packetImg.patchValue(packet)
+        console.log(this.packetImg)
         console.log(packet.CustomerScrapPackageDetail)
         packet.CustomerScrapPackageDetail.forEach(ele => {
           this.packetsName = ele.packetUniqueId;
+          this.controls.packetId.patchValue(ele.id)
+          this.splicedPackets.push(ele)
           this.pushPackets()
         });
-        this.url = 'view-scrap'
-        this.buttonName = 'next'
       }
     }
 
@@ -241,10 +249,10 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         console.log(temp)
         this.ornamentTypeData = temp;
       }, 200)
-      
-      if (this.packets.length === 0) {
-        this.packetImg.reset()
-      }
+    }
+
+    if (this.packets.length === 0) {
+      this.packetImg.reset()
     }
   }
 

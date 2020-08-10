@@ -180,6 +180,10 @@ export class ScrapApplicationFormComponent implements OnInit {
       this.scrapStage = event
   }
 
+  processingChrgs(event) {
+    this.processingCharges = event;
+  }
+
   ornaments(event) {
     this.ornamentDetails = event
     this.scrapStage.id = 3;

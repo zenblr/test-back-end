@@ -6,6 +6,9 @@ import { ToastrService } from 'ngx-toastr';
 import { LoanApplicationFormService } from '../../../../core/loan-management';
 import { ScrapApplicationFormService } from '../../../../core/scrap-management';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material';
+import { PdfViewerComponent } from '../pdf-viewer/pdf-viewer.component';
+import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
 
 @Component({
   selector: 'kt-bank-details',
@@ -35,6 +38,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     public toastr: ToastrService,
     public ref: ChangeDetectorRef,
     public fb: FormBuilder,
+    public dialog: MatDialog,
     public sharedService: SharedService,
     public loanFormService: LoanApplicationFormService,
     public scrapApplicationFormService: ScrapApplicationFormService,
@@ -136,7 +140,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     if (this.controls.passbookProof.value.length < 2) {
       var name = event.target.files[0].name
       var ext = name.split('.')
-      if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+      if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg' || ext[ext.length - 1] == 'pdf') {
         let params;
         if (this.scrapIds) {
           params = {
@@ -183,6 +187,28 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     this.bankForm.get('passbookProofImage').patchValue(this.passbookImg);
     this.bankForm.get('passbookProofImageName').patchValue(this.passbookImgFileName[this.passbookImgFileName.length - 1]);
     this.ref.detectChanges();
+  }
+
+  preview(value) {
+    var ext = value.split('.')
+    if (ext[ext.length - 1] == 'pdf') {
+      this.dialog.open(PdfViewerComponent, {
+        data: {
+          pdfSrc: value,
+          page: 1,
+          showAll: true
+        },
+        width: "80%"
+      })
+    } else {
+      this.dialog.open(ImagePreviewDialogComponent, {
+        data: {
+          images: [value],
+          index: 0
+        },
+        width: "auto"
+      })
+    }
   }
 
   get controls() {
