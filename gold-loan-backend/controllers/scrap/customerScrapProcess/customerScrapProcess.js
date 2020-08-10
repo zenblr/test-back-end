@@ -98,7 +98,7 @@ exports.scrapBasicDeatils = async (req, res, next) => {
 
 }
 
-//FUNCTION for submitting nominee details  DONE
+//function for submitting acknowledgement details  DONE
 exports.acknowledgementDetails = async (req, res, next) => {
     let { processingCharges, standardDeduction, customerConfirmationStatus, customerConfirmation, scrapId } = req.body;
     let createdBy = req.userData.id;
@@ -166,7 +166,7 @@ exports.acknowledgementDetails = async (req, res, next) => {
 
 }
 
-//FUNCTION for scrap bank details DONE
+//function for scrap bank details DONE
 exports.scrapBankDetails = async (req, res, next) => {
     let { scrapId, paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof } = req.body
     let createdBy = req.userData.id;
@@ -204,7 +204,7 @@ exports.scrapBankDetails = async (req, res, next) => {
 
 }
 
-//FUNCTION for submitting ornament details  DONE
+//function for submitting ornament details  DONE
 exports.scrapOrnmanetDetails = async (req, res, next) => {
     let { scrapOrnaments, finalScrapAmount, scrapId } = req.body
     let allOrnmanets = []
@@ -255,7 +255,7 @@ exports.scrapOrnmanetDetails = async (req, res, next) => {
     }
 }
 
-//FUNCTION for submitting ornament details  DONE
+//function for submitting melting ornament details  DONE
 exports.scrapOrnmanetMeltingDetails = async (req, res, next) => {
 
     let { scrapId, grossWeight, netWeight, deductionWeight, karat, purityReading, ornamentImageWithWeight, ornamentImageWithXrfMachineReading, ornamentImage, customerConfirmation, finalScrapAmountAfterMelting, eligibleScrapAmount } = req.body
@@ -306,7 +306,7 @@ exports.scrapOrnmanetMeltingDetails = async (req, res, next) => {
     }
 }
 
-//FUNCTION FOR APPRAISER RATING DONE
+//function for appraiser rating
 exports.scrapAppraiserRating = async (req, res, next) => {
     let { scrapId, applicationFormForAppraiser, goldValuationForAppraiser, scrapStatusForAppraiser, commentByAppraiser } = req.body
     let createdBy = req.userData.id;
@@ -375,7 +375,7 @@ exports.scrapAppraiserRating = async (req, res, next) => {
 
 }
 
-//FUNCTION FOR BM RATING
+//function for bm rating
 exports.scrapBmRating = async (req, res, next) => {
     let { scrapId,
         applicationFormForBM, goldValuationForBM, scrapStatusForBM, commentByBM } = req.body
@@ -435,7 +435,7 @@ exports.scrapBmRating = async (req, res, next) => {
 
 }
 
-// FUNCTION FOR OPS TEAM RATING
+// function ops team rating
 exports.scrapOpsTeamRating = async (req, res, next) => {
     let { scrapId,
         applicationFormForOperatinalTeam, goldValuationForOperatinalTeam, scrapStatusForOperatinalTeam, commentByOperatinalTeam } = req.body;
@@ -618,7 +618,7 @@ exports.singleScrapDetails = async (req, res, next) => {
 
 }
 
-//  FUNCTION FOR ADD PACKAGE IMAGES
+//  function for add packet image for scrap
 exports.addPackageImagesForScrap = async (req, res, next) => {
     let { scrapId, emptyPacketWithNoOrnament, sealingPacketWithWeight, sealingPacketWithCustomer, packetOrnamentArray } = req.body;
     let createdBy = req.userData.id;
@@ -743,7 +743,7 @@ exports.addPackageImagesForScrap = async (req, res, next) => {
 
 }
 
-//FUNCTION for disbursement
+//function for disbursement
 exports.disbursementOfScrapBankDetails = async (req, res, next) => {
     let { scrapId } = req.query;
     let createdBy = req.userData.id;
@@ -772,9 +772,9 @@ exports.disbursementOfScrapBankDetails = async (req, res, next) => {
 
 }
 
-//  FUNCTION FOR DISBURSEMENT OF LOAN AMOUNT
+//  function for disbursement og scrap amount
 exports.disbursementOfScrapAmount = async (req, res, next) => {
-    let { scrapId, scrapAmount, transactionId, date, paymentMode, ifscCode, bankName, bankBranchName,
+    let { scrapId, scrapAmount, transactionId, date, paymentMode, ifscCode, bankName, bankBranch,
         accountHolderName, accountNumber, disbursementStatus } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
@@ -794,10 +794,12 @@ exports.disbursementOfScrapAmount = async (req, res, next) => {
 
             let stageId = await models.scrapStage.findOne({ where: { stageName: 'disbursed' } });
 
-            await models.customerScrap.update({ disbursementAmount: scrapAmount, scrapStageId: stageId.id, isDisbursed: true }, { where: { id: scrapId }, transaction: t })
+            await models.customerScrap.update({ disbursementAmount: scrapAmount, scrapStageId: stageId.id, isDisbursed: true }, { where: { id: scrapId }, transaction: t });
+
+            await models.customerScrapBankDetails.update({ paymentType: paymentMode, bankName, acNumber: accountNumber, ifscCode, bankBranch, acHolderName: accountHolderName, createdBy, modifiedBy }, { where: { scrapId: scrapId }, transaction: t });
 
             await models.customerScrapDisbursement.create({
-                scrapId, scrapAmount, transactionId, date, paymentMode, ifscCode, bankName, bankBranch: bankBranchName,
+                scrapId, scrapAmount, transactionId, date, paymentMode, ifscCode, bankName, bankBranch,
                 acHolderName: accountHolderName, acNumber: accountNumber, disbursementStatus, createdBy, modifiedBy
             }, { transaction: t })
 
@@ -811,7 +813,7 @@ exports.disbursementOfScrapAmount = async (req, res, next) => {
 
 }
 
-//  FUNCTION FOR GET APPLIED LOAN DETAILS
+//  function for apploed scrap detail
 exports.appliedScrapDetails = async (req, res, next) => {
     let stage = await models.scrapStage.findOne({
         where: { stageName: 'applying' }
@@ -925,7 +927,7 @@ exports.appliedScrapDetails = async (req, res, next) => {
 
 }
 
-//  FUNCTION FOR GET SCRAP DETAILS
+//  function for get scrap details
 exports.getScrapDetails = async (req, res, next) => {
 
     let { search, offset, pageSize } =
@@ -993,7 +995,7 @@ exports.getScrapDetails = async (req, res, next) => {
     }
 }
 
-//get function for single loan in CUSTOMER-MANAGMENT
+//get function for single loan in customer management
 exports.getSingleScrapInCustomerManagment = async (req, res, next) => {
     let { customerScrapId } = req.query
     let customerScrap = await models.customerScrap.findOne({
@@ -1076,6 +1078,7 @@ exports.getSingleScrapInCustomerManagment = async (req, res, next) => {
 
 }
 
+//function for quick pay in scrap melting details 
 exports.quickPay = async (req, res, next) => {
     let { scrapId, paymentMode, bankName, bankBranch, transactionId, chequeNumber, depositAmount, depositDate } = req.body;
 
