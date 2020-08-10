@@ -21,6 +21,7 @@ interface marker {
 })
 export class ViewLocationComponent implements OnInit {
 
+  selected:any = 0;
   latitude: number = 18.969050;
   longitude: number = 72.821180;
   mapType = 'roadmap';
@@ -51,7 +52,8 @@ export class ViewLocationComponent implements OnInit {
 
   createForm() {
     this.mapReport = this.fb.group({
-      mapDate: [new Date(), Validators.required]
+      dateForMap: [new Date(), Validators.required],
+      dateForLocation:[new Date(), Validators.required]
     })
   }
 
