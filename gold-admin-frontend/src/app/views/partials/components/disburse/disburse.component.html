@@ -63,7 +63,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-6" *ngIf="scrapIds">
             <div class="row justify-content-center kt-margin-t-10">
                 <div class="col-4 form-label">
@@ -152,7 +152,10 @@
                     <label class="kt-padding-l-10 mandatory" *ngIf="!scrapIds">Loan Status</label>
                 </div>
                 <div class="col-8">
-                    <input type="text" class="form-control" formControlName="disbursementStatus"
+                    <input type="text" *ngIf="scrapIds" class="form-control" formControlName="disbursementStatus"
+                        [class.isError]="controls.disbursementStatus.invalid &&  controls.disbursementStatus.touched"
+                        readonly>
+                    <input type="text" *ngIf="!scrapIds" class="form-control" formControlName="disbursementStatus"
                         [class.isError]="controls.disbursementStatus.invalid &&  controls.disbursementStatus.touched">
                     <mat-error
                         *ngIf="controls.disbursementStatus.touched && controls.disbursementStatus.errors?.required">

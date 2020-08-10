@@ -840,6 +840,13 @@ export class MenuConfig {
 							permission: false
 						},
 						{
+							title: "Customer Management",
+							root: true,
+							src: "assets/media/aside-icons/icons-08.svg",
+							page: "/admin/scrap-management/customer-management",
+							permission: false
+						},
+						{
 							title: "Settings",
 							root: true,
 							bullet: 'dot',

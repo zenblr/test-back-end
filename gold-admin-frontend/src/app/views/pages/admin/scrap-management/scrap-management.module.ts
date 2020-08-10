@@ -23,6 +23,7 @@ import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dial
 import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
 import { BuyingListComponent } from './buying-list/buying-list.component';
 import { QuickPayComponent } from './quick-pay/quick-pay.component';
+import { CustomerManagementComponent } from './customer-management/customer-management.component';
 
 const routes: Routes = [
   {
@@ -67,6 +68,10 @@ const routes: Routes = [
         component: BuyingListComponent
       },
       {
+        path: 'customer-management',
+        component: CustomerManagementComponent
+      },
+      {
         path: 'global-settings',
         component: GlobalSettingsComponent
       },
@@ -86,6 +91,7 @@ const routes: Routes = [
     AppliedScrapComponent,
     GlobalSettingsComponent,
     BuyingListComponent,
+    CustomerManagementComponent,
     QuickPayComponent,
   ],
   imports: [
