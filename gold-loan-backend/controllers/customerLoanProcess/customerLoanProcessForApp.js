@@ -7,6 +7,7 @@ const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATIO
 
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 const moment = require('moment');
+const { getSchemeDetails } = require('../../utils/loanFunction')
 
 var pdf = require("pdf-creator-node"); // PDF CREATOR PACKAGE
 var fs = require('fs');
