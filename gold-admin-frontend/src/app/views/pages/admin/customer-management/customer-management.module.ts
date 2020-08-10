@@ -15,7 +15,7 @@ import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MAT_SNACK_BAR_DATA } from 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CustomerManagementComponent } from './customer-management.component';
 import { CustomerGridComponent } from './customer-grid/customer-grid.component';
-import { CustomerDetailsComponent } from './customer-details/customer-details.component';
+import { CustomerDetailsComponent } from '../../../partials/components/customer-details/customer-details.component';
 import { LoanDetailsComponent } from './loan-details/loan-details.component';
 
 const routes: Routes = [
@@ -37,7 +37,6 @@ const routes: Routes = [
   declarations: [CustomerListComponent,
     CustomerManagementComponent,
     CustomerGridComponent,
-    CustomerDetailsComponent,
     LoanDetailsComponent],
   imports: [
     CommonModule,

@@ -24,6 +24,7 @@ import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-revie
 import { BuyingListComponent } from './buying-list/buying-list.component';
 import { QuickPayComponent } from './quick-pay/quick-pay.component';
 import { CustomerManagementComponent } from './customer-management/customer-management.component';
+import { CustomerDetailsComponent } from '../../../partials/components/customer-details/customer-details.component';
 
 const routes: Routes = [
   {
@@ -68,8 +69,12 @@ const routes: Routes = [
         component: BuyingListComponent
       },
       {
-        path: 'customer-management',
+        path: 'customer-list',
         component: CustomerManagementComponent
+      },
+      {
+        path: 'customer-list/:id',
+        component: CustomerDetailsComponent
       },
       {
         path: 'global-settings',

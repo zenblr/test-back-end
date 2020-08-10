@@ -843,7 +843,7 @@ export class MenuConfig {
 							title: "Customer Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-08.svg",
-							page: "/admin/scrap-management/customer-management",
+							page: "/admin/scrap-management/customer-list",
 							permission: false
 						},
 						{

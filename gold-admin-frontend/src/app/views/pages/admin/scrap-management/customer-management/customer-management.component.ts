@@ -80,7 +80,7 @@ export class CustomerManagementComponent implements OnInit {
     this.router.navigate(['/admin/scrap-management/scrap-buying-application-form/'], { queryParams: { customerID: item.customerUniqueId } })
   }
 
-  viewScrap(item) {
-    this.router.navigate(['/admin/scrap-management/view-scrap', item.id])
+  viewDetails(id: number) {
+    this.router.navigate(['/admin/scrap-management/customer-list/' + id])
   }
 }
