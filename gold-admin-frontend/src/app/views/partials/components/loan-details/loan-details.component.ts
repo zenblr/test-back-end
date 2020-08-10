@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { LoanApplicationFormService } from '../../../../../core/loan-management';
+import { LoanApplicationFormService } from '../../../../core/loan-management';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
-import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
 
 @Component({
   selector: 'kt-loan-details',

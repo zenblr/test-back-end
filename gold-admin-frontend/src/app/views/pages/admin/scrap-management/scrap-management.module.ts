@@ -25,6 +25,7 @@ import { BuyingListComponent } from './buying-list/buying-list.component';
 import { QuickPayComponent } from './quick-pay/quick-pay.component';
 import { CustomerManagementComponent } from './customer-management/customer-management.component';
 import { CustomerDetailsComponent } from '../../../partials/components/customer-details/customer-details.component';
+import { LoanDetailsComponent } from '../../../partials/components/loan-details/loan-details.component';
 
 const routes: Routes = [
   {
@@ -75,6 +76,10 @@ const routes: Routes = [
       {
         path: 'customer-list/:id',
         component: CustomerDetailsComponent
+      },
+      {
+        path: 'scrap-details/:loanId',
+        component: LoanDetailsComponent
       },
       {
         path: 'global-settings',
