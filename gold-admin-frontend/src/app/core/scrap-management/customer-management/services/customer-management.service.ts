@@ -7,7 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 @Injectable({
   providedIn: 'root'
 })
-export class CustomerManagementService {
+export class ScrapCustomerManagementService {
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
@@ -20,5 +20,9 @@ export class CustomerManagementService {
         throw (err);
       })
     );
+  }
+
+  getScrapCustomerById(id): Observable<any> {
+    return this.http.get(`/api/scrap/customer/customer-management/${id}`)
   }
 }

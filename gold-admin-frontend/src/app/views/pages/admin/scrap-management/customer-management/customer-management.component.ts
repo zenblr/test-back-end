@@ -3,7 +3,7 @@ import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { Subscription, merge, Subject, from } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
 import { DataTableService } from '../../../../../core/shared/services/data-table.service';
-import { CustomerManagementDatasource, CustomerManagementService } from '../../../../../core/scrap-management';
+import { CustomerManagementDatasource, ScrapCustomerManagementService } from '../../../../../core/scrap-management';
 import { LayoutUtilsService } from '../../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
@@ -25,7 +25,7 @@ export class CustomerManagementComponent implements OnInit {
   customerManagementResult = [];
   constructor(
     public dialog: MatDialog,
-    private customerManagementService: CustomerManagementService,
+    private customerManagementService: ScrapCustomerManagementService,
     private dataTableService: DataTableService,
     private layoutUtilsService: LayoutUtilsService,
     private toastr: ToastrService,

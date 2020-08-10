@@ -2,7 +2,7 @@ import { catchError, finalize } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
 import { BaseDataSource } from '../../../_base/crud';
 import { BehaviorSubject, of } from 'rxjs';
-import { CustomerManagementService } from '../services/customer-management.service';
+import { ScrapCustomerManagementService } from '../services/customer-management.service';
 
 export class CustomerManagementDatasource extends BaseDataSource {
 
@@ -12,13 +12,13 @@ export class CustomerManagementDatasource extends BaseDataSource {
     public loading$ = this.loadingSubject.asObservable();
     public isPreloadTextViewed$ = this.isPreloadTextViewedSubject.asObservable();
 
-    constructor(private customerManagementService: CustomerManagementService) {
+    constructor(private scrapCustomerManagementService: ScrapCustomerManagementService) {
         super();
     }
 
     loadList(from, to, search) {
         this.loadingSubject.next(true);
-        this.customerManagementService.getList(from, to, search)
+        this.scrapCustomerManagementService.getList(from, to, search)
             .pipe(
                 map(
                     report => {

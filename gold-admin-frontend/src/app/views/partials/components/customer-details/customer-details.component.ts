@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router'
 import { CustomerManagementService } from '../../../../core/customer-management';
+import { ScrapCustomerManagementService } from '../../../../core/scrap-management';
 import { tap } from 'rxjs/operators';
 import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
 import { MatDialog } from '@angular/material';
@@ -17,20 +18,38 @@ export class CustomerDetailsComponent implements OnInit {
   url: any;
   constructor(
     private customerService: CustomerManagementService,
-    private rout: ActivatedRoute,
+    private scrapCustomerManagementService: ScrapCustomerManagementService,
+    private route: ActivatedRoute,
     private router: Router,
     private dilaog: MatDialog
   ) {
-    this.url = (this.router.url.split('/')[1]);
+    this.url = (this.router.url.split('/')[2]);
+    console.log(this.url)
   }
 
   ngOnInit() {
-    this.customerId = this.rout.snapshot.params.id
+    this.customerId = this.route.snapshot.params.id;
+    if (this.url == 'scrap-management') {
+      this.getScrapCustomerById();
+    } else {
+      this.getCustomerById();
+    }
+  }
+
+  getCustomerById() {
     this.customerService.getCustomerById(this.customerId).pipe(
       tap(res => {
         this.cutomerDetails = res.data;
-        this.prepareImages()
-      })).subscribe()
+        this.prepareImages();
+      })).subscribe();
+  }
+
+  getScrapCustomerById() {
+    this.scrapCustomerManagementService.getScrapCustomerById(this.customerId).pipe(
+      tap(res => {
+        this.cutomerDetails = res.data;
+        this.prepareImages();
+      })).subscribe();
   }
 
   viewLoan(loanId: number) {
