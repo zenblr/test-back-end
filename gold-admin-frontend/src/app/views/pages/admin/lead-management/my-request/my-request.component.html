@@ -8,31 +8,41 @@
                 <ng-container matColumnDef="fullName">
                     <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
                     <mat-cell *matCellDef="let row">
-                        {{row.customer.firstName | titlecase}}&nbsp;{{row.customer.lastName | titlecase}}
+                        {{row.users[0].customer.firstName | titlecase}}&nbsp;{{row.users[0].customer.lastName | titlecase}}
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
-                    <mat-cell *matCellDef="let row">{{row.customer.customerUniqueId | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let row">{{row.users[0].customer.customerUniqueId | uppercase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="mobileNumber">
                     <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
-                    <mat-cell *matCellDef="let row">{{row.customer.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let row">{{row.users[0].customer.mobileNumber}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="product">
                     <mat-header-cell *matHeaderCellDef>Product</mat-header-cell>
-                    <mat-cell *matCellDef="let row">{{row.module.moduleName | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let row">
+                        <div style="display: flex; flex-direction: column;">
+                            <div *ngFor="let item of row.users; first as f" [class.mb-4]="row.users.length > 1 && f">
+                                {{item.module.moduleName | titlecase}}
+                            </div>
+                        </div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="apply">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let row">
-                        <button style="width: 120px;" class="apply-kyc" (click)="apply(row)">
-                            Apply
-                        </button>
+                        <div style="display: flex; flex-direction: column;">
+                            <button *ngFor="let item of row.users" style="width: 120px;" class="apply-kyc my-2"
+                                (click)="apply(item)">
+                                Apply
+                            </button>
+                        </div>
+
                     </mat-cell>
                 </ng-container>
 
