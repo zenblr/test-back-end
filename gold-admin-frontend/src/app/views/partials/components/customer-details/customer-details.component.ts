@@ -16,6 +16,7 @@ export class CustomerDetailsComponent implements OnInit {
   customerId: number;
   cutomerDetails: any
   url: any;
+
   constructor(
     private customerService: CustomerManagementService,
     private scrapCustomerManagementService: ScrapCustomerManagementService,
@@ -24,7 +25,6 @@ export class CustomerDetailsComponent implements OnInit {
     private dilaog: MatDialog
   ) {
     this.url = (this.router.url.split('/')[2]);
-    console.log(this.url)
   }
 
   ngOnInit() {
@@ -54,6 +54,10 @@ export class CustomerDetailsComponent implements OnInit {
 
   viewLoan(loanId: number) {
     this.router.navigate(['/admin/customer-management/loan-details/' + loanId])
+  }
+
+  viewScrap(scrapId: number) {
+    this.router.navigate(['/admin/customer-management/scrap-details/' + scrapId]);
   }
 
   prepareImages() {

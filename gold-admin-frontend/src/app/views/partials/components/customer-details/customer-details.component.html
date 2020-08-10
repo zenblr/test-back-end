@@ -25,7 +25,6 @@
                 </div>
                 <!-- <div class="col-6">
                     <div class="row">
-
                         <div class="col-3">
                             <div class="kt-margin-t-30 text-gray font-weight-500 kt-margin-b-5">Pan</div>
                             <div class="text-color font-weight-500">{{cutomerDetails.panCardNumber}}</div>
@@ -51,22 +50,21 @@
                     <div class="text-gray font-weight-500 kt-margin-b-5">Permanent Address</div>
                     <div class="text-color font-weight-500 kt-margin-b-5"
                         [ngStyle]="{'width':'80%','line-height':'1.5'}">
-                        {{cutomerDetails.customerKycAddress[0].address | titlecase}}
-                        {{cutomerDetails.customerKycAddress[0].city.name}}
-                        {{cutomerDetails.customerKycAddress[0].state.name}}
-                        {{cutomerDetails.customerKycAddress[0].pinCode}}
+                        {{cutomerDetails?.customerKycAddress[0]?.address | titlecase}}
+                        {{cutomerDetails?.customerKycAddress[0]?.city?.name}}
+                        {{cutomerDetails?.customerKycAddress[0]?.state?.name}}
+                        {{cutomerDetails?.customerKycAddress[0]?.pinCode}}
                     </div>
-
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">
                         Residential Address</div>
                     <div class="text-color font-weight-500 kt-margin-b-5"
                         [ngStyle]="{'width':'65%','line-height':'1.5'}">
-                        {{cutomerDetails.customerKycAddress[1].address | titlecase}}
-                        {{cutomerDetails.customerKycAddress[1].city.name}}
-                        {{cutomerDetails.customerKycAddress[1].state.name}}
-                        {{cutomerDetails.customerKycAddress[1].pinCode}}
+                        {{cutomerDetails?.customerKycAddress[1]?.address | titlecase}}
+                        {{cutomerDetails?.customerKycAddress[1]?.city?.name}}
+                        {{cutomerDetails?.customerKycAddress[1]?.state?.name}}
+                        {{cutomerDetails?.customerKycAddress[1]?.pinCode}}
                     </div>
                 </div>
                 <div class="col">
@@ -95,20 +93,20 @@
             <div class="row kt-margin-t-10 kt-padding-b-25 justify-content-around">
                 <div class="col offset-1 kt-padding-l-25">
                     <div class="text-primary font-weight-500 kt-pointer"
-                        (click)="preview(cutomerDetails.customerKycAddress[0].addressProof[0])">View Proof</div>
+                        (click)="preview(cutomerDetails?.customerKycAddress[0]?.addressProof[0])">View Proof</div>
                 </div>
                 <div class="col">
                     <div class="text-primary font-weight-500 kt-pointer"
-                        (click)="preview(cutomerDetails.customerKycAddress[1].addressProof[0])">View Proof</div>
+                        (click)="preview(cutomerDetails?.customerKycAddress[1]?.addressProof[0])">View Proof</div>
                 </div>
                 <div class="col">
-                   <!--  <div class="text-primary font-weight-500 kt-pointer"
+                    <!--  <div class="text-primary font-weight-500 kt-pointer"
                         (click)="preview(cutomerDetails.customerKycBank[0].passbookProof[0])">View Proof</div> -->
                 </div>
                 <div class="col">
                     <div class="text-primary font-weight-500 kt-pointer"
-                        (click)="preview(cutomerDetails.customerKycPersonal.identityProof[0])">View
-                        {{cutomerDetails.customerKycPersonal.identityType.name}}</div>
+                        (click)="preview(cutomerDetails?.customerKycPersonal?.identityProof[0])">View
+                        {{cutomerDetails?.customerKycPersonal?.identityType?.name}}</div>
                 </div>
                 <!-- <div class="col-2">
                     <div class="text-primary font-weight-500 kt-pointer">View AADHAAR</div>
@@ -117,7 +115,9 @@
         </div>
     </div>
     <div class="row kt-margin-t-20 justify-content-start">
-        <div class="p-0" [ngClass]="masterLoan.customerLoan.length == 1 ? 'col-3' : 'col-6'" *ngFor="let masterLoan of cutomerDetails.masterLoan;index as i">
+        <!-- Loan -->
+        <div class="p-0" [ngClass]="masterLoan?.customerLoan?.length == 1 ? 'col-3' : 'col-6'"
+            *ngFor="let masterLoan of cutomerDetails?.masterLoan;index as i">
             <div class="row">
                 <div class="col" *ngFor="let loan of masterLoan.customerLoan">
                     <div class="card kt-padding-15" [class.kt-margin-r-15]="(i+1)%4!=0">
@@ -138,7 +138,8 @@
                         <div class="row kt-margin-b-20">
                             <div class="col-6">
                                 <div class="text-gray font-weight-500">Start Date</div>
-                                <div class="text-color font-weight-500">{{masterLoan?.loanStartDate | date: 'mediumDate'}}
+                                <div class="text-color font-weight-500">
+                                    {{masterLoan?.loanStartDate | date: 'mediumDate'}}
                                 </div>
                             </div>
                             <div class="col-6">
@@ -148,12 +149,34 @@
                             </div>
                         </div>
                         <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10" (click)="viewLoan(loan.id)"
-                        *ngxPermissionsOnly="['loanDetailsView']">View  Details</div>
+                            *ngxPermissionsOnly="['loanDetailsView']">View Details</div>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- Scrap -->
+        <div class="col-3 p-0" *ngFor="let scrap of cutomerDetails?.customerScrap;index as i">
+            <div class="card kt-padding-15">
+                <div class="text-gray font-weight-500 kt-margin-b-5">Scrap ID</div>
+                <div class="text-color font-weight-500 kt-margin-b-5">{{scrap?.scrapUniqueId}}</div>
+                <mat-divider class="kt-margin-b-10 kt-margin-t-10"></mat-divider>
+                <div class="row kt-margin-b-15">
+                    <div class="col-6">
+                        <div class="text-gray font-weight-500">Scrap Amount</div>
+                        <div class="text-color font-weight-500">
+                            <span class="currency">{{scrap?.finalScrapAmountAfterMelting | indianCurrencyFormat}}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-gray font-weight-500">Start Date</div>
+                        <div class="text-color font-weight-500">
+                            {{scrap?.scrapPersonalDetail?.startDate | date: 'mediumDate'}}
+                        </div>
+                    </div>
+                </div>
+                <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10" (click)="viewScrap(scrap?.id)">View
+                    Details</div>
+            </div>
+        </div>
     </div>
 </div>
-
-
