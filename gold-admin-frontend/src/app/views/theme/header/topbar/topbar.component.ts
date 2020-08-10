@@ -52,6 +52,7 @@ import { OccupationService } from '../../../../core/masters/occupation/services/
 import { StandardDeductionService } from '../../../../core/masters/standard-deduction/service/standard-deduction.service';
 import { ScrapPacketsService, AppliedScrapService } from '../../../../core/scrap-management';
 import { OtherChargesService } from '../../../../core/masters/other-charges/service/other-charges.service';
+import { ScrapCustomerManagementService } from '../../../../core/scrap-management/customer-management';
 
 @Component({
 	selector: "kt-topbar",
@@ -150,7 +151,8 @@ export class TopbarComponent implements OnInit {
 		private standardDeductionService: StandardDeductionService,
 		private scrapPacketsService: ScrapPacketsService,
 		private appliedScrap: AppliedScrapService,
-		private otherChargesService:OtherChargesService
+		private otherChargesService: OtherChargesService,
+		private scrapCustomerManagementService: ScrapCustomerManagementService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -786,7 +788,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'purposes') {
 			this.purposeService.openModal.next(true)
 		}
-		if (this.path == 'other-charges'){
+		if (this.path == 'other-charges') {
 			this.otherChargesService.openModal.next(true);
 		}
 		if (this.path == 'lead-source') {
@@ -815,6 +817,8 @@ export class TopbarComponent implements OnInit {
 	check(val) {
 		if (this.path == "customer-list") {
 			this.customerManagementServiceCustomer.toggle.next(val);
+			this.scrapCustomerManagementService.toggle.next(val);
+
 		}
 		if (this.path == "shop") {
 			this.shopService.toggle.next(val);
