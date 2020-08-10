@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { PacketLocationService } from '../../../../../../core/masters/packet-location/service/packet-location.service';
@@ -26,11 +26,13 @@ export class UpdateLocationComponent implements OnInit {
     this.getPacketLocationList()
     this.locationForm = this.fb.group({
       location: ['', [Validators.required]],
-      barcodeNumber: [],
+      barcodeNumber: this.fb.array([]),
       mobileNumber: [, [Validators.required]],
       user: [, [Validators.required]],
       otp: [, [Validators.required]]
     })
+
+    this.initBarcodeArray()
   }
 
   getPacketLocationList() {
@@ -51,5 +53,25 @@ export class UpdateLocationComponent implements OnInit {
     if (this.locationForm.invalid) return this.locationForm.markAllAsTouched()
 
     console.log(this.locationForm.value)
+  }
+
+  get barcodeNumber() {
+    return this.locationForm.controls.barcodeNumber as FormArray
+  }
+
+  addBarcode() {
+    this.barcodeNumber.push(this.newBarcode())
+  }
+
+  newBarcode(): FormGroup {
+    return this.fb.group({
+      barcode: []
+    })
+  }
+
+  initBarcodeArray() {
+    for (let index = 0; index < 1; index++) {
+      this.barcodeNumber.push(this.newBarcode())
+    }
   }
 }

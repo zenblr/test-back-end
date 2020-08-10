@@ -25,7 +25,7 @@
                             <kt-ornaments [action]="action" (next)="next($event)" [disable]="disabledForm"
                                 [details]="customerDetail" (totalAmt)="total($event)" (fullAmt)="fullAmt($event)"
                                 [masterAndLoanIds]="masterAndLoanIds" [ornamentType]="ornamentType"
-                                [showButton]="showButton">
+                                [showButton]="showButton" (loanTransfer)="loanTransfer($event)">
                             </kt-ornaments>
                         </div>
                         <!-- </ng-template> -->
@@ -34,7 +34,7 @@
                         <kt-interest-calculator (next)="next($event)" [disable]="disabledForm" [action]="action"
                             (finalLoanAmount)="finalLoanAmount($event)" [totalAmt]="totalAmount"
                             [fullAmount]="fullAmount" [details]="customerDetail" [masterAndLoanIds]="masterAndLoanIds"
-                            [showButton]="showButton" (accountHolderName)="accountHolder($event)">
+                            [showButton]="showButton" (accountHolderName)="accountHolder($event)" [loanTransfer]=loanTransferdata>
                         </kt-interest-calculator>
                     </mat-tab>
                     <mat-tab label="Bank Details" [disabled]="disabled[4]">
@@ -66,7 +66,7 @@
 
                     <mat-tab label="Loan Status Approval"
                         *ngIf="loanStage?.id == 2 || (url == 'view-loan' && loanStage?.id == 2)"
-                        [disabled]="disabled[6]">
+                        [disabled]="false">
                         <kt-approval [action]="action" [disable]="approvalFrom" [details]="customerDetail"
                             [masterAndLoanIds]="masterAndLoanIds" [loanStage]="loanStage">
                         </kt-approval>
@@ -79,7 +79,7 @@
                         </kt-upload-documents>
                     </mat-tab>
 
-                    <mat-tab label="Loan Status Approval" [disabled]="false"
+                    <mat-tab label="Loan Status Approval" [disabled]="disabled[7]"
                         *ngIf="loanStage?.id == 7 || loanStage?.id == 4 || (url == 'view-loan' && loanStage?.id == 7) || (url == 'view-loan' && loanStage?.id == 4) || (url == 'view-loan' && loanStage?.id == 5)">
                         <kt-approval [action]="action" [disable]="approvalFrom" [details]="customerDetail"
                             [masterAndLoanIds]="masterAndLoanIds" [loanStage]="loanStage"

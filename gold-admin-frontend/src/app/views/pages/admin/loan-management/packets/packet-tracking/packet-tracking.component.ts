@@ -11,6 +11,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 import { UpdateLocationComponent } from '../update-location/update-location.component';
 import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.component';
 import { Router } from '@angular/router';
+import { OrnamentsComponent } from '../../../../../partials/components/ornaments/ornaments.component';
 
 @Component({
   selector: 'kt-packet-tracking',
@@ -177,7 +178,13 @@ export class PacketTrackingComponent implements OnInit {
   }
 
   ornaments(packet) {
-
+    // this.dialog.open(OrnamentsComponent, {
+    //   data: {
+    //     modal: true,
+    //     modalData: packet
+    //   },
+    //   width: '90%'
+    // })
   }
 
 }

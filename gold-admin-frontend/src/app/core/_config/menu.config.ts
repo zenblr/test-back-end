@@ -271,11 +271,11 @@ export class MenuConfig {
 									page: "/admin/applied-kyc",
 									permission: !this.permissionsArr.includes('appliedKycView'),
 								},
-								{
-									title: "Assigned Customers",
-									page: "/admin/assigned-customers",
-									// permission: !this.permissionsArr.includes('appliedKycView'),
-								},
+								// {
+								// 	title: "Assigned Customers",
+								// 	page: "/admin/assigned-customers",
+								// 	// permission: !this.permissionsArr.includes('appliedKycView'),
+								// },
 							],
 						},
 						{

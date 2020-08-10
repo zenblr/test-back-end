@@ -23,7 +23,8 @@ export class LoanDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.loanId = this.rout.snapshot.params.loanId
-    this.loanservice.getLoanDetails(this.loanId).subscribe(res => {
+    let masterLoanId = this.rout.snapshot.params.masterLoanId
+    this.loanservice.getLoanDetails(this.loanId,masterLoanId).subscribe(res => {
       this.loanDetails = res.data
       this.createOrnamentsImage()
       this.pdfCheck()
@@ -32,9 +33,9 @@ export class LoanDetailsComponent implements OnInit {
   }
 
   pdfCheck(){
-    let laonAgree = this.loanDetails.masterLoan.customerLoanDocument.loanAgreementCopyImage[0].split('.')
-    let pawn = this.loanDetails.masterLoan.customerLoanDocument.pawnCopyImage[0].split('.')
-    let scheme = this.loanDetails.masterLoan.customerLoanDocument.schemeConfirmationCopyImage[0].split('.')
+    let laonAgree = this.loanDetails.customerLoanDocument.loanAgreementCopyImage[0].split('.')
+    let pawn = this.loanDetails.customerLoanDocument.pawnCopyImage[0].split('.')
+    let scheme = this.loanDetails.customerLoanDocument.schemeConfirmationCopyImage[0].split('.')
     if(laonAgree[laonAgree.length - 1] == 'pdf'){
       this.pdf.loanAgreementCopyImage = true
     }else{
@@ -58,8 +59,8 @@ export class LoanDetailsComponent implements OnInit {
   }
 
   createOrnamentsImage() {
-    for (let ornametsIndex = 0; ornametsIndex < this.loanDetails.masterLoan.loanOrnamentsDetail.length; ornametsIndex++) {
-      let ornamets = this.loanDetails.masterLoan.loanOrnamentsDetail[ornametsIndex]
+    for (let ornametsIndex = 0; ornametsIndex < this.loanDetails.loanOrnamentsDetail.length; ornametsIndex++) {
+      let ornamets = this.loanDetails.loanOrnamentsDetail[ornametsIndex]
       this.createImageArray()
       let keys = Object.keys(ornamets)
       for (let index = 0; index < keys.length; index++) {

@@ -28,7 +28,7 @@ const routes: Routes = [
     component: CustomerDetailsComponent
   },
   {
-    path: 'loan-details/:loanId',
+    path: 'loan-details/:loanId/:masterLoanId',
     component: LoanDetailsComponent
   }
 ];
