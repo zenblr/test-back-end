@@ -15,6 +15,7 @@ import { WebcamDialogComponent } from '../../../pages/admin/kyc-settings/webcam-
 import { LayoutUtilsService } from '../../../../core/_base/crud';
 import { GlobalSettingService } from '../../../../core/global-setting/services/global-setting.service';
 import { ScrapApplicationFormService } from '../../../../core/scrap-management';
+import { QuickPayComponent } from '../../../pages/admin/scrap-management/quick-pay/quick-pay.component';
 
 @Component({
   selector: 'kt-ornaments',
@@ -43,6 +44,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() showButton
   @Input() meltingOrnament
   @Input() processingCharges
+  @Input() karatArr
+  @Input() customerConfirmationArr
+  @Input() karatFlag
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
   @ViewChild('stoneTouch', { static: false }) stoneTouch: ElementRef
@@ -55,8 +59,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   width: number = 0
   ornamentsForm: FormGroup;
   images: any = [];
-  @Input() karatArr
-  @Input() customerConfirmationArr
   purityBasedDeduction: number;
   ltvPercent = [];
   url: string
@@ -75,7 +77,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     public sharedService: SharedService,
     public toast: ToastrService,
     public ele: ElementRef,
-    public dilaog: MatDialog,
+    public dialog: MatDialog,
     public ref: ChangeDetectorRef,
     public goldRateService: GoldRateService,
     public karatService: KaratDetailsService,
@@ -92,7 +94,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnInit() {
     console.log(this.data.modal)
     this.url = this.router.url.split('/')[3]
-    this.getKarat()
+    if (!this.karatFlag) {
+      this.getKarat()
+    }
     this.initForm()
     if (this.data && this.data.modal) {
       this.showAddMoreBtn = false
@@ -230,9 +234,15 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.fullAmount = 0;
         if (this.scrapIds) {
           if (this.meltingOrnament) {
-            this.OrnamentsData.value.forEach(element => {
-              this.totalAmount += Number(element.finalScrapAmountAfterMelting);
-            });
+            if (this.disable) {
+              this.OrnamentsData.getRawValue().forEach(element => {
+                this.totalAmount += Number(element.finalScrapAmountAfterMelting);
+              });
+            } else {
+              this.OrnamentsData.value.forEach(element => {
+                this.totalAmount += Number(element.finalScrapAmountAfterMelting);
+              });
+            }
             this.totalAmount = Math.round(this.totalAmount)
             this.finaltotalAmt.emit(this.totalAmount)
           } else {
@@ -655,7 +665,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     if (this.data.modal) {
       isModal = true
     }
-    this.dilaog.open(ImagePreviewDialogComponent, {
+    this.dialog.open(ImagePreviewDialogComponent, {
       data: {
         images: temp,
         index: index,
@@ -718,18 +728,21 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         return
       }
     }
-    if (this.ornamentsForm.invalid) {
-      let array = this.OrnamentsData.controls
-      for (let index = 0; index < array.length; index++) {
-        const element = array[index];
-        if (element.invalid) {
-          element.markAllAsTouched();
-          this.selected = index
-          return
+    if (this.buttonValue != 'Pay Now') {
+      if (this.ornamentsForm.invalid) {
+        let array = this.OrnamentsData.controls
+        for (let index = 0; index < array.length; index++) {
+          const element = array[index];
+          if (element.invalid) {
+            element.markAllAsTouched();
+            this.selected = index
+            return
+          }
         }
+        return
       }
-      return
     }
+
     if (this.scrapIds) {
       if (this.meltingOrnament) {
         if (this.buttonValue == 'Next') {
@@ -749,6 +762,17 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
               this.next.emit(stage)
             })
           ).subscribe();
+        } else {
+          const dialogRef = this.dialog.open(QuickPayComponent, {
+            data: { quickPayData: this.OrnamentsData.value[0], scrapIds: this.scrapIds },
+            width: '80vw'
+          });
+          dialogRef.afterClosed().subscribe(res => {
+            if (res) {
+              console.log(res)
+              this.router.navigate(['/admin/scrap-management/applied-scrap'])
+            }
+          });
         }
       } else {
         this.scrapApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.scrapIds).pipe(
@@ -785,7 +809,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   webcam(index, event, string) {
     const controls = this.OrnamentsData.at(index) as FormGroup;
-    const dialogRef = this.dilaog.open(WebcamDialogComponent,
+    const dialogRef = this.dialog.open(WebcamDialogComponent,
       {
         data: {},
         width: '500px'

@@ -66,13 +66,16 @@
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
                         <div *ngIf="!loan?.loanTransfer?.isLoanDisbursed">
-                            <button class="primary-button btn-width"
+                            <button [class.cursor-not-allowed]="!permission.loanTransferAppraiserRating"
+                                class="primary-button btn-width"
                                 *ngIf="loan?.loanTransfer?.loanTransferCurrentStage == '3'"
                                 (click)="navigate(loan)">Appraiser Rating</button>
-                            <button class="primary-button btn-width"
+                            <button [class.cursor-not-allowed]="!permission.loanTransferRating"
+                                class="primary-button btn-width"
                                 *ngIf="loan?.loanTransfer?.loanTransferCurrentStage == '4'" (click)="navigate(loan)">B.M
                                 Rating</button>
-                            <button class="warning-button btn-width"
+                            <button [class.cursor-not-allowed]="!permission.loanTransferDisbursal"
+                                class="warning-button btn-width"
                                 *ngIf="loan?.loanTransfer?.loanTransferCurrentStage == '5'"
                                 (click)="navigate(loan)">Disbursement</button>
                         </div>

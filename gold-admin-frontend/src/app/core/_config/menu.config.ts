@@ -231,9 +231,27 @@ export class MenuConfig {
 						{
 							title: "Lead Management",
 							root: true,
+							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-05.svg",
 							page: "/admin/lead-management",
 							permission: !(this.permissionsArr.includes('leadManagmentView')),
+							submenu: [
+								{
+									title: "All Leads",
+									page: "/admin/lead-management",
+									permission: !this.permissionsArr.includes('leadManagmentView'),
+								},
+								{
+									title: "New Requests",
+									page: "/admin/lead-management/new-requests",
+									permission: false,
+								},
+								{
+									title: "My Requests",
+									page: "/admin/lead-management/my-requests",
+									permission: false,
+								},
+							],
 						},
 						{
 							title: "Customer Setting",
@@ -468,7 +486,7 @@ export class MenuConfig {
 						{
 							title: "Scrap Management",
 							root: true,
-							src: "assets/media/aside-icons/icons-01.svg",
+							src: "assets/media/aside-icons/icons-39.svg",
 							page: "/admin/scrap-management",
 							// permission: !this.modulesArr.includes(3),
 						},
@@ -789,29 +807,36 @@ export class MenuConfig {
 						{
 							title: "Scrap Buying Calculator",
 							root: true,
-							src: "assets/media/aside-icons/icons-01.svg",
+							src: "assets/media/aside-icons/icons-34.svg",
 							page: "/admin/scrap-management/scrap-buying-calculator",
 							permission: false,
 						},
 						{
 							title: "Scrap Buying Application Form",
 							root: true,
-							src: "assets/media/aside-icons/icons-01.svg",
+							src: "assets/media/aside-icons/icons-35.svg",
 							page: "/admin/scrap-management/scrap-buying-application-form",
 							permission: false,
 						},
 						{
 							title: "Packet",
 							root: true,
-							src: "assets/media/aside-icons/icons-01.svg",
+							src: "assets/media/aside-icons/icons-36.svg",
 							page: "/admin/scrap-management/packets",
 							permission: false,
 						},
 						{
 							title: "Applied Scrap",
 							root: true,
-							src: "assets/media/aside-icons/icons-01.svg",
+							src: "assets/media/aside-icons/icons-37.svg",
 							page: "/admin/scrap-management/applied-scrap",
+							permission: false
+						},
+						{
+							title: "Scrap Buying List",
+							root: true,
+							src: "assets/media/aside-icons/icons-38.svg",
+							page: "/admin/scrap-management/scrap-buying",
 							permission: false
 						},
 						{

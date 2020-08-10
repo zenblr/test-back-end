@@ -4,7 +4,7 @@ const route = express.Router();
 const { wrapper } = require('../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
 const { addPackageImagesForLoan, disbursementOfLoanAmount, interestRate, generateInterestTable, unsecuredTableGeneration,
   disbursementOfLoanBankDetails, getLoanDetails, getSingleLoanDetails, appliedLoanDetails, customerDetails, loanBmRating, loanOpsTeamRating, checkForLoanType,
-  loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getAssignAppraiserCustomer, getSingleLoanInCustomerManagment, getDetailsForPrint, } =
+  loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getAssignAppraiserCustomer, getSingleLoanInCustomerManagment, getDetailsForPrint, getLoanOrnaments } =
   require('../controllers/customerLoanProcess/customerLoanProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
 
 const { loanRequest } = require('../controllers/customerLoanProcess/customerLoanProcessForApp')
@@ -56,6 +56,8 @@ route.get('/assign-appraiser-customer', checkAuth, wrapper(getAssignAppraiserCus
 route.post('/loan-documents', checkAuth, wrapper(loanDocuments))// ADD loan documents
 
 route.get('/get-print-details', checkAuth, wrapper(getDetailsForPrint)); //Print details
+
+route.get('/get-loan-ornamets', checkAuth, wrapper(getLoanOrnaments)) //GET LOAN ORNAMENTS
 
 // backoffice app 
 route.post('/loan-request', checkAuth, wrapper(loanRequest)); //apply loan for backoffice app 

@@ -13,5 +13,8 @@ module.exports = {
     LOAN_DISBURSEMENT: "loan disbursement",
     LOAN_TRANSFER_APPLY_LOAN: "Applied loan for loan transfer",
 
+    LOAN_APPLY_FROM_APPRAISER_APP: "Applied loan from appraiser app",
+    LOAN_EDIT_FROM_APPRAISER_APP: "Edit loan from appraiser app"
+
 
 }

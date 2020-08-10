@@ -37,6 +37,7 @@ export class AppliedKycComponent implements OnInit {
     cceStatus: '',
     kycStatus: '',
   }
+  permission: any;
 
   constructor(
     private appliedKycService: AppliedKycService,

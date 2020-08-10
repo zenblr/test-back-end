@@ -2,8 +2,8 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
-const { customerDetails, scrapBasicDeatils, acknowledgementDetails, scrapBankDetails, scrapOrnmanetDetails, scrapAppraiserRating, scrapBmRating, scrapOpsTeamRating, singleScrapDetails, scrapDocuments, addPackageImagesForScrap, scrapOrnmanetMeltingDetails, disbursementOfScrapBankDetails, disbursementOfScrapAmount, appliedScrapDetails, getScrapDetails, getSingleScrapInCustomerManagment, quickPay, printCustomerAcknowledgement } =
-  require('../../controllers/scrap/customerScrapProcess/customerScrapProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
+const { customerDetails, scrapBasicDeatils, acknowledgementDetails, scrapBankDetails, scrapOrnmanetDetails, scrapAppraiserRating, scrapBmRating, scrapOpsTeamRating, singleScrapDetails, scrapDocuments, addPackageImagesForScrap, scrapOrnmanetMeltingDetails, disbursementOfScrapBankDetails, disbursementOfScrapAmount, appliedScrapDetails, getScrapDetails, getSingleScrapInCustomerManagment, quickPay, printCustomerAcknowledgement, printPurchaseVoucher, getScrapStatus } =
+  require('../../controllers/scrap/customerScrapProcess/customerScrapProcess'); // IMPORTING SCRAP PROCESS FUNCTIONS
 const checkRolePermission = require('../../middleware/checkRolesPermissions');
 
 
@@ -37,14 +37,18 @@ route.post('/ops-rating', checkAuth, wrapper(scrapOpsTeamRating)); // ADD OPERAT
 
 route.post('/scrap-disbursement', checkAuth, wrapper(disbursementOfScrapAmount)); // DISBURSEMENT OF SCRAP AMOUNT
 
-route.get('/applied-scrap-details', checkAuth, wrapper(appliedScrapDetails)); // FETCH APLLIED LOAN DETAILS
+route.get('/applied-scrap-details', checkAuth, wrapper(appliedScrapDetails)); // FETCH APLLIED SCRAP DETAILS
 
-route.get('/scrap-details', checkAuth, wrapper(getScrapDetails)); // FETCH APLLIED LOAN DETAILS
+route.get('/scrap-details', checkAuth, wrapper(getScrapDetails)); // FETCH APLLIED SCRAP DETAILS
 
-route.get('/single-scrap-customer', checkAuth, wrapper(getSingleScrapInCustomerManagment))//customer-managment single loan
+route.get('/single-scrap-customer', checkAuth, wrapper(getSingleScrapInCustomerManagment))//customer-managment single SCRAP
 
 route.post('/quick-pay', checkAuth, wrapper(quickPay)); // DISBURSEMENT OF SCRAP AMOUNT
 
 route.get('/get-customer-acknowledgement', checkAuth, wrapper(printCustomerAcknowledgement)); //Print details
+
+route.get('/get-purchase-voucher', checkAuth, wrapper(printPurchaseVoucher)); //Print details
+
+route.get('/get-scrap-status', checkAuth, wrapper(getScrapStatus)); // // To get all scrap ststus
 
 module.exports = route; // EXPORTING ALL ROUTES

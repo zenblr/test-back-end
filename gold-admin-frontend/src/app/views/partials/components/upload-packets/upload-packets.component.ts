@@ -85,6 +85,20 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       this.ornamentTypeData = temp
     }
 
+    if (change.loanStage && change.loanStage.currentValue) {
+      if (change.loanStage.currentValue.id != 3) {
+        this.url = 'view-loan'
+        this.buttonName = 'next'
+      }
+    }
+
+    if (change.scrapStage && change.scrapStage.currentValue) {
+      if (change.scrapStage.currentValue.id != 3) {
+        this.url = 'view-scrap'
+        this.buttonName = 'next'
+      }
+    }
+
     if (change.viewpacketsDetails && change.viewpacketsDetails.currentValue) {
       let packet = change.viewpacketsDetails.currentValue.loanPacketDetails[0]
       if (packet) {
@@ -92,12 +106,16 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         console.log(packet.packets)
         packet.packets.forEach(ele => {
           this.packetsName = ele.packetUniqueId;
+          this.controls.packetId.patchValue(ele.id)
           this.ornamentName = ele.packetOrnament.map(e => e.ornamentType.name).toString();
+          let ornamentType = ele.packetOrnament.map(e => e.ornamentType)
+          this.ornamentId = ele.packetOrnament.map(e => e.ornamentType.id)
+          this.splicedPackets.push(ele)
+          this.removeOnamentsDataFromMultiselect(ornamentType)
           this.pushPackets()
         });
-        this.url = 'view-loan'
-        this.buttonName = 'next'
 
+        console.log(this.ornamentTypeData)
       }
     }
 
@@ -105,12 +123,14 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       let packet = change.viewScrapPacketsDetails.currentValue.scrapPacketDetails[0]
       if (packet) {
         this.packetImg.patchValue(packet)
+        console.log(this.packetImg)
         console.log(packet.CustomerScrapPackageDetail)
         packet.CustomerScrapPackageDetail.forEach(ele => {
           this.packetsName = ele.packetUniqueId;
+          this.controls.packetId.patchValue(ele.id)
+          this.splicedPackets.push(ele)
           this.pushPackets()
         });
-        this.url = 'view-scrap'
       }
     }
 
@@ -160,8 +180,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         this.ref.detectChanges()
       })
     ).subscribe()
-    // this.packetsDetails = [{ packetUniqueId: 'PAC-2', id: 2 }, { packetUniqueId: 'PAC-2', id: 1 }]
-    // this.packetsDetails.map(ele => ele.disabled = false)
   }
 
   getScrapPacketsDetails() {
@@ -231,6 +249,10 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         console.log(temp)
         this.ornamentTypeData = temp;
       }, 200)
+
+      if (this.packets.length === 0) {
+        this.packetImg.reset()
+      }
     }
   }
 
@@ -271,33 +293,46 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       let ornamentTypeObject = this.controls.ornamentType.value.multiSelect
       this.ornamentName = ornamentTypeObject.map(e => e.name).toString();
       this.ornamentId = ornamentTypeObject.map(e => e.id)
-      var selectedOrnaments = this.ornamentTypeData.filter((val) => {
-        return ornamentTypeObject.indexOf(val) != -1;
-      });
 
-      var temp = this.ornamentTypeData
-      this.ornamentTypeData = [];
-      console.log(selectedOrnaments);
-      selectedOrnaments.forEach(selectedornament => {
-        var index = temp.findIndex(ornament => {
-          return selectedornament.id == ornament.id
-        })
-        this.splicedOrnaments.push(temp[index])
-        temp.splice(index, 1)
-      })
+      this.removeOnamentsDataFromMultiselect(ornamentTypeObject)
 
-      setTimeout(() => {
-        this.ornamentTypeData = temp;
-      }, 500)
-      console.log(this.ornamentTypeData)
     }
 
     this.clearData = true;
   }
 
+  removeOnamentsDataFromMultiselect(ornamentTypeObject) {
+    var selectedOrnaments = []
+    this.ornamentTypeData.forEach((val) => {
+      let temp = []
+      ornamentTypeObject.forEach(element => {
+        if (element.id == val.id) {
+          temp.push(val)
+        }
+      });
+      Array.prototype.push.apply(selectedOrnaments, temp)
+    });
+
+    var temp = this.ornamentTypeData
+    this.ornamentTypeData = [];
+    console.log(selectedOrnaments);
+    selectedOrnaments.forEach(selectedornament => {
+      var index = temp.findIndex(ornament => {
+        return selectedornament.id == ornament.id
+      })
+      this.splicedOrnaments.push(temp[index])
+      temp.splice(index, 1)
+    })
+
+    setTimeout(() => {
+      this.ornamentTypeData = temp;
+    }, 500)
+    console.log(this.ornamentTypeData)
+  }
+
   save() {
 
-    if (this.url == 'view-loan') {
+    if (this.url == 'view-loan' || this.url == 'view-scrap') {
       this.next.emit(6)
       return
     }

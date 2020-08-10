@@ -14,6 +14,15 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
 let { sendOtpToLeadVerification } = require('../../utils/SMS')
 
+exports.getOtp = async (req, res, next) => {
+  let getOtp = await models.customerOtp.findAll({
+    order: [
+      ['id', 'desc']
+    ]
+  });
+  return res.status(200).json({ data: getOtp })
+}
+
 exports.addCustomer = async (req, res, next) => {
   let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId, source, panType, panImage, leadSourceId } = req.body;
   // cheanges needed here
@@ -271,10 +280,10 @@ exports.getAllCustomersForLead = async (req, res, next) => {
   {
     model: models.customerAssignAppraiser,
     as: "customerAssignAppraiser",
-    include:[{
-      model : models.user,
-      as : "appraiser",
-      attributes:['id','firstName','lastName']
+    include: [{
+      model: models.user,
+      as: "appraiser",
+      attributes: ['id', 'firstName', 'lastName']
     }]
   },
 
@@ -286,7 +295,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
 
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
-    attributes: { exclude: [ 'createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
+    attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
     order: [["updatedAt", "DESC"]],
     offset: offset,
     limit: pageSize,

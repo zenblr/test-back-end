@@ -18,7 +18,7 @@ import { AssignAppraiserPacketsComponent } from '../assign-appraiser-packets/ass
 })
 export class PacketsListComponent implements OnInit {
   dataSource: ScrapPacketsDatasource;
-  displayedColumns = ['select', 'packetUniqueId', 'internalBranch', 'appraiserName','customerID', 'scrapId', 'actions'];
+  displayedColumns = ['select', 'packetUniqueId', 'barcode', 'internalBranch', 'appraiserName', 'customerID', 'scrapId', 'actions'];
   packetsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
@@ -95,7 +95,7 @@ export class PacketsListComponent implements OnInit {
   assignPackets() {
     const dialogRef = this.dialog.open(AddPacketsComponent, {
       data: { action: 'add' },
-      width: '400px'
+      width: '600px'
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -109,7 +109,7 @@ export class PacketsListComponent implements OnInit {
     const dialogRef = this.dialog.open(AddPacketsComponent,
       {
         data: { packetData: role, action: 'edit' },
-        width: '400px'
+        width: '600px'
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {

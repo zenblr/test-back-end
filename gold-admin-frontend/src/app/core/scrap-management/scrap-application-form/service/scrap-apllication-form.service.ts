@@ -85,12 +85,6 @@ export class ScrapApplicationFormService {
     )
   }
 
-  getLoanDataById(id: number): Observable<any> {
-    return this.http.get(`/api/loan-process/single-loan?customerLoanId=${id}`).pipe(
-      map(res => res)
-    )
-  }
-
   uploadDocuments(details, scrapIds): Observable<any> {
     let data = { ...details, ...scrapIds }
     return this.http.post(`/api/scrap/scrap-process/scrap-documents`, data).pipe(
@@ -98,43 +92,7 @@ export class ScrapApplicationFormService {
     )
   }
 
-  checkForLoanType(data): Observable<any> {
-    return this.http.post(`/api/loan-process/check-loan-type`, data).pipe(
-      map(res => res)
-    )
-  }
-
-  getInterest(data): Observable<any> {
-    return this.http.post(`/api/loan-process/interest-rate`, data).pipe(
-      map(res => res)
-    )
-  }
-
-  updateLoan(id, data): Observable<any> {
-    return this.http.put(`/api/loan-process/change-loan-detail/${id}`, data).pipe(
-      map(res => res)
-    )
-  }
-
-  calculateFinalInterestTable(data): Observable<any> {
-    return this.http.post('/api/loan-process/generate-interest-table', data).pipe(
-      map(res => res)
-    )
-  }
-
-  unsecuredTableGenration(form, paymentFrequency, tenure): Observable<any> {
-    let data = {
-      unsecuredSchemeAmount: form.unsecuredSchemeAmount,
-      unsecuredSchemeId: form.unsecuredSchemeName,
-      paymentFrequency: paymentFrequency,
-      tenure: tenure
-    }
-    return this.http.post('/api/loan-process/generate-unsecured-interest-table', data).pipe(
-      map(res => res)
-    )
-  }
-
-  getPdf(id): Observable<any> {
+  getCustomerAcknowledgementPdf(id): Observable<any> {
     return this.http.get(`/api/scrap/scrap-process/get-customer-acknowledgement?scrapId=${id}`,
       { responseType: "arraybuffer" }
     ).pipe(
@@ -152,14 +110,27 @@ export class ScrapApplicationFormService {
       }))
   }
 
-  applyLoanFromPartRelease(data): Observable<any> {
-    return this.http.get(`/api/jewellery-release/apply-loan/${data.customerUniqueId}?partReleaseId=${data.partReleaseId}`).pipe(
-      map(res => res),
-      catchError(err => {
-        if (err.error.message)
-          this.toastr.error(err.error.message);
-        throw (err);
-      })
+  getPurchaseVoucherPdf(id): Observable<any> {
+    return this.http.get(`/api/scrap/scrap-process/get-purchase-voucher?scrapId=${id}`,
+      { responseType: "arraybuffer" }
+    ).pipe(
+      tap(res => {
+        if (res) {
+          var binary = '';
+          var bytes = new Uint8Array(res);
+          var len = bytes.byteLength;
+          for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+          }
+          let base64 = (window.btoa(binary));
+          printJS({ printable: base64, type: 'pdf', base64: true })
+        }
+      }))
+  }
+
+  quickPay(details): Observable<any> {
+    return this.http.post(`/api/scrap/scrap-process/quick-pay`, details).pipe(
+      map(res => res)
     )
   }
 }

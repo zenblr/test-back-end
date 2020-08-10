@@ -16,9 +16,9 @@ export class AppliedScrapDatasource extends BaseDataSource {
         super();
     }
 
-    loadAppliedScraps(from, to, search) {
+    loadAppliedScraps(data) {
         this.loadingSubject.next(true);
-        this.appliedScrapService.getAppliedScraps(from, to, search)
+        this.appliedScrapService.getAppliedScraps(data)
             .pipe(
                 map(
                     loan => {

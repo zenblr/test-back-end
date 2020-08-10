@@ -20,6 +20,10 @@
                     <mat-header-cell *matHeaderCellDef>Packet ID</mat-header-cell>
                     <mat-cell *matCellDef="let role">{{role?.packetUniqueId | uppercase}}</mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="barcode">
+                    <mat-header-cell *matHeaderCellDef>Barcode</mat-header-cell>
+                    <mat-cell *matCellDef="let role">{{role?.barcodeNumber | uppercase}}</mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="internalBranch">
                     <mat-header-cell *matHeaderCellDef>Branch</mat-header-cell>
                     <mat-cell *matCellDef="let role">{{role?.internalBranch?.name | titlecase}}</mat-cell>

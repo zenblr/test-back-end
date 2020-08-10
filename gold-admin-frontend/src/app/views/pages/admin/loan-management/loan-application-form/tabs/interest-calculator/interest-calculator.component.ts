@@ -9,6 +9,7 @@ import { UnSecuredSchemeComponent } from '../../un-secured-scheme/un-secured-sch
 import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
 import { Subject } from 'rxjs';
 import { threadId } from 'worker_threads';
+import { async } from 'rxjs/internal/scheduler/async';
 
 @Component({
   selector: 'kt-interest-calculator',
@@ -419,7 +420,7 @@ export class InterestCalculatorComponent implements OnInit {
   //   }
   // }
 
-  getIntrest() {
+  async getIntrest() {
     if (this.controls.paymentFrequency.valid && (this.controls.finalLoanAmount.valid || this.controls.finalLoanAmount.status == 'DISABLED') && this.controls.partnerId.valid && this.controls.schemeId.valid) {
 
       let data = {
@@ -428,7 +429,7 @@ export class InterestCalculatorComponent implements OnInit {
         paymentFrequency: this.controls.paymentFrequency.value
       }
 
-      this.loanFormService.getInterest(data).subscribe(res => {
+      await this.loanFormService.getInterest(data).subscribe(res => {
         if (res.data) {
           this.paymentType = this.controls.paymentFrequency.value
           this.dateOfPayment = [];
@@ -475,13 +476,13 @@ export class InterestCalculatorComponent implements OnInit {
     }
   }
 
-  calcInterestAmount() {
+  async calcInterestAmount() {
     if (this.finalInterestForm.invalid) {
       this.finalInterestForm.markAllAsTouched();
       return;
     }
 
-    this.loanFormService.calculateFinalInterestTable(this.finalInterestForm.value).subscribe(res => {
+    await this.loanFormService.calculateFinalInterestTable(this.finalInterestForm.value).subscribe(res => {
       this.dateOfPayment = res.data.interestTable;
       this.controls.totalFinalInterestAmt.patchValue(res.data.totalInterestAmount)
       this.ref.detectChanges()

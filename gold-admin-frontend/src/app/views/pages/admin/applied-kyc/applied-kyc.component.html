@@ -143,7 +143,8 @@
                             </button>
                             <mat-menu #menu="matMenu" xPosition="before">
                                 <button mat-menu-item (click)="applyLoan(role)">Apply Loan</button>
-                                <button mat-menu-item (click)="transferLoan(role)">Transfer Loan</button>
+                                <button *ngxPermissionsOnly="['loanTransferAppraiserRating']" mat-menu-item
+                                    (click)="transferLoan(role)">Transfer Loan</button>
                                 <button mat-menu-item (click)="applyScrapBuy(role)">Apply Scrap</button>
                             </mat-menu>
                         </ng-container>

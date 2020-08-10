@@ -1,31 +1,81 @@
 <kt-portlet>
     <kt-modal-header [title]='title' (action)="action($event)"></kt-modal-header>
-    <kt-portlet-body>
-        <form [formGroup]="packetForm">
-            <div class="row ">
-                <div class="col-12">
-                    <div class="row justify-content-center kt-margin-t-10">
-                        <div class="col-4 form-label">
-                            <label class="kt-padding-l-10 mandatory">Packet Id</label>
-                        </div>
-                        <div class="col-8">
-                            <input type="text" class="form-control" formControlName="packetUniqueId"
-                                placeholder="PAC-01"
-                                [class.isError]="packetForm.controls.packetUniqueId.invalid &&  packetForm.controls.packetUniqueId.touched">
-                            <mat-error
-                                *ngIf="controls.packetUniqueId.touched && controls.packetUniqueId.errors?.required">
-                                Required field
-                            </mat-error>
+    <!-- <kt-portlet-body> -->
+    <div class="kt-portlet__body position-relative" id="container">
+        <div class="text-right">
+            <a href="../../../../../assets/media/files/packetList.csv" download="packetList.csv" *ngIf="tabIndex">
+                <span class="text-primary csv_pos">
+                    <img src="../../../../../assets/media/icons/download.svg" alt="download" height="20"> Download
+                    Sample CSV </span>
+            </a>
+        </div>
+        <mat-tab-group #tabGroup (selectedIndexChange)="selectedIndex($event)">
+            <mat-tab label="By Filling Form">
+                <form [formGroup]="packetForm">
+                    <div class="row ">
+                        <div class="col-12">
+                            <div class="row justify-content-center kt-margin-t-10">
+                                <div class="col-4 form-label">
+                                    <label class="kt-padding-l-10 mandatory">Packet Id</label>
+                                </div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" formControlName="packetUniqueId"
+                                        placeholder="PAC-01"
+                                        [class.isError]="packetForm.controls.packetUniqueId.invalid &&  packetForm.controls.packetUniqueId.touched">
+                                    <mat-error
+                                        *ngIf="controls.packetUniqueId.touched && controls.packetUniqueId.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+
+                            <div class="row justify-content-center kt-margin-t-10">
+                                <div class="col-4 form-label">
+                                    <label class="kt-padding-l-10 mandatory">Branch</label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-control" formControlName="internalUserBranchId"
+                                        [class.isError]="controls.internalUserBranchId.touched && controls.internalUserBranchId.invalid">
+                                        <option value="" [disabled]="true" [selected]="true"> Select Branch
+                                        </option>
+                                        <option *ngFor="let branch of branches" [value]="branch.id">
+                                            {{branch.name | titlecase}}
+                                        </option>
+                                    </select>
+                                    <mat-error
+                                        *ngIf="controls.internalUserBranchId.touched && controls.internalUserBranchId.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+
+                            </div>
+
+                            <div class="row justify-content-center kt-margin-t-10">
+                                <div class="col-4 form-label">
+                                    <label class="kt-padding-l-10 mandatory">Barcode</label>
+                                </div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" formControlName="barcodeNumber"
+                                        [class.isError]="packetForm.controls.barcodeNumber.invalid &&  packetForm.controls.barcodeNumber.touched">
+                                    <mat-error
+                                        *ngIf="controls.barcodeNumber.touched && controls.barcodeNumber.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="row justify-content-center kt-margin-t-10">
-                        <div class="col-4 form-label">
+                </form>
+            </mat-tab>
+            <mat-tab label="By Uploading CSV" [disabled]="data.action == 'edit'">
+                <form [formGroup]="csvForm">
+                    <div class="row kt-margin-t-20">
+                        <div class="col-3  form-label">
                             <label class="kt-padding-l-10 mandatory">Branch</label>
                         </div>
-                        <div class="col-8">
-                            <select class="form-control" formControlName="internalUserBranchId"
-                                [class.isError]="controls.internalUserBranchId.touched && controls.internalUserBranchId.invalid">
+                        <div class="col-9">
+                            <select name="" id="" class="form-control" formControlName="internalUserBranch"
+                                [class.isError]="csvForm.controls.internalUserBranch.touched && csvForm.controls.internalUserBranch.invalid">
                                 <option value="" [disabled]="true" [selected]="true"> Select Branch
                                 </option>
                                 <option *ngFor="let branch of branches" [value]="branch.id">
@@ -33,19 +83,44 @@
                                 </option>
                             </select>
                             <mat-error
-                                *ngIf="controls.internalUserBranchId.touched && controls.internalUserBranchId.errors?.required">
+                                *ngIf="csvForm.controls.internalUserBranch.touched && csvForm.controls.internalUserBranch.errors?.required">
                                 Required field
                             </mat-error>
                         </div>
-
                     </div>
-                </div>
-            </div>
-        </form>
-    </kt-portlet-body>
+
+                    <div class="row kt-margin-t-20">
+                        <div class="col-3 form-label">
+                            <label class="kt-padding-l-10 mandatory">Upload CSV</label>
+                        </div>
+                        <div class="col-9">
+                            <div class="input-group mb-3"
+                                [class.isError]="csvForm.get('csv').touched && csvForm.get('csv').invalid">
+                                <input type="text" class="form-control" placeholder="Sample.csv"
+                                    aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                    formControlName="csv" readonly>
+                                <div class="input-group-append">
+                                    <span class="input-group-text kt-pointer font-weight" id="basic-addon2"
+                                        (click)="file.click()">Attach</span>
+                                </div>
+                            </div>
+                            <label class="file d-none">
+                                <input type="file" id="file" aria-label="File browser example" #file
+                                    (input)="getFileInfo($event)">
+                                <span class="file-custom"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                </form>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+    <!-- </kt-portlet-body> -->
     <kt-portlet-footer>
         <div class="p-3">
-            <kt-modal-footer *ngIf="data.action == 'add'" (action)="action($event)" [value]="'Add'"></kt-modal-footer>
+            <kt-modal-footer *ngIf="data.action == 'add'" (action)="action($event)" [value]="'Add'">
+            </kt-modal-footer>
             <kt-modal-footer *ngIf="data.action == 'edit'" (action)="action($event)" [value]="'Update'">
             </kt-modal-footer>
         </div>
