@@ -30,7 +30,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() details;
   @Input() meltingDetails;
   @Input() action
-  // @Output() OrnamentsDataEmit: EventEmitter<any> = new EventEmitter();
+  @Output() loanTransfer: EventEmitter<any> = new EventEmitter();
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() totalAmt: EventEmitter<any> = new EventEmitter();
   @Output() finaltotalAmt: EventEmitter<any> = new EventEmitter();
@@ -782,10 +782,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
             controls.controls.id.patchValue(res.ornaments[index].id)
           }
           if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
-            this.loanApplicationFormService.finalLoanAmount.next(res.loanTransferData.loanTransfer.disbursedLoanAmount)
-          } else {
-            this.loanApplicationFormService.finalLoanAmount.next(0)
-          }
+            this.loanTransfer.emit(res.loanTransferData.loanTransfer.disbursedLoanAmount)
+          } 
+
           this.next.emit(3)
         })
       ).subscribe()
