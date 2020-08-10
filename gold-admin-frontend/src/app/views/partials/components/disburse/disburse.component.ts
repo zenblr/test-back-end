@@ -151,12 +151,43 @@ export class DisburseComponent implements OnInit {
   }
 
   formDisable() {
-    this.controls.loanAmount.disable()
+    this.controls.loanAmount.disable();
     this.controls.ifscCode.disable()
     this.controls.bankName.disable()
     this.controls.bankBranch.disable()
     this.controls.accountHolderName.disable()
     this.controls.accountNumber.disable()
+    this.controls.passbookStatementChequeId.disable()
+    this.controls.passbookImgName.disable()
+  }
+
+  conditionalDisable() {
+    this.controls.loanAmount.disable();
+    if (this.details.userBankDetail.ifscCode) {
+      this.controls.ifscCode.disable()
+    } else {
+      this.controls.ifscCode.enable()
+    }
+    if (this.details.userBankDetail.bankName) {
+      this.controls.bankName.disable()
+    } else {
+      this.controls.bankName.enable()
+    }
+    if (this.details.userBankDetail.bankBranchName) {
+      this.controls.bankBranch.disable()
+    } else {
+      this.controls.bankBranch.enable()
+    }
+    if (this.details.userBankDetail.accountHolderName) {
+      this.controls.accountHolderName.disable()
+    } else {
+      this.controls.accountHolderName.enable()
+    }
+    if (this.details.userBankDetail.accountNumber) {
+      this.controls.accountNumber.disable()
+    } else {
+      this.controls.accountNumber.enable()
+    }
     this.controls.passbookStatementChequeId.disable()
     this.controls.passbookImgName.disable()
   }
@@ -247,7 +278,7 @@ export class DisburseComponent implements OnInit {
       this.disburseForm.patchValue(this.details.userBankDetail)
       this.disburseForm.patchValue({ bankBranch: this.details.userBankDetail.bankBranchName })
       this.controls.disbursementStatus.patchValue('Disbursed to Customer')
-      this.formDisable()
+      this.conditionalDisable()
     } else if (value == "cash") {
       if (this.details.branchBankDetail) {
         this.disburseForm.patchValue(this.details.branchBankDetail)
