@@ -201,7 +201,7 @@ export class LoanTransferComponent implements OnInit {
   }
 
   approval() {
-    if (this.approvalForm.status == 'DISABLED') {
+    if (this.approvalForm.status == 'DISABLED' || this.loanTransferStage == '5') {
       this.next(4)
       return
     }
@@ -215,7 +215,7 @@ export class LoanTransferComponent implements OnInit {
       this.loanTransferService.appraiserApproval(this.approvalForm.value, this.masterAndLoanIds).subscribe(res => {
         this.router.navigate(['/admin/loan-management/transfer-loan-list'])
       })
-    } else {
+    } else if(this.loanTransferStage == '4'){
       this.loanTransferService.approval(this.approvalForm.value, this.masterAndLoanIds).subscribe(res => {
         if (res) {
           if (this.approvalForm.controls.loanTransferStatusForBM.value == 'approved') {

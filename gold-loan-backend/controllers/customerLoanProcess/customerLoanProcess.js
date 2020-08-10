@@ -316,8 +316,8 @@ exports.checkForLoanType = async (req, res, next) => {
         var unsecuredAmount = Math.round(loanAmount * unsecureSchemeMaximumAmtAllowed / Number(ltvPercent[0].ltvGoldValue / 100))
 
 
-        if (unsecuredSchemeApplied && (securedScheme.isSplitAtBeginning ||
-            Number(loanAmount) <= Math.round(fullAmount * (securedLoanAmount + unsecuredAmount)))) {
+        if ((unsecuredSchemeApplied && (securedScheme.isSplitAtBeginning ||
+            Number(loanAmount) <= Math.round(fullAmount * (securedLoanAmount + unsecuredAmount))))|| isLoanTransfer) {
 
             processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
@@ -415,7 +415,7 @@ exports.generateInterestTable = async (req, res, next) => {
     })
 
     // secure interest calculation
-    let securedInterestAmount = await interestCalcultaion(securedLoanAmount, interestRate)
+    let securedInterestAmount = await interestCalcultaion(securedLoanAmount, interestRate,paymentFrequency)
     let securedScheme = await models.scheme.findOne({
         where: { id: schemeId },
         attributes: ['schemeName']
@@ -424,7 +424,7 @@ exports.generateInterestTable = async (req, res, next) => {
     let unsecuredInterestAmount = 0;
     // unsecure interest calculation
     if (isUnsecuredSchemeApplied) {
-        unsecuredInterestAmount = await interestCalcultaion(unsecuredLoanAmount, unsecuredInterestRate)
+        unsecuredInterestAmount = await interestCalcultaion(unsecuredLoanAmount, unsecuredInterestRate,paymentFrequency)
         var unsecuredScheme = await models.scheme.findOne({
             where: { id: unsecuredSchemeId },
             attributes: ['schemeName']
@@ -511,9 +511,10 @@ exports.unsecuredTableGeneration = async (req, res, next) => {
 
 
 // interest calculation
-async function interestCalcultaion(amount, interestRate) {
-    let interest = (amount * interestRate / 100).toFixed(2)
-    return Number(interest)
+async function interestCalcultaion(amount, interestRate, paymentFrequency) {
+    let interest = ((Number(amount) * (Number(interestRate) * 12 / 100)) * Number(paymentFrequency)
+        / 360).toFixed(2)
+    return interest
 }
 
 //FUNCTION for final loan calculator
