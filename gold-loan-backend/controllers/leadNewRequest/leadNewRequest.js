@@ -11,11 +11,7 @@ exports.addLeadNewRequest = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let { customerId, moduleId } = req.body;
-    let requestExist = await models.leadNewRequest.findOne({ where: { customerId: customerId, moduleId: moduleId } })
-
-    if (!check.isEmpty(requestExist)) {
-        return res.status(400).json({ message: 'This Lead Request already Exists' });
-    }
+    
     let LeadNewRequest = await models.leadNewRequest.create({ customerId, moduleId, createdBy, modifiedBy })
     return res.status(201).json({ message: `Request Created` })
 }
@@ -25,11 +21,7 @@ exports.updateLeadNewRequest = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let id = req.params.id;
     let { moduleId, customerId } = req.body;
-    let requestExist = await models.leadNewRequest.findOne({ where: { moduleId: moduleId, customerId: customerId } })
 
-    if (!check.isEmpty(requestExist)) {
-        return res.status(400).json({ message: 'This Lead Request already Exists' });
-    }
     let LeadNewRequest = await models.leadNewRequest.update({ moduleId, modifiedBy }, { where: { id, isAssigned: false } })
     return res.status(200).json({ message: `Request updated` })
 
