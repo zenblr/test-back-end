@@ -21,26 +21,32 @@
                             </mat-error>
                         </div>
                     </div>
-                    <div class="row justify-content-center kt-margin-t-15">
-                        <div class="col-4 form-label">
-                            <label class="kt-padding-l-10 mandatory">Barcode No.</label>
-                        </div>
-                        <div class="col-8">
-                            <div class="row">
-                                <div class="col-7 d-flex align-items-center">
-                                    Packet ID
+                    <div formArrayName="barcodeNumber">
+                        <div *ngFor="let item of barcodeNumber.controls; index as idx">
+                            <div [formGroupName]="idx">
+                                <div class="row justify-content-center kt-margin-t-15">
+                                    <div class="col-4 form-label">
+                                        <label class="kt-padding-l-10 mandatory">Barcode No.</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="row">
+                                            <div class="col-7 d-flex align-items-center">
+                                                Packet ID
+                                            </div>
+                                            <div class="col text-right">
+                                                <kt-button [type]="'button'" [value]="'Scan'"></kt-button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col text-right">
-                                    <kt-button [type]="'button'" [value]="'Scan'"></kt-button>
+                                <div class="row justify-content-center kt-margin-t-15">
+                                    <div class="col-8 offset-4">
+                                        <input type="text" class="form-control" placeholder="Enter Barcode No."
+                                            formControlName="barcode"
+                                            [class.isError]="item.get('barcode').invalid &&  item.get('barcode').touched">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row justify-content-center kt-margin-t-15">
-                        <div class="col-8 offset-4">
-                            <input type="text" class="form-control" placeholder="Enter Barcode No."
-                                formControlName="barcodeNumber"
-                                [class.isError]="locationForm.controls.barcodeNumber.invalid &&  locationForm.controls.barcodeNumber.touched">
                         </div>
                     </div>
                     <div class="row justify-content-center kt-margin-t-15">

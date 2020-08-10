@@ -225,18 +225,19 @@ export class UploadDocumentsComponent implements OnInit {
 
   pdfCheck() {
     Object.keys(this.documentsForm.value).forEach(value => {
-      console.log()
       let pdf = this.documentsForm.value[value]
+      let ext: any;
       if (typeof pdf == 'string' && pdf) {
-        let ext = pdf.split('.')
-        console.log(ext)
-        if (ext[ext.length - 1] == 'pdf') {
-          this.pdf[value] = true
-          this.ref.detectChanges()
-        } else {
-          this.pdf[value] = false
-        }
-        console.log(value)
+        ext = pdf.split('.')
+      } else if (typeof pdf == 'object' && pdf) {
+        ext = pdf[0].split('.')
+      }
+
+      if (ext[ext.length - 1] == 'pdf') {
+        this.pdf[value] = true
+        this.ref.detectChanges()
+      } else {
+        this.pdf[value] = false
       }
     })
   }
