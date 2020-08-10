@@ -75,6 +75,7 @@ exports.loanRequest = async (req, res, next) => {
                 loanOrnaments[i]['masterLoanId'] = masterLoanId
                 allOrnmanets.push(loanOrnaments[i])
             }
+            console.log(loanOrnaments[0].ornamentTypeId)
 
             let checkOrnaments = await models.customerLoanOrnamentsDetail.findAll({ where: { masterLoanId: masterLoanId } })
             if (checkOrnaments.length == 0) {
@@ -283,7 +284,7 @@ exports.loanRequest = async (req, res, next) => {
             }, { where: { id: masterLoanId }, transaction: t })
         }
     })
-    return res.status(200).json({ message: "Success", loanId: loanData.loanId, masterLoanId: loanData.masterLoanId })
+    return res.status(200).json({ message: "Success", loanId: loanId, masterLoanId: masterLoanId })
 }
 
 

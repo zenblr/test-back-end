@@ -1581,7 +1581,7 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
 
     let customerLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
-        attributes: ['id'],
+        attributes: ['id','loanStartDate','loanEndDate','tenure'],
         include: [
             {
                 model: models.customerLoan,

@@ -94,7 +94,7 @@ export class LoanDetailsComponent implements OnInit {
   }
 
   viewLoan(loan) {
-    this.router.navigate(['/admin/customer-management/loan-details', loan.id])
+    this.router.navigate(['/admin/customer-management/loan-details', loan.id,loan.customerLoan[0].masterLoanId])
   }
 
   newLoan(loan) {
