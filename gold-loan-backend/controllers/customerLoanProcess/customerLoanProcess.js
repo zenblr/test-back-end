@@ -20,6 +20,10 @@ exports.customerDetails = async (req, res, next) => {
     let customerUniqueId = req.params.customerUniqueId;
     let reqId = req.userData.id;
     let getCustomer = await models.customer.findOne({ where: { customerUniqueId } })
+
+    if (getCustomer.kycStatus != "approved") {
+        return res.status(400).json({ message: 'This customer Kyc is not completed' })
+    }
     let getAppraiserId = await models.customerAssignAppraiser.findOne({ where: { customerId: getCustomer.id } })
 
     if (check.isEmpty(getAppraiserId)) {
@@ -1082,9 +1086,9 @@ exports.loanDocuments = async (req, res, next) => {
             await models.customerLoanMaster.update({ loanStageId: stageId.id, modifiedBy }, { where: { id: masterLoanId }, transaction: t })
 
 
-           let x = await models.customerLoanDocument.update({ loanAgreementCopy:loanAgreementCopy, pawnCopy:pawnCopy, schemeConfirmationCopy:schemeConfirmationCopy, modifiedBy:modifiedBy }, { where: { id: checkDocument.id }, transaction: t })
+            let x = await models.customerLoanDocument.update({ loanAgreementCopy: loanAgreementCopy, pawnCopy: pawnCopy, schemeConfirmationCopy: schemeConfirmationCopy, modifiedBy: modifiedBy }, { where: { id: checkDocument.id }, transaction: t })
 
-           let y =  await models.customerLoanHistory.create({ loanId, masterLoanId, action: LOAN_DOCUMENTS, modifiedBy }, { transaction: t });
+            let y = await models.customerLoanHistory.create({ loanId, masterLoanId, action: LOAN_DOCUMENTS, modifiedBy }, { transaction: t });
 
             // return loan
         })
@@ -1567,70 +1571,76 @@ exports.getSingleLoanDetails = async (req, res, next) => {
 
 //get function for single loan in CUSTOMER-MANAGMENT
 exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
-    let { customerLoanId } = req.query
-    let customerLoan = await models.customerLoan.findOne({
-        where: { id: customerLoanId },
-        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+    let { customerLoanId, masterLoanId } = req.query
+
+    let whereCondition = {}
+    if (!check.isEmpty(customerLoanId)) {
+        whereCondition = { id: customerLoanId }
+    }
+
+    let customerLoan = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        attributes: ['id'],
         include: [
             {
-                model: models.customerLoanMaster,
-                as: 'masterLoan',
-                attributes: ['id'],
+                model: models.customerLoan,
+                as: 'customerLoan',
+                where: whereCondition,
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            },
+            {
+                model: models.loanStage,
+                as: 'loanStage',
+                attributes: ['id', 'name']
+            },
+            {
+                model: models.customerLoanTransfer,
+                as: "loanTransfer",
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            },
+            {
+                model: models.customerLoanPersonalDetail,
+                as: 'loanPersonalDetail',
+            }, {
+                model: models.customerLoanBankDetail,
+                as: 'loanBankDetail',
+            }, {
+                model: models.customerLoanNomineeDetail,
+                as: 'loanNomineeDetail',
+            },
+            {
+                model: models.customerLoanOrnamentsDetail,
+                as: 'loanOrnamentsDetail',
+                include: [
+                    {
+                        model: models.ornamentType,
+                        as: "ornamentType"
+                    }
+                ]
+            },
+            {
+                model: models.customerLoanPackageDetails,
+                as: 'loanPacketDetails',
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
                 include: [{
-                    model: models.loanStage,
-                    as: 'loanStage',
-                    attributes: ['id', 'name']
-                },
-                {
-                    model: models.customerLoanTransfer,
-                    as: "loanTransfer",
+                    model: models.packet,
+                    as: 'packets',
                     attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                },
-                {
-                    model: models.customerLoanPersonalDetail,
-                    as: 'loanPersonalDetail',
-                }, {
-                    model: models.customerLoanBankDetail,
-                    as: 'loanBankDetail',
-                }, {
-                    model: models.customerLoanNomineeDetail,
-                    as: 'loanNomineeDetail',
-                },
-                {
-                    model: models.customerLoanOrnamentsDetail,
-                    as: 'loanOrnamentsDetail',
                     include: [
                         {
-                            model: models.ornamentType,
-                            as: "ornamentType"
+                            model: models.packetOrnament,
+                            as: 'packetOrnament',
+                            include: [{
+                                model: models.ornamentType,
+                                as: 'ornamentType'
+                            }]
                         }
                     ]
-                },
-                {
-                    model: models.customerLoanPackageDetails,
-                    as: 'loanPacketDetails',
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                    include: [{
-                        model: models.packet,
-                        as: 'packets',
-                        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                        include: [
-                            {
-                                model: models.packetOrnament,
-                                as: 'packetOrnament',
-                                include: [{
-                                    model: models.ornamentType,
-                                    as: 'ornamentType'
-                                }]
-                            }
-                        ]
-                    }]
-                },
-                {
-                    model: models.customerLoanDocument,
-                    as: 'customerLoanDocument'
-                }
-                ]
+                }]
+            },
+            {
+                model: models.customerLoanDocument,
+                as: 'customerLoanDocument'
             },
             {
                 model: models.customer,
