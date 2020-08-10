@@ -38,6 +38,8 @@ export class UploadDocumentsComponent implements OnInit {
   @Input() showScrapFlag;
   @Input() showScrapAcknowledgementFlag;
   @Input() standardDeductionArr
+  @Input() loanStage
+  @Input() scrapStage
   @ViewChild('loanAgreementCopy', { static: false }) loanAgreementCopy
   @ViewChild('pawnCopy', { static: false }) pawnCopy
   @ViewChild('schemeConfirmationCopy', { static: false }) schemeConfirmationCopy
@@ -62,6 +64,7 @@ export class UploadDocumentsComponent implements OnInit {
   documentsForm: FormGroup
   show: boolean;
   url: string;
+  scrapUrl: string;
   buttonName: string;
   buttonValue = 'Next';
   isEdit: boolean;
@@ -85,6 +88,7 @@ export class UploadDocumentsComponent implements OnInit {
     public globalSettingService: GlobalSettingService,
   ) {
     this.url = (this.router.url.split("/")[3]).split("?")[0]
+    this.scrapUrl = (this.router.url.split("/")[2]).split("?")[0];
     // if (this.url == "loan-transfer") {
     //   this.show = true
     // } else {
@@ -109,6 +113,18 @@ export class UploadDocumentsComponent implements OnInit {
     if (changes.standardDeductionArr && changes.standardDeductionArr) {
       this.standardDeductionArr = changes.standardDeductionArr.currentValue
     }
+    if (changes.loanStage && changes.loanStage.currentValue) {
+      if (changes.loanStage.currentValue.id != 8) {
+        this.isEdit = false
+        this.buttonValue = 'Next'
+      }
+    }
+    if (changes.scrapStage && changes.scrapStage.currentValue) {
+      if (changes.scrapStage.currentValue.id != 8) {
+        this.isEdit = false
+        this.buttonValue = 'Next'
+      }
+    }
     if (changes.loanDocumnets && changes.loanDocumnets.currentValue) {
       let documents = changes.loanDocumnets.currentValue.customerLoanDocument
 
@@ -117,13 +133,11 @@ export class UploadDocumentsComponent implements OnInit {
           pawnCopyImage: documents.pawnCopyImage[0],
           schemeConfirmationCopyImage: documents.schemeConfirmationCopyImage[0],
           loanAgreementCopyImage: documents.loanAgreementCopyImage[0],
-          loanAgreementCopy: documents.loanAgreementCopyImage[0],
-          pawnCopy: documents.pawnCopyImage[0],
-          schemeConfirmationCopy: documents.schemeConfirmationCopyImage[0],
+          loanAgreementCopy: documents.loanAgreementCopy,
+          pawnCopy: documents.pawnCopy,
+          schemeConfirmationCopy: documents.schemeConfirmationCopy,
         })
         this.pdfCheck();
-        this.isEdit = false
-        this.buttonValue = 'Next'
       }
     }
     if (changes.acknowledgmentDocuments && changes.acknowledgmentDocuments.currentValue) {
@@ -155,24 +169,24 @@ export class UploadDocumentsComponent implements OnInit {
           this.documentsForm.patchValue({
             purchaseVoucher: documents.purchaseVoucherImage[0],
             purchaseVoucherImage: documents.purchaseVoucherImage[0],
+            purchaseVoucherArr: documents.purchaseVoucher,
           })
         }
         if (documents.purchaseInvoice) {
           this.documentsForm.patchValue({
             purchaseInvoice: documents.purchaseInvoiceImage[0],
             purchaseInvoiceImage: documents.purchaseInvoiceImage[0],
+            purchaseInvoiceArr: documents.purchaseInvoice,
           })
         }
         if (documents.saleInvoice) {
           this.documentsForm.patchValue({
             saleInvoice: documents.saleInvoiceImage[0],
             saleInvoiceImage: documents.saleInvoiceImage[0],
+            saleInvoiceArr: documents.saleInvoice,
           })
         }
         this.pdfCheck();
-        this.isEdit = false
-        this.ref.detectChanges();
-        this.buttonValue = 'Next'
       }
     }
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
@@ -191,7 +205,6 @@ export class UploadDocumentsComponent implements OnInit {
         if (documents.loanTransferStatusForAppraiser == 'approved') {
           this.isEdit = false
           this.documentsForm.disable()
-          this.buttonValue = 'Next'
           this.ref.detectChanges();
 
         }
@@ -236,7 +249,7 @@ export class UploadDocumentsComponent implements OnInit {
 
   ngAfterViewInit() {
     this.globalSettingService.globalSetting$.subscribe(global => this.globalValue = global);
-    if (this.url == "scrap-buying-application-form" || this.url == "view-scrap") {
+    if (this.scrapUrl == "scrap-management") {
       this.documentsForm.controls['customerConfirmationStatus'].valueChanges.subscribe((val) => {
         if (val == 'confirmed') {
           this.buttonValue = 'Next';
@@ -247,9 +260,10 @@ export class UploadDocumentsComponent implements OnInit {
           this.buttonValue = 'Save';
           this.showCustomerConfirmationFlag = false;
           this.documentsForm.patchValue({
-            customerConfirmation: [],
-            customerConfirmationImage: [],
-            customerConfirmationImageName: []
+            customerConfirmation: null,
+            customerConfirmationImage: null,
+            customerConfirmationImageName: null,
+            customerConfirmationArr: null,
           })
           this.documentsForm.controls.customerConfirmation.setValidators([]),
             this.documentsForm.controls.customerConfirmation.updateValueAndValidity()
@@ -288,14 +302,18 @@ export class UploadDocumentsComponent implements OnInit {
       purchaseVoucher: [],
       purchaseVoucherImage: [],
       purchaseVoucherImageName: [],
+      purchaseVoucherArr: [],
       purchaseInvoice: [],
       purchaseInvoiceImage: [],
       purchaseInvoiceImageName: [],
+      purchaseInvoiceArr: [],
       saleInvoice: [],
       saleInvoiceImage: [],
       saleInvoiceImageName: [],
+      saleInvoiceArr: [],
     })
     this.validation()
+    this.documentsForm.valueChanges.subscribe(val => console.log(val))
   }
 
   get controls() {
@@ -458,7 +476,11 @@ export class UploadDocumentsComponent implements OnInit {
 
     // loan
     if (!this.isEdit) {
-      this.next.emit(7)
+      if (this.showScrapAcknowledgementFlag) {
+        this.next.emit(4)
+      } else {
+        this.next.emit(7)
+      }
       return
     }
 
@@ -480,8 +502,7 @@ export class UploadDocumentsComponent implements OnInit {
           }
         })).subscribe()
     } else if (this.url == 'scrap-buying-application-form') {
-      console.log(this.documentsForm.value)
-      if (this.controls.customerConfirmationArr.value && this.controls.customerConfirmationArr.value.length) {
+      if (this.controls.customerConfirmationArr.value) {
         this.controls['customerConfirmation'].patchValue(this.controls.customerConfirmationArr.value)
       }
       this.scrapApplicationFormService.acknowledgementSubmit(this.documentsForm.value, this.scrapIds).pipe(
@@ -498,6 +519,15 @@ export class UploadDocumentsComponent implements OnInit {
           }
         })).subscribe();
     } else if (this.showScrapFlag) {
+      if (this.controls.purchaseVoucherArr.value) {
+        this.controls['purchaseVoucher'].patchValue(this.controls.purchaseVoucherArr.value)
+      }
+      if (this.controls.purchaseInvoiceArr.value) {
+        this.controls['purchaseInvoice'].patchValue(this.controls.purchaseInvoiceArr.value)
+      }
+      if (this.controls.saleInvoiceArr.value) {
+        this.controls['saleInvoice'].patchValue(this.controls.saleInvoiceArr.value)
+      }
       this.scrapApplicationFormService.uploadDocuments(this.documentsForm.value, this.scrapIds).pipe(
         map(res => {
           this.toastr.success(res.message)

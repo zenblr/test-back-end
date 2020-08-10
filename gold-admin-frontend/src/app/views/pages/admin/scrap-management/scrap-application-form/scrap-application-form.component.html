@@ -71,7 +71,8 @@
                     <mat-tab label="Upload Documents" [disabled]="disabled[6]"
                         *ngIf="scrapStage?.id == 8 || scrapStage?.id == 7 || scrapStage?.id == 4 || (scrapStage?.id == 8 || url =='view-scrap') || (scrapStage?.id == 7 || url =='view-scrap') || (scrapStage?.id == 4 || url =='view-scrap')">
                         <kt-upload-documents [scrapIds]="scrapIds" (next)="next($event)"
-                            [scrapDocuments]="customerDetail" [showButton]="showButton" [showScrapFlag]="true">
+                            [scrapDocuments]="customerDetail" [showButton]="showButton" [showScrapFlag]="true"
+                            [scrapStage]="scrapStage">
                         </kt-upload-documents>
                     </mat-tab>
                     <mat-tab label="Scrap Status Approval" [disabled]="false"

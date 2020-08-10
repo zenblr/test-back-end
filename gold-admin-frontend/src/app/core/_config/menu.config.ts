@@ -202,6 +202,12 @@ export class MenuConfig {
 											permission: false,
 											page: "/admin/masters/standard-deduction"
 										},
+										{
+											title: "Other Charges",
+											root: true,
+											permission: false,
+											page: "/admin/masters/other-charges"
+										},
 									],
 								},
 							],
@@ -480,7 +486,7 @@ export class MenuConfig {
 						{
 							title: "Scrap Management",
 							root: true,
-							src: "assets/media/aside-icons/icons-01.svg",
+							src: "assets/media/aside-icons/icons-39.svg",
 							page: "/admin/scrap-management",
 							// permission: !this.modulesArr.includes(3),
 						},
@@ -801,36 +807,43 @@ export class MenuConfig {
 						{
 							title: "Scrap Buying Calculator",
 							root: true,
-							src: "assets/media/aside-icons/icons-01.svg",
+							src: "assets/media/aside-icons/icons-34.svg",
 							page: "/admin/scrap-management/scrap-buying-calculator",
 							permission: false,
 						},
 						{
 							title: "Scrap Buying Application Form",
 							root: true,
-							src: "assets/media/aside-icons/icons-01.svg",
+							src: "assets/media/aside-icons/icons-35.svg",
 							page: "/admin/scrap-management/scrap-buying-application-form",
 							permission: false,
 						},
 						{
 							title: "Packet",
 							root: true,
-							src: "assets/media/aside-icons/icons-01.svg",
+							src: "assets/media/aside-icons/icons-36.svg",
 							page: "/admin/scrap-management/packets",
 							permission: false,
 						},
 						{
 							title: "Applied Scrap",
 							root: true,
-							src: "assets/media/aside-icons/icons-01.svg",
+							src: "assets/media/aside-icons/icons-37.svg",
 							page: "/admin/scrap-management/applied-scrap",
 							permission: false
 						},
 						{
 							title: "Scrap Buying List",
 							root: true,
-							src: "assets/media/aside-icons/icons-01.svg",
+							src: "assets/media/aside-icons/icons-38.svg",
 							page: "/admin/scrap-management/scrap-buying",
+							permission: false
+						},
+						{
+							title: "Customer Management",
+							root: true,
+							src: "assets/media/aside-icons/icons-08.svg",
+							page: "/admin/scrap-management/customer-management",
 							permission: false
 						},
 						{

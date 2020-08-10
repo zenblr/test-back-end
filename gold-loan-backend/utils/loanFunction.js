@@ -136,7 +136,7 @@ let getAllDetailsOfCustomerLoan = async (customerLoanId) => {
             ['id', 'asc'],
             [models.customerLoanInterest, 'id', 'asc'],
         ],
-        attributes: ['id', 'masterLoanId', 'selectedSlab', 'loanAmount', 'outstandingAmount', 'currentSlab', 'currentInterestRate', 'penalInterestLastReceivedDate'],
+        attributes: ['id', 'masterLoanId', 'selectedSlab', 'loanAmount', 'outstandingAmount', 'currentSlab', 'currentInterestRate', 'penalInterestLastReceivedDate', 'penalInterest'],
         include: [{
             model: models.customerLoanSlabRate,
             as: 'slab',
@@ -229,7 +229,10 @@ let calculation = async (noOfDays, interestRate, loanAmount, paidAmount) => {
 let newSlabRateInterestCalcultaion = async (loanAmount, interestRate, paymentFrequency, tenure) => {
     let amount = ((Number(loanAmount) * (Number(interestRate) * 12 / 100)) * Number(paymentFrequency)
         / 360).toFixed(2);
-    let length = (tenure * 30) / paymentFrequency
+    let length = (tenure * 30) / paymentFrequency;
+    if(amount < 0){
+        amount = 0
+    }
     return { amount, length }
 }
 

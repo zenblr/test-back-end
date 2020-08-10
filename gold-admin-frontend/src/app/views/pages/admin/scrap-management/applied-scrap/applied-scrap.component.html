@@ -38,8 +38,8 @@
                     <mat-header-cell *matHeaderCellDef>Appraiser Approval</mat-header-cell>
                     <mat-cell *matCellDef="let item">
                         <span
-                            [ngClass]="item?.scrapStatusForAppraiser == 'pending' ? 'text-warning' :item?.scrapStatusForAppraiser == 'approved' ? 'text-success' : 'text-danger'">
-                            {{item?.scrapStage?.id == 10 ? '-'  : item?.scrapStatusForAppraiser | titlecase}}
+                            [ngClass]="item?.scrapStatusForAppraiser == 'pending' ? 'text-warning' : item?.scrapStatusForAppraiser == 'approved' ? 'text-success' : 'text-danger'">
+                            {{item?.scrapStage?.id == 9 || item?.scrapStage?.id == 10 ? '-'  : item?.scrapStatusForAppraiser | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -47,8 +47,8 @@
                     <mat-header-cell *matHeaderCellDef>BM Approval</mat-header-cell>
                     <mat-cell *matCellDef="let item">
                         <span
-                            [ngClass]="item?.scrapStatusForBM == 'pending' ? 'text-warning' :item?.scrapStatusForBM == 'approved' ? 'text-success' : 'text-danger'">
-                            {{item?.scrapStage?.id == 10 ? '-'  : item?.scrapStatusForBM | titlecase}}
+                            [ngClass]="item?.scrapStatusForBM == 'pending' ? 'text-warning' : item?.scrapStatusForBM == 'approved' ? 'text-success' : 'text-danger'">
+                            {{item?.scrapStage?.id == 9 || item?.scrapStage?.id == 10 ? '-'  : item?.scrapStatusForBM | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -56,8 +56,8 @@
                     <mat-header-cell *matHeaderCellDef>OPS Approval</mat-header-cell>
                     <mat-cell *matCellDef="let item">
                         <span
-                            [ngClass]="item?.scrapStatusForOperatinalTeam == 'pending' ? 'text-warning' :item?.scrapStatusForOperatinalTeam == 'approved' ? 'text-success' : 'text-danger'">
-                            {{item?.scrapStage?.id == 10 ? '-'  : item?.scrapStatusForOperatinalTeam | titlecase}}
+                            [ngClass]="item?.scrapStatusForOperatinalTeam == 'pending' ? 'text-warning' : item?.scrapStatusForOperatinalTeam == 'approved' ? 'text-success' : 'text-danger'">
+                            {{item?.scrapStage?.id == 9 || item?.scrapStage?.id == 10 ? '-'  : item?.scrapStatusForOperatinalTeam | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -113,10 +113,14 @@
                                         class="primary-button">{{item?.scrapStage?.stageName | uppercase}}</button>
                                 </div>
                             </div>
+                            <div *ngIf="item?.scrapStage?.id == 9">
+                                <div class="kt-pointer">
+                                    <button class="warning-button">{{item?.scrapStage?.stageName | titlecase}}</button>
+                                </div>
+                            </div>
                             <div *ngIf="item?.scrapStage?.id == 10">
                                 <div class="kt-pointer">
-                                    <button (click)="editScrap(item)"
-                                        class="primary-button">{{item?.scrapStage?.stageName | titlecase}}</button>
+                                    <button class="warning-button">{{item?.scrapStage?.stageName | titlecase}}</button>
                                 </div>
                             </div>
                         </div>

@@ -18,9 +18,14 @@ export class FinalInterestAmountComponent implements OnInit {
   partnerList: any[] = [];
   schemesList: any = [];
   tenure = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-  repayType = [{ name: "monthly", value: 30 },
-  { name: "quarterly", value: 90 },
-  { name: "half Yearly", value: 180 }]
+  repayType = [
+    { name: "30 days", value: 30 },
+    { name: "60 days", value: 60 },
+    { name: "90 days", value: 90 },
+    { name: "120 days", value: 120 },
+    { name: "150 days", value: 150 },
+    { name: "180 days", value: 180 }
+  ]
   selectedScheme: any = []
   finalInterestForm: FormGroup;
   @ViewChild('print', { static: false }) print: ElementRef
@@ -66,7 +71,7 @@ export class FinalInterestAmountComponent implements OnInit {
     if (this.controls.loanStartDate.valid && this.controls.tenure.valid) {
       let startDate = this.controls.loanStartDate.value;
       let date = new Date(startDate)
-      this.controls.loanEndDate.patchValue(new Date(date.setDate(startDate.getDate() + (Number(this.controls.tenure.value))*30)))
+      this.controls.loanEndDate.patchValue(new Date(date.setDate(startDate.getDate() + (Number(this.controls.tenure.value)) * 30)))
       console.log(this.controls.loanEndDate.value)
     } else {
       this.controls.loanStartDate.markAsTouched()
@@ -117,7 +122,7 @@ export class FinalInterestAmountComponent implements OnInit {
     for (let index = 0; index < length; index++) {
       let startDate = this.controls.loanStartDate.value;
       let date = new Date(startDate)
-      var data = { key: new Date(date.setDate(date.getDate() + (30*index))) }
+      var data = { key: new Date(date.setDate(date.getDate() + (30 * index))) }
       this.dateOfPayment.push((data))
     }
     console.log(this.dateOfPayment)

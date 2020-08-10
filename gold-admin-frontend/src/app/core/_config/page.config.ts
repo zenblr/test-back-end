@@ -40,6 +40,9 @@ export class PageConfig {
 				'standard-deduction': {
 					page: { title: "Standard Deduction", desc: "" },
 				},
+				'other-charges': {
+					page: { title: "Other Charges", desc: "" },
+				}
 			},
 			"global-settings": {
 				page: { title: "Global Settings", desc: "" },
@@ -356,6 +359,9 @@ export class PageConfig {
 				},
 				"scrap-buying": {
 					page: { title: "Scrap Buying List", desc: "" },
+				},
+				"customer-management": {
+					page: { title: "Customer Management", desc: "" },
 				},
 				"global-settings": {
 					page: { title: "Global Settings", desc: "" },

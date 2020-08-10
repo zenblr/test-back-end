@@ -40,9 +40,9 @@ export class LoanTransferComponent implements OnInit {
     private rout: ActivatedRoute,
     private router: Router,
     private ref: ChangeDetectorRef,
-    private ngxPermission:NgxPermissionsService,
-    private toast:ToastrService,
-    private location:Location
+    private ngxPermission: NgxPermissionsService,
+    private toast: ToastrService,
+    private location: Location
   ) {
     this.ngxPermission.permissions$.subscribe(res => {
       this.permission = res
@@ -71,7 +71,7 @@ export class LoanTransferComponent implements OnInit {
           let stage = res.data.masterLoan.loanTransfer.loanTransferCurrentStage;
           this.next(Number(stage) - 1);
           if (stage == '4') {
-            if(!this.permission.loanTransferRating){
+            if (!this.permission.loanTransferRating) {
               this.toast.error('Access Denied')
               this.location.back()
             }
@@ -83,29 +83,33 @@ export class LoanTransferComponent implements OnInit {
           this.approvalForm.patchValue(res.data.masterLoan.loanTransfer)
           console.log(this.approvalForm.value)
           if (res.data.masterLoan.loanTransfer.reasonByBM && res.data.masterLoan.loanTransfer.loanTransferCurrentStage == '4') {
-            this.approvalForm.patchValue({ reason: res.data.masterLoan.loanTransfer.reasonByBM })
-            let temp = this.reasons.filter(reason => {
-              return reason.description == res.data.masterLoan.loanTransfer.reasonByBM
-            })
-
-            if (!temp.length) {
-              this.approvalForm.patchValue({ reason: "Other" })
-            } else {
+            setTimeout(() => {
               this.approvalForm.patchValue({ reason: res.data.masterLoan.loanTransfer.reasonByBM })
-            }
+              let temp = this.reasons.filter(reason => {
+                return reason.description == res.data.masterLoan.loanTransfer.reasonByBM
+              })
+
+              if (!temp.length) {
+                this.approvalForm.patchValue({ reason: "Other" })
+              } else {
+                this.approvalForm.patchValue({ reason: res.data.masterLoan.loanTransfer.reasonByBM })
+              }
+            })
           }
 
           if (res.data.masterLoan.loanTransfer.reasonByAppraiser && res.data.masterLoan.loanTransfer.loanTransferCurrentStage == '3') {
-            this.approvalForm.patchValue({ reason: res.data.masterLoan.loanTransfer.reasonByAppraiser })
-            let temp = this.reasons.filter(reason => {
-              return reason.description == res.data.masterLoan.loanTransfer.reasonByAppraiser
-            })
-
-            if (!temp.length) {
-              this.approvalForm.patchValue({ reason: "Other" })
-            } else {
+            setTimeout(() => {
               this.approvalForm.patchValue({ reason: res.data.masterLoan.loanTransfer.reasonByAppraiser })
-            }
+              let temp = this.reasons.filter(reason => {
+                return reason.description == res.data.masterLoan.loanTransfer.reasonByAppraiser
+              })
+
+              if (!temp.length) {
+                this.approvalForm.patchValue({ reason: "Other" })
+              } else {
+                this.approvalForm.patchValue({ reason: res.data.masterLoan.loanTransfer.reasonByAppraiser })
+              }
+            })
           }
 
           this.ref.detectChanges()
@@ -157,7 +161,7 @@ export class LoanTransferComponent implements OnInit {
   initForms() {
     this.approvalForm = this.fb.group({
       loanTransferStatusForBM: ['pending', Validators.required],
-      loanTransferStatusForAppraiser: ['', Validators.required],
+      loanTransferStatusForAppraiser: ['pending', Validators.required],
       reasonByBM: ['', Validators.required],
       reasonByAppraiser: ['', Validators.required],
       reason: ['', Validators.required]
@@ -217,9 +221,11 @@ export class LoanTransferComponent implements OnInit {
           if (this.approvalForm.controls.loanTransferStatusForBM.value == 'approved') {
             this.approvalForm.disable()
             this.disbursalForm.patchValue(res)
-            if (res.loanCurrentStage) {
+            if (res.loanCurrentStage && this.permission.loanTransferDisbursal) {
               let stage = Number(res.loanCurrentStage) - 1
               this.next(stage)
+            } else {
+              this.router.navigate(['/admin/loan-management/transfer-loan-list'])
             }
           }
           else {
@@ -227,7 +233,6 @@ export class LoanTransferComponent implements OnInit {
           }
         }
       }, err => {
-
       })
     }
   }
