@@ -7,7 +7,7 @@ import { catchError, map, finalize, takeUntil, debounceTime, distinctUntilChange
 import { MatDialog } from '@angular/material';
 import { UnSecuredSchemeComponent } from '../../un-secured-scheme/un-secured-scheme.component';
 import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { threadId } from 'worker_threads';
 import { async } from 'rxjs/internal/scheduler/async';
 
@@ -42,6 +42,8 @@ export class InterestCalculatorComponent implements OnInit {
   @Input() action;
   @Input() masterAndLoanIds
   @Input() fullAmount
+  @Input() showButton
+  @Input() loanTransfer
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
   @Output() accountHolderName: EventEmitter<any> = new EventEmitter()
   @ViewChild('calculation', { static: false }) calculation: ElementRef
@@ -55,9 +57,9 @@ export class InterestCalculatorComponent implements OnInit {
   globalValue: any;
   transferLoan: boolean = false;
   destroy$ = new Subject()
-  @Input() showButton
   partnerName: any;
   paymentFrequency: any;
+  subscription:Subscription[] = []
 
   constructor(
     public fb: FormBuilder,
@@ -77,29 +79,30 @@ export class InterestCalculatorComponent implements OnInit {
       this.globalValue = res;
     })
 
-    this.loanFormService.finalLoanAmount$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+    
 
-      if (res) {
-        console.log(res)
-        this.controls.finalLoanAmount.patchValue(res)
-        this.controls.finalLoanAmount.disable()
-        this.transferLoan = true;
-        this.partner()
-      }
-    })
 
 
     this.controls.finalLoanAmount.valueChanges.pipe(
       debounceTime(1000),
       distinctUntilChanged()
     ).subscribe(res => {
-      if (!this.transferLoan)
-        this.partner()
+      if (!this.transferLoan){
+        this.partner();
+      }
     })
 
   }
 
   ngOnChanges(changes: SimpleChanges) {
+
+    if(changes.loanTransfer && changes.loanTransfer.currentValue){
+      this.controls.finalLoanAmount.patchValue(changes.loanTransfer.currentValue)
+        this.controls.finalLoanAmount.disable()
+        this.transferLoan = true;
+        this.partner()
+    }
+
     if (changes.totalAmt) {
       if (changes.totalAmt.currentValue != changes.totalAmt.previousValue && changes.totalAmt.currentValue != 0) {
         // this.partner()
@@ -180,6 +183,7 @@ export class InterestCalculatorComponent implements OnInit {
       this.partnerService.getPartnerBySchemeAmount(Math.floor(this.controls.finalLoanAmount.value)).subscribe(res => {
         this.partnerList = res.data;
         this.returnScheme()
+        this.ref.detectChanges()
       })
     }
   }
@@ -682,6 +686,7 @@ export class InterestCalculatorComponent implements OnInit {
     // this.loanFormService.finalLoanAmount.unsubscribe()
     this.destroy$.next()
     this.destroy$.complete()
+    this.subscription.forEach(el=>el.unsubscribe)
   }
 
 }

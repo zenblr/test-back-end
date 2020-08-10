@@ -36,6 +36,7 @@ export class LoanApplicationFormComponent implements OnInit {
   accountHolderName: any;
   loanStage: any;
   ornamentDetails: any;
+  loanTransferdata: any;
 
   constructor(
     public ref: ChangeDetectorRef,
@@ -146,6 +147,9 @@ export class LoanApplicationFormComponent implements OnInit {
       this.loanStage = event
   }
 
+  loanTransfer(event){
+    this.loanTransferdata = event
+  }
   ornaments(event) {
     this.ornamentDetails = event
     this.loanStage.id = 3;

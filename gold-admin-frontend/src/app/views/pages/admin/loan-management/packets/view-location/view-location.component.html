@@ -1,17 +1,25 @@
 <kt-portlet>
-    <kt-portlet-body >
-        <mat-tab-group class="position-relative">
+    <kt-portlet-body class="position-relative">
+        <div class="row kt-padding-10 justify-content-center kt-margin-bottom-20-mobile pos">
+            <form [formGroup]="mapReport">
+                <mat-form-field class="mat-form-field-fluid" *ngIf="selected == 0">
+                    <input (dateChange)="getMapReport()" matInput [matDatepicker]="picker" placeholder="Select Date"
+                        formControlName="dateForMap" (click)="picker.open()" readonly />
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field class="mat-form-field-fluid" *ngIf="selected == 1">
+                    <input (dateChange)="getMapReport()" matInput [matDatepicker]="picker" placeholder="Select Date"
+                        formControlName="dateForLocation" (click)="picker.open()" readonly />
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+            </form>
+        </div>
+
+        <mat-tab-group [(selectedIndex)]="selected">
             <mat-tab label="Map">
-                <div class="row kt-padding-10 justify-content-center kt-margin-bottom-20-mobile">
-                    <form [formGroup]="mapReport">
-                        <mat-form-field class="mat-form-field-fluid">
-                            <input (dateChange)="getMapReport()" matInput [matDatepicker]="picker" placeholder="Select Date"
-                                formControlName="mapDate" (click)="picker.open()" readonly />
-                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                            <mat-datepicker #picker></mat-datepicker>
-                        </mat-form-field>
-                    </form>
-                </div>
+                
                 <agm-map [latitude]='latitude' [longitude]='longitude' [zoom]="15" [fitBounds]="true" >
                  <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.lat" [longitude]="m.lng" 
                     [markerDraggable]="m.draggable" (markerClick)="clickedMarker(m.lat, m.lng, i)" [agmFitBounds]="true">
@@ -51,16 +59,6 @@
                 </agm-map>
             </mat-tab>
             <mat-tab label="Location">
-                <div class="row kt-padding-10 justify-content-center kt-margin-bottom-20-mobile">
-                    <form class="pos">
-                        <mat-form-field class="mat-form-field-fluid">
-                            <input (dateChange)="getMapReport()" matInput [matDatepicker]="picker1" placeholder="Select Date"
-                                (click)="picker.open()" readonly />
-                            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                            <mat-datepicker #picker1></mat-datepicker>
-                        </mat-form-field>
-                    </form>
-                </div>
                 <kt-location></kt-location>
             </mat-tab>
         </mat-tab-group>
