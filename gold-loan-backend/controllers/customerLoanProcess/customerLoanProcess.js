@@ -269,7 +269,13 @@ exports.checkForLoanType = async (req, res, next) => {
 
 
     if (loanAmount > securedLoanAmount || securedScheme.isSplitAtBeginning) {
+
         let unsecuredSchemeAmount = loanAmount - securedLoanAmount
+        if(securedScheme.isSplitAtBeginning){
+            securedLoanAmount = loanAmount * secureSchemeMaximumAmtAllowed/(ltvPercent[0].ltvGoldValue/100)
+            unsecuredSchemeAmount = loanAmount - securedLoanAmount
+        }
+
         unsecuredScheme = await models.partner.findOne({
             where: { id: partnerId },
             // attributes: ['id'],
@@ -317,7 +323,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
         let unsecureSchemeMaximumAmtAllowed = (unsecuredSchemeApplied.maximumPercentageAllowed / 100)
 
-        var unsecuredAmount = Math.round(fullAmount * unsecureSchemeMaximumAmtAllowed)
+        var unsecuredAmount = Math.round(loanAmount * unsecureSchemeMaximumAmtAllowed/(ltvPercent[0].ltvGoldValue/100))
 
 
         if ((unsecuredSchemeApplied && (securedScheme.isSplitAtBeginning ||
@@ -1581,7 +1587,7 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
 
     let customerLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
-        attributes: ['id'],
+        attributes: ['id','loanStartDate','loanEndDate','tenure'],
         include: [
             {
                 model: models.customerLoan,
