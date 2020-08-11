@@ -6,7 +6,7 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 const check = require("../../lib/checkLib");
 const action = require('../../utils/partReleaseHistory');
 const loanFunction = require('../../utils/loanFunction');
-const { getCustomerLoanId, interestAmountCalculation, getGlobalSetting, getLoanDetails } = require('../../utils/loanFunction');
+const { getCustomerInterestAmount, getGlobalSetting, getLoanDetails } = require('../../utils/loanFunction');
 
 
 exports.ornamentsDetails = async (req, res, next) => {
@@ -168,20 +168,13 @@ async function getornamentLoanInfo(masterLoanId, ornamentWeight, amount) {
 
 exports.ornamentsAmountDetails = async (req, res, next) => {
     let { masterLoanId, ornamentId } = req.body;
-    let amount = {};
     let whereSelectedOrmenemts = { id: { [Op.in]: ornamentId }, isActive: true };
     let whereOtherOrmenemts = { id: { [Op.notIn]: ornamentId }, isActive: true };
     let loanData = await getLoanDetails(masterLoanId);
-    let customerLoanId = await getCustomerLoanId(masterLoanId);
+    let amount = await getCustomerInterestAmount(masterLoanId);
     let requestedOrnaments = await ornementsDetails(masterLoanId, whereSelectedOrmenemts);
     let otherOrnaments = await ornementsDetails(masterLoanId, whereOtherOrmenemts);
     let ornamentWeight = await getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanData);
-    if (customerLoanId.secured) {
-        amount.secured = await interestAmountCalculation(masterLoanId, customerLoanId.secured);
-    }
-    if (customerLoanId.unsecured) {
-        amount.unSecured = await interestAmountCalculation(masterLoanId, customerLoanId.unsecured);
-    }
     let loanInfo = await getornamentLoanInfo(masterLoanId, ornamentWeight, amount);
     return res.status(200).json({ message: 'success', ornamentWeight, loanInfo });
 }
