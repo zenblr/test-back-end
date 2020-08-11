@@ -24,6 +24,8 @@ import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-revie
 import { BuyingListComponent } from './buying-list/buying-list.component';
 import { QuickPayComponent } from './quick-pay/quick-pay.component';
 import { CustomerManagementComponent } from './customer-management/customer-management.component';
+import { CustomerListComponent } from './customer-management/customer-list/customer-list.component';
+import { CustomerGridComponent } from './customer-management/customer-grid/customer-grid.component';
 import { CustomerDetailsComponent } from '../../../partials/components/customer-details/customer-details.component';
 import { LoanScrapDetailsComponent } from '../../../partials/components/loan-scrap-details/loan-scrap-details.component';
 
@@ -102,6 +104,8 @@ const routes: Routes = [
     GlobalSettingsComponent,
     BuyingListComponent,
     CustomerManagementComponent,
+    CustomerListComponent,
+    CustomerGridComponent,
     QuickPayComponent,
   ],
   imports: [

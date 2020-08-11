@@ -1,0 +1,25 @@
+:host {
+	.card-container {
+		margin: 0 -5px;
+	}
+	.customer-id {
+		margin-bottom: 0.5rem;
+	}
+	.card {
+		position: relative;
+		width: 24%;
+		padding: 10px;
+		margin: 5px;
+		border-radius: 15px;
+	}
+
+	img {
+		position: absolute;
+		right: 20px;
+		top: 14px;
+		height: 50px;
+		border: 1px solid transparent;
+		border-radius: 15px;
+		width: 50px;
+	}
+}
