@@ -100,6 +100,7 @@ import { AngularImageViewerModule } from 'angular-x-image-viewer';
 import { DropdownComponent } from './components/dropdown/dropdown.component';
 
 import { GlobalSettingsComponent } from './components/global-settings/global-settings.component';
+import { PaymentDialogComponent } from './components/payment-dialog/payment-dialog.component';
 
 @NgModule({
 	declarations: [
@@ -163,6 +164,8 @@ import { GlobalSettingsComponent } from './components/global-settings/global-set
 		ApprovalComponent,
 		UploadPacketsComponent,
 		DisburseComponent,
+		PaymentDialogComponent
+
 	],
 	exports: [
 		WidgetModule,
@@ -234,6 +237,7 @@ import { GlobalSettingsComponent } from './components/global-settings/global-set
 		ApprovalComponent,
 		UploadPacketsComponent,
 		DisburseComponent,
+		PaymentDialogComponent
 	],
 	imports: [
 		PdfViewerModule,
