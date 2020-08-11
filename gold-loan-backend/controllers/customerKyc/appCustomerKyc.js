@@ -7,7 +7,7 @@ const { createReferenceCode } = require("../../utils/referenceCode");
 const CONSTANT = require("../../utils/constant");
 const moment = require("moment");
 const { paginationWithFromTo } = require("../../utils/pagination");
-
+const extend = require('extend')
 const check = require("../../lib/checkLib");
 
 exports.submitAppKyc = async (req, res, next) => {
@@ -85,7 +85,7 @@ exports.submitAppKyc = async (req, res, next) => {
 
 }
 
-exports.editAppKyc = async (req, res, next) =>  {
+exports.editAppKyc = async (req, res, next) => {
 
     let { customerId, customerKycId, customerKycPersonal, customerKycAddress } = req.body;
     let { kycRatingFromCce, kycStatusFromCce, reasonFromCce } = req.body
@@ -125,84 +125,159 @@ exports.editAppKyc = async (req, res, next) =>  {
             if (reasonFromCce.length == 0) {
                 return res.status(400).json({ message: `If you are not approved the customer kyc you have to give a reason.` })
             }
-           
-                await models.customerKyc.update(
-                    { cceVerifiedBy: cceId, isKycSubmitted: true },
-                    { where: { customerId: customerId }, transaction: t })
-    
-                await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
-            
+
+            await models.customerKyc.update(
+                { cceVerifiedBy: cceId, isKycSubmitted: true },
+                { where: { customerId: customerId }, transaction: t })
+
+            await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
+
         } else {
             if ((kycRatingFromCce == 1 || kycRatingFromCce == 2 || kycRatingFromCce == 3) && kycStatusFromCce == "approved") {
                 return res.status(400).json({ message: `Please check rating.` })
             }
             reasonFromCce = ""
-           
-                await models.customerKyc.update(
-                    { isVerifiedByCce: true, cceVerifiedBy: cceId, isKycSubmitted: true },
-                    { where: { customerId: customerId }, transaction: t })
-    
-                await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
-        
-            }
-        })
-        return res.status(200).json({ message: 'success' })
+
+            await models.customerKyc.update(
+                { isVerifiedByCce: true, cceVerifiedBy: cceId, isKycSubmitted: true },
+                { where: { customerId: customerId }, transaction: t })
+
+            await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
+
+        }
+    })
+    return res.status(200).json({ message: 'success' })
     // let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
 
     // let KycClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId } })
 
-   
+
     // console.log(KycClassification);
 
 }
 
 exports.getAssignedCustomer = async (req, res, next) => {
-    const id = req.userData.id
-    let getAppraisal = await models.customerAssignAppraiser.findAll({
-        where: { appraiserId: id },
-        order: [
-            // [models.customerKycAddressDetail, 'id', 'asc']
-        ],
-        attributes: ['appraiserId', 'appoinmentDate', 'startTime', 'endTime'],
+    let { search, offset, pageSize } = paginationWithFromTo(req.query.search, req.query.from, req.query.to);
+    let id = req.userData.id;
+    let query = {}
+    let searchQuery = {
+        [Op.and]: [query, {
+            [Op.or]: {
+                "$customer.first_name$": { [Op.iLike]: search + '%' },
+                "$customer.last_name$": { [Op.iLike]: search + '%' },
+                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+            },
+        }],
+        appraiserId: id
+    };
+    let includeArray = [{
+        model: models.customer,
+        as: 'customer',
+        subQuery: false,
         include: [
             {
-                model: models.customer,
-                as: 'customer',
-                attributes: { exclude: ['customerUniqueId', 'internalBranchId', 'password', 'createdBy', 'modifiedBy', 'createdAt', 'updatedAt', 'isActive', 'lastLogin'] },
+                model: models.customerKyc,
+                as: "customerKyc",
+                attributes: ['id']
+            },
+            {
+                model: models.customerKycClassification,
+                as: "customerKycClassification",
+            },
+            {
+                model: models.state,
+                as: 'state'
+            },
+            {
+                model: models.city,
+                as: 'city'
+            },
+            {
+                model: models.status,
+                as: 'status',
+                attributes: ['id', 'statusName']
+            },
+            {
+                model: models.customerKycClassification,
+                as: 'customerKycClassification',
+                attributes: ['id', 'kycStatusFromCce', 'kycStatusFromOperationalTeam']
+            },
+            {
+                model: models.customerLoanMaster,
+                as: "masterLoan",
                 include: [
                     {
-                        model: models.customerKyc,
-                        as: "customerKyc",
-                        attributes: ['id']
-                    },
-                    {
-                        model: models.customerKycClassification,
-                        as: "customerKycClassification",
-                    },
-                    {
-                        model: models.state,
-                        as: 'state'
-                    },
-                    {
-                        model: models.city,
-                        as: 'city'
-                    },
-                    {
-                        model: models.status,
-                        as: 'status',
-                        attributes: ['id', 'statusName']
-                    },
-                    {
-                        model: models.customerKycClassification,
-                        as: 'customerKycClassification',
-                        attributes: ['id', 'kycStatusFromCce', 'kycStatusFromOperationalTeam']
+                        model: models.customerLoan,
+                        as: 'customerLoan',
+                        attributes: ['id'],
+                        // where: { loanType: 'secured' }
                     }
                 ]
-            },
-        ]
+            }]
+    }]
+    let data = await models.customerAssignAppraiser.findAll({
+        where: searchQuery,
+        attributes: ['appraiserId', 'appoinmentDate', 'startTime', 'endTime'],
+        subQuery: false,
+        include: includeArray,
+        order: [
+            ['id', 'DESC'],
+        ],
+        offset: offset,
+        limit: pageSize
     })
 
+    let tempData = []
+    for (let i = 0; i < data.length; i++) {
+        let singleCustomer = extend(data[i].dataValues);
+        if (singleCustomer.customer.masterLoan.length > 1) {
+            let customer = extend(singleCustomer.customer.dataValues);
+            let masterLoans = customer.masterLoan.slice();
+            delete singleCustomer.customer;
+            for (let j = 0; j < masterLoans.length; j++) {
+                let masterLoan = extend(masterLoans[j].dataValues);
+                singleCustomer['customer'] = { ...customer };
+                delete singleCustomer.customer.masterLoan;
+                singleCustomer.customer['masterLoan'] = [masterLoan];//.slice();
+                tempData.push({ ...singleCustomer });
+            }
+        } else {
+            tempData.push(singleCustomer);
+        }
 
-    return res.status(200).json({ message: 'message', data: getAppraisal })
+    }
+    data = tempData;
+
+    let count = await models.customerAssignAppraiser.findAll({
+        where: searchQuery,
+        subQuery: false,
+        include: includeArray,
+    });
+    let tempCount = []
+    for (let i = 0; i < count.length; i++) {
+        let singleCustomer = extend(count[i].dataValues);
+        if (singleCustomer.customer.masterLoan.length > 1) {
+            let customer = extend(singleCustomer.customer.dataValues);
+            let masterLoans = customer.masterLoan.slice();
+            delete singleCustomer.customer;
+            for (let j = 0; j < masterLoans.length; j++) {
+                let masterLoan = extend(masterLoans[j].dataValues);
+                singleCustomer['customer'] = { ...customer };
+                delete singleCustomer.customer.masterLoan;
+                singleCustomer.customer['masterLoan'] = [masterLoan];//.slice();
+                tempCount.push({ ...singleCustomer });
+            }
+        } else {
+            tempCount.push(singleCustomer);
+        }
+    }
+    count = tempCount;
+
+    if (data.length === 0) {
+        return res.status(200).json([]);
+    } else {
+        return res.status(200).json({ message: 'success', count: count.length, data })
+    }
+
 
 }

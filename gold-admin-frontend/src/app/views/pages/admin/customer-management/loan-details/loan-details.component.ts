@@ -23,7 +23,7 @@ export class LoanDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.loanId = this.rout.snapshot.params.loanId
-    let masterLoanId = this.rout.snapshot.params.loanId
+    let masterLoanId = this.rout.snapshot.params.masterLoanId
     this.loanservice.getLoanDetails(this.loanId,masterLoanId).subscribe(res => {
       this.loanDetails = res.data
       this.createOrnamentsImage()

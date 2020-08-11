@@ -105,14 +105,16 @@
                             <mat-icon>more_vert</mat-icon>
                         </button>
                         <mat-menu #menu="matMenu" xPosition="before">
-                            <button mat-menu-item (click)="viewLoan(loan)">View Loan</button>
+                            <button *ngxPermissionsOnly="['loanDetailsView']" mat-menu-item
+                                (click)="viewLoan(loan)">View Loan</button>
                             <ng-container *ngIf="!loan.partRelease">
                                 <button mat-menu-item (click)="interestEmi(loan)">Quick Pay</button>
                                 <button mat-menu-item (click)="topUp(loan)">Top Up</button>
                                 <button mat-menu-item (click)="jewelleryRelease(loan)">Jewellery
                                     Release</button>
                             </ng-container>
-                            <button mat-menu-item (click)="newLoan(loan)">Add New Loan</button>
+                            <button *ngxPermissionsOnly="['loanDetailsAdd']" mat-menu-item (click)="newLoan(loan)">Add
+                                New Loan</button>
                         </mat-menu>
 
                         <!-- <button mat-icon-button class="btn-transparent" ngbDropdown>
