@@ -4,7 +4,7 @@
             <div class="row justify-content-around kt-padding-b-15">
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Loan ID</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails.loanUniqueId}}</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.customerLoan[0]?.loanUniqueId}}</div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Customer ID</div>
@@ -13,35 +13,35 @@
                 </div>
                 <div class="col-2">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Loan Amount</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.loanAmount}}
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.customerLoan[0]?.loanAmount}}
                     </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Loan Tenure</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.masterLoan?.tenure}} Months
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.tenure}} Months
                     </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Start Date</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails?.masterLoan?.loanStartDate | date: 'mediumDate'}}</div>
+                        {{loanDetails?.loanStartDate | date: 'mediumDate'}}</div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">End Date</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails?.masterLoan?.loanEndDate | date: 'mediumDate'}}</div>
+                        {{loanDetails?.loanEndDate | date: 'mediumDate'}}</div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Status</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails?.masterLoan?.loanStage?.name | titlecase}}
+                        {{loanDetails?.loanStage?.name | titlecase}}
                     </div>
                 </div>
             </div>
             <div class="row justify-content-around">
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Interest Rate</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.interestRate}}% P.M
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.customerLoan[0]?.interestRate}}% P.M
                     </div>
                 </div>
 
@@ -66,30 +66,30 @@
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Nominee</div>
                     <div class="text-color font-weight-500">
-                        {{loanDetails?.masterLoan.loanNomineeDetail[0].nomineeName | titlecase}}
+                        {{loanDetails?.loanNomineeDetail[0].nomineeName | titlecase}}
                     </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Age</div>
-                    <div class="text-color font-weight-500">{{loanDetails?.masterLoan.loanNomineeDetail[0].nomineeAge}}
+                    <div class="text-color font-weight-500">{{loanDetails?.loanNomineeDetail[0].nomineeAge}}
                     </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Relation</div>
                     <div class="text-color font-weight-500">
-                        {{loanDetails?.masterLoan.loanNomineeDetail[0].relationship | titlecase}}</div>
+                        {{loanDetails?.loanNomineeDetail[0].relationship | titlecase}}</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row kt-margin-t-15">
+     <div class="row kt-margin-t-15">
         <div class="col-12 card kt-padding-15">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Ornaments - Total
-                {{loanDetails?.masterLoan?.loanOrnamentsDetail.length}} Ornaments</label>
+                {{loanDetails?.loanOrnamentsDetail.length}} Ornaments</label>
             <mat-tab-group style="min-height: 300px;">
                 <mat-tab label="Ornaments {{idx + 1}}"
-                    *ngFor="let ornaments of loanDetails?.masterLoan?.loanOrnamentsDetail;index as idx">
+                    *ngFor="let ornaments of loanDetails?.loanOrnamentsDetail;index as idx">
                     <div class="row">
                         <div class="col-3">
                             <img [src]="ornaments?.ornamentImageData?.URL" class="ornaments" alt="">
@@ -165,12 +165,12 @@
         </div>
     </div>
 
-    <div class="row kt-margin-t-15">
+     <div class="row kt-margin-t-15">
         <div class="col-12 card kt-padding-15">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Packets ID - Total
-                {{loanDetails.masterLoan.loanPacketDetails[0].packets.length}} Packets</label>
+                {{loanDetails.loanPacketDetails[0].packets.length}} Packets</label>
             <div style="min-height: 300px;"
-                *ngFor="let packets of loanDetails.masterLoan.loanPacketDetails;index as idx">
+                *ngFor="let packets of loanDetails?.loanPacketDetails;index as idx">
                 <div class="row justify-content-center kt-padding-t-15">
                     <div class="col-4">
                         <div class="table-div">
@@ -188,8 +188,8 @@
                                             </td>
                                             <td class="text-color ">
                                                 <span *ngFor="let ornament of packet?.packetOrnament;index as idx">
-                                                    {{ornament.name | uppercase}}
-                                                    <span *ngIf="index == packet.ornamentTypes.length - 1"></span>
+                                                    {{ornament?.ornamentType?.name | uppercase}}
+                                                    <span *ngIf="idx != packet.packetOrnament.length - 1">,</span>
                                                 </span>
 
                                             </td>
@@ -220,7 +220,7 @@
                     </div>
                 </div>
 
-            </div>
+            </div> 
         </div>
     </div>
 
@@ -236,31 +236,31 @@
                 <div class="col-4">
                     <div class="pdf">
                         <iframe
-                            [src]="loanDetails.masterLoan.customerLoanDocument.loanAgreementCopyImage | safe : 'resourceUrl'"
+                            [src]="loanDetails.customerLoanDocument.loanAgreementCopyImage | safe : 'resourceUrl'"
                             scrolling="no" *ngIf="pdf?.loanAgreementCopyImage" height="255"></iframe>
                     </div>
                     <img  *ngIf="!pdf?.loanAgreementCopyImage" class="packets"
-                        [src]="loanDetails.masterLoan.customerLoanDocument.loanAgreementCopyImage">
+                        [src]="loanDetails.customerLoanDocument.loanAgreementCopyImage">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Loan Agreement Copy</label>
                 </div>
                 <div class="col-4">
                     <div class="pdf">
-                        <iframe [src]="loanDetails.masterLoan.customerLoanDocument.pawnCopyImage | safe : 'resourceUrl'"
+                        <iframe [src]="loanDetails.customerLoanDocument.pawnCopyImage | safe : 'resourceUrl'"
                             scrolling="no" *ngIf="pdf?.pawnCopyImage" height="255"></iframe>
                     </div>
                     <img *ngIf="!pdf?.pawnCopyImage" class="packets"
-                        [src]="loanDetails.masterLoan.customerLoanDocument.pawnCopyImage">
+                        [src]="loanDetails.customerLoanDocument.pawnCopyImage">
 
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Pawn Copy</label>
                 </div>
                 <div class="col-4">
                     <div class="pdf">
                         <iframe
-                            [src]="loanDetails.masterLoan.customerLoanDocument.schemeConfirmationCopyImage | safe : 'resourceUrl'"
+                            [src]="loanDetails.customerLoanDocument.schemeConfirmationCopyImage | safe : 'resourceUrl'"
                             scrolling="no" *ngIf="pdf?.schemeConfirmationCopyImage" height="255"></iframe>
                     </div>
                     <img  *ngIf="!pdf?.schemeConfirmationCopyImage" class="packets"
-                        [src]="loanDetails.masterLoan.customerLoanDocument.schemeConfirmationCopyImage">
+                        [src]="loanDetails.customerLoanDocument.schemeConfirmationCopyImage">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Scheme Confirmation Copy
                     </label>
 
@@ -268,7 +268,7 @@
             </div>
 
         </div>
-    </div>
+    </div> 
 
 
 </div>

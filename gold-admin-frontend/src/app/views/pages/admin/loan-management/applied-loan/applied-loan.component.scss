@@ -25,6 +25,10 @@
     }
     .mat-column-actions{
         flex:0 0 13% !important;
+
+        button {
+            width: 140px;
+        }
     }
   
     .mat-column-customerID{
