@@ -10,19 +10,19 @@ const { dailyIntrestCalculation } = require('../../utils/interestCron');
 const { getCustomerInterestAmount } = require('../../utils/loanFunction');
 
 
-    // add internal branch
+// add internal branch
 
-    exports.interestCalculation = async (req, res) => {
-        let data;
-        let { date } = req.body;
-        if (date) {
-            data = await dailyIntrestCalculation(date);
-        } else {
-            date = moment();
-            data = await dailyIntrestCalculation(date);
-        }
-        return res.status(200).json(data);
+exports.interestCalculation = async (req, res) => {
+    let data;
+    let { date } = req.body;
+    if (date) {
+        data = await dailyIntrestCalculation(date);
+    } else {
+        date = moment();
+        data = await dailyIntrestCalculation(date);
     }
+    return res.status(200).json(data);
+}
 
 exports.interestAmount = async (req, res) => {
     let { id } = req.query;
