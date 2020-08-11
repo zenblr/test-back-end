@@ -159,14 +159,6 @@ export class ScrapApplicationFormComponent implements OnInit {
     this.totalAmount = event
   }
 
-  fullAmt(event) {
-    this.fullAmount = event
-  }
-
-  finalLoanAmount(event) {
-    this.finalLoanAmt = event
-  }
-
   finalScrapAmount(event) {
     this.finalScrapAmt = event
   }
