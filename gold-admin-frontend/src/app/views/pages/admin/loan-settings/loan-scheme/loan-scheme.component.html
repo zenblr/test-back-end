@@ -37,6 +37,12 @@
                                             <mat-slide-toggle disabled [checked]="schemeDeatils.isSplitAtBeginning">
                                                 <strong>Split at beginning</strong>
                                             </mat-slide-toggle>
+                                            <!-- <mat-radio-group class="example-radio-group">
+                                                <mat-radio-button class="example-radio-button" disabled
+                                                    [value]="schemeDeatils.isSplitAtBeginning">
+                                                    <strong>Split at beginning</strong>
+                                                </mat-radio-button>
+                                            </mat-radio-group> -->
                                         </div>
                                         <div class="col-3" *ngIf="schemeDeatils.schemeType == 'unsecured'">
                                             <mat-slide-toggle [disabled]="schemeDeatils.default"
