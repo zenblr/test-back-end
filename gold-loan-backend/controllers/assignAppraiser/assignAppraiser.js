@@ -138,7 +138,7 @@ exports.getListAssignAppraiser = async (req, res) => {
 
 // for app
 exports.getAssignAppraiserCustomer = async (req, res, next) => {
-    let { search, offset, pageSize } = await paginationWithFromTo(req.query.search, req.query.from, req.query.to);
+    let { search, offset, pageSize } = paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
     let id = req.userData.id;
     let query = {}
     let searchQuery = {
@@ -172,27 +172,6 @@ exports.getAssignAppraiserCustomer = async (req, res, next) => {
         limit: pageSize
     })
 
-    let tempData = []
-    for (let i = 0; i < data.length; i++) {
-        let singleCustomer = extend(data[i].dataValues);
-        if (singleCustomer.customer.masterLoan.length > 1) {
-            let customer = extend(singleCustomer.customer.dataValues);
-            let masterLoans = customer.masterLoan.slice();
-            delete singleCustomer.customer;
-            for (let j = 0; j < masterLoans.length; j++) {
-                let masterLoan = extend(masterLoans[j].dataValues);
-                singleCustomer['customer'] = { ...customer };
-                delete singleCustomer.customer.masterLoan;
-                singleCustomer.customer['masterLoan'] = [masterLoan];//.slice();
-                tempData.push({ ...singleCustomer });
-            }
-        } else {
-            tempData.push(singleCustomer);
-        }
-
-    }
-    data = tempData;
-
     let count = await models.customerAssignAppraiser.findAll({
         where: searchQuery,
         subQuery: false,
@@ -203,5 +182,4 @@ exports.getAssignAppraiserCustomer = async (req, res, next) => {
     } else {
         return res.status(200).json({ message: 'success', data, count: count.length })
     }
-
 }

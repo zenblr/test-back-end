@@ -4,7 +4,7 @@ const route = express.Router();
 const { wrapper } = require('../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
 const { addPackageImagesForLoan, disbursementOfLoanAmount, interestRate, generateInterestTable, unsecuredTableGeneration,
   disbursementOfLoanBankDetails, getLoanDetails, getSingleLoanDetails, appliedLoanDetails, customerDetails, loanBmRating, loanOpsTeamRating, checkForLoanType,
-  loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getAssignAppraiserCustomer, getSingleLoanInCustomerManagment, getDetailsForPrint, getLoanOrnaments } =
+  loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getSingleLoanInCustomerManagment, getDetailsForPrint, getLoanOrnaments } =
   require('../controllers/customerLoanProcess/customerLoanProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
 
 const { loanRequest } = require('../controllers/customerLoanProcess/customerLoanProcessForApp')
@@ -50,8 +50,6 @@ route.get('/loan-details', checkAuth, wrapper(getLoanDetails)); // FETCH LOAN DE
 route.get('/applied-loan-details', checkAuth, wrapper(appliedLoanDetails)); // FETCH APLLIED LOAN DETAILS
 
 route.get('/customer-loan-details/:customerUniqueId', checkAuth, wrapper(customerDetails)); // FETCH CUSTOMER DETAILS
-
-route.get('/assign-appraiser-customer', checkAuth, wrapper(getAssignAppraiserCustomer)) //get customer of appraiser
 
 route.post('/loan-documents', checkAuth, wrapper(loanDocuments))// ADD loan documents
 
