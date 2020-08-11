@@ -56,7 +56,13 @@ exports.getInterestInfo = async (req, res, next) => {
 exports.payableAmount = async (req, res, next) => {
     let { id } = req.query;
     let amount = await getCustomerInterestAmount(id);
-    return res.status(200).json(amount);
+
+    let payableAmount = amount.secured.interest + amount.secured.penalInterest
+    if (amount.unsecured) {
+        payableAmount = payableAmount + amount.unsecured.interest + amount.unsecured.penalInterest
+    }
+
+    return res.status(200).json({ data: (payableAmount.toFixed(2)), amount });
 }
 
 //CALCULATE PAYABLE AMOUNT

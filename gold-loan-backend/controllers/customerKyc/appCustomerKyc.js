@@ -173,7 +173,6 @@ exports.getAssignedCustomer = async (req, res, next) => {
     let includeArray = [{
         model: models.customer,
         as: 'customer',
-        attributes: ['id', 'firstName', 'lastName', 'customerUniqueId'],
         subQuery: false,
         include: [
             {
