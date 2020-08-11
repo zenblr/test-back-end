@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatDialog } from '@angular/material';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { MatPaginator, MatSort, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Subscription, merge, Subject, from } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
@@ -32,11 +32,13 @@ export class ViewPacketLogComponent implements OnInit {
     public dialog: MatDialog,
     private packetsService: PacketTrackingService,
     private dataTableService: DataTableService,
+    public dialogRef: MatDialogRef<ViewPacketLogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private layoutUtilsService: LayoutUtilsService,
     private toastr: ToastrService,
     private ngxPermissionService: NgxPermissionsService
   ) {
-    
+
   }
 
   ngOnInit() {
@@ -90,5 +92,10 @@ export class ViewPacketLogComponent implements OnInit {
     this.dataSource.loadpacketsLog(this.searchValue, from, to);
   }
 
-  
+  action(event) {
+    if (!event)
+      this.dialogRef.close()
+  }
+
+
 }
