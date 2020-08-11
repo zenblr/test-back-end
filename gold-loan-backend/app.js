@@ -103,7 +103,7 @@ cron.schedule('0 1 * * *', async function () {
     await dailyIntrestCalculation(date);
     await models.cronRun.create({ date: date, type: 'Interest' })
 
-    await cronForDailyPenalInterest();
+    await cronForDailyPenalInterest(date);
     await models.cronRun.create({ date: date, type: 'penal Interest' })
 })
 
