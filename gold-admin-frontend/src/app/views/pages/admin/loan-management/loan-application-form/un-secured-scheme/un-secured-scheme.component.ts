@@ -23,7 +23,7 @@ export class UnSecuredSchemeComponent implements OnInit {
     public fb: FormBuilder,
     public dialogRef: MatDialogRef<UnSecuredSchemeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    public loanService:LoanApplicationFormService
+    public loanService: LoanApplicationFormService
   ) { }
 
   ngOnInit() {
@@ -68,47 +68,55 @@ export class UnSecuredSchemeComponent implements OnInit {
     if (scheme && scheme.length > 0) {
       Array.prototype.push.apply(this.seletedScheme, scheme)
     }
-    switch (this.details.paymentType) {
-      case "30":
-        if (scheme.length > 0)
-          this.controls.unsecuredSchemeInterest.patchValue(scheme[0].interestRateThirtyDaysMonthly)
+    let paymetFrequency = this.seletedScheme[0].schemeInterest.filter(res => { return this.details.paymentType == res.days })
+    this.controls.unsecuredSchemeInterest.patchValue(scheme[0].schemeInterest)
+    this.controls.unsecuredSchemeInterest.patchValue(paymetFrequency[0].interestRate)
 
-        this.paymentType = "Month"
-        this.colJoin = 1
+    // switch (this.details.paymentType) {
+    //   case "30":
+    //     if (scheme.length > 0)
+    //       this.controls.unsecuredSchemeInterest.patchValue(scheme[0].interestRateThirtyDaysMonthly)
 
-        break;
-      case "90":
-        if (scheme.length > 0)
-          this.controls.unsecuredSchemeInterest.patchValue(scheme[0].interestRateNinetyDaysMonthly)
+    //     this.paymentType = "Month"
+    //     this.colJoin = 1
 
-        this.paymentType = "Quarter"
-        this.colJoin = 3
+    //     break;
+    //   case "90":
+    //     if (scheme.length > 0)
+    //       this.controls.unsecuredSchemeInterest.patchValue(scheme[0].interestRateNinetyDaysMonthly)
 
-        break;
-      case "180":
-        if (scheme.length > 0)
-          this.controls.unsecuredSchemeInterest.patchValue(scheme[0].interestRateOneHundredEightyDaysMonthly)
+    //     this.paymentType = "Quarter"
+    //     this.colJoin = 3
 
-        this.paymentType = "Half Yearly"
-        this.colJoin = 6
+    //     break;
+    //   case "180":
+    //     if (scheme.length > 0)
+    //       this.controls.unsecuredSchemeInterest.patchValue(scheme[0].interestRateOneHundredEightyDaysMonthly)
 
-        break;
-    }
-  }
+    //     this.paymentType = "Half Yearly"
+    //     this.colJoin = 6
 
-  calculate() {
-    // if (this.isUnsecuredSchemeChanged) {
-      // this.unSecuredInterestAmount = (this.details.unsecuredSchemeAmount *
-      //   (this.controls.unsecuredSchemeInterest.value * 12 / 100)) * this.details.paymentType
-      //   / 360
-      this.isUnsecuredSchemeChanged = false;
-      this.genrateTable()
+    //     break;
     // }
   }
 
+  calculate() {
+    if (this.isUnsecuredSchemeChanged) {
+    // this.unSecuredInterestAmount = (this.details.unsecuredSchemeAmount *
+    //   (this.controls.unsecuredSchemeInterest.value * 12 / 100)) * this.details.paymentType
+    //   / 360
+    this.isUnsecuredSchemeChanged = false;
+    this.genrateTable()
+    }
+  }
+
   genrateTable() {
-    
-    this.loanService.unsecuredTableGenration(this.unsecuredSchemeForm.value,this.details.paymentType,this.details.tenure).subscribe()
+
+    this.loanService.unsecuredTableGenration(this.unsecuredSchemeForm.value, this.details.paymentType, this.details.tenure).subscribe(
+      res=>{
+        this.details.calculation = res.data.interestTable
+      }
+    )
     return
     let tempIndex = 0;
     for (let index = 0; index < this.details.tenure; index++) {
