@@ -52,12 +52,12 @@ export class CustomerDetailsComponent implements OnInit {
       })).subscribe();
   }
 
-  viewLoan(loanId: number) {
-    this.router.navigate(['/admin/customer-management/loan-details/' + loanId])
+  viewLoan(loan) {
+    this.router.navigate(['/admin/customer-management/loan-details', loan.id, loan.masterLoanId])
   }
 
   viewScrap(scrapId: number) {
-    this.router.navigate(['/admin/customer-management/scrap-details/' + scrapId]);
+    this.router.navigate(['/admin/scrap-management/scrap-details/' + scrapId]);
   }
 
   prepareImages() {

@@ -101,7 +101,7 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
 
 import { GlobalSettingsComponent } from './components/global-settings/global-settings.component';
 import { CustomerDetailsComponent } from './components/customer-details/customer-details.component';
-import { LoanDetailsComponent } from './components/loan-details/loan-details.component';
+import { LoanScrapDetailsComponent } from './components/loan-scrap-details/loan-scrap-details.component';
 
 @NgModule({
 	declarations: [
@@ -166,7 +166,7 @@ import { LoanDetailsComponent } from './components/loan-details/loan-details.com
 		UploadPacketsComponent,
 		DisburseComponent,
 		CustomerDetailsComponent,
-		LoanDetailsComponent,
+		LoanScrapDetailsComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -239,7 +239,7 @@ import { LoanDetailsComponent } from './components/loan-details/loan-details.com
 		UploadPacketsComponent,
 		DisburseComponent,
 		CustomerDetailsComponent,
-		LoanDetailsComponent,
+		LoanScrapDetailsComponent,
 	],
 	imports: [
 		PdfViewerModule,

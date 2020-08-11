@@ -148,7 +148,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10" (click)="viewLoan(loan.id)"
+                        <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10" (click)="viewLoan(loan)"
                             *ngxPermissionsOnly="['loanDetailsView']">View Details</div>
                     </div>
                 </div>
@@ -156,7 +156,7 @@
         </div>
         <!-- Scrap -->
         <div class="col-3 p-0" *ngFor="let scrap of cutomerDetails?.customerScrap;index as i">
-            <div class="card kt-padding-15">
+            <div class="card kt-padding-15" [class.kt-margin-r-15]="(i+1)%4!=0">
                 <div class="text-gray font-weight-500 kt-margin-b-5">Scrap ID</div>
                 <div class="text-color font-weight-500 kt-margin-b-5">{{scrap?.scrapUniqueId}}</div>
                 <mat-divider class="kt-margin-b-10 kt-margin-t-10"></mat-divider>

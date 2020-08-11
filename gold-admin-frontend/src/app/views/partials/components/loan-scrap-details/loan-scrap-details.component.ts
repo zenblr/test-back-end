@@ -5,12 +5,11 @@ import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
 
 @Component({
-  selector: 'kt-loan-details',
-  templateUrl: './loan-details.component.html',
-  styleUrls: ['./loan-details.component.scss']
+  selector: 'kt-loan-scrap-details',
+  templateUrl: './loan-scrap-details.component.html',
+  styleUrls: ['./loan-scrap-details.component.scss']
 })
-export class LoanDetailsComponent implements OnInit {
-
+export class LoanScrapDetailsComponent implements OnInit {
   images: any = []
   loanId
   loanDetails: any
