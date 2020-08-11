@@ -59,7 +59,7 @@ export class InterestCalculatorComponent implements OnInit {
   destroy$ = new Subject()
   partnerName: any;
   paymentFrequency: any;
-  subscription:Subscription[] = []
+  private unsubscribe$ = new Subject();
 
   constructor(
     public fb: FormBuilder,
@@ -75,7 +75,7 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.globalSettingService.globalSetting$.subscribe(res => {
+    this.globalSettingService.globalSetting$.pipe(takeUntil(this.unsubscribe$)).subscribe(res => {
       this.globalValue = res;
     })
 
@@ -684,9 +684,11 @@ export class InterestCalculatorComponent implements OnInit {
   ngOnDestroy() {
     // this.loanFormService.finalLoanAmount.next(0)
     // this.loanFormService.finalLoanAmount.unsubscribe()
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
     this.destroy$.next()
     this.destroy$.complete()
-    this.subscription.forEach(el=>el.unsubscribe)
+    //this.subscription.forEach(el=>el.unsubscribe)
   }
 
 }

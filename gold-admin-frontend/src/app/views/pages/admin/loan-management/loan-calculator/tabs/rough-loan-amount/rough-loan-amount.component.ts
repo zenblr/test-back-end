@@ -3,7 +3,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UploadOfferService } from '../../../../../../../core/upload-data';
 import { GoldRateService } from '../../../../../../../core/upload-data/gold-rate/gold-rate.service';
 import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'kt-rough-loan-amount',
   templateUrl: './rough-loan-amount.component.html',
@@ -13,7 +14,7 @@ export class RoughLoanAmountComponent implements OnInit {
 
   roughLoanForm: FormGroup;
   loanAmount: number = 0;
-
+  private unsubscribe$ = new Subject();
   constructor(public fb: FormBuilder,
     private globalSettingService: GlobalSettingService,
     private goldRateService: GoldRateService) {
@@ -22,13 +23,17 @@ export class RoughLoanAmountComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    this.globalSettingService.globalSetting$.subscribe(global => {
+    this.globalSettingService.globalSetting$.pipe(takeUntil(this.unsubscribe$)).subscribe(global => {
       if (global) {
         this.goldRateService.goldRate$.subscribe(res => {
           this.controls.currentLTV.patchValue(res * (global.ltvGoldValue / 100));
         })
       }
     })
+  }
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   initForm() {
