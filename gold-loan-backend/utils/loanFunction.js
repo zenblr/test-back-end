@@ -4,13 +4,14 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const check = require("../lib/checkLib");
 const moment = require("moment");
+const _ = require('lodash');
 
 let getGlobalSetting = async () => {
     let globalSettings = await models.globalSetting.getGlobalSetting();
     return globalSettings;
 }
 
-let getCustomerLoanId = async (masterLoanId) => {
+let getCustomerInterestAmount = async (masterLoanId) => {
     let loanData = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
         include: [{
@@ -28,7 +29,27 @@ let getCustomerLoanId = async (masterLoanId) => {
             loan.unsecured = data.id
         }
     });
-    return loan
+    let amount = {};
+    if (loan.secured) {
+        amount.secured = await interestAmountCalculation(loan.secured);
+    }
+    if (loan.unsecured) {
+        amount.unSecured = await interestAmountCalculation(loan.unsecured);
+    }
+    return amount
+}
+
+let interestAmountCalculation = async ( id) => {
+    let amount = {
+        interest: 0,
+        penalInterest: 0
+    }
+    let interest = await models.customerLoanInterest.findAll({ where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: id }, attributes: ['interestAccrual', 'penalOutstanding'] });
+    let interestAmount = await interest.map((data) => data.interestAccrual);
+    let penalInterest = await interest.map((data) => data.penalOutstanding);
+    amount.interest = _.sum(interestAmount);
+    amount.penalInterest = _.sum(penalInterest);
+    return amount
 }
 
 let getLoanDetails = async (masterLoanId) => {
@@ -54,49 +75,6 @@ let getCustomerLoanDetails = async (loanId) => {
         where: { id: loanId }
     })
     return loanData;
-}
-
-let interestAmountCalculation = async (masterLoanId, id) => {
-    let daysCount;
-    let intrest;
-    let checkMonths;
-    let firstIntrest;
-    let currentDate = moment();
-    let amount = {
-        interest: 0,
-        penalInterest: 0
-    }
-    let globalSettings = await getGlobalSetting();
-    let masterLona = await getLoanDetails(masterLoanId);
-    let loan = await getCustomerLoanDetails(id);
-    let schemeData = await getSchemeDetails(loan.schemeId);
-    penalIntrestPercent = schemeData.penalInterest / 100;
-    intrest = await models.customerLoanInterest.findOne({ where: { emiStatus: { [Op.in]: ["paid"] }, loanId: id }, order: [['emiDueDate', 'DESC']], attributes: ['emiReceivedDate', 'emiDueDate'] });
-    if (intrest == null) {
-        firstIntrest = await models.customerLoanInterest.findOne({ where: { loanId: id }, order: [['emiDueDate', 'ASC']], attributes: ['emiDueDate'] });
-        let intrestStart = moment(firstIntrest.emiDueDate);
-        daysCount = currentDate.diff(intrestStart, 'days');
-        if (daysCount != 0) {
-            if (globalSettings.gracePeriodDays < daysCount) {
-                amount.penalInterest = Number(loan.loanAmount) * penalIntrestPercent / 360 * daysCount;
-            }
-        }
-    } else {
-        let lastPaid = moment(intrest.emiDueDate);
-        checkMonths = currentDate.diff(lastPaid, "months");
-        daysCount = currentDate.diff(lastPaid, 'days');
-
-        if (daysCount != 0) {
-            if (checkMonths != 0) {
-                if (globalSettings.gracePeriodDays < daysCount) {
-                    amount.penalInterest = Number(loan.loanAmount) * penalIntrestPercent / 360 * daysCount;
-                }
-            } else {
-                amount.interest = Number(loan.loanAmount) * (15.96 / 100) / 360 * daysCount;
-            }
-        }
-    }
-    return amount
 }
 
 let getAllCustomerLoanId = async () => {
@@ -348,13 +326,13 @@ let mergeInterestTable = async (masterLoanId) => {
 
 module.exports = {
     getGlobalSetting: getGlobalSetting,
-    getCustomerLoanId: getCustomerLoanId,
+    getAllCustomerLoanId: getAllCustomerLoanId,
     getLoanDetails: getLoanDetails,
     getSchemeDetails: getSchemeDetails,
     interestAmountCalculation: interestAmountCalculation,
     getCustomerLoanDetails: getCustomerLoanDetails,
     getAllDetailsOfCustomerLoan: getAllDetailsOfCustomerLoan,
-    getAllCustomerLoanId: getAllCustomerLoanId,
+    getCustomerInterestAmount: getCustomerInterestAmount,
     getInterestTableOfSingleLoan: getInterestTableOfSingleLoan,
     calculationData: calculationData,
     checkPaidInterest: checkPaidInterest,
