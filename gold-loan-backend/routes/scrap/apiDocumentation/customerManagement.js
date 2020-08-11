@@ -80,4 +80,22 @@
  *     responses:
  *       200:
  *          description: Success
+ * /scrap/customer/single-scrap-customer:
+ *   get:
+ *     tags:
+ *       -  Customer management
+ *     name: read single scrap details
+ *     summary: To read single scrap details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "customerScrapId"
+ *       in: "query"
+ *       description: "Scrap Id"
+ *       type: integer
+ *     responses:
+ *       200:
+ *          description: success.
  */
