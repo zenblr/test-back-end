@@ -710,6 +710,8 @@ mat-header-row {
 	border: thin solid #454d67;
 	border-radius: 5px;
 	padding: 5px;
+	white-space: nowrap;
+   text-align: center;
 }
 
 .timepicker-overlay,.timepicker-backdrop-overlay {
