@@ -325,9 +325,10 @@ exports.checkForLoanType = async (req, res, next) => {
 
         var unsecuredAmount = Math.round(loanAmount * unsecureSchemeMaximumAmtAllowed/(ltvPercent[0].ltvGoldValue/100))
 
+        let totalEligibleAmt = Math.round(fullAmount/(ltvPercent[0].ltvGoldValue/100))
 
-        if ((unsecuredSchemeApplied && (securedScheme.isSplitAtBeginning ||
-            Number(loanAmount) <= Math.round(fullAmount * (securedLoanAmount + unsecuredAmount))))|| isLoanTransfer) {
+        if ((unsecuredSchemeApplied && (securedScheme.isSplitAtBeginning &&
+            Math.round(totalEligibleAmt) >= Math.round (securedLoanAmount + unsecuredAmount)))|| isLoanTransfer) {
 
             processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
@@ -460,12 +461,14 @@ exports.generateInterestTable = async (req, res, next) => {
 
     if (!Number.isInteger(length)) {
         const lastElementOfTable = interestTable[interestTable.length - 1]
-        let secure = (securedInterestAmount / Math.ceil(length)).toFixed(2)
+        const oneMonthSecured = securedInterestAmount / (paymentFrequency/30)
+        let secure = (oneMonthSecured * Math.ceil(length)).toFixed(2)
         lastElementOfTable.securedInterestAmount = secure
 
         if (isUnsecuredSchemeApplied) {
-            let unsecure = (unsecuredInterestAmount / Math.ceil(length)).toFixed(2)
-            lastElementOfTable.unsecuredInterestAmount = unsecure
+            const  oneMonthUnsecured = unsecuredInterestAmount / (paymentFrequency/30)
+            let unsecured = (oneMonthUnsecured * Math.ceil(length)).toFixed(2)
+            lastElementOfTable.unsecuredInterestAmount = unsecured
             lastElementOfTable.totalAmount = Number(lastElementOfTable.securedInterestAmount) + Number(lastElementOfTable.unsecuredInterestAmount)
         }
 
