@@ -674,7 +674,7 @@ export class TopbarComponent implements OnInit {
 			this.value2 = "Assign Appraiser";
 			this.type2 = "button";
 			this.value1 = "Add Packets";
-			this.permissionType = "packetAdd";
+			this.permissionType = "scrapPacketAdd";
 			this.showfilter = true;
 			this.filterName = 'packets';
 			this.filterWidth = '400px';
