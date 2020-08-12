@@ -22,7 +22,7 @@
                     <div class=" text-color font-weight-500 kt-padding-b-5">{{details?.customerLoan[0]?.loanAmount}}
                     </div>
                 </div>
-                <div class="col-2" *ngIf="scrapId">
+                <div class="col" *ngIf="scrapId">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Scrap Amount</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">{{details?.finalScrapAmountAfterMelting}}
                     </div>
@@ -80,7 +80,7 @@
                         {{details?.loanBankDetail?.accountNumber}}
                     </div>
                 </div>
-                <div class="col-2" *ngIf="scrapId">
+                <div class="col" *ngIf="scrapId">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Account Number</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">{{details?.scrapBankDetails?.acNumber}}
                     </div>
@@ -111,6 +111,8 @@
                     <div class="text-color font-weight-500">
                         {{details?.loanNomineeDetail[0].relationship | titlecase}}</div>
                 </div>
+                <div class="col" *ngIf="scrapId"></div>
+                <div class="col" *ngIf="scrapId"></div>
             </div>
         </div>
     </div>
@@ -249,12 +251,12 @@
                                     <div class="text-color font-weight-500">{{ornaments?.approxPurityReading}} %</div>
                                 </div>
                             </div>
-                            <div class="row kt-margin-t-25">
+                            <!-- <div class="row kt-margin-t-25">
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">LTV Amount</div>
                                     <div class="text-color font-weight-500">{{ornaments?.ltvAmount}}</div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </mat-tab>
@@ -425,8 +427,7 @@
                     </div>
                     <img *ngIf="!pdf?.saleInvoiceImage" class="packets"
                         [src]="details?.scrapDocument?.saleInvoiceImage">
-                    <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Sale Invoice(In case of a
-                        registered dealer)</label>
+                    <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Sale Invoice</label>
                 </div>
             </div>
         </div>
