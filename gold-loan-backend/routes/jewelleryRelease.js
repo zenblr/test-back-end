@@ -8,29 +8,29 @@ const checkRolePermission = require('../middleware/checkRolesPermissions');
 
 const checkAuth = require('../middleware/checkAuth');
 
-route.get('/part-release',checkAuth,wrapper(getPartReleaseList));
+route.get('/part-release',checkAuth,checkRolePermission,wrapper(getPartReleaseList));
 
-route.get('/part-release-approved_list',checkAuth,wrapper(partReleaseApprovedList));
+route.get('/part-release-approved_list',checkAuth,checkRolePermission,wrapper(partReleaseApprovedList));
 
 route.get('/apply-loan/:customerUniqueId', checkAuth, wrapper(partReleaseApplyLoan)); 
 
 route.get('/customer/:customerId', checkAuth, wrapper(getCustomerDetails)); 
 
-route.get('/:masterLoanId', checkAuth, wrapper(ornamentsDetails)); 
+route.get('/:masterLoanId', checkAuth,checkRolePermission, wrapper(ornamentsDetails)); 
 
-route.post('/', checkAuth, wrapper(ornamentsAmountDetails)); 
+route.post('/', checkAuth,checkRolePermission, wrapper(ornamentsAmountDetails)); 
 
-route.post('/part-release', checkAuth,partReleasePayment,validatiError, wrapper(ornamentsPartRelease)); 
+route.post('/part-release', checkAuth,checkRolePermission,partReleasePayment,validatiError, wrapper(ornamentsPartRelease)); 
 
-route.put('/amount-status', checkAuth,amountStatusValidation,validatiError, wrapper(updateAmountStatus)); 
+route.put('/amount-status', checkAuth,checkRolePermission,amountStatusValidation,validatiError, wrapper(updateAmountStatus)); 
 
-route.put('/appraiser-status', checkAuth,partReleaseValidation,validatiError, wrapper(updatePartReleaseStatus)); 
+route.put('/appraiser-status', checkAuth,checkRolePermission,partReleaseValidation,validatiError, wrapper(updatePartReleaseStatus)); 
 
-route.post('/assign-appraiser', checkAuth,assignAppriserValidation,validatiError, wrapper(partReleaseAssignAppraiser)); 
+route.post('/assign-appraiser', checkAuth,checkRolePermission,assignAppriserValidation,validatiError, wrapper(partReleaseAssignAppraiser)); 
 
-route.put('/update-appraiser', checkAuth,assignAppriserValidation,validatiError, wrapper(updateAppraiser)); 
+route.put('/update-appraiser', checkAuth,checkRolePermission,assignAppriserValidation,validatiError, wrapper(updateAppraiser)); 
 
-route.post('/document', checkAuth,documentValidation,validatiError, wrapper(uploadDocument)); 
+route.post('/document', checkAuth,checkRolePermission,documentValidation,validatiError, wrapper(uploadDocument)); 
 
 
 module.exports = route;
