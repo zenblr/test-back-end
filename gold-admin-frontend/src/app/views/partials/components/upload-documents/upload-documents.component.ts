@@ -222,7 +222,8 @@ export class UploadDocumentsComponent implements OnInit {
   pdfCheck() {
     Object.keys(this.documentsForm.value).forEach(value => {
       let pdf = this.documentsForm.value[value]
-      let ext: any;
+
+      let ext = [];
       if (typeof pdf == 'string' && pdf) {
         ext = pdf.split('.')
       } else if (typeof pdf == 'object' && pdf) {

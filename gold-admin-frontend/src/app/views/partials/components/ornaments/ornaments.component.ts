@@ -271,7 +271,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       if (this.meltingOrnament && val && this.processingCharges) {
         if (val == 'no') {
           controls.controls.processingCharges.patchValue(this.processingCharges);
-          this.buttonValue = 'Pay Now';
+          this.buttonValue = 'Pay Processing Charges';
         } else {
           controls.controls.processingCharges.patchValue([]);
           this.buttonValue = 'Next';
@@ -728,7 +728,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         return
       }
     }
-    if (this.buttonValue != 'Pay Now') {
+    if (this.buttonValue != 'Pay Processing Charges') {
       if (this.ornamentsForm.invalid) {
         let array = this.OrnamentsData.controls
         for (let index = 0; index < array.length; index++) {

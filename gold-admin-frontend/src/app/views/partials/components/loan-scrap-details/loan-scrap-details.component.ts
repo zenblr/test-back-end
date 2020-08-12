@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LoanApplicationFormService } from '../../../../core/loan-management';
+import { ScrapCustomerManagementService } from '../../../../core/scrap-management';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
@@ -11,63 +12,116 @@ import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-previ
 })
 export class LoanScrapDetailsComponent implements OnInit {
   images: any = []
-  loanId
-  loanDetails: any
-  pdf = { loanAgreementCopyImage: false, pawnCopyImage: false, schemeConfirmationCopyImage: false }
+  loanId;
+  scrapId;
+  details: any
+  pdf = {
+    loanAgreementCopyImage: false, pawnCopyImage: false, schemeConfirmationCopyImage: false,
+    purchaseVoucherImage: false, purchaseInvoiceImage: false, saleInvoiceImage: false
+  }
+
   constructor(
     private loanservice: LoanApplicationFormService,
-    private rout: ActivatedRoute,
+    private scrapCustomerManagementService: ScrapCustomerManagementService,
+    private route: ActivatedRoute,
     public dilaog: MatDialog,
   ) { }
 
   ngOnInit() {
-    this.loanId = this.rout.snapshot.params.loanId
-    let masterLoanId = this.rout.snapshot.params.masterLoanId
-    this.loanservice.getLoanDetails(this.loanId,masterLoanId).subscribe(res => {
-      this.loanDetails = res.data
+    if (this.route.snapshot.params.scrapId) {
+      this.getScrapDetails();
+    } else {
+      this.getLoanDetails();
+    }
+  }
+
+  getLoanDetails() {
+    this.loanId = this.route.snapshot.params.loanId
+    let masterLoanId = this.route.snapshot.params.masterLoanId
+    this.loanservice.getLoanDetails(this.loanId, masterLoanId).subscribe(res => {
+      this.details = res.data
       this.createOrnamentsImage()
       this.pdfCheck()
       console.log(this.images)
-    })
+    });
   }
 
-  pdfCheck(){
-    let laonAgree = this.loanDetails.customerLoanDocument.loanAgreementCopyImage[0].split('.')
-    let pawn = this.loanDetails.customerLoanDocument.pawnCopyImage[0].split('.')
-    let scheme = this.loanDetails.customerLoanDocument.schemeConfirmationCopyImage[0].split('.')
-    if(laonAgree[laonAgree.length - 1] == 'pdf'){
+  getScrapDetails() {
+    this.scrapId = this.route.snapshot.params.scrapId;
+    this.scrapCustomerManagementService.getScrapDetails(this.scrapId).subscribe(res => {
+      this.details = res.data
+      this.createOrnamentsImage()
+      this.pdfCheck()
+      console.log(this.images)
+    });
+  }
+
+  pdfCheck() {
+    let laonAgree, pawn, scheme, voucher, invoice, sale;
+    if (this.details.customerLoanDocument) {
+      laonAgree = this.details.customerLoanDocument.loanAgreementCopyImage[0].split('.')
+      pawn = this.details.customerLoanDocument.pawnCopyImage[0].split('.')
+      scheme = this.details.customerLoanDocument.schemeConfirmationCopyImage[0].split('.')
+    }
+    if (this.details.scrapDocument) {
+      voucher = this.details.scrapDocument.purchaseVoucherImage[0].split('.')
+      invoice = this.details.scrapDocument.purchaseInvoiceImage[0].split('.')
+      sale = this.details.scrapDocument.saleInvoiceImage[0].split('.')
+    }
+    if (laonAgree && laonAgree[laonAgree.length - 1] == 'pdf') {
       this.pdf.loanAgreementCopyImage = true
-    }else{
+    } else {
       this.pdf.loanAgreementCopyImage = false
-
     }
-    if(pawn[pawn.length - 1] == 'pdf'){
+    if (pawn && pawn[pawn.length - 1] == 'pdf') {
       this.pdf.pawnCopyImage = true
-
-    }else{
+    } else {
       this.pdf.pawnCopyImage = false
-      
     }
-    if(scheme[scheme.length - 1] == 'pdf'){
+    if (scheme && scheme[scheme.length - 1] == 'pdf') {
       this.pdf.schemeConfirmationCopyImage = true
-
-    }else{
+    } else {
       this.pdf.schemeConfirmationCopyImage = false
-      
+    }
+    if (voucher && voucher[voucher.length - 1] == 'pdf') {
+      this.pdf.purchaseVoucherImage = true
+    } else {
+      this.pdf.purchaseVoucherImage = false
+    }
+    if (invoice && invoice[invoice.length - 1] == 'pdf') {
+      this.pdf.purchaseInvoiceImage = true
+    } else {
+      this.pdf.purchaseInvoiceImage = false
+    }
+    if (sale && sale[sale.length - 1] == 'pdf') {
+      this.pdf.saleInvoiceImage = true
+    } else {
+      this.pdf.saleInvoiceImage = false
     }
   }
 
   createOrnamentsImage() {
-    for (let ornametsIndex = 0; ornametsIndex < this.loanDetails.loanOrnamentsDetail.length; ornametsIndex++) {
-      let ornamets = this.loanDetails.loanOrnamentsDetail[ornametsIndex]
-      this.createImageArray()
-      let keys = Object.keys(ornamets)
-      for (let index = 0; index < keys.length; index++) {
-        let url = ornamets[keys[index]]
-        this.patchUrlIntoForm(keys[index], url, ornametsIndex)
+    if (this.scrapId) {
+      for (let ornametsIndex = 0; ornametsIndex < this.details.scrapOrnamentsDetail.length; ornametsIndex++) {
+        let ornamets = this.details.scrapOrnamentsDetail[ornametsIndex]
+        this.createImageArray()
+        let keys = Object.keys(ornamets)
+        for (let index = 0; index < keys.length; index++) {
+          let url = ornamets[keys[index]]
+          this.patchUrlIntoForm(keys[index], url, ornametsIndex)
+        }
+      }
+    } else {
+      for (let ornametsIndex = 0; ornametsIndex < this.details.loanOrnamentsDetail.length; ornametsIndex++) {
+        let ornamets = this.details.loanOrnamentsDetail[ornametsIndex]
+        this.createImageArray()
+        let keys = Object.keys(ornamets)
+        for (let index = 0; index < keys.length; index++) {
+          let url = ornamets[keys[index]]
+          this.patchUrlIntoForm(keys[index], url, ornametsIndex)
+        }
       }
     }
-
   }
 
   createImageArray() {
@@ -77,7 +131,9 @@ export class LoanScrapDetailsComponent implements OnInit {
       weightMachineZeroWeight: '',
       stoneTouch: '',
       purity: '',
-      ornamentImage: ''
+      ornamentImage: '',
+      ornamentImageWithWeight: '',
+      ornamentImageWithXrfMachineReading: ''
     }
     this.images.push(data)
   }
@@ -89,28 +145,26 @@ export class LoanScrapDetailsComponent implements OnInit {
         break;
       case 'acidTestData':
         this.images[index].acidTest = url.URL
-
         break;
       case 'weightMachineZeroWeightData':
         this.images[index].weightMachineZeroWeight = url.URL
-
         break;
       case 'stoneTouchData':
         this.images[index].stoneTouch = url.URL
-
         break;
       case 'purityTestImage':
         this.images[index].purity = url.URL
-
         break;
-
       case 'ornamentImageData':
         this.images[index].ornamentImage = url.URL
-
+        break;
+      case 'ornamentImageWithWeightData':
+        this.images[index].ornamentImageWithWeight = url.URL
+        break;
+      case 'ornamentImageWithXrfMachineReadingData':
+        this.images[index].ornamentImageWithXrfMachineReading = url.URL
         break;
     }
-
-
   }
 
   preview(value, formIndex) {

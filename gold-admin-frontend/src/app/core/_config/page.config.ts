@@ -336,9 +336,9 @@ export class PageConfig {
 					page: { title: "Scrap Buying Calculator", desc: "" },
 				},
 				"scrap-buying-application-form": {
-					page: { title: "Scrap Buying Application Form", desc: "" },
+					page: { title: "Scrap Buying Application", desc: "" },
 					id: {
-						page: { title: "Scrap Buying Application Form", desc: "" },
+						page: { title: "Scrap Buying Application", desc: "" },
 					}
 				},
 				"packet-image-upload": {
@@ -348,7 +348,7 @@ export class PageConfig {
 				},
 				'view-scrap': {
 					id: {
-						page: { title: "View Scrap Buying Application Form", desc: "" },
+						page: { title: "View Scrap Buying Application", desc: "" },
 					}
 				},
 				'packets': {

@@ -36,6 +36,7 @@
                                 </div>
                                 <div class="col-8">
                                     <select class="form-control" formControlName="internalUserBranch"
+                                        (change)="changeBranch($event)"
                                         [class.isError]="controls.internalUserBranch.touched && controls.internalUserBranch.invalid">
                                         <option value="" [disabled]="true" [selected]="true"> Select Branch
                                         </option>
@@ -56,7 +57,8 @@
                                 <div *ngIf="data.packetData && data.packetData.appraiserId"
                                     class="row justify-content-center kt-margin-t-10">
                                     <div class="col-4 form-label">
-                                        <label class="kt-padding-l-10 mandatory">Appraiser</label>
+                                        <label class="kt-padding-l-10"
+                                            [class.mandatory]="this.data.packetData.appraiserId">Appraiser</label>
                                     </div>
                                     <div class="col-8">
                                         <select class="form-control" formControlName="appraiserId"

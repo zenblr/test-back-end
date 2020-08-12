@@ -22,14 +22,18 @@
                                     <!-- <input type="text" class="form-control" placeholder="Ring"
                                         formControlName="ornamentTypeId"
                                         [class.isError]="ornament.controls.ornamentTypeId.touched && ornament.controls.ornamentTypeId.invalid"> -->
+                                    <ng-select [items]="ornamentType" bindLabel="name" bindValue="id"
+                                        formControlName="ornamentTypeId" placeholder="Select Ornament"
+                                        [class.isError]="ornament.get('ornamentTypeId').touched && ornament.get('ornamentTypeId').invalid">
+                                    </ng-select>
 
-                                    <select class="form-control" formControlName="ornamentTypeId"
+                                    <!-- <select class="form-control" formControlName="ornamentTypeId"
                                         [class.isError]="ornament.controls.ornamentTypeId.touched && ornament.controls.ornamentTypeId.invalid">
                                         <option value=null [disabled]="true" [selected]="true">Select Ornament</option>
                                         <option [value]="ornament.id" *ngFor="let ornament of ornamentType">
                                             {{ornament.name | titlecase}}
                                         </option>
-                                    </select>
+                                    </select> -->
                                     <mat-error
                                         *ngIf="ornament.controls.ornamentTypeId.touched && ornament.controls.ornamentTypeId.invalid">
                                         <span *ngIf="ornament.controls.ornamentTypeId.errors?.required">Field
@@ -193,11 +197,9 @@
                                 <div class="row kt-margin-t-15">
                                     <div class="col-4 form-label">
                                         <label class="my-auto mandatory text-color" *ngIf="meltingOrnament">Ornament
-                                            Image(with XRF
-                                            machine purity reading))</label>
+                                            Image(with XRF machine purity reading)</label>
                                         <label class="my-auto mandatory text-color" *ngIf="!meltingOrnament">Ornament
-                                            Image(with XRF machine
-                                            reading)</label>
+                                            Image(with XRF machine reading)</label>
                                     </div>
                                     <div class="col-4 form-label">
                                         <label *ngIf="ornament.controls.ornamentImageWithXrfMachineReading.value"

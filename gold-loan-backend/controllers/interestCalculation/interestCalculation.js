@@ -7,6 +7,7 @@ const Op = Sequelize.Op;
 const _ = require('lodash');
 const moment = require('moment')
 const { dailyIntrestCalculation } = require('../../utils/interestCron');
+const { getCustomerInterestAmount } = require('../../utils/loanFunction');
 
 
 // add internal branch
@@ -21,6 +22,12 @@ exports.interestCalculation = async (req, res) => {
         data = await dailyIntrestCalculation(date);
     }
     return res.status(200).json(data);
+}
+
+exports.interestAmount = async (req, res) => {
+    let { id } = req.query;
+    let amount = await getCustomerInterestAmount(id);
+    return res.status(200).json(amount);
 }
 
 exports.app = async (req, res) => {
@@ -87,7 +94,7 @@ exports.app = async (req, res) => {
     //     .map((value, key) => ({ customerId: key, users: value }))
     //     .value()
 
-    return res.status(200).json({ data:[] })
+    return res.status(200).json({ data: [] })
 
 }
 

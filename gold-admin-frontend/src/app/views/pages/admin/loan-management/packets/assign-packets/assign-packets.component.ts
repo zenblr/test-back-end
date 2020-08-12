@@ -53,6 +53,13 @@ export class AssignPacketsComponent implements OnInit, AfterViewInit {
       this.getAllAppraiser()
       this.title = 'Edit Packet'
       this.packetForm.patchValue(this.data.packetData);
+      if (this.controls.appraiserId.value) {
+        this.controls.appraiserId.setValidators([Validators.required])
+        this.controls.appraiserId.updateValueAndValidity()
+      } else {
+        this.controls.appraiserId.setValidators([])
+        this.controls.appraiserId.updateValueAndValidity()
+      }
     }
   }
 
@@ -100,7 +107,10 @@ export class AssignPacketsComponent implements OnInit, AfterViewInit {
       this.packetForm.controls.packetUniqueId.patchValue(packetUniqueId.toLowerCase());
       if (this.controls.appraiserId.value) {
         this.packetForm.patchValue({ appraiserId: Number(this.controls.appraiserId.value) })
+      } else {
+        this.packetForm.patchValue({ appraiserId: null })
       }
+      this.controls.internalUserBranch.patchValue(Number(this.controls.internalUserBranch.value))
       const partnerData = this.packetForm.value;
       const id = this.controls.id.value;
 
@@ -169,11 +179,22 @@ export class AssignPacketsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getAllAppraiser() {
-    if (this.data.packetData && this.data.packetData.internalUserBranch)
+  getAllAppraiser(branchId = null) {
+    if (this.data.packetData && this.data.packetData.internalUserBranch) {
 
-      this.appraiserService.getAllAppraiser(this.data.packetData.internalUserBranch).subscribe(res => {
+      const selectedBranchId = branchId ? branchId : this.data.packetData.internalUserBranch
+
+      this.appraiserService.getAllAppraiser(selectedBranchId).subscribe(res => {
         this.appraisers = res.data;
+        this.ref.markForCheck()
       })
+    }
+  }
+
+  changeBranch(event) {
+    let branchId = event.target.value
+    // this.controls.appraiserId.reset()
+    this.controls.appraiserId.patchValue('')
+    this.getAllAppraiser(branchId)
   }
 }

@@ -9,7 +9,7 @@
                         <label class="mandatory"> Select Unsecured Scheme</label>
                     </div>
                     <div class="col-6">
-                        <select class="form-control" formControlName="unsecuredSchemeName" 
+                        <select class="form-control" formControlName="unsecuredSchemeName"  (change)="unsecuredSchemeChange()"
                             [class.isError]="controls.unsecuredSchemeName.touched && controls.unsecuredSchemeName.invalid">
                             <option selected disabled value="">Select Status</option>
                             <option *ngFor="let scheme of unsecuredSchemes" [value]="scheme.id">

@@ -367,11 +367,12 @@ module.exports = (sequelize, DataTypes) => {
         //bank
         if (values.loanBankDetail) {
             let passbookProofData = [];
+            if (values.loanBankDetail.passbookProof) {
+                for (image of values.loanBankDetail.passbookProof) {
+                    let URL = process.env.BASE_URL + image;
+                    passbookProofData.push(URL)
 
-            for (image of values.loanBankDetail.passbookProof) {
-                let URL = process.env.BASE_URL + image;
-                passbookProofData.push(URL)
-
+                }
             }
             values.loanBankDetail.passbookProofImage = passbookProofData;
         }
