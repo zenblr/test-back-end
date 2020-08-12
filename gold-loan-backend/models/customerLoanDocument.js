@@ -66,13 +66,13 @@ module.exports = (sequelize, DataTypes) => {
             }
         }
         if (values.pawnCopy) {
-            for (imgUrl of values.pawnCopyImage) {
+            for (imgUrl of values.pawnCopy) {
                 let URL = process.env.BASE_URL + imgUrl;
                 pawnCopyImage.push(URL)
             }
         }
         if (values.schemeConfirmationCopy) {
-            for (imgUrl of values.schemeConfirmationCopyImage) {
+            for (imgUrl of values.schemeConfirmationCopy) {
                 let URL = process.env.BASE_URL + imgUrl;
                 schemeConfirmationCopyImage.push(URL)
             }

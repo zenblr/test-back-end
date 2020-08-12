@@ -74,8 +74,11 @@
                     <tbody>
                         <tr>
                             <td>{{payableAmount?.outstandingAmount}}</td>
-                            <td>{{payableAmount?.interest}}</td>
-                            <td>{{payableAmount?.penalInterest}}</td>
+                            <td>{{payableAmount?.securedInterest}} <br>
+                                {{payableAmount?.unsecuredInterest}}</td>
+                            <td>{{payableAmount?.securedPenalInterest}}<br>
+                                {{payableAmount?.unsecuredPenalInterest}}
+                            </td>
                             <td>{{payableAmount?.payableAmount}}</td>
                             <td><input type="text" class="form-control" [formControl]="payableAmt"></td>
                         </tr>
@@ -87,7 +90,8 @@
                 <div class="col-6 text-center">
                     <kt-button [value]="'Proceed'" [type]="'button'" (click)="payment()"></kt-button>
                     <span class="kt-padding-5"></span>
-                    <kt-button [value]="'Cancel'" [type]="'reset'" (click)="payableAmount = '';paymentDetails = '';payableAmt.enable()">
+                    <kt-button [value]="'Cancel'" [type]="'reset'"
+                        (click)="payableAmount = '';paymentDetails = '';payableAmt.enable()">
                     </kt-button>
 
                 </div>
@@ -108,9 +112,15 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="text-gray">{{paymentDetails?.customerLoan[0].loanUniqueId}}</td>
+                        <td class="text-gray">
+                            {{paymentDetails?.customerLoan[0]?.loanUniqueId}} <br>
+                            {{paymentDetails?.customerLoan[1]?.loanUniqueId}}
+                        </td>
                         <td class="text-gray">{{currentDate | date:'mediumDate'}}</td>
-                        <td class="text-gray">{{paymentDetails?.outstandingAmount}}</td>
+                        <td class="text-gray">
+                            {{paymentDetails?.customerLoan[0]?.outstandingAmount}} <br>
+                            {{paymentDetails?.customerLoan[1]?.outstandingAmount}}
+                        </td>
                         <td class="text-gray">{{payableAmt.value}}</td>
                         <td class="text-gray">{{payableAmount?.payableAmount}}</td>
                         <td class="text-gray">

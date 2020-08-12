@@ -60,6 +60,7 @@ export class InterestCalculatorComponent implements OnInit {
   partnerName: any;
   paymentFrequency: any;
   private unsubscribe$ = new Subject();
+  subscription: Subscription[] = []
 
   constructor(
     public fb: FormBuilder,
@@ -79,7 +80,7 @@ export class InterestCalculatorComponent implements OnInit {
       this.globalValue = res;
     })
 
-    
+
 
 
 
@@ -87,7 +88,7 @@ export class InterestCalculatorComponent implements OnInit {
       debounceTime(1000),
       distinctUntilChanged()
     ).subscribe(res => {
-      if (!this.transferLoan){
+      if (!this.transferLoan) {
         this.partner();
       }
     })
@@ -96,11 +97,11 @@ export class InterestCalculatorComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
 
-    if(changes.loanTransfer && changes.loanTransfer.currentValue){
+    if (changes.loanTransfer && changes.loanTransfer.currentValue) {
       this.controls.finalLoanAmount.patchValue(changes.loanTransfer.currentValue)
-        this.controls.finalLoanAmount.disable()
-        this.transferLoan = true;
-        this.partner()
+      this.controls.finalLoanAmount.disable()
+      this.transferLoan = true;
+      this.partner()
     }
 
     if (changes.totalAmt) {
@@ -151,7 +152,10 @@ export class InterestCalculatorComponent implements OnInit {
           if (finalLoan.masterLoan.isUnsecuredSchemeApplied) {
             // this.unSecuredSchemeCheck(finalLoan.masterLoan.unsecuredLoanAmount, (finalLoan.scheme.maximumPercentageAllowed / 100), 'edit')
             this.selectedUnsecuredscheme = finalLoan.unsecuredLoan.scheme
-            this.finalInterestForm.patchValue({ unsecuredSchemeId: finalLoan.unsecuredLoan.scheme.id })
+            this.finalInterestForm.patchValue({
+              unsecuredSchemeId: finalLoan.unsecuredLoan.scheme.id,
+              unsecuredInterestRate: finalLoan.unsecuredLoan.interestRate
+            })
             for (let index = 0; index < temp.length; index++) {
               temp[index].unsecuredInterestAmount = finalLoan.unsecuredLoan.customerLoanInterest[index].interestAmount
               temp[index].totalAmount = Number(temp[index].securedInterestAmount) +
