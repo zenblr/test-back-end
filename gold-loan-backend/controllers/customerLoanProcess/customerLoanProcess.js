@@ -239,7 +239,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
 
 // amount validation and check its a secured scheme aur unsecured scheme
 exports.checkForLoanType = async (req, res, next) => {
-    let { loanAmount, securedSchemeId, fullAmount, partnerId } = req.body
+    let { loanAmount, securedSchemeId, fullAmount, partnerId,isLoanTransfer } = req.body
     let processingCharge = 0;
     let unsecuredScheme
 
@@ -328,7 +328,11 @@ exports.checkForLoanType = async (req, res, next) => {
         let totalEligibleAmt = Math.round(fullAmount/(ltvPercent[0].ltvGoldValue/100))
 
         if ((unsecuredSchemeApplied && (securedScheme.isSplitAtBeginning &&
-            Math.round(totalEligibleAmt) >= Math.round (securedLoanAmount + unsecuredAmount)))|| isLoanTransfer) {
+            Math.round(totalEligibleAmt) >= Math.round (securedLoanAmount + unsecuredAmount))) || isLoanTransfer) {
+
+                if(isLoanTransfer){
+                    unsecuredAmount = Number(loanAmount - securedLoanAmount)
+                }
 
             processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
