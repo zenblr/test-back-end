@@ -4,7 +4,7 @@ import { JewelleryReleaseService } from '../../../../../core/repayment/jewellery
 import { map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
-import { PaymentDialogComponent } from '../payment-dialog/payment-dialog.component';
+import { PaymentDialogComponent } from '../../../../partials/components/payment-dialog/payment-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { TitleCasePipe } from '@angular/common';
 

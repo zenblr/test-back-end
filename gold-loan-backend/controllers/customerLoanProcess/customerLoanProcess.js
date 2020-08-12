@@ -239,7 +239,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
 
 // amount validation and check its a secured scheme aur unsecured scheme
 exports.checkForLoanType = async (req, res, next) => {
-    let { loanAmount, securedSchemeId, fullAmount, partnerId } = req.body
+    let { loanAmount, securedSchemeId, fullAmount, partnerId,isLoanTransfer } = req.body
     let processingCharge = 0;
     let unsecuredScheme
 
@@ -325,9 +325,14 @@ exports.checkForLoanType = async (req, res, next) => {
 
         var unsecuredAmount = Math.round(loanAmount * unsecureSchemeMaximumAmtAllowed/(ltvPercent[0].ltvGoldValue/100))
 
+        let totalEligibleAmt = Math.round(fullAmount/(ltvPercent[0].ltvGoldValue/100))
 
-        if ((unsecuredSchemeApplied && (securedScheme.isSplitAtBeginning ||
-            Number(loanAmount) <= Math.round(fullAmount * (securedLoanAmount + unsecuredAmount))))|| isLoanTransfer) {
+        if ((unsecuredSchemeApplied && (securedScheme.isSplitAtBeginning &&
+            Math.round(totalEligibleAmt) >= Math.round (securedLoanAmount + unsecuredAmount))) || isLoanTransfer) {
+
+                if(isLoanTransfer){
+                    unsecuredAmount = Number(loanAmount - securedLoanAmount)
+                }
 
             processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
@@ -460,12 +465,14 @@ exports.generateInterestTable = async (req, res, next) => {
 
     if (!Number.isInteger(length)) {
         const lastElementOfTable = interestTable[interestTable.length - 1]
-        let secure = (securedInterestAmount / Math.ceil(length)).toFixed(2)
+        const oneMonthSecured = securedInterestAmount / (paymentFrequency/30)
+        let secure = (oneMonthSecured * Math.ceil(length)).toFixed(2)
         lastElementOfTable.securedInterestAmount = secure
 
         if (isUnsecuredSchemeApplied) {
-            let unsecure = (unsecuredInterestAmount / Math.ceil(length)).toFixed(2)
-            lastElementOfTable.unsecuredInterestAmount = unsecure
+            const  oneMonthUnsecured = unsecuredInterestAmount / (paymentFrequency/30)
+            let unsecured = (oneMonthUnsecured * Math.ceil(length)).toFixed(2)
+            lastElementOfTable.unsecuredInterestAmount = unsecured
             lastElementOfTable.totalAmount = Number(lastElementOfTable.securedInterestAmount) + Number(lastElementOfTable.unsecuredInterestAmount)
         }
 
@@ -1884,76 +1891,6 @@ exports.getLoanDetails = async (req, res, next) => {
     } else {
         return res.status(200).json({ message: 'Loan details fetch successfully', data: loanDetails, count: count.length });
     }
-}
-
-// for app
-exports.getAssignAppraiserCustomer = async (req, res, next) => {
-    let { search, offset, pageSize } = paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
-    let id = req.userData.id;
-    let query = {}
-    let searchQuery = {
-        [Op.and]: [query, {
-            [Op.or]: {
-                "$customer.first_name$": { [Op.iLike]: search + '%' },
-                "$customer.last_name$": { [Op.iLike]: search + '%' },
-                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-            },
-        }],
-        appraiserId: id
-    };
-    let includeArray = [{
-        model: models.customer,
-        as: 'customer',
-        attributes: ['id', 'firstName', 'lastName', 'customerUniqueId'],
-        subQuery: false,
-        include: {
-            model: models.customerLoanMaster,
-            as: "masterLoan",
-        }
-    }]
-    let data = await models.customerAssignAppraiser.findAll({
-        where: searchQuery,
-        subQuery: false,
-        include: includeArray,
-        order: [
-            ['id', 'DESC']
-        ],
-        offset: offset,
-        limit: pageSize
-    })
-
-    let tempData = []
-    for (let i = 0; i < data.length; i++) {
-        let singleCustomer = extend(data[i].dataValues);
-        if (singleCustomer.customer.masterLoan.length > 1) {
-            let customer = extend(singleCustomer.customer.dataValues);
-            let masterLoans = customer.masterLoan.slice();
-            delete singleCustomer.customer;
-            for (let j = 0; j < masterLoans.length; j++) {
-                let masterLoan = extend(masterLoans[j].dataValues);
-                singleCustomer['customer'] = { ...customer };
-                delete singleCustomer.customer.masterLoan;
-                singleCustomer.customer['masterLoan'] = [masterLoan];//.slice();
-                tempData.push({ ...singleCustomer });
-            }
-        } else {
-            tempData.push(singleCustomer);
-        }
-
-    }
-    data = tempData;
-
-    let count = await models.customerAssignAppraiser.findAll({
-        where: searchQuery,
-        subQuery: false,
-        include: includeArray,
-    });
-    if (data.length === 0) {
-        return res.status(200).json([]);
-    } else {
-        return res.status(200).json({ message: 'success', data, count: count.length })
-    }
-
 }
 
 //FUNCTION FOR PRINT DETAILS

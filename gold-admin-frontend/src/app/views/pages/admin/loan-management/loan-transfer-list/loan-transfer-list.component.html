@@ -51,7 +51,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="bmStatus">
-                    <mat-header-cell *matHeaderCellDef>B.M Status</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>BM Status</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
                         <span
                             [ngClass]="loan.loanTransfer.loanTransferStatusForBM == 'pending' ? 'text-warning' :loan.loanTransfer.loanTransferStatusForBM == 'approved' ? 'text-success' : 'text-danger'">

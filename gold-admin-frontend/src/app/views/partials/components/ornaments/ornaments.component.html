@@ -22,14 +22,18 @@
                                     <!-- <input type="text" class="form-control" placeholder="Ring"
                                         formControlName="ornamentTypeId"
                                         [class.isError]="ornament.controls.ornamentTypeId.touched && ornament.controls.ornamentTypeId.invalid"> -->
+                                    <ng-select [items]="ornamentType" bindLabel="name" bindValue="id"
+                                        formControlName="ornamentTypeId" placeholder="Select Ornament"
+                                        [class.isError]="ornament.get('ornamentTypeId').touched && ornament.get('ornamentTypeId').invalid">
+                                    </ng-select>
 
-                                    <select class="form-control" formControlName="ornamentTypeId"
+                                    <!-- <select class="form-control" formControlName="ornamentTypeId"
                                         [class.isError]="ornament.controls.ornamentTypeId.touched && ornament.controls.ornamentTypeId.invalid">
                                         <option value=null [disabled]="true" [selected]="true">Select Ornament</option>
                                         <option [value]="ornament.id" *ngFor="let ornament of ornamentType">
                                             {{ornament.name | titlecase}}
                                         </option>
-                                    </select>
+                                    </select> -->
                                     <mat-error
                                         *ngIf="ornament.controls.ornamentTypeId.touched && ornament.controls.ornamentTypeId.invalid">
                                         <span *ngIf="ornament.controls.ornamentTypeId.errors?.required">Field

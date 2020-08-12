@@ -663,6 +663,9 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/admin/repayment/full-release')) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes('/new-requests?origin=leads')) {
+			this.showBackButton = true;
+		}
 		if (this.path == 'standard-deduction') {
 			this.dataSourceHeader();
 			this.value1 = "Add Standard Deduction";
