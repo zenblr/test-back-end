@@ -38,13 +38,18 @@ exports.customerDetails = async (req, res, next) => {
     });
 
     let incompleteStageId = await models.scrapStage.findOne({ where: { stageName: "incomplete" } });
-    console.log(incompleteStageId);
+    let completedStageId = await models.scrapStage.findOne({ where: { stageName: "completed" } });
+
+    
     if (!check.isEmpty(customerScrapStage)) {
 
         if (customerScrapStage.scrapStageId == incompleteStageId.id) {
             res.status(200).json({ message: 'customer details fetch successfully', customerData });
         }
-
+        if(customerScrapStage.scrapStageId == completedStageId.id){
+            res.status(200).json({ message: 'customer details fetch successfully', customerData });
+        }
+        
         const firstName = customerScrapStage.customer.firstName
         const lastName = customerScrapStage.customer.lastName
 

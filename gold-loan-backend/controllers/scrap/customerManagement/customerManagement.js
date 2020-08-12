@@ -283,12 +283,16 @@ exports.getsingleCustomerManagement = async (req, res) => {
 exports.getSingleScrapInCustomerManagment = async (req, res, next) => {
         let { customerScrapId } = req.query;
 
-        console.log(customerScrapId);
 
         let customerScrap = await models.customerScrap.findOne({
             where: { id: customerScrapId },
             attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
             include: [
+                {
+                    model: models.scrapStage,
+                    as: 'scrapStage',
+                    attributes: ['id', 'stageName']
+                },
                 {
                     model: models.customerScrapPersonalDetail,
                     as: 'scrapPersonalDetail',
@@ -363,4 +367,5 @@ exports.getSingleScrapInCustomerManagment = async (req, res, next) => {
         });
         return res.status(200).json({ message: 'success', data: customerScrap })
 
+     
 }
