@@ -1,95 +1,128 @@
-<div class="kt-margin-l-10 kt-margin-r-10 pb-3" *ngIf="loanDetails">
-    <div class="row ">
+<div class="kt-margin-l-10 kt-margin-r-10 pb-3" *ngIf="details">
+    <div class="row">
         <div class="col-12 card kt-padding-15">
             <div class="row justify-content-around kt-padding-b-15">
-                <div class="col">
+                <div class="col" *ngIf="loanId">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Loan ID</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.customerLoan[0]?.loanUniqueId}}</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{details?.customerLoan[0]?.loanUniqueId}}
+                    </div>
+                </div>
+                <div class="col" *ngIf="scrapId">
+                    <div class="text-gray font-weight-500 kt-padding-b-5">Scrap ID</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{details?.scrapUniqueId}}
+                    </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Customer ID</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails.customer.customerUniqueId}}</div>
+                        {{details?.customer?.customerUniqueId}}</div>
                 </div>
-                <div class="col-2">
+                <div class="col-2" *ngIf="loanId">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Loan Amount</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.customerLoan[0]?.loanAmount}}
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{details?.customerLoan[0]?.loanAmount}}
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-2" *ngIf="scrapId">
+                    <div class="text-gray font-weight-500 kt-padding-b-5">Scrap Amount</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{details?.finalScrapAmountAfterMelting}}
+                    </div>
+                </div>
+                <div class="col" *ngIf="loanId">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Loan Tenure</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.tenure}} Months
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{details?.tenure}} Months
                     </div>
                 </div>
-                <div class="col">
+                <div class="col" *ngIf="loanId">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Start Date</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails?.loanStartDate | date: 'mediumDate'}}</div>
+                        {{details?.loanStartDate | date: 'mediumDate'}}</div>
                 </div>
-                <div class="col">
+                <div class="col" *ngIf="scrapId">
+                    <div class="text-gray font-weight-500 kt-padding-b-5">Start Date</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">
+                        {{details?.scrapPersonalDetail?.startDate | date: 'mediumDate'}}</div>
+                </div>
+                <div class="col" *ngIf="loanId">
                     <div class="text-gray font-weight-500 kt-padding-b-5">End Date</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails?.loanEndDate | date: 'mediumDate'}}</div>
+                        {{details?.loanEndDate | date: 'mediumDate'}}</div>
                 </div>
-                <div class="col">
+                <div class="col" *ngIf="loanId">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Status</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails?.loanStage?.name | titlecase}}
+                        {{details?.loanStage?.name | titlecase}}
+                    </div>
+                </div>
+                <div class="col" *ngIf="scrapId">
+                    <div class="text-gray font-weight-500 kt-padding-b-5">Status</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">
+                        {{details?.scrapStage?.stageName | titlecase}}
                     </div>
                 </div>
             </div>
             <div class="row justify-content-around">
-                <div class="col">
+                <div class="col" *ngIf="loanId">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Interest Rate</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.customerLoan[0]?.interestRate}}% P.M
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{details?.customerLoan[0]?.interestRate}}%
+                        P.M
                     </div>
                 </div>
-
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Customer Name</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails?.customer?.firstName | titlecase}}
-                        {{loanDetails?.customer?.lastName | titlecase}}
+                        {{details?.customer?.firstName | titlecase}}
+                        {{details?.customer?.lastName | titlecase}}
                     </div>
                 </div>
-                <div class="col-2">
+                <div class="col-2" *ngIf="loanId">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Account Number</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails?.loanBankDetail?.accountNumber}}
+                        {{details?.loanBankDetail?.accountNumber}}
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-2" *ngIf="scrapId">
+                    <div class="text-gray font-weight-500 kt-padding-b-5">Account Number</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">{{details?.scrapBankDetails?.acNumber}}
+                    </div>
+                </div>
+                <div class="col" *ngIf="loanId">
                     <div class="text-gray font-weight-500 kt-padding-b-5">IFSC Code</div>
                     <div class=" text-color font-weight-500 kt-padding-b-5">
-                        {{loanDetails?.loanBankDetail?.ifscCode | uppercase}}</div>
+                        {{details?.loanBankDetail?.ifscCode | uppercase}}</div>
                 </div>
-                <div class="col">
+                <div class="col" *ngIf="scrapId">
+                    <div class="text-gray font-weight-500 kt-padding-b-5">IFSC Code</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">
+                        {{details?.scrapBankDetails?.ifscCode | uppercase}}</div>
+                </div>
+                <div class="col" *ngIf="loanId">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Nominee</div>
                     <div class="text-color font-weight-500">
-                        {{loanDetails?.loanNomineeDetail[0].nomineeName | titlecase}}
+                        {{details?.loanNomineeDetail[0].nomineeName | titlecase}}
                     </div>
                 </div>
-                <div class="col">
+                <div class="col" *ngIf="loanId">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Age</div>
-                    <div class="text-color font-weight-500">{{loanDetails?.loanNomineeDetail[0].nomineeAge}}
+                    <div class="text-color font-weight-500">{{details?.loanNomineeDetail[0].nomineeAge}}
                     </div>
                 </div>
-                <div class="col">
+                <div class="col" *ngIf="loanId">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Relation</div>
                     <div class="text-color font-weight-500">
-                        {{loanDetails?.loanNomineeDetail[0].relationship | titlecase}}</div>
+                        {{details?.loanNomineeDetail[0].relationship | titlecase}}</div>
                 </div>
             </div>
         </div>
     </div>
 
-     <div class="row kt-margin-t-15">
-        <div class="col-12 card kt-padding-15">
+    <div class="row kt-margin-t-15">
+        <!-- loan ornaments -->
+        <div class="col-12 card kt-padding-15" *ngIf="loanId">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Ornaments - Total
-                {{loanDetails?.loanOrnamentsDetail.length}} Ornaments</label>
+                {{details?.loanOrnamentsDetail?.length}} Ornaments</label>
             <mat-tab-group style="min-height: 300px;">
                 <mat-tab label="Ornaments {{idx + 1}}"
-                    *ngFor="let ornaments of loanDetails?.loanOrnamentsDetail;index as idx">
+                    *ngFor="let ornaments of details?.loanOrnamentsDetail;index as idx">
                     <div class="row">
                         <div class="col-3">
                             <img [src]="ornaments?.ornamentImageData?.URL" class="ornaments" alt="">
@@ -163,14 +196,78 @@
                 </mat-tab>
             </mat-tab-group>
         </div>
+        <!-- scrap ornaments -->
+        <div class="col-12 card kt-padding-15" *ngIf="scrapId">
+            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Ornaments - Total
+                {{details?.scrapOrnamentsDetail?.length}} Ornaments</label>
+            <mat-tab-group style="min-height: 300px;">
+                <mat-tab label="Ornaments {{idx + 1}}"
+                    *ngFor="let ornaments of details?.scrapOrnamentsDetail;index as idx">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row kt-margin-t-15">
+                                <div class="col-3">
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Ornament Type</div>
+                                    <div class="text-color font-weight-500">
+                                        {{ornaments?.ornamentType?.name | titlecase}}</div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Quantity</div>
+                                    <div class="text-color font-weight-500">{{ornaments?.quantity}} Pcs</div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Gross Wt.</div>
+                                    <div class="text-color font-weight-500">{{ornaments?.grossWeight}} Gram</div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Net Wt.</div>
+                                    <div class="text-color font-weight-500">{{ornaments?.netWeight}} Gram</div>
+                                </div>
+                            </div>
+                            <div class="row kt-margin-t-25">
+                                <div class="col-3">
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Deduction Wt.</div>
+                                    <div class="text-color font-weight-500">{{ornaments?.deductionWeight}} Gram</div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Ornament Image with Wt.</div>
+                                    <div *ngIf="ornaments?.ornamentImageWithWeight"
+                                        class="text-primary font-weight-500 kt-pointer"
+                                        (click)="preview(ornaments?.ornamentImageWithWeight,idx)">View Image</div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Ornament Image(with XRF machine
+                                        purity reading)</div>
+                                    <div *ngIf="ornaments?.ornamentImageWithXrfMachineReading"
+                                        class="text-primary font-weight-500 kt-pointer"
+                                        (click)="preview(ornaments?.ornamentImageWithXrfMachineReading,idx)">View Image
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Purity Reading(XRF machine) %
+                                    </div>
+                                    <div class="text-color font-weight-500">{{ornaments?.approxPurityReading}} %</div>
+                                </div>
+                            </div>
+                            <div class="row kt-margin-t-25">
+                                <div class="col-3">
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">LTV Amount</div>
+                                    <div class="text-color font-weight-500">{{ornaments?.ltvAmount}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
     </div>
 
-     <div class="row kt-margin-t-15">
-        <div class="col-12 card kt-padding-15">
+    <div class="row kt-margin-t-15">
+        <!-- loan packets -->
+        <div class="col-12 card kt-padding-15" *ngIf="loanId">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Packets ID - Total
-                {{loanDetails.loanPacketDetails[0].packets.length}} Packets</label>
-            <div style="min-height: 300px;"
-                *ngFor="let packets of loanDetails?.loanPacketDetails;index as idx">
+                {{details?.loanPacketDetails[0]?.packets?.length}} Packets</label>
+            <div style="min-height: 300px;" *ngFor="let packets of details?.loanPacketDetails;index as idx">
                 <div class="row justify-content-center kt-padding-t-15">
                     <div class="col-4">
                         <div class="table-div">
@@ -184,14 +281,12 @@
                                         <ng-container>
                                             <td class="text-color ">
                                                 <label class="m-0">{{packet.packetUniqueId | uppercase}}</label>
-
                                             </td>
                                             <td class="text-color ">
                                                 <span *ngFor="let ornament of packet?.packetOrnament;index as idx">
                                                     {{ornament?.ornamentType?.name | uppercase}}
                                                     <span *ngIf="idx != packet.packetOrnament.length - 1">,</span>
                                                 </span>
-
                                             </td>
                                         </ng-container>
                                     </tr>
@@ -203,8 +298,7 @@
                 <div class="row">
                     <div class="col-4">
                         <img class="packets" [src]="packets?.emptyPacketWithNoOrnamentImage">
-                        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with
-                            No
+                        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with No
                             Ornaments</label>
                     </div>
                     <div class="col-4">
@@ -216,59 +310,125 @@
                         <img class="packets" [src]="packets?.sealingPacketWithCustomerImage">
                         <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with
                             Sealing</label>
-
                     </div>
                 </div>
-
-            </div> 
+            </div>
+        </div>
+        <!-- scrap packets -->
+        <div class="col-12 card kt-padding-15" *ngIf="scrapId">
+            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Packets ID - Total
+                {{details?.scrapPacketDetails[0]?.packets?.length}} Packets</label>
+            <div style="min-height: 300px;" *ngFor="let packets of details?.scrapPacketDetails;index as idx">
+                <div class="row justify-content-center kt-padding-t-15">
+                    <div class="col-4">
+                        <div class="table-div">
+                            <table class="table outer-border">
+                                <thead>
+                                    <th class="transparent text-center">Packet</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let packet of packets?.CustomerScrapPackageDetail;index as idx">
+                                        <ng-container>
+                                            <td class="text-color text-center">
+                                                <label class="m-0">{{packet?.packetUniqueId | uppercase}}</label>
+                                            </td>
+                                        </ng-container>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <img class="packets" [src]="packets?.emptyPacketWithNoOrnamentImage">
+                        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with All
+                            Refining Ornaments</label>
+                    </div>
+                    <div class="col-4">
+                        <img class="packets" [src]="packets?.sealingPacketWithWeightImage">
+                        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with All
+                            Ornaments</label>
+                    </div>
+                    <div class="col-4">
+                        <img class="packets" [src]="packets?.sealingPacketWithCustomerImage">
+                        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with
+                            Sealing</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="row kt-margin-t-15">
         <div class="col-12 card kt-padding-15">
-            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Documents
-            </label>
-
+            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Documents</label>
             <div class="row justify-content-center kt-padding-t-15">
 
             </div>
-            <div class="row">
+            <!-- loan documents -->
+            <div class="row" *ngIf="loanId">
                 <div class="col-4">
                     <div class="pdf">
-                        <iframe
-                            [src]="loanDetails.customerLoanDocument.loanAgreementCopyImage | safe : 'resourceUrl'"
+                        <iframe [src]="details.customerLoanDocument.loanAgreementCopyImage | safe : 'resourceUrl'"
                             scrolling="no" *ngIf="pdf?.loanAgreementCopyImage" height="255"></iframe>
                     </div>
-                    <img  *ngIf="!pdf?.loanAgreementCopyImage" class="packets"
-                        [src]="loanDetails.customerLoanDocument.loanAgreementCopyImage">
+                    <img *ngIf="!pdf?.loanAgreementCopyImage" class="packets"
+                        [src]="details.customerLoanDocument.loanAgreementCopyImage">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Loan Agreement Copy</label>
                 </div>
                 <div class="col-4">
                     <div class="pdf">
-                        <iframe [src]="loanDetails.customerLoanDocument.pawnCopyImage | safe : 'resourceUrl'"
-                            scrolling="no" *ngIf="pdf?.pawnCopyImage" height="255"></iframe>
+                        <iframe [src]="details.customerLoanDocument.pawnCopyImage | safe : 'resourceUrl'" scrolling="no"
+                            *ngIf="pdf?.pawnCopyImage" height="255"></iframe>
                     </div>
-                    <img *ngIf="!pdf?.pawnCopyImage" class="packets"
-                        [src]="loanDetails.customerLoanDocument.pawnCopyImage">
-
+                    <img *ngIf="!pdf?.pawnCopyImage" class="packets" [src]="details.customerLoanDocument.pawnCopyImage">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Pawn Copy</label>
                 </div>
                 <div class="col-4">
                     <div class="pdf">
-                        <iframe
-                            [src]="loanDetails.customerLoanDocument.schemeConfirmationCopyImage | safe : 'resourceUrl'"
+                        <iframe [src]="details.customerLoanDocument.schemeConfirmationCopyImage | safe : 'resourceUrl'"
                             scrolling="no" *ngIf="pdf?.schemeConfirmationCopyImage" height="255"></iframe>
                     </div>
-                    <img  *ngIf="!pdf?.schemeConfirmationCopyImage" class="packets"
-                        [src]="loanDetails.customerLoanDocument.schemeConfirmationCopyImage">
+                    <img *ngIf="!pdf?.schemeConfirmationCopyImage" class="packets"
+                        [src]="details.customerLoanDocument.schemeConfirmationCopyImage">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Scheme Confirmation Copy
                     </label>
-
                 </div>
             </div>
+            <!-- scrap documents -->
+            <div class="row" *ngIf="scrapId">
+                <div class="col-4">
+                    <div class="pdf">
+                        <iframe [src]="details?.scrapDocument?.purchaseVoucherImage | safe : 'resourceUrl'"
+                            scrolling="no" *ngIf="pdf?.purchaseVoucherImage" height="255"></iframe>
+                    </div>
+                    <img *ngIf="!pdf?.purchaseVoucherImage" class="packets"
+                        [src]="details?.scrapDocument?.purchaseVoucherImage">
+                    <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Purchase Voucher</label>
+                </div>
+                <div class="col-4">
+                    <div class="pdf">
+                        <iframe [src]="details?.scrapDocument?.purchaseInvoiceImage | safe : 'resourceUrl'"
+                            scrolling="no" *ngIf="pdf?.purchaseInvoiceImage" height="255"></iframe>
+                    </div>
+                    <img *ngIf="!pdf?.purchaseInvoiceImage" class="packets"
+                        [src]="details?.scrapDocument?.purchaseInvoiceImage">
 
+                    <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Original Purchase
+                        Invoice</label>
+                </div>
+                <div class="col-4">
+                    <div class="pdf">
+                        <iframe [src]="details?.scrapDocument?.saleInvoiceImage | safe : 'resourceUrl'" scrolling="no"
+                            *ngIf="pdf?.saleInvoiceImage" height="255"></iframe>
+                    </div>
+                    <img *ngIf="!pdf?.saleInvoiceImage" class="packets"
+                        [src]="details?.scrapDocument?.saleInvoiceImage">
+                    <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Sale Invoice(In case of a
+                        registered dealer)</label>
+                </div>
+            </div>
         </div>
-    </div> 
-
-
+    </div>
 </div>

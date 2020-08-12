@@ -31,4 +31,10 @@ export class ScrapCustomerManagementService {
   getScrapCustomerById(id): Observable<any> {
     return this.http.get(`/api/scrap/customer/customer-management/${id}`)
   }
+
+  getScrapDetails(id): Observable<any> {
+    return this.http.get(`/api/scrap/customer/single-scrap-customer?customerScrapId=${id}`).pipe(
+      map(res => res)
+    )
+  }
 }
