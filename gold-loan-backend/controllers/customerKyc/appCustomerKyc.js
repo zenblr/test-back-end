@@ -47,7 +47,7 @@ exports.submitAppKyc = async (req, res, next) => {
             customerKycId: customerKycAdd.id,
             firstName: getCustomerInfo.firstName,
             lastName: getCustomerInfo.lastName,
-            panCardNumber: getCustomerInfo.panCardNumber,
+            panCardNumber: panCardNumber,
             profileImage: profileImage,
             dateOfBirth: date,
             alternateMobileNumber: alternateMobileNumber,
