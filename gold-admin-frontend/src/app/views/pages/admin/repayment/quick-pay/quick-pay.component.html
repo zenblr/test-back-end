@@ -1,5 +1,5 @@
 <kt-portlet>
-    <kt-portlet-body>
+    <kt-portlet-body class="min-vh-60">
 
         <div class="table-div kt-padding-t-10">
             <table class="table outer-border">
@@ -11,6 +11,8 @@
                     <th class="transparent">Tenure</th>
                     <th class="transparent">Interest Rate</th>
                     <th class="transparent">Last Payment Date</th>
+                    <th class="transparent">Status</th>
+
 
                 </thead>
                 <tbody>
@@ -43,6 +45,7 @@
                                 {{loanDetails?.customerLoan[1]?.interestRate }}%
                             </span></td>
                         <td class="text-gray">20,May 2020</td>
+                        <td class="text-warning">Pending</td>
                     </tr>
                 </tbody>
             </table>
@@ -50,7 +53,7 @@
 
         <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
             <div class="col-6 text-center">
-                <kt-button [value]="'Pay EMI'" [type]="'button'" (click)="payableAmount()"></kt-button>
+                <kt-button [value]="'Pay EMI'" [type]="'button'" (click)="getPayableAmount()"></kt-button>
                 <span class="kt-padding-5 "></span>
                 <kt-button [value]="'View Interest EMI Logs'" [type]="'button'" (click)="viewEmiLogs()"></kt-button>
                 <span class="kt-padding-5 "></span>
@@ -58,136 +61,85 @@
 
             </div>
         </div>
+        <div *ngIf="payableAmount">
+            <div class="table-div kt-padding-t-10">
+                <table class="table outer-border">
+                    <thead>
+                        <th class="transparent">Principal Outstanding</th>
+                        <th class="transparent">Interest Amount</th>
+                        <th class="transparent">Penal Interest</th>
+                        <th class="transparent">Payable Amount</th>
+                        <th class="transparent">Payment Amount</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{payableAmount?.outstandingAmount}}</td>
+                            <td>{{payableAmount?.securedInterest}} <br>
+                                {{payableAmount?.unsecuredInterest}}</td>
+                            <td>{{payableAmount?.securedPenalInterest}}<br>
+                                {{payableAmount?.unsecuredPenalInterest}}
+                            </td>
+                            <td>{{payableAmount?.payableAmount}}</td>
+                            <td><input type="text" class="form-control" [formControl]="payableAmt"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-        <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15" *ngIf="payableAmount">
-            <div class="col-8">
-                <div class="row border-style">
-                    <div class="col-3 form-label">
-                        <label for="" class="font-weight-500 m-0">Payable Amount</label>
-                    </div>
-                    <div class="col-2 form-label">
-                        <label for="" class="font-weight-500 m-0">{{payableAmount}}</label>
-                    </div>
-                    <div class="col-4 form-label">
-                        <label for="" class="font-weight-500 m-0">Interest Payment Amount</label>
-                    </div>
-                    <div class="col-3 font-weight-500">
-                        <input type="text" class="form-control">
-                    </div>
+            <div class="row justify-content-center kt-padding-t-25 kt-padding-b-10">
+                <div class="col-6 text-center">
+                    <kt-button [value]="'Proceed'" [type]="'button'" (click)="payment()"></kt-button>
+                    <span class="kt-padding-5"></span>
+                    <kt-button [value]="'Cancel'" [type]="'reset'"
+                        (click)="payableAmount = '';paymentDetails = '';payableAmt.enable()">
+                    </kt-button>
+
                 </div>
             </div>
         </div>
 
-        <div class="row justify-content-center kt-padding-t-25">
-            <div class="col-6 text-center">
-                <kt-button [value]="'Proceed'" [type]="'button'"></kt-button>
-                <span class="kt-padding-5"></span>
-                <kt-button [value]="'Cancel'" [type]="'reset'"></kt-button>
 
-            </div>
-        </div>
-
-        <!-- <div class="row kt-padding-t-5">
-            <div class="col-2 font-weight-500">Loan Id</div>
-            <div class="col-2 font-weight-500">Loan Amount</div>
-            <div class="col-2 font-weight-500">Loan Date</div>
-            <div class="col-3 font-weight-500">Scheme Name</div>
-            <div class="col-1 font-weight-500">Tenure</div>
-            <div class="col-2 font-weight-500 text-right">Interest Rate</div>
-        </div>
-
-        <div class="row kt-padding-t-10">
-            <div class="col-2 text-gray font-weight-500">Loan!@#$</div>
-            <div class="col-2 text-gray font-weight-500">10000</div>
-            <div class="col-2 text-gray font-weight-500">12,March 2020</div>
-            <div class="col-3 text-gray font-weight-500">Permimun Super Loan</div>
-            <div class="col-1 text-gray font-weight-500">6 Months</div>
-            <div class="col-2 text-gray font-weight-500 text-right">
-                <div class="">
-                    5%
-                </div>
-            </div>
-        </div> -->
-
-        <!-- <h5 class="kt-padding-t-20 kt-padding-b-20">Payment Interest EMI</h5>
-
-        <div class="table-div">
-            <table class="table outer-border">
-                <thead>
-                    <th class="transparent"></th>
-                    <th class="transparent">Last Interest Payment</th>
-                    <th class="transparent">Last Interest Payment Date</th>
-                    <th class="transparent">EMI Due Date</th>
-                    <th class="transparent">PAID Amount</th>
-                    <th class="transparent">Interest EMI Payment Date</th>
-                    <th class="transparent">Penal Interest</th>
-                    <th class="transparent">Pending Amount</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="position-relative">
-                                <label class="custom-checkbox">
-                                    <span class="label-checkbox"></span>
-                                    <input type="checkbox" (change)="actionChange()">
-                                    <span class="checkmark top-0 checkmark-change"></span>
-                                </label>
-                            </div>
-
-                        </td>
-                        <td class="text-gray">dgfsddf</td>
-                        <td class="text-gray">sdfsdf</td>
-                        <td class="text-gray">dfhdfgh</td>
-                        <td class="text-gray">dgfsddf</td>
-                        <td class="text-gray">sdfsdf</td>
-                        <td class="text-gray">sdfsdf</td>
-                        <td class="text-gray">gdfh</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
-            <div class="col-6 text-center">
-                <kt-button [value]="'Pay EMI'" [type]="'button'"></kt-button>
-                <span class="kt-padding-5 "></span>
-                <kt-button [value]="'View Interest EMI Logs'" [type]="'button'" (click)="viewEmiLogs()"></kt-button>
-
-            </div>
-        </div> -->
-
-
-
-        <h5 class="kt-padding-t-20 kt-padding-b-20">Payment Confirmation</h5>
-        <div class="table-div">
+        <h5 class="kt-padding-t-20 kt-padding-b-20" *ngIf="paymentDetails">Payment Confirmation</h5>
+        <div class="table-div" *ngIf="paymentDetails">
             <table class="table outer-border">
                 <thead>
                     <th class="transparent">Loan ID</th>
                     <th class="transparent">Loan Payment Date</th>
                     <th class="transparent">Loan Amount</th>
-                    <th class="transparent">Interest Payment Amount</th>
+                    <th class="transparent">Payment Amount</th>
                     <th class="transparent">Total Payment Amount</th>
                     <th class="transparent">Select Payment option</th>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="text-gray">dgfsddf</td>
-                        <td class="text-gray">sdfsdf</td>
-                        <td class="text-gray">dfhdfgh</td>
-                        <td class="text-gray">dgfsddf</td>
-                        <td class="text-gray">sdfsdf</td>
                         <td class="text-gray">
-                            <select name="" id="" class="form-control"></select>
+                            {{paymentDetails?.customerLoan[0]?.loanUniqueId}} <br>
+                            {{paymentDetails?.customerLoan[1]?.loanUniqueId}}
+                        </td>
+                        <td class="text-gray">{{currentDate | date:'mediumDate'}}</td>
+                        <td class="text-gray">
+                            {{paymentDetails?.customerLoan[0]?.outstandingAmount}} <br>
+                            {{paymentDetails?.customerLoan[1]?.outstandingAmount}}
+                        </td>
+                        <td class="text-gray">{{payableAmt.value}}</td>
+                        <td class="text-gray">{{payableAmount?.payableAmount}}</td>
+                        <td class="text-gray">
+                            <button *ngIf="!paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">Select
+                                Payment</button>
+                            <button *ngIf="paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">
+                                {{ paymentValue.paymentType === 'IMPS' ? 'RTGS | NEFT | IMPS' : paymentValue.paymentType | uppercase }}
+                            </button>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div class="row justify-content-center kt-padding-t-15 kt-padding-b-15">
+        <div class="row justify-content-center kt-padding-t-15 kt-padding-b-15" *ngIf="paymentDetails">
             <div class="col-6 text-center">
                 <kt-button [value]="'Confirm'" [type]="'button'"></kt-button>
                 <span class="kt-padding-5 "></span>
-                <kt-button [value]="'Cancel'" [type]="'reset'"></kt-button>
+                <kt-button [value]="'Cancel'" [type]="'reset'" (click)="paymentDetails = '';payableAmt.enable()">
+                </kt-button>
                 <div class="kt-padding-t-5"> <i>On clicking confirm you will be redirected to available payment
                         options.</i> </div>
             </div>

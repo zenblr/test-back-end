@@ -45,8 +45,7 @@ exports.dailyIntrestCalculation = async (date) => {
                         let nextInterest = await getPendingNoOfDaysInterest(loan.id, date);
                         if (nextInterest) {
                             let amount = pendingDaysAmount - nextInterest.paidAmount;
-                            let outstandingInterest = interest.amount - nextInterest.paidAmount;
-                            await models.customerLoanInterest.update({ interestAccrual: amount, interestRate: stepUpSlab.interestRate, outstandingInterest }, { where: { id: nextInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                            await models.customerLoanInterest.update({ interestAccrual: amount, interestRate: stepUpSlab.interestRate, outstandingInterest:amount }, { where: { id: nextInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                         }
                     }
                 }
@@ -57,10 +56,10 @@ exports.dailyIntrestCalculation = async (date) => {
                 }
                 //update last interest if changed
                 if (!Number.isInteger(interest.length)) {
-                    let oneMonthAmount = interest.amount / masterLoan.tenure;
+                    let oneMonthAmount = interest.amount / (stepUpSlab.days/30);
                     let amount = oneMonthAmount * Math.ceil(interest.length).toFixed(2);
                     let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
-                    let outstandingInterest = interest.amount - lastInterest.paidAmount;
+                    let outstandingInterest = amount - lastInterest.paidAmount;
                     await models.customerLoanInterest.update({ interestAmount: amount, outstandingInterest, interestRate: stepUpSlab.interestRate }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                 }
                 //update current slab in customer loan table

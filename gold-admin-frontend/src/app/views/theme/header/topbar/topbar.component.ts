@@ -150,7 +150,7 @@ export class TopbarComponent implements OnInit {
 		private standardDeductionService: StandardDeductionService,
 		private scrapPacketsService: ScrapPacketsService,
 		private appliedScrap: AppliedScrapService,
-		private otherChargesService:OtherChargesService
+		private otherChargesService: OtherChargesService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -661,6 +661,9 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/admin/repayment/full-release')) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes('/new-requests?origin=leads')) {
+			this.showBackButton = true;
+		}
 		if (this.path == 'standard-deduction') {
 			this.dataSourceHeader();
 			this.value1 = "Add Standard Deduction";
@@ -786,7 +789,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'purposes') {
 			this.purposeService.openModal.next(true)
 		}
-		if (this.path == 'other-charges'){
+		if (this.path == 'other-charges') {
 			this.otherChargesService.openModal.next(true);
 		}
 		if (this.path == 'lead-source') {

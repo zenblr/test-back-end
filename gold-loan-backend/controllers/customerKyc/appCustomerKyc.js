@@ -14,7 +14,7 @@ exports.submitAppKyc = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let createdBy = req.userData.id;
 
-    let { customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address } = req.body
+    let { customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address, panCardNumber, panType, panImage } = req.body
     var date = dateOfBirth.split("-").reverse().join("-");
 
     let status = await models.status.findOne({ where: { statusName: "confirm" } })
@@ -38,6 +38,8 @@ exports.submitAppKyc = async (req, res, next) => {
 
     let kycInfo = await sequelize.transaction(async t => {
 
+        await models.customer.update({ panCardNumber: panCardNumber, panType, panImage }, { where: { id: customerId }, transaction: t })
+
         let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerKycCurrentStage: '4', customerId: getCustomerInfo.id, createdBy, modifiedBy }, { transaction: t })
 
         let abcd = await models.customerKycPersonalDetail.create({
@@ -45,7 +47,7 @@ exports.submitAppKyc = async (req, res, next) => {
             customerKycId: customerKycAdd.id,
             firstName: getCustomerInfo.firstName,
             lastName: getCustomerInfo.lastName,
-            panCardNumber: getCustomerInfo.panCardNumber,
+            panCardNumber: panCardNumber,
             profileImage: profileImage,
             dateOfBirth: date,
             alternateMobileNumber: alternateMobileNumber,
@@ -173,7 +175,6 @@ exports.getAssignedCustomer = async (req, res, next) => {
     let includeArray = [{
         model: models.customer,
         as: 'customer',
-        attributes: ['id', 'firstName', 'lastName', 'customerUniqueId'],
         subQuery: false,
         include: [
             {
@@ -211,7 +212,13 @@ exports.getAssignedCustomer = async (req, res, next) => {
                         model: models.customerLoan,
                         as: 'customerLoan',
                         attributes: ['id'],
-                        // where: { loanType: 'secured' }
+                        where: { loanType: 'secured' }
+                    },
+                    {
+                        model: models.customerLoanDocument,
+                        as: 'customerLoanDocument',
+                        attributes: { exclude: ['createdAt', 'modifiedBy', 'createdAt', 'updatedAt', 'isActive'] },
+
                     }
                 ]
             }]

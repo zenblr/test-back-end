@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { GoldRateService } from '../../../../../../../core/upload-data/gold-rate/gold-rate.service';
 import { KaratDetailsService } from '../../../../../../../core/loan-setting/karat-details/services/karat-details.service';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
-
+import { Subject } from 'rxjs';
 @Component({
   selector: 'kt-final-loan-amount',
   templateUrl: './final-loan-amount.component.html',
@@ -20,7 +20,7 @@ export class FinalLoanAmountComponent implements OnInit {
 
   finalLoanForm: FormGroup;
   karatArr: any;
-
+  private unsubscribe$ = new Subject();
   constructor(private fb: FormBuilder,
     private goldRateService: GoldRateService,
     public karatService: KaratDetailsService,
@@ -36,7 +36,7 @@ export class FinalLoanAmountComponent implements OnInit {
     //     this.calcGoldDeductionWeight();
     //   }
     // });
-    this.globalSettingService.globalSetting$.subscribe(global => {
+    this.globalSettingService.globalSetting$.pipe(takeUntil(this.unsubscribe$)).subscribe(global => {
       if (global) {
         this.goldRateService.goldRate$.subscribe(res => {
           if (res) {
@@ -46,6 +46,10 @@ export class FinalLoanAmountComponent implements OnInit {
       }
     })
 
+  }
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   initForm() {
