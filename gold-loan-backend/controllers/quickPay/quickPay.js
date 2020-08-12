@@ -59,17 +59,27 @@ exports.payableAmount = async (req, res, next) => {
 
     let loan = await getLoanDetails(masterLoanId);
 
+    let securedPenalInterest = amount.secured.penalInterest
+    let securedInterest = amount.secured.interest
     let interest = amount.secured.interest
     let penalInterest = amount.secured.penalInterest
-    let payableAmount = amount.secured.interest + amount.secured.penalInterest
-    if (amount.unsecured) {
-        payableAmount = payableAmount + amount.unsecured.interest + amount.unsecured.penalInterest
-        interest = interest + amount.unsecured.interest
-        penalInterest = penalInterest + amount.unsecured.penalInterest
 
+    let unsecuredInterest = 0
+    let unsecuredPenalInterest = 0
+    let payableAmount = amount.secured.interest + amount.secured.penalInterest
+    if (amount.unSecured) {
+        payableAmount = payableAmount + amount.unSecured.interest + amount.unSecured.penalInterest
+        interest = interest + amount.unSecured.interest
+        penalInterest = penalInterest + amount.unSecured.penalInterest
+        unsecuredInterest = amount.unSecured.interest
+        unsecuredPenalInterest = amount.unSecured.penalInterest
     }
     let data = {}
     data.outstandingAmount = (loan.outstandingAmount).toFixed(2)
+    data.securedPenalInterest = (securedPenalInterest).toFixed(2)
+    data.unsecuredInterest = (unsecuredInterest).toFixed(2)
+    data.unsecuredPenalInterest = (unsecuredPenalInterest).toFixed(2)
+    data.securedInterest = (securedInterest).toFixed(2)
     data.interest = (interest).toFixed(2)
     data.penalInterest = (penalInterest).toFixed(2)
     data.payableAmount = (payableAmount).toFixed(2)
