@@ -206,7 +206,7 @@ export class LeadManagementComponent implements OnInit {
   newRequest(loan) {
     const dialogRef = this.dialog.open(NewRequestAddComponent, { data: { action: 'add', leadData: loan }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
-      if (res) this.router.navigate(['/admin/lead-management/new-requests'])
+      if (res) this.router.navigate(['/admin/lead-management/new-requests'], { queryParams: { origin: 'leads' } })
     });
   }
 
