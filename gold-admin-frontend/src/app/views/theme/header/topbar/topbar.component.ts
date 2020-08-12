@@ -49,7 +49,7 @@ import { LoanRepaymentService } from '../../../../core/account/loan-repayment/se
 import { LoanDisbursementService } from '../../../../core/account/loan-disbursement/services/loan-disbursement.service';
 import { ShopService, ShoppingCartService, OrdersService } from '../../../../core/broker';
 import { OccupationService } from '../../../../core/masters/occupation/services/occupation.service';
-import { StandardDeductionService } from '../../../../core/masters/standard-deduction/service/standard-deduction.service';
+import { StandardDeductionService } from '../../../../core/scrap-management/standard-deduction/service/standard-deduction.service';
 import { ScrapPacketsService, AppliedScrapService } from '../../../../core/scrap-management';
 import { OtherChargesService } from '../../../../core/masters/other-charges/service/other-charges.service';
 import { ScrapCustomerManagementService } from '../../../../core/scrap-management/customer-management';
@@ -596,6 +596,9 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes("view-loan")) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes("view-scrap/")) {
+			this.showBackButton = true;
+		}
 		if (location.href.includes("packet-image-upload")) {
 			this.showBackButton = true;
 		}
@@ -641,6 +644,9 @@ export class TopbarComponent implements OnInit {
 			this.showBackButton = true;
 		}
 		if (location.href.includes('/orders/cancel-order/')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/scrap-buying-application-form?customerID=')) {
 			this.showBackButton = true;
 		}
 		if (this.path == "orders") {

@@ -10,10 +10,13 @@
                     <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
                     <mat-cell *matCellDef="let item">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div class="kt-pointer" (click)="editStandardDeduction(item)">
+                            <div class="kt-pointer" (click)="editStandardDeduction(item)"
+                                *ngxPermissionsOnly="['editStandardDeduction']">
                                 Edit</div>
-                            <div class="px-3">|</div>
-                            <div class="kt-pointer text-danger" (click)="deleteStandardDeduction(item)">Delete</div>
+                            <div class="px-3"
+                                *ngxPermissionsOnly="['deleteStandardDeduction'] || ['editStandardDeduction']">|</div>
+                            <div class="kt-pointer text-danger" (click)="deleteStandardDeduction(item)"
+                                *ngxPermissionsOnly="['deleteStandardDeduction']">Delete</div>
                         </div>
                     </mat-cell>
                 </ng-container>
