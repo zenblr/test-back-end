@@ -1,0 +1,15 @@
+<div class="row card-container">
+    <div class="card" *ngFor="let customer of customers;index as i">
+        <div class="bg-white">
+            <img [src]="customer.customerKycPersonal.profileImg" alt="test ">
+            <p class="text-color customer-id">{{customer.customerUniqueId}}</p>
+            <p class="text-secondary">{{customer.panCardNumber}}</p>
+            <p class="text-color font-weight-bold">{{customer.firstName | titlecase}} {{customer.lastName | titlecase}}
+            </p>
+            <p class="text-primary font-weight-bold kt-pointer" (click)="viewDetails(customer.id)">View Details</p>
+        </div>
+    </div>
+</div>
+<div class="d-flex justify-content-center">
+    <mat-spinner [diameter]="40" *ngIf="viewLoading"></mat-spinner>
+</div>

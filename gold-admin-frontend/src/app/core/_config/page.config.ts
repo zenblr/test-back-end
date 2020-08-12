@@ -336,9 +336,9 @@ export class PageConfig {
 					page: { title: "Scrap Buying Calculator", desc: "" },
 				},
 				"scrap-buying-application-form": {
-					page: { title: "Scrap Buying Application Form", desc: "" },
+					page: { title: "Scrap Buying Application", desc: "" },
 					id: {
-						page: { title: "Scrap Buying Application Form", desc: "" },
+						page: { title: "Scrap Buying Application", desc: "" },
 					}
 				},
 				"packet-image-upload": {
@@ -348,7 +348,7 @@ export class PageConfig {
 				},
 				'view-scrap': {
 					id: {
-						page: { title: "View Scrap Buying Application Form", desc: "" },
+						page: { title: "View Scrap Buying Application", desc: "" },
 					}
 				},
 				'packets': {
@@ -360,8 +360,11 @@ export class PageConfig {
 				"scrap-buying": {
 					page: { title: "Scrap Buying List", desc: "" },
 				},
-				"customer-management": {
-					page: { title: "Customer Management", desc: "" },
+				"customer-list": {
+					page: { title: "My Customer", desc: "" },
+					id: {
+						page: { title: "Customer Details", desc: "" },
+					},
 				},
 				"global-settings": {
 					page: { title: "Global Settings", desc: "" },

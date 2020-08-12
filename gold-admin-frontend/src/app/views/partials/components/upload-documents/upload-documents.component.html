@@ -83,7 +83,7 @@
                     [class.isError]="controls.customerConfirmationStatus.touched && controls.customerConfirmationStatus.invalid">
                     <option value="" [disabled]="true" [selected]="true">Select Customer confirmation Status</option>
                     <option value="confirmed">Confirmed</option>
-                    <option value="incomplete">Incomplete</option>
+                    <option value="incomplete">Disagree</option>
                 </select>
                 <mat-error
                     *ngIf="controls.customerConfirmationStatus.touched && controls.customerConfirmationStatus.invalid">

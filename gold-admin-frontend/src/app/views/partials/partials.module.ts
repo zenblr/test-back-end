@@ -100,6 +100,8 @@ import { AngularImageViewerModule } from 'angular-x-image-viewer';
 import { DropdownComponent } from './components/dropdown/dropdown.component';
 
 import { GlobalSettingsComponent } from './components/global-settings/global-settings.component';
+import { CustomerDetailsComponent } from './components/customer-details/customer-details.component';
+import { LoanScrapDetailsComponent } from './components/loan-scrap-details/loan-scrap-details.component';
 import { PaymentDialogComponent } from './components/payment-dialog/payment-dialog.component';
 
 @NgModule({
@@ -164,6 +166,8 @@ import { PaymentDialogComponent } from './components/payment-dialog/payment-dial
 		ApprovalComponent,
 		UploadPacketsComponent,
 		DisburseComponent,
+		CustomerDetailsComponent,
+		LoanScrapDetailsComponent,
 		PaymentDialogComponent
 
 	],
@@ -237,6 +241,8 @@ import { PaymentDialogComponent } from './components/payment-dialog/payment-dial
 		ApprovalComponent,
 		UploadPacketsComponent,
 		DisburseComponent,
+		CustomerDetailsComponent,
+		LoanScrapDetailsComponent,
 		PaymentDialogComponent
 	],
 	imports: [

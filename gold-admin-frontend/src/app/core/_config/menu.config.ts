@@ -199,7 +199,7 @@ export class MenuConfig {
 										{
 											title: "Standard Deduction",
 											root: true,
-											permission: false,
+											permission: !this.permissionsArr.includes('viewStandardDeduction'),
 											page: "/admin/masters/standard-deduction"
 										},
 										{
@@ -812,7 +812,7 @@ export class MenuConfig {
 							permission: false,
 						},
 						{
-							title: "Scrap Buying Application Form",
+							title: "Scrap Buying Application",
 							root: true,
 							src: "assets/media/aside-icons/icons-35.svg",
 							page: "/admin/scrap-management/scrap-buying-application-form",
@@ -823,14 +823,14 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-36.svg",
 							page: "/admin/scrap-management/packets",
-							permission: false,
+							permission: !this.permissionsArr.includes('scrapPacketView'),
 						},
 						{
 							title: "Applied Scrap",
 							root: true,
 							src: "assets/media/aside-icons/icons-37.svg",
 							page: "/admin/scrap-management/applied-scrap",
-							permission: false
+							permission: !this.permissionsArr.includes('appliedScrapView')
 						},
 						{
 							title: "Scrap Buying List",
@@ -843,20 +843,20 @@ export class MenuConfig {
 							title: "Customer Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-08.svg",
-							page: "/admin/scrap-management/customer-management",
-							permission: false
+							page: "/admin/scrap-management/customer-list",
+							permission: !this.permissionsArr.includes('scrapCustomerManagementView')
 						},
 						{
 							title: "Settings",
 							root: true,
 							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-03.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('viewScrapGlobalSetting'),
 							submenu: [
 								{
 									title: "Global Settings",
 									page: "/admin/scrap-management/global-settings",
-									permission: false
+									permission: !this.permissionsArr.includes('viewScrapGlobalSetting')
 								},
 							]
 						},

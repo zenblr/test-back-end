@@ -63,7 +63,7 @@
                     </mat-tab>
                     <mat-tab label="Scrap Status Approval"
                         *ngIf="scrapStage?.id == 2 || (url == 'view-scrap' && scrapStage?.id == 2)"
-                        [disabled]="disabled[6]">
+                        [disabled]="false">
                         <kt-approval [action]="action" [disable]="approvalFrom" [scrapDetails]="customerDetail"
                             [scrapIds]="scrapIds" [scrapStage]="scrapStage">
                         </kt-approval>
@@ -75,7 +75,7 @@
                             [scrapStage]="scrapStage">
                         </kt-upload-documents>
                     </mat-tab>
-                    <mat-tab label="Scrap Status Approval" [disabled]="false"
+                    <mat-tab label="Scrap Status Approval" [disabled]="disabled[7]"
                         *ngIf="scrapStage?.id == 7 || scrapStage?.id == 4 || (url == 'view-scrap' && scrapStage?.id == 7) || (url == 'view-scrap' && scrapStage?.id == 4) || (url == 'view-scrap' && scrapStage?.id == 5)">
                         <kt-approval [action]="action" [disable]="approvalFrom" [scrapDetails]="customerDetail"
                             [scrapIds]="scrapIds" [scrapStage]="scrapStage" (disbursal)="disbursal($event)">
