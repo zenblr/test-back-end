@@ -46,8 +46,8 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanPackageDetails.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
 
         // CustomerLoanPackageDetails.hasMany(models.customerLoanPacket, { foreignKey: 'customerLoanPackageDetailsId', as: 'customerLoanPacket' });
-    
-        CustomerLoanPackageDetails.belongsToMany(models.packet, { through: models.customerLoanPacket });
+
+        CustomerLoanPackageDetails.belongsToMany(models.packet, { through: models.customerLoanPacket, foreignKey: 'packetId' });
 
     }
 
@@ -62,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
         if (values.sealingPacketWithCustomer) {
             values.sealingPacketWithCustomerImage = process.env.BASE_URL + values.sealingPacketWithCustomer;
         }
-      
+
 
         return values;
     }

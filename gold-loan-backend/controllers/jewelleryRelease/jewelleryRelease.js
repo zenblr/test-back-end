@@ -86,9 +86,9 @@ async function ornementsDetails(masterLoanId, whereBlock) {
                     as: "ornamentType",
                     attributes: ['name', 'id'],
                     include: [{
-                        model: models.packetOrnament,
+                        model: models.customerLoanOrnamentsDetail,
                         as: 'packetOrnament',
-                        attributes: ['packetId', 'id', 'ornamentTypeId'],
+                        attributes: ['packetId', 'id', 'ornamentDetailId'],
                         include: [{
                             model: models.packet,
                             as: "packet"

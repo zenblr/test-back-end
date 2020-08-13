@@ -83,7 +83,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'loan_amount'
         },
-        ornamentFullAmount:{
+        ornamentFullAmount: {
             type: DataTypes.STRING,
             field: 'ornament_full_amount'
         },
@@ -123,7 +123,9 @@ module.exports = (sequelize, DataTypes) => {
         customerLoanOrnamentsDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
         customerLoanOrnamentsDetail.belongsTo(models.ornamentType, { foreignKey: 'ornamentTypeId', as: 'ornamentType' });
-        customerLoanOrnamentsDetail.belongsToMany(models.partRelease,{through: models.partReleaseOrnaments,foreignKey: 'ornamentId'});
+        customerLoanOrnamentsDetail.belongsToMany(models.partRelease, { through: models.partReleaseOrnaments, foreignKey: 'ornamentId' });
+
+        customerLoanOrnamentsDetail.belongsToMany(models.packet, { through: models.packetOrnament, foreignKey: 'packetId' });
 
     }
 
