@@ -93,6 +93,14 @@ exports.viewScrapPacket = async (req, res, next) => {
         limit: pageSize,
 
     });
+    for(let packet of packetDetails){
+        if(packet.appraiserId == null){
+            packet.dataValues.isAppraiserAssign = false;
+        }else{
+            packet.dataValues.isAppraiserAssign = true;
+        }
+    }
+   
     let count = await models.scrapPacket.count({
         where: searchQuery,
         subQuery: false,
