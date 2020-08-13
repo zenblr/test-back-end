@@ -3,8 +3,9 @@ import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@ang
 import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { PacketLocationService } from '../../../../../../core/masters/packet-location/service/packet-location.service';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import { UpdateLocationService } from '../../../../../../core/loan-management/update-location/services/update-location.service';
+import { AuthService } from '../../../../../../core/auth';
 
 @Component({
   selector: 'kt-update-location',
@@ -15,13 +16,17 @@ export class UpdateLocationComponent implements OnInit {
 
   locationForm: FormGroup
   packetLocations: [any];
+  userTypeList = [{ name: 'Customer', value: 'Customer' }, { name: 'Internal User', value: 'InternalUser' }, { name: 'Partner User', value: 'PartnerUser' }]
+  filteredPacketArray: any[];
+
   constructor(
     public dialogRef: MatDialogRef<UpdateLocationComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     private toastr: ToastrService,
     private packetLocationService: PacketLocationService,
-    private updateLocationService: UpdateLocationService
+    private updateLocationService: UpdateLocationService,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -31,6 +36,7 @@ export class UpdateLocationComponent implements OnInit {
       barcodeNumber: this.fb.array([]),
       mobileNumber: [, [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
       user: [, [Validators.required]],
+      userType: ['', [Validators.required]],
       otp: [, [Validators.required]]
     })
 
@@ -41,17 +47,25 @@ export class UpdateLocationComponent implements OnInit {
   setForm() {
     const packetArray = this.data.packetData
 
-    let filteredPacketArray = []
+    this.filteredPacketArray = []
     packetArray.forEach(element => {
       const { barcodeNumber: Barcode, packetUniqueId: packetId } = element
-      filteredPacketArray.push({ Barcode, packetId })
+      this.filteredPacketArray.push({ Barcode, packetId })
     });
 
-    this.barcodeNumber.patchValue(filteredPacketArray)
+    // this.barcodeNumber.patchValue(this.filteredPacketArray)
+
+    for (let index = 0; index < this.filteredPacketArray.length; index++) {
+      const e = this.filteredPacketArray[index];
+      this.barcodeNumber.at(index).patchValue({ packetId: e.packetId })
+    }
+
+    console.log(this.filteredPacketArray)
+
   }
 
   getPacketLocationList() {
-    this.packetLocationService.getpacketsTrackingDetails(1, 100, '').pipe(map(res => {
+    this.packetLocationService.getpacketsTrackingDetails(1, -1, '').pipe(map(res => {
       this.packetLocations = res.data
     })).subscribe()
   }
@@ -80,8 +94,8 @@ export class UpdateLocationComponent implements OnInit {
 
   newBarcode(): FormGroup {
     return this.fb.group({
-      Barcode: [],
-      packetId: []
+      Barcode: ['', [Validators.required]],
+      packetId: ['', [Validators.required]]
     })
   }
 
@@ -92,16 +106,35 @@ export class UpdateLocationComponent implements OnInit {
   }
 
   scanBarcode(index) {
-    const control = this.barcodeNumber.at(index)
-    console.log(control)
+    const formGroup = this.barcodeNumber.at(index)
+    const filteredFormGroup = this.filteredPacketArray[index]
+    const isVerified = (JSON.stringify(formGroup.value)).toLowerCase() === (JSON.stringify(filteredFormGroup)).toLowerCase()
+
+    console.log(isVerified)
+    if (!isVerified) formGroup.get('Barcode').setErrors({ unverified: true })
+
   }
 
   getDetailsByMobile() {
-    if (this.locationForm.controls.mobileNumber.invalid) return
+    if (this.locationForm.controls.mobileNumber.invalid || this.locationForm.controls.userType.invalid) return
     const mobileNumber = this.locationForm.controls.mobileNumber.value
-    this.updateLocationService.getDetailsByMobile({ mobileNumber }).pipe(map(res => {
+    const isSelected = this.locationForm.controls.userType.value
+    this.updateLocationService.getDetailsByMobile({ mobileNumber, isSelected }).pipe(map(res => {
       this.locationForm.controls.user.patchValue(`${res.data.firstName} ${res.data.lastName}`)
     })).subscribe()
+  }
+
+  generateOTP() {
+    const mobileNumber = this.locationForm.controls.mobileNumber.value
+    this.authService.generateOtp(mobileNumber, 'lead').pipe(
+      map(res => {
+        console.log(res)
+      }),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message)
+        throw (err)
+      })
+    ).subscribe()
   }
 
 }

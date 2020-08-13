@@ -122,7 +122,7 @@ export class PacketTrackingComponent implements OnInit {
   }
 
   updatePacket(packet) {
-    console.log(packet)
+    // console.log(packet)
     const dialogRef = this.dialog.open(UpdateLocationComponent,
       {
         data: { packetData: packet.loanPacketDetails[0].packets, action: 'edit' },
@@ -178,8 +178,8 @@ export class PacketTrackingComponent implements OnInit {
   }
 
   ornaments(packet) {
-    const loanId = packet.loanPacketDetails[0].masterLoanId
-    this.packetTrackingService.viewPackets({ loanId }).pipe(map(res => {
+    const masterLoanId = packet.loanPacketDetails[0].masterLoanId
+    this.packetTrackingService.viewPackets({ masterLoanId }).pipe(map(res => {
       console.table(res.data.loanOrnamentsDetail)
       this.dialog.open(OrnamentsComponent, {
         data: {
