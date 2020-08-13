@@ -608,6 +608,9 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes("customer-list/")) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes("scrap-details/")) {
+			this.showBackButton = true;
+		}
 		if (location.href.includes("kyc-setting?mob")) {
 			this.showBackButton = true;
 		}
@@ -699,6 +702,9 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 		}
 		if (this.path == 'my-requests') {
+			this.showInput = true;
+		}
+		if (this.path == 'scrap-buying') {
 			this.showInput = true;
 		}
 	}

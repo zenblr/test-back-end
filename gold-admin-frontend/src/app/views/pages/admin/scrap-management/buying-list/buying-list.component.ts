@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 })
 export class BuyingListComponent implements OnInit {
   dataSource: BuyingListDatasource;
-  displayedColumns = ['customerUniqueId', 'scrapId', 'customerName', 'scrapDate', 'actions'];
+  displayedColumns = ['customerUniqueId', 'scrapId', 'customerName', 'scrapDate', 'action'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
   private subscriptions: Subscription[] = [];
