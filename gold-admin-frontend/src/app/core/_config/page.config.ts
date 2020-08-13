@@ -374,6 +374,9 @@ export class PageConfig {
 				"global-settings": {
 					page: { title: "Global Settings", desc: "" },
 				},
+				"standard-deduction": {
+					page: { title: "Standard deduction", desc: "" },
+				},
 			}
 		},
 		'broker': {
