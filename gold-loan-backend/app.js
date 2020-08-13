@@ -16,6 +16,7 @@ const apiLogger = require("./middleware/apiLogger");
 const { cronForDailyPenalInterest, dailyIntrestCalculation } = require("./utils/interestCron");
 //customer api logger middleware
 const customerApiLogger = require("./middleware/customerApiLogger");
+const json2xls = require('json2xls');
 
 //model
 const models = require('./models');
@@ -51,7 +52,8 @@ app.use(express.static(path.join(__dirname, 'templates')));
 
 //middleware for apiLogger
 app.use(apiLogger);
-
+//For excel report
+app.use(json2xls.middleware);
 //middleware for customerApiLogger
 app.use(customerApiLogger);
 
