@@ -1532,21 +1532,21 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                     as: 'scheme',
                 }]
             },
-            {
-                model: models.customerLoanPackageDetails,
-                as: 'loanPacketDetails',
-                // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                include: [{
-                    model: models.packet,
-                    include: [{
-                        model: models.customerLoanOrnamentsDetail,
-                        include: [{
-                            model: models.ornamentType,
-                            as: 'ornamentType'
-                        }]
-                    }]
-                }]
-            },
+            // {
+            //     model: models.customerLoanPackageDetails,
+            //     as: 'loanPacketDetails',
+            //     // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            //     include: [{
+            //         model: models.packet,
+            //         include: [{
+            //             model: models.customerLoanOrnamentsDetail,
+            //             include: [{
+            //                 model: models.ornamentType,
+            //                 as: 'ornamentType'
+            //             }]
+            //         }]
+            //     }]
+            // },
             {
                 model: models.customer,
                 as: 'customer',
@@ -1561,6 +1561,22 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             }]
     });
 
+    let packet = await models.customerLoanPackageDetails.findAll({
+        where: { loanId: customerLoanId },
+        include: [{
+            model: models.packet,
+            include: [{
+                model: models.customerLoanOrnamentsDetail,
+                include: [{
+                    model: models.ornamentType,
+                    as: 'ornamentType'
+                }]
+            }]
+        }]
+    })
+
+    customerLoan.dataValues.loanPacketDetails = packet
+
     let ornamentType = [];
     if (customerLoan.loanOrnamentsDetail.length != 0) {
         for (let ornamentsDetail of customerLoan.loanOrnamentsDetail) {
@@ -1568,15 +1584,6 @@ exports.getSingleLoanDetails = async (req, res, next) => {
         }
         customerLoan.dataValues.ornamentType = ornamentType;
     }
-    // if (customerLoan.unsecuredLoan == null) {
-    //     customerLoan.dataValues['isUnsecuredSchemeApplied'] = false;
-    // } else {
-    //     if (customerLoan.unsecuredLoan.isActive) {
-    //         customerLoan.dataValues['isUnsecuredSchemeApplied'] = true
-    //     } else {
-    //         customerLoan.dataValues['isUnsecuredSchemeApplied'] = customerLoan.unsecuredLoan.isActive
-    //     }
-    // }
 
     return res.status(200).json({ message: 'success', data: customerLoan })
 }
@@ -1630,26 +1637,25 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
                     }
                 ]
             },
-            {
-                model: models.customerLoanPackageDetails,
-                as: 'loanPacketDetails',
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                include: [{
-                    model: models.packet,
-                    as: 'packets',
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                    include: [
-                        {
-                            model: models.customerLoanOrnamentsDetail,
-                            as: 'packetOrnament',
-                            include: [{
-                                model: models.ornamentType,
-                                as: 'ornamentType'
-                            }]
-                        }
-                    ]
-                }]
-            },
+            // {
+            //     model: models.customerLoanPackageDetails,
+            //     as: 'loanPacketDetails',
+            //     attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            //     include: [{
+            //         model: models.packet,
+            //         as: 'packets',
+            //         attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            //         include: [
+            //             {
+            //                 model: models.customerLoanOrnamentsDetail,
+            //                 include: [{
+            //                     model: models.ornamentType,
+            //                     as: 'ornamentType'
+            //                 }]
+            //             }
+            //         ]
+            //     }]
+            // },
             {
                 model: models.customerLoanDocument,
                 as: 'customerLoanDocument'
@@ -1661,7 +1667,27 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
             }
         ]
     });
-    return res.status(200).json({ message: 'success', data: customerLoan })
+
+    let packet = await models.customerLoanPackageDetails.findAll({
+        where: { loanId: customerLoanId },
+        include: [{
+            model: models.packet,
+            include: [{
+                model: models.customerLoanOrnamentsDetail,
+                include: [{
+                    model: models.ornamentType,
+                    as: 'ornamentType'
+                }]
+            }]
+        }]
+    })
+
+    let data = await models.customerLoanOrnamentsDetail.findAll({
+        where: { loanId: customerLoanId }
+    })
+
+    customerLoan.dataValues.loanPacketDetails = packet
+    return res.status(200).json({ message: 'success', data: data })
 }
 
 //  FUNCTION FOR GET APPLIED LOAN DETAILS

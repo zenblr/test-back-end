@@ -172,9 +172,9 @@ module.exports = (sequelize, DataTypes) => {
                 }
                 let purityTestImage = []
                 let purityTestPath = []
-                let newData;
+                let newData = {}
 
-                if (values.loanOrnamentsDetail[i].purityTest.length) {
+                if (values.loanOrnamentsDetail[i].purityTest) {
 
                     for (imgUrl of values.loanOrnamentsDetail[i].purityTest) {
                         let URL = process.env.BASE_URL + imgUrl;

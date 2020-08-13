@@ -64,9 +64,9 @@ module.exports = (sequelize, DataTypes) => {
         packet.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
 
 
-        packet.belongsToMany(models.customerLoanPackageDetails, { through: models.customerLoanPacket, foreignKey: 'customerLoanPackageDetailId' });
+        packet.belongsToMany(models.customerLoanPackageDetails, { through: models.customerLoanPacket, foreignKey: 'packetId' });
 
-        packet.belongsToMany(models.customerLoanOrnamentsDetail, { through: models.packetOrnament, foreignKey: 'ornamentDetailId' });
+        packet.belongsToMany(models.customerLoanOrnamentsDetail, { through: models.packetOrnament, foreignKey: 'packetId' });
 
 
 

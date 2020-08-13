@@ -125,36 +125,70 @@ module.exports = (sequelize, DataTypes) => {
         customerLoanOrnamentsDetail.belongsTo(models.ornamentType, { foreignKey: 'ornamentTypeId', as: 'ornamentType' });
         customerLoanOrnamentsDetail.belongsToMany(models.partRelease, { through: models.partReleaseOrnaments, foreignKey: 'ornamentId' });
 
-        customerLoanOrnamentsDetail.belongsToMany(models.packet, { through: models.packetOrnament, foreignKey: 'packetId' });
+        customerLoanOrnamentsDetail.belongsToMany(models.packet, { through: models.packetOrnament, foreignKey: 'ornamentDetailId' });
 
     }
 
     customerLoanOrnamentsDetail.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
         if (values.weightMachineZeroWeight) {
-            values.weightMachineZeroWeightData = process.env.BASE_URL + values.weightMachineZeroWeight;
+
+            let data = {};
+            data.path = values.weightMachineZeroWeight;
+            data.URL = process.env.BASE_URL + values.weightMachineZeroWeight;
+            values.weightMachineZeroWeightData = data;
+
         }
         if (values.withOrnamentWeight) {
-            values.withOrnamentWeightData = process.env.BASE_URL + values.withOrnamentWeight;
+
+            let data = {};
+            data.path = values.withOrnamentWeight;
+            data.URL = process.env.BASE_URL + values.withOrnamentWeight;
+            values.withOrnamentWeightData = data;
         }
+
         if (values.stoneTouch) {
-            values.stoneTouchData = process.env.BASE_URL + values.stoneTouch;
+
+            let data = {};
+            data.path = values.stoneTouch;
+            data.URL = process.env.BASE_URL + values.stoneTouch;
+            values.stoneTouchData = data;
         }
         if (values.acidTest) {
-            values.acidTestData = process.env.BASE_URL + values.acidTest;
+            // values.acidTestData = process.env.BASE_URL + values.acidTest;
+
+            let data = {};
+            data.path = values.acidTest;
+            data.URL = process.env.BASE_URL + values.acidTest;
+            values.acidTestData = data;
         }
+
         if (values.ornamentImage) {
-            values.ornamentImageData = process.env.BASE_URL + values.ornamentImage;
+            let data = {};
+            data.path = values.ornamentImage;
+            data.URL = process.env.BASE_URL + values.ornamentImage;
+            values.ornamentImageData = data;
         }
         let purityTestImage = []
+        let purityTestPath = []
+        let newData = {}
+
         if (values.purityTest) {
+
             for (imgUrl of values.purityTest) {
                 let URL = process.env.BASE_URL + imgUrl;
                 purityTestImage.push(URL)
+
+                let path = imgUrl;
+                purityTestPath.push(path)
+
+                let data = {};
+                data.path = purityTestPath;
+                data.URL = purityTestImage;
+                newData = data;
             }
         }
-        values.purityTestImage = purityTestImage
-
+        values.purityTestImage = newData
         return values;
     }
 
