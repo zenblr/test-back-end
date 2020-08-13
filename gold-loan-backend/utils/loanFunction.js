@@ -34,12 +34,41 @@ let getCustomerInterestAmount = async (masterLoanId) => {
         amount.secured = await interestAmountCalculation(loan.secured);
     }
     if (loan.unsecured) {
-        amount.unSecured = await interestAmountCalculation(loan.unsecured);
+        amount.unsecured = await interestAmountCalculation(loan.unsecured);
     }
     return amount
 }
 
-let interestAmountCalculation = async ( id) => {
+let payableAmount = async (amount, loan) => {
+    let securedPenalInterest = amount.secured.penalInterest
+    let securedInterest = amount.secured.interest
+    let interest = amount.secured.interest
+    let penalInterest = amount.secured.penalInterest
+
+    let unsecuredInterest = 0
+    let unsecuredPenalInterest = 0
+    let payableAmount = amount.secured.interest + amount.secured.penalInterest
+    if (amount.unsecured) {
+        payableAmount = payableAmount + amount.unsecured.interest + amount.unsecured.penalInterest
+        interest = interest + amount.unsecured.interest
+        penalInterest = penalInterest + amount.unsecured.penalInterest
+        unsecuredInterest = amount.unsecured.interest
+        unsecuredPenalInterest = amount.unsecured.penalInterest
+    }
+    let data = {}
+    data.outstandingAmount = (loan.outstandingAmount).toFixed(2)
+    data.securedPenalInterest = (securedPenalInterest).toFixed(2)
+    data.unsecuredPenalInterest = (unsecuredPenalInterest).toFixed(2)
+    data.securedInterest = (securedInterest).toFixed(2)
+    data.unsecuredInterest = (unsecuredInterest).toFixed(2)
+    data.interest = (interest).toFixed(2)
+    data.penalInterest = (penalInterest).toFixed(2)
+    data.payableAmount = (payableAmount).toFixed(2)
+
+    return data
+}
+
+let interestAmountCalculation = async (id) => {
     let amount = {
         interest: 0,
         penalInterest: 0
@@ -208,7 +237,7 @@ let newSlabRateInterestCalcultaion = async (loanAmount, interestRate, paymentFre
     let amount = ((Number(loanAmount) * (Number(interestRate) * 12 / 100)) * Number(paymentFrequency)
         / 360).toFixed(2);
     let length = (tenure * 30) / paymentFrequency;
-    if(amount < 0){
+    if (amount < 0) {
         amount = 0
     }
     return { amount, length }
@@ -333,14 +362,14 @@ let getCustomerLoanId = async (masterLoanId) => {
         ],
         where: {
             isActive: true,
-            id:masterLoanId
+            id: masterLoanId
         },
         attributes: ['id'],
-        include: [ {
-                model: models.customerLoan,
-                as: 'customerLoan',
-                attributes: ['id']
-            }],
+        include: [{
+            model: models.customerLoan,
+            as: 'customerLoan',
+            attributes: ['id']
+        }],
     });
     let customerLoanId = [];
     for (const masterLoanData of masterLona) {
@@ -363,7 +392,7 @@ let calculationDataOneLoan = async (masterLoanId) => {
     return { noOfDaysInYear, gracePeriodDays, loanInfo };
 }
 
-let intrestCalculationForSelectedLoan = async (date,masterLoanId) => {
+let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
     let data = await calculationDataOneLoan(masterLoanId);
     let loanInfo = data.loanInfo;
     let currentDate = moment(date);
@@ -474,7 +503,8 @@ module.exports = {
     getPendingNoOfDaysInterest: getPendingNoOfDaysInterest,
     penal: penal,
     mergeInterestTable: mergeInterestTable,
-    getCustomerLoanId:getCustomerLoanId,
-    calculationDataOneLoan:calculationDataOneLoan,
-    intrestCalculationForSelectedLoan:intrestCalculationForSelectedLoan
+    getCustomerLoanId: getCustomerLoanId,
+    calculationDataOneLoan: calculationDataOneLoan,
+    intrestCalculationForSelectedLoan: intrestCalculationForSelectedLoan,
+    payableAmount: payableAmount
 }

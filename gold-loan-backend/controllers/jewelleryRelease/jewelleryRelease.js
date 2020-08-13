@@ -144,9 +144,9 @@ async function getornamentLoanInfo(masterLoanId, ornamentWeight, amount) {
     }
     loanDetails.interestAmount = amount.secured.interest;
     loanDetails.penalInterest = amount.secured.penalInterest;
-    if (amount.unSecured) {
-        loanDetails.interestAmount = loanDetails.interestAmount + amount.unSecured.interest;
-        loanDetails.penalInterest = loanDetails.penalInterest + amount.unSecured.penalInterest;
+    if (amount.unsecured) {
+        loanDetails.interestAmount = loanDetails.interestAmount + amount.unsecured.interest;
+        loanDetails.penalInterest = loanDetails.penalInterest + amount.unsecured.penalInterest;
     }
     //calculate value here
     loanDetails.totalPayableAmount = ornamentWeight.releaseAmount + loanDetails.penalInterest + loanDetails.interestAmount;

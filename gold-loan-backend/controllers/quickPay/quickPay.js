@@ -12,7 +12,7 @@ const CONSTANT = require("../../utils/constant");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { mergeInterestTable, getCustomerInterestAmount, getLoanDetails } = require('../../utils/loanFunction')
+let { mergeInterestTable, getCustomerInterestAmount, getLoanDetails, payableAmount } = require('../../utils/loanFunction')
 
 //INTEREST TABLE 
 exports.getInterestTable = async (req, res, next) => {
@@ -59,30 +59,7 @@ exports.payableAmount = async (req, res, next) => {
 
     let loan = await getLoanDetails(masterLoanId);
 
-    let securedPenalInterest = amount.secured.penalInterest
-    let securedInterest = amount.secured.interest
-    let interest = amount.secured.interest
-    let penalInterest = amount.secured.penalInterest
-
-    let unsecuredInterest = 0
-    let unsecuredPenalInterest = 0
-    let payableAmount = amount.secured.interest + amount.secured.penalInterest
-    if (amount.unSecured) {
-        payableAmount = payableAmount + amount.unSecured.interest + amount.unSecured.penalInterest
-        interest = interest + amount.unSecured.interest
-        penalInterest = penalInterest + amount.unSecured.penalInterest
-        unsecuredInterest = amount.unSecured.interest
-        unsecuredPenalInterest = amount.unSecured.penalInterest
-    }
-    let data = {}
-    data.outstandingAmount = (loan.outstandingAmount).toFixed(2)
-    data.securedPenalInterest = (securedPenalInterest).toFixed(2)
-    data.unsecuredInterest = (unsecuredInterest).toFixed(2)
-    data.unsecuredPenalInterest = (unsecuredPenalInterest).toFixed(2)
-    data.securedInterest = (securedInterest).toFixed(2)
-    data.interest = (interest).toFixed(2)
-    data.penalInterest = (penalInterest).toFixed(2)
-    data.payableAmount = (payableAmount).toFixed(2)
+    let data = await payableAmount(amount, loan)
 
     return res.status(200).json({ data });
 }
@@ -107,6 +84,9 @@ exports.payableAmountConfirm = async (req, res, next) => {
     console.log(amount)
     loan['amount'] = amount
     return res.status(200).json({ data: loan });
+}
+
+exports.partPayment = async (req, res, next) => {
 
 }
 
