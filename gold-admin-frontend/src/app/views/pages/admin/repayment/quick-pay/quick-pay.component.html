@@ -136,7 +136,7 @@
         </div>
         <div class="row justify-content-center kt-padding-t-15 kt-padding-b-15" *ngIf="paymentDetails">
             <div class="col-6 text-center">
-                <kt-button [value]="'Confirm'" [type]="'button'"></kt-button>
+                <kt-button [value]="'Confirm'" [type]="'button'" (click)="submit()"></kt-button>
                 <span class="kt-padding-5 "></span>
                 <kt-button [value]="'Cancel'" [type]="'reset'" (click)="paymentDetails = '';payableAmt.enable()">
                 </kt-button>

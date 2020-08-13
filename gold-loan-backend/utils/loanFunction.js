@@ -39,7 +39,7 @@ let getCustomerInterestAmount = async (masterLoanId) => {
     return amount
 }
 
-let interestAmountCalculation = async ( id) => {
+let interestAmountCalculation = async (id) => {
     let amount = {
         interest: 0,
         penalInterest: 0
@@ -208,7 +208,7 @@ let newSlabRateInterestCalcultaion = async (loanAmount, interestRate, paymentFre
     let amount = ((Number(loanAmount) * (Number(interestRate) * 12 / 100)) * Number(paymentFrequency)
         / 360).toFixed(2);
     let length = (tenure * 30) / paymentFrequency;
-    if(amount < 0){
+    if (amount < 0) {
         amount = 0
     }
     return { amount, length }
@@ -307,20 +307,37 @@ let mergeInterestTable = async (masterLoanId) => {
         if (interestTable.isUnsecuredSchemeApplied) {
             data.emiReceivedDate = securedTable[i].emiReceivedDate
             data.interestAmount = (securedTable[i].interestAmount + unsecuredTable[i].interestAmount).toFixed(2)
-            data.balanceAmount = (securedTable[i].balanceAmount + unsecuredTable[i].balanceAmount).toFixed(2)
+            data.balanceAmount = (securedTable[i].outstandingInterest + unsecuredTable[i].outstandingInterest).toFixed(2)
             data.paidAmount = securedTable[i].paidAmount + unsecuredTable[i].paidAmount
             data.panelInterest = securedTable[i].panelInterest + unsecuredTable[i].panelInterest
-        }
+        }else{
         data.emiReceivedDate = securedTable[i].emiReceivedDate
         data.interestAmount = (securedTable[i].interestAmount).toFixed(2)
-        data.balanceAmount = (securedTable[i].balanceAmount).toFixed(2)
+        data.balanceAmount = (securedTable[i].outstandingInterest).toFixed(2)
         data.paidAmount = securedTable[i].paidAmount
         data.panelInterest = securedTable[i].panelInterest
-
+        }
         mergeTble.push(data)
     };
 
     return { mergeTble, securedTable, unsecuredTable };
+}
+
+let customerLoanDetailsByMasterLoanDetails = async (masterLoanId) => {
+    let loan = await models.customerLoanMaster.findOne({
+        where: { isActive: true, id: masterLoanId },
+        attributes: ['id', 'outstandingAmount', 'finalLoanAmount', 'tenure'],
+        order: [
+            [models.customerLoan, 'id', 'asc']
+        ],
+        include: [{
+            model: models.customerLoan,
+            as: 'customerLoan',
+            where: { isActive: true }
+        }]
+    });
+
+    return { loan }
 }
 
 
@@ -347,4 +364,5 @@ module.exports = {
     getPendingNoOfDaysInterest: getPendingNoOfDaysInterest,
     penal: penal,
     mergeInterestTable: mergeInterestTable,
+    customerLoanDetailsByMasterLoanDetails:customerLoanDetailsByMasterLoanDetails,
 }
