@@ -41,8 +41,6 @@ route.get('/applied-scrap-details', checkAuth, wrapper(appliedScrapDetails)); //
 
 route.get('/scrap-details', checkAuth, wrapper(getScrapDetails)); // FETCH APLLIED SCRAP DETAILS
 
-route.get('/single-scrap-customer', checkAuth, wrapper(getSingleScrapInCustomerManagment))//customer-managment single SCRAP
-
 route.post('/quick-pay', checkAuth, wrapper(quickPay)); // DISBURSEMENT OF SCRAP AMOUNT
 
 route.get('/get-customer-acknowledgement', checkAuth, wrapper(printCustomerAcknowledgement)); //Print details

@@ -3,11 +3,13 @@ import { Subject, Subscription, merge } from 'rxjs';
 import { MatPaginator, MatDialog } from '@angular/material';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
 import { map, takeUntil, tap, skip, distinctUntilChanged } from 'rxjs/operators';
-import { StandardDeductionDatasource } from '../../../../../../core/masters/standard-deduction/datasources/standard-deduction.datasource';
-import { StandardDeductionService } from '../../../../../../core/masters/standard-deduction/service/standard-deduction.service';
+import { StandardDeductionDatasource } from '../../../../../../core/scrap-management/standard-deduction/datasources/standard-deduction.datasource';
+import { StandardDeductionService } from '../../../../../../core/scrap-management/standard-deduction/service/standard-deduction.service';
 import { AddStandardDeductionComponent } from '../add-standard-deduction/add-standard-deduction.component';
 import { LayoutUtilsService } from '../../../../../../core/_base/crud/utils/layout-utils.service';
 import { ToastrService } from 'ngx-toastr';
+import { NgxPermissionsService } from "ngx-permissions";
+
 
 @Component({
   selector: 'kt-standard-deduction-list',
@@ -22,6 +24,7 @@ export class StandardDeductionListComponent implements OnInit {
   unsubscribeSearch$ = new Subject();
   destroy$ = new Subject();
   searchValue = '';
+  permissions: any;
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -29,7 +32,9 @@ export class StandardDeductionListComponent implements OnInit {
     private standardDeductionService: StandardDeductionService,
     public dialog: MatDialog,
     private layoutUtilsService: LayoutUtilsService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private ngxPermissionService: NgxPermissionsService,
+
   ) {
     this.standardDeductionService.openModal$.pipe(
       map(res => {
@@ -38,6 +43,12 @@ export class StandardDeductionListComponent implements OnInit {
         }
       }),
       takeUntil(this.destroy$)).subscribe();
+
+    this.ngxPermissionService.permissions$.subscribe((res) => {
+      if (res) {
+        this.permissions = res;
+      }
+    });
   }
 
   ngOnInit() {

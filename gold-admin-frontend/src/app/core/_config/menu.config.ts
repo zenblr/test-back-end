@@ -197,12 +197,6 @@ export class MenuConfig {
 											page: "/admin/holidays"
 										},
 										{
-											title: "Standard Deduction",
-											root: true,
-											permission: !this.permissionsArr.includes('viewStandardDeduction'),
-											page: "/admin/masters/standard-deduction"
-										},
-										{
 											title: "Other Charges",
 											root: true,
 											permission: false,
@@ -851,12 +845,18 @@ export class MenuConfig {
 							root: true,
 							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-03.svg",
-							permission: !this.permissionsArr.includes('viewScrapGlobalSetting'),
+							permission: !this.permissionsArr.includes('viewScrapGlobalSetting') || !this.permissionsArr.includes('viewStandardDeduction'),
 							submenu: [
 								{
 									title: "Global Settings",
 									page: "/admin/scrap-management/global-settings",
 									permission: !this.permissionsArr.includes('viewScrapGlobalSetting')
+								},
+								{
+									title: "Standard Deduction",
+									root: true,
+									permission: !this.permissionsArr.includes('viewStandardDeduction'),
+									page: "/admin/scrap-management/standard-deduction"
 								},
 							]
 						},

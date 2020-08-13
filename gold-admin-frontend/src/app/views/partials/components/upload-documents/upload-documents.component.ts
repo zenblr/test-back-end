@@ -9,7 +9,7 @@ import { PdfViewerComponent } from '../../../../views/partials/components/pdf-vi
 import { Router } from '@angular/router';
 import { LoanApplicationFormService } from '../../../../core/loan-management';
 import { ScrapApplicationFormService } from '../../../../core/scrap-management';
-import { StandardDeductionService } from '../../../../core/masters/standard-deduction/service/standard-deduction.service';
+import { StandardDeductionService } from '../../../../core/scrap-management/standard-deduction/service/standard-deduction.service';
 import { LoanTransferService } from '../../../../core/loan-management/loan-transfer/services/loan-transfer.service';
 import { GlobalSettingService } from '../../../../core/global-setting/services/global-setting.service';
 import { NgxPermissionsService } from 'ngx-permissions';

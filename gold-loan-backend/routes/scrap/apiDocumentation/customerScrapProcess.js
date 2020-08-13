@@ -650,24 +650,6 @@
  *     responses:
  *       200:
  *          description: success.
- * /scrap/scrap-process/single-scrap-customer:
- *   get:
- *     tags:
- *       -  Customer scrap Process
- *     name: read single scrap details
- *     summary: To read single scrap details
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     parameters:
- *     - name: "customerScrapId"
- *       in: "query"
- *       description: "Scrap Id"
- *       type: "number"
- *     responses:
- *       200:
- *          description: success.
  * /scrap/scrap-process/get-customer-acknowledgement:
  *   get:
  *     tags: 

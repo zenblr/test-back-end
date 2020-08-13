@@ -20,8 +20,6 @@ import { LeadSourceListComponent } from './lead-source/lead-source-list/lead-sou
 import { LeadSourceAddComponent } from './lead-source/lead-source-add/lead-source-add.component';
 import { OccupationAddComponent } from './occupation/occupation-add/occupation-add.component';
 import { OccupationListComponent } from './occupation/occupation-list/occupation-list.component';
-import { StandardDeductionListComponent } from './standard-deduction/standard-deduction-list/standard-deduction-list.component';
-import { AddStandardDeductionComponent } from './standard-deduction/add-standard-deduction/add-standard-deduction.component';
 import { OtherChargesAddComponent } from './other-charges/other-charges-add/other-charges-add.component';
 import { OtherChargesListComponent } from './other-charges/other-charges-list/other-charges-list.component';
 
@@ -51,10 +49,6 @@ const routes: Routes = [
     component: OccupationListComponent
   },
   {
-    path: 'standard-deduction',
-    component: StandardDeductionListComponent
-  },
-  {
     path: 'other-charges',
     component: OtherChargesListComponent
   }
@@ -74,8 +68,6 @@ const routes: Routes = [
     LeadSourceAddComponent,
     OccupationAddComponent,
     OccupationListComponent,
-    StandardDeductionListComponent,
-    AddStandardDeductionComponent,
     OtherChargesListComponent,
     OtherChargesAddComponent,
   ],
@@ -109,7 +101,6 @@ const routes: Routes = [
     ReasonAddComponent,
     LeadSourceAddComponent,
     OccupationAddComponent,
-    AddStandardDeductionComponent,
     OtherChargesAddComponent,
   ]
 })
