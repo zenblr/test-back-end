@@ -146,7 +146,8 @@
                                     (click)="applyLoan(role)">Apply Loan</button>
                                 <button *ngxPermissionsOnly="['addLoanTransfer', 'loanTransferAppraiserRating']"
                                     mat-menu-item (click)="transferLoan(role)">Transfer Loan</button>
-                                <button mat-menu-item (click)="applyScrap(role)">Apply Scrap</button>
+                                <button *ngxPermissionsOnly="['scrapApplicationAdd']" mat-menu-item
+                                    (click)="applyScrap(role)">Apply Scrap</button>
                             </mat-menu>
                         </ng-container>
                         <!-- <div ngbDropdown class="dropdown dropdown-inline" #customerActionDropdown1="ngbDropdown"
