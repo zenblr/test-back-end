@@ -98,19 +98,19 @@ export class PaymentDialogComponent implements OnInit {
     return this.paymentForm.controls
   }
 
-  closeModal() {
-    if (this.data.value) {
-      this.dialogRef.close(this.paymentForm.value)
-    } else {
-      this.dialogRef.close()
-    }
-  }
+  // closeModal() {
+  //   if (this.data.value) {
+  //     this.dialogRef.close()
+  //   } else {
+  //     this.dialogRef.close()
+  //   }
+  // }
 
   action(event) {
     if (event) {
       this.submit()
     } else if (!event) {
-      this.closeModal()
+      this.dialogRef.close()
     }
   }
 
