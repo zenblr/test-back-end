@@ -1669,7 +1669,7 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
     });
 
     let packet = await models.customerLoanPackageDetails.findAll({
-        where: { loanId: customerLoanId },
+        where: { loanId: masterLoanId },
         include: [{
             model: models.packet,
             include: [{
@@ -1681,13 +1681,8 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
             }]
         }]
     })
-
-    let data = await models.customerLoanOrnamentsDetail.findAll({
-        where: { loanId: customerLoanId }
-    })
-
     customerLoan.dataValues.loanPacketDetails = packet
-    return res.status(200).json({ message: 'success', data: data })
+    return res.status(200).json({ message: 'success', data: customerLoan })
 }
 
 //  FUNCTION FOR GET APPLIED LOAN DETAILS
