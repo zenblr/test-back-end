@@ -7,7 +7,7 @@ const Op = Sequelize.Op;
 const _ = require('lodash');
 const moment = require('moment')
 const { dailyIntrestCalculation } = require('../../utils/interestCron');
-const { getCustomerInterestAmount } = require('../../utils/loanFunction');
+const { getCustomerInterestAmount,intrestCalculationForSelectedLoan } = require('../../utils/loanFunction');
 
 
 // add internal branch
@@ -24,10 +24,58 @@ exports.interestCalculation = async (req, res) => {
     return res.status(200).json(data);
 }
 
+exports.interestCalculationOneLoan = async (req, res) => {
+    let data;
+    let { date,masterLoanId } = req.body;
+    if (date) {
+        data = await intrestCalculationForSelectedLoan(date,masterLoanId);
+    } else {
+        date = moment();
+        data = await intrestCalculationForSelectedLoan(date,masterLoanId);
+    }
+    return res.status(200).json(data);
+}
+
 exports.interestAmount = async (req, res) => {
     let { id } = req.query;
     let amount = await getCustomerInterestAmount(id);
     return res.status(200).json(amount);
+}
+
+exports.getInterestTableInExcel = async (req, res) => {
+    let interestData = await models.customerLoanInterest.findAll({order:[['id','ASC']]});
+    
+    let finalData = [];
+    
+    for (const data of interestData) {
+        let interest = {};
+        interest["id"] = data.id;
+        interest["loanId"] = data.loanId;
+        interest["masterLoanId"] = data.masterLoanId;
+        interest["emiDueDate"] = data.emiDueDate;
+        interest["interestRate"] = data.interestRate;
+        interest["interestAmount"] = data.interestAmount;
+        interest["paidAmount"] = data.paidAmount;
+        interest["interestAccrual"] = data.interestAccrual;
+        interest["outstandingInterest"] = data.outstandingInterest;
+        interest["emiReceivedDate"] = data.emiReceivedDate;
+        interest["panelInterest"] = data.panelInterest;
+        interest["PenalAccrual"] = data.PenalAccrual;
+        interest["penalOutstanding"] = data.penalOutstanding;
+        interest["penalPaid"] = data.penalPaid;
+        interest["emiStatus"] = data.emiStatus;
+        interest["createdBy"] = data.createdBy;
+        interest["modifiedBy"] = data.modifiedBy;
+        interest["isActive"] = data.isActive;
+        interest["createdAt"] = data.createdAt;
+        interest["updatedAt"] = data.updatedAt;
+        finalData.push(interest);
+    }
+    const date = Date.now();
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader("Content-Disposition", "attachment; filename=" + `interest${date}.xlsx`);
+    await res.xls(`interest${date}.xlsx`, finalData);
+    res.end();
 }
 
 exports.app = async (req, res) => {

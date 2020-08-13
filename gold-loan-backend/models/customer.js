@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'internal_branch_id',
         },
+        merchantId: {
+            type: DataTypes.INTEGER,
+            field: 'merchant_id',
+        },
         firstName: {
             type: DataTypes.STRING,
             field: 'first_name',

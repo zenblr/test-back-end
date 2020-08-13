@@ -205,7 +205,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
             return addPartRelease
         });
         return res.status(200).json({ message: "success", partRelease });
-    } else {
+    } else { 
         return res.status(400).json({ message: 'invalid paymentType' });
     }
 }
