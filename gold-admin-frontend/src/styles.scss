@@ -526,6 +526,19 @@ mat-header-row {
 	}
 }
 
+.ng-select.ng-select-disabled>.ng-select-container {
+    background: #f2f3f7 !important;
+	cursor: not-allowed !important;
+}
+
+.ng-select.ng-select-disabled .ng-arrow-wrapper {
+    cursor: not-allowed;
+}
+
+.ng-select.ng-select-disabled>.ng-select-container .ng-input>input {
+	cursor: not-allowed !important;
+}
+
 .ng-select .ng-select-container .ng-value-container .ng-placeholder {
 	color: #000;
 	transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
