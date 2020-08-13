@@ -5,7 +5,8 @@
 
                 <ng-container matColumnDef="fullName">
                     <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
-                    <mat-cell *matCellDef="let customer">{{customer.firstName | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let customer">
+                        {{customer.firstName | titlecase}}&nbsp;{{customer.lastName | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="customerId">

@@ -704,6 +704,9 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'my-requests') {
 			this.showInput = true;
 		}
+		if (this.path == 'scrap-buying') {
+			this.showInput = true;
+		}
 	}
 
 	action(event: Event) {

@@ -22,7 +22,7 @@ exports.addScrapPacket = async (req, res, next) => {
         return res.status(400).json({ message: `This packet Id is already exist` })
     }
 
-    let barcodeExist = await models.scrapPacket.findOne({ where: { barcodeNumber } })
+    let barcodeExist = await models.scrapPacket.findOne({ where: { barcodeNumber, isActive: true } })
     if (!check.isEmpty(barcodeExist)) {
         return res.status(400).json({ message: `This barcode number already exist` })
     }
@@ -93,6 +93,14 @@ exports.viewScrapPacket = async (req, res, next) => {
         limit: pageSize,
 
     });
+    for(let packet of packetDetails){
+        if(packet.appraiserId == null){
+            packet.dataValues.isAppraiserAssign = false;
+        }else{
+            packet.dataValues.isAppraiserAssign = true;
+        }
+    }
+   
     let count = await models.scrapPacket.count({
         where: searchQuery,
         subQuery: false,
