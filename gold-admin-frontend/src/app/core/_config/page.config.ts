@@ -366,6 +366,11 @@ export class PageConfig {
 						page: { title: "Customer Details", desc: "" },
 					},
 				},
+				"scrap-details": {
+					id: {
+						page: { title: "Scrap Details", desc: "" },
+					},
+				},
 				"global-settings": {
 					page: { title: "Global Settings", desc: "" },
 				},
