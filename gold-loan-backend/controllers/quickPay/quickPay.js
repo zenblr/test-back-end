@@ -69,13 +69,11 @@ exports.payableAmountConfirm = async (req, res, next) => {
     let { masterLoanId, amount } = req.query
     let loan = await customerLoanDetailsByMasterLoanDetails(masterLoanId)
 
-
-    loan['amount'] = amount
     return res.status(200).json({ data: loan });
 }
 
 exports.partPayment = async (req, res, next) => {
-
+    let { masterLoanId, amount } = req.query
 }
 
 exports.quickPayment = async (req, res, next) => {
