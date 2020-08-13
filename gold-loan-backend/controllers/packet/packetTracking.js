@@ -21,19 +21,8 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
             attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
             include: [{
                 model: models.packet,
-                as: 'packets',
                 attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
                 include: [
-                    {
-                        model: models.packetOrnament,
-                        as: 'packetOrnament',
-                        attributes: { exclude: ['createdAt', 'updatedAt'] },
-                        include: [{
-                            model: models.ornamentType,
-                            as: 'ornamentType',
-                            attributes: { exclude: ['createdAt', 'updatedAt'] }
-                        }]
-                    },
                     {
                         model: models.internalBranch,
                         as: 'internalBranch',
@@ -89,54 +78,23 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
 
 //FUNCTION TO GET DETAILS OF PACKET OF SINGLE CUSTOMER 
 exports.viewPackets = async (req, res) => {
-    let { loanId } = req.query
-    let associateModel = [
-        {
-            model: models.customerLoanPackageDetails,
-            as: 'loanPacketDetails',
-            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+
+    let { masterLoanId } = req.query
+    let data = await models.customerLoanPackageDetails.findAll({
+        where: { masterLoanId: masterLoanId },
+        include: [{
+            model: models.packet,
             include: [{
-                model: models.packet,
-                as: 'packets',
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                include: [
-                    {
-                        model: models.packetOrnament,
-                        as: 'packetOrnament',
-                        attributes: { exclude: ['createdAt', 'updatedAt'] },
-                        include: [{
-                            model: models.ornamentType,
-                            as: 'ornamentType',
-                            attributes: { exclude: ['createdAt', 'updatedAt'] }
-                        }]
-                    },
-                    {
-                        model: models.internalBranch,
-                        as: 'internalBranch',
-                        where: { isActive: true },
-                        attributes: ['id', 'internalBranchUniqueId', 'name']
-                    },
-                ]
+                model: models.customerLoanOrnamentsDetail,
+                include: [{
+                    model: models.ornamentType,
+                    as: 'ornamentType'
+                }]
             }]
-        },
-        {
-            model: models.customerLoanOrnamentsDetail,
-            as: 'loanOrnamentsDetail',
-            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        }]
+    })
 
-        }
-    ]
-
-    let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
-
-    let packetDetails = await models.customerLoanMaster.findOne({
-        attributes: ['id'],
-        where: { loanStageId: stageId.id, id: loanId },
-        include: associateModel,
-    });
-
-    console.log(Object.keys(packetDetails.loanPacketDetails[0].packets))
-    return res.status(200).json({ data: packetDetails, numberOfPackets: Object.keys(packetDetails.loanPacketDetails[0].packets).length });
+    return res.status(200).json({ data: data });
 }
 
 //FUNCTION TO CHECK BARCODE 
@@ -191,7 +149,7 @@ exports.viewLogs = async (req, res) => {
     let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
 
     let logDetails = await models.customerLoanMaster.findOne({
-        attributes: ['id', 'customerId','appraiserId','operatinalTeamId','bmId'],
+        attributes: ['id', 'customerId', 'appraiserId', 'operatinalTeamId', 'bmId'],
         where: { loanStageId: stageId.id, id: masterLoanId },
         include: [
             {

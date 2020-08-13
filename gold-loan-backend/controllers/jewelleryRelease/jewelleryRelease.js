@@ -267,9 +267,16 @@ exports.getPartReleaseList = async (req, res, next) => {
                 as: 'loanPersonalDetail',
                 attributes: ['customerUniqueId']
             }]
-    }, {
-        model: models.customerLoanOrnamentsDetail
-    }, {
+    },
+    {
+        model: models.customerLoanOrnamentsDetail,
+        include: [
+            {
+                model: models.packet
+            }
+        ]
+    },
+    {
         model: models.partReleaseAppraiser,
         as: 'appraiserData',
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
@@ -426,7 +433,12 @@ exports.partReleaseApprovedList = async (req, res, next) => {
             }
         ]
     }, {
-        model: models.customerLoanOrnamentsDetail
+        model: models.customerLoanOrnamentsDetail,
+        include: [
+            {
+                model: models.packet
+            }
+        ]
     }, {
         model: models.partReleaseAppraiser,
         as: 'appraiserData',
