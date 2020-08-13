@@ -59,14 +59,26 @@ export class LoanScrapDetailsComponent implements OnInit {
   pdfCheck() {
     let laonAgree, pawn, scheme, voucher, invoice, sale;
     if (this.details.customerLoanDocument) {
-      laonAgree = this.details.customerLoanDocument.loanAgreementCopyImage[0].split('.')
-      pawn = this.details.customerLoanDocument.pawnCopyImage[0].split('.')
-      scheme = this.details.customerLoanDocument.schemeConfirmationCopyImage[0].split('.')
+      if (this.details.customerLoanDocument.loanAgreementCopy) {
+        laonAgree = this.details.customerLoanDocument.loanAgreementCopyImage[0].split('.')
+      }
+      if (this.details.customerLoanDocument.pawnCopy) {
+        pawn = this.details.customerLoanDocument.pawnCopyImage[0].split('.')
+      }
+      if (this.details.customerLoanDocument.schemeConfirmationCopy) {
+        scheme = this.details.customerLoanDocument.schemeConfirmationCopyImage[0].split('.')
+      }
     }
     if (this.details.scrapDocument) {
-      voucher = this.details.scrapDocument.purchaseVoucherImage[0].split('.')
-      invoice = this.details.scrapDocument.purchaseInvoiceImage[0].split('.')
-      sale = this.details.scrapDocument.saleInvoiceImage[0].split('.')
+      if (this.details.scrapDocument.purchaseVoucher) {
+        voucher = this.details.scrapDocument.purchaseVoucherImage[0].split('.')
+      }
+      if (this.details.scrapDocument.purchaseInvoice) {
+        invoice = this.details.scrapDocument.purchaseInvoiceImage[0].split('.')
+      }
+      if (this.details.scrapDocument.saleInvoice) {
+        sale = this.details.scrapDocument.saleInvoiceImage[0].split('.')
+      }
     }
     if (laonAgree && laonAgree[laonAgree.length - 1] == 'pdf') {
       this.pdf.loanAgreementCopyImage = true
