@@ -75,14 +75,15 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
   ngOnChanges(change: SimpleChanges) {
     if (change.ornamentType && change.ornamentType.currentValue) {
-      let ornamentType = change.ornamentType.currentValue
+      this.ornamentTypeData = change.ornamentType.currentValue
       console.log(this.ornamentType)
       var temp = []
-      ornamentType.forEach(ele => {
-        temp.push(ele.ornamentType)
-      });
+      // ornamentType.forEach(ele => {
+      //   temp.push(ele.ornamentType)
+      // });
 
-      this.ornamentTypeData = temp
+      // this.ornamentTypeData = temp
+      console.log(this.ornamentTypeData, 'zzz')
     }
 
     if (change.loanStage && change.loanStage.currentValue) {
@@ -107,7 +108,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         packet.packets.forEach(ele => {
           this.packetsName = ele.packetUniqueId;
           this.controls.packetId.patchValue(ele.id)
-          this.ornamentName = ele.packetOrnament.map(e => e.ornamentType.name).toString();
+          this.ornamentName = ele.packetOrnament.map(e => e.ornamentType).toString();
           let ornamentType = ele.packetOrnament.map(e => e.ornamentType)
           this.ornamentId = ele.packetOrnament.map(e => e.ornamentType.id)
           this.splicedPackets.push(ele)
@@ -291,7 +292,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
     if (!this.scrapIds) {
       let ornamentTypeObject = this.controls.ornamentType.value.multiSelect
-      this.ornamentName = ornamentTypeObject.map(e => e.name).toString();
+      this.ornamentName = ornamentTypeObject.map(e => e.ornamentType).toString();
       this.ornamentId = ornamentTypeObject.map(e => e.id)
 
       this.removeOnamentsDataFromMultiselect(ornamentTypeObject)
