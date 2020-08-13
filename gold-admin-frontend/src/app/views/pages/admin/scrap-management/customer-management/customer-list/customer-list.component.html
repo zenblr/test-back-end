@@ -32,8 +32,8 @@
                     <mat-cell *matCellDef="let customer" [ngClass]="'w-200'">
                         <p>
                             <span class="kt-pointer" (click)="newScrap(customer)"
-                                *ngxPermissionsOnly="['loanApplicationAdd']">Add New Scrap</span>
-                            <span *ngxPermissionsOnly="['loanApplicationAdd']" class="px-1">|</span>
+                                *ngxPermissionsOnly="['scrapApplicationAdd']">Add New Scrap</span>
+                            <span *ngxPermissionsOnly="['scrapApplicationAdd']" class="px-1">|</span>
                             <span class="kt-pointer" (click)="viewDetails(customer.id)">View Details</span>
                             <!-- <span class="kt-pointer" (click)="editCustomer(customer)">Edit</span>&nbsp;|&nbsp;
                             <span class="text-danger kt-pointer" (click)="deleteCustomer(customer)">Delete</span> -->

@@ -816,7 +816,7 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-35.svg",
 							page: "/admin/scrap-management/scrap-buying-application-form",
-							permission: false,
+							permission: !this.permissionsArr.includes('scrapApplicationAdd'),
 						},
 						{
 							title: "Packet",
