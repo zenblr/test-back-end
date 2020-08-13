@@ -34,15 +34,9 @@ exports.ornamentsDetails = async (req, res, next) => {
                         model: models.ornamentType,
                         as: "ornamentType",
                         attributes: ['name', 'id'],
-                        include: [{
-                            model: models.packetOrnament,
-                            as: 'packetOrnament',
-                            attributes: ['packetId', 'id', 'ornamentTypeId'],
-                            include: [{
-                                model: models.packet,
-                                as: "packet"
-                            }]
-                        }]
+                    },
+                    {
+                        model: models.packet,
                     },
                     {
                         model: models.partRelease,
@@ -85,15 +79,9 @@ async function ornementsDetails(masterLoanId, whereBlock) {
                     model: models.ornamentType,
                     as: "ornamentType",
                     attributes: ['name', 'id'],
-                    include: [{
-                        model: models.customerLoanOrnamentsDetail,
-                        as: 'packetOrnament',
-                        attributes: ['packetId', 'id', 'ornamentDetailId'],
-                        include: [{
-                            model: models.packet,
-                            as: "packet"
-                        }]
-                    }]
+                },
+                {
+                    model: models.packet,
                 }
             ]
         }]
@@ -252,8 +240,8 @@ exports.getPartReleaseList = async (req, res, next) => {
                     sequelize.cast(sequelize.col("remaining_net_weight"), "varchar"), { [Op.iLike]: search + "%" }),
                 "$masterLoan.loanPersonalDetail.customer_unique_id$": { [Op.iLike]: search + "%" },
                 "$masterLoan.outstanding_amount$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.outstanding_amount"), "varchar"), { [Op.iLike]: search + "%" }),
-                "$masterLoan.tenure$":sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"),{ [Op.iLike]:search + "%" }),
-                "$masterLoan.final_loan_amount$": { [Op.iLike]:search + "%" },
+                "$masterLoan.tenure$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"), { [Op.iLike]: search + "%" }),
+                "$masterLoan.final_loan_amount$": { [Op.iLike]: search + "%" },
                 "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" }
             },
         }],
@@ -403,8 +391,8 @@ exports.partReleaseApprovedList = async (req, res, next) => {
                     sequelize.cast(sequelize.col("remaining_net_weight"), "varchar"), { [Op.iLike]: search + "%" }),
                 "$masterLoan.loanPersonalDetail.customer_unique_id$": { [Op.iLike]: search + "%" },
                 "$masterLoan.outstanding_amount$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.outstanding_amount"), "varchar"), { [Op.iLike]: search + "%" }),
-                "$masterLoan.tenure$":sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"),{ [Op.iLike]:search + "%" }),
-                "$masterLoan.final_loan_amount$": { [Op.iLike]:search + "%" },
+                "$masterLoan.tenure$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"), { [Op.iLike]: search + "%" }),
+                "$masterLoan.final_loan_amount$": { [Op.iLike]: search + "%" },
                 "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" }
             },
         }],
