@@ -130,6 +130,9 @@ router.use('/assign-appraiser', assignAppraiser);
 const packet = require('./packet');
 router.use('/packet', packet)
 
+const packetTracking = require('./packetTracking'); // PACKET TRTACKING DETAILS
+router.use('/packet-tracking',packetTracking)
+
 const uploadPacket = require('./uploadPackets');  //upload Packets List 
 router.use('/upload-packets-file', uploadPacket)
 

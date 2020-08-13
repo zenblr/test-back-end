@@ -116,6 +116,9 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
         customerLoan.hasMany(models.customerLoanHistory, { foreignKey: 'loanId', as: 'customerLoanHistory' });
+
+        customerLoan.hasMany(models.customerPacketLocation, { foreignKey: 'loanId', as: 'customerPacketLocation' });
+        
     }
 
     customerLoan.prototype.toJSON = function () {
