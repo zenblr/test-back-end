@@ -505,6 +505,7 @@ export class UploadDocumentsComponent implements OnInit {
               this.processingChrgs.emit(res.processingCharges)
             }
           } else {
+            this.toastr.success(res.message)
             this.router.navigate(['/admin/scrap-management/applied-scrap'])
           }
         })).subscribe();
