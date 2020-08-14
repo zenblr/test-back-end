@@ -1551,6 +1551,23 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 model: models.customer,
                 as: 'customer',
                 attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+                include:[
+                    {
+                        model: models.customerKycAddressDetail,
+                        as: 'customerKycAddress',
+                        attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
+                        include: [{
+                            model: models.state,
+                            as: 'state'
+                        }, {
+                            model: models.city,
+                            as: 'city'
+                        }, {
+                            model: models.addressProofType,
+                            as: 'addressProofType'
+                        }],
+                    },
+                ]
             },
             {
                 model: models.customerLoanInterest,

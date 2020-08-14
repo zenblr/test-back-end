@@ -183,6 +183,22 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 attributes: ['id']
             },
             {
+                model: models.customerKycAddressDetail,
+                as: 'customerKycAddress',
+                attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
+                include: [{
+                    model: models.state,
+                    as: 'state'
+                }, {
+                    model: models.city,
+                    as: 'city'
+                }, {
+                    model: models.addressProofType,
+                    as: 'addressProofType'
+                }],
+                order: [["id", "ASC"]]
+            },
+            {
                 model: models.customerKycClassification,
                 as: "customerKycClassification",
             },
