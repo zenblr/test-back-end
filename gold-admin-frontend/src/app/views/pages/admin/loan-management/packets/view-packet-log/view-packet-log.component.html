@@ -2,44 +2,69 @@
     <kt-modal-header [title]='"View Logs"' (action)="action($event)"></kt-modal-header>
 
     <kt-portlet-body>
-        <label for="">Customer ID: CUSTO7894 &nbsp;Loan ID: LOAN7894</label>
-        <label for="">Packets: LOAN7894</label>
+        <div class="row">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col">
+                        <label>Customer ID: {{ modalData.customer.customerUniqueId | uppercase }}</label>
+                    </div>
+                    <div class="col">
+                        <label> Loan ID:
+                            <ng-container *ngFor="let item of modalData.customerLoan">
+                                <span *ngIf="item.loanType === 'secured'">{{ item.loanUniqueId | uppercase }}</span>
+                            </ng-container>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="">Packets:
+                    <ng-container *ngFor="let item of modalData.loanPacketDetails[0].packets; last as l">
+                        <span>{{ item.packetUniqueId | uppercase }}</span>
+                        <span *ngIf="!l">, &nbsp;</span>
+                    </ng-container>
+                </label>
+            </div>
+        </div>
         <div class="mat-table__wrapper custom" [ngStyle]="{'overflow-x':'hidden'}">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
-                <ng-container matColumnDef="packetUniqueId">
-                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.packetUniqueId | uppercase}}</mat-cell>
-                </ng-container>
-
-                <ng-container matColumnDef="internalBranch">
-                    <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
-                    <mat-cell *matCellDef="let role">
-                        <span *ngIf="role.internalBranch">
-                            {{role.internalBranch.name | titlecase}}
-                        </span>
-                    </mat-cell>
-                </ng-container>
-
-                <ng-container matColumnDef="customerID">
+                <ng-container matColumnDef="location">
                     <mat-header-cell *matHeaderCellDef>Location</mat-header-cell>
-                    <mat-cell *matCellDef="let role">
-                        <span *ngIf="role.customer">
-                            {{role.customer.customerUniqueId}}
-                        </span>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="loanId">
-                    <mat-header-cell *matHeaderCellDef>Role </mat-header-cell>
-                    <mat-cell *matCellDef="let role">
-                        <span *ngIf="role.customerLoan">
-                            {{role.customerLoan.loanUniqueId}}
-                        </span>
-                    </mat-cell>
+                    <mat-cell *matCellDef="let role">{{role.location | titlecase}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="actions">
+                <ng-container matColumnDef="updatedBy">
                     <mat-header-cell *matHeaderCellDef>Updated By</mat-header-cell>
                     <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.updatedBy">
+                            {{role.updatedBy | titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="handover">
+                    <mat-header-cell *matHeaderCellDef>Handover</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.handover">
+                            {{role.handover | titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="date">
+                    <mat-header-cell *matHeaderCellDef>Date </mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.date">
+                            {{role.date | date:'shortDate'}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="time">
+                    <mat-header-cell *matHeaderCellDef>Time</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        {{ role.time }}
                     </mat-cell>
                 </ng-container>
 

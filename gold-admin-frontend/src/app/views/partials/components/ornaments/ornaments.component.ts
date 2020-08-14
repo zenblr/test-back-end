@@ -108,7 +108,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   setModalData() {
-    Array.prototype.push.apply(this.modalView.details.currentValue.loanOrnamentsDetail, this.data.modalData[0].customerLoanOrnamentsDetails)
+    if (this.data.packetView) {
+      Array.prototype.push.apply(this.modalView.details.currentValue.loanOrnamentsDetail, this.data.modalData[0].customerLoanOrnamentsDetails)
+    } else {
+      this.modalView.details.currentValue.loanOrnamentsDetail = this.data.modalData
+    }
     this.ngOnChanges(this.modalView)
   }
 

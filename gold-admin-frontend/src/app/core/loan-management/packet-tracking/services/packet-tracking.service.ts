@@ -37,6 +37,17 @@ export class PacketTrackingService {
     )
   }
 
+  getPacketLog(search, from, to): Observable<any> {
+    return this.http.get(`/api/packet-tracking/view-log?search=${search}&from=${from}&to=${to}`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    )
+  }
+
   addPacket(data): Observable<any> {
     return this.http.post<any>(`/api/packet`, data).pipe(
       map(res => res),
