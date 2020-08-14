@@ -45,9 +45,38 @@
                                         <input type="text" class="form-control" placeholder="Enter Barcode No."
                                             formControlName="Barcode"
                                             [class.isError]="item.get('Barcode').invalid &&  item.get('Barcode').touched">
+                                        <small>
+                                            <mat-error
+                                                *ngIf="item.get('Barcode').errors?.required &&  item.get('Barcode').touched">
+                                                Field Required
+                                            </mat-error>
+                                        </small>
+                                        <small>
+                                            <mat-error
+                                                *ngIf="item.get('Barcode').errors?.unverified &&  item.get('Barcode').touched">
+                                                Packet ID and Barcode does not match
+                                            </mat-error>
+                                        </small>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center kt-margin-t-15">
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10 mandatory">User Type</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" formControlName="userType"
+                                [class.isError]="locationForm.controls.userType.invalid &&  locationForm.controls.userType.touched">
+                                <option value="" disabled selected>Select User Type</option>
+                                <option [value]="item.value" *ngFor="let item of userTypeList">{{ item.name }}</option>
+                            </select>
+                            <mat-error
+                                *ngIf="locationForm.controls.userType.touched && locationForm.controls.userType.errors?.required">
+                                Required field
+                            </mat-error>
+
                         </div>
                     </div>
                     <div class="row justify-content-center kt-margin-t-15">

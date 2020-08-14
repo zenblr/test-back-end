@@ -4,7 +4,8 @@
             <div class="row justify-content-around kt-padding-b-15">
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Loan ID</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.customerLoan[0]?.loanUniqueId}}</div>
+                    <div class=" text-color font-weight-500 kt-padding-b-5">
+                        {{loanDetails?.customerLoan[0]?.loanUniqueId}}</div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Customer ID</div>
@@ -41,7 +42,8 @@
             <div class="row justify-content-around">
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-padding-b-5">Interest Rate</div>
-                    <div class=" text-color font-weight-500 kt-padding-b-5">{{loanDetails?.customerLoan[0]?.interestRate}}% P.M
+                    <div class=" text-color font-weight-500 kt-padding-b-5">
+                        {{loanDetails?.customerLoan[0]?.interestRate}}% P.M
                     </div>
                 </div>
 
@@ -83,7 +85,7 @@
         </div>
     </div>
 
-     <div class="row kt-margin-t-15">
+    <div class="row kt-margin-t-15">
         <div class="col-12 card kt-padding-15">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Ornaments - Total
                 {{loanDetails?.loanOrnamentsDetail.length}} Ornaments</label>
@@ -165,12 +167,11 @@
         </div>
     </div>
 
-     <div class="row kt-margin-t-15">
+    <div class="row kt-margin-t-15">
         <div class="col-12 card kt-padding-15">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Packets ID - Total
                 {{loanDetails.loanPacketDetails[0].packets.length}} Packets</label>
-            <div style="min-height: 300px;"
-                *ngFor="let packets of loanDetails?.loanPacketDetails;index as idx">
+            <div style="min-height: 300px;" *ngFor="let packets of loanDetails?.loanPacketDetails;index as idx">
                 <div class="row justify-content-center kt-padding-t-15">
                     <div class="col-4">
                         <div class="table-div">
@@ -187,9 +188,11 @@
 
                                             </td>
                                             <td class="text-color ">
-                                                <span *ngFor="let ornament of packet?.packetOrnament;index as idx">
+                                                <span
+                                                    *ngFor="let ornament of packet?.customerLoanOrnamentsDetails;index as idx">
                                                     {{ornament?.ornamentType?.name | uppercase}}
-                                                    <span *ngIf="idx != packet.packetOrnament.length - 1">,</span>
+                                                    <span
+                                                        *ngIf="idx != packet.customerLoanOrnamentsDetails.length - 1">,</span>
                                                 </span>
 
                                             </td>
@@ -220,7 +223,7 @@
                     </div>
                 </div>
 
-            </div> 
+            </div>
         </div>
     </div>
 
@@ -235,11 +238,10 @@
             <div class="row">
                 <div class="col-4">
                     <div class="pdf">
-                        <iframe
-                            [src]="loanDetails.customerLoanDocument.loanAgreementCopyImage | safe : 'resourceUrl'"
+                        <iframe [src]="loanDetails.customerLoanDocument.loanAgreementCopyImage | safe : 'resourceUrl'"
                             scrolling="no" *ngIf="pdf?.loanAgreementCopyImage" height="255"></iframe>
                     </div>
-                    <img  *ngIf="!pdf?.loanAgreementCopyImage" class="packets"
+                    <img *ngIf="!pdf?.loanAgreementCopyImage" class="packets"
                         [src]="loanDetails.customerLoanDocument.loanAgreementCopyImage">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Loan Agreement Copy</label>
                 </div>
@@ -259,7 +261,7 @@
                             [src]="loanDetails.customerLoanDocument.schemeConfirmationCopyImage | safe : 'resourceUrl'"
                             scrolling="no" *ngIf="pdf?.schemeConfirmationCopyImage" height="255"></iframe>
                     </div>
-                    <img  *ngIf="!pdf?.schemeConfirmationCopyImage" class="packets"
+                    <img *ngIf="!pdf?.schemeConfirmationCopyImage" class="packets"
                         [src]="loanDetails.customerLoanDocument.schemeConfirmationCopyImage">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Scheme Confirmation Copy
                     </label>
@@ -268,7 +270,7 @@
             </div>
 
         </div>
-    </div> 
+    </div>
 
 
 </div>
