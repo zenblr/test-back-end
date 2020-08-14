@@ -1852,10 +1852,15 @@ exports.getLoanDetails = async (req, res, next) => {
                 "$customer.mobile_number$": { [Op.iLike]: search + '%' },
                 "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
                 "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-                "$customerLoanMaster.final_loan_amount$": { [Op.iLike]: search + '%' },
+                // "$customerLoanMaster.final_loan_amount$": { [Op.iLike]: search + '%' },
                 "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
                 "$customerLoan.scheme.scheme_name$": { [Op.iLike]: search + '%' },
-
+                finalLoanAmount: sequelize.where(
+                    sequelize.cast(sequelize.col("customerLoanMaster.final_loan_amount"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
                 tenure: sequelize.where(
                     sequelize.cast(sequelize.col("customerLoanMaster.tenure"), "varchar"),
                     {
