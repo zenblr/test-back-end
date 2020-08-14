@@ -53,7 +53,7 @@
  * /calculation/loan:
  *   post:
  *     tags:
- *       - Interest calculation for selected loan
+ *       - Interest calculation
  *     name: Perform interest calculation for selected loan
  *     summary: To perform interest calculation date in  MM-DD-YYYY
  *     security:

@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         disbursementAmount: {
-            type: DataTypes.STRING,
+            type: DataTypes.DECIMAL(10,2),
             field: 'disbursement_amount'
         },
         transactionId: {
