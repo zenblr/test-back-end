@@ -222,6 +222,8 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanMaster.hasMany(models.customerLoanHistory, { foreignKey: 'masterLoanId', as: 'customerLoanHistory' });
         CustomerLoanMaster.hasOne(models.partRelease, { foreignKey: 'masterLoanId', as: 'partRelease' });
         CustomerLoanMaster.hasMany(models.customerPacketLocation, { foreignKey: 'masterLoanId', as: 'customerPacketLocation' });
+
+        CustomerLoanMaster.hasMany(models.packetTracking, { foreignKey: 'masterLoanId', as: 'packetTracking' });
     }
 
     CustomerLoanMaster.prototype.toJSON = function () {

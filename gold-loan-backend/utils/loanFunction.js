@@ -347,6 +347,7 @@ let mergeInterestTable = async (masterLoanId) => {
     return { mergeTble, securedTable, unsecuredTable };
 }
 
+
 //Selected loan
 let getCustomerLoanId = async (masterLoanId) => {
     let masterLona = await models.customerLoanMaster.findAll({
@@ -513,9 +514,9 @@ module.exports = {
     getAllInterestLessThanDate: getAllInterestLessThanDate,
     getPendingNoOfDaysInterest: getPendingNoOfDaysInterest,
     mergeInterestTable: mergeInterestTable,
-    getCustomerLoanId: getCustomerLoanId,
-    calculationDataOneLoan: calculationDataOneLoan,
-    intrestCalculationForSelectedLoan: intrestCalculationForSelectedLoan,
+    getCustomerLoanId:getCustomerLoanId,
+    calculationDataOneLoan:calculationDataOneLoan,
+    intrestCalculationForSelectedLoan:intrestCalculationForSelectedLoan,
     payableAmount: payableAmount,
     customerLoanDetailsByMasterLoanDetails: customerLoanDetailsByMasterLoanDetails,
 }

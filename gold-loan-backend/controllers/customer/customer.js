@@ -12,7 +12,8 @@ const CONSTANT = require("../../utils/constant");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { sendOtpToLeadVerification } = require('../../utils/SMS')
+let { sendOtpToLeadVerification } = require('../../utils/SMS');
+const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 
 exports.getOtp = async (req, res, next) => {
   let getOtp = await models.customerOtp.findAll({
@@ -199,6 +200,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     req.query.from,
     req.query.to
   );
+
   let stage = await models.stage.findOne({ where: { stageName } });
 
   let query = {};
@@ -289,9 +291,12 @@ exports.getAllCustomersForLead = async (req, res, next) => {
 
   ]
   let internalBranchId = req.userData.internalBranchId
-  if (req.userData.userTypeId != 4) {
+  if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
     searchQuery.internalBranchId = internalBranchId
   }
+
+  // if (req.userData.userTypeId != 4) {
+  // }
 
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
@@ -427,9 +432,14 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
     attributes: ['profileImage']
   }]
   let internalBranchId = req.userData.internalBranchId
-  if (req.userData.userTypeId != 4) {
+
+  if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
     searchQuery.internalBranchId = internalBranchId
   }
+
+  // if (req.userData.userTypeId != 4) {
+  //   searchQuery.internalBranchId = internalBranchId
+  // }
 
   let allCustomers = await models.customer.findAll({
     where: searchQuery,

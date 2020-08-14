@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
 
     // CUSTOMER PACKET LOCATION ASSOCIATION WITH MODULES
     customerPacketLocation.associate = function (models) {
-        customerPacketLocation.belongsTo(models.pocketLocation,{ foreignKey: 'packetLocationId',as:'packetLocation'})
+        customerPacketLocation.belongsTo(models.packetLocation,{ foreignKey: 'packetLocationId',as:'packetLocation'})
     }
     return customerPacketLocation;
 }

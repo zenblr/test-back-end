@@ -39,7 +39,7 @@ export class PacketTrackingDatasource extends BaseDataSource {
 
     loadpacketsLog(from, to, search) {
         this.loadingSubject.next(true);
-        this.loanManagementService.getpackets(from, to, search)
+        this.loanManagementService.getPacketLog(from, to, search)
             .pipe(
                 map(
                     report => {
