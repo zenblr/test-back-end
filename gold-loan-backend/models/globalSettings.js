@@ -31,6 +31,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'gst',
             allowNull: false,
         },
+        partPaymentPercent:{
+            type:DataTypes.FLOAT,
+            field: 'part_payment_percent',
+            allowNull: false,
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by',

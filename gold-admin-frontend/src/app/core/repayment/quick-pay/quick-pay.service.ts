@@ -28,8 +28,14 @@ export class QuickPayService {
     )
   }
 
-  payment(id,amount): Observable<any> {
+  paymentConfirmation(id, amount): Observable<any> {
     return this.http.get(`api/quick-pay/confirm-payment-info?masterLoanId=${id}&amount=${amount}`).pipe(
+      map(res => res)
+    )
+  }
+
+  payment(data): Observable<any> {
+    return this.http.post(`api/quick-pay/payment`, data).pipe(
       map(res => res)
     )
   }

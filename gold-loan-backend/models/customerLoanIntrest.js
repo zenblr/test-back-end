@@ -20,22 +20,22 @@ module.exports = (sequelize, DataTypes) => {
             field: 'interest_rate',
         },
         interestAmount: {
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'interest_amount',
             defaultValue: 0
         },
         paidAmount: {
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'paid_amount',
             defaultValue: 0
         },
         interestAccrual:{
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'interest_accrual',
             defaultValue: 0
         },
         outstandingInterest:{
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'outstanding_interest',
             defaultValue: 0
         },
@@ -44,22 +44,22 @@ module.exports = (sequelize, DataTypes) => {
             field: 'emi_received_date'
         },
         panelInterest: {
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'panel_interest',
             defaultValue: 0
         },
         PenalAccrual:{
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'Penal_accrual',
             defaultValue: 0
         },
         penalOutstanding:{
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'penal_outstanding',
             defaultValue: 0
         },
         penalPaid:{
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'penal_paid',
             defaultValue: 0
         },

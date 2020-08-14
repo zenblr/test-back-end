@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         payableAmount:{
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'payable_amount',
         },
         paymentType:{
@@ -18,19 +18,19 @@ module.exports = (sequelize, DataTypes) => {
             field: 'transaction_id',
         },
         paidAmount:{
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'paid_amount',
         },
         releaseAmount:{
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'release_amount',
         },
         interestAmount:{
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'interest_amount',
         },
         penalInterest:{
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'penal_interest',
         },
         depositDate:{

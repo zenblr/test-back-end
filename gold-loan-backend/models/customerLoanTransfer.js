@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'transferred_loan_id'
         },
         disbursedLoanAmount:{
-            type: DataTypes.INTEGER,
+            type: DataTypes.DECIMAL(10,2),
             field: 'disbursed_loan_amount'
         },
         transactionId:{
@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'declaration'
         },
         outstandingLoanAmount:{
-            type: DataTypes.INTEGER,
+            type: DataTypes.DECIMAL(10,2),
             field: 'outstanding_loan_amount'
         },
         loanTransferCurrentStage: {

@@ -24,5 +24,4 @@ route.put('/:id', checkAuth, updatePacketValidation, validationError,wrapper(cha
 
 route.delete('/', checkAuth, wrapper(deletePacket)); // DELETE PACKET
 
-
 module.exports = route;

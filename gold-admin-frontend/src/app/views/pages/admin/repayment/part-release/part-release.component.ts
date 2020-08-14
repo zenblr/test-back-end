@@ -236,9 +236,11 @@ export class PartReleaseComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(res => {
+      if(res){
       console.log(res)
       this.paymentValue = res
       this.ref.detectChanges()
+      }
     })
   }
 }

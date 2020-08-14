@@ -239,7 +239,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
 
 // amount validation and check its a secured scheme aur unsecured scheme
 exports.checkForLoanType = async (req, res, next) => {
-    let { loanAmount, securedSchemeId, fullAmount, partnerId,isLoanTransfer } = req.body
+    let { loanAmount, securedSchemeId, fullAmount, partnerId, isLoanTransfer } = req.body
     let processingCharge = 0;
     let unsecuredScheme
 
@@ -265,14 +265,14 @@ exports.checkForLoanType = async (req, res, next) => {
 
     let secureSchemeMaximumAmtAllowed = (securedScheme.maximumPercentageAllowed / 100)
 
-    let securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed )
+    let securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
 
 
     if (loanAmount > securedLoanAmount || securedScheme.isSplitAtBeginning) {
 
         let unsecuredSchemeAmount = loanAmount - securedLoanAmount
-        if(securedScheme.isSplitAtBeginning){
-            securedLoanAmount = loanAmount * secureSchemeMaximumAmtAllowed/(ltvPercent[0].ltvGoldValue/100)
+        if (securedScheme.isSplitAtBeginning) {
+            securedLoanAmount = loanAmount * secureSchemeMaximumAmtAllowed / (ltvPercent[0].ltvGoldValue / 100)
             unsecuredSchemeAmount = loanAmount - securedLoanAmount
         }
 
@@ -323,16 +323,16 @@ exports.checkForLoanType = async (req, res, next) => {
 
         let unsecureSchemeMaximumAmtAllowed = (unsecuredSchemeApplied.maximumPercentageAllowed / 100)
 
-        var unsecuredAmount = Math.round(loanAmount * unsecureSchemeMaximumAmtAllowed/(ltvPercent[0].ltvGoldValue/100))
+        var unsecuredAmount = Math.round(loanAmount * unsecureSchemeMaximumAmtAllowed / (ltvPercent[0].ltvGoldValue / 100))
 
-        let totalEligibleAmt = Math.round(fullAmount/(ltvPercent[0].ltvGoldValue/100))
+        let totalEligibleAmt = Math.round(fullAmount / (ltvPercent[0].ltvGoldValue / 100))
 
         if ((unsecuredSchemeApplied && (securedScheme.isSplitAtBeginning &&
-            Math.round(totalEligibleAmt) >= Math.round (securedLoanAmount + unsecuredAmount))) || isLoanTransfer) {
+            Math.round(totalEligibleAmt) >= Math.round(securedLoanAmount + unsecuredAmount))) || isLoanTransfer) {
 
-                if(isLoanTransfer){
-                    unsecuredAmount = Number(loanAmount - securedLoanAmount)
-                }
+            if (isLoanTransfer) {
+                unsecuredAmount = Number(loanAmount - securedLoanAmount)
+            }
 
             processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
@@ -430,7 +430,7 @@ exports.generateInterestTable = async (req, res, next) => {
     })
 
     // secure interest calculation
-    let securedInterestAmount = await interestCalcultaion(securedLoanAmount, interestRate,paymentFrequency)
+    let securedInterestAmount = await interestCalcultaion(securedLoanAmount, interestRate, paymentFrequency)
     let securedScheme = await models.scheme.findOne({
         where: { id: schemeId },
         attributes: ['schemeName']
@@ -439,7 +439,7 @@ exports.generateInterestTable = async (req, res, next) => {
     let unsecuredInterestAmount = 0;
     // unsecure interest calculation
     if (isUnsecuredSchemeApplied) {
-        unsecuredInterestAmount = await interestCalcultaion(unsecuredLoanAmount, unsecuredInterestRate,paymentFrequency)
+        unsecuredInterestAmount = await interestCalcultaion(unsecuredLoanAmount, unsecuredInterestRate, paymentFrequency)
         var unsecuredScheme = await models.scheme.findOne({
             where: { id: unsecuredSchemeId },
             attributes: ['schemeName']
@@ -465,12 +465,12 @@ exports.generateInterestTable = async (req, res, next) => {
 
     if (!Number.isInteger(length)) {
         const lastElementOfTable = interestTable[interestTable.length - 1]
-        const oneMonthSecured = securedInterestAmount / (paymentFrequency/30)
+        const oneMonthSecured = securedInterestAmount / (paymentFrequency / 30)
         let secure = (oneMonthSecured * Math.ceil(length)).toFixed(2)
         lastElementOfTable.securedInterestAmount = secure
 
         if (isUnsecuredSchemeApplied) {
-            const  oneMonthUnsecured = unsecuredInterestAmount / (paymentFrequency/30)
+            const oneMonthUnsecured = unsecuredInterestAmount / (paymentFrequency / 30)
             let unsecured = (oneMonthUnsecured * Math.ceil(length)).toFixed(2)
             lastElementOfTable.unsecuredInterestAmount = unsecured
             lastElementOfTable.totalAmount = Number(lastElementOfTable.securedInterestAmount) + Number(lastElementOfTable.unsecuredInterestAmount)
@@ -922,11 +922,10 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
                 for (let singleOrnamentId of x.ornamentsId) {
                     let pushData = {}
                     pushData['packetId'] = Number(x.packetId)
-                    pushData['ornamentTypeId'] = Number(singleOrnamentId)
+                    pushData['ornamentDetailId'] = Number(singleOrnamentId)
                     ornamentPacketData.push(pushData)
                 }
             }
-            console.log(ornamentPacketData)
             await models.packetOrnament.bulkCreate(ornamentPacketData, { transaction: t })
 
             await models.packet.bulkCreate(packetUpdateArray, {
@@ -977,7 +976,7 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
                 for (let singleOrnamentId of x.ornamentsId) {
                     let pushData = {}
                     pushData['packetId'] = Number(x.packetId)
-                    pushData['ornamentTypeId'] = Number(singleOrnamentId)
+                    pushData['ornamentDetailId'] = Number(singleOrnamentId)
                     ornamentPacketData.push(pushData)
                 }
             }
@@ -1533,26 +1532,42 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                     as: 'scheme',
                 }]
             },
-            {
-                model: models.customerLoanPackageDetails,
-                as: 'loanPacketDetails',
-                // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                include: [{
-                    model: models.packet,
-                    include: [{
-                        model: models.packetOrnament,
-                        as: 'packetOrnament',
-                        include: [{
-                            model: models.ornamentType,
-                            as: 'ornamentType'
-                        }]
-                    }]
-                }]
-            },
+            // {
+            //     model: models.customerLoanPackageDetails,
+            //     as: 'loanPacketDetails',
+            //     // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            //     include: [{
+            //         model: models.packet,
+            //         include: [{
+            //             model: models.customerLoanOrnamentsDetail,
+            //             include: [{
+            //                 model: models.ornamentType,
+            //                 as: 'ornamentType'
+            //             }]
+            //         }]
+            //     }]
+            // },
             {
                 model: models.customer,
                 as: 'customer',
                 attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+                include:[
+                    {
+                        model: models.customerKycAddressDetail,
+                        as: 'customerKycAddress',
+                        attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
+                        include: [{
+                            model: models.state,
+                            as: 'state'
+                        }, {
+                            model: models.city,
+                            as: 'city'
+                        }, {
+                            model: models.addressProofType,
+                            as: 'addressProofType'
+                        }],
+                    },
+                ]
             },
             {
                 model: models.customerLoanInterest,
@@ -1563,22 +1578,29 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             }]
     });
 
+    let packet = await models.customerLoanPackageDetails.findAll({
+        where: { loanId: customerLoanId },
+        include: [{
+            model: models.packet,
+            include: [{
+                model: models.customerLoanOrnamentsDetail,
+                include: [{
+                    model: models.ornamentType,
+                    as: 'ornamentType'
+                }]
+            }]
+        }]
+    })
+
+    customerLoan.dataValues.loanPacketDetails = packet
+
     let ornamentType = [];
     if (customerLoan.loanOrnamentsDetail.length != 0) {
         for (let ornamentsDetail of customerLoan.loanOrnamentsDetail) {
-            ornamentType.push({ ornamentType: ornamentsDetail.ornamentType, id: ornamentsDetail.id })
+            ornamentType.push({ ornamentType: ornamentsDetail.ornamentType.name, id: ornamentsDetail.id })
         }
         customerLoan.dataValues.ornamentType = ornamentType;
     }
-    // if (customerLoan.unsecuredLoan == null) {
-    //     customerLoan.dataValues['isUnsecuredSchemeApplied'] = false;
-    // } else {
-    //     if (customerLoan.unsecuredLoan.isActive) {
-    //         customerLoan.dataValues['isUnsecuredSchemeApplied'] = true
-    //     } else {
-    //         customerLoan.dataValues['isUnsecuredSchemeApplied'] = customerLoan.unsecuredLoan.isActive
-    //     }
-    // }
 
     return res.status(200).json({ message: 'success', data: customerLoan })
 }
@@ -1594,7 +1616,7 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
 
     let customerLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
-        attributes: ['id','loanStartDate','loanEndDate','tenure'],
+        attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure'],
         include: [
             {
                 model: models.customerLoan,
@@ -1632,26 +1654,25 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
                     }
                 ]
             },
-            {
-                model: models.customerLoanPackageDetails,
-                as: 'loanPacketDetails',
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                include: [{
-                    model: models.packet,
-                    as: 'packets',
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                    include: [
-                        {
-                            model: models.packetOrnament,
-                            as: 'packetOrnament',
-                            include: [{
-                                model: models.ornamentType,
-                                as: 'ornamentType'
-                            }]
-                        }
-                    ]
-                }]
-            },
+            // {
+            //     model: models.customerLoanPackageDetails,
+            //     as: 'loanPacketDetails',
+            //     attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            //     include: [{
+            //         model: models.packet,
+            //         as: 'packets',
+            //         attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            //         include: [
+            //             {
+            //                 model: models.customerLoanOrnamentsDetail,
+            //                 include: [{
+            //                     model: models.ornamentType,
+            //                     as: 'ornamentType'
+            //                 }]
+            //             }
+            //         ]
+            //     }]
+            // },
             {
                 model: models.customerLoanDocument,
                 as: 'customerLoanDocument'
@@ -1663,6 +1684,21 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
             }
         ]
     });
+
+    let packet = await models.customerLoanPackageDetails.findAll({
+        where: { loanId: masterLoanId },
+        include: [{
+            model: models.packet,
+            include: [{
+                model: models.customerLoanOrnamentsDetail,
+                include: [{
+                    model: models.ornamentType,
+                    as: 'ornamentType'
+                }]
+            }]
+        }]
+    })
+    customerLoan.dataValues.loanPacketDetails = packet
     return res.status(200).json({ message: 'success', data: customerLoan })
 }
 
@@ -1816,10 +1852,15 @@ exports.getLoanDetails = async (req, res, next) => {
                 "$customer.mobile_number$": { [Op.iLike]: search + '%' },
                 "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
                 "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-                "$customerLoanMaster.final_loan_amount$": { [Op.iLike]: search + '%' },
+                // "$customerLoanMaster.final_loan_amount$": { [Op.iLike]: search + '%' },
                 "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
                 "$customerLoan.scheme.scheme_name$": { [Op.iLike]: search + '%' },
-
+                finalLoanAmount: sequelize.where(
+                    sequelize.cast(sequelize.col("customerLoanMaster.final_loan_amount"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
                 tenure: sequelize.where(
                     sequelize.cast(sequelize.col("customerLoanMaster.tenure"), "varchar"),
                     {

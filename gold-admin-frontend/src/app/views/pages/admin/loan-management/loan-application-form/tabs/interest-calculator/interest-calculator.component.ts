@@ -85,7 +85,7 @@ export class InterestCalculatorComponent implements OnInit {
 
 
     this.controls.finalLoanAmount.valueChanges.pipe(
-      debounceTime(1000),
+      debounceTime(500),
       distinctUntilChanged()
     ).subscribe(res => {
       if (!this.transferLoan) {
@@ -659,7 +659,7 @@ export class InterestCalculatorComponent implements OnInit {
     var data = {
       unsecuredSchemeAmount: this.controls.unsecuredLoanAmount.value,
       unsecuredSchemeInterest: this.controls.unsecuredInterestRate.value,
-      unsecuredSchemeName: this.selectedUnsecuredscheme.id,
+      unsecuredSchemeName: this.controls.unsecuredSchemeId.value,
       calculation: this.dateOfPayment,
       unsecuredScheme: this.unSecuredScheme,
       paymentType: this.controls.paymentFrequency.value,

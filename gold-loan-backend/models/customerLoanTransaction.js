@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'transaction_unique_id'
         },
         transactionAmont: {
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'transaction_amont'
         },
         paymentReceivedDate: {
