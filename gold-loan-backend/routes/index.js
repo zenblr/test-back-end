@@ -57,6 +57,9 @@ router.use('/partner', partner);
 const partnerBranch = require('./partnerBranch'); // branch Route
 router.use('/partner-branch', partnerBranch);
 
+const partnerBranchUser = require('./partnerBranchUser'); //Partner Branch User
+router.use('/partner-branch-user',partnerBranchUser);
+
 const role = require('./role'); // role Route
 router.use('/role', role)
 
