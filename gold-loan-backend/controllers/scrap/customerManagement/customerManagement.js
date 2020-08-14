@@ -267,12 +267,21 @@ exports.getsingleCustomerManagement = async (req, res) => {
                 where: { scrapStageId: stageId.id },
                 required: true,
                 attributes: ['id', 'customerId', 'scrapUniqueId', 'finalScrapAmountAfterMelting', 'scrapStageId'],
-                include: {
-                    model: models.customerScrapPersonalDetail,
-                    as: 'scrapPersonalDetail',
-                    attributes: ['startDate']
-                }
+                include:[
+                    {
+                        model: models.customerScrapPersonalDetail,
+                        as: 'scrapPersonalDetail',
+                        attributes: ['startDate']
+                    },
+                    {
+                        model: models.customerScrapDisbursement,
+                        as: 'scrapDisbursement',
+                        attributes: ['date']
+                    }
+                ] 
+                
             }
+            
         ]
     })
 
