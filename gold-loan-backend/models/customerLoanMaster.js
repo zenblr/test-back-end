@@ -91,31 +91,31 @@ module.exports = (sequelize, DataTypes) => {
             field: 'operatinal_team_id'
         },
         totalEligibleAmt: {
-            type: DataTypes.STRING,
+            type: DataTypes.DECIMAL(10,2),
             field: 'total_eligible_amt'
         },
         fullAmount: {
-            type: DataTypes.STRING,
+            type: DataTypes.DECIMAL(10,2),
             field: 'full_amount'
         },
         securedLoanAmount: {
-            type: DataTypes.STRING,
+            type: DataTypes.DECIMAL(10,2),
             field: 'secured_loan_amount',
         },
         unsecuredLoanAmount: {
-            type: DataTypes.STRING,
+            type: DataTypes.DECIMAL(10,2),
             field: 'unsecured_loan_amount',
         },
         finalLoanAmount: {
-            type: DataTypes.STRING,
+            type: DataTypes.DECIMAL(10,2),
             field: 'final_loan_amount',
         },
         totalFinalInterestAmt: {
-            type: DataTypes.STRING,
+            type: DataTypes.DECIMAL(10,2),
             field: 'total_final_interest_amt'
         },
         outstandingAmount: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.DECIMAL(10,2),
             field: 'outstanding_amount'
         },
         tenure: {

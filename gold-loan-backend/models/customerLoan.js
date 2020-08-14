@@ -20,11 +20,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'partner_id'
         },
         loanAmount: {
-            type: DataTypes.STRING,
+            type: DataTypes.DECIMAL(10,2),
             field: 'loan_amount'
         },
         outstandingAmount: {
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'outstanding_amount'
         },
         schemeId: {
@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'scheme_id'
         },
         penalInterest: {
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'penal_interest_rate'
         },
         interestRate: {
