@@ -12,7 +12,7 @@ const CONSTANT = require("../../utils/constant");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { mergeInterestTable, getCustomerInterestAmount, getLoanDetails, customerLoanDetailsByMasterLoanDetails } = require('../../utils/loanFunction')
+let { mergeInterestTable, getCustomerInterestAmount, getLoanDetails, payableAmount, customerLoanDetailsByMasterLoanDetails } = require('../../utils/loanFunction')
 
 //INTEREST TABLE 
 exports.getInterestTable = async (req, res, next) => {
@@ -59,30 +59,7 @@ exports.payableAmount = async (req, res, next) => {
 
     let loan = await getLoanDetails(masterLoanId);
 
-    let securedPenalInterest = amount.secured.penalInterest
-    let securedInterest = amount.secured.interest
-    let interest = amount.secured.interest
-    let penalInterest = amount.secured.penalInterest
-
-    let unsecuredInterest = 0
-    let unsecuredPenalInterest = 0
-    let payableAmount = amount.secured.interest + amount.secured.penalInterest
-    if (amount.unSecured) {
-        payableAmount = payableAmount + amount.unSecured.interest + amount.unSecured.penalInterest
-        interest = interest + amount.unSecured.interest
-        penalInterest = penalInterest + amount.unSecured.penalInterest
-        unsecuredInterest = amount.unSecured.interest
-        unsecuredPenalInterest = amount.unSecured.penalInterest
-    }
-    let data = {}
-    data.outstandingAmount = (loan.outstandingAmount).toFixed(2)
-    data.securedPenalInterest = (securedPenalInterest).toFixed(2)
-    data.unsecuredInterest = (unsecuredInterest).toFixed(2)
-    data.unsecuredPenalInterest = (unsecuredPenalInterest).toFixed(2)
-    data.securedInterest = (securedInterest).toFixed(2)
-    data.interest = (interest).toFixed(2)
-    data.penalInterest = (penalInterest).toFixed(2)
-    data.payableAmount = (payableAmount).toFixed(2)
+    let data = await payableAmount(amount, loan)
 
     return res.status(200).json({ data });
 }
@@ -92,10 +69,11 @@ exports.payableAmountConfirm = async (req, res, next) => {
     let { masterLoanId, amount } = req.query
     let loan = await customerLoanDetailsByMasterLoanDetails(masterLoanId)
 
-
-    loan['amount'] = amount
     return res.status(200).json({ data: loan });
+}
 
+exports.partPayment = async (req, res, next) => {
+    let { masterLoanId, amount } = req.query
 }
 
 exports.quickPayment = async (req, res, next) => {
@@ -124,18 +102,18 @@ exports.quickPayment = async (req, res, next) => {
     if (amount.unSecured) {
         unsecuredInterest = amount.unSecured.interest
         unsecuredPenalInterest = amount.unSecured.penalInterest
-        unsecuredOutstandingAmount =  loanDetails.loan.customerLoan[1].outstandingAmount
+        unsecuredOutstandingAmount = loanDetails.loan.customerLoan[1].outstandingAmount
     }
     let totalOutstandingAmount = securedOutstandingAmount + unsecuredOutstandingAmount
 
     // divinding in ratio
 
-    let securedRatio = securedOutstandingAmount/totalOutstandingAmount * payableAmount;
+    let securedRatio = securedOutstandingAmount / totalOutstandingAmount * payableAmount;
     // securedRatio = Number(securedRatio - securedPenalInterest)
 
-    if(amount.unSecured){
-    var unsecuredRatio = unsecuredOutstandingAmount/totalOutstandingAmount * payableAmount
-    // unsecuredRatio = unsecuredRatio - unsecuredPenalInterest
+    if (amount.unSecured) {
+        var unsecuredRatio = unsecuredOutstandingAmount / totalOutstandingAmount * payableAmount
+        // unsecuredRatio = unsecuredRatio - unsecuredPenalInterest
     }
 
     // payableAmount = payableAmount + amount.unSecured.interest + amount.unSecured.penalInterest
@@ -144,6 +122,6 @@ exports.quickPayment = async (req, res, next) => {
     // unsecuredInterest = amount.unSecured.interest
     // unsecuredPenalInterest = amount.unSecured.penalInterest
 
-    return res.status(200).json({unsecuredRatio,securedRatio,paymentDetails})
+    return res.status(200).json({ unsecuredRatio, securedRatio, paymentDetails })
 }
 

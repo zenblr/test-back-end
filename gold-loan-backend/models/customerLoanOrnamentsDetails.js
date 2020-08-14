@@ -80,11 +80,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'current_ltv_amount'
         },
         loanAmount: {
-            type: DataTypes.STRING,
+            type: DataTypes.DECIMAL(10,2),
             field: 'loan_amount'
         },
-        ornamentFullAmount: {
-            type: DataTypes.STRING,
+        ornamentFullAmount:{
+            type: DataTypes.DECIMAL(10,2),
             field: 'ornament_full_amount'
         },
         finalNetWeight: {

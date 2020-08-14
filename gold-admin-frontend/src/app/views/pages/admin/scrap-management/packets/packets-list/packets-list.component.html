@@ -10,7 +10,7 @@
                         </mat-checkbox>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let row" class="mat-column-checkbox">
-                        <mat-checkbox *ngIf="!row.packetAssigned" (click)="$event.stopPropagation()"
+                        <mat-checkbox *ngIf="!row.isAppraiserAssign" (click)="$event.stopPropagation()"
                             (change)="$event ? selection.toggle(row) : null" (change)="checkForSameBranch()"
                             [checked]="selection.isSelected(row)">
                         </mat-checkbox>
@@ -50,10 +50,10 @@
                     <mat-cell *matCellDef="let role">
                         <div [ngStyle]="{'display': 'inherit'}" *ngIf="!role.packetAssigned">
                             <span class="kt-pointer" (click)="editPacket(role)"
-                                *ngxPermissionsOnly="['packetEdit']">Edit</span>
-                            <div class="px-2" *ngxPermissionsOnly="['packetDelete'] || ['packetEdit']">|</div>
+                                *ngxPermissionsOnly="['scrapPacketEdit']">Edit</span>
+                            <div class="px-2" *ngxPermissionsOnly="['scrapPacketDelete'] || ['scrapPacketEdit']">|</div>
                             <span class="kt-pointer text-danger" (click)="deletePacket(role)"
-                                *ngxPermissionsOnly="['packetDelete']">Delete</span>
+                                *ngxPermissionsOnly="['scrapPacketDelete']">Delete</span>
                         </div>
                     </mat-cell>
                 </ng-container>

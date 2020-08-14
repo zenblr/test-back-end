@@ -532,7 +532,7 @@ mat-header-row {
 }
 
 .ng-select.ng-select-disabled .ng-arrow-wrapper {
-    cursor: not-allowed;
+    cursor: not-allowed !important;
 }
 
 .ng-select.ng-select-disabled>.ng-select-container .ng-input>input {

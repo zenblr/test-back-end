@@ -18,7 +18,7 @@
                     <tbody>
                         <tr>
                             <td scope="row" class="rating-title">
-                                {{scrapIds ? 'Scrap Buying Application Form' : 'Loan Application Form'}}</td>
+                                {{scrapIds ? 'Scrap Buying Application' : 'Loan Application Form'}}</td>
                             <td class="rating-cce text-center">
                                 <img src="../../../../../../../assets/media/icons/correct.svg"
                                     [ngClass]="{'cursor-not-allowed':((stage !=1 && stage !=6) || this.disable )}"
@@ -176,8 +176,9 @@
                 </table>
             </div>
         </div>
-        <div class="row justify-content-center" *ngIf="(stage == 6 && controls.loanStatusForBM.value == 'incomplete' && controls.commentByBM.value) ||
-            (stage == 6 && controls.scrapStatusForBM.value == 'incomplete' && controls.commentByBM.value)">
+        <div class="row justify-content-center"
+            *ngIf="((stage == 6 || stage == 1) && controls.loanStatusForBM.value == 'incomplete' && controls.commentByBM.value) ||
+            ((stage == 6 || stage == 1) && controls.scrapStatusForBM.value == 'incomplete' && controls.commentByBM.value)">
             <div class="col-7">
                 <div class="row">
                     <div class="col-4">

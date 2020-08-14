@@ -5,7 +5,7 @@ import { map, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { OrnamentsService } from '../../../../../core/masters/ornaments/services/ornaments.service';
 import { KaratDetailsService } from '../../../../../core/loan-setting/karat-details/services/karat-details.service';
-import { StandardDeductionService } from '../../../../../core/masters/standard-deduction/service/standard-deduction.service';
+import { StandardDeductionService } from '../../../../../core/scrap-management/standard-deduction/service/standard-deduction.service';
 
 @Component({
   selector: 'kt-scrap-application-form',
@@ -157,14 +157,6 @@ export class ScrapApplicationFormComponent implements OnInit {
 
   totalEligibleAmt(event) {
     this.totalAmount = event
-  }
-
-  fullAmt(event) {
-    this.fullAmount = event
-  }
-
-  finalLoanAmount(event) {
-    this.finalLoanAmt = event
   }
 
   finalScrapAmount(event) {

@@ -23,13 +23,13 @@
                     <mat-header-cell *matHeaderCellDef>Scrap Date</mat-header-cell>
                     <mat-cell *matCellDef="let list">{{list?.scrapDisbursement?.date | date:'mediumDate'}}</mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="actions">
+                <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let list">
                         <div [ngStyle]="{'display': 'inherit'}" *ngIf="!list.packetAssigned">
-                            <span class="kt-pointer" (click)="viewScrap(list)">View</span>
+                            <span class="kt-pointer" (click)="viewScrap(list)">View Scrap</span>
                             <div class="px-2">|</div>
-                            <span class="kt-pointer" (click)="newScrap(list)">Add</span>
+                            <span class="kt-pointer" (click)="newScrap(list)">Add New Scrap</span>
                         </div>
                     </mat-cell>
                 </ng-container>

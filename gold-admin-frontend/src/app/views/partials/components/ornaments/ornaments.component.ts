@@ -71,7 +71,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   buttonValue = 'Next';
   showAddMoreBtn: Boolean = true;
   modalView: any = { details: { currentValue: { loanOrnamentsDetail: [] } }, action: { currentValue: 'edit' } };
-  modalPackets: any;
+  firstView: boolean;
 
   constructor(
     public fb: FormBuilder,
@@ -102,11 +102,25 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     if (this.data && this.data.modal) {
       this.showAddMoreBtn = false
       this.disable = true
-      this.modalView.details.currentValue.loanOrnamentsDetail = this.data.modalData
-      this.modalPackets = this.data.packetData
       this.getOrnamentType()
-      this.ngOnChanges(this.modalView)
+      this.setModalData()
     }
+  }
+
+  setModalData() {
+    Array.prototype.push.apply(this.modalView.details.currentValue.loanOrnamentsDetail, this.data.modalData[0].customerLoanOrnamentsDetails)
+    this.ngOnChanges(this.modalView)
+  }
+
+  showPacketOrnament(event) {
+    const selectedPacketId = Number(event.target.value)
+    this.modalView.details.currentValue.loanOrnamentsDetail = []
+    this.OrnamentsData.clear()
+
+    Array.prototype.push.apply(this.modalView.details.currentValue.loanOrnamentsDetail, this.data.modalData[selectedPacketId].customerLoanOrnamentsDetails)
+    setTimeout(() => {
+      this.ngOnChanges(this.modalView)
+    })
   }
 
   getKarat() {
@@ -121,7 +135,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   getOrnamentType() {
     this.ornamentTypeService.getOrnamentType(1, -1, '').pipe(
       map(res => {
-        console.log(res);
         this.ornamentType = res.data;
       })
     ).subscribe();
@@ -158,6 +171,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         }
         for (let index = 0; index < array.length; index++) {
           if (index > 0) {
+            this.addmore()
+          }
+          else if (this.data && this.data.packetView && this.firstView) {
             this.addmore()
           }
         }
@@ -214,9 +230,13 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
       this.ornamentsForm.markAllAsTouched()
     }
+    this.ref.markForCheck()
+
   }
 
   ngAfterViewInit() {
+    this.firstView = true
+
     this.globalSettingService.globalSetting$.subscribe(global => {
       this.globalValue = global;
       if (global) {
@@ -273,7 +293,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       if (this.meltingOrnament && val && this.processingCharges) {
         if (val == 'no') {
           controls.controls.processingCharges.patchValue(this.processingCharges);
-          this.buttonValue = 'Pay Now';
+          this.buttonValue = 'Pay Processing Charges';
         } else {
           controls.controls.processingCharges.patchValue([]);
           this.buttonValue = 'Next';
@@ -730,7 +750,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         return
       }
     }
-    if (this.buttonValue != 'Pay Now') {
+    if (this.buttonValue != 'Pay Processing Charges') {
       if (this.ornamentsForm.invalid) {
         let array = this.OrnamentsData.controls
         for (let index = 0; index < array.length; index++) {

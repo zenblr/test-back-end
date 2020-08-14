@@ -13,6 +13,12 @@ exports.addDeduction = async (req, res, next) => {
         let createdBy = req.userData.id;
         let modifiedBy = req.userData.id;
     
+        let deductionExist = await models.standardDeduction.findOne({ where: { standardDeduction, isActive: true } });
+
+        if (!check.isEmpty(deductionExist)) {
+            return res.status(400).json({ message: `Standard deduction already exist` })
+        }
+
         const deduction = await models.standardDeduction.create(
             { standardDeduction, createdBy, modifiedBy, isActive: true },
         );
@@ -42,7 +48,7 @@ exports.readDeductionDetails = async (req, res, next) => {
 
     let deductionDetails = await models.standardDeduction.findAll({
         where: searchQuery,
-        order: [["updatedAt", "DESC"]],
+        order: [["standardDeduction", "ASC"]],
         offset: offset,
         limit: pageSize,
     });

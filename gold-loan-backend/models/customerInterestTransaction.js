@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'customer_loan_transaction_id'
         },
         isPenalInterest:{
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'is_penal_interest'
         },
         otherChargesId:{
@@ -26,11 +26,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'other_charges_id'
         },
         credit:{
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'credit'
         },
         debit:{
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'credit'
         },
         paymentDate:{

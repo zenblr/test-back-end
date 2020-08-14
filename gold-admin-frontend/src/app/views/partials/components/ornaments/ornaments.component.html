@@ -1,18 +1,17 @@
 <!-- <kt-modal-header *ngIf="!viewOnly" [title]='"KYC Details"' (action)="action()"></kt-modal-header> -->
 <div class="kt-padding-l-10 kt-padding-r-10" style="background: #fff">
-    <!-- <div *ngIf="modalPackets" class="row kt-padding-t-10 kt-padding-b-10 kt-padding-l-35">
+    <div *ngIf="data.modalData" class="row kt-padding-t-10 kt-padding-b-10 kt-padding-l-35">
         <div class="col-2 form-label">
-            Number of Packets: {{ modalPackets.length }}
+            Number of Packets: {{ data.modalData.length }}
         </div>
         <div class="col-3">
-            <select class="form-control">
-                <option [value]="packet.packetUniqueId" [selected]="i == 0"
-                    *ngFor="let packet of modalPackets; index as i">
+            <select class="form-control" (change)="showPacketOrnament($event)">
+                <option [value]="i" [selected]="i == 0" *ngFor="let packet of data.modalData; index as i">
                     {{packet.packetUniqueId | uppercase}}
                 </option>
             </select>
         </div>
-    </div> -->
+    </div>
     <mat-tab-group [formGroup]="ornamentsForm" class="position-relative" [(selectedIndex)]="selected">
         <mat-tab formArrayName="ornamentData" *ngFor="let ornament of OrnamentsData.controls;index as idx">
             <ng-template mat-tab-label>
@@ -210,11 +209,9 @@
                                 <div class="row kt-margin-t-15">
                                     <div class="col-4 form-label">
                                         <label class="my-auto mandatory text-color" *ngIf="meltingOrnament">Ornament
-                                            Image(with XRF
-                                            machine purity reading))</label>
+                                            Image(with XRF machine purity reading)</label>
                                         <label class="my-auto mandatory text-color" *ngIf="!meltingOrnament">Ornament
-                                            Image(with XRF machine
-                                            reading)</label>
+                                            Image(with XRF machine reading)</label>
                                     </div>
                                     <div class="col-4 form-label">
                                         <label *ngIf="ornament.controls.ornamentImageWithXrfMachineReading.value"
