@@ -16,6 +16,7 @@ const apiLogger = require("./middleware/apiLogger");
 const { cronForDailyPenalInterest, dailyIntrestCalculation } = require("./utils/interestCron");
 //customer api logger middleware
 const customerApiLogger = require("./middleware/customerApiLogger");
+const json2xls = require('json2xls');
 
 //model
 const models = require('./models');
@@ -51,7 +52,8 @@ app.use(express.static(path.join(__dirname, 'templates')));
 
 //middleware for apiLogger
 app.use(apiLogger);
-
+//For excel report
+app.use(json2xls.middleware);
 //middleware for customerApiLogger
 app.use(customerApiLogger);
 
@@ -99,12 +101,46 @@ app.use(function (err, req, res, next) {
 
 cron.schedule('0 1 * * *', async function () {
     let date = moment()
+    var interestStartTime = moment();
 
-    await dailyIntrestCalculation(date);
-    await models.cronRun.create({ date: date, type: 'Interest' })
+    try {
+        await dailyIntrestCalculation(date);
+        var interestEndTime = moment();
+        var interestProcessingTime = moment.utc(moment(interestEndTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(interestStartTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        await cronLogger("loan Interest", date, interestStartTime, interestEndTime, interestProcessingTime, "success", "success", null)
 
-    await cronForDailyPenalInterest(date);
-    await models.cronRun.create({ date: date, type: 'penal Interest' })
+        //penal interest cron
+        var penalStartTime = moment();
+        await penal(date, penalStartTime)
+
+    } catch (interestErr) {
+        var interestEndTime = moment();
+        var interestProcessingTime = moment.utc(moment(interestEndTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(interestStartTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        await cronLogger("loan Interest", date, interestStartTime, interestEndTime, interestProcessingTime, "failed", interestErr.message, null)
+
+        //penal interest cron
+        var penalStartTime = moment();
+        await penal(date, penalStartTime)
+
+    }
 })
+
+async function penal(date, penalStartTime) {
+    try {
+        await cronForDailyPenalInterest(date);
+        var penalEndTime = moment();
+        var penalProcessingTime = moment.utc(moment(penalEndTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(penalStartTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+
+        await cronLogger("loan Penal Interest", date, penalStartTime, penalEndTime, penalProcessingTime, "success", "success", null)
+    } catch (penalErr) {
+        var penalEndTime = moment();
+        var penalProcessingTime = moment.utc(moment(penalEndTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(penalStartTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        await cronLogger("loan Penal Interest", date, penalStartTime, penalEndTime, penalProcessingTime, "failed", penalErr.message, null)
+    }
+}
+
+async function cronLogger(cronType, date, startTime, endTime, processingTime, status, message, notes) {
+    await models.cronLogger.create({ cronType, date, startTime, endTime, processingTime, status, message, notes })
+}
 
 module.exports = app;

@@ -71,6 +71,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   buttonValue = 'Next';
   showAddMoreBtn: Boolean = true;
   modalView: any = { details: { currentValue: { loanOrnamentsDetail: [] } }, action: { currentValue: 'edit' } };
+  modalPackets: any;
 
   constructor(
     public fb: FormBuilder,
@@ -102,6 +103,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.showAddMoreBtn = false
       this.disable = true
       this.modalView.details.currentValue.loanOrnamentsDetail = this.data.modalData
+      this.modalPackets = this.data.packetData
       this.getOrnamentType()
       this.ngOnChanges(this.modalView)
     }
@@ -798,7 +800,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           }
           if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
             this.loanTransfer.emit(res.loanTransferData.loanTransfer.disbursedLoanAmount)
-          } 
+          }
 
           this.next.emit(3)
         })

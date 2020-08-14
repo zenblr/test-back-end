@@ -72,10 +72,10 @@ export class CheckoutCustomerComponent implements OnInit {
     });
 
     this.controls.mobileNumber.valueChanges.subscribe(res => {
-      if (this.controls.mobileNumber.valid) {
-        this.showPrefilledDataFlag = true;
-        this.getExistingCustomer(this.controls.mobileNumber.value);
-      }
+      // if (this.controls.mobileNumber.valid) {
+      //   this.showPrefilledDataFlag = true;
+      //   this.getExistingCustomer(this.controls.mobileNumber.value);
+      // }
     });
 
     this.checkoutCustomerForm.valueChanges.subscribe(val => console.log(val))
@@ -127,7 +127,7 @@ export class CheckoutCustomerComponent implements OnInit {
   checkCustomerType(type) {
     this.existingCustomerData = null;
     this.finalOrderData = null;
-    this.numberSearchForm.reset();
+    // this.numberSearchForm.reset();
     this.checkoutCustomerForm.reset();
     this.otpForm.reset();
     this.controls['stateName'].patchValue('');
@@ -136,13 +136,13 @@ export class CheckoutCustomerComponent implements OnInit {
     if (type == 'new') {
       this.showformFlag = true;
       this.showPlaceOrderFlag = true;
-      this.showNumberSearchFlag = false;
+      // this.showNumberSearchFlag = false;
       this.showCustomerFlag = false;
       this.checkoutCustomerForm.enable();
     } else {
       this.showformFlag = false;
       this.showPlaceOrderFlag = false;
-      this.showNumberSearchFlag = true;
+      // this.showNumberSearchFlag = true;
       this.showCustomerFlag = true;
       this.checkoutCustomerForm.disable();
     }
@@ -169,13 +169,24 @@ export class CheckoutCustomerComponent implements OnInit {
           lastName: res.customerDetails.lastName,
           mobileNumber: res.customerDetails.mobileNumber,
           email: res.customerDetails.email,
-          address: res.customerDetails.customeraddress[0].address,
-          landMark: res.customerDetails.customeraddress[0].landMark,
           postalCode: res.customerDetails.pinCode,
-          stateName: res.customerDetails.customeraddress[0].stateId,
-          cityName: res.customerDetails.customeraddress[0].cityId,
           kycRequired: res.kycRequired,
         });
+        if (res.customerDetails.customeraddress.length) {
+          this.checkoutCustomerForm.patchValue({
+            address: res.customerDetails.customeraddress[0].address,
+            landMark: res.customerDetails.customeraddress[0].landMark,
+            stateName: res.customerDetails.customeraddress[0].stateId,
+            cityName: res.customerDetails.customeraddress[0].cityId,
+          });
+          this.showCustomerFlag = true;
+        } else {
+          this.controls['address'].enable();
+          this.controls['landMark'].enable();
+          this.controls['stateName'].enable();
+          this.controls['cityName'].enable();
+          this.showCustomerFlag = false;
+        }
         this.getCities();
         if (res.customerDetails.kycDetails) {
           this.checkoutCustomerForm.patchValue({
@@ -188,11 +199,11 @@ export class CheckoutCustomerComponent implements OnInit {
           this.controls['nameOnPanCard'].enable();
           this.controls['panCardFileId'].enable();
         }
-        if (this.showPrefilledDataFlag) {
-          const msg = 'Customer already exist. The Details will be automatically pre-filled';
-          this.toastr.successToastr(msg);
-          this.showPrefilledDataFlag = false;
-        }
+        // if (this.showPrefilledDataFlag) {
+        //   const msg = 'Customer already exist. The Details will be automatically pre-filled';
+        //   this.toastr.successToastr(msg);
+        //   this.showPrefilledDataFlag = false;
+        // }
       });
       this.showformFlag = true;
       this.showPlaceOrderFlag = true;
@@ -207,6 +218,10 @@ export class CheckoutCustomerComponent implements OnInit {
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
         }
+        this.checkCustomerType('new');
+        setTimeout(() => {
+          this.checkoutCustomerForm.controls['mobileNumber'].patchValue(this.numberSearchForm.controls.mobileNo.value);
+        });
       });
   }
 
@@ -251,7 +266,7 @@ export class CheckoutCustomerComponent implements OnInit {
       panCardFileId: this.controls.panCardFileId.value,
       blockId: this.checkoutData.blockId
     }
-    if (this.showCustomerFlag) {
+    if (this.showCustomerFlag && this.existingCustomerData.customerDetails.customeraddress.length) {
       generateOTPData.stateName = this.existingCustomerData.customerDetails.customeraddress[0].state.name;
       generateOTPData.cityName = this.existingCustomerData.customerDetails.customeraddress[0].city.name;
     }

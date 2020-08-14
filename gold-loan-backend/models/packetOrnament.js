@@ -4,9 +4,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'packet_id'
         },
-        ornamentTypeId: {
+        ornamentDetailId: {
             type: DataTypes.INTEGER,
-            field: 'ornament_type_id',
+            field: 'ornament_detail_id',
         }
     },
         {
@@ -16,9 +16,9 @@ module.exports = (sequelize, DataTypes) => {
     );
 
     PacketOrnament.associate = function (models) {
-        PacketOrnament.belongsTo(models.packet, { foreignKey: 'packetId', as: 'packet' });
+        // PacketOrnament.belongsTo(models.packet, { foreignKey: 'packetId', as: 'packet' });
 
-        PacketOrnament.belongsTo(models.ornamentType, { foreignKey: 'ornamentTypeId', as: 'ornamentType' });
+        // PacketOrnament.belongsTo(models.customerLoanOrnamentsDetail, { foreignKey: 'ornamentDetailId', as: 'ornamentDetail' });
     }
 
     return PacketOrnament;

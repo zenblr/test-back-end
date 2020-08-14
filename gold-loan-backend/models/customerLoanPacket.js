@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         packetId: {
             type: DataTypes.INTEGER,
-            field: 'packetId'
+            field: 'packet_id'
         }
     },
         {

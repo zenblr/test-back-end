@@ -116,6 +116,9 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
         customerLoan.hasMany(models.customerLoanHistory, { foreignKey: 'loanId', as: 'customerLoanHistory' });
+
+        customerLoan.hasMany(models.customerPacketLocation, { foreignKey: 'loanId', as: 'customerPacketLocation' });
+        
     }
 
     customerLoan.prototype.toJSON = function () {
@@ -172,9 +175,9 @@ module.exports = (sequelize, DataTypes) => {
                 }
                 let purityTestImage = []
                 let purityTestPath = []
-                let newData;
+                let newData = {}
 
-                if (values.loanOrnamentsDetail[i].purityTest.length) {
+                if (values.loanOrnamentsDetail[i].purityTest) {
 
                     for (imgUrl of values.loanOrnamentsDetail[i].purityTest) {
                         let URL = process.env.BASE_URL + imgUrl;
