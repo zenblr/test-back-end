@@ -18,8 +18,14 @@
                                 {{cutomerDetails?.lastName | titlecase}}</div>
                         </div>
                         <div class="col">
-                            <div class="kt-margin-t-30 text-gray font-weight-500 kt-margin-b-5">Pan</div>
-                            <div class="text-color font-weight-500">{{cutomerDetails?.panCardNumber}}</div>
+                            <div class="kt-margin-t-30 text-gray font-weight-500 kt-margin-b-5">PAN</div>
+                            <div class="text-color font-weight-500">
+                                {{cutomerDetails?.panCardNumber ? cutomerDetails?.panCardNumber : '-'}}</div>
+                        </div>
+                        <div class="col" *ngIf="cutomerDetails.panType == 'form60'">
+                            <div class="kt-margin-t-30 text-gray font-weight-500 kt-margin-b-5">FORM 60</div>
+                            <div class="text-primary font-weight-500 kt-pointer"
+                                (click)="preview(cutomerDetails?.panImg)">View FORM 60</div>
                         </div>
                     </div>
                 </div>
@@ -148,8 +154,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10" (click)="viewLoan(loan.id,loan.masterLoanId)"
-                            *ngxPermissionsOnly="['loanDetailsView']">View Details</div>
+                        <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10"
+                            (click)="viewLoan(loan.id,loan.masterLoanId)" *ngxPermissionsOnly="['loanDetailsView']">View
+                            Details</div>
                     </div>
                 </div>
             </div>
