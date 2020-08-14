@@ -319,7 +319,7 @@ exports.getLoanTransferList = async (req, res, next) => {
         include: associateModel,
     });
     if (loanDetails.length === 0) {
-        return res.status(200).json({data:[],count:0});
+        return res.status(200).json([]);
     } else {
         return res.status(200).json({ data: loanDetails, count: count.length });
     }
