@@ -8,23 +8,24 @@ const redisClient = redis.createClient(redisConn.PORT, redisConn.HOST);
 module.exports = async (req, res, next) => {
     try {
         let userId = await req.userData.id;
-        let requestInfo = {'method': req.method,'baseUrl': req.baseUrl,'path': req.route.path}
+        let requestInfo = { 'method': req.method, 'baseUrl': req.baseUrl, 'path': req.route.path }
 
         await redisClient.get(`${userId}permissions`, async (err, result) => {
             if (err) {
-                res.send(err);
+                return res.send(err);
             }
             else if (result) {
                 result = JSON.parse(result);
-                systemInfo = await result;
-                if (systemInfo.length != 0) {
+                systemData = await result;
+                if (systemData.systemInfo.length != 0) {
                     let access = false
-                    await systemInfo.forEach(data => {
+                    await systemData.systemInfo.forEach(data => {
                         if (data.method.toLowerCase() === requestInfo.method.toLowerCase() && data.baseUrl.toLowerCase() === requestInfo.baseUrl.toLowerCase() && data.path.toLowerCase() === requestInfo.path.toLowerCase()) {
                             access = true
                         }
                     })
                     if (access) {
+                        req.permissionArray = systemData.permissionArray
                         next();
                     } else {
                         res.status(403).json({ message: 'access denied' })
@@ -44,18 +45,29 @@ module.exports = async (req, res, next) => {
                     where: { permissionId: { [Op.in]: permissionId } },
                     attributes: ['systemInfo']
                 });
+
+                let getPermissionArray = await models.permission.findAll({
+                    where: { id: { [Op.in]: permissionId } },
+                    attributes: ['description']
+                })
+                let permissionArray = getPermissionArray.map((singlePermission) => singlePermission.description)
                 systemInfo = await systemInfoData.map((data) => data.systemInfo);
-                redisClient.set(`${userId}permissions`, JSON.stringify(systemInfo));
+                let systemData = {
+                    systemInfo: systemInfo,
+                    permissionArray: permissionArray
+                }
+                redisClient.set(`${userId}permissions`, JSON.stringify(systemData));
                 const todayEnd = new Date().setHours(23, 59, 59, 999);
                 redisClient.expireat(`${userId}permissions`, parseInt(todayEnd / 1000));
-                if (systemInfo.length != 0) {
+                if (systemData.systemInfo.length != 0) {
                     let access = false
-                    await systemInfo.forEach(data => {
+                    await systemData.systemInfo.forEach(data => {
                         if (data.method.toLowerCase() === requestInfo.method.toLowerCase() && data.baseUrl.toLowerCase() === requestInfo.baseUrl.toLowerCase() && data.path.toLowerCase() === requestInfo.path.toLowerCase()) {
                             access = true
                         }
                     })
                     if (access) {
+                        req.permissionArray = systemData.permissionArray
                         next();
                     } else {
                         res.status(403).json({ message: 'Access denied' })

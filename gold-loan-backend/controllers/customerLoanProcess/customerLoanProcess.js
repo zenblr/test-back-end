@@ -10,7 +10,9 @@ const moment = require('moment');
 const { getSchemeDetails } = require('../../utils/loanFunction')
 var pdf = require("pdf-creator-node"); // PDF CREATOR PACKAGE
 var fs = require('fs');
-let { sendMessageLoanIdGeneration } = require('../../utils/SMS')
+let { sendMessageLoanIdGeneration } = require('../../utils/SMS');
+const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
+
 
 const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory');
 
@@ -1551,7 +1553,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 model: models.customer,
                 as: 'customer',
                 attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
-                include:[
+                include: [
                     {
                         model: models.customerKycAddressDetail,
                         as: 'customerKycAddress',
@@ -1779,7 +1781,12 @@ exports.appliedLoanDetails = async (req, res, next) => {
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
-    if (req.userData.userTypeId != 4) {
+    // if (req.userData.userTypeId != 4) {
+    //     internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+    // } else {
+    //     internalBranchWhere = { isActive: true }
+    // }
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
         internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
     } else {
         internalBranchWhere = { isActive: true }
@@ -1880,7 +1887,13 @@ exports.getLoanDetails = async (req, res, next) => {
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
-    if (req.userData.userTypeId != 4) {
+    // if (req.userData.userTypeId != 4) {
+    //     internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+    // } else {
+    //     internalBranchWhere = { isActive: true }
+    // }
+
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
         internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
     } else {
         internalBranchWhere = { isActive: true }

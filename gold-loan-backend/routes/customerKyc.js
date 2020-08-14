@@ -3,10 +3,10 @@ const route = express.Router();
 const { wrapper } = require('../utils/errorWrap');
 const validationError = require('../middleware/validationError');
 const { submitCustomerKycAddressValidation, submitAllKycInfoValidation, submitCustomerKycBankDetailValidation,
-    submitCustomerKycInfoValidation, submitCustomerKycpersonalDetailValidation, getCustomerDetailsValidation, submitCustomerKycDetailValidation,z } = require('../validations/customerKyc');
-const { getCustomerDetails, submitCustomerKycinfo, submitCustomerKycAddress, submitCustomerKycPersonalDetail, submitCustomerKycBankDetail, submitAllKycInfo, appliedKyc, getReviewAndSubmit,editAppKyc } = require('../controllers/customerKyc/customerKyc')
+    submitCustomerKycInfoValidation, submitCustomerKycpersonalDetailValidation, getCustomerDetailsValidation, submitCustomerKycDetailValidation, z } = require('../validations/customerKyc');
+const { getCustomerDetails, submitCustomerKycinfo, submitCustomerKycAddress, submitCustomerKycPersonalDetail, submitCustomerKycBankDetail, submitAllKycInfo, appliedKyc, getReviewAndSubmit } = require('../controllers/customerKyc/customerKyc')
 
-const { submitAppKyc, getAssignedCustomer } = require('../controllers/customerKyc/appCustomerKyc')
+const { submitAppKyc, editAppKyc, getAssignedCustomer } = require('../controllers/customerKyc/appCustomerKyc')
 const checkAuth = require('../middleware/checkAuth');
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
