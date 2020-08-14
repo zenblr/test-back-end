@@ -6,6 +6,7 @@ import { PacketLocationService } from '../../../../../../core/masters/packet-loc
 import { map, catchError } from 'rxjs/operators';
 import { UpdateLocationService } from '../../../../../../core/loan-management/update-location/services/update-location.service';
 import { AuthService } from '../../../../../../core/auth';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'kt-update-location',
@@ -18,6 +19,7 @@ export class UpdateLocationComponent implements OnInit {
   packetLocations: [any];
   userTypeList = [{ name: 'Customer', value: 'Customer' }, { name: 'Internal User', value: 'InternalUser' }, { name: 'Partner User', value: 'PartnerUser' }]
   filteredPacketArray: any[];
+  private verifiedPacketsArray = []
 
   constructor(
     public dialogRef: MatDialogRef<UpdateLocationComponent>,
@@ -82,6 +84,15 @@ export class UpdateLocationComponent implements OnInit {
     if (this.locationForm.invalid) return this.locationForm.markAllAsTouched()
 
     console.log(this.locationForm.value)
+
+    if (this.verifiedPacketsArray.length != this.data.packetData.length) return
+
+    const isVerified = this.verifiedPacketsArray.every(e => e.isVerified === true)
+
+    if (!isVerified) return console.log(`Packets are not completely verified!`)
+
+
+
   }
 
   get barcodeNumber() {
@@ -102,6 +113,8 @@ export class UpdateLocationComponent implements OnInit {
   initBarcodeArray() {
     for (let index = 0; index < this.data.packetData.length; index++) {
       this.barcodeNumber.push(this.newBarcode())
+      const packetObject = { isVerified: false }
+      this.verifiedPacketsArray.push(packetObject)
     }
   }
 
@@ -111,8 +124,12 @@ export class UpdateLocationComponent implements OnInit {
     const isVerified = (JSON.stringify(formGroup.value)).toLowerCase() === (JSON.stringify(filteredFormGroup)).toLowerCase()
 
     console.log(isVerified)
-    if (!isVerified) formGroup.get('Barcode').setErrors({ unverified: true })
-
+    if (!isVerified) {
+      formGroup.get('Barcode').setErrors({ unverified: true })
+      this.verifiedPacketsArray.splice(index, 1, { isVerified })
+    } else {
+      this.verifiedPacketsArray.splice(index, 1, { isVerified })
+    }
   }
 
   getDetailsByMobile() {

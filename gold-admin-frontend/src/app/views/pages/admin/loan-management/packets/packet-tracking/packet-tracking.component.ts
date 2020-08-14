@@ -180,12 +180,11 @@ export class PacketTrackingComponent implements OnInit {
   ornaments(packet) {
     const masterLoanId = packet.loanPacketDetails[0].masterLoanId
     this.packetTrackingService.viewPackets({ masterLoanId }).pipe(map(res => {
-      console.table(res.data.loanOrnamentsDetail)
       this.dialog.open(OrnamentsComponent, {
         data: {
           modal: true,
-          modalData: res.data.loanOrnamentsDetail,
-          packetData: res.data.loanPacketDetails[0].packets
+          modalData: res.data[0].packets,
+          packetView: true
         },
         width: '90%'
       })
