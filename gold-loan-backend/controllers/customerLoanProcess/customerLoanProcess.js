@@ -1524,6 +1524,11 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 }]
             },
             {
+                model: models.partner,
+                as: 'partner',
+                attributes: ['id', 'name']
+            },
+            {
                 model: models.customerLoan,
                 as: 'unsecuredLoan',
                 include: [{
@@ -1892,7 +1897,7 @@ exports.getLoanDetails = async (req, res, next) => {
     // } else {
     //     internalBranchWhere = { isActive: true }
     // }
-    
+
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
         internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
     } else {
