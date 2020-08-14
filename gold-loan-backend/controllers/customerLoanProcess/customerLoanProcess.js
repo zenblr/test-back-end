@@ -1892,7 +1892,7 @@ exports.getLoanDetails = async (req, res, next) => {
     // } else {
     //     internalBranchWhere = { isActive: true }
     // }
-
+    
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
         internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
     } else {
