@@ -93,6 +93,8 @@ exports.operationalTeamKycRating = async (req, res, next) => {
         return res.status(400).json({ message: `Cce rating not verified` })
     }
 
+    let customerRating = await models.customerKycClassification.findOne({ where: { customerId } })
+
     let operationalTeamId = req.userData.id
 
     if (customerRating.kycStatusFromOperationalTeam == "approved" || customerRating.kycStatusFromOperationalTeam == "rejected") {

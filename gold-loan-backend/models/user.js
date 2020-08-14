@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
                     args: [0, 30]
                 }
             }
-        },  
+        },
         lastName: {
             type: DataTypes.STRING,
             field: 'last_name',
@@ -90,7 +90,9 @@ module.exports = (sequelize, DataTypes) => {
         User.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
         User.belongsToMany(models.internalBranch, { through: models.userInternalBranch });
-        User.hasMany(models.customerPacketLocation ,{ foreignKey: 'receiverUserId', as: 'customerPacketLocation' })
+        User.hasMany(models.customerPacketLocation, { foreignKey: 'receiverUserId', as: 'customerPacketLocation' })
+
+        User.hasMany(models.packetTracking, { foreignKey: 'appraiserId', as: 'packetTracking' })
 
     }
 
