@@ -38,7 +38,7 @@
                     <mat-header-cell *matHeaderCellDef>Processing Charges</mat-header-cell>
                     <mat-cell *matCellDef="let item" class="d-block">
                         <div class="currency">
-                            {{item?.scrapQuickPay?.depositAmount ? (item?.scrapQuickPay?.depositAmount | indianCurrencyFormat) : '-'}}
+                            {{item?.scrapQuickPay?.depositAmount ? (item?.scrapQuickPay?.depositAmount | indianCurrencyFormat) : 'NA'}}
                         </div>
                     </mat-cell>
                 </ng-container>
