@@ -222,3 +222,15 @@ exports.updateLocation = async (req, res) => {
     }
 }
 
+exports.getMapDetails = async (req, res, next) => {
+
+    let internalBranch = req.userData.internalBranchId
+
+    let appraiser = await models.user.findAll({ where: { userTypeId: 7, } })
+
+}
+
+exports.getLocationDetails = async (req, res, next) => {
+
+}
+

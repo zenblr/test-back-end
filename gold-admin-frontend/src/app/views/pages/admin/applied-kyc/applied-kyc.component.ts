@@ -64,7 +64,7 @@ export class AppliedKycComponent implements OnInit {
     // this.subscriptions.push(sortSubscription);
 
     this.ngxPermissionsService.permissions$.subscribe(res => {
-      // console.log(res);
+      this.permission =res;
     })
 
     const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(
