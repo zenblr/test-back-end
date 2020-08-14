@@ -46,8 +46,8 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanPackageDetails.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
 
         // CustomerLoanPackageDetails.hasMany(models.customerLoanPacket, { foreignKey: 'customerLoanPackageDetailsId', as: 'customerLoanPacket' });
-    
-        CustomerLoanPackageDetails.belongsToMany(models.packet, { through: models.customerLoanPacket });
+
+        CustomerLoanPackageDetails.belongsToMany(models.packet, { through: models.customerLoanPacket, foreignKey: 'customerLoanPackageDetailId' });
 
     }
 
@@ -62,7 +62,75 @@ module.exports = (sequelize, DataTypes) => {
         if (values.sealingPacketWithCustomer) {
             values.sealingPacketWithCustomerImage = process.env.BASE_URL + values.sealingPacketWithCustomer;
         }
-      
+
+        if (values.packets) {
+            for (let i = 0; i < values.packets.length; i++) {
+                let pac = values.packets
+                if (pac[i].customerLoanOrnamentsDetails) {
+                    let orna = pac[i].customerLoanOrnamentsDetails
+                    for (let j = 0; j < orna.length; j++) {
+
+                        if (orna[j].weightMachineZeroWeight) {
+
+                            let data = {};
+                            data.path = orna[j].weightMachineZeroWeight;
+                            data.URL = process.env.BASE_URL + orna[j].weightMachineZeroWeight;
+                            orna[j].weightMachineZeroWeightData = data;
+
+                        }
+                        if (orna[j].withOrnamentWeight) {
+
+                            let data = {};
+                            data.path = orna[j].withOrnamentWeight;
+                            data.URL = process.env.BASE_URL + orna[j].withOrnamentWeight;
+                            orna[j].withOrnamentWeightData = data;
+                        }
+
+                        if (orna[j].stoneTouch) {
+
+                            let data = {};
+                            data.path = orna[j].stoneTouch;
+                            data.URL = process.env.BASE_URL + orna[j].stoneTouch;
+                            orna[j].stoneTouchData = data;
+                        }
+
+                        if (orna[j].acidTest) {
+
+                            let data = {};
+                            data.path = orna[j].acidTest;
+                            data.URL = process.env.BASE_URL + orna[j].acidTest;
+                            orna[j].acidTestData = data;
+                        }
+
+                        if (orna[j].ornamentImage) {
+                            let data = {};
+                            data.path = orna[j].ornamentImage;
+                            data.URL = process.env.BASE_URL + orna[j].ornamentImage;
+                            orna[j].ornamentImageData = data;
+                        }
+
+                        let purityTestImage = []
+                        let purityTestPath = []
+                        let newData = {}
+
+                        if (orna[j].purityTest) {
+                            for (imgUrl of orna[j].purityTest) {
+                                let URL = process.env.BASE_URL + imgUrl;
+                                purityTestImage.push(URL)
+                                let path = imgUrl;
+                                purityTestPath.push(path)
+                                let data = {};
+                                data.path = purityTestPath;
+                                data.URL = purityTestImage;
+                                newData = data;
+                            }
+                            orna[j].purityTestImage = newData
+                        }
+    
+                    }
+                }
+            }
+        }
 
         return values;
     }

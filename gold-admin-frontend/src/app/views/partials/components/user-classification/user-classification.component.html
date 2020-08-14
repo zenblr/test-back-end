@@ -181,7 +181,7 @@
                 <div *ngIf="(showTextBoxCce  && userType == 6)" class="col kt-margin-t-20 kt-margin-b-20"
                     style="width: 600px; margin: auto">
                     <div class="row">
-                        <div class="col-4 form-label">
+                        <div class="col-4" style="font-weight: 500 !important;">
                             <label for="" class="kt-padding-l-10">Choose a reason</label>
                         </div>
                         <div class="col-8">
@@ -192,6 +192,12 @@
                                     {{reason.description}}
                                 </option>
                             </select>
+
+                            <small>
+                                <mat-error
+                                    *ngIf="cceControls.reasonFromCce.touched && cceControls.reasonFromCce.errors?.reasonRequired">
+                                    Please choose a reason</mat-error>
+                            </small>
 
                             <mat-form-field class="w-100 kt-margin-t-20"
                                 *ngIf="cceControls.reasonForOther.value == 'Other'">

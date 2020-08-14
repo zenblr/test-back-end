@@ -3,7 +3,6 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ScrapApplicationFormService } from '../../../../../core/scrap-management';
-// import { SharedService } from '../../../../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-quick-pay',
@@ -19,9 +18,9 @@ export class QuickPayComponent implements OnInit {
   currentDate = new Date();
 
   constructor(
-    private fb: FormBuilder,
-    public dialogRef: MatDialogRef<QuickPayComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<QuickPayComponent>,
+    private fb: FormBuilder,
     private toastr: ToastrService,
     private scrapApplicationFormService: ScrapApplicationFormService
   ) { }
@@ -68,13 +67,15 @@ export class QuickPayComponent implements OnInit {
         break;
       case 'bankTransfer':
         this.quickPayForm.controls.chequeNumber.setValidators([]),
-          this.quickPayForm.controls.transactionId.setValidators(Validators.required)
-        this.quickPayForm.updateValueAndValidity()
+          this.quickPayForm.controls.chequeNumber.updateValueAndValidity()
+        this.quickPayForm.controls.transactionId.setValidators(Validators.required),
+          this.quickPayForm.controls.transactionId.updateValueAndValidity()
         break;
       case 'cheque':
         this.quickPayForm.controls.transactionId.setValidators([]),
-          this.quickPayForm.controls.chequeNumber.setValidators(Validators.required)
-        this.quickPayForm.updateValueAndValidity()
+          this.quickPayForm.controls.transactionId.updateValueAndValidity()
+        this.quickPayForm.controls.chequeNumber.setValidators(Validators.required),
+          this.quickPayForm.controls.chequeNumber.updateValueAndValidity()
         break;
       default:
         break;
@@ -97,8 +98,7 @@ export class QuickPayComponent implements OnInit {
     if (this.quickPayForm.invalid) {
       return this.quickPayForm.markAllAsTouched();
     }
-
-    this.scrapApplicationFormService.quickPay(this.quickPayForm.value).subscribe(res => {
+    this.scrapApplicationFormService.quickPay(this.quickPayForm.value, this.data.quickPayData).subscribe(res => {
       if (res) {
         // const msg = 'Packet Updated Sucessfully';
         this.toastr.success(res.message);

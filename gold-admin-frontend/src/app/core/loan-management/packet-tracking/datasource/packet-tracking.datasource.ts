@@ -25,7 +25,7 @@ export class PacketTrackingDatasource extends BaseDataSource {
                 map(
                     report => {
                         this.paginatorTotalSubject.next(report.count);
-                        this.entitySubject.next(report.packetDetails);
+                        this.entitySubject.next(report.data);
                     }
                 ),
                 catchError(() => of([])),

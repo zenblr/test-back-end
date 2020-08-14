@@ -122,10 +122,10 @@ export class PacketTrackingComponent implements OnInit {
   }
 
   updatePacket(packet) {
-    console.log(packet)
+    // console.log(packet)
     const dialogRef = this.dialog.open(UpdateLocationComponent,
       {
-        data: { packetData: packet, action: 'edit' },
+        data: { packetData: packet.loanPacketDetails[0].packets, action: 'edit' },
         width: '400px'
       });
     dialogRef.afterClosed().subscribe(res => {
@@ -178,13 +178,18 @@ export class PacketTrackingComponent implements OnInit {
   }
 
   ornaments(packet) {
-    // this.dialog.open(OrnamentsComponent, {
-    //   data: {
-    //     modal: true,
-    //     modalData: packet
-    //   },
-    //   width: '90%'
-    // })
+    const masterLoanId = packet.loanPacketDetails[0].masterLoanId
+    this.packetTrackingService.viewPackets({ masterLoanId }).pipe(map(res => {
+      this.dialog.open(OrnamentsComponent, {
+        data: {
+          modal: true,
+          modalData: res.data[0].packets,
+          packetView: true
+        },
+        width: '90%'
+      })
+    }
+    )).subscribe()
   }
 
 }
