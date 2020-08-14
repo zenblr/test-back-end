@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'emi_due_date'
         },
         interestAmount: {
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'interest_amount',
             defaultValue: 0
         },

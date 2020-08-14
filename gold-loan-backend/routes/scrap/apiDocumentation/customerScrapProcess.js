@@ -185,6 +185,28 @@
  *               type: number
  *             depositDate:
  *               type: string
+ *             grossWeight:
+ *               type: number
+ *             netWeight:
+ *               type: number
+ *             deductionWeight:
+ *               type: number
+ *             karat:
+ *               type: number
+ *             purityReading:
+ *               type: number
+ *             customerConfirmation:
+ *               type: string
+ *             finalScrapAmountAfterMelting:
+ *               type: number
+ *             eligibleScrapAmount:
+ *               type: number
+ *             ornamentImageWithWeight:
+ *               type: string
+ *             ornamentImageWithXrfMachineReading:
+ *               type: string
+ *             ornamentImage:
+ *               type: string
  *         required:
  *           - scrapId
  *           - paymentMode
@@ -647,24 +669,6 @@
  *       in: "query"
  *       description: "Pagination ending point"
  *       type: "string"
- *     responses:
- *       200:
- *          description: success.
- * /scrap/scrap-process/single-scrap-customer:
- *   get:
- *     tags:
- *       -  Customer scrap Process
- *     name: read single scrap details
- *     summary: To read single scrap details
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     parameters:
- *     - name: "customerScrapId"
- *       in: "query"
- *       description: "Scrap Id"
- *       type: "number"
  *     responses:
  *       200:
  *          description: success.

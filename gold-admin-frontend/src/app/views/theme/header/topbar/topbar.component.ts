@@ -49,9 +49,10 @@ import { LoanRepaymentService } from '../../../../core/account/loan-repayment/se
 import { LoanDisbursementService } from '../../../../core/account/loan-disbursement/services/loan-disbursement.service';
 import { ShopService, ShoppingCartService, OrdersService } from '../../../../core/broker';
 import { OccupationService } from '../../../../core/masters/occupation/services/occupation.service';
-import { StandardDeductionService } from '../../../../core/masters/standard-deduction/service/standard-deduction.service';
+import { StandardDeductionService } from '../../../../core/scrap-management/standard-deduction/service/standard-deduction.service';
 import { ScrapPacketsService, AppliedScrapService } from '../../../../core/scrap-management';
 import { OtherChargesService } from '../../../../core/masters/other-charges/service/other-charges.service';
+import { ScrapCustomerManagementService } from '../../../../core/scrap-management/customer-management';
 
 @Component({
 	selector: "kt-topbar",
@@ -150,7 +151,8 @@ export class TopbarComponent implements OnInit {
 		private standardDeductionService: StandardDeductionService,
 		private scrapPacketsService: ScrapPacketsService,
 		private appliedScrap: AppliedScrapService,
-		private otherChargesService: OtherChargesService
+		private otherChargesService: OtherChargesService,
+		private scrapCustomerManagementService: ScrapCustomerManagementService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -594,6 +596,9 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes("view-loan")) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes("view-scrap/")) {
+			this.showBackButton = true;
+		}
 		if (location.href.includes("packet-image-upload")) {
 			this.showBackButton = true;
 		}
@@ -601,6 +606,9 @@ export class TopbarComponent implements OnInit {
 			this.showBackButton = true;
 		}
 		if (location.href.includes("customer-list/")) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes("scrap-details/")) {
 			this.showBackButton = true;
 		}
 		if (location.href.includes("kyc-setting?mob")) {
@@ -641,6 +649,9 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/orders/cancel-order/')) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes('/scrap-buying-application-form?customerID=')) {
+			this.showBackButton = true;
+		}
 		if (this.path == "orders") {
 			this.showInput = true;
 			this.filterName = "brokerOrder";
@@ -675,7 +686,7 @@ export class TopbarComponent implements OnInit {
 			this.value2 = "Assign Appraiser";
 			this.type2 = "button";
 			this.value1 = "Add Packets";
-			this.permissionType = "packetAdd";
+			this.permissionType = "scrapPacketAdd";
 			this.showfilter = true;
 			this.filterName = 'packets';
 			this.filterWidth = '400px';
@@ -691,6 +702,9 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 		}
 		if (this.path == 'my-requests') {
+			this.showInput = true;
+		}
+		if (this.path == 'scrap-buying') {
 			this.showInput = true;
 		}
 	}
@@ -818,6 +832,8 @@ export class TopbarComponent implements OnInit {
 	check(val) {
 		if (this.path == "customer-list") {
 			this.customerManagementServiceCustomer.toggle.next(val);
+			this.scrapCustomerManagementService.toggle.next(val);
+
 		}
 		if (this.path == "shop") {
 			this.shopService.toggle.next(val);

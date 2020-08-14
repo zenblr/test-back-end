@@ -34,6 +34,14 @@
                         </div>
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="processCharge">
+                    <mat-header-cell *matHeaderCellDef>Processing Charges</mat-header-cell>
+                    <mat-cell *matCellDef="let item" class="d-block">
+                        <div class="currency">
+                            {{item?.scrapQuickPay?.depositAmount ? (item?.scrapQuickPay?.depositAmount | indianCurrencyFormat) : 'NA'}}
+                        </div>
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="appraisalApproval">
                     <mat-header-cell *matHeaderCellDef>Appraiser Approval</mat-header-cell>
                     <mat-cell *matCellDef="let item">
@@ -96,9 +104,8 @@
                             <div *ngIf="item?.scrapStage?.id == 4">
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)"
-                                        [ngClass]="{'cursor-not-allowed':!permission.loanDisbursement}"
-                                        class="green-button">Disburse
-                                        Amount</button>
+                                        [ngClass]="{'cursor-not-allowed':!permission.scrapDisbursement}"
+                                        class="green-button">Disburse Amount</button>
                                 </div>
                             </div>
                             <div *ngIf="item?.scrapStage?.id == 5">
@@ -115,12 +122,12 @@
                             </div>
                             <div *ngIf="item?.scrapStage?.id == 9">
                                 <div class="kt-pointer">
-                                    <button class="warning-button">{{item?.scrapStage?.stageName | titlecase}}</button>
+                                    <button class="warning-button">{{'Processing Charges Paid' | titlecase}}</button>
                                 </div>
                             </div>
                             <div *ngIf="item?.scrapStage?.id == 10">
                                 <div class="kt-pointer">
-                                    <button class="warning-button">{{item?.scrapStage?.stageName | titlecase}}</button>
+                                    <button class="warning-button">{{'Customer Disagreed' | titlecase}}</button>
                                 </div>
                             </div>
                         </div>

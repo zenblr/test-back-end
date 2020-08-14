@@ -197,12 +197,6 @@ export class MenuConfig {
 											page: "/admin/holidays"
 										},
 										{
-											title: "Standard Deduction",
-											root: true,
-											permission: false,
-											page: "/admin/masters/standard-deduction"
-										},
-										{
 											title: "Other Charges",
 											root: true,
 											permission: false,
@@ -812,25 +806,25 @@ export class MenuConfig {
 							permission: false,
 						},
 						{
-							title: "Scrap Buying Application Form",
+							title: "Scrap Buying Application",
 							root: true,
 							src: "assets/media/aside-icons/icons-35.svg",
 							page: "/admin/scrap-management/scrap-buying-application-form",
-							permission: false,
+							permission: !this.permissionsArr.includes('scrapApplicationAdd'),
 						},
 						{
 							title: "Packet",
 							root: true,
 							src: "assets/media/aside-icons/icons-36.svg",
 							page: "/admin/scrap-management/packets",
-							permission: false,
+							permission: !this.permissionsArr.includes('scrapPacketView'),
 						},
 						{
 							title: "Applied Scrap",
 							root: true,
 							src: "assets/media/aside-icons/icons-37.svg",
 							page: "/admin/scrap-management/applied-scrap",
-							permission: false
+							permission: !this.permissionsArr.includes('appliedScrapView')
 						},
 						{
 							title: "Scrap Buying List",
@@ -843,20 +837,26 @@ export class MenuConfig {
 							title: "Customer Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-08.svg",
-							page: "/admin/scrap-management/customer-management",
-							permission: false
+							page: "/admin/scrap-management/customer-list",
+							permission: !this.permissionsArr.includes('scrapCustomerManagementView')
 						},
 						{
 							title: "Settings",
 							root: true,
 							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-03.svg",
-							permission: false,
+							permission: !this.permissionsArr.includes('viewScrapGlobalSetting') || !this.permissionsArr.includes('viewStandardDeduction'),
 							submenu: [
 								{
 									title: "Global Settings",
 									page: "/admin/scrap-management/global-settings",
-									permission: false
+									permission: !this.permissionsArr.includes('viewScrapGlobalSetting')
+								},
+								{
+									title: "Standard Deduction",
+									root: true,
+									permission: !this.permissionsArr.includes('viewStandardDeduction'),
+									page: "/admin/scrap-management/standard-deduction"
 								},
 							]
 						},

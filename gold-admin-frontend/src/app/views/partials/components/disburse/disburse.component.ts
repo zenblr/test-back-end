@@ -7,6 +7,7 @@ import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { GlobalSettingService } from '../../../../core/global-setting/services/global-setting.service';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'kt-disburse',
@@ -16,6 +17,8 @@ import { Router } from '@angular/router';
 export class DisburseComponent implements OnInit {
   @Input() masterAndLoanIds
   @Input() scrapIds
+  @Input() disbursementDetails;
+  @Input() showButton;
   currentDate = new Date()
   disburseForm: FormGroup
   details: any;
@@ -29,7 +32,8 @@ export class DisburseComponent implements OnInit {
     public appliedScrapService: AppliedScrapService,
     public toast: ToastrService,
     public globalSettingService: GlobalSettingService,
-    public router: Router
+    public router: Router,
+    public location: Location,
   ) {
     this.globalSettingService.globalSetting$.subscribe(res => {
       // console.log(res)
@@ -49,6 +53,10 @@ export class DisburseComponent implements OnInit {
       this.disburseForm.patchValue(this.scrapIds)
       this.getScrapBankDetails()
       this.validation()
+    }
+    if (changes.disbursementDetails.currentValue && changes.disbursementDetails.currentValue.scrapDisbursement) {
+      this.disburseForm.patchValue(changes.disbursementDetails.currentValue.scrapDisbursement);
+      this.disburseForm.disable()
     }
   }
 
@@ -211,7 +219,7 @@ export class DisburseComponent implements OnInit {
     if (event) {
       this.submit()
     } else if (!event) {
-      this.dialogRef.close()
+      this.location.back();
     }
   }
 

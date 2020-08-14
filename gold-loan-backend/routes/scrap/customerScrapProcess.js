@@ -2,7 +2,7 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
-const { customerDetails, scrapBasicDeatils, acknowledgementDetails, scrapBankDetails, scrapOrnmanetDetails, scrapAppraiserRating, scrapBmRating, scrapOpsTeamRating, singleScrapDetails, scrapDocuments, addPackageImagesForScrap, scrapOrnmanetMeltingDetails, disbursementOfScrapBankDetails, disbursementOfScrapAmount, appliedScrapDetails, getScrapDetails, getSingleScrapInCustomerManagment, quickPay, printCustomerAcknowledgement, printPurchaseVoucher, getScrapStatus } =
+const { customerDetails, scrapBasicDeatils, acknowledgementDetails, scrapBankDetails, scrapOrnmanetDetails, scrapAppraiserRating, scrapBmRating, scrapOpsTeamRating, singleScrapDetails, scrapDocuments, addPackageImagesForScrap, scrapOrnmanetMeltingDetails, disbursementOfScrapBankDetails, disbursementOfScrapAmount, appliedScrapDetails, getScrapDetails, quickPay, printCustomerAcknowledgement, printPurchaseVoucher, getScrapStatus } =
   require('../../controllers/scrap/customerScrapProcess/customerScrapProcess'); // IMPORTING SCRAP PROCESS FUNCTIONS
 const checkRolePermission = require('../../middleware/checkRolesPermissions');
 
@@ -40,8 +40,6 @@ route.post('/scrap-disbursement', checkAuth, wrapper(disbursementOfScrapAmount))
 route.get('/applied-scrap-details', checkAuth, wrapper(appliedScrapDetails)); // FETCH APLLIED SCRAP DETAILS
 
 route.get('/scrap-details', checkAuth, wrapper(getScrapDetails)); // FETCH APLLIED SCRAP DETAILS
-
-route.get('/single-scrap-customer', checkAuth, wrapper(getSingleScrapInCustomerManagment))//customer-managment single SCRAP
 
 route.post('/quick-pay', checkAuth, wrapper(quickPay)); // DISBURSEMENT OF SCRAP AMOUNT
 

@@ -1551,6 +1551,23 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 model: models.customer,
                 as: 'customer',
                 attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+                include:[
+                    {
+                        model: models.customerKycAddressDetail,
+                        as: 'customerKycAddress',
+                        attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
+                        include: [{
+                            model: models.state,
+                            as: 'state'
+                        }, {
+                            model: models.city,
+                            as: 'city'
+                        }, {
+                            model: models.addressProofType,
+                            as: 'addressProofType'
+                        }],
+                    },
+                ]
             },
             {
                 model: models.customerLoanInterest,
@@ -1835,10 +1852,15 @@ exports.getLoanDetails = async (req, res, next) => {
                 "$customer.mobile_number$": { [Op.iLike]: search + '%' },
                 "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
                 "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-                "$customerLoanMaster.final_loan_amount$": { [Op.iLike]: search + '%' },
+                // "$customerLoanMaster.final_loan_amount$": { [Op.iLike]: search + '%' },
                 "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
                 "$customerLoan.scheme.scheme_name$": { [Op.iLike]: search + '%' },
-
+                finalLoanAmount: sequelize.where(
+                    sequelize.cast(sequelize.col("customerLoanMaster.final_loan_amount"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
                 tenure: sequelize.where(
                     sequelize.cast(sequelize.col("customerLoanMaster.tenure"), "varchar"),
                     {

@@ -154,7 +154,9 @@ module.exports = (sequelize, DataTypes) => {
         CustomerScrap.hasOne(models.customerScrapDocument, { foreignKey: "scrapId", as: "scrapDocument" });
         CustomerScrap.hasMany(models.customerScrapPackageDetails, { foreignKey: 'scrapId', as: 'scrapPacketDetails' });
         CustomerScrap.hasMany(models.scrapPacket, { foreignKey: 'scrapId', as: 'scrapPacket' });
-        CustomerScrap.hasOne(models.customerScrapDisbursement, {foreignKey: 'scrapId', as: 'scrapDisbursement'})
+        CustomerScrap.hasOne(models.customerScrapDisbursement, {foreignKey: 'scrapId', as: 'scrapDisbursement'});
+        CustomerScrap.hasOne(models.scrapQuickPay, {foreignKey: 'scrapId', as: 'scrapQuickPay'});
+
     }
 
     CustomerScrap.prototype.toJSON = function () {

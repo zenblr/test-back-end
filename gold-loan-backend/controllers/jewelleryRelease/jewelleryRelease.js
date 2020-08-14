@@ -144,9 +144,9 @@ async function getornamentLoanInfo(masterLoanId, ornamentWeight, amount) {
     }
     loanDetails.interestAmount = amount.secured.interest;
     loanDetails.penalInterest = amount.secured.penalInterest;
-    if (amount.unSecured) {
-        loanDetails.interestAmount = loanDetails.interestAmount + amount.unSecured.interest;
-        loanDetails.penalInterest = loanDetails.penalInterest + amount.unSecured.penalInterest;
+    if (amount.unsecured) {
+        loanDetails.interestAmount = loanDetails.interestAmount + amount.unsecured.interest;
+        loanDetails.penalInterest = loanDetails.penalInterest + amount.unsecured.penalInterest;
     }
     //calculate value here
     loanDetails.totalPayableAmount = ornamentWeight.releaseAmount + loanDetails.penalInterest + loanDetails.interestAmount;
@@ -172,12 +172,38 @@ exports.ornamentsPartRelease = async (req, res, next) => {
     } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
+    let loanInfo = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        order: [
+            [models.customerLoan, 'id', 'asc']
+        ],
+        attributes: ['id', 'outstandingAmount'],
+        include: [{
+            model: models.customerLoan,
+            as: 'customerLoan',
+            attributes: ['id', 'outstandingAmount']
+        }]
+    });
+    let securedReleaseAmount = Number(loanInfo.customerLoan[0].outstandingAmount / loanInfo.outstandingAmount * releaseAmount);
+    let securedOutstandingAmount = Number(loanInfo.customerLoan[0].outstandingAmount - securedReleaseAmount);
+    let unSecuredReleaseAmount = 0;
+    let unSecuredOutstandingAmount = 0;
+    if (loanInfo.customerLoan.length > 1) {
+        unSecuredReleaseAmount = Number(loanInfo.customerLoan[1].outstandingAmount / loanInfo.outstandingAmount * releaseAmount);
+        unSecuredOutstandingAmount = Number(loanInfo.customerLoan[1].outstandingAmount - unSecuredReleaseAmount);
+    }
+    let outstandingAmount = Number(loanInfo.outstandingAmount - (securedReleaseAmount + unSecuredReleaseAmount));
     if (paymentType == 'cash') {
         let partRelease = await sequelize.transaction(async t => {
             let addPartRelease = await models.partRelease.create({ paymentType, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, amountStatus: 'completed', createdBy, modifiedBy }, { transaction: t });
             for (const ornament of ornamentId) {
                 await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
                 await models.partReleaseOrnaments.create({ partReleaseId: addPartRelease.id, ornamentId: ornament }, { transaction: t });
+            }
+            await models.customerLoanMaster.update({ outstandingAmount: Number(outstandingAmount) }, { where: { id: loanInfo.id }, transaction: t })
+            await models.customerLoan.update({ outstandingAmount: Number(securedOutstandingAmount) }, { where: { id: loanInfo.customerLoan[0].id }, transaction: t })
+            if (loanInfo.customerLoan.length > 1) {
+                await models.customerLoan.update({ outstandingAmount: Number(unSecuredOutstandingAmount) }, { where: { id: loanInfo.customerLoan[1].id }, transaction: t })
             }
             await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_PAYMENT_CASH, createdBy, modifiedBy }, { transaction: t });
             return addPartRelease
@@ -190,6 +216,11 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                 await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
                 await models.partReleaseOrnaments.create({ partReleaseId: addPartRelease.id, ornamentId: ornament }, { transaction: t });
             }
+            await models.customerLoanMaster.update({ outstandingAmount: Number(outstandingAmount) }, { where: { id: loanInfo.id }, transaction: t })
+            await models.customerLoan.update({ outstandingAmount: Number(securedOutstandingAmount) }, { where: { id: loanInfo.customerLoan[0].id }, transaction: t })
+            if (loanInfo.customerLoan.length > 1) {
+                await models.customerLoan.update({ outstandingAmount: Number(unSecuredOutstandingAmount) }, { where: { id: loanInfo.customerLoan[1].id }, transaction: t })
+            }
             await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_PAYMENT_CHEQUE, createdBy, modifiedBy }, { transaction: t });
             return addPartRelease
         });
@@ -201,11 +232,16 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                 await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
                 await models.partReleaseOrnaments.create({ partReleaseId: addPartRelease.id, ornamentId: ornament }, { transaction: t });
             }
+            await models.customerLoanMaster.update({ outstandingAmount: Number(outstandingAmount) }, { where: { id: loanInfo.id }, transaction: t })
+            await models.customerLoan.update({ outstandingAmount: Number(securedOutstandingAmount) }, { where: { id: loanInfo.customerLoan[0].id }, transaction: t })
+            if (loanInfo.customerLoan.length > 1) {
+                await models.customerLoan.update({ outstandingAmount: Number(unSecuredOutstandingAmount) }, { where: { id: loanInfo.customerLoan[1].id }, transaction: t })
+            }
             await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_PAYMENT_BANK, createdBy, modifiedBy }, { transaction: t });
             return addPartRelease
         });
         return res.status(200).json({ message: "success", partRelease });
-    } else { 
+    } else {
         return res.status(400).json({ message: 'invalid paymentType' });
     }
 }
@@ -241,8 +277,9 @@ exports.getPartReleaseList = async (req, res, next) => {
                 "$masterLoan.loanPersonalDetail.customer_unique_id$": { [Op.iLike]: search + "%" },
                 "$masterLoan.outstanding_amount$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.outstanding_amount"), "varchar"), { [Op.iLike]: search + "%" }),
                 "$masterLoan.tenure$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"), { [Op.iLike]: search + "%" }),
-                "$masterLoan.final_loan_amount$": { [Op.iLike]: search + "%" },
-                "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" }
+                "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" },
+                final_loan_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("masterLoan.final_loan_amount"), "varchar"), { [Op.iLike]: search + "%" })
             },
         }],
         isActive: true
@@ -399,8 +436,9 @@ exports.partReleaseApprovedList = async (req, res, next) => {
                 "$masterLoan.loanPersonalDetail.customer_unique_id$": { [Op.iLike]: search + "%" },
                 "$masterLoan.outstanding_amount$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.outstanding_amount"), "varchar"), { [Op.iLike]: search + "%" }),
                 "$masterLoan.tenure$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"), { [Op.iLike]: search + "%" }),
-                "$masterLoan.final_loan_amount$": { [Op.iLike]: search + "%" },
-                "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" }
+                "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" },
+                final_loan_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("masterLoan.final_loan_amount"), "varchar"), { [Op.iLike]: search + "%" })
             },
         }],
         isActive: true,

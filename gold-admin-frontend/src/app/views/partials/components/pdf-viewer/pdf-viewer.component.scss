@@ -3,4 +3,13 @@
         height: 90vh;
         overflow: auto;
     }
+    .cancel{
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 20px;
+        z-index:1;
+        margin: 15px;
+        cursor:pointer;
+    }
 }

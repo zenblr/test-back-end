@@ -49,7 +49,7 @@
                             <th class="transparent">Gross Weight</th>
                             <th class="transparent">Deduction Weight </th>
                             <th class="transparent" style="width: 100px;">Net Weight</th>
-                            <th class="transparent" style="width: 100px;">Weight machine 00 weight</th>
+                            <th class="transparent" style="width: 100px;">WM 00 weight</th>
                             <th class="transparent">With Ornament weight</th>
                             <th class="transparent" style="width: 100px;">Stone Touch</th>
                             <th class="transparent">Acid Test</th>
@@ -59,7 +59,7 @@
                             <th class="transparent">LTV Amount</th>
                             <th class="transparent">Final LTV Loan Amount</th>
                             <th class="transparent">Ornament Image</th>
-                            <th class="transparent">Release Date</th>
+                            <!-- <th class="transparent">Release Date</th> -->
                             <th class="transparent">Status</th>
                         </thead>
                         <tbody *ngIf="loanDetails">
@@ -87,7 +87,7 @@
                                     </ng-container>
                                 </td> -->
                                 <td>
-                                    {{ornament.ornamentType.packetOrnament[0].packet.packetUn | uppercase}}
+                                    {{ornament.packets[0].packetUniqueId | uppercase}}
                                 </td>
                                 <td>{{ ornament.quantity }}</td>
                                 <td>{{ ornament.grossWeight }} gm</td>

@@ -83,7 +83,7 @@
                     [class.isError]="controls.customerConfirmationStatus.touched && controls.customerConfirmationStatus.invalid">
                     <option value="" [disabled]="true" [selected]="true">Select Customer confirmation Status</option>
                     <option value="confirmed">Confirmed</option>
-                    <option value="incomplete">Incomplete</option>
+                    <option value="incomplete">Disagree</option>
                 </select>
                 <mat-error
                     *ngIf="controls.customerConfirmationStatus.touched && controls.customerConfirmationStatus.invalid">
@@ -504,9 +504,11 @@
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     class="kt-pointer edit-icon" *ngIf="isEdit && controls?.purchaseInvoiceImage?.value"
                                     (click)="editImages('purchaseInvoice');">
-                                <iframe *ngIf="pdf.purchaseInvoice"
-                                    [src]="controls?.purchaseInvoiceImage?.value | safe : 'resourceUrl'" height="250"
-                                    width="290" scrolling="no"></iframe>
+                                <div class="iframeWrapper" (click)="preview(controls?.purchaseInvoiceImage?.value)">
+                                    <iframe *ngIf="pdf.purchaseInvoice"
+                                        [src]="controls?.purchaseInvoiceImage?.value | safe : 'resourceUrl'"
+                                        height="250" width="290" scrolling="no"></iframe>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -526,9 +528,11 @@
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     class="kt-pointer edit-icon" *ngIf="isEdit && controls?.saleInvoiceImage?.value"
                                     (click)="editImages('saleInvoice');">
-                                <iframe *ngIf="pdf.saleInvoice"
-                                    [src]="controls?.saleInvoiceImage?.value | safe : 'resourceUrl'" height="250"
-                                    width="290" scrolling="no"></iframe>
+                                <div class="iframeWrapper" (click)="preview(controls?.saleInvoiceImage?.value)">
+                                    <iframe *ngIf="pdf.saleInvoice"
+                                        [src]="controls?.saleInvoiceImage?.value | safe : 'resourceUrl'" height="250"
+                                        width="290" scrolling="no"></iframe>
+                                </div>
                             </div>
                         </div>
                     </div>

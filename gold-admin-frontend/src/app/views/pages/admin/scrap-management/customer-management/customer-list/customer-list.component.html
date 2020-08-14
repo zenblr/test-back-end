@@ -1,0 +1,63 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="mat-table__wrapper" [ngStyle]="{'overflow-x': 'hidden'}">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="customerResult">
+
+                <ng-container matColumnDef="fullName">
+                    <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let customer">
+                        {{customer.firstName | titlecase}}&nbsp;{{customer.lastName | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="customerId">
+                    <mat-header-cell *matHeaderCellDef>Customer Id</mat-header-cell>
+                    <mat-cell *matCellDef="let customer">{{customer.customerUniqueId | uppercase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="pan">
+                    <mat-header-cell *matHeaderCellDef>PAN Number</mat-header-cell>
+                    <mat-cell *matCellDef="let customer">{{customer.panCardNumber | uppercase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="state">
+                    <mat-header-cell *matHeaderCellDef>State</mat-header-cell>
+                    <mat-cell *matCellDef="let customer">{{customer.state.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="city">
+                    <mat-header-cell *matHeaderCellDef>City</mat-header-cell>
+                    <mat-cell *matCellDef="let customer">{{customer.city.name | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell [ngClass]="'w-200'" *matHeaderCellDef>Action</mat-header-cell>
+                    <mat-cell *matCellDef="let customer" [ngClass]="'w-200'">
+                        <p>
+                            <span class="kt-pointer" (click)="newScrap(customer)"
+                                *ngxPermissionsOnly="['scrapApplicationAdd']">Add New Scrap</span>
+                            <span *ngxPermissionsOnly="['scrapApplicationAdd']" class="px-1">|</span>
+                            <span class="kt-pointer" (click)="viewDetails(customer.id)">View Details</span>
+                            <!-- <span class="kt-pointer" (click)="editCustomer(customer)">Edit</span>&nbsp;|&nbsp;
+                            <span class="text-danger kt-pointer" (click)="deleteCustomer(customer)">Delete</span> -->
+                        </p>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+
+            <div class="mat-table__message" *ngIf="!hasItems">No records found</div>
+            <!-- Message for empty data  -->
+            <div class="mat-table__message" *ngIf="isPreloadTextViewed">Please wait....</div>
+        </div>
+
+        <!-- start: BOTTOM -->
+        <div class="mat-table__bottom">
+            <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+
+            <mat-paginator [pageSize]="20" [pageSizeOptions]="[10,20,60,100]" [length]="paginatorTotal"
+                [showFirstLastButtons]="true"></mat-paginator>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>
