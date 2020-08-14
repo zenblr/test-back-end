@@ -20,11 +20,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'partner_id'
         },
         loanAmount: {
-            type: DataTypes.STRING,
+            type: DataTypes.DECIMAL(10,2),
             field: 'loan_amount'
         },
         outstandingAmount: {
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'outstanding_amount'
         },
         schemeId: {
@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'scheme_id'
         },
         penalInterest: {
-            type: DataTypes.FLOAT,
+            type: DataTypes.DECIMAL(10,2),
             field: 'penal_interest_rate'
         },
         interestRate: {
@@ -116,6 +116,9 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
         customerLoan.hasMany(models.customerLoanHistory, { foreignKey: 'loanId', as: 'customerLoanHistory' });
+
+        customerLoan.hasMany(models.customerPacketLocation, { foreignKey: 'loanId', as: 'customerPacketLocation' });
+        
     }
 
     customerLoan.prototype.toJSON = function () {
@@ -172,9 +175,9 @@ module.exports = (sequelize, DataTypes) => {
                 }
                 let purityTestImage = []
                 let purityTestPath = []
-                let newData;
+                let newData = {}
 
-                if (values.loanOrnamentsDetail[i].purityTest.length) {
+                if (values.loanOrnamentsDetail[i].purityTest) {
 
                     for (imgUrl of values.loanOrnamentsDetail[i].purityTest) {
                         let URL = process.env.BASE_URL + imgUrl;

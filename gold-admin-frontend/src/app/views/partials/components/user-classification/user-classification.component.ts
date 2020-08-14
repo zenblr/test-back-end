@@ -206,6 +206,9 @@ export class UserClassificationComponent implements OnInit {
 
     if (this.custClassificationForm.invalid) {
       this.custClassificationForm.markAllAsTouched();
+      if (this.custClassificationForm.controls.reasonFromCce.invalid) {
+        this.custClassificationForm.controls.reasonFromCce.setErrors({ 'reasonRequired': true })
+      }
       return;
     }
 

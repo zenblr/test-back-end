@@ -268,7 +268,7 @@
         <!-- loan packets -->
         <div class="col-12 card kt-padding-15" *ngIf="loanId">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Packets ID - Total
-                {{details?.loanPacketDetails[0]?.packets?.length}} Packets</label>
+                {{details?.loanPacketDetails[0].packets.length}} Packets</label>
             <div style="min-height: 300px;" *ngFor="let packets of details?.loanPacketDetails;index as idx">
                 <div class="row justify-content-center kt-padding-t-15">
                     <div class="col-4">
@@ -283,12 +283,16 @@
                                         <ng-container>
                                             <td class="text-color ">
                                                 <label class="m-0">{{packet.packetUniqueId | uppercase}}</label>
+
                                             </td>
                                             <td class="text-color ">
-                                                <span *ngFor="let ornament of packet?.packetOrnament;index as idx">
+                                                <span
+                                                    *ngFor="let ornament of packet?.customerLoanOrnamentsDetails;index as idx">
                                                     {{ornament?.ornamentType?.name | uppercase}}
-                                                    <span *ngIf="idx != packet.packetOrnament.length - 1">,</span>
+                                                    <span
+                                                        *ngIf="idx != packet.customerLoanOrnamentsDetails.length - 1">,</span>
                                                 </span>
+
                                             </td>
                                         </ng-container>
                                     </tr>
@@ -300,7 +304,8 @@
                 <div class="row">
                     <div class="col-4">
                         <img class="packets" [src]="packets?.emptyPacketWithNoOrnamentImage">
-                        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with No
+                        <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with
+                            No
                             Ornaments</label>
                     </div>
                     <div class="col-4">
@@ -312,8 +317,10 @@
                         <img class="packets" [src]="packets?.sealingPacketWithCustomerImage">
                         <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with
                             Sealing</label>
+
                     </div>
                 </div>
+
             </div>
         </div>
         <!-- scrap packets -->

@@ -31,10 +31,11 @@
                                     <div class="col-8">
                                         <div class="row">
                                             <div class="col-7 d-flex align-items-center">
-                                                Packet ID
+                                                {{ item.get('packetId').value | uppercase }}
                                             </div>
                                             <div class="col text-right">
-                                                <kt-button [type]="'button'" [value]="'Scan'"></kt-button>
+                                                <kt-button [type]="'button'" (click)="scanBarcode(idx)"
+                                                    [value]="'Scan'"></kt-button>
                                             </div>
                                         </div>
                                     </div>
@@ -42,8 +43,20 @@
                                 <div class="row justify-content-center kt-margin-t-15">
                                     <div class="col-8 offset-4">
                                         <input type="text" class="form-control" placeholder="Enter Barcode No."
-                                            formControlName="barcode"
-                                            [class.isError]="item.get('barcode').invalid &&  item.get('barcode').touched">
+                                            formControlName="Barcode"
+                                            [class.isError]="item.get('Barcode').invalid &&  item.get('Barcode').touched">
+                                        <small>
+                                            <mat-error
+                                                *ngIf="item.get('Barcode').errors?.required &&  item.get('Barcode').touched">
+                                                Field Required
+                                            </mat-error>
+                                        </small>
+                                        <small>
+                                            <mat-error
+                                                *ngIf="item.get('Barcode').errors?.unverified &&  item.get('Barcode').touched">
+                                                Packet ID and Barcode does not match
+                                            </mat-error>
+                                        </small>
                                     </div>
                                 </div>
                             </div>
@@ -51,14 +64,36 @@
                     </div>
                     <div class="row justify-content-center kt-margin-t-15">
                         <div class="col-4 form-label">
+                            <label class="kt-padding-l-10 mandatory">User Type</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" formControlName="userType"
+                                [class.isError]="locationForm.controls.userType.invalid &&  locationForm.controls.userType.touched">
+                                <option value="" disabled selected>Select User Type</option>
+                                <option [value]="item.value" *ngFor="let item of userTypeList">{{ item.name }}</option>
+                            </select>
+                            <mat-error
+                                *ngIf="locationForm.controls.userType.touched && locationForm.controls.userType.errors?.required">
+                                Required field
+                            </mat-error>
+
+                        </div>
+                    </div>
+                    <div class="row justify-content-center kt-margin-t-15">
+                        <div class="col-4 form-label">
                             <label class="kt-padding-l-10 mandatory">Mobile Number</label>
                         </div>
                         <div class="col-8">
-                            <input class="form-control" formControlName="mobileNumber"
-                                [class.isError]="locationForm.controls.mobileNumber.invalid &&  locationForm.controls.mobileNumber.touched" />
+                            <input class="form-control" formControlName="mobileNumber" (blur)="getDetailsByMobile()"
+                                [class.isError]="locationForm.controls.mobileNumber.invalid &&  locationForm.controls.mobileNumber.touched"
+                                maxlength="10" />
                             <mat-error
                                 *ngIf="locationForm.controls.mobileNumber.touched && locationForm.controls.mobileNumber.errors?.required">
                                 Required field
+                            </mat-error>
+                            <mat-error
+                                *ngIf="locationForm.controls.mobileNumber.touched && locationForm.controls.mobileNumber.errors?.pattern">
+                                Invalid Input
                             </mat-error>
                         </div>
                     </div>
@@ -67,7 +102,7 @@
                             <label class="kt-padding-l-10 mandatory">User</label>
                         </div>
                         <div class="col-8">
-                            <input class="form-control" formControlName="user"
+                            <input readonly class="form-control cursor-not-allowed" formControlName="user"
                                 [class.isError]="locationForm.controls.user.invalid &&  locationForm.controls.user.touched" />
                             <mat-error
                                 *ngIf="locationForm.controls.user.touched && locationForm.controls.user.errors?.required">

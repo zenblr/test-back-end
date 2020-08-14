@@ -27,7 +27,7 @@ export class PacketTrackingService {
   }
 
   getpackets(search, from, to): Observable<any> {
-    return this.http.get(`/api/packet?search=${search}&from=${from}&to=${to}`).pipe(
+    return this.http.get(`/api/packet-tracking/tracking-details?search=${search}&from=${from}&to=${to}`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
@@ -72,5 +72,13 @@ export class PacketTrackingService {
 
   getInternalBranhces(): Observable<any> {
     return this.http.get<any>(`api/internal-branch`);
+  }
+
+  viewPackets(data): Observable<any> {
+    return this.http.get<any>(`api/packet-tracking/view-packets`, { params: data }).pipe(map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message)
+        throw (err)
+      }));
   }
 }

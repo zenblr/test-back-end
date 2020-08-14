@@ -61,8 +61,8 @@ export class QuickPayComponent implements OnInit {
       this.payableAmt.markAsTouched()
       return 
     }
-    this.quickPayServie.payment(this.masterLoanId,this.payableAmt.value).subscribe(res => {
-      this.paymentDetails = res.data;
+    this.quickPayServie.paymentConfirmation(this.masterLoanId,this.payableAmt.value).subscribe(res => {
+      this.paymentDetails = res.data.loan;
       this.payableAmt.disable()
       this.ref.detectChanges()
     })
@@ -77,10 +77,23 @@ export class QuickPayComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(res => {
+      if(res){
       console.log(res)
       this.paymentValue = res
       this.ref.detectChanges()
+      }
     })
   }
 
+  submit(){
+    let data = { 
+      masterLoanId :this.masterLoanId,
+      payableAmount:this.payableAmt.value,
+      paymentDetails:this.paymentValue,
+    }
+    this.quickPayServie.payment(data).subscribe(res => {
+     
+      this.ref.detectChanges()
+    })
+  }
 }

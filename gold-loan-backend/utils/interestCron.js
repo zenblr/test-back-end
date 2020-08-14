@@ -45,7 +45,7 @@ exports.dailyIntrestCalculation = async (date) => {
                         let nextInterest = await getPendingNoOfDaysInterest(loan.id, date);
                         if (nextInterest) {
                             let amount = pendingDaysAmount - nextInterest.paidAmount;
-                            await models.customerLoanInterest.update({ interestAccrual: amount, interestRate: stepUpSlab.interestRate, outstandingInterest:amount }, { where: { id: nextInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                            await models.customerLoanInterest.update({ interestAccrual: amount, interestRate: stepUpSlab.interestRate, outstandingInterest: amount }, { where: { id: nextInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                         }
                     }
                 }
@@ -56,7 +56,7 @@ exports.dailyIntrestCalculation = async (date) => {
                 }
                 //update last interest if changed
                 if (!Number.isInteger(interest.length)) {
-                    let oneMonthAmount = interest.amount / (stepUpSlab.days/30);
+                    let oneMonthAmount = interest.amount / (stepUpSlab.days / 30);
                     let amount = oneMonthAmount * Math.ceil(interest.length).toFixed(2);
                     let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
                     let outstandingInterest = amount - lastInterest.paidAmount;
@@ -125,7 +125,7 @@ exports.cronForDailyPenalInterest = async (date) => {
                     penelInterest = Number((((data[i].outstandingAmount * penal) / noOfDaysInYear) * daysCount).toFixed(2))
                 }
                 let penalOutstanding = penelInterest - dataInfo[0].penalPaid
-                console.log(penelInterest, data[i].id, daysCount, penalOutstanding, dataInfo[0].penalPaid)
+                // console.log(penelInterest, data[i].id, daysCount, penalOutstanding, dataInfo[0].penalPaid)
                 await models.customerLoanInterest.update({ PenalAccrual: penelInterest, penalOutstanding }, { where: { id: dataInfo[0].id } })
             }
         }
