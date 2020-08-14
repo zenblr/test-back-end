@@ -22,6 +22,7 @@
         font-size: 14px;
         margin   : 15px 0;
     }
+    
     .pdf{
         overflow: hidden;
         border-radius: 15px;
@@ -35,6 +36,13 @@
         // margin-left: -7px;
         // height: 195px;
         width: 105%;
-        margin-top: -60px;
-	}
+        // margin-top: -60px;
+        height: 200px;
+        border: 0;
+    }
+    
+    .img-container {
+        height: 200px;
+        max-width: 100%;
+    }
 }

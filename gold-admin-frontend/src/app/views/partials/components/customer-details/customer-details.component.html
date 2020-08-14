@@ -168,10 +168,18 @@
                             <span class="currency">{{scrap?.finalScrapAmountAfterMelting | indianCurrencyFormat}}</span>
                         </div>
                     </div>
+                </div>
+                <div class="row kt-margin-b-20">
                     <div class="col-6">
                         <div class="text-gray font-weight-500">Start Date</div>
                         <div class="text-color font-weight-500">
                             {{scrap?.scrapPersonalDetail?.startDate | date: 'mediumDate'}}
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-gray font-weight-500">Disbursed Date</div>
+                        <div class="text-color font-weight-500">
+                            {{scrap?.scrapDisbursement?.date | date: 'mediumDate'}}
                         </div>
                     </div>
                 </div>
