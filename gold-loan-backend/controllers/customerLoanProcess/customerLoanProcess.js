@@ -867,7 +867,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
     let ornamentType = [];
     if (ornament.loanOrnamentsDetail.length != 0) {
         for (let ornamentsDetail of ornament.loanOrnamentsDetail) {
-            ornamentType.push({ ornamentType: ornamentsDetail.ornamentType, id: ornamentsDetail.id })
+            ornamentType.push({ ornamentType: ornamentsDetail.ornamentType.name, id: ornamentsDetail.id })
         }
     }
     return res.status(200).json({ message: 'success', ornamentType })
