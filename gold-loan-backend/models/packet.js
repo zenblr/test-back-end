@@ -68,7 +68,7 @@ module.exports = (sequelize, DataTypes) => {
 
         packet.belongsToMany(models.customerLoanOrnamentsDetail, { through: models.packetOrnament, foreignKey: 'packetId' });
 
-
+        packet.hasMany(models.packetTracking, { foreignKey : 'packetId' ,as : 'packetTracking'})
 
     }
 

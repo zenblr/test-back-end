@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const PocketLocation = sequelize.define('pocketLocation', {
+    const PacketLocation = sequelize.define('packetLocation', {
         // attributes
         location: {
             type: DataTypes.TEXT,
@@ -14,8 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         freezeTableName: true,
         allowNull: false,
-        tableName: 'loan_pocket_location',
+        tableName: 'loan_packet_location',
     });
 
-    return PocketLocation;
+    PacketLocation.associate = function (models) {
+        PacketLocation.hasMany(models.packetTracking, { foreignKey: 'packetLoactionId', as: 'packetTracking' })
+    }
+
+    return PacketLocation;
 }

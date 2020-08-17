@@ -83,7 +83,8 @@ export class PartReleaseApprovalComponent implements OnInit {
     this.dialog.open(OrnamentsComponent, {
       data: {
         modal: true,
-        modalData: item
+        modalData: item,
+        packetView: false
       },
       width: '90%'
     })
