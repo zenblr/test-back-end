@@ -88,6 +88,9 @@ export class PageConfig {
 				branch: {
 					page: { title: "All Partner Branches", desc: "" },
 				},
+				"partner-branch-user": {
+					page: { title: "Partner Branch User", desc: "" }
+				},
 				"internal-user": {
 					page: { title: "Internal User", desc: "" },
 				},

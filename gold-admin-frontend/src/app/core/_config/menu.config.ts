@@ -527,6 +527,12 @@ export class MenuConfig {
 							permission: !this.permissionsArr.includes('partnerBranchView'),
 						},
 						{
+							title: "Partner Branch User",
+							root: true,
+							src: "assets/media/aside-icons/icons-14.svg",
+							page: "/admin/user-management/partner-branch-user",
+						},
+						{
 							title: "Internal User",
 							root: true,
 							page: "/admin/user-management/internal-user",

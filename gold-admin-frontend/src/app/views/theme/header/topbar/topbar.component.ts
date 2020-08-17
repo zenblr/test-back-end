@@ -53,6 +53,7 @@ import { StandardDeductionService } from '../../../../core/scrap-management/stan
 import { ScrapPacketsService, AppliedScrapService } from '../../../../core/scrap-management';
 import { OtherChargesService } from '../../../../core/masters/other-charges/service/other-charges.service';
 import { ScrapCustomerManagementService } from '../../../../core/scrap-management/customer-management';
+import { PartnerBranchUserService } from '../../../../core/user-management/partner-branch-user/services/partner-branch-user.service'
 
 @Component({
 	selector: "kt-topbar",
@@ -152,7 +153,8 @@ export class TopbarComponent implements OnInit {
 		private scrapPacketsService: ScrapPacketsService,
 		private appliedScrap: AppliedScrapService,
 		private otherChargesService: OtherChargesService,
-		private scrapCustomerManagementService: ScrapCustomerManagementService
+		private scrapCustomerManagementService: ScrapCustomerManagementService,
+		private partnerBranchUserservice: PartnerBranchUserService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -320,6 +322,10 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader();
 			this.value1 = "Add Partner";
 			this.permissionType = "partnerAdd";
+		}
+		if (this.path == "partner-branch-user") {
+			this.dataSourceHeader();
+			this.value1 = "Add Partner User";
 		}
 		if (this.path == "logistic-partner") {
 			this.showInput = true;
@@ -727,6 +733,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "partner") {
 			this.partnerService.openModal.next(true);
+		}
+		if (this.path == "partner-branch-user") {
+			this.partnerBranchUserservice.openModal.next(true);
 		}
 		if (this.path == "monthly") {
 			this.monthlyService.openModal.next(true);

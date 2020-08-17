@@ -1,10 +1,12 @@
 const models = require('../../models');
-const { update } = require('lodash');
 const sequelize = models.sequelize;
+const Sequelize = models.Sequelize;
+const Op = Sequelize.Op;
+const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
 
 //FUNCTION TO ADD PARTNER BRANCH USER
 exports.addPartnerBranchUser = async (req, res) => {
-    let { partnerId, branchId, firstName, lastName, mobileNumber, email, state, city, pinCode, isActive } = req.body;
+    let { partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode, isActive } = req.body;
 
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
@@ -12,7 +14,7 @@ exports.addPartnerBranchUser = async (req, res) => {
     await sequelize.transaction(async t => {
 
         let PartnerBranchUser = await models.partnerBranchUser.create({
-            partnerId, branchId, firstName, lastName, mobileNumber, email, state, city, pinCode, isActive, createdBy, modifiedBy
+            partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode, isActive, createdBy, modifiedBy
         }, { transaction: t });
         //console.log(PartnerBranchUser)
         //id = PartnerBranchUser.dataValues.id
@@ -31,10 +33,10 @@ exports.updatePartnerBranchUser = async (req, res) => {
     const partnerBranchUserId = req.params.id;
 
     let modifiedBy = req.userData.id;
-    let { partnerId, branchId, firstName, lastName, mobileNumber, email, state, city, pinCode, isActive } = req.body;
+    let { partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode, isActive } = req.body;
 
     let updateUser = await models.partnerBranchUser.update({
-        partnerId, branchId, firstName, lastName, mobileNumber, email, state, city, pinCode, isActive, modifiedBy
+        partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode, isActive, modifiedBy
     }, { where: { id: partnerBranchUserId, isActive: true } });
     if (updateUser[0] == 0) {
         return res.status(404).json({ message: 'Update failed' })
@@ -44,24 +46,59 @@ exports.updatePartnerBranchUser = async (req, res) => {
 
 //FUNCTION TO GET ALL PARTNER BRANCH USER
 exports.readPartnerBranchUser = async (req, res) => {
-    let partnerBranchUser = await models.partnerBranchUser.findAll({
-        where: { isActive: true },
-        include: [
-            {
-                model: models.partner,
-                as: 'partner',
-                attributes: ['id', 'partnerId', 'name']
-            },
-            {
-                model: models.partnerBranch,
-                as: 'partnerBranch',
-                attributes: { exclude: ['createdBy', 'modifiedBy', 'createdAt', 'updatedAt'] }
-            }
+    let { search, offset, pageSize } =
+        paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
-        ]
+    let query = {};
+    let associateModel = [
+        {
+            model: models.partner,
+            as: 'partner',
+            attributes: ['id', 'partnerId', 'name']
+        },
+        {
+            model: models.partnerBranch,
+            as: 'partnerBranch',
+            attributes: { exclude: ['createdBy', 'modifiedBy', 'createdAt', 'updatedAt'] }
+        },
+        {
+            model: models.state,
+            as: 'state'
+        },
+        {
+            model: models.city,
+            as: 'city'
+        }
+
+    ]
+    let searchQuery = {
+        [Op.and]: [query, {
+            [Op.or]: {
+                firstName: { [Op.iLike]: search + '%' },
+            }
+        },
+        ],
+        isActive: true
+    }
+
+
+    let partnerBranchUser = await models.partnerBranchUser.findAll({
+        where: searchQuery,
+        subQuery: false,
+        include: associateModel,
+        offset: offset,
+        limit: pageSize,
     });
+    let count = await models.partnerBranchUser.findAll({
+        where: searchQuery,
+        subQuery: false,
+        include: associateModel,
+        offset: offset,
+        limit: pageSize,
+    });
+
     if (partnerBranchUser) {
-        return res.status(200).json({ Data: partnerBranchUser })
+        return res.status(200).json({ Data: partnerBranchUser, count: count.length })
     } else {
         return res.status(404).json({ message: 'Data not found!' })
     }
@@ -109,4 +146,16 @@ exports.deactivatePartnerBranchUser = async (req, res) => {
     }
     return res.status(200).json({ message: `User Deleted` })
 
+}
+
+exports.getBranchByPartnerId = async (req, res) => {
+    let Id = req.params.id
+    let allBranch = await models.partnerBranch.findAll({
+        where: { partnerId: Id, isActive: true }
+    });
+    if (allBranch) {
+        return res.status(200).json({ data: allBranch, count: allBranch.length });
+    } else {
+        return res.status(404).json({ message: 'Data not found!' });
+    }
 }

@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
         },
-         mobileNumber: {
+        mobileNumber: {
             type: DataTypes.STRING,
             field: 'mobile_number',
             allowNull: false,
@@ -49,13 +49,13 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
         },
-        state: {
-            type: DataTypes.STRING,
+        stateId: {
+            type: DataTypes.INTEGER,
             field: 'state',
             allowNull: false,
         },
-       city: {
-            type: DataTypes.STRING,
+        cityId: {
+            type: DataTypes.INTEGER,
             field: 'city',
             allowNull: false,
         },
@@ -87,10 +87,14 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     partnerBranchUser.associate = function (models) {
+        partnerBranchUser.belongsTo(models.city,{ foreignKey:'cityId',as: 'city'});
+        partnerBranchUser.belongsTo(models.state,{foreignKey:'stateId', as:'state'})
         partnerBranchUser.belongsTo(models.partner, { foreignKey: 'partnerId', as: 'partner' });
         partnerBranchUser.belongsTo(models.partnerBranch, { foreignKey: 'branchId', as: 'partnerBranch' });
+        partnerBranchUser.hasMany(models.customerPacketLocation, { foreignKey: 'emitterPartnerUserId', as: 'emitterPartnerUser' });
+        partnerBranchUser.hasMany(models.customerPacketLocation, { foreignKey: 'receiverPartnerUserId', as: 'receiverPartnerUser' });
     }
-    
+
     return partnerBranchUser;
 
 }
