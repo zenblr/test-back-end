@@ -88,6 +88,9 @@ export class DisburseComponent implements OnInit {
       scrapId: [],
       scrapAmount: [],
       transactionId: [],
+      fullSecuredAmount: [],
+      fullUnsecuredAmount: [],
+      processingCharge: []
     })
     this.disableSchemeRelatedField()
   }
