@@ -2168,7 +2168,7 @@ exports.getLoanOrnaments = async (req, res, next) => {
 
     let getLoanOrnaments = await models.customerLoanOrnamentsDetail.findAll({
         where: { masterLoanId },
-        attributes: [],
+        attributes: ['id'],
         include: [
             {
                 model: models.ornamentType,
