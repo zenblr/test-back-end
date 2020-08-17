@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'loan_interest_id'
         },
+        referenceId:{
+            type: DataTypes.STRING,
+            field: 'reference_id'
+        },
         customerLoanTransactionId: {
             type: DataTypes.INTEGER,
             field: 'customer_loan_transaction_id'
