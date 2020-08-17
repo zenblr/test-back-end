@@ -1,15 +1,84 @@
 const { body } = require("express-validator");
 const models = require('../../models');
+const sequelize = models.Sequelize;
+const Op = sequelize.Op;
 
 // add scheme Validation
 
-exports.scrapPacketValidation = [
+exports.addPacketValidation = [
   body('packetUniqueId')
-    .exists()
-    .withMessage('packet unique id is required'),
+  .exists()
+  .withMessage('packetUniqueId is required')
+  .custom(async value => {
+    return await models.scrapPacket.findOne({
+      where: {
+          packetUniqueId: {
+          [Op.iLike]: value
+        },
+        isActive: true
+      }
+    }).then(packetUniqueId => {
+      if (packetUniqueId) {
+        return Promise.reject("packetUniqueId already exist !");
+      }
+    })
+  }),
+  body('barcodeNumber')
+  .exists()
+  .withMessage('barcodeNumber is required')
+  .custom(async value => {
+    return await models.scrapPacket.findOne({
+      where: {
+          barcodeNumber: {
+          [Op.iLike]: value
+        },
+        isActive: true
+      }
+    }).then(barcodeNumber => {
+      if (barcodeNumber) {
+        return Promise.reject("barcodeNumber already exist !");
+      }
+    })
+  })
 
-  body('internalUserBranchId')
-    .exists()
-    .withMessage('internal user branch is required')
+];
 
-]
+exports.updatePacketValidation = [
+  body('packetUniqueId')
+  .exists()
+  .withMessage('packetUniqueId is required')
+  .custom(async (value,{ req }) => {
+    return await models.scrapPacket.findOne({
+      where: {
+          id: { [Op.not]: req.params.id },
+          packetUniqueId: {
+          [Op.iLike]: value
+        },
+        isActive: true
+      }
+    }).then(packetUniqueId => {
+      if (packetUniqueId) {
+        return Promise.reject("packetUniqueId already exist !");
+      }
+    })
+  }),
+  body('barcodeNumber')
+  .exists()
+  .withMessage('barcodeNumber is required')
+  .custom(async (value,{ req }) => {
+    return await models.scrapPacket.findOne({
+      where: {
+          id: { [Op.not]: req.params.id },
+          barcodeNumber: {
+          [Op.iLike]: value
+        },
+        isActive: true
+      }
+    }).then(barcodeNumber => {
+      if (barcodeNumber) {
+        return Promise.reject("barcodeNumber already exist !");
+      }
+    })
+  })
+
+];

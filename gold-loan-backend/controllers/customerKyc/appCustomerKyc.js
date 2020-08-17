@@ -240,6 +240,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 ]
             }]
     }]
+    
     let data = await models.customerAssignAppraiser.findAll({
         where: searchQuery,
         attributes: ['appraiserId', 'appoinmentDate', 'startTime', 'endTime'],

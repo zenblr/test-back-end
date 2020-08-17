@@ -128,8 +128,9 @@ export class ScrapApplicationFormService {
       }))
   }
 
-  quickPay(details): Observable<any> {
-    return this.http.post(`/api/scrap/scrap-process/quick-pay`, details).pipe(
+  quickPay(quickPayDetails, details): Observable<any> {
+    let data = { ...quickPayDetails, ...details }
+    return this.http.post(`/api/scrap/scrap-process/quick-pay`, data).pipe(
       map(res => res)
     )
   }

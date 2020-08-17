@@ -504,9 +504,11 @@
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     class="kt-pointer edit-icon" *ngIf="isEdit && controls?.purchaseInvoiceImage?.value"
                                     (click)="editImages('purchaseInvoice');">
-                                <iframe *ngIf="pdf.purchaseInvoice"
-                                    [src]="controls?.purchaseInvoiceImage?.value | safe : 'resourceUrl'" height="250"
-                                    width="290" scrolling="no"></iframe>
+                                <div class="iframeWrapper" (click)="preview(controls?.purchaseInvoiceImage?.value)">
+                                    <iframe *ngIf="pdf.purchaseInvoice"
+                                        [src]="controls?.purchaseInvoiceImage?.value | safe : 'resourceUrl'"
+                                        height="250" width="290" scrolling="no"></iframe>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -526,9 +528,11 @@
                                 <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                     class="kt-pointer edit-icon" *ngIf="isEdit && controls?.saleInvoiceImage?.value"
                                     (click)="editImages('saleInvoice');">
-                                <iframe *ngIf="pdf.saleInvoice"
-                                    [src]="controls?.saleInvoiceImage?.value | safe : 'resourceUrl'" height="250"
-                                    width="290" scrolling="no"></iframe>
+                                <div class="iframeWrapper" (click)="preview(controls?.saleInvoiceImage?.value)">
+                                    <iframe *ngIf="pdf.saleInvoice"
+                                        [src]="controls?.saleInvoiceImage?.value | safe : 'resourceUrl'" height="250"
+                                        width="290" scrolling="no"></iframe>
+                                </div>
                             </div>
                         </div>
                     </div>

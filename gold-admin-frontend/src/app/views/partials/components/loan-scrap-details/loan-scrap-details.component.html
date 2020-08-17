@@ -325,8 +325,7 @@
         </div>
         <!-- scrap packets -->
         <div class="col-12 card kt-padding-15" *ngIf="scrapId">
-            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Packets ID - Total
-                {{details?.scrapPacketDetails[0]?.packets?.length}} Packets</label>
+            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Packet Details</label>
             <div style="min-height: 300px;" *ngFor="let packets of details?.scrapPacketDetails;index as idx">
                 <div class="row justify-content-center kt-padding-t-15">
                     <div class="col-4">
@@ -408,32 +407,46 @@
             <!-- scrap documents -->
             <div class="row" *ngIf="scrapId">
                 <div class="col-4">
-                    <div class="pdf">
-                        <iframe [src]="details?.scrapDocument?.purchaseVoucherImage | safe : 'resourceUrl'"
-                            scrolling="no" *ngIf="pdf?.purchaseVoucherImage" height="255"></iframe>
+                    <div class="img-container" *ngIf="!details?.scrapDocument?.purchaseVoucherImage">
+                        <img src="assets/media/icons/image-placeholder.png" class="placeholder-image">
                     </div>
-                    <img *ngIf="!pdf?.purchaseVoucherImage" class="packets"
-                        [src]="details?.scrapDocument?.purchaseVoucherImage">
+                    <div *ngIf="details?.scrapDocument?.purchaseVoucherImage">
+                        <div class="pdf" (click)="preview(details?.scrapDocument?.purchaseVoucherImage[0])">
+                            <iframe [src]="details?.scrapDocument?.purchaseVoucherImage | safe : 'resourceUrl'"
+                                scrolling="no" *ngIf="pdf?.purchaseVoucherImage" height="255"></iframe>
+                        </div>
+                        <img *ngIf="!pdf?.purchaseVoucherImage" class="packets"
+                            [src]="details?.scrapDocument?.purchaseVoucherImage">
+                    </div>
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Purchase Voucher</label>
                 </div>
                 <div class="col-4">
-                    <div class="pdf">
-                        <iframe [src]="details?.scrapDocument?.purchaseInvoiceImage | safe : 'resourceUrl'"
-                            scrolling="no" *ngIf="pdf?.purchaseInvoiceImage" height="255"></iframe>
+                    <div class="img-container" *ngIf="!details?.scrapDocument?.purchaseInvoiceImage">
+                        <img src="assets/media/icons/image-placeholder.png" class="placeholder-image">
                     </div>
-                    <img *ngIf="!pdf?.purchaseInvoiceImage" class="packets"
-                        [src]="details?.scrapDocument?.purchaseInvoiceImage">
-
+                    <div *ngIf="details?.scrapDocument?.purchaseInvoiceImage">
+                        <div class="pdf" (click)="preview(details?.scrapDocument?.purchaseInvoiceImage[0])">
+                            <iframe [src]="details?.scrapDocument?.purchaseInvoiceImage | safe : 'resourceUrl'"
+                                scrolling="no" *ngIf="pdf?.purchaseInvoiceImage" height="255"></iframe>
+                        </div>
+                        <img *ngIf="!pdf?.purchaseInvoiceImage" class="packets"
+                            [src]="details?.scrapDocument?.purchaseInvoiceImage">
+                    </div>
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Original Purchase
                         Invoice</label>
                 </div>
                 <div class="col-4">
-                    <div class="pdf">
-                        <iframe [src]="details?.scrapDocument?.saleInvoiceImage | safe : 'resourceUrl'" scrolling="no"
-                            *ngIf="pdf?.saleInvoiceImage" height="255"></iframe>
+                    <div class="img-container" *ngIf="!details?.scrapDocument?.saleInvoiceImage">
+                        <img src="assets/media/icons/image-placeholder.png" class="placeholder-image">
                     </div>
-                    <img *ngIf="!pdf?.saleInvoiceImage" class="packets"
-                        [src]="details?.scrapDocument?.saleInvoiceImage">
+                    <div *ngIf="details?.scrapDocument?.saleInvoiceImage">
+                        <div class="pdf" (click)="preview(details?.scrapDocument?.saleInvoiceImage[0])">
+                            <iframe [src]="details?.scrapDocument?.saleInvoiceImage | safe : 'resourceUrl'"
+                                scrolling="no" *ngIf="pdf?.saleInvoiceImage" height="255"></iframe>
+                        </div>
+                        <img *ngIf="!pdf?.saleInvoiceImage" class="packets"
+                            [src]="details?.scrapDocument?.saleInvoiceImage">
+                    </div>
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Sale Invoice</label>
                 </div>
             </div>
