@@ -48,7 +48,7 @@ exports.loanRequest = async (req, res, next) => {
             // let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { transaction: t });
 
             let createdOrnaments = []
-            for (let purityTestData of allOrnmanets) {
+            for (let purityTestData of loanOrnaments) {
                 delete purityTestData.id;
                 var ornaments = await models.customerLoanOrnamentsDetail.create(purityTestData, { transaction: t });
                 createdOrnaments.push(ornaments)

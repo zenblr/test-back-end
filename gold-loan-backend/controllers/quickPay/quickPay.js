@@ -12,7 +12,7 @@ const CONSTANT = require("../../utils/constant");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { mergeInterestTable, getCustomerInterestAmount, getLoanDetails, payableAmount, customerLoanDetailsByMasterLoanDetails } = require('../../utils/loanFunction')
+let { mergeInterestTable, getCustomerInterestAmount, getLoanDetails, payableAmount, customerLoanDetailsByMasterLoanDetails, allInterestPayment } = require('../../utils/loanFunction')
 
 //INTEREST TABLE 
 exports.getInterestTable = async (req, res, next) => {
@@ -101,24 +101,74 @@ exports.quickPayment = async (req, res, next) => {
     let unsecuredPenalInterest = 0
     let unsecuredOutstandingAmount = 0
     // let payableAmount = amount.secured.interest + amount.secured.penalInterest
-    if (amount.unSecured) {
-        unsecuredInterest = amount.unSecured.interest
-        unsecuredPenalInterest = amount.unSecured.penalInterest
+    if (loanDetails.loan.customerLoan.length > 1) {
+        unsecuredInterest = amount.unsecured.interest
+        unsecuredPenalInterest = amount.unsecured.penalInterest
         unsecuredOutstandingAmount = loanDetails.loan.customerLoan[1].outstandingAmount
     }
-    let totalOutstandingAmount = securedOutstandingAmount + unsecuredOutstandingAmount
+    let totalOutstandingAmount = Number(securedOutstandingAmount) + Number(unsecuredOutstandingAmount)
 
     // divinding in ratio
 
+    // secure 
     let securedRatio = securedOutstandingAmount / totalOutstandingAmount * payableAmount;
-    securedRatio = Number(securedRatio - securedPenalInterest)
-
-    if (amount.unSecured) {
-        var unsecuredRatio = unsecuredOutstandingAmount / totalOutstandingAmount * payableAmount
-        unsecuredRatio = unsecuredRatio - unsecuredPenalInterest
+    if (Number(securedPenalInterest) > 0) {
+        securedRatio = Number(securedRatio - securedPenalInterest)
     }
 
-    let quickPayData = await sequelize.transaction(async t => {
+
+
+
+    let securedLoanDetails = await models.customerLoanInterest.findAll({
+        where: {
+            loanId: loanDetails.loan.customerLoan[0].id,
+            emiStatus: { [Op.in]: ['pending', 'partially paid'] }
+        },
+        order: [['id']]
+    })
+    let temp = []
+    for (let index = 0; index < securedLoanDetails.length; index++) {
+        temp.push(securedLoanDetails[index].dataValues)
+    }
+    securedLoanDetails = []
+    securedLoanDetails = temp;
+    // console.log(securedLoanDetails)
+
+    newSecuredDetails = await allInterestPayment(securedLoanDetails, securedRatio, createdBy)
+    securedLoanDetails = newSecuredDetails.loanArray
+    let transactionDetails = newSecuredDetails.transaction
+    // unsecure
+    if (loanDetails.loan.customerLoan.length > 1) {
+
+        var unsecuredRatio = unsecuredOutstandingAmount / totalOutstandingAmount * payableAmount
+        if (Number(unsecuredPenalInterest) > 0) {
+            unsecuredRatio = Number(unsecuredRatio - unsecuredPenalInterest)
+        }
+
+        var unsecuredLoanDetails = await models.customerLoanInterest.findAll({
+            where: {
+                loanId: loanDetails.loan.customerLoan[1].id,
+                emiStatus: { [Op.in]: ['pending', 'partially paid'] }
+            },
+            order: [['id']]
+        })
+
+        let temp = []
+        for (let index = 0; index < unsecuredLoanDetails.length; index++) {
+            temp.push(unsecuredLoanDetails[index].dataValues)
+        }
+        unsecuredLoanDetails = []
+        unsecuredLoanDetails = temp;
+
+        let newUnsecuredDetails = await allInterestPayment(unsecuredLoanDetails, unsecuredRatio, createdBy)
+        unsecuredLoanDetails = newUnsecuredDetails.loanArray
+        Array.prototype.push.apply(transactionDetails, newUnsecuredDetails.transaction)
+    }
+
+
+
+    let quickPayData = await sequelize.transaction(async (t) => {
+
         var transaction = await models.customerLoanTransaction.create({ 
             paymentType: paymentDetails.paymentType, 
             bankName:paymentDetails.bankName,
@@ -129,8 +179,24 @@ exports.quickPayment = async (req, res, next) => {
             paymentReceivedDate:paymentDetails.depositDate,
             transactionUniqueId:paymentDetails.transactionId,
             masterLoanId })
-    })
 
-    return res.status(200).json({ unsecuredRatio, securedRatio, paymentDetails })
+        let customerLoanTransactionDetails = await models.customerTransactionDetail.bulkCreate(transactionDetails, { transaction: t })
+
+        console.log(securedLoanDetails)
+
+        let secure = await models.customerLoanInterest.bulkCreate(securedLoanDetails, {
+            updateOnDuplicate: ['emiStatus', 'outstandingInterest', 'paidAmount']
+        }, { transaction: t })
+
+        if (loanDetails.loan.customerLoan.length > 1) {
+
+            let unsecure = await models.customerLoanInterest.bulkCreate(unsecuredLoanDetails, {
+                updateOnDuplicate: ['emiStatus', 'outstandingInterest', 'paidAmount']
+            },{ transaction: t })
+
+        }
+    })
+    return res.status(200).json({ unsecuredRatio, securedRatio, paymentDetails, securedLoanDetails, unsecuredLoanDetails })
+
 }
 
