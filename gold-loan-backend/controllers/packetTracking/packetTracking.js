@@ -76,7 +76,7 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
     return res.status(200).json({ message: 'packet details fetched successfully', data: packetDetails, count: count.length });
 }
 
-//FUNCTION TO GET DETAILS OF PACKET OF SINGLE CUSTOMER 
+//FUNCTION TO GET DETAILS OF PACKET OF SINGLE CUSTOMER FOR APP ALSO
 exports.viewPackets = async (req, res) => {
 
     let { masterLoanId } = req.query
@@ -220,5 +220,28 @@ exports.updateLocation = async (req, res) => {
     } else {
         return res.status(400).json({ message: 'Loaction not added' });
     }
+}
+
+exports.addPacketLocation = async (req, res) => {
+
+    let { latitude, longitude, appraiserId, packetId, masterLoanId, customerLoanId, packetLocationId } = req.body
+
+    let packetlocation = await models.packetTracking.create({ latitude, longitude, appraiserId, packetId, masterLoanId, customerLoanId, packetLocationId })
+
+    if (packetlocation) {
+        return res.status(200).json({ message: success })
+    }
+}
+
+exports.getMapDetails = async (req, res, next) => {
+
+    let internalBranch = req.userData.internalBranchId
+
+    let appraiser = await models.user.findAll({ where: { userTypeId: 7, } })
+
+}
+
+exports.getLocationDetails = async (req, res, next) => {
+
 }
 

@@ -9,11 +9,11 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 
 exports.addPacketLocation = async (req, res, next) => {
     let { location } = req.body;
-    let pocketExist = await models.pocketLocation.findOne({ where: {isActive: true, location: location } })
+    let pocketExist = await models.packetLocation.findOne({ where: {isActive: true, location: location } })
     if (!check.isEmpty(pocketExist)) {
         return res.status(404).json({ message: 'This Packet Location already Exists' });
     }
-    let pocket = await models.pocketLocation.create({ location })
+    let pocket = await models.packetLocation.create({ location })
     return res.status(200).json({ message: `Created` })
 }
 
@@ -47,7 +47,7 @@ exports.getPacketLocation = async (req, res, next) => {
             whereCondition = { where: { isActive: true }, order: [["updatedAt", "DESC"]] } 
         }
     }
-    let allPocket = await models.pocketLocation.findAll(whereCondition)
+    let allPocket = await models.packetLocation.findAll(whereCondition)
     let count = await models.pocketLocation.findAll({
         where: searchQuery,
       });
@@ -67,7 +67,7 @@ exports.updatePacketLocation = async (req, res, next) => {
     let { location } = req.body;
     let { id } = req.params;
 
-    let pocketExist = await models.pocketLocation.findOne({ where: { location: location, isActive: true } })
+    let pocketExist = await models.packetLocation.findOne({ where: { location: location, isActive: true } })
     if (!check.isEmpty(pocketExist)) {
         return res.status(404).json({ message: 'This Packet Location already Exists' });
     }
@@ -81,7 +81,7 @@ exports.updatePacketLocation = async (req, res, next) => {
 
 exports.deactivatePacketLoaction = async (req, res, next) => {
     const { id, isActive } = req.query;
-    const pocket = await models.pocketLocation.update({ isActive: isActive }, { where: { id: id } })
+    const pocket = await models.packetLocation.update({ isActive: isActive }, { where: { id: id } })
     if (pocket[0] == 0) {
         return res.status(404).json({ message: "pocket location deleted failed" });
     }

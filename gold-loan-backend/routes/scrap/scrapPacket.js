@@ -3,12 +3,12 @@ const { wrapper } = require('../../utils/errorWrap');
 const express = require('express');
 const checkAuth = require('../../middleware/checkAuth');
 const validationError = require('../../middleware/validationError');
-const { scrapPacketValidation } = require('../../validations/scrap/scrapPacket');
+const { addPacketValidation,updatePacketValidation } = require('../../validations/scrap/scrapPacket');
 const checkRolePermission = require('../../middleware/checkRolesPermissions');
 
 const route = express.Router();
 
-route.post('/', checkAuth, scrapPacketValidation, validationError, wrapper(addScrapPacket)); // add packet for scrap
+route.post('/', checkAuth, addPacketValidation, validationError, wrapper(addScrapPacket)); // add packet for scrap
 
 route.get('/', checkAuth, wrapper(viewScrapPacket)); // get scrap packet
 
@@ -18,7 +18,7 @@ route.put('/assign-appraiser',checkAuth, wrapper(scrapAssignAppraiser)); // ASSI
 
 // route.put('/assign-packet/:id', checkAuth, wrapper(assignPacket)); // ASSIGN PACKET
 
-route.put('/:id', checkAuth, scrapPacketValidation, validationError, wrapper(changePacket)); // update scrap packet
+route.put('/:id', checkAuth, updatePacketValidation, validationError, wrapper(changePacket)); // update scrap packet
 
 route.delete('/:id', checkAuth, wrapper(deletePacket)); // delete scrap packet
 

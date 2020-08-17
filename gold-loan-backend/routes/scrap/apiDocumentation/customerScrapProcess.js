@@ -185,6 +185,28 @@
  *               type: number
  *             depositDate:
  *               type: string
+ *             grossWeight:
+ *               type: number
+ *             netWeight:
+ *               type: number
+ *             deductionWeight:
+ *               type: number
+ *             karat:
+ *               type: number
+ *             purityReading:
+ *               type: number
+ *             customerConfirmation:
+ *               type: string
+ *             finalScrapAmountAfterMelting:
+ *               type: number
+ *             eligibleScrapAmount:
+ *               type: number
+ *             ornamentImageWithWeight:
+ *               type: string
+ *             ornamentImageWithXrfMachineReading:
+ *               type: string
+ *             ornamentImage:
+ *               type: string
  *         required:
  *           - scrapId
  *           - paymentMode

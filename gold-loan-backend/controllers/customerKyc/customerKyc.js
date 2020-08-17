@@ -7,6 +7,7 @@ const { createReferenceCode } = require("../../utils/referenceCode");
 const CONSTANT = require("../../utils/constant");
 const moment = require("moment");
 const { paginationWithFromTo } = require("../../utils/pagination");
+const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 
 const check = require("../../lib/checkLib");
 
@@ -394,36 +395,43 @@ exports.appliedKyc = async (req, res, next) => {
             }
         }],
         isActive: true,
-        isKycSubmitted: true
+        isKycSubmitted: true,
+
     }
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
-    if (req.userData.userTypeId != 4) {
+
+    let assignAppraiser;
+    // if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
+    //     internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+    // } else {
+    //     internalBranchWhere = { isActive: true }
+    // }
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
         internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+        if (req.userData.userTypeId == 7) {
+            assignAppraiser = { appraiserId: req.userData.id }
+        }
     } else {
         internalBranchWhere = { isActive: true }
     }
-    let assignAppraiser;
-    if (req.userData.userTypeId == 7) {
-        assignAppraiser = { appraiserId: req.userData.id }
-    }
 
-    if (req.userData.userTypeId == 6) {
-        customerKycClassification = {
-            kycStatusFromCce: { [Op.in]: ["approved", 'pending', 'incomplete', 'rejected'] },
-        }
-    } else {
-        customerKycClassification = {
-            kycStatusFromCce: { [Op.in]: ['approved'] },
-        }
-    }
+    // if (req.userData.userTypeId == 6) {
+    //     customerKycClassification = {
+    //         kycStatusFromCce: { [Op.in]: ["approved", 'pending', 'incomplete', 'rejected'] },
+    //     }
+    // } else {
+    //     customerKycClassification = {
+    //         kycStatusFromCce: { [Op.in]: ['approved'] },
+    //     }
+    // }
 
     const includeArray = [
         {
             model: models.customerKycClassification,
             as: 'customerKycClassification',
             required: true,
-            where: customerKycClassification,
+            // where: customerKycClassification,
             attributes: ['kycStatusFromCce', 'reasonFromCce', 'kycStatusFromOperationalTeam', 'reasonFromOperationalTeam']
         },
         {
@@ -447,9 +455,9 @@ exports.appliedKyc = async (req, res, next) => {
 
     let user = await models.user.findOne({ where: { id: req.userData.id } });
 
-    if (user.userTypeId == 5) {
-        searchQuery.isVerifiedByCce = true
-    }
+    // if (user.userTypeId == 5) {
+    //     searchQuery.isVerifiedByCce = true
+    // }
 
     let getAppliedKyc = await models.customerKyc.findAll({
         where: searchQuery,

@@ -48,6 +48,7 @@ export class GlobalSettingsComponent implements OnInit {
       gracePeriodDays: [],
       processingChargesFixed: [],
       processingChargesInPercent: [],
+      partPaymentPercent: [],
     });
     this.validation();
   }
@@ -65,6 +66,8 @@ export class GlobalSettingsComponent implements OnInit {
         this.globalSettingForm.controls.minimumTopUpAmount.updateValueAndValidity()
       this.globalSettingForm.controls.gracePeriodDays.setValidators(Validators.required),
         this.globalSettingForm.controls.gracePeriodDays.updateValueAndValidity()
+      this.globalSettingForm.controls.partPaymentPercent.setValidators(Validators.required),
+        this.globalSettingForm.controls.partPaymentPercent.updateValueAndValidity()
     }
   }
 

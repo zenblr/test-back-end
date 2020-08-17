@@ -10,7 +10,9 @@ const moment = require('moment');
 const { getSchemeDetails } = require('../../utils/loanFunction')
 var pdf = require("pdf-creator-node"); // PDF CREATOR PACKAGE
 var fs = require('fs');
-let { sendMessageLoanIdGeneration } = require('../../utils/SMS')
+let { sendMessageLoanIdGeneration } = require('../../utils/SMS');
+const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
+
 
 const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory');
 
@@ -325,10 +327,12 @@ exports.checkForLoanType = async (req, res, next) => {
 
         var unsecuredAmount = Math.round(loanAmount * unsecureSchemeMaximumAmtAllowed / (ltvPercent[0].ltvGoldValue / 100))
 
-        let totalEligibleAmt = Math.round(fullAmount / (ltvPercent[0].ltvGoldValue / 100))
+        let totalEligibleAmt = Math.round(fullAmount * (ltvPercent[0].ltvGoldValue / 100))
 
         if ((unsecuredSchemeApplied && (securedScheme.isSplitAtBeginning &&
-            Math.round(totalEligibleAmt) >= Math.round(securedLoanAmount + unsecuredAmount))) || isLoanTransfer) {
+            Math.round(totalEligibleAmt) >= Math.round(securedLoanAmount + unsecuredAmount)) ||
+            Math.round(totalEligibleAmt) >= Math.round(securedLoanAmount + unsecuredAmount) ) || 
+            isLoanTransfer) {
 
             if (isLoanTransfer) {
                 unsecuredAmount = Number(loanAmount - securedLoanAmount)
@@ -865,7 +869,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
     let ornamentType = [];
     if (ornament.loanOrnamentsDetail.length != 0) {
         for (let ornamentsDetail of ornament.loanOrnamentsDetail) {
-            ornamentType.push({ ornamentType: ornamentsDetail.ornamentType, id: ornamentsDetail.id })
+            ornamentType.push({ ornamentType: ornamentsDetail.ornamentType.name, id: ornamentsDetail.id })
         }
     }
     return res.status(200).json({ message: 'success', ornamentType })
@@ -1522,6 +1526,11 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 }]
             },
             {
+                model: models.partner,
+                as: 'partner',
+                attributes: ['id', 'name']
+            },
+            {
                 model: models.customerLoan,
                 as: 'unsecuredLoan',
                 include: [{
@@ -1551,7 +1560,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 model: models.customer,
                 as: 'customer',
                 attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
-                include:[
+                include: [
                     {
                         model: models.customerKycAddressDetail,
                         as: 'customerKycAddress',
@@ -1779,7 +1788,12 @@ exports.appliedLoanDetails = async (req, res, next) => {
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
-    if (req.userData.userTypeId != 4) {
+    // if (req.userData.userTypeId != 4) {
+    //     internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+    // } else {
+    //     internalBranchWhere = { isActive: true }
+    // }
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
         internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
     } else {
         internalBranchWhere = { isActive: true }
@@ -1880,7 +1894,13 @@ exports.getLoanDetails = async (req, res, next) => {
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
-    if (req.userData.userTypeId != 4) {
+    // if (req.userData.userTypeId != 4) {
+    //     internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+    // } else {
+    //     internalBranchWhere = { isActive: true }
+    // }
+
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
         internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
     } else {
         internalBranchWhere = { isActive: true }
@@ -2150,7 +2170,7 @@ exports.getLoanOrnaments = async (req, res, next) => {
 
     let getLoanOrnaments = await models.customerLoanOrnamentsDetail.findAll({
         where: { masterLoanId },
-        attributes: [],
+        attributes: ['id'],
         include: [
             {
                 model: models.ornamentType,

@@ -95,6 +95,7 @@ exports.editAppKyc = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let createdBy = req.userData.id;
 
+    
     let customerRating = await models.customerKycClassification.findOne({ where: { customerId } })
 
     if (customerRating.kycStatusFromCce == "approved") {
@@ -239,6 +240,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 ]
             }]
     }]
+    
     let data = await models.customerAssignAppraiser.findAll({
         where: searchQuery,
         attributes: ['appraiserId', 'appoinmentDate', 'startTime', 'endTime'],

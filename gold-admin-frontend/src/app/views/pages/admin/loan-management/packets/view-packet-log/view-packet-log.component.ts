@@ -15,7 +15,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 })
 export class ViewPacketLogComponent implements OnInit {
   dataSource: PacketTrackingDatasource;
-  displayedColumns = ['packetUniqueId', 'internalBranch', 'customerID', 'loanId', 'actions'];
+  displayedColumns = ['location', 'updatedBy', 'handover', 'date', 'time'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -27,6 +27,7 @@ export class ViewPacketLogComponent implements OnInit {
   private subscriptions: Subscription[] = [];
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
+  modalData: any;
 
   constructor(
     public dialog: MatDialog,
@@ -42,6 +43,8 @@ export class ViewPacketLogComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.setValue()
+
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
       tap(() => {
         this.loadPackets();
@@ -72,6 +75,11 @@ export class ViewPacketLogComponent implements OnInit {
 
     this.dataSource.loadpacketsLog(this.searchValue, 1, 25);
 
+  }
+
+  setValue() {
+    console.log(this.data.packetData)
+    this.modalData = this.data.packetData
   }
 
   ngOnDestroy() {
