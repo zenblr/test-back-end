@@ -47,23 +47,23 @@ let payableAmount = async (amount, loan) => {
 
     let unsecuredInterest = 0
     let unsecuredPenalInterest = 0
-    let payableAmount = amount.secured.interest + amount.secured.penalInterest
+    let payableAmount = Number(amount.secured.interest) + Number(amount.secured.penalInterest)
     if (amount.unsecured) {
-        payableAmount = payableAmount + amount.unsecured.interest + amount.unsecured.penalInterest
-        interest = interest + amount.unsecured.interest
-        penalInterest = penalInterest + amount.unsecured.penalInterest
-        unsecuredInterest = amount.unsecured.interest
-        unsecuredPenalInterest = amount.unsecured.penalInterest
+        payableAmount = Number(payableAmount) + Number(amount.unsecured.interest) + Number(amount.unsecured.penalInterest)
+        interest = Number(interest) + Number(amount.unsecured.interest)
+        penalInterest = Number(penalInterest) + Number(amount.unsecured.penalInterest)
+        unsecuredInterest = Number(amount.unsecured.interest)
+        unsecuredPenalInterest = Number(amount.unsecured.penalInterest)
     }
     let data = {}
-    data.outstandingAmount = (loan.outstandingAmount).toFixed(2)
-    data.securedPenalInterest = (securedPenalInterest).toFixed(2)
-    data.unsecuredPenalInterest = (unsecuredPenalInterest).toFixed(2)
-    data.securedInterest = (securedInterest).toFixed(2)
-    data.unsecuredInterest = (unsecuredInterest).toFixed(2)
-    data.interest = (interest).toFixed(2)
-    data.penalInterest = (penalInterest).toFixed(2)
-    data.payableAmount = (payableAmount).toFixed(2)
+    data.outstandingAmount = loan.outstandingAmount
+    data.securedPenalInterest = securedPenalInterest
+    data.unsecuredPenalInterest = unsecuredPenalInterest
+    data.securedInterest = securedInterest
+    data.unsecuredInterest = unsecuredInterest
+    data.interest = interest
+    data.penalInterest = penalInterest
+    data.payableAmount = payableAmount
 
     return data
 }

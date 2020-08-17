@@ -92,7 +92,7 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanIntrest.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         CustomerLoanIntrest.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
 
-        CustomerLoanIntrest.hasMany(models.customerInterestTransaction,{ foreignKey: 'loanInterestId', as: 'transaction' }  );
+        CustomerLoanIntrest.hasMany(models.customerTransactionDetail,{ foreignKey: 'loanInterestId', as: 'transaction' }  );
 
         CustomerLoanIntrest.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerLoanIntrest.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });

@@ -120,6 +120,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       this.controls.scrapStatusForAppraiser.disable()
       this.controls.scrapStatusForBM.disable()
       this.viewBMForm = true;
+      this.viewOpertaionalForm = false;
 
     } else if (stage == 7) {
       this.controls.scrapStatusForAppraiser.disable()

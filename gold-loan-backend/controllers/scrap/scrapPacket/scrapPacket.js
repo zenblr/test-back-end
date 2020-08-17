@@ -16,6 +16,8 @@ exports.addScrapPacket = async (req, res, next) => {
         let date = Date.now();
         barcodeNumber = date.toString();
     }
+
+    
     let packetExist = await models.scrapPacket.findOne({ where: { packetUniqueId, isActive: true } });
 
     if (!check.isEmpty(packetExist)) {

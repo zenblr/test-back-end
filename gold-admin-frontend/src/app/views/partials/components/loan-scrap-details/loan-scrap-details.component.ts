@@ -4,6 +4,7 @@ import { ScrapCustomerManagementService } from '../../../../core/scrap-managemen
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
+import { PdfViewerComponent } from '../pdf-viewer/pdf-viewer.component';
 
 @Component({
   selector: 'kt-loan-scrap-details',
@@ -24,7 +25,7 @@ export class LoanScrapDetailsComponent implements OnInit {
     private loanservice: LoanApplicationFormService,
     private scrapCustomerManagementService: ScrapCustomerManagementService,
     private route: ActivatedRoute,
-    public dilaog: MatDialog,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -180,31 +181,42 @@ export class LoanScrapDetailsComponent implements OnInit {
   }
 
   preview(value, formIndex) {
-    let filterImage = []
-    filterImage = Object.values(this.images[formIndex])
-    var temp = []
-    temp = filterImage.filter(el => {
-      return el != ''
-    })
-    let array = []
-    for (let index = 0; index < temp.length; index++) {
-      if (typeof temp[index] == "object") {
-        array = temp[index]
-        temp.splice(index, 1)
+    var ext = value.split('.')
+    if (ext[ext.length - 1] == 'pdf') {
+      this.dialog.open(PdfViewerComponent, {
+        data: {
+          pdfSrc: value,
+          page: 1,
+          showAll: true
+        },
+        width: "80%"
+      })
+    } else {
+      let filterImage = []
+      filterImage = Object.values(this.images[formIndex])
+      var temp = []
+      temp = filterImage.filter(el => {
+        return el != ''
+      })
+      let array = []
+      for (let index = 0; index < temp.length; index++) {
+        if (typeof temp[index] == "object") {
+          array = temp[index]
+          temp.splice(index, 1)
+        }
       }
+      console.log(temp)
+      let finalArray = [...array, ...temp]
+      console.log(finalArray)
+      let index = finalArray.indexOf(value)
+      this.dialog.open(ImagePreviewDialogComponent, {
+        data: {
+          images: finalArray,
+          index: index
+        },
+        width: "auto"
+      })
     }
-    console.log(temp)
-
-    let finalArray = [...array, ...temp]
-    console.log(finalArray)
-    let index = finalArray.indexOf(value)
-    this.dilaog.open(ImagePreviewDialogComponent, {
-      data: {
-        images: finalArray,
-        index: index
-      },
-      width: "auto"
-    })
   }
 
 }

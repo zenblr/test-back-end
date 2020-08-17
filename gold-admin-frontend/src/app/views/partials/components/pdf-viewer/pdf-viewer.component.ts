@@ -61,4 +61,7 @@ export class PdfViewerComponent implements OnInit, OnChanges {
     // do anything with progress data. For example progress indicator
   }
 
+  close() {
+    this.dialogRef.close()
+  }
 }

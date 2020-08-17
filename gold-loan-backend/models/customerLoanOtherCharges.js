@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     )
 
     CustomerLoanOtherCharges.associate = function (models) {
-        CustomerLoanOtherCharges.hasMany(models.customerInterestTransaction, { foreignKey: 'otherChargesId', as: 'charges' });
+        CustomerLoanOtherCharges.hasMany(models.customerTransactionDetail, { foreignKey: 'otherChargesId', as: 'charges' });
     }
 
     return CustomerLoanOtherCharges;
