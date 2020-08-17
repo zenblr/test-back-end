@@ -1,0 +1,154 @@
+<kt-portlet>
+    <kt-portlet-body class="min-vh-60">
+        <div id="container">
+            <div class="table-div kt-padding-t-10">
+                <table class="table outer-border">
+                    <thead>
+                        <th class="transparent">Loan Id</th>
+                        <th class="transparent">Loan Amount</th>
+                        <th class="transparent">Payment Date</th>
+                        <th class="transparent">Part Payment</th>
+                        <th class="transparent">Outstanding Loan Amount</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-gray">{{loanDetails?.customerLoan[0]?.loanUniqueId}}
+                                <br>
+                                <span *ngIf="loanDetails?.customerLoan[1]">
+                                    {{loanDetails?.customerLoan[1]?.loanUniqueId}} LOAN2314
+                                </span>
+                            </td>
+                            <td class="text-gray">
+                                {{loanDetails?.customerLoan[0]?.loanAmount}} 340000
+                                <br>
+                                <span *ngIf="loanDetails?.customerLoan[1]">
+                                    {{loanDetails?.customerLoan[1]?.loanAmount}}
+                                </span>
+                            </td>
+                            <td class="text-gray">{{loanDetails?.loanStartDate | date :'mediumDate'}} 4 Sep 2020</td>
+
+                            <td class="text-gray"> 5000</td>
+                            <td class="text-gray"> 5000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
+                <div class="col-6 text-center">
+                    <kt-button [value]="'Part Payment'" [type]="'button'" (click)="partPayment()"></kt-button>
+                </div>
+            </div>
+
+            <div *ngIf="showPartAmountInput" class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
+                <div class="col-12">
+                    <h5>Part Payment</h5>
+                    <mat-divider></mat-divider>
+                </div>
+                <div class="col-12">
+                    <div class="row justify-content-center">
+                        <div class="col-6">
+                            <div class="row kt-margin-t-10">
+                                <div class="col form-label">
+                                    <label for=""> Enter Amount </label>
+                                </div>
+                                <div class="col">
+                                    <input class="form-control" type="text" [formControl]="partAmount" numbersOnly />
+                                </div>
+                                <div class="col">
+                                    <kt-button [type]="'button'" [value]="'Continue'" (click)="partAmountContinue()">
+                                    </kt-button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="payableAmountSummary">
+                <div class="table-div kt-padding-t-10">
+                    <table class="table outer-border">
+                        <thead>
+                            <th class="transparent">Loan ID</th>
+                            <th class="transparent">Part Payment Amount</th>
+                            <th class="transparent">Pending Interest Amount</th>
+                            <th class="transparent">Interest Amount</th>
+                            <th class="transparent">Penal Interest</th>
+                            <th class="transparent">Any Other Charges</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{payableAmountSummary?.outstandingAmount}}</td>
+                                <td>{{payableAmountSummary?.securedInterest}} <br>
+                                    {{payableAmountSummary?.unsecuredInterest}}</td>
+                                <td>{{payableAmountSummary?.securedPenalInterest}}<br>
+                                    {{payableAmountSummary?.unsecuredPenalInterest}}
+                                </td>
+                                <td>{{payableAmountSummary?.payableAmountSummary}}</td>
+                                <td>{{payableAmountSummary?.payableAmountSummary}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row justify-content-center kt-padding-t-25 kt-padding-b-10">
+                    <div class="col-6 text-center">
+                        <kt-button [value]="'Proceed'" [type]="'button'" (click)="proceed()"></kt-button>
+                        <span class="kt-padding-5"></span>
+                        <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancelPayableAmountSummary()">
+                        </kt-button>
+
+                    </div>
+                </div>
+
+                <!-- Payment Confirmation -->
+
+                <h5 class="kt-padding-t-20 kt-padding-b-20" *ngIf="paymentDetails">Payment Confirmation</h5>
+                <div class="table-div" *ngIf="paymentDetails">
+                    <table class="table outer-border">
+                        <thead>
+                            <th class="transparent">Loan ID</th>
+                            <th class="transparent">Loan Amount</th>
+                            <th class="transparent">Part Payment Amount</th>
+                            <th class="transparent">Outstanding Loan Amount</th>
+                            <th class="transparent">Select Payment option</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-gray">
+                                    LOAN123<br>
+                                    LOAN332
+                                </td>
+                                <td class="text-gray">
+                                    60000<br>
+                                    15000
+                                </td>
+                                <td class="text-gray">{{partAmount?.value}}</td>
+                                <td class="text-gray">{{partAmount.value}}</td>
+                                <td class="text-gray">
+                                    <button *ngIf="!paymentValue" (click)="choosePaymentMethod()"
+                                        class="apply-kyc">Select
+                                        Payment</button>
+                                    <button *ngIf="paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">
+                                        {{ paymentValue.paymentType === 'IMPS' ? 'RTGS | NEFT | IMPS' : paymentValue.paymentType | uppercase }}
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row justify-content-center kt-padding-t-15 kt-padding-b-15" *ngIf="paymentDetails">
+                    <div class="col-6 text-center">
+                        <kt-button [value]="'Confirm'" [type]="'button'" (click)="submitPaymentConfirmation()">
+                        </kt-button>
+                        <span class="kt-padding-5 "></span>
+                        <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancelPaymentConfirmation()">
+                        </kt-button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </kt-portlet-body>
+</kt-portlet>
