@@ -325,10 +325,12 @@ exports.checkForLoanType = async (req, res, next) => {
 
         var unsecuredAmount = Math.round(loanAmount * unsecureSchemeMaximumAmtAllowed / (ltvPercent[0].ltvGoldValue / 100))
 
-        let totalEligibleAmt = Math.round(fullAmount / (ltvPercent[0].ltvGoldValue / 100))
+        let totalEligibleAmt = Math.round(fullAmount * (ltvPercent[0].ltvGoldValue / 100))
 
         if ((unsecuredSchemeApplied && (securedScheme.isSplitAtBeginning &&
-            Math.round(totalEligibleAmt) >= Math.round(securedLoanAmount + unsecuredAmount))) || isLoanTransfer) {
+            Math.round(totalEligibleAmt) >= Math.round(securedLoanAmount + unsecuredAmount)) ||
+            Math.round(totalEligibleAmt) >= Math.round(securedLoanAmount + unsecuredAmount) ) || 
+            isLoanTransfer) {
 
             if (isLoanTransfer) {
                 unsecuredAmount = Number(loanAmount - securedLoanAmount)

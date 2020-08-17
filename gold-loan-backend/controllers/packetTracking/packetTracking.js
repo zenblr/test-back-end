@@ -222,6 +222,17 @@ exports.updateLocation = async (req, res) => {
     }
 }
 
+exports.addPacketLocation = async (req, res) => {
+
+    let { latitude, longitude, appraiserId, packetId, masterLoanId, customerLoanId, packetLocationId } = req.body
+
+    let packetlocation = await models.packetTracking.create({ latitude, longitude, appraiserId, packetId, masterLoanId, customerLoanId, packetLocationId })
+
+    if (packetlocation) {
+        return res.status(200).json({ message: success })
+    }
+}
+
 exports.getMapDetails = async (req, res, next) => {
 
     let internalBranch = req.userData.internalBranchId
