@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'transaction_unique_id'
         },
+        paymentMode:{
+            type: DataTypes.STRING,
+            field: 'payment_mode',
+        },
         transactionAmont: {
             type: DataTypes.DECIMAL(10,2),
             field: 'transaction_amont'
@@ -20,6 +24,18 @@ module.exports = (sequelize, DataTypes) => {
         paymentReceivedDate: {
             type: DataTypes.DATE,
             field: 'payment_received_date'
+        },
+        chequeNumber:{
+            type: DataTypes.STRING,
+            field: 'cheque_number',
+        },
+        bankName:{
+            type: DataTypes.STRING,
+            field: 'bank_name',
+        },
+        branchName:{
+            type: DataTypes.STRING,
+            field: 'branch_name',
         },
         createdBy: {
             type: DataTypes.INTEGER,
@@ -37,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanTransaction.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerLoanTransaction.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
         CustomerLoanTransaction.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
-        CustomerLoanTransaction.hasMany(models.customerInterestTransaction, { foreignKey: 'customerLoanTransactionId', as: 'transaction' });
+        CustomerLoanTransaction.hasMany(models.customerTransactionDetail, { foreignKey: 'customerLoanTransactionId', as: 'transaction' });
     }
 
     return CustomerLoanTransaction;
