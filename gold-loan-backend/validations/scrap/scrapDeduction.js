@@ -8,7 +8,7 @@ const Op = sequelize.Op;
 exports.addStandardDeduction = [
   body('standardDeduction')
   .exists()
-  .withMessage('StandardDeduction is required')
+  .withMessage('Standard Deduction is required')
   .custom(async value => {
     return await models.standardDeduction.findOne({
       where: {
@@ -22,7 +22,7 @@ exports.addStandardDeduction = [
       }
     }).then(standardDeduction => {
       if (standardDeduction) {
-        return Promise.reject("StandardDeduction already exist !");
+        return Promise.reject("Standard deduction already exist !");
       }
     })
   })
@@ -31,7 +31,7 @@ exports.addStandardDeduction = [
 exports.updateStandardDeduction = [
   body('standardDeduction')
   .exists()
-  .withMessage('StandardDeduction is required')
+  .withMessage('Standard deduction is required')
   .custom(async (value,{ req }) => {
     console.log(req.params.id);
     return await models.standardDeduction.findOne({
@@ -47,7 +47,7 @@ exports.updateStandardDeduction = [
       }
     }).then(standardDeduction => {
       if (standardDeduction) {
-        return Promise.reject("StandardDeduction already exist !");
+        return Promise.reject("Standard deduction already exist !");
       }
     })
   })
