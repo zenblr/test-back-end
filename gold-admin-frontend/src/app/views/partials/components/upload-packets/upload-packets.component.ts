@@ -120,6 +120,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
             ornamentTypeArray.push(data)
           })
 
+          this.ornamentId = ele.customerLoanOrnamentsDetails.map(e => e.id)
           this.splicedPackets.push(ele)
           this.removeOnamentsDataFromMultiselect(ornamentTypeArray, 'edit')
           this.pushPackets()
