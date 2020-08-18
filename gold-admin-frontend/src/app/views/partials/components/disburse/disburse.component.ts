@@ -17,6 +17,8 @@ import { Location } from '@angular/common';
 export class DisburseComponent implements OnInit {
   @Input() masterAndLoanIds
   @Input() scrapIds
+  @Input() disbursementDetails;
+  @Input() showButton;
   currentDate = new Date()
   disburseForm: FormGroup
   details: any;
@@ -52,6 +54,10 @@ export class DisburseComponent implements OnInit {
       this.getScrapBankDetails()
       this.validation()
     }
+    if (changes.disbursementDetails.currentValue && changes.disbursementDetails.currentValue.scrapDisbursement) {
+      this.disburseForm.patchValue(changes.disbursementDetails.currentValue.scrapDisbursement);
+      this.disburseForm.disable()
+    }
   }
 
   initForm() {
@@ -82,6 +88,9 @@ export class DisburseComponent implements OnInit {
       scrapId: [],
       scrapAmount: [],
       transactionId: [],
+      fullSecuredAmount: [],
+      fullUnsecuredAmount: [],
+      processingCharge: []
     })
     this.disableSchemeRelatedField()
   }

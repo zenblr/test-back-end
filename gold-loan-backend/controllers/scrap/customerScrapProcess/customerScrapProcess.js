@@ -23,6 +23,9 @@ exports.customerDetails = async (req, res, next) => {
         return res.status(400).json({ message: `This customer is not assign to you` })
     }
 
+    let incompleteStageId = await models.scrapStage.findOne({ where: { stageName: "incomplete" } });
+    let completedStageId = await models.scrapStage.findOne({ where: { stageName: "completed" } });
+
     let customerData = await models.customer.findOne({
         where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
         attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
@@ -30,25 +33,24 @@ exports.customerDetails = async (req, res, next) => {
     })
 
     let customerScrapStage = await models.customerScrap.findOne({
-        where: { customerId: customerData.id, isScrapSubmitted: false },
+        where: { customerId: customerData.id, isScrapSubmitted: false, scrapStageId: { [Op.notIn]: [incompleteStageId.id,completedStageId.id ] }, },
         include: [{
             model: models.customer,
             as: 'customer'
         }]
     });
-
-    let incompleteStageId = await models.scrapStage.findOne({ where: { stageName: "incomplete" } });
-    let completedStageId = await models.scrapStage.findOne({ where: { stageName: "completed" } });
+    console.log(customerScrapStage);
+   
 
     
     if (!check.isEmpty(customerScrapStage)) {
 
-        if (customerScrapStage.scrapStageId == incompleteStageId.id) {
-            res.status(200).json({ message: 'customer details fetch successfully', customerData });
-        }
-        if(customerScrapStage.scrapStageId == completedStageId.id){
-            res.status(200).json({ message: 'customer details fetch successfully', customerData });
-        }
+        // if (customerScrapStage.scrapStageId == incompleteStageId.id ) {
+        //     return res.status(200).json({ message: 'customer details fetch successfully', customerData });
+        // }
+        // if(customerScrapStage.scrapStageId == completedStageId.id){
+        //     return res.status(200).json({ message: 'customer details fetch successfully', customerData });
+        // }
         
         const firstName = customerScrapStage.customer.firstName
         const lastName = customerScrapStage.customer.lastName
@@ -608,7 +610,12 @@ exports.singleScrapDetails = async (req, res, next) => {
                 // }]
                 // }]
             }]
-        },]
+        },
+        {
+            model: models.customerScrapDisbursement,
+            as: 'scrapDisbursement',
+            attributes: ['id', 'scrapId', 'transactionId', 'date', 'paymentMode', 'ifscCode', 'bankName', 'bankBranch', 'acHolderName', 'acNumber', 'disbursementStatus']  
+        }]
     });
 
     let ornamentTypesss = [];
@@ -1007,17 +1014,42 @@ exports.getScrapDetails = async (req, res, next) => {
 
 //function for quick pay in scrap melting details 
 exports.quickPay = async (req, res, next) => {
-    let { scrapId, paymentMode, bankName, bankBranch, transactionId, chequeNumber, depositAmount, depositDate } = req.body;
+    let { scrapId, paymentMode, bankName, bankBranch, transactionId, chequeNumber, depositAmount, depositDate,grossWeight, netWeight, deductionWeight, karat, purityReading, ornamentImageWithWeight, ornamentImageWithXrfMachineReading, ornamentImage, customerConfirmation, finalScrapAmountAfterMelting, eligibleScrapAmount } = req.body;
 
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
+
+    let checkMeltingOrnaments = await models.scrapMeltingOrnament.findAll({ where: { scrapId: scrapId } });
+
+
+    if (checkMeltingOrnaments.length == 0) {
+        let scrapData = await sequelize.transaction(async t => {
+
+            let createdMeltingOrnaments = await models.scrapMeltingOrnament.create({ scrapId, grossWeight, netWeight, deductionWeight, karat, purityReading, ornamentImageWithWeight, ornamentImageWithXrfMachineReading, ornamentImage, customerConfirmation, createdBy, modifiedBy }, { transaction: t });
+
+            return createdMeltingOrnaments
+        })
+      
+    } else {
+
+        let scrapData = await sequelize.transaction(async t => {
+            
+            await models.scrapMeltingOrnament.destroy({ where: { scrapId: scrapId }, transaction: t });
+
+            let createdMeltingOrnaments = await models.scrapMeltingOrnament.create({ scrapId, grossWeight, netWeight, deductionWeight, karat, purityReading, ornamentImageWithWeight, ornamentImageWithXrfMachineReading, ornamentImage, customerConfirmation, createdBy, modifiedBy }, { transaction: t });
+
+            return createdMeltingOrnaments;
+        })
+    }
 
     let stageId = await models.scrapStage.findOne({ where: { stageName: 'completed' } });
 
     if (paymentMode == 'cash') {
         let quickPay = await sequelize.transaction(async t => {
             let customerQuickPay = await models.scrapQuickPay.create({ scrapId, paymentMode, depositAmount, depositDate, createdBy, modifiedBy }, { transaction: t });
-            await models.customerScrap.update({ scrapStageId: stageId.id, customerScrapCurrentStage: "4", modifiedBy }, { where: { id: scrapId }, transaction: t });
+
+            await models.customerScrap.update({ scrapStageId: stageId.id,finalScrapAmountAfterMelting, eligibleScrapAmount, customerScrapCurrentStage: "4", modifiedBy }, { where: { id: scrapId }, transaction: t });
+
             await models.customerScrapHistory.create({ scrapId, action: PROCESS_COMPLETED, modifiedBy }, { transaction: t });
 
             return customerQuickPay
@@ -1027,7 +1059,9 @@ exports.quickPay = async (req, res, next) => {
         let quickPay = await sequelize.transaction(async t => {
 
             let customerQuickPay = await models.scrapQuickPay.create({ scrapId, paymentMode, depositAmount, depositDate, chequeNumber, bankName, bankBranch, createdBy, modifiedBy }, { transaction: t });
-            await models.customerScrap.update({ scrapStageId: stageId.id, customerScrapCurrentStage: "4", modifiedBy }, { where: { id: scrapId }, transaction: t });
+
+            await models.customerScrap.update({ scrapStageId: stageId.id,finalScrapAmountAfterMelting, eligibleScrapAmount, customerScrapCurrentStage: "4", modifiedBy }, { where: { id: scrapId }, transaction: t });
+
             await models.customerScrapHistory.create({ scrapId, action: PROCESS_COMPLETED, modifiedBy }, { transaction: t });
             return customerQuickPay
 
@@ -1036,9 +1070,12 @@ exports.quickPay = async (req, res, next) => {
     } else if (paymentMode == 'bankTransfer') {
         let quickPay = await sequelize.transaction(async t => {
 
-            let customerQuickPay = await models.scrapQuickPay.create({ scrapId, paymentMode, depositAmount, depositDate, transactionId, bankName, bankBranch, createdBy, modifiedBy }, { transaction: t })
-            await models.customerScrap.update({ scrapStageId: stageId.id, customerScrapCurrentStage: "4", modifiedBy }, { where: { id: scrapId }, transaction: t });
+            let customerQuickPay = await models.scrapQuickPay.create({ scrapId, paymentMode, depositAmount, depositDate, transactionId, bankName, bankBranch, createdBy, modifiedBy }, { transaction: t });
+
+            await models.customerScrap.update({ scrapStageId: stageId.id,finalScrapAmountAfterMelting, eligibleScrapAmount, customerScrapCurrentStage: "4", modifiedBy }, { where: { id: scrapId }, transaction: t });
+
             await models.customerScrapHistory.create({ scrapId, action: PROCESS_COMPLETED, modifiedBy }, { transaction: t });
+
             return customerQuickPay
         });
         return res.status(200).json({ message: "success", quickPay });

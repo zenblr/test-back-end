@@ -1,5 +1,8 @@
-<div class="height"> 
-    
-    <pdf-viewer [src]="src" [fit-to-page] [render-text]="true" (on-progress)="onProgress($event)"
-        [original-size]="false" [autoresize]="true" style="display: block;" [page]="page" [show-all]="showAll" (page-rendered)="pageRendered($event)"></pdf-viewer>
+<div class="position-relative">
+    <img src="assets/media/icons/cancel.svg" class="cancel" alt="" (click)="close()">
+    <div class="height">
+        <pdf-viewer [src]="src" [fit-to-page] [render-text]="true" (on-progress)="onProgress($event)"
+            [original-size]="false" [autoresize]="true" style="display: block;" [page]="page" [show-all]="showAll"
+            (page-rendered)="pageRendered($event)"></pdf-viewer>
+    </div>
 </div>

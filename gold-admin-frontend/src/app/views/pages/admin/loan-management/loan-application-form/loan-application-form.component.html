@@ -88,7 +88,7 @@
                     </mat-tab>
 
                     <mat-tab label="Disbursement" *ngIf="loanStage?.id == 4 ">
-                        <kt-disburse [masterAndLoanIds]="masterAndLoanIds"></kt-disburse>
+                        <kt-disburse [masterAndLoanIds]="masterAndLoanIds" [showButton]="true"></kt-disburse>
                     </mat-tab>
                 </mat-tab-group>
             </div>

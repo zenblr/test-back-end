@@ -9,44 +9,48 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'loan_id'
         },
-        loanInterestId:{
+        loanInterestId: {
             type: DataTypes.INTEGER,
             field: 'loan_interest_id'
+        },
+        referenceId: {
+            type: DataTypes.STRING,
+            field: 'reference_id'
         },
         customerLoanTransactionId: {
             type: DataTypes.INTEGER,
             field: 'customer_loan_transaction_id'
         },
-        isPenalInterest:{
+        isPenalInterest: {
             type: DataTypes.BOOLEAN,
             field: 'is_penal_interest',
             defaultValue: false
         },
-        otherChargesId:{
+        otherChargesId: {
             type: DataTypes.INTEGER,
             field: 'other_charges_id'
         },
-        credit:{
-            type: DataTypes.DECIMAL(10,2),
+        credit: {
+            type: DataTypes.DECIMAL(10, 2),
             field: 'credit'
         },
-        debit:{
-            type: DataTypes.DECIMAL(10,2),
+        debit: {
+            type: DataTypes.DECIMAL(10, 2),
             field: 'credit'
         },
-        paymentDate:{
+        paymentDate: {
             type: DataTypes.DATE,
             field: 'payment_date'
         },
-        description:{
+        description: {
             type: DataTypes.STRING,
             field: 'description'
         }
     },
         {
             freezeTableName: true,
-            allowNull: false,   
-            tableName: 'loan_customer_transaction_detail',
+            allowNull: false,
+            tableName: 'customer_loan_transaction_detail',
         },
     )
 

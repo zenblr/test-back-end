@@ -108,7 +108,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   setModalData() {
-    Array.prototype.push.apply(this.modalView.details.currentValue.loanOrnamentsDetail, this.data.modalData[0].customerLoanOrnamentsDetails)
+    if (this.data.packetView) {
+      Array.prototype.push.apply(this.modalView.details.currentValue.loanOrnamentsDetail, this.data.modalData[0].customerLoanOrnamentsDetails)
+    } else {
+      this.modalView.details.currentValue.loanOrnamentsDetail = this.data.modalData
+    }
     this.ngOnChanges(this.modalView)
   }
 
@@ -750,19 +754,17 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         return
       }
     }
-    if (this.buttonValue != 'Pay Processing Charges') {
-      if (this.ornamentsForm.invalid) {
-        let array = this.OrnamentsData.controls
-        for (let index = 0; index < array.length; index++) {
-          const element = array[index];
-          if (element.invalid) {
-            element.markAllAsTouched();
-            this.selected = index
-            return
-          }
+    if (this.ornamentsForm.invalid) {
+      let array = this.OrnamentsData.controls
+      for (let index = 0; index < array.length; index++) {
+        const element = array[index];
+        if (element.invalid) {
+          element.markAllAsTouched();
+          this.selected = index
+          return
         }
-        return
       }
+      return
     }
 
     if (this.scrapIds) {

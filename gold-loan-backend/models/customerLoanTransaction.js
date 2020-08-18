@@ -1,3 +1,4 @@
+
 module.exports = (sequelize, DataTypes) => {
     const CustomerLoanTransaction = sequelize.define('customerLoanTransaction', {
         //attribute
@@ -13,9 +14,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'transaction_unique_id'
         },
-        paymentMode:{
+        paymentType:{
             type: DataTypes.STRING,
-            field: 'payment_mode',
+            field: 'payment_type',
         },
         transactionAmont: {
             type: DataTypes.DECIMAL(10,2),

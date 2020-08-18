@@ -9,6 +9,7 @@ import { AppliedKycService } from '../../../../core/applied-kyc/services/applied
 import { Router } from '@angular/router';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { TitleCasePipe } from '@angular/common';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 @Component({
   selector: 'kt-user-classification',
@@ -59,6 +60,7 @@ export class UserClassificationComponent implements OnInit {
   userType: any;
   viewBMForm = true;
   reasons = [];
+  permission: any;
 
   constructor(
     private userDetailsService: UserDetailsService,
@@ -70,8 +72,11 @@ export class UserClassificationComponent implements OnInit {
     private route: Router,
     private sharedService: SharedService,
     private titlecase: TitleCasePipe,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private permissionService:NgxPermissionsService
   ) {
+    this.permissionService.permissions$.subscribe(res=> this.permission = res)
+
     let res = this.sharedService.getDataFromStorage()
     this.userType = res.userDetails.userTypeId;
 
@@ -130,7 +135,7 @@ export class UserClassificationComponent implements OnInit {
       reasonFromOperationalTeam: ['']
     })
 
-    if (this.userType == 6) {
+    if (this.permission.cceKycRatig) {
       // this.custClassificationForm.disable()
       // this.custClassificationForm.controls.behaviourRatingVerifiedByBm.disable();
       // this.custClassificationForm.controls.idProofRatingVerifiedByBm.disable();
@@ -139,7 +144,7 @@ export class UserClassificationComponent implements OnInit {
       this.custClassificationForm.controls.kycStatusFromOperationalTeam.disable();
       this.custClassificationForm.controls.reasonFromOperationalTeam.disable();
       this.viewBMForm = false;
-    } else if (this.userType == 8) {
+    } else if (this.permission.opsKycRating) {
       //   this.custClassificationForm.controls.behaviourRatingCce.disable();
       //   this.custClassificationForm.controls.idProofRatingCce.disable();
       //   this.custClassificationForm.controls.addressProofRatingCce.disable();
@@ -220,8 +225,8 @@ export class UserClassificationComponent implements OnInit {
       // addressProofRatingCce: +(this.custClassificationForm.get('addressProofRatingCce').value),
     })
 
-    if (this.editRating) {
-      this.custClassificationService.updateCceRating(this.custClassificationForm.value).pipe(
+    if (this.viewBMForm) {
+      this.custClassificationService.opsTeamRating(this.custClassificationForm.value).pipe(
         map(res => {
           if (res) {
             this.toastr.success(this.titlecase.transform(res.message));
@@ -250,7 +255,7 @@ export class UserClassificationComponent implements OnInit {
   }
 
   approvalOfBM(value: boolean, type: string) {
-    if (this.userType == 8) {
+    if (this.permission.opsKycRating) {
       if (type == 'kycRating') {
         this.cceControls.kycRatingFromBM.patchValue(value)
       }

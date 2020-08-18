@@ -90,7 +90,7 @@ exports.getAllNewRequest = async (req, res, next) => {
 
 
     if (allRequest.length === 0) {
-        return res.status(404).json([])
+        return res.status(200).json([])
     } else {
         return res.status(200).json({ message: `Fetched all request successfully`, data: allRequest, count: count })
     }
@@ -175,7 +175,7 @@ exports.getAssignedRequest = async (req, res) => {
         .value()
 
     if (allRequest.length === 0) {
-        return res.status(404).json([])
+        return res.status(200).json([])
     } else {
         return res.status(200).json({ message: `Fetched all request successfully`, data: data, count: count.length })
     }

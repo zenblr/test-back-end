@@ -6,6 +6,8 @@ const { addPackageImagesForLoan, disbursementOfLoanAmount, interestRate, generat
   disbursementOfLoanBankDetails, getLoanDetails, getSingleLoanDetails, appliedLoanDetails, customerDetails, loanBmRating, loanOpsTeamRating, checkForLoanType,
   loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getSingleLoanInCustomerManagment, getDetailsForPrint, getLoanOrnaments } =
   require('../controllers/customerLoanProcess/customerLoanProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
+const checkRolePermission = require('../middleware/checkRolesPermissions');
+
 
 const { loanRequest } = require('../controllers/customerLoanProcess/customerLoanProcessForApp')
 
@@ -45,9 +47,9 @@ route.post('/disbursement-of-loan', checkAuth, wrapper(disbursementOfLoanAmount)
 
 route.get('/disbursement-loan-bank-detail', checkAuth, wrapper(disbursementOfLoanBankDetails)); // DISBURSEMENT OF LOAN BANK DETAIL
 
-route.get('/loan-details', checkAuth, wrapper(getLoanDetails)); // FETCH LOAN DETAILS
+route.get('/loan-details', checkAuth, checkRolePermission, wrapper(getLoanDetails)); // FETCH LOAN DETAILS
 
-route.get('/applied-loan-details', checkAuth, wrapper(appliedLoanDetails)); // FETCH APLLIED LOAN DETAILS
+route.get('/applied-loan-details', checkAuth, checkRolePermission, wrapper(appliedLoanDetails)); // FETCH APLLIED LOAN DETAILS
 
 route.get('/customer-loan-details/:customerUniqueId', checkAuth, wrapper(customerDetails)); // FETCH CUSTOMER DETAILS
 

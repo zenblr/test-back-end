@@ -83,8 +83,10 @@
                             [scrapIds]="scrapIds" [scrapStage]="scrapStage" (disbursal)="disbursal($event)">
                         </kt-approval>
                     </mat-tab>
-                    <mat-tab label="Disbursement" *ngIf="url != 'view-scrap' && scrapStage?.id == 4">
-                        <kt-disburse [scrapIds]="scrapIds"></kt-disburse>
+                    <mat-tab label="Disbursement"
+                        *ngIf="(url != 'view-scrap' && scrapStage?.id == 4) || scrapStage?.id == 5">
+                        <kt-disburse [scrapIds]="scrapIds" [disbursementDetails]="customerDetail"
+                            [showButton]="showButton"></kt-disburse>
                     </mat-tab>
                 </mat-tab-group>
             </div>
