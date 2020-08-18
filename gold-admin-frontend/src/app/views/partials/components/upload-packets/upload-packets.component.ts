@@ -110,7 +110,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
           this.controls.packetId.patchValue(ele.id)
           this.ornamentName = ele.customerLoanOrnamentsDetails.map(e => e.ornamentType.name).toString();
           let ornamentType = ele.customerLoanOrnamentsDetails.map(e => e.ornamentType)
-          this.ornamentId = ele.customerLoanOrnamentsDetails.map(e => e.ornamentType.id)
+          this.ornamentId = ele.customerLoanOrnamentsDetails.map(e => e.id)
           this.splicedPackets.push(ele)
           this.removeOnamentsDataFromMultiselect(ornamentType)
           this.pushPackets()
@@ -307,7 +307,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.ornamentTypeData.forEach((val) => {
       let temp = []
       ornamentTypeObject.forEach(element => {
-        if (element.id == val.id) {
+        if (element.name == val.ornamentType) {
           temp.push(val)
         }
       });
