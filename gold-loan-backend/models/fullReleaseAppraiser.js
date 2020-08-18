@@ -1,10 +1,10 @@
 const baseUrlConfig = require('../config/baseUrl');
 
 module.exports = (sequelize, DataTypes) => {
-    const PartReleaseAppraiser = sequelize.define('partReleaseAppraiser', {
-        partReleaseId: {
+    const FullReleaseAppraiser = sequelize.define('fullReleaseAppraiser', {
+        fullReleaseId: {
             type: DataTypes.INTEGER,
-            field: 'part_release_id',
+            field: 'full_release_id',
             allowNull: false
         },
         customerId: {
@@ -49,13 +49,13 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'loan_full_release_appraiser',
     });
 
-    PartReleaseAppraiser.associate = function (models) {
-        PartReleaseAppraiser.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
-        PartReleaseAppraiser.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
-        PartReleaseAppraiser.belongsTo(models.partRelease, { foreignKey: 'partReleaseId', as: 'partRelease' });
-        PartReleaseAppraiser.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
-        PartReleaseAppraiser.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+    FullReleaseAppraiser.associate = function (models) {
+        FullReleaseAppraiser.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
+        FullReleaseAppraiser.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
+        FullReleaseAppraiser.belongsTo(models.fullRelease, { foreignKey: 'fullReleaseId', as: 'fullRelease' });
+        FullReleaseAppraiser.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        FullReleaseAppraiser.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
     }
 
-    return PartReleaseAppraiser;
+    return FullReleaseAppraiser;
 }

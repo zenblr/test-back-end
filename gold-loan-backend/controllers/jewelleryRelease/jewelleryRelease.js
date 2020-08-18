@@ -129,6 +129,9 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
     }
 
     ornamentsWeightInfo.outstandingAmount = Math.round(ornamentsWeightInfo.outstandingAmount);
+    if (otherOrnaments == null) {
+        ornamentsWeightInfo.releaseAmount = Math.round(ornamentsWeightInfo.outstandingAmount);
+    }
     return ornamentsWeightInfo;
 }
 
@@ -671,5 +674,47 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
         res.status(404).json({ message: 'no customer details found' });
     } else {
         res.status(200).json({ message: 'customer details fetch successfully', customerData, partReleaseId });
+    }
+}
+
+//Full release 
+
+exports.ornamentsFullRelease = async (req, res, next) => {
+    let { paymentType, paidAmount, bankName, chequeNumber, ornamentId, depositDate, branchName, transactionId, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv
+    } = req.body;
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+    if (paymentType == 'cash') {
+        let fullRelease = await sequelize.transaction(async t => {
+            let addFullRelease = await models.fullRelease.create({ paymentType, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, amountStatus: 'completed', createdBy, modifiedBy }, { transaction: t });
+            for (const ornament of ornamentId) {
+                await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t });
+            }
+            await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: action.FULL_RELEASE_PAYMENT_CASH, createdBy, modifiedBy }, { transaction: t });
+            return addFullRelease
+        });
+        return res.status(200).json({ message: "success", fullRelease });
+    } else if (paymentType == 'cheque') {
+        let fullRelease = await sequelize.transaction(async t => {
+            let addFullRelease = await models.fullRelease.create({ paymentType, paidAmount, bankName, chequeNumber, branchName, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
+            for (const ornament of ornamentId) {
+                await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
+            }
+            await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: action.FULL_RELEASE_PAYMENT_CHEQUE, createdBy, modifiedBy }, { transaction: t });
+            return addFullRelease
+        });
+        return res.status(200).json({ message: "success", fullRelease });
+    } else if (paymentType == 'IMPS') {
+        let fullRelease = await sequelize.transaction(async t => {
+            let addFullRelease = await models.fullRelease.create({ paymentType, bankName, branchName, transactionId, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
+            for (const ornament of ornamentId) {
+                await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
+            }
+            await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: action.FULL_RELEASE_PAYMENT_BANK, createdBy, modifiedBy }, { transaction: t });
+            return addFullRelease
+        });
+        return res.status(200).json({ message: "success", fullRelease });
+    } else {
+        return res.status(400).json({ message: 'invalid paymentType' });
     }
 }
