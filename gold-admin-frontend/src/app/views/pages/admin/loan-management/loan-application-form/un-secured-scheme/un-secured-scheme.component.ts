@@ -30,7 +30,7 @@ export class UnSecuredSchemeComponent implements OnInit {
     this.initForm()
     this.unsecuredSchemeForm.patchValue(this.data.unsecuredSchemeForm)
     this.details = this.data.unsecuredSchemeForm
-    this.unsecuredSchemes = this.details.unsecuredScheme.schemes
+    this.unsecuredSchemes = this.details.unsecuredScheme
     this.seletedScheme = this.unsecuredSchemes.filter(scheme => { return scheme.id == this.controls.unsecuredSchemeName.value })
     console.log(this.data)
   }
