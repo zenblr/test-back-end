@@ -1172,6 +1172,9 @@ exports.loanOpsTeamRating = async (req, res, next) => {
         let loanMaster = await models.customerLoanMaster.findOne(
             {
                 where: { id: masterLoanId },
+                order: [
+                    [models.customerLoan, 'id', 'asc']
+                ],
                 include: [
                     {
                         model: models.customerLoan,
@@ -1192,6 +1195,38 @@ exports.loanOpsTeamRating = async (req, res, next) => {
             if (loanMaster.isLoanTransfer == true) {
                 let stageIdTransfer = await models.loanStage.findOne({ where: { name: 'disbursed' }, transaction: t })
                 let dateChnage = await disbursementOfLoanTransfer(masterLoanId);
+
+                let loan = await models.customerLoanMaster.findOne({
+                    where: { id: masterLoanId },
+                    order: [
+                        [models.customerLoan, 'id', 'asc']
+                    ],
+                    // attributes: ['id', 'processingCharge'],
+                    include: [
+                        {
+                            model: models.customerLoan,
+                            as: "customerLoan",
+                            // attributes: ['id', 'loanUniqueId', 'loanAmount']
+                        }
+                    ]
+                })
+                if (loan.isUnsecuredSchemeApplied) {
+                    let unsecuredDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[1].id, debit: loan.customerLoan[1].loanAmount, description: `Loan amount disbursed to customer` }, { transaction: t })
+                    await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[1].loanUniqueId}-${unsecuredDisbursed.id}` }, { where: { id: unsecuredDisbursed.id }, transaction: t })
+
+                    let processing = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[1].id, credit: loan.processingCharge, description: `Processing charges for current loan from the customer` }, { transaction: t })
+                    await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[1].loanUniqueId}}-${processing.id}` }, { where: { id: processing.id }, transaction: t })
+
+                    let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[0].id, debit: loan.customerLoan[0].loanAmount, description: `Loan amount disbursed to customer` }, { transaction: t })
+                    await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[0].loanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
+                } else {
+                    let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[0].id, debit: loan.customerLoan[0].loanAmount, description: `Loan amount disbursed to customer` }, { transaction: t })
+                    await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[0].loanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
+
+                    let processing = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[0].id, credit: loan.processingCharge, description: `Processing charges for current loan from the customer` }, { transaction: t })
+                    await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[0].loanUniqueId}-${processing.id}` }, { where: { id: processing.id }, transaction: t })
+                }
+
                 for (let a = 0; a < dateChnage.securedInterest.length; a++) {
                     let updateDate = dateChnage.securedInterest[a].emiDueDate
                     await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.securedInterest[a].id }, transaction: t });
@@ -1208,10 +1243,11 @@ exports.loanOpsTeamRating = async (req, res, next) => {
                 for (const loan of loanMaster.customerLoan) {
                     customerLoanId.push(loan.id);
                     await models.customerLoanDisbursement.create({
-                        loanId: loan.id, masterLoanId, loanAmount: loanMaster.loanTransfer.disbursedLoanAmount, transactionId: loanMaster.loanTransfer.transactionId, date: loanMaster.loanTransfer.updatedAt, paymentMode: 'Loan transfer', createdBy: loanMaster.loanTransfer.modifiedBy, modifiedBy: loanMaster.loanTransfer.modifiedBy
+                        loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, transactionId: loanMaster.loanTransfer.transactionId, date: loanMaster.loanTransfer.updatedAt, paymentMode: 'Loan transfer', createdBy: loanMaster.loanTransfer.modifiedBy, modifiedBy: loanMaster.loanTransfer.modifiedBy
                     }, { transaction: t })
                 }
-                // await models.customerLoan.update({ disbursed: true }, { where: { id: { [Op.in]: customerLoanId } }, transaction: t })
+
+                await models.customerLoan.update({ disbursed: true }, { where: { id: { [Op.in]: customerLoanId } }, transaction: t })
                 await models.customerLoanMaster.update({ applicationFormForOperatinalTeam, goldValuationForOperatinalTeam, loanStatusForOperatinalTeam, commentByOperatinalTeam, loanStageId: stageIdTransfer.id, modifiedBy, operatinalTeamId, isLoanSubmitted: true, }, { where: { id: masterLoanId }, transaction: t })
             } else {
                 // loan transfer changes complete
