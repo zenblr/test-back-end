@@ -158,6 +158,8 @@ export class AddLeadComponent implements OnInit {
       this.getLeadById(this.data['id']);
       this.modalTitle = 'Edit Lead'
       this.viewOnly = true;
+      this.leadForm.controls.mobileNumber.disable()
+      this.leadForm.controls.otp.disable()
     } else if (this.data.action == 'view') {
       this.getLeadById(this.data['id']);
       this.modalTitle = 'View Lead'
@@ -385,6 +387,21 @@ export class AddLeadComponent implements OnInit {
           this.toastr.errorToastr(msg);
         });
     } else if (this.data.action == 'edit') {
+
+      if (this.leadForm.invalid) {
+        // this.checkforVerfication()
+        this.leadForm.markAllAsTouched();
+        if (this.controls.panImage.invalid) {
+          if (this.controls.panType.value == 'pan') {
+            this.toastr.errorToastr('Upload PAN Image')
+          } else if (this.controls.panType.value == 'form60') {
+            this.toastr.errorToastr('Upload Form 60 Image')
+          }
+        }
+        console.log(this.leadForm.value)
+        return
+      }
+
       if (this.controls.panType.value == '') {
         this.leadForm.get('panType').patchValue(null);
         this.controls.panImage.patchValue(null)

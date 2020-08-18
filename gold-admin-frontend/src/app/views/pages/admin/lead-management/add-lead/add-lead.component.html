@@ -218,8 +218,8 @@
                             </div>
                             <div class="col" *ngIf="data.action != 'view'">
                                 <div *ngIf="!isPanVerified">
-                                    <kt-button [myClass]="'w-100'" [isDisabled]="panButton || viewOnly"
-                                        [type]="'button'" [value]="'Verify'" (action)="verifyPAN()">
+                                    <kt-button [myClass]="'w-100'" [isDisabled]="panButton" [type]="'button'"
+                                        [value]="'Verify'" (action)="verifyPAN()">
                                     </kt-button>
                                 </div>
 

@@ -172,7 +172,7 @@ export class PageConfig {
 					page: { title: "Monthly Repayment", desc: "" },
 				},
 				"part-release": {
-					page: { title: "Full Release", desc: "" },
+					page: { title: "Jewellery Release", desc: "" },
 					id: {
 						page: { title: "Jewellery Release", desc: "" },
 					}
@@ -186,6 +186,11 @@ export class PageConfig {
 				'interest-emi': {
 					page: { title: "Pay Interest EMI", desc: "" },
 				},
+				"part-payment": {
+					id: {
+						page: { title: "Part Payment", desc: "" },
+					}
+				}
 			},
 			"kyc-setting": {
 				page: { title: "Customer KYC", desc: "" },

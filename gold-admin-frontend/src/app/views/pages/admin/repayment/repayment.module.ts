@@ -15,6 +15,7 @@ import { QuickPayComponent } from './quick-pay/quick-pay.component';
 import { PartReleaseComponent } from './part-release/part-release.component';
 import { EmiLogsDialogComponent } from './emi-logs-dialog/emi-logs-dialog.component';
 import { PaymentDialogComponent } from '../../../../views/partials/components/payment-dialog/payment-dialog.component';
+import { PartPaymentComponent } from './part-payment/part-payment.component';
 
 const routes: Routes = [
   {
@@ -32,7 +33,11 @@ const routes: Routes = [
   {
     path: 'full-release/:id',
     component: PartReleaseComponent,
-  }
+  },
+  {
+    path: 'part-payment/:id',
+    component: PartPaymentComponent,
+  },
 ]
 
 @NgModule({
@@ -42,6 +47,7 @@ const routes: Routes = [
     QuickPayComponent,
     EmiLogsDialogComponent,
     PartReleaseComponent,
+    PartPaymentComponent,
   ],
   imports: [
     CommonModule,

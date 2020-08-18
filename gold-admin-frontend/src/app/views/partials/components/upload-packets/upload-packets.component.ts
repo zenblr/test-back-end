@@ -322,7 +322,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.ornamentTypeData.forEach((val) => {
       let temp = []
       ornamentTypeObject.forEach(element => {
-        if (element.id == val.id) {
+        if (element.name == val.ornamentType) {
           temp.push(val)
         }
       });
