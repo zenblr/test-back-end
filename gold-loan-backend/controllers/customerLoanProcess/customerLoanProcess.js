@@ -275,7 +275,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
         let unsecuredSchemeAmount = loanAmount - securedLoanAmount
         if (securedScheme.isSplitAtBeginning) {
-            securedLoanAmount = loanAmount * secureSchemeMaximumAmtAllowed / (ltvPercent[0].ltvGoldValue / 100)
+            securedLoanAmount = loanAmount * (secureSchemeMaximumAmtAllowed / (ltvPercent[0].ltvGoldValue / 100))
             unsecuredSchemeAmount = loanAmount - securedLoanAmount
         }
 
@@ -326,28 +326,59 @@ exports.checkForLoanType = async (req, res, next) => {
 
         let unsecureSchemeMaximumAmtAllowed = (unsecuredSchemeApplied.maximumPercentageAllowed / 100)
 
-        var unsecuredAmount = Math.round(loanAmount * unsecureSchemeMaximumAmtAllowed / (ltvPercent[0].ltvGoldValue / 100))
+        var unsecuredAmount = Math.round(fullAmount * unsecureSchemeMaximumAmtAllowed)
 
         let totalEligibleAmt = Math.round(fullAmount * (ltvPercent[0].ltvGoldValue / 100))
 
-        if ((unsecuredSchemeApplied && (securedScheme.isSplitAtBeginning &&
-            Math.round(totalEligibleAmt) >= Math.round(securedLoanAmount + unsecuredAmount)) ||
-            Math.round(totalEligibleAmt) >= Math.round(securedLoanAmount + unsecuredAmount)) ||
-            isLoanTransfer) {
 
-            if (isLoanTransfer) {
-                unsecuredAmount = Number(loanAmount - securedLoanAmount)
+        if (unsecuredSchemeApplied) {
+
+            if ((ltvPercent[0].ltvGoldValue / 100) >= (unsecureSchemeMaximumAmtAllowed + secureSchemeMaximumAmtAllowed)) {
+
+
+
+                // if(securedScheme.isSplitAtBeginning &&
+                // Math.round(loanAmount) >= Math.round(securedLoanAmount + unsecuredAmount)) ||
+                // Math.round(loanAmount) >= Math.round(securedLoanAmount + unsecuredAmount)) ||
+                // isLoanTransfer) {
+
+                if (isLoanTransfer) {
+                    if (Number(loanAmount) > totalEligibleAmt) {
+                        unsecuredAmount = Number(loanAmount - securedLoanAmount)
+                    }
+                } else if (Math.round(loanAmount) >= Math.round(securedLoanAmount + unsecuredAmount)) {
+                    return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
+
+                }
+
+                processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
+
+                let newUnsecuredScheme = await selectScheme(unsecured, securedScheme)
+                return res.status(200).json({ data: { newUnsecuredScheme, unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme, isUnsecuredSchemeApplied: true } })
+
             }
+            else {
+                let newUnsecuredMaximum = (ltvPercent[0].ltvGoldValue / 100) - secureSchemeMaximumAmtAllowed// code
 
-            processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
+                var unsecuredAmount = Math.round(fullAmount * newUnsecuredMaximum)
 
-            let newUnsecuredScheme = await selectScheme(unsecured, securedScheme)
-            return res.status(200).json({ data: { newUnsecuredScheme, unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme, isUnsecuredSchemeApplied: true } })
+                if (isLoanTransfer) {
+                    if (Number(loanAmount) > totalEligibleAmt) {
+                        unsecuredAmount = Number(loanAmount - securedLoanAmount)
+                    }
+                }
 
+                processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
+
+                let newUnsecuredScheme = await selectScheme(unsecured, securedScheme)
+                return res.status(200).json({ data: { newUnsecuredScheme, unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme, isUnsecuredSchemeApplied: true } })
+
+            }
         } else {
             return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
         }
     }
+
     else {
 
         processingCharge = await processingChargeSecuredScheme(loanAmount, securedScheme, undefined, undefined)
