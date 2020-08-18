@@ -1962,6 +1962,11 @@ exports.getLoanDetails = async (req, res, next) => {
             as: 'partRelease',
             attributes: ['amountStatus', 'partReleaseStatus']
         },
+        {
+            model: models.fullRelease,
+            as: 'fullRelease',
+            attributes: ['amountStatus', 'fullReleaseStatus']
+        },
     ]
 
     let loanDetails = await models.customerLoanMaster.findAll({

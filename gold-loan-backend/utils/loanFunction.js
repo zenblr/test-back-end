@@ -115,7 +115,8 @@ let getAllCustomerLoanId = async () => {
         where: {
             isActive: true,
             loanStageId: stageId.id,
-            "$partRelease$": null
+            "$partRelease$": null,
+            "$fullRelease$":null
         },
         attributes: ['id'],
         include: [
@@ -127,6 +128,10 @@ let getAllCustomerLoanId = async () => {
                 model: models.customerLoan,
                 as: 'customerLoan',
                 attributes: ['id']
+            },{
+                model: models.fullRelease,
+                as: 'fullRelease',
+                attributes: ['amountStatus', 'fullReleaseStatus']
             }],
     });
     let customerLoanId = [];
