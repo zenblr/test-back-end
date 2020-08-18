@@ -142,7 +142,7 @@ exports.getScrapDetailCustomerManagement = async (req, res, next) => {
         include: associateModel,
     });
     if (scrapDetails.length === 0) {
-        return res.status(200).json([]);
+        return res.status(200).json({data: scrapDetails, count: count.length});
     } else {
         return res.status(200).json({ data: scrapDetails, count: count.length });
     }
@@ -229,7 +229,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
     });
     console.log(allCustomers);
     if (allCustomers.length === 0) {
-        return res.status(200).json([]);
+        return res.status(200).json({data: allCustomers, count: count.length});
     } else {
         return res.status(200).json({ message: 'Success', data: allCustomers, count: count.length });
     }

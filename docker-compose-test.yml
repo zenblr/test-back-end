@@ -12,6 +12,7 @@ services:
         - "8100:3000"
       volumes:
         - gold-loan-test-public-data:/usr/src/app/public/uploads
+      restart: always
     
     redis:
       container_name: gold-loan-test-redis-demo

@@ -115,7 +115,8 @@ let getAllCustomerLoanId = async () => {
         where: {
             isActive: true,
             loanStageId: stageId.id,
-            "$partRelease$": null
+            "$partRelease$": null,
+            "$fullRelease$":null
         },
         attributes: ['id'],
         include: [
@@ -127,6 +128,10 @@ let getAllCustomerLoanId = async () => {
                 model: models.customerLoan,
                 as: 'customerLoan',
                 attributes: ['id']
+            },{
+                model: models.fullRelease,
+                as: 'fullRelease',
+                attributes: ['amountStatus', 'fullReleaseStatus']
             }],
     });
     let customerLoanId = [];
@@ -491,6 +496,50 @@ let customerLoanDetailsByMasterLoanDetails = async (masterLoanId) => {
     return { loan }
 }
 
+let allInterestPayment = async (loanArray, amount, paymentDetails, createdBy) => {
+    let transactionData = {
+        transactionAmont: 0,
+        createdBy: createdBy,
+        paymentDate:Date.now()
+    }
+    let transaction = []
+    let pendingSecuredAmount = amount
+    for (let index = 0; index < loanArray.length; index++) {
+
+        // outsatnding 
+        if (pendingSecuredAmount <= 0) {
+
+            break;
+
+        } else if (pendingSecuredAmount < Number(loanArray[index]['outstandingInterest'])) {
+
+            loanArray[index]['emiStatus'] = "partially paid"
+            loanArray[index]['outstandingInterest'] = (loanArray[index]['outstandingInterest'] - pendingSecuredAmount).toFixed(2)
+            loanArray[index]['paidAmount'] = pendingSecuredAmount.toFixed(2)
+            transactionData.transactionAmont = pendingSecuredAmount.toFixed(2)
+            pendingSecuredAmount = 0;
+            transactionData.loanInterestId = loanArray[index]['id']
+            transactionData.loanId = loanArray[index]['loanId']
+            transactionData.masterLoanId = loanArray[index]['masterLoanId']
+
+        } else if (pendingSecuredAmount > Number(loanArray[index]['outstandingInterest'])) {
+
+            pendingSecuredAmount = Number(pendingSecuredAmount) - Number(loanArray[index]['outstandingInterest'])
+            loanArray[index]['paidAmount'] = pendingSecuredAmount.toFixed(2)
+            loanArray[index]['emiStatus'] = "paid"
+            transactionData.transactionAmont = pendingSecuredAmount.toFixed(2)
+            transactionData.loanInterestId = loanArray[index]['id']
+            transactionData.loanId = loanArray[index]['loanId']
+            transactionData.masterLoanId = loanArray[index]['masterLoanId']
+
+
+
+        }
+        transaction.push(transactionData)
+    }
+    return { loanArray ,transaction}
+}
+
 
 module.exports = {
     getGlobalSetting: getGlobalSetting,
@@ -514,9 +563,10 @@ module.exports = {
     getAllInterestLessThanDate: getAllInterestLessThanDate,
     getPendingNoOfDaysInterest: getPendingNoOfDaysInterest,
     mergeInterestTable: mergeInterestTable,
-    getCustomerLoanId:getCustomerLoanId,
-    calculationDataOneLoan:calculationDataOneLoan,
-    intrestCalculationForSelectedLoan:intrestCalculationForSelectedLoan,
+    getCustomerLoanId: getCustomerLoanId,
+    calculationDataOneLoan: calculationDataOneLoan,
+    intrestCalculationForSelectedLoan: intrestCalculationForSelectedLoan,
     payableAmount: payableAmount,
     customerLoanDetailsByMasterLoanDetails: customerLoanDetailsByMasterLoanDetails,
+    allInterestPayment: allInterestPayment
 }

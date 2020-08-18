@@ -124,9 +124,9 @@
                         <ng-container *ngIf="lead.status.id == '1'">
                             <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserEdit']">
                                 <button (click)="assign(lead)" *ngIf="!lead?.customerAssignAppraiser"
-                                    class="apply-kyc">Assign Appraiser</button>
+                                    class="apply-kyc appraiser-btn">Assign Appraiser</button>
                                 <button (click)="updateAppraiser(lead)" *ngIf="lead?.customerAssignAppraiser"
-                                    class="apply-kyc">Update Appraiser</button>
+                                    class="apply-kyc appraiser-btn">Update Appraiser</button>
                             </div>
                         </ng-container>
 
