@@ -123,6 +123,9 @@ export class UploadDocumentsComponent implements OnInit {
         this.isEdit = false
         this.buttonValue = 'Next'
       }
+      if (changes.scrapStage.currentValue.id == 9 || changes.scrapStage.currentValue.id == 10) {
+        this.documentsForm.disable()
+      }
     }
     if (changes.loanDocumnets && changes.loanDocumnets.currentValue) {
       let documents = changes.loanDocumnets.currentValue.customerLoanDocument

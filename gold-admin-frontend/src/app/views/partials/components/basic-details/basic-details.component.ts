@@ -322,6 +322,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
             this.basicForm.patchValue(this.customerDetail);
             this.basicForm.controls.customerId.patchValue(this.customerDetail.id);
           }
+          this.basicForm.disable()
         }),
         catchError(err => {
           this.toast.error(err.error.message)
