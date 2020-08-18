@@ -44,15 +44,20 @@ exports.loanRequest = async (req, res, next) => {
             // nominee
             await models.customerLoanNomineeDetail.update({ nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship, createdBy, modifiedBy }, { where: { masterLoanId: masterLoanId }, transaction: t })
 
-            await models.customerLoanOrnamentsDetail.destroy({ where: { masterLoanId: masterLoanId }, transaction: t });
+            // await models.customerLoanOrnamentsDetail.destroy({ where: { masterLoanId: masterLoanId }, transaction: t });
             // let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { transaction: t });
 
-            let createdOrnaments = []
-            for (let purityTestData of allOrnmanets) {
-                delete purityTestData.id;
-                var ornaments = await models.customerLoanOrnamentsDetail.create(purityTestData, { transaction: t });
-                createdOrnaments.push(ornaments)
-            }
+            let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate(loanOrnaments, { updateOnDuplicate: ["ornamentTypeId", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest", "karat", "ltvRange", "ornamentImage", "ltvPercent", "ltvAmount", "currentLtvAmount", "ornamentFullAmount"] }, { transaction: t })
+
+            // for (let singleOrna of loanOrnaments) {
+            //     delete singleOrna.id;
+            //     singleOrna['createdBy'] = createdBy
+            //     singleOrna['modifiedBy'] = modifiedBy
+            //     singleOrna['loanId'] = loanId
+            //     singleOrna['masterLoanId'] = masterLoanId
+            //     var ornaments = await models.customerLoanOrnamentsDetail.create(singleOrna, { transaction: t });
+            //     createdOrnaments.push(ornaments)
+            // }
         } else {
             let masterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, internalBranchId: req.userData.internalBranchId, fullAmount, totalEligibleAmt, createdBy, modifiedBy }, { transaction: t })
 

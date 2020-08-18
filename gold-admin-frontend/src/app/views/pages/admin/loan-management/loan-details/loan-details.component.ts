@@ -94,7 +94,7 @@ export class LoanDetailsComponent implements OnInit {
   }
 
   viewLoan(loan) {
-    this.router.navigate(['/admin/customer-management/loan-details', loan.id,loan.customerLoan[0].masterLoanId])
+    this.router.navigate(['/admin/customer-management/loan-details', loan.id, loan.customerLoan[0].masterLoanId])
   }
 
   newLoan(loan) {
@@ -110,11 +110,15 @@ export class LoanDetailsComponent implements OnInit {
   }
 
   interestEmi(loan) {
-    this.router.navigate(['/admin/repayment/interest-emi',loan.id])
+    this.router.navigate(['/admin/repayment/interest-emi', loan.id])
   }
 
   jewelleryRelease(loan) {
     console.log(loan)
     this.router.navigate([`/admin/repayment/part-release/${loan.customerLoan[0].masterLoanId}`])
+  }
+
+  partPayment(loan) {
+    this.router.navigate(['/admin/repayment/part-payment', loan.id])
   }
 }
