@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'loan_full_release_appraiser',
+        tableName: 'loan_part_release_appraiser',
     });
 
     PartReleaseAppraiser.associate = function (models) {
