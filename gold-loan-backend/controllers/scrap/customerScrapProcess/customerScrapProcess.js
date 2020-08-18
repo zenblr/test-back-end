@@ -23,6 +23,9 @@ exports.customerDetails = async (req, res, next) => {
         return res.status(400).json({ message: `This customer is not assign to you` })
     }
 
+    let incompleteStageId = await models.scrapStage.findOne({ where: { stageName: "incomplete" } });
+    let completedStageId = await models.scrapStage.findOne({ where: { stageName: "completed" } });
+
     let customerData = await models.customer.findOne({
         where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
         attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
@@ -30,25 +33,24 @@ exports.customerDetails = async (req, res, next) => {
     })
 
     let customerScrapStage = await models.customerScrap.findOne({
-        where: { customerId: customerData.id, isScrapSubmitted: false },
+        where: { customerId: customerData.id, isScrapSubmitted: false, scrapStageId: { [Op.notIn]: [incompleteStageId.id,completedStageId.id ] }, },
         include: [{
             model: models.customer,
             as: 'customer'
         }]
     });
-
-    let incompleteStageId = await models.scrapStage.findOne({ where: { stageName: "incomplete" } });
-    let completedStageId = await models.scrapStage.findOne({ where: { stageName: "completed" } });
+    console.log(customerScrapStage);
+   
 
     
     if (!check.isEmpty(customerScrapStage)) {
 
-        if (customerScrapStage.scrapStageId == incompleteStageId.id) {
-            res.status(200).json({ message: 'customer details fetch successfully', customerData });
-        }
-        if(customerScrapStage.scrapStageId == completedStageId.id){
-            res.status(200).json({ message: 'customer details fetch successfully', customerData });
-        }
+        // if (customerScrapStage.scrapStageId == incompleteStageId.id ) {
+        //     return res.status(200).json({ message: 'customer details fetch successfully', customerData });
+        // }
+        // if(customerScrapStage.scrapStageId == completedStageId.id){
+        //     return res.status(200).json({ message: 'customer details fetch successfully', customerData });
+        // }
         
         const firstName = customerScrapStage.customer.firstName
         const lastName = customerScrapStage.customer.lastName

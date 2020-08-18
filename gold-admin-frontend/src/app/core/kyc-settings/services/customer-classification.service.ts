@@ -41,8 +41,8 @@ export class CustomerClassificationService {
       }))
   }
 
-  updateCceRating(data): Observable<any> {
-    return this.http.put(`/api/classification`, data).pipe(
+  opsTeamRating(data): Observable<any> {
+    return this.http.post(`/api/classification/ops-team`, data).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)

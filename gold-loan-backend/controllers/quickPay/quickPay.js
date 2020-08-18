@@ -78,6 +78,8 @@ exports.partPayment = async (req, res, next) => {
 
 exports.quickPayment = async (req, res, next) => {
 
+    let createdBy = req.userData.id
+
     let { paymentDetails, paymentType, masterLoanId, payableAmount } = req.body;
 
     let amount = await getCustomerInterestAmount(masterLoanId);
@@ -109,18 +111,25 @@ exports.quickPayment = async (req, res, next) => {
     // divinding in ratio
 
     let securedRatio = securedOutstandingAmount / totalOutstandingAmount * payableAmount;
-    // securedRatio = Number(securedRatio - securedPenalInterest)
+    securedRatio = Number(securedRatio - securedPenalInterest)
 
     if (amount.unSecured) {
         var unsecuredRatio = unsecuredOutstandingAmount / totalOutstandingAmount * payableAmount
-        // unsecuredRatio = unsecuredRatio - unsecuredPenalInterest
+        unsecuredRatio = unsecuredRatio - unsecuredPenalInterest
     }
 
-    // payableAmount = payableAmount + amount.unSecured.interest + amount.unSecured.penalInterest
-    // interest = interest + amount.unSecured.interest
-    // penalInterest = penalInterest + amount.unSecured.penalInterest
-    // unsecuredInterest = amount.unSecured.interest
-    // unsecuredPenalInterest = amount.unSecured.penalInterest
+    let quickPayData = await sequelize.transaction(async t => {
+        var transaction = await models.customerLoanTransaction.create({ 
+            paymentType: paymentDetails.paymentType, 
+            bankName:paymentDetails.bankName,
+            branchName:paymentDetails.branchName,
+            transactionAmont: payableAmount, 
+            createdBy:createdBy,
+            chequeNumber:paymentDetails.chequeNumber,
+            paymentReceivedDate:paymentDetails.depositDate,
+            transactionUniqueId:paymentDetails.transactionId,
+            masterLoanId })
+    })
 
     return res.status(200).json({ unsecuredRatio, securedRatio, paymentDetails })
 }

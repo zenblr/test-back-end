@@ -118,6 +118,8 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.hasMany(models.customerLoanHistory, { foreignKey: 'loanId', as: 'customerLoanHistory' });
 
         customerLoan.hasMany(models.customerPacketLocation, { foreignKey: 'loanId', as: 'customerPacketLocation' });
+
+        customerLoan.hasMany(models.packetTracking, { foreignKey: 'customerLoanId', as: 'packetTracking' });
         
     }
 

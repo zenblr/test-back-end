@@ -68,36 +68,14 @@ export class UnSecuredSchemeComponent implements OnInit {
     if (scheme && scheme.length > 0) {
       Array.prototype.push.apply(this.seletedScheme, scheme)
     }
-    let paymetFrequency = this.seletedScheme[0].schemeInterest.filter(res => { return this.details.paymentType == res.days })
-    this.controls.unsecuredSchemeInterest.patchValue(scheme[0].schemeInterest)
+    let paymetFrequency = this.seletedScheme[0].schemeInterest.filter(res => { 
+      return this.details.paymentType == res.days 
+    })
+    // this.controls.unsecuredSchemeInterest.patchValue(scheme[0].schemeInterest)
+    this.details.paymentType
     this.controls.unsecuredSchemeInterest.patchValue(paymetFrequency[0].interestRate)
 
-    // switch (this.details.paymentType) {
-    //   case "30":
-    //     if (scheme.length > 0)
-    //       this.controls.unsecuredSchemeInterest.patchValue(scheme[0].interestRateThirtyDaysMonthly)
-
-    //     this.paymentType = "Month"
-    //     this.colJoin = 1
-
-    //     break;
-    //   case "90":
-    //     if (scheme.length > 0)
-    //       this.controls.unsecuredSchemeInterest.patchValue(scheme[0].interestRateNinetyDaysMonthly)
-
-    //     this.paymentType = "Quarter"
-    //     this.colJoin = 3
-
-    //     break;
-    //   case "180":
-    //     if (scheme.length > 0)
-    //       this.controls.unsecuredSchemeInterest.patchValue(scheme[0].interestRateOneHundredEightyDaysMonthly)
-
-    //     this.paymentType = "Half Yearly"
-    //     this.colJoin = 6
-
-    //     break;
-    // }
+    
   }
 
   calculate() {
@@ -117,19 +95,7 @@ export class UnSecuredSchemeComponent implements OnInit {
         this.details.calculation = res.data.interestTable
       }
     )
-    return
-    let tempIndex = 0;
-    for (let index = 0; index < this.details.tenure; index++) {
-      if ((index + 1) % this.colJoin == 0) {
-        this.details.calculation[tempIndex].unsecuredInterestAmount = this.unSecuredInterestAmount
-        tempIndex += 1;
-
-      }
-      else if (index + 1 == Number(this.details.tenure)) {
-        this.details.calculation[tempIndex].unsecuredInterestAmount = ((this.unSecuredInterestAmount / this.colJoin) * (Number(this.details.tenure) % this.colJoin)).toFixed(2)
-        tempIndex += 1;
-      }
-    }
+  
   }
 
   onSubmit() {

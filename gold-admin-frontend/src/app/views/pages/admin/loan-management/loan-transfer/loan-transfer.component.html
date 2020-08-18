@@ -141,7 +141,8 @@
                                                         (change)="clearAppraiser();statusAppraiser()"
                                                         [class.isError]="approvalForm.controls.loanTransferStatusForAppraiser.touched && this.approvalForm.controls.loanTransferStatusForAppraiser.invalid"
                                                         formControlName="loanTransferStatusForAppraiser">
-                                                        <option value="">Select Status</option>
+                                                        <option value="" disabled selected>
+                                                            Select Status</option>
                                                         <option [value]="manager.value"
                                                             *ngFor="let manager of appraiserOrCCE">
                                                             {{manager.name | titlecase}}</option>
@@ -172,7 +173,7 @@
                                                         (change)="clearBM();statusBM()"
                                                         [class.isError]="approvalForm.controls.loanTransferStatusForBM.touched && this.approvalForm.controls.loanTransferStatusForBM.value =='pending'"
                                                         formControlName="loanTransferStatusForBM">
-                                                        <option value="pending">Select Status</option>
+                                                        <option value="pending" disabled selected>Select Status</option>
                                                         <option [value]="manager.value"
                                                             *ngFor="let manager of branchManager">
                                                             {{manager.name | titlecase}}</option>
@@ -223,7 +224,7 @@
                                                 <select name="" id="" class="form-control" formControlName="reason"
                                                     (change)="patchValue('reasonByAppraiser')"
                                                     [class.isError]="approvalForm.controls.reason.invalid && approvalForm.controls.reason.touched">
-                                                    <option value="">Select Reason</option>
+                                                    <option value="" selected disabled>Select Reason</option>
                                                     <option [value]="reason.description" *ngFor="let reason of reasons">
                                                         {{reason.description | titlecase}}</option>
                                                 </select>
@@ -264,7 +265,7 @@
                                                 <select name="" id="" class="form-control" formControlName="reason"
                                                     (change)="patchValue('reasonByBM')"
                                                     [class.isError]="approvalForm.controls.reason.invalid && approvalForm.controls.reason.touched">
-                                                    <option value="">Select Status</option>
+                                                    <option value="" selected disabled>Select Status</option>
                                                     <option [value]="reason.description" *ngFor="let reason of reasons">
                                                         {{reason.description | titlecase}}</option>
                                                 </select>

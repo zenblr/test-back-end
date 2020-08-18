@@ -112,6 +112,10 @@ export class LoanTransferComponent implements OnInit {
             })
           }
 
+          if (res.data.masterLoan.loanTransfer.reasonByAppraiser === null && res.data.masterLoan.loanTransfer.loanTransferCurrentStage == '3') {
+            this.approvalForm.patchValue({ loanTransferStatusForAppraiser: '' })
+          }
+
           this.ref.detectChanges()
           if (this.approvalForm.controls.loanTransferStatusForAppraiser.value == 'approved') {
             this.disabled = [false, false, false, true]
@@ -161,7 +165,7 @@ export class LoanTransferComponent implements OnInit {
   initForms() {
     this.approvalForm = this.fb.group({
       loanTransferStatusForBM: ['pending', Validators.required],
-      loanTransferStatusForAppraiser: ['pending', Validators.required],
+      loanTransferStatusForAppraiser: ['', Validators.required],
       reasonByBM: ['', Validators.required],
       reasonByAppraiser: ['', Validators.required],
       reason: ['', Validators.required]
@@ -215,7 +219,7 @@ export class LoanTransferComponent implements OnInit {
       this.loanTransferService.appraiserApproval(this.approvalForm.value, this.masterAndLoanIds).subscribe(res => {
         this.router.navigate(['/admin/loan-management/transfer-loan-list'])
       })
-    } else if(this.loanTransferStage == '4'){
+    } else if (this.loanTransferStage == '4') {
       this.loanTransferService.approval(this.approvalForm.value, this.masterAndLoanIds).subscribe(res => {
         if (res) {
           if (this.approvalForm.controls.loanTransferStatusForBM.value == 'approved') {
@@ -290,7 +294,7 @@ export class LoanTransferComponent implements OnInit {
   }
 
   resetAppraiser() {
-    this.approvalForm.controls.reason.reset()
+    this.approvalForm.controls.reason.patchValue('')
     this.approvalForm.controls.reasonByAppraiser.reset()
   }
 
@@ -313,7 +317,7 @@ export class LoanTransferComponent implements OnInit {
   }
 
   resetBM() {
-    this.approvalForm.controls.reason.reset()
+    this.approvalForm.controls.reason.patchValue('')
     this.approvalForm.controls.reasonByBM.reset()
   }
 

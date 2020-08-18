@@ -81,8 +81,8 @@
                             *ngxPermissionsOnly="['appliedKycEdit','customerClassificationEdit']">
                             <div class="kt-pointer" (click)="editKyc(role)" class="kt-pointer">
                                 <span
-                                    *ngIf="(userType == 6 && role.customerKycClassification?.kycStatusFromCce == 'pending') 
-                                    || (userType == 8 && role.customerKycClassification?.kycStatusFromCce == 'approved' && 
+                                    *ngIf="(permission.cceRating  && role.customerKycClassification?.kycStatusFromCce == 'pending') 
+                                    || (permission.opsKycRating && role.customerKycClassification?.kycStatusFromCce == 'approved' && 
                                     (role.customerKycClassification?.kycStatusFromOperationalTeam == 'incomplete' || role.customerKycClassification?.kycStatusFromOperationalTeam == 'pending'))">
                                     <!-- <img src="../../../../assets/media/icons/action.svg"> -->
                                     <strong>Action ></strong>

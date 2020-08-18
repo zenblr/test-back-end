@@ -61,7 +61,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	cities = [];
 	approvalStatus: any = [];
 	permissions: any;
-	scrapStatusList: any;
+	scrapStatusList = [];
 
 	constructor(
 		private fb: FormBuilder,
@@ -418,9 +418,18 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	scrapStatus() {
 		this.sharedService.getScrapStatus().subscribe((res) => {
 			this.scrapStatusList = res.scrapStatus;
+			if (this.scrapStatusList.length) {
+				for (const status of this.scrapStatusList) {
+					if (status.id == 9) {
+						status.stageName = 'processing charges paid';
+					}
+					if (status.id == 10) {
+						status.stageName = 'customer disagreed';
+					}
+				}
+			}
 		});
 	}
-
 
 	getCities(event) {
 		if (event) {
