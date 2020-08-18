@@ -919,6 +919,9 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/broker/orders')) {
 			this.ordersService.applyFilter.next(data)
 		}
+		if (this.path == "packet") {
+			this.packetService.applyFilter.next(data)
+		}
 	}
 
 	goBack() {

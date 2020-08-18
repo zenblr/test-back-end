@@ -29,7 +29,14 @@ export class PacketsListComponent implements OnInit {
   // Subscriptions
   private subscriptions: Subscription[] = [];
   private unsubscribeSearch$ = new Subject();
+  private filter$ = new Subject();
   searchValue = '';
+  queryParamsData = {
+    from: 1,
+    to: 25,
+    search: '',
+    packetAssigned:''
+  }
 
   constructor(
     public dialog: MatDialog,
@@ -46,6 +53,14 @@ export class PacketsListComponent implements OnInit {
     this.packetsService.buttonValue$.pipe(
       map(res => { if (res) this.assignAppraiser() }),
       takeUntil(this.destroy$)).subscribe();
+
+    this.packetsService.applyFilter$
+    .pipe(takeUntil(this.filter$))
+    .subscribe((res) => {
+      if (Object.entries(res).length) {
+        this.applyFilter(res);
+      }
+    });
   }
 
   ngOnInit() {
@@ -65,6 +80,7 @@ export class PacketsListComponent implements OnInit {
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;
+        this.queryParamsData.search = res;
         this.paginator.pageIndex = 0;
         this.loadPackets();
       });
@@ -82,7 +98,7 @@ export class PacketsListComponent implements OnInit {
     // First load
     // this.loadLeadsPage();
 
-    this.dataSource.loadpackets(this.searchValue, 1, 25);
+    this.dataSource.loadpackets(this.queryParamsData);
 
   }
 
@@ -96,16 +112,24 @@ export class PacketsListComponent implements OnInit {
     this.unsubscribeSearch$.complete();
     this.destroy$.next();
     this.destroy$.complete();
+    this.filter$.next();
+    this.filter$.complete();
+    this.packetsService.applyFilter.next({});
   }
 
 
   loadPackets() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
-    let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
-    let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
+     this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
+    this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadpackets(this.searchValue, from, to);
+    this.dataSource.loadpackets(this.queryParamsData);
+  }
+  applyFilter(data) {
+     //console.log(data.data.scheme);
+    this.queryParamsData.packetAssigned = data.data.scheme;
+    this.dataSource.loadpackets(this.queryParamsData);
   }
 
   addPackets() {

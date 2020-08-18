@@ -343,11 +343,11 @@ exports.appliedKyc = async (req, res, next) => {
             }
         );
     }
-    if (req.query.cceRating) {
+    if (req.query.cceStatus) {
         query.cceRating = sequelize.where(
             sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_cce"), "varchar"),
             {
-                [Op.iLike]: req.query.cceRating + "%",
+                [Op.iLike]: req.query.cceStatus + "%",
             }
         );
     }
