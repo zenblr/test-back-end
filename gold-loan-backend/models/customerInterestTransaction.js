@@ -32,11 +32,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         credit: {
             type: DataTypes.DECIMAL(10, 2),
-            field: 'credit'
+            field: 'credit',
+            defaultValue: 0
         },
         debit: {
             type: DataTypes.DECIMAL(10, 2),
-            field: 'credit'
+            field: 'debit',
+            defaultValue: 0
         },
         paymentDate: {
             type: DataTypes.DATE,
@@ -45,6 +47,11 @@ module.exports = (sequelize, DataTypes) => {
         description: {
             type: DataTypes.STRING,
             field: 'description'
+        },
+        closingBalance:{
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'closing_balance',
+            defaultValue: 0
         }
     },
         {

@@ -90,7 +90,10 @@ export class DisburseComponent implements OnInit {
       transactionId: [],
       fullSecuredAmount: [],
       fullUnsecuredAmount: [],
-      processingCharge: []
+      processingCharge: [],
+      isUnsecuredSchemeApplied:[],
+      securedLoanUniqueId:[],
+      unsecuredLoanUniqueId:[]
     })
     this.disableSchemeRelatedField()
   }
