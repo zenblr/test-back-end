@@ -132,6 +132,9 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
           this.splicedPackets.push(ele)
           this.pushPackets()
         });
+        setTimeout(() => {
+          this.packetInfo.reset();
+        });
       }
     }
 

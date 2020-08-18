@@ -562,6 +562,12 @@ mat-header-row {
 .ng-select.ng-select-opened > .ng-select-container {
 	background: #f2f3f7;
 }
+
+.ng-select.ng-select-disabled .ng-select-container .ng-value-container .ng-value {
+	color: #454d67 !important;
+	font-weight: 400 !important;
+}
+
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
 	line-height: 0;
 	min-width: 0;
