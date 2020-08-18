@@ -12,6 +12,7 @@ const { getSchemeDetails } = require('../../utils/loanFunction')
 var pdf = require("pdf-creator-node"); // PDF CREATOR PACKAGE
 var fs = require('fs');
 let { sendMessageLoanIdGeneration } = require('../../utils/SMS')
+const _ = require('lodash');
 
 const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT, LOAN_APPLY_FROM_APPRAISER_APP, LOAN_EDIT_FROM_APPRAISER_APP } = require('../../utils/customerLoanHistory');
 
@@ -46,7 +47,14 @@ exports.loanRequest = async (req, res, next) => {
 
             // await models.customerLoanOrnamentsDetail.destroy({ where: { masterLoanId: masterLoanId }, transaction: t });
             // let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { transaction: t });
+            let checkOrnaments = await models.customerLoanOrnamentsDetail.findAll({ where: { masterLoanId: masterLoanId } })
 
+            let newOrnaments = loanOrnaments.map((single) => { return single.id })
+            let oldOrnaments = checkOrnaments.map((single) => { return single.id })
+            let deleteOrnaments = await _.difference(oldOrnaments, newOrnaments);
+
+            await models.customerLoanOrnamentsDetail.destroy({ where: { id: { [Op.in]: deleteOrnaments } }, transaction: t });
+            
             let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate(loanOrnaments, { updateOnDuplicate: ["ornamentTypeId", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest", "karat", "ltvRange", "ornamentImage", "ltvPercent", "ltvAmount", "currentLtvAmount", "ornamentFullAmount"] }, { transaction: t })
 
             // for (let singleOrna of loanOrnaments) {

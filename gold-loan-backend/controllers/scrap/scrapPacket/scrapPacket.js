@@ -138,30 +138,6 @@ exports.availableScrapPacket = async (req, res, next) => {
     }
 }
 
-// FUNCTION TO ASSIGN PACKET
-// exports.assignPacket = async (req, res, next) => {
-//     let id = req.params.id;
-//     let { customerId, loanId, ornamentTypeId } = req.body;
-//     let modifiedBy = req.userData.id;
-
-//     let packet = await models.packet.assignPacket(customerId, loanId, modifiedBy, id);
-
-//     let data = [];
-//     for (let ornament of ornamentTypeId) {
-//         let single = {}
-//         single["packetId"] = id;
-//         single["ornamentTypeId"] = ornament;
-//         data.push(single);
-//     }
-//     await models.packetOrnament.bulkCreate(data);
-
-//     if (packet[0] == 0) {
-//         return res.status(404).json({ message: "not assigned packet" });
-//     }
-//     return res.status(200).json({ message: "packet assigned successfully" });
-// };
-
-
 // FUNCTION TO UPDATE PACKET
 exports.changePacket = async (req, res, next) => {
     let id = req.params.id;

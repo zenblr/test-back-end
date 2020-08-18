@@ -3,7 +3,7 @@
  * /jewellery-release/{masterLoanId}:
  *   get:
  *     tags:
- *       - Jewellery Release
+ *       - Part ornament release
  *     name: Read ornament details
  *     summary: To read ornaments details by masterLoanId
  *     parameters:
@@ -24,7 +24,7 @@
  * /jewellery-release:
  *   post:
  *     tags:
- *       - Jewellery Release
+ *       - Part ornament release
  *     name: To get release amount and details
  *     summary: To get release amount
  *     security:
@@ -54,7 +54,7 @@
  * /jewellery-release/part-release:
  *   post:
  *     tags:
- *       - Jewellery Release
+ *       - Part ornament release
  *     name: Payment Confirmation of part release
  *     summary: Payment Confirmation of part release
  *     security:
@@ -116,7 +116,7 @@
  *          description: failed
  *   get:
  *     tags:
- *       - Jewellery Release
+ *       - Part ornament release
  *     name: read part release list
  *     summary: To read part release list
  *     security:
@@ -144,7 +144,7 @@
  * /jewellery-release/amount-status:
  *   put:
  *     tags:
- *       - Jewellery Release
+ *       - Part ornament release
  *     name: Part release update amount status
  *     summary: Part release update amount status
  *     security:
@@ -169,7 +169,7 @@
  * /jewellery-release/customer/{customerId}:
  *   get:
  *     tags:
- *       - Jewellery Release
+ *       - Part ornament release
  *     name: Read customer details
  *     summary: To read customer details
  *     parameters:
@@ -190,7 +190,7 @@
  * /jewellery-release/assign-appraiser:
  *   post:
  *     tags:
- *       - Jewellery Release
+ *       - Part ornament release
  *     name: Assign appraiser
  *     summary: Assign appraiser for part release process
  *     security:
@@ -223,7 +223,7 @@
  * /jewellery-release/update-appraiser:
  *   put:
  *     tags:
- *       - Jewellery Release
+ *       - Part ornament release
  *     name: Update appraiser
  *     summary: Update appraiser for part release process
  *     security:
@@ -256,7 +256,7 @@
  * /jewellery-release/part-release-approved_list:
  *   get:
  *     tags:
- *       - Jewellery Release
+ *       - Part ornament release
  *     name: read part release approved list
  *     summary: To read part release approved list
  *     security:
@@ -284,7 +284,7 @@
  * /jewellery-release/appraiser-status:
  *   put:
  *     tags:
- *       - Jewellery Release
+ *       - Part ornament release
  *     name: Part release update appraiser status
  *     summary: Part release update appraiser status
  *     security:
@@ -311,7 +311,7 @@
  * /jewellery-release/document:
  *   post:
  *     tags:
- *       - Jewellery Release
+ *       - Part ornament release
  *     name: Part release upload document
  *     summary: Part release upload document
  *     security:
@@ -338,7 +338,7 @@
  * /jewellery-release/apply-loan/{customerUniqueId}:
  *   get:
  *     tags:
- *       - Jewellery Release
+ *       - Part ornament release
  *     summary: To read customer loan details by customer unique Id
  *     parameters:
  *     - name: "customerUniqueId"
@@ -361,6 +361,69 @@
  *         description: This customer Did not assign in to anyone/This customer is not assign to you
  *       404:
  *         description: no customer details found
+ * /jewellery-release/full-release:
+ *   post:
+ *     tags:
+ *       - Full ornament release
+ *     name: Payment Confirmation of part release
+ *     summary: Payment Confirmation of part release
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             paymentType:
+ *               type: string
+ *             paidAmount:
+ *               type: integer
+ *             bankName:
+ *               type: string
+ *             branchName:
+ *               type: string
+ *             chequeNumber:
+ *               type: string
+ *             depositDate:
+ *               type: string
+ *             transactionId:
+ *               type: string
+ *             masterLoanId:
+ *               type: integer
+ *             releaseAmount:
+ *               type: integer
+ *             interestAmount:
+ *               type: integer
+ *             penalInterest:
+ *               type: integer
+ *             payableAmount:
+ *               type: integer
+ *             releaseGrossWeight:
+ *               type: integer
+ *             releaseDeductionWeight:
+ *               type: integer
+ *             releaseNetWeight:
+ *               type: integer
+ *             remainingGrossWeight:
+ *               type: integer
+ *             remainingDeductionWeight:
+ *               type: integer
+ *             remainingNetWeight:
+ *               type: integer
+ *             currentLtv:
+ *               type: integer
+ *             ornamentId:
+ *               type: array
+ *               items:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *          description: release amount and details
+ *       400:
+ *          description: failed
  */
 
 

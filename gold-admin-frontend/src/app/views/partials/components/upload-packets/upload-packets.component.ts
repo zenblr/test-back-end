@@ -143,6 +143,9 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
           this.splicedPackets.push(ele)
           this.pushPackets()
         });
+        setTimeout(() => {
+          this.packetInfo.reset();
+        });
       }
     }
 
@@ -243,7 +246,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     this.packetsDetails.push(this.splicedPackets[packetIndex])
     this.splicedPackets.splice(packetIndex, 1)
     this.packets.controls.splice(idx, 1)
-    
+
     if (!this.scrapIds) {
       let temp = this.ornamentTypeData;
       this.ornamentTypeData = []

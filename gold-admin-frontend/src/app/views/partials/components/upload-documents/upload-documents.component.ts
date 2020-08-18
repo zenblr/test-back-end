@@ -306,7 +306,6 @@ export class UploadDocumentsComponent implements OnInit {
       saleInvoiceImageName: [],
     })
     this.validation()
-    this.documentsForm.valueChanges.subscribe(val => console.log(val))
   }
 
   get controls() {

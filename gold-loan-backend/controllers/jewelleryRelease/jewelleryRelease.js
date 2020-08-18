@@ -5,6 +5,7 @@ const Op = Sequelize.Op;
 const { paginationWithFromTo } = require("../../utils/pagination");
 const check = require("../../lib/checkLib");
 const action = require('../../utils/partReleaseHistory');
+const actionFullRelease = require('../../utils/fullReleaseHistory');
 const loanFunction = require('../../utils/loanFunction');
 const { getCustomerInterestAmount, getGlobalSetting, getLoanDetails } = require('../../utils/loanFunction');
 
@@ -690,7 +691,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
             for (const ornament of ornamentId) {
                 await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t });
             }
-            await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: action.FULL_RELEASE_PAYMENT_CASH, createdBy, modifiedBy }, { transaction: t });
+            await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_PAYMENT_CASH, createdBy, modifiedBy }, { transaction: t });
             return addFullRelease
         });
         return res.status(200).json({ message: "success", fullRelease });
@@ -700,7 +701,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
             for (const ornament of ornamentId) {
                 await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
             }
-            await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: action.FULL_RELEASE_PAYMENT_CHEQUE, createdBy, modifiedBy }, { transaction: t });
+            await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_PAYMENT_CHEQUE, createdBy, modifiedBy }, { transaction: t });
             return addFullRelease
         });
         return res.status(200).json({ message: "success", fullRelease });
@@ -710,7 +711,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
             for (const ornament of ornamentId) {
                 await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
             }
-            await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: action.FULL_RELEASE_PAYMENT_BANK, createdBy, modifiedBy }, { transaction: t });
+            await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_PAYMENT_BANK, createdBy, modifiedBy }, { transaction: t });
             return addFullRelease
         });
         return res.status(200).json({ message: "success", fullRelease });

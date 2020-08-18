@@ -937,7 +937,10 @@ exports.appliedScrapDetails = async (req, res, next) => {
     });
 
     if (appliedScrapDetails.length === 0) {
-        return res.status(200).json([]);
+        return res.status(200).json({
+            appliedScrapDetails,
+            count: count.length
+        });
     } else {
         return res.status(200).json({ message: 'Applied scrap details fetch successfully', appliedScrapDetails, count: count.length });
     }
@@ -1006,7 +1009,7 @@ exports.getScrapDetails = async (req, res, next) => {
         include: associateModel,
     });
     if (scrapDetails.length === 0) {
-        return res.status(200).json([]);
+        return res.status(200).json({data: scrapDetails, count: count.length});
     } else {
         return res.status(200).json({ message: 'Scrap details fetch successfully', data: scrapDetails, count: count.length });
     }
