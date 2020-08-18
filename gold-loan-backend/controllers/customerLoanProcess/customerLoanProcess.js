@@ -341,7 +341,8 @@ exports.checkForLoanType = async (req, res, next) => {
 
             processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
-            return res.status(200).json({ data: { unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme, isUnsecuredSchemeApplied: true } })
+            let newUnsecuredScheme = await selectScheme(unsecured, securedScheme)
+            return res.status(200).json({ data: { newUnsecuredScheme, unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme, isUnsecuredSchemeApplied: true } })
 
         } else {
             return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
