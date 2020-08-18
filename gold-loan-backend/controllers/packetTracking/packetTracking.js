@@ -76,7 +76,7 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
     return res.status(200).json({ message: 'packet details fetched successfully', data: packetDetails, count: count.length });
 }
 
-//FUNCTION TO GET DETAILS OF PACKET OF SINGLE CUSTOMER 
+//FUNCTION TO GET DETAILS OF PACKET OF SINGLE CUSTOMER FOR APP ALSO
 exports.viewPackets = async (req, res) => {
 
     let { masterLoanId } = req.query

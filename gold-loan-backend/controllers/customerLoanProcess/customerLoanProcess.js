@@ -331,7 +331,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
         if ((unsecuredSchemeApplied && (securedScheme.isSplitAtBeginning &&
             Math.round(totalEligibleAmt) >= Math.round(securedLoanAmount + unsecuredAmount)) ||
-            Math.round(totalEligibleAmt) >= Math.round(securedLoanAmount + unsecuredAmount) ) || 
+            Math.round(totalEligibleAmt) >= Math.round(securedLoanAmount + unsecuredAmount)) ||
             isLoanTransfer) {
 
             if (isLoanTransfer) {
@@ -869,7 +869,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
     let ornamentType = [];
     if (ornament.loanOrnamentsDetail.length != 0) {
         for (let ornamentsDetail of ornament.loanOrnamentsDetail) {
-            ornamentType.push({ ornamentType: ornamentsDetail.ornamentType, id: ornamentsDetail.id })
+            ornamentType.push({ ornamentType: ornamentsDetail.ornamentType.name, id: ornamentsDetail.id })
         }
     }
     return res.status(200).json({ message: 'success', ornamentType })
@@ -1291,16 +1291,19 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
         }]
     })
     let securedLoanAmount;
-    let unsecuredLoanAmount;
+    let unsecuredLoanAmount = 0;
     let securedLoanId;
     let unsecuredLoanId;
     let securedSchemeName;
     let unsecuredSchemeName;
+    let fullSecuredAmount = Number(checkLoan.securedLoanAmount)
+    let fullUnsecuredAmount = 0
     if (checkLoan.isUnsecuredSchemeApplied == true) {
         securedLoanId = checkLoan.customerLoan[0].id
         securedSchemeName = checkLoan.customerLoan[0].scheme.schemeName
         securedLoanAmount = Number(checkLoan.securedLoanAmount)
 
+        fullUnsecuredAmount = Number(checkLoan.unsecuredLoanAmount)
         unsecuredLoanId = checkLoan.customerLoan[1].id
         unsecuredSchemeName = checkLoan.customerLoan[1].scheme.schemeName
         unsecuredLoanAmount = Number(checkLoan.unsecuredLoanAmount) - Number(checkLoan.processingCharge)
@@ -1315,14 +1318,17 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
         branchBankDetail: brokerBankDetails,
         paymentType: userBankDetails.paymentType,
         isUnsecuredSchemeApplied: checkLoan.isUnsecuredSchemeApplied,
-        finalLoanAmount: securedLoanAmount + unsecuredLoanAmount,
+        finalLoanAmount: Number(fullSecuredAmount) + Number(fullUnsecuredAmount),
         securedLoanAmount,
         securedLoanId,
         securedSchemeName,
         unsecuredLoanAmount,
         unsecuredLoanId,
         unsecuredSchemeName,
-        masterLoanId
+        masterLoanId,
+        fullSecuredAmount,
+        fullUnsecuredAmount,
+        processingCharge: checkLoan.processingCharge
     }
     return res.status(200).json({ message: 'success', data: data })
 
@@ -1367,7 +1373,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
     let newStartDate = date
     let newEndDate = securedInterest[securedInterest.length - 1].emiDueDate
 
-
+    // return res.json({ message: req.body })
 
     if (loanDetails.loanStageId == matchStageId.id) {
 
