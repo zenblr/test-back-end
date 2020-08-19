@@ -37,7 +37,7 @@ route.put('/update-appraiser', checkAuth,checkRolePermission,assignAppriserValid
 
 route.post('/document', checkAuth,checkRolePermission,documentValidation,validatiError, wrapper(uploadDocument)); 
 
-route.post('/full-release/document', checkAuth,documentValidationFullRelease,validatiError, wrapper(uploadDocumentFullRelease)); 
+route.post('/full-release/document', checkAuth,checkRolePermission,documentValidationFullRelease,validatiError, wrapper(uploadDocumentFullRelease)); 
 
 route.post('/full-release', checkAuth,checkRolePermission,fullReleasePayment,validatiError, wrapper(ornamentsFullRelease)); 
 
