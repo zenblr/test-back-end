@@ -207,9 +207,9 @@
 						</div> -->
 					</div>
 
-					<div class="row kt-margin-t-20 kt-margin-b-20" *ngIf="controls.panType.value" >
+					<div class="row kt-margin-t-20 kt-margin-b-20" *ngIf="controls.panType.value">
 						<div class="col offset-4">
-							<div class="img-container" *ngIf="!controls.panImg.value">
+							<div class="img-container" *ngIf="controls.panImg.value">
 								<img *ngIf="!controls.panImg.value" class=""
 									src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
 								<img class="fetched-image" *ngIf="controls.panImg.value" [src]="controls.panImg.value"

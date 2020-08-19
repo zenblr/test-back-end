@@ -1,7 +1,8 @@
 const express = require('express');
-const { partReleaseApplyLoan,uploadDocument,updateAppraiser,updatePartReleaseStatus,partReleaseApprovedList,partReleaseAssignAppraiser,ornamentsDetails, ornamentsAmountDetails,ornamentsPartRelease,getPartReleaseList,updateAmountStatus,getCustomerDetails } = require('../controllers/jewelleryRelease/jewelleryRelease');
+const { partReleaseApplyLoan,uploadDocument,updateAppraiser,updatePartReleaseStatus,partReleaseApprovedList,partReleaseAssignAppraiser,ornamentsDetails, ornamentsAmountDetails,ornamentsPartRelease,getPartReleaseList,updateAmountStatus,getCustomerDetails,ornamentsFullRelease } = require('../controllers/jewelleryRelease/jewelleryRelease');
 const route = express.Router();
-const { partReleaseValidation,partReleasePayment,amountStatusValidation,documentValidation, assignAppriserValidation } = require('../validations/jewelleryRelease');
+const { partReleaseValidation,partReleasePayment,amountStatusValidation,documentValidation, assignAppriserValidation,documentValidationFullRelease,partReleaseValidationFullRelease,assignAppriserValidationFullRelease,
+amountStatusValidationfullRelease,fullReleasePayment } = require('../validations/jewelleryRelease');
 const validatiError = require('../middleware/validationError');
 const { wrapper } = require('../utils/errorWrap');
 const checkRolePermission = require('../middleware/checkRolesPermissions');
@@ -32,5 +33,6 @@ route.put('/update-appraiser', checkAuth,checkRolePermission,assignAppriserValid
 
 route.post('/document', checkAuth,checkRolePermission,documentValidation,validatiError, wrapper(uploadDocument)); 
 
+route.post('/full-release', checkAuth,fullReleasePayment,validatiError, wrapper(ornamentsFullRelease)); 
 
 module.exports = route;

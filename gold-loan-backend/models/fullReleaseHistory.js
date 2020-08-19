@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         },
     }, {
         freezeTableName: true,
-        tableName: 'loan_part_release_history',
+        tableName: 'loan_full_release_history',
     });
 
     FullReleaseHistory.associate = function(models) {

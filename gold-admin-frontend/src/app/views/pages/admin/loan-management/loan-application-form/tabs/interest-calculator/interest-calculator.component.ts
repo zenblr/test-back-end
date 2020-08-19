@@ -338,7 +338,7 @@ export class InterestCalculatorComponent implements OnInit {
           this.controls.unsecuredLoanAmount.patchValue(res.data.unsecuredAmount)
           this.selectedUnsecuredscheme = res.data.unsecuredSchemeApplied
           this.controls.securedLoanAmount.patchValue(res.data.securedLoanAmount)
-          this.unSecuredScheme = res.data.unsecuredScheme
+          this.unSecuredScheme = res.data.newUnsecuredScheme
         } else {
           this.controls.securedLoanAmount.patchValue(Number(amt))
         }
