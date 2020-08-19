@@ -43,9 +43,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATEONLY,
             field: 'emi_received_date'
         },
-        panelInterest: {
+        penalInterest: {
             type: DataTypes.DECIMAL(10,2),
-            field: 'panel_interest',
+            field: 'penal_interest',
             defaultValue: 0
         },
         PenalAccrual:{

@@ -6,24 +6,27 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const _ = require('lodash');
 const moment = require('moment')
-const { dailyIntrestCalculation, cronForDailyPenalInterest } = require('../../utils/interestCron');
-const { getCustomerInterestAmount, intrestCalculationForSelectedLoan } = require('../../utils/loanFunction');
+const { dailyIntrestCalculation,cronForDailyPenalInterest } = require('../../utils/interestCron');
+const { getCustomerInterestAmount,intrestCalculationForSelectedLoan } = require('../../utils/loanFunction');
 
 
 // add internal branch
 
 exports.interestCalculation = async (req, res) => {
+
+
     let data;
     let { date } = req.body;
     if (date) {
         data = await dailyIntrestCalculation(date);
-        await cronForDailyPenalInterest(date)
+        await  cronForDailyPenalInterest(date)
     } else {
         date = moment();
         data = await dailyIntrestCalculation(date);
-        await cronForDailyPenalInterest(date)
+        await  cronForDailyPenalInterest(date)
 
     }
+
     return res.status(200).json(data);
 }
 
@@ -31,10 +34,14 @@ exports.interestCalculationOneLoan = async (req, res) => {
     let data;
     let { date, masterLoanId } = req.body;
     if (date) {
-        data = await intrestCalculationForSelectedLoan(date, masterLoanId);
+        data = await intrestCalculationForSelectedLoan(date,masterLoanId);
+        await  cronForDailyPenalInterest(date)
+
     } else {
         date = moment();
-        data = await intrestCalculationForSelectedLoan(date, masterLoanId);
+        data = await intrestCalculationForSelectedLoan(date,masterLoanId);
+        await  cronForDailyPenalInterest(date)
+
     }
     return res.status(200).json(data);
 }
@@ -62,7 +69,7 @@ exports.getInterestTableInExcel = async (req, res) => {
         interest["interestAccrual"] = data.interestAccrual;
         interest["outstandingInterest"] = data.outstandingInterest;
         interest["emiReceivedDate"] = data.emiReceivedDate;
-        interest["panelInterest"] = data.panelInterest;
+        interest["penalInterest"] = data.penalInterest;
         interest["PenalAccrual"] = data.PenalAccrual;
         interest["penalOutstanding"] = data.penalOutstanding;
         interest["penalPaid"] = data.penalPaid;
