@@ -78,7 +78,7 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <div [ngStyle]="{'display': 'inherit'}"
-                            *ngxPermissionsOnly="['appliedKycEdit','customerClassificationEdit']">
+                            *ngxPermissionsOnly="['appliedKycEdit', 'cceKycRatig', 'opsKycRating']">
                             <div class="kt-pointer" (click)="editKyc(role)" class="kt-pointer">
                                 <span
                                     *ngIf="(permission.cceRating  && role.customerKycClassification?.kycStatusFromCce == 'pending') 
