@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(10,2),
             field: 'penal_interest',
         },
+        currentOutstandingAmount:{
+            type: DataTypes.DECIMAL(10,2),
+            field: 'current_outstanding_amount',
+        },
         depositDate:{
             type: DataTypes.DATE,
             field: 'deposit_date',
@@ -61,9 +65,9 @@ module.exports = (sequelize, DataTypes) => {
             values: ['pending', 'released'],
             defaultValue: 'pending'
         },
-        appraiserReason:{
+        releaserReason:{
             type: DataTypes.TEXT,
-            field: 'appraiser_reason',
+            field: 'releaser_reason',
         },
         documents:{
             type: DataTypes.ARRAY(DataTypes.TEXT),
@@ -109,9 +113,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'modified_by'
         },
-        isAppraiserAssigned:{
+        isReleaserAssigned:{
             type: DataTypes.BOOLEAN,
-            field: 'is_appraiser_assigned',
+            field: 'is_releaser_assigned',
             defaultValue: false
         },
         isActive:{
@@ -139,6 +143,9 @@ module.exports = (sequelize, DataTypes) => {
                if(values.masterLoan){
                var resOrna = []
                if (values.masterLoan.loanOrnamentsDetail) {
+                if (values.masterLoan.loanOrnamentsDetail[0].currentLtvAmount){
+                    values.previousLtv = values.masterLoan.loanOrnamentsDetail[0].currentLtvAmount;
+                }
                    for (let i = 0; i < values.masterLoan.loanOrnamentsDetail.length; i++) {
                        if (values.masterLoan.loanOrnamentsDetail[i].weightMachineZeroWeight) {
        
