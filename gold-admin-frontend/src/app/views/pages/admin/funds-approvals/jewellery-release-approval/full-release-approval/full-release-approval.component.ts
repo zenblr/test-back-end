@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { AssignAppraiserComponent } from '../../../user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
 import { UpdateStatusComponent } from '../../update-status/update-status.component';
+import { OrnamentsComponent } from '../../../../../partials/components/ornaments/ornaments.component';
 
 @Component({
   selector: 'kt-full-release-approval',
@@ -18,7 +19,7 @@ import { UpdateStatusComponent } from '../../update-status/update-status.compone
 export class FullReleaseApprovalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'releaseDate', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'principalOutstandingAmountLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'updateStatus', 'assignAppraiser'];
+  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'principalOutstandingAmountLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'updateStatus'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -57,7 +58,7 @@ export class FullReleaseApprovalComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // this.dataSource.getFullReleaseList(1, 25, this.searchValue);
+    this.dataSource.getFullReleaseList(1, 25, this.searchValue);
   }
 
   ngOnDestroy() {
@@ -78,8 +79,21 @@ export class FullReleaseApprovalComponent implements OnInit {
     this.dataSource.getFullReleaseList(from, to, this.searchValue);
   }
 
+  // assign(item) {
+  //   const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', customer: item.customer, id: item.customerId }, width: '500px' });
+  //   dialogRef.afterClosed().subscribe(res => {
+  //     if (res) {
+  //       this.loadPage();
+  //     }
+  //   });
+  // }
+
+  // updateAppraiser(item) {
+
+  // }
+
   assign(item) {
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', customer: item.customer, id: item.customerId }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', customer: item.masterLoan.customer, id: item.masterLoan.customerId, partReleaseId: item.id }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
@@ -88,16 +102,35 @@ export class FullReleaseApprovalComponent implements OnInit {
   }
 
   updateAppraiser(item) {
-
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit', appraiser: item.appraiserData, customer: item.masterLoan.customer, partReleaseId: item.id }, width: '500px' });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPage();
+      }
+    });
   }
 
   updateStatus(item) {
     const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'edit', value: item }, width: 'auto' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        // this.loadPage();
+        this.loadPage();
       }
     });
+  }
+
+  ornamentsDetails(item) {
+
+    const packetArr = item.map(e => ({ ...e, packetId: e.packets[0].packetUniqueId }))
+
+    this.dialog.open(OrnamentsComponent, {
+      data: {
+        modal: true,
+        modalData: packetArr,
+        packetView: false
+      },
+      width: '90%'
+    })
   }
 
 }
