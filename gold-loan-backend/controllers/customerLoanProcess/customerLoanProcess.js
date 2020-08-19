@@ -344,6 +344,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
                 if (isLoanTransfer) {
                     if (Number(loanAmount) > totalEligibleAmt) {
+                        securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
                         unsecuredAmount = Number(loanAmount - securedLoanAmount)
                     }
                 } else if (Math.round(loanAmount) >= Math.round(securedLoanAmount + unsecuredAmount)) {
@@ -364,6 +365,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
                 if (isLoanTransfer) {
                     if (Number(loanAmount) > totalEligibleAmt) {
+                        securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
                         unsecuredAmount = Number(loanAmount - securedLoanAmount)
                     }
                 }
