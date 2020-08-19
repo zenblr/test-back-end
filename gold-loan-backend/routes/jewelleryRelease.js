@@ -1,5 +1,5 @@
 const express = require('express');
-const { partReleaseApplyLoan,uploadDocument,updateAppraiser,updatePartReleaseStatus,partReleaseApprovedList,partReleaseAssignAppraiser,ornamentsDetails, ornamentsAmountDetails,ornamentsPartRelease,getPartReleaseList,updateAmountStatus,getCustomerDetails,ornamentsFullRelease } = require('../controllers/jewelleryRelease/jewelleryRelease');
+const { partReleaseApplyLoan,getFullReleaseList,uploadDocument,updateAppraiser,updatePartReleaseStatus,partReleaseApprovedList,partReleaseAssignAppraiser,ornamentsDetails, ornamentsAmountDetails,ornamentsPartRelease,getPartReleaseList,updateAmountStatus,getCustomerDetails,ornamentsFullRelease } = require('../controllers/jewelleryRelease/jewelleryRelease');
 const route = express.Router();
 const { partReleaseValidation,partReleasePayment,amountStatusValidation,documentValidation, assignAppriserValidation,documentValidationFullRelease,partReleaseValidationFullRelease,assignAppriserValidationFullRelease,
 amountStatusValidationfullRelease,fullReleasePayment } = require('../validations/jewelleryRelease');
@@ -10,6 +10,8 @@ const checkRolePermission = require('../middleware/checkRolesPermissions');
 const checkAuth = require('../middleware/checkAuth');
 
 route.get('/part-release',checkAuth,checkRolePermission,wrapper(getPartReleaseList));
+
+route.get('/full-release',checkAuth,wrapper(getFullReleaseList));
 
 route.get('/part-release-approved_list',checkAuth,checkRolePermission,wrapper(partReleaseApprovedList));
 

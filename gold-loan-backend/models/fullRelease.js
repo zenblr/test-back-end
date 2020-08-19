@@ -130,57 +130,58 @@ module.exports = (sequelize, DataTypes) => {
         FullRelease.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
         FullRelease.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         FullRelease.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
-        FullRelease.hasOne(models.fullReleaseAppraiser, { foreignKey: 'fullReleaseId', as: 'appraiserData', });
+        FullRelease.hasOne(models.fullReleaseReleaser, { foreignKey: 'fullReleaseId', as: 'releaser', });
     }
 
     FullRelease.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
                //orna
+               if(values.masterLoan){
                var resOrna = []
-               if (values.customerLoanOrnamentsDetails) {
-                   for (let i = 0; i < values.customerLoanOrnamentsDetails.length; i++) {
-                       if (values.customerLoanOrnamentsDetails[i].weightMachineZeroWeight) {
+               if (values.masterLoan.loanOrnamentsDetail) {
+                   for (let i = 0; i < values.masterLoan.loanOrnamentsDetail.length; i++) {
+                       if (values.masterLoan.loanOrnamentsDetail[i].weightMachineZeroWeight) {
        
                            let data = {};
-                           data.path = values.customerLoanOrnamentsDetails[i].weightMachineZeroWeight;
-                           data.URL = process.env.BASE_URL + values.customerLoanOrnamentsDetails[i].weightMachineZeroWeight;
-                           values.customerLoanOrnamentsDetails[i].weightMachineZeroWeightData = data;
+                           data.path = values.masterLoan.loanOrnamentsDetail[i].weightMachineZeroWeight;
+                           data.URL = process.env.BASE_URL + values.masterLoan.loanOrnamentsDetail[i].weightMachineZeroWeight;
+                           values.masterLoan.loanOrnamentsDetail[i].weightMachineZeroWeightData = data;
        
                        }
        
-                       if (values.customerLoanOrnamentsDetails[i].withOrnamentWeight) {
+                       if (values.masterLoan.loanOrnamentsDetail[i].withOrnamentWeight) {
        
                            let data = {};
-                           data.path = values.customerLoanOrnamentsDetails[i].withOrnamentWeight;
-                           data.URL = process.env.BASE_URL + values.customerLoanOrnamentsDetails[i].withOrnamentWeight;
-                           values.customerLoanOrnamentsDetails[i].withOrnamentWeightData = data;
+                           data.path = values.masterLoan.loanOrnamentsDetail[i].withOrnamentWeight;
+                           data.URL = process.env.BASE_URL + values.masterLoan.loanOrnamentsDetail[i].withOrnamentWeight;
+                           values.masterLoan.loanOrnamentsDetail[i].withOrnamentWeightData = data;
                        }
        
-                       if (values.customerLoanOrnamentsDetails[i].stoneTouch) {
+                       if (values.masterLoan.loanOrnamentsDetail[i].stoneTouch) {
        
                            let data = {};
-                           data.path = values.customerLoanOrnamentsDetails[i].stoneTouch;
-                           data.URL = process.env.BASE_URL + values.customerLoanOrnamentsDetails[i].stoneTouch;
-                           values.customerLoanOrnamentsDetails[i].stoneTouchData = data;
+                           data.path = values.masterLoan.loanOrnamentsDetail[i].stoneTouch;
+                           data.URL = process.env.BASE_URL + values.masterLoan.loanOrnamentsDetail[i].stoneTouch;
+                           values.masterLoan.loanOrnamentsDetail[i].stoneTouchData = data;
                        }
        
-                       if (values.customerLoanOrnamentsDetails[i].acidTest) {
-                           // values.customerLoanOrnamentsDetails[i].acidTestData = process.env.BASE_URL + values.customerLoanOrnamentsDetails[i].acidTest;
+                       if (values.masterLoan.loanOrnamentsDetail[i].acidTest) {
+                           // values.masterLoan.loanOrnamentsDetail[i].acidTestData = process.env.BASE_URL + values.masterLoan.loanOrnamentsDetail[i].acidTest;
        
                            let data = {};
-                           data.path = values.customerLoanOrnamentsDetails[i].acidTest;
-                           data.URL = process.env.BASE_URL + values.customerLoanOrnamentsDetails[i].acidTest;
-                           values.customerLoanOrnamentsDetails[i].acidTestData = data;
+                           data.path = values.masterLoan.loanOrnamentsDetail[i].acidTest;
+                           data.URL = process.env.BASE_URL + values.masterLoan.loanOrnamentsDetail[i].acidTest;
+                           values.masterLoan.loanOrnamentsDetail[i].acidTestData = data;
                        }
        
-                       if (values.customerLoanOrnamentsDetails[i].ornamentImage) {
+                       if (values.masterLoan.loanOrnamentsDetail[i].ornamentImage) {
                            let data = {};
-                           data.path = values.customerLoanOrnamentsDetails[i].ornamentImage;
-                           data.URL = process.env.BASE_URL + values.customerLoanOrnamentsDetails[i].ornamentImage;
-                           values.customerLoanOrnamentsDetails[i].ornamentImageData = data;
+                           data.path = values.masterLoan.loanOrnamentsDetail[i].ornamentImage;
+                           data.URL = process.env.BASE_URL + values.masterLoan.loanOrnamentsDetail[i].ornamentImage;
+                           values.masterLoan.loanOrnamentsDetail[i].ornamentImageData = data;
                        }
-                       if (values.customerLoanOrnamentsDetails[i].purityTest) {
-                           for (image of values.customerLoanOrnamentsDetails[i].purityTest) {
+                       if (values.masterLoan.loanOrnamentsDetail[i].purityTest) {
+                           for (image of values.masterLoan.loanOrnamentsDetail[i].purityTest) {
                                image.purityTest = process.env.BASE_URL + image.purityTest;
                            }
        
@@ -189,9 +190,9 @@ module.exports = (sequelize, DataTypes) => {
                        let purityTestPath = []
                        let newData;
        
-                       if (values.customerLoanOrnamentsDetails[i].purityTest.length) {
+                       if (values.masterLoan.loanOrnamentsDetail[i].purityTest.length) {
        
-                           for (imgUrl of values.customerLoanOrnamentsDetails[i].purityTest) {
+                           for (imgUrl of values.masterLoan.loanOrnamentsDetail[i].purityTest) {
                                let URL = process.env.BASE_URL + imgUrl;
                                purityTestImage.push(URL)
        
@@ -204,86 +205,12 @@ module.exports = (sequelize, DataTypes) => {
                                newData = data;
                            }
                        }
-                       values.customerLoanOrnamentsDetails[i].purityTestImage = newData
+                       values.masterLoan.loanOrnamentsDetail[i].purityTestImage = newData
        
-                       resOrna.push(values.customerLoanOrnamentsDetails[i])
+                       resOrna.push(values.masterLoan.loanOrnamentsDetail[i])
                    }
                }
-               //add base url in masterLoan customerLoanOrnamentsDetails
-               var resMasterOrna = []
-               if (values.customerLoanOrnamentsDetails) {
-                   for (let i = 0; i < values.customerLoanOrnamentsDetails.length; i++) {
-                       if (values.customerLoanOrnamentsDetails[i].weightMachineZeroWeight) {
-       
-                           let data = {};
-                           data.path = values.customerLoanOrnamentsDetails[i].weightMachineZeroWeight;
-                           data.URL = process.env.BASE_URL + values.customerLoanOrnamentsDetails[i].weightMachineZeroWeight;
-                           values.customerLoanOrnamentsDetails[i].weightMachineZeroWeightData = data;
-       
-                       }
-       
-                       if (values.customerLoanOrnamentsDetails[i].withOrnamentWeight) {
-       
-                           let data = {};
-                           data.path = values.customerLoanOrnamentsDetails[i].withOrnamentWeight;
-                           data.URL = process.env.BASE_URL + values.customerLoanOrnamentsDetails[i].withOrnamentWeight;
-                           values.customerLoanOrnamentsDetails[i].withOrnamentWeightData = data;
-                       }
-       
-                       if (values.customerLoanOrnamentsDetails[i].stoneTouch) {
-       
-                           let data = {};
-                           data.path = values.customerLoanOrnamentsDetails[i].stoneTouch;
-                           data.URL = process.env.BASE_URL + values.customerLoanOrnamentsDetails[i].stoneTouch;
-                           values.customerLoanOrnamentsDetails[i].stoneTouchData = data;
-                       }
-       
-                       if (values.customerLoanOrnamentsDetails[i].acidTest) {
-                           // values.customerLoanOrnamentsDetails[i].acidTestData = process.env.BASE_URL + values.customerLoanOrnamentsDetails[i].acidTest;
-       
-                           let data = {};
-                           data.path = values.customerLoanOrnamentsDetails[i].acidTest;
-                           data.URL = process.env.BASE_URL + values.customerLoanOrnamentsDetails[i].acidTest;
-                           values.customerLoanOrnamentsDetails[i].acidTestData = data;
-                       }
-       
-                       if (values.customerLoanOrnamentsDetails[i].ornamentImage) {
-                           let data = {};
-                           data.path = values.customerLoanOrnamentsDetails[i].ornamentImage;
-                           data.URL = process.env.BASE_URL + values.customerLoanOrnamentsDetails[i].ornamentImage;
-                           values.customerLoanOrnamentsDetails[i].ornamentImageData = data;
-                       }
-                       if (values.customerLoanOrnamentsDetails[i].purityTest) {
-                           for (image of values.customerLoanOrnamentsDetails[i].purityTest) {
-                               image.purityTest = process.env.BASE_URL + image.purityTest;
-                           }
-       
-                       }
-                       let purityTestImage = []
-                       let purityTestPath = []
-                       let newData;
-       
-                       if (values.customerLoanOrnamentsDetails[i].purityTest.length) {
-       
-                           for (imgUrl of values.customerLoanOrnamentsDetails[i].purityTest) {
-                               let URL = process.env.BASE_URL + imgUrl;
-                               purityTestImage.push(URL)
-       
-                               let path = imgUrl;
-                               purityTestPath.push(path)
-       
-                               let data = {};
-                               data.path = purityTestPath;
-                               data.URL = purityTestImage;
-                               newData = data;
-                           }
-                       }
-                       values.customerLoanOrnamentsDetails[i].purityTestImage = newData
-       
-                       resMasterOrna.push(values.customerLoanOrnamentsDetails[i])
-                   }
-               }
-
+            }
                if (values.documents) {
                     let documentsImages = [];
                     for (image of values.documents) {

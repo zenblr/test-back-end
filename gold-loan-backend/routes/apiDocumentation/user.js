@@ -404,4 +404,24 @@
  *     responses:
  *       200:
  *         description: Success.
+ * /user/releaser-list:
+ *   get:
+ *     tags:
+ *       - Releaser
+ *     name: get releaser list
+ *     summary: To read releaser list
+ *     parameters:
+ *     - name: "internalBranchId"
+ *       in: "query"
+ *       description: "internalBranchId"
+ *       type: "integer"
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Data found
+ *       404:
+ *         description: Data not found
  */

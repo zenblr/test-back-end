@@ -314,6 +314,9 @@ exports.getPartReleaseList = async (req, res, next) => {
         include: [
             {
                 model: models.packet
+            },{
+                model: models.ornamentType,
+                as: "ornamentType"
             }
         ]
     },
@@ -718,4 +721,113 @@ exports.ornamentsFullRelease = async (req, res, next) => {
     } else {
         return res.status(400).json({ message: 'invalid paymentType' });
     }
+}
+
+exports.getFullReleaseList = async (req, res, next) => {
+    const { search, offset, pageSize } = paginationWithFromTo(
+        req.query.search,
+        req.query.from,
+        req.query.to
+    );
+    let query = {};
+    const searchQuery = {
+        [Op.and]: [query, {
+            [Op.or]: {
+                release_gross_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("release_gross_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                amount_status: sequelize.where(
+                    sequelize.cast(sequelize.col("amount_status"), "varchar"), { [Op.iLike]: search + "%" }),
+                release_deduction_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("release_deduction_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                release_net_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("release_net_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                release_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("release_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                payable_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("payable_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                interest_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("interest_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                penal_interest: sequelize.where(
+                    sequelize.cast(sequelize.col("penal_interest"), "varchar"), { [Op.iLike]: search + "%" }),
+                remaining_net_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("remaining_net_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                "$masterLoan.loanPersonalDetail.customer_unique_id$": { [Op.iLike]: search + "%" },
+                "$masterLoan.outstanding_amount$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.outstanding_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                "$masterLoan.tenure$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"), { [Op.iLike]: search + "%" }),
+                "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" },
+                final_loan_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("masterLoan.final_loan_amount"), "varchar"), { [Op.iLike]: search + "%" })
+            },
+        }],
+        isActive: true
+    }
+    let includeArray = [{
+        model: models.customerLoanMaster,
+        as: 'masterLoan',
+        attributes: ['customerId', 'outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
+        include: [
+            {
+                model: models.customer,
+                as: 'customer',
+                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+            },
+            {
+                model: models.customerLoan,
+                as: 'customerLoan',
+                attributes: ['masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId']
+            },
+            {
+                model: models.customerLoanPersonalDetail,
+                as: 'loanPersonalDetail',
+                attributes: ['customerUniqueId']
+            }, {
+                model: models.customerLoanOrnamentsDetail,
+                as: 'loanOrnamentsDetail',
+                include: [
+                    {
+                        model: models.ornamentType,
+                        as: "ornamentType"
+                    },
+                    {
+                        model: models.packet
+                    }
+                ]
+            },
+        ]
+    },
+    {
+        model: models.fullReleaseReleaser,
+        as: 'releaser',
+        attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        include: [
+            {
+                model: models.customer,
+                as: 'customer',
+                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+            },
+            {
+                model: models.user,
+                as: 'appraiser',
+                attributes: ['firstName', 'lastName', 'mobileNumber']
+            }
+        ]
+    }
+    ]
+    let fullRelease = await models.fullRelease.findAll({
+        where: searchQuery,
+        attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        order: [["updatedAt", "DESC"]],
+        offset: offset,
+        limit: pageSize,
+        subQuery: false,
+        include: includeArray
+    })
+
+    let count = await models.fullRelease.findAll({
+        where: searchQuery,
+        subQuery: false,
+        include: includeArray
+    })
+
+    return res.status(200).json({ data: fullRelease, count: count.length });
 }

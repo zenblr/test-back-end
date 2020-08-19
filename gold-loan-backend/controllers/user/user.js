@@ -371,6 +371,32 @@ exports.getAppraiser = async (req, res, next) => {
 
 }
 
+
+//getReleaser
+
+exports.getReleaser = async (req, res, next) => {
+
+    let id = req.userData.id
+    let { internalBranchId } = req.query
+
+    let getReleaserList = await models.user.findAll({
+        where: { isActive: true },
+        attributes: ['id', 'firstName', 'lastName'],
+        include: [{
+            model: models.internalBranch,
+            where: { id: internalBranchId }
+        }, {
+            model: models.userType,
+            as: 'Usertype',
+            where: { isInternal: true, userType: 'Releaser' },
+            attributes: []
+        }]
+    })
+
+    return res.status(200).json({ message: 'success', data: getReleaserList })
+
+}
+
 exports.getUserTypeInternal = async (req, res, next) => {
 
     let userType = await models.userType.findAll({
