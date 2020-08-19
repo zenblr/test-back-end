@@ -20,8 +20,8 @@ import { NgxPermissionsService } from 'ngx-permissions';
 export class UserClassificationComponent implements OnInit {
 
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
-  cceKycStatus = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }, { value: 'rejected', name: 'rejected' }];
-  bmKycStatus = [{ value: 'approved', name: 'approved' }, { value: 'incomplete', name: 'incomplete' }, { value: 'rejected', name: 'rejected' }];
+  cceKycStatus = [{ value: 'pending', name: 'pending' }, { value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }];
+  bmKycStatus = [{ value: 'incomplete', name: 'incomplete' }, { value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }];
 
   // kycStatus = [];
   rating = [];

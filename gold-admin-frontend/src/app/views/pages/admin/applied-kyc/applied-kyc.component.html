@@ -140,7 +140,7 @@
                         <ng-container
                             *ngxPermissionsOnly="['addLoanTransfer', 'loanTransferAppraiserRating', 'scrapApplicationAdd']">
                             <ng-container
-                                *ngIf="role.customer.kycStatus == 'approved' && role.customerKycClassification?.kycStatusFromCce == 'approved'">
+                                *ngIf="role.customer.kycStatus == 'approved' && role.customerKycClassification?.kycStatusFromCce == 'approved' && role.customer.customerAssignAppraiser">
                                 <button mat-button [matMenuTriggerFor]="menu">
                                     <mat-icon>more_vert</mat-icon>
                                 </button>

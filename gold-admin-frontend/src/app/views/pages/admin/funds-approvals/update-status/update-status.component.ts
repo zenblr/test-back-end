@@ -5,6 +5,7 @@ import { PartReleaseApprovalService } from '../../../../../core/funds-approvals/
 import { ToastrService } from 'ngx-toastr';
 import { map } from 'rxjs/operators';
 import { PartReleaseFinalService } from '../../../../../core/funds-approvals/jewellery-release-final/part-release-final/services/part-release-final.service';
+import { FullReleaseApprovalService } from '../../../../../core/funds-approvals/jewellery-release-approval/full-release-approval/services/full-release-approval.service';
 
 @Component({
   selector: 'kt-update-status',
@@ -25,6 +26,7 @@ export class UpdateStatusComponent implements OnInit {
     private toastr: ToastrService,
     public dialogRef: MatDialogRef<UpdateStatusComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    private fullReleaseApprovalService: FullReleaseApprovalService,
   ) { }
 
   ngOnInit() {
@@ -35,6 +37,7 @@ export class UpdateStatusComponent implements OnInit {
   initForm() {
     this.updateStatusForm = this.fb.group({
       partReleaseId: [],
+      fullReleaseId: [],
       customerId: [, [Validators.required]],
       loanId: [, [Validators.required]],
       loanAmount: ['', [Validators.required]],
@@ -60,6 +63,7 @@ export class UpdateStatusComponent implements OnInit {
     const loanIdArr = data.masterLoan.customerLoan.map(e => e.loanUniqueId)
     this.updateStatusForm.patchValue({
       partReleaseId: data.id,
+      fullReleaseId: data.id,
       customerId: data.masterLoan.loanPersonalDetail.customerUniqueId,
       loanAmount: data.masterLoan.finalLoanAmount,
       outstandingAmount: data.masterLoan.outstandingAmount,
@@ -74,7 +78,7 @@ export class UpdateStatusComponent implements OnInit {
 
     for (const key in this.controls) {
       if (this.controls.hasOwnProperty(key)) {
-        if (!(key == 'amountStatus' || key == 'partReleaseId' || key == 'partReleaseStatus' || key == 'appraiserReason')) this.controls[key].disable()
+        if (!(key == 'amountStatus' || key == 'partReleaseId' || key == 'partReleaseStatus' || key == 'appraiserReason' || key == 'fullReleaseId')) this.controls[key].disable()
       }
     }
   }
@@ -122,17 +126,47 @@ export class UpdateStatusComponent implements OnInit {
 
     console.log(this.updateStatusForm.value)
 
-    if (this.data.name === 'jewelleryReleaseFinal') {
-      this.partReleaseFinalService.upateStatus(this.updateStatusForm.value).pipe(map(res => {
-        if (res) this.toastr.success('Status Updated Successfully')
-        this.dialogRef.close(true)
-      })).subscribe()
-    } else {
-      this.partReleaseApprovalService.updateAmountStatus(this.updateStatusForm.value).pipe(map(res => {
-        if (res) this.toastr.success('Status Updated Successfully')
-        this.dialogRef.close(true)
-      })).subscribe()
+    switch (this.data.name) {
+      case 'jewelleryReleaseFinal':
+        this.partReleaseFinalService.upateStatus(this.updateStatusForm.value).pipe(map(res => {
+          if (res) this.toastr.success('Status Updated Successfully')
+          this.dialogRef.close(true)
+        })).subscribe()
+
+        break;
+
+
+      case 'jewelleryReleaseApproval':
+        this.partReleaseApprovalService.updateAmountStatus(this.updateStatusForm.value).pipe(map(res => {
+          if (res) this.toastr.success('Status Updated Successfully')
+          this.dialogRef.close(true)
+        })).subscribe()
+
+        break;
+
+      case 'fullReleaseApproval':
+        this.fullReleaseApprovalService.updateAmountStatus(this.updateStatusForm.value).pipe(map(res => {
+          if (res) this.toastr.success('Status Updated Successfully')
+          this.dialogRef.close(true)
+        })).subscribe()
+
+        break;
+
+      default:
+        break;
     }
+
+    // if (this.data.name === 'jewelleryReleaseFinal') {
+    //   this.partReleaseFinalService.upateStatus(this.updateStatusForm.value).pipe(map(res => {
+    //     if (res) this.toastr.success('Status Updated Successfully')
+    //     this.dialogRef.close(true)
+    //   })).subscribe()
+    // } else {
+    //   this.partReleaseApprovalService.updateAmountStatus(this.updateStatusForm.value).pipe(map(res => {
+    //     if (res) this.toastr.success('Status Updated Successfully')
+    //     this.dialogRef.close(true)
+    //   })).subscribe()
+    // }
 
 
   }

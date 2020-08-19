@@ -21,14 +21,14 @@ export class SharedService {
 	clearFilter$ = this.clearFilter.asObservable();
 
 	appraiserOrCCE = [
-		{ value: 'approved', name: 'approved' },
 		{ value: 'pending', name: 'pending' },
+		{ value: 'approved', name: 'approved' },
 		{ value: 'rejected', name: 'rejected' }
 	];
 	branchManager = [
+		{ value: 'incomplete', name: 'incomplete' },
 		{ value: 'approved', name: 'approved' },
 		{ value: 'rejected', name: 'rejected' },
-		{ value: 'incomplete', name: 'incomplete' }
 	];
 
 	constructor(private http: HttpClient) { }
