@@ -135,7 +135,7 @@ export class UserClassificationComponent implements OnInit {
       reasonFromOperationalTeam: ['']
     })
 
-    if (this.permission.cceKycRatig) {
+    if (this.permission.cceKycRating) {
       // this.custClassificationForm.disable()
       // this.custClassificationForm.controls.behaviourRatingVerifiedByBm.disable();
       // this.custClassificationForm.controls.idProofRatingVerifiedByBm.disable();

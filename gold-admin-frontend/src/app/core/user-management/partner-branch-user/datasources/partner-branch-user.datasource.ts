@@ -4,28 +4,28 @@ import { map } from 'rxjs/operators';
 // CRUD
 import { BaseDataSource } from '../../../_base/crud';
 import { BehaviorSubject, of } from 'rxjs';
-import { AppliedLoanService } from '../services/applied-loan.service';
-
-export class AppliedLoanDatasource extends BaseDataSource {
+import { PartnerBranchUserService } from "../services/partner-branch-user.service";
+export class PartnerBranchUserDatasource extends BaseDataSource {
 
     private loadingSubject = new BehaviorSubject<boolean>(false);
     private isPreloadTextViewedSubject = new BehaviorSubject<boolean>(true);
 
     public loading$ = this.loadingSubject.asObservable();
     public isPreloadTextViewed$ = this.isPreloadTextViewedSubject.asObservable();
+    desserts: any;
 
-    constructor(private loanManagementService: AppliedLoanService) {
+    constructor(private userService: PartnerBranchUserService) {
         super();
     }
 
-    loadAppliedLoans(data) {
+    loadUser(search, from, to) {
         this.loadingSubject.next(true);
-        this.loanManagementService.getAplliedLoans(data)
+        this.userService.loadUser(search, from, to)
             .pipe(
                 map(
-                    loan => {
-                        this.paginatorTotalSubject.next(loan.count);
-                        this.entitySubject.next(loan.appliedLoanDetails);
+                    user => {
+                        this.entitySubject.next(user.Data);
+                        this.paginatorTotalSubject.next(user.count);
                     }
                 ),
                 catchError(() => of([])),

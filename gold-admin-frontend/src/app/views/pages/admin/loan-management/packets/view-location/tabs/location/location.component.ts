@@ -27,6 +27,11 @@ export class LocationComponent implements OnInit {
   private subscriptions: Subscription[] = [];
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
+  queryParamsData = {
+    from: 1,
+    to: 25,
+    search: '',
+  }
 
   constructor(
     public dialog: MatDialog,
@@ -56,6 +61,7 @@ export class LocationComponent implements OnInit {
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;
+        this.queryParamsData.search = res; 
         this.paginator.pageIndex = 0;
         this.loadPackets();
       });
@@ -73,7 +79,7 @@ export class LocationComponent implements OnInit {
     // First load
     // this.loadLeadsPage();
 
-    this.dataSource.loadpackets(this.searchValue, 1, 25);
+    this.dataSource.loadpackets( this.queryParamsData);
 
   }
 
@@ -89,10 +95,10 @@ export class LocationComponent implements OnInit {
   loadPackets() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
-    let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
-    let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
+    this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
+    this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadpackets(this.searchValue, from, to);
+    this.dataSource.loadpackets( this.queryParamsData);
   }
 
   

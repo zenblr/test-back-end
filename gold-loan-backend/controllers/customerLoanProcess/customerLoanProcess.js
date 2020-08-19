@@ -344,6 +344,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
                 if (isLoanTransfer) {
                     if (Number(loanAmount) > totalEligibleAmt) {
+                        securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
                         unsecuredAmount = Number(loanAmount - securedLoanAmount)
                     }
                 } else if (Math.round(loanAmount) >= Math.round(securedLoanAmount + unsecuredAmount)) {
@@ -364,6 +365,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
                 if (isLoanTransfer) {
                     if (Number(loanAmount) > totalEligibleAmt) {
+                        securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
                         unsecuredAmount = Number(loanAmount - securedLoanAmount)
                     }
                 }
@@ -1947,10 +1949,8 @@ exports.appliedLoanDetails = async (req, res, next) => {
         include: associateModel,
     });
 
-
-
     if (appliedLoanDetails.length === 0) {
-        return res.status(200).json([]);
+        return res.status(200).json({ data: [], count: count.length });
     } else {
         return res.status(200).json({ message: 'Applied loan details fetch successfully', appliedLoanDetails, count: count.length });
     }
@@ -2058,7 +2058,7 @@ exports.getLoanDetails = async (req, res, next) => {
         include: associateModel,
     });
     if (loanDetails.length === 0) {
-        return res.status(200).json([]);
+        return res.status(200).json({data:[],count: count.length});
     } else {
         return res.status(200).json({ message: 'Loan details fetch successfully', data: loanDetails, count: count.length });
     }
