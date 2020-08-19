@@ -319,7 +319,7 @@ exports.checkForLoanType = async (req, res, next) => {
         } else {
             let checkScheme = await selectScheme(unsecured, securedScheme)
             if (checkScheme.length === 0) {
-                return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
+                return res.status(400).json({ message: "No Unsecured Scheme Availabe0" })
             }
             unsecuredSchemeApplied = checkScheme[0]
         }
@@ -344,14 +344,17 @@ exports.checkForLoanType = async (req, res, next) => {
 
                 if (isLoanTransfer) {
                     if (Number(loanAmount) > totalEligibleAmt) {
+                        securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
                         unsecuredAmount = Number(loanAmount - securedLoanAmount)
                     }
-                } else if (Math.round(loanAmount) >= Math.round(securedLoanAmount + unsecuredAmount)) {
+                } else if (Math.round(loanAmount) > Math.round(securedLoanAmount + unsecuredAmount)) {
                     return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
 
                 }
 
                 processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
+
+                let newUnsecuredScheme = await selectScheme(unsecured, securedScheme)
 
                 return res.status(200).json({ data: { newUnsecuredScheme, unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme, isUnsecuredSchemeApplied: true } })
 
@@ -363,18 +366,19 @@ exports.checkForLoanType = async (req, res, next) => {
 
                 if (isLoanTransfer) {
                     if (Number(loanAmount) > totalEligibleAmt) {
+                        securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
                         unsecuredAmount = Number(loanAmount - securedLoanAmount)
                     }
                 }
 
                 processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
-            let newUnsecuredScheme = await selectScheme(unsecured, securedScheme)
-            return res.status(200).json({ data: { newUnsecuredScheme, unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme, isUnsecuredSchemeApplied: true } })
+                let newUnsecuredScheme = await selectScheme(unsecured, securedScheme)
+                return res.status(200).json({ data: { newUnsecuredScheme, unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme, isUnsecuredSchemeApplied: true } })
 
             }
         } else {
-            return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
+            return res.status(400).json({ message: "No Unsecured Scheme Availabe3" })
         }
     }
 

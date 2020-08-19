@@ -69,7 +69,7 @@ exports.getInterestTableInExcel = async (req, res) => {
         interest["interestAccrual"] = data.interestAccrual;
         interest["outstandingInterest"] = data.outstandingInterest;
         interest["emiReceivedDate"] = data.emiReceivedDate;
-        interest["panelInterest"] = data.panelInterest;
+        interest["penalInterest"] = data.penalInterest;
         interest["PenalAccrual"] = data.PenalAccrual;
         interest["penalOutstanding"] = data.penalOutstanding;
         interest["penalPaid"] = data.penalPaid;
