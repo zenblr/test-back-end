@@ -8,6 +8,7 @@ import { map, tap } from 'rxjs/operators';
 import { takeUntil, skip, distinctUntilChanged } from 'rxjs/operators';
 import { DepositDatasource } from '../../../../../core/funds-approvals/deposit/datasources/deposit.datasource';
 import { DepositService } from '../../../../../core/funds-approvals/deposit/services/deposit.service';
+import { UpdateStatusComponent } from '../update-status/update-status.component';
 
 @Component({
   selector: 'kt-deposit-list',
@@ -17,7 +18,7 @@ import { DepositService } from '../../../../../core/funds-approvals/deposit/serv
 export class DepositListComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['transactionId', 'bankTransactionId', 'customerId', 'loanId', 'depositDate', 'fullName', 'mobileNumber', 'modeOfPayment', 'depositBankName', 'depositAmount', 'depositStatus'];
+  displayedColumns = ['transactionId', 'bankTransactionId', 'customerId', 'loanId', 'depositDate', 'fullName', 'mobileNumber', 'modeOfPayment', 'depositBankName', 'depositBranchName', 'depositAmount', 'depositStatus', 'update'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -56,7 +57,7 @@ export class DepositListComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    this.dataSource.getDepositList(1, 25, this.searchValue);
+    // this.dataSource.getDepositList(1, 25, this.searchValue);
   }
 
   ngOnDestroy() {
@@ -75,6 +76,15 @@ export class DepositListComponent implements OnInit {
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
     this.dataSource.getDepositList(from, to, this.searchValue);
+  }
+
+  updateStatus(item) {
+    const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'edit', value: item }, width: 'auto' });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPage();
+      }
+    });
   }
 
 }
