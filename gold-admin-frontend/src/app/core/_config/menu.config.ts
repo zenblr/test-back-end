@@ -323,7 +323,7 @@ export class MenuConfig {
 									title: "Loan Transfer List",
 									page: "/admin/loan-management/transfer-loan-list",
 									bullet: 'dot',
-									// permission: !this.permissionsArr.includes('loanDetailsView'),
+									permission: !this.permissionsArr.includes('viewLoanTransfer'),
 								}
 							],
 						},
