@@ -111,7 +111,14 @@ export class FullReleaseApprovalComponent implements OnInit {
   }
 
   updateStatus(item) {
-    const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'edit', value: item }, width: 'auto' });
+    const dialogRef = this.dialog.open(UpdateStatusComponent, {
+      data: {
+        action: 'edit',
+        value: item,
+        name: 'fullReleaseApproval'
+      },
+      width: 'auto'
+    });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();

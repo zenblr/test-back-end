@@ -24,4 +24,15 @@ export class FullReleaseApprovalService {
       })
     )
   }
+
+  updateAmountStatus(data): Observable<any> {
+    return this.http.put(`/api/jewellery-release/full-release/amount-status`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    )
+  }
 }
