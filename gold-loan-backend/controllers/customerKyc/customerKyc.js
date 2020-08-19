@@ -467,14 +467,14 @@ exports.appliedKyc = async (req, res, next) => {
         limit: pageSize,
         include: includeArray
     })
-    let count = await models.customerKyc.count({
+    let count = await models.customerKyc.findAll({
         where: searchQuery,
         include: includeArray,
     });
     if (getAppliedKyc.length == 0) {
-        return res.status(200).json({ data: [] })
+        return res.status(200).json({data:[],count: count.length})
     }
-    return res.status(200).json({ data: getAppliedKyc, count })
+    return res.status(200).json({ data: getAppliedKyc, count:count.length })
 
 
 }
