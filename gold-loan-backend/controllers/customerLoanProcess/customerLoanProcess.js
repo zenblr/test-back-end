@@ -319,7 +319,7 @@ exports.checkForLoanType = async (req, res, next) => {
         } else {
             let checkScheme = await selectScheme(unsecured, securedScheme)
             if (checkScheme.length === 0) {
-                return res.status(400).json({ message: "No Unsecured Scheme Availabe0" })
+                return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
             }
             unsecuredSchemeApplied = checkScheme[0]
         }
@@ -341,16 +341,21 @@ exports.checkForLoanType = async (req, res, next) => {
                 // Math.round(loanAmount) >= Math.round(securedLoanAmount + unsecuredAmount)) ||
                 // Math.round(loanAmount) >= Math.round(securedLoanAmount + unsecuredAmount)) ||
                 // isLoanTransfer) {
-
-                if (isLoanTransfer) {
-                    if (Number(loanAmount) > totalEligibleAmt) {
+                    if (Math.round(loanAmount) > Math.round(securedLoanAmount + unsecuredAmount)) {
+                        return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
+    
+                    }
+                // if (isLoanTransfer) {
+                //     if (Number(loanAmount) > totalEligibleAmt) {
+                    if(!securedScheme.isSplitAtBeginning){
                         securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
                         unsecuredAmount = Number(loanAmount - securedLoanAmount)
                     }
-                } else if (Math.round(loanAmount) > Math.round(securedLoanAmount + unsecuredAmount)) {
-                    return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
+                    // }
+                // } else if (Math.round(loanAmount) > Math.round(securedLoanAmount + unsecuredAmount)) {
+                //     return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
 
-                }
+                // }
 
                 processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
