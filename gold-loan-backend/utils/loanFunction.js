@@ -526,7 +526,7 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
             transactionData.loanUniqueId = loanArray[index]['customerLoan'].loanUniqueId
             transaction.push(transactionData)
             pendingSecuredAmount = (loanArray[index]['outstandingInterest'] - pendingSecuredAmount).toFixed(2)
-            loanArray[index]['outstandingInterest'] = pendingSecuredAmount
+            loanArray[index]['outstandingInterest'] = loanArray[index]['outstandingInterest'] - loanArray[index]['paidAmount'];
             pendingSecuredAmount = 0.00;
 
         } else if (pendingSecuredAmount > Number(loanArray[index]['outstandingInterest'])) {
@@ -541,7 +541,7 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
             transactionData.loanUniqueId = loanArray[index]['customerLoan'].loanUniqueId
             transaction.push(transactionData)
             pendingSecuredAmount = Number(pendingSecuredAmount) - Number(loanArray[index]['outstandingInterest'])
-            loanArray[index]['outstandingInterest'] = 0.00
+            loanArray[index]['outstandingInterest'] = loanArray[index]['outstandingInterest'] - loanArray[index]['paidAmount'];
         }
         loanArray[index]['emiReceivedDate'] = Date.now()
 
@@ -720,7 +720,7 @@ let penalInterestPayment = async (loanArray, totalPenalAmount, createdBy) => {
             transactionData.loanUniqueId = loanArray[index]['customerLoan'].loanUniqueId
             transaction.push(transactionData)
             pendingPenalAmount = (loanArray[index]['penalInterest'] - pendingPenalAmount).toFixed(2)
-            loanArray[index]['penalOutstanding'] = pendingPenalAmount
+            loanArray[index]['penalOutstanding'] = loanArray[index]['penalOutstanding'] - loanArray[index]['penalPaid'];
             pendingPenalAmount = 0.00;
 
         } else if (pendingPenalAmount > Number(loanArray[index]['penalInterest'])) {
@@ -735,7 +735,7 @@ let penalInterestPayment = async (loanArray, totalPenalAmount, createdBy) => {
             transactionData.loanUniqueId = loanArray[index]['customerLoan'].loanUniqueId
             transaction.push(transactionData)
             pendingPenalAmount = Number(pendingPenalAmount) - Number(loanArray[index]['penalOutstanding'])
-            loanArray[index]['penalOutstanding'] = 0.00
+            loanArray[index]['penalOutstanding'] = loanArray[index]['penalOutstanding'] - loanArray[index]['penalPaid'];
         }
 
     }
