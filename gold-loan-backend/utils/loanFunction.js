@@ -83,7 +83,17 @@ let interestAmountCalculation = async (id) => {
 
 let getLoanDetails = async (masterLoanId) => {
     let loanData = await models.customerLoanMaster.findOne({
-        where: { id: masterLoanId }
+        where: { id: masterLoanId },
+        order: [
+            [models.customerLoan, 'id', 'asc']
+        ],
+        include: [
+            {
+                model: models.customerLoan,
+                as: 'customerLoan',
+                where: { isActive: true }
+            }
+        ]
     })
     return loanData;
 }
@@ -482,7 +492,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
 let customerLoanDetailsByMasterLoanDetails = async (masterLoanId) => {
     let loan = await models.customerLoanMaster.findOne({
         where: { isActive: true, id: masterLoanId },
-        attributes: ['id', 'outstandingAmount', 'finalLoanAmount', 'tenure'],
+        attributes: ['id', 'outstandingAmount', 'finalLoanAmount', 'tenure', 'isUnsecuredSchemeApplied'],
         order: [
             [models.customerLoan, 'id', 'asc']
         ],
@@ -557,6 +567,44 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
         }
     }
     return { loanArray, transaction }
+}
+
+let getPenalDateOfMasterLoan = async (amount, loan, securedPaidAmount, unsecuredPaidAmount) => {
+
+    let unsecuredPenalDate;
+    let unsecuredPenalData;
+    let securedPenalDate = await lastPenalPaidDate(loan.customerLoan[0], amount.securedPenalInterest, securedPaidAmount)
+    if (loan.isUnsecuredSchemeApplied) {
+        unsecuredPenalDate = await lastPenalPaidDate(loan.customerLoan[1], amount.unsecuredPenalInterest, unsecuredPaidAmount)
+        unsecuredPenalData = {
+            unsecuredPenalDate,
+            loanId: loan.customerLoan[1].id
+        }
+    }
+    let securedPenalData = {
+        securedPenalDate,
+        loanId: loan.customerLoan[0].id
+    }
+
+    return { securedPenalData, unsecuredPenalData }
+}
+
+let lastPenalPaidDate = async (loan, appliedPenalInterest, paidAmount) => {
+    let penal = (loan.penalInterest / 100)
+    let noOfDaysInYear = 360
+    let singleDayPenal = Number(((loan.outstandingAmount * penal) / noOfDaysInYear).toFixed(2))
+    let numberOfDaysPaid = Math.floor(paidAmount / singleDayPenal)
+    let dueDateFromDb
+    //check here
+    if (loan.penalInterestLastReceivedDate != null) {
+        dueDateFromDb = loan.penalInterestLastReceivedDate
+    } else {
+        let dataInfo = await getInterestTableOfSingleLoan(loan.id)
+        dueDateFromDb = dataInfo[0].emiDueDate
+    }
+    console.log(dueDateFromDb, singleDayPenal)
+    var newDate = moment(dueDateFromDb, "YYYY-MM-DD").add(numberOfDaysPaid, 'days').format()
+    return newDate
 }
 
 let allInterestPayment = async (masterLoanId, payableAmount, createdBy) => {
@@ -638,7 +686,7 @@ let allInterestPayment = async (masterLoanId, payableAmount, createdBy) => {
     } else {
         securedLoanDetails = temp;
     }
-    console.log(securedLoanDetails)
+    // console.log(securedLoanDetails)
 
     if (securedRatio > 0) {
         newSecuredDetails = await generateTranscationAndUpdateInterestValue(securedLoanDetails, securedRatio, createdBy)
@@ -685,10 +733,12 @@ let allInterestPayment = async (masterLoanId, payableAmount, createdBy) => {
         }
     }
 
-    return { transactionDetails, securedLoanDetails, unsecuredLoanDetails }
+    if (Number(amount.secured.penalInterest) > 0) {
+        var penalDate = await getPenalDateOfMasterLoan(amount, loanDetails.loan, securedPenalInterest, unsecuredPenalInterest)
+    }
+
+    return { transactionDetails, securedLoanDetails, unsecuredLoanDetails, penalDate }
 }
-
-
 
 let penalInterestPayment = async (loanArray, totalPenalAmount, createdBy) => {
 
@@ -750,7 +800,7 @@ let penalInterestPayment = async (loanArray, totalPenalAmount, createdBy) => {
 
         }
     }
-    console.log(transaction)
+    // console.log(transaction)
     return { loanArray, transaction }
 }
 
