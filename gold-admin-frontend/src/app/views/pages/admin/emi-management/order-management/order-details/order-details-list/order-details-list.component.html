@@ -145,6 +145,15 @@
                         {{element['invoiceNumber'] ? element['invoiceNumber'] : '-'}}
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="invoiceDate">
+                    <mat-header-cell *matHeaderCellDef>Invoice Date</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <div class="d-block">
+                            <div>{{element['invoiceDate'] ? (element['invoiceDate'] | date:'MMM d, y') : '-'}}</div>
+                            <div>{{element['invoiceDate'] ? (element['invoiceDate'] | date:'h:mm a') : ''}}</div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="orderStatus">
                     <mat-header-cell *matHeaderCellDef>Order Status</mat-header-cell>
                     <mat-cell *matCellDef="let element" [ngClass]="{'text-orange' : element['orderCurrentStatus.id'] == 1 || element['orderCurrentStatus.id'] == 5,

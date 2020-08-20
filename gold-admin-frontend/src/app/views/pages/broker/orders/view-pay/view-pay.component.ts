@@ -34,17 +34,29 @@ export class ViewPayComponent implements OnInit {
     this.shopService.getOrderDetails(this.orderId).subscribe(res => this.orderData = res.orderData);
   }
 
-  selectedEmi(event, id) {
+  selectedEmi(event, id, index) {
     if (event.checked) {
-      this.emi.push(id);
+      this.emi = [];
+      this.orderData.orderemidetails.forEach((emidetail, i) => {
+        if (index >= i && (emidetail.orderStatusId == 1 || emidetail.orderStatusId == 15)) {
+          emidetail.checked = true;
+          this.emi.push(emidetail.id);
+        }
+      });
     } else {
       if (this.emi.length > 0) {
-        const index = this.emi.indexOf(id);
-        if (index > -1) {
-          this.emi.splice(index, 1);
-        }
+        this.orderData.orderemidetails.forEach((emidetail, i) => {
+          if (index <= i) {
+            emidetail.checked = false;
+            const emiIndex = this.emi.indexOf(emidetail.id);
+            if (emiIndex > -1) {
+              this.emi.splice(emiIndex, 1);
+            }
+          }
+        });
       }
     }
+    console.log(this.emi)
   }
 
   getEmiAmount() {
