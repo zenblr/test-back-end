@@ -7,7 +7,7 @@ const check = require("../../lib/checkLib");
 const action = require('../../utils/partReleaseHistory');
 const actionFullRelease = require('../../utils/fullReleaseHistory');
 const loanFunction = require('../../utils/loanFunction');
-const { getCustomerInterestAmount, getGlobalSetting, getLoanDetails } = require('../../utils/loanFunction');
+const { getCustomerInterestAmount, getGlobalSetting, getLoanDetails,allInterestPayment } = require('../../utils/loanFunction');
 
 
 exports.ornamentsDetails = async (req, res, next) => {
@@ -176,6 +176,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
     } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
+    let interestAmountPaid = paidAmount - releaseAmount;
     let loanInfo = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
         order: [
@@ -212,6 +213,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
             await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_PAYMENT_CASH, createdBy, modifiedBy }, { transaction: t });
             return addPartRelease
         });
+        await allInterestPayment(masterLoanId,interestAmountPaid,createdBy);
         return res.status(200).json({ message: "success", partRelease });
     } else if (paymentType == 'cheque') {
         let partRelease = await sequelize.transaction(async t => {
@@ -228,6 +230,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
             await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_PAYMENT_CHEQUE, createdBy, modifiedBy }, { transaction: t });
             return addPartRelease
         });
+        await allInterestPayment(masterLoanId,interestAmountPaid,createdBy);
         return res.status(200).json({ message: "success", partRelease });
     } else if (paymentType == 'IMPS') {
         let partRelease = await sequelize.transaction(async t => {
@@ -244,6 +247,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
             await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_PAYMENT_BANK, createdBy, modifiedBy }, { transaction: t });
             return addPartRelease
         });
+        await allInterestPayment(masterLoanId,interestAmountPaid,createdBy);
         return res.status(200).json({ message: "success", partRelease });
     } else {
         return res.status(400).json({ message: 'invalid paymentType' });
@@ -688,6 +692,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
     } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
+    let interestAmountPaid = paidAmount - releaseAmount;
     if (paymentType == 'cash') {
         let fullRelease = await sequelize.transaction(async t => {
             let addFullRelease = await models.fullRelease.create({ paymentType, currentOutstandingAmount, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, amountStatus: 'completed', createdBy, modifiedBy }, { transaction: t });
@@ -697,6 +702,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
             await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_PAYMENT_CASH, createdBy, modifiedBy }, { transaction: t });
             return addFullRelease
         });
+        await allInterestPayment(masterLoanId,interestAmountPaid,createdBy);
         return res.status(200).json({ message: "success", fullRelease });
     } else if (paymentType == 'cheque') {
         let fullRelease = await sequelize.transaction(async t => {
@@ -707,6 +713,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
             await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_PAYMENT_CHEQUE, createdBy, modifiedBy }, { transaction: t });
             return addFullRelease
         });
+        await allInterestPayment(masterLoanId,interestAmountPaid,createdBy);
         return res.status(200).json({ message: "success", fullRelease });
     } else if (paymentType == 'IMPS') {
         let fullRelease = await sequelize.transaction(async t => {
@@ -717,7 +724,8 @@ exports.ornamentsFullRelease = async (req, res, next) => {
             await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_PAYMENT_BANK, createdBy, modifiedBy }, { transaction: t });
             return addFullRelease
         });
-        return res.status(200).json({ message: "success", fullRelease });
+        let interestData = await allInterestPayment(masterLoanId,interestAmountPaid,createdBy);
+        return res.status(200).json({ message: "success", fullRelease,interestData });
     } else {
         return res.status(400).json({ message: 'invalid paymentType' });
     }
@@ -866,11 +874,11 @@ exports.fullReleaseAssignReleaser = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let existAssign = await models.fullReleaseReleaser.findOne({ where: { fullReleaseId, isActive: true } });
     if (!check.isEmpty(existAssign)) {
-        return res.status(400).json({ message: `Already assigned appraiser to this part release process.` });
+        return res.status(400).json({ message: `Already assigned appraiser to this full release process.` });
     }
     await sequelize.transaction(async t => {
         await models.fullReleaseReleaser.create({ fullReleaseId, customerId, releaserId, createdBy, modifiedBy, appoinmentDate, startTime, endTime }, { transaction: t });
-        await models.fullRelease.update({ isAppraiserAssigned: true }, { where: { id: fullReleaseId }, transaction: t });
+        await models.fullRelease.update({ isReleaserAssigned: true }, { where: { id: fullReleaseId }, transaction: t });
         await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_ASSIGNED_RELEASER, createdBy, modifiedBy }, { transaction: t });
     });
     // send sms
