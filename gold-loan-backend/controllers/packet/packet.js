@@ -45,10 +45,12 @@ exports.viewPacket = async (req, res, next) => {
             [Op.or]: {
                 "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
                 "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-                "$internalBranch.name$": {
-                    [Op.iLike]: search + "%",
-                },
+                "$internalBranch.name$": { [Op.iLike]: search + "%" },
+                "$appraiser.first_name$": { [Op.iLike]: search + "%" },
+                "$appraiser.last_name$": { [Op.iLike]: search + "%" },
                 packetUniqueId: { [Op.iLike]: search + '%' },
+                barcodeNumber: { [Op.iLike]: search + '%' },
+
             },
         }],
         isActive: true,
@@ -78,7 +80,8 @@ exports.viewPacket = async (req, res, next) => {
         },
         {
             model: models.user,
-            as: 'appraiser'
+            as: 'appraiser',
+            attributes: ['id', 'userUniqueId', 'firstName','lastName']
         }
     ];
 
@@ -157,10 +160,10 @@ exports.assignPacket = async (req, res, next) => {
 // FUNCTION TO UPDATE PACKET
 exports.changePacket = async (req, res, next) => {
     let id = req.params.id;
-    let { packetUniqueId, internalUserBranch ,appraiserId ,barcodeNumber} = req.body;
+    let { packetUniqueId, internalUserBranch, appraiserId, barcodeNumber } = req.body;
     let modifiedBy = req.userData.id;
 
-    let packet = await models.packet.updatePacket(id, packetUniqueId, internalUserBranch, modifiedBy, appraiserId,barcodeNumber);
+    let packet = await models.packet.updatePacket(id, packetUniqueId, internalUserBranch, modifiedBy, appraiserId, barcodeNumber);
 
     if (packet[0] == 0) {
         return res.status(404).json({ message: "packet not update" });

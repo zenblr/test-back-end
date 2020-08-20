@@ -113,7 +113,10 @@ exports.fullReleasePayment = [
         .withMessage('payableAmount is required'),
     body('penalInterest')
         .exists()
-        .withMessage('penalInterest is required'),
+        .withMessage('penalInterest is required'), 
+    body('currentOutstandingAmount')
+        .exists()
+        .withMessage('currentOutstandingAmount is required'), 
     body('interestAmount')
         .exists()
         .withMessage('interestAmount is required'),
@@ -167,13 +170,13 @@ exports.amountStatusValidationfullRelease = [
         .withMessage('fullReleaseId is required'),
 ]
 
-exports.assignAppriserValidationFullRelease = [
+exports.assignReleaserValidationFullRelease = [
     body('fullReleaseId')
         .exists()
         .withMessage('fullReleaseId is required'),
-    body('appraiserId')
+    body('releaserId')
         .exists()
-        .withMessage('appraiserId is required'),
+        .withMessage('releaserId is required'),
     body('customerId')
         .exists()
         .withMessage('customerId is required'),
@@ -189,7 +192,7 @@ exports.assignAppriserValidationFullRelease = [
 ]
 
 
-exports.partReleaseValidationFullRelease = [
+exports.fullReleaseValidation = [
     body('fullReleaseStatus')
         .exists()
         .withMessage('fullReleaseStatus is required'),

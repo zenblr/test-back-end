@@ -15,7 +15,8 @@ exports.submitAppKyc = async (req, res, next) => {
     let createdBy = req.userData.id;
 
     let { customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address, panCardNumber, panType, panImage } = req.body
-    var date = dateOfBirth.split("-").reverse().join("-");
+    // var date = dateOfBirth.split("-").reverse().join("-");
+    var date = dateOfBirth
 
     let status = await models.status.findOne({ where: { statusName: "confirm" } })
     if (check.isEmpty(status)) {

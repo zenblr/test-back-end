@@ -395,6 +395,8 @@
  *               type: integer
  *             releaseAmount:
  *               type: integer
+ *             currentOutstandingAmount:
+ *               type: integer
  *             interestAmount:
  *               type: integer
  *             penalInterest:
@@ -422,6 +424,206 @@
  *     responses:
  *       200:
  *          description: release amount and details
+ *       400:
+ *          description: failed
+ *   get:
+ *     tags:
+ *       - Full ornament release
+ *     name: read part release list
+ *     summary: To read part release list
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
+ *     responses:
+ *       200:
+ *          description: Success
+ *       404:
+ *          description: Data not found
+ * /jewellery-release/full-release/amount-status:
+ *   put:
+ *     tags:
+ *       - Full ornament release
+ *     name: Full ornament release update amount status
+ *     summary: Full ornament release update amount status (pending,rejected,completed)
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             amountStatus:
+ *               type: string
+ *             fullReleaseId:
+ *               type: integer
+ *     responses:
+ *       200:
+ *          description: status updated
+ *       400:
+ *          description: failed
+ * /jewellery-release/assign-releaser:
+ *   post:
+ *     tags:
+ *       - Full ornament release
+ *     name: Assign releaser
+ *     summary: Assign releaser for full ornament release
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             fullReleaseId:
+ *               type: integer
+ *             releaserId:
+ *               type: integer
+ *             customerId:
+ *               type: integer
+ *             appoinmentDate:
+ *               type: string
+ *             startTime:
+ *               type: string
+ *             endTime:
+ *               type: string
+ *     responses:
+ *       200:
+ *          description: success
+ *       400:
+ *          description: failed
+ * /jewellery-release/update-releaser:
+ *   put:
+ *     tags:
+ *       - Full ornament release
+ *     name: update releaser
+ *     summary: update releaser for full ornament release
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             fullReleaseId:
+ *               type: integer
+ *             releaserId:
+ *               type: integer
+ *             customerId:
+ *               type: integer
+ *             appoinmentDate:
+ *               type: string
+ *             startTime:
+ *               type: string
+ *             endTime:
+ *               type: string
+ *     responses:
+ *       200:
+ *          description: success
+ *       400:
+ *          description: failed
+ * /jewellery-release/full-release-approved_list:
+ *   get:
+ *     tags:
+ *       - Full ornament release
+ *     name: read full release approved list
+ *     summary: To read full release approved list
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
+ *     responses:
+ *       200:
+ *          description: Success
+ *       404:
+ *          description: Data not found
+ * /jewellery-release/releaser-status:
+ *   put:
+ *     tags:
+ *       - Full ornament release
+ *     name: Full ornament release update releaser status
+ *     summary: Full ornament release update releaser status
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             fullReleaseStatus:
+ *               type: string
+ *             fullReleaseId:
+ *               type: integer
+ *             releaserReason:
+ *               type: string
+ *     responses:
+ *       200:
+ *          description: status updated
+ *       400:
+ *          description: failed
+ * /jewellery-release/full-release/document:
+ *   post:
+ *     tags:
+ *       - Full ornament release
+ *     name: Full ornament release upload document
+ *     summary: Full ornament release upload document
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             fullReleaseId:
+ *               type: integer
+ *             documents:
+ *               type: array
+ *               items:
+ *                 type: string
+ *     responses:
+ *       200:
+ *          description: success
  *       400:
  *          description: failed
  */
