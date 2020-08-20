@@ -272,7 +272,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.list.appraiserStatus = controls['appraiserStatus'].value.multiSelect;
 			}
 			if (controls['loanStatus'].value && (controls['loanStatus'].value.multiSelect && controls['loanStatus'].value.multiSelect.length)) {
-				this.filterObject.data.loanStatus = controls['loanStatus'].value.multiSelect.map(e => e.value).toString();
+				this.filterObject.data.loanStatus = controls['loanStatus'].value.multiSelect.map(e => e.id).toString();
 				this.filterObject.list.loanStatus = controls['loanStatus'].value.multiSelect;
 			}
 			if (controls['scheme'].value) {
@@ -351,6 +351,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'scrapStatus':
 				this.controls['scrapStatus'].value.multiSelect.splice(index, 1);
 				break;
+			case 'packets':
+				this.controls['scheme'].patchValue('');
 			default:
 				break;
 		}

@@ -18,9 +18,9 @@ export class PacketsDatasource extends BaseDataSource {
         super();
     }
 
-    loadpackets(from, to, search) {
+    loadpackets(data) {
         this.loadingSubject.next(true);
-        this.loanManagementService.getpackets(from, to, search)
+        this.loanManagementService.getpackets(data)
             .pipe(
                 map(
                     report => {

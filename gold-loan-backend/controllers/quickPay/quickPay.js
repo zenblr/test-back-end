@@ -12,7 +12,7 @@ const CONSTANT = require("../../utils/constant");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { mergeInterestTable, getCustomerInterestAmount, getLoanDetails, payableAmount, customerLoanDetailsByMasterLoanDetails, allInterestPayment } = require('../../utils/loanFunction')
+let { mergeInterestTable, getCustomerInterestAmount, getLoanDetails, payableAmount, customerLoanDetailsByMasterLoanDetails, allInterestPayment, penalInterestPayment, getInterestTableOfSingleLoan } = require('../../utils/loanFunction')
 
 //INTEREST TABLE 
 exports.getInterestTable = async (req, res, next) => {
@@ -73,7 +73,67 @@ exports.payableAmountConfirm = async (req, res, next) => {
 }
 
 exports.partPayment = async (req, res, next) => {
-    let { masterLoanId, amount } = req.query
+    let { masterLoanId, paidAmount, payableAmount } = req.body
+    let createdBy = req.userData.id
+    let { transactionDetails, securedLoanDetails, unsecuredLoanDetails, penalDate } = await allInterestPayment(masterLoanId, payableAmount, createdBy)
+
+
+    let partPaymentamount = paidAmount - payableAmount
+
+    // let quickPayData = await sequelize.transaction(async (t) => {
+
+    //     var transaction = await models.customerLoanTransaction.create({
+    //         paymentType: paymentDetails.paymentType,
+    //         bankName: paymentDetails.bankName,
+    //         branchName: paymentDetails.branchName,
+    //         transactionAmont: payableAmount,
+    //         createdBy: createdBy,
+    //         chequeNumber: paymentDetails.chequeNumber,
+    //         paymentReceivedDate: paymentDetails.depositDate,
+    //         transactionUniqueId: paymentDetails.transactionId,
+    //         masterLoanId
+    //     }, { transaction: t })
+
+    //     for (let index = 0; index < transactionDetails.length; index++) {
+    //         const element = transactionDetails[index];
+    //         element.customerLoanTransactionId = transaction.id
+    //     }
+
+    //     for (let index = 0; index < transactionDetails.length; index++) {
+
+    //         let customerLoanTransactionDetails = await models.customerTransactionDetail.create(transactionDetails[index], { transaction: t })
+
+    //         let referenceId = `${transactionDetails[index].loanUniqueId}-${customerLoanTransactionDetails.id}`
+
+    //         let id = await models.customerTransactionDetail.update({ referenceId }, {
+    //             where: { id: customerLoanTransactionDetails.id }, transaction: t
+    //         })
+    //     }
+
+    //     let secure = await models.customerLoanInterest.bulkCreate(securedLoanDetails, {
+    //         updateOnDuplicate: ['emiStatus', 'outstandingInterest', 'paidAmount', 'penalOutstanding', 'penalPaid', 'emiReceivedDate']
+    //     }, { transaction: t })
+
+    //     if (loanDetails.loan.customerLoan.length > 1) {
+
+    //         let unsecure = await models.customerLoanInterest.bulkCreate(unsecuredLoanDetails, {
+    //             updateOnDuplicate: ['emiStatus', 'outstandingInterest', 'paidAmount', 'penalOutstanding', 'penalPaid', 'emiReceivedDate']
+    //         }, { transaction: t })
+
+    //     }
+
+    //     // penal date change
+    //     if (penalDate) {
+    //         await models.customerLoan.update({ penalInterestLastReceivedDate: penalDate.securedPenalData.securedPenalDate }, { where: { id: penalDate.securedPenalData.loanId }, transaction: t })
+    //         if (penalDate.unsecuredPenalData) {
+    //             await models.customerLoan.update({ penalInterestLastReceivedDate: penalDate.unsecuredPenalData.unsecuredPenalDate }, { where: { id: penalDate.unsecuredPenalData.loanId }, transaction: t })
+    //         }
+    //     }
+    //     //penal date change
+
+    // })
+
+    return res.status(200).json({ message: data })
 }
 
 exports.quickPayment = async (req, res, next) => {
@@ -82,121 +142,62 @@ exports.quickPayment = async (req, res, next) => {
 
     let { paymentDetails, paymentType, masterLoanId, payableAmount } = req.body;
 
-    let amount = await getCustomerInterestAmount(masterLoanId);
-
-    let loanDetails = await customerLoanDetailsByMasterLoanDetails(masterLoanId)
-
-    let loan = await getLoanDetails(masterLoanId);
-
-    // let loan
+    let { transactionDetails, securedLoanDetails, unsecuredLoanDetails, penalDate } = await allInterestPayment(masterLoanId, payableAmount, createdBy)
 
 
-    // let outstandingAmount = Number(loan.outstandingAmount.toFixed(2))
+    // let quickPayData = await sequelize.transaction(async (t) => {
 
-    let securedPenalInterest = amount.secured.penalInterest
-    let securedInterest = amount.secured.interest
-    let securedOutstandingAmount = loanDetails.loan.customerLoan[0].outstandingAmount
+    //     var transaction = await models.customerLoanTransaction.create({
+    //         paymentType: paymentDetails.paymentType,
+    //         bankName: paymentDetails.bankName,
+    //         branchName: paymentDetails.branchName,
+    //         transactionAmont: payableAmount,
+    //         createdBy: createdBy,
+    //         chequeNumber: paymentDetails.chequeNumber,
+    //         paymentReceivedDate: paymentDetails.depositDate,
+    //         transactionUniqueId: paymentDetails.transactionId,
+    //         masterLoanId
+    //     }, { transaction: t })
 
-    let unsecuredInterest = 0
-    let unsecuredPenalInterest = 0
-    let unsecuredOutstandingAmount = 0
-    // let payableAmount = amount.secured.interest + amount.secured.penalInterest
-    if (loanDetails.loan.customerLoan.length > 1) {
-        unsecuredInterest = amount.unsecured.interest
-        unsecuredPenalInterest = amount.unsecured.penalInterest
-        unsecuredOutstandingAmount = loanDetails.loan.customerLoan[1].outstandingAmount
-    }
-    let totalOutstandingAmount = Number(securedOutstandingAmount) + Number(unsecuredOutstandingAmount)
+    //     for (let index = 0; index < transactionDetails.length; index++) {
+    //         const element = transactionDetails[index];
+    //         element.customerLoanTransactionId = transaction.id
+    //     }
 
-    // divinding in ratio
+    //     for (let index = 0; index < transactionDetails.length; index++) {
 
-    // secure 
-    let securedRatio = securedOutstandingAmount / totalOutstandingAmount * payableAmount;
-    if (Number(securedPenalInterest) > 0) {
-        securedRatio = Number(securedRatio - securedPenalInterest)
-    }
+    //         let customerLoanTransactionDetails = await models.customerTransactionDetail.create(transactionDetails[index], { transaction: t })
 
+    //         let referenceId = `${transactionDetails[index].loanUniqueId}-${customerLoanTransactionDetails.id}`
 
+    //         let id = await models.customerTransactionDetail.update({ referenceId }, {
+    //             where: { id: customerLoanTransactionDetails.id }, transaction: t
+    //         })
+    //     }
 
+    //     let secure = await models.customerLoanInterest.bulkCreate(securedLoanDetails, {
+    //         updateOnDuplicate: ['emiStatus', 'outstandingInterest', 'paidAmount', 'penalOutstanding', 'penalPaid', 'emiReceivedDate']
+    //     }, { transaction: t })
 
-    let securedLoanDetails = await models.customerLoanInterest.findAll({
-        where: {
-            loanId: loanDetails.loan.customerLoan[0].id,
-            emiStatus: { [Op.in]: ['pending', 'partially paid'] }
-        },
-        order: [['id']]
-    })
-    let temp = []
-    for (let index = 0; index < securedLoanDetails.length; index++) {
-        temp.push(securedLoanDetails[index].dataValues)
-    }
-    securedLoanDetails = []
-    securedLoanDetails = temp;
-    // console.log(securedLoanDetails)
+    //     if (loanDetails.loan.customerLoan.length > 1) {
 
-    newSecuredDetails = await allInterestPayment(securedLoanDetails, securedRatio, createdBy)
-    securedLoanDetails = newSecuredDetails.loanArray
-    let transactionDetails = newSecuredDetails.transaction
-    // unsecure
-    if (loanDetails.loan.customerLoan.length > 1) {
+    //         let unsecure = await models.customerLoanInterest.bulkCreate(unsecuredLoanDetails, {
+    //             updateOnDuplicate: ['emiStatus', 'outstandingInterest', 'paidAmount', 'penalOutstanding', 'penalPaid', 'emiReceivedDate']
+    //         }, { transaction: t })
 
-        var unsecuredRatio = unsecuredOutstandingAmount / totalOutstandingAmount * payableAmount
-        if (Number(unsecuredPenalInterest) > 0) {
-            unsecuredRatio = Number(unsecuredRatio - unsecuredPenalInterest)
-        }
+    //     }
 
-        var unsecuredLoanDetails = await models.customerLoanInterest.findAll({
-            where: {
-                loanId: loanDetails.loan.customerLoan[1].id,
-                emiStatus: { [Op.in]: ['pending', 'partially paid'] }
-            },
-            order: [['id']]
-        })
+    //     // penal date change
+    //     if (penalDate) {
+    //         await models.customerLoan.update({ penalInterestLastReceivedDate: penalDate.securedPenalData.securedPenalDate }, { where: { id: penalDate.securedPenalData.loanId }, transaction: t })
+    //         if (penalDate.unsecuredPenalData) {
+    //             await models.customerLoan.update({ penalInterestLastReceivedDate: penalDate.unsecuredPenalData.unsecuredPenalDate }, { where: { id: penalDate.unsecuredPenalData.loanId }, transaction: t })
+    //         }
+    //     }
+    //     //penal date change
 
-        let temp = []
-        for (let index = 0; index < unsecuredLoanDetails.length; index++) {
-            temp.push(unsecuredLoanDetails[index].dataValues)
-        }
-        unsecuredLoanDetails = []
-        unsecuredLoanDetails = temp;
-
-        let newUnsecuredDetails = await allInterestPayment(unsecuredLoanDetails, unsecuredRatio, createdBy)
-        unsecuredLoanDetails = newUnsecuredDetails.loanArray
-        Array.prototype.push.apply(transactionDetails, newUnsecuredDetails.transaction)
-    }
-
-
-
-    let quickPayData = await sequelize.transaction(async (t) => {
-
-        var transaction = await models.customerLoanTransaction.create({ 
-            paymentType: paymentDetails.paymentType, 
-            bankName:paymentDetails.bankName,
-            branchName:paymentDetails.branchName,
-            transactionAmont: payableAmount, 
-            createdBy:createdBy,
-            chequeNumber:paymentDetails.chequeNumber,
-            paymentReceivedDate:paymentDetails.depositDate,
-            transactionUniqueId:paymentDetails.transactionId,
-            masterLoanId })
-
-        let customerLoanTransactionDetails = await models.customerTransactionDetail.bulkCreate(transactionDetails, { transaction: t })
-
-        console.log(securedLoanDetails)
-
-        let secure = await models.customerLoanInterest.bulkCreate(securedLoanDetails, {
-            updateOnDuplicate: ['emiStatus', 'outstandingInterest', 'paidAmount']
-        }, { transaction: t })
-
-        if (loanDetails.loan.customerLoan.length > 1) {
-
-            let unsecure = await models.customerLoanInterest.bulkCreate(unsecuredLoanDetails, {
-                updateOnDuplicate: ['emiStatus', 'outstandingInterest', 'paidAmount']
-            },{ transaction: t })
-
-        }
-    })
-    return res.status(200).json({ unsecuredRatio, securedRatio, paymentDetails, securedLoanDetails, unsecuredLoanDetails })
+    // })
+    return res.status(200).json({ transactionDetails, securedLoanDetails, unsecuredLoanDetails, penalDate })
 
 }
 

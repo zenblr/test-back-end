@@ -18,9 +18,9 @@ export class AppliedLoanDatasource extends BaseDataSource {
         super();
     }
 
-    loadAppliedLoans(from, to, search) {
+    loadAppliedLoans(data) {
         this.loadingSubject.next(true);
-        this.loanManagementService.getAplliedLoans(from, to, search)
+        this.loanManagementService.getAplliedLoans(data)
             .pipe(
                 map(
                     loan => {
