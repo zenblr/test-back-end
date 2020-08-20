@@ -12,7 +12,9 @@
                 <label *ngIf="totalRecords" class="kt-subheader__desc">{{totalRecords}} Total</label>
             </div>
         </div>
-        <div class="col-6 align-self-center">
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-6 offset-4 align-self-center">
             <kt-search *ngIf="showInput"></kt-search>
             <kt-dropdown *ngIf="showDropdown" [dropdownValue]="dropdownValue" [isDisabled]="isDisabled"
                 [title]="dropdownTitle" (dropdownResult)="selectedValue($event)">
