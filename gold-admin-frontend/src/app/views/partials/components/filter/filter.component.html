@@ -190,6 +190,26 @@
           </form>
         </div>
 
+        <div class="kt-portlet__body" *ngIf="filterName == 'deposit'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col-9">
+                <label>By Deposit Status</label>
+                <select placeholder="Packet Assigned" class="form-control" formControlName="scheme">
+                  <option value="" selected disabled>Select Status</option>
+                  <option value="Pending">PENDING</option>
+                  <option value="Completed">COMPLETED</option>
+                  <option value="Rejected">REJECTED</option>
+                </select>
+              </div>
+              <div class="col-3 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
+        </div>
+
         <!-- scheme -->
         <div class="kt-portlet__body" *ngIf="filterName == 'scheme'">
           <form class="kt-form" [formGroup]="filterForm">

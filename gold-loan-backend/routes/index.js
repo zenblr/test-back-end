@@ -178,6 +178,9 @@ router.use('/jewellery-release', jewelleryRelese);
 const quickPay = require('./quickPay');
 router.use('/quick-pay', quickPay);
 
+const deposit = require('./deposit');// DEPOSIT
+router.use('/deposit',deposit);
+
 const scrapPacket = require('./scrap/scrapPacket'); // Scrap packet
 router.use('/scrap/packet', scrapPacket);
 

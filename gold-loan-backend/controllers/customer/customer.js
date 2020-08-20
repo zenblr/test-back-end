@@ -311,7 +311,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     include: includeArray,
   });
   if (allCustomers.length == 0) {
-    return res.status(200).json({ data: [], count: count.length });
+    return res.status(200).json({ data: []});
   }
   return res.status(200).json({ data: allCustomers, count: count.length });
 };
@@ -456,7 +456,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
     subQuery: false
   });
   if (allCustomers.length === 0) {
-    return res.status(200).json({ data: [], count: count.length });
+    return res.status(200).json({ data: []});
   } else {
     return res.status(200).json({ message: 'Success', data: allCustomers, count: count.length });
   }

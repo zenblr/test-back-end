@@ -16,6 +16,7 @@ import { PartReleaseFinalComponent } from './jewellery-release-final/part-releas
 import { FullReleaseFinalComponent } from './jewellery-release-final/full-release-final/full-release-final.component';
 import { UpdateStatusComponent } from './update-status/update-status.component';
 import { UploadDocumentComponent } from './upload-document/upload-document.component';
+import { PaymentDialogComponent } from '../../../../views/partials/components/payment-dialog/payment-dialog.component';
 
 const routes = [
   {
@@ -73,6 +74,9 @@ const routes = [
     TypesUtilsService,
     LayoutUtilsService
   ],
-  entryComponents: [UpdateStatusComponent]
+  entryComponents: [
+    UpdateStatusComponent,
+    PaymentDialogComponent
+  ]
 })
 export class FundsApprovalsModule { }

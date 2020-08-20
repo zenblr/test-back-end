@@ -54,6 +54,7 @@ import { ScrapPacketsService, AppliedScrapService } from '../../../../core/scrap
 import { OtherChargesService } from '../../../../core/masters/other-charges/service/other-charges.service';
 import { ScrapCustomerManagementService } from '../../../../core/scrap-management/customer-management';
 import { PartnerBranchUserService } from '../../../../core/user-management/partner-branch-user/services/partner-branch-user.service'
+import { DepositService } from "../../../../core/funds-approvals/deposit/services/deposit.service";
 
 @Component({
 	selector: "kt-topbar",
@@ -154,7 +155,8 @@ export class TopbarComponent implements OnInit {
 		private appliedScrap: AppliedScrapService,
 		private otherChargesService: OtherChargesService,
 		private scrapCustomerManagementService: ScrapCustomerManagementService,
-		private partnerBranchUserservice: PartnerBranchUserService
+		private partnerBranchUserservice: PartnerBranchUserService,
+		private depositService:DepositService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -713,6 +715,12 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'scrap-buying') {
 			this.showInput = true;
 		}
+		if(this.path == 'deposit') {
+			this.showInput = true;
+			this.showfilter = true;
+			this.filterName = 'deposit';
+			this.filterWidth = '400px';
+		}
 	}
 
 	action(event: Event) {
@@ -921,6 +929,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "packet") {
 			this.packetService.applyFilter.next(data)
+		}
+		if( this.path == "deposit") {
+			this.depositService.applyFilter.next(data)
 		}
 	}
 

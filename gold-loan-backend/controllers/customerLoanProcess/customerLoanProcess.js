@@ -1950,7 +1950,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
     });
 
     if (appliedLoanDetails.length === 0) {
-        return res.status(200).json({ data: [], count: count.length });
+        return res.status(200).json({ data: [] });
     } else {
         return res.status(200).json({ message: 'Applied loan details fetch successfully', appliedLoanDetails, count: count.length });
     }
@@ -2058,7 +2058,7 @@ exports.getLoanDetails = async (req, res, next) => {
         include: associateModel,
     });
     if (loanDetails.length === 0) {
-        return res.status(200).json({data:[],count: count.length});
+        return res.status(200).json({data:[]});
     } else {
         return res.status(200).json({ message: 'Loan details fetch successfully', data: loanDetails, count: count.length });
     }
