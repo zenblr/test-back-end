@@ -5,6 +5,7 @@ import { SharedService } from '../../../../core/shared/services/shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/broker';
 import { RazorpayPaymentService } from '../../../../core/shared/services/razorpay-payment.service';
+import { MatCheckbox } from '@angular/material';
 
 @Component({
   selector: 'kt-checkout-customer',
@@ -60,6 +61,11 @@ export class CheckoutCustomerComponent implements OnInit {
       postalCode: ['', Validators.required],
       stateName: ['', Validators.required],
       cityName: ['', Validators.required],
+      shippingAddress: ['', Validators.required],
+      shippingLandMark: ['', Validators.required],
+      shippingStateName: ['', Validators.required],
+      shippingCityName: ['', Validators.required],
+      shippingPostalCode: ['', Validators.required],
       panCardNumber: ['', Validators.compose([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])],
       nameOnPanCard: ['', Validators.compose([Validators.required, Validators.pattern("^[a-zA-Z ]*$")])],
       panCardFileId: [''],
@@ -247,6 +253,11 @@ export class CheckoutCustomerComponent implements OnInit {
     }
   }
 
+  sameAddress(event: MatCheckbox) {
+    if (event) {
+    } else {
+    }
+  }
   generateOTP() {
     if (this.checkoutCustomerForm.invalid) {
       this.checkoutCustomerForm.markAllAsTouched();
@@ -262,6 +273,11 @@ export class CheckoutCustomerComponent implements OnInit {
       postalCode: this.controls.postalCode.value,
       stateName: this.controls.stateName.value.name,
       cityName: this.controls.cityName.value.name,
+      shippingAddress: this.controls.shippingAddress.value,
+      shippingLandMark: this.controls.shippingLandMark.value,
+      shippingStateName: this.controls.shippingStateName.value.name,
+      shippingCityName: this.controls.shippingCityName.value.name,
+      shippingPostalCode: this.controls.shippingPostalCode.value,
       panCardNumber: this.controls.panCardNumber.value,
       nameOnPanCard: this.controls.nameOnPanCard.value,
       panCardFileId: this.controls.panCardFileId.value,

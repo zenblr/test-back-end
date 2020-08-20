@@ -97,7 +97,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6 pl-4">
+                <!-- <div class="col-6 pl-4">
                     <div class="row">
                         <div class="col-4 align-self-center">
                             <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Landmark</label>
@@ -111,9 +111,9 @@
                             </mat-error>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
-            <div class="row py-3">
+            <!-- <div class="row py-3">
                 <div class="col-6 pr-4">
                     <div class="row">
                         <div class="col-4 align-self-center">
@@ -190,6 +190,194 @@
                                 formControlName="postalCode"
                                 [class.isError]="controls.postalCode.touched && controls.postalCode.invalid">
                             <mat-error *ngIf=" controls.postalCode.errors?.required && controls.postalCode.touched">
+                                Field is required
+                            </mat-error>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+            <div class="row pt-3">
+                <div class="col-12 text-right">
+                    <label class="custom-checkbox position-relative">
+                        <span class="label-checkbox">Shipping Address same as Billing Address</span>
+                        <input type="checkbox" (change)="sameAddress($event.target.checked)">
+                        <span class="checkmark top-0"></span>
+                    </label>
+                </div>
+                <div class="col-6 pr-4">
+                    <b>Billing Address: </b>
+                    <div class="row py-3">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Address</label>
+                        </div>
+                        <div class="col-8">
+                            <textarea type="text" aria-label="Address" placeholder="Address" class="form-control"
+                                formControlName="address"
+                                [class.isError]="controls.address.touched && controls.address.invalid"></textarea>
+                            <mat-error *ngIf=" controls.address.errors?.required && controls.address.touched">
+                                Field is required
+                            </mat-error>
+                        </div>
+                    </div>
+                    <div class="row py-3">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Landmark</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" aria-label="Landmark" placeholder="Landmark" class="form-control"
+                                formControlName="landMark"
+                                [class.isError]="controls.landMark.touched && controls.landMark.invalid">
+                            <mat-error *ngIf=" controls.landMark.errors?.required && controls.landMark.touched">
+                                Field is required
+                            </mat-error>
+                        </div>
+                    </div>
+                    <div class="row py-3">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">State</label>
+                        </div>
+                        <div class="col-8">
+                            <select *ngIf="showCustomerFlag" class="form-control" formControlName="stateName"
+                                (change)="getCities()">
+                                <option value="" [selected]="true" [disabled]="true">Select State</option>
+                                <option [value]="state.id" *ngFor="let state of stateList">{{state.name}}
+                                </option>
+                            </select>
+                            <select *ngIf="!showCustomerFlag" class="form-control" formControlName="stateName"
+                                [class.isError]="controls.stateName.touched && controls.stateName.invalid"
+                                (change)="getCities()">
+                                <option value="" [selected]="true" [disabled]="true">Select State</option>
+                                <option [ngValue]="state" *ngFor="let state of stateList">{{state.name}}
+                                </option>
+                            </select>
+                            <div *ngIf="controls.stateName.touched && controls.stateName.invalid">
+                                <mat-error *ngIf="controls.stateName.touched && controls.stateName.errors?.required">
+                                    Field is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-3">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">City</label>
+                        </div>
+                        <div class="col-8">
+                            <select *ngIf="showCustomerFlag" class="form-control" formControlName="cityName">
+                                <option value="" [selected]="true" [disabled]="true">Select City</option>
+                                <option [value]="city.id" *ngFor="let city of cityList">{{city.name}}</option>
+                            </select>
+                            <select *ngIf="!showCustomerFlag" class="form-control" formControlName="cityName"
+                                [class.isError]="controls.cityName.touched && controls.cityName.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select City</option>
+                                <option [ngValue]="city" *ngFor="let city of cityList">{{city.name}}</option>
+                            </select>
+                            <div *ngIf="controls.cityName.touched && controls.cityName.invalid">
+                                <mat-error *ngIf="controls.cityName.touched && controls.cityName.errors?.required">
+                                    Field
+                                    is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-3">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Pincode</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" aria-label="Pincode" placeholder="Pincode" class="form-control"
+                                formControlName="postalCode"
+                                [class.isError]="controls.postalCode.touched && controls.postalCode.invalid">
+                            <mat-error *ngIf=" controls.postalCode.errors?.required && controls.postalCode.touched">
+                                Field is required
+                            </mat-error>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 pl-4">
+                    <b>Shipping Address: </b>
+                    <div class="row py-3">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Address</label>
+                        </div>
+                        <div class="col-8">
+                            <textarea type="text" aria-label="Address" placeholder="Address" class="form-control"
+                                formControlName="shippingAddress"
+                                [class.isError]="controls.shippingAddress.touched && controls.shippingAddress.invalid"></textarea>
+                            <mat-error
+                                *ngIf=" controls.shippingAddress.errors?.required && controls.shippingAddress.touched">
+                                Field is required
+                            </mat-error>
+                        </div>
+                    </div>
+                    <div class="row py-3">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Landmark</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" aria-label="Landmark" placeholder="Landmark" class="form-control"
+                                formControlName="shippingLandMark"
+                                [class.isError]="controls.shippingLandMark.touched && controls.shippingLandMark.invalid">
+                            <mat-error
+                                *ngIf=" controls.shippingLandMark.errors?.required && controls.shippingLandMark.touched">
+                                Field is required
+                            </mat-error>
+                        </div>
+                    </div>
+                    <div class="row py-3">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">State</label>
+                        </div>
+                        <div class="col-8">
+                            <select *ngIf="showCustomerFlag" class="form-control" formControlName="shippingStateName"
+                                (change)="getCities()">
+                                <option value="" [selected]="true" [disabled]="true">Select State</option>
+                                <option [value]="state.id" *ngFor="let state of stateList">{{state.name}}
+                                </option>
+                            </select>
+                            <select *ngIf="!showCustomerFlag" class="form-control" formControlName="shippingStateName"
+                                [class.isError]="controls.shippingStateName.touched && controls.shippingStateName.invalid"
+                                (change)="getCities()">
+                                <option value="" [selected]="true" [disabled]="true">Select State</option>
+                                <option [ngValue]="state" *ngFor="let state of stateList">{{state.name}}
+                                </option>
+                            </select>
+                            <div *ngIf="controls.shippingStateName.touched && controls.shippingStateName.invalid">
+                                <mat-error
+                                    *ngIf="controls.shippingStateName.touched && controls.shippingStateName.errors?.required">
+                                    Field is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-3">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">City</label>
+                        </div>
+                        <div class="col-8">
+                            <select *ngIf="showCustomerFlag" class="form-control" formControlName="shippingCityName">
+                                <option value="" [selected]="true" [disabled]="true">Select City</option>
+                                <option [value]="city.id" *ngFor="let city of cityList">{{city.name}}</option>
+                            </select>
+                            <select *ngIf="!showCustomerFlag" class="form-control" formControlName="shippingCityName"
+                                [class.isError]="controls.shippingCityName.touched && controls.shippingCityName.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select City</option>
+                                <option [ngValue]="city" *ngFor="let city of cityList">{{city.name}}</option>
+                            </select>
+                            <div *ngIf="controls.shippingCityName.touched && controls.shippingCityName.invalid">
+                                <mat-error
+                                    *ngIf="controls.shippingCityName.touched && controls.shippingCityName.errors?.required">
+                                    Field
+                                    is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row py-3">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Pincode</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" aria-label="Pincode" placeholder="Pincode" class="form-control"
+                                formControlName="shippingPostalCode"
+                                [class.isError]="controls.shippingPostalCode.touched && controls.shippingPostalCode.invalid">
+                            <mat-error
+                                *ngIf=" controls.shippingPostalCode.errors?.required && controls.shippingPostalCode.touched">
                                 Field is required
                             </mat-error>
                         </div>
