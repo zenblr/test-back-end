@@ -158,7 +158,7 @@ let getAllDetailsOfCustomerLoan = async (customerLoanId) => {
             ['id', 'asc'],
             [models.customerLoanInterest, 'id', 'asc'],
         ],
-        attributes: ['id', 'masterLoanId', 'selectedSlab', 'loanAmount', 'outstandingAmount', 'currentSlab', 'currentInterestRate', 'penalInterestLastReceivedDate', 'penalInterest'],
+        attributes: ['id', 'masterLoanId','loanUniqueId', 'selectedSlab', 'loanAmount', 'outstandingAmount', 'currentSlab', 'currentInterestRate', 'penalInterestLastReceivedDate', 'penalInterest'],
         include: [{
             model: models.customerLoanSlabRate,
             as: 'slab',
@@ -288,7 +288,7 @@ let getLastInterest = async (loanId, masterLaonId) => {
 let getAllNotPaidInterest = async (loanId) => {
     let allNotPaidInterest = await models.customerLoanInterest.findAll({
         where: { loanId: loanId, emiStatus: { [Op.notIn]: ['paid'] } },
-        attributes: ['id', 'paidAmount']
+        attributes: ['id','interestAmount' ,'paidAmount','emiDueDate']
     });
     return allNotPaidInterest;
 }
@@ -296,7 +296,7 @@ let getAllNotPaidInterest = async (loanId) => {
 let getAllInterestLessThanDate = async (loanId, date) => {
     let allInterestLessThanDate = await models.customerLoanInterest.findAll({
         where: { loanId: loanId, emiDueDate: { [Op.lte]: date, }, emiStatus: { [Op.notIn]: ['paid'] } },
-        attributes: ['id', 'paidAmount']
+        attributes: ['id','interestAmount','paidAmount','emiDueDate']
     });
     return allInterestLessThanDate;
 }
@@ -304,7 +304,7 @@ let getAllInterestLessThanDate = async (loanId, date) => {
 let getPendingNoOfDaysInterest = async (loanId, date) => {
     let pendingNoOfDaysInterest = await models.customerLoanInterest.findOne({
         where: { loanId: loanId, emiDueDate: { [Op.gt]: date, }, emiStatus: { [Op.notIn]: ['paid'] } },
-        attributes: ['id', 'paidAmount'],
+        attributes: ['id', 'paidAmount','emiDueDate'],
         order: [['emiDueDate', 'ASC']]
     });
     return pendingNoOfDaysInterest;
