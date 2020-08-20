@@ -132,15 +132,15 @@
                             </button>
                         </ng-container>
                         <ng-container *ngIf="item.amountStatus == 'completed'">
-                            <div *ngIf="!item.isAppraiserAssigned" [ngStyle]="{'display': 'inherit'}">
+                            <div *ngIf="!item.isReleaserAssigned" [ngStyle]="{'display': 'inherit'}">
                                 <button *ngxPermissionsOnly="['partReleaseAssignAppraiser']" style="width: 120px;"
                                     class="apply-kyc" (click)="assign(item)">Assign
-                                    Appraiser</button>
+                                    Releaser</button>
                             </div>
-                            <div *ngIf="item.isAppraiserAssigned" [ngStyle]="{'display': 'inherit'}">
+                            <div *ngIf="item.isReleaserAssigned" [ngStyle]="{'display': 'inherit'}">
                                 <button *ngxPermissionsOnly="['partReleaseAssignAppraiser']" style="width: 120px;"
                                     class="apply-kyc" (click)="updateAppraiser(item)">Update
-                                    Appraiser
+                                    Releaser
                                 </button>
                             </div>
                         </ng-container>
