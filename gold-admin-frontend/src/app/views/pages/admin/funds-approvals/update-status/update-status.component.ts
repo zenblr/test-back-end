@@ -76,6 +76,8 @@ export class UpdateStatusComponent implements OnInit {
       })
     }
 
+    if (this.data.name === 'fullReleaseApproval' && data.amountStatus === 'pending') this.controls.amountStatus.patchValue('')
+
     for (const key in this.controls) {
       if (this.controls.hasOwnProperty(key)) {
         if (!(key == 'amountStatus' || key == 'partReleaseId' || key == 'partReleaseStatus' || key == 'appraiserReason' || key == 'fullReleaseId')) this.controls[key].disable()
