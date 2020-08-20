@@ -200,7 +200,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
     let outstandingAmount = Number(loanInfo.outstandingAmount - (securedReleaseAmount + unSecuredReleaseAmount));
     if (paymentType == 'cash') {
         let partRelease = await sequelize.transaction(async t => {
-            let addPartRelease = await models.partRelease.create({ paymentType, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, amountStatus: 'completed', createdBy, modifiedBy }, { transaction: t });
+            let addPartRelease = await models.partRelease.create({ paymentType, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
             for (const ornament of ornamentId) {
                 await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
                 await models.partReleaseOrnaments.create({ partReleaseId: addPartRelease.id, ornamentId: ornament }, { transaction: t });
@@ -695,7 +695,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
     let interestAmountPaid = paidAmount - releaseAmount;
     if (paymentType == 'cash') {
         let fullRelease = await sequelize.transaction(async t => {
-            let addFullRelease = await models.fullRelease.create({ paymentType, currentOutstandingAmount, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, amountStatus: 'completed', createdBy, modifiedBy }, { transaction: t });
+            let addFullRelease = await models.fullRelease.create({ paymentType, currentOutstandingAmount, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
             for (const ornament of ornamentId) {
                 await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t });
             }
