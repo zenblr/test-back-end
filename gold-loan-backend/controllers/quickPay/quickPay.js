@@ -77,9 +77,6 @@ exports.partPayment = async (req, res, next) => {
     let createdBy = req.userData.id
     let { transactionDetails, securedLoanDetails, unsecuredLoanDetails, penalDate } = await allInterestPayment(masterLoanId, payableAmount, createdBy)
 
-    if (payableAmount > paidAmount) {
-        return res.status(200).json({ message: `Your payable amount is greater than paid amount` })
-    }
 
     let partPaymentamount = paidAmount - payableAmount
 
