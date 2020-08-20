@@ -376,7 +376,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
 
                     } else {
-                       
+
                         unsecuredAmount = Number(loanAmount - securedLoanAmount)
                     }
 
@@ -1825,7 +1825,7 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
     });
 
     let packet = await models.customerLoanPackageDetails.findAll({
-        where: { loanId: masterLoanId },
+        where: { masterLoanId: masterLoanId },
         include: [{
             model: models.packet,
             include: [{
