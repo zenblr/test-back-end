@@ -47,7 +47,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="partReleaseAmountStatus">
-                    <mat-header-cell *matHeaderCellDef>Part Release Amount Status</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Full Release <br> Amount Status</mat-header-cell>
                     <mat-cell
                         [ngClass]="item.amountStatus == 'completed' ? 'text-success': item.amountStatus == 'pending' ? 'text-warning' : 'text-danger'"
                         *matCellDef="let item">{{item.amountStatus | titlecase}}
