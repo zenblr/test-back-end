@@ -113,7 +113,17 @@ export class FullReleaseApprovalComponent implements OnInit {
   }
 
   updateAppraiser(item) {
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit', appraiser: item.appraiserData, customer: item.masterLoan.customer, partReleaseId: item.id }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent,
+      {
+        data: {
+          action: 'edit',
+          appraiser: item.releaser,
+          customer: item.masterLoan.customer,
+          fullReleaseId: item.id,
+          isReleaser: true
+        },
+        width: '500px'
+      });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
