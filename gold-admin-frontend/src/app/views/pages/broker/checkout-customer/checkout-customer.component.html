@@ -26,6 +26,10 @@
                                 *ngIf="numberSearchForm.controls.mobileNo.errors?.required && numberSearchForm.controls.mobileNo.touched">
                                 Field is required
                             </mat-error>
+                            <mat-error
+                                *ngIf="numberSearchForm.controls.mobileNo.errors?.pattern && numberSearchForm.controls.mobileNo.touched">
+                                Invalid Input
+                            </mat-error>
                         </div>
                     </div>
                 </div>
@@ -284,7 +288,8 @@
                         <div class="col-8">
                             <input type="text" aria-label="Pincode" placeholder="Pincode" class="form-control"
                                 formControlName="postalCode"
-                                [class.isError]="controls.postalCode.touched && controls.postalCode.invalid">
+                                [class.isError]="controls.postalCode.touched && controls.postalCode.invalid" numbersOnly
+                                maxlength="6">
                             <mat-error *ngIf=" controls.postalCode.errors?.required && controls.postalCode.touched">
                                 Field is required
                             </mat-error>
@@ -326,15 +331,16 @@
                             <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">State</label>
                         </div>
                         <div class="col-8">
-                            <select *ngIf="showCustomerFlag" class="form-control" formControlName="shippingStateName"
-                                (change)="getCities()">
+                            <select *ngIf="showShippingCustomerFlag" class="form-control"
+                                formControlName="shippingStateName" (change)="getShippingCities()">
                                 <option value="" [selected]="true" [disabled]="true">Select State</option>
                                 <option [value]="state.id" *ngFor="let state of stateList">{{state.name}}
                                 </option>
                             </select>
-                            <select *ngIf="!showCustomerFlag" class="form-control" formControlName="shippingStateName"
+                            <select *ngIf="!showShippingCustomerFlag" class="form-control"
+                                formControlName="shippingStateName"
                                 [class.isError]="controls.shippingStateName.touched && controls.shippingStateName.invalid"
-                                (change)="getCities()">
+                                (change)="getShippingCities()">
                                 <option value="" [selected]="true" [disabled]="true">Select State</option>
                                 <option [ngValue]="state" *ngFor="let state of stateList">{{state.name}}
                                 </option>
@@ -351,14 +357,16 @@
                             <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">City</label>
                         </div>
                         <div class="col-8">
-                            <select *ngIf="showCustomerFlag" class="form-control" formControlName="shippingCityName">
+                            <select *ngIf="showShippingCustomerFlag" class="form-control"
+                                formControlName="shippingCityName">
                                 <option value="" [selected]="true" [disabled]="true">Select City</option>
-                                <option [value]="city.id" *ngFor="let city of cityList">{{city.name}}</option>
+                                <option [value]="city.id" *ngFor="let city of shippingCityList">{{city.name}}</option>
                             </select>
-                            <select *ngIf="!showCustomerFlag" class="form-control" formControlName="shippingCityName"
+                            <select *ngIf="!showShippingCustomerFlag" class="form-control"
+                                formControlName="shippingCityName"
                                 [class.isError]="controls.shippingCityName.touched && controls.shippingCityName.invalid">
                                 <option value="" [selected]="true" [disabled]="true">Select City</option>
-                                <option [ngValue]="city" *ngFor="let city of cityList">{{city.name}}</option>
+                                <option [ngValue]="city" *ngFor="let city of shippingCityList">{{city.name}}</option>
                             </select>
                             <div *ngIf="controls.shippingCityName.touched && controls.shippingCityName.invalid">
                                 <mat-error
@@ -375,7 +383,8 @@
                         <div class="col-8">
                             <input type="text" aria-label="Pincode" placeholder="Pincode" class="form-control"
                                 formControlName="shippingPostalCode"
-                                [class.isError]="controls.shippingPostalCode.touched && controls.shippingPostalCode.invalid">
+                                [class.isError]="controls.shippingPostalCode.touched && controls.shippingPostalCode.invalid"
+                                numbersOnly maxlength="6">
                             <mat-error
                                 *ngIf=" controls.shippingPostalCode.errors?.required && controls.shippingPostalCode.touched">
                                 Field is required
@@ -385,6 +394,11 @@
                 </div>
             </div>
             <ng-container *ngIf="checkoutData?.kycRequired || existingCustomerData?.kycRequired">
+                <div class="row pt-3">
+                    <div class="col">
+                        <b>PAN Card Details: </b>
+                    </div>
+                </div>
                 <div class="row py-3">
                     <div class="col-6 pr-4">
                         <div class="row">
