@@ -24,7 +24,7 @@
                         <kt-upload-documents [scrapIds]="scrapIds" (next)="next($event)" [totalAmt]="totalAmount"
                             [acknowledgmentDocuments]="customerDetail" [showButton]="showButton"
                             [showScrapAcknowledgementFlag]="true" [standardDeductionArr]="standardDeductionArr"
-                            (processingChrgs)="processingChrgs($event)">
+                            (processingChrgs)="processingChrgs($event)" [scrapStage]="scrapStage">
                         </kt-upload-documents>
                     </mat-tab>
                     <mat-tab label="Melting Ornaments" [disabled]="disabled[3]"

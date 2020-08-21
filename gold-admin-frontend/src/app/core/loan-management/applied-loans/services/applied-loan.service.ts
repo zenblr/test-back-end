@@ -16,8 +16,21 @@ export class AppliedLoanService {
     private http: HttpClient, private toastr: ToastrService
   ) { }
 
-  getAplliedLoans(search, from, to): Observable<any> {
-    return this.http.get(`/api/loan-process/applied-loan-details?search=${search}&from=${from}&to=${to}`).pipe(
+  getAplliedLoans(data): Observable<any> {
+    const reqParams: any = {};
+    if (data && data.from) {
+      reqParams.from = data.from;
+    }
+    if (data && data.to) {
+      reqParams.to = data.to;
+    }
+    if (data && data.search) {
+      reqParams.search = data.search;
+    }
+    if (data && data.appraiserApproval) {
+      reqParams.appraiserApproval = data.appraiserApproval;
+    }
+    return this.http.get(`/api/loan-process/applied-loan-details`,{ params: reqParams }).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message) {

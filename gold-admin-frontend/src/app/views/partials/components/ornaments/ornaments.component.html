@@ -595,6 +595,18 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div *ngIf="data && data.modal && !data.packetView" class="col-6">
+                                <div class="row kt-margin-t-15 ">
+                                    <div class="col-4 form-label">
+                                        <label class="text-color mandatory my-auto">Packet ID</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" placeholder="PAC-15"
+                                            formControlName="packetId" readonly>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </ng-template>
                 </div>

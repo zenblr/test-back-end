@@ -43,9 +43,9 @@ module.exports = (sequelize, DataTypes) => {
 
         Partner.hasMany(models.partnerBranch, { foreignKey: 'partnerId', as: 'partnerBranch' });
 
-
         Partner.hasMany(models.partnerCommissionHistory, { foreignKey: 'partnerId', as: 'partnerCommissionHistory' });
 
+        Partner.hasMany(models.partnerBranchUser, { foreignKey: 'partnerId', as: 'partnerBranchUser' });
     }
 
 

@@ -51,6 +51,8 @@ import { AddInternalUserBranchComponent } from './internal-user-branch/add-inter
 import { CreateStoreComponent } from './store/create-store/create-store.component';
 import { StoreListComponent } from './store/store-list/store-list.component';
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { AddPartnerBranchUserComponent } from './partner-branch-user/add-partner-branch-user/add-partner-branch-user.component';
+import { PartnerBranchUserListComponent } from './partner-branch-user/partner-branch-user-list/partner-branch-user-list.component';
 
 
 const routes: Routes = [
@@ -116,6 +118,10 @@ const routes: Routes = [
 		path: 'store',
 		component: StoreListComponent
 	},
+	{
+		path: 'partner-branch-user',
+		component: PartnerBranchUserListComponent
+	}
 
 ]
 
@@ -158,7 +164,8 @@ const routes: Routes = [
 		ApiKeyComponent,
 		AddInternalUserBranchComponent,
 		CreateStoreComponent,
-		DeleteEntityDialogComponent
+		DeleteEntityDialogComponent,
+		AddPartnerBranchUserComponent
 	],
 	declarations: [
 		RolesListComponent,
@@ -183,7 +190,9 @@ const routes: Routes = [
 		InternalUserBranchListComponent,
 		AddInternalUserBranchComponent,
 		StoreListComponent,
-		CreateStoreComponent
+		CreateStoreComponent,
+		AddPartnerBranchUserComponent,
+		PartnerBranchUserListComponent
 	]
 })
 export class UserManagementModule { }

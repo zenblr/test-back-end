@@ -420,6 +420,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       customerConfirmation: [],
       finalScrapAmountAfterMelting: [],
       processingCharges: [],
+      packetId: []
     }))
     this.createImageArray()
     this.selected = this.OrnamentsData.length;

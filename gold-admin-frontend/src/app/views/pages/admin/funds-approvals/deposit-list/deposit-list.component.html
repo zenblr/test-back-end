@@ -48,6 +48,11 @@
                     <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="depositBranchName">
+                    <mat-header-cell *matHeaderCellDef>Deposit Branch Name</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="depositAmount">
                     <mat-header-cell *matHeaderCellDef>Deposit Amount</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
@@ -58,6 +63,16 @@
                     <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="update">
+                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        <ng-container>
+                            <button style="width: 120px;" class="apply-kyc" (click)="updateStatus(item)">Update
+                            </button>
+                        </ng-container>
+
+                    </mat-cell>
+                </ng-container>
 
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>

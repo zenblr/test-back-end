@@ -59,6 +59,8 @@ module.exports = (sequelize, DataTypes) => {
 
         PartnerBranch.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         PartnerBranch.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+        
+        PartnerBranch.hasMany(models.partnerBranchUser, { foreignKey: 'branchId', as: 'partnerBranchUser' });
 
     }
     return PartnerBranch;

@@ -6,8 +6,7 @@
         "host": "127.0.0.1",
         "port": "6432",
         "dialect": "postgres",
-        "operatorsAliases": false,
-        "logging": false
+        "operatorsAliases": false
     },
     "test": {
         "username": "postgres",

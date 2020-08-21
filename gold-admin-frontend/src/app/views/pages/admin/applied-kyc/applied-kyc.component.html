@@ -77,11 +77,12 @@
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <div [ngStyle]="{'display': 'inherit'}"
-                            *ngxPermissionsOnly="['appliedKycEdit','customerClassificationEdit']">
-                            <div class="kt-pointer" (click)="editKyc(role)" class="kt-pointer">
+                        <div [ngStyle]="{'display': 'inherit'}">
+                            <div class="kt-pointer" (click)="editKyc(role)" class="kt-pointer"
+                                *ngxPermissionsOnly="['cceKycRating', 'opsKycRating']">
+
                                 <span
-                                    *ngIf="(permission.cceRating  && role.customerKycClassification?.kycStatusFromCce == 'pending') 
+                                    *ngIf="(permission.cceKycRating  && role.customerKycClassification?.kycStatusFromCce == 'pending') 
                                     || (permission.opsKycRating && role.customerKycClassification?.kycStatusFromCce == 'approved' && 
                                     (role.customerKycClassification?.kycStatusFromOperationalTeam == 'incomplete' || role.customerKycClassification?.kycStatusFromOperationalTeam == 'pending'))">
                                     <!-- <img src="../../../../assets/media/icons/action.svg"> -->
@@ -137,18 +138,21 @@
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <ng-container
-                            *ngIf="role.customer.kycStatus == 'approved' && role.customerKycClassification?.kycStatusFromCce == 'approved'">
-                            <button mat-button [matMenuTriggerFor]="menu">
-                                <mat-icon>more_vert</mat-icon>
-                            </button>
-                            <mat-menu #menu="matMenu" xPosition="before">
-                                <button *ngxPermissionsOnly="['loanApplicationAdd']" mat-menu-item
-                                    (click)="applyLoan(role)">Apply Loan</button>
-                                <button *ngxPermissionsOnly="['addLoanTransfer', 'loanTransferAppraiserRating']"
-                                    mat-menu-item (click)="transferLoan(role)">Transfer Loan</button>
-                                <button *ngxPermissionsOnly="['scrapApplicationAdd']" mat-menu-item
-                                    (click)="applyScrap(role)">Apply Scrap</button>
-                            </mat-menu>
+                            *ngxPermissionsOnly="['addLoanTransfer', 'loanTransferAppraiserRating', 'scrapApplicationAdd']">
+                            <ng-container
+                                *ngIf="role.customer.kycStatus == 'approved' && role.customerKycClassification?.kycStatusFromCce == 'approved' && role.customer.customerAssignAppraiser">
+                                <button mat-button [matMenuTriggerFor]="menu">
+                                    <mat-icon>more_vert</mat-icon>
+                                </button>
+                                <mat-menu #menu="matMenu" xPosition="before">
+                                    <button *ngxPermissionsOnly="['loanApplicationAdd']" mat-menu-item
+                                        (click)="applyLoan(role)">Apply Loan</button>
+                                    <button *ngxPermissionsOnly="['addLoanTransfer', 'loanTransferAppraiserRating']"
+                                        mat-menu-item (click)="transferLoan(role)">Transfer Loan</button>
+                                    <button *ngxPermissionsOnly="['scrapApplicationAdd']" mat-menu-item
+                                        (click)="applyScrap(role)">Apply Scrap</button>
+                                </mat-menu>
+                            </ng-container>
                         </ng-container>
                         <!-- <div ngbDropdown class="dropdown dropdown-inline" #customerActionDropdown1="ngbDropdown"
                             aria-haspopup="true" aria-expanded="false" [autoClose]="false">

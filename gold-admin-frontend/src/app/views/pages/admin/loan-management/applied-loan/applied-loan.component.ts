@@ -27,6 +27,9 @@ export class AppliedLoanComponent implements OnInit {
     search: '',
     cceStatus: '',
     kycStatus: '',
+    appraiserApproval: '',
+    loanStageId: ''
+
   }
   destroy$ = new Subject();
 
@@ -74,6 +77,7 @@ export class AppliedLoanComponent implements OnInit {
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;
+        this.queryParamsData.search = res;
         this.paginator.pageIndex = 0;
         this.loadAppliedLoansPage();
       });
@@ -91,7 +95,7 @@ export class AppliedLoanComponent implements OnInit {
     // First load
     // this.loadLeadsPage();
 
-    this.dataSource.loadAppliedLoans(this.searchValue, 1, 25);
+    this.dataSource.loadAppliedLoans(this.queryParamsData);
 
     // this.disburse('data')
 
@@ -114,15 +118,19 @@ export class AppliedLoanComponent implements OnInit {
   loadAppliedLoansPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
-    let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
-    let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
+    this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
+    this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadAppliedLoans(this.searchValue, from, to);
+    this.dataSource.loadAppliedLoans(this.queryParamsData);
   }
 
   applyFilter(data) {
     console.log(data)
-    this.filteredDataList = data.list
+    this.queryParamsData.appraiserApproval = data.data.appraiserStatus;
+    this.queryParamsData.loanStageId = data.data.loanStatus;
+
+    this.filteredDataList = data.list;
+    this.dataSource.loadAppliedLoans(this.queryParamsData);
   }
 
   // disburse(loan, masterLoanId) {
@@ -140,22 +148,22 @@ export class AppliedLoanComponent implements OnInit {
 
   editLoan(loan) {
     console.log(loan)
-    if(loan.loanStage.id == 2 && this.permission.addBmRating){
+    if (loan.loanStage.id == 2 && this.permission.addBmRating) {
       this.navigate(loan)
     }
-    else if(loan.loanStage.id == 1 && this.permission.addAppraiserRating){
+    else if (loan.loanStage.id == 1 && this.permission.addAppraiserRating) {
       this.navigate(loan)
     }
-    else if(loan.loanStage.id == 7 && this.permission.addOpsRating){
+    else if (loan.loanStage.id == 7 && this.permission.addOpsRating) {
       this.navigate(loan)
     }
-    else if(loan.loanStage.id == 8 && this.permission.uploadDocuments){
+    else if (loan.loanStage.id == 8 && this.permission.uploadDocuments) {
       this.packetImageUpload(loan)
     }
-    else if(loan.loanStage.id == 3 && this.permission.assignPacket){
+    else if (loan.loanStage.id == 3 && this.permission.assignPacket) {
       this.packetImageUpload(loan)
     }
-    else if(loan.loanStage.id == 4 && this.permission.loanDisbursement){
+    else if (loan.loanStage.id == 4 && this.permission.loanDisbursement) {
       this.packetImageUpload(loan)
     }
   }

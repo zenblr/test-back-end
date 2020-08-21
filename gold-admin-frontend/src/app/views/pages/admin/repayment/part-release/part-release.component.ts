@@ -136,6 +136,9 @@ export class PartReleaseComponent implements OnInit {
   }
 
   pay() {
+    const path = this.url.split('/');
+    const url = path[path.length - 2];
+
     const ornamnentIds = this.selectedOrnaments.map(e => e.id)
     let payObject = {
       ornamentId: ornamnentIds,
@@ -148,12 +151,23 @@ export class PartReleaseComponent implements OnInit {
     Object.assign(payObject, this.paymentValue, this.totalSelectedOrnamentDetails.ornamentWeight)
     console.log(payObject)
 
-    this.jewelleryReleaseService.partReleasePayment(payObject).pipe(map(res => {
-      if (res) {
-        this.toastr.success(this.titleCasePipe.transform(res['message']))
-        this.router.navigate(['/admin/funds-approvals/part-release-approval'])
-      }
-    })).subscribe()
+    // return
+    if (url === 'part-release') {
+      this.jewelleryReleaseService.partReleasePayment(payObject).pipe(map(res => {
+        if (res) {
+          this.toastr.success(this.titleCasePipe.transform(res['message']))
+          this.router.navigate(['/admin/funds-approvals/part-release-approval'])
+        }
+      })).subscribe()
+    }
+    else if (url === 'full-release') {
+      this.jewelleryReleaseService.fullReleasePayment(payObject).pipe(map(res => {
+        if (res) {
+          this.toastr.success(this.titleCasePipe.transform(res['message']))
+          this.router.navigate(['/admin/funds-approvals/full-release-approval'])
+        }
+      })).subscribe()
+    }
   }
 
   cancelPayment() {
@@ -236,10 +250,10 @@ export class PartReleaseComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(res => {
-      if(res){
-      console.log(res)
-      this.paymentValue = res
-      this.ref.detectChanges()
+      if (res) {
+        console.log(res)
+        this.paymentValue = res
+        this.ref.detectChanges()
       }
     })
   }
