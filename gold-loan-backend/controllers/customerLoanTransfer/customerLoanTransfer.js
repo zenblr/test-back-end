@@ -12,7 +12,12 @@ exports.customerDetails = async (req, res, next) => {
 
     let customerUniqueId = req.params.customerUniqueId;
     let reqId = req.userData.id;
-    let getAppraiserId = await models.customerAssignAppraiser.findOne({ where: { customerUniqueId } })
+    let getCustomer = await models.customer.findOne({ where: { customerUniqueId } })
+
+    if (getCustomer.kycStatus != "approved") {
+        return res.status(400).json({ message: 'This customer Kyc is not completed' })
+    }
+    let getAppraiserId = await models.customerAssignAppraiser.findOne({ where: { customerId: getCustomer.id } })
 
     if (check.isEmpty(getAppraiserId)) {
         return res.status(400).json({ message: 'This customer Did not assign in to anyone' })
@@ -329,7 +334,12 @@ exports.customerDetailsLoanTransfer = async (req, res, next) => {
 
     let customerUniqueId = req.params.customerUniqueId;
     let reqId = req.userData.id;
-    let getAppraiserId = await models.customerAssignAppraiser.findOne({ where: { customerUniqueId } })
+    let getCustomer = await models.customer.findOne({ where: { customerUniqueId } })
+
+    if (getCustomer.kycStatus != "approved") {
+        return res.status(400).json({ message: 'This customer Kyc is not completed' })
+    }
+    let getAppraiserId = await models.customerAssignAppraiser.findOne({ where: { customerId: getCustomer.id } })
 
     if (check.isEmpty(getAppraiserId)) {
         return res.status(400).json({ message: 'This customer Did not assign in to anyone' })
