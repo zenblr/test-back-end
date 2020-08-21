@@ -1761,6 +1761,10 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
     let customerLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
         attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure'],
+        order: [
+            [models.customerLoan, 'id', 'asc'],
+            ['id', 'DESC']
+        ],
         include: [
             {
                 model: models.customerLoan,
@@ -2067,6 +2071,13 @@ exports.getLoanDetails = async (req, res, next) => {
             as: 'fullRelease',
             attributes: ['amountStatus', 'fullReleaseStatus']
         },
+        {
+            model: models.customerLoanPackageDetails,
+            as: 'loanPacketDetails',
+            include: [{
+                model: models.packet,
+            }]
+        }
     ]
 
     let loanDetails = await models.customerLoanMaster.findAll({
@@ -2086,7 +2097,7 @@ exports.getLoanDetails = async (req, res, next) => {
         include: associateModel,
     });
     if (loanDetails.length === 0) {
-        return res.status(200).json({data:[]});
+        return res.status(200).json({ data: [] });
     } else {
         return res.status(200).json({ message: 'Loan details fetch successfully', data: loanDetails, count: count.length });
     }
