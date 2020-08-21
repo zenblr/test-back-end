@@ -87,12 +87,12 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     partnerBranchUser.associate = function (models) {
-        partnerBranchUser.belongsTo(models.city,{ foreignKey:'cityId',as: 'city'});
-        partnerBranchUser.belongsTo(models.state,{foreignKey:'stateId', as:'state'})
+        partnerBranchUser.belongsTo(models.city, { foreignKey: 'cityId', as: 'city' });
+        partnerBranchUser.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' })
         partnerBranchUser.belongsTo(models.partner, { foreignKey: 'partnerId', as: 'partner' });
         partnerBranchUser.belongsTo(models.partnerBranch, { foreignKey: 'branchId', as: 'partnerBranch' });
-        partnerBranchUser.hasMany(models.customerPacketLocation, { foreignKey: 'partnerSenderId', as: 'packetSender' });
-        partnerBranchUser.hasMany(models.customerPacketLocation, { foreignKey: 'partnerReceiverId', as: 'packetReceiver' });
+        partnerBranchUser.hasMany(models.customerPacketTracking, { foreignKey: 'partnerSenderId', as: 'packetSender' });
+        partnerBranchUser.hasMany(models.customerPacketTracking, { foreignKey: 'partnerReceiverId', as: 'packetReceiver' });
     }
 
     return partnerBranchUser;
