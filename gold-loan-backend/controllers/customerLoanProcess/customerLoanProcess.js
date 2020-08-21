@@ -325,8 +325,13 @@ exports.checkForLoanType = async (req, res, next) => {
         }
 
         let unsecureSchemeMaximumAmtAllowed = (unsecuredSchemeApplied.maximumPercentageAllowed / 100)
+        var unsecuredAmount
+        if (securedScheme.isSplitAtBeginning) {
+            unsecuredAmount = unsecuredSchemeAmount
+        } else {
 
-        var unsecuredAmount = Math.round(fullAmount * unsecureSchemeMaximumAmtAllowed)
+            unsecuredAmount = Math.round(fullAmount * unsecureSchemeMaximumAmtAllowed)
+        }
 
         let totalEligibleAmt = Math.round(fullAmount * (ltvPercent[0].ltvGoldValue / 100))
 
@@ -345,13 +350,13 @@ exports.checkForLoanType = async (req, res, next) => {
                     return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
 
                 }
-                // if (isLoanTransfer) {
-                //     if (Number(loanAmount) > totalEligibleAmt) {
-                if (!securedScheme.isSplitAtBeginning) {
-                    securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
-                    unsecuredAmount = Number(loanAmount - securedLoanAmount)
+                if (isLoanTransfer) {
+                    if (Number(loanAmount) > totalEligibleAmt) {
+                        // if (!securedScheme.isSplitAtBeginning) {
+                        securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
+                    }
                 }
-                // }
+                unsecuredAmount = Number(loanAmount - securedLoanAmount)
                 // } else if (Math.round(loanAmount) > Math.round(securedLoanAmount + unsecuredAmount)) {
                 //     return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
 
@@ -377,7 +382,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
                     } else {
 
-                        unsecuredAmount = Number(loanAmount - securedLoanAmount)
+                        unsecuredAmount = Number(loanAmount) - Number(securedLoanAmount)
                     }
 
                     processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
@@ -390,7 +395,7 @@ exports.checkForLoanType = async (req, res, next) => {
                     securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
                     unsecuredAmount = Number(loanAmount - securedLoanAmount)
                 } else {
-                    unsecuredAmount = Number(loanAmount - securedLoanAmount)
+                    unsecuredAmount = Number(loanAmount) - Number(securedLoanAmount)
                 }
 
                 processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
