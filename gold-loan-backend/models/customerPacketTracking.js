@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'customer_packet_location',
+        tableName: 'customer_packet_tracking',
     });
 
     // CUSTOMER PACKET LOCATION ASSOCIATION WITH MODULES
