@@ -5,7 +5,7 @@ const Op = Sequelize.Op;
 const check = require("../lib/checkLib");
 const moment = require("moment");
 const _ = require('lodash');
-let { getInterestTableOfSingleLoan, calculationData, checkPaidInterest, getFirstInterest, calculation, newSlabRateInterestCalcultaion, getStepUpslab, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getLastInterest } = require('./loanFunction')
+let { getFirstInterestToPay,getInterestTableOfSingleLoan, calculationData, checkPaidInterest, getFirstInterest, calculation, newSlabRateInterestCalcultaion, getStepUpslab, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getLastInterest } = require('./loanFunction')
 
 //cron for daily interest calculation
 exports.dailyIntrestCalculation = async (date) => {
@@ -16,6 +16,7 @@ exports.dailyIntrestCalculation = async (date) => {
     await sequelize.transaction(async t => {
         for (const loan of loanInfo) {
             let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
+            let firstInterestToPay = await getFirstInterestToPay(loan.id, loan.masterLoanId);
             let loanStartDate;
             if (!lastPaidEmi) {
                 loanStartDate = moment(loan.masterLoan.loanStartDate);
@@ -24,7 +25,8 @@ exports.dailyIntrestCalculation = async (date) => {
                 loanStartDate = moment(lastPaidEmi.emiDueDate);
                 noOfDays = currentDate.diff(loanStartDate, 'days');
             }
-            if (noOfDays > loan.currentSlab) {
+            let checkDueDateForSlab = moment(date).isAfter(firstInterestToPay.emiDueDate);//check due date to change slab
+            if (noOfDays > loan.currentSlab && checkDueDateForSlab) {
                 //scenario 2 slab changed
                 let stepUpSlab = await getStepUpslab(loan.id, noOfDays);
                 let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, stepUpSlab.interestRate, loan.selectedSlab, loan.masterLoan.tenure);

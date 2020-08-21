@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         partnerSenderId: {
             type: DataTypes.INTEGER,
-            field: 'partnerSenderId'
+            field: 'partner_sender_id'
         },
         receiverType: {
             type: DataTypes.ENUM,
@@ -24,19 +24,19 @@ module.exports = (sequelize, DataTypes) => {
         },
         customerReceiverId: {
             type: DataTypes.INTEGER,
-            field: 'customerReceiverId'
+            field: 'customer_receiver_id'
         },
         userReceiverId: {
             type: DataTypes.INTEGER,
-            field: 'userReceiverId'
+            field: 'user_receiver_id'
         },
         partnerReceiverId: {
             type: DataTypes.INTEGER,
-            field: 'partnerUserReceiverId'
+            field: 'partner_receiver_id'
         },
         packetStatus: {
             type: DataTypes.TEXT,
-            field: 'partnerUserReceiverId'
+            field: 'packet_status'
         }
     }, {
         freezeTableName: true,

@@ -416,6 +416,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
     await sequelize.transaction(async t => {
         for (const loan of loanInfo) {
             let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
+            let firstInterestToPay = await getFirstInterestToPay(loan.id, loan.masterLoanId);
             let loanStartDate;
             if (!lastPaidEmi) {
                 loanStartDate = moment(loan.masterLoan.loanStartDate);
@@ -424,7 +425,8 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                 loanStartDate = moment(lastPaidEmi.emiDueDate);
                 noOfDays = currentDate.diff(loanStartDate, 'days');
             }
-            if (noOfDays > loan.currentSlab) {
+            let checkDueDateForSlab = moment(date).isAfter(firstInterestToPay.emiDueDate);//check due date to change slab
+            if (noOfDays > loan.currentSlab && checkDueDateForSlab) {
                 //scenario 2 slab changed
                 let stepUpSlab = await getStepUpslab(loan.id, noOfDays);
                 let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, stepUpSlab.interestRate, loan.selectedSlab, loan.masterLoan.tenure);
@@ -873,6 +875,15 @@ let penalInterestPayment = async (loanArray, totalPenalAmount, createdBy) => {
     return { loanArray, transaction }
 }
 
+let getFirstInterestToPay = async (loanId, masterLaonId) => {
+    let firstInterest = await models.customerLoanInterest.findOne({
+        where: { loanId: loanId, masterLoanId: masterLaonId,emiStatus: { [Op.notIn]: ['paid'] } },
+        order: [['emiDueDate', 'ASC']],
+        attributes: ['id', 'paidAmount','emiDueDate']
+    })
+    return firstInterest
+}
+
 
 module.exports = {
     getGlobalSetting: getGlobalSetting,
@@ -903,5 +914,6 @@ module.exports = {
     customerLoanDetailsByMasterLoanDetails: customerLoanDetailsByMasterLoanDetails,
     allInterestPayment: allInterestPayment,
     penalInterestPayment: penalInterestPayment,
-    updateInterestAftertOutstandingAmount:updateInterestAftertOutstandingAmount
+    updateInterestAftertOutstandingAmount:updateInterestAftertOutstandingAmount,
+    getFirstInterestToPay:getFirstInterestToPay
 }
