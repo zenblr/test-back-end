@@ -58,7 +58,7 @@ const partnerBranch = require('./partnerBranch'); // branch Route
 router.use('/partner-branch', partnerBranch);
 
 const partnerBranchUser = require('./partnerBranchUser'); //Partner Branch User
-router.use('/partner-branch-user',partnerBranchUser);
+router.use('/partner-branch-user', partnerBranchUser);
 
 const role = require('./role'); // role Route
 router.use('/role', role)
@@ -134,7 +134,7 @@ const packet = require('./packet');
 router.use('/packet', packet)
 
 const packetTracking = require('./packetTracking'); // PACKET TRACKING DETAILS
-router.use('/packet-tracking',packetTracking)
+router.use('/packet-tracking', packetTracking)
 
 const uploadPacket = require('./uploadPackets');  //upload Packets List 
 router.use('/upload-packets-file', uploadPacket)
@@ -180,6 +180,8 @@ router.use('/quick-pay', quickPay);
 
 const deposit = require('./deposit');// DEPOSIT
 router.use('/deposit',deposit);
+const partPayment = require('./partPayment');
+router.use('/part-payment', partPayment);
 
 const scrapPacket = require('./scrap/scrapPacket'); // Scrap packet
 router.use('/scrap/packet', scrapPacket);

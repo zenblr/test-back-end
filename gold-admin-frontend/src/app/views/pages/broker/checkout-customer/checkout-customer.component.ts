@@ -60,7 +60,7 @@ export class CheckoutCustomerComponent implements OnInit {
       postalCode: ['', Validators.required],
       stateName: ['', Validators.required],
       cityName: ['', Validators.required],
-      panCardNumber: ['', Validators.compose([Validators.required, Validators.pattern("[A-Z]{5}[0-9]{4}[A-Z]{1}")])],
+      panCardNumber: ['', Validators.compose([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])],
       nameOnPanCard: ['', Validators.compose([Validators.required, Validators.pattern("^[a-zA-Z ]*$")])],
       panCardFileId: [''],
       kycRequired: [false],
@@ -195,8 +195,8 @@ export class CheckoutCustomerComponent implements OnInit {
             panCardFileId: res.customerDetails.kycDetails.panCardFileId
           });
         } else {
+          this.controls['nameOnPanCard'].patchValue(res.customerDetails.firstName + ' ' + res.customerDetails.lastName);
           this.controls['panCardNumber'].enable();
-          this.controls['nameOnPanCard'].enable();
           this.controls['panCardFileId'].enable();
         }
         // if (this.showPrefilledDataFlag) {
@@ -221,6 +221,7 @@ export class CheckoutCustomerComponent implements OnInit {
         this.checkCustomerType('new');
         setTimeout(() => {
           this.checkoutCustomerForm.controls['mobileNumber'].patchValue(this.numberSearchForm.controls.mobileNo.value);
+          this.checkoutCustomerForm.controls['mobileNumber'].disable();
         });
       });
   }
@@ -274,8 +275,8 @@ export class CheckoutCustomerComponent implements OnInit {
     this.checkoutCustomerService.generateOTPAdmin(generateOTPData).subscribe(res => {
       console.log(res);
       this.finalOrderData = res;
-      const msg = 'OTP has been sent successfully.';
-      this.toastr.successToastr(msg);
+      // const msg = 'OTP has been sent successfully.';
+      this.toastr.successToastr(res.message);
     },
       error => {
         console.log(error.error.message);

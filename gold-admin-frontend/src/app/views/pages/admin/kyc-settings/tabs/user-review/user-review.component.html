@@ -152,12 +152,16 @@
                                 <label [class.mandatory]="viewOnly" class="">Aadhaar No.</label>
                             </div>
                             <div class="col-7">
-                                <input formControlName="identityProofNumber" type="text"
+                                <input formControlName="identityProofNumber" type="text" maxlength="12"
                                     placeholder="Unique Identity Number" class="form-control"
                                     [class.isError]="reviewForm.controls.identityProofNumber.touched && reviewForm.controls.identityProofNumber.invalid">
                                 <mat-error
                                     *ngIf="reviewForm.controls.identityProofNumber.errors?.required && reviewForm.controls.identityProofNumber.touched">
                                     Required field
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="reviewForm.controls.identityProofNumber.errors?.pattern && reviewForm.controls.identityProofNumber.touched">
+                                    Invalid Input
                                 </mat-error>
                             </div>
                         </div>
