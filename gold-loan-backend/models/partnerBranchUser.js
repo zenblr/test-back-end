@@ -91,8 +91,8 @@ module.exports = (sequelize, DataTypes) => {
         partnerBranchUser.belongsTo(models.state,{foreignKey:'stateId', as:'state'})
         partnerBranchUser.belongsTo(models.partner, { foreignKey: 'partnerId', as: 'partner' });
         partnerBranchUser.belongsTo(models.partnerBranch, { foreignKey: 'branchId', as: 'partnerBranch' });
-        partnerBranchUser.hasMany(models.customerPacketLocation, { foreignKey: 'emitterPartnerUserId', as: 'emitterPartnerUser' });
-        partnerBranchUser.hasMany(models.customerPacketLocation, { foreignKey: 'receiverPartnerUserId', as: 'receiverPartnerUser' });
+        partnerBranchUser.hasMany(models.customerPacketLocation, { foreignKey: 'partnerSenderId', as: 'packetSender' });
+        partnerBranchUser.hasMany(models.customerPacketLocation, { foreignKey: 'partnerReceiverId', as: 'packetReceiver' });
     }
 
     return partnerBranchUser;
