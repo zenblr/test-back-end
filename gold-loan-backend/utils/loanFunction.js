@@ -39,7 +39,7 @@ let getCustomerInterestAmount = async (masterLoanId) => {
     return amount
 }
 
-let payableAmount = async (amount, loan) => {
+let payableAmountForLoan = async (amount, loan) => {
     let securedPenalInterest = amount.secured.penalInterest
     let securedInterest = amount.secured.interest
     let interest = amount.secured.interest
@@ -61,9 +61,9 @@ let payableAmount = async (amount, loan) => {
     data.unsecuredPenalInterest = unsecuredPenalInterest
     data.securedInterest = securedInterest
     data.unsecuredInterest = unsecuredInterest
-    data.interest = interest
-    data.penalInterest = penalInterest
-    data.payableAmount = payableAmount
+    data.interest = Number((interest).toFixed(2))
+    data.penalInterest = Number((penalInterest).toFixed(2))
+    data.payableAmount = Number((payableAmount).toFixed(2))
 
     return data
 }
@@ -91,7 +91,14 @@ let getLoanDetails = async (masterLoanId) => {
             {
                 model: models.customerLoan,
                 as: 'customerLoan',
-                where: { isActive: true }
+                where: { isActive: true },
+                include: [
+                    {
+                        model: models.scheme,
+                        as: 'scheme',
+                        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                    }
+                ]
             }
         ]
     })
@@ -548,14 +555,20 @@ let updateInterestAftertOutstandingAmount= async (date, masterLoanId) => {
 let customerLoanDetailsByMasterLoanDetails = async (masterLoanId) => {
     let loan = await models.customerLoanMaster.findOne({
         where: { isActive: true, id: masterLoanId },
-        attributes: ['id', 'outstandingAmount', 'finalLoanAmount', 'tenure', 'isUnsecuredSchemeApplied'],
         order: [
             [models.customerLoan, 'id', 'asc']
         ],
         include: [{
             model: models.customerLoan,
             as: 'customerLoan',
-            where: { isActive: true }
+            where: { isActive: true },
+            include: [
+                {
+                    model: models.scheme,
+                    as: 'scheme',
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                }
+            ]
         }]
     });
 
@@ -886,7 +899,7 @@ module.exports = {
     getCustomerLoanId: getCustomerLoanId,
     calculationDataOneLoan: calculationDataOneLoan,
     intrestCalculationForSelectedLoan: intrestCalculationForSelectedLoan,
-    payableAmount: payableAmount,
+    payableAmountForLoan: payableAmountForLoan,
     customerLoanDetailsByMasterLoanDetails: customerLoanDetailsByMasterLoanDetails,
     allInterestPayment: allInterestPayment,
     penalInterestPayment: penalInterestPayment,
