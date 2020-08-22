@@ -5,6 +5,7 @@ import { SharedService } from '../../../../core/shared/services/shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/broker';
 import { RazorpayPaymentService } from '../../../../core/shared/services/razorpay-payment.service';
+import { MatCheckbox } from '@angular/material';
 
 @Component({
   selector: 'kt-checkout-customer',
@@ -18,10 +19,12 @@ export class CheckoutCustomerComponent implements OnInit {
   otpForm: FormGroup;
   stateList = [];
   cityList = [];
+  shippingCityList = [];
   showformFlag = false;
   showPlaceOrderFlag = false;
   showNumberSearchFlag = true;
   showCustomerFlag = false;
+  showShippingCustomerFlag = false;
   isMandatory = true;
   showPrefilledDataFlag = false;
   checkoutData: any;
@@ -47,7 +50,7 @@ export class CheckoutCustomerComponent implements OnInit {
 
   formInitialize() {
     this.numberSearchForm = this.fb.group({
-      mobileNo: ['', Validators.required]
+      mobileNo: ['', [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
     });
 
     this.checkoutCustomerForm = this.fb.group({
@@ -57,9 +60,14 @@ export class CheckoutCustomerComponent implements OnInit {
       email: ['', Validators.email],
       address: ['', Validators.required],
       landMark: ['', Validators.required],
-      postalCode: ['', Validators.required],
+      postalCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       stateName: ['', Validators.required],
       cityName: ['', Validators.required],
+      shippingAddress: ['', Validators.required],
+      shippingLandMark: ['', Validators.required],
+      shippingStateName: ['', Validators.required],
+      shippingCityName: ['', Validators.required],
+      shippingPostalCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       panCardNumber: ['', Validators.compose([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])],
       nameOnPanCard: ['', Validators.compose([Validators.required, Validators.pattern("^[a-zA-Z ]*$")])],
       panCardFileId: [''],
@@ -138,12 +146,14 @@ export class CheckoutCustomerComponent implements OnInit {
       this.showPlaceOrderFlag = true;
       // this.showNumberSearchFlag = false;
       this.showCustomerFlag = false;
+      this.showShippingCustomerFlag = false;
       this.checkoutCustomerForm.enable();
     } else {
       this.showformFlag = false;
       this.showPlaceOrderFlag = false;
       // this.showNumberSearchFlag = true;
       this.showCustomerFlag = true;
+      this.showShippingCustomerFlag = true;
       this.checkoutCustomerForm.disable();
     }
   }
@@ -169,7 +179,6 @@ export class CheckoutCustomerComponent implements OnInit {
           lastName: res.customerDetails.lastName,
           mobileNumber: res.customerDetails.mobileNumber,
           email: res.customerDetails.email,
-          postalCode: res.customerDetails.pinCode,
           kycRequired: res.kycRequired,
         });
         if (res.customerDetails.customeraddress.length) {
@@ -178,6 +187,7 @@ export class CheckoutCustomerComponent implements OnInit {
             landMark: res.customerDetails.customeraddress[0].landMark,
             stateName: res.customerDetails.customeraddress[0].stateId,
             cityName: res.customerDetails.customeraddress[0].cityId,
+            postalCode: res.customerDetails.customeraddress[0].postalCode,
           });
           this.showCustomerFlag = true;
         } else {
@@ -185,9 +195,28 @@ export class CheckoutCustomerComponent implements OnInit {
           this.controls['landMark'].enable();
           this.controls['stateName'].enable();
           this.controls['cityName'].enable();
+          this.controls['postalCode'].enable();
           this.showCustomerFlag = false;
         }
         this.getCities();
+        if (res.customerDetails.customerOrderAddress.length) {
+          this.checkoutCustomerForm.patchValue({
+            shippingAddress: res.customerDetails.customerOrderAddress[0].shippingAddress,
+            shippingLandMark: res.customerDetails.customerOrderAddress[0].shippingLandMark,
+            shippingStateName: res.customerDetails.customerOrderAddress[0].shippingStateId,
+            shippingCityName: res.customerDetails.customerOrderAddress[0].shippingCityId,
+            shippingPostalCode: res.customerDetails.customerOrderAddress[0].shippingPostalCode,
+          });
+          this.showShippingCustomerFlag = true;
+        } else {
+          this.showShippingCustomerFlag = false;
+        }
+        this.controls['shippingAddress'].enable();
+        this.controls['shippingLandMark'].enable();
+        this.controls['shippingStateName'].enable();
+        this.controls['shippingCityName'].enable();
+        this.controls['shippingPostalCode'].enable();
+        this.getShippingCities();
         if (res.customerDetails.kycDetails) {
           this.checkoutCustomerForm.patchValue({
             panCardNumber: res.customerDetails.kycDetails.panCardNumber,
@@ -208,6 +237,7 @@ export class CheckoutCustomerComponent implements OnInit {
       this.showformFlag = true;
       this.showPlaceOrderFlag = true;
       this.showCustomerFlag = true;
+      this.showShippingCustomerFlag = true;
       this.finalOrderData = null;
       this.checkoutCustomerForm.disable();
       this.ref.detectChanges();
@@ -247,6 +277,43 @@ export class CheckoutCustomerComponent implements OnInit {
     }
   }
 
+  getShippingCities() {
+    if (this.controls.shippingStateName.value == '') {
+      this.shippingCityList = [];
+    } else {
+      let stateData;
+      if (this.showShippingCustomerFlag) {
+        stateData = this.controls.shippingStateName.value;
+      } else {
+        stateData = this.controls.shippingStateName.value.id;
+      }
+      this.sharedService.getCities(stateData).subscribe(res => {
+        this.shippingCityList = res.data;
+        this.ref.detectChanges();
+      });
+    }
+  }
+
+  sameAddress(event: MatCheckbox) {
+    if (event) {
+      this.checkoutCustomerForm.patchValue({
+        shippingAddress: this.controls.address.value,
+        shippingLandMark: this.controls.landMark.value,
+        shippingStateName: this.controls.stateName.value,
+        shippingCityName: this.controls.cityName.value,
+        shippingPostalCode: this.controls.postalCode.value,
+      });
+    } else {
+      this.checkoutCustomerForm.patchValue({
+        shippingAddress: null,
+        shippingLandMark: null,
+        shippingStateName: [''],
+        shippingCityName: [''],
+        shippingPostalCode: null,
+      });
+    }
+  }
+
   generateOTP() {
     if (this.checkoutCustomerForm.invalid) {
       this.checkoutCustomerForm.markAllAsTouched();
@@ -262,6 +329,11 @@ export class CheckoutCustomerComponent implements OnInit {
       postalCode: this.controls.postalCode.value,
       stateName: this.controls.stateName.value.name,
       cityName: this.controls.cityName.value.name,
+      shippingAddress: this.controls.shippingAddress.value,
+      shippingLandMark: this.controls.shippingLandMark.value,
+      shippingStateName: this.controls.shippingStateName.value.name,
+      shippingCityName: this.controls.shippingCityName.value.name,
+      shippingPostalCode: this.controls.shippingPostalCode.value,
       panCardNumber: this.controls.panCardNumber.value,
       nameOnPanCard: this.controls.nameOnPanCard.value,
       panCardFileId: this.controls.panCardFileId.value,
@@ -270,6 +342,10 @@ export class CheckoutCustomerComponent implements OnInit {
     if (this.showCustomerFlag && this.existingCustomerData.customerDetails.customeraddress.length) {
       generateOTPData.stateName = this.existingCustomerData.customerDetails.customeraddress[0].state.name;
       generateOTPData.cityName = this.existingCustomerData.customerDetails.customeraddress[0].city.name;
+    }
+    if (this.showShippingCustomerFlag && this.existingCustomerData.customerDetails.customerOrderAddress.length) {
+      generateOTPData.shippingStateName = this.existingCustomerData.customerDetails.customerOrderAddress[0].shippingState.name;
+      generateOTPData.shippingCityName = this.existingCustomerData.customerDetails.customerOrderAddress[0].shippingCity.name;
     }
     console.log(generateOTPData)
     this.checkoutCustomerService.generateOTPAdmin(generateOTPData).subscribe(res => {

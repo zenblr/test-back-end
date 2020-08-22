@@ -6,7 +6,7 @@ module.exports = {
     PART_RELEASE_AMOUNT_STATUS_R:"Amount status changed to rejected",
     PART_RELEASE_ASSIGNED_APPRAISER:"Assigned appraiser for process",
     PART_RELEASE_UPDATED_APPRAISER:"Updated appraiser for process",
-    PART_RELEASE_STATUS_P:"Amount status changed to pending",
-    PART_RELEASE_STATUS_R:"Amount status changed to released",
+    PART_RELEASE_STATUS_P:"Appraiser changed status to pending",
+    PART_RELEASE_STATUS_R:"Appraiser changed status to released",
     PART_RELEASE_DOCUMENT:"Part release documents uploaded",
 }

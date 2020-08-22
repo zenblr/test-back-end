@@ -80,10 +80,12 @@ export class PartReleaseApprovalComponent implements OnInit {
   }
 
   ornamentsDetails(item) {
+    const packetArr = item.map(e => ({ ...e, packetId: e.packets[0].packetUniqueId }))
+
     this.dialog.open(OrnamentsComponent, {
       data: {
         modal: true,
-        modalData: item,
+        modalData: packetArr,
         packetView: false
       },
       width: '90%'
@@ -109,7 +111,7 @@ export class PartReleaseApprovalComponent implements OnInit {
   }
 
   updateStatus(item) {
-    const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'edit', value: item }, width: 'auto' });
+    const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'edit', value: item, name: 'jewelleryReleaseApproval' }, width: 'auto' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();

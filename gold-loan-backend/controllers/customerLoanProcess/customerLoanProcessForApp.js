@@ -54,7 +54,15 @@ exports.loanRequest = async (req, res, next) => {
             let deleteOrnaments = await _.difference(oldOrnaments, newOrnaments);
 
             await models.customerLoanOrnamentsDetail.destroy({ where: { id: { [Op.in]: deleteOrnaments } }, transaction: t });
-            
+
+            for (let i = 0; i < loanOrnaments.length; i++) {
+                loanOrnaments[i]['createdBy'] = createdBy
+                loanOrnaments[i]['modifiedBy'] = modifiedBy
+                loanOrnaments[i]['loanId'] = loanId
+                loanOrnaments[i]['masterLoanId'] = masterLoanId
+                allOrnmanets.push(loanOrnaments[i])
+            }
+
             let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate(loanOrnaments, { updateOnDuplicate: ["ornamentTypeId", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest", "karat", "ltvRange", "ornamentImage", "ltvPercent", "ltvAmount", "currentLtvAmount", "ornamentFullAmount"] }, { transaction: t })
 
             // for (let singleOrna of loanOrnaments) {

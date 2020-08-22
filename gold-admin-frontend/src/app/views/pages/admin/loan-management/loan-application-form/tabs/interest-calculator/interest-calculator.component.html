@@ -255,7 +255,7 @@
                                     <th scope="col" class=" text-center"
                                         *ngIf="controls.isUnsecuredSchemeApplied.value">
                                         {{partnerName | uppercase }} /
-                                        {{selectedUnsecuredscheme?.schemeName | titlecase}}
+                                        {{selectedUnsecuredscheme.schemeName | titlecase}}
                                         ({{controls.unsecuredInterestRate.value}}%)
                                     </th>
                                     <th scope="col" class=" text-center"
@@ -267,7 +267,7 @@
                             <tbody>
                                 <tr *ngFor="let data of dateOfPayment;index as idx; last as last">
                                     <td *ngIf="approved">{{data.emiDueDate | date :'mediumDate'}}</td>
-                                    <td *ngIf="!approved">{{data.paymentType | uppercase}}&nbsp;{{idx+1}}</td>
+                                    <td *ngIf="!approved">{{data.paymentType | uppercase}}&nbsp;({{idx+1}})</td>
 
                                     <td class="text-center currency">
                                         {{data.securedInterestAmount | indianCurrencyFormat}}
