@@ -159,12 +159,12 @@ exports.cronForDailyPenalInterest = async (datee) => {
             if (dataInfo[j + 1] != undefined) {
                 penalOutstanding = penalAccrual - dataInfo[j + 1].penalPaid
                 console.log("update", penalAccrual, dataInfo[j + 1].id)
-                // await models.customerLoanInterest.update({ penalAccrual: penalAccrual, penalOutstanding: penalOutstanding }, { where: { id: dataInfo[j + 1].id } })
+                await models.customerLoanInterest.update({ penalAccrual: penalAccrual, penalOutstanding: penalOutstanding }, { where: { id: dataInfo[j + 1].id } })
             } else {
                 penalAccrual = Number(penalAccrual) + Number(dataInfo[dataInfo.length - 1].penalAccrual)
                 penalOutstanding = penalAccrual - dataInfo[j].penalPaid
                 console.log("update", penalAccrual, dataInfo[j].id)
-                // await models.customerLoanInterest.update({ penalAccrual: penalAccrual, penalOutstanding: penalOutstanding }, { where: { id: dataInfo[j].id } })
+                await models.customerLoanInterest.update({ penalAccrual: penalAccrual, penalOutstanding: penalOutstanding }, { where: { id: dataInfo[j].id } })
             }
         }
     }

@@ -13,19 +13,19 @@ const { getCustomerInterestAmount, intrestCalculationForSelectedLoan, updateInte
 
 // add internal branch
 
-// exports.interestCalculation = async (req, res) => {
-//     let data;
-//     let { date } = req.body;
-//     if (date) {
-//         data = await dailyIntrestCalculation(date);
-//         await  cronForDailyPenalInterest(date)
-//     } else {
-//         date = moment();
-//         data = await dailyIntrestCalculation(date);
-//         await  cronForDailyPenalInterest(date)
-//     }
-//     return res.status(200).json(data);
-// }
+exports.interestCalculation = async (req, res) => {
+    let data;
+    let { date } = req.body;
+    if (date) {
+        data = await dailyIntrestCalculation(date);
+        await cronForDailyPenalInterest(date)
+    } else {
+        date = moment();
+        data = await dailyIntrestCalculation(date);
+        await cronForDailyPenalInterest(date)
+    }
+    return res.status(200).json(data);
+}
 
 exports.penalInterestCalculation = async (req, res) => {
     // let date = moment()
