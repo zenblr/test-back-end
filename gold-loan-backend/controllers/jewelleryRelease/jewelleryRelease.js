@@ -492,6 +492,9 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         include: [
             {
                 model: models.packet
+            },{
+                model: models.ornamentType,
+                as: "ornamentType"
             }
         ]
     }, {
