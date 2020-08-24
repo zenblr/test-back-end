@@ -37,8 +37,8 @@ export class PacketTrackingService {
     )
   }
 
-  getPacketLog(search, from, to): Observable<any> {
-    return this.http.get(`/api/packet-tracking/view-log?search=${search}&from=${from}&to=${to}`).pipe(
+  getPacketLog(masterLoanId,loanId,search, from, to): Observable<any> {
+    return this.http.get(`/api/packet-tracking/view-log?masterLoanId=${masterLoanId}&loanId=${loanId}&search=${search}&from=${from}&to=${to}`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
