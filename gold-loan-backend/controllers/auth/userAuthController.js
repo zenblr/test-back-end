@@ -53,7 +53,8 @@ exports.userLogin = async (req, res, next) => {
                 roleId: userRoleId,
                 roleName: roleName,
                 userTypeId: checkUser.userTypeId,
-                internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId
+                internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId,
+                userBelongsTo: "internaluser"
             },
                 JWT_SECRETKEY, {
                 expiresIn: JWT_EXPIRATIONTIME
@@ -67,7 +68,8 @@ exports.userLogin = async (req, res, next) => {
                 roleId: userRoleId,
                 roleName: roleName,
                 userTypeId: checkUser.userTypeId,
-                internalBranchId: null
+                internalBranchId: null,
+                userBelongsTo: "internaluser"
             },
                 JWT_SECRETKEY, {
                 expiresIn: JWT_EXPIRATIONTIME
@@ -186,7 +188,8 @@ exports.verifyLoginOtp = async (req, res, next) => {
             roleId: roleId,
             roleName: roleName,
             userTypeId: checkUser.userTypeId,
-            internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId
+            internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId,
+            userBelongsTo: "internaluser"
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME

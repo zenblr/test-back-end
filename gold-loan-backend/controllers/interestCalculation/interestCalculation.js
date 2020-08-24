@@ -6,8 +6,9 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const _ = require('lodash');
 const moment = require('moment')
-const { dailyIntrestCalculation,cronForDailyPenalInterest } = require('../../utils/interestCron');
-const { getCustomerInterestAmount,intrestCalculationForSelectedLoan,updateInterestAftertOutstandingAmount } = require('../../utils/loanFunction');
+const { dailyIntrestCalculation, cronForDailyPenalInterest } = require('../../utils/interestCron');
+const { getCustomerInterestAmount, intrestCalculationForSelectedLoan, updateInterestAftertOutstandingAmount,
+    calculationData, getInterestTableOfSingleLoan, getAllPaidInterest } = require('../../utils/loanFunction');
 
 
 // add internal branch
@@ -17,28 +18,76 @@ exports.interestCalculation = async (req, res) => {
     let { date } = req.body;
     if (date) {
         data = await dailyIntrestCalculation(date);
-        await  cronForDailyPenalInterest(date)
+        await cronForDailyPenalInterest(date)
     } else {
         date = moment();
         data = await dailyIntrestCalculation(date);
-        await  cronForDailyPenalInterest(date)
-
+        await cronForDailyPenalInterest(date)
     }
-
     return res.status(200).json(data);
+}
+
+exports.penalInterestCalculation = async (req, res) => {
+    // let date = moment()
+    // let info = await calculationData();
+    // let data = info.loanInfo
+    // let { gracePeriodDays, noOfDaysInYear } = info
+    // for (let i = 0; i < data.length; i++) {
+    //     let penal = (data[i].penalInterest / 100)
+    //     let selectedSlab = data[i].selectedSlab
+    //     let dataInfo = await getInterestTableOfSingleLoan(data[i].id)
+    //     for (let j = 0; j < dataInfo.length; j++) {
+    //         //due date from db
+    //         const dueDate = moment(dataInfo[j].emiDueDate);
+    //         let nextDueDate
+    //         if (dataInfo[j + 1] == undefined) {
+    //             nextDueDate = moment(date);
+    //         } else {
+    //             nextDueDate = moment(dataInfo[j + 1].emiDueDate)
+    //         }
+    //         //current date
+    //         const currentDate = moment(date);
+    //         let daysCount = currentDate.diff(dueDate, 'days');
+    //         let daysCount2 = nextDueDate.diff(dueDate, 'days');
+    //         if (daysCount < gracePeriodDays) {
+    //             break
+    //         }
+    //         if (daysCount < selectedSlab) {
+    //             daysCount2 = currentDate.diff(dueDate, 'days');
+    //         }
+    //         if (dueDate > currentDate) {
+    //             break
+    //         }
+    //         let penelInterest = Number((((data[i].outstandingAmount * penal) / noOfDaysInYear) * daysCount2).toFixed(2))
+    //         let penalAccrual = penelInterest
+    //         let penalOutstanding;
+    //         if (dataInfo[j + 1] != undefined) {
+    //             penalOutstanding = penalAccrual - dataInfo[j + 1].penalPaid
+    //             console.log("update", penalAccrual, dataInfo[j + 1].id)
+    //             // await models.customerLoanInterest.update({ penalAccrual: penalAccrual, penalOutstanding: penalOutstanding }, { where: { id: dataInfo[j + 1].id } })
+    //         } else {
+    //             penalAccrual = Number(penalAccrual) + Number(dataInfo[dataInfo.length - 1].penalAccrual)
+    //             penalOutstanding = penalAccrual - dataInfo[j].penalPaid
+    //             console.log("update", penalAccrual, dataInfo[j].id)
+    //             // await models.customerLoanInterest.update({ penalAccrual: penalAccrual, penalOutstanding: penalOutstanding }, { where: { id: dataInfo[j].id } })
+    //         }
+    //     }
+    // }
+
+    // return res.status(200).json(data);
 }
 
 exports.interestCalculationOneLoan = async (req, res) => {
     let data;
     let { date, masterLoanId } = req.body;
     if (date) {
-        data = await intrestCalculationForSelectedLoan(date,masterLoanId);
-        await  cronForDailyPenalInterest(date)
+        data = await intrestCalculationForSelectedLoan(date, masterLoanId);
+        await cronForDailyPenalInterest(date)
 
     } else {
         date = moment();
-        data = await intrestCalculationForSelectedLoan(date,masterLoanId);
-        await  cronForDailyPenalInterest(date)
+        data = await intrestCalculationForSelectedLoan(date, masterLoanId);
+        await cronForDailyPenalInterest(date)
 
     }
     return res.status(200).json(data);
@@ -48,10 +97,10 @@ exports.interestCalculationUpdate = async (req, res) => {
     let data;
     let { date, masterLoanId } = req.body;
     if (date) {
-        data = await updateInterestAftertOutstandingAmount(date,masterLoanId);
+        data = await updateInterestAftertOutstandingAmount(date, masterLoanId);
     } else {
         date = moment();
-        data = await updateInterestAftertOutstandingAmount(date,masterLoanId);
+        data = await updateInterestAftertOutstandingAmount(date, masterLoanId);
     }
     return res.status(200).json(data);
 }
@@ -100,7 +149,7 @@ exports.getInterestTableInExcel = async (req, res) => {
 
 exports.getTransactionDetailTable = async (req, res) => {
     let { masterLoanId } = req.query;
-    let transactionDetails = await models.customerTransactionDetail.findAll({where:{masterLoanId:masterLoanId}},{ order: [['id', 'ASC']] });
+    let transactionDetails = await models.customerTransactionDetail.findAll({ where: { masterLoanId: masterLoanId } }, { order: [['id', 'ASC']] });
     let finalData = [];
 
     for (const data of transactionDetails) {
@@ -195,42 +244,3 @@ exports.app = async (req, res) => {
     return res.status(200).json({ data: [] })
 
 }
-
-// async function getPenal(info) {
-//     let data = info.loanInfo
-//     let { gracePeriodDays, noOfDaysInYear } = info
-//     for (let i = 0; i < data.length; i++) {
-//         let penal = (data[i].scheme.penalInterest / 100)
-//         let dataInfo = await models.customerLoanInterest.findAll({
-//             where: {
-//                 loanId: data[i].id,
-//                 emiStatus: { [Op.notIn]: ['paid'] },
-//             },
-//             order: [['id', 'asc']],
-//             attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-//         })
-//         //due date from db
-//         let dueDateFromDb = dataInfo[0].emiDueDate
-//         const dueDate = moment(dueDateFromDb);
-//         //current date
-//         let inDate = moment(moment.utc(moment(new Date())).toDate()).format('YYYY-MM-DD');
-//         const currentDate = moment(inDate);
-//         let daysCount = currentDate.diff(dueDateFromDb, 'days');
-
-//         if (currentDate > dueDate) {
-//             if (daysCount > gracePeriodDays) {
-//                 var penelInterest
-//                 var lastPenalPaid = moment(data[i].penalInterestLastReceivedDate)
-//                 if (data[i].penalInterestLastReceivedDate == null) {
-//                     penelInterest = Number((((data[i].outstandingAmount * penal) / noOfDaysInYear) * daysCount).toFixed(2))
-//                 } else {
-//                     daysCount = currentDate.diff(lastPenalPaid, 'days');
-//                     penelInterest = Number((((data[i].outstandingAmount * penal) / noOfDaysInYear) * daysCount).toFixed(2))
-//                 }
-//                 console.log(penelInterest, data[i].id, daysCount)
-//                 await models.customerLoanInterest.update({ PenalAccrual: penelInterest }, { where: { id: dataInfo[0].id } })
-//             }
-//         }
-//     }
-
-// }
