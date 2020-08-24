@@ -141,4 +141,12 @@ export class SharedService {
 			return of(details);
 		}
 	}
+
+	getTokenDecode(): Observable<any> {
+		let token = localStorage.getItem("UserDetails");
+		if (token) {
+			let decodedValue = JSON.parse(atob(token.split(".")[1]));
+			return of(decodedValue);
+		}
+	}
 }

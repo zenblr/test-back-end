@@ -1,47 +1,51 @@
-// Angular
 import { Component, Input, OnInit } from '@angular/core';
-// RxJS
 import { Observable } from 'rxjs';
-// NGRX
-
-// State
-
+import { AuthService } from '../../../../../core/auth';
+import { SharedService } from '../../../../../core/shared/services/shared.service';
+import { Router } from '@angular/router';
+import { map, catchError } from 'rxjs/operators';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
 	selector: 'kt-user-profile',
 	templateUrl: './user-profile.component.html',
 })
 export class UserProfileComponent implements OnInit {
-	// Public properties
-
-	@Input() avatar = true;
-	@Input() greeting = true;
+	user$: Observable<any>;
+	@Input() avatar: boolean = true;
+	@Input() greeting: boolean = true;
 	@Input() badge: boolean;
 	@Input() icon: boolean;
 
-	/**
-	 * Component constructor
-	 *
-	 * 
-	 */
-	constructor() {
-	}
+	constructor(
+		private router: Router,
+		private sharedService: SharedService,
+		private auth: AuthService,
+		private cookieService: CookieService
+	) { }
 
-	/**
-	 * @ Lifecycle sequences => https://angular.io/guide/lifecycle-hooks
-	 */
-
-	/**
-	 * On init
-	 */
 	ngOnInit(): void {
-		
+		this.user$ = this.sharedService.getTokenDecode()
 	}
 
-	/**
-	 * Log out
-	 */
+	redirectToMyTask() {
+		this.router.navigate(['/mytask']);
+	}
+
 	logout() {
-		
+		this.auth.logout().pipe(map(
+			res => {
+				localStorage.clear();
+				this.cookieService.deleteAll();
+				this.sharedService.role.next(null);
+				this.router.navigate(['/auth/login']);
+			}
+		), catchError(err => {
+			throw err
+		})).subscribe()
+	}
+
+	redirect() {
+		this.router.navigate(['/viewuser']);
 	}
 }
