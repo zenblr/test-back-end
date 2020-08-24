@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     PacketLocation.associate = function (models) {
-        PacketLocation.hasMany(models.packetTracking, { foreignKey: 'packetLoactionId', as: 'packetTracking' })
+        // PacketLocation.hasMany(models.packetTracking, { foreignKey: 'packetLoactionId', as: 'packetTracking' })
     }
 
     return PacketLocation;

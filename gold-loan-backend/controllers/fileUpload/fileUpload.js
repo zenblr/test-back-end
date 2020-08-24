@@ -11,6 +11,7 @@ exports.uploadFile =
             const fileFor = req.query.reason;
             const loanId = req.query.loanId;
             const partReleaseId = req.query.partReleaseId;
+            const fullReleaseId = req.query.fullReleaseId;
             const customerId = req.query.customerId;
             const partnerId = req.query.partnerId;
             const scrapId = req.query.scrapId;
@@ -43,6 +44,8 @@ exports.uploadFile =
                 destination = `public/uploads/scrap/customerPasbookDetails/${scrapId}/`
             }else if(fileFor == "customerDocumentDetails"){
                 destination = `public/uploads/scrap/customerDocumentDetails/${scrapId}/`
+            }else if (fileFor == "fullRelease") {
+                destination = `public/uploads/fullRelease/${fullReleaseId}/`;
             } else {
                 return res.status(422).json({ message: 'reason not found' });
             }

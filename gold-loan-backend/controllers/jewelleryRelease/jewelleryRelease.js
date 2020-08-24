@@ -52,7 +52,7 @@ exports.ornamentsDetails = async (req, res, next) => {
 
 async function getLoanLastPayment(masterLoanId) {
     let lastPayment = await models.customerLoanInterest.findOne({
-        where: { masterLoanId: masterLoanId, emiStatus: "complete" },
+        where: { masterLoanId: masterLoanId, emiStatus: "complete",isExtraDaysInterest:false },
         order: [["updatedAt", "DESC"]],
     });
     return lastPayment;
@@ -380,6 +380,12 @@ exports.updateAmountStatus = async (req, res, next) => {
                     await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_AMOUNT_STATUS_R, createdBy, modifiedBy }, { transaction: t });
                 });
                 return res.status(200).json({ message: "success" });
+            }else if(amountStatus == 'pending'){
+                await sequelize.transaction(async t => {
+                    await models.partRelease.update({ amountStatus: 'pending', modifiedBy }, { where: { id: partReleaseId }, transaction: t });
+                    await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_AMOUNT_STATUS_P, createdBy, modifiedBy }, { transaction: t });
+                });
+                return res.status(200).json({ message: "success" });
             }
         } else { return res.status(400).json({ message: "you can't change status as it's already updated" }); }
     } else {
@@ -486,6 +492,9 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         include: [
             {
                 model: models.packet
+            },{
+                model: models.ornamentType,
+                as: "ornamentType"
             }
         ]
     }, {
@@ -857,6 +866,12 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
                 await sequelize.transaction(async t => {
                     await models.fullRelease.update({ amountStatus: 'rejected', modifiedBy }, { where: { id: fullReleaseId }, transaction: t });
                     await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_AMOUNT_STATUS_R, createdBy, modifiedBy }, { transaction: t });
+                });
+                return res.status(200).json({ message: "success" });
+            } else if (amountStatus == 'pending') {
+                await sequelize.transaction(async t => {
+                    await models.fullRelease.update({ amountStatus: 'pending', modifiedBy }, { where: { id: fullReleaseId }, transaction: t });
+                    await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_AMOUNT_STATUS_P, createdBy, modifiedBy }, { transaction: t });
                 });
                 return res.status(200).json({ message: "success" });
             }
