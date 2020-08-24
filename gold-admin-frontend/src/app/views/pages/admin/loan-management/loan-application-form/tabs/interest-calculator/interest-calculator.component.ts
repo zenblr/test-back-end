@@ -7,7 +7,7 @@ import { catchError, map, finalize, takeUntil, debounceTime, distinctUntilChange
 import { MatDialog } from '@angular/material';
 import { UnSecuredSchemeComponent } from '../../un-secured-scheme/un-secured-scheme.component';
 import { GlobalSettingService } from '../../../../../../../core/global-setting/services/global-setting.service';
-import { Subject, Subscription } from 'rxjs';
+import { Subject, Subscription, Observable } from 'rxjs';
 import { threadId } from 'worker_threads';
 import { async } from 'rxjs/internal/scheduler/async';
 
@@ -313,7 +313,7 @@ export class InterestCalculatorComponent implements OnInit {
       this.checkForLoanType(data, amt)
 
     }
-    
+
   }
 
   eligibleCheck(amt, data) {
@@ -338,7 +338,7 @@ export class InterestCalculatorComponent implements OnInit {
           this.controls.unsecuredLoanAmount.patchValue(res.data.unsecuredAmount)
           this.selectedUnsecuredscheme = res.data.unsecuredSchemeApplied
           this.controls.securedLoanAmount.patchValue(res.data.securedLoanAmount)
-          this.unSecuredScheme = res.data.unsecuredScheme
+          this.unSecuredScheme = res.data.newUnsecuredScheme
         } else {
           this.controls.securedLoanAmount.patchValue(Number(amt))
         }
@@ -355,9 +355,9 @@ export class InterestCalculatorComponent implements OnInit {
     })
   }
 
- 
 
-  async getIntrest() {
+
+  getIntrest() {
     if (this.controls.paymentFrequency.valid && (this.controls.finalLoanAmount.valid || this.controls.finalLoanAmount.status == 'DISABLED') && this.controls.partnerId.valid && this.controls.schemeId.valid) {
 
       let data = {
@@ -366,7 +366,7 @@ export class InterestCalculatorComponent implements OnInit {
         paymentFrequency: this.controls.paymentFrequency.value
       }
 
-      await this.loanFormService.getInterest(data).subscribe(res => {
+      this.loanFormService.getInterest(data).subscribe(res => {
         if (res.data) {
           this.paymentType = this.controls.paymentFrequency.value
           this.dateOfPayment = [];
@@ -378,23 +378,23 @@ export class InterestCalculatorComponent implements OnInit {
     }
   }
 
-  async calcInterestAmount() {
+  calcInterestAmount() {
     if (this.finalInterestForm.invalid) {
       this.finalInterestForm.markAllAsTouched();
       return;
     }
 
-    await this.loanFormService.calculateFinalInterestTable(this.finalInterestForm.value).subscribe(res => {
+    this.loanFormService.calculateFinalInterestTable(this.finalInterestForm.value).subscribe(res => {
       this.dateOfPayment = res.data.interestTable;
       this.controls.totalFinalInterestAmt.patchValue(res.data.totalInterestAmount)
-      this.ref.detectChanges()
+      this.ref.markForCheck()
       setTimeout(() => {
         const dom = this.eleRef.nativeElement.querySelector('#calculation') as HTMLElement
         dom.scrollIntoView({ behavior: "smooth", block: "end" })
       }, 500)
     })
   }
-   
+
 
   calculateTotainterestAmount() {
     this.totalinterestAmount = 0;
@@ -448,7 +448,7 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   changeUnSecuredScheme() {
-    var data = {
+    var unSecuredData = {
       unsecuredSchemeAmount: this.controls.unsecuredLoanAmount.value,
       unsecuredSchemeInterest: this.controls.unsecuredInterestRate.value,
       unsecuredSchemeName: this.controls.unsecuredSchemeId.value,
@@ -457,21 +457,22 @@ export class InterestCalculatorComponent implements OnInit {
       paymentType: this.controls.paymentFrequency.value,
       tenure: this.controls.tenure.value
     }
-    console.log(data)
+    console.log(unSecuredData)
     const dialogRef = this.dialog.open(UnSecuredSchemeComponent, {
-      data: { unsecuredSchemeForm: data },
+      data: { unsecuredSchemeForm: unSecuredData },
       width: '500px'
     });
 
-    dialogRef.afterClosed().subscribe(res => {
+    dialogRef.afterClosed().subscribe((res) => {
       if (res) {
-        this.selectedUnsecuredscheme = res;
+        this.selectedUnsecuredscheme = res[0];
         this.controls.unsecuredSchemeId.patchValue(res[0].id)
         this.getIntrest()
-        this.calcInterestAmount()
+        setTimeout(() => { this.calcInterestAmount() }, 1000)
+        // this.calcInterestAmount()
         // this.CheckProcessingCharge();
         // this.generateTable();
-        this.ref.detectChanges()
+        // this.ref.detectChanges()
       }
     });
 

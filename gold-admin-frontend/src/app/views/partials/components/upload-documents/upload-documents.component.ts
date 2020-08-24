@@ -40,6 +40,7 @@ export class UploadDocumentsComponent implements OnInit {
   @Input() standardDeductionArr
   @Input() loanStage
   @Input() scrapStage
+  @Input() scrapAcknowledgmentStage
   @ViewChild('loanAgreementCopy', { static: false }) loanAgreementCopy
   @ViewChild('pawnCopy', { static: false }) pawnCopy
   @ViewChild('schemeConfirmationCopy', { static: false }) schemeConfirmationCopy
@@ -122,6 +123,14 @@ export class UploadDocumentsComponent implements OnInit {
       if (changes.scrapStage.currentValue.id != 8) {
         this.isEdit = false
         this.buttonValue = 'Next'
+      }
+      if (changes.scrapStage.currentValue.id == 9 || changes.scrapStage.currentValue.id == 10) {
+        this.documentsForm.disable()
+      }
+    }
+    if (changes.scrapAcknowledgmentStage && changes.scrapAcknowledgmentStage.currentValue) {
+      if (changes.scrapAcknowledgmentStage.currentValue.id == 9 || changes.scrapAcknowledgmentStage.currentValue.id == 10) {
+        this.documentsForm.disable()
       }
     }
     if (changes.loanDocumnets && changes.loanDocumnets.currentValue) {
@@ -306,7 +315,6 @@ export class UploadDocumentsComponent implements OnInit {
       saleInvoiceImageName: [],
     })
     this.validation()
-    this.documentsForm.valueChanges.subscribe(val => console.log(val))
   }
 
   get controls() {
@@ -470,7 +478,7 @@ export class UploadDocumentsComponent implements OnInit {
     // loan
     if (!this.isEdit) {
       if (this.showScrapAcknowledgementFlag) {
-        this.next.emit(4)
+        this.next.emit(3)
       } else {
         this.next.emit(7)
       }

@@ -514,7 +514,7 @@ export class UserReviewComponent implements OnInit {
       identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
       identityProof: [, [Validators.required]],
       identityProofFileName: [],
-      identityProofNumber: [this.data.customerKycReview.customerKycPersonal.identityProofNumber, [Validators.required]],
+      identityProofNumber: [this.data.customerKycReview.customerKycPersonal.identityProofNumber, [Validators.required, Validators.pattern('[0-9]{12}')]],
     })
     this.customerKycAddressOne = this.fb.group({
       id: this.data.customerKycReview.customerKycAddress[0].id,

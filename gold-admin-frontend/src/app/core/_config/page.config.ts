@@ -88,6 +88,9 @@ export class PageConfig {
 				branch: {
 					page: { title: "All Partner Branches", desc: "" },
 				},
+				"partner-branch-user": {
+					page: { title: "Partner Branch User", desc: "" }
+				},
 				"internal-user": {
 					page: { title: "Internal User", desc: "" },
 				},
@@ -172,7 +175,7 @@ export class PageConfig {
 					page: { title: "Monthly Repayment", desc: "" },
 				},
 				"part-release": {
-					page: { title: "Full Release", desc: "" },
+					page: { title: "Jewellery Release", desc: "" },
 					id: {
 						page: { title: "Jewellery Release", desc: "" },
 					}
@@ -186,6 +189,11 @@ export class PageConfig {
 				'interest-emi': {
 					page: { title: "Pay Interest EMI", desc: "" },
 				},
+				"part-payment": {
+					id: {
+						page: { title: "Part Payment", desc: "" },
+					}
+				}
 			},
 			"kyc-setting": {
 				page: { title: "Customer KYC", desc: "" },

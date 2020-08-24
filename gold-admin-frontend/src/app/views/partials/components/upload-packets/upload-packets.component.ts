@@ -106,17 +106,28 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         this.packetImg.patchValue(packet)
         console.log(packet.packets)
         packet.packets.forEach(ele => {
+
           this.packetsName = ele.packetUniqueId;
           this.controls.packetId.patchValue(ele.id)
           this.ornamentName = ele.customerLoanOrnamentsDetails.map(e => e.ornamentType.name).toString();
-          let ornamentType = ele.customerLoanOrnamentsDetails.map(e => e.ornamentType)
-          this.ornamentId = ele.customerLoanOrnamentsDetails.map(e => e.ornamentType.id)
+          this.ornamentId = ele.customerLoanOrnamentsDetails.map(e => e.id)
+
+          let ornamentTypeArray = []
+          ele.customerLoanOrnamentsDetails.forEach(ornamentType => {
+            let data = { id: 0, name: '' }
+            data.id = ornamentType.id;
+            data.name = ornamentType.ornamentType.name
+            ornamentTypeArray.push(data)
+          })
+
+          this.ornamentId = ele.customerLoanOrnamentsDetails.map(e => e.id)
           this.splicedPackets.push(ele)
-          this.removeOnamentsDataFromMultiselect(ornamentType)
+          this.removeOnamentsDataFromMultiselect(ornamentTypeArray, 'edit')
           this.pushPackets()
         });
 
         console.log(this.ornamentTypeData)
+        this.packetInfo.reset()
       }
     }
 
@@ -131,6 +142,9 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
           this.controls.packetId.patchValue(ele.id)
           this.splicedPackets.push(ele)
           this.pushPackets()
+        });
+        setTimeout(() => {
+          this.packetInfo.reset();
         });
       }
     }
@@ -227,6 +241,8 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     let packetIndex = this.splicedPackets.findIndex(packet => {
       return packet.id == this.packets.controls[idx].value.packetId
     })
+
+    let ornamentId = this.packets.controls[idx].value.ornamentsId
     this.packetsDetails.push(this.splicedPackets[packetIndex])
     this.splicedPackets.splice(packetIndex, 1)
     this.packets.controls.splice(idx, 1)
@@ -234,10 +250,10 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     if (!this.scrapIds) {
       let temp = this.ornamentTypeData;
       this.ornamentTypeData = []
-      for (let ornamnetsIdIndex = 0; ornamnetsIdIndex < this.ornamentId.length; ornamnetsIdIndex++) {
+      for (let ornamnetsIdIndex = 0; ornamnetsIdIndex < ornamentId.length; ornamnetsIdIndex++) {
         for (let ornamnetsIndex = 0; ornamnetsIndex < this.splicedOrnaments.length; ornamnetsIndex++) {
-          console.log(this.splicedOrnaments[ornamnetsIndex].id == this.ornamentId[ornamnetsIdIndex])
-          if (this.splicedOrnaments[ornamnetsIndex].id == this.ornamentId[ornamnetsIdIndex]) {
+          console.log(this.splicedOrnaments[ornamnetsIndex].id == ornamentId[ornamnetsIdIndex])
+          if (this.splicedOrnaments[ornamnetsIndex].id == ornamentId[ornamnetsIdIndex]) {
             temp.push(this.splicedOrnaments[ornamnetsIndex])
             this.splicedOrnaments.splice(ornamnetsIndex, 1)
             // this.ornamentId.splice(ornamnetsIdIndex, 1)
@@ -249,6 +265,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       setTimeout(() => {
         console.log(temp)
         this.ornamentTypeData = temp;
+        this.ref.detectChanges()
       }, 200)
     }
 
@@ -295,15 +312,16 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       this.ornamentName = ornamentTypeObject.map(e => e.ornamentType).toString();
       this.ornamentId = ornamentTypeObject.map(e => e.id)
 
-      this.removeOnamentsDataFromMultiselect(ornamentTypeObject)
+      this.removeOnamentsDataFromMultiselect(ornamentTypeObject, 'add')
 
     }
 
     this.clearData = true;
   }
 
-  removeOnamentsDataFromMultiselect(ornamentTypeObject) {
+  removeOnamentsDataFromMultiselect(ornamentTypeObject, action) {
     var selectedOrnaments = []
+
     this.ornamentTypeData.forEach((val) => {
       let temp = []
       ornamentTypeObject.forEach(element => {
@@ -316,7 +334,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
     var temp = this.ornamentTypeData
     this.ornamentTypeData = [];
-    console.log(selectedOrnaments);
+
     selectedOrnaments.forEach(selectedornament => {
       var index = temp.findIndex(ornament => {
         return selectedornament.id == ornament.id
@@ -325,9 +343,18 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       temp.splice(index, 1)
     })
 
-    setTimeout(() => {
+    if (action == 'edit') {
+
       this.ornamentTypeData = temp;
-    }, 500)
+
+    } else if (action == 'add') {
+
+      setTimeout(() => {
+        this.ornamentTypeData = temp;
+        this.ref.detectChanges()
+      }, 500)
+
+    }
     console.log(this.ornamentTypeData)
   }
 

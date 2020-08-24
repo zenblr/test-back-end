@@ -5,8 +5,9 @@ const Op = Sequelize.Op;
 const { paginationWithFromTo } = require("../../utils/pagination");
 const check = require("../../lib/checkLib");
 const action = require('../../utils/partReleaseHistory');
+const actionFullRelease = require('../../utils/fullReleaseHistory');
 const loanFunction = require('../../utils/loanFunction');
-const { getCustomerInterestAmount, getGlobalSetting, getLoanDetails } = require('../../utils/loanFunction');
+const { getCustomerInterestAmount, getGlobalSetting, getLoanDetails,allInterestPayment } = require('../../utils/loanFunction');
 
 
 exports.ornamentsDetails = async (req, res, next) => {
@@ -100,7 +101,7 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
         releaseAmount: 0,
         currentLtv: 0,
         previousLtv: 0,
-        outstandingAmount: 0
+        currentOutstandingAmount: 0
     }
     let globalSettings = await getGlobalSetting();
     let goldRate = await getGoldRate();
@@ -113,7 +114,7 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
             ornamentsWeightInfo.releaseNetWeight = ornamentsWeightInfo.releaseNetWeight + parseFloat(ornaments.netWeight);
             if (otherOrnaments == null) {
                 let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
-                ornamentsWeightInfo.outstandingAmount = ornamentsWeightInfo.outstandingAmount + (ltvAmount * parseFloat(ornaments.netWeight));
+                ornamentsWeightInfo.currentOutstandingAmount = ornamentsWeightInfo.currentOutstandingAmount + (ltvAmount * parseFloat(ornaments.netWeight));
             }
         }
     }
@@ -128,13 +129,16 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
         ornamentsWeightInfo.releaseAmount = parseFloat(loanData.finalLoanAmount) - Math.round(ornamentsWeightInfo.releaseAmount)
     }
 
-    ornamentsWeightInfo.outstandingAmount = Math.round(ornamentsWeightInfo.outstandingAmount);
+    ornamentsWeightInfo.currentOutstandingAmount = Math.round(ornamentsWeightInfo.currentOutstandingAmount);
+    if (otherOrnaments == null) {
+        ornamentsWeightInfo.releaseAmount = Math.round(ornamentsWeightInfo.currentOutstandingAmount);
+    }
     return ornamentsWeightInfo;
 }
 
 async function getornamentLoanInfo(masterLoanId, ornamentWeight, amount) {
     let loanData = await models.customerLoan.findAll({ where: { masterLoanId }, attributes: ['loanUniqueId'] });
-    let loanAmountData = await models.customerLoanMaster.findOne({ where: { id: masterLoanId }, attributes: ['finalLoanAmount'] });
+    let loanAmountData = await models.customerLoanMaster.findOne({ where: { id: masterLoanId }, attributes: ['finalLoanAmount', 'outstandingAmount'] });
     let loanDetails = {
         loanData,
         finalLoanAmount: 0,
@@ -172,6 +176,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
     } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
+    let interestAmountPaid = paidAmount - releaseAmount;
     let loanInfo = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
         order: [
@@ -195,7 +200,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
     let outstandingAmount = Number(loanInfo.outstandingAmount - (securedReleaseAmount + unSecuredReleaseAmount));
     if (paymentType == 'cash') {
         let partRelease = await sequelize.transaction(async t => {
-            let addPartRelease = await models.partRelease.create({ paymentType, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, amountStatus: 'completed', createdBy, modifiedBy }, { transaction: t });
+            let addPartRelease = await models.partRelease.create({ paymentType, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
             for (const ornament of ornamentId) {
                 await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
                 await models.partReleaseOrnaments.create({ partReleaseId: addPartRelease.id, ornamentId: ornament }, { transaction: t });
@@ -208,6 +213,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
             await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_PAYMENT_CASH, createdBy, modifiedBy }, { transaction: t });
             return addPartRelease
         });
+        await allInterestPayment(masterLoanId,interestAmountPaid,createdBy);
         return res.status(200).json({ message: "success", partRelease });
     } else if (paymentType == 'cheque') {
         let partRelease = await sequelize.transaction(async t => {
@@ -224,6 +230,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
             await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_PAYMENT_CHEQUE, createdBy, modifiedBy }, { transaction: t });
             return addPartRelease
         });
+        await allInterestPayment(masterLoanId,interestAmountPaid,createdBy);
         return res.status(200).json({ message: "success", partRelease });
     } else if (paymentType == 'IMPS') {
         let partRelease = await sequelize.transaction(async t => {
@@ -240,6 +247,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
             await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_PAYMENT_BANK, createdBy, modifiedBy }, { transaction: t });
             return addPartRelease
         });
+        await allInterestPayment(masterLoanId,interestAmountPaid,createdBy);
         return res.status(200).json({ message: "success", partRelease });
     } else {
         return res.status(400).json({ message: 'invalid paymentType' });
@@ -310,6 +318,9 @@ exports.getPartReleaseList = async (req, res, next) => {
         include: [
             {
                 model: models.packet
+            }, {
+                model: models.ornamentType,
+                as: "ornamentType"
             }
         ]
     },
@@ -671,5 +682,410 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
         res.status(404).json({ message: 'no customer details found' });
     } else {
         res.status(200).json({ message: 'customer details fetch successfully', customerData, partReleaseId });
+    }
+}
+
+//Full release 
+
+exports.ornamentsFullRelease = async (req, res, next) => {
+    let { paymentType, currentOutstandingAmount, paidAmount, bankName, chequeNumber, ornamentId, depositDate, branchName, transactionId, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv
+    } = req.body;
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+    let interestAmountPaid = paidAmount - releaseAmount;
+    if (paymentType == 'cash') {
+        let fullRelease = await sequelize.transaction(async t => {
+            let addFullRelease = await models.fullRelease.create({ paymentType, currentOutstandingAmount, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
+            for (const ornament of ornamentId) {
+                await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t });
+            }
+            await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_PAYMENT_CASH, createdBy, modifiedBy }, { transaction: t });
+            return addFullRelease
+        });
+        await allInterestPayment(masterLoanId,interestAmountPaid,createdBy);
+        return res.status(200).json({ message: "success", fullRelease });
+    } else if (paymentType == 'cheque') {
+        let fullRelease = await sequelize.transaction(async t => {
+            let addFullRelease = await models.fullRelease.create({ paymentType, currentOutstandingAmount, paidAmount, bankName, chequeNumber, branchName, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
+            for (const ornament of ornamentId) {
+                await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
+            }
+            await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_PAYMENT_CHEQUE, createdBy, modifiedBy }, { transaction: t });
+            return addFullRelease
+        });
+        await allInterestPayment(masterLoanId,interestAmountPaid,createdBy);
+        return res.status(200).json({ message: "success", fullRelease });
+    } else if (paymentType == 'IMPS') {
+        let fullRelease = await sequelize.transaction(async t => {
+            let addFullRelease = await models.fullRelease.create({ paymentType, currentOutstandingAmount, bankName, branchName, transactionId, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
+            for (const ornament of ornamentId) {
+                await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
+            }
+            await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_PAYMENT_BANK, createdBy, modifiedBy }, { transaction: t });
+            return addFullRelease
+        });
+        let interestData = await allInterestPayment(masterLoanId,interestAmountPaid,createdBy);
+        return res.status(200).json({ message: "success", fullRelease,interestData });
+    } else {
+        return res.status(400).json({ message: 'invalid paymentType' });
+    }
+}
+
+exports.getFullReleaseList = async (req, res, next) => {
+    const { search, offset, pageSize } = paginationWithFromTo(
+        req.query.search,
+        req.query.from,
+        req.query.to
+    );
+    let query = {};
+    const searchQuery = {
+        [Op.and]: [query, {
+            [Op.or]: {
+                release_gross_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("release_gross_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                amount_status: sequelize.where(
+                    sequelize.cast(sequelize.col("amount_status"), "varchar"), { [Op.iLike]: search + "%" }),
+                release_deduction_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("release_deduction_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                release_net_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("release_net_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                release_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("release_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                payable_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("payable_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                interest_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("interest_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                penal_interest: sequelize.where(
+                    sequelize.cast(sequelize.col("penal_interest"), "varchar"), { [Op.iLike]: search + "%" }),
+                remaining_net_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("remaining_net_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                "$masterLoan.loanPersonalDetail.customer_unique_id$": { [Op.iLike]: search + "%" },
+                "$masterLoan.outstanding_amount$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.outstanding_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                "$masterLoan.tenure$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"), { [Op.iLike]: search + "%" }),
+                "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" },
+                final_loan_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("masterLoan.final_loan_amount"), "varchar"), { [Op.iLike]: search + "%" })
+            },
+        }],
+        isActive: true
+    }
+    let includeArray = [{
+        model: models.customerLoanMaster,
+        as: 'masterLoan',
+        attributes: ['customerId', 'outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
+        include: [
+            {
+                model: models.customer,
+                as: 'customer',
+                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+            },
+            {
+                model: models.customerLoan,
+                as: 'customerLoan',
+                attributes: ['masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId']
+            },
+            {
+                model: models.customerLoanPersonalDetail,
+                as: 'loanPersonalDetail',
+                attributes: ['customerUniqueId']
+            }, {
+                model: models.customerLoanOrnamentsDetail,
+                as: 'loanOrnamentsDetail',
+                include: [
+                    {
+                        model: models.ornamentType,
+                        as: "ornamentType"
+                    },
+                    {
+                        model: models.packet
+                    }
+                ]
+            },
+        ]
+    },
+    {
+        model: models.fullReleaseReleaser,
+        as: 'releaser',
+        attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        include: [
+            {
+                model: models.customer,
+                as: 'customer',
+                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+            },
+            {
+                model: models.user,
+                as: 'appraiser',
+                attributes: ['firstName', 'lastName', 'mobileNumber']
+            }
+        ]
+    }
+    ]
+    let fullRelease = await models.fullRelease.findAll({
+        where: searchQuery,
+        attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        order: [["updatedAt", "DESC"]],
+        offset: offset,
+        limit: pageSize,
+        subQuery: false,
+        include: includeArray
+    })
+
+    let count = await models.fullRelease.findAll({
+        where: searchQuery,
+        subQuery: false,
+        include: includeArray
+    })
+
+    return res.status(200).json({ data: fullRelease, count: count.length });
+}
+
+exports.updateAmountStatusFullRelease = async (req, res, next) => {
+    let { amountStatus, fullReleaseId } = req.body;
+    let modifiedBy = req.userData.id;
+    let createdBy = req.userData.id;
+    let fullReleaseData = await models.fullRelease.findOne({ where: { id: fullReleaseId }, attributes: ['amountStatus'] });
+    if (fullReleaseData) {
+        if (fullReleaseData.amountStatus == 'pending' || fullReleaseData.amountStatus == 'rejected') {
+            if (amountStatus == 'completed') {
+                await sequelize.transaction(async t => {
+                    await models.fullRelease.update({ amountStatus: 'completed', modifiedBy }, { where: { id: fullReleaseId }, transaction: t });
+                    await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_AMOUNT_STATUS_C, createdBy, modifiedBy }, { transaction: t });
+                });
+                return res.status(200).json({ message: "success" });
+            } else if (amountStatus == 'rejected') {
+                await sequelize.transaction(async t => {
+                    await models.fullRelease.update({ amountStatus: 'rejected', modifiedBy }, { where: { id: fullReleaseId }, transaction: t });
+                    await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_AMOUNT_STATUS_R, createdBy, modifiedBy }, { transaction: t });
+                });
+                return res.status(200).json({ message: "success" });
+            }
+        } else { return res.status(400).json({ message: "you can't change status as it's already updated" }); }
+    } else {
+        return res.status(404).json({ message: "Data not found" });
+    }
+
+}
+
+exports.fullReleaseAssignReleaser = async (req, res, next) => {
+
+    let { fullReleaseId, releaserId, customerId, appoinmentDate, startTime, endTime } = req.body;
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+    let existAssign = await models.fullReleaseReleaser.findOne({ where: { fullReleaseId, isActive: true } });
+    if (!check.isEmpty(existAssign)) {
+        return res.status(400).json({ message: `Already assigned appraiser to this full release process.` });
+    }
+    await sequelize.transaction(async t => {
+        await models.fullReleaseReleaser.create({ fullReleaseId, customerId, releaserId, createdBy, modifiedBy, appoinmentDate, startTime, endTime }, { transaction: t });
+        await models.fullRelease.update({ isReleaserAssigned: true }, { where: { id: fullReleaseId }, transaction: t });
+        await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_ASSIGNED_RELEASER, createdBy, modifiedBy }, { transaction: t });
+    });
+    // send sms
+    // let customerInfo = await models.customer.findOne({ where: { id: customerId } })
+    // let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } });
+    // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=${customerInfo.firstName} is assign for you`);
+    return res.status(200).json({ message: 'success' });
+}
+
+exports.updateReleaser = async (req, res, next) => {
+    let { fullReleaseId, releaserId, customerId, appoinmentDate, startTime, endTime } = req.body;
+    let createdBy = req.userData.id;
+    let modifiedBy = req.userData.id;
+    await sequelize.transaction(async t => {
+        await models.fullReleaseReleaser.update({ customerId, releaserId, modifiedBy, appoinmentDate, startTime, endTime }, { where: { fullReleaseId }, transaction: t });
+        await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_UPDATED_RELEASER, createdBy, modifiedBy }, { transaction: t });
+    });
+    return res.status(200).json({ message: 'success' });
+}
+
+exports.getFullReleaseApprovedList = async (req, res, next) => {
+    const { search, offset, pageSize } = paginationWithFromTo(
+        req.query.search,
+        req.query.from,
+        req.query.to
+    );
+    let userId = req.userData.id;
+    let releaserSearch = { isActive: true }
+    if (req.userData.userTypeId != 4) {
+        releaserSearch.releaserId = userId;
+    }
+    let query = {};
+    const searchQuery = {
+        [Op.and]: [query, {
+            [Op.or]: {
+                release_gross_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("release_gross_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                amount_status: sequelize.where(
+                    sequelize.cast(sequelize.col("amount_status"), "varchar"), { [Op.iLike]: search + "%" }),
+                release_deduction_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("release_deduction_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                release_net_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("release_net_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                release_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("release_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                payable_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("payable_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                interest_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("interest_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                penal_interest: sequelize.where(
+                    sequelize.cast(sequelize.col("penal_interest"), "varchar"), { [Op.iLike]: search + "%" }),
+                remaining_net_weight: sequelize.where(
+                    sequelize.cast(sequelize.col("remaining_net_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+                "$masterLoan.loanPersonalDetail.customer_unique_id$": { [Op.iLike]: search + "%" },
+                "$masterLoan.outstanding_amount$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.outstanding_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+                "$masterLoan.tenure$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"), { [Op.iLike]: search + "%" }),
+                "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" },
+                final_loan_amount: sequelize.where(
+                    sequelize.cast(sequelize.col("masterLoan.final_loan_amount"), "varchar"), { [Op.iLike]: search + "%" })
+            },
+        }],
+        isActive: true
+    }
+    let includeArray = [{
+        model: models.customerLoanMaster,
+        as: 'masterLoan',
+        attributes: ['customerId', 'outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
+        include: [
+            {
+                model: models.customer,
+                as: 'customer',
+                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+            },
+            {
+                model: models.customerLoan,
+                as: 'customerLoan',
+                attributes: ['masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId']
+            },
+            {
+                model: models.customerLoanPersonalDetail,
+                as: 'loanPersonalDetail',
+                attributes: ['customerUniqueId']
+            }, {
+                model: models.customerLoanOrnamentsDetail,
+                as: 'loanOrnamentsDetail',
+                include: [
+                    {
+                        model: models.ornamentType,
+                        as: "ornamentType"
+                    },
+                    {
+                        model: models.packet
+                    }
+                ]
+            },
+        ]
+    },
+    {
+        model: models.fullReleaseReleaser,
+        as: 'releaser',
+        where: releaserSearch,
+        attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        include: [
+            {
+                model: models.customer,
+                as: 'customer',
+                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+            },
+            {
+                model: models.user,
+                as: 'appraiser',
+                attributes: ['firstName', 'lastName', 'mobileNumber']
+            }
+        ]
+    }
+    ]
+    let fullRelease = await models.fullRelease.findAll({
+        where: searchQuery,
+        attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        order: [["updatedAt", "DESC"]],
+        offset: offset,
+        limit: pageSize,
+        subQuery: false,
+        include: includeArray
+    })
+
+    let count = await models.fullRelease.findAll({
+        where: searchQuery,
+        subQuery: false,
+        include: includeArray
+    })
+
+    return res.status(200).json({ data: fullRelease, count: count.length });
+}
+
+exports.updatePartReleaseReleaserStatus = async (req, res, next) => {
+    let { fullReleaseStatus, releaserReason, fullReleaseId } = req.body;
+    let modifiedBy = req.userData.id;
+    let createdBy = req.userData.id;
+    let userId = req.userData.id;
+    let releaserSearch = { isActive: true }
+    let releaseDate = Date.now();
+    if (req.userData.userTypeId != 4) {
+        releaserSearch.releaserId = userId;
+    }
+    let fullReleaseData = await models.fullRelease.findOne({
+        where: { id: fullReleaseId },
+        attributes: ['amountStatus', 'fullReleaseStatus', 'masterLoanId'],
+        include: [{
+            model: models.fullReleaseReleaser,
+            as: 'releaser',
+            subQuery: false,
+            where: releaserSearch,
+            attributes: ['releaserId']
+        }]
+    });
+    if (fullReleaseData) {
+        if (fullReleaseData.fullReleaseStatus == "pending") {
+            if (fullReleaseStatus == "pending") {
+                await sequelize.transaction(async t => {
+                    await models.fullRelease.update({ fullReleaseStatus, releaserReason, modifiedBy }, { where: { id: fullReleaseId }, transaction: t });
+                    await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_STATUS_P, createdBy, modifiedBy }, { transaction: t });
+                });
+                return res.status(200).json({ message: "success" });
+            } else if (fullReleaseStatus == "released") {
+                await sequelize.transaction(async t => {
+                    await models.fullRelease.update({ fullReleaseStatus, modifiedBy, releaseDate }, { where: { id: fullReleaseId }, transaction: t });
+                    await models.customerLoanMaster.update({ isOrnamentsReleased: true, modifiedBy }, { where: { id: fullReleaseData.masterLoanId }, transaction: t });
+                    await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_STATUS_R, createdBy, modifiedBy }, { transaction: t });
+                });
+                return res.status(200).json({ message: "success" });
+            }
+        } else {
+            return res.status(400).json({ message: "Now you can't change status as it's Already released!" });
+        }
+    } else {
+        return res.status(400).json({ message: "This full release process is not assigned to you!" })
+    }
+}
+
+exports.uploadDocumentFullRelease = async (req, res, next) => {
+    let { documents, fullReleaseId } = req.body;
+    let modifiedBy = req.userData.id;
+    let createdBy = req.userData.id;
+    let userId = req.userData.id;
+    let releaserSearch = { isActive: true }
+    if (req.userData.userTypeId != 4) {
+        releaserSearch.releaserId = userId;
+    }
+    let fullReleaseData = await models.fullRelease.findOne({
+        where: { id: fullReleaseId },
+        attributes: ['amountStatus', 'fullReleaseStatus', 'masterLoanId'],
+        include: [{
+            model: models.fullReleaseReleaser,
+            as: 'releaser',
+            subQuery: false,
+            where: releaserSearch,
+            attributes: ['releaserId']
+        }]
+    });
+    if (fullReleaseData) {
+        await sequelize.transaction(async t => {
+            await models.fullRelease.update({ documents, modifiedBy }, { where: { id: fullReleaseId }, transaction: t });
+            await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_DOCUMENT, createdBy, modifiedBy }, { transaction: t });
+        });
+        return res.status(200).json({ message: 'success' });
+    } else {
+        return res.status(400).json({ message: "This full release process is not assigned to you!" })
     }
 }

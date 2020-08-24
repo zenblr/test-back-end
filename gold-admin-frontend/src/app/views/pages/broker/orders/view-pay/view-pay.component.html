@@ -74,11 +74,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let data of orderData.orderemidetails">
+                            <tr *ngFor="let data of orderData.orderemidetails; let i = index;">
                                 <td> <span
                                         *ngIf="orderData.orderCurrentStatus.id == 2 || orderData.orderCurrentStatus.id == 3 || orderData.orderCurrentStatus.id == 15">
                                         <mat-checkbox *ngIf="data.orderStatusId == 1 || data.orderStatusId == 15"
-                                            (change)="selectedEmi($event,data.id)"></mat-checkbox>
+                                            (change)="selectedEmi($event,data.id,i)" [checked]="data.checked">
+                                        </mat-checkbox>
                                     </span>
                                 </td>
                                 <td>{{orderData.customerDetails.customerUniqueId}}</td>

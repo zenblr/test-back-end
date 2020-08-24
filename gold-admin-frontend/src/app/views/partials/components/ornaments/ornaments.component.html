@@ -119,7 +119,6 @@
 
                     </div>
                     <div class="row">
-
                         <div class="col-6">
                             <div class="row kt-margin-t-15 ">
                                 <div class="col-4 form-label">
@@ -342,7 +341,7 @@
                                     </div>
                                 </div>
                             </div>
-                           
+
                             <div class="col-6" *ngIf="!meltingOrnament">
                                 <div class="row kt-margin-t-15">
                                     <div class="col-4 form-label">
@@ -358,7 +357,6 @@
                         <!-- {{ornament.controls.customerConfirmation.value | json}} -->
                         <!-- {{ornament.controls.customerConfirmation.value == customerConfirmation.value}} -->
                         <!-- <div class="row" *ngIf="meltingOrnament">
-                            
                             <div class="col-6" *ngIf="ornament.controls.customerConfirmation.value == 'no'">
                                 <div class="row kt-margin-t-15">
                                     <div class="col-4 form-label">
@@ -597,6 +595,18 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div *ngIf="data && data.modal && !data.packetView" class="col-6">
+                                <div class="row kt-margin-t-15 ">
+                                    <div class="col-4 form-label">
+                                        <label class="text-color mandatory my-auto">Packet ID</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" placeholder="PAC-15"
+                                            formControlName="packetId" readonly>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </ng-template>
                 </div>
@@ -641,29 +651,23 @@
     </div>
 </div>
 
-<div class="row justify-content-center col-10" *ngIf="!data?.modal">
-    <div class="col-4 py-2" *ngIf="scrapIds">
-
+<div class="row justify-content-center" *ngIf="!data?.modal">
+    <!-- <div class="col-4 py-2" *ngIf="scrapIds">
         <h3 class="text-center my-3" *ngIf="meltingOrnament">
             <b *ngIf="buttonValue == 'Pay Processing Charges'">
                 Processing Charges - <span class="currency">
                     {{'1000' | indianCurrencyFormat}}</span>
             </b>
         </h3>
-
-    </div>
-    <div class="col-5 py-2" *ngIf="scrapIds">
+    </div> -->
+    <div class="col-12 py-2">
         <h3 class="text-center my-3">
-            <b>
-                Total Scrap Amount - <span class="currency">
-                    {{totalAmount | indianCurrencyFormat}}</span>
+            <b *ngIf="buttonValue == 'Pay Processing Charges'" class="float-left">
+                Processing Charges - <span class="currency">
+                    {{processingCharges | indianCurrencyFormat}}</span>
             </b>
-        </h3>
-    </div>
-    <div class="col-5 py-2" *ngIf="!scrapIds">
-        <h3 class="text-center my-3">
-            <b>
-                Total Eligible Amount - <span class="currency">
+            <b [ngClass]="{'float-right': buttonValue == 'Pay Processing Charges'}">
+                {{scrapIds ? 'Total Scrap Amount' : 'Total Eligible Amount'}} - <span class="currency">
                     {{totalAmount | indianCurrencyFormat}}</span>
             </b>
         </h3>

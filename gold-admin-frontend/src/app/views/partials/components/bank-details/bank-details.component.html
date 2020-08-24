@@ -2,12 +2,12 @@
     <div class="row kt-margin-l-25 kt-margin-r-30">
         <div class="col-12 justify-content-center">
             <div class="row">
-                
-                    <div class="col-6">
+                <div class="col-6">
+                    <div class="row">
                         <div class="col-4 form-label">
                             <label class="mandatory kt-padding-l-10">Payment Mode</label>
                         </div>
-                        <div class="col-8">
+                        <div class="col-6">
                             <select formControlName="paymentType" class="form-control"
                                 [class.isError]="controls.paymentType.touched && controls.paymentType.invalid"
                                 (change)="setValidation($event)">
@@ -22,18 +22,18 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-6" *ngIf="bankForm">
-                        <div class="row kt-margin-t-15">
-                            <div class="col-4 form-label">
-                                <label class="text-color mandatory my-auto">Final Scrap Amount</label>
-                            </div>
-                            <div class="col-8">
-                                <input type="text" class="form-control" placeholder="100.00"
-                                    formControlName="finalScrapAmountAfterMelting" readonly>
-                            </div>
+                </div>
+                <!-- <div class="col-6" *ngIf="bankForm">
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 form-label">
+                            <label class="text-color mandatory my-auto">Final Scrap Amount</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" placeholder="100.00"
+                                formControlName="finalScrapAmountAfterMelting" readonly>
                         </div>
                     </div>
-                
+                </div> -->
 
             </div>
             <span *ngIf="controls.paymentType.value != 'cash'">
@@ -100,7 +100,8 @@
                             <div class="col-6">
                                 <input type="text" class="form-control" placeholder="John Doe"
                                     formControlName="accountHolderName"
-                                    [class.isError]="controls.accountHolderName.touched && controls.accountHolderName.invalid">
+                                    [class.isError]="controls.accountHolderName.touched && controls.accountHolderName.invalid"
+                                    readonly>
                                 <mat-error
                                     *ngIf="controls.accountHolderName.errors?.required && controls.accountHolderName.touched">
                                     Required field

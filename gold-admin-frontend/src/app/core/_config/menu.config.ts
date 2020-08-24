@@ -323,7 +323,7 @@ export class MenuConfig {
 									title: "Loan Transfer List",
 									page: "/admin/loan-management/transfer-loan-list",
 									bullet: 'dot',
-									// permission: !this.permissionsArr.includes('loanDetailsView'),
+									permission: !this.permissionsArr.includes('viewLoanTransfer'),
 								}
 							],
 						},
@@ -525,6 +525,12 @@ export class MenuConfig {
 							page: "/admin/user-management/branch",
 							src: "assets/media/aside-icons/icons-13.svg",
 							permission: !this.permissionsArr.includes('partnerBranchView'),
+						},
+						{
+							title: "Partner Branch User",
+							root: true,
+							src: "assets/media/aside-icons/icons-14.svg",
+							page: "/admin/user-management/partner-branch-user",
 						},
 						{
 							title: "Internal User",

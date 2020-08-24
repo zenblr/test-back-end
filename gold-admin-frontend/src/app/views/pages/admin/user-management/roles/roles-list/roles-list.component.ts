@@ -18,6 +18,7 @@ import { RolesDatasource, RolesModel, RolesService } from '../../../../../../cor
 import { RoleAddDialogComponent } from '../role-add/role-add.dialog.component';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
 
 @Component({
 	selector: 'kt-roles-list',
@@ -36,6 +37,8 @@ export class RolesListComponent implements OnInit, OnDestroy {
 	// Subscriptions
 	private subscriptions: Subscription[] = [];
 	private destroy$: Subject<any> = new Subject()
+	private unsubscribeSearch$ = new Subject();
+	searchValue = '';
 
 	/**
 	 * Component constructor
@@ -52,7 +55,9 @@ export class RolesListComponent implements OnInit, OnDestroy {
 		private layoutUtilsService: LayoutUtilsService,
 		private rolesService: RolesService,
 		private router: Router,
-		private toast: ToastrService) {
+		private toast: ToastrService,
+		private dataTableService: DataTableService,
+	) {
 		this.rolesService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
 			if (res) {
 				this.addRole('add')
@@ -73,6 +78,13 @@ export class RolesListComponent implements OnInit, OnDestroy {
 			tap(() => this.loadRolesList())
 		).subscribe();
 		this.subscriptions.push(paginatorSubscriptions);
+
+		const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
+			.subscribe(res => {
+				this.searchValue = res;
+				this.paginator.pageIndex = 0;
+				this.loadRolesList();
+			});
 
 		// Init DataSource
 		this.dataSource = new RolesDatasource(this.rolesService);
@@ -96,6 +108,8 @@ export class RolesListComponent implements OnInit, OnDestroy {
 	 */
 	ngOnDestroy() {
 		this.subscriptions.forEach(el => el.unsubscribe());
+		this.unsubscribeSearch$.next();
+		this.unsubscribeSearch$.complete();
 		this.destroy$.next()
 		this.destroy$.complete()
 	}
@@ -109,7 +123,7 @@ export class RolesListComponent implements OnInit, OnDestroy {
 		let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
 		let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-		this.dataSource.loadRoles('', from, to);
+		this.dataSource.loadRoles(this.searchValue, from, to);
 		this.selection.clear();
 	}
 

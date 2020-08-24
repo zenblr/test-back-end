@@ -12,7 +12,7 @@ var pdf = require("pdf-creator-node"); // PDF CREATOR PACKAGE
 var fs = require('fs');
 let { sendMessageLoanIdGeneration } = require('../../utils/SMS');
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
-
+const _ = require('lodash');
 
 const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory');
 
@@ -215,6 +215,10 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
         return res.status(200).json({ message: 'success', loanId, masterLoanId, loanCurrentStage: '4', totalEligibleAmt, ornaments: loanData, loanTransferData })
     } else {
 
+        let newOrnaments = allOrnmanets.map((single) => { return single.id })
+        let oldOrnaments = checkOrnaments.map((single) => { return single.id })
+        let deleteOrnaments = await _.difference(oldOrnaments, newOrnaments);
+
         let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
         let loanData = await sequelize.transaction(async t => {
             if (loanSubmitted.isLoanSubmitted == false) {
@@ -223,18 +227,15 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
 
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
 
-            await models.customerLoanOrnamentsDetail.destroy({ where: { masterLoanId: masterLoanId }, transaction: t });
-            // let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { transaction: t });
+            await models.customerLoanOrnamentsDetail.destroy({ where: { id: { [Op.in]: deleteOrnaments } }, transaction: t });
+            // let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate( allOrnmanets, { transaction: t });
 
-            let createdOrnaments = []
-            for (let purityTestData of allOrnmanets) {
-                delete purityTestData.id;
-                var ornaments = await models.customerLoanOrnamentsDetail.create(purityTestData, { transaction: t });
-                createdOrnaments.push(ornaments)
-            }
+            let createdOrnaments
+                = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { updateOnDuplicate: ["ornamentTypeId", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest", "karat", "ltvRange", "ornamentImage", "ltvPercent", "ltvAmount", "currentLtvAmount", "ornamentFullAmount"] }, { transaction: t })
+
             return createdOrnaments
         })
-        return res.status(200).json({ message: 'success', loanId, masterLoanId, loanCurrentStage: '4', totalEligibleAmt, ornaments: loanData, loanTransferData })
+        return res.status(200).json({ message: 'success', allOrnmanets, loanId, masterLoanId, loanCurrentStage: '4', totalEligibleAmt, ornaments: loanData, loanTransferData })
     }
 
 }
@@ -274,7 +275,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
         let unsecuredSchemeAmount = loanAmount - securedLoanAmount
         if (securedScheme.isSplitAtBeginning) {
-            securedLoanAmount = loanAmount * secureSchemeMaximumAmtAllowed / (ltvPercent[0].ltvGoldValue / 100)
+            securedLoanAmount = loanAmount * (secureSchemeMaximumAmtAllowed / (ltvPercent[0].ltvGoldValue / 100))
             unsecuredSchemeAmount = loanAmount - securedLoanAmount
         }
 
@@ -324,28 +325,90 @@ exports.checkForLoanType = async (req, res, next) => {
         }
 
         let unsecureSchemeMaximumAmtAllowed = (unsecuredSchemeApplied.maximumPercentageAllowed / 100)
+        var unsecuredAmount
+        if (securedScheme.isSplitAtBeginning) {
+            unsecuredAmount = unsecuredSchemeAmount
+        } else {
 
-        var unsecuredAmount = Math.round(loanAmount * unsecureSchemeMaximumAmtAllowed / (ltvPercent[0].ltvGoldValue / 100))
+            unsecuredAmount = Math.round(fullAmount * unsecureSchemeMaximumAmtAllowed)
+        }
 
         let totalEligibleAmt = Math.round(fullAmount * (ltvPercent[0].ltvGoldValue / 100))
 
-        if ((unsecuredSchemeApplied && (securedScheme.isSplitAtBeginning &&
-            Math.round(totalEligibleAmt) >= Math.round(securedLoanAmount + unsecuredAmount)) ||
-            Math.round(totalEligibleAmt) >= Math.round(securedLoanAmount + unsecuredAmount)) ||
-            isLoanTransfer) {
 
-            if (isLoanTransfer) {
+        if (unsecuredSchemeApplied) {
+
+            if ((ltvPercent[0].ltvGoldValue / 100) >= (unsecureSchemeMaximumAmtAllowed + secureSchemeMaximumAmtAllowed)) {
+
+
+
+                // if(securedScheme.isSplitAtBeginning &&
+                // Math.round(loanAmount) >= Math.round(securedLoanAmount + unsecuredAmount)) ||
+                // Math.round(loanAmount) >= Math.round(securedLoanAmount + unsecuredAmount)) ||
+                // isLoanTransfer) {
+                if (Math.round(loanAmount) > Math.round(securedLoanAmount + unsecuredAmount)) {
+                    return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
+
+                }
+                if (isLoanTransfer) {
+                    if (Number(loanAmount) > totalEligibleAmt) {
+                        // if (!securedScheme.isSplitAtBeginning) {
+                        securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
+                    }
+                }
                 unsecuredAmount = Number(loanAmount - securedLoanAmount)
+                // } else if (Math.round(loanAmount) > Math.round(securedLoanAmount + unsecuredAmount)) {
+                //     return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
+
+                // }
+
+                processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
+
+                let newUnsecuredScheme = await selectScheme(unsecured, securedScheme)
+                return res.status(200).json({ data: { newUnsecuredScheme, unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme, isUnsecuredSchemeApplied: true } })
+
             }
+            else {
+                let newUnsecuredMaximum = (ltvPercent[0].ltvGoldValue / 100) - secureSchemeMaximumAmtAllowed// code
 
-            processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
+                var unsecuredAmount = Math.round(fullAmount * newUnsecuredMaximum)
 
-            return res.status(200).json({ data: { unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme, isUnsecuredSchemeApplied: true } })
 
+                if (isLoanTransfer) {
+                    if (Number(loanAmount) > totalEligibleAmt) {
+                        securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
+                        unsecuredAmount = Number(loanAmount - securedLoanAmount)
+
+
+                    } else {
+
+                        unsecuredAmount = Number(loanAmount) - Number(securedLoanAmount)
+                    }
+
+                    processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
+
+                    let newUnsecuredScheme = await selectScheme(unsecured, securedScheme)
+                    return res.status(200).json({ data: { newUnsecuredScheme, unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme, isUnsecuredSchemeApplied: true } })
+                }
+
+                if (!securedScheme.isSplitAtBeginning) {
+                    securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
+                    unsecuredAmount = Number(loanAmount - securedLoanAmount)
+                } else {
+                    unsecuredAmount = Number(loanAmount) - Number(securedLoanAmount)
+                }
+
+                processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
+
+                let newUnsecuredScheme = await selectScheme(unsecured, securedScheme)
+                return res.status(200).json({ data: { newUnsecuredScheme, unsecuredScheme, unsecuredAmount, securedLoanAmount, processingCharge, unsecuredSchemeApplied, securedScheme, isUnsecuredSchemeApplied: true } })
+
+            }
         } else {
-            return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
+            return res.status(400).json({ message: "No Unsecured Scheme Availabe3" })
         }
     }
+
     else {
 
         processingCharge = await processingChargeSecuredScheme(loanAmount, securedScheme, undefined, undefined)
@@ -1170,6 +1233,9 @@ exports.loanOpsTeamRating = async (req, res, next) => {
         let loanMaster = await models.customerLoanMaster.findOne(
             {
                 where: { id: masterLoanId },
+                order: [
+                    [models.customerLoan, 'id', 'asc']
+                ],
                 include: [
                     {
                         model: models.customerLoan,
@@ -1190,6 +1256,38 @@ exports.loanOpsTeamRating = async (req, res, next) => {
             if (loanMaster.isLoanTransfer == true) {
                 let stageIdTransfer = await models.loanStage.findOne({ where: { name: 'disbursed' }, transaction: t })
                 let dateChnage = await disbursementOfLoanTransfer(masterLoanId);
+
+                let loan = await models.customerLoanMaster.findOne({
+                    where: { id: masterLoanId },
+                    order: [
+                        [models.customerLoan, 'id', 'asc']
+                    ],
+                    // attributes: ['id', 'processingCharge'],
+                    include: [
+                        {
+                            model: models.customerLoan,
+                            as: "customerLoan",
+                            // attributes: ['id', 'loanUniqueId', 'loanAmount']
+                        }
+                    ]
+                })
+                if (loan.isUnsecuredSchemeApplied) {
+                    let unsecuredDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[1].id, debit: loan.customerLoan[1].loanAmount, description: `Loan amount disbursed to customer` }, { transaction: t })
+                    await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[1].loanUniqueId}-${unsecuredDisbursed.id}` }, { where: { id: unsecuredDisbursed.id }, transaction: t })
+
+                    let processing = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[1].id, credit: loan.processingCharge, description: `Processing charges for current loan from the customer` }, { transaction: t })
+                    await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[1].loanUniqueId}}-${processing.id}` }, { where: { id: processing.id }, transaction: t })
+
+                    let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[0].id, debit: loan.customerLoan[0].loanAmount, description: `Loan amount disbursed to customer` }, { transaction: t })
+                    await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[0].loanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
+                } else {
+                    let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[0].id, debit: loan.customerLoan[0].loanAmount, description: `Loan amount disbursed to customer` }, { transaction: t })
+                    await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[0].loanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
+
+                    let processing = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[0].id, credit: loan.processingCharge, description: `Processing charges for current loan from the customer` }, { transaction: t })
+                    await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[0].loanUniqueId}-${processing.id}` }, { where: { id: processing.id }, transaction: t })
+                }
+
                 for (let a = 0; a < dateChnage.securedInterest.length; a++) {
                     let updateDate = dateChnage.securedInterest[a].emiDueDate
                     await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.securedInterest[a].id }, transaction: t });
@@ -1206,10 +1304,11 @@ exports.loanOpsTeamRating = async (req, res, next) => {
                 for (const loan of loanMaster.customerLoan) {
                     customerLoanId.push(loan.id);
                     await models.customerLoanDisbursement.create({
-                        loanId: loan.id, masterLoanId, loanAmount: loanMaster.loanTransfer.disbursedLoanAmount, transactionId: loanMaster.loanTransfer.transactionId, date: loanMaster.loanTransfer.updatedAt, paymentMode: 'Loan transfer', createdBy: loanMaster.loanTransfer.modifiedBy, modifiedBy: loanMaster.loanTransfer.modifiedBy
+                        loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, transactionId: loanMaster.loanTransfer.transactionId, date: loanMaster.loanTransfer.updatedAt, paymentMode: 'Loan transfer', createdBy: loanMaster.loanTransfer.modifiedBy, modifiedBy: loanMaster.loanTransfer.modifiedBy
                     }, { transaction: t })
                 }
-                // await models.customerLoan.update({ disbursed: true }, { where: { id: { [Op.in]: customerLoanId } }, transaction: t })
+
+                await models.customerLoan.update({ disbursed: true }, { where: { id: { [Op.in]: customerLoanId } }, transaction: t })
                 await models.customerLoanMaster.update({ applicationFormForOperatinalTeam, goldValuationForOperatinalTeam, loanStatusForOperatinalTeam, commentByOperatinalTeam, loanStageId: stageIdTransfer.id, modifiedBy, operatinalTeamId, isLoanSubmitted: true, }, { where: { id: masterLoanId }, transaction: t })
             } else {
                 // loan transfer changes complete
@@ -1296,8 +1395,12 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
     let unsecuredLoanId;
     let securedSchemeName;
     let unsecuredSchemeName;
+
     let fullSecuredAmount = Number(checkLoan.securedLoanAmount)
     let fullUnsecuredAmount = 0
+
+    let securedLoanUniqueId = checkLoan.customerLoan[0].loanUniqueId;
+    let unsecuredLoanUniqueId;
     if (checkLoan.isUnsecuredSchemeApplied == true) {
         securedLoanId = checkLoan.customerLoan[0].id
         securedSchemeName = checkLoan.customerLoan[0].scheme.schemeName
@@ -1307,6 +1410,9 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
         unsecuredLoanId = checkLoan.customerLoan[1].id
         unsecuredSchemeName = checkLoan.customerLoan[1].scheme.schemeName
         unsecuredLoanAmount = Number(checkLoan.unsecuredLoanAmount) - Number(checkLoan.processingCharge)
+
+        unsecuredLoanUniqueId = checkLoan.customerLoan[1].loanUniqueId;
+
     } else {
         securedLoanId = checkLoan.customerLoan[0].id
         securedSchemeName = checkLoan.customerLoan[0].scheme.schemeName
@@ -1319,6 +1425,8 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
         paymentType: userBankDetails.paymentType,
         isUnsecuredSchemeApplied: checkLoan.isUnsecuredSchemeApplied,
         finalLoanAmount: Number(fullSecuredAmount) + Number(fullUnsecuredAmount),
+        securedLoanUniqueId: securedLoanUniqueId,
+        unsecuredLoanUniqueId: unsecuredLoanUniqueId,
         securedLoanAmount,
         securedLoanId,
         securedSchemeName,
@@ -1328,7 +1436,7 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
         masterLoanId,
         fullSecuredAmount,
         fullUnsecuredAmount,
-        processingCharge: checkLoan.processingCharge
+        processingCharge: Number(checkLoan.processingCharge)
     }
     return res.status(200).json({ message: 'success', data: data })
 
@@ -1337,10 +1445,10 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
 //  FUNCTION FOR DISBURSEMENT OF LOAN AMOUNT
 exports.disbursementOfLoanAmount = async (req, res, next) => {
 
-    let { masterLoanId, securedLoanId, unsecuredLoanId, securedLoanAmount, unsecuredLoanAmount, securedTransactionId, unsecuredTransactionId, date, paymentMode, ifscCode, bankName, bankBranch, accountHolderName, accountNumber, disbursementStatus } = req.body;
+    let { masterLoanId, isUnsecuredSchemeApplied, securedLoanUniqueId, unsecuredLoanUniqueId, securedLoanId, unsecuredLoanId, fullSecuredAmount, fullUnsecuredAmount, processingCharge, securedLoanAmount, unsecuredLoanAmount, securedTransactionId, unsecuredTransactionId, date, paymentMode, ifscCode, bankName, bankBranch, accountHolderName, accountNumber, disbursementStatus } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
-
+    console.log(fullSecuredAmount, fullUnsecuredAmount, processingCharge, isUnsecuredSchemeApplied, securedLoanUniqueId, unsecuredLoanUniqueId)
     let checkIsDisbursed = await models.customerLoanDisbursement.findAll({ where: { masterLoanId: masterLoanId } });
 
     if (!check.isEmpty(checkIsDisbursed)) {
@@ -1373,11 +1481,27 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
     let newStartDate = date
     let newEndDate = securedInterest[securedInterest.length - 1].emiDueDate
 
-    // return res.json({ message: req.body })
 
     if (loanDetails.loanStageId == matchStageId.id) {
 
         await sequelize.transaction(async (t) => {
+
+            if (isUnsecuredSchemeApplied) {
+                let unsecuredDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, debit: fullUnsecuredAmount, description: `Loan amount disbursed to customer` }, { transaction: t })
+                await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${unsecuredDisbursed.id}` }, { where: { id: unsecuredDisbursed.id }, transaction: t })
+
+                let processing = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, credit: processingCharge, description: `Processing charges for current loan from the customer` }, { transaction: t })
+                await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${processing.id}` }, { where: { id: processing.id }, transaction: t })
+
+                let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: fullSecuredAmount, description: `Loan amount disbursed to customer` }, { transaction: t })
+                await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
+            } else {
+                let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: fullSecuredAmount, description: `Loan amount disbursed to customer` }, { transaction: t })
+                await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
+
+                let processing = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, credit: processingCharge, description: `Processing charges for current loan from the customer` }, { transaction: t })
+                await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${processing.id}` }, { where: { id: processing.id }, transaction: t })
+            }
 
             await models.customerLoanMaster.update({ loanStartDate: newStartDate, loanEndDate: newEndDate, loanStageId: stageId.id }, { where: { id: masterLoanId }, transaction: t })
 
@@ -1545,6 +1669,11 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 }, {
                     model: models.scheme,
                     as: 'scheme',
+                    include: [{
+                        model: models.schemeInterest,
+                        as: 'schemeInterest',
+                        attributes: ['schemeId', 'days']
+                    }]
                 }]
             },
             // {
@@ -1701,7 +1830,7 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
     });
 
     let packet = await models.customerLoanPackageDetails.findAll({
-        where: { loanId: masterLoanId },
+        where: { masterLoanId: masterLoanId },
         include: [{
             model: models.packet,
             include: [{
@@ -1848,10 +1977,8 @@ exports.appliedLoanDetails = async (req, res, next) => {
         include: associateModel,
     });
 
-
-
     if (appliedLoanDetails.length === 0) {
-        return res.status(200).json([]);
+        return res.status(200).json({ data: [], count: count.length });
     } else {
         return res.status(200).json({ message: 'Applied loan details fetch successfully', appliedLoanDetails, count: count.length });
     }
@@ -1935,6 +2062,11 @@ exports.getLoanDetails = async (req, res, next) => {
             as: 'partRelease',
             attributes: ['amountStatus', 'partReleaseStatus']
         },
+        {
+            model: models.fullRelease,
+            as: 'fullRelease',
+            attributes: ['amountStatus', 'fullReleaseStatus']
+        },
     ]
 
     let loanDetails = await models.customerLoanMaster.findAll({
@@ -1954,7 +2086,7 @@ exports.getLoanDetails = async (req, res, next) => {
         include: associateModel,
     });
     if (loanDetails.length === 0) {
-        return res.status(200).json([]);
+        return res.status(200).json({ data: [], count: count.length });
     } else {
         return res.status(200).json({ message: 'Loan details fetch successfully', data: loanDetails, count: count.length });
     }

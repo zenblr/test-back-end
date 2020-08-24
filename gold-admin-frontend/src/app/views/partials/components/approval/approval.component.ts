@@ -27,6 +27,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   // appraiser = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }, { value: 'rejected', name: 'rejected' }];
   // branchManager = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }, { value: 'incomplete', name: 'incomplete' }];
   appraiser: any;
+  appraiserScrap: any;
   branchManagerScrap: any;
   branchManagerLoan: any;
   userType: any = ''
@@ -41,6 +42,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   reasons: any[] = [];
   viewOpertaionalForm: boolean = true;
   stage: any;
+  isLoanTransfer: boolean;
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
@@ -61,6 +63,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     this.url = this.router.url.split('/')[3]
     this.sharedSerive.getStatus().subscribe(res => {
       this.appraiser = res.apprsiserOrCCE;
+      this.appraiserScrap = res.appraiserOrCCEScrap;
       this.branchManagerScrap = res.bm;
       this.branchManagerLoan = res.bml;
     })
@@ -190,15 +193,21 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
               this.approvalForm.patchValue({ reasons: changes.details.currentValue.masterLoan.commentByAppraiser })
             }
           }
-        })
+        }, 500)
         this.approvalForm.controls.loanStatusForBM.patchValue(changes.details.currentValue.masterLoan.loanStatusForBM)
         this.approvalForm.controls.loanStatusForBM.patchValue(changes.details.currentValue.masterLoan.loanStatusForBM)
         console.log(this.approvalForm.value)
         // this.statusAppraiser()
         // this.statusBM()
+
+        if (changes.details.currentValue.masterLoan.loanTransfer) {
+          this.isLoanTransfer = true
+        }
         this.ref.detectChanges()
 
       }
+
+      console.log(this.details)
     }
 
     if (changes.scrapDetails && changes.scrapDetails.currentValue) {
@@ -448,9 +457,13 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
         this.loanFormService.opsRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
           map(res => {
             if (this.approvalForm.controls.loanStatusForOperatinalTeam.value == 'approved') {
-              this.disableForm(4)
-              this.stage = 4
-              this.disbursal.emit(4)
+              if (!this.isLoanTransfer) {
+                this.disableForm(4)
+                this.stage = 4
+                this.disbursal.emit(4)
+              } else {
+                this.router.navigate(['/admin/loan-management/applied-loan'])
+              }
             } else {
               this.router.navigate(['/admin/loan-management/applied-loan'])
             }
