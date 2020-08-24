@@ -94,7 +94,7 @@ module.exports = (sequelize, DataTypes) => {
         User.hasMany(models.customerPacketTracking, { foreignKey: 'userReceiverId', as: 'packetReceiver' })
 
 
-        User.hasMany(models.packetTracking, { foreignKey: 'appraiserId', as: 'packetTracking' })
+        User.hasMany(models.packetTracking, { foreignKey: 'userId', as: 'packetTracking' })
 
     }
 

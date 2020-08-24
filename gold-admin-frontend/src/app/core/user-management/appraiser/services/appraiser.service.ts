@@ -77,4 +77,36 @@ export class AppraiserService {
         throw (err)
       }))
   }
+
+  getAllReleaser(internalBranchId?): Observable<any> {
+    const reqParams: any = {}
+    if (internalBranchId) {
+      reqParams.internalBranchId = internalBranchId
+    }
+    return this.http.get(`api/user/releaser-list`, { params: reqParams }).pipe(
+      map(res => res)
+    )
+  }
+
+  assignReleaserFullRelease(value): Observable<any> {
+    return this.http.post(`/api/jewellery-release/assign-releaser`, value).pipe(
+      map(res => res),
+      catchError((err) => {
+        if (err.error.message) {
+          this.toastr.error(err.error.message)
+        }
+        throw (err)
+      }))
+  }
+
+  updateReleaserFullRelease(value): Observable<any> {
+    return this.http.put(`/api/jewellery-release/update-releaser`, value).pipe(
+      map(res => res),
+      catchError((err) => {
+        if (err.error.message) {
+          this.toastr.error(err.error.message)
+        }
+        throw (err)
+      }))
+  }
 }
