@@ -137,6 +137,36 @@
             </div>
         </div>
 
+        <div class="row kt-padding-t-40" *ngIf="showScrapFlag">
+            <div class="col">
+                <div class="row">
+                    <div class="col-6 form-label text-color d-flex align-items-center mandatory">Before Standard Deduction
+                    </div>
+                    <div class="col-6 per-gram align-items-center">
+                        <input type="text" class="form-control" formControlName="beforeStandardDeduction" placeholder="8"
+                            [class.isError]="controls.beforeStandardDeduction.invalid && controls.beforeStandardDeduction.touched">
+                        <mat-error *ngIf="controls.beforeStandardDeduction.invalid && controls.beforeStandardDeduction.touched">
+                            Field required</mat-error>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row kt-padding-t-40" *ngIf="showScrapFlag">
+            <div class="col">
+                <div class="row">
+                    <div class="col-6 form-label text-color d-flex align-items-center mandatory">After Standard Deduction
+                    </div>
+                    <div class="col-6 per-gram align-items-center">
+                        <input type="text" class="form-control" formControlName="afterStandardDeduction" placeholder="8"
+                            [class.isError]="controls.afterStandardDeduction.invalid && controls.afterStandardDeduction.touched">
+                        <mat-error *ngIf="controls.afterStandardDeduction.invalid && controls.afterStandardDeduction.touched">
+                            Field required</mat-error>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row kt-padding-t-40" *ngIf="!showScrapFlag">
             <div class="col">
                 <div class="row">
