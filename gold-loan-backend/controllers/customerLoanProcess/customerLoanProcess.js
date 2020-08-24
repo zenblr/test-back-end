@@ -1565,7 +1565,7 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
     })
 
     let interestTable = await models.customerLoanInterest.findAll({
-        where: { loanId: loanId },
+        where: { loanId: loanId,isExtraDaysInterest:false },
         order: [['id', 'asc']]
     })
 
