@@ -394,7 +394,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       withOrnamentWeight: [],
       stoneTouch: [],
       acidTest: [],
-      karat: ['', Validators.required],
+      karat: [, Validators.required],
       ltvRange: [[]],
       purityTest: [[]],
       ltvPercent: [, [Validators.required]],

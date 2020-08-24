@@ -651,18 +651,22 @@
     </div>
 </div>
 
-<div class="row justify-content-center col-10" *ngIf="!data?.modal">
-    <div class="col-4 py-2" *ngIf="scrapIds">
+<div class="row justify-content-center" *ngIf="!data?.modal">
+    <!-- <div class="col-4 py-2" *ngIf="scrapIds">
         <h3 class="text-center my-3" *ngIf="meltingOrnament">
             <b *ngIf="buttonValue == 'Pay Processing Charges'">
                 Processing Charges - <span class="currency">
                     {{'1000' | indianCurrencyFormat}}</span>
             </b>
         </h3>
-    </div>
-    <div class="col-5 py-2">
+    </div> -->
+    <div class="col-12 py-2">
         <h3 class="text-center my-3">
-            <b>
+            <b *ngIf="buttonValue == 'Pay Processing Charges'" class="float-left">
+                Processing Charges - <span class="currency">
+                    {{processingCharges | indianCurrencyFormat}}</span>
+            </b>
+            <b [ngClass]="{'float-right': buttonValue == 'Pay Processing Charges'}">
                 {{scrapIds ? 'Total Scrap Amount' : 'Total Eligible Amount'}} - <span class="currency">
                     {{totalAmount | indianCurrencyFormat}}</span>
             </b>

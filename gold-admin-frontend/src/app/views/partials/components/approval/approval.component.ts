@@ -27,6 +27,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   // appraiser = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }, { value: 'rejected', name: 'rejected' }];
   // branchManager = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }, { value: 'incomplete', name: 'incomplete' }];
   appraiser: any;
+  appraiserScrap: any;
   branchManagerScrap: any;
   branchManagerLoan: any;
   userType: any = ''
@@ -62,6 +63,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     this.url = this.router.url.split('/')[3]
     this.sharedSerive.getStatus().subscribe(res => {
       this.appraiser = res.apprsiserOrCCE;
+      this.appraiserScrap = res.appraiserOrCCEScrap;
       this.branchManagerScrap = res.bm;
       this.branchManagerLoan = res.bml;
     })

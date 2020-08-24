@@ -86,7 +86,7 @@
                                     [class.isError]="controls.scrapStatusForAppraiser.invalid && controls.scrapStatusForAppraiser.touched">
                                     <option value=null [disabled]="true" [selected]="true">Select Status</option>
                                     <option [value]="status.value" [disabled]="checkforApprovalAppraiser(status)"
-                                        *ngFor="let status of appraiser">
+                                        *ngFor="let status of appraiserScrap">
                                         {{status.name | titlecase}}
                                     </option>
                                 </select>
