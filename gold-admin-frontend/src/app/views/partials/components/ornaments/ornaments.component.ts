@@ -439,6 +439,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         controls.controls.ornamentImage.updateValueAndValidity()
       controls.controls.ornamentImageData.setValidators([]),
         controls.controls.ornamentImageData.updateValueAndValidity()
+        controls.controls.karat.setValidators([]),
+        controls.controls.karat.updateValueAndValidity()
       if (this.meltingOrnament) {
         controls.controls.purityReading.setValidators(Validators.required),
           controls.controls.purityReading.updateValueAndValidity()

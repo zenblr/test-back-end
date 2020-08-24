@@ -25,7 +25,12 @@ export class SharedService {
 		{ value: 'pending', name: 'pending' },
 		{ value: 'rejected', name: 'rejected' }
 	];
-	branchManager = [
+	branchManagerScrap = [
+		{ value: 'approved', name: 'incomplete' },
+		{ value: 'rejected', name: 'rejected' },
+		{ value: 'incomplete', name: 'approved' }
+	];
+	branchManagerLoan = [
 		{ value: 'approved', name: 'approved' },
 		{ value: 'rejected', name: 'rejected' },
 		{ value: 'incomplete', name: 'incomplete' }
@@ -34,8 +39,9 @@ export class SharedService {
 	constructor(private http: HttpClient) { }
 
 	getStatus() {
-		return of({ apprsiserOrCCE: this.appraiserOrCCE, bm: this.branchManager })
+		return of({ apprsiserOrCCE: this.appraiserOrCCE, bm: this.branchManagerScrap,  bml: this.branchManagerLoan })
 	}
+	
 
 	getScrapStatus(): Observable<any> {
 		return this.http.get(`/api/scrap/scrap-process/get-scrap-status`);
