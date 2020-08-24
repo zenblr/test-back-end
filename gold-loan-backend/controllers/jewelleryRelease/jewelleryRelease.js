@@ -52,7 +52,7 @@ exports.ornamentsDetails = async (req, res, next) => {
 
 async function getLoanLastPayment(masterLoanId) {
     let lastPayment = await models.customerLoanInterest.findOne({
-        where: { masterLoanId: masterLoanId, emiStatus: "complete" },
+        where: { masterLoanId: masterLoanId, emiStatus: "complete",isExtraDaysInterest:false },
         order: [["updatedAt", "DESC"]],
     });
     return lastPayment;
@@ -492,6 +492,9 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         include: [
             {
                 model: models.packet
+            },{
+                model: models.ornamentType,
+                as: "ornamentType"
             }
         ]
     }, {
