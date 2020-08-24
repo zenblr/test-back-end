@@ -92,7 +92,7 @@ module.exports = (sequelize, DataTypes) => {
         User.belongsToMany(models.internalBranch, { through: models.userInternalBranch });
         User.hasMany(models.customerPacketLocation, { foreignKey: 'receiverUserId', as: 'customerPacketLocation' })
 
-        User.hasMany(models.packetTracking, { foreignKey: 'appraiserId', as: 'packetTracking' })
+        User.hasMany(models.packetTracking, { foreignKey: 'userId', as: 'packetTracking' })
 
     }
 

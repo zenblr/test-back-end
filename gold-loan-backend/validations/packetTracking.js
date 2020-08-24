@@ -5,3 +5,4 @@ exports.updateLocationValidation =[
     .exists()
     .withMessage('Packet Location Required'),
 ]
+
