@@ -48,9 +48,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'penal_interest',
             defaultValue: 0
         },
-        PenalAccrual:{
+        penalAccrual:{
             type: DataTypes.DECIMAL(10,2),
-            field: 'Penal_accrual',
+            field: 'penal_accrual',
             defaultValue: 0
         },
         penalOutstanding:{
