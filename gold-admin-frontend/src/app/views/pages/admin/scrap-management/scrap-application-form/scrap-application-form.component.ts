@@ -1,3 +1,4 @@
+
 import { Component, OnInit, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ScrapApplicationFormService } from '../../../../../core/scrap-management';
