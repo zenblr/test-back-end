@@ -101,7 +101,7 @@ export class PartReleaseFinalComponent implements OnInit {
   }
 
   updateDocument(item) {
-    this.router.navigate([`admin/funds-approvals/upload-document/${item.id}`])
+    this.router.navigate([`admin/funds-approvals/upload-document/partRelease/${item.id}`])
   }
 
   newLoan(item) {
@@ -109,11 +109,7 @@ export class PartReleaseFinalComponent implements OnInit {
       customerUniqueId: item.masterLoan.customer.customerUniqueId,
       partReleaseId: item.id
     }
-    // this.partReleaseFinalService.applyLoan(params).pipe(map(res => {
-    //   if (res) {
     this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerUniqueId: params.customerUniqueId, partReleaseId: params.partReleaseId } })
-    //   }
-    // })).subscribe()
   }
 
 }

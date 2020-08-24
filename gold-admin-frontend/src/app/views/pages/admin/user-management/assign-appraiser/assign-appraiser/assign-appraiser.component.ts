@@ -67,15 +67,19 @@ export class AssignAppraiserComponent implements OnInit {
   setForm() {
     console.log(this.data)
     if (this.data.action == 'add') {
-      this.title = 'Assign Appraiser'
+      this.title = this.data.isReleaser ? 'Assign Releaser' : 'Assign Appraiser';
       if (this.data.customer) {
         this.appraiserForm.patchValue({ customerName: this.data.customer.firstName + ' ' + this.data.customer.lastName })
         this.appraiserForm.controls.customerUniqueId.patchValue(this.data.customer.customerUniqueId)
         this.appraiserForm.controls.customerId.patchValue(this.data.id)
       }
-      if (this.data.partReleaseId) this.appraiserForm.controls.partReleaseId.patchValue(this.data.partReleaseId)
-    } else if (this.data.action == 'edit') {
-      this.title = 'Update Appraiser'
+      // if (this.data.partReleaseId) this.appraiserForm.controls.partReleaseId.patchValue(this.data.partReleaseId)
+
+      // if (this.data.fullReleaseId) this.appraiserForm.controls.fullReleaseId.patchValue(this.data.fullReleaseId)
+
+    }
+    else if (this.data.action == 'edit') {
+      this.title = this.data.isReleaser ? 'Update Releaser' : 'Update Appraiser'
       // console.log(this.data)
       this.appraiserForm.patchValue(this.data.appraiser)
       this.startTime = this.convertTime24To12(this.data.appraiser.startTime);
@@ -86,13 +90,22 @@ export class AssignAppraiserComponent implements OnInit {
         this.appraiserForm.patchValue({ customerName: this.data.customer.firstName + ' ' + this.data.customer.lastName })
         if (this.data.customer.customerUniqueId) this.controls.customerUniqueId.patchValue(this.data.customer.customerUniqueId)
       }
-      if (this.data.partReleaseId)
-        this.appraiserForm.controls.partReleaseId.patchValue(this.data.partReleaseId)
+
+      // if (this.data.partReleaseId)
+      //   this.appraiserForm.controls.partReleaseId.patchValue(this.data.partReleaseId)
 
     } else {
       this.title = 'View Appraiser'
       this.appraiserForm.patchValue(this.data.appraiser)
       this.appraiserForm.disable();
+    }
+
+    if (this.data.partReleaseId) {
+      this.appraiserForm.controls.partReleaseId.patchValue(this.data.partReleaseId)
+    }
+
+    if (this.data.fullReleaseId) {
+      this.appraiserForm.controls.fullReleaseId.patchValue(this.data.fullReleaseId)
     }
   }
 
@@ -103,23 +116,41 @@ export class AssignAppraiserComponent implements OnInit {
       customerId: [, [Validators.required]],
       customerName: [''],
       appraiserId: ['', [Validators.required]],
+      releaserId: ['', [Validators.required]],
       appoinmentDate: [],
       startTime: [this.addStartTime],
       endTime: [],
-      partReleaseId: []
+      partReleaseId: [],
+      fullReleaseId: []
     });
+
+    if (this.data.isReleaser) {
+      this.appraiserForm.controls.appraiserId.disable()
+    } else {
+      this.appraiserForm.controls.releaserId.disable()
+    }
   }
 
   getUserDetails() {
     this.sharedService.getUserDetailsFromStorage().pipe(map(res => {
       // console.log(res)
       this.internalBranchId = res.userDetails.internalBranchId
-      this.getAllAppraiser()
+      if (this.data.isReleaser) {
+        this.getAllReleaser()
+      } else {
+        this.getAllAppraiser()
+      }
     })).subscribe()
   }
 
   getAllAppraiser() {
     this.appraiserService.getAllAppraiser(this.internalBranchId).subscribe(res => {
+      this.appraisers = res.data;
+    })
+  }
+
+  getAllReleaser() {
+    this.appraiserService.getAllReleaser(this.internalBranchId).subscribe(res => {
       this.appraisers = res.data;
     })
   }
@@ -157,6 +188,11 @@ export class AssignAppraiserComponent implements OnInit {
   onSubmit() {
     if (this.appraiserForm.invalid) {
       this.appraiserForm.markAllAsTouched()
+      for (const key in this.appraiserForm.controls) {
+        const element = this.appraiserForm.controls[key];
+        // console.log({ key, element })
+        if (element.invalid) console.log({ key, element })
+      }
       return
     }
     // console.log(this.appraiserForm.value);
@@ -178,7 +214,17 @@ export class AssignAppraiserComponent implements OnInit {
             this.dialogRef.close(true);
           }
         });
-      } else {
+      }
+      else if (this.data.fullReleaseId) {
+        this.appraiserService.updateReleaserFullRelease(appraiserData).subscribe(res => {
+          if (res) {
+            const msg = 'Releaser Updated Sucessfully';
+            this.toastr.successToastr(msg);
+            this.dialogRef.close(true);
+          }
+        });
+      }
+      else {
         this.appraiserService.updateAppraiser(appraiserData.id, appraiserData).subscribe(res => {
           if (res) {
             const msg = 'Appraiser Updated Sucessfully';
@@ -197,7 +243,17 @@ export class AssignAppraiserComponent implements OnInit {
             this.dialogRef.close(true);
           }
         });
-      } else {
+      }
+      else if (this.data.fullReleaseId) {
+        this.appraiserService.assignReleaserFullRelease(appraiserData).subscribe(res => {
+          if (res) {
+            const msg = 'Releaser Assigned Successfully';
+            this.toastr.successToastr(msg);
+            this.dialogRef.close(true);
+          }
+        });
+      }
+      else {
         this.appraiserService.assignAppraiser(appraiserData).subscribe(res => {
           if (res) {
             const msg = 'Appraiser Assigned Successfully';

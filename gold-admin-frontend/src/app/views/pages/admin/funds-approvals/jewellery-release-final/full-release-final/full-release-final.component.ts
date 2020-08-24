@@ -11,6 +11,7 @@ import { AssignAppraiserComponent } from '../../../user-management/assign-apprai
 import { FullReleaseFinalDatasource } from '../../../../../../core/funds-approvals/jewellery-release-final/full-release-final/datasources/full-release-final.datasource';
 import { FullReleaseFinalService } from '../../../../../../core/funds-approvals/jewellery-release-final/full-release-final/services/full-release-final.service';
 import { UpdateStatusComponent } from '../../update-status/update-status.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-full-release-final',
@@ -20,7 +21,7 @@ import { UpdateStatusComponent } from '../../update-status/update-status.compone
 export class FullReleaseFinalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'releaseDate', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'principalOutstandingAmountLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'updateStatus', 'assignAppraiser'];
+  displayedColumns = ['customerId', 'loanId', 'appointmentDate', 'appointmentTime', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'principalOutstandingAmountLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'updateStatus'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -34,6 +35,7 @@ export class FullReleaseFinalComponent implements OnInit {
     public dialog: MatDialog,
     private toastr: ToastrService,
     private layoutUtilsService: LayoutUtilsService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -59,7 +61,7 @@ export class FullReleaseFinalComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // this.dataSource.getFullReleaseList(1, 25, this.searchValue);
+    this.dataSource.getFullReleaseList(1, 25, this.searchValue);
   }
 
   ngOnDestroy() {
@@ -80,8 +82,16 @@ export class FullReleaseFinalComponent implements OnInit {
     this.dataSource.getFullReleaseList(from, to, this.searchValue);
   }
 
-  assign(item) {
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', customer: item.customer, id: item.customerId }, width: '500px' });
+  updateStatus(item) {
+    const dialogRef = this.dialog.open(UpdateStatusComponent,
+      {
+        data: {
+          action: 'edit',
+          value: item,
+          name: 'fullReleaseFinal'
+        },
+        width: 'auto'
+      });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
@@ -89,17 +99,8 @@ export class FullReleaseFinalComponent implements OnInit {
     });
   }
 
-  updateAppraiser(item) {
-
-  }
-
-  updateStatus(item) {
-    const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'edit', value: item }, width: 'auto' });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        // this.loadPage();
-      }
-    });
+  updateDocument(item) {
+    this.router.navigate([`admin/funds-approvals/upload-document/fullRelease/${item.id}`])
   }
 
 }

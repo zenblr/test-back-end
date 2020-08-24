@@ -165,8 +165,15 @@ export class PageConfig {
 				},
 				"upload-document": {
 					page: { title: "Upload Document", desc: "" },
-					id: {
-						page: { title: "Upload Document", desc: "" },
+					"partRelease": {
+						id: {
+							page: { title: "Upload Document", desc: "" },
+						}
+					},
+					"fullRelease": {
+						id: {
+							page: { title: "Upload Document", desc: "" },
+						}
 					}
 				},
 			},
