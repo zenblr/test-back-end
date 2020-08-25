@@ -327,6 +327,13 @@ let getPendingNoOfDaysInterest = async (loanId, date) => {
     return pendingNoOfDaysInterest;
 }
 
+let getExtraInterest = async (loanId) => {
+    let extraInteres = await models.customerLoanInterest.findOne({
+        where: { loanId: loanId,isExtraDaysInterest:true }
+    });
+    return extraInteres;
+}
+
 let mergeInterestTable = async (masterLoanId) => {
 
     let interestTable = await models.customerLoanMaster.findOne({
@@ -939,5 +946,6 @@ module.exports = {
     updateInterestAftertOutstandingAmount: updateInterestAftertOutstandingAmount,
     getFirstInterestToPay: getFirstInterestToPay,
     getAllPaidInterest: getAllPaidInterest,
-    getAllInterestGreaterThanDate:getAllInterestGreaterThanDate
+    getAllInterestGreaterThanDate:getAllInterestGreaterThanDate,
+    getExtraInterest:getExtraInterest
 }
