@@ -131,28 +131,5 @@ export class LocationComponent implements OnInit {
 
   }
 
-  deletePacket(_item) {
-    // const role = _item;
-    // const _title = 'Delete Packet';
-    // const _description = 'Are you sure to permanently delete this packet?';
-    // const _waitDesciption = 'Packet is deleting...';
-    // const _deleteMessage = `Packet has been deleted`;
-    // console.log(role.id)
-    // const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
-    // dialogRef.afterClosed().subscribe(res => {
-    //   if (res) {
-    //     console.log(res);
-    //     this.locationService.deletePacket(role.id).subscribe(successDelete => {
-    //       this.toastr.success(_deleteMessage);
-    //       this.loadPackets();
-    //     },
-    //       errorDelete => {
-    //         this.toastr.error(errorDelete.error.message);
-    //       });
-    //   }
-    // });
-  }
-
-
 }
 
