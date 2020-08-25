@@ -255,7 +255,13 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.globalSettingService.globalSetting$.subscribe(global => this.globalValue = global);
+    this.globalSettingService.globalSetting$.subscribe(global => {
+      this.globalValue = global
+      this.globalValue.beforeSD = 0;
+      this.globalValue.afterSD = 10;
+
+    });
+
     if (this.scrapUrl == "scrap-management") {
       this.documentsForm.controls['customerConfirmationStatus'].valueChanges.subscribe((val) => {
         if (val == 'confirmed') {
@@ -298,7 +304,7 @@ export class UploadDocumentsComponent implements OnInit {
       schemeConfirmationCopyImage: [],
       //acknowledgment
       processingCharges: [],
-      standardDeduction: [''],
+      standardDeduction: [],
       customerConfirmation: [],
       customerConfirmationImage: [],
       customerConfirmationImageName: [],
@@ -334,7 +340,7 @@ export class UploadDocumentsComponent implements OnInit {
         this.documentsForm.controls.pawnCopy.updateValueAndValidity()
       this.documentsForm.controls.processingCharges.setValidators(Validators.required),
         this.documentsForm.controls.processingCharges.updateValueAndValidity()
-      this.documentsForm.controls.standardDeduction.setValidators(Validators.required),
+      this.documentsForm.controls.standardDeduction.setValidators( [Validators.min(0), Validators.max(10), Validators.required]),
         this.documentsForm.controls.standardDeduction.updateValueAndValidity()
       this.documentsForm.controls.customerConfirmationStatus.setValidators(Validators.required),
         this.documentsForm.controls.customerConfirmationStatus.updateValueAndValidity()

@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ChangeDetectorRef, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ElementRef, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ScrapApplicationFormService } from '../../../../../core/scrap-management';
 import { map, catchError } from 'rxjs/operators';
@@ -35,7 +35,7 @@ export class ScrapApplicationFormComponent implements OnInit {
   customerConfirmationArr = [];
   standardDeductionArr = [];
   finalLoanAmt: any;
-  finalScrapAmt: any;
+  @Output() finalScrapAmt: any;
   fullAmount: any = 0;
   showButton: boolean = true;
   approvalFrom: boolean = false;
@@ -72,12 +72,14 @@ export class ScrapApplicationFormComponent implements OnInit {
   editApi() {
     this.scrapApplicationFormService.getScrapDataById(this.id).subscribe(res => {
       this.action = 'edit'
-      this.customerDetail = res.customerScrap
+      this.customerDetail = res.customerScrap;
       this.scrapIds = { scrapId: res.customerScrap.id }
-      this.scrapStage = this.customerDetail.scrapStage
-      this.ornamentDetails = res.customerScrap.ornamentType
+      this.scrapStage = this.customerDetail.scrapStage;
+      this.finalScrapAmt = this.customerDetail.finalScrapAmountAfterMelting;
+      console.log(this.finalScrapAmt)
+      this.ornamentDetails = res.customerScrap.ornamentType;
       if (res.customerScrap.customerScrapAcknowledgement) {
-        this.processingCharges = res.customerScrap.customerScrapAcknowledgement.processingCharges
+        this.processingCharges = res.customerScrap.customerScrapAcknowledgement.processingCharges;
       }
       console.log(this.scrapStage)
       if (this.url == 'packet-image-upload') {

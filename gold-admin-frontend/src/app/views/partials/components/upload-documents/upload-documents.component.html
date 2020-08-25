@@ -67,11 +67,14 @@
             </div>
             <div class="col">
             <div class="col" *ngIf="showScrapAcknowledgementFlag">
-                <input type="text" formControlName="standardDeduction" class="form-control "
-                [class.isError]="controls.standardDeduction.touched && controls.standardDeduction.invalid"
-                placeholder="standardDeduction" readonly>
-            <mat-error *ngIf="controls.standardDeduction.touched && controls.standardDeduction.invalid">
-                Field Required</mat-error>
+                <!-- <input type="text" class="form-control" placeholder="10" formControlName="quantity"
+                numbersOnly
+                [class.isError]="ornament.controls.quantity.touched && ornament.controls.quantity.invalid"> -->
+                <input type="text" class="form-control"  placeholder="0" formControlName="standardDeduction"
+                numbersOnly
+                [class.isError]="controls.standardDeduction.touched && controls.standardDeduction.invalid">
+            <mat-error *ngIf="controls.standardDeduction.errors?.max">
+                Invalid Number</mat-error>
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
                 <label>Before Standard Deduction - <span class="currency">
