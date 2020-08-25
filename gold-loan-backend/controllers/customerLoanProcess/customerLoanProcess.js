@@ -1773,12 +1773,85 @@ exports.getSingleLoanDetails = async (req, res, next) => {
 exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
     let { customerLoanId, masterLoanId } = req.query
 
-    // let whereCondition = {}
-    // if (!check.isEmpty(customerLoanId)) {
-    //     whereCondition = { id: customerLoanId }
-    // }
+    let whereCondition = {}
+   if (!check.isEmpty(customerLoanId)) {
+        whereCondition = { id: customerLoanId }
+    } 
 
-    let customerLoan = await getSingleLoanDetail(customerLoanId, masterLoanId)
+    let customerLoan = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure'],
+        order: [
+            [models.customerLoanDisbursement, 'loanId', 'asc']
+        ],
+        include: [
+            {
+                model: models.customerLoan,
+                as: 'customerLoan',
+                where: { id: loanId },
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            },
+            {
+                model: models.loanStage,
+                as: 'loanStage',
+                attributes: ['id', 'name']
+            },
+            {
+                model: models.customerLoanTransfer,
+                as: "loanTransfer",
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            },
+            {
+                model: models.customerLoanPersonalDetail,
+                as: 'loanPersonalDetail',
+            }, {
+                model: models.customerLoanBankDetail,
+                as: 'loanBankDetail',
+            }, {
+                model: models.customerLoanNomineeDetail,
+                as: 'loanNomineeDetail',
+            },
+            {
+                model: models.customerLoanOrnamentsDetail,
+                as: 'loanOrnamentsDetail',
+                include: [
+                    {
+                        model: models.ornamentType,
+                        as: "ornamentType"
+                    }
+                ]
+            },
+            {
+                model: models.customerLoanDocument,
+                as: 'customerLoanDocument'
+            },
+            {
+                model: models.customer,
+                as: 'customer',
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+            },
+            {
+                model: models.customerLoanDisbursement,
+                as: 'customerLoanDisbursement'
+            }
+        ]
+    });
+
+    let packet = await models.customerLoanPackageDetails.findAll({
+        where: { masterLoanId: masterLoanId },
+        include: [{
+            model: models.packet,
+            include: [{
+                model: models.customerLoanOrnamentsDetail,
+                include: [{
+                    model: models.ornamentType,
+                    as: 'ornamentType'
+                }]
+            }]
+        }]
+    })
+    customerLoan.dataValues.loanPacketDetails = packet
+
     return res.status(200).json({ message: 'success', data: customerLoan })
 }
 
@@ -1914,7 +1987,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
     });
 
     if (appliedLoanDetails.length === 0) {
-        return res.status(200).json({ data: [], count: count.length });
+        return res.status(200).json({ data: [] });
     } else {
         return res.status(200).json({ message: 'Applied loan details fetch successfully', appliedLoanDetails, count: count.length });
     }
@@ -2003,6 +2076,13 @@ exports.getLoanDetails = async (req, res, next) => {
             as: 'fullRelease',
             attributes: ['amountStatus', 'fullReleaseStatus']
         },
+        {
+            model: models.customerLoanPackageDetails,
+            as: 'loanPacketDetails',
+            include: [{
+                model: models.packet,
+            }]
+        }
     ]
 
     let loanDetails = await models.customerLoanMaster.findAll({
@@ -2022,7 +2102,7 @@ exports.getLoanDetails = async (req, res, next) => {
         include: associateModel,
     });
     if (loanDetails.length === 0) {
-        return res.status(200).json({ data: [], count: count.length });
+        return res.status(200).json({ data: [] });
     } else {
         return res.status(200).json({ message: 'Loan details fetch successfully', data: loanDetails, count: count.length });
     }

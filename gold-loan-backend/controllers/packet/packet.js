@@ -81,7 +81,7 @@ exports.viewPacket = async (req, res, next) => {
         {
             model: models.user,
             as: 'appraiser',
-            attributes: ['id', 'userUniqueId', 'firstName','lastName']
+            attributes: ['id', 'userUniqueId', 'firstName', 'lastName']
         }
     ];
 
@@ -96,13 +96,16 @@ exports.viewPacket = async (req, res, next) => {
         limit: pageSize,
 
     });
-    let count = await models.packet.count({
+    let count = await models.packet.findAll({
         where: searchQuery,
         subQuery: false,
         include: associateModel,
     });
-
-    return res.status(200).json({ message: 'packet details fetch successfully', packetDetails, count: count });
+    if (packetDetails.length === 0) {
+        return res.status(200).json({ data: [] });
+    } else {
+        return res.status(200).json({ message: 'packet details fetch successfully', packetDetails, count: count.length });
+    }
 
 }
 

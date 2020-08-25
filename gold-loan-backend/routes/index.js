@@ -178,6 +178,8 @@ router.use('/jewellery-release', jewelleryRelese);
 const quickPay = require('./quickPay');
 router.use('/quick-pay', quickPay);
 
+const deposit = require('./deposit');// DEPOSIT
+router.use('/deposit',deposit);
 const partPayment = require('./partPayment');
 router.use('/part-payment', partPayment);
 
