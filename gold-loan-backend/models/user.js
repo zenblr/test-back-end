@@ -90,7 +90,9 @@ module.exports = (sequelize, DataTypes) => {
         User.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
         User.belongsToMany(models.internalBranch, { through: models.userInternalBranch });
-        User.hasMany(models.customerPacketLocation, { foreignKey: 'receiverUserId', as: 'customerPacketLocation' })
+        User.hasMany(models.customerPacketTracking, { foreignKey: 'userSenderId', as: 'packetSender' })
+        User.hasMany(models.customerPacketTracking, { foreignKey: 'userReceiverId', as: 'packetReceiver' })
+
 
         User.hasMany(models.packetTracking, { foreignKey: 'userId', as: 'packetTracking' })
 

@@ -62,10 +62,10 @@
                     <mat-header-cell *matHeaderCellDef>Shipping Address</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <!-- {{element['customerDetails.customeraddress.address'] ? element['customerDetails.customeraddress.address'] : '-'}} -->
-                        {{element['customerDetails.customeraddress.landMark']}}
-                        {{element['customerDetails.customeraddress.address']}}
-                        {{element['customerDetails.customeraddress.city.name']}}
-                        {{element['customerDetails.customeraddress.state.name']}}
+                        {{element['customerOrderAddress.shippingLandMark']}}
+                        {{element['customerOrderAddress.shippingAddress']}}
+                        {{element['customerOrderAddress.shippingCity.name']}}
+                        {{element['customerOrderAddress.shippingState.name']}}
                         {{element['customerDetails.customeraddress.postalCode']}}
                     </mat-cell>
                 </ng-container>
@@ -143,6 +143,15 @@
                     <mat-header-cell *matHeaderCellDef>Invoice No</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         {{element['invoiceNumber'] ? element['invoiceNumber'] : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="invoiceDate">
+                    <mat-header-cell *matHeaderCellDef>Invoice Date</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <div class="d-block">
+                            <div>{{element['invoiceDate'] ? (element['invoiceDate'] | date:'MMM d, y') : '-'}}</div>
+                            <div>{{element['invoiceDate'] ? (element['invoiceDate'] | date:'h:mm a') : ''}}</div>
+                        </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="orderStatus">

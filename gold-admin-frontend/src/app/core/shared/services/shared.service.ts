@@ -25,7 +25,17 @@ export class SharedService {
 		{ value: 'approved', name: 'approved' },
 		{ value: 'rejected', name: 'rejected' }
 	];
-	branchManager = [
+	appraiserOrCCEScrap = [
+		{ value: 'incomplete', name: 'incomplete' },
+		{ value: 'rejected', name: 'rejected' },
+		{ value: 'approved', name: 'approved' }
+	];
+	branchManagerScrap = [
+		{ value: 'incomplete', name: 'incomplete' },
+		{ value: 'rejected', name: 'rejected' },
+		{ value: 'approved', name: 'approved' }
+	];
+	branchManagerLoan = [
 		{ value: 'incomplete', name: 'incomplete' },
 		{ value: 'approved', name: 'approved' },
 		{ value: 'rejected', name: 'rejected' },
@@ -34,7 +44,7 @@ export class SharedService {
 	constructor(private http: HttpClient) { }
 
 	getStatus() {
-		return of({ apprsiserOrCCE: this.appraiserOrCCE, bm: this.branchManager })
+		return of({ apprsiserOrCCE: this.appraiserOrCCE, appraiserOrCCEScrap: this.appraiserOrCCEScrap, bm: this.branchManagerScrap, bml: this.branchManagerLoan })
 	}
 
 	getScrapStatus(): Observable<any> {
@@ -65,6 +75,9 @@ export class SharedService {
 		}
 		if (data && data.partReleaseId) {
 			reqParams.partReleaseId = data.partReleaseId;
+		}
+		if (data && data.fullReleaseId) {
+			reqParams.fullReleaseId = data.fullReleaseId;
 		}
 		var fd = new FormData();
 		fd.append("avatar", files);

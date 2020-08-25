@@ -27,7 +27,9 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   // appraiser = [{ value: 'approved', name: 'approved' }, { value: 'pending', name: 'pending' }, { value: 'rejected', name: 'rejected' }];
   // branchManager = [{ value: 'approved', name: 'approved' }, { value: 'rejected', name: 'rejected' }, { value: 'incomplete', name: 'incomplete' }];
   appraiser: any;
-  branchManager: any;
+  appraiserScrap: any;
+  branchManagerScrap: any;
+  branchManagerLoan: any;
   userType: any = ''
   @Input() action;
   @Output() ornamentType: EventEmitter<any> = new EventEmitter<any>();
@@ -60,8 +62,10 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnInit() {
     this.url = this.router.url.split('/')[3]
     this.sharedSerive.getStatus().subscribe(res => {
-      this.appraiser = res.apprsiserOrCCE
-      this.branchManager = res.bm
+      this.appraiser = res.apprsiserOrCCE;
+      this.appraiserScrap = res.appraiserOrCCEScrap;
+      this.branchManagerScrap = res.bm;
+      this.branchManagerLoan = res.bml;
     })
   }
 

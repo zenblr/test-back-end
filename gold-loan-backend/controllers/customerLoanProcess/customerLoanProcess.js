@@ -1568,7 +1568,7 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
     })
 
     let interestTable = await models.customerLoanInterest.findAll({
-        where: { loanId: loanId },
+        where: { loanId: loanId,isExtraDaysInterest:false },
         order: [['id', 'asc']]
     })
 
@@ -1579,8 +1579,8 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
         for (let j = 0; j < holidayDate.length; j++) {
             let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
             let sunday = moment(momentDate, 'YYYY-MM-DD').weekday();
+            let newDate = new Date(newEmiDueDate);
             if (momentDate == holidayDate[j].holidayDate || sunday == 0) {
-                let newDate = new Date(newEmiDueDate);
                 let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
                 interestTable[i].emiEndDate = holidayEmiDueDate
 

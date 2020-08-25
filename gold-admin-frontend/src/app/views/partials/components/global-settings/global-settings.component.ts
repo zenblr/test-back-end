@@ -43,6 +43,8 @@ export class GlobalSettingsComponent implements OnInit {
       ltvGoldValue: [, [Validators.required]],
       minimumLoanAmountAllowed: [],
       gst: [, [Validators.required]],
+      beforeStandardDeduction: [],
+      afterStandardDeduction: [],
       cashTransactionLimit: [, [Validators.required]],
       minimumTopUpAmount: [],
       gracePeriodDays: [],

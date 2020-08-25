@@ -133,7 +133,7 @@
                 <ng-container matColumnDef="merchant">
                     <mat-header-cell *matHeaderCellDef>Merchant</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.Createdby?.broker?.merchant?.merchantName ? element?.Createdby?.broker?.merchant?.merchantName : '-'}}
+                        {{element?.merchant?.merchant?.merchantName ? (element?.merchant?.merchant?.merchantName | titlecase) : '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="createdDate">
