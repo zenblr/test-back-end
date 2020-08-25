@@ -50,6 +50,7 @@ import { ProductComponent } from './shop/product/product.component';
 import { OrderReceivedComponent } from './order-received/order-received.component';
 import { ViewPayComponent } from './orders/view-pay/view-pay.component';
 import { CancelOrderComponent } from './orders/cancel-order/cancel-order.component';
+import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 
 const routes: Routes = [
   {
@@ -122,7 +123,8 @@ const routes: Routes = [
     ProductComponent,
     OrderReceivedComponent,
     ViewPayComponent,
-    CancelOrderComponent
+    CancelOrderComponent,
+    PaymentDialogComponent
   ],
   imports: [
     CommonModule,
@@ -152,6 +154,7 @@ const routes: Routes = [
   entryComponents: [
     ProfileChangePassComponent,
     ProfileChangePanComponent,
+    PaymentDialogComponent
   ],
 })
 export class MerchantModule { }
