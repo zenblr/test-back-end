@@ -1024,7 +1024,7 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
             let y = await models.packetOrnament.destroy({ where: { packetId: { [Op.in]: packetId } }, transaction: t })
 
 
-            let z = await models.packet.update({ customerId: null, loanId: null, masterLoanId: null, packetAssigned: false }, {
+            let z = await models.packet.update({ customerId: null, loanId: null, masterLoanId: null, packetAssigned: false, isActive: false }, {
                 where: { id: { [Op.in]: packetId } }, transaction: t
             })
 
@@ -1736,7 +1736,15 @@ exports.getSingleLoanDetails = async (req, res, next) => {
         }]
     })
 
+    let disbursement = await models.customerLoanDisbursement.findAll({
+        where: { masterLoanId: customerLoan.masterLoanId },
+        order: [
+            ['loanId', 'asc']
+        ]
+    })
+
     customerLoan.dataValues.loanPacketDetails = packet
+    customerLoan.dataValues.customerLoanDisbursement = disbursement
 
     let ornamentType = [];
     if (customerLoan.loanOrnamentsDetail.length != 0) {
@@ -1761,6 +1769,9 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
     let customerLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
         attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure'],
+        order: [
+            [models.customerLoanDisbursement, 'loanId', 'asc']
+        ],
         include: [
             {
                 model: models.customerLoan,
@@ -1825,6 +1836,10 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
                 model: models.customer,
                 as: 'customer',
                 attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+            },
+            {
+                model: models.customerLoanDisbursement,
+                as: 'customerLoanDisbursement'
             }
         ]
     });

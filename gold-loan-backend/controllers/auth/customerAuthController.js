@@ -8,8 +8,8 @@ const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
 let check = require('../../lib/checkLib');
 
 exports.customerLogin = async (req, res, next) => {
-    const { firstName, password } = req.body;
-    let checkCustomer = await models.customer.findOne({ where: { firstName: firstName } });
+    const { mobileNumber, password } = req.body;
+    let checkCustomer = await models.customer.findOne({ where: { mobileNumber: mobileNumber } });
     if (!checkCustomer) {
         return res.status(404).json({ message: 'Wrong Credentials' })
     }
