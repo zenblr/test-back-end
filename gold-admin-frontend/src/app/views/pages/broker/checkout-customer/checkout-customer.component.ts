@@ -404,7 +404,7 @@ export class CheckoutCustomerComponent implements OnInit {
             const msg = 'Order has been placed successfully.';
             this.toastr.successToastr(msg);
             this.shoppingCartService.cartCount.next(0);
-            this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId]);
+            this.router.navigate(['/broker/order-received/'], { queryParams: { id: this.finalOrderData.blockId } });
           }
         });
       }
@@ -440,7 +440,7 @@ export class CheckoutCustomerComponent implements OnInit {
         const msg = 'Order has been placed successfully.';
         this.toastr.successToastr(msg);
         this.shoppingCartService.cartCount.next(0);
-        this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId]);
+        this.router.navigate(['/broker/order-received/'], { queryParams: { id: this.finalOrderData.blockId } });
       },
         error => {
           console.log(error.error.message);

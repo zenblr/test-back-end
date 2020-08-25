@@ -104,6 +104,10 @@ const routes: Routes = [
         path: "order-received/:id",
         component: OrderReceivedComponent,
       },
+      {
+        path: "order-received",
+        component: OrderReceivedComponent,
+      },
     ],
   },
 ];

@@ -26,8 +26,12 @@ export class OrderReceivedComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.blockId = this.route.snapshot.params.id;
-    this.getOrderDetailByBlockid();
+    this.route.queryParams.subscribe(res => {
+      if (res.id) {
+        this.blockId = res.id;
+        this.getOrderDetailByBlockid();
+      }
+    })
   }
 
   getOrderDetailByBlockid() {
