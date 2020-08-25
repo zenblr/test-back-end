@@ -449,6 +449,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                 let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, stepUpSlab.interestRate, loan.selectedSlab, loan.masterLoan.tenure);
                 let allInterest = await getAllNotPaidInterest(loan.id)//get all interest
                 let interestLessThanDate = await getAllInterestLessThanDate(loan.id, date);
+                let interestGreaterThanDate = await getAllInterestGreaterThanDate(loan.id, date);
                 //update interestAccrual & interest amount
                 for (const interestData of interestLessThanDate) {
                     let outstandingInterest = interest.amount - interestData.paidAmount;
@@ -468,6 +469,26 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                         }
                     }
                 }
+                //calculate extra interest
+                if (interestGreaterThanDate.length == 0) {
+                    let pendingNoOfDays = noOfDays - (interestLessThanDate.length * loan.selectedSlab);
+                    if (pendingNoOfDays > 0) {
+                        let oneDayInterest = stepUpSlab.interestRate / 30;
+                        let oneDayAmount = loan.outstandingAmount * (oneDayInterest / 100);
+                        let pendingDaysAmount = pendingNoOfDays * oneDayAmount;
+                        let extraInterest = await getExtraInterest(loan.id);
+                        if (!extraInterest) {
+                            let amount = pendingDaysAmount;
+                            await models.customerLoanInterest.create({ loanId: loan.id, masterLoanId: loan.masterLoanId, emiStartDate: date, interestRate: stepUpSlab.interestRate, interestAmount: amount, interestAccrual: amount, totalInterestAccrual: amount, outstandingInterest: amount, isExtraDaysInterest: true }, { transaction: t });
+                        } else {
+                            let amount = pendingDaysAmount;
+                            let interestAccrual = amount - extraInterest.paidAmount;
+                            let outstandingInterest = amount - extraInterest.paidAmount;
+                            await models.customerLoanInterest.update({ interestAmount: amount, interestAccrual, totalInterestAccrual: amount, outstandingInterest,interestRate: stepUpSlab.interestRate }, { where: { id: extraInterest.id }, transaction: t });
+                        }
+                    }
+                }
+
                 //update all interest amount
                 for (const interestData of allInterest) {
                     let outstandingInterest = interest.amount - interestData.paidAmount;
@@ -507,6 +528,27 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                             }
                         }
                     }
+
+                    //Extra interest
+                     //calculate extra interest
+                if (interestGreaterThanDate.length == 0) {
+                    let pendingNoOfDays = noOfDays - (interestLessThanDate.length * loan.selectedSlab);
+                    if (pendingNoOfDays > 0) {
+                        let oneDayInterest = loan.currentInterestRate / 30;
+                        let oneDayAmount = loan.outstandingAmount * (oneDayInterest / 100);
+                        let pendingDaysAmount = pendingNoOfDays * oneDayAmount;
+                        let extraInterest = await getExtraInterest(loan.id);
+                        if (!extraInterest) {
+                            let amount = pendingDaysAmount;
+                            await models.customerLoanInterest.create({ loanId: loan.id, masterLoanId: loan.masterLoanId, emiStartDate: date, interestRate: loan.currentInterestRate, interestAmount: amount, interestAccrual: amount, totalInterestAccrual: amount, outstandingInterest: amount, isExtraDaysInterest: true }, { transaction: t });
+                        } else {
+                            let amount = pendingDaysAmount;
+                            let interestAccrual = amount - extraInterest.paidAmount;
+                            let outstandingInterest = amount - extraInterest.paidAmount;
+                            await models.customerLoanInterest.update({ interestAmount: amount, interestAccrual, totalInterestAccrual: amount, outstandingInterest }, { where: { id: extraInterest.id }, transaction: t });
+                        }
+                    }
+                }
                 }
             }
         }
