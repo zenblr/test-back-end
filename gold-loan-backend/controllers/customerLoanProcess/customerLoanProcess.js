@@ -13,6 +13,7 @@ var fs = require('fs');
 let { sendMessageLoanIdGeneration } = require('../../utils/SMS');
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 const _ = require('lodash');
+const { getSingleLoanDetail } = require('../../utils/loanFunction')
 
 const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory');
 
@@ -1568,7 +1569,7 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
     })
 
     let interestTable = await models.customerLoanInterest.findAll({
-        where: { loanId: loanId,isExtraDaysInterest:false },
+        where: { loanId: loanId, isExtraDaysInterest: false },
         order: [['id', 'asc']]
     })
 
@@ -1772,103 +1773,12 @@ exports.getSingleLoanDetails = async (req, res, next) => {
 exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
     let { customerLoanId, masterLoanId } = req.query
 
-    let whereCondition = {}
-    if (!check.isEmpty(customerLoanId)) {
-        whereCondition = { id: customerLoanId }
-    }
+    // let whereCondition = {}
+    // if (!check.isEmpty(customerLoanId)) {
+    //     whereCondition = { id: customerLoanId }
+    // }
 
-    let customerLoan = await models.customerLoanMaster.findOne({
-        where: { id: masterLoanId },
-        attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure'],
-        order: [
-            [models.customerLoanDisbursement, 'loanId', 'asc']
-        ],
-        include: [
-            {
-                model: models.customerLoan,
-                as: 'customerLoan',
-                where: whereCondition,
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-            },
-            {
-                model: models.loanStage,
-                as: 'loanStage',
-                attributes: ['id', 'name']
-            },
-            {
-                model: models.customerLoanTransfer,
-                as: "loanTransfer",
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-            },
-            {
-                model: models.customerLoanPersonalDetail,
-                as: 'loanPersonalDetail',
-            }, {
-                model: models.customerLoanBankDetail,
-                as: 'loanBankDetail',
-            }, {
-                model: models.customerLoanNomineeDetail,
-                as: 'loanNomineeDetail',
-            },
-            {
-                model: models.customerLoanOrnamentsDetail,
-                as: 'loanOrnamentsDetail',
-                include: [
-                    {
-                        model: models.ornamentType,
-                        as: "ornamentType"
-                    }
-                ]
-            },
-            // {
-            //     model: models.customerLoanPackageDetails,
-            //     as: 'loanPacketDetails',
-            //     attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-            //     include: [{
-            //         model: models.packet,
-            //         as: 'packets',
-            //         attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-            //         include: [
-            //             {
-            //                 model: models.customerLoanOrnamentsDetail,
-            //                 include: [{
-            //                     model: models.ornamentType,
-            //                     as: 'ornamentType'
-            //                 }]
-            //             }
-            //         ]
-            //     }]
-            // },
-            {
-                model: models.customerLoanDocument,
-                as: 'customerLoanDocument'
-            },
-            {
-                model: models.customer,
-                as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
-            },
-            {
-                model: models.customerLoanDisbursement,
-                as: 'customerLoanDisbursement'
-            }
-        ]
-    });
-
-    let packet = await models.customerLoanPackageDetails.findAll({
-        where: { masterLoanId: masterLoanId },
-        include: [{
-            model: models.packet,
-            include: [{
-                model: models.customerLoanOrnamentsDetail,
-                include: [{
-                    model: models.ornamentType,
-                    as: 'ornamentType'
-                }]
-            }]
-        }]
-    })
-    customerLoan.dataValues.loanPacketDetails = packet
+    let customerLoan = await getSingleLoanDetail(customerLoanId, masterLoanId)
     return res.status(200).json({ message: 'success', data: customerLoan })
 }
 
