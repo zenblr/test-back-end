@@ -74,4 +74,22 @@
  *     responses:
  *       201:
  *          description: interest calculation
+ * /calculation/transaction-table:
+ *   get:
+ *     tags:
+ *       - Interest calculation
+ *     name: get transaction table in excel
+ *     summary: To get transaction table in excel (debit, credit)
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "masterLoanId"
+ *       in: "query"
+ *       description: "masterLoanId of loan"
+ *       type: "integer"
+ *     responses:
+ *       200:
+ *          description: interest table
  */

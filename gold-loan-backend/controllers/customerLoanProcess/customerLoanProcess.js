@@ -261,11 +261,6 @@ exports.checkForLoanType = async (req, res, next) => {
         }]
     })
 
-    // if (securedScheme.isSplitAtBeginning) {
-
-    //     fullAmount = loanAmount       //During split at the beginning consider loan amount as full amount 
-    // }
-
     let secureSchemeMaximumAmtAllowed = (securedScheme.maximumPercentageAllowed / 100)
 
     let securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
@@ -325,8 +320,13 @@ exports.checkForLoanType = async (req, res, next) => {
         }
 
         let unsecureSchemeMaximumAmtAllowed = (unsecuredSchemeApplied.maximumPercentageAllowed / 100)
+        var unsecuredAmount
+        if (securedScheme.isSplitAtBeginning) {
+            unsecuredAmount = unsecuredSchemeAmount
+        } else {
 
-        var unsecuredAmount = Math.round(fullAmount * unsecureSchemeMaximumAmtAllowed)
+            unsecuredAmount = Math.round(fullAmount * unsecureSchemeMaximumAmtAllowed)
+        }
 
         let totalEligibleAmt = Math.round(fullAmount * (ltvPercent[0].ltvGoldValue / 100))
 
@@ -345,13 +345,13 @@ exports.checkForLoanType = async (req, res, next) => {
                     return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
 
                 }
-                // if (isLoanTransfer) {
-                //     if (Number(loanAmount) > totalEligibleAmt) {
-                if (!securedScheme.isSplitAtBeginning) {
-                    securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
-                    unsecuredAmount = Number(loanAmount - securedLoanAmount)
+                if (isLoanTransfer) {
+                    if (Number(loanAmount) > totalEligibleAmt) {
+                        // if (!securedScheme.isSplitAtBeginning) {
+                        securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
+                    }
                 }
-                // }
+                unsecuredAmount = Number(loanAmount - securedLoanAmount)
                 // } else if (Math.round(loanAmount) > Math.round(securedLoanAmount + unsecuredAmount)) {
                 //     return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
 
@@ -376,8 +376,8 @@ exports.checkForLoanType = async (req, res, next) => {
 
 
                     } else {
-                       
-                        unsecuredAmount = Number(loanAmount - securedLoanAmount)
+
+                        unsecuredAmount = Number(loanAmount) - Number(securedLoanAmount)
                     }
 
                     processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
@@ -390,7 +390,7 @@ exports.checkForLoanType = async (req, res, next) => {
                     securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
                     unsecuredAmount = Number(loanAmount - securedLoanAmount)
                 } else {
-                    unsecuredAmount = Number(loanAmount - securedLoanAmount)
+                    unsecuredAmount = Number(loanAmount) - Number(securedLoanAmount)
                 }
 
                 processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
@@ -613,6 +613,8 @@ exports.loanFinalLoan = async (req, res, next) => {
         interestTable[i]['outstandingInterest'] = interestTable[i].securedInterestAmount
         interestTable[i]['masterLoanId'] = masterLoanId
         interestTable[i]['interestRate'] = interestRate
+        interestTable[i]['emiStartDate'] = loanStartDate
+        interestTable[i]['emiEndDate'] = interestTable[i].emiDueDate
         interestData.push(interestTable[i])
     }
 
@@ -658,6 +660,8 @@ exports.loanFinalLoan = async (req, res, next) => {
                     interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                     interestTable[i]['masterLoanId'] = masterLoanId
                     interestTable[i]['interestRate'] = unsecuredInterestRate
+                    interestTable[i]['emiStartDate'] = loanStartDate
+                    interestTable[i]['emiEndDate'] = interestTable[i].emiDueDate
                     newUnsecuredInterestData.push(interestTable[i])
                 }
                 let unsecuredSlab = await getSchemeSlab(unsecuredSchemeId, unsecuredLoan.id)
@@ -710,6 +714,8 @@ exports.loanFinalLoan = async (req, res, next) => {
                     interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                     interestTable[i]['masterLoanId'] = masterLoanId
                     interestTable[i]['interestRate'] = unsecuredInterestRate
+                    interestTable[i]['emiStartDate'] = loanStartDate
+                    interestTable[i]['emiEndDate'] = interestTable[i].emiDueDate
                     unsecuredInterestData.push(interestTable[i])
                 }
 
@@ -735,6 +741,8 @@ exports.loanFinalLoan = async (req, res, next) => {
                         interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                         interestTable[i]['masterLoanId'] = masterLoanId
                         interestTable[i]['interestRate'] = unsecuredInterestRate
+                        interestTable[i]['emiStartDate'] = loanStartDate
+                        interestTable[i]['emiEndDate'] = interestTable[i].emiDueDate
                         newUnsecuredInterestData.push(interestTable[i])
                     }
 
@@ -1560,22 +1568,30 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
     })
 
     let interestTable = await models.customerLoanInterest.findAll({
-        where: { loanId: loanId },
+        where: { loanId: loanId,isExtraDaysInterest:false },
         order: [['id', 'asc']]
     })
 
     for (let i = 0; i < interestTable.length; i++) {
         let date = new Date();
         let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency) * (i + 1))))
-        interestTable[i].emiDueDate = newEmiDueDate
+        interestTable[i].emiEndDate = newEmiDueDate
         for (let j = 0; j < holidayDate.length; j++) {
             let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
-            if (momentDate == holidayDate[j].holidayDate) {
-                let newDate = new Date(newEmiDueDate);
+            let sunday = moment(momentDate, 'YYYY-MM-DD').weekday();
+            let newDate = new Date(newEmiDueDate);
+            if (momentDate == holidayDate[j].holidayDate || sunday == 0) {
                 let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
-                interestTable[i].emiDueDate = holidayEmiDueDate
+                interestTable[i].emiEndDate = holidayEmiDueDate
+
+                if (i != 0 && i < interestTable.length - 1)
+                    interestTable[i + 1].emiStartDate = new Date(newDate.setDate(newDate.getDate() + 2))
+
                 newEmiDueDate = holidayEmiDueDate
                 j = 0
+            } else {
+                if (i != 0 && i < interestTable.length - 1)
+                    interestTable[i + 1].emiStartDate = new Date(newDate.setDate(newDate.getDate() + 2))
             }
         }
         interestTable.loanId = loanId
@@ -1825,7 +1841,7 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
     });
 
     let packet = await models.customerLoanPackageDetails.findAll({
-        where: { loanId: masterLoanId },
+        where: { masterLoanId: masterLoanId },
         include: [{
             model: models.packet,
             include: [{

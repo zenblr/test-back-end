@@ -22,11 +22,11 @@
                 <div class="col-4 offset-2">
                     <div class="text-muted pb-2">Shipping Address: </div>
                     <div>
-                        <span>{{orderDetail?.orderData[0]?.customerDetails?.customeraddress[0]?.landMark}}, </span>
-                        <span>{{orderDetail?.orderData[0]?.customerDetails?.customeraddress[0]?.address}}, </span>
-                        <span>{{orderDetail?.orderData[0]?.customerDetails?.customeraddress[0]?.city?.name}}, </span>
-                        <span>{{orderDetail?.orderData[0]?.customerDetails?.customeraddress[0]?.state?.name}}, </span>
-                        <span>{{orderDetail?.orderData[0]?.customerDetails?.customeraddress[0]?.postalCode}}.</span>
+                        <span>{{orderDetail?.orderData[0]?.customerOrderAddress[0]?.shippingLandMark}}, </span>
+                        <span>{{orderDetail?.orderData[0]?.customerOrderAddress[0]?.shippingAddress}}, </span>
+                        <span>{{orderDetail?.orderData[0]?.customerOrderAddress[0]?.shippingCity?.name}}, </span>
+                        <span>{{orderDetail?.orderData[0]?.customerOrderAddress[0]?.shippingState?.name}}, </span>
+                        <span>{{orderDetail?.orderData[0]?.customerOrderAddress[0]?.shippingPostalCode}}.</span>
                     </div>
                 </div>
             </div>

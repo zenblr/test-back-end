@@ -12,7 +12,7 @@ const CONSTANT = require("../../utils/constant");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { mergeInterestTable, getCustomerInterestAmount, getLoanDetails, payableAmount, customerLoanDetailsByMasterLoanDetails, allInterestPayment, penalInterestPayment, getInterestTableOfSingleLoan } = require('../../utils/loanFunction')
+let { mergeInterestTable, getCustomerInterestAmount, getLoanDetails, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, penalInterestPayment, getInterestTableOfSingleLoan } = require('../../utils/loanFunction')
 
 //INTEREST TABLE 
 exports.getInterestTable = async (req, res, next) => {
@@ -27,27 +27,9 @@ exports.getInterestTable = async (req, res, next) => {
 exports.getInterestInfo = async (req, res, next) => {
     let { loanId, masterLoanId } = req.query;
 
-    let interestInfo = await models.customerLoanMaster.findOne({
-        where: { id: masterLoanId },
-        order: [[models.customerLoan, 'id', 'asc']],
-        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-        include: [
-            {
-                model: models.customerLoan,
-                as: 'customerLoan',
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                include: [
-                    {
-                        model: models.scheme,
-                        as: 'scheme',
-                        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                    }
-                ]
-            }
-        ]
-    })
+    let interestInfo =  await customerLoanDetailsByMasterLoanDetails(masterLoanId);
 
-    return res.status(200).json({ message: "success", data: interestInfo })
+    return res.status(200).json({ message: "success", data: interestInfo.loan })
 
 
 }
@@ -57,9 +39,9 @@ exports.payableAmount = async (req, res, next) => {
     let { masterLoanId } = req.query;
     let amount = await getCustomerInterestAmount(masterLoanId);
 
-    let loan = await getLoanDetails(masterLoanId);
+    let loan = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
 
-    let data = await payableAmount(amount, loan)
+    let data = await payableAmountForLoan(amount, loan.loan)
 
     return res.status(200).json({ data });
 }
