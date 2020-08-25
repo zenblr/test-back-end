@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'packet_location_id'
         },
+        senderType:{
+            type: DataTypes.STRING,
+            field: 'sender_type'
+        },
         userSenderId: {
             type: DataTypes.INTEGER,
             field: 'user_sender_id'

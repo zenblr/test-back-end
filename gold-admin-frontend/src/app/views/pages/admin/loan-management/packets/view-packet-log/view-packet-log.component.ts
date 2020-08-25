@@ -75,12 +75,13 @@ export class ViewPacketLogComponent implements OnInit {
     // First load
     // this.loadLeadsPage();
 
-    this.dataSource.loadpacketsLog(this.masterLoanId,this.loanId,this.searchValue, 1, 25);
+    this.dataSource.loadpacketsLog(this.masterLoanId,this.loanId, 1, 25);
 
   }
 
   setValue() {
-    //console.log(this.data.packetData.customerLoan[0].id)
+    //console.log(this.data.packetData.customerLoan[0].id,'loanId')
+    //console.log(this.data.packetData.id)
     this.modalData = this.data.packetData
      this.masterLoanId = this.data.packetData.id
      this.loanId = this.data.packetData.customerLoan[0].id
@@ -101,7 +102,7 @@ export class ViewPacketLogComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadpacketsLog(this.masterLoanId,this.loanId,this.searchValue, from, to);
+    this.dataSource.loadpacketsLog(this.masterLoanId,this.loanId, from, to);
   }
 
   action(event) {

@@ -9,14 +9,14 @@
                             <label class="kt-padding-l-10 mandatory">Select Location</label>
                         </div>
                         <div class="col-8">
-                            <select name="" id="" class="form-control" formControlName="location"
-                                [class.isError]="locationForm.controls.location.invalid &&  locationForm.controls.location.touched">
+                            <select name="" id="" class="form-control" formControlName="packetLocationId"
+                                [class.isError]="locationForm.controls.packetLocationId.invalid &&  locationForm.controls.packetLocationId.touched">
                                 <option selected disabled value="">Select Location</option>
                                 <option [value]="item.id" *ngFor="let item of packetLocations">
                                     {{item.location | titlecase}}</option>
                             </select>
                             <mat-error
-                                *ngIf="locationForm.controls.location.touched && locationForm.controls.location.errors?.required">
+                                *ngIf="locationForm.controls.packetLocationId.touched && locationForm.controls.packetLocationId.errors?.required">
                                 Required field
                             </mat-error>
                         </div>
@@ -67,13 +67,13 @@
                             <label class="kt-padding-l-10 mandatory">User Type</label>
                         </div>
                         <div class="col-8">
-                            <select class="form-control" formControlName="userType"
-                                [class.isError]="locationForm.controls.userType.invalid &&  locationForm.controls.userType.touched">
+                            <select class="form-control" formControlName="receiverType" (change)="remove()"
+                                [class.isError]="locationForm.controls.receiverType.invalid &&  locationForm.controls.receiverType.touched">
                                 <option value="" disabled selected>Select User Type</option>
                                 <option [value]="item.value" *ngFor="let item of userTypeList">{{ item.name }}</option>
                             </select>
                             <mat-error
-                                *ngIf="locationForm.controls.userType.touched && locationForm.controls.userType.errors?.required">
+                                *ngIf="locationForm.controls.receiverType.touched && locationForm.controls.receiverType.errors?.required">
                                 Required field
                             </mat-error>
 
@@ -112,10 +112,10 @@
                     </div>
                     <div class="row justify-content-center kt-margin-t-15">
                         <div class="col-4 offset-4">
-                            <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Send OTP'"></kt-button>
+                            <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Send OTP'" (action)="generateOTP()"></kt-button>
                         </div>
-                        <div class="col-4 d-flex justify-content-center align-items-center">
-                            <label class="kt-pointer kt-link kt-link--brand kt-font-bolder">
+                        <div class="col-4 d-flex justify-content-center align-items-center ">
+                            <label class="kt-pointer kt-link kt-link--brand kt-font-bolder" (click)="generateOTP()">
                                 Resend OTP</label>
                         </div>
                     </div>
@@ -124,6 +124,11 @@
                         <div class="col offset-4">
                             <input type="text" class="form-control" placeholder="Enter OTP" formControlName="otp"
                                 [class.isError]="locationForm.controls.otp.invalid &&  locationForm.controls.otp.touched">
+                        </div>
+                        <div  class="col-4" *ngIf="otpSent">
+                            <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Verify'"
+                             (action)="verifyOTP()">
+                            </kt-button>
                         </div>
                     </div>
                 </div>
