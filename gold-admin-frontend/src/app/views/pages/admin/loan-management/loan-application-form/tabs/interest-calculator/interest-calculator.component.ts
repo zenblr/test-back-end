@@ -357,7 +357,7 @@ export class InterestCalculatorComponent implements OnInit {
 
 
 
-  getIntrest() {
+  getIntrest(event = null) {
     if (this.controls.paymentFrequency.valid && (this.controls.finalLoanAmount.valid || this.controls.finalLoanAmount.status == 'DISABLED') && this.controls.partnerId.valid && this.controls.schemeId.valid) {
 
       let data = {
@@ -372,6 +372,7 @@ export class InterestCalculatorComponent implements OnInit {
           this.dateOfPayment = [];
           this.controls.interestRate.patchValue(res.data.securedinterestRate.interestRate)
           this.controls.unsecuredInterestRate.patchValue(res.data.unsecuredinterestRate.interestRate)
+          if (!event) this.calcInterestAmount()
         }
       })
 
@@ -468,8 +469,8 @@ export class InterestCalculatorComponent implements OnInit {
         this.selectedUnsecuredscheme = res[0];
         this.controls.unsecuredSchemeId.patchValue(res[0].id)
         this.getIntrest()
-        setTimeout(() => { this.calcInterestAmount() }, 1000)
-        // this.calcInterestAmount()
+        // setTimeout(() => { this.calcInterestAmount() }, 1000)
+        this.calcInterestAmount()
         // this.CheckProcessingCharge();
         // this.generateTable();
         // this.ref.detectChanges()

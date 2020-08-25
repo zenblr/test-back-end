@@ -127,7 +127,18 @@ exports.getFile = async (req, res, next) => {
 
 exports.base64Convertor = async (req, res, next) => {
     let fileName = Date.now();
+    const type = req.query.type;
     let userId = req.userData.id
+    let extension;
+    let contentType;
+    if(type=='pdf'){
+        extension = "pdf";
+        contentType = 'application/pdf';
+    }else{
+        extension = "jpeg";
+        contentType = 'image/jpeg';
+    }
+    console.log({type,extension,contentType})
     let destination = 'public/uploads/images/';
     if (process.env.FILE_TO_AWS == 'true') {
         AWS.config.update({
@@ -138,15 +149,15 @@ exports.base64Convertor = async (req, res, next) => {
         let s3 = new AWS.S3({ params: { Bucket: process.env.Bucket } });
         let buf = Buffer.from(req.body.avatar.replace(/^data:image\/\w+;base64,/, ""), 'base64')
         var data = {
-            Key: `${destination}${fileName}.jpeg`,
+            Key: `${destination}${fileName}.${extension}`,
             Body: buf,
             ACL: 'public-read',
             ContentEncoding: 'base64',
-            ContentType: 'image/jpeg'
+            ContentType: contentType
         };
         const awsData = await s3.upload(data).promise();
         console.log(awsData)
-        let uploadFile = await models.fileUpload.create({ filename: `${fileName}.jpeg`, url: awsData.Location, path: awsData.Key, userId: userId });
+        let uploadFile = await models.fileUpload.create({ filename: `${fileName}.${extension}`, url: awsData.Location, path: awsData.Key, userId: userId });
         return res.status(200).json({
             imgUrl: awsData.Location, uploadFile
         })
@@ -155,18 +166,18 @@ exports.base64Convertor = async (req, res, next) => {
         let mimetype = baseImage[0].split(';')[0].split(':')[1]
         let encoding = '7Bit';
         let userId = req.userData.id
-        let url = destination + `${fileName}.jpeg`;
+        let url = destination + `${fileName}.${extension}`;
 
         let pathToadd = destination.replace('public/', '');
-        let path = pathToadd + `${fileName}.jpeg`;
+        let path = pathToadd + `${fileName}.${extension}`;
 
         let bitmap = await new Buffer.from(baseImage[1], 'base64')
-        fs.writeFileSync(`public/uploads/images/${fileName}.jpeg`, bitmap)
+        fs.writeFileSync(`public/uploads/images/${fileName}.${extension}`, bitmap)
 
-        let uploadFile = await models.fileUpload.create({ filename: `${fileName}.jpeg`, url: url, mimetype: mimetype, encoding: encoding, path: path, userId: userId });
+        let uploadFile = await models.fileUpload.create({ filename: `${fileName}.${extension}`, url: url, mimetype: mimetype, encoding: encoding, path: path, userId: userId });
 
         return res.status(200).json({
-            imgUrl: `${process.env.BASE_URL}/uploads/images/${fileName}.jpeg`, uploadFile
+            imgUrl: `${process.env.BASE_URL}/uploads/images/${fileName}.${extension}`, uploadFile
         })
     }
 }
