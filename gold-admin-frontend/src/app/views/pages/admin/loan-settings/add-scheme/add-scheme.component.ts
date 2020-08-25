@@ -54,8 +54,8 @@ export class AddSchemeComponent implements OnInit {
   initForm() {
     this.fillingForm = this.fb.group({
       schemeName: ['', [Validators.required]],
-      schemeAmountStart: ['', [Validators.required, Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,5})?(?![\\d.])')]],
-      schemeAmountEnd: ['', [Validators.required, Validators.pattern('(?<![\\d.])(\\d{1,2}|\\d{0,2}\\.\\d{1,5})?(?![\\d.])')]],
+      schemeAmountStart: ['', [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
+      schemeAmountEnd: ['', [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       // interestRateThirtyDaysMonthly: ['', Validators.required],
       // interestRateNinetyDaysMonthly: ['', Validators.required],
       // interestRateOneHundredEightyDaysMonthly: ['', Validators.required],
@@ -254,7 +254,7 @@ export class AddSchemeComponent implements OnInit {
     const previousSlabControls = previousSlab.controls
     const currentSlabControls = currentSlab.controls
 
-    if (previousSlabControls.days.value >= currentSlabControls.days.value) {
+    if (previousSlabControls.days.value >= currentSlabControls.days.value || (currentSlabControls.days.value % 30)) {
       currentSlabControls.days.setErrors({ 'incorrect': true })
     } else {
       currentSlabControls.days.setErrors(null)
