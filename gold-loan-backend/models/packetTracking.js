@@ -1,20 +1,24 @@
 module.exports = (sequelize, DataTypes) => {
     const PacketTracking = sequelize.define('packetTracking', {
-        masterLoanId: {
-            type: DataTypes.INTEGER,
-            field: 'master_loan_id'
-        }, 
         customerLoanId: {
             type: DataTypes.INTEGER,
             field: 'customer_loan_id'
         },
-        userId: {
+        masterLoanId: {
             type: DataTypes.INTEGER,
-            field: 'user_id'
+            field: 'master_loan_id'
+        },
+        appraiserId: {
+            type: DataTypes.INTEGER,
+            field: 'apprasier_id'
         },
         packetId:{
             type:DataTypes.INTEGER,
             field:'packet_id'
+        },
+        packetLoactionId:{
+            type:DataTypes.INTEGER,
+            field:'packet_location_id'
         },
         latitude: {
             type: DataTypes.FLOAT,
@@ -33,21 +37,9 @@ module.exports = (sequelize, DataTypes) => {
             type:DataTypes.STRING,
             field:'network'
         },
-        address:{
-            type:DataTypes.STRING,
-            field:'address'
-        },
         totalDistance:{
             type:DataTypes.FLOAT,
             field:'total_distance'
-        },
-        trackingDate:{
-            type:DataTypes.DATEONLY,
-            field:'tracking_date'
-        },
-        trackingTime:{
-            type:DataTypes.TIME,
-            field:'tracking_time'
         }
 
     },
@@ -59,7 +51,8 @@ module.exports = (sequelize, DataTypes) => {
 
     PacketTracking.associate = function (models) {
         PacketTracking.belongsTo(models.packet, { foreignKey: 'packetId', as: 'packet' });
-        PacketTracking.belongsTo(models.user, { foreignKey: 'userId', as: 'user' });
+        PacketTracking.belongsTo(models.packetLocation, { foreignKey: 'packetLoactionId', as: 'pocketLocation' });
+        PacketTracking.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'user' });
         PacketTracking.belongsTo(models.customerLoan, { foreignKey: 'customerLoanId', as: 'customerLoan' });
         PacketTracking.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
 

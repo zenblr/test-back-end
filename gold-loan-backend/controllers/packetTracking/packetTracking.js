@@ -1,12 +1,7 @@
 const models = require('../../models');
 const Sequelize = models.Sequelize;
-const sequelize = models.sequelize;
 const Op = Sequelize.Op;
 const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
-
-const moment = require('moment')
-const { paginationWithFromTo } = require("../../utils/pagination");
-
 
 //FUNCTION TO GET ALL PACKET DETAILS
 exports.getAllPacketTrackingDetail = async (req, res, next) => {
@@ -238,112 +233,15 @@ exports.addPacketLocation = async (req, res) => {
     }
 }
 
-exports.addPacketTracking = async (req, res, next) => {
-
-    let getAll = req.body
-    let createdBy = req.userData.id;
-    let modifiedBy = req.userData.id;
-    let userId = req.userData.id;
-
-
-    let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
-    let master = await models.customerLoanMaster.findAll({
-        where: {
-            isActive: true,
-            loanStageId: stageId.id
-        }
-    })
-
-    if (master.length === 0) {
-        return res.status(200).json({ message: "Loan is not yet disbursed" })
-    }
-
-    var trackingTime = getAll['trackingDate']
-    var date = moment(trackingTime);
-    var timeComponent = date.utc(true).format('HH:mm');
-
-    getAll['createdBy'] = createdBy
-    getAll['modifiedBy'] = modifiedBy
-    getAll['userId'] = userId
-    getAll['trackingTime'] = timeComponent;
-
-
-
-
-    let customerLoan = await models.customerLoan.findAll({
-        where: { masterLoanId: getAll.masterLoanId },
-        order: ['id']
-    })
-
-    getAll['customerLoanId'] = customerLoan[0].id
-
-    // let packet = await sequelize.transaction(async t => {
-    let packetTracking = await models.packetTracking.create(getAll)
-    // })
-
-    return res.status(200).json({ message: "Success" })
-}
-
 exports.getMapDetails = async (req, res, next) => {
 
-    let { masterLoanId, date } = req.query
+    let internalBranch = req.userData.internalBranchId
 
-    let data = await models.packetTracking.findAll({
-        where: {
-            masterLoanId: masterLoanId,
-            trackingDate: date,
-
-        },
-        include: {
-            model: models.customerLoanMaster,
-            as: 'masterLoan',
-            attributes:['id'],
-            include: {
-                model: models.packet,
-                as: 'packet'
-            }
-        }
-    })
-
-    res.status(200).json({ data: data })
+    let appraiser = await models.user.findAll({ where: { userTypeId: 7, } })
 
 }
 
 exports.getLocationDetails = async (req, res, next) => {
-
-    let { masterLoanId, date } = req.query
-
-    const { offset, pageSize } = paginationWithFromTo(
-        req.query.search,
-        req.query.from,
-        req.query.to
-    );
-
-    let data = await models.packetTracking.findAll({
-        where: {
-            masterLoanId: masterLoanId,
-            trackingDate: date,
-        },
-        order: [['trackingTime', 'DESC']],
-        offset: offset,
-        limit: pageSize,
-
-    })
-
-    let count = await models.packetTracking.findAll({
-        where: {
-            masterLoanId: masterLoanId,
-            trackingDate: date
-        }
-    })
-
-    if (data.length > 0) {
-
-        res.status(200).json({ data: data, count: count.length })
-    } else {
-        res.status(200).json([])
-
-    }
 
 }
 
