@@ -116,7 +116,7 @@ export class LocationComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // console.log(changes)
+    console.log(changes)
     if (changes && changes.date.currentValue) {
       this.queryParamsData = {
         from: 1,

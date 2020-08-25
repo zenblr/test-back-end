@@ -118,7 +118,7 @@
                         <label class="kt-padding-l-10 mandatory">Loan Amount</label>
                     </div>
                     <div class="col-8">
-                        <input type="text" class="form-control" formControlName="unsecuredLoanAmount">
+                        <input type="text" class="form-control" formControlName="fullUnsecuredAmount">
                     </div>
                 </div>
             </div>
@@ -134,6 +134,16 @@
                             *ngIf="controls.unsecuredTransactionId.touched && controls.unsecuredTransactionId.errors?.required">
                             Required field
                         </mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6" *ngIf="details?.isUnsecuredSchemeApplied">
+                <div class="row justify-content-center kt-margin-t-10">
+                    <div class="col-4 form-label">
+                        <label class="kt-padding-l-10 mandatory">Processing Charge</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" formControlName="processingCharge">
                     </div>
                 </div>
             </div>
@@ -174,7 +184,16 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6"></div>
+            <div class="col-6" *ngIf="details?.isUnsecuredSchemeApplied">
+                <div class="row justify-content-center kt-margin-t-10">
+                    <div class="col-4 form-label">
+                        <label class="kt-padding-l-10 mandatory">Final Loan Amount</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" formControlName="unsecuredLoanAmount">
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- <div class="row justify-content-center kt-margin-t-10" *ngIf="controls.paymentMode.value == 'bank'">
                         <div class="col-4 form-label">

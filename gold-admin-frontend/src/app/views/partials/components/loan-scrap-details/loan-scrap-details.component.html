@@ -452,4 +452,16 @@
             </div>
         </div>
     </div>
+
+    <div class="row kt-margin-t-15">
+        <div class="col-12 card kt-padding-15">
+            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Disbursement</label>
+
+            <div class="row" *ngIf="loanId">
+                <kt-disburse [disable]="true" [loanDetials]="details" [masterAndLoanIds]="masterAndLoanIds">
+                </kt-disburse>
+            </div>
+        </div>
+
+    </div>
 </div>

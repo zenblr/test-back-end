@@ -19,7 +19,6 @@
 
         <mat-tab-group [(selectedIndex)]="selected">
             <mat-tab label="Map">
-
                 <agm-map [latitude]='latitude' [longitude]='longitude' [zoom]="15" [fitBounds]="true">
                     <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.lat" [longitude]="m.lng"
                         [markerDraggable]="m.draggable" (markerClick)="clickedMarker(m.lat, m.lng, i)"

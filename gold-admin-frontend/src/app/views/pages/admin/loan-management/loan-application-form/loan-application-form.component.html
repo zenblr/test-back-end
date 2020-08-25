@@ -34,7 +34,8 @@
                         <kt-interest-calculator (next)="next($event)" [disable]="disabledForm" [action]="action"
                             (finalLoanAmount)="finalLoanAmount($event)" [totalAmt]="totalAmount"
                             [fullAmount]="fullAmount" [details]="customerDetail" [masterAndLoanIds]="masterAndLoanIds"
-                            [showButton]="showButton" (accountHolderName)="accountHolder($event)" [loanTransfer]=loanTransferdata>
+                            [showButton]="showButton" (accountHolderName)="accountHolder($event)"
+                            [loanTransfer]=loanTransferdata>
                         </kt-interest-calculator>
                     </mat-tab>
                     <mat-tab label="Bank Details" [disabled]="disabled[4]">
@@ -65,8 +66,7 @@
                     </mat-tab>
 
                     <mat-tab label="Loan Status Approval"
-                        *ngIf="loanStage?.id == 2 || (url == 'view-loan' && loanStage?.id == 2)"
-                        [disabled]="false">
+                        *ngIf="loanStage?.id == 2 || (url == 'view-loan' && loanStage?.id == 2)" [disabled]="false">
                         <kt-approval [action]="action" [disable]="approvalFrom" [details]="customerDetail"
                             [masterAndLoanIds]="masterAndLoanIds" [loanStage]="loanStage">
                         </kt-approval>
@@ -75,7 +75,8 @@
                     <mat-tab label="Upload Documents" [disabled]="disabled[6]"
                         *ngIf="loanStage?.id == 8 || loanStage?.id == 7 || loanStage?.id == 4 || (loanStage?.id == 8 || url =='view-loan') || (loanStage?.id == 7 || url =='view-loan') || (loanStage?.id == 4 || url =='view-loan')">
                         <kt-upload-documents [masterAndLoanIds]="masterAndLoanIds" (next)="next($event)"
-                            [loanDocumnets]="customerDetail" [showButton]="showButton" [showLoanFlag]="true" [loanStage]="loanStage">
+                            [loanDocumnets]="customerDetail" [showButton]="showButton" [showLoanFlag]="true"
+                            [loanStage]="loanStage">
                         </kt-upload-documents>
                     </mat-tab>
 
@@ -87,8 +88,10 @@
                         </kt-approval>
                     </mat-tab>
 
-                    <mat-tab label="Disbursement" *ngIf="loanStage?.id == 4 ">
-                        <kt-disburse [masterAndLoanIds]="masterAndLoanIds" [showButton]="true"></kt-disburse>
+                    <mat-tab label="Disbursement"
+                        *ngIf="loanStage?.id == 4 || (loanStage?.id == 5 && url =='view-loan')">
+                        <kt-disburse [masterAndLoanIds]="masterAndLoanIds" [loanDetials]="customerDetail"
+                            [disable]="disabledForm" [showButton]="true"></kt-disburse>
                     </mat-tab>
                 </mat-tab-group>
             </div>
