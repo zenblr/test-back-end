@@ -1,7 +1,7 @@
 const { wrapper } = require('../utils/errorWrap');
 const express = require('express');
 const checkAuth = require('../middleware/checkAuth');
-const { getAllPacketTrackingDetail, viewPackets, checkBarcode, getUserName, getMapDetails, getLocationDetails, addCustomerPacketTracking, viewCustomerPacketTrackingLogs } = require('../controllers/packetTracking/packetTracking');
+const { getAllPacketTrackingDetail, addPacketTracking, viewPackets, checkBarcode, getUserName, getMapDetails, getLocationDetails, addCustomerPacketTracking, viewCustomerPacketTrackingLogs } = require('../controllers/packetTracking/packetTracking');
 const { addCustomerPacketTrackingValidation } = require('../validations/packetTracking')
 const validationError = require('../middleware/validationError')
 const route = express.Router();

@@ -916,6 +916,11 @@ let getAllPaidInterest = async (loanId) => {
 
 let getSingleLoanDetail = async (loanId, masterLoanId) => {
 
+    let whereCondition = {}
+    if (!check.isEmpty(loanId)) {
+        whereCondition = { id: loanId }
+    }
+
     let customerLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
         attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure'],
@@ -926,7 +931,7 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
             {
                 model: models.customerLoan,
                 as: 'customerLoan',
-                where: { id: loanId },
+                where: whereCondition,
                 attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
             },
             {
