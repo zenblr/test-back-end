@@ -17,9 +17,12 @@
                                     (change)="setValidation($event)"
                                     [class.isError]="controls.paymentType.touched && controls.paymentType.invalid">
                                     <option value="" selected disabled>Select Payment</option>
-                                    <option value="cash">CASH</option>
+                                    <!-- <option value="cash">CASH</option>
                                     <option value="IMPS">RTGS/NEFT/IMPS</option>
-                                    <option value="cheque">CHEQUE</option>
+                                    <option value="cheque">CHEQUE</option> -->
+                                    <option [value]="item.value" *ngFor="let item of paymentTypeList;">
+                                        {{item.name | uppercase}}
+                                    </option>
                                 </select>
 
                                 <mat-error
@@ -135,7 +138,7 @@
                             </div>
                         </div>
 
-                        <div *ngIf ="controls.depositStatus.value">
+                        <div *ngIf="controls.depositStatus.value">
                             <div class="row kt-margin-b-15">
                                 <div class="col-4 form-label mandatory">
                                     <mat-label>Deposit Status</mat-label>
@@ -149,7 +152,7 @@
                                         <option value="Completed">COMPLETED</option>
                                         <option value="Rejected">REJECTED</option>
                                     </select>
-    
+
                                     <mat-error
                                         *ngIf="controls.depositStatus.touched && controls.depositStatus.errors?.required">
                                         Required field
@@ -158,7 +161,7 @@
                             </div>
                         </div>
 
-                        
+
 
 
                         <kt-modal-footer (action)="action($event)" [value]="data.action">

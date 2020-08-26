@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./payment-dialog.component.scss']
 })
 export class PaymentDialogComponent implements OnInit {
+  paymentTypeList = [{ value: 'cash', name: 'cash' }, { value: 'IMPS', name: 'IMPS' }, { value: 'NEFT', name: 'NEFT' }, { value: 'RTGS', name: 'RTGS' }, { value: 'cheque', name: 'cheque' }, { value: 'UPI', name: 'UPI' }, { value: 'gateway', name: 'payment gateway' }]
   paymentForm: FormGroup;
   title: string = ''
 
@@ -66,7 +67,7 @@ export class PaymentDialogComponent implements OnInit {
         this.paymentForm.updateValueAndValidity()
         break;
 
-      case 'IMPS':
+      case 'IMPS' || 'NEFT' || 'RTGS' || 'UPI':
         this.paymentForm.clearValidators();
 
         for (const key in this.paymentForm.controls) {
