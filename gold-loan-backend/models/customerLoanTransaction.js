@@ -45,7 +45,8 @@ module.exports = (sequelize, DataTypes) => {
         depositStatus:{
             type: DataTypes.ENUM,
             field: 'deposit_status',
-            values:['Pending','Completed','Rejected']
+            values:['Pending','Completed','Rejected'],
+            defaultValue: 'Pending'
         },
         createdBy: {
             type: DataTypes.INTEGER,
