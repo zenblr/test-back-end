@@ -121,7 +121,7 @@ exports.viewPackets = async (req, res) => {
 exports.checkBarcode = async (req, res) => {
     let { packetId, Barcode } = req.query
     let isMatched = await models.packet.findOne({
-        where: { packetUniqueId: packetId, barcodeNumber: Barcode }
+        where: { id: packetId, barcodeNumber: Barcode }
     })
     if (isMatched) {
         return res.status(200).json({ message: 'Barcode Matched' })
@@ -141,7 +141,7 @@ exports.getUserName = async (req, res) => {
         if (User) {
             return res.status(200).json({ data: User, receiverType });
         } else {
-            return res.status(404).json({ message: 'Data not found!' });
+            return res.status(404).json({ message: 'User not found!' });
         }
     } else if (receiverType == 'Customer') {
         let User = await models.customer.findOne({
@@ -151,7 +151,7 @@ exports.getUserName = async (req, res) => {
         if (User) {
             return res.status(200).json({ data: User, receiverType });
         } else {
-            return res.status(404).json({ message: 'Data not found!' });
+            return res.status(404).json({ message: 'Customer not found!' });
         }
     } else if (receiverType == 'PartnerUser') {
         let User = await models.partnerBranchUser.findOne({
@@ -161,7 +161,7 @@ exports.getUserName = async (req, res) => {
         if (User) {
             return res.status(200).json({ data: User, receiverType });
         } else {
-            return res.status(404).json({ message: 'Data not found!' });
+            return res.status(404).json({ message: 'Partner user not found!' });
         }
     }
 
