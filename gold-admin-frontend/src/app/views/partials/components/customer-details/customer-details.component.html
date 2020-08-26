@@ -132,7 +132,7 @@
                                 {{masterLoan.customerLoan[0].loanUniqueId}}
                             </div>
                             <div>
-                                {{masterLoan.customerLoan[1].loanUniqueId}}
+                                {{masterLoan?.customerLoan[1]?.loanUniqueId}}
                             </div>
 
 
@@ -148,7 +148,7 @@
                                     </div>
                                     <div>
                                         <span
-                                            class="currency">{{masterLoan.customerLoan[1].loanAmount | indianCurrencyFormat}}</span>
+                                            class="currency">{{masterLoan?.customerLoan[1]?.loanAmount | indianCurrencyFormat}}</span>
                                     </div>
                                 </div>
                             </div>

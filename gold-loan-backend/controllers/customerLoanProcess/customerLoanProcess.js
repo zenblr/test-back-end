@@ -269,7 +269,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
     let secureSchemeMaximumAmtAllowed = (securedScheme.maximumPercentageAllowed / 100)
 
-    let securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
+    let securedLoanAmount = fullAmount * secureSchemeMaximumAmtAllowed
 
 
     if (loanAmount > securedLoanAmount || securedScheme.isSplitAtBeginning) {
@@ -331,7 +331,7 @@ exports.checkForLoanType = async (req, res, next) => {
             unsecuredAmount = unsecuredSchemeAmount
         } else {
 
-            unsecuredAmount = Math.round(fullAmount * unsecureSchemeMaximumAmtAllowed)
+            unsecuredAmount = fullAmount * unsecureSchemeMaximumAmtAllowed
         }
 
         let totalEligibleAmt = Math.round(fullAmount * (ltvPercent[0].ltvGoldValue / 100))
@@ -354,10 +354,10 @@ exports.checkForLoanType = async (req, res, next) => {
                 if (isLoanTransfer) {
                     if (Number(loanAmount) > totalEligibleAmt) {
                         // if (!securedScheme.isSplitAtBeginning) {
-                        securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
+                        securedLoanAmount = fullAmount * secureSchemeMaximumAmtAllowed
                     }
                 }
-                unsecuredAmount = Number(loanAmount - securedLoanAmount)
+                unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
                 // } else if (Math.round(loanAmount) > Math.round(securedLoanAmount + unsecuredAmount)) {
                 //     return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
 
@@ -378,13 +378,14 @@ exports.checkForLoanType = async (req, res, next) => {
                 if (isLoanTransfer) {
                     if (Number(loanAmount) > totalEligibleAmt) {
                         securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
-                        unsecuredAmount = Number(loanAmount - securedLoanAmount)
-
-
-                    } else {
-
-                        unsecuredAmount = Number(loanAmount) - Number(securedLoanAmount)
+                    //     unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
                     }
+
+                    //  else {
+
+                        
+                    // }
+                    unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
 
                     processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
@@ -394,10 +395,13 @@ exports.checkForLoanType = async (req, res, next) => {
 
                 if (!securedScheme.isSplitAtBeginning) {
                     securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
-                    unsecuredAmount = Number(loanAmount - securedLoanAmount)
-                } else {
-                    unsecuredAmount = Number(loanAmount) - Number(securedLoanAmount)
-                }
+                    // unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
+    
+                } 
+                // else {
+                    
+                // }
+                unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
 
                 processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
@@ -523,11 +527,19 @@ exports.generateInterestTable = async (req, res, next) => {
         let date = new Date()
         let data = {
             emiDueDate: moment(new Date(date.setDate(date.getDate() + (paymentFrequency * (index + 1)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
+            month:"Month " + ((paymentFrequency/30) * (index  + 1)),
             paymentType: paymentFrequency,
             securedInterestAmount: securedInterestAmount,
             unsecuredInterestAmount: unsecuredInterestAmount,
             totalAmount: Number(securedInterestAmount) + Number(unsecuredInterestAmount)
         }
+        if(Number(paymentFrequency) != 30){
+            if(index == 0 ){
+                data.month = "Month 1"
+            }else{
+            data.month = "Month " + ((paymentFrequency/30) * (index))
+        }
+    }
         interestTable.push(data)
     }
 

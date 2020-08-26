@@ -108,8 +108,8 @@ export class DepositListComponent implements OnInit {
    this.dataSource.getDepositList(this.queryParamsData);
  }
   updateStatus(deposit) {
-    deposit.status = 'deposit';
-    const dialogRef = this.dialog.open(PaymentDialogComponent, { data: { action: 'edit', value: deposit }, width: 'auto' });
+    
+    const dialogRef = this.dialog.open(PaymentDialogComponent, { data: { value: deposit,name :'deposit' }, width: 'auto' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();

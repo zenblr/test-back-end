@@ -40,8 +40,8 @@ export class LoanScrapDetailsComponent implements OnInit {
 
   getLoanDetails() {
     this.loanId = this.route.snapshot.params.loanId
-    let masterLoanId = this.route.snapshot.params.masterLoanId
-    this.loanservice.getLoanDetails( masterLoanId).subscribe(res => {
+    this.masterLoanId = this.route.snapshot.params.masterLoanId
+    this.loanservice.getLoanDetails(this.masterLoanId).subscribe(res => {
       this.details = res.data;
       this.masterAndLoanIds = { loanId: res.data.customerLoanDisbursement[0].loanId, masterLoanId: res.data.customerLoanDisbursement[0].masterLoanId }
       this.createOrnamentsImage()
