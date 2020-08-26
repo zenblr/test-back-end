@@ -19,8 +19,8 @@ export class UpdateLocationService {
       })
     )
   }
-  sendCustomerOtp(data): Observable<any> {
-    return this.http.post<any>(`/api/customer/send-otp`, data); //mobile
+  sendCustomerOtp(mobileNumber:string): Observable<any> {
+    return this.http.post<any>(`/api/customer/send-otp`,{mobileNumber} ); //mobile
   }
 
   addPacketLocation(data):Observable<any> {
