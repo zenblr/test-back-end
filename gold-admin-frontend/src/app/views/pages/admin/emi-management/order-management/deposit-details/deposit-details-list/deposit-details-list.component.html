@@ -178,6 +178,22 @@
                         {{element?.order?.product?.subCategory?.category?.categoryName ? element?.order?.product?.subCategory?.category?.categoryName : '-'}}
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="paymentStatus">
+                    <mat-header-cell *matHeaderCellDef>Payment Status</mat-header-cell>
+                    <mat-cell *matCellDef="let element" [ngClass]="{'text-orange' : element?.paymentStatusId == 1,
+                        'text-red' : element?.paymentStatusId == 9,
+                        'text-green' : element?.paymentStatusId == 1 }">
+                        {{element?.paymentStatus?.statusName ? (element?.paymentStatus?.statusName | titlecase) : '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <div [ngStyle]="{'display': 'inherit'}">
+                            <div (click)="updateStatus(element)" class="kt-pointer">Update</div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
 
                 <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 350%;"></mat-header-row>
 

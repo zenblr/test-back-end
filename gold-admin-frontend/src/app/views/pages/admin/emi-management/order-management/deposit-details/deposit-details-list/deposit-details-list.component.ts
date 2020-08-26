@@ -57,6 +57,8 @@ export class DepositDetailsListComponent implements OnInit {
 		"emiRemaining",
 		"orderStatus",
 		"productType",
+		"paymentStatus",
+		"action",
 	];
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 	@ViewChild("sort1", { static: true }) sort: MatSort;
@@ -196,6 +198,10 @@ export class DepositDetailsListComponent implements OnInit {
 		this.depositData.orderCurrentStatus = data.data.status;
 		this.dataSource.loadDepositDetails(this.depositData);
 		this.filteredDataList = data.list;
+	}
+
+	updateStatus(details) {
+
 	}
 
 	/**
