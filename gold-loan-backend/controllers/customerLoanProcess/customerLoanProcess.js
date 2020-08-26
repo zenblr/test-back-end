@@ -1579,11 +1579,19 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
             let newDate = new Date(newEmiDueDate);
             if (momentDate == holidayDate[j].holidayDate || sunday == 0) {
                 let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
-                interestTable[i].emiDueDate = holidayEmiDueDate
+                interestTable[i].emiEndDate = holidayEmiDueDate
+
+                if (i != 0 && i < interestTable.length - 1)
+                    interestTable[i + 1].emiStartDate = new Date(newDate.setDate(newDate.getDate() + 2))
+
                 newEmiDueDate = holidayEmiDueDate
                 j = 0
+            } else {
+                if (i != 0 && i < interestTable.length - 1)
+                    interestTable[i + 1].emiStartDate = new Date(newDate.setDate(newDate.getDate() + 2))
             }
         }
+
         interestTable.loanId = loanId
         interestTable.masterLoanId = masterLoanId
     }
