@@ -136,6 +136,9 @@ router.use('/packet', packet)
 const packetTracking = require('./packetTracking'); // PACKET TRACKING DETAILS
 router.use('/packet-tracking', packetTracking)
 
+const globalMap = require('./globalMap'); // GLOBAL MAP
+router.use('/global-map', globalMap)
+
 const uploadPacket = require('./uploadPackets');  //upload Packets List 
 router.use('/upload-packets-file', uploadPacket)
 
@@ -178,6 +181,8 @@ router.use('/jewellery-release', jewelleryRelese);
 const quickPay = require('./quickPay');
 router.use('/quick-pay', quickPay);
 
+const deposit = require('./deposit');// DEPOSIT
+router.use('/deposit',deposit);
 const partPayment = require('./partPayment');
 router.use('/part-payment', partPayment);
 

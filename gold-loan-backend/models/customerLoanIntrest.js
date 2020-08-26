@@ -15,14 +15,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATEONLY,
             field: 'emi_due_date'
         },
-        emiEndDate: {
-            type: DataTypes.DATEONLY,
-            field: 'emi_end_date'
-        },
-        emiStartDate: {
-            type: DataTypes.DATEONLY,
-            field: 'emi_start_date'
-        },
         interestRate:{
             type: DataTypes.FLOAT,
             field: 'interest_rate',

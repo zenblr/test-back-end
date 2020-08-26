@@ -165,7 +165,6 @@ exports.dailyIntrestCalculation = async (date) => {
 //cron for daily penal interest calculation
 exports.cronForDailyPenalInterest = async (date) => {
 
-    // let date = moment()
     let info = await calculationData();
     let data = info.loanInfo
     let { gracePeriodDays, noOfDaysInYear } = info

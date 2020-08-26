@@ -45,6 +45,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   ornamentId: any;
   @Output() next: EventEmitter<any> = new EventEmitter();
   buttonName: string;
+  editPackets: boolean;
 
   constructor(
     private sharedService: SharedService,
@@ -124,10 +125,15 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
           this.splicedPackets.push(ele)
           this.removeOnamentsDataFromMultiselect(ornamentTypeArray, 'edit')
           this.pushPackets()
+
         });
 
         console.log(this.ornamentTypeData)
         this.packetInfo.reset()
+      }
+
+      if (change.viewpacketsDetails.currentValue.loanPacketDetails.length) {
+        this.editPackets = true;
       }
     }
 
@@ -243,7 +249,14 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     })
 
     let ornamentId = this.packets.controls[idx].value.ornamentsId
-    this.packetsDetails.push(this.splicedPackets[packetIndex])
+    // console.log(this.splicedPackets[packetIndex].id)
+    // console.log(this.packets.controls[idx].value.packetId)
+    if (this.editPackets && (this.splicedPackets[packetIndex].id !== this.packets.controls[idx].value.packetId)) {
+      this.packetsDetails.push(this.splicedPackets[packetIndex])
+    }
+    if (!this.editPackets) {
+      this.packetsDetails.push(this.splicedPackets[packetIndex])
+    }
     this.splicedPackets.splice(packetIndex, 1)
     this.packets.controls.splice(idx, 1)
 

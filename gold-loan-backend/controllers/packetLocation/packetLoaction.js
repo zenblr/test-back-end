@@ -48,7 +48,7 @@ exports.getPacketLocation = async (req, res, next) => {
         }
     }
     let allPocket = await models.packetLocation.findAll(whereCondition)
-    let count = await models.pocketLocation.findAll({
+    let count = await models.packetLocation.findAll({
         where: searchQuery,
       });
       if (allPocket.length == 0) {

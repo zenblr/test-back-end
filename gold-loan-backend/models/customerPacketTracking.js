@@ -9,6 +9,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'master_loan_id',
         },
+        packetLocationId:{
+            type: DataTypes.INTEGER,
+            field: 'packet_location_id'
+        },
+        senderType:{
+            type: DataTypes.STRING,
+            field: 'sender_type'
+        },
         userSenderId: {
             type: DataTypes.INTEGER,
             field: 'user_sender_id'
@@ -19,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         receiverType: {
             type: DataTypes.ENUM,
-            field: 'is_selected',
+            field: 'receiver_type',
             values: ['Customer', 'InternalUser', 'PartnerUser']
         },
         customerReceiverId: {

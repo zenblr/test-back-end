@@ -38,6 +38,7 @@ module.exports = async (req, res, next) => {
         "/",
 
         "/api/customer/send-otp",
+        "/api/customer/verify-otp",
         "/api/customer/verify-register-otp",
         "/api/customer/send-register-otp",
         "/api/auth/verify-customer-login",

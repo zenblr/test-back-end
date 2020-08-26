@@ -174,7 +174,7 @@ export class PacketTrackingComponent implements OnInit {
   }
 
   viewLocation(packet) {
-    this.router.navigate(['/admin/loan-management/view-location'])
+    this.router.navigate([`/admin/loan-management/view-location/${packet.customerLoan[0].masterLoanId}`])
   }
 
   ornaments(packet) {
