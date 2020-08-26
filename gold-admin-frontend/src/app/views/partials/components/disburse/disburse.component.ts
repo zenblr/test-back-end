@@ -74,7 +74,7 @@ export class DisburseComponent implements OnInit {
       this.getScrapBankDetails()
       this.validation()
     }
-    if (changes.disbursementDetails.currentValue && changes.disbursementDetails.currentValue.scrapDisbursement) {
+    if (changes.disbursementDetails && changes.disbursementDetails.currentValue && changes.disbursementDetails.currentValue.scrapDisbursement) {
       this.disburseForm.patchValue(changes.disbursementDetails.currentValue.scrapDisbursement);
       this.disburseForm.disable()
     }

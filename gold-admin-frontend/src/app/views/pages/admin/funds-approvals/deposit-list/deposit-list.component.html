@@ -72,11 +72,11 @@
 
                 </ng-container>
 
-                <ng-container matColumnDef="update">
+                <ng-container matColumnDef="update" >
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let deposit">
                         <ng-container>
-                            <button style="width: 120px;" class="apply-kyc" (click)="updateStatus(deposit)">Update
+                            <button  *ngIf ="deposit.depositStatus == 'Pending'" style="width: 120px;" class="apply-kyc" (click)="updateStatus(deposit)">Update
                             </button>
                         </ng-container>
 

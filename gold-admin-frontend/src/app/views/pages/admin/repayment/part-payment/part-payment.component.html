@@ -15,20 +15,20 @@
                             <td class="text-gray">{{loanDetails?.customerLoan[0]?.loanUniqueId}}
                                 <br>
                                 <span *ngIf="loanDetails?.customerLoan[1]">
-                                    {{loanDetails?.customerLoan[1]?.loanUniqueId}} LOAN2314
+                                    {{loanDetails?.customerLoan[1]?.loanUniqueId}} 
                                 </span>
                             </td>
                             <td class="text-gray">
-                                {{loanDetails?.customerLoan[0]?.loanAmount}} 340000
+                                {{loanDetails?.customerLoan[0]?.loanAmount}} 
                                 <br>
                                 <span *ngIf="loanDetails?.customerLoan[1]">
                                     {{loanDetails?.customerLoan[1]?.loanAmount}}
                                 </span>
                             </td>
-                            <td class="text-gray">{{loanDetails?.loanStartDate | date :'mediumDate'}} 4 Sep 2020</td>
+                            <td class="text-gray">{{loanDetails?.loanStartDate | date :'mediumDate'}}</td>
 
-                            <td class="text-gray"> 5000</td>
-                            <td class="text-gray"> 5000</td>
+                            <td class="text-gray"> </td>
+                            <td class="text-gray"> {{loanDetails?.outstandingAmount}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -64,7 +64,7 @@
                     </div>
                 </div>
             </div>
-
+            {{payableAmountSummary}}
             <div *ngIf="payableAmountSummary">
                 <div class="table-div kt-padding-t-10">
                     <table class="table outer-border">
@@ -78,13 +78,23 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{payableAmountSummary?.outstandingAmount}}</td>
+                                <td>{{payableAmountSummary?.loanDetails?.customerLoan[0].loanUniqueId}} <br>
+                                    <span *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">
+                                        {{payableAmountSummary?.loanDetails?.customerLoan[1].loanUniqueId}}
+                                    </span>
+                                </td>
+                                <td>{{payableAmountSummary?.partPaymentAmount}}</td>
                                 <td>{{payableAmountSummary?.securedInterest}} <br>
-                                    {{payableAmountSummary?.unsecuredInterest}}</td>
-                                <td>{{payableAmountSummary?.securedPenalInterest}}<br>
-                                    {{payableAmountSummary?.unsecuredPenalInterest}}
+                                    <span *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">
+                                        {{payableAmountSummary?.unsecuredInterest}}
+                                    </span>
                                 </td>
                                 <td>{{payableAmountSummary?.payableAmountSummary}}</td>
+                                <td>{{payableAmountSummary?.securedPenalInterest}}<br>
+                                    <span *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">
+                                    {{payableAmountSummary?.unsecuredPenalInterest}}
+                                    </span>
+                                </td>
                                 <td>{{payableAmountSummary?.payableAmountSummary}}</td>
                             </tr>
                         </tbody>
