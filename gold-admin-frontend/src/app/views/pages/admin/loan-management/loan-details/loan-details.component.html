@@ -118,7 +118,7 @@
                                 <button mat-menu-item (click)="interestEmi(loan)">Quick Pay</button>
                                 <button mat-menu-item (click)="partPayment(loan)">Part Payment</button>
                                 <button mat-menu-item (click)="topUp(loan)">Top Up</button>
-                                <button *ngxPermissionsOnly="['partReleaseAdd']" mat-menu-item
+                                <button *ngxPermissionsOnly="['partReleaseAdd', 'fullReleaseAdd']" mat-menu-item
                                     (click)="jewelleryRelease(loan)">Jewellery
                                     Release</button>
                             </ng-container>

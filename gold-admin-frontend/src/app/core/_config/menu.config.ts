@@ -404,12 +404,12 @@ export class MenuConfig {
 										{
 											title: "Part Release Approval",
 											page: "/admin/funds-approvals/part-release-approval",
-											permission: false,
+											permission: !this.permissionsArr.includes('partReleaseView'),
 										},
 										{
 											title: "Full Release Approval",
 											page: "/admin/funds-approvals/full-release-approval",
-											permission: false,
+											permission: !this.permissionsArr.includes('fullReleaseView'),
 										},
 									]
 								},

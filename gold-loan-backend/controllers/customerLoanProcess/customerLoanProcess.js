@@ -13,6 +13,7 @@ var fs = require('fs');
 let { sendMessageLoanIdGeneration } = require('../../utils/SMS');
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 const _ = require('lodash');
+const { getSingleLoanDetail } = require('../../utils/loanFunction')
 
 const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory');
 
@@ -260,11 +261,6 @@ exports.checkForLoanType = async (req, res, next) => {
             attributes: ['days', 'interestRate']
         }]
     })
-
-    // if (securedScheme.isSplitAtBeginning) {
-
-    //     fullAmount = loanAmount       //During split at the beginning consider loan amount as full amount 
-    // }
 
     let secureSchemeMaximumAmtAllowed = (securedScheme.maximumPercentageAllowed / 100)
 
@@ -618,6 +614,8 @@ exports.loanFinalLoan = async (req, res, next) => {
         interestTable[i]['outstandingInterest'] = interestTable[i].securedInterestAmount
         interestTable[i]['masterLoanId'] = masterLoanId
         interestTable[i]['interestRate'] = interestRate
+        interestTable[i]['emiStartDate'] = loanStartDate
+        interestTable[i]['emiEndDate'] = interestTable[i].emiDueDate
         interestData.push(interestTable[i])
     }
 
@@ -663,6 +661,8 @@ exports.loanFinalLoan = async (req, res, next) => {
                     interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                     interestTable[i]['masterLoanId'] = masterLoanId
                     interestTable[i]['interestRate'] = unsecuredInterestRate
+                    interestTable[i]['emiStartDate'] = loanStartDate
+                    interestTable[i]['emiEndDate'] = interestTable[i].emiDueDate
                     newUnsecuredInterestData.push(interestTable[i])
                 }
                 let unsecuredSlab = await getSchemeSlab(unsecuredSchemeId, unsecuredLoan.id)
@@ -715,6 +715,8 @@ exports.loanFinalLoan = async (req, res, next) => {
                     interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                     interestTable[i]['masterLoanId'] = masterLoanId
                     interestTable[i]['interestRate'] = unsecuredInterestRate
+                    interestTable[i]['emiStartDate'] = loanStartDate
+                    interestTable[i]['emiEndDate'] = interestTable[i].emiDueDate
                     unsecuredInterestData.push(interestTable[i])
                 }
 
@@ -740,6 +742,8 @@ exports.loanFinalLoan = async (req, res, next) => {
                         interestTable[i]['outstandingInterest'] = interestTable[i].unsecuredInterestAmount
                         interestTable[i]['masterLoanId'] = masterLoanId
                         interestTable[i]['interestRate'] = unsecuredInterestRate
+                        interestTable[i]['emiStartDate'] = loanStartDate
+                        interestTable[i]['emiEndDate'] = interestTable[i].emiDueDate
                         newUnsecuredInterestData.push(interestTable[i])
                     }
 
@@ -1024,7 +1028,7 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
             let y = await models.packetOrnament.destroy({ where: { packetId: { [Op.in]: packetId } }, transaction: t })
 
 
-            let z = await models.packet.update({ customerId: null, loanId: null, masterLoanId: null, packetAssigned: false }, {
+            let z = await models.packet.update({ customerId: null, loanId: null, masterLoanId: null, packetAssigned: false, isActive: false }, {
                 where: { id: { [Op.in]: packetId } }, transaction: t
             })
 
@@ -1565,22 +1569,30 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
     })
 
     let interestTable = await models.customerLoanInterest.findAll({
-        where: { loanId: loanId },
+        where: { loanId: loanId, isExtraDaysInterest: false },
         order: [['id', 'asc']]
     })
 
     for (let i = 0; i < interestTable.length; i++) {
         let date = new Date();
         let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency) * (i + 1))))
-        interestTable[i].emiDueDate = newEmiDueDate
+        interestTable[i].emiEndDate = newEmiDueDate
         for (let j = 0; j < holidayDate.length; j++) {
             let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
-            if (momentDate == holidayDate[j].holidayDate) {
-                let newDate = new Date(newEmiDueDate);
+            let sunday = moment(momentDate, 'YYYY-MM-DD').weekday();
+            let newDate = new Date(newEmiDueDate);
+            if (momentDate == holidayDate[j].holidayDate || sunday == 0) {
                 let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
-                interestTable[i].emiDueDate = holidayEmiDueDate
+                interestTable[i].emiEndDate = holidayEmiDueDate
+
+                if (i != 0 && i < interestTable.length - 1)
+                    interestTable[i + 1].emiStartDate = new Date(newDate.setDate(newDate.getDate() + 2))
+
                 newEmiDueDate = holidayEmiDueDate
                 j = 0
+            } else {
+                if (i != 0 && i < interestTable.length - 1)
+                    interestTable[i + 1].emiStartDate = new Date(newDate.setDate(newDate.getDate() + 2))
             }
         }
         interestTable.loanId = loanId
@@ -1736,7 +1748,15 @@ exports.getSingleLoanDetails = async (req, res, next) => {
         }]
     })
 
+    let disbursement = await models.customerLoanDisbursement.findAll({
+        where: { masterLoanId: customerLoan.masterLoanId },
+        order: [
+            ['loanId', 'asc']
+        ]
+    })
+
     customerLoan.dataValues.loanPacketDetails = packet
+    customerLoan.dataValues.customerLoanDisbursement = disbursement
 
     let ornamentType = [];
     if (customerLoan.loanOrnamentsDetail.length != 0) {
@@ -1753,100 +1773,8 @@ exports.getSingleLoanDetails = async (req, res, next) => {
 exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
     let { customerLoanId, masterLoanId } = req.query
 
-    let whereCondition = {}
-    if (!check.isEmpty(customerLoanId)) {
-        whereCondition = { id: customerLoanId }
-    }
-
-    let customerLoan = await models.customerLoanMaster.findOne({
-        where: { id: masterLoanId },
-        attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure'],
-        order: [
-            [models.customerLoan, 'id', 'asc'],
-            ['id', 'DESC']
-        ],
-        include: [
-            {
-                model: models.customerLoan,
-                as: 'customerLoan',
-                where: whereCondition,
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-            },
-            {
-                model: models.loanStage,
-                as: 'loanStage',
-                attributes: ['id', 'name']
-            },
-            {
-                model: models.customerLoanTransfer,
-                as: "loanTransfer",
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-            },
-            {
-                model: models.customerLoanPersonalDetail,
-                as: 'loanPersonalDetail',
-            }, {
-                model: models.customerLoanBankDetail,
-                as: 'loanBankDetail',
-            }, {
-                model: models.customerLoanNomineeDetail,
-                as: 'loanNomineeDetail',
-            },
-            {
-                model: models.customerLoanOrnamentsDetail,
-                as: 'loanOrnamentsDetail',
-                include: [
-                    {
-                        model: models.ornamentType,
-                        as: "ornamentType"
-                    }
-                ]
-            },
-            // {
-            //     model: models.customerLoanPackageDetails,
-            //     as: 'loanPacketDetails',
-            //     attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-            //     include: [{
-            //         model: models.packet,
-            //         as: 'packets',
-            //         attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-            //         include: [
-            //             {
-            //                 model: models.customerLoanOrnamentsDetail,
-            //                 include: [{
-            //                     model: models.ornamentType,
-            //                     as: 'ornamentType'
-            //                 }]
-            //             }
-            //         ]
-            //     }]
-            // },
-            {
-                model: models.customerLoanDocument,
-                as: 'customerLoanDocument'
-            },
-            {
-                model: models.customer,
-                as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
-            }
-        ]
-    });
-
-    let packet = await models.customerLoanPackageDetails.findAll({
-        where: { masterLoanId: masterLoanId },
-        include: [{
-            model: models.packet,
-            include: [{
-                model: models.customerLoanOrnamentsDetail,
-                include: [{
-                    model: models.ornamentType,
-                    as: 'ornamentType'
-                }]
-            }]
-        }]
-    })
-    customerLoan.dataValues.loanPacketDetails = packet
+    let customerLoan = await getSingleLoanDetail(customerLoanId, masterLoanId)
+   
     return res.status(200).json({ message: 'success', data: customerLoan })
 }
 
