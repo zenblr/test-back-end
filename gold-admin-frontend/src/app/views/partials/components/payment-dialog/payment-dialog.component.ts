@@ -42,7 +42,7 @@ export class PaymentDialogComponent implements OnInit {
 
   setForm() {
     if (this.data.value) {
-      if (this.data.value.status == "deposit") {
+      if (this.data.name == "deposit") {
         this.title = 'Edit Deposit Status'
         this.paymentForm.patchValue(this.data.value)
         this.paymentForm.controls.depositTransactionId.patchValue(this.data.value.transactionUniqueId);
@@ -149,7 +149,7 @@ export class PaymentDialogComponent implements OnInit {
 
   submit() {
     if (this.paymentForm.invalid) return this.paymentForm.markAllAsTouched()
-    if (this.data.action == 'edit') {
+    if (this.data.name == "deposit") {
       console.log(this.paymentForm.controls.depositStatus.value)
       this.depositService.editStatus(this.paymentForm.controls.depositStatus.value, this.data.value.id).pipe(
         map(res => {
