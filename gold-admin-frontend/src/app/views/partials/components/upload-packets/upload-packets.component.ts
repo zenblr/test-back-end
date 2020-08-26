@@ -132,7 +132,9 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
         this.packetInfo.reset()
       }
 
-      this.editPackets = true;
+      if (change.viewpacketsDetails.currentValue.loanPacketDetails.length) {
+        this.editPackets = true;
+      }
     }
 
     if (change.viewScrapPacketsDetails && change.viewScrapPacketsDetails.currentValue) {
