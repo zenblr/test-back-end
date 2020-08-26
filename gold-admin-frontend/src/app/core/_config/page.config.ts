@@ -47,6 +47,12 @@ export class PageConfig {
 			"global-settings": {
 				page: { title: "Global Settings", desc: "" },
 			},
+			roles: {
+				page: { title: "Roles", desc: "" },
+				id: {
+					page: { title: "Permissions", desc: "" },
+				}
+			},
 			"loan-setting": {
 				scheme: {
 					page: { title: "Schemes", desc: "" },
@@ -120,12 +126,12 @@ export class PageConfig {
 				store: {
 					page: { title: "Store", desc: "" },
 				},
-				roles: {
-					page: { title: "Roles", desc: "" },
-					id: {
-						page: { title: "Permissions", desc: "" },
-					}
-				}
+				// roles: {
+				// 	page: { title: "Roles", desc: "" },
+				// 	id: {
+				// 		page: { title: "Permissions", desc: "" },
+				// 	}
+				// }
 			},
 			"lead-management": {
 				page: { title: "All Leads", desc: "" },
