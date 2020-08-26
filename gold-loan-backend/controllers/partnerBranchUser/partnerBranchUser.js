@@ -6,7 +6,7 @@ const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATIO
 
 //FUNCTION TO ADD PARTNER BRANCH USER
 exports.addPartnerBranchUser = async (req, res) => {
-    let { partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode, isActive } = req.body;
+    let { partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode,partnerBranchUserUniqueId, isActive } = req.body;
 
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
@@ -14,7 +14,7 @@ exports.addPartnerBranchUser = async (req, res) => {
     await sequelize.transaction(async t => {
 
         let PartnerBranchUser = await models.partnerBranchUser.create({
-            partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode, isActive, createdBy, modifiedBy
+            partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode,partnerBranchUserUniqueId, isActive, createdBy, modifiedBy
         }, { transaction: t });
         //console.log(PartnerBranchUser)
         //id = PartnerBranchUser.dataValues.id

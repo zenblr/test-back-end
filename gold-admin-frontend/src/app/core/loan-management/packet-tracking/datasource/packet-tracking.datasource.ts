@@ -37,14 +37,14 @@ export class PacketTrackingDatasource extends BaseDataSource {
             .subscribe();
     }
 
-    loadpacketsLog(masterLoanId,loanId, search,from, to) {
+    loadpacketsLog(masterLoanId,loanId,from, to) {
         this.loadingSubject.next(true);
-        this.loanManagementService.getPacketLog(masterLoanId,loanId, search,from, to)
+        this.loanManagementService.getPacketLog(masterLoanId,loanId,from, to)
             .pipe(
                 map(
                     report => {
                         this.paginatorTotalSubject.next(report.count);
-                        this.entitySubject.next(report.packetDetails);
+                        this.entitySubject.next(report.data);
                     }
                 ),
                 catchError(() => of([])),
