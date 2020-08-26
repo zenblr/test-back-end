@@ -57,8 +57,8 @@
                                 <label class="m-0">{{packet.controls.ornamentsName.value | uppercase  }}</label>
                             </td>
                             <td class="text-gray text-center" *ngIf="!(url == 'view-loan' || url == 'view-scrap')">
-                                <img src="../../../../../../../assets/media/icons/cancel.png" alt="" height="15"
-                                    (click)="removeSelectedPacketsData(idx)">
+                                <img class="kt-pointer" src="../../../../../../../assets/media/icons/cancel.png" alt=""
+                                    height="15" (click)="removeSelectedPacketsData(idx)">
                             </td>
                         </ng-container>
                     </tr>

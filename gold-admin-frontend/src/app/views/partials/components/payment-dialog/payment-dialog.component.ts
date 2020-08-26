@@ -1,7 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-
+import { DepositService } from '../../../../core/funds-approvals/deposit/services/deposit.service'
+import { map, catchError } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'kt-payment-dialog',
   templateUrl: './payment-dialog.component.html',
@@ -9,16 +11,19 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 })
 export class PaymentDialogComponent implements OnInit {
   paymentForm: FormGroup;
+  title: string = ''
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<PaymentDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    private depositService: DepositService,
+    private toast: ToastrService,
   ) { }
 
   ngOnInit() {
     this.initForm()
-    if (this.data.value) this.paymentForm.patchValue(this.data.value)
+    this.setForm()
   }
 
   initForm() {
@@ -29,10 +34,26 @@ export class PaymentDialogComponent implements OnInit {
       transactionId: [],
       depositDate: [, [Validators.required]],
       paidAmount: [, [Validators.required]],
-      chequeNumber: []
+      chequeNumber: [],
+      depositStatus: ['', [Validators.required]]
     })
   }
 
+  setForm() {
+    if (this.data.value) {
+      if (this.data.value.status == "deposit") {
+        this.title = 'Edit Deposit Status'
+        this.paymentForm.patchValue(this.data.value)
+        this.paymentForm.controls.transactionId.patchValue(this.data.value.bankTransactionUniqueId);
+        this.paymentForm.controls.depositDate.patchValue(this.data.value.paymentReceivedDate);
+        this.paymentForm.controls.paidAmount.patchValue(this.data.value.transactionAmont);
+        this.paymentForm.controls.paymentType.patchValue(this.data.value.paymentType);
+        this.paymentForm.controls.depositStatus.patchValue(this.data.value.depositStatus);
+      } else {
+        this.paymentForm.patchValue(this.data.value)
+      }
+    }
+  }
   setValidation(event) {
     // console.log(event.target.value)
     const paymentMode = event.target.value
@@ -106,7 +127,7 @@ export class PaymentDialogComponent implements OnInit {
   //   }
   // }
 
-  action(event) {
+  action(event: Event) {
     if (event) {
       this.submit()
     } else if (!event) {
@@ -116,14 +137,26 @@ export class PaymentDialogComponent implements OnInit {
 
   submit() {
     if (this.paymentForm.invalid) return this.paymentForm.markAllAsTouched()
-    this.paymentForm.patchValue({ paidAmount: Number(this.controls.paidAmount.value) })
-    if (this.controls.paymentType.value === 'cash') {
-      this.paymentForm.patchValue({
-        branchName: null,
-        bankName: null,
-        transactionId: null,
-        chequeNumber: null
-      })
+    if (this.data.action == 'edit') {
+      console.log(this.paymentForm.controls.depositStatus.value)
+      this.depositService.editStatus(this.paymentForm.controls.depositStatus.value, this.data.value.id).pipe(
+        map(res => {
+          this.toast.success(res.message)
+          this.dialogRef.close(res)
+        }), catchError(err => {
+          this.toast.error(err.error.message)
+          throw err
+        })).subscribe()
+    } else {
+      this.paymentForm.patchValue({ paidAmount: Number(this.controls.paidAmount.value) })
+      if (this.controls.paymentType.value === 'cash') {
+        this.paymentForm.patchValue({
+          branchName: null,
+          bankName: null,
+          transactionId: null,
+          chequeNumber: null
+        })
+      }
     }
     this.dialogRef.close(this.paymentForm.value)
   }

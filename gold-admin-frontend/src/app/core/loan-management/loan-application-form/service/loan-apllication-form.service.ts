@@ -22,8 +22,8 @@ export class LoanApplicationFormService {
     )
   }
 
-  getLoanDetails(id,masterLoanId): Observable<any> {
-    return this.http.get(`/api/loan-process/single-loan-customer?customerLoanId=${id}&masterLoanId=${masterLoanId}`).pipe(
+  getLoanDetails(masterLoanId): Observable<any> {
+    return this.http.get(`/api/loan-process/single-loan-customer?masterLoanId=${masterLoanId}`).pipe(
       map(res => res)
     )
   }

@@ -6,7 +6,7 @@ const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATIO
 
 //FUNCTION TO ADD PARTNER BRANCH USER
 exports.addPartnerBranchUser = async (req, res) => {
-    let { partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode, isActive } = req.body;
+    let { partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode,partnerBranchUserUniqueId, isActive } = req.body;
 
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
@@ -14,7 +14,7 @@ exports.addPartnerBranchUser = async (req, res) => {
     await sequelize.transaction(async t => {
 
         let PartnerBranchUser = await models.partnerBranchUser.create({
-            partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode, isActive, createdBy, modifiedBy
+            partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode,partnerBranchUserUniqueId, isActive, createdBy, modifiedBy
         }, { transaction: t });
         //console.log(PartnerBranchUser)
         //id = PartnerBranchUser.dataValues.id
@@ -75,6 +75,11 @@ exports.readPartnerBranchUser = async (req, res) => {
         [Op.and]: [query, {
             [Op.or]: {
                 firstName: { [Op.iLike]: search + '%' },
+                lastName: { [Op.iLike]: search + '%' },
+                mobileNumber:{ [Op.iLike]: search + '%' },
+                email:{ [Op.iLike]: search + '%' },
+                "$partner.name$":{ [Op.iLike]: search + '%' },
+                "$partnerBranch.name$":{ [Op.iLike]: search + '%' }
             }
         },
         ],
@@ -97,10 +102,10 @@ exports.readPartnerBranchUser = async (req, res) => {
         limit: pageSize,
     });
 
-    if (partnerBranchUser) {
-        return res.status(200).json({ Data: partnerBranchUser, count: count.length })
+    if (partnerBranchUser.length === 0) {
+        return res.status(200).json({ data:[]})
     } else {
-        return res.status(404).json({ message: 'Data not found!' })
+        return res.status(200).json({ Data: partnerBranchUser, count: count.length })
     }
 
 }

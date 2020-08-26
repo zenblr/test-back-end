@@ -19,4 +19,18 @@ export class UpdateLocationService {
       })
     )
   }
+  sendCustomerOtp(data): Observable<any> {
+    return this.http.post<any>(`/api/customer/send-otp`, data); //mobile
+  }
+
+  addPacketLocation(data):Observable<any> {
+    return this.http.post<any>(`/api/packet-tracking`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
 }

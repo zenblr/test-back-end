@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { map } from 'rxjs/operators';
 import { PartReleaseFinalService } from '../../../../../core/funds-approvals/jewellery-release-final/part-release-final/services/part-release-final.service';
 import { FullReleaseApprovalService } from '../../../../../core/funds-approvals/jewellery-release-approval/full-release-approval/services/full-release-approval.service';
+import { FullReleaseFinalService } from '../../../../../core/funds-approvals/jewellery-release-final/full-release-final/services/full-release-final.service';
 
 @Component({
   selector: 'kt-update-status',
@@ -15,8 +16,8 @@ import { FullReleaseApprovalService } from '../../../../../core/funds-approvals/
 export class UpdateStatusComponent implements OnInit {
 
   updateStatusForm: FormGroup
-  amountStatus = ['completed', 'pending', 'rejected']
-  partReleaseStatus = ['released', 'pending']
+  amountStatus = ['pending', 'completed', 'rejected']
+  partReleaseStatus = ['pending', 'released']
   jewelleryReleaseFinal: boolean;
 
   constructor(
@@ -27,6 +28,7 @@ export class UpdateStatusComponent implements OnInit {
     public dialogRef: MatDialogRef<UpdateStatusComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fullReleaseApprovalService: FullReleaseApprovalService,
+    private fullReleaseFinalService: FullReleaseFinalService
   ) { }
 
   ngOnInit() {
@@ -48,13 +50,44 @@ export class UpdateStatusComponent implements OnInit {
       payableAmount: ['', [Validators.required]],
       amountStatus: ['', [Validators.required]],
       partReleaseStatus: ['', [Validators.required]],
-      appraiserReason: ['']
+      appraiserReason: ['', [Validators.required]],
+      fullReleaseStatus: ['', [Validators.required]],
+      releaserReason: [, [Validators.required]]
     })
 
-    if (this.data.name === 'jewelleryReleaseFinal') {
-      this.controls.amountStatus.disable()
-    } else {
-      this.controls.partReleaseStatus.disable()
+    // if (this.data.name === 'jewelleryReleaseFinal') {
+    //   this.controls.amountStatus.disable()
+    // } else {
+    //   this.controls.partReleaseStatus.disable()
+    // }
+
+    this.updateStatusForm.disable()
+
+    switch (this.data.name) {
+      case 'jewelleryReleaseApproval':
+        this.controls.partReleaseId.enable();
+        this.controls.amountStatus.enable();
+        break;
+
+      case 'jewelleryReleaseFinal':
+        this.controls.partReleaseId.enable();
+        this.controls.partReleaseStatus.enable();
+        this.controls.appraiserReason.enable();
+        break;
+
+      case 'fullReleaseApproval':
+        this.controls.fullReleaseId.enable();
+        this.controls.amountStatus.enable();
+        break;
+
+      case 'fullReleaseFinal':
+        this.controls.fullReleaseId.enable();
+        this.controls.fullReleaseStatus.enable();
+        this.controls.releaserReason.enable();
+        break;
+
+      default:
+        break;
     }
   }
 
@@ -71,18 +104,15 @@ export class UpdateStatusComponent implements OnInit {
     })
 
     if (!data.appraiserReason) {
-      this.updateStatusForm.patchValue({
-        partReleaseStatus: ''
-      })
+      this.updateStatusForm.patchValue({ partReleaseStatus: '' })
     }
 
-    if (this.data.name === 'fullReleaseApproval' && data.amountStatus === 'pending') this.controls.amountStatus.patchValue('')
-
-    for (const key in this.controls) {
-      if (this.controls.hasOwnProperty(key)) {
-        if (!(key == 'amountStatus' || key == 'partReleaseId' || key == 'partReleaseStatus' || key == 'appraiserReason' || key == 'fullReleaseId')) this.controls[key].disable()
-      }
+    if (!data.releaserReason) {
+      this.updateStatusForm.patchValue({ fullReleaseStatus: '' })
     }
+
+    // if (this.data.name === 'fullReleaseApproval' && data.amountStatus === 'pending') this.controls.amountStatus.patchValue('')
+
   }
 
   get controls() {
@@ -109,6 +139,14 @@ export class UpdateStatusComponent implements OnInit {
         this.resetAppraiserReason()
       }
     }
+
+    if (this.data.name == 'fullReleaseFinal') {
+      if (event.target.value != 'released') {
+        this.setReleaserReason()
+      } else {
+        this.resetReleaserReason()
+      }
+    }
   }
 
   setAppraiserReason() {
@@ -121,6 +159,18 @@ export class UpdateStatusComponent implements OnInit {
     this.updateStatusForm.controls.appraiserReason.reset()
     this.updateStatusForm.controls.appraiserReason.clearValidators()
     this.updateStatusForm.controls.appraiserReason.updateValueAndValidity()
+  }
+
+  setReleaserReason() {
+    this.controls.releaserReason.reset()
+    this.updateStatusForm.controls.releaserReason.setValidators([Validators.required])
+    this.updateStatusForm.controls.releaserReason.updateValueAndValidity()
+  }
+
+  resetReleaserReason() {
+    this.updateStatusForm.controls.releaserReason.reset()
+    this.updateStatusForm.controls.releaserReason.clearValidators()
+    this.updateStatusForm.controls.releaserReason.updateValueAndValidity()
   }
 
   submit() {
@@ -137,7 +187,6 @@ export class UpdateStatusComponent implements OnInit {
 
         break;
 
-
       case 'jewelleryReleaseApproval':
         this.partReleaseApprovalService.updateAmountStatus(this.updateStatusForm.value).pipe(map(res => {
           if (res) this.toastr.success('Status Updated Successfully')
@@ -148,6 +197,14 @@ export class UpdateStatusComponent implements OnInit {
 
       case 'fullReleaseApproval':
         this.fullReleaseApprovalService.updateAmountStatus(this.updateStatusForm.value).pipe(map(res => {
+          if (res) this.toastr.success('Status Updated Successfully')
+          this.dialogRef.close(true)
+        })).subscribe()
+
+        break;
+
+      case 'fullReleaseFinal':
+        this.fullReleaseFinalService.upateStatus(this.updateStatusForm.value).pipe(map(res => {
           if (res) this.toastr.success('Status Updated Successfully')
           this.dialogRef.close(true)
         })).subscribe()

@@ -5,7 +5,7 @@
                 <div class="col-6">
                     <div class="row">
                         <div class="col-4 form-label">
-                            <label class="text-color kt-padding-l-10 mandatory">Name</label>
+                            <label class="text-color kt-padding-l-10 mandatory">Nominee Name</label>
                         </div>
                         <div class="col-6">
                             <input type="text" class="form-control" placeholder="vishwas shetty"
@@ -21,16 +21,16 @@
                 <div class="col-6">
                     <div class="row">
                         <div class="col-4 offset-2 form-label">
-                            <label class="text-color kt-padding-l-10 mandatory">Age</label>
+                            <label class="text-color kt-padding-l-10 mandatory">Nominee Age</label>
                         </div>
                         <div class="col-6">
                             <input type="number" class="form-control" placeholder="18" numbersOnly
                                 formControlName="nomineeAge" (blur)="checkForMinor()"
                                 [class.isError]="controls.nomineeAge.touched && controls.nomineeAge.invalid">
-                                <mat-error *ngIf="controls.nomineeAge.touched && controls.nomineeAge.invalid">
-                                    <span *ngIf="controls.nomineeAge.errors?.required">Field is Required</span>
-                                    <span *ngIf="controls.nomineeAge.errors?.max">Invalid Input</span>
-                                </mat-error>
+                            <mat-error *ngIf="controls.nomineeAge.touched && controls.nomineeAge.invalid">
+                                <span *ngIf="controls.nomineeAge.errors?.required">Field is Required</span>
+                                <span *ngIf="controls.nomineeAge.errors?.max">Invalid Input</span>
+                            </mat-error>
                         </div>
                     </div>
                 </div>

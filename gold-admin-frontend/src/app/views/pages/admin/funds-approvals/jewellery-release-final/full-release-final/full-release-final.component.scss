@@ -6,8 +6,15 @@
 
     .mat-column-principalOutstandingAmountLTV{
         display: flex;
-    flex-direction: column;
-    flex: 0 0 8%;
+        flex-direction: column;
+        flex: 0 0 8%;
+    }
+
+    .mat-column-loanId {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        flex: 0 0 4%;
     }
 
 }

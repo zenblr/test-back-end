@@ -11,8 +11,8 @@
                     </div>
                 </div>
                 <div class="row justify-content-between">
-                    <div class="col-4">
-                        <div class="input-group mb-3 w-80"
+                    <div class="col-4 mb-3">
+                        <div class="input-group w-80"
                             [class.isError]="controls.documents.touched && controls.documents.invalid">
                             <input type="text" class="form-control" placeholder="Select File"
                                 aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
@@ -26,8 +26,7 @@
 
                         </div>
                         <mat-error *ngIf="controls.documents.touched && controls.documents.invalid">
-                            Field
-                            Required</mat-error>
+                            Field Required</mat-error>
                     </div>
                 </div>
                 <div class="row">

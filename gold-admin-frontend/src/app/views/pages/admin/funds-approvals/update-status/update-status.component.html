@@ -45,7 +45,7 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-4 form-label">
-                                        <mat-label>Loan Amount</mat-label>
+                                        <mat-label>Loan Amount (&#x20B9;)</mat-label>
                                     </div>
                                     <div class="col-7">
                                         <input class="form-control" formControlName="loanAmount"
@@ -61,7 +61,7 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="offset-1 col-4 form-label">
-                                        <mat-label>Principal OutStanding Amount</mat-label>
+                                        <mat-label>Principal OutStanding Amount (&#x20B9;)</mat-label>
                                     </div>
                                     <div class="col-7">
                                         <input class="form-control" formControlName="outstandingAmount"
@@ -80,7 +80,7 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-4 form-label">
-                                        <mat-label>Interest Amount</mat-label>
+                                        <mat-label>Interest Amount (&#x20B9;)</mat-label>
                                     </div>
                                     <div class="col-7">
                                         <input class="form-control" formControlName="interestAmount"
@@ -93,10 +93,11 @@
                                 </div>
                             </div>
 
-                            <div class="col-6" *ngIf="data.name !== 'fullReleaseApproval'">
+                            <div class="col-6"
+                                *ngIf="data.name === ('jewelleryReleaseApproval' || 'jewelleryReleaseFinal')">
                                 <div class="row">
                                     <div class="offset-1 col-4 form-label">
-                                        <mat-label>Ornament Release Amount</mat-label>
+                                        <mat-label>Ornament Release Amount (&#x20B9;)</mat-label>
                                     </div>
                                     <div class="col-7">
                                         <input class="form-control" formControlName="releaseAmount"
@@ -114,7 +115,7 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-4 form-label">
-                                        <mat-label>Penal Interest</mat-label>
+                                        <mat-label>Penal Interest (&#x20B9;)</mat-label>
                                     </div>
                                     <div class="col-7">
                                         <input class="form-control" formControlName="penalInterest"
@@ -130,10 +131,8 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="offset-1 col-4 form-label">
-                                        <mat-label>Total
-                                            <span *ngIf="data.name == 'jewelleryReleaseFinal'">Paid</span>
-                                            <span *ngIf="data.name != 'jewelleryReleaseFinal'">Payable</span>
-                                            Amount</mat-label>
+                                        <mat-label>Total Payable <br>
+                                            Amount (₹)</mat-label>
                                     </div>
                                     <div class="col-7">
                                         <input class="form-control" formControlName="payableAmount"
@@ -147,7 +146,8 @@
                             </div>
                         </div>
 
-                        <div *ngIf="data.name != 'jewelleryReleaseFinal'" class="row kt-margin-b-15">
+                        <div *ngIf="data.name != 'jewelleryReleaseFinal' && data.name != 'fullReleaseFinal'"
+                            class="row kt-margin-b-15">
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-4 form-label">
@@ -160,8 +160,7 @@
                                         <select class="form-control" formControlName="amountStatus"
                                             [class.isError]="controls.amountStatus.touched && controls.amountStatus.invalid">
                                             <option value="" disabled selected>Select Status</option>
-                                            <option *ngFor="let stat of amountStatus" [disabled]="stat == 'pending'"
-                                                [value]="stat">
+                                            <option *ngFor="let stat of amountStatus" [value]="stat">
                                                 {{stat | titlecase}}
                                             </option>
                                         </select>
@@ -197,7 +196,7 @@
                                 </div>
                             </div>
 
-                            <div *ngIf="controls.partReleaseStatus.value != 'released'" class="col-6">
+                            <div *ngIf="controls.partReleaseStatus.value === 'pending'" class="col-6">
                                 <div class="row">
                                     <div class="offset-1 col-4 form-label">
                                         <mat-label>Reason</mat-label>
@@ -206,12 +205,49 @@
                                         <textarea class="form-control" formControlName="appraiserReason"
                                             [class.isError]="controls.appraiserReason.touched && controls.appraiserReason.invalid"
                                             placeholder="Reason for {{controls.partReleaseStatus.value | titlecase}}"></textarea>
-                                        <!-- <mat-form-field class="example-full-width">
-                                            <textarea matInput formControlName="appraiserReason"
-                                                placeholder="Reason for {{controls.partReleaseStatus.value | titlecase}}"></textarea>
-                                        </mat-form-field> -->
                                         <mat-error
                                             *ngIf="controls.appraiserReason.touched && controls.appraiserReason.errors?.required">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="data.name == 'fullReleaseFinal'" class="row kt-margin-b-15">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <mat-label>Status</mat-label>
+                                    </div>
+                                    <div class="col-7">
+                                        <select class="form-control" formControlName="fullReleaseStatus"
+                                            (change)="commentValidation($event)"
+                                            [class.isError]="controls.fullReleaseStatus.touched && controls.fullReleaseStatus.invalid">
+                                            <option value="" disabled selected>Select Status</option>
+                                            <option *ngFor="let stat of partReleaseStatus" [value]="stat">
+                                                {{stat | titlecase}}
+                                            </option>
+                                        </select>
+                                        <mat-error
+                                            *ngIf="controls.fullReleaseStatus.touched && controls.fullReleaseStatus.errors?.required">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div *ngIf="controls.fullReleaseStatus.value === 'pending'" class="col-6">
+                                <div class="row">
+                                    <div class="offset-1 col-4 form-label">
+                                        <mat-label>Reason</mat-label>
+                                    </div>
+                                    <div class="col-7">
+                                        <textarea class="form-control" formControlName="releaserReason"
+                                            [class.isError]="controls.releaserReason.touched && controls.releaserReason.invalid"
+                                            placeholder="Reason for {{controls.fullReleaseStatus.value | titlecase}}"></textarea>
+                                        <mat-error
+                                            *ngIf="controls.releaserReason.touched && controls.releaserReason.errors?.required">
                                             Required field
                                         </mat-error>
                                     </div>

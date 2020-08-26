@@ -46,7 +46,9 @@ exports.getAllNewRequest = async (req, res, next) => {
             [Op.or]: {
                 "$customer.first_name$": { [Op.iLike]: search + '%' },
                 "$customer.last_name$": { [Op.iLike]: search + '%' },
-                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' }
+                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+                "$customer.mobile_number$": { [Op.iLike]: search + '%' },
+                "$module.module_name$": { [Op.iLike]: search + '%' }
             },
         }]
     };
@@ -82,7 +84,7 @@ exports.getAllNewRequest = async (req, res, next) => {
         limit: pageSize,
     });
 
-    let count = await models.leadNewRequest.count({
+    let count = await models.leadNewRequest.findAll({
         where: searchQuery,
         subQuery: false,
         include: associateModel,
@@ -90,9 +92,9 @@ exports.getAllNewRequest = async (req, res, next) => {
 
 
     if (allRequest.length === 0) {
-        return res.status(200).json([])
+        return res.status(200).json({data:[]})
     } else {
-        return res.status(200).json({ message: `Fetched all request successfully`, data: allRequest, count: count })
+        return res.status(200).json({ message: `Fetched all request successfully`, data: allRequest, count: count.length })
     }
 }
 
@@ -127,7 +129,9 @@ exports.getAssignedRequest = async (req, res) => {
                 [Op.or]: {
                     "$customer.first_name$": { [Op.iLike]: search + '%' },
                     "$customer.last_name$": { [Op.iLike]: search + '%' },
-                    "$customer.customer_unique_id$": { [Op.iLike]: search + '%' }
+                    "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+                    "$customer.mobile_number$": { [Op.iLike]: search + '%' },
+                    "$module.module_name$": { [Op.iLike]: search + '%' }
                 },
             }]
     };
@@ -175,7 +179,7 @@ exports.getAssignedRequest = async (req, res) => {
         .value()
 
     if (allRequest.length === 0) {
-        return res.status(200).json([])
+        return res.status(200).json({data:[]})
     } else {
         return res.status(200).json({ message: `Fetched all request successfully`, data: data, count: count.length })
     }

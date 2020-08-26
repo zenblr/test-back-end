@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, SimpleChanges } from '@angular/core';
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { Subscription, merge, Subject, from } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
@@ -7,6 +7,9 @@ import { PacketsDatasource, PacketsService } from '../../../../../../../../core/
 import { LayoutUtilsService } from '../../../../../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { LocationDatasource } from '../../../../../../../../core/loan-management/view-location/location/datasources/location.datasource';
+import { LocationService } from '../../../../../../../../core/loan-management/view-location/location/services/location.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'kt-location',
@@ -14,13 +17,13 @@ import { NgxPermissionsService } from 'ngx-permissions';
   styleUrls: ['./location.component.scss']
 })
 export class LocationComponent implements OnInit {
-  dataSource: PacketsDatasource;
-  displayedColumns = ['packetUniqueId', 'internalBranch', 'customerID', 'loanId', 'actions'];
+  @Input() masterLoanId: number;
+  @Input() date: Date;
+
+  dataSource: LocationDatasource;
+  displayedColumns = ['time', 'location', 'distance', 'battery', 'coordinates', 'network', 'totalDistance'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  // Filter fields
-  // @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
-  // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   destroy$ = new Subject();
 
   // Subscriptions
@@ -31,25 +34,41 @@ export class LocationComponent implements OnInit {
     from: 1,
     to: 25,
     search: '',
+    masterLoanId: null,
+    date: ''
   }
 
   constructor(
     public dialog: MatDialog,
-    private packetsService: PacketsService,
+    private locationService: LocationService,
     private dataTableService: DataTableService,
     private layoutUtilsService: LayoutUtilsService,
     private toastr: ToastrService,
-    private ngxPermissionService: NgxPermissionsService
+    private ngxPermissionService: NgxPermissionsService,
   ) {
-    
   }
 
   ngOnInit() {
-    const permission = this.ngxPermissionService.permissions$.subscribe(res => {
-      if (!(res.packetEdit || res.packetDelete))
-        this.displayedColumns.splice(3, 1)
-    })
-    this.subscriptions.push(permission);
+    // const permission = this.ngxPermissionService.permissions$.subscribe(res => {
+    //   if (!(res.packetEdit || res.packetDelete))
+    //     this.displayedColumns.splice(3, 1)
+    // })
+    // this.subscriptions.push(permission);
+
+
+    this.queryParamsData = {
+      from: 1,
+      to: 25,
+      search: '',
+      masterLoanId: this.masterLoanId,
+      date: (this.date).toISOString()
+    }
+
+    // this.init()
+
+  }
+
+  init() {
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
       tap(() => {
         this.loadPackets();
@@ -61,13 +80,13 @@ export class LocationComponent implements OnInit {
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;
-        this.queryParamsData.search = res; 
+        this.queryParamsData.search = res;
         this.paginator.pageIndex = 0;
         this.loadPackets();
       });
 
     // Init DataSource
-    this.dataSource = new PacketsDatasource(this.packetsService);
+    this.dataSource = new LocationDatasource(this.locationService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
@@ -75,12 +94,7 @@ export class LocationComponent implements OnInit {
       this.leadsResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
-
-    // First load
-    // this.loadLeadsPage();
-
-    this.dataSource.loadpackets( this.queryParamsData);
-
+    this.dataSource.loadpacketsLocation(this.queryParamsData);
   }
 
   ngOnDestroy() {
@@ -98,35 +112,24 @@ export class LocationComponent implements OnInit {
     this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadpackets( this.queryParamsData);
+    this.dataSource.loadpacketsLocation(this.queryParamsData);
   }
 
-  
-
-  deletePacket(_item) {
-    const role = _item;
-    const _title = 'Delete Packet';
-    const _description = 'Are you sure to permanently delete this packet?';
-    const _waitDesciption = 'Packet is deleting...';
-    const _deleteMessage = `Packet has been deleted`;
-    console.log(role.id)
-    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        console.log(res);
-        this.packetsService.deletePacket(role.id).subscribe(successDelete => {
-          this.toastr.success(_deleteMessage);
-          this.loadPackets();
-        },
-          errorDelete => {
-            this.toastr.error(errorDelete.error.message);
-          });
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes)
+    if (changes && changes.date.currentValue) {
+      this.queryParamsData = {
+        from: 1,
+        to: 25,
+        search: '',
+        masterLoanId: this.masterLoanId,
+        date: (changes.date.currentValue).toISOString()
       }
-      // this.store.dispatch(new RoleDeleted({ id: _item.id }));
-      // this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
-    });
-  }
 
+      this.init()
+    }
+
+  }
 
 }
 

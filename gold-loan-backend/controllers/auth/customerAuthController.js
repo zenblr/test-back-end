@@ -8,8 +8,8 @@ const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
 let check = require('../../lib/checkLib');
 
 exports.customerLogin = async (req, res, next) => {
-    const { firstName, password } = req.body;
-    let checkCustomer = await models.customer.findOne({ where: { firstName: firstName } });
+    const { mobileNumber, password } = req.body;
+    let checkCustomer = await models.customer.findOne({ where: { mobileNumber: mobileNumber } });
     if (!checkCustomer) {
         return res.status(404).json({ message: 'Wrong Credentials' })
     }
@@ -20,14 +20,23 @@ exports.customerLogin = async (req, res, next) => {
             mobile: checkCustomer.dataValues.mobileNumber,
             firstName: checkCustomer.dataValues.firstName,
             lastName: checkCustomer.dataValues.lastName,
+            userBelongsTo: "customeruser"
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
         });
         const decoded = jwt.verify(Token, JWT_SECRETKEY);
         const createdTime = new Date(decoded.iat * 1000).toGMTString();
+        const expiryTime = new Date(decoded.exp * 1000).toGMTString();
+
         await models.customer.update({ lastLogin: createdTime }, {
             where: { id: decoded.id }
+        });
+        await models.customerLogger.create({
+            customerId: decoded.id,
+            token: Token,
+            expiryDate: expiryTime,
+            createdDate: createdTime
         });
 
         return res.status(200).json({ message: 'login successful', Token });
@@ -68,6 +77,7 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
             mobile: checkUser.dataValues.mobileNumber,
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
+            userBelongsTo: "customer"
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
