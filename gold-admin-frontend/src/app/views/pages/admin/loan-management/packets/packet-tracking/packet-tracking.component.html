@@ -1,7 +1,6 @@
 <kt-portlet>
 
     <kt-portlet-body>
-        <button (click)="viewLocation('hi')">tracking</button>
         <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
                 <ng-container matColumnDef="userName">
@@ -59,8 +58,8 @@
                 <ng-container matColumnDef="currentLocation">
                     <mat-header-cell *matHeaderCellDef>Current Location</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngIf="packet.customerLoan">
-                            {{packet.customerLoan.loanUniqueId}}
+                        <span *ngIf="packet.customerPacketTracking">
+                            {{packet.customerPacketTracking[0].packetLocation.location |titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>

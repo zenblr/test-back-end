@@ -1,8 +1,7 @@
 const { body } = require("express-validator");
 
-exports.updateLocationValidation =[
+exports.addCustomerPacketTrackingValidation =[
     body('packetLocationId')
     .exists()
     .withMessage('Packet Location Required'),
 ]
-

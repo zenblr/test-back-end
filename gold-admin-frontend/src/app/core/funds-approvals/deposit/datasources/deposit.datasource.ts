@@ -15,15 +15,15 @@ export class DepositDatasource extends BaseDataSource {
         super();
     }
 
-    getDepositList(from, to, search) {
+    getDepositList(data) {
         this.loadingSubject.next(true);
 
-        this.depositService.getDepositList(from, to, search)
+        this.depositService.getDepositList(data)
             .pipe(
                 map(
-                    report => {
-                        this.paginatorTotalSubject.next(report.count);
-                        this.entitySubject.next(report);
+                    deposit => {
+                        this.paginatorTotalSubject.next(deposit.count);
+                        this.entitySubject.next(deposit.data);
                     }
                 ),
                 catchError(() => of([])),

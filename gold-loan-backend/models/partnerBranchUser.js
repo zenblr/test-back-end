@@ -51,12 +51,12 @@ module.exports = (sequelize, DataTypes) => {
         },
         stateId: {
             type: DataTypes.INTEGER,
-            field: 'state',
+            field: 'state_id',
             allowNull: false,
         },
         cityId: {
             type: DataTypes.INTEGER,
-            field: 'city',
+            field: 'city_id',
             allowNull: false,
         },
         pinCode: {

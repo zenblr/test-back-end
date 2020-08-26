@@ -25,7 +25,7 @@ router.post('/send-register-otp', checkAuth, registerCustomerSendOtp);
 
 router.post('/send-otp', sendOtp);
 
-router.post('/verify-otp', checkAuth, verifyOtp);
+router.post('/verify-otp', verifyOtp);
 
 router.put('/:customerId', validationError, checkAuth, checkRolePermission, wrapper(editCustomer))
 
