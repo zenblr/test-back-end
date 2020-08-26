@@ -69,13 +69,14 @@ export class LoanTransferComponent implements OnInit {
         this.laonTransferDetails = res.data
         if (res.data.masterLoan.loanTransfer.loanTransferCurrentStage) {
           let stage = res.data.masterLoan.loanTransfer.loanTransferCurrentStage;
-          this.next(Number(stage) - 1);
+          // this.next(Number(stage) - 1);
+          this.selected = 0;
           if (stage == '4') {
             if (!this.permission.loanTransferRating) {
               this.toast.error('Access Denied')
               this.location.back()
             }
-            this.selected = 2
+            this.selected = 0
             this.approvalForm.controls.loanTransferStatusForAppraiser.disable()
             this.approvalForm.controls.reasonByAppraiser.disable()
           }
@@ -259,6 +260,7 @@ export class LoanTransferComponent implements OnInit {
   next(event) {
     if (event.index != undefined) {
       this.selected = event.index;
+      // this.selected = 0;
     } else {
       if (event == 3) {
         this.selected = 2

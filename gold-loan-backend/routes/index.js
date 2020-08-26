@@ -136,6 +136,9 @@ router.use('/packet', packet)
 const packetTracking = require('./packetTracking'); // PACKET TRACKING DETAILS
 router.use('/packet-tracking', packetTracking)
 
+const globalMap = require('./globalMap'); // GLOBAL MAP
+router.use('/global-map', globalMap)
+
 const uploadPacket = require('./uploadPackets');  //upload Packets List 
 router.use('/upload-packets-file', uploadPacket)
 

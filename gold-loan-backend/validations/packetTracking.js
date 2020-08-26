@@ -5,4 +5,3 @@ exports.addCustomerPacketTrackingValidation =[
     .exists()
     .withMessage('Packet Location Required'),
 ]
-

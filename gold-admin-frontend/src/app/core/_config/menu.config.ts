@@ -421,12 +421,12 @@ export class MenuConfig {
 										{
 											title: "Part Release Approved List",
 											page: "/admin/funds-approvals/part-release-final",
-											permission: false,
+											permission: !this.permissionsArr.includes('partReleaseView'),
 										},
 										{
 											title: "Full Release Final Process",
 											page: "/admin/funds-approvals/full-release-final",
-											permission: false,
+											permission: !this.permissionsArr.includes('fullReleaseView'),
 										},
 									]
 								},

@@ -344,7 +344,12 @@ export class PageConfig {
 					id: {
 						page: { title: "Loan Transfer", desc: "" },
 					}
-				}
+				},
+				"view-location": {
+					id: {
+						page: { title: "View Location", desc: "" },
+					}
+				},
 			},
 			"scrap-management": {
 				"scrap-buying-calculator": {
