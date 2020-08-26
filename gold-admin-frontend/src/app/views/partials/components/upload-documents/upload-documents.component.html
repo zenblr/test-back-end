@@ -67,10 +67,7 @@
             </div>
             <div class="col">
             <div class="col" *ngIf="showScrapAcknowledgementFlag">
-                <!-- <input type="text" class="form-control" placeholder="10" formControlName="quantity"
-                numbersOnly
-                [class.isError]="ornament.controls.quantity.touched && ornament.controls.quantity.invalid"> -->
-                <input type="text" class="form-control"  placeholder="0" formControlName="standardDeduction"
+                <input type="text" class="form-control"  (keyup)= "calculateAfterDeduction()" placeholder="0" formControlName="standardDeduction"
                 numbersOnly
                 [class.isError]="controls.standardDeduction.touched && controls.standardDeduction.invalid">
             <mat-error *ngIf="controls.standardDeduction.errors?.max">
@@ -78,10 +75,11 @@
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
                 <label>Before Standard Deduction - <span class="currency">
-                    {{totalAmount | indianCurrencyFormat}}</span></label>
+                    {{totalAmt | indianCurrencyFormat}}</span></label>
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
-                <label>After Standard Deduction -</label>
+                <label>After Standard Deduction - <span class="currency">
+                    {{total | indianCurrencyFormat}}</span></label>
             </div>
             </div>
             <div class="col" *ngIf="showScrapAcknowledgementFlag">

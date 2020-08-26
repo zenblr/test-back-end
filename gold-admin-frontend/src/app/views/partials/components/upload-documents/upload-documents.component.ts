@@ -63,6 +63,7 @@ export class UploadDocumentsComponent implements OnInit {
     saleInvoice: false
   }
   documentsForm: FormGroup
+  total;
   show: boolean;
   url: string;
   scrapUrl: string;
@@ -156,6 +157,7 @@ export class UploadDocumentsComponent implements OnInit {
           standardDeduction: documents.standardDeduction,
           customerConfirmationStatus: documents.customerConfirmationStatus
         })
+        this.calculateAfterDeduction();
         if (documents.customerConfirmation) {
           this.documentsForm.patchValue({
             customerConfirmation: documents.customerConfirmation,
@@ -471,6 +473,17 @@ export class UploadDocumentsComponent implements OnInit {
     } else {
       this.loanService.getPdf(this.masterAndLoanIds.masterLoanId).subscribe()
     }
+  }
+
+
+  calculateAfterDeduction() {
+    const controls = this.documentsForm as FormGroup;
+    if (controls.controls.standardDeduction.valid && controls.controls.standardDeduction.value) {
+      let standardDeduction = controls.controls.standardDeduction.value
+      this.total = ( this.totalAmt - (this.totalAmt * standardDeduction / 100))
+      console.log(this.total)
+    }
+    console.log(this.documentsForm.value);
   }
 
   save() {

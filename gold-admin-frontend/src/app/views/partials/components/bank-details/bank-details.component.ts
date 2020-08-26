@@ -87,9 +87,9 @@ export class BankDetailsComponent implements OnInit, OnChanges {
 
     if (changes.finalScrapAmt && changes.finalScrapAmt.currentValue) {
       console.log(changes.finalScrapAmt)
+      this.controls.finalScrapAmountAfterMelting.patchValue(changes.finalScrapAmt.currentValue)
       if (Number(changes.finalScrapAmt.currentValue) > 200000) {
         this.controls.paymentType.patchValue('bank')
-        this.controls.finalScrapAmountAfterMelting.patchValue(changes.finalScrapAmt.currentValue)
         this.controls.paymentType.disable()
       }
       this.ref.detectChanges()
