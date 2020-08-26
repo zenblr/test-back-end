@@ -302,15 +302,13 @@ export class CheckoutCustomerComponent implements OnInit {
 
   sameAddress(event: MatCheckbox) {
     if (event) {
-      setTimeout(() => {
-        this.checkoutCustomerForm.patchValue({
-          shippingAddress: this.controls.address.value,
-          shippingLandMark: this.controls.landMark.value,
-          shippingStateName: this.controls.stateName.value,
-          shippingCityName: this.controls.cityName.value,
-          shippingPostalCode: this.controls.postalCode.value,
-        });
-        this.getShippingCities();
+      this.shippingCityList = this.cityList;
+      this.checkoutCustomerForm.patchValue({
+        shippingAddress: this.controls.address.value,
+        shippingLandMark: this.controls.landMark.value,
+        shippingStateName: this.controls.stateName.value,
+        shippingCityName: this.controls.cityName.value,
+        shippingPostalCode: this.controls.postalCode.value,
       });
     } else {
       this.checkoutCustomerForm.patchValue({
