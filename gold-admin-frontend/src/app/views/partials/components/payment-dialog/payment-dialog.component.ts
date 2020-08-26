@@ -52,21 +52,13 @@ export class PaymentDialogComponent implements OnInit {
         this.paymentForm.controls.paidAmount.patchValue(this.data.value.transactionAmont);
         this.paymentForm.controls.paymentType.patchValue(this.data.value.paymentType);
         this.paymentForm.controls.depositStatus.patchValue(this.data.value.depositStatus);
-        this.disableForm();
+        this.paymentForm.disable();
+        this.paymentForm.controls.depositStatus.enable();
       } else {
         this.paymentForm.patchValue(this.data.value)
         this.paymentForm.controls.depositStatus.disable()
       }
     }
-  }
-  disableForm() {
-    this.paymentForm.controls.depositTransactionId.disable()
-    this.paymentForm.controls.transactionId.disable()
-    this.paymentForm.controls.depositDate.disable()
-    this.paymentForm.controls.paidAmount.disable()
-    this.paymentForm.controls.bankName.disable()
-    this.paymentForm.controls.branchName.disable()
-    this.paymentForm.controls.chequeNumber.disable()
   }
   setValidation(event) {
     // console.log(event.target.value)

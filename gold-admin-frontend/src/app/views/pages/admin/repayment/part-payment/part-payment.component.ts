@@ -61,12 +61,12 @@ export class PartPaymentComponent implements OnInit {
   }
 
   proceed() {
-    this.partPaymentService.getPaymentConfirm(this.masterLoanId).pipe(map(res => {
+    this.partPaymentService.getPaymentConfirm(this.masterLoanId,Number(this.partAmount.value)).pipe(map(res => {
       console.log(res)
       this.paymentDetails = res.data
       // this.paymentDetails = res.message
     })).subscribe()
-    this.paymentDetails = { tested: 'ok' }
+    // this.paymentDetails = { tested: 'ok' }
     this.scrollToBottom()
   }
 
@@ -92,7 +92,11 @@ export class PartPaymentComponent implements OnInit {
     })
   }
 
-  submitPaymentConfirmation() { }
+  submitPaymentConfirmation() {
+    this.partPaymentService.confirmPayment(this.masterLoanId,Number(this.partAmount.value),this.paymentValue,).subscribe(res=>{
+
+    })
+   }
 
   cancelPaymentConfirmation() {
     this.paymentDetails = {}

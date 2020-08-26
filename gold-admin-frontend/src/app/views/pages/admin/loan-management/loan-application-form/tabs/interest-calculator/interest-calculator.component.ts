@@ -37,6 +37,7 @@ export class InterestCalculatorComponent implements OnInit {
   finalInterestForm: FormGroup;
   @Input() invalid;
   @Input() totalAmt = 0;
+  @Input() disbursed:boolean = false
   // @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   @Input() action;
@@ -120,7 +121,7 @@ export class InterestCalculatorComponent implements OnInit {
             this.loanFormService.finalLoanAmount.next(finalLoan.masterLoan.loanTransfer.disbursedLoanAmount)
           }
 
-          if (changes.details.currentValue.disbursed)
+          if (changes.disbursed && changes.disbursed.currentValue)
             this.approved = true;
 
           // this.finalInterestForm.controls.loanStartDate.patchValue(new Date(finalLoan.loanStartDate))

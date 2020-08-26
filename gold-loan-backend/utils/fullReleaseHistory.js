@@ -10,4 +10,5 @@ module.exports = {
     FULL_RELEASE_STATUS_P:"Releaser changed status to pending",
     FULL_RELEASE_STATUS_R:"Releaser changed status to released",
     FULL_RELEASE_DOCUMENT:"Full release documents uploaded",
+    FULL_RELEASE_APPLIED:"Applied for full release"
 }
