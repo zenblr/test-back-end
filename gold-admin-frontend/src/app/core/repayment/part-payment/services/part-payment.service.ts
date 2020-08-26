@@ -12,13 +12,19 @@ export class PartPaymentService {
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   getPreviousPartPaymentInfo(id): Observable<any> {
-    return this.http.get(`/api/quick-pay/interest-info?masterLoanId=${id}`).pipe(
+    return this.http.get(`/api/part-payment/interest-info?masterLoanId=${id}`).pipe(
       map(res => res)
     )
   }
 
-  getPayableAmount(queryparams): Observable<any> {
-    return this.http.get(`/api/quick-pay/interest-info`, { params: queryparams }).pipe(
+  getPayableAmount(data): Observable<any> {
+    return this.http.post(`/api/part-payment/check-part-amount`,data).pipe(
+      map(res => res)
+    )
+  }
+
+  getPaymentConfirm(masterLoanId):Observable<any>{
+    return this.http.get(`/api/part-payment/confirm-payment-info?masterLoanId=${masterLoanId}`).pipe(
       map(res => res)
     )
   }

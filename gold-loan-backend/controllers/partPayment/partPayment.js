@@ -38,7 +38,7 @@ exports.checkPartAmount = async (req, res, next) => {
     data.partPaymentAmount = (partPaymentAmount.toFixed(2))
     data.paidAmount = paidAmount
     data.loanDetails = loan.loan
-    return res.status(200).json({ message: data })
+    return res.status(200).json({ data })
 }
 
 //CALCULATE PAYABLE AMOUNT
