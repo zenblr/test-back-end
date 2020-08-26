@@ -925,7 +925,8 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
         where: { id: masterLoanId },
         attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure'],
         order: [
-            [models.customerLoanDisbursement, 'loanId', 'asc']
+            [models.customerLoanDisbursement, 'loanId', 'asc'],
+            [models.customerLoan ,'id','asc']
         ],
         include: [
             {
