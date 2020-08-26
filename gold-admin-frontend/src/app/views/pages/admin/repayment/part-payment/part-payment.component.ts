@@ -30,7 +30,7 @@ export class PartPaymentComponent implements OnInit {
 
   ngOnInit() {
     this.masterLoanId = this.route.snapshot.params.id
-    // this.getPreviousPartPaymentInfo(this.masterLoanId)
+    this.getPreviousPartPaymentInfo(this.masterLoanId)
   }
 
   getPreviousPartPaymentInfo(id) {
@@ -45,20 +45,27 @@ export class PartPaymentComponent implements OnInit {
 
   partAmountContinue() {
     console.log(this.partAmount)
-    const queryParams = {
-      amount: this.partAmount.value,
+    const data = {
+      paidAmount: this.partAmount.value,
       masterLoanId: this.masterLoanId
     }
-    this.partPaymentService.getPayableAmount(queryParams).pipe(map(res => {
-      console.log(res)
-      this.payableAmountSummary = res
+    this.partPaymentService.getPayableAmount(data).pipe(map(res => {
+      this.payableAmountSummary = res.data
+      console.log(this.payableAmountSummary)
+      this.ref.detectChanges()
+      // this.payableAmountSummary = res.message
     })).subscribe()
-    this.payableAmountSummary = { test: 'ok' }
+    // this.payableAmountSummary = { test: 'ok' }
     this.scrollToBottom()
 
   }
 
   proceed() {
+    this.partPaymentService.getPaymentConfirm(this.masterLoanId).pipe(map(res => {
+      console.log(res)
+      this.paymentDetails = res.data
+      // this.paymentDetails = res.message
+    })).subscribe()
     this.paymentDetails = { tested: 'ok' }
     this.scrollToBottom()
   }
