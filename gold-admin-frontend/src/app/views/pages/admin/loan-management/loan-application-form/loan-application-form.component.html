@@ -91,7 +91,7 @@
                     <mat-tab label="Disbursement"
                         *ngIf="loanStage?.id == 4 || (loanStage?.id == 5 && url =='view-loan')">
                         <kt-disburse [masterAndLoanIds]="masterAndLoanIds" [loanDetials]="customerDetail"
-                            [disable]="disabledForm" [showButton]="true"></kt-disburse>
+                            [disable]="disabledForm" [showButton]="true" [disbursed]="disbursed"></kt-disburse>
                     </mat-tab>
                 </mat-tab-group>
             </div>
