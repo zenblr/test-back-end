@@ -221,28 +221,6 @@ exports.ornamentsPartRelease = async (req, res, next) => {
     } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
-    let interestAmountPaid = paidAmount - releaseAmount;
-    let loanInfo = await models.customerLoanMaster.findOne({
-        where: { id: masterLoanId },
-        order: [
-            [models.customerLoan, 'id', 'asc']
-        ],
-        attributes: ['id', 'outstandingAmount'],
-        include: [{
-            model: models.customerLoan,
-            as: 'customerLoan',
-            attributes: ['id', 'outstandingAmount']
-        }]
-    });
-    let securedReleaseAmount = Number(loanInfo.customerLoan[0].outstandingAmount / loanInfo.outstandingAmount * releaseAmount);
-    let securedOutstandingAmount = Number(loanInfo.customerLoan[0].outstandingAmount - securedReleaseAmount);
-    let unSecuredReleaseAmount = 0;
-    let unSecuredOutstandingAmount = 0;
-    if (loanInfo.customerLoan.length > 1) {
-        unSecuredReleaseAmount = Number(loanInfo.customerLoan[1].outstandingAmount / loanInfo.outstandingAmount * releaseAmount);
-        unSecuredOutstandingAmount = Number(loanInfo.customerLoan[1].outstandingAmount - unSecuredReleaseAmount);
-    }
-    let outstandingAmount = Number(loanInfo.outstandingAmount - (securedReleaseAmount + unSecuredReleaseAmount));
     if (paymentType == 'cash') {
         let partRelease = await sequelize.transaction(async t => {
             let addPartRelease = await models.partRelease.create({ paymentType, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
@@ -250,15 +228,9 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                 await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
                 await models.partReleaseOrnaments.create({ partReleaseId: addPartRelease.id, ornamentId: ornament }, { transaction: t });
             }
-            await models.customerLoanMaster.update({ outstandingAmount: Number(outstandingAmount) }, { where: { id: loanInfo.id }, transaction: t })
-            await models.customerLoan.update({ outstandingAmount: Number(securedOutstandingAmount) }, { where: { id: loanInfo.customerLoan[0].id }, transaction: t })
-            if (loanInfo.customerLoan.length > 1) {
-                await models.customerLoan.update({ outstandingAmount: Number(unSecuredOutstandingAmount) }, { where: { id: loanInfo.customerLoan[1].id }, transaction: t })
-            }
             await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_PAYMENT_CASH, createdBy, modifiedBy }, { transaction: t });
             return addPartRelease
         });
-        await allInterestPayment(masterLoanId, interestAmountPaid, createdBy);
         return res.status(200).json({ message: "success", partRelease });
     } else if (paymentType == 'cheque') {
         let partRelease = await sequelize.transaction(async t => {
@@ -267,15 +239,9 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                 await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
                 await models.partReleaseOrnaments.create({ partReleaseId: addPartRelease.id, ornamentId: ornament }, { transaction: t });
             }
-            await models.customerLoanMaster.update({ outstandingAmount: Number(outstandingAmount) }, { where: { id: loanInfo.id }, transaction: t })
-            await models.customerLoan.update({ outstandingAmount: Number(securedOutstandingAmount) }, { where: { id: loanInfo.customerLoan[0].id }, transaction: t })
-            if (loanInfo.customerLoan.length > 1) {
-                await models.customerLoan.update({ outstandingAmount: Number(unSecuredOutstandingAmount) }, { where: { id: loanInfo.customerLoan[1].id }, transaction: t })
-            }
             await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_PAYMENT_CHEQUE, createdBy, modifiedBy }, { transaction: t });
             return addPartRelease
         });
-        await allInterestPayment(masterLoanId, interestAmountPaid, createdBy);
         return res.status(200).json({ message: "success", partRelease });
     } else if (paymentType == 'IMPS') {
         let partRelease = await sequelize.transaction(async t => {
@@ -284,15 +250,9 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                 await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
                 await models.partReleaseOrnaments.create({ partReleaseId: addPartRelease.id, ornamentId: ornament }, { transaction: t });
             }
-            await models.customerLoanMaster.update({ outstandingAmount: Number(outstandingAmount) }, { where: { id: loanInfo.id }, transaction: t })
-            await models.customerLoan.update({ outstandingAmount: Number(securedOutstandingAmount) }, { where: { id: loanInfo.customerLoan[0].id }, transaction: t })
-            if (loanInfo.customerLoan.length > 1) {
-                await models.customerLoan.update({ outstandingAmount: Number(unSecuredOutstandingAmount) }, { where: { id: loanInfo.customerLoan[1].id }, transaction: t })
-            }
             await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_PAYMENT_BANK, createdBy, modifiedBy }, { transaction: t });
             return addPartRelease
         });
-        await allInterestPayment(masterLoanId, interestAmountPaid, createdBy);
         return res.status(200).json({ message: "success", partRelease });
     } else {
         return res.status(400).json({ message: 'invalid paymentType' });
@@ -756,7 +716,6 @@ exports.ornamentsFullRelease = async (req, res, next) => {
             await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_PAYMENT_CASH, createdBy, modifiedBy }, { transaction: t });
             return addFullRelease
         });
-        await allInterestPayment(masterLoanId, interestAmountPaid, createdBy);
         return res.status(200).json({ message: "success", fullRelease });
     } else if (paymentType == 'cheque') {
         let fullRelease = await sequelize.transaction(async t => {
@@ -767,7 +726,6 @@ exports.ornamentsFullRelease = async (req, res, next) => {
             await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_PAYMENT_CHEQUE, createdBy, modifiedBy }, { transaction: t });
             return addFullRelease
         });
-        await allInterestPayment(masterLoanId, interestAmountPaid, createdBy);
         return res.status(200).json({ message: "success", fullRelease });
     } else if (paymentType == 'IMPS') {
         let fullRelease = await sequelize.transaction(async t => {
@@ -778,7 +736,6 @@ exports.ornamentsFullRelease = async (req, res, next) => {
             await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_PAYMENT_BANK, createdBy, modifiedBy }, { transaction: t });
             return addFullRelease
         });
-        let interestData = await allInterestPayment(masterLoanId, interestAmountPaid, createdBy);
         return res.status(200).json({ message: "success", fullRelease, interestData });
     } else {
         return res.status(400).json({ message: 'invalid paymentType' });
