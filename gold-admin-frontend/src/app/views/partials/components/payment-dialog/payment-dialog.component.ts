@@ -55,6 +55,7 @@ export class PaymentDialogComponent implements OnInit {
         this.disableForm();
       } else {
         this.paymentForm.patchValue(this.data.value)
+        this.paymentForm.controls.depositStatus.disable()
       }
     }
   }
@@ -79,7 +80,10 @@ export class PaymentDialogComponent implements OnInit {
         this.paymentForm.updateValueAndValidity()
         break;
 
-      case 'IMPS' || 'NEFT' || 'RTGS' || 'UPI':
+      case 'IMPS':
+      case 'NEFT':
+      case 'RTGS':
+      case 'UPI':
         this.paymentForm.clearValidators();
 
         for (const key in this.paymentForm.controls) {

@@ -52,7 +52,7 @@
 
                         <div>
                             <div
-                                *ngIf="controls.paymentType.value === 'IMPS' || controls.paymentType.value === 'cheque'">
+                                *ngIf="controls.paymentType.value && (controls.paymentType.value != 'gateway' && controls.paymentType.value != 'cash')">
                                 <div class="row kt-margin-b-15">
                                     <div class="col-4 form-label mandatory">
                                         <mat-label>Deposit Bank Name</mat-label>
@@ -84,7 +84,7 @@
                                     </div>
                                 </div>
 
-                                <div *ngIf="controls.paymentType.value === 'IMPS'" class="row kt-margin-b-15">
+                                <div *ngIf="controls.paymentType.value != 'cheque'" class="row kt-margin-b-15">
                                     <div class="col-4 form-label mandatory">
                                         <mat-label>Bank Transaction ID</mat-label>
                                     </div>
