@@ -378,12 +378,12 @@ exports.checkForLoanType = async (req, res, next) => {
                 if (isLoanTransfer) {
                     if (Number(loanAmount) > totalEligibleAmt) {
                         securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
-                    //     unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
+                        //     unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
                     }
 
                     //  else {
 
-                        
+
                     // }
                     unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
 
@@ -396,10 +396,10 @@ exports.checkForLoanType = async (req, res, next) => {
                 if (!securedScheme.isSplitAtBeginning) {
                     securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
                     // unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
-    
-                } 
+
+                }
                 // else {
-                    
+
                 // }
                 unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
 
@@ -527,19 +527,20 @@ exports.generateInterestTable = async (req, res, next) => {
         let date = new Date()
         let data = {
             emiDueDate: moment(new Date(date.setDate(date.getDate() + (paymentFrequency * (index + 1)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
-            month:"Month " + ((paymentFrequency/30) * (index  + 1)),
+            month: "Month " + ((paymentFrequency / 30) * (index + 1)),
             paymentType: paymentFrequency,
             securedInterestAmount: securedInterestAmount,
             unsecuredInterestAmount: unsecuredInterestAmount,
             totalAmount: Number(securedInterestAmount) + Number(unsecuredInterestAmount)
         }
-        if(Number(paymentFrequency) != 30){
-            if(index == 0 ){
+        if (Number(paymentFrequency) != 30) {
+            if (index == 0) {
                 data.month = "Month 1"
-            }else{
-            data.month = "Month " + ((paymentFrequency/30) * (index))
+            } 
+            // else {
+            //     data.month = "Month " + ((paymentFrequency / 30) * (index))
+            // }
         }
-    }
         interestTable.push(data)
     }
 
@@ -1784,7 +1785,7 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
     let { customerLoanId, masterLoanId } = req.query
 
     let customerLoan = await getSingleLoanDetail(customerLoanId, masterLoanId)
-   
+
     return res.status(200).json({ message: 'success', data: customerLoan })
 }
 
