@@ -81,7 +81,7 @@
                             {{details?.customerLoan[0]?.interestRate}}%
                             P.M
                         </div>
-                        <div>
+                        <div *ngIf="details?.customerLoan[1]?.interestRate">
                             {{details?.customerLoan[1]?.interestRate}}%
                             P.M
                         </div>
