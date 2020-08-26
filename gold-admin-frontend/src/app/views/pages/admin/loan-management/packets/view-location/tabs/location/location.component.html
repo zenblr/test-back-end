@@ -1,48 +1,62 @@
 <div>
-    
+
     <div class="mat-table__wrapper custom-2" [ngStyle]="{'overflow-x':'hidden'}">
         <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
-            <ng-container matColumnDef="packetUniqueId">
-                <mat-header-cell *matHeaderCellDef>Packet ID</mat-header-cell>
-                <mat-cell *matCellDef="let role">{{role.packetUniqueId | uppercase}}</mat-cell>
+            <ng-container matColumnDef="time">
+                <mat-header-cell *matHeaderCellDef>Time</mat-header-cell>
+                <mat-cell *matCellDef="let role">{{role.trackingTime | time24to12}}</mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="internalBranch">
-                <mat-header-cell *matHeaderCellDef>Branch</mat-header-cell>
+            <ng-container matColumnDef="location">
+                <mat-header-cell *matHeaderCellDef>Location</mat-header-cell>
                 <mat-cell *matCellDef="let role">
-                    <span *ngIf="role.internalBranch">
-                        {{role.internalBranch.name | titlecase}}
+                    <span *ngIf="role.location">
+                        {{role.location.location | titlecase}}
                     </span>
                 </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="customerID">
-                <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+            <ng-container matColumnDef="distance">
+                <mat-header-cell *matHeaderCellDef>Distance (kms)</mat-header-cell>
                 <mat-cell *matCellDef="let role">
-                    <span *ngIf="role.customer">
-                        {{role.customer.customerUniqueId}}
+                    <span *ngIf="role.distance">
+                        {{role.distance}}
                     </span>
                 </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="loanId">
-                <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
+            <ng-container matColumnDef="battery">
+                <mat-header-cell *matHeaderCellDef>Battery</mat-header-cell>
                 <mat-cell *matCellDef="let role">
-                    <span *ngIf="role.customerLoan">
-                        {{role.customerLoan.loanUniqueId}}
+                    <span *ngIf="role.battery">
+                        {{role.battery}} %
                     </span>
                 </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="actions">
-                <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+            <ng-container matColumnDef="coordinates">
+                <mat-header-cell *matHeaderCellDef>Latititude & Longitude</mat-header-cell>
                 <mat-cell *matCellDef="let role">
-                    <div [ngStyle]="{'display': 'inherit'}" *ngIf="!role.packetAssigned">
-                        <span class="kt-pointer" (click)="editPacket(role)"
-                            *ngxPermissionsOnly="['packetEdit']">Edit</span>
-                        <div class="px-2" *ngxPermissionsOnly="['packetDelete'] || ['packetEdit']">|</div>
-                        <span class="kt-pointer text-danger" (click)="deletePacket(role)"
-                            *ngxPermissionsOnly="['packetDelete']">Delete</span>
-                    </div>
+                    <span *ngIf="role.battery">
+                        {{role.battery}} %
+                    </span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="network">
+                <mat-header-cell *matHeaderCellDef>network</mat-header-cell>
+                <mat-cell *matCellDef="let role">
+                    <span *ngIf="role.network">
+                        {{role.network | titlecase}}
+                    </span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="totalDistance">
+                <mat-header-cell *matHeaderCellDef>Total Distance</mat-header-cell>
+                <mat-cell *matCellDef="let role">
+                    <span *ngIf="role.totalDistance">
+                        {{role.totalDistance}}
+                    </span>
                 </mat-cell>
             </ng-container>
 
