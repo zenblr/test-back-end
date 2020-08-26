@@ -77,4 +77,12 @@ export class DepositDetailsService {
 				})
 			);
 	}
+
+	getTransactionStatus(): Observable<any> {
+		return this.http.get<any>(API_ENDPOINT + `api/deposit-details/transaction-status`);
+	}
+
+	editPaymentStatus(data, id): Observable<any> {
+		return this.http.put<any>(API_ENDPOINT + `api/deposit-details/${id}`, data);
+	}
 }

@@ -181,8 +181,8 @@
                 <ng-container matColumnDef="paymentStatus">
                     <mat-header-cell *matHeaderCellDef>Payment Status</mat-header-cell>
                     <mat-cell *matCellDef="let element" [ngClass]="{'text-orange' : element?.paymentStatusId == 1,
-                        'text-red' : element?.paymentStatusId == 9,
-                        'text-green' : element?.paymentStatusId == 1 }">
+                        'text-red' : element?.paymentStatusId == 16,
+                        'text-green' : element?.paymentStatusId == 14 }">
                         {{element?.paymentStatus?.statusName ? (element?.paymentStatus?.statusName | titlecase) : '-'}}
                     </mat-cell>
                 </ng-container>
