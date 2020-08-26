@@ -35,6 +35,7 @@ export class PaymentDialogComponent implements OnInit {
       depositDate: [, [Validators.required]],
       paidAmount: [, [Validators.required]],
       chequeNumber: [],
+      depositTransactionId: [],
       depositStatus: ['', [Validators.required]]
     })
   }
@@ -44,15 +45,26 @@ export class PaymentDialogComponent implements OnInit {
       if (this.data.value.status == "deposit") {
         this.title = 'Edit Deposit Status'
         this.paymentForm.patchValue(this.data.value)
+        this.paymentForm.controls.depositTransactionId.patchValue(this.data.value.transactionUniqueId);
         this.paymentForm.controls.transactionId.patchValue(this.data.value.bankTransactionUniqueId);
         this.paymentForm.controls.depositDate.patchValue(this.data.value.paymentReceivedDate);
         this.paymentForm.controls.paidAmount.patchValue(this.data.value.transactionAmont);
         this.paymentForm.controls.paymentType.patchValue(this.data.value.paymentType);
         this.paymentForm.controls.depositStatus.patchValue(this.data.value.depositStatus);
+        this.disableForm();
       } else {
         this.paymentForm.patchValue(this.data.value)
       }
     }
+  }
+  disableForm() {
+    this.paymentForm.controls.depositTransactionId.disable()
+    this.paymentForm.controls.transactionId.disable()
+    this.paymentForm.controls.depositDate.disable()
+    this.paymentForm.controls.paidAmount.disable()
+    this.paymentForm.controls.bankName.disable()
+    this.paymentForm.controls.branchName.disable()
+    this.paymentForm.controls.chequeNumber.disable()
   }
   setValidation(event) {
     // console.log(event.target.value)
