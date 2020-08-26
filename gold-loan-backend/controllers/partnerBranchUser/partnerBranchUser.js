@@ -75,6 +75,11 @@ exports.readPartnerBranchUser = async (req, res) => {
         [Op.and]: [query, {
             [Op.or]: {
                 firstName: { [Op.iLike]: search + '%' },
+                lastName: { [Op.iLike]: search + '%' },
+                mobileNumber:{ [Op.iLike]: search + '%' },
+                email:{ [Op.iLike]: search + '%' },
+                "$partner.name$":{ [Op.iLike]: search + '%' },
+                "$partnerBranch.name$":{ [Op.iLike]: search + '%' }
             }
         },
         ],
@@ -97,10 +102,10 @@ exports.readPartnerBranchUser = async (req, res) => {
         limit: pageSize,
     });
 
-    if (partnerBranchUser) {
-        return res.status(200).json({ Data: partnerBranchUser, count: count.length })
+    if (partnerBranchUser.length === 0) {
+        return res.status(200).json({ data:[]})
     } else {
-        return res.status(404).json({ message: 'Data not found!' })
+        return res.status(200).json({ Data: partnerBranchUser, count: count.length })
     }
 
 }

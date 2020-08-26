@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'transaction_unique_id'
         },
+        bankTransactionUniqueId: {
+            type: DataTypes.STRING,
+            field: 'bank_transaction_unique_id'
+        },
         paymentType:{
             type: DataTypes.STRING,
             field: 'payment_type',
@@ -38,10 +42,19 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'branch_name',
         },
+        depositStatus:{
+            type: DataTypes.ENUM,
+            field: 'deposit_status',
+            values:['Pending','Completed','Rejected']
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
-        }
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
+        },
     },
         {
             freezeTableName: true,
@@ -52,6 +65,8 @@ module.exports = (sequelize, DataTypes) => {
 
     CustomerLoanTransaction.associate = function (models) {
         CustomerLoanTransaction.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        CustomerLoanTransaction.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'modifieby' });
+
         CustomerLoanTransaction.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
         CustomerLoanTransaction.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         CustomerLoanTransaction.hasMany(models.customerTransactionDetail, { foreignKey: 'customerLoanTransactionId', as: 'transaction' });

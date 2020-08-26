@@ -218,11 +218,6 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 attributes: ['id', 'statusName']
             },
             {
-                model: models.customerKycClassification,
-                as: 'customerKycClassification',
-                attributes: ['id', 'kycStatusFromCce', 'kycStatusFromOperationalTeam']
-            },
-            {
                 model: models.customerLoanMaster,
                 as: "masterLoan",
                 include: [

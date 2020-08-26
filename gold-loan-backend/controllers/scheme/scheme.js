@@ -136,7 +136,11 @@ exports.readSchemeByPartnerId = async (req, res, next) => {
         where: { isActive: true, id: partnerId },
         include: [{
             model: models.scheme,
-            where: { isActive: true }
+            where: { isActive: true },
+            include: [{
+                model: models.schemeInterest,
+                as: 'schemeInterest'
+            }]
         }],
     })
     if (!readSchemeByPartner) {

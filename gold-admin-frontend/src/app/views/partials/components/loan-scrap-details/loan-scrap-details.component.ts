@@ -20,6 +20,7 @@ export class LoanScrapDetailsComponent implements OnInit {
     loanAgreementCopyImage: false, pawnCopyImage: false, schemeConfirmationCopyImage: false,
     purchaseVoucherImage: false, purchaseInvoiceImage: false, saleInvoiceImage: false
   }
+  masterLoanId: any;
 
   constructor(
     private loanservice: LoanApplicationFormService,
@@ -38,8 +39,8 @@ export class LoanScrapDetailsComponent implements OnInit {
 
   getLoanDetails() {
     this.loanId = this.route.snapshot.params.loanId
-    let masterLoanId = this.route.snapshot.params.masterLoanId
-    this.loanservice.getLoanDetails(this.loanId, masterLoanId).subscribe(res => {
+    this.masterLoanId = this.route.snapshot.params.masterLoanId
+    this.loanservice.getLoanDetails( this.masterLoanId).subscribe(res => {
       this.details = res.data
       this.createOrnamentsImage()
       this.pdfCheck()

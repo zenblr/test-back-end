@@ -135,8 +135,33 @@
                             </div>
                         </div>
 
+                        <div *ngIf ="controls.depositStatus.value">
+                            <div class="row kt-margin-b-15">
+                                <div class="col-4 form-label mandatory">
+                                    <mat-label>Deposit Status</mat-label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-control" formControlName="depositStatus"
+                                        (change)="setValidation($event)"
+                                        [class.isError]="controls.depositStatus.touched && controls.depositStatus.invalid">
+                                        <option value="" selected disabled>Select Status</option>
+                                        <option value="Pending">PENDING</option>
+                                        <option value="Completed">COMPLETED</option>
+                                        <option value="Rejected">REJECTED</option>
+                                    </select>
+    
+                                    <mat-error
+                                        *ngIf="controls.depositStatus.touched && controls.depositStatus.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
 
-                        <kt-modal-footer (action)="action($event)" [value]="'Update'">
+                        
+
+
+                        <kt-modal-footer (action)="action($event)" [value]="data.action">
                         </kt-modal-footer>
 
                     </div>

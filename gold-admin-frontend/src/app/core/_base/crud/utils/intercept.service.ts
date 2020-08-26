@@ -53,7 +53,7 @@ export class InterceptService implements HttpInterceptor {
 						if (event.body.count != undefined) {
 							this.sharedSerivce.totalCount.next(event.body.count)
 						} else {
-							this.sharedSerivce.totalCount.next(null)
+							this.sharedSerivce.totalCount.next(0)
 						}
 
 					}

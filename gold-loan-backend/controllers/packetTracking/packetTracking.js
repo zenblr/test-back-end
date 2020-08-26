@@ -144,29 +144,25 @@ exports.getUserName = async (req, res) => {
 
 }
 
-//FUNCTION TO GET LOGS OF PACKET LOCATION
-exports.viewLogs = async (req, res) => {
-    let { masterLoanId } = req.query
+//FUNCTION TO GET LOGS OF PACKET TRACKING
+exports.viewCustomerPacketTrackingLogs = async (req, res) => {
+    let { masterLoanId, loanId } = req.query
 
     let { offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.from, req.query.to);
 
-    let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
-
-    let logDetails = await models.customerLoanMaster.findOne({
-        attributes: ['id', 'customerId', 'appraiserId', 'operatinalTeamId', 'bmId'],
-        where: { loanStageId: stageId.id, id: masterLoanId },
+    let logDetails = await models.customerPacketTracking.findAll({
+        where: { loanId: loanId, masterLoanId: masterLoanId },
         include: [
             {
-                model: models.customerPacketLocation,
-                as: 'customerPacketLocation',
-                include: [
-                    {
-                        model: models.pocketLocation,
-                        as: 'packetLocation',
-                        attributes: { exclude: ['createdAt', 'updatedAt'] },
-                    },
-                ]
+                model: models.packetLocation,
+                as: 'packetLocation',
+                attributes: { exclude: ['createdAt', 'updatedAt'] },
+            },
+            {
+                model: models.user,
+                as: 'senderUser',
+                attributes: ['id', 'firstName', 'lastName']
             },
             {
                 model: models.customer,
@@ -174,53 +170,97 @@ exports.viewLogs = async (req, res) => {
                 attributes: ['id', 'customerUniqueId', 'firstName', 'lastName'],
             },
             {
-                model: models.customerLoan,
-                as: 'customerLoan',
-                attributes: ['id', 'masterLoanId', 'loanUniqueId', 'loanType'],
-            },
-            {
-                model: models.customerLoanPackageDetails,
-                as: 'loanPacketDetails',
-                attributes: ['id', 'loanId', 'masterLoanId'],
-                include: [{
-                    model: models.packet,
-                    as: 'packets',
-                    attributes: ['id', 'loanId', 'masterLoanId', 'packetUniqueId', 'barcodeNumber'],
-                }]
-            },
-            {
                 model: models.user,
-                as: 'appraiser',
+                as: 'receiverUser',
                 attributes: ['id', 'firstName', 'lastName']
             },
             {
-                model: models.user,
-                as: 'bm',
+                model: models.partnerBranchUser,
+                as: 'senderPartner',
                 attributes: ['id', 'firstName', 'lastName']
             },
             {
-                model: models.user,
-                as: 'operatinalTeam',
+                model: models.partnerBranchUser,
+                as: 'receiverPartner',
                 attributes: ['id', 'firstName', 'lastName']
             }
-
         ],
         offset: offset,
         limit: pageSize,
     });
-    return res.status(200).json({ data: logDetails });
+    let logData = []
+    let receiverData = [];
+    let senderData = [];
+    if (logDetails.length != 0) {
+        for (let logDetail of logDetails) {
+            console.log(logDetail)
+            if (logDetail.senderUser != null) {
+                senderData.push({
+                    firstName: logDetail.senderUser.firstName,
+                    lastName: logDetail.senderUser.lastName,
+                    dateAndTime: logDetail.updatedAt
+                })
+            } else {
+                senderData.push({
+                    firstName: logDetail.senderPartner.firstName,
+                    lastName: logDetail.senderPartner.lastName,
+                    dateAndTime: logDetail.updatedAt
+                })
+            }
+            if (logDetail.customer != null) {
+                receiverData.push({
+                    firstName: logDetail.customer.firstName,
+                    lastName: logDetail.customer.lastName,
+                    dateAndTime: logDetail.updatedAt
+                });
+            } else if (logDetail.receiverUser != null) {
+                receiverData.push({
+                    firstName: logDetail.receiverUser.firstName,
+                    lastName: logDetail.receiverUser.lastName,
+                    dateAndTime: logDetail.updatedAt
+                });
+            } else {
+                receiverData.push({
+                    firstName: logDetail.receiverPartner.firstName,
+                    lastName: logDetail.receiverPartner.lastName,
+                    dateAndTime: logDetail.updatedAt
+                });
+            }
+        };
+    }
+    logData.push({
+        receiverData,
+        senderData,
+    })
+    console.log(receiverData.dateAndTime, 'receiver')
+    //console.log(logData)
+    if (logDetails) {
+        return res.status(200).json({ data: logData });
+    }
+    else {
+        return res.status(404).json({ message: 'Data not found!' });
+    }
+
 }
 
-//FUNCTION TO UPDATE LOCATION OF PACKET
-exports.updateLocation = async (req, res) => {
-    emitterId = req.userData.id
-    let { receiverCustomerId, packetLocationId, receiverUserId, isSelected, loanId, masterLoanId } = req.body;
+//FUNCTION TO UPDATE  LOCATION IN PACKET TRACKING 
+exports.addCustomerPacketTracking = async (req, res) => {
+    //console.log(req.userData.userBelongsTo)
+    if (req.userData.userBelongsTo === "internaluser") {
+        userSenderId = req.userData.id
+        partnerSenderId = null
+    } else if (req.userData.userBelongsTo === "partneruser") {
+        partnerSenderId = req.userData.id
+        userSenderId = null
+    }
 
-    let packetLocationData = await models.customerPacketLocation.create({
-        receiverCustomerId, packetLocationId, receiverUserId, isSelected, emitterId, loanId, masterLoanId
+    let { customerReceiverId, userReceiverId, partnerReceiverId, receiverType, packetLocationId, loanId, masterLoanId } = req.body;
+
+    let packetTrackingData = await models.customerPacketTracking.create({
+        customerReceiverId, userReceiverId, partnerReceiverId, receiverType, loanId, masterLoanId, packetLocationId, userSenderId, partnerSenderId
     });
 
-    if (packetLocationData) {
+    if (packetTrackingData) {
         return res.status(201).json({ message: 'Loaction Added' });
     } else {
         return res.status(400).json({ message: 'Loaction not added' });
