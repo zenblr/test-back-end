@@ -28,7 +28,7 @@ export class SubCategoryAddComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.data);
+    // console.log(this.data);
     this.formInitialize();
     this.setForm();
     this.getCategory();
@@ -60,7 +60,7 @@ export class SubCategoryAddComponent implements OnInit {
   getCategory() {
     this.subCategoryService.getAllCategory().subscribe(
       res => {
-        console.log(res);
+        // console.log(res);
         this.category = res;
       }
     )
@@ -69,12 +69,12 @@ export class SubCategoryAddComponent implements OnInit {
   getSubCategoryData(id) {
     this.subCategoryService.getSingleSubCategory(id).subscribe(
       res => {
-        console.log(res);
+        // console.log(res);
         this.subCategoryForm.patchValue(res[0]);
         this.ref.detectChanges();
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     )
   }
@@ -104,7 +104,7 @@ export class SubCategoryAddComponent implements OnInit {
         }
       },
         error => {
-          console.log(error.error.message);
+          // console.log(error.error.message);
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
         });
@@ -117,7 +117,7 @@ export class SubCategoryAddComponent implements OnInit {
         }
       },
         error => {
-          console.log(error.error.message);
+          // console.log(error.error.message);
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
         });

@@ -13,7 +13,7 @@ const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
 let { mergeInterestTable, getCustomerInterestAmount, getLoanDetails, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, penalInterestPayment, getInterestTableOfSingleLoan } = require('../../utils/loanFunction')
-
+ 
 
 exports.getInterestInfo = async (req, res, next) => {
     let { loanId, masterLoanId } = req.query;
@@ -91,13 +91,47 @@ exports.partPayment = async (req, res, next) => {
     paymentDetails.paymentFor = 'partPayment'
     paymentDetails.createdBy = createdBy
 
-    // let data = await sequelize.transaction(async t => {
-    //     let data = await models.customerLoanTransaction.create(paymentDetails, { transaction: t })
+    let data = await sequelize.transaction(async t => {
+        let customerLoanTransaction = await models.customerLoanTransaction.create(paymentDetails, { transaction: t })
 
-    //     await models.customerLoanTransaction.create
+        await models.customerTransactionSplitUp.create({
+            customerLoanTransactionId: customerLoanTransaction.id,
+            loanId: securedLoanId,
+            masterLoanId: masterLoanId,
+            payableOutstanding: securedRatio,
+            penal: securedPenalInterest,
+            interest: securedInterest,
+            isSecured: true
+        }, { transaction: t })
 
-    //     return data
-    // })
+        if (isUnsecuredSchemeApplied) {
+            await models.customerTransactionSplitUp.create({
+                customerLoanTransactionId: customerLoanTransaction.id,
+                loanId: unsecuredLoanId,
+                masterLoanId: masterLoanId,
+                payableOutstanding: unsecuredRatio,
+                penal: unsecuredPenalInterest,
+                interest: unsecuredInterest,
+                isSecured: false
+            }, { transaction: t })
+        }
 
-    return res.status(200).json({ isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest, securedLoanId, unsecuredLoanId })
+        return customerLoanTransaction
+    })
+
+    return res.status(200).json({ message: 'success' })
+}
+
+exports.confirmPartPaymentTranscation = async (req,res,next) =>{
+
+    let {transactionId , status} = req.body
+
+    let createdBy = req.userData.id
+
+    if(status == 'approved'){
+        var data = await allInterestPayment(transactionId,createdBy)
+    }
+
+    return res.status(200).json({ data });
+
 }

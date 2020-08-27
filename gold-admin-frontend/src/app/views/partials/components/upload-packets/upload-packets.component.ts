@@ -77,14 +77,12 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   ngOnChanges(change: SimpleChanges) {
     if (change.ornamentType && change.ornamentType.currentValue) {
       this.ornamentTypeData = change.ornamentType.currentValue
-      console.log(this.ornamentType)
       var temp = []
       // ornamentType.forEach(ele => {
       //   temp.push(ele.ornamentType)
       // });
 
       // this.ornamentTypeData = temp
-      console.log(this.ornamentTypeData, 'zzz')
     }
 
     if (change.loanStage && change.loanStage.currentValue) {
@@ -105,7 +103,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       let packet = change.viewpacketsDetails.currentValue.loanPacketDetails[0]
       if (packet) {
         this.packetImg.patchValue(packet)
-        console.log(packet.packets)
         packet.packets.forEach(ele => {
 
           this.packetsName = ele.packetUniqueId;
@@ -128,7 +125,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
 
         });
 
-        console.log(this.ornamentTypeData)
         this.packetInfo.reset()
       }
 
@@ -141,8 +137,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       let packet = change.viewScrapPacketsDetails.currentValue.scrapPacketDetails[0]
       if (packet) {
         this.packetImg.patchValue(packet)
-        console.log(this.packetImg)
-        console.log(packet.CustomerScrapPackageDetail)
+        
         packet.CustomerScrapPackageDetail.forEach(ele => {
           this.packetsName = ele.packetUniqueId;
           this.controls.packetId.patchValue(ele.id)
@@ -243,14 +238,11 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   }
 
   removeSelectedPacketsData(idx) {
-    console.log(this.packets.controls[idx])
     let packetIndex = this.splicedPackets.findIndex(packet => {
       return packet.id == this.packets.controls[idx].value.packetId
     })
 
     let ornamentId = this.packets.controls[idx].value.ornamentsId
-    // console.log(this.splicedPackets[packetIndex].id)
-    // console.log(this.packets.controls[idx].value.packetId)
     if (this.editPackets && (this.splicedPackets[packetIndex].id !== this.packets.controls[idx].value.packetId)) {
       this.packetsDetails.push(this.splicedPackets[packetIndex])
     }
@@ -265,7 +257,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       this.ornamentTypeData = []
       for (let ornamnetsIdIndex = 0; ornamnetsIdIndex < ornamentId.length; ornamnetsIdIndex++) {
         for (let ornamnetsIndex = 0; ornamnetsIndex < this.splicedOrnaments.length; ornamnetsIndex++) {
-          console.log(this.splicedOrnaments[ornamnetsIndex].id == ornamentId[ornamnetsIdIndex])
           if (this.splicedOrnaments[ornamnetsIndex].id == ornamentId[ornamnetsIdIndex]) {
             temp.push(this.splicedOrnaments[ornamnetsIndex])
             this.splicedOrnaments.splice(ornamnetsIndex, 1)
@@ -276,7 +267,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       }
 
       setTimeout(() => {
-        console.log(temp)
         this.ornamentTypeData = temp;
         this.ref.detectChanges()
       }, 200)
@@ -368,7 +358,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       }, 500)
 
     }
-    console.log(this.ornamentTypeData)
   }
 
   save() {
@@ -463,7 +452,6 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
           }
         }
         this.sharedService.uploadBase64File(res.imageAsDataUrl).subscribe(res => {
-          console.log(res)
           this.packetImg.controls[value].patchValue(res.uploadFile.path)
           this.packetImg.controls[imageDataKey].patchValue(res.uploadFile.URL)
           this.ref.detectChanges()

@@ -1,6 +1,6 @@
 const { wrapper } = require('../utils/errorWrap');
 const checkAuth = require('../middleware/checkAuth');
-const { getInterestInfo, checkPartAmount, partPayment, payableAmountConfirmPartPayment } = require('../controllers/partPayment/partPayment');
+const { getInterestInfo, checkPartAmount, partPayment, payableAmountConfirmPartPayment,confirmPartPaymentTranscation } = require('../controllers/partPayment/partPayment');
 
 const express = require('express');
 const route = express.Router();
@@ -12,5 +12,7 @@ route.post('/check-part-amount', checkAuth, wrapper(checkPartAmount))
 route.post('/confirm-payment-info', checkAuth, wrapper(payableAmountConfirmPartPayment))
 
 route.post('/payment', checkAuth, wrapper(partPayment))
+
+route.post('/confirm-transcation', checkAuth, wrapper(confirmPartPaymentTranscation))
 
 module.exports = route;   

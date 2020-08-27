@@ -49,7 +49,6 @@ export class UplodPreviewImageComponent implements OnInit {
           const height = img.naturalHeight;
           window.URL.revokeObjectURL(img.src);
           if ((width > 1500 || height > 1500) || (file.size > 200000)) {
-            console.log(width, height, file.size);
             this.toast.error('Please Upload Image of Valid Size');
             this.file.nativeElement.value = '';
           } else {

@@ -72,7 +72,7 @@ export class DepositListComponent implements OnInit {
       skip(1),
       distinctUntilChanged()
     ).subscribe(res => {
-      console.log(res)
+      // console.log(res)
       this.result = res;
 
     });
@@ -103,7 +103,7 @@ export class DepositListComponent implements OnInit {
   }
 
   applyFilter(data) {
-    console.log(data);
+    // console.log(data);
    this.queryParamsData.depositStatus = data.data.scheme;
    this.dataSource.getDepositList(this.queryParamsData);
  }

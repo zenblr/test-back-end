@@ -536,7 +536,7 @@ exports.generateInterestTable = async (req, res, next) => {
         if (Number(paymentFrequency) != 30) {
             if (index == 0) {
                 data.month = "Month 1"
-            } 
+            }
             // else {
             //     data.month = "Month " + ((paymentFrequency / 30) * (index))
             // }
@@ -1522,7 +1522,9 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
             //for secured interest date change
             for (let a = 0; a < securedInterest.length; a++) {
                 let updateDate = securedInterest[a].emiDueDate
-                await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: securedInterest[a].id }, transaction: t })
+                let emiStartDate = securedInterest[a].emiStartDate
+                let emiEndDate = securedInterest[a].emiEndDate
+                await models.customerLoanInterest.update({ emiDueDate: updateDate, emiStartDate, emiEndDate }, { where: { id: securedInterest[a].id }, transaction: t })
                 await models.customerLoanInitialInterest.update({ emiDueDate: updateDate }, { where: { id: securedInterest[a].id }, transaction: t })
             }
 
@@ -1531,7 +1533,9 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
                 //for unsecured interest date change
                 for (let a = 0; a < unsecuredInterest.length; a++) {
                     let updateDate = unsecuredInterest[a].emiDueDate
-                    await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: unsecuredInterest[a].id }, transaction: t })
+                    let emiStartDate = securedInterest[a].emiStartDate
+                    let emiEndDate = securedInterest[a].emiEndDate
+                    await models.customerLoanInterest.update({ emiDueDate: updateDate, emiStartDate, emiEndDate }, { where: { id: unsecuredInterest[a].id }, transaction: t })
                     await models.customerLoanInitialInterest.update({ emiDueDate: updateDate }, { where: { id: unsecuredInterest[a].id }, transaction: t })
                 }
 
@@ -1587,23 +1591,30 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
         let date = new Date();
         let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency) * (i + 1))))
         interestTable[i].emiDueDate = newEmiDueDate
+        interestTable[i].emiEndDate = newEmiDueDate
+
+        if (i == 0) {
+            console.log(new Date().toISOString(), 'date')
+            interestTable[i].emiStartDate = new Date().toISOString()
+        }
+        else {
+            let startDate = new Date(interestTable[i - 1].emiEndDate)
+            console.log(startDate, i)
+            interestTable[i].emiStartDate = new Date(startDate.setDate(startDate.getDate() + 1))
+        }
+
         for (let j = 0; j < holidayDate.length; j++) {
             let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
             let sunday = moment(momentDate, 'YYYY-MM-DD').weekday();
             let newDate = new Date(newEmiDueDate);
             if (momentDate == holidayDate[j].holidayDate || sunday == 0) {
                 let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
-                interestTable[i].emiEndDate = holidayEmiDueDate
-
-                if (i != 0 && i < interestTable.length - 1)
-                    interestTable[i + 1].emiStartDate = new Date(newDate.setDate(newDate.getDate() + 2))
+                interestTable[i].emiDueDate = holidayEmiDueDate
 
                 newEmiDueDate = holidayEmiDueDate
                 j = 0
-            } else {
-                if (i != 0 && i < interestTable.length - 1)
-                    interestTable[i + 1].emiStartDate = new Date(newDate.setDate(newDate.getDate() + 2))
             }
+
         }
 
         interestTable.loanId = loanId
@@ -1622,7 +1633,8 @@ exports.getSingleLoanDetails = async (req, res, next) => {
         where: { id: customerLoanId },
         order: [
             [models.scheme, 'id', 'asc'],
-            [models.scheme, models.schemeInterest, 'days', 'asc']
+            [models.scheme, models.schemeInterest, 'days', 'asc'],
+            [models.customerLoanInterest, 'id', 'asc']
         ],
         // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
         include: [
@@ -1769,15 +1781,31 @@ exports.getSingleLoanDetails = async (req, res, next) => {
     customerLoan.dataValues.loanPacketDetails = packet
     customerLoan.dataValues.customerLoanDisbursement = disbursement
 
-    let ornamentType = [];
-    if (customerLoan.loanOrnamentsDetail.length != 0) {
-        for (let ornamentsDetail of customerLoan.loanOrnamentsDetail) {
-            ornamentType.push({ ornamentType: ornamentsDetail.ornamentType.name, id: ornamentsDetail.id })
-        }
-        customerLoan.dataValues.ornamentType = ornamentType;
-    }
 
-    return res.status(200).json({ message: 'success', data: customerLoan })
+    for (let index = 0; index < customerLoan.dataValues.customerLoanInterest.length; index++) {
+        const element = customerLoan.dataValues.customerLoanInterest
+        element[index].dataValues.month = "Month " + ((customerLoan.masterLoan.paymentFrequency / 30) * (index + 1))
+            
+        
+    if (Number(customerLoan.masterLoan.paymentFrequency) != 30) {
+        if (index == 0) {
+            element.month = "Month 1"
+        }
+        // else {
+        //     data.month = "Month " + ((paymentFrequency / 30) * (index))
+        // }
+    }
+}
+
+let ornamentType = [];
+if (customerLoan.loanOrnamentsDetail.length != 0) {
+    for (let ornamentsDetail of customerLoan.loanOrnamentsDetail) {
+        ornamentType.push({ ornamentType: ornamentsDetail.ornamentType.name, id: ornamentsDetail.id })
+    }
+    customerLoan.dataValues.ornamentType = ornamentType;
+}
+
+return res.status(200).json({ message: 'success', data: customerLoan })
 }
 
 //get function for single loan in CUSTOMER-MANAGMENT

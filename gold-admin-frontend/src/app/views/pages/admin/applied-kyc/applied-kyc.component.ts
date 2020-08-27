@@ -173,7 +173,6 @@ export class AppliedKycComponent implements OnInit {
   }
 
   applyLoan(loan) {
-    console.log(loan)
     this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerID: loan.customer.customerUniqueId } })
   }
 
