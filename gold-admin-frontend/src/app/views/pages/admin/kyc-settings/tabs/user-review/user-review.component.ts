@@ -436,7 +436,7 @@ export class UserReviewComponent implements OnInit {
     this.userType = res.userDetails.userTypeId;
 
     if (this.modalData.action) {
-      console.log(this.data);
+     
       this.viewOnly = false;
     }
   }
@@ -455,7 +455,7 @@ export class UserReviewComponent implements OnInit {
       }
     })
 
-    console.log(this.data)
+    
 
     this.initForm();
 
@@ -682,7 +682,7 @@ export class UserReviewComponent implements OnInit {
   }
 
   removeImages(index, type) {
-    // console.log(index, type)
+  
     if (this.userType == 5) {
       return;
     }
@@ -726,7 +726,7 @@ export class UserReviewComponent implements OnInit {
     }
     this.file = event.target.files[0];
     var name = event.target.files[0].name
-    console.log(name)
+    
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
       const params = {
@@ -740,7 +740,7 @@ export class UserReviewComponent implements OnInit {
             this.identityImageArray.push(res.uploadFile.URL)
             this.identityIdArray.push(res.uploadFile.path)
             this.identityFileNameArray.push(event.target.files[0].name)
-            console.log(this.identityFileNameArray)
+           
             this.customerKycPersonal.patchValue({ identityProof: this.identityIdArray })
             this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
           } else
@@ -817,7 +817,7 @@ export class UserReviewComponent implements OnInit {
           customerId: this.customerKycAddressOne.controls.customerId.value
         }
         this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
-          console.log(res)
+          
           this.data.customerKycReview.customerKycPersonal.profileImg = res.uploadFile.URL
           this.customerKycPersonal.get('profileImage').patchValue(res.uploadFile.path);
           this.ref.detectChanges()
