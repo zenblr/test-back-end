@@ -33,7 +33,7 @@ export class ProductEditComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.data);
+    // console.log(this.data);
     this.formInitialize();
     this.setForm();
   }
@@ -120,7 +120,7 @@ export class ProductEditComponent implements OnInit {
         }
       },
         error => {
-          console.log(error.error.message);
+          // console.log(error.error.message);
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
         });
@@ -131,7 +131,7 @@ export class ProductEditComponent implements OnInit {
     this.viewLoading = true
     this.productService.getSingleProduct(id).subscribe(
       res => {
-        console.log(res);
+        // console.log(res);
         if (this.data.action == 'view') {
           if (res.productImage != '0') {
             const prodImage = {
@@ -146,7 +146,7 @@ export class ProductEditComponent implements OnInit {
         this.ref.detectChanges();
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     )
   }

@@ -173,13 +173,13 @@ export class RefundDetailsEditComponent implements OnInit {
 			this.refundForm.markAllAsTouched();
 			return;
 		}
-		console.log(this.refundForm.value);
+		// console.log(this.refundForm.value);
 		if (this.refundId) {
 			const refundData = {
 				transactionId: this.controls.utrNumber.value,
 				statusId: this.controls.status.value
 			};
-			console.log(refundData);
+			// console.log(refundData);
 			this.refundDetailsService
 				.updateRefundStatus(refundData, this.refundId)
 				.pipe(

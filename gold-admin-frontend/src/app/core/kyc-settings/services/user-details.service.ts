@@ -20,7 +20,6 @@ export class UserDetailsService {
     return this.http.post<any>(`/api/kyc/get-customer-detail`, data).pipe(
       map(res => res),
       catchError(err => {
-        console.log(err);
         if (err.error.message)
           this._toastr.error(err.error.message);
         throw (err);

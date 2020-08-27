@@ -114,7 +114,7 @@ export class ListLogisticPartnerComponent implements OnInit {
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        console.log(res);
+        // console.log(res);
         this.logisticPartnerService.deleteLogisticPartner(role.id).subscribe(successDelete => {
           this.toast.success(_deleteMessage);
           this.loadBranchPage();
