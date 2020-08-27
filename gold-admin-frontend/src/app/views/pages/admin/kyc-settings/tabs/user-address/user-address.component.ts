@@ -49,7 +49,7 @@ export class UserAddressComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    console.log(this.userDetailsService.userData)
+    // console.log(this.userDetailsService.userData)
     this.getStates();
     this.getIdentityType();
     this.getAddressProofType()
@@ -99,7 +99,7 @@ export class UserAddressComponent implements OnInit {
     this.userAddressService.getIdentityType().subscribe(res => {
       this.identityProofs = res.data.filter(filter => filter.name == 'Aadhaar Card');
     }, err => {
-      console.log(err);
+      // console.log(err);
     })
   }
 
@@ -107,7 +107,7 @@ export class UserAddressComponent implements OnInit {
     this.userAddressService.getAddressProofType().subscribe(res => {
       this.addressProofs = res.data;
     }, err => {
-      console.log(err);
+      // console.log(err);
     })
   }
 
