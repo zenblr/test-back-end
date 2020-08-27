@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'loan_id'
         },
         transactionUniqueId: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'transaction_unique_id'
         },
         bankTransactionUniqueId: {
@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
         paymentReceivedDate: {
             type: DataTypes.DATE,
             field: 'payment_received_date'
+        },
+        depositDate:{
+            type: DataTypes.DATE,
+            field: 'deposit_date'
         },
         chequeNumber:{
             type: DataTypes.STRING,
