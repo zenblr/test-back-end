@@ -142,6 +142,7 @@ export class InterestCalculatorComponent implements OnInit {
 
           finalLoan.customerLoanInterest.forEach(interset => {
             var data = {
+              month:interset.month,
               emiDueDate: interset.emiDueDate,
               paymentType: this.paymentType,
               securedInterestAmount: interset.interestAmount,
