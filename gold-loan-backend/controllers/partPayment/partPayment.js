@@ -85,7 +85,7 @@ exports.partPayment = async (req, res, next) => {
 
     paymentDetails.masterLoanId = masterLoanId
     paymentDetails.transactionAmont = paidAmount
-    paymentDetails.paymentReceivedDate = depositDate
+    paymentDetails.depositDate = depositDate
     paymentDetails.transactionUniqueId = transactionId
     paymentDetails.depositStatus = "Pending"
     paymentDetails.paymentFor = 'partPayment'
