@@ -175,7 +175,7 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
         if (ornamentsWeightInfo.releaseAmount > 0) {
             ornamentsWeightInfo.releaseAmount = 0
         } else {
-            ornamentsWeightInfo.releaseAmount = Math.abs(ornamentsWeightInfo.releaseAmount);
+            ornamentsWeightInfo.releaseAmount = Math.round(Math.abs(ornamentsWeightInfo.releaseAmount));
         }
     }
     return ornamentsWeightInfo;
@@ -235,12 +235,8 @@ exports.ornamentsPartRelease = async (req, res, next) => {
     if (checkOrnament.length == 0) {
         let addPartRelease;
         let partRelease = await sequelize.transaction(async t => {
-            if (paymentType == 'cash') {
-                addPartRelease = await models.partRelease.create({ paymentType, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
-            } else if (paymentType == 'cheque') {
-                addPartRelease = await models.partRelease.create({ paymentType, paidAmount, bankName, chequeNumber, branchName, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
-            } else if (paymentType == 'IMPS') {
-                addPartRelease = await models.partRelease.create({ paymentType, bankName, branchName, transactionId, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
+            if (paymentType == 'IMPS' || paymentType == 'cash' || paymentType == 'NEFT' || paymentType == 'RTGS' || paymentType == 'cheque'|| paymentType == 'UPI'|| paymentType == 'gateway') {
+                addPartRelease = await models.partRelease.create({ paymentType, bankName, branchName,chequeNumber, transactionId, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
             } else {
                 return res.status(400).json({ message: 'invalid paymentType' });
             }
@@ -710,12 +706,8 @@ exports.ornamentsFullRelease = async (req, res, next) => {
     if (checkOrnament.length == 0) {
         let addFullRelease;
         let fullRelease = await sequelize.transaction(async t => {
-            if (paymentType == 'cash') {
-                addFullRelease = await models.fullRelease.create({ paymentType, currentOutstandingAmount, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
-            } else if (paymentType == 'cheque') {
-                addFullRelease = await models.fullRelease.create({ paymentType, currentOutstandingAmount, paidAmount, bankName, chequeNumber, branchName, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
-            } else if (paymentType == 'IMPS') {
-                addFullRelease = await models.fullRelease.create({ paymentType, currentOutstandingAmount, bankName, branchName, transactionId, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
+            if (paymentType == 'IMPS' || paymentType == 'cash' || paymentType == 'NEFT' || paymentType == 'RTGS' || paymentType == 'cheque'|| paymentType == 'UPI'|| paymentType == 'gateway') {
+                addFullRelease = await models.fullRelease.create({ paymentType, currentOutstandingAmount, paidAmount, bankName,transactionId, chequeNumber, branchName, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
             } else {
                 return res.status(400).json({ message: 'invalid paymentType' });
             }

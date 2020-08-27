@@ -48,6 +48,10 @@ module.exports = (sequelize, DataTypes) => {
             values:['Pending','Completed','Rejected'],
             defaultValue: 'Pending'
         },
+        paymentFor:{
+            type: DataTypes.STRING,
+            field: 'payment_for',
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
@@ -71,6 +75,7 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanTransaction.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
         CustomerLoanTransaction.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         CustomerLoanTransaction.hasMany(models.customerTransactionDetail, { foreignKey: 'customerLoanTransactionId', as: 'transaction' });
+        CustomerLoanTransaction.hasMany(models.customerTransactionSplitUp, { foreignKey: 'customerLoanTransactionId', as: 'transactionSplitUp' });
     }
 
     return CustomerLoanTransaction;
