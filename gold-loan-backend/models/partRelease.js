@@ -13,9 +13,9 @@ module.exports = (sequelize, DataTypes) => {
         //     type: DataTypes.STRING,
         //     field: 'payment_Type',
         // },
-        transactionId:{
+        customerLoanTransactionId:{
             type: DataTypes.INTEGER,
-            field: 'transaction_id',
+            field: 'customer_loan_transaction_id',
         },
         paidAmount:{
             type: DataTypes.DECIMAL(10,2),
@@ -146,7 +146,7 @@ module.exports = (sequelize, DataTypes) => {
         PartRelease.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
         PartRelease.belongsToMany(models.customerLoanOrnamentsDetail,{through: models.partReleaseOrnaments,foreignKey: 'partReleaseId'});
         PartRelease.hasOne(models.partReleaseAppraiser, { foreignKey: 'partReleaseId', as: 'appraiserData', });
-        PartRelease.belongsTo(models.customerLoanTransaction, { foreignKey: 'transactionId', as: 'transaction' });
+        PartRelease.belongsTo(models.customerLoanTransaction, { foreignKey: 'customerLoanTransactionId', as: 'transaction' });
     }
 
     PartRelease.prototype.toJSON = function () {
