@@ -9,12 +9,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(10,2),
             field: 'payable_amount',
         },
-        paymentType:{
-            type: DataTypes.STRING,
-            field: 'payment_Type',
-        },
+        // paymentType:{
+        //     type: DataTypes.STRING,
+        //     field: 'payment_Type',
+        // },
         transactionId:{
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             field: 'transaction_id',
         },
         paidAmount:{
@@ -33,22 +33,22 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(10,2),
             field: 'penal_interest',
         },
-        depositDate:{
-            type: DataTypes.DATE,
-            field: 'deposit_date',
-        },
-        chequeNumber:{
-            type: DataTypes.STRING,
-            field: 'cheque_number',
-        },
-        bankName:{
-            type: DataTypes.STRING,
-            field: 'bank_name',
-        },
-        branchName:{
-            type: DataTypes.STRING,
-            field: 'branch_name',
-        },
+        // depositDate:{
+        //     type: DataTypes.DATE,
+        //     field: 'deposit_date',
+        // },
+        // chequeNumber:{
+        //     type: DataTypes.STRING,
+        //     field: 'cheque_number',
+        // },
+        // bankName:{
+        //     type: DataTypes.STRING,
+        //     field: 'bank_name',
+        // },
+        // branchName:{
+        //     type: DataTypes.STRING,
+        //     field: 'branch_name',
+        // },
         amountStatus:{
             type: DataTypes.ENUM,
             field: 'amount_status',
@@ -68,6 +68,10 @@ module.exports = (sequelize, DataTypes) => {
         documents:{
             type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'documents'
+        },
+        currentOutstandingAmount:{
+            type: DataTypes.DECIMAL(10,2),
+            field: 'current_outstanding_amount',
         },
         releaseGrossWeight:{
             type: DataTypes.FLOAT,
@@ -142,6 +146,7 @@ module.exports = (sequelize, DataTypes) => {
         PartRelease.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
         PartRelease.belongsToMany(models.customerLoanOrnamentsDetail,{through: models.partReleaseOrnaments,foreignKey: 'partReleaseId'});
         PartRelease.hasOne(models.partReleaseAppraiser, { foreignKey: 'partReleaseId', as: 'appraiserData', });
+        PartRelease.belongsTo(models.customerLoanTransaction, { foreignKey: 'transactionId', as: 'transaction' });
     }
 
     PartRelease.prototype.toJSON = function () {

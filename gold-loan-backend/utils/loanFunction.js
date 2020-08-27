@@ -795,8 +795,7 @@ let allInterestPayment = async (masterLoanId, payableAmount, createdBy) => {
     let securedLoanDetails = await models.customerLoanInterest.findAll({
         where: {
             loanId: loanDetails.loan.customerLoan[0].id,
-            emiStatus: { [Op.in]: ['pending', 'partially paid'] },
-            isExtraDaysInterest: false
+            emiStatus: { [Op.in]: ['pending', 'partially paid'] }
         },
         order: [['emiDueDate']],
         include: {
@@ -832,8 +831,7 @@ let allInterestPayment = async (masterLoanId, payableAmount, createdBy) => {
         var unsecuredLoanDetails = await models.customerLoanInterest.findAll({
             where: {
                 loanId: loanDetails.loan.customerLoan[1].id,
-                emiStatus: { [Op.in]: ['pending', 'partially paid'] },
-                isExtraDaysInterest: false
+                emiStatus: { [Op.in]: ['pending', 'partially paid'] }
             },
             order: [['emiDueDate']],
             include: {
@@ -1041,6 +1039,58 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
     return customerLoan
 }
 
+async function getAmountLoanSplitUpData(loan, amount, partPaymentAmount) {
+
+    let { securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest } = await payableAmountForLoan(amount, loan)
+
+    let securedOutstandingAmount = loan.customerLoan[0].outstandingAmount
+    let unsecuredOutstandingAmount = 0
+    if (loan.isUnsecuredSchemeApplied) {
+        unsecuredOutstandingAmount = loan.customerLoan[1].outstandingAmount
+    }
+    let totalOutstandingAmount = Number(securedOutstandingAmount) + Number(unsecuredOutstandingAmount)
+
+    let securedLoanId = loan.customerLoan[0].id
+    let securedRatio = securedOutstandingAmount / totalOutstandingAmount * (partPaymentAmount)
+    let newSecuredOutstandingAmount = securedOutstandingAmount - securedRatio
+    let newUnsecuredOutstandingAmount = 0
+    let unsecuredRatio = 0
+    let unsecuredLoanId = null
+    if (loan.isUnsecuredSchemeApplied) {
+        unsecuredLoanId = loan.customerLoan[1].id
+        unsecuredRatio = unsecuredOutstandingAmount / totalOutstandingAmount * partPaymentAmount
+        newUnsecuredOutstandingAmount = Number(unsecuredOutstandingAmount) - unsecuredRatio
+    }
+    let newMasterOutstandingAmount = newSecuredOutstandingAmount + newUnsecuredOutstandingAmount
+
+    let isUnsecuredSchemeApplied = false
+    if (loan.isUnsecuredSchemeApplied) {
+        isUnsecuredSchemeApplied = true
+    }
+
+
+
+    let data = {
+        securedOutstandingAmount,
+        unsecuredOutstandingAmount,
+        totalOutstandingAmount,
+        securedRatio,
+        unsecuredRatio,
+        newSecuredOutstandingAmount,
+        newUnsecuredOutstandingAmount,
+        newMasterOutstandingAmount,
+        isUnsecuredSchemeApplied,
+        securedPenalInterest,
+        unsecuredPenalInterest,
+        securedInterest,
+        unsecuredInterest,
+        securedLoanId,
+        unsecuredLoanId
+    }
+    return data
+
+}
+
 module.exports = {
     getGlobalSetting: getGlobalSetting,
     getAllCustomerLoanId: getAllCustomerLoanId,
@@ -1075,5 +1125,6 @@ module.exports = {
     getAllPaidInterest: getAllPaidInterest,
     getAllInterestGreaterThanDate: getAllInterestGreaterThanDate,
     getExtraInterest: getExtraInterest,
-    getSingleLoanDetail: getSingleLoanDetail
+    getSingleLoanDetail: getSingleLoanDetail,
+    getAmountLoanSplitUpData: getAmountLoanSplitUpData
 }
