@@ -49,7 +49,7 @@ exports.payableAmountConfirmPartPayment = async (req, res, next) => {
     let { payableAmount } = await payableAmountForLoan(amount, loan)
     let partPaymentAmount = paidAmount - payableAmount
 
-    let { isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest } = await getAmountLoanSplitUpData(loan, amount, partPaymentAmount)
+    let { isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest, securedLoanId, unsecuredLoanId } = await getAmountLoanSplitUpData(loan, amount, partPaymentAmount)
 
     loan.dataValues.newOutstandingAmount = newMasterOutstandingAmount
 
@@ -81,7 +81,7 @@ exports.partPayment = async (req, res, next) => {
     if (payableAmount > paidAmount) {
         return res.status(200).json({ message: `Your payable amount is greater than paid amount. You have to pay ${payableAmount}` })
     }
-    let { isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest } = await getAmountLoanSplitUpData(loan, amount, partPaymentAmount)
+    let { isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest, securedLoanId, unsecuredLoanId } = await getAmountLoanSplitUpData(loan, amount, partPaymentAmount)
 
     paymentDetails.masterLoanId = masterLoanId
     paymentDetails.transactionAmont = paidAmount
@@ -99,5 +99,5 @@ exports.partPayment = async (req, res, next) => {
     //     return data
     // })
 
-    return res.status(200).json({ isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest })
+    return res.status(200).json({ isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest, securedLoanId, unsecuredLoanId })
 }

@@ -1050,11 +1050,14 @@ async function getAmountLoanSplitUpData(loan, amount, partPaymentAmount) {
     }
     let totalOutstandingAmount = Number(securedOutstandingAmount) + Number(unsecuredOutstandingAmount)
 
+    let securedLoanId = loan.customerLoan[0].id
     let securedRatio = securedOutstandingAmount / totalOutstandingAmount * (partPaymentAmount)
     let newSecuredOutstandingAmount = securedOutstandingAmount - securedRatio
     let newUnsecuredOutstandingAmount = 0
     let unsecuredRatio = 0
+    let unsecuredLoanId = null
     if (loan.isUnsecuredSchemeApplied) {
+        unsecuredLoanId = loan.customerLoan[1].id
         unsecuredRatio = unsecuredOutstandingAmount / totalOutstandingAmount * partPaymentAmount
         newUnsecuredOutstandingAmount = Number(unsecuredOutstandingAmount) - unsecuredRatio
     }
@@ -1080,7 +1083,9 @@ async function getAmountLoanSplitUpData(loan, amount, partPaymentAmount) {
         securedPenalInterest,
         unsecuredPenalInterest,
         securedInterest,
-        unsecuredInterest
+        unsecuredInterest,
+        securedLoanId,
+        unsecuredLoanId
     }
     return data
 
