@@ -1095,16 +1095,19 @@ let getTransactionPrincipalAmount = async(masterLoanId, customerLoanTransactionI
         include: [{
             model: models.customerLoan,
             as: 'customerLoan',
-            attributes: ['id', 'outstandingAmount']
+            attributes: ['id', 'outstandingAmount','loanUniqueId']
         }]
     });
     let securedOutstandingAmount = Number(loanInfo.customerLoan[0].outstandingAmount - securedPayableOutstanding);
+    let securedLoanUniqueId = loanInfo.customerLoan[0].loanUniqueId;
     let unSecuredOutstandingAmount = 0;
+    let unSecuredLoanUniqueId;
     if(transactionDataUnSecured){
         unSecuredOutstandingAmount = Number(loanInfo.customerLoan[1].outstandingAmount - unSecuredPayableOutstanding);
+        unSecuredLoanUniqueId = loanInfo.customerLoan[1].loanUniqueId;
     }
     let outstandingAmount = Number(loanInfo.outstandingAmount - totalPayableOutstanding);
-    return {securedPayableOutstanding,unSecuredPayableOutstanding,transactionDataSecured,transactionDataUnSecured,securedOutstandingAmount,unSecuredOutstandingAmount,outstandingAmount}
+    return {securedPayableOutstanding,unSecuredPayableOutstanding,transactionDataSecured,transactionDataUnSecured,securedOutstandingAmount,unSecuredOutstandingAmount,outstandingAmount,securedLoanUniqueId,unSecuredLoanUniqueId}
 }
 
 module.exports = {
