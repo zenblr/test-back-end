@@ -795,8 +795,7 @@ let allInterestPayment = async (masterLoanId, payableAmount, createdBy) => {
     let securedLoanDetails = await models.customerLoanInterest.findAll({
         where: {
             loanId: loanDetails.loan.customerLoan[0].id,
-            emiStatus: { [Op.in]: ['pending', 'partially paid'] },
-            isExtraDaysInterest: false
+            emiStatus: { [Op.in]: ['pending', 'partially paid'] }
         },
         order: [['emiDueDate']],
         include: {
@@ -832,8 +831,7 @@ let allInterestPayment = async (masterLoanId, payableAmount, createdBy) => {
         var unsecuredLoanDetails = await models.customerLoanInterest.findAll({
             where: {
                 loanId: loanDetails.loan.customerLoan[1].id,
-                emiStatus: { [Op.in]: ['pending', 'partially paid'] },
-                isExtraDaysInterest: false
+                emiStatus: { [Op.in]: ['pending', 'partially paid'] }
             },
             order: [['emiDueDate']],
             include: {
