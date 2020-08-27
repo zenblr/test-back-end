@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'loan_id'
         },
+        masterLoanId:{
+            type: DataTypes.INTEGER,
+            field: 'master_loan_id'
+        },
         payableOutstanding: {
             type: DataTypes.DECIMAL(10,2),
             field: 'payable_outstanding',
@@ -50,6 +54,9 @@ module.exports = (sequelize, DataTypes) => {
 
     CustomerTransactionSplitUp.associate = function (models) {
         CustomerTransactionSplitUp.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
+        CustomerTransactionSplitUp.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
+        CustomerTransactionSplitUp.belongsTo(models.customerLoanTransaction, { foreignKey: 'customerLoanTransactionId', as: 'customerTransaction' });
+
     }
 
     return CustomerTransactionSplitUp;
