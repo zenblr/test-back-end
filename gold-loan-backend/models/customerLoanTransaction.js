@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'loan_id'
         },
         transactionUniqueId: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'transaction_unique_id'
         },
         bankTransactionUniqueId: {
