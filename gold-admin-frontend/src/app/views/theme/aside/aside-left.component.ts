@@ -102,7 +102,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 				if (ct != null) {
 					Promise.resolve(null).then(() => {
 						this.cartTotalCount = ct;
-						console.log(this.cartTotalCount);
+						// console.log(this.cartTotalCount);
 						// this.ref.detectChanges();
 					});
 				}

@@ -166,7 +166,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 	}
 
 	editProduct(product) {
-		console.log(product);
+		// console.log(product);
 		const dialogRef = this.dialog.open(ProductEditComponent, {
 			data: { productId: product.id, action: "edit" },
 			width: "550px",
@@ -191,7 +191,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 		);
 		dialogRef.afterClosed().subscribe((res) => {
 			if (res) {
-				console.log(res);
+				// console.log(res);
 				this.productService.deleteProduct(product.id).subscribe(
 					(successDelete) => {
 						this.toastr.successToastr(_deleteMessage);
@@ -237,7 +237,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 		});
 		dialogRef.afterClosed().subscribe((res) => {
 			if (res) {
-				console.log(res);
+				// console.log(res);
 			}
 		});
 	}
@@ -258,7 +258,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 	}
 
 	applyFilter(data) {
-		console.log(data);
+		// console.log(data);
 		this.productData.categoryId = data.data.category;
 		this.productData.subCategoryId = data.data.subCategory;
 		this.productData.priceFrom = data.data.priceFrom;

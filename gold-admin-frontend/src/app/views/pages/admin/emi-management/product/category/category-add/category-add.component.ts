@@ -28,7 +28,7 @@ export class CategoryAddComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.data);
+    // console.log(this.data);
     this.formInitialize();
     this.setForm();
     this.getMetalType();
@@ -61,7 +61,7 @@ export class CategoryAddComponent implements OnInit {
   getMetalType() {
     this.categoryService.getMetalType().subscribe(
       res => {
-        console.log(res);
+        // console.log(res);
         this.metalType = res;
       }
     )
@@ -70,12 +70,12 @@ export class CategoryAddComponent implements OnInit {
   getCategoryData(id) {
     this.categoryService.getSingleCategory(id).subscribe(
       res => {
-        console.log(res);
+        // console.log(res);
         this.categoryForm.patchValue(res[0]);
         this.ref.detectChanges();
       },
       err => {
-        console.log(err);
+        // console.log(err);
       }
     )
   }
@@ -105,7 +105,7 @@ export class CategoryAddComponent implements OnInit {
         }
       },
         error => {
-          console.log(error.error.message);
+          // console.log(error.error.message);
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
         });
@@ -118,7 +118,7 @@ export class CategoryAddComponent implements OnInit {
         }
       },
         error => {
-          console.log(error.error.message);
+          // console.log(error.error.message);
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
         });

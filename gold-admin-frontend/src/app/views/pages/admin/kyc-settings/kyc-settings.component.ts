@@ -48,7 +48,7 @@ export class KycSettingsComponent implements OnInit {
 
   next(event) {
 
-    console.log(event);
+    // console.log(event);
 
     if (event !== true) {
       // console.log(event);
