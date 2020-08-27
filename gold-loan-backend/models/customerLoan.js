@@ -97,7 +97,7 @@ module.exports = (sequelize, DataTypes) => {
         customerLoan.hasMany(models.customerLoanInterest, { foreignKey: 'loanId', as: 'customerLoanInterest' });
         customerLoan.hasOne(models.customerLoanDisbursement, { foreignKey: 'loanId', as: 'customerLoanDisbursement' });
         customerLoan.hasOne(models.customerLoanDocument, { foreignKey: 'loanId', as: 'customerLoanDocument' });
-        customerLoan.hasMany(models.customerLoanTransaction, { foreignKey: 'loanId', as: 'customerLoanTransaction' });
+        customerLoan.hasMany(models.customerTransactionSplitUp, { foreignKey: 'loanId', as: 'transactionSplitUp' });
 
         customerLoan.hasMany(models.customerLoanSlabRate, { foreignKey: 'loanId', as: 'slab' });
 
