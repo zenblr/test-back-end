@@ -27,7 +27,17 @@ exports.getInterestTable = async (req, res, next) => {
 exports.getInterestInfo = async (req, res, next) => {
     let { loanId, masterLoanId } = req.query;
 
-    let interestInfo =  await customerLoanDetailsByMasterLoanDetails(masterLoanId);
+    let interestInfo = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
+
+    let lastPayment = await models.customerLoanTransaction.findAll({
+        where: { masterLoanId: masterLoanId, depositStatus: "Completed" },
+        order: [
+            ['id', 'asc']
+        ]
+    })
+    let lastPaymentDate = lastPayment[lastPayment.length - 1].depositDate
+
+    interestInfo.loan.dataValues.lastPaymentDate = lastPaymentDate
 
     return res.status(200).json({ message: "success", data: interestInfo.loan })
 
