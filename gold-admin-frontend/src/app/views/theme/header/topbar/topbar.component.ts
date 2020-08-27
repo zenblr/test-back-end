@@ -156,7 +156,7 @@ export class TopbarComponent implements OnInit {
 		private otherChargesService: OtherChargesService,
 		private scrapCustomerManagementService: ScrapCustomerManagementService,
 		private partnerBranchUserservice: PartnerBranchUserService,
-		private depositService:DepositService
+		private depositService: DepositService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -188,6 +188,7 @@ export class TopbarComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.packetService.disableBtn$.pipe(takeUntil(this.destroy$)).subscribe(res => this.isDisabled = res)
 		this.setTopbar(this.router.url);
 	}
 
@@ -715,7 +716,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'scrap-buying') {
 			this.showInput = true;
 		}
-		if(this.path == 'deposit') {
+		if (this.path == 'deposit') {
 			this.showInput = true;
 			this.showfilter = true;
 			this.filterName = 'deposit';
@@ -930,7 +931,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "packet") {
 			this.packetService.applyFilter.next(data)
 		}
-		if( this.path == "deposit") {
+		if (this.path == "deposit") {
 			this.depositService.applyFilter.next(data)
 		}
 	}

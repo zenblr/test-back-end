@@ -35,7 +35,7 @@ export class PacketsListComponent implements OnInit {
     from: 1,
     to: 25,
     search: '',
-    packetAssigned:''
+    packetAssigned: ''
   }
 
   constructor(
@@ -55,12 +55,13 @@ export class PacketsListComponent implements OnInit {
       takeUntil(this.destroy$)).subscribe();
 
     this.packetsService.applyFilter$
-    .pipe(takeUntil(this.filter$))
-    .subscribe((res) => {
-      if (Object.entries(res).length) {
-        this.applyFilter(res);
-      }
-    });
+      .pipe(takeUntil(this.filter$))
+      .subscribe((res) => {
+        if (Object.entries(res).length) {
+          this.applyFilter(res);
+        }
+      });
+
   }
 
   ngOnInit() {
@@ -95,16 +96,9 @@ export class PacketsListComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // First load
-    // this.loadLeadsPage();
-
     this.dataSource.loadpackets(this.queryParamsData);
 
   }
-
-  // ngAfterViewInit(): void {
-  //   this.checkForSameBranch()
-  // }
 
   ngOnDestroy() {
     this.subscriptions.forEach(el => el.unsubscribe());
@@ -115,19 +109,20 @@ export class PacketsListComponent implements OnInit {
     this.filter$.next();
     this.filter$.complete();
     this.packetsService.applyFilter.next({});
+    this.packetsService.disableBtn.next(false)
   }
 
 
   loadPackets() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
-     this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
+    this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
     this.dataSource.loadpackets(this.queryParamsData);
   }
   applyFilter(data) {
-     //console.log(data.data.scheme);
+    //console.log(data.data.scheme);
     this.queryParamsData.packetAssigned = data.data.scheme;
     this.dataSource.loadpackets(this.queryParamsData);
   }
@@ -164,7 +159,7 @@ export class PacketsListComponent implements OnInit {
     const _description = 'Are you sure to permanently delete this packet?';
     const _waitDesciption = 'Packet is deleting...';
     const _deleteMessage = `Packet has been deleted`;
-    console.log(role.id)
+    // console.log(role.id)
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -228,7 +223,12 @@ export class PacketsListComponent implements OnInit {
     const isSelectionEmpty = this.selection.isEmpty()
     const isUsed = selectedPackets.every(e => e.packetAssigned === false)
 
-    const isAssignAppraiserValid = !(isSelectionEmpty) && isBranchSame && isUsed ? true : false
+    // isAppraiserSame
+    const isAppraiserSame = selectedPackets.length && selectedPackets.every(e => e.appraiserId === selectedPackets[0].appraiserId)
+
+    const isAssignAppraiserValid = !(isSelectionEmpty) && isBranchSame && isUsed && isAppraiserSame ? true : false
+
+    this.packetsService.disableBtn.next(!isAppraiserSame)
 
     return { isAssignAppraiserValid, isBranchSame, isSelectionEmpty, isUsed }
   }
