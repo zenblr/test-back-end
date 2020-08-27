@@ -18,9 +18,28 @@ let { mergeInterestTable, getCustomerInterestAmount, getLoanDetails, getAmountLo
 exports.getInterestInfo = async (req, res, next) => {
     let { loanId, masterLoanId } = req.query;
 
-    let interestInfo = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
-
-    return res.status(200).json({ message: "success", data: interestInfo.loan })
+    let interestInfo = await models.customerLoanTransaction.findAll({
+        where: { masterLoanId: masterLoanId },
+        order: [
+            [
+                [{ model: models.customerTransactionSplitUp, as: 'transactionSplitUp' }, 'loanId', 'asc']
+            ]
+        ],
+        include: [
+            {
+                model: models.customerTransactionSplitUp,
+                as: 'transactionSplitUp',
+                include: [
+                    {
+                        model: models.customerLoan,
+                        as: 'customerLoan',
+                        attributes: ['id', 'outstandingAmount']
+                    }
+                ]
+            }
+        ]
+    })
+    return res.status(200).json({ message: "success", data: interestInfo })
 
 
 }
