@@ -19,7 +19,7 @@ exports.getInterestInfo = async (req, res, next) => {
     let { loanId, masterLoanId } = req.query;
 
     let interestInfo = await models.customerLoanTransaction.findAll({
-        where: { masterLoanId: masterLoanId },
+        where: { masterLoanId: masterLoanId, depositStatus: 'Completed' },
         order: [
             [
                 [{ model: models.customerTransactionSplitUp, as: 'transactionSplitUp' }, 'loanId', 'asc']
