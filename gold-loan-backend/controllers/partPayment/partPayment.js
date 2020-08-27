@@ -12,7 +12,7 @@ const CONSTANT = require("../../utils/constant");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { mergeInterestTable, getCustomerInterestAmount, getLoanDetails, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, penalInterestPayment, getInterestTableOfSingleLoan } = require('../../utils/loanFunction')
+let { mergeInterestTable, getCustomerInterestAmount, getLoanDetails, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, penalInterestPayment, getInterestTableOfSingleLoan } = require('../../utils/loanFunction')
 
 
 exports.getInterestInfo = async (req, res, next) => {
@@ -47,23 +47,9 @@ exports.payableAmountConfirmPartPayment = async (req, res, next) => {
     let amount = await getCustomerInterestAmount(masterLoanId);
     let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId)
     let { payableAmount } = await payableAmountForLoan(amount, loan)
-    let partPaymentamount = paidAmount - payableAmount
+    let partPaymentAmount = paidAmount - payableAmount
 
-    let securedOutstandingAmount = loan.customerLoan[0].outstandingAmount
-    let unsecuredOutstandingAmount = 0
-    if (loan.isUnsecuredSchemeApplied) {
-        unsecuredOutstandingAmount = loan.customerLoan[1].outstandingAmount
-    }
-    let totalOutstandingAmount = Number(securedOutstandingAmount) + Number(unsecuredOutstandingAmount)
-
-    let securedRatio = securedOutstandingAmount / totalOutstandingAmount * (partPaymentamount)
-    let newSecuredOutstandingAmount = securedOutstandingAmount - securedRatio
-    let newUnsecuredOutstandingAmount = 0
-    if (loan.isUnsecuredSchemeApplied) {
-        var unsecuredRatio = unsecuredOutstandingAmount / totalOutstandingAmount * partPaymentamount
-        newUnsecuredOutstandingAmount = Number(unsecuredOutstandingAmount) - unsecuredRatio
-    }
-    let newMasterOutstandingAmount = newSecuredOutstandingAmount + newUnsecuredOutstandingAmount
+    let { isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest } = await getAmountLoanSplitUpData(loan, amount, partPaymentAmount)
 
     loan.dataValues.newOutstandingAmount = newMasterOutstandingAmount
 
@@ -80,40 +66,38 @@ exports.payableAmountConfirmPartPayment = async (req, res, next) => {
 
 
 exports.partPayment = async (req, res, next) => {
-    let { masterLoanId, paidAmount } = req.body
+    let { masterLoanId, paidAmount, paymentDetails } = req.body
+    let { bankName, branchName, chequeNumber, depositDate, depositTransactionId, paymentType, transactionId } = paymentDetails
     let createdBy = req.userData.id
     let amount = await getCustomerInterestAmount(masterLoanId);
     let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
     let { payableAmount } = await payableAmountForLoan(amount, loan)
-    let { transactionDetails, securedLoanDetails, unsecuredLoanDetails, penalDate } = await allInterestPayment(masterLoanId, payableAmount, createdBy)
 
-    let partPaymentamount = paidAmount - payableAmount
+    if (!['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'UPI', 'gateway'].includes(paymentType)) {
+        return res.status(400).json({ message: "Invalid payment type" })
+    }
+
+    let partPaymentAmount = paidAmount - payableAmount
     if (payableAmount > paidAmount) {
         return res.status(200).json({ message: `Your payable amount is greater than paid amount. You have to pay ${payableAmount}` })
     }
+    let { isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest } = await getAmountLoanSplitUpData(loan, amount, partPaymentAmount)
 
-    //// outstanding amount change
-    let securedOutstandingAmount = loan.customerLoan[0].outstandingAmount
-    let unsecuredOutstandingAmount = 0
-    if (loan.isUnsecuredSchemeApplied) {
-        unsecuredOutstandingAmount = loan.customerLoan[1].outstandingAmount
-    }
-    let totalOutstandingAmount = Number(securedOutstandingAmount) + Number(unsecuredOutstandingAmount)
+    paymentDetails.masterLoanId = masterLoanId
+    paymentDetails.transactionAmont = paidAmount
+    paymentDetails.paymentReceivedDate = depositDate
+    paymentDetails.transactionUniqueId = transactionId
+    paymentDetails.depositStatus = "Pending"
+    paymentDetails.paymentFor = 'partPayment'
+    paymentDetails.createdBy = createdBy
 
-    let securedRatio = securedOutstandingAmount / totalOutstandingAmount * (partPaymentamount)
-    let newSecuredOutstandingAmount = securedOutstandingAmount - securedRatio
-    let newUnsecuredOutstandingAmount = 0
-    // await models.customerLoan.update({ outstandingAmount: newSecuredOutstandingAmount }, { where: { id: loan.customerLoan[0].id }, transaction: t })
-    if (loan.isUnsecuredSchemeApplied) {
-        var unsecuredRatio = unsecuredOutstandingAmount / totalOutstandingAmount * partPaymentamount
-        newUnsecuredOutstandingAmount = Number(unsecuredOutstandingAmount) - unsecuredRatio
-        // await models.customerLoan.update({ outstandingAmount: newUnsecuredOutstandingAmount }, { where: { id: loan.customerLoan[1].id }, transaction: t })
-    }
-    let newMasterOutstandingAmount = newSecuredOutstandingAmount + newUnsecuredOutstandingAmount
-    // await models.customerLoanMaster.update({ outstandingAmount: newMasterOutstandingAmount }, { where: { id: loan.id }, transaction: t })
-    //// outstanding amount change
+    // let data = await sequelize.transaction(async t => {
+    //     let data = await models.customerLoanTransaction.create(paymentDetails, { transaction: t })
 
-  
+    //     await models.customerLoanTransaction.create
 
-    return res.status(200).json({ amount, transactionDetails, securedLoanDetails, unsecuredLoanDetails, penalDate })
+    //     return data
+    // })
+
+    return res.status(200).json({ isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest })
 }
