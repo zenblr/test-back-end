@@ -18,6 +18,9 @@ export class PacketsService {
   applyFilter = new BehaviorSubject<any>({});
   applyFilter$ = this.applyFilter.asObservable();
 
+  disableBtn = new BehaviorSubject<any>(false);
+  disableBtn$ = this.disableBtn.asObservable();
+
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
   uploadPackets(packetImages, masterLoanId): Observable<any> {
@@ -47,7 +50,7 @@ export class PacketsService {
     if (data && data.packetAssigned) {
       reqParams.packetAssigned = data.packetAssigned;
     }
-    return this.http.get(`/api/packet`,{ params: reqParams }).pipe(
+    return this.http.get(`/api/packet`, { params: reqParams }).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
