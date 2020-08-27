@@ -33,7 +33,6 @@ exports.getInterestInfo = async (req, res, next) => {
                     {
                         model: models.customerLoan,
                         as: 'customerLoan',
-                        attributes: ['id', 'outstandingAmount']
                     }
                 ]
             }
