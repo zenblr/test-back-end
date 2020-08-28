@@ -146,11 +146,12 @@ exports.confirmationForPayment = async (req, res, next) => {
             //update in transaction
             if (payment.transactionDetails) {
                 for (const amount of payment.transactionDetails) {
-                    let description = "quick pay for customer loan"      
                     if (amount.isPenalInterest) {
+                        let description = "penal interest for customer loan"      
                         let paid = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, isPenalInterest: amount.isPenalInterest, credit: amount.credit, description:description, paymentDate: moment() }, { transaction: t });
                         await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
                     } else {
+                        let description = "interest for customer loan"      
                         let paid = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, credit: amount.credit,description:description, paymentDate: moment(), }, { transaction: t });
                         await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
                     }
