@@ -122,7 +122,7 @@ exports.quickPayment = async (req, res, next) => {
 
 exports.confirmationForPayment = async (req,res,next) =>{
 
-    let { transactionId , status }
+    let { transactionId , status } = req.body
 
     if(status == 'approved'){
         let { transactionDetails, securedLoanDetails, unsecuredLoanDetails } = await allInterestPayment(transactionId,createdBy)
