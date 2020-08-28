@@ -100,7 +100,7 @@ exports.quickPayment = async (req, res, next) => {
     paymentDetails.transactionUniqueId = transactionUniqueId //ye change karna h
     paymentDetails.bankTransactionUniqueId = transactionId
     paymentDetails.depositStatus = "Pending"
-    paymentDetails.paymentFor = 'QuickPay'
+    paymentDetails.paymentFor = 'quickPay'
     paymentDetails.createdBy = createdBy
 
     let data = await sequelize.transaction(async t => {
