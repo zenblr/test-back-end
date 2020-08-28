@@ -1148,7 +1148,7 @@ let getSingleDayInterestAmount = async (loan) => {
 
 
 
-    return { securedTotalInterest, unsecuredTotalInterest,securedPerDayInterestAmount }
+    return { securedTotalInterest:securedTotalInterest.toFixed(2), unsecuredTotalInterest:unsecuredTotalInterest.toFixed(2) }
 }
 
 
