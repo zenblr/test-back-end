@@ -1023,6 +1023,8 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
     return customerLoan
 }
 
+
+
 async function getAmountLoanSplitUpData(loan, amount, splitUpRatioAmount) {
 
     let { securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest } = await payableAmountForLoan(amount, loan)
@@ -1111,6 +1113,85 @@ let getTransactionPrincipalAmount = async( customerLoanTransactionId) => {
     return {securedPayableOutstanding,unSecuredPayableOutstanding,transactionDataSecured,transactionDataUnSecured,securedOutstandingAmount,unSecuredOutstandingAmount,outstandingAmount,securedLoanUniqueId,unSecuredLoanUniqueId}
 }
 
+
+let getSingleMasterLoanDetail = async ( masterLoanId) => {
+    let masterLoan = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure'],
+        order: [
+            [models.customerLoanDisbursement, 'loanId', 'asc'],
+            [models.customerLoan, 'id', 'asc']
+        ],
+        include: [
+            {
+                model: models.customerLoan,
+                as: 'customerLoan',
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            },
+            {
+                model: models.loanStage,
+                as: 'loanStage',
+                attributes: ['id', 'name']
+            },
+            {
+                model: models.customerLoanTransfer,
+                as: "loanTransfer",
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            },
+            {
+                model: models.customerLoanPersonalDetail,
+                as: 'loanPersonalDetail',
+            }, {
+                model: models.customerLoanBankDetail,
+                as: 'loanBankDetail',
+            }, {
+                model: models.customerLoanNomineeDetail,
+                as: 'loanNomineeDetail',
+            },
+            {
+                model: models.customerLoanOrnamentsDetail,
+                as: 'loanOrnamentsDetail',
+                include: [
+                    {
+                        model: models.ornamentType,
+                        as: "ornamentType"
+                    }
+                ]
+            },
+            {
+                model: models.customerLoanDocument,
+                as: 'customerLoanDocument'
+            },
+            {
+                model: models.customer,
+                as: 'customer',
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+            },
+            {
+                model: models.customerLoanDisbursement,
+                as: 'customerLoanDisbursement'
+            }
+        ]
+    });
+
+    let packet = await models.customerLoanPackageDetails.findAll({
+        where: { masterLoanId: masterLoanId },
+        include: [{
+            model: models.packet,
+            include: [{
+                model: models.customerLoanOrnamentsDetail,
+                include: [{
+                    model: models.ornamentType,
+                    as: 'ornamentType'
+                }]
+            }]
+        }]
+    })
+    masterLoan.dataValues.loanPacketDetails = packet
+
+    return masterLoan
+}
+
 module.exports = {
     getGlobalSetting: getGlobalSetting,
     getAllCustomerLoanId: getAllCustomerLoanId,
@@ -1147,5 +1228,6 @@ module.exports = {
     getExtraInterest: getExtraInterest,
     getSingleLoanDetail: getSingleLoanDetail,
     getAmountLoanSplitUpData: getAmountLoanSplitUpData,
-    getTransactionPrincipalAmount:getTransactionPrincipalAmount
+    getTransactionPrincipalAmount:getTransactionPrincipalAmount,
+    getSingleMasterLoanDetail:getSingleMasterLoanDetail
 }
