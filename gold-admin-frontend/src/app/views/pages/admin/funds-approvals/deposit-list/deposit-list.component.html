@@ -15,7 +15,7 @@
 
                 <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
-                    <mat-cell *matCellDef="let deposit">{{deposit.masterLoan.customer.customerUniqueId | titlecase}}
+                    <mat-cell *matCellDef="let deposit">{{deposit.masterLoan.customer.customerUniqueId | uppercase}}
                     </mat-cell>
                 </ng-container>
 

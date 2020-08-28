@@ -7,7 +7,7 @@ import { ToastrComponent } from '../../../../../partials/components/toastr/toast
 import { PartnerService } from '../../../../../../core/user-management/partner/services/partner.service';
 import { AppraiserService } from '../../../../../../core/user-management/appraiser';
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
-import { map } from 'rxjs/operators';
+import { map, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'kt-assign-appraiser',
@@ -20,6 +20,7 @@ export class AssignAppraiserComponent implements OnInit {
   states: any;
   cities: any;
   appraisers = [];
+  releasers = [];
   customers = [];
   editData = false;
   viewOnly = false;
@@ -115,8 +116,9 @@ export class AssignAppraiserComponent implements OnInit {
       customerUniqueId: [''],
       customerId: [, [Validators.required]],
       customerName: [''],
-      appraiserId: ['', [Validators.required]],
-      releaserId: ['', [Validators.required]],
+      userType: [, [Validators.required]],
+      appraiserId: [, [Validators.required]],
+      releaserId: [, [Validators.required]],
       appoinmentDate: [],
       startTime: [this.addStartTime],
       endTime: [],
@@ -124,10 +126,9 @@ export class AssignAppraiserComponent implements OnInit {
       fullReleaseId: []
     });
 
-    if (this.data.isReleaser) {
-      this.appraiserForm.controls.appraiserId.disable()
-    } else {
+    if (!this.data.isReleaser) {
       this.appraiserForm.controls.releaserId.disable()
+      this.appraiserForm.controls.userType.disable()
     }
   }
 
@@ -137,6 +138,7 @@ export class AssignAppraiserComponent implements OnInit {
       this.internalBranchId = res.userDetails.internalBranchId
       if (this.data.isReleaser) {
         this.getAllReleaser()
+        this.getAllAppraiser()
       } else {
         this.getAllAppraiser()
       }
@@ -151,7 +153,7 @@ export class AssignAppraiserComponent implements OnInit {
 
   getAllReleaser() {
     this.appraiserService.getAllReleaser(this.internalBranchId).subscribe(res => {
-      this.appraisers = res.data;
+      this.releasers = res.data;
     })
   }
 
@@ -216,13 +218,19 @@ export class AssignAppraiserComponent implements OnInit {
         });
       }
       else if (this.data.fullReleaseId) {
-        this.appraiserService.updateReleaserFullRelease(appraiserData).subscribe(res => {
-          if (res) {
-            const msg = 'Releaser Updated Sucessfully';
-            this.toastr.successToastr(msg);
-            this.dialogRef.close(true);
-          }
-        });
+        if (this.controls.userType.value == 'appraiser') {
+          this.changeAppraiserToReleaser()
+        }
+        this.appraiserService.updateReleaserFullRelease(this.appraiserForm.value).pipe(
+          map(res => {
+            if (res) {
+              const msg = 'Releaser Updated Sucessfully';
+              this.toastr.successToastr(msg);
+              this.dialogRef.close(true);
+            }
+          }),
+          finalize(() => this.changeReleaserToAppraiser()))
+          .subscribe();
       }
       else {
         this.appraiserService.updateAppraiser(appraiserData.id, appraiserData).subscribe(res => {
@@ -245,13 +253,19 @@ export class AssignAppraiserComponent implements OnInit {
         });
       }
       else if (this.data.fullReleaseId) {
-        this.appraiserService.assignReleaserFullRelease(appraiserData).subscribe(res => {
-          if (res) {
-            const msg = 'Releaser Assigned Successfully';
-            this.toastr.successToastr(msg);
-            this.dialogRef.close(true);
-          }
-        });
+        if (this.controls.userType.value == 'appraiser') {
+          this.changeAppraiserToReleaser()
+        }
+        this.appraiserService.assignReleaserFullRelease(this.appraiserForm.value).pipe(
+          map(res => {
+            if (res) {
+              const msg = 'Releaser Assigned Successfully';
+              this.toastr.successToastr(msg);
+              this.dialogRef.close(true);
+            }
+          }),
+          finalize(() => this.changeReleaserToAppraiser()))
+          .subscribe();
       }
       else {
         this.appraiserService.assignAppraiser(appraiserData).subscribe(res => {
@@ -306,6 +320,36 @@ export class AssignAppraiserComponent implements OnInit {
 
   }
 
+  selectUsertype(value) {
+    if (value === 'appraiser') {
+      this.controls.appraiserId.enable()
+      this.controls.releaserId.disable()
+      this.controls.appraiserId.setValidators([Validators.required])
+      this.controls.releaserId.setValidators([])
+      this.controls.appraiserId.updateValueAndValidity()
+      this.controls.appraiserId.reset()
+    } else {
+      this.controls.releaserId.enable()
+      this.controls.appraiserId.disable()
+      this.controls.releaserId.setValidators([Validators.required])
+      this.controls.appraiserId.setValidators([])
+      this.controls.releaserId.updateValueAndValidity()
+      this.controls.releaserId.reset()
+    }
+  }
+
+  changeAppraiserToReleaser() {
+    this.controls.releaserId.enable()
+    this.controls.releaserId.patchValue(this.controls.appraiserId.value)
+    this.controls.appraiserId.disable()
+  }
+
+  changeReleaserToAppraiser() {
+    this.controls.appraiserId.patchValue(this.controls.releaserId.value)
+    this.controls.releaserId.reset()
+    this.controls.appraiserId.enable()
+    this.controls.releaserId.disable()
+  }
 
 
 }

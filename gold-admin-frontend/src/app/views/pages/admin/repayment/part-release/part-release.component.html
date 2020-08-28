@@ -29,11 +29,17 @@
                 </div>
                 <div class="col text-gray font-weight-500"> {{loanDetails.customerLoan.loanEndDate}}</div>
                 <div class="col text-gray font-weight-500">{{loanDetails.customerLoan.tenure}} Months</div>
-                <div class="col text-gray font-weight-500">{{loanDetails.lastPayment}}</div>
-                <div class="col-2 text-gray font-weight-500">{{loanDetails?.outstandingAmount}}</div>
+                <div class="col text-gray font-weight-500">
+                    <span *ngIf="loanDetails.lastPayment else blank">{{loanDetails.lastPayment}}</span>
+                </div>
+                <div class="col-2 text-gray font-weight-500">{{loanDetails?.customerLoan.outstandingAmount}}</div>
                 <div class="col font-weight-500">
 
                 </div>
+
+                <ng-template #blank>
+                    <div>-</div>
+                </ng-template>
             </div>
 
             <div *ngIf="!fullReleaseScreen">
