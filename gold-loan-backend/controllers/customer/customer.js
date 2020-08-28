@@ -139,7 +139,7 @@ exports.verifyOtp = async (req, res, next) => {
     },
   });
   if (check.isEmpty(verifyUser)) {
-    return res.status(404).json({ message: `Invalid otp.` });
+    return res.status(404).json({ message: `INVALID OTP.` });
   }
 
   let verifyFlag = await models.customerOtp.update(

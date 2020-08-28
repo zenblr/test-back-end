@@ -149,14 +149,27 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
     let modifiedBy = req.userData.id
     let { transactionId, status, masterLoanId } = req.body;
 
+    let transactionDetail = await models.customerLoanTransaction.findOne({ where: { id: transactionId } })
+
+    if (transactionDetail.depositStatus == "Completed" || transactionDetail.depositStatus == "Rejected") {
+        return res.status(400).json({ message: `You can not change the status from this stage.` })
+    }
+
+    if (status == "Rejected") {
+        await models.customerLoanTransaction.update({ depositStatus: status }, { where: { id: transactionId } });
+    }
+    if (status == "Pending") {
+        await models.customerLoanTransaction.update({ depositStatus: status }, { where: { id: transactionId } });
+    }
+
     if (status == 'Completed') {
-
-
 
         let payment = await allInterestPayment(transactionId);
         let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(transactionId);
 
         let quickPayData = await sequelize.transaction(async (t) => {
+
+            await models.customerLoanTransaction.update({ depositStatus: status, paymentReceivedDate: moment() }, { where: { id: transactionId }, transaction: t });
 
             if (payment.securedLoanDetails) {
                 for (const interest of payment.securedLoanDetails) {
@@ -189,14 +202,14 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
                 let unSecuredTransaction = await models.customerTransactionDetail.create({ masterLoanId: masterLoanId, customerLoanTransactionId: transactionId, loanId: transactionDataUnSecured.loanId, credit: unSecuredPayableOutstanding, paymentDate: moment(), description: "part payment for customer loan" }, { transaction: t });
                 await models.customerTransactionDetail.update({ referenceId: `${unSecuredLoanUniqueId}-${unSecuredTransaction.id}` }, { where: { id: unSecuredTransaction.id }, transaction: t })
             }
-            await models.customerLoanTransaction.update({ depositStatus: "Completed", paymentReceivedDate: moment() }, { where: { id: transactionId }, transaction: t });
+
             let x = await models.customerLoan.update({ outstandingAmount: securedOutstandingAmount }, { where: { id: transactionDataSecured.loanId }, transaction: t });
 
             if (transactionDataUnSecured) {
                 let y = await models.customerLoan.update({ outstandingAmount: unSecuredOutstandingAmount }, { where: { id: transactionDataUnSecured.loanId }, transaction: t });
             }
             let z = await models.customerLoanMaster.update({ outstandingAmount: outstandingAmount }, { where: { id: masterLoanId }, transaction: t });
-            let loanOf = await models.customerLoanMaster.findOne({where:{id:masterLoanId}})
+            let loanOf = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
 
             // interest calculation after part payment
             // let updateInterestAftertOutstandingAmount = async (date, masterLoanId) => {
@@ -216,10 +229,10 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
                     loanStartDate = moment(lastPaidEmi.emiDueDate);
                     noOfDays = currentDate.diff(loanStartDate, 'days');
                 }
-                let outstandingAmount 
-                if(loan.loanType == 'secured') {
+                let outstandingAmount
+                if (loan.loanType == 'secured') {
                     outstandingAmount = securedOutstandingAmount
-                }else{
+                } else {
                     outstandingAmount = unSecuredOutstandingAmount
 
                 }

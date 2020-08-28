@@ -133,6 +133,19 @@ exports.confirmationForPayment = async (req, res, next) => {
     let { transactionId, status } = req.body
     let modifiedBy = req.userData.id
 
+    let transactionDetail = await models.customerLoanTransaction.findOne({ where: { id: transactionId } })
+
+    if (transactionDetail.depositStatus == "Completed" || transactionDetail.depositStatus == "Rejected") {
+        return res.status(400).json({ message: `You can not change the status from this stage.` })
+    }
+
+    if (status == "Rejected") {
+        await models.customerLoanTransaction.update({ depositStatus: status }, { where: { id: transactionId } });
+    }
+    if (status == "Pending") {
+        await models.customerLoanTransaction.update({ depositStatus: status }, { where: { id: transactionId } });
+    }
+
     if (status == 'Completed') {
 
 
