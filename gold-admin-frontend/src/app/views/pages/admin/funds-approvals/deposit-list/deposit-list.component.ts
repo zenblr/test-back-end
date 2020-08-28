@@ -44,7 +44,7 @@ export class DepositListComponent implements OnInit {
     private toastr: ToastrService,
     private layoutUtilsService: LayoutUtilsService,
     private quickPayService: QuickPayService,
-    private partPaymentService:PartPaymentService
+    private partPaymentService: PartPaymentService
   ) {
 
     this.depositService.applyFilter$
@@ -112,36 +112,36 @@ export class DepositListComponent implements OnInit {
     this.dataSource.getDepositList(this.queryParamsData);
   }
 
-  toaster(depositStatus){
-    if(depositStatus == 'confirm'){
+  toaster(depositStatus) {
+    if (depositStatus == 'Completed') {
       this.toastr.success('Payment Confirm')
-      }else{
+    } else {
       this.toastr.error('Payment Rejected')
-      }
+    }
   }
   updateStatus(deposit) {
 
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
       data: { value: deposit, name: 'deposit' },
-      width: '380px'
+      width: '500px'
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        if (res.depositStatus != 'pending') {
+        if (res.depositStatus == 'Pending') {
           return
         }
-          if (deposit.paymentFor == "partPayment") {
-            this.partPaymentService.finalPaymentConfirm(deposit.id, res.depositStatus,deposit.masterLoanId).subscribe(res=>{
-              this.loadPage();
-              this.toaster(res.depositStatus)
-            })
-          } else {
-            this.quickPayService.confirmPayment(deposit.id, res.depositStatus).subscribe(res=>{
-              this.loadPage();
-              this.toaster(res.depositStatus)
-            })
-          }
+        if (deposit.paymentFor == "partPayment") {
+          this.partPaymentService.finalPaymentConfirm(deposit.id, res.depositStatus, deposit.masterLoanId).subscribe(result => {
+            this.toaster(res.depositStatus)
+            this.loadPage();
+          })
+        } else {
+          this.quickPayService.confirmPayment(deposit.id, res.depositStatus).subscribe(result => {
+            this.toaster(res.depositStatus)
+            this.loadPage();
+          })
         }
+      }
     });
   }
 

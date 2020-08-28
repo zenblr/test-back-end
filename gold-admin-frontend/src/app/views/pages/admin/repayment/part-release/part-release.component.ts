@@ -276,4 +276,5 @@ export class PartReleaseComponent implements OnInit {
       }
     });
   }
+
 }
