@@ -14,7 +14,7 @@ var uniqid = require('uniqid');
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getSingleDayInterestAmount } = require('../../utils/loanFunction')
+let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getSingleDayInterestAmount, getAmountLoanSplitUpData } = require('../../utils/loanFunction')
 
 //INTEREST TABLE 
 exports.getInterestTable = async (req, res, next) => {
@@ -32,7 +32,7 @@ exports.getInterestInfo = async (req, res, next) => {
     let interestInfo = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
 
     let lastPayment = await models.customerLoanTransaction.findAll({
-        where: { masterLoanId: masterLoanId, depositStatus: "Completed",paymentFor:'quickPay' },
+        where: { masterLoanId: masterLoanId, depositStatus: "Completed", paymentFor: 'quickPay' },
         order: [
             ['id', 'asc']
         ]
@@ -159,6 +159,9 @@ exports.confirmationForPayment = async (req, res, next) => {
 
         let quickPayData = await sequelize.transaction(async (t) => {
 
+
+            await models.customerLoanTransaction.update({ depositStatus: status, paymentReceivedDate: moment() }, { where: { id: transactionId }, transaction: t });
+
             if (payment.securedLoanDetails) {
                 for (const interest of payment.securedLoanDetails) {
                     await models.customerLoanInterest.update({ paidAmount: interest.paidAmount, interestAccrual: interest.interestAccrual, outstandingInterest: interest.outstandingInterest, emiReceivedDate: moment(), penalAccrual: interest.penalAccrual, penalOutstanding: interest.penalOutstanding, penalPaid: interest.penalPaid, modifiedBy, emiStatus: interest.emiStatus }, { where: { id: interest.id }, transaction: t });
@@ -187,8 +190,10 @@ exports.confirmationForPayment = async (req, res, next) => {
 
         })
 
-        return res.status(200).json({ message: "success" });
     }
+    return res.status(200).json({ message: "success" });
+
+
 
 }
 

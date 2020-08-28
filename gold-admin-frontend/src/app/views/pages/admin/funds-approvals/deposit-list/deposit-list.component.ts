@@ -123,7 +123,7 @@ export class DepositListComponent implements OnInit {
 
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
       data: { value: deposit, name: 'deposit' },
-      width: '380px'
+      width: '500px'
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
