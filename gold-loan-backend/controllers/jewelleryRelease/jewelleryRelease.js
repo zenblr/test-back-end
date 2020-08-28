@@ -388,7 +388,7 @@ exports.updateAmountStatus = async (req, res, next) => {
         if (partReleaseData.amountStatus == 'pending' || partReleaseData.amountStatus == 'rejected') {
             if (amountStatus == 'completed') {
                 let payment = await allInterestPayment(partReleaseData.customerLoanTransactionId);
-                let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(partReleaseData.masterLoanId, partReleaseData.customerLoanTransactionId);
+                let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount( partReleaseData.customerLoanTransactionId);
                 await sequelize.transaction(async t => {
 
                     //update in interest table
@@ -912,7 +912,7 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
         if (fullReleaseData.amountStatus == 'pending' || fullReleaseData.amountStatus == 'rejected') {
             if (amountStatus == 'completed') {
                 let payment = await allInterestPayment(fullReleaseData.customerLoanTransactionId);
-                let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(fullReleaseData.masterLoanId, fullReleaseData.customerLoanTransactionId);
+                let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(fullReleaseData.customerLoanTransactionId);
                 await sequelize.transaction(async t => {
 
                     //update in interest table

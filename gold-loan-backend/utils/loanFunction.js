@@ -1076,7 +1076,7 @@ async function getAmountLoanSplitUpData(loan, amount, partPaymentAmount) {
 }
 
 
-let getTransactionPrincipalAmount = async(masterLoanId, customerLoanTransactionId) => {
+let getTransactionPrincipalAmount = async( customerLoanTransactionId) => {
     let transactionDataSecured = await models.customerTransactionSplitUp.findOne({ where: { customerLoanTransactionId: customerLoanTransactionId, isSecured: true } });
     let transactionDataUnSecured = await models.customerTransactionSplitUp.findOne({ where: { customerLoanTransactionId: customerLoanTransactionId, isSecured: false } });
     let securedPayableOutstanding = 0;
@@ -1088,7 +1088,7 @@ let getTransactionPrincipalAmount = async(masterLoanId, customerLoanTransactionI
     }
     totalPayableOutstanding = Number(securedPayableOutstanding) + Number(unSecuredPayableOutstanding);
     let loanInfo = await models.customerLoanMaster.findOne({
-        where: { id: masterLoanId },
+        where: { id: transactionDataSecured.masterLoanId },
         order: [
             [models.customerLoan, 'id', 'asc']
         ],
