@@ -1075,6 +1075,42 @@ async function getAmountLoanSplitUpData(loan, amount, partPaymentAmount) {
 
 }
 
+
+let getTransactionPrincipalAmount = async(masterLoanId, customerLoanTransactionId) => {
+    let transactionDataSecured = await models.customerTransactionSplitUp.findOne({ where: { customerLoanTransactionId: customerLoanTransactionId, isSecured: true } });
+    let transactionDataUnSecured = await models.customerTransactionSplitUp.findOne({ where: { customerLoanTransactionId: customerLoanTransactionId, isSecured: false } });
+    let securedPayableOutstanding = 0;
+    let unSecuredPayableOutstanding = 0;
+    let totalPayableOutstanding = 0;
+    securedPayableOutstanding = transactionDataSecured.payableOutstanding;
+    if (transactionDataUnSecured) {
+        unSecuredPayableOutstanding = transactionDataUnSecured.payableOutstanding;
+    }
+    totalPayableOutstanding = Number(securedPayableOutstanding) + Number(unSecuredPayableOutstanding);
+    let loanInfo = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        order: [
+            [models.customerLoan, 'id', 'asc']
+        ],
+        attributes: ['id', 'outstandingAmount'],
+        include: [{
+            model: models.customerLoan,
+            as: 'customerLoan',
+            attributes: ['id', 'outstandingAmount','loanUniqueId']
+        }]
+    });
+    let securedOutstandingAmount = Number(loanInfo.customerLoan[0].outstandingAmount - securedPayableOutstanding);
+    let securedLoanUniqueId = loanInfo.customerLoan[0].loanUniqueId;
+    let unSecuredOutstandingAmount = 0;
+    let unSecuredLoanUniqueId;
+    if(transactionDataUnSecured){
+        unSecuredOutstandingAmount = Number(loanInfo.customerLoan[1].outstandingAmount - unSecuredPayableOutstanding);
+        unSecuredLoanUniqueId = loanInfo.customerLoan[1].loanUniqueId;
+    }
+    let outstandingAmount = Number(loanInfo.outstandingAmount - totalPayableOutstanding);
+    return {securedPayableOutstanding,unSecuredPayableOutstanding,transactionDataSecured,transactionDataUnSecured,securedOutstandingAmount,unSecuredOutstandingAmount,outstandingAmount,securedLoanUniqueId,unSecuredLoanUniqueId}
+}
+
 module.exports = {
     getGlobalSetting: getGlobalSetting,
     getAllCustomerLoanId: getAllCustomerLoanId,
@@ -1110,5 +1146,6 @@ module.exports = {
     getAllInterestGreaterThanDate: getAllInterestGreaterThanDate,
     getExtraInterest: getExtraInterest,
     getSingleLoanDetail: getSingleLoanDetail,
-    getAmountLoanSplitUpData: getAmountLoanSplitUpData
+    getAmountLoanSplitUpData: getAmountLoanSplitUpData,
+    getTransactionPrincipalAmount:getTransactionPrincipalAmount
 }
