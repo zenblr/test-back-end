@@ -117,7 +117,7 @@ export class PartPaymentComponent implements OnInit {
 
   viewEmiLogs() {
     const dialogRef = this.dialog.open(PartPaymentLogDialogComponent, {
-      data: { partPaymentHistory: this.loanDetails },
+      data: { id: this.masterLoanId },
       width: 'auto'
     })
   }

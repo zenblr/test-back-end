@@ -10,10 +10,10 @@
                     <th class="transparent">Payment Date</th>
                     <th class="transparent">Paid Part Amount</th>
                     <th class="transparent">Principal Outstanding Amount</th>
-                    <th class="transparent">Total Part Payment</th>
+                    <!-- <th class="transparent">Total Part Payment</th> -->
                 </thead>
                 <tbody>
-                    <tr *ngFor="let loanDetail of data.partPaymentHistory">
+                    <tr *ngFor="let loanDetail of partPaymentHistory">
                         <td>
                             {{loanDetail.transactionSplitUp[0].customerLoan?.loanUniqueId}}
                             <br>
@@ -22,10 +22,10 @@
                             </span>
                         </td>
                         <td>
-                            {{loanDetail.transactionSplitUp[0].customerLoan?.outstandingAmount}}
+                            {{loanDetail.transactionSplitUp[0].customerLoan?.loanAmount}}
                             <br>
                             <span *ngIf="loanDetail.transactionSplitUp.length > 1">
-                                {{loanDetail.transactionSplitUp[1].customerLoan?.outstandingAmount}}
+                                {{loanDetail.transactionSplitUp[1].customerLoan?.loanAmount}}
                             </span>
                         </td>
                         <td>{{loanDetail.depositDate | date :'mediumDate'}}</td>
@@ -36,10 +36,10 @@
                                 {{loanDetail.transactionSplitUp[1].payableOutstanding}}
                             </span>
                         </td>
-                        <td> {{loanDetail.transactionSplitUp[0].loanOutstanding}}
+                        <td> {{loanDetail.transactionSplitUp[0].customerLoan?.loanOutstanding}}
                             <br>
                             <span *ngIf="loanDetail.transactionSplitUp.length > 1">
-                                {{loanDetail.transactionSplitUp[1].loanOutstanding}}
+                                {{loanDetail.transactionSplitUp[1].customerLoan?.loanOutstanding}}
                             </span>
                         </td>
                         <td></td>
@@ -47,5 +47,12 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- <div class="row kt-padding-t-20">
+            <h5>Total Part Payment</h5>
+            <h6> </h6>
+        </div>
+        <div class="row kt-padding-t-20"></div> -->
+
     </kt-portlet-body>
 </kt-portlet>
