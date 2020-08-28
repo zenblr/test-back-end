@@ -807,11 +807,12 @@ let allInterestPayment = async (transactionId, createdBy) => {
         Array.prototype.push.apply(transactionDetails, newSecuredDetails.transaction)
 
     }
+    let unsecuredLoanDetails
     // unsecure
     if (transactionSplitUp.length > 1) {
 
 
-        var unsecuredLoanDetails = await models.customerLoanInterest.findAll({
+         unsecuredLoanDetails = await models.customerLoanInterest.findAll({
             where: {
                 loanId: transactionSplitUp[1].loanId,
                 emiStatus: { [Op.in]: ['pending', 'partially paid'] }
