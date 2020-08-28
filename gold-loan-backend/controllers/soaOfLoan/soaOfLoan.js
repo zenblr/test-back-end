@@ -22,22 +22,39 @@ exports.getSoa = async (req, res) => {
         }]
     });
     //Excel
-    let wb = new xl.Workbook();
+    let wb = new xl.Workbook({dateFormat: 'dd/mm/yyyy',numberFormat: '#.00; (#.00); 0.00'});
     let ws = wb.addWorksheet('report');
     const style = wb.createStyle({
         font: {
             color: '#000000'
+        },
+        alignment: { 
+            wrapText: true
         }
     });
     // Create a reusable style
     var numberStyle = wb.createStyle({
-        numberFormat: '#,##0.00; (#,##0.00); -',
+        numberFormat: '#.00; (#.00); 0.00',
     });
+    //Column
+    ws.column(1).setWidth(10);
+    ws.column(2).setWidth(25);
+    ws.column(3).setWidth(14);
+    ws.column(4).setWidth(10);
+    ws.column(5).setWidth(10);
+    ws.column(6).setWidth(12);
+    ws.column(7).setWidth(12);
+    ws.column(8).setWidth(12);
+    ws.column(9).setWidth(12);
+    ws.column(10).setWidth(9);
+    ws.column(11).setWidth(12);
+    ws.column(12).setWidth(12);
+    ws.column(13).setWidth(12);
     //account opening
     ws.cell(1, 1).string("Transaction Date").style(style);
     ws.cell(1, 2).string("Transaction Type Narration").style(style);
     ws.cell(1, 3).string("Reference ID").style(style);
-    ws.cell(1, 4).string("paymentType").style(style);
+    ws.cell(1, 4).string("Payment Type").style(style);
     ws.cell(1, 5).string("Transaction ID").style(style);
     ws.cell(1, 6).string("Bank Transaction Unique ID").style(style);
     ws.cell(1, 7).string("Cheque Number").style(style);
@@ -63,7 +80,7 @@ exports.getSoa = async (req, res) => {
     let closingBalance = 0;
     for (let i = 0; account.length > i; i++) {
         ws.cell(i + 3, 1).date(account[i].createdAt);
-        ws.cell(i + 3, 2).string(account[i].description);
+        ws.cell(i + 3, 2).string(account[i].description).style(style);
         ws.cell(i + 3, 3).string(account[i].referenceId);
         //
         if (account[i].customerLoanTransactionId != null) {
@@ -86,7 +103,7 @@ exports.getSoa = async (req, res) => {
         ws.cell(i + 3, 11).number(Number(account[i].debit)).style(numberStyle);
         ws.cell(i + 3, 12).number(Number(account[i].credit)).style(numberStyle);
         closingBalance = Number(closingBalance) + Number(account[i].debit) - Number(account[i].credit);
-        ws.cell(i + 3, 14).number(Number(closingBalance)).style(numberStyle);
+        ws.cell(i + 3, 13).number(Number(closingBalance)).style(numberStyle);
     }
     return wb.write(`${Date.now()}.xlsx`, res);
     // return res.status(200).json({ message: "success",account });
