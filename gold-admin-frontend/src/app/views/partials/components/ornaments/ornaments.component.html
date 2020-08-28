@@ -526,7 +526,7 @@
                                     <div class="col-8">
                                         <select class="form-control" formControlName="karat" (change)="selectKarat(idx)"
                                             [class.isError]="ornament.controls.karat.touched && ornament.controls.karat.invalid">
-                                            <option value="" [disabled]="true" [selected]="true">Select Karat</option>
+                                            <option value=null [disabled]="true" [selected]="true">Select Karat</option>
                                             <option [value]="karat.karat" *ngFor="let karat of karatArr"
                                                 [selected]="ornament.controls.karat.value == karat.karat">
                                                 {{karat.karat}}

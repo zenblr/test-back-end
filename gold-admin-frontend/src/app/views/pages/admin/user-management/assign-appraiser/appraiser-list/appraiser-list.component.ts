@@ -121,7 +121,7 @@ export class AppraiserListComponent implements OnInit {
 	 * @param appraiser: appraiser
 	 */
   editappraiser(appraiser, action) {
-    console.log(appraiser);
+    
     // const _saveMessage = `appraiser successfully has been saved.`;
     // const _messageType = appraiser.id ? MessageType.Update : MessageType.Create;
     const dialogRef = this.dialog.open(AssignAppraiserComponent,

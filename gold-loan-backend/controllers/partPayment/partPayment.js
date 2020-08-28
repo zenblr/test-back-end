@@ -18,9 +18,27 @@ let { checkPaidInterest, getCustomerInterestAmount, newSlabRateInterestCalcultai
 exports.getInterestInfo = async (req, res, next) => {
     let { loanId, masterLoanId } = req.query;
 
-    let interestInfo = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
-
-    return res.status(200).json({ message: "success", data: interestInfo.loan })
+    let interestInfo = await models.customerLoanTransaction.findAll({
+        where: { masterLoanId: masterLoanId, depositStatus: 'Completed', paymentFor: 'partPayment' },
+        order: [
+            [
+                [{ model: models.customerTransactionSplitUp, as: 'transactionSplitUp' }, 'loanId', 'asc']
+            ]
+        ],
+        include: [
+            {
+                model: models.customerTransactionSplitUp,
+                as: 'transactionSplitUp',
+                include: [
+                    {
+                        model: models.customerLoan,
+                        as: 'customerLoan',
+                    }
+                ]
+            }
+        ]
+    })
+    return res.status(200).json({ message: "success", data: interestInfo })
 
 
 }
@@ -79,7 +97,7 @@ exports.partPayment = async (req, res, next) => {
 
     let partPaymentAmount = paidAmount - payableAmount
     if (payableAmount > paidAmount) {
-        return res.status(200).json({ message: `Your payable amount is greater than paid amount. You have to pay ${payableAmount}` })
+        return res.status(400).json({ message: `Your payable amount is greater than paid amount. You have to pay ${payableAmount}` })
     }
     let { isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest, securedLoanId, unsecuredLoanId } = await getAmountLoanSplitUpData(loan, amount, partPaymentAmount)
 

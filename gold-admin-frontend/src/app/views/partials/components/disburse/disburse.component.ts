@@ -20,7 +20,7 @@ export class DisburseComponent implements OnInit {
   @Input() disbursementDetails;
   @Input() showButton;
   @Input() loanDetials;
-  @Input() disable = false ;
+  @Input() disable = false;
   @Input() disbursed = false;
   currentDate = new Date()
   disburseForm: FormGroup
@@ -137,6 +137,7 @@ export class DisburseComponent implements OnInit {
     this.controls.securedLoanAmount.disable()
     this.controls.processingCharge.disable()
     this.controls.fullUnsecuredAmount.disable()
+    this.controls.disbursementStatus.disable()
   }
 
   enableSchemeRelatedField() {
@@ -146,6 +147,7 @@ export class DisburseComponent implements OnInit {
     this.controls.securedLoanAmount.enable()
     this.controls.processingCharge.disable()
     this.controls.fullUnsecuredAmount.disable()
+    this.controls.disbursementStatus.enable()
   }
 
   getBankDetails() {

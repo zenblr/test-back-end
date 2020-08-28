@@ -49,7 +49,7 @@ export class UserAddressComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    // console.log(this.userDetailsService.userData)
+    
     this.getStates();
     this.getIdentityType();
     this.getAddressProofType()
@@ -113,10 +113,9 @@ export class UserAddressComponent implements OnInit {
 
   getFileInfo(event, type: any) {
     this.files = event.target.files[0];
-    // console.log(type);
-    // console.log(this.addressControls)
+   
     var name = event.target.files[0].name
-    console.log(name)
+  
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
       const params = {
@@ -133,7 +132,7 @@ export class UserAddressComponent implements OnInit {
             // identityProofImg
 
             this.identityFileNameArray.push(event.target.files[0].name)
-            console.log(this.identityFileNameArray)
+          
             this.identityForm.patchValue({ identityProofImg: this.images.identityProof });
             this.identityForm.patchValue({ identityProof: this.imageId.identityProof });
             //this.identityForm.get('identityProofFileName').patchValue(event.target.files[0].name);
@@ -161,7 +160,7 @@ export class UserAddressComponent implements OnInit {
             this.toastr.error("Cannot upload more than two images")
           }
           this.ref.detectChanges();
-          // console.log(this.addressControls)
+         
         }), catchError(err => {
           this.toastr.error(err.error.message);
           throw err
@@ -185,9 +184,9 @@ export class UserAddressComponent implements OnInit {
   }
 
   getCities(index) {
-    console.log(index)
+  
     const stateId = this.addressControls.controls[index]['controls'].stateId.value;
-    // console.log(stateId)
+   
     this.sharedService.getCities(stateId).subscribe(res => {
       if (index == 0) {
         this.cities0 = res.data;
@@ -206,7 +205,7 @@ export class UserAddressComponent implements OnInit {
   }
 
   submit() {
-    console.log(this.identityForm)
+   
     if (this.identityForm.invalid) {
       this.identityForm.markAllAsTouched()
       return
@@ -217,13 +216,13 @@ export class UserAddressComponent implements OnInit {
     this.addressControls.at(0)['controls'].addressProofNumber.enable()
 
     const data = this.identityForm.value;
-    console.log(data)
+  
     this.userAddressService.addressDetails(data).pipe(
       map(res => {
         if (res) {
           this.next.emit(true);
         }
-        console.log(res);
+      
       }, finalize(() => {
         this.identityForm.controls.identityTypeId.disable()
 
@@ -255,11 +254,10 @@ export class UserAddressComponent implements OnInit {
       this.images.residential = this.images.permanent;
       this.addressControls.at(1).disable();
       this.addressControls.at(1).patchValue(this.addressControls.at(0).value)
-      console.log(this.addressControls.at(0).value)
-      console.log(this.addressControls.at(1).value)
+     
       this.addressControls.at(1)['controls'].addressType.patchValue('residential')
       this.addressFileNameArray2 = this.addressFileNameArray1
-      console.log(this.addressFileNameArray2, this.addressFileNameArray1)
+    
       this.addressControls.at(1)['controls'].addressProofFileName.patchValue(this.addressFileNameArray2[this.addressFileNameArray2.length - 1])
     } else {
       this.sameAdd = false
@@ -274,7 +272,7 @@ export class UserAddressComponent implements OnInit {
   }
 
   removeImages(index, type) {
-    // console.log(index, type)
+  
     if (type == 'identityProof') {
       this.images.identityProof.splice(index, 1);
       this.imageId.identityProof.splice(index, 1);
@@ -386,7 +384,7 @@ export class UserAddressComponent implements OnInit {
         this.addressFileNameArray1 = []
       }
     }
-    console.log(this.addressControls.at(0).value)
+    
   }
 
 }

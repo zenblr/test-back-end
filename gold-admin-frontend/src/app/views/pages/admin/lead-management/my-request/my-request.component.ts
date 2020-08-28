@@ -86,7 +86,7 @@ export class MyRequestComponent implements OnInit {
   }
 
   apply(item) {
-    console.log(item)
+   
     if (item.customer.kycStatus === 'approved') {
       switch (item.module.id) {
         case 1:

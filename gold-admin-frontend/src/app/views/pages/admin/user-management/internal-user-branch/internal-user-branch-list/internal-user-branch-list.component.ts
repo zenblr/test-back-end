@@ -90,7 +90,6 @@ export class InternalUserBranchListComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(res => {
       this.internalBranchResult = res;
-      console.log(this.internalBranchResult)
     });
     this.subscriptions.push(entitiesSubscription);
 
@@ -150,7 +149,7 @@ export class InternalUserBranchListComponent implements OnInit {
           this.toast.success(res.message)
         }), catchError(err => {
           this.toast.error(err.error.message)
-          console.log(err.error)
+          //console.log(err.error)
           throw err
         })).subscribe()
       this.loadInternalBranchList();

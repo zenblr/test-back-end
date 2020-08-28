@@ -93,7 +93,7 @@ export class InternalUserListComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(res => {
       this.userResult = res;
-      console.log(this.userResult)
+      
     });
     this.subscriptions.push(entitiesSubscription);
 

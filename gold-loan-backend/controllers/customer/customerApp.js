@@ -144,12 +144,25 @@ exports.readMyLoan = async (req, res, next) => {
     let loanDetails = await models.customerLoanMaster.findAll({
         where: { isActive: true, customerId: customerId, loanStageId: stageId.id },
         order: [
-            [models.customerLoan, 'id', 'asc']
+            [models.customerLoan, 'id', 'asc'],
+            [models.customerLoan, models.customerLoanInterest, 'id', 'asc']
         ],
         include: [
             {
                 model: models.customerLoan,
-                as: "customerLoan"
+                as: "customerLoan",
+                include: [
+                    {
+                        model: models.scheme,
+                        as: 'scheme'
+                    },
+                    {
+                        model: models.customerLoanInterest,
+                        as: 'customerLoanInterest',
+                        where: { emiStatus: { [Op.notIn]: ['paid'] } },//isExtraDaysInterest: false
+                    },
+
+                ]
             }
         ]
     });

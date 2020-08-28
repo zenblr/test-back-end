@@ -65,7 +65,7 @@ export class AssignAppraiserComponent implements OnInit {
   }
 
   setForm() {
-    console.log(this.data)
+   
     if (this.data.action == 'add') {
       this.title = this.data.isReleaser ? 'Assign Releaser' : 'Assign Appraiser';
       if (this.data.customer) {
@@ -80,7 +80,7 @@ export class AssignAppraiserComponent implements OnInit {
     }
     else if (this.data.action == 'edit') {
       this.title = this.data.isReleaser ? 'Update Releaser' : 'Update Appraiser'
-      // console.log(this.data)
+      
       this.appraiserForm.patchValue(this.data.appraiser)
       this.startTime = this.convertTime24To12(this.data.appraiser.startTime);
       this.endTime = this.convertTime24To12(this.data.appraiser.endTime);
@@ -133,7 +133,7 @@ export class AssignAppraiserComponent implements OnInit {
 
   getUserDetails() {
     this.sharedService.getUserDetailsFromStorage().pipe(map(res => {
-      // console.log(res)
+     
       this.internalBranchId = res.userDetails.internalBranchId
       if (this.data.isReleaser) {
         this.getAllReleaser()
@@ -177,7 +177,7 @@ export class AssignAppraiserComponent implements OnInit {
   }
 
   bindCustomerName(event) {
-    // console.log(event)
+    
     if (event) {
       this.controls.customerName.patchValue(event.firstName + " " + event.lastName);
     } else {
@@ -190,12 +190,12 @@ export class AssignAppraiserComponent implements OnInit {
       this.appraiserForm.markAllAsTouched()
       for (const key in this.appraiserForm.controls) {
         const element = this.appraiserForm.controls[key];
-        // console.log({ key, element })
+        
         if (element.invalid) console.log({ key, element })
       }
       return
     }
-    // console.log(this.appraiserForm.value);
+   
     const appoinmentDate = new Date(this.controls.appoinmentDate.value)
     const correctedDate = new Date(appoinmentDate.getTime() - appoinmentDate.getTimezoneOffset() * 60000)
     this.appraiserForm.patchValue({ appoinmentDate: correctedDate })
