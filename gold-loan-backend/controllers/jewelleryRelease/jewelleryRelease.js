@@ -387,14 +387,41 @@ exports.updateAmountStatus = async (req, res, next) => {
     if (partReleaseData) {
         if (partReleaseData.amountStatus == 'pending' || partReleaseData.amountStatus == 'rejected') {
             if (amountStatus == 'completed') {
-                let { securedPayableOutstanding,unSecuredPayableOutstanding,transactionDataSecured,transactionDataUnSecured,securedOutstandingAmount,unSecuredOutstandingAmount,outstandingAmount,securedLoanUniqueId,unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(partReleaseData.masterLoanId, partReleaseData.customerLoanTransactionId);
+                let payment = await allInterestPayment(partReleaseData.customerLoanTransactionId);
+                let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(partReleaseData.masterLoanId, partReleaseData.customerLoanTransactionId);
                 await sequelize.transaction(async t => {
+
+                    //update in interest table
+                    if (payment.securedLoanDetails) {
+                        for (const interest of payment.securedLoanDetails) {
+                            await models.customerLoanInterest.update({ paidAmount: interest.paidAmount, interestAccrual: interest.interestAccrual, outstandingInterest: interest.outstandingInterest, emiReceivedDate: moment(), penalAccrual: interest.penalAccrual, penalOutstanding: interest.penalOutstanding, penalPaid: interest.penalPaid, modifiedBy, emiStatus: interest.emiStatus }, { where: { id: interest.id }, transaction: t });
+                        }
+                    }
+                    if (payment.unsecuredLoanDetails) {
+                        for (const interest of payment.unsecuredLoanDetails) {
+                            await models.customerLoanInterest.update({ paidAmount: interest.paidAmount, interestAccrual: interest.interestAccrual, outstandingInterest: interest.outstandingInterest, emiReceivedDate: moment(), penalAccrual: interest.penalAccrual, penalOutstanding: interest.penalOutstanding, penalPaid: interest.penalPaid, modifiedBy, emiStatus: interest.emiStatus }, { where: { id: interest.id }, transaction: t });
+                        }
+                    }
+                    //update in transaction
+                    if (payment.transactionDetails) {
+                        for (const amount of payment.transactionDetails) {
+                            if (amount.isPenalInterest) {
+                                let paid = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, isPenalInterest: amount.isPenalInterest, credit: amount.credit, paymentDate: moment() }, { transaction: t });
+                                await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
+                            } else {
+                                let paid = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, credit: amount.credit, paymentDate: moment() }, { transaction: t });
+                                await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
+                            }
+                        }
+                    }
+
+
                     //credit part release ornament amount
                     let securedTransaction = await models.customerTransactionDetail.create({ masterLoanId: partReleaseData.masterLoanId, customerLoanTransactionId: partReleaseData.customerLoanTransactionId, loanId: transactionDataSecured.loanId, credit: securedPayableOutstanding, paymentDate: moment(), description: "part release ornament amount" }, { transaction: t });
-                    await models.customerTransactionDetail.update({referenceId:`${securedLoanUniqueId}-${securedTransaction.id}`},{where:{id:securedTransaction.id},transaction: t})
+                    await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${securedTransaction.id}` }, { where: { id: securedTransaction.id }, transaction: t })
                     if (transactionDataUnSecured) {
                         let unSecuredTransaction = await models.customerTransactionDetail.create({ masterLoanId: partReleaseData.masterLoanId, customerLoanTransactionId: partReleaseData.customerLoanTransactionId, loanId: transactionDataUnSecured.loanId, credit: unSecuredPayableOutstanding, paymentDate: moment(), description: "part release ornament amount" }, { transaction: t });
-                        await models.customerTransactionDetail.update({referenceId:`${unSecuredLoanUniqueId}-${unSecuredTransaction.id}`},{where:{id:unSecuredTransaction.id},transaction: t})
+                        await models.customerTransactionDetail.update({ referenceId: `${unSecuredLoanUniqueId}-${unSecuredTransaction.id}` }, { where: { id: unSecuredTransaction.id }, transaction: t })
                     }
                     await models.customerLoanTransaction.update({ depositStatus: "Completed", paymentReceivedDate: moment() }, { where: { id: partReleaseData.customerLoanTransactionId }, transaction: t });
                     await models.customerLoan.update({ outstandingAmount: securedOutstandingAmount }, { where: { id: transactionDataSecured.loanId }, transaction: t });
@@ -884,14 +911,39 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
     if (fullReleaseData) {
         if (fullReleaseData.amountStatus == 'pending' || fullReleaseData.amountStatus == 'rejected') {
             if (amountStatus == 'completed') {
-                let { securedPayableOutstanding,unSecuredPayableOutstanding,transactionDataSecured,transactionDataUnSecured,securedOutstandingAmount,unSecuredOutstandingAmount,outstandingAmount,securedLoanUniqueId,unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(fullReleaseData.masterLoanId, fullReleaseData.customerLoanTransactionId);
+                let payment = await allInterestPayment(fullReleaseData.customerLoanTransactionId);
+                let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(fullReleaseData.masterLoanId, fullReleaseData.customerLoanTransactionId);
                 await sequelize.transaction(async t => {
+
+                    //update in interest table
+                    if (payment.securedLoanDetails) {
+                        for (const interest of payment.securedLoanDetails) {
+                            await models.customerLoanInterest.update({ paidAmount: interest.paidAmount, interestAccrual: interest.interestAccrual, outstandingInterest: interest.outstandingInterest, emiReceivedDate: moment(), penalAccrual: interest.penalAccrual, penalOutstanding: interest.penalOutstanding, penalPaid: interest.penalPaid, modifiedBy, emiStatus: interest.emiStatus }, { where: { id: interest.id }, transaction: t });
+                        }
+                    }
+                    if (payment.unsecuredLoanDetails) {
+                        for (const interest of payment.unsecuredLoanDetails) {
+                            await models.customerLoanInterest.update({ paidAmount: interest.paidAmount, interestAccrual: interest.interestAccrual, outstandingInterest: interest.outstandingInterest, emiReceivedDate: moment(), penalAccrual: interest.penalAccrual, penalOutstanding: interest.penalOutstanding, penalPaid: interest.penalPaid, modifiedBy, emiStatus: interest.emiStatus }, { where: { id: interest.id }, transaction: t });
+                        }
+                    }
+                    //update in transaction
+                    if (payment.transactionDetails) {
+                        for (const amount of payment.transactionDetails) {
+                            if (amount.isPenalInterest) {
+                                let paid = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, isPenalInterest: amount.isPenalInterest, credit: amount.credit, paymentDate: moment() }, { transaction: t });
+                                await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
+                            } else {
+                                let paid = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, credit: amount.credit, paymentDate: moment() }, { transaction: t });
+                                await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
+                            }
+                        }
+                    }
                     //credit part release ornament amount
                     let securedTransaction = await models.customerTransactionDetail.create({ masterLoanId: fullReleaseData.masterLoanId, customerLoanTransactionId: fullReleaseData.customerLoanTransactionId, loanId: transactionDataSecured.loanId, credit: securedPayableOutstanding, paymentDate: moment(), description: "full release ornament amount" }, { transaction: t });
-                    await models.customerTransactionDetail.update({referenceId:`${securedLoanUniqueId}-${securedTransaction.id}`},{where:{id:securedTransaction.id},transaction: t})
+                    await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${securedTransaction.id}` }, { where: { id: securedTransaction.id }, transaction: t })
                     if (transactionDataUnSecured) {
                         let unSecuredTransaction = await models.customerTransactionDetail.create({ masterLoanId: fullReleaseData.masterLoanId, customerLoanTransactionId: fullReleaseData.customerLoanTransactionId, loanId: transactionDataUnSecured.loanId, credit: unSecuredPayableOutstanding, paymentDate: moment(), description: "full release ornament amount" }, { transaction: t });
-                        await models.customerTransactionDetail.update({referenceId:`${unSecuredLoanUniqueId}-${unSecuredTransaction.id}`},{where:{id:unSecuredTransaction.id},transaction: t})
+                        await models.customerTransactionDetail.update({ referenceId: `${unSecuredLoanUniqueId}-${unSecuredTransaction.id}` }, { where: { id: unSecuredTransaction.id }, transaction: t })
                     }
                     await models.customerLoanTransaction.update({ depositStatus: "Completed", paymentReceivedDate: moment() }, { where: { id: fullReleaseData.customerLoanTransactionId }, transaction: t });
                     await models.customerLoan.update({ outstandingAmount: securedOutstandingAmount }, { where: { id: transactionDataSecured.loanId }, transaction: t });
@@ -902,7 +954,7 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
                     await models.fullRelease.update({ amountStatus: 'completed', modifiedBy }, { where: { id: fullReleaseId }, transaction: t });
                     await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_AMOUNT_STATUS_C, createdBy, modifiedBy }, { transaction: t });
                 });
-                return res.status(200).json({ message: "success" });
+                return res.status(200).json({ message: "success", payment });
             } else if (amountStatus == 'rejected') {
                 await sequelize.transaction(async t => {
                     await models.customerLoanTransaction.update({ depositStatus: "Rejected" }, { where: { id: fullReleaseData.customerLoanTransactionId }, transaction: t });
