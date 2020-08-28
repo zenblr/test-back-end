@@ -26,7 +26,7 @@ import { DataTableService } from '../../../../../../core/shared/services/data-ta
 })
 export class InternalUserListComponent implements OnInit {
 
-  
+
   searchValue = ''
   unsubscribeSearch$ = new Subject()
   // Table fields
@@ -51,7 +51,7 @@ export class InternalUserListComponent implements OnInit {
    * @param layoutUtilsService: LayoutUtilsService
    */
   constructor(
-    public toast:ToastrService,
+    public toast: ToastrService,
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
@@ -75,10 +75,10 @@ export class InternalUserListComponent implements OnInit {
   ngOnInit() {
 
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
-			tap(() => this.loadUserList())
-		).subscribe();
+      tap(() => this.loadUserList())
+    ).subscribe();
     this.subscriptions.push(paginatorSubscriptions);
-    
+
     const searchSubscription = this.dataTableService.searchInput$.pipe(
       takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {

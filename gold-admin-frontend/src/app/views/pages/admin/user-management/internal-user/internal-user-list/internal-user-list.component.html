@@ -23,6 +23,15 @@
                         </div>
                     </mat-cell>
                 </ng-container>
+                <!-- <ng-container matColumnDef="role">
+                    <mat-header-cell *matHeaderCellDef>Role Name</mat-header-cell>
+                    <mat-cell *matCellDef="let user">
+                        <div class="text-color">
+                            {{user.firstName | titlecase}}
+                            {{user.lastName | titlecase}}
+                        </div>
+                    </mat-cell>
+                </ng-container> -->
                 <ng-container matColumnDef="email">
                     <mat-header-cell *matHeaderCellDef>Email ID</mat-header-cell>
                     <mat-cell *matCellDef="let user">

@@ -17,23 +17,23 @@
             </div>
 
             <div class="row kt-padding-t0" *ngIf="loanDetails">
-                <div class="col text-gray font-weight-500">
+                <div class="col">
                     {{loanDetails.customerLoan.loanPersonalDetail.customerUniqueId}}</div>
-                <div class="col text-gray font-weight-500">
+                <div class="col">
                     <div *ngFor="let loan of loanDetails.customerLoan.customerLoan">
                         {{loan.loanUniqueId}}
                     </div>
                 </div>
-                <div class="col text-gray font-weight-500"> {{loanDetails.customerLoan.finalLoanAmount}}</div>
-                <div class="col text-gray font-weight-500"> {{loanDetails.customerLoan.loanStartDate}}
+                <div class="col"> {{loanDetails.customerLoan.finalLoanAmount}}</div>
+                <div class="col"> {{loanDetails.customerLoan.loanStartDate}}
                 </div>
-                <div class="col text-gray font-weight-500"> {{loanDetails.customerLoan.loanEndDate}}</div>
-                <div class="col text-gray font-weight-500">{{loanDetails.customerLoan.tenure}} Months</div>
-                <div class="col text-gray font-weight-500">
+                <div class="col"> {{loanDetails.customerLoan.loanEndDate}}</div>
+                <div class="col">{{loanDetails.customerLoan.tenure}} Months</div>
+                <div class="col">
                     <span *ngIf="loanDetails.lastPayment else blank">{{loanDetails.lastPayment}}</span>
                 </div>
-                <div class="col-2 text-gray font-weight-500">{{loanDetails?.customerLoan.outstandingAmount}}</div>
-                <div class="col font-weight-500">
+                <div class="col-2">{{loanDetails?.customerLoan.outstandingAmount}}</div>
+                <div class="col">
 
                 </div>
 
@@ -50,23 +50,21 @@
                         <thead>
                             <th class="transparent"> </th>
                             <th class="transparent">Ornament Type</th>
-                            <th class="transparent">Packet ID</th>
+                            <th class="transparent" style="width: 110px;">Packet ID</th>
                             <th class="transparent">Quantity</th>
                             <th class="transparent">Gross Weight</th>
                             <th class="transparent">Deduction Weight </th>
                             <th class="transparent" style="width: 100px;">Net Weight</th>
-                            <th class="transparent" style="width: 100px;">WM 00 weight</th>
-                            <th class="transparent">With Ornament weight</th>
-                            <th class="transparent" style="width: 100px;">Stone Touch</th>
-                            <th class="transparent">Acid Test</th>
-                            <th class="transparent">Purity Test</th>
+                            <!-- <th class="transparent" style="width: 100px;">WM 00 weight</th> -->
+                            <!-- <th class="transparent">With Ornament weight</th> -->
+                            <!-- <th class="transparent" style="width: 100px;">Stone Touch</th> -->
+                            <!-- <th class="transparent">Acid Test</th> -->
+                            <!-- <th class="transparent">Purity Test</th> -->
                             <th class="transparent">Karat</th>
                             <th class="transparent">Purity %</th>
                             <th class="transparent">LTV Amount</th>
                             <th class="transparent">Final LTV Loan Amount</th>
                             <th class="transparent">Ornament Image</th>
-                            <!-- <th class="transparent">Release Date</th> -->
-                            <th class="transparent">Status</th>
                         </thead>
                         <tbody *ngIf="loanDetails">
                             <tr *ngFor="let ornament of loanDetails.customerLoan.loanOrnamentsDetail, index as i">
@@ -99,53 +97,47 @@
                                 <td>{{ ornament.grossWeight }} gm</td>
                                 <td>{{ ornament.deductionWeight }} gm</td>
                                 <td>{{ ornament.netWeight }} gm</td>
-                                <td>
+                                <!-- <td>
                                     <span *ngIf="ornament.weightMachineZeroWeight; else noImage" class="kt-pointer"
                                         (click)="previewImage(ornament.weightMachineZeroWeightData.URL, i)">
                                         View
                                     </span>
-                                    <!-- <span *ngIf="!ornament.weightMachineZeroWeight"> - </span> -->
                                 </td>
                                 <td>
                                     <span *ngIf="ornament.withOrnamentWeight; else noImage" class="kt-pointer"
                                         (click)="previewImage(ornament.withOrnamentWeightData.URL, i)">
                                         View
                                     </span>
-                                    <!-- <span *ngIf="!ornament.withOrnamentWeight"> - </span> -->
                                 </td>
                                 <td>
                                     <span *ngIf="ornament.stoneTouch; else noImage" class="kt-pointer"
                                         (click)="previewImage(ornament.stoneTouchData.URL, i)">
                                         View
                                     </span>
-                                    <!-- <span *ngIf="!ornament.stoneTouch"> - </span> -->
                                 </td>
                                 <td>
                                     <span *ngIf="ornament.acidTest; else noImage" class="kt-pointer"
                                         (click)="previewImage(ornament.acidTestData.URL, i)">
                                         View
                                     </span>
-                                    <!-- <span *ngIf="!ornament.acidTest"> - </span> -->
                                 </td>
                                 <td>
                                     <span *ngIf="ornament.purityTest.length; else noImage" class="kt-pointer"
                                         (click)="previewImage(ornament.purityTestImage.URL[0], i)">
                                         View
                                     </span>
-                                    <!-- <span *ngIf="!ornament.purityTest"> - </span> -->
-                                </td>
+                                </td> -->
                                 <td>{{ ornament.karat }} K</td>
                                 <td>{{ ornament.ltvPercent }} %</td>
                                 <td>{{ ornament.ltvAmount }}</td>
                                 <td>{{ ornament.currentLtvAmount }}</td>
                                 <td>
-                                    <span *ngIf="ornament.ornamentImage; else noImage" class="kt-pointer"
+                                    <span *ngIf="ornament.ornamentImage; else noImage"
+                                        class="kt-pointer kt-link kt-link--brand kt-font-bolder"
                                         (click)="previewImage(ornament.ornamentImageData.URL, i)">
                                         View
                                     </span>
                                 </td>
-                                <td>-</td>
-                                <td>-</td>
                                 <ng-template #noImage>
                                     <span> - </span>
                                 </ng-template>
@@ -182,7 +174,7 @@
                                         <th class="transparent">Previous LTV</th>
                                         <th class="transparent">Current LTV</th>
                                         <th class="transparent">Principal Outstanding Amount<br>
-                                            (based on Current LTV Price)
+
                                         </th>
                                     </ng-container>
                                 </thead>
@@ -271,7 +263,7 @@
                     <div class="row kt-padding-t-15 kt-padding-b-15">
                         <div class="col mx-auto d-flex justify-content-center">
                             <span class="kt-padding-r-10">
-                                <kt-button [value]="'Confirm'" [type]="'button'" (click)="pay()">
+                                <kt-button [value]="'Confirm'" [type]="'button'" (click)="releaseConfirmation()">
                                 </kt-button>
                             </span>
                             <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancelPayment()">
