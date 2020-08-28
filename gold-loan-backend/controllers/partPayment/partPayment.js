@@ -12,7 +12,7 @@ const CONSTANT = require("../../utils/constant");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { checkPaidInterest, getCustomerInterestAmount, newSlabRateInterestCalcultaion, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest,getTransactionPrincipalAmount,calculationDataOneLoan } = require('../../utils/loanFunction')
+let { checkPaidInterest, getCustomerInterestAmount, newSlabRateInterestCalcultaion, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getTransactionPrincipalAmount, calculationDataOneLoan } = require('../../utils/loanFunction')
 
 
 exports.getInterestInfo = async (req, res, next) => {
@@ -145,7 +145,7 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
     let modifiedBy = req.userData.id
     let { transactionId, status, masterLoanId } = req.body;
 
-    if (status == 'approved') {
+    if (status == 'Completed') {
 
 
 
@@ -186,12 +186,13 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
                 await models.customerTransactionDetail.update({ referenceId: `${unSecuredLoanUniqueId}-${unSecuredTransaction.id}` }, { where: { id: unSecuredTransaction.id }, transaction: t })
             }
             await models.customerLoanTransaction.update({ depositStatus: "Completed", paymentReceivedDate: moment() }, { where: { id: transactionId }, transaction: t });
-            await models.customerLoan.update({ outstandingAmount: securedOutstandingAmount }, { where: { id: transactionDataSecured.loanId }, transaction: t });
-            if (transactionDataUnSecured) {
-                await models.customerLoan.update({ outstandingAmount: unSecuredOutstandingAmount }, { where: { id: transactionDataUnSecured.loanId }, transaction: t });
-            }
-            await models.customerLoanMaster.update({ outstandingAmount: outstandingAmount }, { where: { id: masterLoanId }, transaction: t });
+            let x = await models.customerLoan.update({ outstandingAmount: securedOutstandingAmount }, { where: { id: transactionDataSecured.loanId }, transaction: t });
 
+            if (transactionDataUnSecured) {
+                let y = await models.customerLoan.update({ outstandingAmount: unSecuredOutstandingAmount }, { where: { id: transactionDataUnSecured.loanId }, transaction: t });
+            }
+            let z = await models.customerLoanMaster.update({ outstandingAmount: outstandingAmount }, { where: { id: masterLoanId }, transaction: t });
+            let loanOf = await models.customerLoanMaster.findOne({where:{id:masterLoanId}})
 
             // interest calculation after part payment
             // let updateInterestAftertOutstandingAmount = async (date, masterLoanId) => {
@@ -211,7 +212,14 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
                     loanStartDate = moment(lastPaidEmi.emiDueDate);
                     noOfDays = currentDate.diff(loanStartDate, 'days');
                 }
-                let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, loan.currentInterestRate, loan.selectedSlab, loan.masterLoan.tenure);
+                let outstandingAmount 
+                if(loan.loanType == 'secured') {
+                    outstandingAmount = securedOutstandingAmount
+                }else{
+                    outstandingAmount = unSecuredOutstandingAmount
+
+                }
+                let interest = await newSlabRateInterestCalcultaion(outstandingAmount, loan.currentInterestRate, loan.selectedSlab, loan.masterLoan.tenure);
                 let allInterest = await getAllNotPaidInterest(loan.id)//get all interest
                 let interestLessThanDate = await getAllInterestLessThanDate(loan.id, date);
                 //update interestAccrual & interest amount

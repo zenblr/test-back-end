@@ -56,8 +56,8 @@ exports.payableAmount = async (req, res, next) => {
     let data = await payableAmountForLoan(amount, loan.loan)
     data.unsecuredTotalInterest = interest.unsecuredTotalInterest
     data.securedTotalInterest = interest.securedTotalInterest
-    
-    return res.status(200).json({ data });
+
+    return res.status(200).json({ data ,interest});
 }
 
 //CALCULATE PAYABLE AMOUNT
@@ -129,7 +129,7 @@ exports.confirmationForPayment = async (req, res, next) => {
     let { transactionId, status } = req.body
     let modifiedBy = req.userData.id
 
-    if (status == 'approved') {
+    if (status == 'Completed') {
 
 
 

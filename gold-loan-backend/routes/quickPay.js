@@ -15,7 +15,7 @@ route.get('/confirm-payment-info', checkAuth, wrapper(payableAmountConfirm))
 
 route.post('/payment', checkAuth, wrapper(quickPayment));
 
-route.post('/payment-confirm', checkAuth, wrapper(confirmationForPayment));
+route.post('/confirm-payment', checkAuth, wrapper(confirmationForPayment));
 
 
 module.exports = route;   

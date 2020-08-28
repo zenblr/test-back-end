@@ -165,7 +165,7 @@ let getAllDetailsOfCustomerLoan = async (customerLoanId) => {
             ['id', 'asc'],
             [models.customerLoanInterest, 'id', 'asc'],
         ],
-        attributes: ['id', 'masterLoanId', 'loanUniqueId', 'selectedSlab', 'loanAmount', 'outstandingAmount', 'currentSlab', 'currentInterestRate', 'penalInterestLastReceivedDate', 'penalInterest'],
+        attributes: ['id', 'masterLoanId', 'loanUniqueId', 'selectedSlab', 'loanAmount', 'outstandingAmount', 'currentSlab', 'currentInterestRate', 'penalInterestLastReceivedDate', 'penalInterest','loanType'],
         include: [{
             model: models.customerLoanSlabRate,
             as: 'slab',
@@ -1078,49 +1078,53 @@ async function getAmountLoanSplitUpData(loan, amount, splitUpRatioAmount) {
 let getSingleDayInterestAmount = async (loan) => {
 
     let paymentFrequency = loan.paymentFrequency
-    let securedInterest = loan.customerLoan[0].interestRate
+    let securedInterest = loan.customerLoan[0].currentInterestRate
     let securedOutstandingAmount = loan.customerLoan[0].outstandingAmount
+    
+
+    // let securedPerDayInterestAmount = await newSlabRateInterestCalcultaion(securedOutstandingAmount, securedInterest, selectedSlab, tenure);
+
     let securedPerDayInterestAmount = (((securedInterest / 100) * securedOutstandingAmount) / paymentFrequency).toFixed(2)
 
     let interest = await models.customerLoanInterest.findAll({ where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[0].id, } });
-   
+
     let startDate = moment(interest[0].emiStartDate)
-    let index = interest.findIndex(ele=>{
-        let a = new Date(ele.emiStartDate);
+    let index = interest.findIndex(ele => {
+        let a = new Date(ele.emiEndDate);
         let b = new Date()
         return a.getTime() > b.getTime()
     })
 
-    let partialPaidSecuredIndex = interest.findIndex(ele=>{
+    let partialPaidSecuredIndex = interest.findIndex(ele => {
         return ele.emiStatus == 'partially paid'
     })
 
     let dueDate = moment(interest[index].emiEndDate)
 
-    let noOfDays = dueDate.diff(startDate,'days')
-    let securedTotalInterest = (securedPerDayInterestAmount * noOfDays) - interest[partialPaidSecuredIndex].paidAmount    
+    let noOfDays = dueDate.diff(startDate, 'days')
+    let securedTotalInterest = (securedPerDayInterestAmount * noOfDays) - interest[partialPaidSecuredIndex].paidAmount
 
     if (loan.customerLoan.length > 1) {
-        let unsecuredInterest = loan.customerLoan[1].interestRate
+        let unsecuredInterest = loan.customerLoan[1].currentInterestRate
         let unsecuredOutstandingAmount = loan.customerLoan[1].outstandingAmount
         var unsecuredPerDayInterestAmount = (((unsecuredInterest / 100) * unsecuredOutstandingAmount) / paymentFrequency).toFixed(2)
 
         let interest = await models.customerLoanInterest.findAll({ where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[1].id, } });
 
-        let partialPaidSecuredIndex = interest.findIndex(ele=>{
+        let partialPaidSecuredIndex = interest.findIndex(ele => {
             return ele.emiStatus == 'partially paid'
         })
-    
+
         let dueDate = moment(interest[index].emiEndDate)
-    
-        let noOfDays = dueDate.diff(startDate,'days')
-        var  unsecuredTotalInterest = (unsecuredPerDayInterestAmount * noOfDays) - interest[partialPaidSecuredIndex].paidAmount
+
+        let noOfDays = dueDate.diff(startDate, 'days')
+        var unsecuredTotalInterest = (unsecuredPerDayInterestAmount * noOfDays) - interest[partialPaidSecuredIndex].paidAmount
     }
 
 
 
 
-    return {  securedTotalInterest,unsecuredTotalInterest }
+    return { securedTotalInterest, unsecuredTotalInterest,securedPerDayInterestAmount }
 }
 
 
