@@ -169,11 +169,11 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
                 for (const amount of payment.transactionDetails) {
                     if (amount.isPenalInterest) {
                         let description = "penal interest for customer loan"
-                        let paid = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, isPenalInterest: amount.isPenalInterest, description: description, credit: amount.credit, paymentDate: moment() }, { transaction: t });
+                        let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: transactionId, masterLoanId: amount.masterLoanId, loanId: amount.loanId, isPenalInterest: amount.isPenalInterest, description: description, credit: amount.credit, paymentDate: moment() }, { transaction: t });
                         await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
                     } else {
                         let description = "interest for customer loan"
-                        let paid = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, description: description, credit: amount.credit, paymentDate: moment() }, { transaction: t });
+                        let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: transactionId, masterLoanId: amount.masterLoanId, loanId: amount.loanId, description: description, credit: amount.credit, paymentDate: moment() }, { transaction: t });
                         await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
                     }
                 }
