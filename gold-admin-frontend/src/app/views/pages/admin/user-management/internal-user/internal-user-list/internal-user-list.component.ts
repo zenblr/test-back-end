@@ -31,7 +31,7 @@ export class InternalUserListComponent implements OnInit {
   unsubscribeSearch$ = new Subject()
   // Table fields
   dataSource: InternalUserDatasource;
-  displayedColumns = ['userId', 'userName', 'email', 'mobileNumber', 'branchName', 'action'];
+  displayedColumns = ['userId', 'userName', 'role', 'email', 'mobileNumber', 'branchName', 'action'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   userResult: any[] = [];

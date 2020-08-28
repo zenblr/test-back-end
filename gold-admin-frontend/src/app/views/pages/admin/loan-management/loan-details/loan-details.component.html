@@ -12,6 +12,16 @@
                         {{loan?.customer?.customerUniqueId | uppercase}}
                     </mat-cell>
                 </ng-container>
+
+                <ng-container matColumnDef="customerName">
+                    <!-- ATTRIBUTE mat-sort-header  for sorting | https://material.angular.io/components/sort/overview -->
+                    <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        {{loan?.customer?.firstName | titlecase}}
+                        {{loan?.customer?.lastName | titlecase}}
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
                     <mat-cell *matCellDef="let loan" class="d-block">
