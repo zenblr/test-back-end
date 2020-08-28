@@ -13,13 +13,13 @@ const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
 let { mergeInterestTable, getCustomerInterestAmount, getLoanDetails, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, penalInterestPayment, getInterestTableOfSingleLoan } = require('../../utils/loanFunction')
-
+ 
 
 exports.getInterestInfo = async (req, res, next) => {
     let { loanId, masterLoanId } = req.query;
 
     let interestInfo = await models.customerLoanTransaction.findAll({
-        where: { masterLoanId: masterLoanId, depositStatus: 'Completed' },
+        where: { masterLoanId: masterLoanId, depositStatus: 'Completed', paymentFor: 'partPayment' },
         order: [
             [
                 [{ model: models.customerTransactionSplitUp, as: 'transactionSplitUp' }, 'loanId', 'asc']
@@ -138,4 +138,18 @@ exports.partPayment = async (req, res, next) => {
     })
 
     return res.status(200).json({ message: 'success' })
+}
+
+exports.confirmPartPaymentTranscation = async (req,res,next) =>{
+
+    let {transactionId , status} = req.body
+
+    let createdBy = req.userData.id
+
+    if(status == 'approved'){
+        var data = await allInterestPayment(transactionId,createdBy)
+    }
+
+    return res.status(200).json({ data });
+
 }

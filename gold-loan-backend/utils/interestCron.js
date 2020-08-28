@@ -81,7 +81,7 @@ exports.dailyIntrestCalculation = async (date) => {
                             let amount = pendingDaysAmount;
                             let interestAccrual = amount - extraInterest.paidAmount;
                             let outstandingInterest = amount - extraInterest.paidAmount;
-                            await models.customerLoanInterest.update({ interestAmount: amount, interestAccrual, totalInterestAccrual: amount, outstandingInterest,interestRate: stepUpSlab.interestRate }, { where: { id: extraInterest.id }, transaction: t });
+                            await models.customerLoanInterest.update({ interestAmount: amount, interestAccrual, totalInterestAccrual: amount, outstandingInterest, interestRate: stepUpSlab.interestRate }, { where: { id: extraInterest.id }, transaction: t });
                         }
                     }
                 }
@@ -135,25 +135,25 @@ exports.dailyIntrestCalculation = async (date) => {
                         }
                     }
                     //Extra interest
-                     //calculate extra interest
-                if (interestGreaterThanDate.length == 0) {
-                    let pendingNoOfDays = noOfDays - (interestLessThanDate.length * loan.selectedSlab);
-                    if (pendingNoOfDays > 0) {
-                        let oneDayInterest = loan.currentInterestRate / 30;
-                        let oneDayAmount = loan.outstandingAmount * (oneDayInterest / 100);
-                        let pendingDaysAmount = pendingNoOfDays * oneDayAmount;
-                        let extraInterest = await getExtraInterest(loan.id);
-                        if (!extraInterest) {
-                            let amount = pendingDaysAmount;
-                            await models.customerLoanInterest.create({ loanId: loan.id, masterLoanId: loan.masterLoanId, emiStartDate: date, interestRate: loan.currentInterestRate, interestAmount: amount, interestAccrual: amount, totalInterestAccrual: amount, outstandingInterest: amount, isExtraDaysInterest: true }, { transaction: t });
-                        } else {
-                            let amount = pendingDaysAmount;
-                            let interestAccrual = amount - extraInterest.paidAmount;
-                            let outstandingInterest = amount - extraInterest.paidAmount;
-                            await models.customerLoanInterest.update({ interestAmount: amount, interestAccrual, totalInterestAccrual: amount, outstandingInterest }, { where: { id: extraInterest.id }, transaction: t });
+                    //calculate extra interest
+                    if (interestGreaterThanDate.length == 0) {
+                        let pendingNoOfDays = noOfDays - (interestLessThanDate.length * loan.selectedSlab);
+                        if (pendingNoOfDays > 0) {
+                            let oneDayInterest = loan.currentInterestRate / 30;
+                            let oneDayAmount = loan.outstandingAmount * (oneDayInterest / 100);
+                            let pendingDaysAmount = pendingNoOfDays * oneDayAmount;
+                            let extraInterest = await getExtraInterest(loan.id);
+                            if (!extraInterest) {
+                                let amount = pendingDaysAmount;
+                                await models.customerLoanInterest.create({ loanId: loan.id, masterLoanId: loan.masterLoanId, emiStartDate: date, interestRate: loan.currentInterestRate, interestAmount: amount, interestAccrual: amount, totalInterestAccrual: amount, outstandingInterest: amount, isExtraDaysInterest: true }, { transaction: t });
+                            } else {
+                                let amount = pendingDaysAmount;
+                                let interestAccrual = amount - extraInterest.paidAmount;
+                                let outstandingInterest = amount - extraInterest.paidAmount;
+                                await models.customerLoanInterest.update({ interestAmount: amount, interestAccrual, totalInterestAccrual: amount, outstandingInterest }, { where: { id: extraInterest.id }, transaction: t });
+                            }
                         }
                     }
-                }
                 }
             }
         }
@@ -200,12 +200,12 @@ exports.cronForDailyPenalInterest = async (date) => {
             if (dataInfo[j + 1] != undefined) {
                 penalOutstanding = penalAccrual - dataInfo[j + 1].penalPaid
                 console.log("update", penalAccrual, dataInfo[j + 1].id)
-                await models.customerLoanInterest.update({ penalAccrual: penalAccrual, penalOutstanding: penalOutstanding }, { where: { id: dataInfo[j + 1].id } })
+                await models.customerLoanInterest.update({ penalInterest: penalAccrual, penalAccrual: penalAccrual, penalOutstanding: penalOutstanding }, { where: { id: dataInfo[j + 1].id } })
             } else {
                 penalAccrual = Number(penalAccrual) + Number(dataInfo[dataInfo.length - 1].penalAccrual)
                 penalOutstanding = penalAccrual - dataInfo[j].penalPaid
                 console.log("update", penalAccrual, dataInfo[j].id)
-                await models.customerLoanInterest.update({ penalAccrual: penalAccrual, penalOutstanding: penalOutstanding }, { where: { id: dataInfo[j].id } })
+                await models.customerLoanInterest.update({ penalInterest: penalAccrual, penalAccrual: penalAccrual, penalOutstanding: penalOutstanding }, { where: { id: dataInfo[j].id } })
             }
         }
     }
