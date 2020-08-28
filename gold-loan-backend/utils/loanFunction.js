@@ -661,7 +661,7 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
             transactionData.loanInterestId = loanArray[index]['id']
             transactionData.loanId = loanArray[index]['loanId']
             transactionData.masterLoanId = loanArray[index]['masterLoanId']
-            transactionData.credit = pendingSecuredAmount.toFixed(2) 
+            transactionData.credit = pendingSecuredAmount.toFixed(2)
             transactionData.loanUniqueId = loanArray[index]['customerLoan'].loanUniqueId
             transaction.push(transactionData)
             pendingSecuredAmount = (loanArray[index]['outstandingInterest'] - pendingSecuredAmount).toFixed(2)
@@ -812,7 +812,7 @@ let allInterestPayment = async (transactionId, createdBy) => {
     if (transactionSplitUp.length > 1) {
 
 
-         unsecuredLoanDetails = await models.customerLoanInterest.findAll({
+        unsecuredLoanDetails = await models.customerLoanInterest.findAll({
             where: {
                 loanId: transactionSplitUp[1].loanId,
                 emiStatus: { [Op.in]: ['pending', 'partially paid'] }
@@ -867,14 +867,14 @@ let penalInterestPayment = async (loanArray, totalPenalAmount, createdBy) => {
             // transactionAmont: 0,
             createdBy: createdBy,
         }
-        
-        
+
+
 
         if (pendingPenalAmount <= 0) {
 
             break;
 
-        } else if (pendingPenalAmount < Number(loanArray[index]['penalInterest'])  && Number(loanArray[index]['penalOutstanding']) > 0) {
+        } else if (pendingPenalAmount < Number(loanArray[index]['penalInterest']) && Number(loanArray[index]['penalOutstanding']) > 0) {
 
             loanArray[index]['penalPaid'] = pendingPenalAmount.toFixed(2)
             transactionData.credit = pendingPenalAmount.toFixed(2)
@@ -888,9 +888,9 @@ let penalInterestPayment = async (loanArray, totalPenalAmount, createdBy) => {
             loanArray[index]['penalOutstanding'] = Number(loanArray[index]['penalOutstanding']) - Number(loanArray[index]['penalPaid']);
             pendingPenalAmount = 0.00;
 
-        } else if (pendingPenalAmount > Number(loanArray[index]['penalInterest']) && Number(loanArray[index]['penalOutstanding']) > 0 ) {
+        } else if (pendingPenalAmount > Number(loanArray[index]['penalInterest']) && Number(loanArray[index]['penalOutstanding']) > 0) {
 
-            loanArray[index]['penalPaid'] = pendingPenalAmount.toFixed(2) 
+            loanArray[index]['penalPaid'] = pendingPenalAmount.toFixed(2)
             transactionData.credit = pendingPenalAmount.toFixed(2)
             transactionData.loanInterestId = loanArray[index]['id']
             transactionData.loanId = loanArray[index]['loanId']
@@ -1075,8 +1075,56 @@ async function getAmountLoanSplitUpData(loan, amount, splitUpRatioAmount) {
 
 }
 
+let getSingleDayInterestAmount = async (loan) => {
 
-let getTransactionPrincipalAmount = async( customerLoanTransactionId) => {
+    let paymentFrequency = loan.paymentFrequency
+    let securedInterest = loan.customerLoan[0].interestRate
+    let securedOutstandingAmount = loan.customerLoan[0].outstandingAmount
+    let securedPerDayInterestAmount = (((securedInterest / 100) * securedOutstandingAmount) / paymentFrequency).toFixed(2)
+
+    let interest = await models.customerLoanInterest.findAll({ where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[0].id, } });
+   
+    let startDate = moment(interest[0].emiStartDate)
+    let index = interest.findIndex(ele=>{
+        let a = new Date(ele.emiStartDate);
+        let b = new Date()
+        return a.getTime() > b.getTime()
+    })
+
+    let partialPaidSecuredIndex = interest.findIndex(ele=>{
+        return ele.emiStatus == 'partially paid'
+    })
+
+    let dueDate = moment(interest[index].emiEndDate)
+
+    let noOfDays = dueDate.diff(startDate,'days')
+    let securedTotalInterest = (securedPerDayInterestAmount * noOfDays) - interest[partialPaidSecuredIndex].paidAmount    
+
+    if (loan.customerLoan.length > 1) {
+        let unsecuredInterest = loan.customerLoan[1].interestRate
+        let unsecuredOutstandingAmount = loan.customerLoan[1].outstandingAmount
+        var unsecuredPerDayInterestAmount = (((unsecuredInterest / 100) * unsecuredOutstandingAmount) / paymentFrequency).toFixed(2)
+
+        let interest = await models.customerLoanInterest.findAll({ where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[1].id, } });
+
+        let partialPaidSecuredIndex = interest.findIndex(ele=>{
+            return ele.emiStatus == 'partially paid'
+        })
+    
+        let dueDate = moment(interest[index].emiEndDate)
+    
+        let noOfDays = dueDate.diff(startDate,'days')
+        var  unsecuredTotalInterest = (unsecuredPerDayInterestAmount * noOfDays) - interest[partialPaidSecuredIndex].paidAmount
+    }
+
+
+
+
+    return {  securedTotalInterest,unsecuredTotalInterest }
+}
+
+
+let getTransactionPrincipalAmount = async (customerLoanTransactionId) => {
     let transactionDataSecured = await models.customerTransactionSplitUp.findOne({ where: { customerLoanTransactionId: customerLoanTransactionId, isSecured: true } });
     let transactionDataUnSecured = await models.customerTransactionSplitUp.findOne({ where: { customerLoanTransactionId: customerLoanTransactionId, isSecured: false } });
     let securedPayableOutstanding = 0;
@@ -1096,19 +1144,19 @@ let getTransactionPrincipalAmount = async( customerLoanTransactionId) => {
         include: [{
             model: models.customerLoan,
             as: 'customerLoan',
-            attributes: ['id', 'outstandingAmount','loanUniqueId']
+            attributes: ['id', 'outstandingAmount', 'loanUniqueId']
         }]
     });
     let securedOutstandingAmount = Number(loanInfo.customerLoan[0].outstandingAmount - securedPayableOutstanding);
     let securedLoanUniqueId = loanInfo.customerLoan[0].loanUniqueId;
     let unSecuredOutstandingAmount = 0;
     let unSecuredLoanUniqueId;
-    if(transactionDataUnSecured){
+    if (transactionDataUnSecured) {
         unSecuredOutstandingAmount = Number(loanInfo.customerLoan[1].outstandingAmount - unSecuredPayableOutstanding);
         unSecuredLoanUniqueId = loanInfo.customerLoan[1].loanUniqueId;
     }
     let outstandingAmount = Number(loanInfo.outstandingAmount - totalPayableOutstanding);
-    return {securedPayableOutstanding,unSecuredPayableOutstanding,transactionDataSecured,transactionDataUnSecured,securedOutstandingAmount,unSecuredOutstandingAmount,outstandingAmount,securedLoanUniqueId,unSecuredLoanUniqueId}
+    return { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId }
 }
 
 module.exports = {
@@ -1147,5 +1195,6 @@ module.exports = {
     getExtraInterest: getExtraInterest,
     getSingleLoanDetail: getSingleLoanDetail,
     getAmountLoanSplitUpData: getAmountLoanSplitUpData,
-    getTransactionPrincipalAmount:getTransactionPrincipalAmount
+    getTransactionPrincipalAmount: getTransactionPrincipalAmount,
+    getSingleDayInterestAmount: getSingleDayInterestAmount,
 }

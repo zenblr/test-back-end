@@ -12,7 +12,7 @@ const CONSTANT = require("../../utils/constant");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment } = require('../../utils/loanFunction')
+let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment,getSingleDayInterestAmount } = require('../../utils/loanFunction')
 
 //INTEREST TABLE 
 exports.getInterestTable = async (req, res, next) => {
@@ -51,8 +51,12 @@ exports.payableAmount = async (req, res, next) => {
 
     let loan = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
 
+    let interest = await getSingleDayInterestAmount(loan.loan)
+    
     let data = await payableAmountForLoan(amount, loan.loan)
-
+    data.unsecuredTotalInterest = interest.unsecuredTotalInterest
+    data.securedTotalInterest = interest.securedTotalInterest
+    
     return res.status(200).json({ data });
 }
 

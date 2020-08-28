@@ -68,8 +68,10 @@
                         <th class="transparent">Principal Outstanding</th>
                         <th class="transparent">Interest Amount</th>
                         <th class="transparent">Penal Interest</th>
+                        <th class="transparent">Next Due Date Amount</th>
                         <th class="transparent">Payable Amount</th>
                         <th class="transparent">Payment Amount</th>
+                        
                     </thead>
                     <tbody>
                         <tr>
@@ -78,6 +80,9 @@
                                 {{payableAmount?.unsecuredInterest}}</td>
                             <td>{{payableAmount?.securedPenalInterest}}<br>
                                 {{payableAmount?.unsecuredPenalInterest}}
+                            </td>
+                            <td>{{payableAmount?.securedTotalInterest}}<br>
+                                {{payableAmount?.unsecuredTotalInterest}}
                             </td>
                             <td>{{payableAmount?.payableAmount}}</td>
                             <td><input type="text" class="form-control" [formControl]="payableAmt"></td>
