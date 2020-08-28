@@ -12,7 +12,7 @@ const CONSTANT = require("../../utils/constant");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { checkPaidInterest, getCustomerInterestAmount, newSlabRateInterestCalcultaion, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest } = require('../../utils/loanFunction')
+let { checkPaidInterest, getCustomerInterestAmount, newSlabRateInterestCalcultaion, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest,getTransactionPrincipalAmount,calculationDataOneLoan } = require('../../utils/loanFunction')
 
 
 exports.getInterestInfo = async (req, res, next) => {
@@ -124,6 +124,7 @@ exports.partPayment = async (req, res, next) => {
 
 exports.confirmPartPaymentTranscation = async (req, res, next) => {
 
+    let modifiedBy = req.userData.id
     let { transactionId, status, masterLoanId } = req.body;
 
     if (status == 'approved') {
@@ -179,6 +180,7 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
             let data = await calculationDataOneLoan(masterLoanId);
             let loanInfo = data.loanInfo;
             let currentDate = moment();
+            let date = moment()
             let noOfDays = 0;
             // await sequelize.transaction(async t => {
             for (const loan of loanInfo) {
