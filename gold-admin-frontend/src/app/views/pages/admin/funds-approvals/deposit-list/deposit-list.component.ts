@@ -109,7 +109,10 @@ export class DepositListComponent implements OnInit {
  }
   updateStatus(deposit) {
     
-    const dialogRef = this.dialog.open(PaymentDialogComponent, { data: { value: deposit,name :'deposit' }, width: 'auto' });
+    const dialogRef = this.dialog.open(PaymentDialogComponent, { 
+      data: { value: deposit,name :'deposit' },
+       width: '380px' 
+      });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();

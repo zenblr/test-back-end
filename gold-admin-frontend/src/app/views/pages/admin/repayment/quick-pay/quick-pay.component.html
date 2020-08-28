@@ -17,34 +17,34 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="text-gray">{{loanDetails?.customerLoan[0]?.loanUniqueId}}
+                        <td class="">{{loanDetails?.customerLoan[0]?.loanUniqueId}}
                             <br>
                             <span *ngIf="loanDetails?.customerLoan[1]">
                                 {{loanDetails?.customerLoan[1]?.loanUniqueId}}
                             </span>
                         </td>
-                        <td class="text-gray">
+                        <td class="">
                             {{loanDetails?.customerLoan[0]?.loanAmount}}
                             <br>
                             <span *ngIf="loanDetails?.customerLoan[1]">
                                 {{loanDetails?.customerLoan[1]?.loanAmount}}
                             </span>
                         </td>
-                        <td class="text-gray">{{loanDetails?.loanStartDate | date :'mediumDate'}}</td>
-                        <td class="text-gray">
+                        <td class="">{{loanDetails?.loanStartDate | date :'mediumDate'}}</td>
+                        <td class="">
                             {{loanDetails?.customerLoan[0]?.scheme?.schemeName | titlecase}}
                             <br>
                             <span *ngIf="loanDetails?.customerLoan[1]">
                                 {{loanDetails?.customerLoan[1]?.scheme?.schemeName | titlecase}}
                             </span>
                         </td>
-                        <td class="text-gray">{{loanDetails?.tenure}} Months</td>
-                        <td class="text-gray">{{loanDetails?.customerLoan[0]?.interestRate }}%
+                        <td class="">{{loanDetails?.tenure}} Months</td>
+                        <td class="">{{loanDetails?.customerLoan[0]?.interestRate }}%
                             <br>
                             <span *ngIf="loanDetails?.customerLoan[1]">
                                 {{loanDetails?.customerLoan[1]?.interestRate }}%
                             </span></td>
-                        <td class="text-gray">20,May 2020</td>
+                        <td class="">{{loanDetails?.lastPaymentDate | date : 'mediumDate'}}</td>
                         <td class="text-warning">Pending</td>
                     </tr>
                 </tbody>
@@ -112,18 +112,18 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="text-gray">
+                        <td class="">
                             {{paymentDetails?.customerLoan[0]?.loanUniqueId}} <br>
                             {{paymentDetails?.customerLoan[1]?.loanUniqueId}}
                         </td>
-                        <td class="text-gray">{{currentDate | date:'mediumDate'}}</td>
-                        <td class="text-gray">
+                        <td class="">{{currentDate | date:'mediumDate'}}</td>
+                        <td class="">
                             {{paymentDetails?.customerLoan[0]?.outstandingAmount}} <br>
                             {{paymentDetails?.customerLoan[1]?.outstandingAmount}}
                         </td>
-                        <td class="text-gray">{{payableAmt.value}}</td>
-                        <td class="text-gray">{{payableAmount?.payableAmount}}</td>
-                        <td class="text-gray">
+                        <td class="">{{payableAmt.value}}</td>
+                        <td class="">{{payableAmount?.payableAmount}}</td>
+                        <td class="">
                             <button *ngIf="!paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">Select
                                 Payment</button>
                             <button *ngIf="paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">

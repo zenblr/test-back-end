@@ -1939,8 +1939,9 @@ exports.appliedLoanDetails = async (req, res, next) => {
         subQuery: false,
         include: associateModel,
         order: [
+            [["updatedAt", "desc"]],
             [models.customerLoan, "id", "asc"],
-            ["updatedAt", "DESC"]
+
         ],
         attributes: ['id', 'loanStatusForAppraiser', 'loanStatusForBM', 'loanStatusForOperatinalTeam', 'loanStartDate', 'securedLoanAmount', 'unsecuredLoanAmount', 'finalLoanAmount', 'loanStageId', 'isLoanSubmitted'],
         offset: offset,
