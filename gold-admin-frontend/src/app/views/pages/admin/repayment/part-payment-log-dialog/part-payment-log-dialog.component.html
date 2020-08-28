@@ -36,10 +36,10 @@
                                 {{loanDetail.transactionSplitUp[1].payableOutstanding}}
                             </span>
                         </td>
-                        <td> {{loanDetail.transactionSplitUp[0].customerLoan?.loanOutstanding}}
+                        <td> {{loanDetail.transactionSplitUp[0].loanOutstanding}}
                             <br>
                             <span *ngIf="loanDetail.transactionSplitUp.length > 1">
-                                {{loanDetail.transactionSplitUp[1].customerLoan?.loanOutstanding}}
+                                {{loanDetail.transactionSplitUp[1].loanOutstanding}}
                             </span>
                         </td>
                         <td></td>
