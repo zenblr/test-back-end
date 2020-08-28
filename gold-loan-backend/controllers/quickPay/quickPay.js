@@ -14,7 +14,7 @@ var uniqid = require('uniqid');
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getSingleDayInterestAmount } = require('../../utils/loanFunction')
+let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getSingleDayInterestAmount, getAmountLoanSplitUpData } = require('../../utils/loanFunction')
 
 //INTEREST TABLE 
 exports.getInterestTable = async (req, res, next) => {
@@ -32,7 +32,7 @@ exports.getInterestInfo = async (req, res, next) => {
     let interestInfo = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
 
     let lastPayment = await models.customerLoanTransaction.findAll({
-        where: { masterLoanId: masterLoanId, depositStatus: "Completed",paymentFor:'quickPay' },
+        where: { masterLoanId: masterLoanId, depositStatus: "Completed", paymentFor: 'quickPay' },
         order: [
             ['id', 'asc']
         ]
