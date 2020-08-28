@@ -227,7 +227,7 @@ export class OrderDetailsListComponent implements OnInit {
 		});
 		dialogRef.afterClosed().subscribe((res) => {
 			if (res) {
-				console.log(res);
+				// console.log(res);
 			}
 		});
 	}

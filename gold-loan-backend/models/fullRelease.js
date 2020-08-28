@@ -13,9 +13,9 @@ module.exports = (sequelize, DataTypes) => {
         //     type: DataTypes.STRING,
         //     field: 'payment_Type',
         // },
-        transactionId:{
+        customerLoanTransactionId:{
             type: DataTypes.INTEGER,
-            field: 'transaction_id',
+            field: 'customer_loan_transaction_id',
         },
         paidAmount:{
             type: DataTypes.DECIMAL(10,2),
@@ -135,7 +135,7 @@ module.exports = (sequelize, DataTypes) => {
         FullRelease.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         FullRelease.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
         FullRelease.hasOne(models.fullReleaseReleaser, { foreignKey: 'fullReleaseId', as: 'releaser', });
-        FullRelease.belongsTo(models.customerLoanTransaction, { foreignKey: 'transactionId', as: 'transaction' });
+        FullRelease.belongsTo(models.customerLoanTransaction, { foreignKey: 'customerLoanTransactionId', as: 'transaction' });
     }
 
     FullRelease.prototype.toJSON = function () {

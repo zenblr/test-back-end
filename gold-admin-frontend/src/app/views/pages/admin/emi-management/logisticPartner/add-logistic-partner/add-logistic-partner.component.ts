@@ -49,7 +49,7 @@ export class AddLogisticPartnerComponent implements OnInit {
       this.logisticPartnerForm.patchValue(res);
     },
       error => {
-        console.log(error.error.message);
+        // console.log(error.error.message);
       })
   }
 
@@ -89,7 +89,7 @@ export class AddLogisticPartnerComponent implements OnInit {
             const msg=' Logistic Partner added successFully';
             this.toast.success(msg);
             this.dialogRef.close(true);
-            console.log(res.message)
+            // console.log(res.message)
           }
         })
       }

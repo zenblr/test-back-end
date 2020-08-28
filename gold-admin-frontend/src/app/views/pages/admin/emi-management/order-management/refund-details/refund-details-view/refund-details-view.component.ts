@@ -51,14 +51,14 @@ export class RefundDetailsViewComponent implements OnInit {
 		this.viewLoading = true;
 		this.refundDetailsService.getSingleRefund(refundId).subscribe(
 			(res) => {
-				console.log(res);
+				// console.log(res);
 				this.refundData = res;
 				// this.productForm.patchValue(res);
 				// this.productForm.controls['price'].patchValue(res.productPrice[0].finalProductPrice);
 				this.ref.detectChanges();
 			},
 			(err) => {
-				console.log(err);
+				// console.log(err);
 			}
 		);
 	}
