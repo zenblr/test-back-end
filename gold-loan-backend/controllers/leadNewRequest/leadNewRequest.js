@@ -59,7 +59,7 @@ exports.getAllNewRequest = async (req, res, next) => {
             required: false,
             as: 'customer',
             where: { isActive: true },
-            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'kycStatus']
+            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'kycStatus', 'internalBranchId']
         },
         {
             model: models.module,
@@ -92,7 +92,7 @@ exports.getAllNewRequest = async (req, res, next) => {
 
 
     if (allRequest.length === 0) {
-        return res.status(200).json({data:[]})
+        return res.status(200).json({ data: [] })
     } else {
         return res.status(200).json({ message: `Fetched all request successfully`, data: allRequest, count: count.length })
     }
@@ -179,7 +179,7 @@ exports.getAssignedRequest = async (req, res) => {
         .value()
 
     if (allRequest.length === 0) {
-        return res.status(200).json({data:[]})
+        return res.status(200).json({ data: [] })
     } else {
         return res.status(200).json({ message: `Fetched all request successfully`, data: data, count: count.length })
     }

@@ -44,4 +44,11 @@ export class PartPaymentService {
       map(res => res)
     )
   }
+  
+  finalPaymentConfirm(transactionId, status, masterLoanId): Observable<any> {
+    return this.http.post(`/api/part-payment/confirm-payment`, { transactionId, status, masterLoanId }).pipe(
+      map(res => res)
+    )
+  }
+
 }

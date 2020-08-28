@@ -9,6 +9,8 @@ import { takeUntil, skip, distinctUntilChanged } from 'rxjs/operators';
 import { DepositDatasource } from '../../../../../core/funds-approvals/deposit/datasources/deposit.datasource';
 import { DepositService } from '../../../../../core/funds-approvals/deposit/services/deposit.service';
 import { PaymentDialogComponent } from '../../../../partials/components/payment-dialog/payment-dialog.component';
+import { QuickPayService } from '../../../../../core/repayment/quick-pay/quick-pay.service';
+import { PartPaymentService } from '../../../../../core/repayment/part-payment/services/part-payment.service';
 
 
 @Component({
@@ -41,6 +43,8 @@ export class DepositListComponent implements OnInit {
     public dialog: MatDialog,
     private toastr: ToastrService,
     private layoutUtilsService: LayoutUtilsService,
+    private quickPayService: QuickPayService,
+    private partPaymentService: PartPaymentService
   ) {
 
     this.depositService.applyFilter$
@@ -107,6 +111,14 @@ export class DepositListComponent implements OnInit {
     this.queryParamsData.depositStatus = data.data.scheme;
     this.dataSource.getDepositList(this.queryParamsData);
   }
+
+  toaster(depositStatus) {
+    if (depositStatus == 'Completed') {
+      this.toastr.success('Payment Confirm')
+    } else {
+      this.toastr.error('Payment Rejected')
+    }
+  }
   updateStatus(deposit) {
 
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
@@ -115,7 +127,20 @@ export class DepositListComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.loadPage();
+        if (res.depositStatus == 'Pending') {
+          return
+        }
+        if (deposit.paymentFor == "partPayment") {
+          this.partPaymentService.finalPaymentConfirm(deposit.id, res.depositStatus, deposit.masterLoanId).subscribe(result => {
+            this.toaster(res.depositStatus)
+            this.loadPage();
+          })
+        } else {
+          this.quickPayService.confirmPayment(deposit.id, res.depositStatus).subscribe(result => {
+            this.toaster(res.depositStatus)
+            this.loadPage();
+          })
+        }
       }
     });
   }

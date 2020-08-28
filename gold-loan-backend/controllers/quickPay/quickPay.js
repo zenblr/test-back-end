@@ -8,11 +8,13 @@ const { createReferenceCode } = require("../../utils/referenceCode");
 const request = require("request");
 const moment = require("moment");
 const CONSTANT = require("../../utils/constant");
+var uniqid = require('uniqid');
+
 
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment } = require('../../utils/loanFunction')
+let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getSingleDayInterestAmount } = require('../../utils/loanFunction')
 
 //INTEREST TABLE 
 exports.getInterestTable = async (req, res, next) => {
@@ -30,12 +32,16 @@ exports.getInterestInfo = async (req, res, next) => {
     let interestInfo = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
 
     let lastPayment = await models.customerLoanTransaction.findAll({
-        where: { masterLoanId: masterLoanId, depositStatus: "Completed" },
+        where: { masterLoanId: masterLoanId, depositStatus: "Completed",paymentFor:'quickPay' },
         order: [
             ['id', 'asc']
         ]
     })
-    let lastPaymentDate = lastPayment[lastPayment.length - 1].depositDate
+    let lastPaymentDate = null
+
+    if (lastPayment.length != 0) {
+        lastPaymentDate = lastPayment[lastPayment.length - 1].depositDate
+    }
 
     interestInfo.loan.dataValues.lastPaymentDate = lastPaymentDate
 
@@ -51,9 +57,13 @@ exports.payableAmount = async (req, res, next) => {
 
     let loan = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
 
-    let data = await payableAmountForLoan(amount, loan.loan)
+    let interest = await getSingleDayInterestAmount(loan.loan)
 
-    return res.status(200).json({ data });
+    let data = await payableAmountForLoan(amount, loan.loan)
+    data.unsecuredTotalInterest = interest.unsecuredTotalInterest
+    data.securedTotalInterest = interest.securedTotalInterest
+
+    return res.status(200).json({ data, interest });
 }
 
 //CALCULATE PAYABLE AMOUNT
@@ -74,6 +84,7 @@ exports.quickPayment = async (req, res, next) => {
 
     let amount = await getCustomerInterestAmount(masterLoanId);
     let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
+    let transactionUniqueId = uniqid.time().toUpperCase();
 
     if (!['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'UPI', 'gateway'].includes(paymentType)) {
         return res.status(400).json({ message: "Invalid payment type" })
@@ -86,9 +97,10 @@ exports.quickPayment = async (req, res, next) => {
     paymentDetails.masterLoanId = masterLoanId
     paymentDetails.transactionAmont = payableAmount
     paymentDetails.depositDate = depositDate
-    paymentDetails.transactionUniqueId = transactionId
+    paymentDetails.transactionUniqueId = transactionUniqueId //ye change karna h
+    paymentDetails.bankTransactionUniqueId = transactionId
     paymentDetails.depositStatus = "Pending"
-    paymentDetails.paymentFor = 'QuickPay'
+    paymentDetails.paymentFor = 'quickPay'
     paymentDetails.createdBy = createdBy
 
     let data = await sequelize.transaction(async t => {
@@ -125,7 +137,20 @@ exports.confirmationForPayment = async (req, res, next) => {
     let { transactionId, status } = req.body
     let modifiedBy = req.userData.id
 
-    if (status == 'approved') {
+    let transactionDetail = await models.customerLoanTransaction.findOne({ where: { id: transactionId } })
+
+    if (transactionDetail.depositStatus == "Completed" || transactionDetail.depositStatus == "Rejected") {
+        return res.status(400).json({ message: `You can not change the status from this stage.` })
+    }
+
+    if (status == "Rejected") {
+        await models.customerLoanTransaction.update({ depositStatus: status }, { where: { id: transactionId } });
+    }
+    if (status == "Pending") {
+        await models.customerLoanTransaction.update({ depositStatus: status }, { where: { id: transactionId } });
+    }
+
+    if (status == 'Completed') {
 
 
 
@@ -148,18 +173,18 @@ exports.confirmationForPayment = async (req, res, next) => {
             if (payment.transactionDetails) {
                 for (const amount of payment.transactionDetails) {
                     if (amount.isPenalInterest) {
-                        let description = "penal interest for customer loan"      
-                        let paid = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, isPenalInterest: amount.isPenalInterest, credit: amount.credit, description:description, paymentDate: moment() }, { transaction: t });
+                        let description = "penal interest for customer loan"
+                        let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: transactionId, masterLoanId: amount.masterLoanId, loanId: amount.loanId, isPenalInterest: amount.isPenalInterest, credit: amount.credit, description: description, paymentDate: moment() }, { transaction: t });
                         await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
                     } else {
-                        let description = "interest for customer loan"      
-                        let paid = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, credit: amount.credit,description:description, paymentDate: moment(), }, { transaction: t });
+                        let description = "interest for customer loan"
+                        let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: transactionId, masterLoanId: amount.masterLoanId, loanId: amount.loanId, credit: amount.credit, description: description, paymentDate: moment(), }, { transaction: t });
                         await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
                     }
                 }
             }
-            
-          
+
+
         })
 
         return res.status(200).json({ message: "success" });
