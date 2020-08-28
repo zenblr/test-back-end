@@ -1,11 +1,11 @@
 const { wrapper } = require('../utils/errorWrap');
 const checkAuth = require('../middleware/checkAuth');
-const { viewLogs,getInterestInfo, checkPartAmount, partPayment, payableAmountConfirmPartPayment,confirmPartPaymentTranscation } = require('../controllers/partPayment/partPayment');
+const { viewLog,getInterestInfo, checkPartAmount, partPayment, payableAmountConfirmPartPayment,confirmPartPaymentTranscation } = require('../controllers/partPayment/partPayment');
 
 const express = require('express');
 const route = express.Router();
 
-route.get('/view-logs', checkAuth, wrapper(viewLogs))
+route.get('/view-log', checkAuth, wrapper(viewLog))
 
 route.get('/part-payment-info', checkAuth, wrapper(getInterestInfo))
 

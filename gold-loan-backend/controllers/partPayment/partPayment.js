@@ -38,7 +38,7 @@ exports.getInterestInfo = async (req, res, next) => {
 
 }
 
-exports.viewlogs = async (req, res, next) => {
+exports.viewLog = async (req, res, next) => {
     let { loanId, masterLoanId } = req.query;
 
     let logs = await models.customerLoanTransaction.findAll({
