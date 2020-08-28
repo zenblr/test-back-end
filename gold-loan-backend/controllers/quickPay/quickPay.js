@@ -14,7 +14,7 @@ var uniqid = require('uniqid');
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment } = require('../../utils/loanFunction')
+let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment,getSingleDayInterestAmount } = require('../../utils/loanFunction')
 
 //INTEREST TABLE 
 exports.getInterestTable = async (req, res, next) => {
@@ -53,9 +53,13 @@ exports.payableAmount = async (req, res, next) => {
 
     let loan = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
 
+    let interest = await getSingleDayInterestAmount(loan.loan)
+    
     let data = await payableAmountForLoan(amount, loan.loan)
+    data.unsecuredTotalInterest = interest.unsecuredTotalInterest
+    data.securedTotalInterest = interest.securedTotalInterest
 
-    return res.status(200).json({ data });
+    return res.status(200).json({ data ,interest});
 }
 
 //CALCULATE PAYABLE AMOUNT
@@ -129,7 +133,7 @@ exports.confirmationForPayment = async (req, res, next) => {
     let { transactionId, status } = req.body
     let modifiedBy = req.userData.id
 
-    if (status == 'approved') {
+    if (status == 'Completed') {
 
 
 
@@ -153,11 +157,11 @@ exports.confirmationForPayment = async (req, res, next) => {
                 for (const amount of payment.transactionDetails) {
                     if (amount.isPenalInterest) {
                         let description = "penal interest for customer loan"      
-                        let paid = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, isPenalInterest: amount.isPenalInterest, credit: amount.credit, description:description, paymentDate: moment() }, { transaction: t });
+                        let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: transactionId, masterLoanId: amount.masterLoanId, loanId: amount.loanId, isPenalInterest: amount.isPenalInterest, credit: amount.credit, description:description, paymentDate: moment() }, { transaction: t });
                         await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
                     } else {
                         let description = "interest for customer loan"      
-                        let paid = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, credit: amount.credit,description:description, paymentDate: moment(), }, { transaction: t });
+                        let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: transactionId, masterLoanId: amount.masterLoanId, loanId: amount.loanId, credit: amount.credit,description:description, paymentDate: moment(), }, { transaction: t });
                         await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
                     }
                 }

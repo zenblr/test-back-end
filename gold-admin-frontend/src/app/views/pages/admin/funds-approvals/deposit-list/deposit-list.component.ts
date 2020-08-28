@@ -9,6 +9,7 @@ import { takeUntil, skip, distinctUntilChanged } from 'rxjs/operators';
 import { DepositDatasource } from '../../../../../core/funds-approvals/deposit/datasources/deposit.datasource';
 import { DepositService } from '../../../../../core/funds-approvals/deposit/services/deposit.service';
 import { PaymentDialogComponent } from '../../../../partials/components/payment-dialog/payment-dialog.component';
+import { QuickPayService } from '../../../../../core/repayment/quick-pay/quick-pay.service';
 
 
 @Component({
@@ -41,6 +42,7 @@ export class DepositListComponent implements OnInit {
     public dialog: MatDialog,
     private toastr: ToastrService,
     private layoutUtilsService: LayoutUtilsService,
+    private quickPayService:QuickPayService
   ) {
 
     this.depositService.applyFilter$
@@ -115,7 +117,12 @@ export class DepositListComponent implements OnInit {
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.loadPage();
+        if(deposit.paymentFor == "partPayment"){
+          // this.quickPayService.
+          this.loadPage();
+        }else{
+
+        }
       }
     });
   }
