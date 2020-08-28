@@ -4,6 +4,7 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const { createReferenceCode } = require("../../utils/referenceCode");
+var uniqid = require('uniqid');
 
 const request = require("request");
 const moment = require("moment");
@@ -91,6 +92,8 @@ exports.partPayment = async (req, res, next) => {
     let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
     let { payableAmount } = await payableAmountForLoan(amount, loan)
 
+    let transactionUniqueId = uniqid.time().toUpperCase();
+
     if (!['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'UPI', 'gateway'].includes(paymentType)) {
         return res.status(400).json({ message: "Invalid payment type" })
     }
@@ -104,7 +107,8 @@ exports.partPayment = async (req, res, next) => {
     paymentDetails.masterLoanId = masterLoanId
     paymentDetails.transactionAmont = paidAmount
     paymentDetails.depositDate = depositDate
-    paymentDetails.transactionUniqueId = transactionId
+    paymentDetails.transactionUniqueId = transactionUniqueId //ye chanege hoyega
+    paymentDetails.bankTransactionUniqueId = transactionId
     paymentDetails.depositStatus = "Pending"
     paymentDetails.paymentFor = 'partPayment'
     paymentDetails.createdBy = createdBy

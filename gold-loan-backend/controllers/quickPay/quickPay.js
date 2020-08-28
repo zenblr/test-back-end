@@ -8,6 +8,8 @@ const { createReferenceCode } = require("../../utils/referenceCode");
 const request = require("request");
 const moment = require("moment");
 const CONSTANT = require("../../utils/constant");
+var uniqid = require('uniqid');
+
 
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
@@ -74,6 +76,7 @@ exports.quickPayment = async (req, res, next) => {
 
     let amount = await getCustomerInterestAmount(masterLoanId);
     let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
+    let transactionUniqueId = uniqid.time().toUpperCase();
 
     if (!['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'UPI', 'gateway'].includes(paymentType)) {
         return res.status(400).json({ message: "Invalid payment type" })
@@ -86,7 +89,8 @@ exports.quickPayment = async (req, res, next) => {
     paymentDetails.masterLoanId = masterLoanId
     paymentDetails.transactionAmont = payableAmount
     paymentDetails.depositDate = depositDate
-    paymentDetails.transactionUniqueId = transactionId
+    paymentDetails.transactionUniqueId = transactionUniqueId //ye change karna h
+    paymentDetails.bankTransactionUniqueId = transactionId
     paymentDetails.depositStatus = "Pending"
     paymentDetails.paymentFor = 'QuickPay'
     paymentDetails.createdBy = createdBy
