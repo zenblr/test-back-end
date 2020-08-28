@@ -5,6 +5,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { PaymentDialogComponent } from '../../../../partials/components/payment-dialog/payment-dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-part-payment',
@@ -25,7 +26,8 @@ export class PartPaymentComponent implements OnInit {
     private partPaymentService: PartPaymentService,
     private dialog: MatDialog,
     private ref: ChangeDetectorRef,
-    private ele: ElementRef
+    private ele: ElementRef,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -36,7 +38,7 @@ export class PartPaymentComponent implements OnInit {
   getPreviousPartPaymentInfo(id) {
     this.partPaymentService.getPreviousPartPaymentInfo(id).subscribe(res => {
       this.loanDetails = res.data
-      
+
       this.ref.detectChanges();
     })
   }
@@ -97,7 +99,8 @@ export class PartPaymentComponent implements OnInit {
   submitPaymentConfirmation() {
     this.partPaymentService.confirmPayment(this.masterLoanId, Number(this.partAmount.value), this.paymentValue,).subscribe(res => {
 
-    })
+    });
+    this.router.navigate(['/admin/loan-management/all-loan'])
   }
 
   cancelPaymentConfirmation() {

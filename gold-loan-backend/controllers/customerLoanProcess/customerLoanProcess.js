@@ -1785,27 +1785,27 @@ exports.getSingleLoanDetails = async (req, res, next) => {
     for (let index = 0; index < customerLoan.dataValues.customerLoanInterest.length; index++) {
         const element = customerLoan.dataValues.customerLoanInterest
         element[index].dataValues.month = "Month " + ((customerLoan.masterLoan.paymentFrequency / 30) * (index + 1))
-            
-        
-    if (Number(customerLoan.masterLoan.paymentFrequency) != 30) {
-        if (index == 0) {
-            element.month = "Month 1"
+
+
+        if (Number(customerLoan.masterLoan.paymentFrequency) != 30) {
+            if (index == 0) {
+                element.month = "Month 1"
+            }
+            // else {
+            //     data.month = "Month " + ((paymentFrequency / 30) * (index))
+            // }
         }
-        // else {
-        //     data.month = "Month " + ((paymentFrequency / 30) * (index))
-        // }
     }
-}
 
-let ornamentType = [];
-if (customerLoan.loanOrnamentsDetail.length != 0) {
-    for (let ornamentsDetail of customerLoan.loanOrnamentsDetail) {
-        ornamentType.push({ ornamentType: ornamentsDetail.ornamentType.name, id: ornamentsDetail.id })
+    let ornamentType = [];
+    if (customerLoan.loanOrnamentsDetail.length != 0) {
+        for (let ornamentsDetail of customerLoan.loanOrnamentsDetail) {
+            ornamentType.push({ ornamentType: ornamentsDetail.ornamentType.name, id: ornamentsDetail.id })
+        }
+        customerLoan.dataValues.ornamentType = ornamentType;
     }
-    customerLoan.dataValues.ornamentType = ornamentType;
-}
 
-return res.status(200).json({ message: 'success', data: customerLoan })
+    return res.status(200).json({ message: 'success', data: customerLoan })
 }
 
 //get function for single loan in CUSTOMER-MANAGMENT
@@ -1824,7 +1824,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
     let stage = await models.loanStage.findOne({
-        where: { name: 'applying' }
+        where: { name: 'applying' && 'disbursed' }
     })
     let transfer = await models.loanStage.findOne({
         where: { name: 'loan transfer' }
@@ -1890,6 +1890,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
             },
         }],
         loanStageId: { [Op.notIn]: [stage.id, transfer.id] },
+
         isActive: true
     };
     let internalBranchId = req.userData.internalBranchId
@@ -1934,8 +1935,9 @@ exports.appliedLoanDetails = async (req, res, next) => {
         subQuery: false,
         include: associateModel,
         order: [
+            [["updatedAt", "desc"]],
             [models.customerLoan, "id", "asc"],
-            ["updatedAt", "DESC"]
+
         ],
         attributes: ['id', 'loanStatusForAppraiser', 'loanStatusForBM', 'loanStatusForOperatinalTeam', 'loanStartDate', 'securedLoanAmount', 'unsecuredLoanAmount', 'finalLoanAmount', 'loanStageId', 'isLoanSubmitted'],
         offset: offset,

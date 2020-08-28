@@ -131,31 +131,31 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="text-gray">{{paymentDetails?.customerLoan[0]?.loanUniqueId}} <br>
+                                <td>{{paymentDetails?.customerLoan[0]?.loanUniqueId}} <br>
                                     <span *ngIf="paymentDetails?.customerLoan?.length > 1">
                                         {{paymentDetails?.customerLoan[1]?.loanUniqueId}}
                                     </span>
                                 </td>
-                                <td class="text-gray">
+                                <td >
                                     {{paymentDetails?.customerLoan[0]?.outstandingAmount}}<br>
                                     <span *ngIf="paymentDetails?.customerLoan?.length > 1">
                                         {{paymentDetails?.customerLoan[1]?.outstandingAmount}}
                                     </span>
                                 </td>
-                                <td class="text-gray">
+                                <td >
                                     {{paymentDetails?.customerLoan[0]?.partPayment}}<br>
                                     <span *ngIf="paymentDetails?.customerLoan?.length > 1">
                                         {{paymentDetails?.customerLoan[1].partPayment}}
                                     </span>
                                 </td>
-                                <td class="text-gray">
+                                <td >
                                     {{paymentDetails?.customerLoan[0]?.newOutstandingAmount}}<br>
                                     <span *ngIf="paymentDetails?.customerLoan?.length > 1">
                                         {{paymentDetails?.customerLoan[1].newOutstandingAmount}}
                                     </span>
                                 </td>
 
-                                <td class="text-gray">
+                                <td>
                                     <button *ngIf="!paymentValue" (click)="choosePaymentMethod()"
                                         class="apply-kyc">Select
                                         Payment</button>
