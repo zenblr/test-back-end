@@ -11,24 +11,35 @@
                         <th class="transparent">Outstanding Loan Amount</th>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="text-gray">{{loanDetails?.customerLoan[0]?.loanUniqueId}}
+                        <tr *ngFor="let loanDetail of loanDetails">
+                            <td>
+                                {{loanDetail.transactionSplitUp[0].customerLoan?.loanUniqueId}}
                                 <br>
-                                <span *ngIf="loanDetails?.customerLoan[1]">
-                                    {{loanDetails?.customerLoan[1]?.loanUniqueId}} 
+                                <span *ngIf="loanDetail.transactionSplitUp.length > 1">
+                                    {{loanDetail.transactionSplitUp[1].customerLoan?.loanUniqueId}}
                                 </span>
                             </td>
-                            <td class="text-gray">
-                                {{loanDetails?.customerLoan[0]?.loanAmount}} 
+                            <td>
+                                {{loanDetail.transactionSplitUp[0].customerLoan?.outstandingAmount}}
                                 <br>
-                                <span *ngIf="loanDetails?.customerLoan[1]">
-                                    {{loanDetails?.customerLoan[1]?.loanAmount}}
+                                <span *ngIf="loanDetail.transactionSplitUp.length > 1">
+                                    {{loanDetail.transactionSplitUp[1].customerLoan?.outstandingAmount}}
                                 </span>
                             </td>
-                            <td class="text-gray">{{loanDetails?.loanStartDate | date :'mediumDate'}}</td>
+                            <td>{{loanDetail.depositDate | date :'mediumDate'}}</td>
 
-                            <td class="text-gray"> </td>
-                            <td class="text-gray"> {{loanDetails?.outstandingAmount}}</td>
+                            <td>{{loanDetail.transactionSplitUp[0].payableOutstanding}}
+                                <br>
+                                <span *ngIf="loanDetail.transactionSplitUp.length > 1">
+                                    {{loanDetail.transactionSplitUp[1].payableOutstanding}}
+                                </span>
+                            </td>
+                            <td> {{loanDetail.transactionSplitUp[0].loanOutstanding}}
+                                <br>
+                                <span *ngIf="loanDetail.transactionSplitUp.length > 1">
+                                    {{loanDetail.transactionSplitUp[1].loanOutstanding}}
+                                </span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -88,7 +99,7 @@
                                 </td>
                                 <td>{{payableAmountSummary?.securedPenalInterest}}<br>
                                     <span *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">
-                                    {{payableAmountSummary?.unsecuredPenalInterest}}
+                                        {{payableAmountSummary?.unsecuredPenalInterest}}
                                     </span>
                                 </td>
                             </tr>
