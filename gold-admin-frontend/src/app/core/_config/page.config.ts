@@ -443,6 +443,7 @@ export class PageConfig {
 				page: { title: "Customer Address", desc: "" },
 			},
 			"order-received": {
+				page: { title: "Order Received", desc: "" },
 				id: {
 					page: { title: "Order Received", desc: "" },
 				}
