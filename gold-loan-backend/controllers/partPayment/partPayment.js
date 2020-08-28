@@ -145,7 +145,8 @@ exports.partPayment = async (req, res, next) => {
             payableOutstanding: securedRatio,
             penal: securedPenalInterest,
             interest: securedInterest,
-            isSecured: true
+            isSecured: true,
+            loanOutstanding: Number(securedOutstandingAmount) - Number(securedRatio)
         }, { transaction: t })
 
         if (isUnsecuredSchemeApplied) {
@@ -156,7 +157,8 @@ exports.partPayment = async (req, res, next) => {
                 payableOutstanding: unsecuredRatio,
                 penal: unsecuredPenalInterest,
                 interest: unsecuredInterest,
-                isSecured: false
+                isSecured: false,
+                loanOutstanding: Number(unsecuredOutstandingAmount) - Number(unsecuredRatio)
             }, { transaction: t })
         }
 
