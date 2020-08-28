@@ -62,7 +62,7 @@ export class DepositListComponent implements OnInit {
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;
-        this.queryParamsData.search= res;
+        this.queryParamsData.search = res;
         this.paginator.pageIndex = 0;
         this.loadPage();
       });
@@ -104,15 +104,15 @@ export class DepositListComponent implements OnInit {
 
   applyFilter(data) {
     // console.log(data);
-   this.queryParamsData.depositStatus = data.data.scheme;
-   this.dataSource.getDepositList(this.queryParamsData);
- }
+    this.queryParamsData.depositStatus = data.data.scheme;
+    this.dataSource.getDepositList(this.queryParamsData);
+  }
   updateStatus(deposit) {
-    
-    const dialogRef = this.dialog.open(PaymentDialogComponent, { 
-      data: { value: deposit,name :'deposit' },
-       width: '380px' 
-      });
+
+    const dialogRef = this.dialog.open(PaymentDialogComponent, {
+      data: { value: deposit, name: 'deposit' },
+      width: '500px'
+    });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();

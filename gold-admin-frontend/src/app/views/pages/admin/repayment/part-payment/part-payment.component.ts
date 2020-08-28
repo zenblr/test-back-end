@@ -6,6 +6,8 @@ import { map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { PaymentDialogComponent } from '../../../../partials/components/payment-dialog/payment-dialog.component';
 import { Router } from '@angular/router';
+import { PartPaymentLogDialogComponent } from '../part-payment-log-dialog/part-payment-log-dialog.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'kt-part-payment',
@@ -27,7 +29,8 @@ export class PartPaymentComponent implements OnInit {
     private dialog: MatDialog,
     private ref: ChangeDetectorRef,
     private ele: ElementRef,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit() {
@@ -48,34 +51,30 @@ export class PartPaymentComponent implements OnInit {
   }
 
   partAmountContinue() {
-    console.log(this.partAmount)
+    // console.log(this.partAmount)
     const data = {
       paidAmount: this.partAmount.value,
       masterLoanId: this.masterLoanId
     }
     this.partPaymentService.getPayableAmount(data).pipe(map(res => {
       this.payableAmountSummary = res.data
-      console.log(this.payableAmountSummary)
+      // console.log(this.payableAmountSummary)
       this.ref.detectChanges()
-      // this.payableAmountSummary = res.message
+      this.scrollToBottom()
     })).subscribe()
-    // this.payableAmountSummary = { test: 'ok' }
-    this.scrollToBottom()
 
   }
 
   proceed() {
     this.partPaymentService.getPaymentConfirm(this.masterLoanId, Number(this.partAmount.value)).pipe(map(res => {
-      console.log(res)
+      // console.log(res)
       this.paymentDetails = res.data
-      // this.paymentDetails = res.message
+      this.scrollToBottom()
     })).subscribe()
-    // this.paymentDetails = { tested: 'ok' }
-    this.scrollToBottom()
   }
 
   cancelPayableAmountSummary() {
-    this.payableAmountSummary = {}
+    this.payableAmountSummary = null
     this.scrollToBottom()
   }
 
@@ -89,7 +88,6 @@ export class PartPaymentComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        console.log(res)
         this.paymentValue = res
         this.ref.detectChanges()
       }
@@ -97,14 +95,17 @@ export class PartPaymentComponent implements OnInit {
   }
 
   submitPaymentConfirmation() {
-    this.partPaymentService.confirmPayment(this.masterLoanId, Number(this.partAmount.value), this.paymentValue,).subscribe(res => {
-
+    this.partPaymentService.confirmPayment(this.masterLoanId, Number(this.partAmount.value), this.paymentValue).subscribe(res => {
+      if (res) {
+        this.toastr.success('Payment done Successfully')
+        this.router.navigate(['/admin/loan-management/all-loan'])
+      }
     });
-    this.router.navigate(['/admin/loan-management/all-loan'])
   }
 
   cancelPaymentConfirmation() {
-    this.paymentDetails = {}
+    this.paymentDetails = null
+    this.ref.detectChanges()
   }
 
   scrollToBottom() {
@@ -112,5 +113,12 @@ export class PartPaymentComponent implements OnInit {
       let view = this.ele.nativeElement.querySelector('#container') as HTMLElement
       view.scrollIntoView({ behavior: "smooth", block: "end" })
     }, 500)
+  }
+
+  viewEmiLogs() {
+    const dialogRef = this.dialog.open(PartPaymentLogDialogComponent, {
+      data: { partPaymentHistory: this.loanDetails },
+      width: 'auto'
+    })
   }
 }
