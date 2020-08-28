@@ -10,4 +10,5 @@ module.exports = {
     PART_RELEASE_STATUS_P:"Appraiser changed status to pending",
     PART_RELEASE_STATUS_R:"Appraiser changed status to released",
     PART_RELEASE_DOCUMENT:"Part release documents uploaded",
+    PART_RELEASE_APPLIED:"Applied for part release"
 }

@@ -136,6 +136,9 @@ export class PartReleaseComponent implements OnInit {
   }
 
   pay() {
+    if (!(this.paymentValue && this.paymentValue.paymentType)) {
+      return this.toastr.error('Please select a payment method')
+    }
     const path = this.url.split('/');
     const url = path[path.length - 2];
 

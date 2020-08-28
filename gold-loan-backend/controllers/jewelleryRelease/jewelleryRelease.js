@@ -16,7 +16,7 @@ exports.ornamentsDetails = async (req, res, next) => {
 
     let customerLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
-        attributes: ['customerId', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate','outstandingAmount'],
+        attributes: ['customerId', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate', 'outstandingAmount'],
         include: [
             {
                 model: models.customerLoan,
@@ -97,7 +97,7 @@ async function allOrnamentsDetails(masterLoanId) {
         include: [{
             model: models.customerLoanOrnamentsDetail,
             as: 'loanOrnamentsDetail',
-            where: { isActive:true, isReleased: false },
+            where: { isActive: true, isReleased: false },
             include: [
                 {
                     model: models.ornamentType,
@@ -125,58 +125,59 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
         currentLtv: 0,
         previousLtv: 0,
         currentOutstandingAmount: 0,
-        allOrnamentsGrossWeight:0,
-        allOrnamentsDeductionWeight:0,
-        allOrnamentsNetWeight:0,
-        totalOfReleaseOrnaments:0,
-        previousOutstandingAmount:0
+        allOrnamentsGrossWeight: 0,
+        allOrnamentsDeductionWeight: 0,
+        allOrnamentsNetWeight: 0,
+        totalOfReleaseOrnaments: 0,
+        previousOutstandingAmount: 0
     }
-    let globalSettings = await getGlobalSetting();
-    let goldRate = await getGoldRate();
-    ornamentsWeightInfo.currentLtv = goldRate * (globalSettings.ltvGoldValue / 100);
-    ornamentsWeightInfo.previousLtv = requestedOrnaments.loanOrnamentsDetail[0].currentLtvAmount;
-    ornamentsWeightInfo.previousOutstandingAmount=loanData.outstandingAmount;
-    
-    //current outstanding amount
-    if (allOrnaments != null) {
-        for (const ornaments of allOrnaments.loanOrnamentsDetail) {
-            ornamentsWeightInfo.allOrnamentsGrossWeight = ornamentsWeightInfo.allOrnamentsGrossWeight + parseFloat(ornaments.grossWeight);
-            ornamentsWeightInfo.allOrnamentsDeductionWeight = ornamentsWeightInfo.allOrnamentsDeductionWeight + parseFloat(ornaments.deductionWeight);
-            ornamentsWeightInfo.allOrnamentsNetWeight = ornamentsWeightInfo.allOrnamentsNetWeight + parseFloat(ornaments.netWeight);
-            let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
-            ornamentsWeightInfo.currentOutstandingAmount = ornamentsWeightInfo.currentOutstandingAmount + (ltvAmount * parseFloat(ornaments.netWeight));
+    if (requestedOrnaments || allOrnaments) {
+        let globalSettings = await getGlobalSetting();
+        let goldRate = await getGoldRate();
+        ornamentsWeightInfo.currentLtv = goldRate * (globalSettings.ltvGoldValue / 100);
+        ornamentsWeightInfo.previousLtv = requestedOrnaments.loanOrnamentsDetail[0].currentLtvAmount;
+        ornamentsWeightInfo.previousOutstandingAmount = loanData.outstandingAmount;
+
+        //current outstanding amount
+        if (allOrnaments != null) {
+            for (const ornaments of allOrnaments.loanOrnamentsDetail) {
+                ornamentsWeightInfo.allOrnamentsGrossWeight = ornamentsWeightInfo.allOrnamentsGrossWeight + parseFloat(ornaments.grossWeight);
+                ornamentsWeightInfo.allOrnamentsDeductionWeight = ornamentsWeightInfo.allOrnamentsDeductionWeight + parseFloat(ornaments.deductionWeight);
+                ornamentsWeightInfo.allOrnamentsNetWeight = ornamentsWeightInfo.allOrnamentsNetWeight + parseFloat(ornaments.netWeight);
+                let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
+                ornamentsWeightInfo.currentOutstandingAmount = ornamentsWeightInfo.currentOutstandingAmount + (ltvAmount * parseFloat(ornaments.netWeight));
+            }
+        }
+
+
+        if (requestedOrnaments != null) {
+            for (const ornaments of requestedOrnaments.loanOrnamentsDetail) {
+                ornamentsWeightInfo.releaseGrossWeight = ornamentsWeightInfo.releaseGrossWeight + parseFloat(ornaments.grossWeight);
+                ornamentsWeightInfo.releaseDeductionWeight = ornamentsWeightInfo.releaseDeductionWeight + parseFloat(ornaments.deductionWeight);
+                ornamentsWeightInfo.releaseNetWeight = ornamentsWeightInfo.releaseNetWeight + parseFloat(ornaments.netWeight);
+                let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
+                ornamentsWeightInfo.totalOfReleaseOrnaments = ornamentsWeightInfo.totalOfReleaseOrnaments + (ltvAmount * parseFloat(ornaments.netWeight));
+            }
+        }
+
+        if (otherOrnaments != null) {
+            for (const ornaments of otherOrnaments.loanOrnamentsDetail) {
+                ornamentsWeightInfo.remainingGrossWeight = ornamentsWeightInfo.remainingGrossWeight + parseFloat(ornaments.grossWeight);
+                ornamentsWeightInfo.remainingDeductionWeight = ornamentsWeightInfo.remainingDeductionWeight + parseFloat(ornaments.deductionWeight);
+                ornamentsWeightInfo.remainingNetWeight = ornamentsWeightInfo.remainingNetWeight + parseFloat(ornaments.netWeight);
+            }
+        }
+
+
+        ornamentsWeightInfo.currentOutstandingAmount = Math.round(ornamentsWeightInfo.currentOutstandingAmount);
+        ornamentsWeightInfo.totalOfReleaseOrnaments = ornamentsWeightInfo.totalOfReleaseOrnaments;
+        ornamentsWeightInfo.releaseAmount = ornamentsWeightInfo.currentOutstandingAmount - ornamentsWeightInfo.previousOutstandingAmount - ornamentsWeightInfo.totalOfReleaseOrnaments;
+        if (ornamentsWeightInfo.releaseAmount > 0) {
+            ornamentsWeightInfo.releaseAmount = 0
+        } else {
+            ornamentsWeightInfo.releaseAmount = Math.abs(ornamentsWeightInfo.releaseAmount);
         }
     }
-
-    
-    if (requestedOrnaments != null) {
-        for (const ornaments of requestedOrnaments.loanOrnamentsDetail) {
-            ornamentsWeightInfo.releaseGrossWeight = ornamentsWeightInfo.releaseGrossWeight + parseFloat(ornaments.grossWeight);
-            ornamentsWeightInfo.releaseDeductionWeight = ornamentsWeightInfo.releaseDeductionWeight + parseFloat(ornaments.deductionWeight);
-            ornamentsWeightInfo.releaseNetWeight = ornamentsWeightInfo.releaseNetWeight + parseFloat(ornaments.netWeight);
-            let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
-            ornamentsWeightInfo.totalOfReleaseOrnaments = ornamentsWeightInfo.totalOfReleaseOrnaments + (ltvAmount * parseFloat(ornaments.netWeight));
-        }
-    }
-
-    if (otherOrnaments != null) {
-        for (const ornaments of otherOrnaments.loanOrnamentsDetail) {
-            ornamentsWeightInfo.remainingGrossWeight = ornamentsWeightInfo.remainingGrossWeight + parseFloat(ornaments.grossWeight);
-            ornamentsWeightInfo.remainingDeductionWeight = ornamentsWeightInfo.remainingDeductionWeight + parseFloat(ornaments.deductionWeight);
-            ornamentsWeightInfo.remainingNetWeight = ornamentsWeightInfo.remainingNetWeight + parseFloat(ornaments.netWeight);
-        }
-    }
-    
-
-    ornamentsWeightInfo.currentOutstandingAmount = Math.round(ornamentsWeightInfo.currentOutstandingAmount);
-    ornamentsWeightInfo.totalOfReleaseOrnaments = ornamentsWeightInfo.totalOfReleaseOrnaments;
-    ornamentsWeightInfo.releaseAmount = ornamentsWeightInfo.currentOutstandingAmount - ornamentsWeightInfo.previousOutstandingAmount-ornamentsWeightInfo.totalOfReleaseOrnaments;
-    if(ornamentsWeightInfo.releaseAmount > 0){
-        ornamentsWeightInfo.releaseAmount = 0
-    }else{
-        ornamentsWeightInfo.releaseAmount = Math.abs(ornamentsWeightInfo.releaseAmount);
-    }
-
     return ornamentsWeightInfo;
 }
 
@@ -204,16 +205,23 @@ async function getornamentLoanInfo(masterLoanId, ornamentWeight, amount) {
 
 exports.ornamentsAmountDetails = async (req, res, next) => {
     let { masterLoanId, ornamentId } = req.body;
-    let whereSelectedOrmenemts = { id: { [Op.in]: ornamentId }, isActive: true,isReleased: false };
-    let whereOtherOrmenemts = { id: { [Op.notIn]: ornamentId }, isActive: true,isReleased: false };
-    let loanData = await getLoanDetails(masterLoanId);
-    let amount = await getCustomerInterestAmount(masterLoanId);
-    let requestedOrnaments = await ornementsDetails(masterLoanId, whereSelectedOrmenemts);
-    let otherOrnaments = await ornementsDetails(masterLoanId, whereOtherOrmenemts);
-    let allOrnaments = await allOrnamentsDetails(masterLoanId);
-    let ornamentWeight = await getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanData, allOrnaments);
-    let loanInfo = await getornamentLoanInfo(masterLoanId, ornamentWeight, amount);
-    return res.status(200).json({ message: 'success', ornamentWeight, loanInfo });
+    let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
+        where: { isReleased: true, masterLoanId: masterLoanId }
+    });
+    if (checkOrnament.length == 0) {
+        let whereSelectedOrmenemts = { id: { [Op.in]: ornamentId }, isActive: true, isReleased: false };
+        let whereOtherOrmenemts = { id: { [Op.notIn]: ornamentId }, isActive: true, isReleased: false };
+        let loanData = await getLoanDetails(masterLoanId);
+        let amount = await getCustomerInterestAmount(masterLoanId);
+        let requestedOrnaments = await ornementsDetails(masterLoanId, whereSelectedOrmenemts);
+        let otherOrnaments = await ornementsDetails(masterLoanId, whereOtherOrmenemts);
+        let allOrnaments = await allOrnamentsDetails(masterLoanId);
+        let ornamentWeight = await getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanData, allOrnaments);
+        let loanInfo = await getornamentLoanInfo(masterLoanId, ornamentWeight, amount);
+        return res.status(200).json({ message: 'success', ornamentWeight, loanInfo });
+    } else {
+        return res.status(400).json({ message: "Can't proceed further as you have already applied for pat released or full release" });
+    }
 }
 
 exports.ornamentsPartRelease = async (req, res, next) => {
@@ -221,81 +229,31 @@ exports.ornamentsPartRelease = async (req, res, next) => {
     } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
-    let interestAmountPaid = paidAmount - releaseAmount;
-    let loanInfo = await models.customerLoanMaster.findOne({
-        where: { id: masterLoanId },
-        order: [
-            [models.customerLoan, 'id', 'asc']
-        ],
-        attributes: ['id', 'outstandingAmount'],
-        include: [{
-            model: models.customerLoan,
-            as: 'customerLoan',
-            attributes: ['id', 'outstandingAmount']
-        }]
+    let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
+        where: { isReleased: true, masterLoanId: masterLoanId }
     });
-    let securedReleaseAmount = Number(loanInfo.customerLoan[0].outstandingAmount / loanInfo.outstandingAmount * releaseAmount);
-    let securedOutstandingAmount = Number(loanInfo.customerLoan[0].outstandingAmount - securedReleaseAmount);
-    let unSecuredReleaseAmount = 0;
-    let unSecuredOutstandingAmount = 0;
-    if (loanInfo.customerLoan.length > 1) {
-        unSecuredReleaseAmount = Number(loanInfo.customerLoan[1].outstandingAmount / loanInfo.outstandingAmount * releaseAmount);
-        unSecuredOutstandingAmount = Number(loanInfo.customerLoan[1].outstandingAmount - unSecuredReleaseAmount);
-    }
-    let outstandingAmount = Number(loanInfo.outstandingAmount - (securedReleaseAmount + unSecuredReleaseAmount));
-    if (paymentType == 'cash') {
+    if (checkOrnament.length == 0) {
+        let addPartRelease;
         let partRelease = await sequelize.transaction(async t => {
-            let addPartRelease = await models.partRelease.create({ paymentType, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
+            if (paymentType == 'cash') {
+                addPartRelease = await models.partRelease.create({ paymentType, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
+            } else if (paymentType == 'cheque') {
+                addPartRelease = await models.partRelease.create({ paymentType, paidAmount, bankName, chequeNumber, branchName, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
+            } else if (paymentType == 'IMPS') {
+                addPartRelease = await models.partRelease.create({ paymentType, bankName, branchName, transactionId, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
+            } else {
+                return res.status(400).json({ message: 'invalid paymentType' });
+            }
             for (const ornament of ornamentId) {
                 await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
                 await models.partReleaseOrnaments.create({ partReleaseId: addPartRelease.id, ornamentId: ornament }, { transaction: t });
             }
-            await models.customerLoanMaster.update({ outstandingAmount: Number(outstandingAmount) }, { where: { id: loanInfo.id }, transaction: t })
-            await models.customerLoan.update({ outstandingAmount: Number(securedOutstandingAmount) }, { where: { id: loanInfo.customerLoan[0].id }, transaction: t })
-            if (loanInfo.customerLoan.length > 1) {
-                await models.customerLoan.update({ outstandingAmount: Number(unSecuredOutstandingAmount) }, { where: { id: loanInfo.customerLoan[1].id }, transaction: t })
-            }
-            await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_PAYMENT_CASH, createdBy, modifiedBy }, { transaction: t });
+            await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_APPLIED, createdBy, modifiedBy }, { transaction: t });
             return addPartRelease
         });
-        await allInterestPayment(masterLoanId, interestAmountPaid, createdBy);
-        return res.status(200).json({ message: "success", partRelease });
-    } else if (paymentType == 'cheque') {
-        let partRelease = await sequelize.transaction(async t => {
-            let addPartRelease = await models.partRelease.create({ paymentType, paidAmount, bankName, chequeNumber, branchName, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
-            for (const ornament of ornamentId) {
-                await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
-                await models.partReleaseOrnaments.create({ partReleaseId: addPartRelease.id, ornamentId: ornament }, { transaction: t });
-            }
-            await models.customerLoanMaster.update({ outstandingAmount: Number(outstandingAmount) }, { where: { id: loanInfo.id }, transaction: t })
-            await models.customerLoan.update({ outstandingAmount: Number(securedOutstandingAmount) }, { where: { id: loanInfo.customerLoan[0].id }, transaction: t })
-            if (loanInfo.customerLoan.length > 1) {
-                await models.customerLoan.update({ outstandingAmount: Number(unSecuredOutstandingAmount) }, { where: { id: loanInfo.customerLoan[1].id }, transaction: t })
-            }
-            await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_PAYMENT_CHEQUE, createdBy, modifiedBy }, { transaction: t });
-            return addPartRelease
-        });
-        await allInterestPayment(masterLoanId, interestAmountPaid, createdBy);
-        return res.status(200).json({ message: "success", partRelease });
-    } else if (paymentType == 'IMPS') {
-        let partRelease = await sequelize.transaction(async t => {
-            let addPartRelease = await models.partRelease.create({ paymentType, bankName, branchName, transactionId, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
-            for (const ornament of ornamentId) {
-                await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
-                await models.partReleaseOrnaments.create({ partReleaseId: addPartRelease.id, ornamentId: ornament }, { transaction: t });
-            }
-            await models.customerLoanMaster.update({ outstandingAmount: Number(outstandingAmount) }, { where: { id: loanInfo.id }, transaction: t })
-            await models.customerLoan.update({ outstandingAmount: Number(securedOutstandingAmount) }, { where: { id: loanInfo.customerLoan[0].id }, transaction: t })
-            if (loanInfo.customerLoan.length > 1) {
-                await models.customerLoan.update({ outstandingAmount: Number(unSecuredOutstandingAmount) }, { where: { id: loanInfo.customerLoan[1].id }, transaction: t })
-            }
-            await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_PAYMENT_BANK, createdBy, modifiedBy }, { transaction: t });
-            return addPartRelease
-        });
-        await allInterestPayment(masterLoanId, interestAmountPaid, createdBy);
         return res.status(200).json({ message: "success", partRelease });
     } else {
-        return res.status(400).json({ message: 'invalid paymentType' });
+        return res.status(400).json({ message: "can't proceed further as you have already applied for pat released or full release" });
     }
 }
 
@@ -746,42 +704,30 @@ exports.ornamentsFullRelease = async (req, res, next) => {
     } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
-    let interestAmountPaid = paidAmount - releaseAmount;
-    if (paymentType == 'cash') {
+    let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
+        where: { isReleased: true, masterLoanId: masterLoanId }
+    });
+    if (checkOrnament.length == 0) {
+        let addFullRelease;
         let fullRelease = await sequelize.transaction(async t => {
-            let addFullRelease = await models.fullRelease.create({ paymentType, currentOutstandingAmount, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
+            if (paymentType == 'cash') {
+                addFullRelease = await models.fullRelease.create({ paymentType, currentOutstandingAmount, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
+            } else if (paymentType == 'cheque') {
+                addFullRelease = await models.fullRelease.create({ paymentType, currentOutstandingAmount, paidAmount, bankName, chequeNumber, branchName, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
+            } else if (paymentType == 'IMPS') {
+                addFullRelease = await models.fullRelease.create({ paymentType, currentOutstandingAmount, bankName, branchName, transactionId, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
+            } else {
+                return res.status(400).json({ message: 'invalid paymentType' });
+            }
             for (const ornament of ornamentId) {
                 await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t });
             }
-            await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_PAYMENT_CASH, createdBy, modifiedBy }, { transaction: t });
+            await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_APPLIED, createdBy, modifiedBy }, { transaction: t });
             return addFullRelease
-        });
-        await allInterestPayment(masterLoanId, interestAmountPaid, createdBy);
+        })
         return res.status(200).json({ message: "success", fullRelease });
-    } else if (paymentType == 'cheque') {
-        let fullRelease = await sequelize.transaction(async t => {
-            let addFullRelease = await models.fullRelease.create({ paymentType, currentOutstandingAmount, paidAmount, bankName, chequeNumber, branchName, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
-            for (const ornament of ornamentId) {
-                await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
-            }
-            await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_PAYMENT_CHEQUE, createdBy, modifiedBy }, { transaction: t });
-            return addFullRelease
-        });
-        await allInterestPayment(masterLoanId, interestAmountPaid, createdBy);
-        return res.status(200).json({ message: "success", fullRelease });
-    } else if (paymentType == 'IMPS') {
-        let fullRelease = await sequelize.transaction(async t => {
-            let addFullRelease = await models.fullRelease.create({ paymentType, currentOutstandingAmount, bankName, branchName, transactionId, paidAmount, depositDate, masterLoanId, releaseAmount, interestAmount, penalInterest, payableAmount, releaseGrossWeight, releaseDeductionWeight, releaseNetWeight, remainingGrossWeight, remainingDeductionWeight, remainingNetWeight, currentLtv, createdBy, modifiedBy }, { transaction: t });
-            for (const ornament of ornamentId) {
-                await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
-            }
-            await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_PAYMENT_BANK, createdBy, modifiedBy }, { transaction: t });
-            return addFullRelease
-        });
-        let interestData = await allInterestPayment(masterLoanId, interestAmountPaid, createdBy);
-        return res.status(200).json({ message: "success", fullRelease, interestData });
     } else {
-        return res.status(400).json({ message: 'invalid paymentType' });
+        return res.status(400).json({ message: "can't proceed further as you have already applied for pat released or full release" });
     }
 }
 
