@@ -30,11 +30,12 @@ exports.getInterestInfo = async (req, res, next) => {
     let interestInfo = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
 
     let lastPayment = await models.customerLoanTransaction.findAll({
-        where: { masterLoanId: masterLoanId, depositStatus: "Completed" },
+        where: { masterLoanId: masterLoanId, depositStatus: "Completed",paymentFor:'quickPay' },
         order: [
             ['id', 'asc']
         ]
     })
+    
     let lastPaymentDate = lastPayment[lastPayment.length - 1].depositDate
 
     interestInfo.loan.dataValues.lastPaymentDate = lastPaymentDate
@@ -92,7 +93,7 @@ exports.quickPayment = async (req, res, next) => {
     paymentDetails.depositDate = depositDate
     paymentDetails.transactionUniqueId = transactionId
     paymentDetails.depositStatus = "Pending"
-    paymentDetails.paymentFor = 'QuickPay'
+    paymentDetails.paymentFor = 'quickPay'
     paymentDetails.createdBy = createdBy
 
     let data = await sequelize.transaction(async t => {

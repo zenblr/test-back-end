@@ -371,13 +371,13 @@ let mergeInterestTable = async (masterLoanId) => {
             data.emiReceivedDate = securedTable[i].emiReceivedDate
             data.interestAmount = (Number(securedTable[i].interestAmount) + Number(unsecuredTable[i].interestAmount)).toFixed(2)
             data.balanceAmount = (Number(securedTable[i].outstandingInterest) + Number(unsecuredTable[i].outstandingInterest)).toFixed(2)
-            data.paidAmount = securedTable[i].paidAmount + unsecuredTable[i].paidAmount
-            data.penalInterest = securedTable[i].penalInterest + unsecuredTable[i].penalInterest
+            data.paidAmount = (Number(securedTable[i].paidAmount) + Number(unsecuredTable[i].paidAmount)).toFixed(2)
+            data.penalInterest = Number(securedTable[i].penalInterest) + Number(unsecuredTable[i].penalInterest)
         } else {
             data.emiReceivedDate = securedTable[i].emiReceivedDate
             data.interestAmount = (Number(securedTable[i].interestAmount)).toFixed(2)
             data.balanceAmount = (Number(securedTable[i].outstandingInterest)).toFixed(2)
-            data.paidAmount = securedTable[i].paidAmount
+            data.paidAmount = (securedTable[i].paidAmount).toFixed(2)
             data.penalInterest = securedTable[i].penalInterest
         }
         mergeTble.push(data)

@@ -18,24 +18,31 @@ export class PartPaymentService {
   }
 
   getPayableAmount(data): Observable<any> {
-    return this.http.post(`/api/part-payment/check-part-amount`,data).pipe(
+    return this.http.post(`/api/part-payment/check-part-amount`, data).pipe(
       map(res => res),
-      catchError(err=>{
+      catchError(err => {
         this.toastr.error(err.error.message);
         throw err
       })
     )
   }
 
-  getPaymentConfirm(masterLoanId,paidAmount):Observable<any>{
-    return this.http.post(`/api/part-payment/confirm-payment-info`,{masterLoanId,paidAmount}).pipe(
+  getPaymentConfirm(masterLoanId, paidAmount): Observable<any> {
+    return this.http.post(`/api/part-payment/confirm-payment-info`, { masterLoanId, paidAmount }).pipe(
       map(res => res)
     )
   }
 
-  confirmPayment(masterLoanId,paidAmount,paymentDetails):Observable<any>{
-    return this.http.post(`/api/part-payment/payment`,{masterLoanId,paidAmount,paymentDetails}).pipe(
+  confirmPayment(masterLoanId, paidAmount, paymentDetails): Observable<any> {
+    return this.http.post(`/api/part-payment/payment`, { masterLoanId, paidAmount, paymentDetails }).pipe(
       map(res => res)
     )
   }
+  
+  finalPaymentConfirm(transactionId, status, masterLoanId): Observable<any> {
+    return this.http.post(`/api/part-payment/confirm-payment`, { transactionId, status, masterLoanId }).pipe(
+      map(res => res)
+    )
+  }
+
 }
