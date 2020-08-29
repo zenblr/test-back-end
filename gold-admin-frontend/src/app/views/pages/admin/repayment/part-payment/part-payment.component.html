@@ -44,7 +44,7 @@
             </div>
 
             <ng-template #blankTableValue>
-                <td class="text-center">-</td>
+                <td>-</td>
             </ng-template>
 
             <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
@@ -55,7 +55,7 @@
                 </div>
             </div>
 
-            <div *ngIf="showPartAmountInput" class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
+            <div *ngIf="showPartAmountInput" class="row justify-content-center kt-padding-t-25 kt-padding-b-5">
                 <div class="col-12">
                     <h5>Part Payment</h5>
                     <mat-divider></mat-divider>
@@ -63,7 +63,7 @@
                 <div class="col-12">
                     <div class="row justify-content-center">
                         <div class="col-6">
-                            <div class="row kt-margin-t-10">
+                            <div class="row kt-margin-t-15">
                                 <div class="align-self-center font-weight-500 col text-right">
                                     <label for=""> Enter Amount </label>
                                 </div>
@@ -99,9 +99,9 @@
                                         {{payableAmountSummary?.loanDetails?.customerLoan[1]?.loanUniqueId}}
                                     </span>
                                 </td>
-                                <td>{{payableAmountSummary?.ratio?.securedRatio}}
+                                <td>{{payableAmountSummary?.securedRatio}}
                                     <br>
-                                    {{payableAmountSummary?.ratio?.unsecuredRatio}}
+                                    {{payableAmountSummary?.unsecuredRatio}}
                                 </td>
                                 <td>{{payableAmountSummary?.securedInterest}} <br>
                                     <span *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">

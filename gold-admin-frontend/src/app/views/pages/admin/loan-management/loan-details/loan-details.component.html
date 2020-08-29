@@ -117,9 +117,12 @@
                                 <button *ngxPermissionsOnly="['partReleaseAdd', 'fullReleaseAdd']" mat-menu-item
                                     (click)="jewelleryRelease(loan)">Jewellery
                                     Release</button>
+                                    
                             </ng-container>
                             <!-- <button *ngxPermissionsOnly="['loanDetailsAdd']" mat-menu-item (click)="newLoan(loan)">Add
                                 New Loan</button> -->
+                                <button  mat-menu-item
+                                    (click)="soaDownload(loan.id)">S.O.A</button>
                         </mat-menu>
                     </mat-cell>
                 </ng-container>

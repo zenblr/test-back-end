@@ -150,6 +150,10 @@ export class LoanApplicationFormComponent implements OnInit {
       this.loanStage = event
   }
 
+  partPayment(event) {
+    this.loanTransferdata = event
+  }
+
   loanTransfer(event){
     this.loanTransferdata = event
   }

@@ -200,7 +200,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
         // this.statusAppraiser()
         // this.statusBM()
 
-        if (changes.details.currentValue.masterLoan.loanTransfer) {
+        if (changes.details.currentValue.masterLoan.loanTransfer || changes.details.currentValue.masterLoan.isNewLoanFromPartRelease) {
           this.isLoanTransfer = true
         }
         this.ref.detectChanges()
