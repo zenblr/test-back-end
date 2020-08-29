@@ -37,7 +37,7 @@ export class LoanApplicationFormComponent implements OnInit {
   loanStage: any;
   ornamentDetails: any;
   loanTransferdata: any;
-  disbursed: boolean;
+  disbursed: boolean = false;
 
   constructor(
     public ref: ChangeDetectorRef,
