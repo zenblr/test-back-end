@@ -104,11 +104,14 @@
                                     {{payableAmountSummary?.unsecuredRatio}}
                                 </td>
                                 <td class="th-p-style">{{payableAmountSummary?.securedInterest}} <br>
-                                <td class="th-padding-style">{{payableAmountSummary?.partPaymentAmount}}</td>
-                                <td class="th-p-style">{{payableAmountSummary?.securedInterest}} <br>
                                     <span *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">
                                         {{payableAmountSummary?.unsecuredInterest}}
                                     </span>
+                                <!-- <td class="th-padding-style">{{payableAmountSummary?.partPaymentAmount}}</td>
+                                <td class="th-p-style">{{payableAmountSummary?.securedInterest}} <br>
+                                    <span *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">
+                                        {{payableAmountSummary?.unsecuredInterest}}
+                                    </span> -->
                                 </td>
                                 <td class="th-padding-left-style">{{payableAmountSummary?.securedPenalInterest}}<br>
                                     <span *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">
