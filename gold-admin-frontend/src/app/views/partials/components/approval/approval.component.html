@@ -132,7 +132,6 @@
                                         *ngFor="let status of branchManagerLoan">
                                         {{status.name | titlecase}}</option>
                                 </select>
-                                {{controls.loanStatusForBM.value == 'pending'&&  controls.loanStatusForBM.touched}}
                                 <mat-error *ngIf="controls.loanStatusForBM.value == 'pending'&&  controls.loanStatusForBM.touched">
                                     Field
                                     Required</mat-error>
