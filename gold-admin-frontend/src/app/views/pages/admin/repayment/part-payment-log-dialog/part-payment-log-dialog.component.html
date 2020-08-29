@@ -1,5 +1,5 @@
 <kt-portlet>
-    <kt-modal-header [title]='"Part Payment Logs EMI"' (action)="action($event)"></kt-modal-header>
+    <kt-modal-header [title]='"Part Payment Logs"' (action)="action($event)"></kt-modal-header>
     <kt-portlet-body>
         <!-- <h5 class="kt-padding-t-25 kt-padding-l-20">Interest EMI</h5> -->
         <div class="table-div kt-padding-20">
@@ -22,37 +22,45 @@
                             </span>
                         </td>
                         <td>
-                            {{loanDetail.transactionSplitUp[0].customerLoan?.loanAmount}}
+                            <span class="currency">
+                                {{loanDetail.transactionSplitUp[0].customerLoan?.loanAmount | indianCurrencyFormat}}
+                            </span>
                             <br>
-                            <span *ngIf="loanDetail.transactionSplitUp.length > 1">
-                                {{loanDetail.transactionSplitUp[1].customerLoan?.loanAmount}}
+                            <span class="currency" *ngIf="loanDetail.transactionSplitUp.length > 1">
+                                {{loanDetail.transactionSplitUp[1].customerLoan?.loanAmount | indianCurrencyFormat}}
                             </span>
                         </td>
+
                         <td>{{loanDetail.depositDate | date :'mediumDate'}}</td>
 
-                        <td>{{loanDetail.transactionSplitUp[0].payableOutstanding}}
+                        <td>
+                            <span
+                                class="currency">{{loanDetail.transactionSplitUp[0].payableOutstanding | indianCurrencyFormat}}</span>
                             <br>
-                            <span *ngIf="loanDetail.transactionSplitUp.length > 1">
-                                {{loanDetail.transactionSplitUp[1].payableOutstanding}}
+                            <span class="currency" *ngIf="loanDetail.transactionSplitUp.length > 1">
+                                {{loanDetail.transactionSplitUp[1].payableOutstanding | indianCurrencyFormat}}
                             </span>
                         </td>
-                        <td> {{loanDetail.transactionSplitUp[0].loanOutstanding}}
+                        <td>
+                            <span
+                                class="currency">{{loanDetail.transactionSplitUp[0].loanOutstanding | indianCurrencyFormat}}</span>
                             <br>
-                            <span *ngIf="loanDetail.transactionSplitUp.length > 1">
-                                {{loanDetail.transactionSplitUp[1].loanOutstanding}}
+                            <span class="currency" *ngIf="loanDetail.transactionSplitUp.length > 1">
+                                {{loanDetail.transactionSplitUp[1].loanOutstanding | indianCurrencyFormat}}
                             </span>
                         </td>
-                        <td></td>
+                        <!-- <td></td> -->
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- <div class="row kt-padding-t-20">
-            <h5>Total Part Payment</h5>
-            <h6> </h6>
+        <div class="kt-padding-b-20">
+            <h5 class="text-center">Total Part Payment</h5>
+            <h5 class="text-center">
+                <span class="currency"> {{totalPartPayment | indianCurrencyFormat}} </span>
+            </h5>
         </div>
-        <div class="row kt-padding-t-20"></div> -->
 
     </kt-portlet-body>
 </kt-portlet>

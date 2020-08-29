@@ -10,7 +10,7 @@
         flex : 0 0 7% !important;
     }
     .mat-column-schemeName {
-        flex: 0 0 11% !important;
+        flex: 0 0 12% !important;
     }
     .mat-column-amount{
         flex: 0 0 8% !important;
@@ -31,7 +31,7 @@
         flex: 0 0 8% !important;
     }
     .mat-column-actions  {
-        flex: 0 0 5% !important;
+        flex: 0 0 3% !important;
     }
     .mat-column-new  {
         flex: 0 0 10% !important;
@@ -42,5 +42,9 @@
     }
     .nav-link {
         padding: 0 !important;
+    }
+    button.mat-menu-trigger.mat-button.mat-button-base {
+        min-width: 15px;
+        padding: 0 5px;
     }
 }
