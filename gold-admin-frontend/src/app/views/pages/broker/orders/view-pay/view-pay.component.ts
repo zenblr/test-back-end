@@ -113,7 +113,7 @@ export class ViewPayComponent implements OnInit {
               console.log(res)
               const msg = 'EMI Paid Successfully';
               this.toastr.successToastr(msg);
-              this.router.navigate(['/broker/order/']);
+              this.router.navigate(['/broker/orders/']);
 
                          }
           });
