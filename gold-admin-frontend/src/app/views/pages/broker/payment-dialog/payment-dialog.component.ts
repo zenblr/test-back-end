@@ -3,6 +3,8 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/broker';
+import { ShopService } from '../../../../core/broker';
+import { values } from 'lodash';
 
 @Component({
   selector: 'kt-payment-dialog',
@@ -23,6 +25,7 @@ export class PaymentDialogComponent implements OnInit {
     private fb: FormBuilder,
     private toastr: ToastrService,
     private checkoutCustomerService: CheckoutCustomerService,
+    private shopService: ShopService,
   ) { }
 
   ngOnInit() {
@@ -30,7 +33,11 @@ export class PaymentDialogComponent implements OnInit {
     this.title = 'Payment Mode';
     if (this.data.paymentData) {
       this.paymentForm.patchValue(this.data.paymentData)
+      this.paymentForm.controls['transactionAmount'].patchValue(this.data.paymentData.amount)
       this.setValidation(this.paymentForm.controls.paymentMode.value)
+    }
+    if(this.data.orderId) {
+      this.paymentForm.controls['orderId'].patchValue(this.data.orderId)
     }
     console.log(this.data.paymentData);
     console.log(this.paymentForm.value);
@@ -44,9 +51,11 @@ export class PaymentDialogComponent implements OnInit {
       transactionId: [],
       chequeNumber: [],
       depositDate: [this.currentDate, Validators.required],
-      customerId: [, [Validators.required]],
-      blockId: [, [Validators.required]],
-      totalInitialAmount: [, [Validators.required]],
+      customerId: [],
+      blockId: [],
+      orderId: [],
+      totalInitialAmount: [],
+      transactionAmount: []  
     })
     this.paymentForm.valueChanges.subscribe(val => console.log(val))
   }
@@ -88,6 +97,21 @@ export class PaymentDialogComponent implements OnInit {
       default:
         break;
     }
+    if(this.data.isEMI){
+      this.paymentForm.controls.transactionAmount.setValidators(Validators.required),
+      this.paymentForm.controls.transactionAmount.updateValueAndValidity()
+      this.paymentForm.controls.orderId.setValidators(Validators.required),
+      this.paymentForm.controls.orderId.updateValueAndValidity()
+     
+    }
+    else{
+      this.paymentForm.controls.totalInitialAmount.setValidators(Validators.required),
+      this.paymentForm.controls.totalInitialAmount.updateValueAndValidity()
+      this.paymentForm.controls.customerId.setValidators(Validators.required),
+      this.paymentForm.controls.customerId.updateValueAndValidity()
+      this.paymentForm.controls.blockId.setValidators(Validators.required),
+      this.paymentForm.controls.blockId.updateValueAndValidity()
+    }
   }
 
   get controls() {
@@ -97,6 +121,7 @@ export class PaymentDialogComponent implements OnInit {
   action(event) {
     if (event) {
       this.submit()
+      console.log(this.submit)
     } else if (!event) {
       this.dialogRef.close()
     }
@@ -104,12 +129,22 @@ export class PaymentDialogComponent implements OnInit {
 
   submit() {
     if (this.paymentForm.invalid) {
+     console.log(this.paymentForm.invalid)
       return this.paymentForm.markAllAsTouched();
     }
-    this.checkoutCustomerService.placeOrder(this.paymentForm.value).subscribe(res => {
-      if (res) {
-        this.dialogRef.close(true);
+    if (this.data.isEMI) {
+      this.shopService.payEMI(this.paymentForm.value).subscribe(res => {
+        if (res) {
+          this.dialogRef.close(true);
+        }
+      });
+    }
+    else {
+          this.checkoutCustomerService.placeOrder(this.paymentForm.value).subscribe(res => {
+            if (res) {
+              this.dialogRef.close(true);
+            }
+          });
+        }
       }
-    });
-  }
 }

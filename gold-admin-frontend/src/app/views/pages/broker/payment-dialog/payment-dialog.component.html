@@ -127,7 +127,28 @@
                             </div>
                         </div>
                         <div class="row kt-margin-t-15">
-                            <div class="col-6">
+                            <div class="col-6" *ngIf="data.isEMI">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label class="text-color mandatory kt-padding-l-10">Deposit Amount</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" placeholder="1050"
+                                            formControlName="transactionAmount"
+                                            [class.isError]="controls.transactionAmount.touched && controls.transactionAmount.invalid"
+                                            readonly>
+                                        <mat-error
+                                            *ngIf="controls.transactionAmount.errors?.required && controls.transactionAmount.touched">
+                                            Required field
+                                        </mat-error>
+                                        <mat-error
+                                            *ngIf="controls.transactionAmount.errors?.pattern && controls.transactionAmount.touched">
+                                            <small>Invalid Input</small>
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6" *ngIf="!data.isEMI">
                                 <div class="row">
                                     <div class="col-4 form-label">
                                         <label class="text-color mandatory kt-padding-l-10">Deposit Amount</label>
