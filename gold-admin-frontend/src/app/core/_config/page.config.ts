@@ -200,7 +200,9 @@ export class PageConfig {
 					}
 				},
 				'interest-emi': {
-					page: { title: "Pay Interest EMI", desc: "" },
+					id: {
+						page: { title: "Pay Interest EMI", desc: "" },
+					}
 				},
 				"part-payment": {
 					id: {

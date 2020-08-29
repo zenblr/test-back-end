@@ -12,7 +12,13 @@ export class PartPaymentService {
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   getPreviousPartPaymentInfo(id): Observable<any> {
-    return this.http.get(`/api/part-payment/interest-info?masterLoanId=${id}`).pipe(
+    return this.http.get(`/api/part-payment/part-payment-info?masterLoanId=${id}`).pipe(
+      map(res => res)
+    )
+  }
+
+  getPreviousPartPaymentLogs(id): Observable<any> {
+    return this.http.get(`/api/part-payment/view-log?masterLoanId=${id}`).pipe(
       map(res => res)
     )
   }
