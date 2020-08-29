@@ -63,7 +63,7 @@ exports.payableAmount = async (req, res, next) => {
     data.unsecuredTotalInterest = interest.unsecuredTotalInterest
     data.securedTotalInterest = interest.securedTotalInterest
 
-    return res.status(200).json({ data, interest });
+    return res.status(200).json({ data });
 }
 
 //CALCULATE PAYABLE AMOUNT

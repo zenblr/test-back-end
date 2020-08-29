@@ -71,15 +71,21 @@
                         <th class="transparent">Next Due Date Amount</th>
                         <th class="transparent">Payable Amount</th>
                         <th class="transparent">Payment Amount</th>
-                        
+
                     </thead>
                     <tbody>
                         <tr>
                             <td>{{payableAmount?.outstandingAmount}}</td>
                             <td>{{payableAmount?.securedInterest}} <br>
-                                {{payableAmount?.unsecuredInterest}}</td>
+                                <span *ngIf="loanDetails?.customerLoan[1]">
+                                    {{payableAmount?.unsecuredInterest}}
+                                </span>
+                            </td>
+
                             <td>{{payableAmount?.securedPenalInterest}}<br>
-                                {{payableAmount?.unsecuredPenalInterest}}
+                                <span *ngIf="loanDetails?.customerLoan[1]">
+                                    {{payableAmount?.unsecuredPenalInterest}}
+                                </span>
                             </td>
                             <td>{{payableAmount?.securedTotalInterest}}<br>
                                 {{payableAmount?.unsecuredTotalInterest}}
