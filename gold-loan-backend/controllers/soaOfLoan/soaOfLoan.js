@@ -13,6 +13,8 @@ const xl = require('excel4node');
 exports.getSoa = async (req, res) => {
     let { masterLoanId, startDate, endDate } = req.body;
     let masterLoan = await getSingleMasterLoanDetail(masterLoanId);
+    let customerLoanId = await masterLoan.customerLoan.map((data) => data.loanUniqueId);
+    let customerLoanIdtoString = customerLoanId.toString();
     let account = await models.customerTransactionDetail.findAll({
         where: { masterLoanId: masterLoanId },
         order: [['id', 'ASC']],
@@ -22,14 +24,44 @@ exports.getSoa = async (req, res) => {
         }]
     });
     //Excel
-    let wb = new xl.Workbook({dateFormat: 'dd/mm/yyyy',numberFormat: '#.00; (#.00); 0.00'});
+    let wb = new xl.Workbook({dateFormat: 'dd/mm/yyyy',numberFormat: '##.00,##0.00; (#,##0.00); #.00'});
     let ws = wb.addWorksheet('report');
     const style = wb.createStyle({
-        font: {
-            color: '#000000'
-        },
         alignment: { 
             wrapText: true
+        },border: {
+            left: {
+                style: 'thin',
+                color: 'black',
+            },
+            right: {
+                style: 'thin',
+                color: 'black',
+            },
+            top: {
+                style: 'thin',
+                color: 'black',
+            },
+            bottom: {
+                style: 'thin',
+                color: 'black',
+            },
+            outline: false,
+          }
+    });
+    const style2 = wb.createStyle({
+        alignment: { 
+            wrapText: true,
+            horizontal:'center'
+        },
+        font: {
+            bold: true
+          }
+    });
+    const customerStyle = wb.createStyle({
+        alignment: { 
+            wrapText: true,
+            horizontal:'left'
         }
     });
     // Create a reusable style
@@ -46,66 +78,85 @@ exports.getSoa = async (req, res) => {
     ws.column(7).setWidth(12);
     ws.column(8).setWidth(12);
     ws.column(9).setWidth(12);
-    ws.column(10).setWidth(9);
+    ws.column(10).setWidth(12);
     ws.column(11).setWidth(12);
     ws.column(12).setWidth(12);
     ws.column(13).setWidth(12);
+    //Title
+    ws.cell(1, 2, 1, 12, true).string("Statement of Account").style(style2);
+    //Customer details:
+    ws.cell(2, 2, 5, 5, true).string(`To,
+Customer Name: ${masterLoan.customer.firstName} ${masterLoan.customer.lastName}
+Mobile: ${masterLoan.customer.mobileNumber}
+Customer ID: ${masterLoan.customer.customerUniqueId}`).style(customerStyle);
+
+ws.cell(7, 2, 7, 5, true).string("Loan No").style(style);
+ws.cell(7, 6, 7, 7, true).string(`${customerLoanIdtoString}`).style(style);
+ws.cell(8, 2, 8, 5, true).string("Tenure").style(style);
+ws.cell(8, 6, 8, 7, true).string(`${masterLoan.tenure}`).style(style);
+ws.cell(9, 2, 9, 5, true).string("Frequency in days").style(style);
+ws.cell(9, 6, 9, 7, true).string(`${masterLoan.customerLoan[0].selectedSlab}`).style(style);
+ws.cell(10, 2, 10, 5, true).string("Loan amount").style(style);
+ws.cell(10, 6, 10, 7, true).string(`${masterLoan.finalLoanAmount}`).style(style);
+ws.cell(11, 2, 11, 5, true).string("Loan outstanding amount").style(style);
+ws.cell(11, 6, 11, 7, true).string(`${masterLoan.outstandingAmount}`).style(style);
+
     //account opening
-    ws.cell(1, 1).string("Transaction Date").style(style);
-    ws.cell(1, 2).string("Transaction Type Narration").style(style);
-    ws.cell(1, 3).string("Reference ID").style(style);
-    ws.cell(1, 4).string("Payment Type").style(style);
-    ws.cell(1, 5).string("Transaction ID").style(style);
-    ws.cell(1, 6).string("Bank Transaction Unique ID").style(style);
-    ws.cell(1, 7).string("Cheque Number").style(style);
-    ws.cell(1, 8).string("Bank Name").style(style);
-    ws.cell(1, 9).string("Branch Name").style(style);
-    ws.cell(1, 10).string("Deposit Status").style(style);
-    ws.cell(1, 11).string("Debit in Rs").style(style);
-    ws.cell(1, 12).string("Credit in Rs").style(style);
-    ws.cell(1, 13).string("Closing Balance due in Rs").style(style);
-    ws.cell(2, 1).date(null);
-    ws.cell(2, 2).string("Opening Balance");
-    ws.cell(2, 3).string("-");
-    ws.cell(2, 4).string("-");
-    ws.cell(2, 5).string("-");
-    ws.cell(2, 6).string("-");
-    ws.cell(2, 7).string("-");
-    ws.cell(2, 8).string("-");
-    ws.cell(2, 9).string("-");
-    ws.cell(2, 10).string("-");
-    ws.cell(2, 11).number(0.00).style(numberStyle);
-    ws.cell(2, 12).number(0.00).style(numberStyle);
-    ws.cell(2, 13).number(0.00).style(numberStyle);
+    ws.cell(16, 1).string("Transaction Date").style(style);
+    ws.cell(16, 2).string("Transaction Type Narration").style(style);
+    ws.cell(16, 3).string("Reference ID").style(style);
+    ws.cell(16, 4).string("Payment Type").style(style);
+    ws.cell(16, 5).string("Transaction ID").style(style);
+    ws.cell(16, 6).string("Bank Transaction Unique ID").style(style);
+    ws.cell(16, 7).string("Cheque Number").style(style);
+    ws.cell(16, 8).string("Bank Name").style(style);
+    ws.cell(16, 9).string("Branch Name").style(style);
+    ws.cell(16, 10).string("Deposit Status").style(style);
+    ws.cell(16, 11).string("Debit in Rs").style(style);
+    ws.cell(16, 12).string("Credit in Rs").style(style);
+    ws.cell(16, 13).string("Closing Balance due in Rs").style(style);
+    ws.cell(17, 1).date(masterLoan.loanStartDate).style(style);
+    ws.cell(17, 2).string("Opening Balance").style(style);
+    ws.cell(17, 3).string("-").style(style);
+    ws.cell(17, 4).string("-").style(style);
+    ws.cell(17, 5).string("-").style(style);
+    ws.cell(17, 6).string("-").style(style);
+    ws.cell(17, 7).string("-").style(style);
+    ws.cell(17, 8).string("-").style(style);
+    ws.cell(17, 9).string("-").style(style);
+    ws.cell(17, 10).string("-").style(style);
+    ws.cell(17, 11).number(0.00).style(numberStyle).style(style);
+    ws.cell(17, 12).number(0.00).style(numberStyle).style(style);
+    ws.cell(17, 13).number(0.00).style(numberStyle).style(style);
     let closingBalance = 0;
     for (let i = 0; account.length > i; i++) {
-        ws.cell(i + 3, 1).date(account[i].createdAt);
-        ws.cell(i + 3, 2).string(account[i].description).style(style);
-        ws.cell(i + 3, 3).string(account[i].referenceId);
+        ws.cell(i + 18, 1).date(account[i].createdAt).style(style);
+        ws.cell(i + 18, 2).string(account[i].description).style(style);
+        ws.cell(i + 18, 3).string(account[i].referenceId).style(style);
         //
         if (account[i].customerLoanTransactionId != null) {
-            ws.cell(i + 3, 4).string(account[i].transaction.paymentType);
-            ws.cell(i + 3, 5).string(account[i].transaction.transactionUniqueId);
-            ws.cell(i + 3, 6).string(account[i].transaction.bankTransactionUniqueId);
-            ws.cell(i + 3, 7).string(account[i].transaction.chequeNumber);
-            ws.cell(i + 3, 8).string(account[i].transaction.bankName);
-            ws.cell(i + 3, 9).string(account[i].transaction.branchName);
-            ws.cell(i + 3, 10).string(account[i].transaction.depositStatus);
+            ws.cell(i + 18, 4).string(account[i].transaction.paymentType).style(style);
+            ws.cell(i + 18, 5).string(account[i].transaction.transactionUniqueId).style(style);
+            ws.cell(i + 18, 6).string(account[i].transaction.bankTransactionUniqueId).style(style);
+            ws.cell(i + 18, 7).string(account[i].transaction.chequeNumber).style(style);
+            ws.cell(i + 18, 8).string(account[i].transaction.bankName).style(style);
+            ws.cell(i + 18, 9).string(account[i].transaction.branchName).style(style);
+            ws.cell(i + 18, 10).string(account[i].transaction.depositStatus).style(style);
         } else {
-            ws.cell(i + 3, 4).string("-");
-            ws.cell(i + 3, 5).string("-");
-            ws.cell(i + 3, 6).string("-");
-            ws.cell(i + 3, 7).string("-");
-            ws.cell(i + 3, 8).string("-");
-            ws.cell(i + 3, 9).string("-");
-            ws.cell(i + 3, 10).string("-");
+            ws.cell(i + 18, 4).string("-").style(style);
+            ws.cell(i + 18, 5).string("-").style(style);
+            ws.cell(i + 18, 6).string("-").style(style);
+            ws.cell(i + 18, 7).string("-").style(style);
+            ws.cell(i + 18, 8).string("-").style(style);
+            ws.cell(i + 18, 9).string("-").style(style);
+            ws.cell(i + 18, 10).string("-").style(style);
         }
-        ws.cell(i + 3, 11).number(Number(account[i].debit)).style(numberStyle);
-        ws.cell(i + 3, 12).number(Number(account[i].credit)).style(numberStyle);
+        ws.cell(i + 18, 11).number(Number(account[i].debit)).style(numberStyle).style(style);
+        ws.cell(i + 18, 12).number(Number(account[i].credit)).style(numberStyle).style(style);
         closingBalance = Number(closingBalance) + Number(account[i].debit) - Number(account[i].credit);
-        ws.cell(i + 3, 13).number(Number(closingBalance)).style(numberStyle);
+        ws.cell(i + 18, 13).number(Math.abs(Number(closingBalance))).style(numberStyle).style(style);
     }
     return wb.write(`${Date.now()}.xlsx`, res);
-    // return res.status(200).json({ message: "success",account });
+    // return res.status(200).json({ message: "success",masterLoan });
 }
 

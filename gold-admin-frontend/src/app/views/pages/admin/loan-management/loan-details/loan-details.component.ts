@@ -121,4 +121,8 @@ export class LoanDetailsComponent implements OnInit {
   partPayment(loan) {
     this.router.navigate(['/admin/repayment/part-payment', loan.id])
   }
+
+  soaDownload(masterLoanId){
+    this.sharedService.soaDownload(masterLoanId).subscribe()
+  }
 }

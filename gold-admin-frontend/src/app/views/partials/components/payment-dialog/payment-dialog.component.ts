@@ -13,16 +13,18 @@ export class PaymentDialogComponent implements OnInit {
   paymentTypeList = [{ value: 'cash', name: 'cash' }, { value: 'IMPS', name: 'IMPS' }, { value: 'NEFT', name: 'NEFT' }, { value: 'RTGS', name: 'RTGS' }, { value: 'cheque', name: 'cheque' }, { value: 'UPI', name: 'UPI' }, { value: 'gateway', name: 'payment gateway' }]
   paymentForm: FormGroup;
   title: string = ''
-
+  minDate: Date;
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<PaymentDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private depositService: DepositService,
     private toast: ToastrService,
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
+
     this.initForm()
     this.setForm()
   }
@@ -55,8 +57,10 @@ export class PaymentDialogComponent implements OnInit {
         this.paymentForm.disable();
         this.paymentForm.controls.depositStatus.enable();
       } else {
+        this.minDate = this.data.date;
         this.paymentForm.patchValue(this.data.value)
-        this.paymentForm.controls.depositStatus.disable()
+        this.paymentForm.controls.depositStatus.disable();
+        this.paymentForm.controls.paidAmount.disable();
       }
     }
   }
@@ -78,10 +82,14 @@ export class PaymentDialogComponent implements OnInit {
       case 'RTGS':
       case 'UPI':
         this.paymentForm.clearValidators();
+        // Object.keys(this.paymentForm.controls).forEach(key => {
+        //   this.paymentForm.get(key).markAsDirty();
+        // });
 
         for (const key in this.paymentForm.controls) {
           if (key !== 'chequeNumber') {
             this.paymentForm.controls[key].setValidators([Validators.required])
+            this.paymentForm.updateValueAndValidity()
           } else {
             this.paymentForm.controls[key].patchValue(null)
           }
@@ -151,6 +159,7 @@ export class PaymentDialogComponent implements OnInit {
     if (this.data.name == "deposit") {
       this.dialogRef.close(this.paymentForm.controls.depositStatus.value)
     } else {
+      this.paymentForm.controls.paidAmount.enable();
       this.paymentForm.patchValue({ paidAmount: Number(this.controls.paidAmount.value) })
       if (this.controls.paymentType.value === 'cash') {
         this.paymentForm.patchValue({

@@ -25,7 +25,7 @@
                             <kt-ornaments [action]="action" (next)="next($event)" [disable]="disabledForm"
                                 [details]="customerDetail" (totalAmt)="total($event)" (fullAmt)="fullAmt($event)"
                                 [masterAndLoanIds]="masterAndLoanIds" [ornamentType]="ornamentType"
-                                [showButton]="showButton" (loanTransfer)="loanTransfer($event)">
+                                [showButton]="showButton" (loanTransfer)="loanTransfer($event)" (partPayment)=partPayment($event)>
                             </kt-ornaments>
                         </div>
                         <!-- </ng-template> -->

@@ -42,10 +42,10 @@
                         {{deposit.masterLoan.customer.lastName | titlecase}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="mobileNumber">
+                <!-- <ng-container matColumnDef="mobileNumber">
                     <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
                     <mat-cell *matCellDef="let deposit">{{deposit.masterLoan.customer.mobileNumber}}</mat-cell>
-                </ng-container>
+                </ng-container> -->
 
                 <ng-container matColumnDef="modeOfPayment">
                     <mat-header-cell *matHeaderCellDef>Mode of Payment</mat-header-cell>
@@ -87,7 +87,7 @@
                     <mat-cell *matCellDef="let deposit">
                         <ng-container>
                             <button *ngIf="deposit.depositStatus == 'Pending'" style="width: 120px;" class="apply-kyc"
-                                (click)="updateStatus(deposit)">Update
+                                (click)="updateStatus(deposit)">Edit
                             </button>
                         </ng-container>
 

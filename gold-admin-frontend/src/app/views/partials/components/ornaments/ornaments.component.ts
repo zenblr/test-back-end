@@ -47,6 +47,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() karatArr
   @Input() customerConfirmationArr
   @Input() karatFlag
+  @Output() partPayment:EventEmitter<any> = new EventEmitter();
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
   @ViewChild('stoneTouch', { static: false }) stoneTouch: ElementRef
@@ -825,6 +826,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           }
           if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
             this.loanTransfer.emit(res.loanTransferData.loanTransfer.disbursedLoanAmount)
+          }
+          if (res.newLoanAmount) {
+            this.partPayment.emit(res.newLoanAmount)
           }
 
           this.next.emit(3)
