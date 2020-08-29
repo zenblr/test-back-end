@@ -9,7 +9,7 @@ route.get('/interest-info', checkAuth, wrapper(getInterestInfo))
 
 route.post('/check-part-amount', checkAuth, wrapper(checkPartAmount))
 
-route.get('/confirm-payment-info', checkAuth, wrapper(payableAmountConfirmPartPayment))
+route.post('/confirm-payment-info', checkAuth, wrapper(payableAmountConfirmPartPayment))
 
 route.post('/payment', checkAuth, wrapper(partPayment))
 

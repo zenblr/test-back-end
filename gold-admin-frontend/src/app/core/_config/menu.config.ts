@@ -42,170 +42,32 @@ export class MenuConfig {
 							translate: "MENU.DASHBOARD",
 							permission: false,
 						},
-						{
-							title: "Admin Account",
-							root: true,
-							src: "assets/media/aside-icons/icons-02.svg",
-							page: "/admin/dashboard",
-							bullet: 'dot',
-							permission: false,
-							submenu: [
-								{
-									title: "Change Password",
-									page: "/admin/admin-account/change-password",
-									permission: false,
-								},
-								{
-									title: "Show Queries",
-									page: "/admin/admin-account/show-queries",
-									permission: false,
-								},
-								{
-									title: "Show Feedback",
-									page: "/admin/admin-account/show-feedback",
-									permission: false,
-								},
-							],
-						},
-						{
-							title: "Admin Settings",
-							root: true,
-							src: "assets/media/aside-icons/icons-03.svg",
-							bullet: 'dot',
-							permission: false,
-							submenu: [
-								{
-									title: "Upload Data",
-									root: true,
-									bullet: 'dot',
-									permission: !(this.permissionsArr.includes('promotionalBannerView') ||
-										this.permissionsArr.includes('offerBannerView') ||
-										this.permissionsArr.includes('goldRateView') ||
-										this.permissionsArr.includes('partnerBannerView')),
+						// {
+						// 	title: "Admin Account",
+						// 	root: true,
+						// 	src: "assets/media/aside-icons/icons-02.svg",
+						// 	page: "/admin/dashboard",
+						// 	bullet: 'dot',
+						// 	permission: false,
+						// 	submenu: [
+						// 		{
+						// 			title: "Change Password",
+						// 			page: "/admin/admin-account/change-password",
+						// 			permission: false,
+						// 		},
+						// 		{
+						// 			title: "Show Queries",
+						// 			page: "/admin/admin-account/show-queries",
+						// 			permission: false,
+						// 		},
+						// 		{
+						// 			title: "Show Feedback",
+						// 			page: "/admin/admin-account/show-feedback",
+						// 			permission: false,
+						// 		},
+						// 	],
+						// },
 
-									submenu: [
-										{
-											title: "Gold Rate",
-											page: "/admin/upload-data/gold-rate",
-											permission: !this.permissionsArr.includes('goldRateView'),
-										},
-										{
-											title: "Promotional Banners",
-											page: "/admin/upload-data/upload-banner",
-											permission: !this.permissionsArr.includes('promotionalBannerView'),
-										},
-										{
-											title: "Offer Banners",
-											page: "/admin/upload-data/upload-offer",
-											permission: !this.permissionsArr.includes('offerBannerView'),
-										},
-										{
-											title: "Partner Banners",
-											page: "/admin/upload-data/upload-lender-banner",
-											permission: !this.permissionsArr.includes('partnerBannerView'),
-										},
-
-									],
-								},
-								{
-									title: "Loan Settings",
-									root: true,
-									bullet: 'dot',
-									permission: !(this.permissionsArr.includes('schemeView') ||
-										this.permissionsArr.includes('karatDetailsView')),
-
-									submenu: [
-										{
-											title: "Scheme",
-											page: "/admin/loan-setting/scheme",
-											bullet: 'dot',
-											permission: !this.permissionsArr.includes('schemeView'),
-										},
-										{
-											title: "Karat details",
-											page: "/admin/loan-setting/karat-details",
-											bullet: 'dot',
-											permission: !this.permissionsArr.includes('karatDetailsView'),
-										},
-									],
-								},
-								{
-									title: "Notification Settings",
-									root: true,
-									bullet: 'dot',
-									permission: false,
-
-									submenu: [
-										{
-											title: "Email Template",
-											page: "/admin/notification-setting/email-alert",
-											permission: false,
-										},
-										{
-											title: "SMS Template",
-											page: "/admin/notification-setting/sms-alert",
-											permission: false,
-										},
-									],
-								},
-								{
-									title: "Masters",
-									root: true,
-									bullet: 'dot',
-									permission: !(this.permissionsArr.includes('viewLeadSource') ||
-										this.permissionsArr.includes('viewOrnamentType') ||
-										this.permissionsArr.includes('viewUnapprovalReason') ||
-										this.permissionsArr.includes('viewPurpose') ||
-										this.permissionsArr.includes('viewOccupation') ||
-										this.permissionsArr.includes('viewPacketLocation') ||
-										this.permissionsArr.includes('viewHoliday')),
-									submenu: [
-										{
-											title: "Lead Source",
-											page: "/admin/masters/lead-source",
-											permission: !this.permissionsArr.includes('viewLeadSource'),
-										},
-										{
-											title: "Ornaments",
-											page: "/admin/masters/ornaments",
-											permission: !this.permissionsArr.includes('viewOrnamentType'),
-										},
-										{
-											title: "Unapproved Reasons",
-											page: "/admin/masters/reasons",
-											permission: !this.permissionsArr.includes('viewUnapprovalReason'),
-										},
-										{
-											title: "Purposes",
-											page: "/admin/masters/purposes",
-											permission: !this.permissionsArr.includes('viewPurpose'),
-										},
-										{
-											title: "Occupations",
-											page: "/admin/masters/occupation",
-											permission: !this.permissionsArr.includes('viewOccupation'),
-										},
-										{
-											title: "Packet Location",
-											page: "/admin/masters/packet-location",
-											permission: !this.permissionsArr.includes('viewPacketLocation'),
-										},
-										{
-											title: "Holidays",
-											root: true,
-											permission: !this.permissionsArr.includes('viewHoliday'),
-											page: "/admin/holidays"
-										},
-										{
-											title: "Other Charges",
-											root: true,
-											permission: false,
-											page: "/admin/masters/other-charges"
-										},
-									],
-								},
-							],
-						},
 						{
 							title: "User Management",
 							root: true,
@@ -248,7 +110,7 @@ export class MenuConfig {
 							],
 						},
 						{
-							title: "Customer Setting",
+							title: "KYC Details",
 							root: true,
 							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-06.svg",
@@ -256,7 +118,7 @@ export class MenuConfig {
 								this.permissionsArr.includes('appliedKycView')),
 							submenu: [
 								{
-									title: "KYC Setting",
+									title: "KYC Application",
 									page: "/admin/kyc-setting",
 									permission: !this.permissionsArr.includes('customerKycAdd'),
 								},
@@ -327,12 +189,12 @@ export class MenuConfig {
 								}
 							],
 						},
-						{
-							title: "Global Map",
-							root: true,
-							src: "assets/media/aside-icons/icons-08.svg",
-							page: "/admin/global-map",
-						},
+						// {
+						// 	title: "Global Map",
+						// 	root: true,
+						// 	src: "assets/media/aside-icons/icons-08.svg",
+						// 	page: "/admin/global-map",
+						// },
 						{
 							title: "Customer Management",
 							root: true,
@@ -340,45 +202,40 @@ export class MenuConfig {
 							page: "/admin/customer-management/customer-list",
 							permission: !this.permissionsArr.includes('customerManagementView'),
 						},
-						{
-							title: "Repayment Structure",
-							root: true,
-							bullet: 'dot',
-							src: "assets/media/aside-icons/icons-09.svg",
-							permission: false,
-							submenu: [
-								{
-									title: "Monthly Payment",
-									page: "/admin/repayment/monthly",
-									bullet: 'dot',
-									permission: false,
-								},
-								// {
-								// 	title: 'One Shot Payment',
-								// 	path: '/one-shot-payment',
-								// permission: false,
-								// }
-							],
-						},
-						{
-							title: "Account",
-							root: true,
-							src: "assets/media/aside-icons/icons-12.svg",
-							bullet: 'dot',
-							permission: false,
-							submenu: [
-								{
-									title: "Loan Disbursed Details",
-									page: "/admin/account/loan-disbursement",
-									permission: false,
-								},
-								{
-									title: "Loan Repayment Details",
-									page: "/admin/account/loan-repayment",
-									permission: false,
-								},
-							],
-						},
+						// {
+						// 	title: "Repayment Structure",
+						// 	root: true,
+						// 	bullet: 'dot',
+						// 	src: "assets/media/aside-icons/icons-09.svg",
+						// 	permission: false,
+						// 	submenu: [
+						// 		{
+						// 			title: "Monthly Payment",
+						// 			page: "/admin/repayment/monthly",
+						// 			bullet: 'dot',
+						// 			permission: false,
+						// 		},
+						// 	],
+						// },
+						// {
+						// 	title: "Account",
+						// 	root: true,
+						// 	src: "assets/media/aside-icons/icons-12.svg",
+						// 	bullet: 'dot',
+						// 	permission: false,
+						// 	submenu: [
+						// 		{
+						// 			title: "Loan Disbursed Details",
+						// 			page: "/admin/account/loan-disbursement",
+						// 			permission: false,
+						// 		},
+						// 		{
+						// 			title: "Loan Repayment Details",
+						// 			page: "/admin/account/loan-repayment",
+						// 			permission: false,
+						// 		},
+						// 	],
+						// },
 						{
 							title: "Funds and Approvals",
 							root: true,
@@ -485,25 +342,174 @@ export class MenuConfig {
 							// permission: !this.modulesArr.includes(3),
 						},
 						{
+							title: "Broker",
+							root: true,
+							src: "assets/media/aside-icons/icons-29.svg",
+							page: "/broker",
+							permission: !this.modulesArr.includes(2),
+						},
+						{
 							title: "Settings",
 							root: true,
 							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-03.svg",
-							permission: !(this.permissionsArr.includes('viewGlobalSetting')),
+							permission: false,
 							submenu: [
+								{
+									title: "Admin Settings",
+									root: true,
+									bullet: 'dot',
+									permission: false,
+									submenu: [
+										{
+											title: "Change Password",
+											page: "/admin/admin-account/change-password",
+											permission: false,
+										},
+										{
+											title: "Upload Data",
+											root: true,
+											bullet: 'dot',
+											permission: !(this.permissionsArr.includes('promotionalBannerView') ||
+												this.permissionsArr.includes('offerBannerView') ||
+												this.permissionsArr.includes('goldRateView') ||
+												this.permissionsArr.includes('partnerBannerView')),
+
+											submenu: [
+												{
+													title: "Gold Rate",
+													page: "/admin/upload-data/gold-rate",
+													permission: !this.permissionsArr.includes('goldRateView'),
+												},
+												{
+													title: "Promotional Banners",
+													page: "/admin/upload-data/upload-banner",
+													permission: !this.permissionsArr.includes('promotionalBannerView'),
+												},
+												{
+													title: "Offer Banners",
+													page: "/admin/upload-data/upload-offer",
+													permission: !this.permissionsArr.includes('offerBannerView'),
+												},
+												{
+													title: "Partner Banners",
+													page: "/admin/upload-data/upload-lender-banner",
+													permission: !this.permissionsArr.includes('partnerBannerView'),
+												},
+
+											],
+										},
+										{
+											title: "Scheme Configuration",
+											bullet: 'dot',
+											page: "/admin/loan-setting/scheme",
+											permission: !(this.permissionsArr.includes('schemeView')),
+
+											// submenu: [
+											// 	{
+											// 		title: "Scheme",
+											// 		page: "/admin/loan-setting/scheme",
+											// 		bullet: 'dot',
+											// 		permission: !this.permissionsArr.includes('schemeView'),
+											// 	},
+											// ],
+										},
+										{
+											title: "Notification Settings",
+											root: true,
+											bullet: 'dot',
+											permission: false,
+
+											submenu: [
+												{
+													title: "Email Template",
+													page: "/admin/notification-setting/email-alert",
+													permission: false,
+												},
+												{
+													title: "SMS Template",
+													page: "/admin/notification-setting/sms-alert",
+													permission: false,
+												},
+											],
+										},
+										{
+											title: "Masters",
+											root: true,
+											bullet: 'dot',
+											permission: !(this.permissionsArr.includes('viewLeadSource') ||
+												this.permissionsArr.includes('viewOrnamentType') ||
+												this.permissionsArr.includes('viewUnapprovalReason') ||
+												this.permissionsArr.includes('viewPurpose') ||
+												this.permissionsArr.includes('viewOccupation') ||
+												this.permissionsArr.includes('viewPacketLocation') ||
+												this.permissionsArr.includes('viewHoliday') ||
+												this.permissionsArr.includes('karatDetailsView')),
+											submenu: [
+												{
+													title: "Lead Source",
+													page: "/admin/masters/lead-source",
+													permission: !this.permissionsArr.includes('viewLeadSource'),
+												},
+												{
+													title: "Ornaments",
+													page: "/admin/masters/ornaments",
+													permission: !this.permissionsArr.includes('viewOrnamentType'),
+												},
+												{
+													title: "Karat",
+													page: "/admin/loan-setting/karat-details",
+													bullet: 'dot',
+													permission: !this.permissionsArr.includes('karatDetailsView'),
+												},
+												{
+													title: "Unapproved Reasons",
+													page: "/admin/masters/reasons",
+													permission: !this.permissionsArr.includes('viewUnapprovalReason'),
+												},
+												{
+													title: "Purposes",
+													page: "/admin/masters/purposes",
+													permission: !this.permissionsArr.includes('viewPurpose'),
+												},
+												{
+													title: "Occupations",
+													page: "/admin/masters/occupation",
+													permission: !this.permissionsArr.includes('viewOccupation'),
+												},
+												{
+													title: "Packet Location",
+													page: "/admin/masters/packet-location",
+													permission: !this.permissionsArr.includes('viewPacketLocation'),
+												},
+												{
+													title: "Holidays",
+													root: true,
+													permission: !this.permissionsArr.includes('viewHoliday'),
+													page: "/admin/holidays"
+												},
+												{
+													title: "Other Charges",
+													root: true,
+													permission: false,
+													page: "/admin/masters/other-charges"
+												},
+											],
+										},
+										{
+											title: "Roles and Permissions",
+											page: "/admin/roles",
+											bullet: 'dot',
+											permission: !(this.userType === 4),
+										},
+									],
+								},
 								{
 									title: "Global Settings",
 									page: "/admin/global-settings",
 									permission: !this.permissionsArr.includes('viewGlobalSetting')
 								},
 							]
-						},
-						{
-							title: "Broker",
-							root: true,
-							src: "assets/media/aside-icons/icons-29.svg",
-							page: "/broker",
-							permission: !this.modulesArr.includes(2),
 						},
 						{
 							title: "Log Out",
@@ -574,13 +580,13 @@ export class MenuConfig {
 							src: "assets/media/aside-icons/icons-19.svg",
 							permission: !this.permissionsArr.includes('storeView')
 						},
-						{
-							title: "Roles and permissions",
-							root: true,
-							page: "/admin/user-management/roles",
-							src: "assets/media/aside-icons/icons-20.svg",
-							permission: !(this.userType === 4),
-						},
+						// {
+						// 	title: "Roles and permissions",
+						// 	root: true,
+						// 	page: "/admin/user-management/roles",
+						// 	src: "assets/media/aside-icons/icons-20.svg",
+						// 	permission: !(this.userType === 4),
+						// },
 						{
 							title: "Back",
 							src: "assets/media/aside-icons/icons-21.svg",

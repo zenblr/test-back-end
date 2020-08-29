@@ -344,7 +344,6 @@
                     </div> -->
     </div>
 </form>
-
-<div class="p-3" *ngIf="showButton">
-    <kt-modal-footer (action)="action($event)" [value]="'Done'"></kt-modal-footer>
+<div class="p-3" >
+    <kt-modal-footer *ngIf="showButton && !disbursed" (action)="action($event)" [value]="'Done'"></kt-modal-footer>
 </div>

@@ -101,6 +101,10 @@ import { AdminComponent } from './admin.component';
 						path: 'global-map',
 						loadChildren: () => import('./global-map/global-map.module').then(m => m.GlobalMapModule)
 					},
+					{
+						path: 'roles',
+						loadChildren: () => import('./settings/roles-permissions/roles-permissions.module').then(m => m.RolesPermissionsModule)
+					},
 					{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 					{ path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
 				]

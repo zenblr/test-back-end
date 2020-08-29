@@ -9,7 +9,7 @@ exports.readBanner = async (req, res, next) => {
     if (!banner) {
         res.status(404).json({ message: 'Data not found' });
     } else {
-        res.status(200).json(banner[0]);
+        res.status(200).json({ data: banner[0] });
     }
 };
 
@@ -19,7 +19,7 @@ exports.readOffer = async (req, res, next) => {
     if (!offer[0]) {
         res.status(400).json({ message: 'Data not found' });
     } else {
-        res.status(200).json(offer[0]);
+        res.status(200).json({ data: offer[0] });
     }
 };
 
@@ -29,7 +29,7 @@ exports.readLenderBanner = async (req, res, next) => {
     if (!lenderBanner[0]) {
         res.status(404).json({ message: 'Data not found' });
     } else {
-        res.status(200).json(lenderBanner[0]);
+        res.status(200).json({ data: lenderBanner[0] });
     }
 };
 
@@ -39,7 +39,7 @@ exports.readGoldRate = async (req, res, next) => {
         res.status(404).json({ message: 'Data not found' });
     }
     else {
-        res.status(200).json(readGoldRate);
+        res.status(200).json({ data: readGoldRate });
     }
 }
 
@@ -52,7 +52,7 @@ exports.readPersonalDetailsOfCustomer = async (req, res, next) => {
         res.status(404).json({ message: 'Data not found' })
     }
     else {
-        res.status(200).json(readPersonalDetailsOfCustomer);
+        res.status(200).json({ data: readPersonalDetailsOfCustomer });
     }
 
 }
@@ -65,7 +65,7 @@ exports.readBankDetailsOfCustomer = async (req, res, next) => {
         res.status(404).json({ message: 'Data not found' })
     }
     else {
-        res.status(200).json(readBankDetailsOfCustomer);
+        res.status(200).json({ data: readBankDetailsOfCustomer });
     }
 
 }
@@ -77,7 +77,7 @@ exports.readNomineeDetailsOfCustomer = async (req, res, next) => {
         res.status(404).json({ message: 'Data not found' })
     }
     else {
-        res.status(200).json(readNomineeDetailsOfCustomer);
+        res.status(200).json({ data: readNomineeDetailsOfCustomer });
     }
 }
 exports.readAddressDetailsOfCustomer = async (req, res, next) => {
@@ -87,7 +87,7 @@ exports.readAddressDetailsOfCustomer = async (req, res, next) => {
         res.status(404).json({ message: 'Data not found' })
     }
     else {
-        res.status(200).json(readAddressDetailsOfCustomer);
+        res.status(200).json({ data: readAddressDetailsOfCustomer });
     }
 }
 
@@ -98,7 +98,7 @@ exports.readPanCardImageOfCustomer = async (req, res, next) => {
         res.status(404).json({ message: 'Data not found' });
     }
     else {
-        res.status(200).json(readPanCardImageOfCustomer);
+        res.status(200).json({ data: readPanCardImageOfCustomer });
     }
 }
 
@@ -109,7 +109,7 @@ exports.readAddressImageOfCustomer = async (req, res, next) => {
         res.status(404).json({ message: 'Data not found' });
     }
     else {
-        res.status(200).json(readAddressImageOfCustomer);
+        res.status(200).json({ data: readAddressImageOfCustomer });
     }
 }
 
@@ -135,7 +135,7 @@ exports.readPartnerBranch = async (req, res, next) => {
         res.status(404).json({ message: 'Data not found' })
     }
     else {
-        res.status(200).json(readPartner);
+        res.status(200).json({ data: readPartner });
     }
 }
 exports.readMyLoan = async (req, res, next) => {
@@ -153,7 +153,7 @@ exports.readMyLoan = async (req, res, next) => {
             }
         ]
     });
-    return res.status(200).json(loanDetails)
+    return res.status(200).json({ data: loanDetails })
 }
 
 exports.readAllScheme = async (req, res, next) => {
@@ -162,7 +162,7 @@ exports.readAllScheme = async (req, res, next) => {
         res.status(404).json({ message: 'Data not found' })
     }
     else {
-        res.status(200).json(getAllScheme)
+        res.status(200).json({ data: getAllScheme })
     }
 }
 
@@ -196,7 +196,7 @@ exports.schemeBasedOnPriceRange = async (req, res, next) => {
         return res.status(404).json({ message: 'Data not found' })
     }
     else {
-        return res.status(200).json(schemeBasedOnPriceRange);
+        return res.status(200).json({ data: schemeBasedOnPriceRange });
     }
 }
 
@@ -206,7 +206,7 @@ exports.readFeedBack = async (req, res) => {
     if (!readCustomerFeedBack[0]) {
         return res.status(404).json({ message: 'data not found' });
     }
-    return res.status(200).json(readCustomerFeedBack);
+    return res.status(200).json({ data: readCustomerFeedBack });
 }
 
 exports.addFeedBack = async (req, res) => {

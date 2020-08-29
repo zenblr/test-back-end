@@ -35,7 +35,7 @@
                             (finalLoanAmount)="finalLoanAmount($event)" [totalAmt]="totalAmount"
                             [fullAmount]="fullAmount" [details]="customerDetail" [masterAndLoanIds]="masterAndLoanIds"
                             [showButton]="showButton" (accountHolderName)="accountHolder($event)"
-                            [loanTransfer]=loanTransferdata>
+                            [loanTransfer]=loanTransferdata [disbursed]="disbursed">
                         </kt-interest-calculator>
                     </mat-tab>
                     <mat-tab label="Bank Details" [disabled]="disabled[4]">
@@ -91,7 +91,7 @@
                     <mat-tab label="Disbursement"
                         *ngIf="loanStage?.id == 4 || (loanStage?.id == 5 && url =='view-loan')">
                         <kt-disburse [masterAndLoanIds]="masterAndLoanIds" [loanDetials]="customerDetail"
-                            [disable]="disabledForm" [showButton]="true"></kt-disburse>
+                            [disable]="disabledForm" [showButton]="true" [disbursed]="disbursed"></kt-disburse>
                     </mat-tab>
                 </mat-tab-group>
             </div>

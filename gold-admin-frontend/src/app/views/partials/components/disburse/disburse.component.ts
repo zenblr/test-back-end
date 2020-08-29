@@ -20,7 +20,8 @@ export class DisburseComponent implements OnInit {
   @Input() disbursementDetails;
   @Input() showButton;
   @Input() loanDetials;
-  @Input() disable;
+  @Input() disable = false ;
+  @Input() disbursed = false;
   currentDate = new Date()
   disburseForm: FormGroup
   details: any;
