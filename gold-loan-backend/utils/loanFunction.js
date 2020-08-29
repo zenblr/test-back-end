@@ -925,7 +925,7 @@ let penalInterestPayment = async (loanArray, totalPenalAmount, createdBy) => {
         } else if (pendingPenalAmount > Number(loanArray[index]['penalInterest']) && Number(loanArray[index]['penalOutstanding']) > 0) {
 
             loanArray[index]['penalPaid'] = pendingPenalAmount.toFixed(2)
-            transactionData.credit = pendingPenalAmount.toFixed(2)
+            transactionData.credit = loanArray[index]['penalOutstanding']
             transactionData.loanInterestId = loanArray[index]['id']
             transactionData.isExtraDaysInterest = loanArray[index]['isExtraDaysInterest']
             transactionData.interestAmount = loanArray[index]['interestAmount']
