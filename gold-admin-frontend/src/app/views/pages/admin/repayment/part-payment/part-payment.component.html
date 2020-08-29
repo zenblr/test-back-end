@@ -44,7 +44,7 @@
             </div>
 
             <ng-template #blankTableValue>
-                <td>-</td>
+                <td class="text-center">-</td>
             </ng-template>
 
             <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
@@ -99,9 +99,9 @@
                                         {{payableAmountSummary?.loanDetails?.customerLoan[1]?.loanUniqueId}}
                                     </span>
                                 </td>
-                                <td>{{payableAmountSummary?.securedRatio}}
+                                <td>{{payableAmountSummary?.ratio?.securedRatio}}
                                     <br>
-                                    {{payableAmountSummary?.unsecuredRatio}}
+                                    {{payableAmountSummary?.ratio?.unsecuredRatio}}
                                 </td>
                                 <td>{{payableAmountSummary?.securedInterest}} <br>
                                     <span *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">

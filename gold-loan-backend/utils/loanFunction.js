@@ -1124,7 +1124,7 @@ let getSingleDayInterestAmount = async (loan) => {
 
     // let securedPerDayInterestAmount = await newSlabRateInterestCalcultaion(securedOutstandingAmount, securedInterest, selectedSlab, tenure);
 
-    let securedPerDayInterestAmount = (((securedInterest / 100) * securedOutstandingAmount * (paymentFrequency/30))/paymentFrequency).toFixed(2)
+    let securedPerDayInterestAmount = (((securedInterest / 100) * securedOutstandingAmount * (paymentFrequency / 30)) / paymentFrequency).toFixed(2)
 
     let secured = await models.customerLoanInterest.findAll({
         where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[0].id, },
@@ -1154,9 +1154,9 @@ let getSingleDayInterestAmount = async (loan) => {
     if (loan.customerLoan.length > 1) {
         let unsecuredInterest = loan.customerLoan[1].currentInterestRate
         let unsecuredOutstandingAmount = loan.customerLoan[1].outstandingAmount
-        var unsecuredPerDayInterestAmount = (((unsecuredInterest / 100) * unsecuredOutstandingAmount * (paymentFrequency/30))/paymentFrequency).toFixed(2)
+        var unsecuredPerDayInterestAmount = (((unsecuredInterest / 100) * unsecuredOutstandingAmount * (paymentFrequency / 30)) / paymentFrequency).toFixed(2)
 
-        
+
         let interest = await models.customerLoanInterest.findAll({
             where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[1].id, },
             order: [['emiEndDate', 'asc']]
@@ -1185,13 +1185,16 @@ let getSingleDayInterestAmount = async (loan) => {
     return { securedTotalInterest: securedTotalInterest.toFixed(2), unsecuredTotalInterest }
 }
 
-let splitAmountIntoSecuredAndUnsecured = async(customerLoan,paidAmount) =>{
-    
+let splitAmountIntoSecuredAndUnsecured = async (customerLoan, paidAmount) => {
+
     let loanAmount = customerLoan.outstandingAmount
     let securedLoanAmount = customerLoan.customerLoan[0].outstandingAmount
     let unsecuredLoanAmount = customerLoan.customerLoan[1].outstandingAmount
-  
-    return {customerLoan,amount,paidAmount }
+    
+    let securedRatio = securedLoanAmount/loanAmount * paidAmount
+    let unsecuredRatio = unsecuredLoanAmount/loanAmount * paidAmount
+
+    return { securedRatio, unsecuredRatio }
 }
 
 
@@ -1348,5 +1351,5 @@ module.exports = {
     getTransactionPrincipalAmount: getTransactionPrincipalAmount,
     getSingleDayInterestAmount: getSingleDayInterestAmount,
     getSingleMasterLoanDetail: getSingleMasterLoanDetail,
-    splitAmountIntoSecuredAndUnsecured:splitAmountIntoSecuredAndUnsecured
+    splitAmountIntoSecuredAndUnsecured: splitAmountIntoSecuredAndUnsecured
 }
