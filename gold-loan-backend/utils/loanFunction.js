@@ -59,8 +59,8 @@ let payableAmountForLoan = async (amount, loan) => {
     data.outstandingAmount = loan.outstandingAmount
     data.securedPenalInterest = securedPenalInterest
     data.unsecuredPenalInterest = unsecuredPenalInterest
-    data.securedInterest = securedInterest
-    data.unsecuredInterest = unsecuredInterest
+    data.securedInterest = Number((securedInterest).toFixed(2))
+    data.unsecuredInterest = Number((unsecuredInterest).toFixed(2))
     data.interest = Number((interest).toFixed(2))
     data.penalInterest = Number((penalInterest).toFixed(2))
     data.payableAmount = Number((payableAmount).toFixed(2))
@@ -694,7 +694,7 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
             loanArray[index]['outstandingInterest'] = loanArray[index]['outstandingInterest'] - loanArray[index]['paidAmount'];
             pendingSecuredAmount = 0.00;
 
-        } else if (pendingSecuredAmount > Number(loanArray[index]['outstandingInterest'])) {
+        } else if (pendingSecuredAmount >= Number(loanArray[index]['outstandingInterest'])) {
 
             loanArray[index]['paidAmount'] = loanArray[index]['outstandingInterest']
             loanArray[index]['emiStatus'] = "paid"
@@ -922,7 +922,7 @@ let penalInterestPayment = async (loanArray, totalPenalAmount, createdBy) => {
             loanArray[index]['penalOutstanding'] = Number(loanArray[index]['penalOutstanding']) - Number(loanArray[index]['penalPaid']);
             pendingPenalAmount = 0.00;
 
-        } else if (pendingPenalAmount > Number(loanArray[index]['penalInterest']) && Number(loanArray[index]['penalOutstanding']) > 0) {
+        } else if (pendingPenalAmount >= Number(loanArray[index]['penalInterest']) && Number(loanArray[index]['penalOutstanding']) > 0) {
 
             loanArray[index]['penalPaid'] = pendingPenalAmount.toFixed(2)
             transactionData.credit = loanArray[index]['penalOutstanding']
