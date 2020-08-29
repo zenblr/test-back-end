@@ -68,14 +68,15 @@
                                     <label class="mandatory">Product</label>
                                 </div>
                                 <div class="col-8">
-                                    <select class="form-control" formControlName="moduleId"
-                                        [class.isError]="controls.moduleId.touched && controls.moduleId.invalid">
+                                    <select class="form-control" formControlName="productId"
+                                        [class.isError]="controls.productId.touched && controls.productId.invalid">
                                         <option value="" selected disabled>Select Product</option>
                                         <option *ngFor="let item of modules" [value]="item.id">
-                                            {{item.moduleName | titlecase}}
+                                            {{item.name | titlecase}}
                                         </option>
                                     </select>
-                                    <mat-error *ngIf="controls.moduleId.touched && controls.moduleId.errors?.required">
+                                    <mat-error
+                                        *ngIf="controls.productId.touched && controls.productId.errors?.required">
                                         Required field
                                     </mat-error>
                                 </div>
