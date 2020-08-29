@@ -20,10 +20,10 @@
                                 </span>
                             </td>
                             <td>
-                                {{loanDetails?.loan?.customerLoan[0]?.outstandingAmount}}
+                                {{loanDetails?.loan?.customerLoan[0]?.loanAmount}}
                                 <br>
                                 <span *ngIf="loanDetails?.loan?.customerLoan.length > 1">
-                                    {{loanDetails?.loan?.customerLoan[1]?.outstandingAmount}}
+                                    {{loanDetails?.loan?.customerLoan[1]?.loanAmount}}
                                 </span>
                             </td>
                             <td>{{loanDetails?.loan?.loanStartDate | date :'mediumDate'}}</td>
@@ -99,7 +99,10 @@
                                         {{payableAmountSummary?.loanDetails?.customerLoan[1]?.loanUniqueId}}
                                     </span>
                                 </td>
-                                <td>{{payableAmountSummary?.partPaymentAmount}}</td>
+                                <td>{{payableAmountSummary?.securedRatio}}
+                                    <br>
+                                    {{payableAmountSummary?.unsecuredRatio}}
+                                </td>
                                 <td>{{payableAmountSummary?.securedInterest}} <br>
                                     <span *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">
                                         {{payableAmountSummary?.unsecuredInterest}}
@@ -134,7 +137,7 @@
                             <th class="transparent">Loan ID</th>
                             <th class="transparent">Loan Amount</th>
                             <th class="transparent">Final Part Payment Amount</th>
-                            <th class="transparent">Outstanding Loan Amount</th>
+                            <!-- <th class="transparent">Outstanding Loan Amount</th> -->
                             <th class="transparent">Select Payment option</th>
                         </thead>
                         <tbody>
@@ -146,9 +149,9 @@
                                     </span>
                                 </td>
                                 <td *ngIf="paymentDetails && paymentDetails?.customerLoan.length">
-                                    {{paymentDetails?.customerLoan[0]?.outstandingAmount}}<br>
+                                    {{paymentDetails?.customerLoan[0]?.loanAmount}}<br>
                                     <span *ngIf="paymentDetails?.customerLoan?.length > 1">
-                                        {{paymentDetails?.customerLoan[1]?.outstandingAmount}}
+                                        {{paymentDetails?.customerLoan[1]?.loanAmount}}
                                     </span>
                                 </td>
                                 <td *ngIf="paymentDetails && paymentDetails?.customerLoan.length">
@@ -157,12 +160,12 @@
                                         {{paymentDetails?.customerLoan[1].partPayment}}
                                     </span>
                                 </td>
-                                <td *ngIf="paymentDetails && paymentDetails?.customerLoan.length">
+                                <!-- <td *ngIf="paymentDetails && paymentDetails?.customerLoan.length">
                                     {{paymentDetails?.customerLoan[0]?.newOutstandingAmount}}<br>
                                     <span *ngIf="paymentDetails?.customerLoan?.length > 1">
                                         {{paymentDetails?.customerLoan[1].newOutstandingAmount}}
                                     </span>
-                                </td>
+                                </td> -->
 
                                 <td>
                                     <button *ngIf="!paymentValue" (click)="choosePaymentMethod()"
