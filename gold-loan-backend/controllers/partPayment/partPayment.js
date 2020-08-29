@@ -13,7 +13,7 @@ const CONSTANT = require("../../utils/constant");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { checkPaidInterest, getCustomerInterestAmount, newSlabRateInterestCalcultaion, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getTransactionPrincipalAmount, calculationDataOneLoan,splitAmountIntoSecuredAndUnsecured } = require('../../utils/loanFunction')
+let { checkPaidInterest, getCustomerInterestAmount, newSlabRateInterestCalcultaion, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getTransactionPrincipalAmount, calculationDataOneLoan, splitAmountIntoSecuredAndUnsecured } = require('../../utils/loanFunction')
 
 exports.getInterestInfo = async (req, res, next) => {
     let { loanId, masterLoanId } = req.query;
@@ -72,11 +72,7 @@ exports.checkPartAmount = async (req, res, next) => {
     let amount = await getCustomerInterestAmount(masterLoanId);
     let loan = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
     let data = await payableAmountForLoan(amount, loan.loan)
-    if (loan.loan.customerLoan.length > 1) {
-        var paidAmountSplitUp = await splitAmountIntoSecuredAndUnsecured(loan.loan, paidAmount)
-    }else{
-        paidAmountSplitUp = paidAmount;
-    }
+    
     if (data.payableAmount > paidAmount) {
         return res.status(400).json({ message: `Your payable amount is greater than paid amount. You have to pay ${data.payableAmount}` })
     }
@@ -84,9 +80,16 @@ exports.checkPartAmount = async (req, res, next) => {
     data.partPaymentAmount = (partPaymentAmount.toFixed(2))
     data.paidAmount = paidAmount
     data.loanDetails = loan.loan
-    // data.securedRatio = paidAmountSplitUp.securedRatio
-    // data.unsecuredRatio = paidAmountSplitUp.unsecuredRatio
-    return res.status(200).json({ data, paidAmountSplitUp })
+    let { securedRatio, unsecuredRatio, isUnsecuredSchemeApplied } = await getAmountLoanSplitUpData(loan.loan, amount, paidAmount);
+
+    data.securedRatio = securedRatio
+    if (isUnsecuredSchemeApplied) {
+        data.unsecuredRatio = unsecuredRatio
+
+    }
+
+
+    return res.status(200).json({ data })
 }
 
 //CALCULATE PAYABLE AMOUNT
