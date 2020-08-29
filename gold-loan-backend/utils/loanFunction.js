@@ -1191,7 +1191,7 @@ let getTransactionPrincipalAmount = async (customerLoanTransactionId) => {
 let getSingleMasterLoanDetail = async ( masterLoanId) => {
     let masterLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
-        attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure'],
+        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
         order: [
             [models.customerLoanDisbursement, 'loanId', 'asc'],
             [models.customerLoan, 'id', 'asc']
