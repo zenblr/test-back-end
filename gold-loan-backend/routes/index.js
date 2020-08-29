@@ -12,8 +12,8 @@ router.use('/user', user);
 const customer = require('./customer'); //Customer Route
 router.use('/customer', customer);
 
-const leadNewRquest = require('./leadNewRequest'); //leadNewRquest Route
-router.use('/lead-new-request', leadNewRquest);
+const appraiserRequest = require('./appraiserRequest'); //leadNewRquest Route
+router.use('/appraiser-request', appraiserRequest);
 
 const city = require('./city'); //City Route
 router.use('/city', city);
@@ -182,12 +182,15 @@ const quickPay = require('./quickPay');
 router.use('/quick-pay', quickPay);
 
 const deposit = require('./deposit');// DEPOSIT
-router.use('/deposit',deposit);
+router.use('/deposit', deposit);
 const partPayment = require('./partPayment');
 router.use('/part-payment', partPayment);
 
 const soaOfLoan = require('./soaOfLoan');
 router.use('/loan-soa', soaOfLoan);
+
+const product = require('./product');
+router.use('/product', product)
 
 const scrapPacket = require('./scrap/scrapPacket'); // Scrap packet
 router.use('/scrap/packet', scrapPacket);

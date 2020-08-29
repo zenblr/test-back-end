@@ -26,6 +26,8 @@ module.exports = (sequelize, DataTypes) => {
     Module.associate = function(models) {
         Module.hasMany(models.entity,{foreignKey:'moduleId', as:'entity'});
         Module.belongsToMany(models.role,{through: models.roleModule});
+        Module.hasMany(models.product, { foreignKey: 'moduleId', as: 'module' });
+
     }
 
     return Module;

@@ -93,6 +93,7 @@ module.exports = (sequelize, DataTypes) => {
         User.hasMany(models.customerPacketTracking, { foreignKey: 'userSenderId', as: 'packetSender' })
         User.hasMany(models.customerPacketTracking, { foreignKey: 'userReceiverId', as: 'packetReceiver' })
 
+        User.hasMany(models.appraiserRequest, { foreignKey: 'appraiserId', as: 'appraiserRequest' })
 
         User.hasMany(models.packetTracking, { foreignKey: 'userId', as: 'packetTracking' })
 
