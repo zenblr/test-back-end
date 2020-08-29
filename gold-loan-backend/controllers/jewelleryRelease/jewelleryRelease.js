@@ -742,7 +742,7 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
     }
     let partReleaseData = await models.partRelease.findOne({
         where: { id: partReleaseId },
-        attributes: ['amountStatus', 'partReleaseStatus', 'masterLoanId'],
+        attributes: ['amountStatus', 'partReleaseStatus', 'masterLoanId','newLoanAmount'],
         include: [{
             model: models.partReleaseAppraiser,
             as: 'appraiserData',
@@ -754,7 +754,7 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
     if (!partReleaseData) {
         return res.status(400).json({ message: `This customer is not assign to you` })
     }
-
+    let newLoanAmount = partReleaseData.newLoanAmount;
     let customerData = await models.customer.findOne({
         where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
         attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
@@ -783,21 +783,21 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
         let customerCurrentStage = customerLoanStage.customerLoanCurrentStage
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanStage.id, loanType: 'secured' } })
         if (customerCurrentStage == '2') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId,newLoanAmount })
         } else if (customerCurrentStage == '3') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId,newLoanAmount })
         } else if (customerCurrentStage == '4') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt, partReleaseId })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt, partReleaseId,newLoanAmount })
         } else if (customerCurrentStage == '5') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount, firstName, lastName, partReleaseId })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount, firstName, lastName, partReleaseId,newLoanAmount })
         } else if (customerCurrentStage == '6') {
-            return res.status(200).json({ message: 'success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage, partReleaseId })
+            return res.status(200).json({ message: 'success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage, partReleaseId,newLoanAmount })
         }
     }
     if (!customerData) {
         res.status(404).json({ message: 'no customer details found' });
     } else {
-        res.status(200).json({ message: 'customer details fetch successfully', customerData, partReleaseId });
+        res.status(200).json({ message: 'customer details fetch successfully', customerData, partReleaseId,newLoanAmount });
     }
 }
 
