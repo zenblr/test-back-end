@@ -48,7 +48,7 @@ export class PaymentDialogComponent implements OnInit {
         this.paymentForm.patchValue(this.data.value)
         this.paymentForm.controls.depositTransactionId.patchValue(this.data.value.transactionUniqueId);
         this.paymentForm.controls.transactionId.patchValue(this.data.value.bankTransactionUniqueId);
-        this.paymentForm.controls.depositDate.patchValue(this.data.value.paymentReceivedDate);
+        this.paymentForm.controls.depositDate.patchValue(this.data.value.depositDate);
         this.paymentForm.controls.paidAmount.patchValue(this.data.value.transactionAmont);
         this.paymentForm.controls.paymentType.patchValue(this.data.value.paymentType);
         this.paymentForm.controls.depositStatus.patchValue(this.data.value.depositStatus);
@@ -60,6 +60,7 @@ export class PaymentDialogComponent implements OnInit {
       }
     }
   }
+
   setValidation(event) {
     // console.log(event.target.value)
     const paymentMode = event.target.value
@@ -145,17 +146,10 @@ export class PaymentDialogComponent implements OnInit {
   }
 
   submit() {
-    if (this.paymentForm.invalid) return this.paymentForm.markAllAsTouched()
+    if (this.paymentForm.invalid)
+      return this.paymentForm.markAllAsTouched()
     if (this.data.name == "deposit") {
-      console.log(this.paymentForm.controls.depositStatus.value)
-      this.depositService.editStatus(this.paymentForm.controls.depositStatus.value, this.data.value.id).pipe(
-        map(res => {
-          this.toast.success(res.message)
-          this.dialogRef.close(res)
-        }), catchError(err => {
-          this.toast.error(err.error.message)
-          throw err
-        })).subscribe()
+      this.dialogRef.close(this.paymentForm.controls.depositStatus.value)
     } else {
       this.paymentForm.patchValue({ paidAmount: Number(this.controls.paidAmount.value) })
       if (this.controls.paymentType.value === 'cash') {

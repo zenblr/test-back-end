@@ -15,35 +15,41 @@
 
                 <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
-                    <mat-cell *matCellDef="let deposit">{{deposit.customerLoan.customer.customerUniqueId | titlecase}}
+                    <mat-cell *matCellDef="let deposit">{{deposit.masterLoan.customer.customerUniqueId | uppercase}}
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
-                    <mat-cell *matCellDef="let deposit">{{deposit.customerLoan.loanUniqueId | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">
+                        <div class="loanID">
+                            <span *ngFor="let item of deposit.masterLoan.customerLoan">
+                                {{ item.loanUniqueId | uppercase }}
+                            </span>
+                        </div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="depositDate">
                     <mat-header-cell *matHeaderCellDef>Deposit Date</mat-header-cell>
-                    <mat-cell *matCellDef="let deposit">{{deposit.paymentReceivedDate  | date: 'mediumDate'}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.depositDate  | date: 'mediumDate'}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="fullName">
                     <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
                     <mat-cell *matCellDef="let deposit">
-                        {{deposit.customerLoan.customer.firstName | titlecase}}&nbsp;
-                        {{deposit.customerLoan.customer.lastName | titlecase}}</mat-cell>
+                        {{deposit.masterLoan.customer.firstName | titlecase}}&nbsp;
+                        {{deposit.masterLoan.customer.lastName | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="mobileNumber">
                     <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
-                    <mat-cell *matCellDef="let deposit">{{deposit.customerLoan.customer.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.masterLoan.customer.mobileNumber}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="modeOfPayment">
                     <mat-header-cell *matHeaderCellDef>Mode of Payment</mat-header-cell>
-                    <mat-cell *matCellDef="let deposit">{{deposit.paymentType | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.paymentType | uppercase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="depositBankName">
@@ -58,7 +64,11 @@
 
                 <ng-container matColumnDef="depositAmount">
                     <mat-header-cell *matHeaderCellDef>Deposit Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let deposit">{{deposit.transactionAmont}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">
+                        <div class="currency">
+                            {{deposit.transactionAmont | indianCurrencyFormat}}
+                        </div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="depositStatus">
@@ -72,11 +82,12 @@
 
                 </ng-container>
 
-                <ng-container matColumnDef="update" >
+                <ng-container matColumnDef="update">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let deposit">
                         <ng-container>
-                            <button  *ngIf ="deposit.depositStatus == 'Pending'" style="width: 120px;" class="apply-kyc" (click)="updateStatus(deposit)">Update
+                            <button *ngIf="deposit.depositStatus == 'Pending'" style="width: 120px;" class="apply-kyc"
+                                (click)="updateStatus(deposit)">Update
                             </button>
                         </ng-container>
 

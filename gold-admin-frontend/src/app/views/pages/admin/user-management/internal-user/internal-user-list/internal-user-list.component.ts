@@ -26,12 +26,12 @@ import { DataTableService } from '../../../../../../core/shared/services/data-ta
 })
 export class InternalUserListComponent implements OnInit {
 
-  
+
   searchValue = ''
   unsubscribeSearch$ = new Subject()
   // Table fields
   dataSource: InternalUserDatasource;
-  displayedColumns = ['userId', 'userName', 'email', 'mobileNumber', 'branchName', 'action'];
+  displayedColumns = ['userId', 'userName', 'role', 'email', 'mobileNumber', 'branchName', 'action'];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   userResult: any[] = [];
@@ -51,7 +51,7 @@ export class InternalUserListComponent implements OnInit {
    * @param layoutUtilsService: LayoutUtilsService
    */
   constructor(
-    public toast:ToastrService,
+    public toast: ToastrService,
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
@@ -75,10 +75,10 @@ export class InternalUserListComponent implements OnInit {
   ngOnInit() {
 
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
-			tap(() => this.loadUserList())
-		).subscribe();
+      tap(() => this.loadUserList())
+    ).subscribe();
     this.subscriptions.push(paginatorSubscriptions);
-    
+
     const searchSubscription = this.dataTableService.searchInput$.pipe(
       takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
@@ -93,7 +93,7 @@ export class InternalUserListComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(res => {
       this.userResult = res;
-      console.log(this.userResult)
+      
     });
     this.subscriptions.push(entitiesSubscription);
 

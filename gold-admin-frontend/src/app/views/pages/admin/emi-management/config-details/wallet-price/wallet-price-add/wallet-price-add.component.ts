@@ -28,7 +28,7 @@ export class WalletPriceAddComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     this.setForm();
-    console.log(this.data.data);
+    // console.log(this.data.data);
     
   }
 
@@ -92,7 +92,7 @@ export class WalletPriceAddComponent implements OnInit {
         }
       },
         error => {
-          console.log(error.error.message);
+          // console.log(error.error.message);
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
         });
@@ -106,7 +106,7 @@ export class WalletPriceAddComponent implements OnInit {
         }
       },
         error => {
-          console.log(error.error.message);
+          // console.log(error.error.message);
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
         });

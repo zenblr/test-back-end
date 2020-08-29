@@ -276,12 +276,12 @@ export class MenuConfig {
 									bullet: 'dot',
 									submenu: [
 										{
-											title: "Part Release Approved List",
+											title: "Final Part Release",
 											page: "/admin/funds-approvals/part-release-final",
 											permission: !this.permissionsArr.includes('partReleaseView'),
 										},
 										{
-											title: "Full Release Final Process",
+											title: "Final Full Release",
 											page: "/admin/funds-approvals/full-release-final",
 											permission: !this.permissionsArr.includes('fullReleaseView'),
 										},

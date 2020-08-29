@@ -35,7 +35,7 @@ export class UserPersonalComponent implements OnInit {
     private dialog: MatDialog) { }
 
   ngOnInit() {
-    // console.log(this.signature)
+   
     this.getOccupation();
     this.initForm();
   }
@@ -80,7 +80,7 @@ export class UserPersonalComponent implements OnInit {
           customerId: this.controls.customerId.value
         }
         this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
-          console.log(res)
+         
           // this.profile = res.uploadFile.id
           this.personalForm.controls.profileImage.patchValue(res.uploadFile.path);
           this.personalForm.controls.profileImg.patchValue(res.uploadFile.URL);
@@ -172,7 +172,7 @@ export class UserPersonalComponent implements OnInit {
 
     this.userPersonalService.personalDetails(basicForm).pipe(
       map(res => {
-        // console.log(res);
+      
         if (res) {
           this.next.emit(true);
         }
@@ -217,7 +217,6 @@ export class UserPersonalComponent implements OnInit {
     if (event.target.value == 'null') {
       this.controls.occupationId.patchValue(null)
     }
-    console.log(event.target.value)
-    console.log(this.personalForm.value)
+    
   }
 }

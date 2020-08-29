@@ -46,7 +46,7 @@ export class UploadDesignComponent implements OnInit {
           })
         }
       }
-      console.log(this.files);
+      // console.log(this.files);
     }
   }
 
@@ -67,7 +67,7 @@ export class UploadDesignComponent implements OnInit {
           const height = img.naturalHeight;
           window.URL.revokeObjectURL(img.src);
           if ((width > 1500 || height > 1500) || (file.size > 200000)) {
-            console.log(width, height, file.size);
+            // console.log(width, height, file.size);
             this.improperCount++;
           } else {
             this.files.push(file);

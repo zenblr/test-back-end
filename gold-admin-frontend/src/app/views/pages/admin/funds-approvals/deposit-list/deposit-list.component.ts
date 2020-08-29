@@ -9,6 +9,8 @@ import { takeUntil, skip, distinctUntilChanged } from 'rxjs/operators';
 import { DepositDatasource } from '../../../../../core/funds-approvals/deposit/datasources/deposit.datasource';
 import { DepositService } from '../../../../../core/funds-approvals/deposit/services/deposit.service';
 import { PaymentDialogComponent } from '../../../../partials/components/payment-dialog/payment-dialog.component';
+import { QuickPayService } from '../../../../../core/repayment/quick-pay/quick-pay.service';
+import { PartPaymentService } from '../../../../../core/repayment/part-payment/services/part-payment.service';
 
 
 @Component({
@@ -19,7 +21,7 @@ import { PaymentDialogComponent } from '../../../../partials/components/payment-
 export class DepositListComponent implements OnInit {
 
   dataSource: DepositDatasource;
-  displayedColumns = ['transactionId', 'bankTransactionId', 'customerId', 'loanId', 'depositDate', 'fullName', 'mobileNumber', 'modeOfPayment', 'depositBankName', 'depositBranchName', 'depositAmount', 'depositStatus', 'update'];
+  displayedColumns = ['transactionId', 'bankTransactionId', 'customerId', 'fullName', 'loanId', 'mobileNumber', 'modeOfPayment', 'depositDate', 'depositBankName', 'depositBranchName', 'depositAmount', 'depositStatus', 'update'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -41,6 +43,8 @@ export class DepositListComponent implements OnInit {
     public dialog: MatDialog,
     private toastr: ToastrService,
     private layoutUtilsService: LayoutUtilsService,
+    private quickPayService: QuickPayService,
+    private partPaymentService: PartPaymentService
   ) {
 
     this.depositService.applyFilter$
@@ -62,7 +66,7 @@ export class DepositListComponent implements OnInit {
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;
-        this.queryParamsData.search= res;
+        this.queryParamsData.search = res;
         this.paginator.pageIndex = 0;
         this.loadPage();
       });
@@ -72,7 +76,7 @@ export class DepositListComponent implements OnInit {
       skip(1),
       distinctUntilChanged()
     ).subscribe(res => {
-      console.log(res)
+      // console.log(res)
       this.result = res;
 
     });
@@ -103,16 +107,40 @@ export class DepositListComponent implements OnInit {
   }
 
   applyFilter(data) {
-    console.log(data);
-   this.queryParamsData.depositStatus = data.data.scheme;
-   this.dataSource.getDepositList(this.queryParamsData);
- }
+    // console.log(data);
+    this.queryParamsData.depositStatus = data.data.scheme;
+    this.dataSource.getDepositList(this.queryParamsData);
+  }
+
+  toaster(depositStatus) {
+    if (depositStatus == 'Completed') {
+      this.toastr.success('Payment Confirm')
+    } else {
+      this.toastr.error('Payment Rejected')
+    }
+  }
   updateStatus(deposit) {
-    
-    const dialogRef = this.dialog.open(PaymentDialogComponent, { data: { value: deposit,name :'deposit' }, width: 'auto' });
+
+    const dialogRef = this.dialog.open(PaymentDialogComponent, {
+      data: { value: deposit, name: 'deposit' },
+      width: '500px'
+    });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.loadPage();
+        if (res.depositStatus == 'Pending') {
+          return
+        }
+        if (deposit.paymentFor == "partPayment") {
+          this.partPaymentService.finalPaymentConfirm(deposit.id, res.depositStatus, deposit.masterLoanId).subscribe(result => {
+            this.toaster(res.depositStatus)
+            this.loadPage();
+          })
+        } else {
+          this.quickPayService.confirmPayment(deposit.id, res.depositStatus).subscribe(result => {
+            this.toaster(res.depositStatus)
+            this.loadPage();
+          })
+        }
       }
     });
   }

@@ -16,6 +16,7 @@ import { PartReleaseComponent } from './part-release/part-release.component';
 import { EmiLogsDialogComponent } from './emi-logs-dialog/emi-logs-dialog.component';
 import { PaymentDialogComponent } from '../../../../views/partials/components/payment-dialog/payment-dialog.component';
 import { PartPaymentComponent } from './part-payment/part-payment.component';
+import { PartPaymentLogDialogComponent } from './part-payment-log-dialog/part-payment-log-dialog.component';
 
 const routes: Routes = [
   {
@@ -48,6 +49,7 @@ const routes: Routes = [
     EmiLogsDialogComponent,
     PartReleaseComponent,
     PartPaymentComponent,
+    PartPaymentLogDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -83,7 +85,8 @@ const routes: Routes = [
   entryComponents: [
     MonthlyPaymentAddComponent,
     EmiLogsDialogComponent,
-    PaymentDialogComponent
+    PaymentDialogComponent,
+    PartPaymentLogDialogComponent
   ]
 })
 export class RepaymentModule { }

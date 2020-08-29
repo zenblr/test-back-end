@@ -200,7 +200,9 @@ export class PageConfig {
 					}
 				},
 				'interest-emi': {
-					page: { title: "Pay Interest EMI", desc: "" },
+					id: {
+						page: { title: "Pay Interest EMI", desc: "" },
+					}
 				},
 				"part-payment": {
 					id: {
@@ -329,7 +331,7 @@ export class PageConfig {
 					page: { title: "Packet Tracking", desc: "" },
 				},
 				"all-loan": {
-					page: { title: "All Loans", desc: "" },
+					page: { title: "Loan Details", desc: "" },
 				},
 				"applied-loan": {
 					page: { title: "Applied Loan", desc: "" },

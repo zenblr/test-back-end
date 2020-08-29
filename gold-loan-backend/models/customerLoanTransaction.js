@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'loan_id'
         },
         transactionUniqueId: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'transaction_unique_id'
         },
         bankTransactionUniqueId: {
@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'payment_received_date'
         },
+        depositDate:{
+            type: DataTypes.DATE,
+            field: 'deposit_date'
+        },
         chequeNumber:{
             type: DataTypes.STRING,
             field: 'cheque_number',
@@ -47,6 +51,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'deposit_status',
             values:['Pending','Completed','Rejected'],
             defaultValue: 'Pending'
+        },
+        paymentFor:{
+            type: DataTypes.STRING,
+            field: 'payment_for',
         },
         createdBy: {
             type: DataTypes.INTEGER,
@@ -71,6 +79,7 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanTransaction.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
         CustomerLoanTransaction.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         CustomerLoanTransaction.hasMany(models.customerTransactionDetail, { foreignKey: 'customerLoanTransactionId', as: 'transaction' });
+        CustomerLoanTransaction.hasMany(models.customerTransactionSplitUp, { foreignKey: 'customerLoanTransactionId', as: 'transactionSplitUp' });
     }
 
     return CustomerLoanTransaction;

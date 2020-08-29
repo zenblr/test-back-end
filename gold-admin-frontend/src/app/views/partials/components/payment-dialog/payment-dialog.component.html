@@ -5,12 +5,12 @@
     <kt-portlet-body>
         <div class="kt-form">
             <form [formGroup]="paymentForm">
-                <div class="kt-portlet__body">
+                <!-- <div class="kt-portlet__body"> -->
                     <div>
                         <div *ngIf="controls.depositStatus.value">
                             <div class="row kt-margin-b-15">
                                 <div class="col-4 form-label mandatory">
-                                    <mat-label>Transaction ID</mat-label>
+                                    <mat-label class="kt-padding-l-10">Transaction ID</mat-label>
                                 </div>
                                 <div class="col-8">
                                     <input class="form-control" formControlName="depositTransactionId"
@@ -27,8 +27,8 @@
                         </div>
 
                         <div class="row kt-margin-b-15">
-                            <div class="col-4 form-label mandatory">
-                                <mat-label>Mode of Payment</mat-label>
+                            <div class="col-4 form-label ">
+                                <mat-label class="kt-padding-l-10 mandatory">Mode of Payment</mat-label>
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="paymentType"
@@ -55,7 +55,7 @@
                                 *ngIf="controls.paymentType.value && (controls.paymentType.value != 'gateway' && controls.paymentType.value != 'cash')">
                                 <div class="row kt-margin-b-15">
                                     <div class="col-4 form-label mandatory">
-                                        <mat-label>Deposit Bank Name</mat-label>
+                                        <mat-label class="kt-padding-l-10">Deposit Bank Name</mat-label>
                                     </div>
                                     <div class="col-8">
                                         <input class="form-control" formControlName="bankName" placeholder="Bank Name"
@@ -70,7 +70,7 @@
 
                                 <div class="row kt-margin-b-15">
                                     <div class="col-4 form-label mandatory">
-                                        <mat-label>Deposit Branch Name</mat-label>
+                                        <mat-label class="kt-padding-l-10">Deposit Branch Name</mat-label>
                                     </div>
                                     <div class="col-8">
                                         <input class="form-control" formControlName="branchName"
@@ -86,7 +86,7 @@
 
                                 <div *ngIf="controls.paymentType.value != 'cheque'" class="row kt-margin-b-15">
                                     <div class="col-4 form-label mandatory">
-                                        <mat-label>Bank Transaction ID</mat-label>
+                                        <mat-label class="kt-padding-l-10">Bank Transaction ID</mat-label>
                                     </div>
                                     <div class="col-8">
                                         <input class="form-control" formControlName="transactionId"
@@ -103,7 +103,7 @@
 
                                 <div *ngIf="controls.paymentType.value === 'cheque'" class="row kt-margin-b-15">
                                     <div class="col-4 form-label mandatory">
-                                        <mat-label>Cheque Number</mat-label>
+                                        <mat-label class="kt-padding-l-10">Cheque Number</mat-label>
                                     </div>
                                     <div class="col-8">
                                         <input numbersOnly class="form-control" formControlName="chequeNumber"
@@ -124,7 +124,7 @@
 
                             <div class="row kt-margin-b-15">
                                 <div class="col-4 form-label mandatory">
-                                    <mat-label>Deposit Date</mat-label>
+                                    <mat-label class="kt-padding-l-10">Deposit Date</mat-label>
                                 </div>
                                 <div class="col-8">
                                     <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
@@ -142,7 +142,7 @@
 
                             <div class="row kt-margin-b-15">
                                 <div class="col-4 form-label mandatory">
-                                    <mat-label>Deposit Amount </mat-label>
+                                    <mat-label class="kt-padding-l-10">Deposit Amount </mat-label>
                                 </div>
                                 <div class="col-8">
                                     <input numbersOnly class="form-control" formControlName="paidAmount" placeholder="0"
@@ -159,7 +159,7 @@
                         <div *ngIf="controls.depositStatus.value">
                             <div class="row kt-margin-b-15">
                                 <div class="col-4 form-label mandatory">
-                                    <mat-label>Deposit Status</mat-label>
+                                    <mat-label class="kt-padding-l-10">Deposit Status</mat-label>
                                 </div>
                                 <div class="col-8">
                                     <select class="form-control" formControlName="depositStatus"
@@ -181,12 +181,14 @@
 
 
 
-
-                        <kt-modal-footer (action)="action($event)" [value]="'Update'">
-                        </kt-modal-footer>
+                        <div class="p-3">
+                            <kt-modal-footer (action)="action($event)" [value]="'Update'">
+                            </kt-modal-footer>
+                            
+                        </div>
 
                     </div>
-                </div>
+                <!-- </div> -->
             </form>
         </div>
     </kt-portlet-body>

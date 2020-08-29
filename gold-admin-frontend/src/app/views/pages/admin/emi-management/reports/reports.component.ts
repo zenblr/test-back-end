@@ -46,7 +46,7 @@ export class ReportsComponent implements OnInit {
 	ngOnInit() {
 		this.ngxPermissionService.permissions$.subscribe((res) => {
 			if (res) {
-				console.log(res);
+				// console.log(res);
 				this.reportTypes = [
 					{ id: 1, name: "User Report", permission: res.userReport },
 					{
@@ -189,7 +189,7 @@ export class ReportsComponent implements OnInit {
 			startDate: sd,
 			endDate: ed,
 		};
-		console.log(reportData);
+		// console.log(reportData);
 		if (this.controls.reportType.value == 1) {
 			this.reportsService.getUserReport(reportData).subscribe();
 		} else if (this.controls.reportType.value == 2) {

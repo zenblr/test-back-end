@@ -1,6 +1,6 @@
 const { wrapper } = require('../utils/errorWrap');
 const checkAuth = require('../middleware/checkAuth');
-const { getInterestTable, getInterestInfo, payableAmount, payableAmountConfirm, quickPayment, partPayment } = require('../controllers/quickPay/quickPay');
+const { getInterestTable, getInterestInfo, payableAmount, payableAmountConfirm, quickPayment,confirmationForPayment } = require('../controllers/quickPay/quickPay');
 
 const express = require('express');
 const route = express.Router();
@@ -15,6 +15,7 @@ route.get('/confirm-payment-info', checkAuth, wrapper(payableAmountConfirm))
 
 route.post('/payment', checkAuth, wrapper(quickPayment));
 
-route.post('/part-payment', checkAuth, wrapper(partPayment))
+route.post('/confirm-payment', checkAuth, wrapper(confirmationForPayment));
+
 
 module.exports = route;   

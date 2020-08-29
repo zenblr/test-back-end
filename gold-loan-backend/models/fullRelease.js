@@ -9,13 +9,13 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(10,2),
             field: 'payable_amount',
         },
-        paymentType:{
-            type: DataTypes.STRING,
-            field: 'payment_Type',
-        },
-        transactionId:{
-            type: DataTypes.STRING,
-            field: 'transaction_id',
+        // paymentType:{
+        //     type: DataTypes.STRING,
+        //     field: 'payment_Type',
+        // },
+        customerLoanTransactionId:{
+            type: DataTypes.INTEGER,
+            field: 'customer_loan_transaction_id',
         },
         paidAmount:{
             type: DataTypes.DECIMAL(10,2),
@@ -37,22 +37,22 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(10,2),
             field: 'current_outstanding_amount',
         },
-        depositDate:{
-            type: DataTypes.DATE,
-            field: 'deposit_date',
-        },
-        chequeNumber:{
-            type: DataTypes.STRING,
-            field: 'cheque_number',
-        },
-        bankName:{
-            type: DataTypes.STRING,
-            field: 'bank_name',
-        },
-        branchName:{
-            type: DataTypes.STRING,
-            field: 'branch_name',
-        },
+        // depositDate:{
+        //     type: DataTypes.DATE,
+        //     field: 'deposit_date',
+        // },
+        // chequeNumber:{
+        //     type: DataTypes.STRING,
+        //     field: 'cheque_number',
+        // },
+        // bankName:{
+        //     type: DataTypes.STRING,
+        //     field: 'bank_name',
+        // },
+        // branchName:{
+        //     type: DataTypes.STRING,
+        //     field: 'branch_name',
+        // },
         amountStatus:{
             type: DataTypes.ENUM,
             field: 'amount_status',
@@ -135,6 +135,7 @@ module.exports = (sequelize, DataTypes) => {
         FullRelease.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         FullRelease.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
         FullRelease.hasOne(models.fullReleaseReleaser, { foreignKey: 'fullReleaseId', as: 'releaser', });
+        FullRelease.belongsTo(models.customerLoanTransaction, { foreignKey: 'customerLoanTransactionId', as: 'transaction' });
     }
 
     FullRelease.prototype.toJSON = function () {

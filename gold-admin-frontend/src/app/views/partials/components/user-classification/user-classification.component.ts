@@ -106,7 +106,7 @@ export class UserClassificationComponent implements OnInit {
     const editable = this.appliedKycService.editKyc.getValue()
     if (editable.editable) {
       this.editRating = true;
-      console.log(this.customerDetails)
+      // console.log(this.customerDetails)
       this.custClassificationForm.patchValue(this.customerDetails)
       this.custClassificationForm.patchValue({ reasonForOther: this.customerDetails.reasonFromCce })
 
@@ -198,7 +198,7 @@ export class UserClassificationComponent implements OnInit {
   getReasonsList() {
     this.custClassificationService.getReasonsList().pipe(
       map(res => {
-        console.log(res)
+        // console.log(res)
         this.reasons = res.data;
       })
     ).subscribe()
@@ -206,7 +206,7 @@ export class UserClassificationComponent implements OnInit {
 
   submit() {
 
-    console.log(this.custClassificationForm.value)
+    // console.log(this.custClassificationForm.value)
 
 
     if (this.custClassificationForm.invalid) {
@@ -217,7 +217,7 @@ export class UserClassificationComponent implements OnInit {
       return;
     }
 
-    console.log(this.custClassificationForm.value)
+    // console.log(this.custClassificationForm.value)
 
     this.custClassificationForm.patchValue({
       behaviourRatingCce: +(this.custClassificationForm.get('kycRatingFromCce').value),

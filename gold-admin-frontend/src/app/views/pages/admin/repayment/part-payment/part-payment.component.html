@@ -6,37 +6,52 @@
                     <thead>
                         <th class="transparent">Loan Id</th>
                         <th class="transparent">Loan Amount</th>
-                        <th class="transparent">Payment Date</th>
-                        <th class="transparent">Part Payment</th>
+                        <th class="transparent">Loan Date</th>
+                        <th class="transparent">Last Part Payment Date</th>
                         <th class="transparent">Outstanding Loan Amount</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="text-gray">{{loanDetails?.customerLoan[0]?.loanUniqueId}}
+                            <td>
+                                {{loanDetails?.loan?.customerLoan[0]?.loanUniqueId}}
                                 <br>
-                                <span *ngIf="loanDetails?.customerLoan[1]">
-                                    {{loanDetails?.customerLoan[1]?.loanUniqueId}} 
+                                <span *ngIf="loanDetails?.loan?.customerLoan.length > 1">
+                                    {{loanDetails?.loan?.customerLoan[1]?.loanUniqueId}}
                                 </span>
                             </td>
-                            <td class="text-gray">
-                                {{loanDetails?.customerLoan[0]?.loanAmount}} 
+                            <td>
+                                {{loanDetails?.loan?.customerLoan[0]?.outstandingAmount}}
                                 <br>
-                                <span *ngIf="loanDetails?.customerLoan[1]">
-                                    {{loanDetails?.customerLoan[1]?.loanAmount}}
+                                <span *ngIf="loanDetails?.loan?.customerLoan.length > 1">
+                                    {{loanDetails?.loan?.customerLoan[1]?.outstandingAmount}}
                                 </span>
                             </td>
-                            <td class="text-gray">{{loanDetails?.loanStartDate | date :'mediumDate'}}</td>
+                            <td>{{loanDetails?.loan?.loanStartDate | date :'mediumDate'}}</td>
 
-                            <td class="text-gray"> </td>
-                            <td class="text-gray"> {{loanDetails?.outstandingAmount}}</td>
+                            <td *ngIf="loanDetails?.loan?.lastPaymentDate else blankTableValue">
+                                {{loanDetails?.loan?.lastPaymentDate | date :'mediumDate'}}
+
+                            </td>
+                            <td> {{loanDetails?.loan?.customerLoan[0]?.outstandingAmount}}
+                                <br>
+                                <span *ngIf="loanDetails?.loan?.customerLoan.length > 1">
+                                    {{loanDetails?.loan?.customerLoan[1]?.outstandingAmount}}
+                                </span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
+            <ng-template #blankTableValue>
+                <td>-</td>
+            </ng-template>
+
             <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
                 <div class="col-6 text-center">
                     <kt-button [value]="'Part Payment'" [type]="'button'" (click)="partPayment()"></kt-button>
+                    <span class="kt-padding-5"></span>
+                    <kt-button [value]="'View Part Payment Logs'" [type]="'button'" (click)="viewEmiLogs()"></kt-button>
                 </div>
             </div>
 
@@ -49,11 +64,15 @@
                     <div class="row justify-content-center">
                         <div class="col-6">
                             <div class="row kt-margin-t-10">
-                                <div class="col form-label">
+                                <div class="align-self-center font-weight-500 col text-right">
                                     <label for=""> Enter Amount </label>
                                 </div>
                                 <div class="col">
-                                    <input class="form-control" type="text" [formControl]="partAmount" numbersOnly />
+                                    <input [class.isError]="partAmount.touched && partAmount.invalid"
+                                        class="form-control" type="text" [formControl]="partAmount" numbersOnly />
+                                    <mat-error *ngIf="partAmount.errors?.required && partAmount.touched">
+                                        Field Required
+                                    </mat-error>
                                 </div>
                                 <div class="col">
                                     <kt-button [type]="'button'" [value]="'Continue'" (click)="partAmountContinue()">
@@ -88,7 +107,7 @@
                                 </td>
                                 <td>{{payableAmountSummary?.securedPenalInterest}}<br>
                                     <span *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">
-                                    {{payableAmountSummary?.unsecuredPenalInterest}}
+                                        {{payableAmountSummary?.unsecuredPenalInterest}}
                                     </span>
                                 </td>
                             </tr>
@@ -110,7 +129,7 @@
 
                 <h5 class="kt-padding-t-20 kt-padding-b-20" *ngIf="paymentDetails">Payment Confirmation</h5>
                 <div class="table-div" *ngIf="paymentDetails">
-                    <table class="table outer-border">
+                    <table *ngIf="paymentDetails" class="table outer-border">
                         <thead>
                             <th class="transparent">Loan ID</th>
                             <th class="transparent">Loan Amount</th>
@@ -120,31 +139,32 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="text-gray">{{paymentDetails?.customerLoan[0]?.loanUniqueId}} <br>
+                                <td *ngIf="paymentDetails && paymentDetails?.customerLoan.length">
+                                    {{paymentDetails?.customerLoan[0]?.loanUniqueId}} <br>
                                     <span *ngIf="paymentDetails?.customerLoan?.length > 1">
                                         {{paymentDetails?.customerLoan[1]?.loanUniqueId}}
                                     </span>
                                 </td>
-                                <td class="text-gray">
+                                <td *ngIf="paymentDetails && paymentDetails?.customerLoan.length">
                                     {{paymentDetails?.customerLoan[0]?.outstandingAmount}}<br>
                                     <span *ngIf="paymentDetails?.customerLoan?.length > 1">
                                         {{paymentDetails?.customerLoan[1]?.outstandingAmount}}
                                     </span>
                                 </td>
-                                <td class="text-gray">
+                                <td *ngIf="paymentDetails && paymentDetails?.customerLoan.length">
                                     {{paymentDetails?.customerLoan[0]?.partPayment}}<br>
                                     <span *ngIf="paymentDetails?.customerLoan?.length > 1">
                                         {{paymentDetails?.customerLoan[1].partPayment}}
                                     </span>
                                 </td>
-                                <td class="text-gray">
+                                <td *ngIf="paymentDetails && paymentDetails?.customerLoan.length">
                                     {{paymentDetails?.customerLoan[0]?.newOutstandingAmount}}<br>
                                     <span *ngIf="paymentDetails?.customerLoan?.length > 1">
                                         {{paymentDetails?.customerLoan[1].newOutstandingAmount}}
                                     </span>
                                 </td>
 
-                                <td class="text-gray">
+                                <td>
                                     <button *ngIf="!paymentValue" (click)="choosePaymentMethod()"
                                         class="apply-kyc">Select
                                         Payment</button>

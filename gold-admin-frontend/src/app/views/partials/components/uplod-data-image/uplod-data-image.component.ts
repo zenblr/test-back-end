@@ -173,6 +173,5 @@ export class UplodDataImageComponent implements OnInit {
       if (permission.partnerBannerDelete)
         this.deleteBanner = true
     }
-    console.log(this.add, this.editBanner, this.deleteBanner)
   }
 }
