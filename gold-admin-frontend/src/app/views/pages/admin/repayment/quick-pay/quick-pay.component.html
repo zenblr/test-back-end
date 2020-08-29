@@ -44,12 +44,17 @@
                             <span *ngIf="loanDetails?.customerLoan[1]">
                                 {{loanDetails?.customerLoan[1]?.interestRate }}%
                             </span></td>
-                        <td class="">{{loanDetails?.lastPaymentDate | date : 'mediumDate'}}</td>
+                        <td *ngIf="loanDetails?.lastPaymentDate else blankTableValue">
+                            {{loanDetails?.lastPaymentDate | date : 'mediumDate'}}</td>
                         <td class="text-warning">Pending</td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
+        <ng-template #blankTableValue>
+            <td>-</td>
+        </ng-template>
 
         <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
             <div class="col-6 text-center">
@@ -71,7 +76,7 @@
                         <th class="transparent">Next Due Date Amount</th>
                         <th class="transparent">Payable Amount</th>
                         <th class="transparent">Payment Amount</th>
-                        
+
                     </thead>
                     <tbody>
                         <tr>

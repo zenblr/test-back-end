@@ -49,7 +49,7 @@
 
                 <ng-container matColumnDef="modeOfPayment">
                     <mat-header-cell *matHeaderCellDef>Mode of Payment</mat-header-cell>
-                    <mat-cell *matCellDef="let deposit">{{deposit.paymentType | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.paymentType | uppercase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="depositBankName">
@@ -64,7 +64,11 @@
 
                 <ng-container matColumnDef="depositAmount">
                     <mat-header-cell *matHeaderCellDef>Deposit Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let deposit">{{deposit.transactionAmont}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">
+                        <div class="currency">
+                            {{deposit.transactionAmont | indianCurrencyFormat}}
+                        </div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="depositStatus">

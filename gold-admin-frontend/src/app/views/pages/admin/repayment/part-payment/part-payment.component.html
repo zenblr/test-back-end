@@ -28,7 +28,8 @@
                             </td>
                             <td>{{loanDetails?.loan?.loanStartDate | date :'mediumDate'}}</td>
 
-                            <td>{{loanDetails?.loan?.lastPaymentDate | date :'mediumDate'}}
+                            <td *ngIf="loanDetails?.loan?.lastPaymentDate else blankTableValue">
+                                {{loanDetails?.loan?.lastPaymentDate | date :'mediumDate'}}
 
                             </td>
                             <td> {{loanDetails?.loan?.customerLoan[0]?.outstandingAmount}}
@@ -41,6 +42,10 @@
                     </tbody>
                 </table>
             </div>
+
+            <ng-template #blankTableValue>
+                <td>-</td>
+            </ng-template>
 
             <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
                 <div class="col-6 text-center">
@@ -63,7 +68,11 @@
                                     <label for=""> Enter Amount </label>
                                 </div>
                                 <div class="col">
-                                    <input class="form-control" type="text" [formControl]="partAmount" numbersOnly />
+                                    <input [class.isError]="partAmount.touched && partAmount.invalid"
+                                        class="form-control" type="text" [formControl]="partAmount" numbersOnly />
+                                    <mat-error *ngIf="partAmount.errors?.required && partAmount.touched">
+                                        Field Required
+                                    </mat-error>
                                 </div>
                                 <div class="col">
                                     <kt-button [type]="'button'" [value]="'Continue'" (click)="partAmountContinue()">
