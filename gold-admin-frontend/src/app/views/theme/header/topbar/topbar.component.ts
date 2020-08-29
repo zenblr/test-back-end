@@ -684,6 +684,18 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/new-requests?origin=leads')) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes('/repayment/part-payment/')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/repayment/interest-emi/')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/loan-management/loan-application-form?customerID=')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/admin/loan-management/loan-transfer?customerID=')) {
+			this.showBackButton = true;
+		}
 		if (this.path == 'standard-deduction') {
 			this.dataSourceHeader();
 			this.value1 = "Add Standard Deduction";

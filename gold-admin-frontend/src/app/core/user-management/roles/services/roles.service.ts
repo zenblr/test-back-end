@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { RolesModel } from '../models/rolesmodel';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class RolesService {
   openModal = new BehaviorSubject<any>(false);
   openModal$ = this.openModal.asObservable();
   roles = { desserts: [] }
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private toastr: ToastrService) { }
 
 
   getRoles(search, from, to): Observable<any> {
@@ -37,6 +38,15 @@ export class RolesService {
       map(res => res
       ))
   }
+  getAllProducts(): Observable<any> {
+    return this.http.get(`/api/product`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      }))
+  }
+
   editRole(id, value): Observable<any> {
     return this.http.put(`/api/role/${id}`, value).pipe(
       map(res => res
@@ -49,7 +59,7 @@ export class RolesService {
       ))
   }
 
-  deleteRole(id) :Observable<any> {
+  deleteRole(id): Observable<any> {
     return this.http.delete(`/api/role/${id}`).pipe(
       map(res => res
       ))

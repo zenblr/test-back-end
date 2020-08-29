@@ -33,13 +33,9 @@ export class NewRequestAddComponent implements OnInit {
   }
 
   getModules() {
-    this.roleService.getAllModule().pipe(map(res => {
-      this.modules = res.filter(e => e.id === 1 || e.id === 3)
-    }),
-      catchError(err => {
-        if (err.error.message) this.toastr.error(err.error.message)
-        throw err;
-      })).subscribe()
+    this.roleService.getAllProducts().pipe(map(res => {
+      this.modules = res
+    })).subscribe()
   }
 
   initForm() {
@@ -49,7 +45,7 @@ export class NewRequestAddComponent implements OnInit {
       customerName: [],
       customerUniqueId: [],
       mobileNumber: [],
-      moduleId: ['', [Validators.required]]
+      productId: ['', [Validators.required]]
     })
     this.requestForm.controls.customerName.disable()
     this.requestForm.controls.customerUniqueId.disable()
@@ -57,7 +53,7 @@ export class NewRequestAddComponent implements OnInit {
   }
 
   setForm() {
-    
+
     this.requestForm.patchValue(this.data.leadData)
     if (this.data.action === 'edit') {
       this.requestForm.patchValue({
@@ -93,7 +89,7 @@ export class NewRequestAddComponent implements OnInit {
   }
 
   submit() {
-   
+
     if (this.requestForm.invalid) return this.requestForm.markAllAsTouched()
 
     if (this.data.action == 'add') {

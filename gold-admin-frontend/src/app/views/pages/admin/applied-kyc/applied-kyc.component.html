@@ -101,7 +101,8 @@
                         </div>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="appraiser">
+
+                <!-- <ng-container matColumnDef="appraiser">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let role" class="kt-pointer">
                         <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserAdd']">
@@ -116,7 +117,7 @@
                                 Appraiser</button>
                         </div>
                     </mat-cell>
-                </ng-container>
+                </ng-container> -->
 
                 <ng-container matColumnDef="appraiserName">
                     <mat-header-cell *matHeaderCellDef>Appraiser Name</mat-header-cell>
@@ -134,7 +135,7 @@
                     </mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="menu">
+                <!-- <ng-container matColumnDef="menu">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <ng-container
@@ -154,19 +155,8 @@
                                 </mat-menu>
                             </ng-container>
                         </ng-container>
-                        <!-- <div ngbDropdown class="dropdown dropdown-inline" #customerActionDropdown1="ngbDropdown"
-                            aria-haspopup="true" aria-expanded="false" [autoClose]="false">
-                            <button mat-icon-button class="btn-transparent" ngbDropdownToggle>
-                                <mat-icon>more_vert</mat-icon>
-                            </button>
-                            <div ngbDropdownMenu aria-labelledby="navbarDropdown2"
-                                class="dropdown-menu dropdown-menu-right">
-                                <a (click)="applyLoan(loan)">Apply Loan</a>
-                                <a (click)="transferLoan(loan)">Transfer Loan</a>
-                            </div>
-                        </div> -->
                     </mat-cell>
-                </ng-container>
+                </ng-container> -->
 
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 
