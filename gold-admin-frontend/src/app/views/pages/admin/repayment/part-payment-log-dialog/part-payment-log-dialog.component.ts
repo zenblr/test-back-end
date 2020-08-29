@@ -9,6 +9,7 @@ import { PartPaymentService } from '../../../../../core/repayment/part-payment/s
 })
 export class PartPaymentLogDialogComponent implements OnInit {
   partPaymentHistory: any;
+  totalPartPayment = 0;
 
   constructor(
     public dialogRef: MatDialogRef<PartPaymentLogDialogComponent>,
@@ -19,12 +20,19 @@ export class PartPaymentLogDialogComponent implements OnInit {
   ngOnInit() {
     this.partPaymentService.getPreviousPartPaymentLogs(this.data.id).subscribe(res => {
       this.partPaymentHistory = res.data
-      // let payments = this.partPaymentHistory
-      // payments.forEach(element => {
-      //   element.transactionSplitUp.forEach(element => {
+      let payments = this.partPaymentHistory
+      payments.forEach(element => {
+        // let sum = 0
+        // element.transactionSplitUp.forEach(value => {
+        //   sum += Number(value.payableOutstanding)
+        //   console.log(sum)
+        // });
+        let sum = element.transactionSplitUp.reduce((acc, val) => acc + Number(val.payableOutstanding), 0)
+        this.totalPartPayment += sum
+      });
+      console.log(this.totalPartPayment)
 
-      //   });[0].payableOutstanding
-      // });
+
     })
   }
 

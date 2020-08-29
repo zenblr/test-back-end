@@ -52,6 +52,7 @@ export class PartPaymentComponent implements OnInit {
 
   partAmountContinue() {
     // console.log(this.partAmount)
+    if (this.partAmount.invalid) return this.partAmount.markAsTouched()
     const data = {
       paidAmount: this.partAmount.value,
       masterLoanId: this.masterLoanId
@@ -95,6 +96,10 @@ export class PartPaymentComponent implements OnInit {
   }
 
   submitPaymentConfirmation() {
+    if (!(this.paymentValue && this.paymentValue.paymentType)) {
+      return this.toastr.error('Please select a payment method')
+    }
+
     this.partPaymentService.confirmPayment(this.masterLoanId, Number(this.partAmount.value), this.paymentValue).subscribe(res => {
       if (res) {
         this.toastr.success('Payment done Successfully')
