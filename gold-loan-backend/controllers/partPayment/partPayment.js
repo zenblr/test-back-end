@@ -72,7 +72,7 @@ exports.checkPartAmount = async (req, res, next) => {
     let amount = await getCustomerInterestAmount(masterLoanId);
     let loan = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
     let data = await payableAmountForLoan(amount, loan.loan)
-
+    
     if (data.payableAmount > paidAmount) {
         return res.status(400).json({ message: `Your payable amount is greater than paid amount. You have to pay ${data.payableAmount}` })
     }
@@ -81,6 +81,15 @@ exports.checkPartAmount = async (req, res, next) => {
     data.partPaymentAmount = (partPaymentAmount.toFixed(2))
     data.paidAmount = paidAmount
     data.loanDetails = loan.loan
+    let { securedRatio, unsecuredRatio, isUnsecuredSchemeApplied } = await getAmountLoanSplitUpData(loan.loan, amount, paidAmount);
+
+    data.securedRatio = securedRatio
+    if (isUnsecuredSchemeApplied) {
+        data.unsecuredRatio = unsecuredRatio
+
+    }
+
+
     return res.status(200).json({ data })
 }
 
