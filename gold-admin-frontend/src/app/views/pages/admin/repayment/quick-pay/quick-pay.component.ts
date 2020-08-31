@@ -78,7 +78,7 @@ export class QuickPayComponent implements OnInit {
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
       data: {
         value: this.paymentValue ? this.paymentValue : { paidAmount: this.payableAmt.value },
-        date: this.loanDetails.loan.loanStartDate
+        date: this.loanDetails.loanStartDate
       },
       width: '500px'
     })
