@@ -10,13 +10,13 @@ const _ = require('lodash');
 exports.addAppraiserRequest = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
-    let { customerId, productId } = req.body;
-    let requestExist = await models.appraiserRequest.findOne({ where: { productId: productId, customerId: customerId, status: 'incomplete' } })
+    let { customerId, moduleId } = req.body;
+    let requestExist = await models.appraiserRequest.findOne({ where: { moduleId: moduleId, customerId: customerId, status: 'incomplete' } })
 
     if (!check.isEmpty(requestExist)) {
         return res.status(400).json({ message: 'This product Request already Exists' });
     }
-    let appraiserRequest = await models.appraiserRequest.create({ customerId, productId, createdBy, modifiedBy })
+    let appraiserRequest = await models.appraiserRequest.create({ customerId, moduleId, createdBy, modifiedBy })
     return res.status(201).json({ message: `Request Created` })
 }
 
@@ -24,13 +24,13 @@ exports.addAppraiserRequest = async (req, res, next) => {
 exports.updateAppraiserRequest = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let id = req.params.id;
-    let { productId, customerId } = req.body;
-    let requestExist = await models.appraiserRequest.findOne({ where: { productId: productId, customerId: customerId, status: 'incomplete' } })
+    let { moduleId, customerId } = req.body;
+    let requestExist = await models.appraiserRequest.findOne({ where: { moduleId: moduleId, customerId: customerId, status: 'incomplete' } })
     if (!check.isEmpty(requestExist)) {
         return res.status(400).json({ message: 'This product Request already Exists' });
     }
 
-    let appraiserRequest = await models.appraiserRequest.update({ productId, modifiedBy }, { where: { id } })
+    let appraiserRequest = await models.appraiserRequest.update({ moduleId, modifiedBy }, { where: { id } })
     return res.status(200).json({ message: `Request updated` })
 
 }
@@ -61,10 +61,8 @@ exports.getAllNewRequest = async (req, res, next) => {
             attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'kycStatus', 'internalBranchId']
         },
         {
-            model: models.product,
-            as: 'product',
-            attributes: ['id', 'name']
-
+            model: models.module,
+            as: 'module',
         },
         {
             model: models.user,
@@ -75,7 +73,7 @@ exports.getAllNewRequest = async (req, res, next) => {
     if (req.userData.userTypeId == 7) {
         searchQuery.appraiserId = req.userData.id
     }
-    console.log(searchQuery)
+    // console.log(searchQuery)
     let allRequest = await models.appraiserRequest.findAll({
         where: searchQuery,
         subQuery: false,

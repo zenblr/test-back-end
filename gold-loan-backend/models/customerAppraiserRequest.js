@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'product_id',
         },
+        moduleId: {
+            type: DataTypes.INTEGER,
+            field: 'module_id',
+        },
         appraiserId: {
             type: DataTypes.INTEGER,
             field: 'appraiser_id',
@@ -65,6 +69,8 @@ module.exports = (sequelize, DataTypes) => {
     // LEAD NEW REQUEST ASSOCIATION WITH MODULES
     AppraiserRequest.associate = function (models) {
         AppraiserRequest.belongsTo(models.product, { foreignKey: 'productId', as: 'product' });
+
+        AppraiserRequest.belongsTo(models.module, { foreignKey: 'moduleId', as: 'module' });
         AppraiserRequest.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         AppraiserRequest.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
         AppraiserRequest.hasOne(models.customerLoanMaster, { foreignKey: 'requestId', as: 'masterLoan' });

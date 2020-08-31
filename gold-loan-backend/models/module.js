@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'module_name',
             allowNull: false,
         },
-        description:{
+        description: {
             type: DataTypes.TEXT,
             field: 'description'
         },
@@ -23,10 +23,12 @@ module.exports = (sequelize, DataTypes) => {
 
     Module.getAllModule = () => Module.findAll({ where: { isActive: true }, order: [['id', 'ASC']], attributes: ['id', 'moduleName'], });
 
-    Module.associate = function(models) {
-        Module.hasMany(models.entity,{foreignKey:'moduleId', as:'entity'});
-        Module.belongsToMany(models.role,{through: models.roleModule});
+    Module.associate = function (models) {
+        Module.hasMany(models.entity, { foreignKey: 'moduleId', as: 'entity' });
+        Module.belongsToMany(models.role, { through: models.roleModule });
         Module.hasMany(models.product, { foreignKey: 'moduleId', as: 'module' });
+
+        Module.hasMany(models.appraiserRequest, { foreignKey: 'moduleId', as: 'appraiserRequest' });
 
     }
 
