@@ -249,7 +249,8 @@ export class PartReleaseComponent implements OnInit {
   choosePaymentMethod() {
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
       data: {
-        value: this.paymentValue ? this.paymentValue : { paidAmount: this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount }
+        value: this.paymentValue ? this.paymentValue : { paidAmount: this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount },
+        date:this.loanDetails.customerLoan.loanStartDate
       },
       width: '500px'
     })
