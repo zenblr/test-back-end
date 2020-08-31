@@ -512,8 +512,9 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                 }
                 //update last interest if changed
                 if (!Number.isInteger(interest.length)) {
+                    const noOfMonths = ((( loan.masterLoan.tenure * 30) - ((interest.length - 1) * loan.selectedSlab))/30)
                     let oneMonthAmount = interest.amount / (stepUpSlab.days / 30);
-                    let amount = oneMonthAmount * Math.ceil(interest.length).toFixed(2);
+                    let amount = (oneMonthAmount * noOfMonths).toFixed(2);
                     let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
                     let outstandingInterest = amount - lastInterest.paidAmount;
                     await models.customerLoanInterest.update({ interestAmount: amount, outstandingInterest, interestRate: stepUpSlab.interestRate }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
@@ -626,8 +627,9 @@ let updateInterestAftertOutstandingAmount = async (date, masterLoanId) => {
             }
             //update last interest if changed
             if (!Number.isInteger(interest.length)) {
+                const noOfMonths = ((( loan.masterLoan.tenure * 30) - ((interest.length - 1) * loan.selectedSlab))/30)
                 let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
-                let amount = oneMonthAmount * Math.ceil(interest.length).toFixed(2);
+                let amount =( oneMonthAmount * noOfMonths).toFixed(2);
                 let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
                 let outstandingInterest = amount - lastInterest.paidAmount;
                 await models.customerLoanInterest.update({ interestAmount: amount, outstandingInterest }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
