@@ -137,9 +137,6 @@ export class PartReleaseComponent implements OnInit {
   }
 
   pay() {
-    if (!(this.paymentValue && this.paymentValue.paymentType)) {
-      return this.toastr.error('Please select a payment method')
-    }
 
     const path = this.url.split('/');
     const url = path[path.length - 2];
@@ -249,7 +246,8 @@ export class PartReleaseComponent implements OnInit {
   choosePaymentMethod() {
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
       data: {
-        value: this.paymentValue ? this.paymentValue : { paidAmount: this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount }
+        value: this.paymentValue ? this.paymentValue : { paidAmount: this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount },
+        date:this.loanDetails.customerLoan.loanStartDate
       },
       width: '500px'
     })
@@ -263,6 +261,10 @@ export class PartReleaseComponent implements OnInit {
   }
 
   releaseConfirmation() {
+    if (!(this.paymentValue && this.paymentValue.paymentType)) {
+      return this.toastr.error('Please select a payment method')
+    }
+
     let path = this.url.split('/')
     let url = path[path.length - 2]
     const releaseType = url === 'part-release' ? 'Part Release' : 'Full Release'

@@ -64,7 +64,7 @@ export class ShopService {
     }
 
     payEMI(data): Observable<any> {
-        return this.http.post(API_ENDPOINT + 'api/order/pay-emi', data)
+        return this.http.post(API_ENDPOINT + 'api/emi-details/pay-emi-by-order', data)
     }
 
     getCancelDetails(id): Observable<any> {

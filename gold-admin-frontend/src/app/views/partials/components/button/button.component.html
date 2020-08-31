@@ -3,6 +3,10 @@
 <button *ngIf="type == 'reset'" mat-raised-button [type]="type" [ngClass]="myClass" class="cancel"
     (click)="actionPerformed()">{{value | titlecase}}</button>
 <button *ngIf="type == 'button'" mat-raised-button color="primary" [ngClass]="myClass" [disabled]="isDisabled"
-    class="submit" [type]="type" (click)="actionPerformed()">{{value | titlecase}}</button>
+    class="submit" [type]="type" (click)="actionPerformed()">
+    <span *ngIf="notTitleCase else asStated" >
+        {{value}}
+    </span></button>
 <button *ngIf="type == 'normalButton'" mat-raised-button color="primary" [ngClass]="myClass" [disabled]="isDisabled"
     class="submit" [type]="type" (click)="actionPerformed()">{{value}}</button>
+    <ng-template #asStated>{{value | titlecase}}</ng-template>
