@@ -679,7 +679,7 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
         } else if (pendingSecuredAmount < Number(loanArray[index]['outstandingInterest'])) {
 
             loanArray[index]['emiStatus'] = "partially paid"
-            loanArray[index]['paidAmount'] = pendingSecuredAmount.toFixed(2)
+            loanArray[index]['paidAmount'] = Number(loanArray[index]['paidAmount']) + Number(pendingSecuredAmount.toFixed(2))
             transactionData.loanInterestId = loanArray[index]['id']
             transactionData.isExtraDaysInterest = loanArray[index]['isExtraDaysInterest']
             transactionData.interestAmount = loanArray[index]['interestAmount']
@@ -696,6 +696,7 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
 
         } else if (pendingSecuredAmount >= Number(loanArray[index]['outstandingInterest'])) {
 
+            loanArray[index]['paidAmount'] = Number(loanArray[index]['paidAmount']) + Number(loanArray[index]['outstandingInterest'])
             loanArray[index]['paidAmount'] = loanArray[index]['outstandingInterest']
             loanArray[index]['emiStatus'] = "paid"
             transactionData.loanInterestId = loanArray[index]['id']
@@ -1130,26 +1131,27 @@ let getSingleDayInterestAmount = async (loan) => {
         where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[0].id, },
         order: [['emiEndDate', 'asc']]
     });
-
-    let startDate = moment(secured[0].emiStartDate)
-    let index = secured.findIndex(ele => {
-        let a = new Date(ele.emiEndDate);
-        let b = new Date()
-        return a.getTime() > b.getTime()
-    })
-
-    let partialPaidSecuredIndex = secured.findIndex(ele => {
-        return ele.emiStatus == 'partially paid'
-    })
-    let paidAmount = 0
-    if (partialPaidSecuredIndex >= 0) {
-        paidAmount = secured[partialPaidSecuredIndex].paidAmount
-    }
     if (secured.length > 0) {
+        let startDate = moment(secured[0].emiStartDate)
+        let index = secured.findIndex(ele => {
+            let a = new Date(ele.emiEndDate);
+            let b = new Date()
+            return a.getTime() > b.getTime()
+        })
+
+        let partialPaidSecuredIndex = secured.findIndex(ele => {
+            return ele.emiStatus == 'partially paid'
+        })
+        let paidAmount = 0
+        if (partialPaidSecuredIndex >= 0) {
+            paidAmount = secured[partialPaidSecuredIndex].paidAmount
+        }
+
         let dueDate = moment(secured[index].emiEndDate)
 
         let noOfDays = dueDate.diff(startDate, 'days')
-        var securedTotalInterest = (securedPerDayInterestAmount * noOfDays) - paidAmount
+        var securedTotalInterest = (securedPerDayInterestAmount * noOfDays) - paidAmount;
+        securedTotalInterest = securedTotalInterest.toFixed(2)
     }
     if (loan.customerLoan.length > 1) {
         let unsecuredInterest = loan.customerLoan[1].currentInterestRate
@@ -1157,32 +1159,41 @@ let getSingleDayInterestAmount = async (loan) => {
         var unsecuredPerDayInterestAmount = (((unsecuredInterest / 100) * unsecuredOutstandingAmount * (paymentFrequency / 30)) / paymentFrequency).toFixed(2)
 
 
-        let interest = await models.customerLoanInterest.findAll({
+        let unsecured = await models.customerLoanInterest.findAll({
             where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[1].id, },
             order: [['emiEndDate', 'asc']]
         });
-        if (interest.length > 0) {
-            let partialPaidSecuredIndex = interest.findIndex(ele => {
-                return ele.emiStatus == 'partially paid'
+        if (unsecured.length > 0) {
+            let startDate = moment(unsecured[0].emiStartDate)
+            let index = unsecured.findIndex(ele => {
+                let a = new Date(ele.emiEndDate);
+                let b = new Date()
+                return a.getTime() > b.getTime()
             })
+            
+                let partialPaidSecuredIndex = unsecured.findIndex(ele => {
+                    return ele.emiStatus == 'partially paid'
+                })
 
-            let unsecuredPaidAmount = 0
-            if (partialPaidSecuredIndex >= 0) {
-                unsecuredPaidAmount = interest[partialPaidSecuredIndex].paidAmount
+
+                let unsecuredPaidAmount = 0
+                if (partialPaidSecuredIndex >= 0) {
+                    unsecuredPaidAmount = unsecured[partialPaidSecuredIndex].paidAmount
+                }
+
+                let dueDate = moment(unsecured[index].emiEndDate)
+
+                let noOfDays = dueDate.diff(startDate, 'days') 
+                let months = Math.ceil(noOfDays / 30)
+                var unsecuredTotalInterest = (unsecuredPerDayInterestAmount * (months * 30)) - unsecuredPaidAmount
+                unsecuredTotalInterest = unsecuredTotalInterest.toFixed(2)
             }
-
-            let dueDate = moment(interest[index].emiEndDate)
-
-            let noOfDays = dueDate.diff(startDate, 'days')
-            var unsecuredTotalInterest = (unsecuredPerDayInterestAmount * noOfDays) - unsecuredPaidAmount
-            unsecuredTotalInterest = unsecuredTotalInterest.toFixed(2)
         }
-    }
+    
 
 
 
-
-    return { securedTotalInterest: securedTotalInterest.toFixed(2), unsecuredTotalInterest }
+    return { securedTotalInterest, unsecuredTotalInterest }
 }
 
 let splitAmountIntoSecuredAndUnsecured = async (customerLoan, paidAmount) => {
@@ -1190,9 +1201,9 @@ let splitAmountIntoSecuredAndUnsecured = async (customerLoan, paidAmount) => {
     let loanAmount = customerLoan.outstandingAmount
     let securedLoanAmount = customerLoan.customerLoan[0].outstandingAmount
     let unsecuredLoanAmount = customerLoan.customerLoan[1].outstandingAmount
-    
-    let securedRatio = securedLoanAmount/loanAmount * paidAmount
-    let unsecuredRatio = unsecuredLoanAmount/loanAmount * paidAmount
+
+    let securedRatio = securedLoanAmount / loanAmount * paidAmount
+    let unsecuredRatio = unsecuredLoanAmount / loanAmount * paidAmount
 
     return { securedRatio, unsecuredRatio }
 }
