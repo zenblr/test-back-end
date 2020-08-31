@@ -134,7 +134,7 @@ export class BranchListComponent implements OnInit {
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        console.log(res);
+       
         this.branchService.deleteBranch(role.id).subscribe(successDelete => {
           this.toastr.successToastr(_deleteMessage);
           this.loadBranchPage();
@@ -167,7 +167,7 @@ export class BranchListComponent implements OnInit {
 	 * @param role: Role
 	 */
   editRole(role) {
-    console.log(role);
+   
     // const _saveMessage = `Role successfully has been saved.`;
     // const _messageType = role.id ? MessageType.Update : MessageType.Create;
     const dialogRef = this.dialog.open(BranchAddComponent,

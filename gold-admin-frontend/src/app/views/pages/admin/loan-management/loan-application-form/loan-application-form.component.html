@@ -25,7 +25,7 @@
                             <kt-ornaments [action]="action" (next)="next($event)" [disable]="disabledForm"
                                 [details]="customerDetail" (totalAmt)="total($event)" (fullAmt)="fullAmt($event)"
                                 [masterAndLoanIds]="masterAndLoanIds" [ornamentType]="ornamentType"
-                                [showButton]="showButton" (loanTransfer)="loanTransfer($event)">
+                                [showButton]="showButton" (loanTransfer)="loanTransfer($event)" (partPayment)=partPayment($event)>
                             </kt-ornaments>
                         </div>
                         <!-- </ng-template> -->
@@ -91,7 +91,7 @@
                     <mat-tab label="Disbursement"
                         *ngIf="loanStage?.id == 4 || (loanStage?.id == 5 && url =='view-loan')">
                         <kt-disburse [masterAndLoanIds]="masterAndLoanIds" [loanDetials]="customerDetail"
-                            [disable]="disabledForm" [showButton]="true"></kt-disburse>
+                            [disable]="disabledForm" [showButton]="true" [disbursed]="disbursed"></kt-disburse>
                     </mat-tab>
                 </mat-tab-group>
             </div>

@@ -35,7 +35,7 @@ export class AddInternalUserBranchComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.data)
+   
     this.getAllPartners()
     this.getStates()
     this.initForm()
@@ -57,16 +57,16 @@ export class AddInternalUserBranchComponent implements OnInit {
       this.title = 'Edit Internal User Branch'
       this.button = 'update'
       this.addInternalBranchForm.patchValue(this.data.branch)
-      console.log(this.data.branch)
+    
       this.getCites()
     } else {
       this.title = 'View Internal User'
       this.addInternalBranchForm.patchValue(this.data.branch)
-      console.log(this.data.branch)
+     
       this.getCites()
       this.addInternalBranchForm.disable();
     }
-    console.log(this.addInternalBranchForm.value)
+    //console.log(this.addInternalBranchForm.value)
   }
 
   initForm() {

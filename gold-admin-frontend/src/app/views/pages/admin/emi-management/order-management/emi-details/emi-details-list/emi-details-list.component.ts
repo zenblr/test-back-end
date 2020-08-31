@@ -170,7 +170,7 @@ export class EmiDetailsListComponent implements OnInit {
 		});
 		dialogRef.afterClosed().subscribe((res) => {
 			if (res) {
-				console.log(res);
+				// console.log(res);
 			}
 		});
 	}
@@ -185,7 +185,7 @@ export class EmiDetailsListComponent implements OnInit {
 	}
 
 	applyFilter(data) {
-		console.log(data);
+		// console.log(data);
 		this.emiData.orderemistatus = data.data.status;
 		this.dataSource.loadEmiDetails(this.emiData);
 		this.filteredDataList = data.list;

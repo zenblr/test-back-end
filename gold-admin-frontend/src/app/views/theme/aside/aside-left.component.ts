@@ -102,7 +102,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 				if (ct != null) {
 					Promise.resolve(null).then(() => {
 						this.cartTotalCount = ct;
-						console.log(this.cartTotalCount);
+						// console.log(this.cartTotalCount);
 						// this.ref.detectChanges();
 					});
 				}
@@ -253,7 +253,8 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 	logout() {
 		this.auth.logout().pipe(map(
 			res => {
-				localStorage.clear();
+				// localStorage.clear();
+				localStorage.removeItem('UserDetails')
 				this.cookieService.deleteAll();
 				this.sharedService.role.next(null);
 				this.router.navigate(['/auth/login']);

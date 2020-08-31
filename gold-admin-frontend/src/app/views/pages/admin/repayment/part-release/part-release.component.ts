@@ -7,6 +7,7 @@ import { ImagePreviewDialogComponent } from '../../../../partials/components/ima
 import { PaymentDialogComponent } from '../../../../partials/components/payment-dialog/payment-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { TitleCasePipe } from '@angular/common';
+import { LayoutUtilsService } from '../../../../../core/_base/crud';
 
 @Component({
   selector: 'kt-part-release',
@@ -36,7 +37,8 @@ export class PartReleaseComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private toastr: ToastrService,
     private titleCasePipe: TitleCasePipe,
-    private ele: ElementRef
+    private ele: ElementRef,
+    private layoutUtilsService: LayoutUtilsService
   ) { }
 
   ngOnInit() {
@@ -72,7 +74,6 @@ export class PartReleaseComponent implements OnInit {
   }
 
   selectOrnament(event, index, item) {
-    // console.log(event, index, item)
     if (event) {
       this.selectedOrnaments.push(item)
     } else {
@@ -136,9 +137,7 @@ export class PartReleaseComponent implements OnInit {
   }
 
   pay() {
-    if (!(this.paymentValue && this.paymentValue.paymentType)) {
-      return this.toastr.error('Please select a payment method')
-    }
+
     const path = this.url.split('/');
     const url = path[path.length - 2];
 
@@ -152,7 +151,7 @@ export class PartReleaseComponent implements OnInit {
       payableAmount: this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount,
     }
     Object.assign(payObject, this.paymentValue, this.totalSelectedOrnamentDetails.ornamentWeight)
-    console.log(payObject)
+    // console.log(payObject)
 
     // return
     if (url === 'part-release') {
@@ -247,17 +246,37 @@ export class PartReleaseComponent implements OnInit {
   choosePaymentMethod() {
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
       data: {
-        value: this.paymentValue ? this.paymentValue : { paidAmount: this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount }
+        value: this.paymentValue ? this.paymentValue : { paidAmount: this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount },
+        date:this.loanDetails.customerLoan.loanStartDate
       },
       width: '500px'
     })
 
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        console.log(res)
         this.paymentValue = res
         this.ref.detectChanges()
       }
     })
   }
+
+  releaseConfirmation() {
+    if (!(this.paymentValue && this.paymentValue.paymentType)) {
+      return this.toastr.error('Please select a payment method')
+    }
+
+    let path = this.url.split('/')
+    let url = path[path.length - 2]
+    const releaseType = url === 'part-release' ? 'Part Release' : 'Full Release'
+    const _title = `Confirm ${releaseType}?`;
+    const _description = `Are you sure you want to place a ${releaseType} request?`;
+    const _waitDesciption = 'Placing request...';
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.pay();
+      }
+    });
+  }
+
 }

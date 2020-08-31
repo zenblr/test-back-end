@@ -54,7 +54,7 @@ export class AddLeadComponent implements OnInit {
     private ref: ChangeDetectorRef
   ) {
     this.details = this.sharedService.getDataFromStorage()
-    console.log(this.details)
+    
   }
 
   ngOnInit() {
@@ -142,7 +142,7 @@ export class AddLeadComponent implements OnInit {
       pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       dateTime: [this.currentDate, [Validators.required]],
       statusId: [, [Validators.required]],
-      panType: [''],
+      panType: [],
       form60: [''],
       panImage: [null],
       panImg: [null],
@@ -207,7 +207,7 @@ export class AddLeadComponent implements OnInit {
       this.leadForm.patchValue(res.singleCustomer);
       this.leadForm.patchValue({ panImage: res.singleCustomer.panImage })
       this.leadForm.patchValue({ panImg: res.singleCustomer.panImg })
-      console.log(this.leadForm.value)
+     
       this.getCities();
       this.commentBox()
     },
@@ -315,7 +315,7 @@ export class AddLeadComponent implements OnInit {
   }
 
   preview() {
-    console.log(this.controls.panImg.value)
+   
     let img = [this.controls.panImg.value]
     this.dialog.open(ImagePreviewDialogComponent, {
       data: {
@@ -345,7 +345,7 @@ export class AddLeadComponent implements OnInit {
             this.toastr.errorToastr('Upload Form 60 Image')
           }
         }
-        console.log(this.leadForm.value)
+        
         return
       }
 
@@ -374,7 +374,7 @@ export class AddLeadComponent implements OnInit {
       const leadData = this.leadForm.value;
 
       this.leadService.addLead(leadData).subscribe(res => {
-        // console.log(res);
+       
         if (res) {
           const msg = 'Lead Added Successfully';
           this.toastr.successToastr(msg);
@@ -382,7 +382,7 @@ export class AddLeadComponent implements OnInit {
         }
       },
         error => {
-          console.log(error.error.message);
+        
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
         });
@@ -398,7 +398,7 @@ export class AddLeadComponent implements OnInit {
             this.toastr.errorToastr('Upload Form 60 Image')
           }
         }
-        console.log(this.leadForm.value)
+        
         return
       }
 
@@ -418,9 +418,9 @@ export class AddLeadComponent implements OnInit {
         this.leadForm.get('pinCode').patchValue(Number(this.controls.pinCode.value));
       }
       const leadData = this.leadForm.value;
-      console.log('edit')
+     
       this.leadService.editLead(this.data.id, leadData).subscribe(res => {
-        // console.log(res);
+       
         if (res) {
           const msg = 'Lead Edited Successfully';
           this.toastr.successToastr(msg);

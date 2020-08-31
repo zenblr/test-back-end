@@ -103,6 +103,7 @@ export class TopbarComponent implements OnInit {
 	sortImg = "../../../../../assets/media/icons/sort.svg";
 	sortType: number = 1;
 	sortFlag: boolean = false;
+	notTitleCase: boolean =false;
 
 	constructor(
 		public sharedService: SharedService,
@@ -156,7 +157,7 @@ export class TopbarComponent implements OnInit {
 		private otherChargesService: OtherChargesService,
 		private scrapCustomerManagementService: ScrapCustomerManagementService,
 		private partnerBranchUserservice: PartnerBranchUserService,
-		private depositService:DepositService
+		private depositService: DepositService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -188,6 +189,7 @@ export class TopbarComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.packetService.disableBtn$.pipe(takeUntil(this.destroy$)).subscribe(res => this.isDisabled = res)
 		this.setTopbar(this.router.url);
 	}
 
@@ -365,6 +367,12 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "all-loan") {
 			this.showfilter = false;
 			this.showInput = true;
+		}
+		if(location.href.includes('loan-details/')){
+			this.rightButton = true;
+			this.notTitleCase=true;
+			this.value2 = "Generate S.O.A.";
+			this.type2 = "button";
 		}
 		if (this.path == "applied-kyc") {
 			this.showInput = true;
@@ -683,6 +691,12 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/new-requests?origin=leads')) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes('/repayment/part-payment/')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/repayment/interest-emi/')) {
+			this.showBackButton = true;
+		}
 		if (this.path == 'standard-deduction') {
 			this.dataSourceHeader();
 			this.value1 = "Add Standard Deduction";
@@ -715,7 +729,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'scrap-buying') {
 			this.showInput = true;
 		}
-		if(this.path == 'deposit') {
+		if (this.path == 'deposit') {
 			this.showInput = true;
 			this.showfilter = true;
 			this.filterName = 'deposit';
@@ -838,6 +852,9 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'standard-deduction') {
 			this.standardDeductionService.openModal.next(true);
 		}
+		if (location.href.includes('loan-details/')) {
+			this.sharedService.exportExcel.next(true);
+		}
 	}
 
 	download() {
@@ -930,7 +947,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "packet") {
 			this.packetService.applyFilter.next(data)
 		}
-		if( this.path == "deposit") {
+		if (this.path == "deposit") {
 			this.depositService.applyFilter.next(data)
 		}
 	}

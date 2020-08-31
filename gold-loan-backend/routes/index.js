@@ -186,6 +186,9 @@ router.use('/deposit',deposit);
 const partPayment = require('./partPayment');
 router.use('/part-payment', partPayment);
 
+const soaOfLoan = require('./soaOfLoan');
+router.use('/loan-soa', soaOfLoan);
+
 const scrapPacket = require('./scrap/scrapPacket'); // Scrap packet
 router.use('/scrap/packet', scrapPacket);
 

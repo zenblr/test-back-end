@@ -57,7 +57,7 @@ export class NewRequestAddComponent implements OnInit {
   }
 
   setForm() {
-    console.log(this.data.leadData)
+    
     this.requestForm.patchValue(this.data.leadData)
     if (this.data.action === 'edit') {
       this.requestForm.patchValue({
@@ -93,7 +93,7 @@ export class NewRequestAddComponent implements OnInit {
   }
 
   submit() {
-    console.log(this.requestForm.value)
+   
     if (this.requestForm.invalid) return this.requestForm.markAllAsTouched()
 
     if (this.data.action == 'add') {
