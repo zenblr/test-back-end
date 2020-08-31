@@ -2053,8 +2053,7 @@ exports.getLoanDetails = async (req, res, next) => {
                 as: 'scheme',
                 attributes: ['id', 'schemeName']
 
-            },
-            ]
+            }]
         },
         {
             model: models.customer,
@@ -2075,9 +2074,9 @@ exports.getLoanDetails = async (req, res, next) => {
         {
             model: models.customerLoanPackageDetails,
             as: 'loanPacketDetails',
-            include: [{
-                model: models.packet,
-            }]
+            // include: [{
+            //     model: models.packet,
+            // }]
         }
     ]
 
