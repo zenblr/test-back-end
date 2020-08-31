@@ -9,9 +9,9 @@
                 <div class="col font-weight-500">Loan End Date</div>
                 <div class="col font-weight-500">Tenure</div>
                 <div class="col font-weight-500">Last Payment Date</div>
-                <div class="col-2 font-weight-500">Principal Outstanding Amount</div>
-                <div class="col font-weight-500">
-                    <kt-button *ngIf="!fullReleaseScreen" [value]="'Full Release'" [type]="'button'"
+                <div class="col-2 font-weight-500"[class.padding-left]="fullReleaseScreen">Principal Outstanding Amount</div>
+                <div class="col font-weight-500 " *ngIf="!fullReleaseScreen">
+                    <kt-button  [value]="'Full Release'" [type]="'button'"
                         (click)="fullRelease()"></kt-button>
                 </div>
             </div>
@@ -32,8 +32,8 @@
                 <div class="col">
                     <span *ngIf="loanDetails.lastPayment else blank">{{loanDetails.lastPayment}}</span>
                 </div>
-                <div class="col-2">{{loanDetails?.customerLoan.outstandingAmount}}</div>
-                <div class="col">
+                <div class="col-2" [class.padding-left]="fullReleaseScreen">{{loanDetails?.customerLoan.outstandingAmount}}</div>
+                <div class="col" *ngIf="!fullReleaseScreen">
 
                 </div>
 
@@ -41,9 +41,9 @@
                     <div>-</div>
                 </ng-template>
             </div>
-
+            <h5 class="kt-padding-t-30">Ornaments Details</h5>
             <div *ngIf="!fullReleaseScreen">
-                <h5 class="kt-padding-t-30">Ornaments Details</h5>
+                <!-- <h5 class="kt-padding-t-30">Ornaments Details</h5> -->
 
                 <div class="table-div table-responsive kt-padding-t-15">
                     <table class="table outer-border ornament-list">
@@ -62,8 +62,8 @@
                             <!-- <th class="transparent">Purity Test</th> -->
                             <th class="transparent">Karat</th>
                             <th class="transparent">Purity %</th>
-                            <th class="transparent">LTV Amount</th>
-                            <th class="transparent">Final LTV Loan Amount</th>
+                            <!-- <th class="transparent">LTV Amount</th>
+                            <th class="transparent">Final LTV Loan Amount</th> -->
                             <th class="transparent">Ornament Image</th>
                         </thead>
                         <tbody *ngIf="loanDetails">
@@ -129,8 +129,8 @@
                                 </td> -->
                                 <td>{{ ornament.karat }} K</td>
                                 <td>{{ ornament.ltvPercent }} %</td>
-                                <td>{{ ornament.ltvAmount }}</td>
-                                <td>{{ ornament.currentLtvAmount }}</td>
+                                <!-- <td>{{ ornament.ltvAmount }}</td>
+                                <td>{{ ornament.currentLtvAmount }}</td> -->
                                 <td>
                                     <span *ngIf="ornament.ornamentImage; else noImage"
                                         class="kt-pointer kt-link kt-link--brand kt-font-bolder"

@@ -61,7 +61,7 @@
     <kt-button *ngIf="rightButton" [value]='value2' [type]='type2' (click)="action($event)"></kt-button>
 </ng-template> -->
 <ng-template #thenBlock>
-    <kt-button *ngIf="rightButton" [value]='value2' [type]='type2' [isDisabled]="isDisabled" (click)="action($event)"
+    <kt-button *ngIf="rightButton" [value]='value2' [type]='type2' [isDisabled]="isDisabled" [notTitleCase]="notTitleCase" (click)="action($event)"
         (action)="buttonValue($event)" class="kt-padding-r-5"></kt-button>
 </ng-template>
 <ng-template #elseBlock>

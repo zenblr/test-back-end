@@ -22,6 +22,9 @@ export class SharedService {
 	clearFilter = new BehaviorSubject<any>({});
 	clearFilter$ = this.clearFilter.asObservable();
 
+	exportExcel = new BehaviorSubject<any>(false);
+	exportExcel$ = this.exportExcel.asObservable();
+
 	appraiserOrCCE = [
 		{ value: 'pending', name: 'pending' },
 		{ value: 'approved', name: 'approved' },

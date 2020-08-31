@@ -78,7 +78,7 @@ exports.getSoa = async (req, res) => {
     ws.column(7).setWidth(12);
     ws.column(8).setWidth(12);
     ws.column(9).setWidth(12);
-    ws.column(10).setWidth(9);
+    ws.column(10).setWidth(12);
     ws.column(11).setWidth(12);
     ws.column(12).setWidth(12);
     ws.column(13).setWidth(12);
