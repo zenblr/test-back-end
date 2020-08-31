@@ -35,6 +35,7 @@ export class LoanDetailsComponent implements OnInit {
     private router: Router,
     private sharedService: SharedService
   ) {
+    
   }
 
   ngOnInit() {
@@ -122,7 +123,5 @@ export class LoanDetailsComponent implements OnInit {
     this.router.navigate(['/admin/repayment/part-payment', loan.id])
   }
 
-  soaDownload(masterLoanId){
-    this.sharedService.soaDownload(masterLoanId).subscribe()
-  }
+  
 }
