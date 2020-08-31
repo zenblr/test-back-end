@@ -38,6 +38,11 @@ export class RolesService {
       map(res => res
       ))
   }
+  getAllModuleAppraiser(): Observable<any> {
+    return this.http.get(`/api/modules/appraiser-request-module`).pipe(
+      map(res => res
+      ))
+  }
   getAllProducts(): Observable<any> {
     return this.http.get(`/api/product`).pipe(
       map(res => res),
