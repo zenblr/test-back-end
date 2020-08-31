@@ -373,11 +373,14 @@ let mergeInterestTable = async (masterLoanId) => {
             data.balanceAmount = (Number(securedTable[i].outstandingInterest) + Number(unsecuredTable[i].outstandingInterest)).toFixed(2)
             data.paidAmount = (Number(securedTable[i].paidAmount) + Number(unsecuredTable[i].paidAmount)).toFixed(2)
             data.penalInterest = Number(securedTable[i].penalInterest) + Number(unsecuredTable[i].penalInterest)
+            if(securedTable[i].emiStatus == 'partially paid' || unsecuredTable[i].emiStatus == 'partially paid'){
+                data.emiStatus = 'partially paid'
+            }else if(securedTable[i].emiStatus == 'pending' || unsecuredTable[i].emiStatus == 'pending'){}
         } else {
             data.emiReceivedDate = securedTable[i].emiReceivedDate
             data.interestAmount = (Number(securedTable[i].interestAmount)).toFixed(2)
             data.balanceAmount = (Number(securedTable[i].outstandingInterest)).toFixed(2)
-            data.paidAmount = (securedTable[i].paidAmount).toFixed(2)
+            data.paidAmount = (Number(securedTable[i].paidAmount)).toFixed(2)
             data.penalInterest = securedTable[i].penalInterest
         }
         mergeTble.push(data)
@@ -1125,7 +1128,7 @@ let getSingleDayInterestAmount = async (loan) => {
 
     // let securedPerDayInterestAmount = await newSlabRateInterestCalcultaion(securedOutstandingAmount, securedInterest, selectedSlab, tenure);
 
-    let securedPerDayInterestAmount = (((securedInterest / 100) * securedOutstandingAmount * (paymentFrequency / 30)) / paymentFrequency).toFixed(2)
+    let securedPerDayInterestAmount = ((securedInterest / 100) * securedOutstandingAmount * (paymentFrequency / 30)) / paymentFrequency
 
     let secured = await models.customerLoanInterest.findAll({
         where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[0].id, },
@@ -1150,13 +1153,14 @@ let getSingleDayInterestAmount = async (loan) => {
         let dueDate = moment(secured[index].emiEndDate)
 
         let noOfDays = dueDate.diff(startDate, 'days')
-        var securedTotalInterest = (securedPerDayInterestAmount * noOfDays) - paidAmount;
+        let months = Math.ceil(noOfDays / 30)
+        var securedTotalInterest = (securedPerDayInterestAmount * (months * 30)) - paidAmount;
         securedTotalInterest = securedTotalInterest.toFixed(2)
     }
     if (loan.customerLoan.length > 1) {
         let unsecuredInterest = loan.customerLoan[1].currentInterestRate
         let unsecuredOutstandingAmount = loan.customerLoan[1].outstandingAmount
-        var unsecuredPerDayInterestAmount = (((unsecuredInterest / 100) * unsecuredOutstandingAmount * (paymentFrequency / 30)) / paymentFrequency).toFixed(2)
+        var unsecuredPerDayInterestAmount = ((unsecuredInterest / 100) * unsecuredOutstandingAmount * (paymentFrequency / 30)) / paymentFrequency
 
 
         let unsecured = await models.customerLoanInterest.findAll({
