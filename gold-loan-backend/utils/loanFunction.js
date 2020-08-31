@@ -76,8 +76,8 @@ let interestAmountCalculation = async (id) => {
     let interest = await models.customerLoanInterest.findAll({ where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: id }, attributes: ['interestAccrual', 'penalOutstanding'] });
     let interestAmount = await interest.map((data) => Number(data.interestAccrual));
     let penalInterest = await interest.map((data) => Number(data.penalOutstanding));
-    amount.interest = _.sum(interestAmount);
-    amount.penalInterest = _.sum(penalInterest);
+    amount.interest = Number((_.sum(interestAmount)).toFixed(2));
+    amount.penalInterest = Number((_.sum(penalInterest)).toFixed(2));
     return amount
 }
 
