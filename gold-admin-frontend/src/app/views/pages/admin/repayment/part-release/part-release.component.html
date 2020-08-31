@@ -9,10 +9,10 @@
                 <div class="col font-weight-500">Loan End Date</div>
                 <div class="col font-weight-500">Tenure</div>
                 <div class="col font-weight-500">Last Payment Date</div>
-                <div class="col-2 font-weight-500"[class.padding-left]="fullReleaseScreen">Principal Outstanding Amount</div>
+                <div class="col-2 font-weight-500" [class.padding-left]="fullReleaseScreen">Principal Outstanding Amount
+                </div>
                 <div class="col font-weight-500 " *ngIf="!fullReleaseScreen">
-                    <kt-button  [value]="'Full Release'" [type]="'button'"
-                        (click)="fullRelease()"></kt-button>
+                    <kt-button [value]="'Full Release'" [type]="'button'" (click)="fullRelease()"></kt-button>
                 </div>
             </div>
 
@@ -32,7 +32,8 @@
                 <div class="col">
                     <span *ngIf="loanDetails.lastPayment else blank">{{loanDetails.lastPayment}}</span>
                 </div>
-                <div class="col-2" [class.padding-left]="fullReleaseScreen">{{loanDetails?.customerLoan.outstandingAmount}}</div>
+                <div class="col-2" [class.padding-left]="fullReleaseScreen">
+                    {{loanDetails?.customerLoan.outstandingAmount}}</div>
                 <div class="col" *ngIf="!fullReleaseScreen">
 
                 </div>
@@ -247,7 +248,8 @@
                                     <td>{{ totalSelectedOrnamentDetails.ornamentWeight.releaseAmount }}</td>
                                     <td>{{ totalSelectedOrnamentDetails.loanInfo.interestAmount }}</td>
                                     <td>{{ totalSelectedOrnamentDetails.loanInfo.penalInterest }}</td>
-                                    <td>{{ totalSelectedOrnamentDetails.loanInfo.totalPayableAmount }}</td>
+                                    <td class="font-weight-500" style="font-size: 14px;">
+                                        {{ totalSelectedOrnamentDetails.loanInfo.totalPayableAmount }}</td>
                                     <td>
                                         <button *ngIf="!paymentValue" (click)="choosePaymentMethod()"
                                             class="apply-kyc">Select Payment</button>
