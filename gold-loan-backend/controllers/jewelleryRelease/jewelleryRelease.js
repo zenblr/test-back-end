@@ -53,10 +53,14 @@ exports.ornamentsDetails = async (req, res, next) => {
 }
 
 async function getLoanLastPayment(masterLoanId) {
-    let lastPayment = await models.customerLoanInterest.findOne({
-        where: { masterLoanId: masterLoanId, emiStatus: "complete", isExtraDaysInterest: false },
+    let lastPaymentData = await models.customerLoanInterest.findOne({
+        where: { masterLoanId: masterLoanId, emiStatus: "paid" },
         order: [["updatedAt", "DESC"]],
     });
+    let lastPayment;
+    if(lastPaymentData){
+        lastPayment = lastPaymentData.emiReceivedDate;
+    }
     return lastPayment;
 }
 
