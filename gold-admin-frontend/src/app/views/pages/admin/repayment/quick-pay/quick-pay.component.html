@@ -132,7 +132,7 @@
                     <th class="transparent th-style">Select Payment option</th>
                 </thead>
                 <tbody>
-                    <tr >
+                    <tr>
                         <td class="th-padding-style">
                             {{paymentDetails?.customerLoan[0]?.loanUniqueId}} <br>
                             {{paymentDetails?.customerLoan[1]?.loanUniqueId}}
@@ -147,7 +147,7 @@
                             <button *ngIf="!paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">Select
                                 Payment</button>
                             <button *ngIf="paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">
-                                {{ paymentValue.paymentType === 'IMPS' ? 'RTGS | NEFT | IMPS' : paymentValue.paymentType | uppercase }}
+                                {{ paymentValue.paymentType | uppercase }}
                             </button>
                         </td>
                     </tr>
