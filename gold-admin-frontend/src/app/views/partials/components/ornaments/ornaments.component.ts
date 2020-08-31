@@ -74,6 +74,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   modalView: any = { details: { currentValue: { loanOrnamentsDetail: [] } }, action: { currentValue: 'edit' } };
   firstView: boolean;
 
+
   constructor(
     public fb: FormBuilder,
     public sharedService: SharedService,
@@ -106,6 +107,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.getOrnamentType()
       this.setModalData()
     }
+    
   }
 
   setModalData() {
@@ -312,6 +314,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       return this.ornamentsForm.controls.ornamentData as FormArray;
   }
 
+  
   createPurityImageArray(purity) {
     let data = { URL: [], path: [] }
     // console.log(purity)
@@ -875,4 +878,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     return Array.isArray(obj)
   }
 
+close(event: Event){
+if(!event){
+  this.dialogRef.close()
+}
+}
 }
