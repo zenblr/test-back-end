@@ -142,7 +142,7 @@
                                 {{paymentDetails?.customerLoan[0]?.outstandingAmount}} <br>
                                 {{paymentDetails?.customerLoan[1]?.outstandingAmount}}
                             </td>
-                            <td class="" style="font-size: 14px;"><b>{{payableAmt.value}}</b></td>
+                            <td class="font-weight-500" style="font-size: 14px;">{{payableAmt.value}}</td>
                             <td class="">
                                 <button *ngIf="!paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">Select
                                     Payment</button>

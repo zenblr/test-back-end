@@ -87,7 +87,7 @@ export class QuickPayComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        console.log(res)
+        // console.log(res)
         this.paymentValue = res
         this.ref.detectChanges()
       }
