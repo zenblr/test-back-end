@@ -35,6 +35,7 @@ export class LoanDetailsComponent implements OnInit {
     private router: Router,
     private sharedService: SharedService
   ) {
+    
   }
 
   ngOnInit() {
@@ -121,4 +122,6 @@ export class LoanDetailsComponent implements OnInit {
   partPayment(loan) {
     this.router.navigate(['/admin/repayment/part-payment', loan.id])
   }
+
+  
 }

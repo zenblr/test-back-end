@@ -37,7 +37,7 @@ export class LoanApplicationFormComponent implements OnInit {
   loanStage: any;
   ornamentDetails: any;
   loanTransferdata: any;
-  disbursed: boolean;
+  disbursed: boolean = false;
 
   constructor(
     public ref: ChangeDetectorRef,
@@ -148,6 +148,10 @@ export class LoanApplicationFormComponent implements OnInit {
   stage(event) {
     if (event)
       this.loanStage = event
+  }
+
+  partPayment(event) {
+    this.loanTransferdata = event
   }
 
   loanTransfer(event){

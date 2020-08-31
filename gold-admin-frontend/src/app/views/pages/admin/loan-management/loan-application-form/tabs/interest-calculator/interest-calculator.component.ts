@@ -37,7 +37,7 @@ export class InterestCalculatorComponent implements OnInit {
   finalInterestForm: FormGroup;
   @Input() invalid;
   @Input() totalAmt = 0;
-  @Input() disbursed:boolean = false
+  @Input() disbursed: boolean = false
   // @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   @Input() action;
@@ -117,8 +117,11 @@ export class InterestCalculatorComponent implements OnInit {
 
           const finalLoan = changes.details.currentValue
 
-          if (finalLoan.masterLoan.loanTransfer && finalLoan.masterLoan.loanTransfer.disbursedLoanAmount) {
-            this.loanFormService.finalLoanAmount.next(finalLoan.masterLoan.loanTransfer.disbursedLoanAmount)
+          if (finalLoan.masterLoan.isNewLoanFromPartRelease || finalLoan.masterLoan.isLoanTransfer) {
+            this.controls.finalLoanAmount.disable()
+            this.transferLoan = true;
+            this.partner()
+
           }
 
           if (changes.disbursed && changes.disbursed.currentValue)
@@ -142,7 +145,7 @@ export class InterestCalculatorComponent implements OnInit {
 
           finalLoan.customerLoanInterest.forEach(interset => {
             var data = {
-              month:interset.month,
+              month: interset.month,
               emiDueDate: interset.emiDueDate,
               paymentType: this.paymentType,
               securedInterestAmount: interset.interestAmount,

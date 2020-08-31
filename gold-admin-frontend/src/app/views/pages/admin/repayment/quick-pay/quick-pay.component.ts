@@ -72,9 +72,13 @@ export class QuickPayComponent implements OnInit {
   }
 
   choosePaymentMethod() {
+    if (this.paymentValue && this.paymentValue.paidAmount) {
+      this.paymentValue.paidAmount = this.payableAmt.value
+    }
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
       data: {
-        value: this.paymentValue ? this.paymentValue : { paidAmount: this.payableAmt.value }
+        value: this.paymentValue ? this.paymentValue : { paidAmount: this.payableAmt.value },
+        date: this.loanDetails.loanStartDate
       },
       width: '500px'
     })
@@ -89,6 +93,9 @@ export class QuickPayComponent implements OnInit {
   }
 
   submit() {
+    if (!(this.paymentValue && this.paymentValue.paymentType)) {
+      return this.toastr.error('Please select a payment method')
+    }
     let data = {
       masterLoanId: this.masterLoanId,
       payableAmount: this.payableAmt.value,

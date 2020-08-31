@@ -11,6 +11,7 @@ export class ButtonComponent implements OnInit {
 	@Input() myClass;
 	@Input() isDisabled;
 	@Output() action = new EventEmitter();
+	@Input() notTitleCase ;
 	constructor() {}
 
 	ngOnInit() {}
