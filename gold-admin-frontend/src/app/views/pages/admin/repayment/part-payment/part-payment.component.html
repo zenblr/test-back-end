@@ -65,7 +65,7 @@
                         <div class="col-6">
                             <div class="row kt-margin-t-15">
                                 <div class="align-self-center font-weight-500 col text-right">
-                                    <label for=""> Enter Amount </label>
+                                    <label for="" class="mb-0"> Enter Amount </label>
                                 </div>
                                 <div class="col">
                                     <input [class.isError]="partAmount.touched && partAmount.invalid"
@@ -90,11 +90,12 @@
                             <th class="transparent th-width-style th-padding-style">Loan ID</th>
                             <th class="transparent th-width-style th-padding-style">Part Payment Amount</th>
                             <th class="transparent th-width-style th-p-style ">Interest Amount</th>
-                            <th class="transparent th-width-style th-padding-left-style" >Penal Interest</th>
+                            <th class="transparent th-width-style th-padding-left-style">Penal Interest</th>
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="th-style th-padding-style">{{payableAmountSummary?.loanDetails?.customerLoan[0]?.loanUniqueId}} <br>
+                                <td class="th-style th-padding-style">
+                                    {{payableAmountSummary?.loanDetails?.customerLoan[0]?.loanUniqueId}} <br>
                                     <span *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">
                                         {{payableAmountSummary?.loanDetails?.customerLoan[1]?.loanUniqueId}}
                                     </span>
@@ -107,7 +108,7 @@
                                     <span *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">
                                         {{payableAmountSummary?.unsecuredInterest}}
                                     </span>
-                                <!-- <td class="th-padding-style">{{payableAmountSummary?.partPaymentAmount}}</td>
+                                    <!-- <td class="th-padding-style">{{payableAmountSummary?.partPaymentAmount}}</td>
                                 <td class="th-p-style">{{payableAmountSummary?.securedInterest}} <br>
                                     <span *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">
                                         {{payableAmountSummary?.unsecuredInterest}}
@@ -152,7 +153,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="th-padding-style" *ngIf="paymentDetails && paymentDetails?.customerLoan.length">
+                                <td class="th-padding-style"
+                                    *ngIf="paymentDetails && paymentDetails?.customerLoan.length">
                                     {{paymentDetails?.customerLoan[0]?.loanUniqueId}} <br>
                                     <span *ngIf="paymentDetails?.customerLoan?.length > 1">
                                         {{paymentDetails?.customerLoan[1]?.loanUniqueId}}
