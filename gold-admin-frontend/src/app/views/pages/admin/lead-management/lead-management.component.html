@@ -22,6 +22,11 @@
                     <mat-cell *matCellDef="let lead">{{lead.internalBranch.name | titlecase}}</mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="module">
+                    <mat-header-cell *matHeaderCellDef>Product</mat-header-cell>
+                    <mat-cell *matCellDef="let row">{{row.module?.moduleName | titlecase}}</mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="state">
                     <mat-header-cell *matHeaderCellDef>State</mat-header-cell>
                     <mat-cell *matCellDef="let lead">{{lead.state.name | titlecase}}</mat-cell>

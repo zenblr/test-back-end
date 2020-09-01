@@ -98,7 +98,7 @@ export class MenuConfig {
 									permission: !this.permissionsArr.includes('leadManagmentView'),
 								},
 								{
-									title: "New Requests",
+									title: "Appraiser Requests",
 									page: "/admin/lead-management/new-requests",
 									permission: false,
 								},
