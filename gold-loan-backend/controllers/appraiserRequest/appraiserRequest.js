@@ -47,7 +47,7 @@ exports.getAllNewRequest = async (req, res, next) => {
                 "$customer.last_name$": { [Op.iLike]: search + '%' },
                 "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
                 "$customer.mobile_number$": { [Op.iLike]: search + '%' },
-                "$product.name$": { [Op.iLike]: search + '%' }
+                "$module.module_name$": { [Op.iLike]: search + '%' }
             },
         }]
     };
@@ -58,7 +58,14 @@ exports.getAllNewRequest = async (req, res, next) => {
             required: false,
             as: 'customer',
             where: { isActive: true },
-            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'kycStatus', 'internalBranchId']
+            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'kycStatus', 'internalBranchId'],
+            include: [
+                {
+                    model: models.customerKyc,
+                    as: 'customerKyc',
+                    attributes: ['id', 'isKycSubmitted']
+                }
+            ]
         },
         {
             model: models.module,
@@ -67,7 +74,7 @@ exports.getAllNewRequest = async (req, res, next) => {
         {
             model: models.user,
             as: 'appraiser'
-        }
+        },
     ]
     console.log(req.userData)
     if (req.userData.userTypeId == 7) {
