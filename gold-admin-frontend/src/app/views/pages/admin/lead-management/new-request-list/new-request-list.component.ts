@@ -20,7 +20,7 @@ import { NewRequestService } from '../../../../../core/lead-management/services/
 export class NewRequestListComponent implements OnInit {
 
   dataSource: NewRequestDatasource;
-  displayedColumns = ['customerId', 'fullName', 'mobileNumber', 'product', 'status', 'update', 'appraiser', 'apply'];
+  displayedColumns = ['customerId', 'fullName', 'product', 'apprasierName', 'appointmentDate', 'appointmentTime', 'status', 'update', 'appraiser', 'apply'];
   results = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   queryParamsData = {

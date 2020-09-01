@@ -17,9 +17,32 @@
                     <mat-cell *matCellDef="let row">{{row.customer?.customerUniqueId | uppercase}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="mobileNumber">
-                    <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
-                    <mat-cell *matCellDef="let row">{{row.customer?.mobileNumber}}</mat-cell>
+                <ng-container matColumnDef="module">
+                    <mat-header-cell *matHeaderCellDef>Product</mat-header-cell>
+                    <mat-cell *matCellDef="let row">{{row.module?.moduleName | uppercase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="apprasierName">
+                    <mat-header-cell *matHeaderCellDef>Appraiser Name</mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        {{row.appraiser?.firstName | titlecase}}
+                        {{row.appraiser?.lastName | titlecase}}
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="appointmentTime">
+                    <mat-header-cell *matHeaderCellDef>Appointment Time</mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        <span *ngIf="row.startTime">
+                            {{row.startTime | time24to12}} -
+                            {{ row.endTime | time24to12 }}</span>
+                        <span *ngIf="!row.startTime">-</span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="appointmentDate">
+                    <mat-header-cell *matHeaderCellDef>Appointment Date</mat-header-cell>
+                    <mat-cell *matCellDef="let row">{{row.appoinmentDate | date: 'mediumDate'}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="product">
@@ -85,7 +108,7 @@
                             </ng-container>
                         </ng-container>
 
-                        <div *ngIf="row.customer.kycStatus === 'approved'">
+                        <div *ngIf="row.customer.kycStatus === 'approved' && row.isAssigned">
 
                             <button mat-button [matMenuTriggerFor]="menu">
                                 <mat-icon>more_vert</mat-icon>
