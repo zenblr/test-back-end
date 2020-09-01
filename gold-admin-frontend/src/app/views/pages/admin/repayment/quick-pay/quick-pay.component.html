@@ -127,7 +127,7 @@
                     <thead>
                         <th class="transparent th-style th-padding-style">Loan ID</th>
                         <th class="transparent th-style">Loan Payment Date</th>
-                        <th class="transparent th-style">Loan Amount</th>
+                        <!-- <th class="transparent th-style">Loan Amount</th> -->
                         <th class="transparent th-style">Total Payment Amount</th>
                         <th class="transparent th-style">Select Payment option</th>
                     </thead>
@@ -138,10 +138,10 @@
                                 {{paymentDetails?.customerLoan[1]?.loanUniqueId}}
                             </td>
                             <td class="">{{currentDate | date:'mediumDate'}}</td>
-                            <td class="">
+                            <!-- <td class="">
                                 {{paymentDetails?.customerLoan[0]?.outstandingAmount}} <br>
                                 {{paymentDetails?.customerLoan[1]?.outstandingAmount}}
-                            </td>
+                            </td> -->
                             <td class="font-weight-500" style="font-size: 14px;">{{payableAmt.value}}</td>
                             <td class="">
                                 <button *ngIf="!paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">Select
