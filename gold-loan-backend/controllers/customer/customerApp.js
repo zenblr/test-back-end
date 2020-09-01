@@ -1,14 +1,15 @@
 const models = require('../../models'); // importing models.
 const Sequelize = models.Sequelize;
-const sequelize=models.sequelize;
+const sequelize = models.sequelize;
 const Op = Sequelize.Op;
+const { getSingleLoanDetail } = require('../../utils/loanFunction')
 exports.readBanner = async (req, res, next) => {
     console.log("banner")
     let banner = await models.banner.readBanner()
     if (!banner) {
         res.status(404).json({ message: 'Data not found' });
     } else {
-        res.status(200).json(banner[0]);
+        res.status(200).json({ data: banner[0] });
     }
 };
 
@@ -18,7 +19,7 @@ exports.readOffer = async (req, res, next) => {
     if (!offer[0]) {
         res.status(400).json({ message: 'Data not found' });
     } else {
-        res.status(200).json(offer[0]);
+        res.status(200).json({ data: offer[0] });
     }
 };
 
@@ -28,7 +29,7 @@ exports.readLenderBanner = async (req, res, next) => {
     if (!lenderBanner[0]) {
         res.status(404).json({ message: 'Data not found' });
     } else {
-        res.status(200).json(lenderBanner[0]);
+        res.status(200).json({ data: lenderBanner[0] });
     }
 };
 
@@ -38,77 +39,77 @@ exports.readGoldRate = async (req, res, next) => {
         res.status(404).json({ message: 'Data not found' });
     }
     else {
-        res.status(200).json(readGoldRate);
+        res.status(200).json({ data: readGoldRate });
     }
 }
 
 exports.readPersonalDetailsOfCustomer = async (req, res, next) => {
     let customerId = req.userData.id;
     // console.log(customerId);
-    let readPersonalDetailsOfCustomer = await models.customer.findOne( { attributes: ['firstName', 'lastName', 'email', 'panCardNumber', 'mobileNumber'], where: { id:customerId  } });
+    let readPersonalDetailsOfCustomer = await models.customer.findOne({ attributes: ['firstName', 'lastName', 'email', 'panCardNumber', 'mobileNumber'], where: { id: customerId } });
     // console.log(readPersonalDetailsOfCustomer)
     if (!readPersonalDetailsOfCustomer) {
         res.status(404).json({ message: 'Data not found' })
     }
     else {
-        res.status(200).json(readPersonalDetailsOfCustomer);
+        res.status(200).json({ data: readPersonalDetailsOfCustomer });
     }
 
 }
 
 exports.readBankDetailsOfCustomer = async (req, res, next) => {
     let customerId = req.userData.id;
-    let readBankDetailsOfCustomer = await models.customerKycBankDetail.findOne({ attributes: ['bankName', 'bankBranchName', 'accountHolderName', 'accountNumber', 'ifscCode'] ,  where: { customerId: customerId } });
-// console.log(readBankDetailsOfCustomer)
+    let readBankDetailsOfCustomer = await models.customerKycBankDetail.findOne({ attributes: ['bankName', 'bankBranchName', 'accountHolderName', 'accountNumber', 'ifscCode'], where: { customerId: customerId } });
+    // console.log(readBankDetailsOfCustomer)
     if (!readBankDetailsOfCustomer) {
         res.status(404).json({ message: 'Data not found' })
     }
     else {
-        res.status(200).json(readBankDetailsOfCustomer);
+        res.status(200).json({ data: readBankDetailsOfCustomer });
     }
 
 }
 
 exports.readNomineeDetailsOfCustomer = async (req, res, next) => {
     let customerId = req.userData.id;
-    let readNomineeDetailsOfCustomer = await models.customerLoanNomineeDetail.findAll({ where:{customerId:customerId} });
+    let readNomineeDetailsOfCustomer = await models.customerLoanNomineeDetail.findAll({ where: { customerId: customerId } });
     if (!readNomineeDetailsOfCustomer) {
         res.status(404).json({ message: 'Data not found' })
     }
     else {
-        res.status(200).json(readNomineeDetailsOfCustomer);
+        res.status(200).json({ data: readNomineeDetailsOfCustomer });
     }
 }
 exports.readAddressDetailsOfCustomer = async (req, res, next) => {
     let customerId = req.userData.id;
-    let readAddressDetailsOfCustomer = await models.customerKycAddressDetail.findAll({ attributes: ['addressType','address', 'stateId', 'cityId', 'pinCode'] ,  where: { customerId: customerId }} );
+    let readAddressDetailsOfCustomer = await models.customerKycAddressDetail.findAll({ attributes: ['addressType', 'address', 'stateId', 'cityId', 'pinCode'], where: { customerId: customerId } });
     if (!readAddressDetailsOfCustomer) {
         res.status(404).json({ message: 'Data not found' })
     }
     else {
-        res.status(200).json(readAddressDetailsOfCustomer);
+        res.status(200).json({ data: readAddressDetailsOfCustomer });
     }
 }
 
 exports.readPanCardImageOfCustomer = async (req, res, next) => {
     let customerId = req.userData.id;
-    let readPanCardImageOfCustomer = await models.customerKycPersonalDetail.findOne({ attributes: ['identityProof'] ,  where: { customerId: customerId } });
+    let readPanCardImageOfCustomer = await models.customerKycPersonalDetail.findOne({ attributes: ['identityProof'], where: { customerId: customerId } });
     if (!readPanCardImageOfCustomer) {
         res.status(404).json({ message: 'Data not found' });
     }
     else {
-        res.status(200).json(readPanCardImageOfCustomer);
+        res.status(200).json({ data: readPanCardImageOfCustomer });
     }
 }
 
 exports.readAddressImageOfCustomer = async (req, res, next) => {
     let customerId = req.userData.id;
-    let readAddressImageOfCustomer = await models.customerKycAddressDetail.findOne({ attributes: ['addressProof'] ,  where: { customerId: customerId } });
+    let readAddressImageOfCustomer = await models.customerKycAddressDetail.findOne({ attributes: ['addressProof'], where: { customerId: customerId } });
     if (!readAddressImageOfCustomer) {
         res.status(404).json({ message: 'Data not found' });
     }
     else {
-        res.status(200).json(readAddressImageOfCustomer);
+        res.status(200).json({ data: readAddressImageOfCustomer });
     }
 }
 
@@ -134,18 +135,38 @@ exports.readPartnerBranch = async (req, res, next) => {
         res.status(404).json({ message: 'Data not found' })
     }
     else {
-        res.status(200).json(readPartner);
+        res.status(200).json({ data: readPartner });
     }
 }
 exports.readMyLoan = async (req, res, next) => {
     let customerId = req.userData.id;
-    let readMyLoan = await models.customerFinalLoan.findOne({ attributes: ['loanId', 'interestRate', 'tenure', 'loanStartDate', 'loanEndDate', 'finalLoanAmount'] ,  where: { customerId: customerId } });
-    if (!readMyLoan) {
-        res.status(404).json({ message: 'Data not found' })
-    }
-    else {
-        res.status(200).json(readMyLoan);
-    }
+    let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
+    let loanDetails = await models.customerLoanMaster.findAll({
+        where: { isActive: true, customerId: customerId, loanStageId: stageId.id },
+        order: [
+            [models.customerLoan, 'id', 'asc'],
+            [models.customerLoan, models.customerLoanInterest, 'id', 'asc']
+        ],
+        include: [
+            {
+                model: models.customerLoan,
+                as: "customerLoan",
+                include: [
+                    {
+                        model: models.scheme,
+                        as: 'scheme'
+                    },
+                    {
+                        model: models.customerLoanInterest,
+                        as: 'customerLoanInterest',
+                        where: { emiStatus: { [Op.notIn]: ['paid'] } },//isExtraDaysInterest: false
+                    },
+
+                ]
+            }
+        ]
+    });
+    return res.status(200).json({ data: loanDetails })
 }
 
 exports.readAllScheme = async (req, res, next) => {
@@ -154,22 +175,16 @@ exports.readAllScheme = async (req, res, next) => {
         res.status(404).json({ message: 'Data not found' })
     }
     else {
-        res.status(200).json(getAllScheme)
+        res.status(200).json({ data: getAllScheme })
     }
 }
 
 exports.readLoanDetails = async (req, res, next) => {
-    let customerId = req.userData.id;
-    let loanDetails = await models.customerFinalLoan.findOne({
-        attributes: ['loanId', 'finalLoanAmount', 'interestRate',
-            'tenure', 'loanStartDate', 'loanEndDate']
-    , where: { isActive: true, customerId: customerId } });
-    if (!loanDetails) {
-        res.status(404).json({ message: 'Data not found' })
-    }
-    else {
-        res.status(200).json(loanDetails)
-    }
+    let { customerLoanId, masterLoanId } = req.query
+
+    let customerLoan = await getSingleLoanDetail(customerLoanId, masterLoanId)
+
+    return res.status(200).json({ message: 'success', data: customerLoan })
 }
 
 exports.schemeBasedOnPriceRange = async (req, res, next) => {
@@ -194,17 +209,17 @@ exports.schemeBasedOnPriceRange = async (req, res, next) => {
         return res.status(404).json({ message: 'Data not found' })
     }
     else {
-        return res.status(200).json(schemeBasedOnPriceRange);
+        return res.status(200).json({ data: schemeBasedOnPriceRange });
     }
 }
 
 exports.readFeedBack = async (req, res) => {
-    let readCustomerFeedBack = await models.feedBack.findAll({ attributes: ['customerName', 'feedBack', 'rating', 'profileImage']  , where: { isActive: true } });
+    let readCustomerFeedBack = await models.feedBack.findAll({ attributes: ['customerName', 'feedBack', 'rating', 'profileImage'], where: { isActive: true } });
 
     if (!readCustomerFeedBack[0]) {
         return res.status(404).json({ message: 'data not found' });
     }
-    return res.status(200).json(readCustomerFeedBack);
+    return res.status(200).json({ data: readCustomerFeedBack });
 }
 
 exports.addFeedBack = async (req, res) => {

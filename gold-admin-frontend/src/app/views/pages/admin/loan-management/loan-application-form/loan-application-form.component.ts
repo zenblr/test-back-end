@@ -37,6 +37,7 @@ export class LoanApplicationFormComponent implements OnInit {
   loanStage: any;
   ornamentDetails: any;
   loanTransferdata: any;
+  disbursed: boolean = false;
 
   constructor(
     public ref: ChangeDetectorRef,
@@ -74,7 +75,9 @@ export class LoanApplicationFormComponent implements OnInit {
       this.loanStage = this.customerDetail.masterLoan.loanStage
       this.ornamentDetails = res.data.ornamentType
       console.log(this.loanStage)
-
+      if(this.loanStage.id == 5){
+        this.disbursed = true
+      }
       // this.totalAmount = res.data.totalEligibleAmt
       if (this.url == "packet-image-upload") {
         if (this.customerDetail.loanPacketDetails.length) {
@@ -145,6 +148,10 @@ export class LoanApplicationFormComponent implements OnInit {
   stage(event) {
     if (event)
       this.loanStage = event
+  }
+
+  partPayment(event) {
+    this.loanTransferdata = event
   }
 
   loanTransfer(event){

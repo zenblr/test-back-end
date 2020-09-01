@@ -31,6 +31,7 @@ export class RazorpayPaymentService {
     theme: {
       color: '#454d67'
     },
+    paymentMode: ''
   };
 
   constructor(

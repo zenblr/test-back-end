@@ -5,7 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
 import { PdfViewerComponent } from '../pdf-viewer/pdf-viewer.component';
-
+import { SharedService } from '../../../../core/shared/services/shared.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 @Component({
   selector: 'kt-loan-scrap-details',
   templateUrl: './loan-scrap-details.component.html',
@@ -20,13 +22,25 @@ export class LoanScrapDetailsComponent implements OnInit {
     loanAgreementCopyImage: false, pawnCopyImage: false, schemeConfirmationCopyImage: false,
     purchaseVoucherImage: false, purchaseInvoiceImage: false, saleInvoiceImage: false
   }
+  masterLoanId: any;
+  masterAndLoanIds: { loanId: any; masterLoanId: any; };
+  destroy$ = new Subject();
 
   constructor(
     private loanservice: LoanApplicationFormService,
     private scrapCustomerManagementService: ScrapCustomerManagementService,
     private route: ActivatedRoute,
-    public dialog: MatDialog
-  ) { }
+    public dialog: MatDialog,
+    private sharedService:SharedService
+  ) { 
+    this.sharedService.exportExcel$
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((res) => {
+      if (res) {
+        this.soaDownload();
+      }
+    });
+  }
 
   ngOnInit() {
     if (this.route.snapshot.params.scrapId) {
@@ -36,11 +50,16 @@ export class LoanScrapDetailsComponent implements OnInit {
     }
   }
 
+  ngDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
   getLoanDetails() {
     this.loanId = this.route.snapshot.params.loanId
-    let masterLoanId = this.route.snapshot.params.masterLoanId
-    this.loanservice.getLoanDetails(this.loanId, masterLoanId).subscribe(res => {
-      this.details = res.data
+    this.masterLoanId = this.route.snapshot.params.masterLoanId
+    this.loanservice.getLoanDetails(this.masterLoanId).subscribe(res => {
+      this.details = res.data;
+      this.masterAndLoanIds = { loanId: res.data.customerLoanDisbursement[0].loanId, masterLoanId: res.data.customerLoanDisbursement[0].masterLoanId }
       this.createOrnamentsImage()
       this.pdfCheck()
       console.log(this.images)
@@ -217,6 +236,12 @@ export class LoanScrapDetailsComponent implements OnInit {
         width: "auto"
       })
     }
+  }
+
+  soaDownload(){
+    this.masterLoanId = this.route.snapshot.params.masterLoanId
+    this.sharedService.soaDownload(this.masterLoanId).subscribe();
+    this.sharedService.exportExcel.next(false);
   }
 
 }

@@ -19,6 +19,9 @@ export class DisburseComponent implements OnInit {
   @Input() scrapIds
   @Input() disbursementDetails;
   @Input() showButton;
+  @Input() loanDetials;
+  @Input() disable = false;
+  @Input() disbursed = false;
   currentDate = new Date()
   disburseForm: FormGroup
   details: any;
@@ -49,12 +52,34 @@ export class DisburseComponent implements OnInit {
       this.disburseForm.patchValue(this.masterAndLoanIds)
       this.getBankDetails()
     }
+    if (changes.disbursed && changes.disbursed.currentValue) {
+      if (changes.loanDetials && changes.loanDetials.currentValue) {
+        this.disburseForm.patchValue({
+          securedTransactionId: changes.loanDetials.currentValue.customerLoanDisbursement[0].transactionId,
+        })
+        if (changes.loanDetials.currentValue.customerLoanDisbursement.length > 1) {
+          console.log(changes.loanDetials.currentValue.customerLoanDisbursement)
+          this.disburseForm.patchValue({
+            unsecuredTransactionId: changes.loanDetials.currentValue.customerLoanDisbursement[1].transactionId
+          })
+        }
+
+        // if (this.disable) {
+        //   this.disburseForm.disable()
+        // }
+      }
+      if (this.disable) {
+        this.disburseForm.disable()
+      }
+    }
+
+
     if (changes.scrapIds && changes.scrapIds.currentValue) {
       this.disburseForm.patchValue(this.scrapIds)
       this.getScrapBankDetails()
       this.validation()
     }
-    if (changes.disbursementDetails.currentValue && changes.disbursementDetails.currentValue.scrapDisbursement) {
+    if (changes.disbursementDetails && changes.disbursementDetails.currentValue && changes.disbursementDetails.currentValue.scrapDisbursement) {
       this.disburseForm.patchValue(changes.disbursementDetails.currentValue.scrapDisbursement);
       this.disburseForm.disable()
     }
@@ -91,9 +116,9 @@ export class DisburseComponent implements OnInit {
       fullSecuredAmount: [],
       fullUnsecuredAmount: [],
       processingCharge: [],
-      isUnsecuredSchemeApplied:[],
-      securedLoanUniqueId:[],
-      unsecuredLoanUniqueId:[]
+      isUnsecuredSchemeApplied: [],
+      securedLoanUniqueId: [],
+      unsecuredLoanUniqueId: []
     })
     this.disableSchemeRelatedField()
   }
@@ -114,6 +139,9 @@ export class DisburseComponent implements OnInit {
     this.controls.unsecuredLoanAmount.disable()
     this.controls.unsecuredSchemeName.disable()
     this.controls.securedLoanAmount.disable()
+    this.controls.processingCharge.disable()
+    this.controls.fullUnsecuredAmount.disable()
+    this.controls.disbursementStatus.disable()
   }
 
   enableSchemeRelatedField() {
@@ -121,6 +149,9 @@ export class DisburseComponent implements OnInit {
     this.controls.unsecuredLoanAmount.enable()
     this.controls.unsecuredSchemeName.enable()
     this.controls.securedLoanAmount.enable()
+    this.controls.processingCharge.enable()
+    this.controls.fullUnsecuredAmount.enable()
+    this.controls.disbursementStatus.enable()
   }
 
   getBankDetails() {

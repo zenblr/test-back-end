@@ -15,6 +15,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATEONLY,
             field: 'emi_due_date'
         },
+        emiStartDate: {
+            type: DataTypes.DATEONLY,
+            field: 'emi_start_date'
+        },
+        emiEndDate: {
+            type: DataTypes.DATEONLY,
+            field: 'emi_end_date'
+        },
         interestRate:{
             type: DataTypes.FLOAT,
             field: 'interest_rate',
@@ -34,6 +42,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'interest_accrual',
             defaultValue: 0
         },
+        totalInterestAccrual:{
+            type: DataTypes.DECIMAL(10,2),
+            field: 'total_interest_accrual',
+            defaultValue: 0
+        },
         outstandingInterest:{
             type: DataTypes.DECIMAL(10,2),
             field: 'outstanding_interest',
@@ -48,9 +61,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'penal_interest',
             defaultValue: 0
         },
-        PenalAccrual:{
+        penalAccrual:{
             type: DataTypes.DECIMAL(10,2),
-            field: 'Penal_accrual',
+            field: 'penal_accrual',
             defaultValue: 0
         },
         penalOutstanding:{
@@ -68,6 +81,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'emi_status',
             values: ['pending', 'paid','overdue','partially paid'],
             defaultValue: 'pending'
+        },
+        isExtraDaysInterest: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_extra_days_interest',
+            defaultValue: false
         },
         createdBy: {
             type: DataTypes.INTEGER,

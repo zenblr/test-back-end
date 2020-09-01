@@ -2,6 +2,8 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable, BehaviorSubject, of } from "rxjs";
 import { API_ENDPOINT } from '../../../app.constant';
+import { map, tap } from 'rxjs/operators';
+import { ExcelService } from '../../_base/crud/services/excel.service';
 
 @Injectable({
 	providedIn: "root",
@@ -19,6 +21,9 @@ export class SharedService {
 
 	clearFilter = new BehaviorSubject<any>({});
 	clearFilter$ = this.clearFilter.asObservable();
+
+	exportExcel = new BehaviorSubject<any>(false);
+	exportExcel$ = this.exportExcel.asObservable();
 
 	appraiserOrCCE = [
 		{ value: 'pending', name: 'pending' },
@@ -41,7 +46,9 @@ export class SharedService {
 		{ value: 'rejected', name: 'rejected' },
 	];
 
-	constructor(private http: HttpClient) { }
+	constructor(
+		private http: HttpClient,
+		private excelService:ExcelService) { }
 
 	getStatus() {
 		return of({ apprsiserOrCCE: this.appraiserOrCCE, appraiserOrCCEScrap: this.appraiserOrCCEScrap, bm: this.branchManagerScrap, bml: this.branchManagerLoan })
@@ -75,6 +82,9 @@ export class SharedService {
 		}
 		if (data && data.partReleaseId) {
 			reqParams.partReleaseId = data.partReleaseId;
+		}
+		if (data && data.fullReleaseId) {
+			reqParams.fullReleaseId = data.fullReleaseId;
 		}
 		var fd = new FormData();
 		fd.append("avatar", files);
@@ -150,5 +160,23 @@ export class SharedService {
 		if (details) {
 			return of(details);
 		}
+	}
+
+	soaDownload(masterLoanId): Observable<any> {
+		let endDate =""
+		let startDate =""
+		return this.http.post(`api/loan-soa`, { masterLoanId ,startDate,endDate},{ responseType: "arraybuffer" }).pipe(
+			map((res) => {
+				return res;
+			}),
+			tap(
+				(data) => {
+					this.excelService.saveAsExcelFile(
+						data,
+						"S.O.A_" + Date.now());
+				},
+				(error) => console.log(error)
+			)
+		);
 	}
 }

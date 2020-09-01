@@ -47,6 +47,12 @@ export class PageConfig {
 			"global-settings": {
 				page: { title: "Global Settings", desc: "" },
 			},
+			roles: {
+				page: { title: "Roles", desc: "" },
+				id: {
+					page: { title: "Permissions", desc: "" },
+				}
+			},
 			"loan-setting": {
 				scheme: {
 					page: { title: "Schemes", desc: "" },
@@ -120,12 +126,12 @@ export class PageConfig {
 				store: {
 					page: { title: "Store", desc: "" },
 				},
-				roles: {
-					page: { title: "Roles", desc: "" },
-					id: {
-						page: { title: "Permissions", desc: "" },
-					}
-				}
+				// roles: {
+				// 	page: { title: "Roles", desc: "" },
+				// 	id: {
+				// 		page: { title: "Permissions", desc: "" },
+				// 	}
+				// }
 			},
 			"lead-management": {
 				page: { title: "All Leads", desc: "" },
@@ -165,8 +171,15 @@ export class PageConfig {
 				},
 				"upload-document": {
 					page: { title: "Upload Document", desc: "" },
-					id: {
-						page: { title: "Upload Document", desc: "" },
+					"partRelease": {
+						id: {
+							page: { title: "Upload Document", desc: "" },
+						}
+					},
+					"fullRelease": {
+						id: {
+							page: { title: "Upload Document", desc: "" },
+						}
 					}
 				},
 			},
@@ -187,7 +200,9 @@ export class PageConfig {
 					}
 				},
 				'interest-emi': {
-					page: { title: "Pay Interest EMI", desc: "" },
+					id: {
+						page: { title: "Quick Pay ", desc: "" },
+					}
 				},
 				"part-payment": {
 					id: {
@@ -316,7 +331,7 @@ export class PageConfig {
 					page: { title: "Packet Tracking", desc: "" },
 				},
 				"all-loan": {
-					page: { title: "All Loans", desc: "" },
+					page: { title: "Loan Details", desc: "" },
 				},
 				"applied-loan": {
 					page: { title: "Applied Loan", desc: "" },
@@ -337,7 +352,12 @@ export class PageConfig {
 					id: {
 						page: { title: "Loan Transfer", desc: "" },
 					}
-				}
+				},
+				"view-location": {
+					id: {
+						page: { title: "View Location", desc: "" },
+					}
+				},
 			},
 			"scrap-management": {
 				"scrap-buying-calculator": {
@@ -425,6 +445,7 @@ export class PageConfig {
 				page: { title: "Customer Address", desc: "" },
 			},
 			"order-received": {
+				page: { title: "Order Received", desc: "" },
 				id: {
 					page: { title: "Order Received", desc: "" },
 				}

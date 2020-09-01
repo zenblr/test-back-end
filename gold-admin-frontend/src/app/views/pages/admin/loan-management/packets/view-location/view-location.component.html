@@ -9,8 +9,8 @@
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
                 <mat-form-field class="mat-form-field-fluid" *ngIf="selected == 1">
-                    <input (dateChange)="getMapReport()" matInput [matDatepicker]="picker" placeholder="Select Date"
-                        formControlName="dateForLocation" (click)="picker.open()" readonly />
+                    <input matInput [matDatepicker]="picker" placeholder="Select Date" formControlName="dateForLocation"
+                        (click)="picker.open()" readonly />
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
@@ -19,47 +19,45 @@
 
         <mat-tab-group [(selectedIndex)]="selected">
             <mat-tab label="Map">
-                
-                <agm-map [latitude]='latitude' [longitude]='longitude' [zoom]="15" [fitBounds]="true" >
-                 <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.lat" [longitude]="m.lng" 
-                    [markerDraggable]="m.draggable" (markerClick)="clickedMarker(m.lat, m.lng, i)" [agmFitBounds]="true">
-                    <agm-info-window [isOpen]="m.isVisible">
-                        <!-- <span *ngIf="!infoToggle[i]">
-                            <strong>{{m.userName}}</strong>&nbsp; | &nbsp;
-                            <strong *ngIf="m.checkOutTime == ''">{{m.checkInTime | customDate:'0':'hh:mm a'}}</strong>
-                            <strong *ngIf="m.checkOutTime != ''">
-                                {{m.checkOutTime | customDate:'0':'hh:mm a'}}</strong>
-                        </span>
-                        <div class="font">
-                            <span *ngIf="infoToggle[i]" style="z-index: 999">
-                                <strong>{{m.userName}}</strong><br>
-                                <span><small>Date:
-                                        {{m.checkInTime | customDate:'0':'dd-MMM-yyyy'}}
-                                    </small>
-                                </span><br>
-                                <span>
-                                    <small>Punched
-                                        In:
-                                        {{m.checkInTime | date:'shortTime'}}</small>
-                                </span><br>
-                                <span [ngStyle]="{'display': (m.checkOutTime != '') ? 'block' : 'none'}">
-                                    <small>Punched out:
-                                        {{m.checkOutTime | date:'shortTime'}}</small>
-                                </span>
-                                <span [ngStyle]="{'display': (m.checkOutTime == '')? 'block' : 'none'}">
-                                    <small>Punched out: NA</small>
-                                </span><br>
-                                <small *ngIf="address">Last Location:</small><br>
-                                <small class="w-25 text-wrap">{{address}}</small>
+                <agm-map [latitude]='latitude' [longitude]='longitude' [zoom]="15" [fitBounds]="true">
+                    <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.lat" [longitude]="m.lng"
+                        [markerDraggable]="m.draggable" (markerClick)="clickedMarker(m.lat, m.lng, i)"
+                        [agmFitBounds]="true">
+                        <agm-info-window [isOpen]="m.isVisible">
+                            <span *ngIf="!infoToggle[i]">
+                                <strong *ngIf="m.trackingTime">{{m.trackingTime | time24to12}}</strong>
                             </span>
-    
-                        </div> -->
-                    </agm-info-window>
-                </agm-marker>
+                            <div class="font">
+                                <span *ngIf="infoToggle[i]" style="z-index: 999">
+                                    <span><small>Time:
+                                            {{m.trackingTime | time24to12}}
+                                        </small>
+                                    </span>
+                                    <br>
+                                    <span>
+                                        <small>
+                                            Packets:
+                                            <span *ngFor="let item of m.masterLoan.packet; last as l;">
+                                                <ng-container>{{ item.packetUniqueId | uppercase }}
+                                                    <span *ngIf="!l"> ,&nbsp;</span>
+                                                </ng-container>
+                                            </span>
+                                        </small>
+                                    </span>
+                                    <br>
+
+                                    <small *ngIf="address">Last Location:</small><br>
+                                    <small class="w-25 text-wrap">{{m.address}}</small>
+                                </span>
+
+                            </div>
+                        </agm-info-window>
+                    </agm-marker>
                 </agm-map>
             </mat-tab>
             <mat-tab label="Location">
-                <kt-location></kt-location>
+                <kt-location [masterLoanId]="masterLoanId" [date]="mapReport.controls.dateForLocation.value">
+                </kt-location>
             </mat-tab>
         </mat-tab-group>
     </kt-portlet-body>

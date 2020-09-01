@@ -220,7 +220,7 @@ export class OrderDetailsEditComponent implements OnInit {
 			this.orderForm.markAllAsTouched();
 			return;
 		}
-		console.log(this.orderForm.value);
+		// console.log(this.orderForm.value);
 		if (this.orderId) {
 			const orderData = {
 				logisticPartnerId: this.controls.logisticPartnerId.value,
@@ -229,7 +229,7 @@ export class OrderDetailsEditComponent implements OnInit {
 				uploadedAwbBox: this.controls.uploadedAwbBox.value,
 				uploadedAwbFile: this.controls.uploadedAwbFile.value,
 			};
-			console.log(orderData);
+			// console.log(orderData);
 			this.orderDetailsService
 				.editOrderStatus(orderData, this.orderId)
 				.pipe(

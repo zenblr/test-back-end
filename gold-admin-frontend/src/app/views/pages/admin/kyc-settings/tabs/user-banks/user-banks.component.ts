@@ -24,7 +24,7 @@ export class UserBanksComponent implements OnInit {
   constructor(private fb: FormBuilder, private sharedService: SharedService,
     private userBankService: UserBankService, private userDetailsService: UserDetailsService,
     private ref: ChangeDetectorRef, private toastr: ToastrService) {
-    console.log(this.customerDetails);
+    
   }
 
   ngOnInit() {
@@ -52,7 +52,7 @@ export class UserBanksComponent implements OnInit {
       var name = event.target.files[0].name
       var ext = name.split('.')
       if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
-        console.log(this.file);
+       
         this.sharedService.uploadFile(this.file).pipe(
           map(res => {
             this.passBookImage.push(res.uploadFile.URL);
@@ -60,7 +60,7 @@ export class UserBanksComponent implements OnInit {
 
             this.bankForm.get('passbookProofImage').patchValue(event.target.files[0].name);
             this.ref.detectChanges();
-            console.log(this.bankForm.value);
+           
           }), catchError(err => {
             this.toastr.error(err.error.message);
             throw err
@@ -78,7 +78,7 @@ export class UserBanksComponent implements OnInit {
   }
 
   submit() {
-    console.log(this.bankForm.value);
+   
 
     if (this.bankForm.invalid) {
       this.bankForm.markAllAsTouched()
@@ -87,19 +87,18 @@ export class UserBanksComponent implements OnInit {
 
 
     this.bankForm.patchValue({ passbookProof: this.passBookImage });
-    console.log(this.bankForm.value)
-
+   
     const basicForm = this.bankForm.value;
     this.userBankService.bankDetails(basicForm).pipe(
       map(res => {
-        console.log(res);
+       
         if (res) {
           this.next.emit(true);
         }
       }),
       finalize(() => {
         // this.bankForm.get('passbookProof').patchValue(this.file.name);
-        console.log(this.bankForm.value)
+        
       })
     ).subscribe();
 
@@ -107,7 +106,7 @@ export class UserBanksComponent implements OnInit {
 
   removeImages(index) {
     this.passBookImage.splice(index, 1);
-    console.log(this.passBookImage)
+  
     this.bankForm.get('passbookProof').patchValue('');
     this.bankForm.get('passbookProofImage').patchValue('');
   }

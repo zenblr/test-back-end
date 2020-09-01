@@ -48,7 +48,32 @@
                             </div>
                         </div>
 
-                        <div class="row kt-padding-t-15">
+
+                        <div *ngIf="data.isReleaser" class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label class="mandatory kt-padding-l-10">Select User Type</label>
+                            </div>
+
+                            <div class="col-8">
+                                <select class="form-control" name="" id="" formControlName="userType"
+                                    (change)="selectUsertype($event.target.value)"
+                                    [class.isError]="controls.userType.touched && controls.userType.invalid">
+                                    <option [selected]="true" [disabled]="true" value=null>Select User Type</option>
+                                    <option value="appraiser"> Appraiser </option>
+                                    <option value="releaser"> Releaser </option>
+                                    <!-- <option *ngFor="let appraiser of appraisers" [value]="appraiser.id">
+                                        {{appraiser.firstName | titlecase}}&nbsp;{{appraiser.lastName | titlecase}}
+                                    </option> -->
+                                </select>
+
+                                <mat-error *ngIf="controls.userType.touched && controls.userType.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+
+                        <div *ngIf="controls.userType.value === 'appraiser' || !data.isReleaser"
+                            class="row kt-padding-t-15">
                             <div class="col-4 form-label">
                                 <label class="mandatory kt-padding-l-10">Appraiser Name</label>
                             </div>
@@ -56,7 +81,7 @@
                             <div class="col-8">
                                 <select class="form-control" name="" id="" formControlName="appraiserId"
                                     [class.isError]="controls.appraiserId.touched && controls.appraiserId.invalid">
-                                    <option [selected]="true" [disabled]="true" value="">Select Appraiser</option>
+                                    <option [selected]="true" [disabled]="true" value=null>Select Appraiser</option>
                                     <option *ngFor="let appraiser of appraisers" [value]="appraiser.id">
                                         {{appraiser.firstName | titlecase}}&nbsp;{{appraiser.lastName | titlecase}}
                                     </option>
@@ -64,6 +89,27 @@
 
                                 <mat-error
                                     *ngIf="controls.appraiserId.touched && controls.appraiserId.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+
+                        <div *ngIf="controls.userType.value === 'releaser' && data.isReleaser"
+                            class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <label *ngIf="data.isReleaser" class="mandatory kt-padding-l-10">Releaser Name</label>
+                            </div>
+
+                            <div *ngIf="data.isReleaser" class="col-8">
+                                <select class="form-control" name="" id="" formControlName="releaserId"
+                                    [class.isError]="controls.releaserId.touched && controls.releaserId.invalid">
+                                    <option [selected]="true" [disabled]="true" value=null>Select Releaser</option>
+                                    <option *ngFor="let appraiser of releasers" [value]="appraiser.id">
+                                        {{appraiser.firstName | titlecase}}&nbsp;{{appraiser.lastName | titlecase}}
+                                    </option>
+                                </select>
+
+                                <mat-error *ngIf="controls.releaserId.touched && controls.releaserId.errors?.required">
                                     Required field
                                 </mat-error>
                             </div>

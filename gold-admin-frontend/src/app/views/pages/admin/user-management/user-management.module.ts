@@ -70,14 +70,14 @@ const routes: Routes = [
 		path: 'partner/view-schemes/:id',
 		component: LoanSchemeComponent,
 	},
-	{
-		path: 'roles',
-		component: RolesListComponent
-	},
-	{
-		path: 'roles/:id',
-		component: PermissionsComponent
-	},
+	// {
+	// 	path: 'roles',
+	// 	component: RolesListComponent
+	// },
+	// {
+	// 	path: 'roles/:id',
+	// 	component: PermissionsComponent
+	// },
 	{
 		path: 'internal-user',
 		component: InternalUserListComponent,
@@ -154,7 +154,7 @@ const routes: Routes = [
 	],
 	entryComponents: [
 		ActionNotificationComponent,
-		RoleAddDialogComponent,
+		// RoleAddDialogComponent,
 		BranchAddComponent,
 		PartnerAddComponent,
 		AddBrokerComponent,
@@ -168,13 +168,13 @@ const routes: Routes = [
 		AddPartnerBranchUserComponent
 	],
 	declarations: [
-		RolesListComponent,
-		RoleAddDialogComponent,
+		// RolesListComponent,
+		// RoleAddDialogComponent,
 		PartnerListComponent,
 		BranchListComponent,
 		BranchAddComponent,
 		PartnerAddComponent,
-		PermissionsComponent,
+		// PermissionsComponent,
 		MerchantComponent,
 		UserDetailsComponent,
 		CommissionDetailsComponent,

@@ -5,18 +5,6 @@ const op = sequelize.Op;
 
 
 exports.partReleasePayment = [
-    body('payableAmount')
-        .exists()
-        .withMessage('payableAmount is required'),
-    body('penalInterest')
-        .exists()
-        .withMessage('penalInterest is required'),
-    body('interestAmount')
-        .exists()
-        .withMessage('interestAmount is required'),
-    body('releaseAmount')
-        .exists()
-        .withMessage('releaseAmount is required'),
     body('masterLoanId')
         .exists()
         .withMessage('masterLoanId is required'),
@@ -31,28 +19,7 @@ exports.partReleasePayment = [
         .withMessage('paymentType is required'),
     body('depositDate')
         .exists()
-        .withMessage('depositDate is required'),
-    body('releaseGrossWeight')
-        .exists()
-        .withMessage('releaseGrossWeight is required'),
-    body('releaseDeductionWeight')
-        .exists()
-        .withMessage('releaseDeductionWeight is required'),
-    body('releaseNetWeight')
-        .exists()
-        .withMessage('releaseNetWeight is required'),
-    body('remainingGrossWeight')
-        .exists()
-        .withMessage('remainingGrossWeight is required'),
-    body('remainingDeductionWeight')
-        .exists()
-        .withMessage('remainingDeductionWeight is required'),
-    body('remainingNetWeight')
-        .exists()
-        .withMessage('remainingNetWeight is required'),
-    body('currentLtv')
-        .exists()
-        .withMessage('currentLtv is required'),
+        .withMessage('depositDate is required')
 ]
 
 exports.amountStatusValidation = [
@@ -108,21 +75,6 @@ exports.documentValidation = [
 /////
 
 exports.fullReleasePayment = [
-    body('payableAmount')
-        .exists()
-        .withMessage('payableAmount is required'),
-    body('penalInterest')
-        .exists()
-        .withMessage('penalInterest is required'), 
-    body('currentOutstandingAmount')
-        .exists()
-        .withMessage('currentOutstandingAmount is required'), 
-    body('interestAmount')
-        .exists()
-        .withMessage('interestAmount is required'),
-    body('releaseAmount')
-        .exists()
-        .withMessage('releaseAmount is required'),
     body('masterLoanId')
         .exists()
         .withMessage('masterLoanId is required'),
@@ -137,28 +89,7 @@ exports.fullReleasePayment = [
         .withMessage('paymentType is required'),
     body('depositDate')
         .exists()
-        .withMessage('depositDate is required'),
-    body('releaseGrossWeight')
-        .exists()
-        .withMessage('releaseGrossWeight is required'),
-    body('releaseDeductionWeight')
-        .exists()
-        .withMessage('releaseDeductionWeight is required'),
-    body('releaseNetWeight')
-        .exists()
-        .withMessage('releaseNetWeight is required'),
-    body('remainingGrossWeight')
-        .exists()
-        .withMessage('remainingGrossWeight is required'),
-    body('remainingDeductionWeight')
-        .exists()
-        .withMessage('remainingDeductionWeight is required'),
-    body('remainingNetWeight')
-        .exists()
-        .withMessage('remainingNetWeight is required'),
-    body('currentLtv')
-        .exists()
-        .withMessage('currentLtv is required'),
+        .withMessage('depositDate is required')
 ]
 
 exports.amountStatusValidationfullRelease = [

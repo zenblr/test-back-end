@@ -7,6 +7,7 @@ import { map, catchError } from 'rxjs/operators';
 import { UpdateLocationService } from '../../../../../../core/loan-management/update-location/services/update-location.service';
 import { AuthService } from '../../../../../../core/auth';
 import { BehaviorSubject } from 'rxjs';
+import { LeadService } from '../../../../../../core/lead-management/services/lead.service';
 
 @Component({
   selector: 'kt-update-location',
@@ -20,6 +21,8 @@ export class UpdateLocationComponent implements OnInit {
   userTypeList = [{ name: 'Customer', value: 'Customer' }, { name: 'Internal User', value: 'InternalUser' }, { name: 'Partner User', value: 'PartnerUser' }]
   filteredPacketArray: any[];
   private verifiedPacketsArray = []
+  refCode: number; //reference code
+  otpSent: boolean = false;
 
   constructor(
     public dialogRef: MatDialogRef<UpdateLocationComponent>,
@@ -28,18 +31,26 @@ export class UpdateLocationComponent implements OnInit {
     private toastr: ToastrService,
     private packetLocationService: PacketLocationService,
     private updateLocationService: UpdateLocationService,
-    private authService: AuthService
+    private authService: AuthService,
+    private leadService: LeadService
   ) { }
 
   ngOnInit() {
     this.getPacketLocationList()
     this.locationForm = this.fb.group({
-      location: ['', [Validators.required]],
+      packetLocationId: [, [Validators.required]],
       barcodeNumber: this.fb.array([]),
       mobileNumber: [, [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
       user: [, [Validators.required]],
-      userType: ['', [Validators.required]],
-      otp: [, [Validators.required]]
+      receiverType: ['', [Validators.required]],
+      otp: [, [Validators.required]],
+      referenceCode: [this.refCode],
+      userReceiverId: [null],
+      customerReceiverId: [null],
+      partnerReceiverId: [null],
+      loanId: [null],
+      masterLoanId: [null],
+
     })
 
     this.initBarcodeArray()
@@ -48,6 +59,11 @@ export class UpdateLocationComponent implements OnInit {
 
   setForm() {
     const packetArray = this.data.packetData
+    //console.log(this.data.packetData)
+    this.locationForm.controls.masterLoanId.patchValue(this.data.packetData[0].masterLoanId)
+    console.log(this.data.packetData[0].masterLoanId, 'masterLoanId')
+    console.log(this.data.packetData[0].loanId, 'loanId')
+    this.locationForm.controls.loanId.patchValue(this.data.packetData[0].loanId)
 
     this.filteredPacketArray = []
     packetArray.forEach(element => {
@@ -69,6 +85,7 @@ export class UpdateLocationComponent implements OnInit {
   getPacketLocationList() {
     this.packetLocationService.getpacketsTrackingDetails(1, -1, '').pipe(map(res => {
       this.packetLocations = res.data
+
     })).subscribe()
   }
 
@@ -85,14 +102,21 @@ export class UpdateLocationComponent implements OnInit {
 
     console.log(this.locationForm.value)
 
+
     if (this.verifiedPacketsArray.length != this.data.packetData.length) return
 
     const isVerified = this.verifiedPacketsArray.every(e => e.isVerified === true)
-
+    //console.log(this.verifiedPacketsArray)
     if (!isVerified) return console.log(`Packets are not completely verified!`)
 
-
-
+    this.updateLocationService.addPacketLocation(this.locationForm.value).subscribe(res => {
+      // console.log(res);
+      if (res) {
+        const msg = 'Packet Location Added Successfully';
+        this.toastr.success(msg);
+        this.dialogRef.close(true);
+      }
+    });
   }
 
   get barcodeNumber() {
@@ -133,25 +157,108 @@ export class UpdateLocationComponent implements OnInit {
   }
 
   getDetailsByMobile() {
-    if (this.locationForm.controls.mobileNumber.invalid || this.locationForm.controls.userType.invalid) return
+    if (this.locationForm.controls.mobileNumber.invalid || this.locationForm.controls.receiverType.invalid) return
     const mobileNumber = this.locationForm.controls.mobileNumber.value
-    const isSelected = this.locationForm.controls.userType.value
-    this.updateLocationService.getDetailsByMobile({ mobileNumber, isSelected }).pipe(map(res => {
+    const receiverType = this.locationForm.controls.receiverType.value
+
+    this.updateLocationService.getDetailsByMobile({ mobileNumber, receiverType }).subscribe(res => {
+      switch (res.receiverType) {
+        case 'Customer':
+          this.locationForm.controls.customerReceiverId.patchValue(res.data.id)
+          break;
+        case 'InternalUser':
+          this.locationForm.controls.userReceiverId.patchValue(res.data.id)
+          break;
+        case 'PartnerUser':
+          this.locationForm.controls.partnerReceiverId.patchValue(res.data.id)
+          break;
+      }
+      if (res) {
+        this.otpSent = true;
+      }
       this.locationForm.controls.user.patchValue(`${res.data.firstName} ${res.data.lastName}`)
-    })).subscribe()
+    }, err => {
+      this.remove()
+    }
+    );
   }
 
   generateOTP() {
     const mobileNumber = this.locationForm.controls.mobileNumber.value
-    this.authService.generateOtp(mobileNumber, 'lead').pipe(
-      map(res => {
-        console.log(res)
-      }),
-      catchError(err => {
-        if (err.error.message) this.toastr.error(err.error.message)
-        throw (err)
-      })
-    ).subscribe()
+    switch (this.locationForm.controls.receiverType.value) {
+      case 'Customer':
+        this.updateLocationService.sendCustomerOtp(mobileNumber).subscribe(res => {
+          console.log(res)
+          if (res) {
+            this.refCode = res.referenceCode;
+            this.locationForm.controls.referenceCode.patchValue(this.refCode);
+            const msg = 'Otp has been sent to the registered mobile number';
+            this.toastr.success(msg);
+          }
+        },
+          err => {
+            this.toastr.error(err.error.message)
+          })
+
+        break;
+      case 'InternalUser':
+        this.authService.generateOtp(mobileNumber, 'lead').subscribe(res => {
+          console.log(res)
+          if (res) {
+            this.refCode = res.referenceCode;
+            this.locationForm.controls.referenceCode.patchValue(this.refCode);
+            const msg = 'Otp has been sent to the registered mobile number';
+            this.toastr.success(msg);
+          }
+        },
+          err => {
+            this.toastr.error(err.error.message)
+          })
+
+        break;
+    }
   }
 
+  verifyOTP() {
+    const params = {
+      otp: this.locationForm.controls.otp.value,
+      referenceCode: this.locationForm.controls.referenceCode.value,
+      type: 'lead'
+    };
+    switch (this.locationForm.controls.receiverType.value) {
+      case 'Customer':
+        this.leadService.verifyOtp(params).subscribe(res => {
+          if (res) {
+            this.otpSent = true;
+            const msg = 'Otp has been verified!'
+            this.toastr.success(msg);
+          }
+        },
+          err => {
+            this.toastr.error(err.error.message)
+          }
+        );
+        break;
+      case 'InternalUser':
+        this.authService.verifyotp(params.referenceCode, params.otp, params.type).subscribe(res => {
+          if (res) {
+            this.otpSent = true;
+            const msg = 'Otp has been verified!'
+            this.toastr.success(msg);
+          }
+        }
+          ,
+          err => {
+            this.toastr.error(err.error.message)
+          });
+        break;
+    }
+  }
+
+  remove() {
+    this.locationForm.controls.otp.patchValue(null);
+    this.locationForm.controls.referenceCode.patchValue(null);
+    this.locationForm.controls.mobileNumber.patchValue(null);
+    this.locationForm.controls.user.patchValue(null);
+  }
 }

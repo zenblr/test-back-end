@@ -122,19 +122,35 @@
     </div>
     <div class="row kt-margin-t-20 justify-content-start">
         <!-- Loan -->
-        <div class="p-0" [ngClass]="masterLoan?.customerLoan?.length == 1 ? 'col-3' : 'col-6'"
-            *ngFor="let masterLoan of cutomerDetails?.masterLoan;index as i">
+        <div class="p-0 col-3" *ngFor="let masterLoan of cutomerDetails?.masterLoan;index as i">
             <div class="row">
-                <div class="col" *ngFor="let loan of masterLoan.customerLoan">
+                <div class="col">
                     <div class="card kt-padding-15" [class.kt-margin-r-15]="(i+1)%4!=0">
                         <div class="text-gray font-weight-500 kt-margin-b-5">Loan ID</div>
-                        <div class="text-color font-weight-500 kt-margin-b-5">{{loan.loanUniqueId}}</div>
+                        <div class="text-color font-weight-500 kt-margin-b-5 d-block">
+                            <div>
+                                {{masterLoan.customerLoan[0].loanUniqueId}}
+                            </div>
+                            <div>
+                                {{masterLoan?.customerLoan[1]?.loanUniqueId}}
+                            </div>
+
+
+                        </div>
                         <mat-divider class="kt-margin-b-10 kt-margin-t-10"></mat-divider>
                         <div class="row kt-margin-b-15">
                             <div class="col-6">
                                 <div class="text-gray font-weight-500">Loan Amount</div>
-                                <div class="text-color font-weight-500">
-                                    <span class="currency">{{loan.loanAmount | indianCurrencyFormat}}</span></div>
+                                <div class="text-color font-weight-500 d-block">
+                                    <div>
+                                        <span
+                                            class="currency">{{masterLoan.customerLoan[0].loanAmount | indianCurrencyFormat}}</span>
+                                    </div>
+                                    <div>
+                                        <span
+                                            class="currency">{{masterLoan?.customerLoan[1]?.loanAmount | indianCurrencyFormat}}</span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-6">
                                 <div class="text-gray font-weight-500">Loan Tennure</div>
@@ -155,7 +171,7 @@
                             </div>
                         </div>
                         <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10"
-                            (click)="viewLoan(loan.id,loan.masterLoanId)" *ngxPermissionsOnly="['loanDetailsView']">View
+                            (click)="viewLoan(masterLoan.id)" *ngxPermissionsOnly="['loanDetailsView']">View
                             Details</div>
                     </div>
                 </div>

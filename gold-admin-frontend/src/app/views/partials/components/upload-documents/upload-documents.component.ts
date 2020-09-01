@@ -220,7 +220,6 @@ export class UploadDocumentsComponent implements OnInit {
     if (changes.totalAmt) {
       if (Number(changes.totalAmt.currentValue) && this.globalValue) {
         const calculateProcessingCharges = Math.round(this.totalAmt * this.globalValue.processingChargesInPercent / 100);
-        console.log(calculateProcessingCharges);
         if (calculateProcessingCharges > this.globalValue.processingChargesFixed) {
           this.controls.processingCharges.patchValue(calculateProcessingCharges);
         } else {
@@ -426,7 +425,6 @@ export class UploadDocumentsComponent implements OnInit {
           } else {
             this.pdf[value] = false
           }
-          console.log(this.pdf)
         }), finalize(() => {
           this[value].nativeElement.value = ''
           this.ref.detectChanges()

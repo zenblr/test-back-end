@@ -150,10 +150,10 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         Customer.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
-        Customer.belongsTo(models.lead,{foreignKey: 'leadSourceId', as: 'lead' });
+        Customer.belongsTo(models.lead, { foreignKey: 'leadSourceId', as: 'lead' });
 
         Customer.hasMany(models.customerScrap, { foreignKey: 'customerId', as: 'customerScrap' });
-        Customer.hasMany(models.customerPacketLocation ,{ foreignKey: 'receiverCustomerId', as: 'customerPacketLocation' });
+        Customer.hasMany(models.customerPacketTracking, { foreignKey: 'customerReceiverId', as: 'customerReceiver' });
 
     }
 

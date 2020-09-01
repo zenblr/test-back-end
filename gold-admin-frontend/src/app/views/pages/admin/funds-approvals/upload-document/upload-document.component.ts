@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material';
 import { PdfViewerComponent } from '../../../../partials/components/pdf-viewer/pdf-viewer.component';
 import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { PartReleaseFinalService } from '../../../../../core/funds-approvals/jewellery-release-final/part-release-final/services/part-release-final.service';
+import { FullReleaseFinalService } from '../../../../../core/funds-approvals/jewellery-release-final/full-release-final/services/full-release-final.service';
 
 @Component({
   selector: 'kt-upload-document',
@@ -21,6 +22,7 @@ export class UploadDocumentComponent implements OnInit {
   }
   @ViewChild('documents', { static: false }) documents
   id: any;
+  releaseType: string;
 
   constructor(
     private fb: FormBuilder,
@@ -30,9 +32,12 @@ export class UploadDocumentComponent implements OnInit {
     private route: ActivatedRoute,
     public dialog: MatDialog,
     private partReleaseFinalService: PartReleaseFinalService,
+    private fullReleaseFinalService: FullReleaseFinalService,
     private router: Router
   ) {
-    this.route.paramMap.subscribe(res => this.id = res['params'].id)
+    this.route.paramMap.subscribe(res => this.id = res.get('id'));
+    this.route.paramMap.subscribe(res => this.releaseType = res.get('name'));
+    // this.route.queryParamMap.subscribe(res => this.releaseType = res.get('name'));
   }
 
   ngOnInit() {
@@ -43,14 +48,19 @@ export class UploadDocumentComponent implements OnInit {
   initForm() {
     this.documentsForm = this.fb.group({
       partReleaseId: [],
+      fullReleaseId: [],
       documents: [, [Validators.required]],
-      documentsName: [],
+      documentsName: ['', [Validators.required]],
       documentsImage: [, [Validators.required]]
     })
   }
 
   patchForm() {
-    if (this.id) this.documentsForm.patchValue({ partReleaseId: this.id })
+    if (this.releaseType === 'partRelease') {
+      this.documentsForm.patchValue({ partReleaseId: this.id })
+    } else {
+      this.documentsForm.patchValue({ fullReleaseId: this.id })
+    }
   }
 
   get controls() {
@@ -63,10 +73,10 @@ export class UploadDocumentComponent implements OnInit {
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png'
       || ext[ext.length - 1] == 'jpeg' || ext[ext.length - 1] == 'pdf') {
       const controls = this.documentsForm.controls
-      const params = {
-        reason: 'partRelease',
-        partReleaseId: this.id
-      }
+
+      const params = this.releaseType === 'partRelease' ? { reason: this.releaseType, partReleaseId: this.id } : { reason: this.releaseType, fullReleaseId: this.id };
+
+      // console.log(params)
 
       this.sharedService.uploadFile(event.target.files[0], params).pipe(
         map(res => {
@@ -81,7 +91,7 @@ export class UploadDocumentComponent implements OnInit {
             this.pdf[value] = false
           }
 
-          console.log(this.pdf)
+          // console.log(this.pdf)
 
         }), finalize(() => {
           this[value].nativeElement.value = ''
@@ -127,12 +137,34 @@ export class UploadDocumentComponent implements OnInit {
   }
 
   save() {
-    if (this.documentsForm.invalid) return this.toastr.error('Upload Customer Acknowledgement')
-    this.partReleaseFinalService.uploadDocument(this.documentsForm.value).pipe(
-      map(res => {
-        this.toastr.success(res['message'])
-        this.router.navigate(['/admin/funds-approvals/part-release-final'])
-      })).subscribe()
+    if (this.documentsForm.invalid) {
+      return this.documentsForm.markAllAsTouched()
+      // return this.toastr.error('Upload Customer Acknowledgement')
+    }
+
+    switch (this.releaseType) {
+      case 'partRelease':
+        this.partReleaseFinalService.uploadDocument(this.documentsForm.value).pipe(
+          map(res => {
+            this.toastr.success(res['message'])
+            this.router.navigate(['/admin/funds-approvals/part-release-final'])
+          })).subscribe()
+
+        break;
+
+      case 'fullRelease':
+        this.fullReleaseFinalService.uploadDocument(this.documentsForm.value).pipe(
+          map(res => {
+            this.toastr.success(res['message'])
+            this.router.navigate(['/admin/funds-approvals/full-release-final'])
+          })).subscribe()
+
+        break;
+
+      default:
+        break;
+    }
+
   }
 
 }

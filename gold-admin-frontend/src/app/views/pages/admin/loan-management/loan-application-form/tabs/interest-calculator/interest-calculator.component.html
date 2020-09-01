@@ -154,7 +154,7 @@
                         <label class="mandatory">Payment Frequency</label>
                     </div>
                     <div class="col-7">
-                        <select class="form-control" formControlName="paymentFrequency" (change)="getIntrest()"
+                        <select class="form-control" formControlName="paymentFrequency" (change)="getIntrest(true)"
                             [class.isError]="controls.paymentFrequency.touched && controls.paymentFrequency.invalid">
                             <option value=null [selected]="true" [disabled]="true">Select Payment Frequency</option>
                             <option [value]="pay.days" *ngFor="let pay of paymentFrequency">{{pay.days}}</option>
@@ -192,7 +192,8 @@
                         <label class="mandatory">Processing Charges</label>
                     </div>
                     <div class="col-7">
-                        <input type="number" class="form-control" formControlName="processingCharge" placeholder="1100"
+                        <input type="number" class="form-control cursor-not-allowed" formControlName="processingCharge"
+                            placeholder="00"
                             [class.isError]="controls.processingCharge.touched && controls.processingCharge.invalid" />
                         <mat-error
                             *ngIf="controls.processingCharge.errors?.pattern && controls.processingCharge.touched">
@@ -267,7 +268,7 @@
                             <tbody>
                                 <tr *ngFor="let data of dateOfPayment;index as idx; last as last">
                                     <td *ngIf="approved">{{data.emiDueDate | date :'mediumDate'}}</td>
-                                    <td *ngIf="!approved">{{data.paymentType | uppercase}}&nbsp;({{idx+1}})</td>
+                                    <td *ngIf="!approved">{{data.month }}</td>
 
                                     <td class="text-center currency">
                                         {{data.securedInterestAmount | indianCurrencyFormat}}

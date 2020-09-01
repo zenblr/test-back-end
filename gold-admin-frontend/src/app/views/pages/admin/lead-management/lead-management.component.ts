@@ -121,7 +121,7 @@ export class LeadManagementComponent implements OnInit {
   }
 
   applyFilter(data) {
-    console.log(data);
+   
     this.queryParamsData.cityId = data.data.cities;
     this.queryParamsData.stateId = data.data.states;
     this.queryParamsData.statusId = data.data.leadStatus;
@@ -130,7 +130,7 @@ export class LeadManagementComponent implements OnInit {
   }
 
   addLead() {
-    // console.log(event);
+   
     const dialogRef = this.dialog.open(AddLeadComponent, {
       data: { action: 'add' },
       width: '500px'
@@ -171,7 +171,7 @@ export class LeadManagementComponent implements OnInit {
   }
 
   goToKyc(data) {
-    console.log(data)
+    
     var mobile = '';
     this.leadService.getLeadById(data.id).pipe(
       map(res => {

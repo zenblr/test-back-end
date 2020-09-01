@@ -111,7 +111,15 @@ export class PartReleaseApprovalComponent implements OnInit {
   }
 
   updateStatus(item) {
-    const dialogRef = this.dialog.open(UpdateStatusComponent, { data: { action: 'edit', value: item, name: 'jewelleryReleaseApproval' }, width: 'auto' });
+    const dialogRef = this.dialog.open(UpdateStatusComponent,
+      {
+        data: {
+          action: 'edit',
+          value: item,
+          name: 'jewelleryReleaseApproval'
+        },
+        width: 'auto'
+      });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();

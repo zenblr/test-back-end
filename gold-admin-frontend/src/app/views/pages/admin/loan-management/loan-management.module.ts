@@ -88,7 +88,7 @@ const rout: Routes = [
     component: LoanTransferListComponent
   },
   {
-    path: 'view-location',
+    path: 'view-location/:id',
     component: ViewLocationComponent,
   }
 ]

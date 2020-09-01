@@ -11,15 +11,20 @@ export class EmiLogsDialogComponent implements OnInit {
   emiDetails: any;
 
   constructor(
-    private quickPayService:QuickPayService,
+    private quickPayService: QuickPayService,
     public dialogRef: MatDialogRef<EmiLogsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) { }
 
   ngOnInit() {
-    this.quickPayService.emiInfo(this.data.id).subscribe(res=>{
+    this.quickPayService.emiInfo(this.data.id).subscribe(res => {
       this.emiDetails = res.data
     })
   }
 
+  action(event) {
+    if (!event) {
+      this.dialogRef.close();
+    }
+  }
 }

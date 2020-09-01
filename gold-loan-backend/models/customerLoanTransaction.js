@@ -11,8 +11,12 @@ module.exports = (sequelize, DataTypes) => {
             field: 'loan_id'
         },
         transactionUniqueId: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'transaction_unique_id'
+        },
+        bankTransactionUniqueId: {
+            type: DataTypes.STRING,
+            field: 'bank_transaction_unique_id'
         },
         paymentType:{
             type: DataTypes.STRING,
@@ -26,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'payment_received_date'
         },
+        depositDate:{
+            type: DataTypes.DATE,
+            field: 'deposit_date'
+        },
         chequeNumber:{
             type: DataTypes.STRING,
             field: 'cheque_number',
@@ -38,10 +46,24 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'branch_name',
         },
+        depositStatus:{
+            type: DataTypes.ENUM,
+            field: 'deposit_status',
+            values:['Pending','Completed','Rejected'],
+            defaultValue: 'Pending'
+        },
+        paymentFor:{
+            type: DataTypes.STRING,
+            field: 'payment_for',
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
-        }
+        },
+        modifiedBy: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by'
+        },
     },
         {
             freezeTableName: true,
@@ -52,9 +74,12 @@ module.exports = (sequelize, DataTypes) => {
 
     CustomerLoanTransaction.associate = function (models) {
         CustomerLoanTransaction.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        CustomerLoanTransaction.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'modifieby' });
+
         CustomerLoanTransaction.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
         CustomerLoanTransaction.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         CustomerLoanTransaction.hasMany(models.customerTransactionDetail, { foreignKey: 'customerLoanTransactionId', as: 'transaction' });
+        CustomerLoanTransaction.hasMany(models.customerTransactionSplitUp, { foreignKey: 'customerLoanTransactionId', as: 'transactionSplitUp' });
     }
 
     return CustomerLoanTransaction;

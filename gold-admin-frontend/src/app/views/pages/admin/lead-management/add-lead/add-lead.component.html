@@ -88,7 +88,7 @@
                             <div [ngClass]="data.action == 'add' ? 'col-5' : 'col-8'">
                                 <!-- <mat-form-field appearance="outline" class="w-100"> -->
                                 <input class="form-control" type="text" formControlName="mobileNumber" numbersOnly
-                                    autocomplete="off" placeholder="Enter mobile number" margin
+                                    autocomplete="off" placeholder="Enter mobile number" maxlength="10"
                                     [class.isError]="controls.mobileNumber.touched && controls.mobileNumber.invalid">
                                 <mat-error
                                     *ngIf="controls.mobileNumber.errors?.required && controls.mobileNumber.touched">
@@ -164,7 +164,7 @@
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="panType" (change)='remove()'>
-                                    <option value="" selected>Select</option>
+                                    <option value=null selected>Select</option>
                                     <option value="pan">PAN</option>
                                     <option value="form60">FORM 60</option>
                                 </select>

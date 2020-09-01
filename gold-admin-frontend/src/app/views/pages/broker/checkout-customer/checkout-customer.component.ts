@@ -5,7 +5,8 @@ import { SharedService } from '../../../../core/shared/services/shared.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/broker';
 import { RazorpayPaymentService } from '../../../../core/shared/services/razorpay-payment.service';
-import { MatCheckbox } from '@angular/material';
+import { MatCheckbox, MatDialog } from '@angular/material';
+import { PaymentDialogComponent } from '../payment-dialog/payment-dialog.component';
 
 @Component({
   selector: 'kt-checkout-customer',
@@ -39,7 +40,8 @@ export class CheckoutCustomerComponent implements OnInit {
     private checkoutCustomerService: CheckoutCustomerService,
     private shoppingCartService: ShoppingCartService,
     private zone: NgZone,
-    private razorpayPaymentService: RazorpayPaymentService
+    private razorpayPaymentService: RazorpayPaymentService,
+    public dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -77,6 +79,7 @@ export class CheckoutCustomerComponent implements OnInit {
 
     this.otpForm = this.fb.group({
       otp: ['', [Validators.required, Validators.pattern('^[0-9]{4}$')]],
+      paymentMode: ['', [Validators.required]],
     });
 
     this.controls.mobileNumber.valueChanges.subscribe(res => {
@@ -87,6 +90,7 @@ export class CheckoutCustomerComponent implements OnInit {
     });
 
     this.checkoutCustomerForm.valueChanges.subscribe(val => console.log(val))
+    this.otpForm.valueChanges.subscribe(val => console.log(val))
   }
 
   get controls() {
@@ -140,6 +144,8 @@ export class CheckoutCustomerComponent implements OnInit {
     this.otpForm.reset();
     this.controls['stateName'].patchValue('');
     this.controls['cityName'].patchValue('');
+    this.controls['shippingStateName'].patchValue('');
+    this.controls['shippingCityName'].patchValue('');
 
     if (type == 'new') {
       this.showformFlag = true;
@@ -296,6 +302,7 @@ export class CheckoutCustomerComponent implements OnInit {
 
   sameAddress(event: MatCheckbox) {
     if (event) {
+      this.shippingCityList = this.cityList;
       this.checkoutCustomerForm.patchValue({
         shippingAddress: this.controls.address.value,
         shippingLandMark: this.controls.landMark.value,
@@ -307,11 +314,12 @@ export class CheckoutCustomerComponent implements OnInit {
       this.checkoutCustomerForm.patchValue({
         shippingAddress: null,
         shippingLandMark: null,
-        shippingStateName: [''],
-        shippingCityName: [''],
+        shippingStateName: '',
+        shippingCityName: '',
         shippingPostalCode: null,
       });
     }
+    this.ref.detectChanges();
   }
 
   generateOTP() {
@@ -370,17 +378,35 @@ export class CheckoutCustomerComponent implements OnInit {
       customerId: this.finalOrderData.customerId,
       otp: this.otpForm.controls.otp.value,
       blockId: this.finalOrderData.blockId,
-      totalInitialAmount: this.checkoutData.nowPayableAmount
+      totalInitialAmount: this.checkoutData.nowPayableAmount,
+      paymentMode: this.otpForm.controls.paymentMode.value
     }
     this.checkoutCustomerService.verifyOTP(verifyOTPData).subscribe(res => {
       console.log(res);
-      this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
-      this.razorpayPaymentService.razorpayOptions.amount = res.totalInitialAmount;
-      this.razorpayPaymentService.razorpayOptions.order_id = res.razorPayOrder.id;
-      this.razorpayPaymentService.razorpayOptions.prefill.contact = this.controls.mobileNumber.value;
-      this.razorpayPaymentService.razorpayOptions.prefill.email = this.controls.email.value || 'info@augmont.in';
-      this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
-      this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
+      if (res.paymentMode == 'paymentGateway') {
+        this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
+        this.razorpayPaymentService.razorpayOptions.amount = res.totalInitialAmount;
+        this.razorpayPaymentService.razorpayOptions.order_id = res.razorPayOrder.id;
+        this.razorpayPaymentService.razorpayOptions.paymentMode = res.paymentMode;
+        this.razorpayPaymentService.razorpayOptions.prefill.contact = this.controls.mobileNumber.value;
+        this.razorpayPaymentService.razorpayOptions.prefill.email = this.controls.email.value || 'info@augmont.in';
+        this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
+        this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
+      } else {
+        const dialogRef = this.dialog.open(PaymentDialogComponent, {
+          data: { paymentData: res },
+          width: '70vw'
+        });
+        dialogRef.afterClosed().subscribe(res => {
+          if (res) {
+            console.log(res)
+            const msg = 'Order has been placed successfully.';
+            this.toastr.successToastr(msg);
+            this.shoppingCartService.cartCount.next(0);
+            this.router.navigate(['/broker/order-received/'], { queryParams: { id: this.finalOrderData.blockId } });
+          }
+        });
+      }
     },
       error => {
         console.log(error.error.message);
@@ -406,14 +432,15 @@ export class CheckoutCustomerComponent implements OnInit {
         customerId: this.finalOrderData.customerId,
         blockId: this.finalOrderData.blockId,
         transactionDetails: response,
-        totalInitialAmount: this.checkoutData.nowPayableAmount
+        totalInitialAmount: this.checkoutData.nowPayableAmount,
+        paymentMode: this.razorpayPaymentService.razorpayOptions.paymentMode
       }
       this.checkoutCustomerService.placeOrder(placeOrderData).subscribe(res => {
         console.log(res);
         const msg = 'Order has been placed successfully.';
         this.toastr.successToastr(msg);
         this.shoppingCartService.cartCount.next(0);
-        this.router.navigate(['/broker/order-received/' + this.finalOrderData.blockId]);
+        this.router.navigate(['/broker/order-received/'], { queryParams: { id: this.finalOrderData.blockId } });
       },
         error => {
           console.log(error.error.message);

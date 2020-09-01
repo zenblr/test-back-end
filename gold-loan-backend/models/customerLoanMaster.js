@@ -179,6 +179,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_ornaments_released',
             defaultValue: false
         },
+        isNewLoanFromPartRelease:{
+            type: DataTypes.BOOLEAN,
+            field: 'is_new_loan_from_part_release',
+            defaultValue: false
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -222,9 +227,11 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanMaster.hasMany(models.customerLoanHistory, { foreignKey: 'masterLoanId', as: 'customerLoanHistory' });
         CustomerLoanMaster.hasOne(models.partRelease, { foreignKey: 'masterLoanId', as: 'partRelease' });
         CustomerLoanMaster.hasOne(models.fullRelease, { foreignKey: 'masterLoanId', as: 'fullRelease' });
-        CustomerLoanMaster.hasMany(models.customerPacketLocation, { foreignKey: 'masterLoanId', as: 'customerPacketLocation' });
+        CustomerLoanMaster.hasMany(models.customerPacketTracking, { foreignKey: 'masterLoanId', as: 'customerPacketTracking' });
 
         CustomerLoanMaster.hasMany(models.packetTracking, { foreignKey: 'masterLoanId', as: 'packetTracking' });
+        CustomerLoanMaster.hasMany(models.customerTransactionSplitUp, { foreignKey: 'masterLoanId', as: 'transactionSplitUp' });
+
     }
 
     CustomerLoanMaster.prototype.toJSON = function () {
