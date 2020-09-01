@@ -840,7 +840,7 @@ let allInterestPayment = async (transactionId, createdBy) => {
     }
     // console.log(securedLoanDetails)
 
-    if (unsecuredInterest > 0) {
+    if ( securedInterest > 0) {
         newSecuredDetails = await generateTranscationAndUpdateInterestValue(securedLoanDetails, securedInterest, createdBy)
         securedLoanDetails = newSecuredDetails.loanArray
         Array.prototype.push.apply(transactionDetails, newSecuredDetails.transaction)
@@ -879,7 +879,7 @@ let allInterestPayment = async (transactionId, createdBy) => {
             // console.log(securedLoanDetails)
         }
 
-        if (securedInterest > 0) {
+        if (unsecuredInterest > 0) {
             let newUnsecuredDetails = await generateTranscationAndUpdateInterestValue(unsecuredLoanDetails, unsecuredInterest, createdBy)
             unsecuredLoanDetails = newUnsecuredDetails.loanArray
             Array.prototype.push.apply(transactionDetails, newUnsecuredDetails.transaction)

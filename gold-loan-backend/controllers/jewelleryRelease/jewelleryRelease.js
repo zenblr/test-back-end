@@ -10,7 +10,7 @@ const loanFunction = require('../../utils/loanFunction');
 const { getCustomerInterestAmount, customerLoanDetailsByMasterLoanDetails, getGlobalSetting, getLoanDetails, allInterestPayment, getAmountLoanSplitUpData, getTransactionPrincipalAmount } = require('../../utils/loanFunction');
 const moment = require('moment')
 const uniqid = require('uniqid');
-
+const _ = require('lodash');
 
 exports.ornamentsDetails = async (req, res, next) => {
 

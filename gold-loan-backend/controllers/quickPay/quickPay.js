@@ -4,7 +4,7 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const { createReferenceCode } = require("../../utils/referenceCode");
-
+const _ = require('lodash');
 const request = require("request");
 const moment = require("moment");
 const CONSTANT = require("../../utils/constant");
