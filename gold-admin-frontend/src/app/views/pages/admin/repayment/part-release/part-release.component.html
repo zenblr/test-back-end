@@ -24,16 +24,24 @@
                         {{loan.loanUniqueId}}
                     </div>
                 </div>
-                <div class="col"> {{loanDetails.customerLoan.finalLoanAmount}}</div>
-                <div class="col"> {{loanDetails.customerLoan.loanStartDate}}
+                <div class="col">
+                    <div *ngFor="let loan of loanDetails.customerLoan.customerLoan">
+                        {{loan.loanAmount}}
+                    </div>
                 </div>
-                <div class="col"> {{loanDetails.customerLoan.loanEndDate}}</div>
+                <div class="col"> {{loanDetails.customerLoan.loanStartDate | date: 'mediumDate'}}
+                </div>
+                <div class="col"> {{loanDetails.customerLoan.loanEndDate | date: 'mediumDate'}}</div>
                 <div class="col">{{loanDetails.customerLoan.tenure}} Months</div>
                 <div class="col">
-                    <span *ngIf="loanDetails.lastPayment else blank">{{loanDetails.lastPayment}}</span>
+                    <span
+                        *ngIf="loanDetails.lastPayment else blank">{{loanDetails.lastPayment | date: 'mediumDate'}}</span>
                 </div>
                 <div class="col-2" [class.padding-left]="fullReleaseScreen">
-                    {{loanDetails?.customerLoan.outstandingAmount}}</div>
+                    <div *ngFor="let loan of loanDetails.customerLoan.customerLoan">
+                        {{loan.outstandingAmount}}
+                    </div>
+                </div>
                 <div class="col" *ngIf="!fullReleaseScreen">
 
                 </div>
@@ -159,11 +167,12 @@
 
             <ng-container *ngIf="showReleaseSummary">
                 <div class="row kt-padding-t-15 kt-padding-b-15">
-                    <div class="col-10 mx-auto">
+                    <div [ngClass]="fullReleaseScreen ? 'col-8' : 'col-10'" class="mx-auto">
                         <div class="table-div kt-padding-t-15">
                             <table class="table outer-border">
                                 <thead>
-                                    <th class="transparent">Total Gross Weight</th>
+                                    <th [class.table-padding-start]="fullReleaseScreen" class="transparent">Total Gross
+                                        Weight</th>
                                     <th class="transparent w100">Deduction Weight</th>
                                     <ng-container *ngIf="!fullReleaseScreen">
                                         <th class="transparent">Net Weight (Release Ornament)</th>
@@ -171,17 +180,18 @@
                                         <th class="transparent">Ornament Release Amount</th>
                                     </ng-container>
                                     <ng-container *ngIf="fullReleaseScreen">
-                                        <th class="transparent">Net Weight</th>
-                                        <th class="transparent">Previous LTV</th>
-                                        <th class="transparent">Current LTV</th>
-                                        <th class="transparent">Principal Outstanding Amount<br>
+                                        <th class="transparent" style="width: 15%;">Net Weight</th>
+                                        <!-- <th class="transparent">Previous LTV</th>
+                                        <th class="transparent">Current LTV</th> -->
+                                        <th class="transparent table-padding-end">Principal Outstanding Amount
 
                                         </th>
                                     </ng-container>
                                 </thead>
                                 <tbody>
                                     <tr *ngIf="totalSelectedOrnamentDetails">
-                                        <td>{{ totalSelectedOrnamentDetails.ornamentWeight.releaseGrossWeight }} gm</td>
+                                        <td class="table-padding-start">
+                                            {{ totalSelectedOrnamentDetails.ornamentWeight.releaseGrossWeight }} gm</td>
                                         <td>{{ totalSelectedOrnamentDetails.ornamentWeight.releaseDeductionWeight }} gm
                                         </td>
                                         <ng-container *ngIf="!fullReleaseScreen">
@@ -194,9 +204,10 @@
                                         <ng-container *ngIf="fullReleaseScreen">
                                             <td>{{ totalSelectedOrnamentDetails.ornamentWeight.releaseNetWeight }} gm
                                             </td>
-                                            <td>{{ totalSelectedOrnamentDetails.ornamentWeight.previousLtv }}</td>
-                                            <td>{{ totalSelectedOrnamentDetails.ornamentWeight.currentLtv }}</td>
-                                            <td>{{ totalSelectedOrnamentDetails.ornamentWeight.currentOutstandingAmount }}
+                                            <!-- <td>{{ totalSelectedOrnamentDetails.ornamentWeight.previousLtv }}</td>
+                                            <td>{{ totalSelectedOrnamentDetails.ornamentWeight.currentLtv }}</td> -->
+                                            <td class="table-padding-end">
+                                                {{ totalSelectedOrnamentDetails.ornamentWeight.currentOutstandingAmount }}
                                             </td>
                                         </ng-container>
                                     </tr>
@@ -243,11 +254,28 @@
                                             *ngFor="let item of totalSelectedOrnamentDetails.loanInfo.loanData">
                                             <div>{{item.loanAmount}}</div>
                                         </ng-container> -->
-                                        {{ totalSelectedOrnamentDetails.loanInfo.finalLoanAmount }}
+                                        <div *ngFor="let loan of loanDetails.customerLoan.customerLoan">
+                                            {{loan.loanAmount}}
+                                        </div>
+                                        <!-- {{ totalSelectedOrnamentDetails.loanInfo.finalLoanAmount }} -->
                                     </td>
                                     <td>{{ totalSelectedOrnamentDetails.ornamentWeight.releaseAmount }}</td>
-                                    <td>{{ totalSelectedOrnamentDetails.loanInfo.interestAmount }}</td>
-                                    <td>{{ totalSelectedOrnamentDetails.loanInfo.penalInterest }}</td>
+                                    <td>
+                                        <div>
+                                            {{ totalSelectedOrnamentDetails?.loanInfo?.securedInterest }}
+                                        </div>
+                                        <div *ngIf="totalSelectedOrnamentDetails?.loanInfo?.loanData?.length > 1">
+                                            {{ totalSelectedOrnamentDetails?.loanInfo?.unsecuredInterest }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            {{ totalSelectedOrnamentDetails?.loanInfo?.securedPenalInterest }}
+                                        </div>
+                                        <div *ngIf="totalSelectedOrnamentDetails?.loanInfo?.loanData?.length > 1">
+                                            {{ totalSelectedOrnamentDetails?.loanInfo?.unsecuredPenalInterest }}
+                                        </div>
+                                    </td>
                                     <td class="font-weight-500" style="font-size: 14px;">
                                         {{ totalSelectedOrnamentDetails.loanInfo.totalPayableAmount }}</td>
                                     <td>
