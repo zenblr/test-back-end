@@ -24,7 +24,7 @@
 
                 <ng-container matColumnDef="product">
                     <mat-header-cell *matHeaderCellDef>Product</mat-header-cell>
-                    <mat-cell *matCellDef="let row">{{row.product?.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let row">{{row.module?.moduleName | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="status">
@@ -65,14 +65,46 @@
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let row">
                         <ng-container *ngxPermissionsOnly="['customerKycAdd']">
-                            <button style="width: 120px;" class="apply-kyc" (click)="applyKyc(row)"
+                            <!-- <button style="width: 120px;" class="apply-kyc" (click)="applyKyc(row)"
                                 *ngIf="row.customer.kycStatus === 'pending'">
-                                Apply KYC
-                            </button>
+                                    Apply KYC
+                            </button> -->
+
+                            <ng-container
+                                *ngIf="row.customer.kycStatus === 'pending' && row.customer.customerKyc !== null">
+                                <div [ngStyle]="{'display': 'inherit'}"
+                                    *ngIf="!row.customer?.customerKyc?.isKycSubmitted">
+                                    <button (click)="applyKyc(row)" class="apply-kyc">Apply KYC</button>
+                                </div>
+                            </ng-container>
+                            <ng-container
+                                *ngIf="row.customer.kycStatus === 'pending' && row.customer?.customerKyc == null">
+                                <div [ngStyle]="{'display': 'inherit'}">
+                                    <button (click)="applyKyc(row)" class="apply-kyc">Apply KYC</button>
+                                </div>
+                            </ng-container>
                         </ng-container>
 
                         <div *ngIf="row.customer.kycStatus === 'approved'">
-                            <ng-container *ngxPermissionsOnly="['loanApplicationAdd']">
+
+                            <button mat-button [matMenuTriggerFor]="menu">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu" xPosition="before">
+                                <ng-container *ngIf="row.module.id === 1">
+                                    <button *ngxPermissionsOnly="['loanApplicationAdd']" mat-menu-item
+                                        (click)="applyLoan(row)">Apply Loan</button>
+                                    <button *ngxPermissionsOnly="['addLoanTransfer']" mat-menu-item
+                                        (click)="applyLoanTransfer(row)"> Loan Transfer</button>
+                                </ng-container>
+
+                                <ng-container *ngxPermissionsOnly="['scrapApplicationAdd']">
+                                    <button *ngIf="row.module.id === 3" mat-menu-item (click)="applyScrapBuy(row)">Apply
+                                        Scrap Gold</button>
+                                </ng-container>
+                            </mat-menu>
+
+                            <!-- <ng-container *ngxPermissionsOnly="['loanApplicationAdd']">
                                 <button style="width: 120px;" class="apply-kyc" (click)="applyLoan(row)"
                                     *ngIf="row.product.id === 1 && row.isAssigned && !row.isProcessComplete">
                                     Apply Loan
@@ -91,7 +123,7 @@
                                     *ngIf="row.product.id === 2 && row.isAssigned && !row.isProcessComplete">
                                     Loan Transfer
                                 </button>
-                            </ng-container>
+                            </ng-container> -->
                         </div>
 
                     </mat-cell>

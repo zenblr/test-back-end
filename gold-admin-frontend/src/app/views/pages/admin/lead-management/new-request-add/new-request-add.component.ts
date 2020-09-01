@@ -33,8 +33,8 @@ export class NewRequestAddComponent implements OnInit {
   }
 
   getModules() {
-    this.roleService.getAllProducts().pipe(map(res => {
-      this.modules = res
+    this.roleService.getAllModuleAppraiser().pipe(map(res => {
+      this.modules = res;
     })).subscribe()
   }
 
@@ -45,7 +45,7 @@ export class NewRequestAddComponent implements OnInit {
       customerName: [],
       customerUniqueId: [],
       mobileNumber: [],
-      productId: ['', [Validators.required]]
+      moduleId: [, [Validators.required]]
     })
     this.requestForm.controls.customerName.disable()
     this.requestForm.controls.customerUniqueId.disable()
