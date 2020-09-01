@@ -46,6 +46,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	@Input() clear: boolean;
 	@Input() filterWidth: string;
 
+
 	filterForm: FormGroup;
 	subscriptions: Subscription[] = [];
 	clearData: boolean = false;
@@ -105,7 +106,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		}
 	}
 
-	ngOnChanges(change: SimpleChanges) { }
+	ngOnChanges(changes: SimpleChanges) {
+
+	}
 
 	toggleDropdown(event) {
 		if (event) {
@@ -165,14 +168,14 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			weight: [''],
 			paymentType: [''],
 			merchant: [''],
-			states: [''],
+			states: [],
 			cities: [''],
 			appraiserStatus: [''],
 			loanStatus: [''],
 			kycStatus: [''],
 			cceStatus: [''],
 			packets: [''],
-			scheme: [''],
+			scheme: [],
 			leadStatus: [''],
 			scrapStatus: [''],
 		});
@@ -185,7 +188,6 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			}
 		});
 	}
-
 	get controls() {
 		return this.filterForm.controls;
 	}
@@ -276,8 +278,13 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.list.loanStatus = controls['loanStatus'].value.multiSelect;
 			}
 			if (controls['scheme'].value) {
-				this.filterObject.data.scheme = controls['scheme'].value
-				this.filterObject.list.scheme = controls['scheme'].value;
+				console.log(controls['scheme'].value)
+				if (controls['scheme'].value == "All") {
+					this.filterObject.data.scheme = ''
+				} else {
+					this.filterObject.data.scheme = controls['scheme'].value
+					this.filterObject.list.scheme = controls['scheme'].value;
+				}
 			}
 			return this.filterObject;
 		}
@@ -285,6 +292,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 
 	applyFilter() {
 		this.clearData = false;
+
 		if (this.filterForm.invalid) {
 			return;
 		}
