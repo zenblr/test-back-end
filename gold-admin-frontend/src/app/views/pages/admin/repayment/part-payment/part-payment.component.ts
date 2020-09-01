@@ -80,16 +80,20 @@ export class PartPaymentComponent implements OnInit {
   }
 
   choosePaymentMethod() {
+    if (this.paymentValue && this.paymentValue.paidAmount) {
+      this.paymentValue.paidAmount = this.partAmount.value
+    }
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
       data: {
-        value: this.paymentValue ? this.paymentValue : { paidAmount: this.partAmount.value }
+        value: this.paymentValue ? this.paymentValue : { paidAmount: this.partAmount.value },
+        date: this.loanDetails.loan.loanStartDate
       },
       width: '500px'
     })
 
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.paymentValue = res
+        this.paymentValue = res;
         this.ref.detectChanges()
       }
     })

@@ -200,7 +200,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
         // this.statusAppraiser()
         // this.statusBM()
 
-        if (changes.details.currentValue.masterLoan.loanTransfer) {
+        if (changes.details.currentValue.masterLoan.loanTransfer || changes.details.currentValue.masterLoan.isNewLoanFromPartRelease) {
           this.isLoanTransfer = true
         }
         this.ref.detectChanges()
@@ -420,11 +420,19 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
     }
     if (this.scrapIds) {
       if (this.stage == 2) {
+        if (this.approvalForm.controls.scrapStatusForBM.value == 'pending') {
+          this.approvalForm.markAllAsTouched()
+          return
+        }
         this.scrapApplicationFormService.bmRating(this.approvalForm.value, this.scrapIds).pipe(
           map(res => {
             this.router.navigate(['/admin/scrap-management/applied-scrap'])
           })).subscribe()
       } else if (this.stage == 7) {
+        if (this.approvalForm.controls.scrapStatusForOperatinalTeam.value == 'pending') {
+          this.approvalForm.markAllAsTouched()
+          return
+        }
         this.scrapApplicationFormService.opsRating(this.approvalForm.value, this.scrapIds).pipe(
           map(res => {
             if (this.approvalForm.controls.scrapStatusForOperatinalTeam.value == 'approved') {
@@ -449,11 +457,19 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
       }
     } else {
       if (this.stage == 2) {
+        if (this.approvalForm.controls.loanStatusForBM.value == 'pending') {
+          this.approvalForm.markAllAsTouched()
+          return
+        }
         this.loanFormService.bmRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
           map(res => {
             this.router.navigate(['/admin/loan-management/applied-loan'])
           })).subscribe()
       } else if (this.stage == 7) {
+        if (this.approvalForm.controls.loanStatusForOperatinalTeam.value == 'pending') {
+          this.approvalForm.markAllAsTouched()
+          return
+        }
         this.loanFormService.opsRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
           map(res => {
             if (this.approvalForm.controls.loanStatusForOperatinalTeam.value == 'approved') {

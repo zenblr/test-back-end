@@ -21,7 +21,7 @@ import { PartPaymentService } from '../../../../../core/repayment/part-payment/s
 export class DepositListComponent implements OnInit {
 
   dataSource: DepositDatasource;
-  displayedColumns = ['transactionId', 'bankTransactionId', 'customerId', 'fullName', 'loanId', 'mobileNumber', 'modeOfPayment', 'depositDate', 'depositBankName', 'depositBranchName', 'depositAmount', 'depositStatus', 'update'];
+  displayedColumns = ['transactionId', 'bankTransactionId', 'customerId', 'fullName', 'loanId', 'modeOfPayment', 'depositDate', 'depositBankName', 'depositBranchName', 'depositAmount', 'depositStatus', 'update'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();

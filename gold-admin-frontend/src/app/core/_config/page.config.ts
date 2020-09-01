@@ -201,7 +201,7 @@ export class PageConfig {
 				},
 				'interest-emi': {
 					id: {
-						page: { title: "Pay Interest EMI", desc: "" },
+						page: { title: "Quick Pay ", desc: "" },
 					}
 				},
 				"part-payment": {
