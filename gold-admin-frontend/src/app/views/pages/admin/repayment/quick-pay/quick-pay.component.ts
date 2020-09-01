@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { EmiLogsDialogComponent } from '../emi-logs-dialog/emi-logs-dialog.component';
 import { QuickPayService } from '../../../../../core/repayment/quick-pay/quick-pay.service';
@@ -26,7 +26,8 @@ export class QuickPayComponent implements OnInit {
     private rout: ActivatedRoute,
     private ref: ChangeDetectorRef,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    private ele: ElementRef
   ) { }
 
   ngOnInit() {
@@ -68,6 +69,7 @@ export class QuickPayComponent implements OnInit {
       this.paymentDetails = res.data.loan;
       this.payableAmt.disable()
       this.ref.detectChanges()
+      this.scrollToBottom()
     })
   }
 
@@ -78,14 +80,14 @@ export class QuickPayComponent implements OnInit {
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
       data: {
         value: this.paymentValue ? this.paymentValue : { paidAmount: this.payableAmt.value },
-        date: this.loanDetails.loan.loanStartDate
+        date: this.loanDetails.loanStartDate
       },
       width: '500px'
     })
 
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        console.log(res)
+        // console.log(res)
         this.paymentValue = res
         this.ref.detectChanges()
       }
@@ -106,5 +108,12 @@ export class QuickPayComponent implements OnInit {
       this.router.navigate(['/admin/loan-management/all-loan'])
       this.ref.detectChanges()
     })
+  }
+
+  scrollToBottom() {
+    setTimeout(() => {
+      let view = this.ele.nativeElement.querySelector('#container') as HTMLElement
+      view.scrollIntoView({ behavior: "smooth", block: "end" })
+    }, 500)
   }
 }
