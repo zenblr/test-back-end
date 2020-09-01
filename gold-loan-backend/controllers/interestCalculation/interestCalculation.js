@@ -7,7 +7,7 @@ const Op = Sequelize.Op;
 const _ = require('lodash');
 const moment = require('moment')
 const { dailyIntrestCalculation, cronForDailyPenalInterest } = require('../../utils/interestCron');
-const { getCustomerInterestAmount, intrestCalculationForSelectedLoan, updateInterestAftertOutstandingAmount,
+const { getCustomerInterestAmount, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan, updateInterestAftertOutstandingAmount,
     calculationData, getInterestTableOfSingleLoan, getAllPaidInterest } = require('../../utils/loanFunction');
 
 
@@ -82,12 +82,12 @@ exports.interestCalculationOneLoan = async (req, res) => {
     let { date, masterLoanId } = req.body;
     if (date) {
         data = await intrestCalculationForSelectedLoan(date, masterLoanId);
-        await cronForDailyPenalInterest(date)
+        await penalInterestCalculationForSelectedLoan(date, masterLoanId)
 
     } else {
         date = moment();
         data = await intrestCalculationForSelectedLoan(date, masterLoanId);
-        await cronForDailyPenalInterest(date)
+        await penalInterestCalculationForSelectedLoan(date, masterLoanId)
 
     }
     return res.status(200).json(data);
@@ -127,7 +127,7 @@ exports.getInterestTableInExcel = async (req, res) => {
         interest["paidAmount"] = data.paidAmount;
         interest["interestAccrual"] = data.interestAccrual;
         interest["outstandingInterest"] = data.outstandingInterest;
-        interest["totalInterestAccrual"]=data.totalInterestAccrual;
+        interest["totalInterestAccrual"] = data.totalInterestAccrual;
         interest["emiReceivedDate"] = data.emiReceivedDate;
         interest["penalInterest"] = data.penalInterest;
         interest["PenalAccrual"] = data.PenalAccrual;
