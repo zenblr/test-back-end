@@ -73,7 +73,7 @@ module.exports = (sequelize, DataTypes) => {
         AppraiserRequest.belongsTo(models.module, { foreignKey: 'moduleId', as: 'module' });
         AppraiserRequest.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         AppraiserRequest.belongsTo(models.user, { foreignKey: 'appraiserId', as: 'appraiser' });
-        AppraiserRequest.hasOne(models.customerLoanMaster, { foreignKey: 'requestId', as: 'masterLoan' });
+        AppraiserRequest.hasOne(models.customerLoanMaster, { foreignKey: 'appraiserRequestId', as: 'masterLoan' });
 
     }
     return AppraiserRequest;

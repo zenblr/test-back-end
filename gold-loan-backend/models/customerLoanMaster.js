@@ -233,7 +233,6 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerLoanMaster.belongsTo(models.appraiserRequest, { foreignKey: 'appraiserRequestId', as: 'appraiserRequest' });
 
-
     }
 
     CustomerLoanMaster.prototype.toJSON = function () {
