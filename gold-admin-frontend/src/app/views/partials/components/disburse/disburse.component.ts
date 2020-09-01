@@ -149,8 +149,8 @@ export class DisburseComponent implements OnInit {
     this.controls.unsecuredLoanAmount.enable()
     this.controls.unsecuredSchemeName.enable()
     this.controls.securedLoanAmount.enable()
-    this.controls.processingCharge.disable()
-    this.controls.fullUnsecuredAmount.disable()
+    this.controls.processingCharge.enable()
+    this.controls.fullUnsecuredAmount.enable()
     this.controls.disbursementStatus.enable()
   }
 

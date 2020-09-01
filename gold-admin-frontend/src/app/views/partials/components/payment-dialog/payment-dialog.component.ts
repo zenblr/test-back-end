@@ -61,6 +61,7 @@ export class PaymentDialogComponent implements OnInit {
         this.paymentForm.patchValue(this.data.value)
         this.paymentForm.controls.depositStatus.disable();
         this.paymentForm.controls.paidAmount.disable();
+        this.paymentForm.controls.depositTransactionId.disable();
       }
     }
   }
@@ -70,7 +71,10 @@ export class PaymentDialogComponent implements OnInit {
     const paymentMode = event.target.value
     switch (paymentMode) {
       case 'cash':
-        this.paymentForm.clearValidators();
+        for (const key in this.paymentForm.controls) {
+          this.paymentForm.controls[key].setValidators([])
+          this.paymentForm.controls[key].updateValueAndValidity()
+        }
         this.paymentForm.controls.paymentType.setValidators([Validators.required])
         this.paymentForm.controls.paidAmount.setValidators([Validators.required])
         this.paymentForm.controls.depositDate.setValidators([Validators.required])
@@ -82,28 +86,15 @@ export class PaymentDialogComponent implements OnInit {
       case 'RTGS':
       case 'UPI':
         this.paymentForm.clearValidators();
-        // Object.keys(this.paymentForm.controls).forEach(key => {
-        //   this.paymentForm.get(key).markAsDirty();
-        // });
 
         for (const key in this.paymentForm.controls) {
           if (key !== 'chequeNumber') {
             this.paymentForm.controls[key].setValidators([Validators.required])
-            this.paymentForm.updateValueAndValidity()
+            this.paymentForm.controls[key].updateValueAndValidity()
           } else {
             this.paymentForm.controls[key].patchValue(null)
           }
         }
-        this.paymentForm.updateValueAndValidity()
-        // console.log(this.paymentForm)
-
-
-        // this.paymentForm.controls.paymentMode.setValidators([Validators.required])
-        // this.paymentForm.controls.transactionId.setValidators([Validators.required])
-        // this.paymentForm.controls.depositBankName.setValidators([Validators.required])
-        // this.paymentForm.controls.depositAmount.setValidators([Validators.required])
-        // this.paymentForm.controls.depositDate.setValidators([Validators.required])
-        // this.paymentForm.updateValueAndValidity()
         break;
 
       case 'cheque':
@@ -112,20 +103,15 @@ export class PaymentDialogComponent implements OnInit {
         for (const key in this.paymentForm.controls) {
           if (key != 'transactionId') {
             this.paymentForm.controls[key].setValidators([Validators.required])
-            if (key === 'chequeNumber') this.paymentForm.controls[key].setValidators([Validators.required, Validators.pattern('[0-9]{6}')])
+            this.paymentForm.controls[key].updateValueAndValidity()
+            if (key === 'chequeNumber') {
+              this.paymentForm.controls[key].setValidators([Validators.required, Validators.pattern('[0-9]{6}')]);
+              this.paymentForm.controls[key].updateValueAndValidity()
+            }
           } else {
             this.paymentForm.controls[key].patchValue(null)
           }
         }
-        this.paymentForm.updateValueAndValidity()
-        // console.log(this.paymentForm)
-
-        // this.paymentForm.controls.paymentMode.setValidators([Validators.required])
-        // this.paymentForm.controls.chequeNumber.setValidators([Validators.required])
-        // this.paymentForm.controls.depositBankName.setValidators([Validators.required])
-        // this.paymentForm.controls.depositAmount.setValidators([Validators.required])
-        // this.paymentForm.controls.depositDate.setValidators([Validators.required])
-        // this.paymentForm.updateValueAndValidity()
         break;
 
       default:
@@ -136,14 +122,6 @@ export class PaymentDialogComponent implements OnInit {
   get controls() {
     return this.paymentForm.controls
   }
-
-  // closeModal() {
-  //   if (this.data.value) {
-  //     this.dialogRef.close()
-  //   } else {
-  //     this.dialogRef.close()
-  //   }
-  // }
 
   action(event: Event) {
     if (event) {

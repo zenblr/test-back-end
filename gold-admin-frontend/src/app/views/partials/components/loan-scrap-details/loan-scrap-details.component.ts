@@ -5,7 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
 import { PdfViewerComponent } from '../pdf-viewer/pdf-viewer.component';
-
+import { SharedService } from '../../../../core/shared/services/shared.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 @Component({
   selector: 'kt-loan-scrap-details',
   templateUrl: './loan-scrap-details.component.html',
@@ -22,13 +24,23 @@ export class LoanScrapDetailsComponent implements OnInit {
   }
   masterLoanId: any;
   masterAndLoanIds: { loanId: any; masterLoanId: any; };
+  destroy$ = new Subject();
 
   constructor(
     private loanservice: LoanApplicationFormService,
     private scrapCustomerManagementService: ScrapCustomerManagementService,
     private route: ActivatedRoute,
-    public dialog: MatDialog
-  ) { }
+    public dialog: MatDialog,
+    private sharedService:SharedService
+  ) { 
+    this.sharedService.exportExcel$
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((res) => {
+      if (res) {
+        this.soaDownload();
+      }
+    });
+  }
 
   ngOnInit() {
     if (this.route.snapshot.params.scrapId) {
@@ -38,6 +50,10 @@ export class LoanScrapDetailsComponent implements OnInit {
     }
   }
 
+  ngDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
   getLoanDetails() {
     this.loanId = this.route.snapshot.params.loanId
     this.masterLoanId = this.route.snapshot.params.masterLoanId
@@ -220,6 +236,12 @@ export class LoanScrapDetailsComponent implements OnInit {
         width: "auto"
       })
     }
+  }
+
+  soaDownload(){
+    this.masterLoanId = this.route.snapshot.params.masterLoanId
+    this.sharedService.soaDownload(this.masterLoanId).subscribe();
+    this.sharedService.exportExcel.next(false);
   }
 
 }
