@@ -23,7 +23,7 @@ exports.ornamentsDetails = async (req, res, next) => {
             {
                 model: models.customerLoan,
                 as: 'customerLoan',
-                attributes: ['masterLoanId', 'loanUniqueId', 'loanAmount']
+                attributes: ['masterLoanId', 'loanUniqueId', 'outstandingAmount', 'loanAmount']
             },
             {
                 model: models.customerLoanPersonalDetail,
@@ -58,7 +58,7 @@ async function getLoanLastPayment(masterLoanId) {
         order: [["updatedAt", "DESC"]],
     });
     let lastPayment;
-    if(lastPaymentData){
+    if (lastPaymentData) {
         lastPayment = lastPaymentData.emiReceivedDate;
     }
     return lastPayment;
@@ -205,12 +205,20 @@ async function getornamentLoanInfo(masterLoanId, ornamentWeight, amount) {
         interestAmount: 0,
         penalInterest: 0,
         totalPayableAmount: 0,
+        securedInterest: 0,
+        securedPenalInterest: 0,
+        unsecuredInterest: 0,
+        unsecuredPenalInterest: 0
     }
     loanDetails.interestAmount = amount.secured.interest;
     loanDetails.penalInterest = amount.secured.penalInterest;
+    loanDetails.securedInterest = amount.secured.interest;
+    loanDetails.securedPenalInterest = amount.secured.penalInterest;
     if (amount.unsecured) {
         loanDetails.interestAmount = loanDetails.interestAmount + amount.unsecured.interest;
         loanDetails.penalInterest = loanDetails.penalInterest + amount.unsecured.penalInterest;
+        loanDetails.unsecuredInterest = amount.unsecured.interest;
+        loanDetails.unsecuredPenalInterest = amount.unsecured.penalInterest;
     }
     //calculate value here
     loanDetails.totalPayableAmount = Number((ornamentWeight.releaseAmount + loanDetails.penalInterest + loanDetails.interestAmount).toFixed(2));
@@ -242,7 +250,8 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
         let releaseData = await getAllPartAndFullReleaseData(masterLoanId, ornamentId);
         let ornamentWeight = releaseData.ornamentWeight;
         let loanInfo = releaseData.loanInfo;
-        return res.status(200).json({ message: 'success', ornamentWeight, loanInfo });
+        let amount = releaseData.amount;
+        return res.status(200).json({ message: 'success', ornamentWeight, loanInfo, amount });
     } else {
         return res.status(400).json({ message: "Can't proceed further as you have already applied for pat released or full release" });
     }

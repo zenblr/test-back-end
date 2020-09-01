@@ -78,9 +78,10 @@
                 <ng-container matColumnDef="interestRestDays">
                     <mat-header-cell *matHeaderCellDef>Payment Frequency</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <span *ngIf="loan?.paymentFrequency == '30'">Monthly</span>
+                        <!-- <span *ngIf="loan?.paymentFrequency == '30'">Monthly</span>
                         <span *ngIf="loan?.paymentFrequency == '90'">Quarterly</span>
-                        <span *ngIf="loan?.paymentFrequency == '180'">Half Yearly</span>
+                        <span *ngIf="loan?.paymentFrequency == '180'">Half Yearly</span> -->
+                        <span>{{loan?.paymentFrequency}} Days</span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="startDate">
