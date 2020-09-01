@@ -289,7 +289,11 @@ exports.getAllCustomersForLead = async (req, res, next) => {
       as: "appraiser",
       attributes: ['id', 'firstName', 'lastName']
     }]
-  },
+  }, {
+    model: models.module,
+    as: 'module',
+    attributes: ['id', 'moduleName']
+  }
 
   ]
   let internalBranchId = req.userData.internalBranchId
