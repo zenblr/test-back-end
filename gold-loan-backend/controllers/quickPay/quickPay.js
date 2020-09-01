@@ -154,7 +154,7 @@ exports.confirmationForPayment = async (req, res, next) => {
 
 
 
-        let payment = await allInterestPayment(transactionId);
+        var payment = await allInterestPayment(transactionId);
         // let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(transactionId);
 
         let quickPayData = await sequelize.transaction(async (t) => {
@@ -227,7 +227,7 @@ exports.confirmationForPayment = async (req, res, next) => {
         })
 
     }
-    return res.status(200).json({ message: "success" });
+    return res.status(200).json({ message: "success",payment });
 
 
 
