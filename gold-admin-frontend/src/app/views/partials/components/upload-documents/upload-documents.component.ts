@@ -256,11 +256,15 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.globalSettingService.globalSetting$.subscribe(global => {
+    this.globalSettingService.getScrapGlobalSetting().subscribe(global => {
+      console.log(global)
       this.globalValue = global
-      this.globalValue.beforeSD = 0;
-      this.globalValue.afterSD = 10;
-
+      // this.globalValue.beforeSD = this.globalValue.;
+      // this.globalValue.afterSD = 10;
+      this.documentsForm.controls.standardDeduction.setValidators
+      ([Validators.min(this.globalValue.standardDeductionMin), 
+        Validators.max(this.globalValue.standardDeductionMax)]);
+      this.documentsForm.controls.standardDeduction.updateValueAndValidity();
     });
 
     if (this.scrapUrl == "scrap-management") {

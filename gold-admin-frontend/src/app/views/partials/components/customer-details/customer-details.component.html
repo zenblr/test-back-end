@@ -75,11 +75,13 @@
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Bank Details</div>
-                    <div class="text-color font-weight-500">
-                        <!-- <div>{{cutomerDetails?.customerKycBank[0]?.accountHolderName | titlecase}}</div>
-                        <div>{{cutomerDetails?.customerKycBank[0]?.accountNumber}}</div>
-                        <div>{{cutomerDetails?.customerKycBank[0]?.ifscCode | uppercase}}</div> -->
-                    </div>
+                   
+                    <div class="text-color font-weight-500 kt-margin-b-5"
+                    [ngStyle]="{'width':'65%','line-height':'1.5'}">
+                    {{cutomerDetails?.customerScrap[0]?.scrapBankDetails?.acHolderName | titlecase}}
+                    {{cutomerDetails?.customerScrap[0]?.scrapBankDetails?.bankBranch | titlecase}}
+                    {{cutomerDetails?.customerScrap[0]?.scrapBankDetails?.acNumber | titlecase}}
+                </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">KYC Document</div>
@@ -170,6 +172,7 @@
                                 </div>
                             </div>
                         </div>
+                       
                         <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10"
                             (click)="viewLoan(masterLoan.id)" *ngxPermissionsOnly="['loanDetailsView']">View
                             Details</div>
@@ -202,6 +205,20 @@
                         <div class="text-gray font-weight-500">Disbursed Date</div>
                         <div class="text-color font-weight-500">
                             {{scrap?.scrapDisbursement?.date | date: 'mediumDate'}}
+                        </div>
+                    </div>
+                </div>
+                <div class="row kt-margin-b-20">
+                    <div class="col-6">
+                        <div class="text-gray font-weight-500">Bank Name</div>
+                        <div class="text-color font-weight-500">
+                            {{cutomerDetails?.customerScrap[i]?.scrapBankDetails?.bankName | titlecase}}
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-gray font-weight-500">PaymentMode</div>
+                        <div class="text-color font-weight-500">
+                            {{cutomerDetails?.customerScrap[i]?.scrapBankDetails?.paymentType| titlecase}}
                         </div>
                     </div>
                 </div>

@@ -14,6 +14,7 @@ export class GlobalSettingsComponent implements OnInit {
   globalSettingForm: FormGroup;
   url: any;
   showScrapFlag: boolean;
+  globalValue: any;
 
   constructor(
     private fb: FormBuilder,
@@ -43,8 +44,8 @@ export class GlobalSettingsComponent implements OnInit {
       ltvGoldValue: [, [Validators.required]],
       minimumLoanAmountAllowed: [],
       gst: [, [Validators.required]],
-      beforeStandardDeduction: [, [Validators.required]],
-      afterStandardDeduction: [, [Validators.required]],
+      standardDeductionMin: [],
+      standardDeductionMax: [],
       cashTransactionLimit: [, [Validators.required]],
       minimumTopUpAmount: [],
       gracePeriodDays: [],
@@ -61,6 +62,10 @@ export class GlobalSettingsComponent implements OnInit {
         this.globalSettingForm.controls.processingChargesFixed.updateValueAndValidity()
       this.globalSettingForm.controls.processingChargesInPercent.setValidators(Validators.required),
         this.globalSettingForm.controls.processingChargesInPercent.updateValueAndValidity()
+        this.globalSettingForm.controls.standardDeductionMin.setValidators([Validators.required, Validators.maxLength(1)]),
+        this.globalSettingForm.controls.standardDeductionMin.updateValueAndValidity()
+        this.globalSettingForm.controls.standardDeductionMax.setValidators([Validators.required, Validators.maxLength(2)]),
+        this.globalSettingForm.controls.standardDeductionMax.updateValueAndValidity()
     } else {
       this.globalSettingForm.controls.minimumLoanAmountAllowed.setValidators(Validators.required),
         this.globalSettingForm.controls.minimumLoanAmountAllowed.updateValueAndValidity()
@@ -89,6 +94,7 @@ export class GlobalSettingsComponent implements OnInit {
   getScrapGlobalSetting() {
     if (this.globalSettingService.globalSetting.getValue() != null) {
       this.globalSettingService.globalSetting$.subscribe(res => {
+        console.log(res);
         this.globalSettingForm.patchValue(res);
       })
     } else {
