@@ -282,14 +282,6 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     attributes: ['id', 'leadName'],
   },
   {
-    model: models.customerAssignAppraiser,
-    as: "customerAssignAppraiser",
-    include: [{
-      model: models.user,
-      as: "appraiser",
-      attributes: ['id', 'firstName', 'lastName']
-    }]
-  }, {
     model: models.module,
     as: 'module',
     attributes: ['id', 'moduleName']
