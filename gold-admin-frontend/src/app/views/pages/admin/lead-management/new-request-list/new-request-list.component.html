@@ -34,7 +34,8 @@
                     <mat-header-cell *matHeaderCellDef>Appointment Time</mat-header-cell>
                     <mat-cell *matCellDef="let row">
                         <span *ngIf="row.startTime">
-                            {{row.startTime | time24to12}} -
+                            {{row.startTime | time24to12 }}
+                            <span *ngIf="row.startTime">-</span>
                             {{ row.endTime | time24to12 }}</span>
                         <span *ngIf="!row.startTime">-</span>
                     </mat-cell>

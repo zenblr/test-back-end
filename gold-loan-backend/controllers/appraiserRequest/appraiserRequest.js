@@ -128,6 +128,20 @@ exports.assignAppraiser = async (req, res) => {
     }
 }
 
+exports.updateAppraiser = async (req, res) => {
+     let requestId = req.params.id
+    const { id, appraiserId, appoinmentDate, startTime, endTime } = req.body;
+    let modifiedBy = req.userData.id;
+
+    const data = await models.appraiserRequest.update({ appraiserId, appoinmentDate, startTime, endTime, modifiedBy, isAssigned: true }, { where: { id: id } })
+    //console.log(data)
+    if (data.length === 0) {
+        return res.status(404).json({ message: "Appraiser not assigned to request" });
+    } else {
+        return res.status(200).json({ message: "Appraiser assigned to request" });
+    }
+}
+
 //FUNCTION TO GET ASSIGNED REQUEST(S)
 exports.getAssignedRequest = async (req, res) => {
     let { search, offset, pageSize } =
