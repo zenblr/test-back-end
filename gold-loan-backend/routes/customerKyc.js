@@ -27,7 +27,7 @@ route.get('/applied-kyc', checkAuth, checkRolePermission, wrapper(appliedKyc))
 
 route.get('/kyc-form-review', checkAuth, checkRolePermission, wrapper(getReviewAndSubmit));
 
-//customerApp
+//appraiserApp
 
 route.post('/submit-kyc', submitCustomerKycDetailValidation, validationError, checkAuth, wrapper(submitAppKyc))
 
@@ -37,7 +37,7 @@ route.post('/edit-kyc', submitCustomerKycDetailValidation, validationError, chec
 
 route.get('/get-assigned-customer', checkAuth, wrapper(getAssignedCustomer))
 
-//customerApp
+//appraiserApp
 
 
 module.exports = route;

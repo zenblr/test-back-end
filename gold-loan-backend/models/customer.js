@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'merchant_id',
         },
+        moduleId:{
+            type: DataTypes.INTEGER,
+            field: 'module_id',
+        },
         firstName: {
             type: DataTypes.STRING,
             field: 'first_name',
@@ -154,6 +158,11 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.hasMany(models.customerScrap, { foreignKey: 'customerId', as: 'customerScrap' });
         Customer.hasMany(models.customerPacketTracking, { foreignKey: 'customerReceiverId', as: 'customerReceiver' });
+
+        Customer.hasMany(models.appraiserRequest, { foreignKey: 'customerId', as: 'appraiserRequest' });
+
+        Customer.belongsTo(models.module, { foreignKey: 'moduleId', as: 'module' });
+
 
     }
 
