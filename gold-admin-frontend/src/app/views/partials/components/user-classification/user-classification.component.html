@@ -2,82 +2,24 @@
     <kt-portlet-body>
         <div class="container">
             <form [formGroup]="custClassificationForm">
-                <!-- <div>
-                    <div class="row">
-                        <div class="col">
-                            <h6>Company</h6>
-                        </div>
-                        <div class="col">
-                            <h6>CCE</h6>
-                        </div>
-                        <div class="col">
-                            <h6>BM/ Operation Team</h6>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <h6>Customer Behaviour</h6>
-                        </div>
-                        <div class="col">
-                            <h6>CCE</h6>
-                        </div>
-                        <div class="col">
-                            <h6>BM/ Operation Team</h6>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <h6>ID Proof</h6>
-                        </div>
-                        <div class="col">
-                            <h6>CCE</h6>
-                        </div>
-                        <div class="col">
-                            <h6>BM/ Operation Team</h6>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <h6>Address Proof</h6>
-                        </div>
-                        <div class="col">
-                            <h6>CCE</h6>
-                        </div>
-                        <div class="col">
-                            <h6>BM/ Operation Team</h6>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <h6>KYC Status</h6>
-                        </div>
-                        <div class="col">
-                            <h6>CCE</h6>
-                        </div>
-                        <div class="col">
-                            <h6>BM/ Operation Team</h6>
-                        </div>
-                    </div>
-                </div> -->
-
                 <div class=" table-div">
                     <table class="table ">
                         <thead>
                             <tr>
                                 <th scope="col" style="width: 40%" class="rating-title">Category</th>
-                                <th scope="col" style="width: 30%" class="rating-cce">CCE</th>
-                                <th scope="col" style="width: 30%" class="rating-bm" *ngIf="viewBMForm">Operation
+                                <th scope="col" style="width: 30%" class="rating-cce"
+                                    *ngIf="permission.cceKycRating || permission.opsKycRating">
+                                    CCE</th>
+                                <th scope="col" style="width: 30%" class="rating-bm"
+                                    *ngIf="permission.opsKycRating && customerDetails.kycStatusFromCce == 'approved'">
+                                    Operation
                                     Team</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td scope="row" class="rating-title">KYC Rating</td>
-                                <td class="rating-cce">
+                                <td class="rating-cce" *ngIf="permission.cceKycRating || permission.opsKycRating">
                                     <select class="form-control" formControlName="kycRatingFromCce"
                                         (change)="conditionalValidation(); resetKYCStatus()"
                                         [class.isError]="cceControls.kycRatingFromCce.invalid && cceControls.kycRatingFromCce.touched">
@@ -88,60 +30,13 @@
                                         </option>
                                     </select>
                                 </td>
-                                <td class="rating-bm text-center" *ngIf="viewBMForm">
-                                    <!-- <img src="../../../../../../../assets/media/icons/correct.svg"
-                                        *ngIf="cceControls.kycRatingFromBM.value"
-                                        (click)="approvalOfBM(false,'kycRating')">
-                                    <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                                        *ngIf="!cceControls.kycRatingFromBM.value"
-                                        (click)="approvalOfBM(true,'kycRating')"> -->
+                                <td class="rating-bm text-center"
+                                    *ngIf="permission.opsKycRating && customerDetails.kycStatusFromCce == 'approved'">
                                 </td>
                             </tr>
-                            <!-- <tr>
-                                <td scope="row" class="rating-title">ID Proof</td>
-                                <td class="rating-cce">
-                                    <select class="form-control" formControlName="idProofRatingCce"
-                                        [class.isError]="cceControls.idProofRatingCce.invalid && cceControls.idProofRatingCce.touched">
-                                        <option value="" [disabled]=true [selected]="true"> Select Rating
-                                        </option>
-                                        <option *ngFor="let rate of rating" [value]="rate.ratingPoint">
-                                            {{rate.ratingPoint}}
-                                        </option>
-                                    </select>
-                                </td>
-                                <td class="rating-bm text-center" *ngIf="viewBMForm">
-                                    <img src="../../../../../../../assets/media/icons/correct.svg"
-                                        *ngIf="cceControls.idProofRatingVerifiedByBm.value"
-                                        (click)="approvalOfBM(false,'identity')">
-                                    <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                                        *ngIf="!cceControls.idProofRatingVerifiedByBm.value"
-                                        (click)="approvalOfBM(true,'identity')">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td scope="row" class="rating-title">Address Proof</td>
-                                <td class="rating-cce">
-                                    <select class="form-control" formControlName="addressProofRatingCce"
-                                        [class.isError]="cceControls.addressProofRatingCce.invalid && cceControls.addressProofRatingCce.touched">
-                                        <option value="" [disabled]=true [selected]="true"> Select Rating
-                                        </option>
-                                        <option *ngFor="let rate of rating" [value]="rate.ratingPoint">
-                                            {{rate.ratingPoint}}
-                                        </option>
-                                    </select>
-                                </td>
-                                <td class="rating-bm text-center" *ngIf="viewBMForm">
-                                    <img src="../../../../../../../assets/media/icons/correct.svg"
-                                        *ngIf="cceControls.addressProofRatingVerifiedBm.value"
-                                        (click)="approvalOfBM(false,'address')">
-                                    <img src="../../../../../../../assets/media/icons/incorrect.svg"
-                                        *ngIf="!cceControls.addressProofRatingVerifiedBm.value"
-                                        (click)="approvalOfBM(true,'address')">
-                                </td>
-                            </tr> -->
                             <tr>
                                 <td scope="row" class="rating-title">KYC Status</td>
-                                <td class="rating-cce">
+                                <td class="rating-cce" *ngIf="permission.cceKycRating || permission.opsKycRating">
                                     <select class="form-control" formControlName="kycStatusFromCce"
                                         (change)="conditionalValidation()"
                                         [class.isError]="cceControls.kycStatusFromCce.invalid && cceControls.kycStatusFromCce.touched">
@@ -154,7 +49,8 @@
                                         </option>
                                     </select>
                                 </td>
-                                <td class="rating-bm" *ngIf="viewBMForm">
+                                <td class="rating-bm"
+                                    *ngIf="permission.opsKycRating && customerDetails.kycStatusFromCce == 'approved'">
                                     <select class="form-control" formControlName="kycStatusFromOperationalTeam">
                                         <option value="pending" disabled selected> Select Status
                                         </option>
@@ -178,7 +74,7 @@
                 </div>
 
                 <!-- <ng-container *ngIf="editRating"> -->
-                <div *ngIf="(showTextBoxCce  && userType == 6)" class="col kt-margin-t-20 kt-margin-b-20"
+                <div *ngIf="(showTextBoxCce && permission.cceKycRating)" class="col kt-margin-t-20 kt-margin-b-20"
                     style="width: 600px; margin: auto">
                     <div class="row">
                         <div class="col-4" style="font-weight: 500 !important;">
@@ -210,7 +106,7 @@
                     </div>
                 </div>
                 <!-- </ng-container> -->
-                <div *ngIf="showTextBoxBM && userType== 8" class="col kt-margin-t-20 kt-margin-b-20"
+                <div *ngIf="showTextBoxBM && permission.opsKycRating" class="col kt-margin-t-20 kt-margin-b-20"
                     style="width: 600px; margin: auto">
                     <mat-form-field class="w-100">
                         <mat-label class="mandatory">Reason for selected status</mat-label>
