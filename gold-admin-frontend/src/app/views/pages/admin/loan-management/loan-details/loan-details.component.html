@@ -78,9 +78,10 @@
                 <ng-container matColumnDef="interestRestDays">
                     <mat-header-cell *matHeaderCellDef>Payment Frequency</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <span *ngIf="loan?.paymentFrequency == '30'">Monthly</span>
+                        <!-- <span *ngIf="loan?.paymentFrequency == '30'">Monthly</span>
                         <span *ngIf="loan?.paymentFrequency == '90'">Quarterly</span>
-                        <span *ngIf="loan?.paymentFrequency == '180'">Half Yearly</span>
+                        <span *ngIf="loan?.paymentFrequency == '180'">Half Yearly</span> -->
+                        <span>{{loan?.paymentFrequency}} Days</span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="startDate">
@@ -111,8 +112,10 @@
                             <button *ngxPermissionsOnly="['loanDetailsView']" mat-menu-item
                                 (click)="viewLoan(loan)">View Loan</button>
                             <ng-container *ngIf="!(loan.partRelease || loan.fullRelease)">
-                                <button mat-menu-item (click)="interestEmi(loan)">Quick Pay</button>
-                                <button mat-menu-item (click)="partPayment(loan)">Part Payment</button>
+                                <button *ngxPermissionsOnly="['addQuickPay']" mat-menu-item
+                                    (click)="interestEmi(loan)">Quick Pay</button>
+                                <button *ngxPermissionsOnly="['addPartPayment']" mat-menu-item
+                                    (click)="partPayment(loan)">Part Payment</button>
                                 <!-- <button mat-menu-item (click)="topUp(loan)">Top Up</button> -->
                                 <button *ngxPermissionsOnly="['partReleaseAdd', 'fullReleaseAdd']" mat-menu-item
                                     (click)="jewelleryRelease(loan)">Jewellery
@@ -144,7 +147,7 @@
             <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
             <!-- MATERIAL PAGINATOR | Binded to dasources -->
             <!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
-            <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
                 [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
         </div>
     </kt-portlet-body>

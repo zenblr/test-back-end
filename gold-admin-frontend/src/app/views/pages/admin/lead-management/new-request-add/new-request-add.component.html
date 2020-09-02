@@ -70,7 +70,7 @@
                                 <div class="col-8">
                                     <select class="form-control" formControlName="moduleId"
                                         [class.isError]="controls.moduleId.touched && controls.moduleId.invalid">
-                                        <option value="" selected disabled>Select Product</option>
+                                        <option value=null selected disabled>Select Product</option>
                                         <option *ngFor="let item of modules" [value]="item.id">
                                             {{item.moduleName | titlecase}}
                                         </option>

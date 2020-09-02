@@ -49,7 +49,6 @@ export class AppliedLoanComponent implements OnInit {
   ) {
     this.ngxPermission.permissions$.subscribe(res => {
       this.permission = res
-      console.log(res)
     })
 
 
@@ -125,7 +124,6 @@ export class AppliedLoanComponent implements OnInit {
   }
 
   applyFilter(data) {
-    console.log(data)
     this.queryParamsData.appraiserApproval = data.data.appraiserStatus;
     this.queryParamsData.loanStageId = data.data.loanStatus;
 
@@ -133,21 +131,9 @@ export class AppliedLoanComponent implements OnInit {
     this.dataSource.loadAppliedLoans(this.queryParamsData);
   }
 
-  // disburse(loan, masterLoanId) {
-  //   // console.log(event);
-  //   const dialogRef = this.dialog.open(DisburseDialogComponent, {
-  //     data: { loan, masterLoanId },
-  //     width: '500px'
-  //   });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) {
-  //       this.loadAppliedLoansPage();
-  //     }
-  //   });
-  // }
+ 
 
   editLoan(loan) {
-    console.log(loan)
     if (loan.loanStage.id == 2 && this.permission.addBmRating) {
       this.navigate(loan)
     }

@@ -10,7 +10,7 @@ const loanFunction = require('../../utils/loanFunction');
 const { getCustomerInterestAmount, customerLoanDetailsByMasterLoanDetails, getGlobalSetting, getLoanDetails, allInterestPayment, getAmountLoanSplitUpData, getTransactionPrincipalAmount } = require('../../utils/loanFunction');
 const moment = require('moment')
 const uniqid = require('uniqid');
-
+const _ = require('lodash');
 
 exports.ornamentsDetails = async (req, res, next) => {
 
@@ -23,7 +23,7 @@ exports.ornamentsDetails = async (req, res, next) => {
             {
                 model: models.customerLoan,
                 as: 'customerLoan',
-                attributes: ['masterLoanId', 'loanUniqueId', 'loanAmount']
+                attributes: ['masterLoanId', 'loanUniqueId', 'outstandingAmount', 'loanAmount']
             },
             {
                 model: models.customerLoanPersonalDetail,
@@ -58,7 +58,7 @@ async function getLoanLastPayment(masterLoanId) {
         order: [["updatedAt", "DESC"]],
     });
     let lastPayment;
-    if(lastPaymentData){
+    if (lastPaymentData) {
         lastPayment = lastPaymentData.emiReceivedDate;
     }
     return lastPayment;
@@ -155,7 +155,6 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
                 ornamentsWeightInfo.allOrnamentsNetWeight = ornamentsWeightInfo.allOrnamentsNetWeight + parseFloat(ornaments.netWeight);
                 let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
                 ornamentsWeightInfo.currentOutstandingAmount = ornamentsWeightInfo.currentOutstandingAmount + (ltvAmount * parseFloat(ornaments.netWeight));
-                console.log((ltvAmount * parseFloat(ornaments.netWeight)))
             }
         }
 
@@ -205,12 +204,20 @@ async function getornamentLoanInfo(masterLoanId, ornamentWeight, amount) {
         interestAmount: 0,
         penalInterest: 0,
         totalPayableAmount: 0,
+        securedInterest: 0,
+        securedPenalInterest: 0,
+        unsecuredInterest: 0,
+        unsecuredPenalInterest: 0
     }
     loanDetails.interestAmount = amount.secured.interest;
     loanDetails.penalInterest = amount.secured.penalInterest;
+    loanDetails.securedInterest = amount.secured.interest;
+    loanDetails.securedPenalInterest = amount.secured.penalInterest;
     if (amount.unsecured) {
         loanDetails.interestAmount = loanDetails.interestAmount + amount.unsecured.interest;
         loanDetails.penalInterest = loanDetails.penalInterest + amount.unsecured.penalInterest;
+        loanDetails.unsecuredInterest = amount.unsecured.interest;
+        loanDetails.unsecuredPenalInterest = amount.unsecured.penalInterest;
     }
     //calculate value here
     loanDetails.totalPayableAmount = Number((ornamentWeight.releaseAmount + loanDetails.penalInterest + loanDetails.interestAmount).toFixed(2));
@@ -242,7 +249,8 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
         let releaseData = await getAllPartAndFullReleaseData(masterLoanId, ornamentId);
         let ornamentWeight = releaseData.ornamentWeight;
         let loanInfo = releaseData.loanInfo;
-        return res.status(200).json({ message: 'success', ornamentWeight, loanInfo });
+        let amount = releaseData.amount;
+        return res.status(200).json({ message: 'success', ornamentWeight, loanInfo, amount });
     } else {
         return res.status(400).json({ message: "Can't proceed further as you have already applied for pat released or full release" });
     }
@@ -805,6 +813,19 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
     } else {
         res.status(200).json({ message: 'customer details fetch successfully', customerData, partReleaseId, newLoanAmount });
     }
+}
+
+exports.getPartReleaseNewLonaAmount = async (req, res, next) => {
+    let partReleaseId = req.query.partReleaseId;
+    let partReleaseData = await models.partRelease.findOne({
+        where: { id: partReleaseId },
+        attributes: ['amountStatus', 'partReleaseStatus', 'masterLoanId', 'newLoanAmount']
+    });
+    if(partReleaseData){
+        return res.status(200).json({ newLoanAmount:partReleaseData.newLoanAmount,partReleaseId });
+    }else{
+        return res.status(404).json({ message:"Data not found"});
+    }  
 }
 
 //Full release 

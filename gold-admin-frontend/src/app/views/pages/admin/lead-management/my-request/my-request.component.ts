@@ -106,7 +106,7 @@ export class MyRequestComponent implements OnInit {
   }
 
   applyLoan(loan) {
-    this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerID: loan.customer.customerUniqueId } })
+    this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerID: loan.id } })
   }
 
   applyScrapBuy(item) {

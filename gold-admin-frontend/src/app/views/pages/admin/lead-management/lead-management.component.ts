@@ -20,7 +20,7 @@ import { NewRequestAddComponent } from './new-request-add/new-request-add.compon
 export class LeadManagementComponent implements OnInit {
 
   dataSource: LeadManagementDatasource;
-  displayedColumns = ['fullName', 'pan', 'internalBranch', 'state', 'city', 'pincode', 'date', 'status', 'kycStatus', 'kyc', 'actions', 'view', 'appraiser', 'menu'];
+  displayedColumns = ['fullName', 'pan', 'internalBranch', 'module', 'state', 'city', 'pincode', 'date', 'status', 'kycStatus', 'kyc', 'actions', 'view', 'menu'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   queryParamsData = {
@@ -32,8 +32,6 @@ export class LeadManagementComponent implements OnInit {
     cityId: '',
     statusId: '',
   }
-  // Filter fields
-  // @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   destroy$ = new Subject();
   filter$ = new Subject();
@@ -121,7 +119,7 @@ export class LeadManagementComponent implements OnInit {
   }
 
   applyFilter(data) {
-   
+
     this.queryParamsData.cityId = data.data.cities;
     this.queryParamsData.stateId = data.data.states;
     this.queryParamsData.statusId = data.data.leadStatus;
@@ -130,7 +128,7 @@ export class LeadManagementComponent implements OnInit {
   }
 
   addLead() {
-   
+
     const dialogRef = this.dialog.open(AddLeadComponent, {
       data: { action: 'add' },
       width: '500px'
@@ -171,7 +169,7 @@ export class LeadManagementComponent implements OnInit {
   }
 
   goToKyc(data) {
-    
+
     var mobile = '';
     this.leadService.getLeadById(data.id).pipe(
       map(res => {
@@ -184,7 +182,7 @@ export class LeadManagementComponent implements OnInit {
   assign(item) {
     // this.router.navigate(['/admin/user-management/redirect-assign-appraiser'])
     item.customer = { firstName: item.firstName, lastName: item.lastName }
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', from: 'lead', customer: item.customer, id: item.id }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', from: 'lead', customer: item.customer, id: item.id, internalBranchId: item.customer.internalBranchId }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadLeadsPage();
@@ -195,7 +193,7 @@ export class LeadManagementComponent implements OnInit {
   updateAppraiser(item) {
     item.customer = { firstName: item.firstName, lastName: item.lastName }
     item.customer.customerUniqueId = item.customerUniqueId
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit', from: 'lead', appraiser: item.customerAssignAppraiser, customer: item.customer, id: item.id }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit', from: 'lead', appraiser: item.customerAssignAppraiser, customer: item.customer, id: item.id, internalBranchId: item.customer.internalBranchId }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadLeadsPage();

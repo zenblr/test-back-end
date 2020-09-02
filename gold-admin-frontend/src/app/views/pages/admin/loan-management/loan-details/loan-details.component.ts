@@ -15,7 +15,7 @@ export class LoanDetailsComponent implements OnInit {
 
   roles: any
   dataSource: LoanDetailsDatasource;
-  displayedColumns = ['customerID', 'customerName', 'loanId', 'schemeName', 'packets', 'amount', 'interestRate', 'tenure', 'interestRestDays', 'startDate', 'endDate', 'actions',];
+  displayedColumns = ['customerID', 'customerName', 'loanId', 'schemeName', 'amount', 'interestRate', 'tenure', 'interestRestDays', 'startDate', 'endDate', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -35,7 +35,7 @@ export class LoanDetailsComponent implements OnInit {
     private router: Router,
     private sharedService: SharedService
   ) {
-    
+
   }
 
   ngOnInit() {
@@ -123,5 +123,5 @@ export class LoanDetailsComponent implements OnInit {
     this.router.navigate(['/admin/repayment/part-payment', loan.id])
   }
 
-  
+
 }

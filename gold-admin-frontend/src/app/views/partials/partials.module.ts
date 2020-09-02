@@ -103,6 +103,7 @@ import { GlobalSettingsComponent } from './components/global-settings/global-set
 import { CustomerDetailsComponent } from './components/customer-details/customer-details.component';
 import { LoanScrapDetailsComponent } from './components/loan-scrap-details/loan-scrap-details.component';
 import { PaymentDialogComponent } from './components/payment-dialog/payment-dialog.component';
+import { LocationComponent} from './components/location/location.component'
 
 @NgModule({
 	declarations: [
@@ -168,7 +169,8 @@ import { PaymentDialogComponent } from './components/payment-dialog/payment-dial
 		DisburseComponent,
 		CustomerDetailsComponent,
 		LoanScrapDetailsComponent,
-		PaymentDialogComponent
+		PaymentDialogComponent,
+		LocationComponent
 
 	],
 	exports: [
@@ -243,7 +245,8 @@ import { PaymentDialogComponent } from './components/payment-dialog/payment-dial
 		DisburseComponent,
 		CustomerDetailsComponent,
 		LoanScrapDetailsComponent,
-		PaymentDialogComponent
+		PaymentDialogComponent,
+		LocationComponent
 	],
 	imports: [
 		PdfViewerModule,
