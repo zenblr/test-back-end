@@ -1,3 +1,5 @@
+const baseUrlConfig = require('../config/baseUrl');
+
 module.exports = (sequelize, DataTypes) => {
     const AppraiserRequest = sequelize.define('appraiserRequest', {
         //leadNewRequest
@@ -76,5 +78,15 @@ module.exports = (sequelize, DataTypes) => {
         AppraiserRequest.hasOne(models.customerLoanMaster, { foreignKey: 'appraiserRequestId', as: 'masterLoan' });
 
     }
+
+    AppraiserRequest.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get());
+        if (values.customer) {
+            values.customer.panImg = process.env.BASE_URL + values.customer.panImage;
+        }
+        return values;
+    }
+
+
     return AppraiserRequest;
 }

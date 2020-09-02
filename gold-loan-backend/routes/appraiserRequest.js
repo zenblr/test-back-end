@@ -4,12 +4,14 @@ var route = express.Router();
 const { wrapper } = require('../utils/errorWrap');
 const checkAuth = require('../middleware/checkAuth');
 const validatiError = require('../middleware/validationError');
-const { addAppraiserRequest, updateAppraiserRequest, getAllNewRequest, assignAppraiser, getAssignedRequest } = require('../controllers/appraiserRequest/appraiserRequest');
+const { addAppraiserRequest, updateAppraiserRequest, updateAppraiser, getAllNewRequest, assignAppraiser, getAssignedRequest } = require('../controllers/appraiserRequest/appraiserRequest');
 
 
 route.post('/', checkAuth, wrapper(addAppraiserRequest)); // add new request
 
 route.post('/assign-appraiser', checkAuth, wrapper(assignAppraiser)); // ASSIGN APPRAISER
+
+route.put('/update-appraiser', checkAuth, wrapper(updateAppraiser)); // update new request
 
 route.put('/:id', checkAuth, wrapper(updateAppraiserRequest)); // update new request
 

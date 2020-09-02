@@ -87,6 +87,8 @@ export class AssignAppraiserComponent implements OnInit {
       this.startTime = this.convertTime24To12(this.data.appraiser.startTime);
       this.endTime = this.convertTime24To12(this.data.appraiser.endTime);
       this.appraiserForm.patchValue({ startTime: this.startTime, endTime: this.endTime })
+      this.appraiserForm.controls.id.patchValue(this.data.requestData.id)
+
 
       if (this.data.customer) {
         this.appraiserForm.patchValue({ customerName: this.data.customer.firstName + ' ' + this.data.customer.lastName })
@@ -115,7 +117,7 @@ export class AssignAppraiserComponent implements OnInit {
     this.appraiserForm = this.fb.group({
       id: [null],
       customerUniqueId: [''],
-      customerId: [, [Validators.required]],
+      customerId: [],
       customerName: [''],
       userType: [, [Validators.required]],
       appraiserId: [, [Validators.required]],
@@ -234,7 +236,7 @@ export class AssignAppraiserComponent implements OnInit {
           .subscribe();
       }
       else {
-        this.appraiserService.updateAppraiser(appraiserData.id, appraiserData).subscribe(res => {
+        this.appraiserService.updateAppraiser(appraiserData).subscribe(res => {
           if (res) {
             const msg = 'Appraiser Updated Sucessfully';
             this.toastr.successToastr(msg);
