@@ -2,7 +2,7 @@
     "development": {
         "username": "postgres",
         "password": "nimap@123",
-        "database": "gold",
+        "database": "new_request",
         "host": "127.0.0.1",
         "port": "7432",
         "dialect": "postgres",

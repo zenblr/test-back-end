@@ -12,7 +12,7 @@ export class NewRequestService {
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   newRequestAdd(data): Observable<any> {
-    return this.http.post<any>(`/api/lead-new-request`, data).pipe(map(res => res),
+    return this.http.post<any>(`/api/appraiser-request`, data).pipe(map(res => res),
       catchError(err => {
         if (err.error.message) this.toastr.error(err.error.message)
         throw (err)
@@ -32,7 +32,7 @@ export class NewRequestService {
       reqParams.search = data.search;
     }
 
-    return this.http.get<any>(`api/lead-new-request/view-all`, { params: reqParams })
+    return this.http.get<any>(`api/appraiser-request/view-all`, { params: reqParams })
       .pipe(map(res => res),
         catchError(err => {
           if (err.error.message) this.toastr.error(err.error.message)
@@ -42,7 +42,7 @@ export class NewRequestService {
   }
 
   newRequestUpdate({ id, ...data }): Observable<any> {
-    return this.http.put<any>(`/api/lead-new-request/${id}`, data).pipe(map(res => res),
+    return this.http.put<any>(`/api/appraiser-request/${id}`, data).pipe(map(res => res),
       catchError(err => {
         if (err.error.message) this.toastr.error(err.error.message)
         throw (err)
@@ -62,7 +62,7 @@ export class NewRequestService {
       reqParams.search = data.search;
     }
 
-    return this.http.get<any>(`/api/lead-new-request/my-request`, { params: reqParams })
+    return this.http.get<any>(`/api/appraiser-request/my-request`, { params: reqParams })
       .pipe(map(res => res),
         catchError(err => {
           if (err.error.message) this.toastr.error(err.error.message)
@@ -72,7 +72,7 @@ export class NewRequestService {
   }
 
   newRequestAssignAppraiser({ id, ...data }): Observable<any> {
-    return this.http.put<any>(`/api/lead-new-request/assign-appraiser/${id}`, data)
+    return this.http.put<any>(`/api/appraiser-request/assign-appraiser/${id}`, data)
       .pipe(map(res => res),
         catchError(err => {
           if (err.error.message) this.toastr.error(err.error.message)

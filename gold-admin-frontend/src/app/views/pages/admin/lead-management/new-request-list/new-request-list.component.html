@@ -8,23 +8,30 @@
                 <ng-container matColumnDef="fullName">
                     <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
                     <mat-cell *matCellDef="let row">
-                        {{row.customer.firstName | titlecase}}&nbsp;{{row.customer.lastName | titlecase}}
+                        {{row.customer?.firstName | titlecase}}&nbsp;{{row.customer?.lastName | titlecase}}
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
-                    <mat-cell *matCellDef="let row">{{row.customer.customerUniqueId | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let row">{{row.customer?.customerUniqueId | uppercase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="mobileNumber">
                     <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
-                    <mat-cell *matCellDef="let row">{{row.customer.mobileNumber}}</mat-cell>
+                    <mat-cell *matCellDef="let row">{{row.customer?.mobileNumber}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="product">
                     <mat-header-cell *matHeaderCellDef>Product</mat-header-cell>
-                    <mat-cell *matCellDef="let row">{{row.module.moduleName | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let row">{{row.module?.moduleName | titlecase}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                    <mat-cell *matCellDef="let row"
+                        [ngClass]="row.status == 'complete' ? 'text-success': row.status == 'incomplete' ? 'text-warning' : 'text-danger'">
+                        {{row.status | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="update">
@@ -40,17 +47,85 @@
                 <ng-container matColumnDef="appraiser">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let row">
-                        <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserAdd']">
+                        <div [ngStyle]="{'display': 'inherit'}">
                             <button style="width: 120px;" class="apply-kyc" (click)="assignAppraiser(row)"
                                 *ngIf="!row.isAssigned">Assign
                                 Appraiser</button>
                         </div>
-                        <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserEdit']">
+                        <div [ngStyle]="{'display': 'inherit'}">
 
                             <button style="width: 120px;" class="apply-kyc" (click)="updateAppraiser(row)"
                                 *ngIf="row.isAssigned">Update
                                 Appraiser</button>
                         </div>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="apply">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        <ng-container *ngxPermissionsOnly="['customerKycAdd']">
+                            <!-- <button style="width: 120px;" class="apply-kyc" (click)="applyKyc(row)"
+                                *ngIf="row.customer.kycStatus === 'pending'">
+                                    Apply KYC
+                            </button> -->
+
+                            <ng-container
+                                *ngIf="row.customer.kycStatus === 'pending' && row.customer.customerKyc !== null">
+                                <div [ngStyle]="{'display': 'inherit'}"
+                                    *ngIf="!row.customer?.customerKyc?.isKycSubmitted">
+                                    <button (click)="applyKyc(row)" class="apply-kyc">Apply KYC</button>
+                                </div>
+                            </ng-container>
+                            <ng-container
+                                *ngIf="row.customer.kycStatus === 'pending' && row.customer?.customerKyc == null">
+                                <div [ngStyle]="{'display': 'inherit'}">
+                                    <button (click)="applyKyc(row)" class="apply-kyc">Apply KYC</button>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+
+                        <div *ngIf="row.customer.kycStatus === 'approved'">
+
+                            <button mat-button [matMenuTriggerFor]="menu">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu" xPosition="before">
+                                <ng-container *ngIf="row.module.id === 1">
+                                    <button *ngxPermissionsOnly="['loanApplicationAdd']" mat-menu-item
+                                        (click)="applyLoan(row)">Apply Loan</button>
+                                    <button *ngxPermissionsOnly="['addLoanTransfer']" mat-menu-item
+                                        (click)="applyLoanTransfer(row)"> Loan Transfer</button>
+                                </ng-container>
+
+                                <ng-container *ngxPermissionsOnly="['scrapApplicationAdd']">
+                                    <button *ngIf="row.module.id === 3" mat-menu-item (click)="applyScrapBuy(row)">Apply
+                                        Scrap Gold</button>
+                                </ng-container>
+                            </mat-menu>
+
+                            <!-- <ng-container *ngxPermissionsOnly="['loanApplicationAdd']">
+                                <button style="width: 120px;" class="apply-kyc" (click)="applyLoan(row)"
+                                    *ngIf="row.product.id === 1 && row.isAssigned && !row.isProcessComplete">
+                                    Apply Loan
+                                </button>
+                            </ng-container>
+
+                            <ng-container *ngxPermissionsOnly="['scrapApplicationAdd']">
+                                <button style="width: 120px;" class="apply-kyc" (click)="applyScrapBuy(row)"
+                                    *ngIf="row.product.id === 3 && row.isAssigned && !row.isProcessComplete">
+                                    Apply Scrap Gold
+                                </button>
+                            </ng-container>
+
+                            <ng-container *ngxPermissionsOnly="['addLoanTransfer', 'loanTransferAppraiserRating']">
+                                <button style="width: 120px;" class="apply-kyc" (click)="applyLoanTransfer(row)"
+                                    *ngIf="row.product.id === 2 && row.isAssigned && !row.isProcessComplete">
+                                    Loan Transfer
+                                </button>
+                            </ng-container> -->
+                        </div>
+
                     </mat-cell>
                 </ng-container>
 
