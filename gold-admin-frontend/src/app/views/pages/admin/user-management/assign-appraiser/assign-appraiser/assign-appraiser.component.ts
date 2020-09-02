@@ -66,13 +66,14 @@ export class AssignAppraiserComponent implements OnInit {
   }
 
   setForm() {
-   
+
     if (this.data.action == 'add') {
       this.title = this.data.isReleaser ? 'Assign Releaser' : 'Assign Appraiser';
       if (this.data.customer) {
         this.appraiserForm.patchValue({ customerName: this.data.customer.firstName + ' ' + this.data.customer.lastName })
         this.appraiserForm.controls.customerUniqueId.patchValue(this.data.customer.customerUniqueId)
         this.appraiserForm.controls.customerId.patchValue(this.data.id)
+        this.appraiserForm.controls.id.patchValue(this.data.requestData.id)
       }
       // if (this.data.partReleaseId) this.appraiserForm.controls.partReleaseId.patchValue(this.data.partReleaseId)
 
@@ -81,7 +82,7 @@ export class AssignAppraiserComponent implements OnInit {
     }
     else if (this.data.action == 'edit') {
       this.title = this.data.isReleaser ? 'Update Releaser' : 'Update Appraiser'
-      
+
       this.appraiserForm.patchValue(this.data.appraiser)
       this.startTime = this.convertTime24To12(this.data.appraiser.startTime);
       this.endTime = this.convertTime24To12(this.data.appraiser.endTime);
@@ -134,7 +135,7 @@ export class AssignAppraiserComponent implements OnInit {
 
   getUserDetails() {
     this.sharedService.getUserDetailsFromStorage().pipe(map(res => {
-     
+
       this.internalBranchId = res.userDetails.internalBranchId
       if (this.data.isReleaser) {
         this.getAllReleaser()
@@ -179,7 +180,7 @@ export class AssignAppraiserComponent implements OnInit {
   }
 
   bindCustomerName(event) {
-    
+
     if (event) {
       this.controls.customerName.patchValue(event.firstName + " " + event.lastName);
     } else {
@@ -192,12 +193,12 @@ export class AssignAppraiserComponent implements OnInit {
       this.appraiserForm.markAllAsTouched()
       for (const key in this.appraiserForm.controls) {
         const element = this.appraiserForm.controls[key];
-        
+
         if (element.invalid) console.log({ key, element })
       }
       return
     }
-   
+
     const appoinmentDate = new Date(this.controls.appoinmentDate.value)
     const correctedDate = new Date(appoinmentDate.getTime() - appoinmentDate.getTimezoneOffset() * 60000)
     this.appraiserForm.patchValue({ appoinmentDate: correctedDate })
