@@ -9,7 +9,7 @@ import { LayoutUtilsService } from '../../../../core/_base/crud';
 import { WebcamDialogComponent } from '../../../pages/admin/kyc-settings/webcam-dialog/webcam-dialog.component';
 import { MatDialog } from '@angular/material';
 import { ScrapPacketsService } from '../../../../core/scrap-management';
-
+import { ImagePreviewDialogComponent } from '../../../../views/partials/components/image-preview-dialog/image-preview-dialog.component';
 @Component({
   selector: 'kt-upload-packets',
   templateUrl: './upload-packets.component.html',
@@ -58,7 +58,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     private toast: ToastrService,
     private layoutUtilsService: LayoutUtilsService,
     private ref: ChangeDetectorRef,
-    private dilaog: MatDialog
+    private dialog: MatDialog
   ) {
     this.buttonName = 'save'
     this.url = this.router.url.split('/')[3]
@@ -137,7 +137,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       let packet = change.viewScrapPacketsDetails.currentValue.scrapPacketDetails[0]
       if (packet) {
         this.packetImg.patchValue(packet)
-        
+
         packet.CustomerScrapPackageDetail.forEach(ele => {
           this.packetsName = ele.packetUniqueId;
           this.controls.packetId.patchValue(ele.id)
@@ -302,6 +302,26 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
     }
   }
 
+  previewImage(value) {
+    let img = [
+      this.packetImg.controls.emptyPacketWithNoOrnamentImage.value,
+      this.packetImg.controls.sealingPacketWithWeightImage.value,
+      this.packetImg.controls.sealingPacketWithCustomerImage.value
+    ]
+    let temp = []
+    temp = img.filter(ele =>{ 
+      return ele != ''
+    })
+      let index = temp.indexOf(value)
+    this.dialog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: temp,
+        index: index
+      },
+      width: "auto"
+    })
+  }
+
   removePackets() {
     let index = this.packetsDetails.findIndex(ele => {
       return ele.id == this.controls.packetId.value;
@@ -432,7 +452,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
   }
 
   webcam(value, imageDataKey) {
-    const dialogRef = this.dilaog.open(WebcamDialogComponent,
+    const dialogRef = this.dialog.open(WebcamDialogComponent,
       {
         data: {},
         width: '500px'
