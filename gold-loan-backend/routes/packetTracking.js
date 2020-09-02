@@ -28,11 +28,11 @@ route.post('/add-packet-tracking', checkAuth, wrapper(addPacketTracking)); // ad
 
 // global Map 
 
-route.get('/global-map-info', wrapper(getGlobalMapDetails))
+route.get('/global-map-info',checkAuth, wrapper(getGlobalMapDetails))
 
-route.get('/global-location-info',wrapper(getGloablMapLocation))
+route.get('/global-location-info',checkAuth,wrapper(getGloablMapLocation))
 
-route.get('/global-packet-trackng',wrapper(getPacketTrackingByLoanId))
+route.get('/global-packet-trackng',checkAuth,wrapper(getPacketTrackingByLoanId))
 
 
 module.exports = route;
