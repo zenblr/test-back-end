@@ -69,7 +69,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   ngAfterViewInit() {
     this.rout.queryParams.subscribe(res => {
       if (res.customerID) {
-        this.controls.customerUniqueId.patchValue(res.customerID)
+        this.controls.requestId.patchValue(res.customerID)
         if (res.customerID && this.url == 'loan-application-form') {
           this.getCustomerDetails();
         } else {
@@ -119,7 +119,8 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       scrapId: [],
       masterLoanId: [],
       panImage: [],
-      partReleaseId: []
+      partReleaseId: [],
+      requestId: []
     })
   }
 
@@ -242,8 +243,8 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
 
   getCustomerDetailsForTransfer() {
 
-    if (this.controls.customerUniqueId.valid) {
-      this.loanTransferFormService.getCustomerDetailsForTransfer(this.controls.customerUniqueId.value).pipe(
+    if (this.controls.requestId.value) {
+      this.loanTransferFormService.getCustomerDetailsForTransfer(this.controls.requestId.value).pipe(
         map(res => {
           this.action = "add"
           if (res.loanCurrentStage) {
@@ -270,8 +271,8 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   getCustomerDetails() {
-    if (this.controls.customerUniqueId.valid) {
-      this.loanApplicationFormService.customerDetails(this.controls.customerUniqueId.value).pipe(
+    if (this.controls.requestId.value) {
+      this.loanApplicationFormService.customerDetails(this.controls.requestId.value).pipe(
         map(res => {
           if (res.loanCurrentStage) {
             let stage = res.loanCurrentStage

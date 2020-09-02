@@ -20,7 +20,7 @@ export class AppliedKycComponent implements OnInit {
 
   filteredDataList: any = {};
   dataSource: AppliedKycDatasource;
-  displayedColumns = ['fullName', 'pan', 'customerId', 'appraiserName', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view', 'appraiser', 'menu'];
+  displayedColumns = ['fullName', 'pan', 'customerId', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
@@ -64,7 +64,7 @@ export class AppliedKycComponent implements OnInit {
     // this.subscriptions.push(sortSubscription);
 
     this.ngxPermissionsService.permissions$.subscribe(res => {
-      this.permission =res;
+      this.permission = res;
     })
 
     const paginatorSubscriptions = merge(this.sort.sortChange, this.paginator.page).pipe(

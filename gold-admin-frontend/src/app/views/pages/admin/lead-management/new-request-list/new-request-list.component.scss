@@ -1,0 +1,26 @@
+:host {
+    mat-header-row, mat-row {
+        width: 100%;
+    }
+
+    .mat-column-apply {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mat-column-status {
+        flex: 0 0 8%;
+    }
+
+    .mat-column-customerId {
+        flex: 0 0 10%;
+    }
+
+    .mat-column-product {
+        flex: 0 0 8%;
+    }
+
+    .mat-column-apply{
+        flex: 0 0 7%;
+    }
+}

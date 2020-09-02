@@ -22,6 +22,11 @@
                     <mat-cell *matCellDef="let lead">{{lead.internalBranch.name | titlecase}}</mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="module">
+                    <mat-header-cell *matHeaderCellDef>Product</mat-header-cell>
+                    <mat-cell *matCellDef="let row">{{row.module?.moduleName | titlecase}}</mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="state">
                     <mat-header-cell *matHeaderCellDef>State</mat-header-cell>
                     <mat-cell *matCellDef="let lead">{{lead.state.name | titlecase}}</mat-cell>
@@ -118,7 +123,7 @@
                             View</div>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="appraiser">
+                <!-- <ng-container matColumnDef="appraiser">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let lead">
                         <ng-container *ngIf="lead.status.id == '1'">
@@ -131,7 +136,7 @@
                         </ng-container>
 
                     </mat-cell>
-                </ng-container>
+                </ng-container> -->
 
                 <ng-container matColumnDef="menu">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
