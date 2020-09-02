@@ -38,6 +38,7 @@ export class LoanApplicationFormComponent implements OnInit {
   ornamentDetails: any;
   loanTransferdata: any;
   disbursed: boolean = false;
+  partPaymentdata: any;
 
   constructor(
     public ref: ChangeDetectorRef,
@@ -151,7 +152,7 @@ export class LoanApplicationFormComponent implements OnInit {
   }
 
   partPayment(event) {
-    this.loanTransferdata = event
+    this.partPaymentdata = event
   }
 
   loanTransfer(event){
