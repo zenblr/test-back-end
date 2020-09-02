@@ -98,15 +98,15 @@ export class MenuConfig {
 									permission: !this.permissionsArr.includes('leadManagmentView'),
 								},
 								{
-									title: "New Requests",
+									title: "Appraiser Requests",
 									page: "/admin/lead-management/new-requests",
 									permission: false,
 								},
-								{
-									title: "My Requests",
-									page: "/admin/lead-management/my-requests",
-									permission: false,
-								},
+								// {
+								// 	title: "My Requests",
+								// 	page: "/admin/lead-management/my-requests",
+								// 	permission: false,
+								// },
 							],
 						},
 						{

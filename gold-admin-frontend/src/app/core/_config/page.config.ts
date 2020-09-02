@@ -136,7 +136,7 @@ export class PageConfig {
 			"lead-management": {
 				page: { title: "All Leads", desc: "" },
 				"new-requests": {
-					page: { title: "New Requests", desc: "" },
+					page: { title: "Appraiser Requests", desc: "" },
 				},
 				"my-requests": {
 					page: { title: "My Requests", desc: "" },
@@ -201,7 +201,7 @@ export class PageConfig {
 				},
 				'interest-emi': {
 					id: {
-						page: { title: "Pay Interest EMI", desc: "" },
+						page: { title: "Quick Pay ", desc: "" },
 					}
 				},
 				"part-payment": {

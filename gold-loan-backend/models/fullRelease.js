@@ -9,10 +9,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(10,2),
             field: 'payable_amount',
         },
-        // paymentType:{
-        //     type: DataTypes.STRING,
-        //     field: 'payment_Type',
-        // },
         customerLoanTransactionId:{
             type: DataTypes.INTEGER,
             field: 'customer_loan_transaction_id',
@@ -24,6 +20,14 @@ module.exports = (sequelize, DataTypes) => {
         releaseAmount:{
             type: DataTypes.DECIMAL(10,2),
             field: 'release_amount',
+        },
+        remainingOrnamentAmount:{
+            type: DataTypes.FLOAT,
+            field: 'remaining_ornament_amount',
+        },
+        newLoanAmount:{
+            type: DataTypes.FLOAT,
+            field: 'new_loan_amount',
         },
         interestAmount:{
             type: DataTypes.DECIMAL(10,2),
@@ -37,22 +41,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(10,2),
             field: 'current_outstanding_amount',
         },
-        // depositDate:{
-        //     type: DataTypes.DATE,
-        //     field: 'deposit_date',
-        // },
-        // chequeNumber:{
-        //     type: DataTypes.STRING,
-        //     field: 'cheque_number',
-        // },
-        // bankName:{
-        //     type: DataTypes.STRING,
-        //     field: 'bank_name',
-        // },
-        // branchName:{
-        //     type: DataTypes.STRING,
-        //     field: 'branch_name',
-        // },
         amountStatus:{
             type: DataTypes.ENUM,
             field: 'amount_status',

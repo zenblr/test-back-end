@@ -129,10 +129,14 @@ exports.loanBasicDeatils = async (req, res, next) => {
     }
 
     let loanData = await sequelize.transaction(async t => {
+        let masterLoan;
+        if (partReleaseId) {
+            masterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, customerLoanCurrentStage: '2', internalBranchId: req.userData.internalBranchId, createdBy, modifiedBy, isNewLoanFromPartRelease: true }, { transaction: t })
+        } else {
+            masterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, customerLoanCurrentStage: '2', internalBranchId: req.userData.internalBranchId, appraiserRequestId: requestId, createdBy, modifiedBy }, { transaction: t })
 
-        await models.appraiserRequest.update({ status: 'complete' }, { where: { id: requestId }, transaction: t })
-
-        let masterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, customerLoanCurrentStage: '2', internalBranchId: req.userData.internalBranchId, appraiserRequestId: requestId, createdBy, modifiedBy }, { transaction: t })
+            await models.appraiserRequest.update({ status: 'complete' }, { where: { id: requestId }, transaction: t })
+        }
 
         let loan = await models.customerLoan.create({ customerId, masterLoanId: masterLoan.id, loanType: 'secured', createdBy, modifiedBy }, { transaction: t })
 
@@ -211,7 +215,19 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
             as: "loanTransfer",
             attributes: ['disbursedLoanAmount', 'outstandingLoanAmount']
         }]
-    })
+    });
+    let checkIsPartRelease = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        attributes: ['isNewLoanFromPartRelease']
+    });
+    let partReleaseData;
+    if (checkIsPartRelease.isNewLoanFromPartRelease) {
+        partReleaseData = await models.partRelease.findOne({ where: { newLoanId: masterLoanId } });
+    }
+    let newLoanAmount = null;
+    if (partReleaseData) {
+        newLoanAmount = partReleaseData.newLoanAmount;
+    }
     let checkOrnaments = await models.customerLoanOrnamentsDetail.findAll({ where: { masterLoanId: masterLoanId } })
     if (checkOrnaments.length == 0) {
         let loanData = await sequelize.transaction(async t => {
@@ -223,7 +239,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
 
             return createdOrnaments
         })
-        return res.status(200).json({ message: 'success', loanId, masterLoanId, loanCurrentStage: '4', totalEligibleAmt, ornaments: loanData, loanTransferData })
+        return res.status(200).json({ message: 'success', loanId, masterLoanId, loanCurrentStage: '4', totalEligibleAmt, ornaments: loanData, loanTransferData, newLoanAmount })
     } else {
 
         let newOrnaments = allOrnmanets.map((single) => { return single.id })
@@ -246,7 +262,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
 
             return createdOrnaments
         })
-        return res.status(200).json({ message: 'success', allOrnmanets, loanId, masterLoanId, loanCurrentStage: '4', totalEligibleAmt, ornaments: loanData, loanTransferData })
+        return res.status(200).json({ message: 'success', allOrnmanets, loanId, masterLoanId, loanCurrentStage: '4', totalEligibleAmt, ornaments: loanData, loanTransferData, newLoanAmount })
     }
 
 }
@@ -537,7 +553,7 @@ exports.generateInterestTable = async (req, res, next) => {
         let date = new Date()
         let data = {
             emiDueDate: moment(new Date(date.setDate(date.getDate() + (paymentFrequency * (index + 1)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
-            month: "Month " + ((paymentFrequency / 30) * (index + 1)),
+            month: "Month " + (index + 1).toString(),
             paymentType: paymentFrequency,
             securedInterestAmount: securedInterestAmount,
             unsecuredInterestAmount: unsecuredInterestAmount,
@@ -547,22 +563,23 @@ exports.generateInterestTable = async (req, res, next) => {
             if (index == 0) {
                 data.month = "Month 1"
             }
-            // else {
-            //     data.month = "Month " + ((paymentFrequency / 30) * (index))
-            // }
+            else {
+                data.month = "Month " + (((paymentFrequency / 30) * (index)) + 1)
+            }
         }
         interestTable.push(data)
     }
 
     if (!Number.isInteger(length)) {
+        const noOfMonths = (((tenure * 30) - ((interestTable.length - 1) * paymentFrequency))/30)
         const lastElementOfTable = interestTable[interestTable.length - 1]
         const oneMonthSecured = securedInterestAmount / (paymentFrequency / 30)
-        let secure = (oneMonthSecured * Math.ceil(length)).toFixed(2)
+        let secure = (oneMonthSecured * noOfMonths).toFixed(2)
         lastElementOfTable.securedInterestAmount = secure
 
         if (isUnsecuredSchemeApplied) {
             const oneMonthUnsecured = unsecuredInterestAmount / (paymentFrequency / 30)
-            let unsecured = (oneMonthUnsecured * Math.ceil(length)).toFixed(2)
+            let unsecured = (oneMonthUnsecured * noOfMonths).toFixed(2)
             lastElementOfTable.unsecuredInterestAmount = unsecured
             lastElementOfTable.totalAmount = Number(lastElementOfTable.securedInterestAmount) + Number(lastElementOfTable.unsecuredInterestAmount)
         }
@@ -1281,7 +1298,7 @@ exports.loanOpsTeamRating = async (req, res, next) => {
         }
         await sequelize.transaction(async (t) => {
             // loan transfer changes complete
-            if (loanMaster.isLoanTransfer == true) {
+            if (loanMaster.isLoanTransfer == true || loanMaster.isNewLoanFromPartRelease == true) {
                 let stageIdTransfer = await models.loanStage.findOne({ where: { name: 'disbursed' }, transaction: t })
                 let dateChnage = await disbursementOfLoanTransfer(masterLoanId);
 
@@ -1318,22 +1335,33 @@ exports.loanOpsTeamRating = async (req, res, next) => {
 
                 for (let a = 0; a < dateChnage.securedInterest.length; a++) {
                     let updateDate = dateChnage.securedInterest[a].emiDueDate
-                    await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.securedInterest[a].id }, transaction: t });
+                    let emiStartDate = dateChnage.securedInterest[a].emiStartDate
+                    let emiEndDate = dateChnage.securedInterest[a].emiEndDate
+                    await models.customerLoanInterest.update({ emiDueDate: updateDate, emiStartDate, emiEndDate }, { where: { id: dateChnage.securedInterest[a].id }, transaction: t });
                     await models.customerLoanInitialInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.securedInterest[a].id }, transaction: t })
                 }
                 if (dateChnage.isUnSecured == true) {
                     for (let a = 0; a < dateChnage.unsecuredInterest.length; a++) {
                         let updateDate = dateChnage.unsecuredInterest[a].emiDueDate
-                        await models.customerLoanInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.unsecuredInterest[a].id }, transaction: t })
+                        let emiStartDate = dateChnage.securedInterest[a].emiStartDate
+                        let emiEndDate = dateChnage.securedInterest[a].emiEndDate
+                        await models.customerLoanInterest.update({ emiDueDate: updateDate, emiStartDate, emiEndDate }, { where: { id: dateChnage.unsecuredInterest[a].id }, transaction: t })
                         await models.customerLoanInitialInterest.update({ emiDueDate: updateDate }, { where: { id: dateChnage.unsecuredInterest[a].id }, transaction: t })
                     }
                 }
                 let customerLoanId = [];
                 for (const loan of loanMaster.customerLoan) {
                     customerLoanId.push(loan.id);
-                    await models.customerLoanDisbursement.create({
-                        loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, transactionId: loanMaster.loanTransfer.transactionId, date: loanMaster.loanTransfer.updatedAt, paymentMode: 'Loan transfer', createdBy: loanMaster.loanTransfer.modifiedBy, modifiedBy: loanMaster.loanTransfer.modifiedBy
-                    }, { transaction: t })
+                    if (loanMaster.isLoanTransfer) {
+                        await models.customerLoanDisbursement.create({
+                            loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, transactionId: loanMaster.loanTransfer.transactionId, date: loanMaster.loanTransfer.updatedAt, paymentMode: 'Loan transfer', createdBy: loanMaster.loanTransfer.modifiedBy, modifiedBy: loanMaster.loanTransfer.modifiedBy
+                        }, { transaction: t })
+                    } else {
+                        await models.customerLoanDisbursement.create({
+                            loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy
+                        }, { transaction: t })
+                    }
+
                 }
 
                 await models.customerLoan.update({ disbursed: true }, { where: { id: { [Op.in]: customerLoanId } }, transaction: t })
@@ -2039,8 +2067,7 @@ exports.getLoanDetails = async (req, res, next) => {
                 as: 'scheme',
                 attributes: ['id', 'schemeName']
 
-            },
-            ]
+            }]
         },
         {
             model: models.customer,
@@ -2061,9 +2088,9 @@ exports.getLoanDetails = async (req, res, next) => {
         {
             model: models.customerLoanPackageDetails,
             as: 'loanPacketDetails',
-            include: [{
-                model: models.packet,
-            }]
+            // include: [{
+            //     model: models.packet,
+            // }]
         }
     ]
 

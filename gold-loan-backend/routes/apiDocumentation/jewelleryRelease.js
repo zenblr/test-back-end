@@ -361,6 +361,25 @@
  *         description: This customer Did not assign in to anyone/This customer is not assign to you
  *       404:
  *         description: no customer details found
+ * /jewellery-release/apply-loan:
+ *   get:
+ *     tags:
+ *       - Part ornament release
+ *     summary: To get new loan amount by part release ID
+ *     parameters:
+ *     - name: "partReleaseId"
+ *       in: "query"
+ *       description: "partReleaseId"
+ *       type: "string"
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: new loan amount
+ *       404:
+ *         description: no customer details found
  * /jewellery-release/full-release:
  *   post:
  *     tags:

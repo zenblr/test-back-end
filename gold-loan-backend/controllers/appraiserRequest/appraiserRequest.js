@@ -68,12 +68,17 @@ exports.getAllNewRequest = async (req, res, next) => {
             ]
         },
         {
+            model: models.customerLoanMaster,
+            as: 'masterLoan',
+            attributes: ['id', 'isLoanTransfer']
+        },
+        {
             model: models.module,
             as: 'module',
         },
         {
             model: models.user,
-            as: 'appraiser'
+            as: 'appraiser',
         },
     ]
     console.log(req.userData)
@@ -157,7 +162,7 @@ exports.getAssignedRequest = async (req, res) => {
             as: 'module',
             attributes: ['id', 'moduleName']
 
-        }
+        },
     ]
 
     let allRequest = await models.appraiserRequest.findAll({

@@ -103,6 +103,7 @@ export class TopbarComponent implements OnInit {
 	sortImg = "../../../../../assets/media/icons/sort.svg";
 	sortType: number = 1;
 	sortFlag: boolean = false;
+	notTitleCase: boolean =false;
 
 	constructor(
 		public sharedService: SharedService,
@@ -366,6 +367,12 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "all-loan") {
 			this.showfilter = false;
 			this.showInput = true;
+		}
+		if(location.href.includes('loan-details/')){
+			this.rightButton = true;
+			this.notTitleCase=true;
+			this.value2 = "Generate S.O.A.";
+			this.type2 = "button";
 		}
 		if (this.path == "applied-kyc") {
 			this.showInput = true;
@@ -850,6 +857,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'standard-deduction') {
 			this.standardDeductionService.openModal.next(true);
+		}
+		if (location.href.includes('loan-details/')) {
+			this.sharedService.exportExcel.next(true);
 		}
 	}
 
