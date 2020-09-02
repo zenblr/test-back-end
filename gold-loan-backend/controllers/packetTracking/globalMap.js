@@ -66,11 +66,21 @@ exports.getGloablMapLocation = async (req, res, next) => {
     );
     let locationData = await models.packetTracking.findAll({
         where: { trackingDate: date },
-        include: {
+        include: [{
             model: models.user,
             as: 'user',
             attributes: ['id', 'firstName', 'lastName']
+        }, {
+            model: models.customerLoan,
+            as: 'customerLoan',
+            include: {
+                model: models.packet,
+                as: 'packet',
+                where: { isActive: true }
+            }
         },
+
+        ],
         offset: offset,
         limit: pageSize,
     })
