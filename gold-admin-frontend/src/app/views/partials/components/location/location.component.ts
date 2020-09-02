@@ -10,18 +10,21 @@ import { NgxPermissionsService } from 'ngx-permissions';
 import { LocationDatasource } from '../../../../core/loan-management/view-location/location/datasources/location.datasource';
 import { LocationService } from '../../../../core/loan-management/view-location/location/services/location.service';
 import { ActivatedRoute } from '@angular/router';
+import { DatePipe } from '@angular/common';
+import { GlobalMapService } from '../../../../core/global-map/global-map.service';
 
 @Component({
   selector: 'kt-location',
   templateUrl: './location.component.html',
-  styleUrls: ['./location.component.scss']
+  styleUrls: ['./location.component.scss'],
+  providers: [DatePipe]
 })
 export class LocationComponent implements OnInit {
   @Input() masterLoanId: number;
   @Input() date: Date;
-@Input() from ;
+  @Input() from
   dataSource: LocationDatasource;
-  displayedColumns = ['time', 'location', 'distance', 'battery', 'coordinates', 'network', 'totalDistance'];
+  displayedColumns = ['appraiserName','time', 'location', 'distance', 'battery', 'coordinates', 'network', 'totalDistance'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
@@ -35,7 +38,8 @@ export class LocationComponent implements OnInit {
     to: 25,
     search: '',
     masterLoanId: null,
-    date: ''
+    date: '',
+    fromWhere:''
   }
 
   constructor(
@@ -45,6 +49,8 @@ export class LocationComponent implements OnInit {
     private layoutUtilsService: LayoutUtilsService,
     private toastr: ToastrService,
     private ngxPermissionService: NgxPermissionsService,
+    private datePipe: DatePipe,
+    private globalMapService:GlobalMapService
   ) {
   }
 
@@ -54,14 +60,15 @@ export class LocationComponent implements OnInit {
     //     this.displayedColumns.splice(3, 1)
     // })
     // this.subscriptions.push(permission);
-
+    let date = this.datePipe.transform(this.date, 'yyyy-MM-dd')
 
     this.queryParamsData = {
       from: 1,
       to: 25,
       search: '',
       masterLoanId: this.masterLoanId,
-      date: (this.date).toISOString()
+      date: date,
+      fromWhere:this.from
     }
 
     // this.init()
@@ -86,7 +93,7 @@ export class LocationComponent implements OnInit {
       });
 
     // Init DataSource
-    this.dataSource = new LocationDatasource(this.locationService);
+    this.dataSource = new LocationDatasource(this.locationService,this.globalMapService);
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
@@ -116,17 +123,28 @@ export class LocationComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    
     console.log(changes)
     if (changes && changes.date.currentValue) {
+    let date = this.datePipe.transform(changes.date.currentValue, 'yyyy-MM-dd')
+
       this.queryParamsData = {
         from: 1,
         to: 25,
         search: '',
         masterLoanId: this.masterLoanId,
-        date: (changes.date.currentValue).toISOString()
+        date: date,
+        fromWhere:this.from
       }
 
       this.init()
+    }
+
+    if(changes.from && changes.from.currentValue){
+      if(changes.from.currentValue == 'viewLocation'){
+        let index = this.displayedColumns.indexOf('appraiserName')
+        this.displayedColumns.splice(index,1)
+      }
     }
 
   }

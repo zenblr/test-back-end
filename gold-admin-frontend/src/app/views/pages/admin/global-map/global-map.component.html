@@ -1,22 +1,33 @@
 <kt-portlet>
     <kt-portlet-body>
+        <div class="row kt-padding-10 justify-content-center kt-margin-bottom-20-mobile pos">
+                <mat-form-field class="mat-form-field-fluid">
+                    <input (dateChange)="getGlobalMapInfo()" matInput [matDatepicker]="picker" placeholder="Select Date"
+                    [formControl]="date" (click)="picker.open()" readonly />
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+        </div>
+            <!-- <div class="row kt-margin-b-15">
+                <div class="col-2 form-label mandatory kt-padding-l-10">
+                    <mat-label class="kt-padding-l-10">Date</mat-label>
+                </div>
+                <div class="col-8">
+                    <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
+                        [formControl]="date" (dateChange)="getGlobalMapInfo()"
+                        [class.isError]="date.touched && date.invalid" readonly placeholder="4/5/2020" />
+                    <mat-datepicker #picker></mat-datepicker>
+    
+                    <mat-error *ngIf="date.touched && date.errors?.required">
+                        Required field
+                    </mat-error>
+                </div>
+            </div>
+        </div> -->
+       
         <mat-tab-group>
             <mat-tab label="Map">
-                <div class="row kt-margin-b-15">
-                    <div class="col-2 form-label mandatory kt-padding-l-10">
-                        <mat-label class="kt-padding-l-10">Date</mat-label>
-                    </div>
-                    <div class="col-2">
-                        <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                            [formControl]="date" (dateChange)="getGlobalMapInfo()"
-                            [class.isError]="date.touched && date.invalid" readonly placeholder="4/5/2020" />
-                        <mat-datepicker #picker></mat-datepicker>
-
-                        <mat-error *ngIf="date.touched && date.errors?.required">
-                            Required field
-                        </mat-error>
-                    </div>
-                </div>
+                
                 <div class="row">
                     <div class="col-3">
                         <h5>User Name</h5>
@@ -87,7 +98,7 @@
                 </div>
             </mat-tab>
             <mat-tab label="Location">
-                <kt-location [from]="'globalMap'" [masterLoanId]="masterLoanId" [date]="mapReport.controls.dateForLocation.value">
+                <kt-location [from]="'globalMap'" [masterLoanId]="masterLoanId" [date]="date.value">
                 </kt-location>
             </mat-tab>
         </mat-tab-group>

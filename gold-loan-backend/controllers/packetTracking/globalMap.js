@@ -16,10 +16,6 @@ exports.getGlobalMapDetails = async (req, res, next) => {
             where: { isInternal: true, userType: 'Appraiser' },
             attributes: [],
 
-        }, {
-            model: models.internalBranch,
-            where: { id: 1 },
-            attributes: []
         },
         {
             model: models.appraiserRequest,
@@ -85,65 +81,15 @@ exports.getGloablMapLocation = async (req, res, next) => {
         limit: pageSize,
     })
 
-    // let apprasiserData = await getAppraiser(date)
-    // // let internalBranchId = req.userData.id
-    // let temp = apprasiserData.map(ele=>ele.dataValues)
-    // let newArray = []
-    // for (let index = 0; index < temp.length; index++) {
-    //     const element = temp[index];
-    //     if(element.appraiserRequest.length != 0 ){
-    //         for (let appraiserRequestIndex = 0; appraiserRequestIndex < element.appraiserRequest.length; appraiserRequestIndex++) {
-    //             const appraiserRequest = element.appraiserRequest[appraiserRequestIndex];
-    //             if(appraiserRequest.masterLoan){
-    //                 element.masterLoan = appraiserRequest.masterLoan
-    //                 newArray.push(element)
-    //             }
-    //         }
-    //     }
-    // }
-
-    // for (let index = 0; index < newArray.length; index++) {
-    //     delete newArray[index].appraiserRequest
-    // }
-
-    res.status(200).json({ data: locationData })
-}
-
-async function getAppraiser(date) {
-    let getAppraiserList = await models.user.findAll({
-        where: { isActive: true },
-        attributes: ['id', 'firstName', 'lastName'],
-        include: [{
-            model: models.userType,
-            as: 'Usertype',
-            where: { isInternal: true, userType: 'Appraiser' },
-            attributes: [],
-
-        }, {
-            model: models.internalBranch,
-            where: { id: 1 },
-            attributes: []
-        },
-        {
-            model: models.appraiserRequest,
-            as: 'appraiserRequest',
-            attributes: ['id'],
-            include: [{
-                model: models.customerLoanMaster,
-                as: 'masterLoan',
-                attributes: ['id'],
-                include: [{
-                    model: models.customerLoan,
-                    as: 'customerLoan',
-                    attributes: ['loanUniqueId'],
-                }, {
-                    model: models.packetTracking,
-                    as: 'packetTracking',
-                    where: { trackingDate: date }
-                },]
-            }]
-        },]
+    let count = await models.packetTracking.findAll({
+        where: { trackingDate: date },
     })
 
-    return getAppraiserList
+   
+    if(count.length == 0){
+        res.status(200).json([])
+    }else{
+
+        res.status(200).json({ data: locationData,count:count.length })
+    }
 }

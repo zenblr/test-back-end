@@ -104,6 +104,7 @@ import { CustomerDetailsComponent } from './components/customer-details/customer
 import { LoanScrapDetailsComponent } from './components/loan-scrap-details/loan-scrap-details.component';
 import { PaymentDialogComponent } from './components/payment-dialog/payment-dialog.component';
 import { LocationComponent} from './components/location/location.component'
+
 @NgModule({
 	declarations: [
 		ScrollTopComponent,
@@ -168,7 +169,8 @@ import { LocationComponent} from './components/location/location.component'
 		DisburseComponent,
 		CustomerDetailsComponent,
 		LoanScrapDetailsComponent,
-		PaymentDialogComponent
+		PaymentDialogComponent,
+		LocationComponent
 
 	],
 	exports: [
