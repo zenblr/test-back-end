@@ -301,8 +301,8 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   getScrapCustomerDetails() {
-    if (this.controls.customerUniqueId.valid) {
-      this.scrapApplicationFormService.customerDetails(this.controls.customerUniqueId.value).pipe(
+    if (this.controls.requestId.value) {
+      this.scrapApplicationFormService.customerDetails(this.controls.requestId.value).pipe(
         map(res => {
           if (res.scrapCurrentStage) {
             let stage = res.scrapCurrentStage;

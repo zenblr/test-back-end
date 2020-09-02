@@ -71,7 +71,7 @@
                 <input type="text" class="form-control"  (keyup)= "calculateAfterDeduction()" placeholder="0" formControlName="standardDeduction"
                 numbersOnly
                 [class.isError]="controls.standardDeduction.touched && controls.standardDeduction.invalid">
-            <mat-error *ngIf="controls.standardDeduction.errors?.max">
+            <mat-error *ngIf="controls.standardDeduction.errors?.max || controls.standardDeduction.errors?.min">
                 Invalid Number</mat-error>
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
