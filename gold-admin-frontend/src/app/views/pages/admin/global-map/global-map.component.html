@@ -1,33 +1,105 @@
 <kt-portlet>
     <kt-portlet-body>
+        <div class="row kt-padding-10 justify-content-center kt-margin-bottom-20-mobile pos">
+                <mat-form-field class="mat-form-field-fluid">
+                    <input (dateChange)="getGlobalMapInfo()" matInput [matDatepicker]="picker" placeholder="Select Date"
+                    [formControl]="date" (click)="picker.open()" readonly />
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+        </div>
+            <!-- <div class="row kt-margin-b-15">
+                <div class="col-2 form-label mandatory kt-padding-l-10">
+                    <mat-label class="kt-padding-l-10">Date</mat-label>
+                </div>
+                <div class="col-8">
+                    <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
+                        [formControl]="date" (dateChange)="getGlobalMapInfo()"
+                        [class.isError]="date.touched && date.invalid" readonly placeholder="4/5/2020" />
+                    <mat-datepicker #picker></mat-datepicker>
+    
+                    <mat-error *ngIf="date.touched && date.errors?.required">
+                        Required field
+                    </mat-error>
+                </div>
+            </div>
+        </div> -->
+       
         <mat-tab-group>
             <mat-tab label="Map">
+                
                 <div class="row">
                     <div class="col-3">
                         <h5>User Name</h5>
                         <mat-accordion>
-                            <mat-expansion-panel (opened)="panelOpenState = true"
-                                                 (closed)="panelOpenState = false" 
-                                                 hideToggle>
-                              <mat-expansion-panel-header>
-                                <mat-panel-title>
-                                  Self aware panel
-                                </mat-panel-title>
-                              </mat-expansion-panel-header>
-                              <p>I'm visible because I am open</p>
+                            <mat-expansion-panel *ngFor="let info of mapInfo" (opened)="panelOpenState = true"
+                                (closed)="panelOpenState = false" hideToggle>
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        {{info?.firstName}}&nbsp;
+                                        {{info?.lastName}}
+
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+
+                                <ng-template matExpansionPanelContent>
+                                    <div *ngFor="let loan of info.appraiserRequest">
+                                        {{loan?.masterLoan?.customerLoan[0].loanUniqueId}}
+
+                                        <!-- <span *ngIf="info.masterLoan.customerLoan[1].loanUniqueId">
+                                        {{info.masterLoan.customerLoan[1].loanUniqueId}}
+                                    </span> -->
+                                    </div>
+                                </ng-template>
                             </mat-expansion-panel>
-                          </mat-accordion>
-                          
+                        </mat-accordion>
+
                     </div>
                     <div class="col-9">
                         <agm-map [latitude]='latitude' [longitude]='longitude' [zoom]="15" [fitBounds]="true">
-                            <!-- <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.lat" [longitude]="m.lng"
+                            <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.lat" [longitude]="m.lng"
                                 [markerDraggable]="m.draggable" (markerClick)="clickedMarker(m.lat, m.lng, i)"
                                 [agmFitBounds]="true">
-                            </agm-marker> -->
+
+                                <agm-info-window [isOpen]="m.isVisible">
+                                    <span>
+                                        <strong>
+                                            {{m.firstName |titlecase}}&nbsp;{{m.lastName |titlecase}} <span
+                                                *ngIf="infoToggle[i]">| {{m.trackingTime | time24to12}}</span>
+                                        </strong>
+                                    </span><br>
+                                    <span *ngIf="!infoToggle[i]">
+                                        <strong>Date :</strong>
+                                        <strong *ngIf="m.trackingDate">{{m.trackingDate | date: 'mediumDate'}}</strong>
+                                        <br>
+
+                                        <strong>Time :</strong>
+                                        <strong *ngIf="m.trackingTime">{{m.trackingTime | time24to12}}</strong><br>
+
+
+                                        <small>Location :</small>
+                                        <small class="w-25 text-wrap">{{m.address}}</small>
+
+                                        <br>
+                                        <strong>Loan ID -</strong>
+                                        <strong>
+                                            {{m.loanUniqueId}}
+                                        </strong>
+                                        <br>
+                                        <strong>Packet ID :</strong>
+                                        <strong>
+                                            {{m.packetUniqueId}}
+                                        </strong>
+                                    </span>
+                                </agm-info-window>
+                            </agm-marker>
                         </agm-map>
                     </div>
                 </div>
+            </mat-tab>
+            <mat-tab label="Location">
+                <kt-location [from]="'globalMap'" [masterLoanId]="masterLoanId" [date]="date.value">
+                </kt-location>
             </mat-tab>
         </mat-tab-group>
     </kt-portlet-body>

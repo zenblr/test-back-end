@@ -45,6 +45,7 @@ export class InterestCalculatorComponent implements OnInit {
   @Input() fullAmount
   @Input() showButton
   @Input() loanTransfer
+  @Input() partPaymentdata
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
   @Output() accountHolderName: EventEmitter<any> = new EventEmitter()
   @ViewChild('calculation', { static: false }) calculation: ElementRef
@@ -62,6 +63,7 @@ export class InterestCalculatorComponent implements OnInit {
   paymentFrequency: any;
   private unsubscribe$ = new Subject();
   subscription: Subscription[] = []
+  isNewLoanFromPartRelease:boolean = false;
 
   constructor(
     public fb: FormBuilder,
@@ -98,10 +100,17 @@ export class InterestCalculatorComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
 
+    if (changes.partPaymentdata && changes.partPaymentdata.currentValue) {
+      this.controls.finalLoanAmount.patchValue(changes.partPaymentdata.currentValue)
+      this.controls.finalLoanAmount.disable()
+      this.transferLoan = true;
+      this.partner()
+    }
+
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
       this.controls.finalLoanAmount.patchValue(changes.loanTransfer.currentValue)
       this.controls.finalLoanAmount.disable()
-      this.transferLoan = true;
+      this.isNewLoanFromPartRelease = true;
       this.partner()
     }
 
@@ -117,11 +126,16 @@ export class InterestCalculatorComponent implements OnInit {
 
           const finalLoan = changes.details.currentValue
 
-          if (finalLoan.masterLoan.isNewLoanFromPartRelease || finalLoan.masterLoan.isLoanTransfer) {
+          if (finalLoan.masterLoan.isLoanTransfer) {
             this.controls.finalLoanAmount.disable()
             this.transferLoan = true;
             this.partner()
 
+          }
+          if (finalLoan.masterLoan.isNewLoanFromPartRelease) {
+            this.controls.finalLoanAmount.disable()
+            this.isNewLoanFromPartRelease = true;
+            this.partner()
           }
 
           if (changes.disbursed && changes.disbursed.currentValue)
@@ -287,7 +301,8 @@ export class InterestCalculatorComponent implements OnInit {
       securedSchemeId: this.controls.schemeId.value,
       fullAmount: this.fullAmount,
       partnerId: this.controls.partnerId.value,
-      isLoanTransfer: this.transferLoan
+      isLoanTransfer: this.transferLoan,
+      isNewLoanFromPartRelease:this.isNewLoanFromPartRelease
     }
 
     let check = this.eligibleCheck(amt, data)
@@ -324,7 +339,7 @@ export class InterestCalculatorComponent implements OnInit {
   eligibleCheck(amt, data) {
     if (amt > this.totalAmt) {
       if (this.transferLoan) {
-        this.checkForLoanType(data, amt)
+        this.checkForLoanType(data, amt,)
       } else
         this.controls.finalLoanAmount.setErrors({ eligible: true })
       return true

@@ -36,4 +36,30 @@ export class LocationService {
       })
     )
   }
+
+  globalMapLocation(data): Observable<any> {
+    const reqParams: any = {};
+    if (data && data.from) {
+      reqParams.from = data.from;
+    }
+    if (data && data.to) {
+      reqParams.to = data.to;
+    }
+    if (data && data.search) {
+      reqParams.search = data.search;
+    }
+    if (data && data.masterLoanId) {
+      reqParams.masterLoanId = data.masterLoanId;
+    }
+    if (data && data.date) {
+      reqParams.date = data.date;
+    }
+    return this.http.get(`/api/packet-tracking/global-location-info`, { params: reqParams }).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      })
+    )
+  }
 }
