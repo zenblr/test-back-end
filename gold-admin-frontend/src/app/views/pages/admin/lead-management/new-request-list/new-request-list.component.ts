@@ -114,7 +114,12 @@ export class NewRequestListComponent implements OnInit {
   updateAppraiser(item) {
     // item.customer = { firstName: item.firstName, lastName: item.lastName }
     // item.customer.customerUniqueId = item.customerUniqueId
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit', requestData: item, appraiser: item.customer.customerAssignAppraiser, customer: item.customer }, width: '500px' });
+    item.appraiser.startTime = item.startTime;
+    item.appraiser.endTime = item.endTime;
+    item.appraiser.appoinmentDate = item.appoinmentDate;
+    item.appraiser.appraiserId = item.appraiserId;
+
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit', requestData: item, appraiser: item.appraiser, customer: item.customer }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
