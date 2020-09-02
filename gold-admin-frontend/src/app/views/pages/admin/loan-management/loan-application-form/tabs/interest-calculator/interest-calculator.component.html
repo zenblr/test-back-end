@@ -172,7 +172,7 @@
                         <label class="mandatory">Interest Rate% (p.m.)</label>
                     </div>
                     <div class="col-7">
-                        <input type="number" class="form-control" formControlName="interestRate" placeholder="00%"
+                        <input type="number" class="form-control cursor-not-allowed" formControlName="interestRate" placeholder="00%"
                             [class.isError]="controls.interestRate.touched && controls.interestRate.invalid" readonly />
                         <mat-error *ngIf="controls.interestRate.errors?.required && controls.interestRate.touched">
                             Required field
@@ -193,7 +193,7 @@
                     </div>
                     <div class="col-7">
                         <input type="number" class="form-control cursor-not-allowed" formControlName="processingCharge"
-                            placeholder="00"
+                            placeholder="00" readonly
                             [class.isError]="controls.processingCharge.touched && controls.processingCharge.invalid" />
                         <mat-error
                             *ngIf="controls.processingCharge.errors?.pattern && controls.processingCharge.touched">
