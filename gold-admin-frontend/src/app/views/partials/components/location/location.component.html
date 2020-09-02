@@ -1,0 +1,82 @@
+<div>
+
+    <div class="mat-table__wrapper custom-2" [ngStyle]="{'overflow-x':'hidden'}">
+        <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
+            <ng-container matColumnDef="time">
+                <mat-header-cell *matHeaderCellDef>Time</mat-header-cell>
+                <mat-cell *matCellDef="let role">{{role.trackingTime | time24to12}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="location">
+                <mat-header-cell *matHeaderCellDef>Location</mat-header-cell>
+                <mat-cell *matCellDef="let role">
+                    <span *ngIf="role.location">
+                        {{role.location.location | titlecase}}
+                    </span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="distance">
+                <mat-header-cell *matHeaderCellDef>Distance (kms)</mat-header-cell>
+                <mat-cell *matCellDef="let role">
+                    <span *ngIf="role.distance">
+                        {{role.distance}}
+                    </span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="battery">
+                <mat-header-cell *matHeaderCellDef>Battery</mat-header-cell>
+                <mat-cell *matCellDef="let role">
+                    <span *ngIf="role.battery">
+                        {{role.battery}} %
+                    </span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="coordinates">
+                <mat-header-cell *matHeaderCellDef>Latititude & Longitude</mat-header-cell>
+                <mat-cell *matCellDef="let role">
+                    <span *ngIf="role.battery">
+                        {{role.battery}} %
+                    </span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="network">
+                <mat-header-cell *matHeaderCellDef>network</mat-header-cell>
+                <mat-cell *matCellDef="let role">
+                    <span *ngIf="role.network">
+                        {{role.network | titlecase}}
+                    </span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="totalDistance">
+                <mat-header-cell *matHeaderCellDef>Total Distance</mat-header-cell>
+                <mat-cell *matCellDef="let role">
+                    <span *ngIf="role.totalDistance">
+                        {{role.totalDistance}}
+                    </span>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        </mat-table>
+
+        <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+        <!-- Message for empty data  -->
+        <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+    </div>
+
+    <!-- start: BOTTOM -->
+    <div class="mat-table__bottom">
+        <!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
+        <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+        <!-- MATERIAL PAGINATOR | Binded to dasources -->
+        <!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
+        <mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]" [length]="dataSource.paginatorTotal$ | async"
+            [showFirstLastButtons]="true"></mat-paginator>
+    </div>
+</div>
