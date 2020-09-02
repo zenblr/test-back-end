@@ -155,7 +155,6 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
                 ornamentsWeightInfo.allOrnamentsNetWeight = ornamentsWeightInfo.allOrnamentsNetWeight + parseFloat(ornaments.netWeight);
                 let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
                 ornamentsWeightInfo.currentOutstandingAmount = ornamentsWeightInfo.currentOutstandingAmount + (ltvAmount * parseFloat(ornaments.netWeight));
-                console.log((ltvAmount * parseFloat(ornaments.netWeight)))
             }
         }
 
@@ -814,6 +813,19 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
     } else {
         res.status(200).json({ message: 'customer details fetch successfully', customerData, partReleaseId, newLoanAmount });
     }
+}
+
+exports.getPartReleaseNewLonaAmount = async (req, res, next) => {
+    let partReleaseId = req.query.partReleaseId;
+    let partReleaseData = await models.partRelease.findOne({
+        where: { id: partReleaseId },
+        attributes: ['amountStatus', 'partReleaseStatus', 'masterLoanId', 'newLoanAmount']
+    });
+    if(partReleaseData){
+        return res.status(200).json({ newLoanAmount:partReleaseData.newLoanAmount,partReleaseId });
+    }else{
+        return res.status(404).json({ message:"Data not found"});
+    }  
 }
 
 //Full release 

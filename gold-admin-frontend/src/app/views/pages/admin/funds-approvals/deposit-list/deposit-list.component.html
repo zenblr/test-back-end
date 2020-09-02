@@ -85,11 +85,11 @@
                 <ng-container matColumnDef="update">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let deposit">
-                        <ng-container>
+                        <div *ngxPermissionsOnly="['approveDeposit']">
                             <button *ngIf="deposit.depositStatus == 'Pending'" style="width: 120px;" class="apply-kyc"
                                 (click)="updateStatus(deposit)">Edit
                             </button>
-                        </ng-container>
+                        </div>
 
                     </mat-cell>
                 </ng-container>

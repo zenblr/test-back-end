@@ -23,7 +23,7 @@
             <div class="col form-label" *ngIf="showLoanTransferFlag || showLoanFlag">
                 <label class="kt-padding-l-10 kt-padding-r-25">Pawn Ticket/Copy of Pledge</label>
                 <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"
-                    *ngIf="showLoanFlag && !controls?.pawnCopyImage?.value"></kt-button>
+                    *ngIf="showLoanFlag && buttonValue =='save'"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showLoanFlag">
                 <label class="kt-padding-l-10">Scheme Confirmation Copy</label>

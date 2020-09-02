@@ -183,7 +183,7 @@ export class UserDetailsComponent implements OnInit {
   getFileInfo(event) {
     var name = event.target.files[0].name
     var ext = name.split('.')
-    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg' || ext[ext.length - 1] == 'pdf') {
       const params = {
         reason: 'lead',
         customerId: this.controls.id.value

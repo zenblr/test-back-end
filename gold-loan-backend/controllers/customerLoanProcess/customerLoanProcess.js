@@ -269,7 +269,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
 
 // amount validation and check its a secured scheme aur unsecured scheme
 exports.checkForLoanType = async (req, res, next) => {
-    let { loanAmount, securedSchemeId, fullAmount, partnerId, isLoanTransfer } = req.body
+    let { loanAmount, securedSchemeId, fullAmount, partnerId, isLoanTransfer,isNewLoanFromPartRelease } = req.body
     let processingCharge = 0;
     let unsecuredScheme
 
@@ -377,7 +377,7 @@ exports.checkForLoanType = async (req, res, next) => {
                     return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
 
                 }
-                if (isLoanTransfer) {
+                if (isLoanTransfer || isNewLoanFromPartRelease) {
                     if (Number(loanAmount) > totalEligibleAmt) {
                         // if (!securedScheme.isSplitAtBeginning) {
                         securedLoanAmount = fullAmount * secureSchemeMaximumAmtAllowed
@@ -401,7 +401,7 @@ exports.checkForLoanType = async (req, res, next) => {
                 var unsecuredAmount = Math.round(fullAmount * newUnsecuredMaximum)
 
 
-                if (isLoanTransfer) {
+                if (isLoanTransfer || isNewLoanFromPartRelease) {
                     if (Number(loanAmount) > totalEligibleAmt) {
                         securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
                         //     unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
