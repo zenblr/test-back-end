@@ -31,7 +31,9 @@ exports.loanRequest = async (req, res, next) => {
     let appraiserId = req.userData.id;
     let stageId = await models.loanStage.findOne({ where: { name: 'applying' } })
     let ornamentType = [];
-
+    if(!isNewLoanFromPartRelease){
+        isNewLoanFromPartRelease = false
+    }
 
 
     let loanData = await sequelize.transaction(async t => {
