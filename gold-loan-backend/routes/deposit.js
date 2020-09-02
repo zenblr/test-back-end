@@ -5,9 +5,11 @@ const { getAllDeposits, updateDepositStatus } = require('../controllers/deposit/
 
 const express = require('express');
 const route = express.Router();
+const checkRolePermission = require('../middleware/checkRolesPermissions');
 
-route.get('/',checkAuth,wrapper(getAllDeposits));//FETCH ALL DEPOSITS LIST
 
-route.put('/:id',checkAuth,wrapper(updateDepositStatus));//UPDATE DEPOSIT STATUS
+route.get('/', checkAuth, checkRolePermission, wrapper(getAllDeposits));//FETCH ALL DEPOSITS LIST
+
+route.put('/:id', checkAuth, wrapper(updateDepositStatus));//UPDATE DEPOSIT STATUS
 
 module.exports = route;  

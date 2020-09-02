@@ -571,7 +571,7 @@ exports.generateInterestTable = async (req, res, next) => {
     }
 
     if (!Number.isInteger(length)) {
-        const noOfMonths = (((tenure * 30) - ((interestTable.length - 1) * paymentFrequency))/30)
+        const noOfMonths = (((tenure * 30) - ((interestTable.length - 1) * paymentFrequency)) / 30)
         const lastElementOfTable = interestTable[interestTable.length - 1]
         const oneMonthSecured = securedInterestAmount / (paymentFrequency / 30)
         let secure = (oneMonthSecured * noOfMonths).toFixed(2)
