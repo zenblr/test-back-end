@@ -318,8 +318,16 @@ exports.submitAllKycInfo = async (req, res, next) => {
     let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
 
     let KycClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId } })
+    let kycRating = await models.customerKyc.findOne({ where: { customerId: customerId } })
+
+    if (!kycRating.isVerifiedByCce) {
+        ratingStage = 1
+    } else {
+        ratingStage = 2
+    }
+
     // console.log(KycClassification);
-    return res.status(200).json({ message: `successful`, customerId, customerKycId, customerKycCurrentStage, KycClassification })
+    return res.status(200).json({ message: `successful`, customerId, customerKycId, customerKycCurrentStage, KycClassification, ratingStage })
 
 }
 
@@ -396,7 +404,7 @@ exports.appliedKyc = async (req, res, next) => {
     let internalBranchWhere;
 
     let assignAppraiser;
-    
+
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
         internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
         // if (req.userData.userTypeId == 7) {
@@ -451,9 +459,9 @@ exports.appliedKyc = async (req, res, next) => {
         include: includeArray,
     });
     if (getAppliedKyc.length == 0) {
-        return res.status(200).json({data:[]})
+        return res.status(200).json({ data: [] })
     }
-    return res.status(200).json({ data: getAppliedKyc, count:count.length })
+    return res.status(200).json({ data: getAppliedKyc, count: count.length })
 
 
 }

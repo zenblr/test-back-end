@@ -304,7 +304,7 @@ exports.addCustomerPacketTracking = async (req, res) => {
     });
 
     if (packetTrackingData) {
-        return res.status(201).json({ message: 'Loaction Added' });
+        return res.status(200).json({ message: 'Loaction Added' });
     } else {
         return res.status(400).json({ message: 'Loaction not added' });
     }
