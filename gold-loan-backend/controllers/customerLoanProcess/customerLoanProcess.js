@@ -1318,7 +1318,7 @@ exports.loanOpsTeamRating = async (req, res, next) => {
                     ]
                 })
                 if (loan.isUnsecuredSchemeApplied) {
-                    // let amount = loan.customerLoan[1].loanAmount - loan.processingCharge;
+                    let amount = loan.customerLoan[1].loanAmount;
                     let unsecuredDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[1].id, debit: amount, description: `Loan amount disbursed to customer` }, { transaction: t })
                     await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[1].loanUniqueId}-${unsecuredDisbursed.id}` }, { where: { id: unsecuredDisbursed.id }, transaction: t })
 
@@ -1331,7 +1331,7 @@ exports.loanOpsTeamRating = async (req, res, next) => {
                     let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[0].id, debit: loan.customerLoan[0].loanAmount, description: `Loan amount disbursed to customer` }, { transaction: t })
                     await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[0].loanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
                 } else {
-                    // let amount = loan.customerLoan[0].loanAmount - loan.processingCharge;
+                    let amount = loan.customerLoan[0].loanAmount - loan.processingCharge;
                     let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[0].id, debit: amount, description: `Loan amount disbursed to customer` }, { transaction: t })
                     await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[0].loanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
 
@@ -1964,7 +1964,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
     //     internalBranchWhere = { isActive: true }
     // }
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-        internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+        internalBranchWhere = { isActive: true }
     } else {
         internalBranchWhere = { isActive: true }
     }
