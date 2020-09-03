@@ -97,7 +97,7 @@ export class UpdateStatusComponent implements OnInit {
     this.updateStatusForm.patchValue({
       partReleaseId: data.id,
       fullReleaseId: data.id,
-      customerId: data.masterLoan.loanPersonalDetail.customerUniqueId,
+      customerId: data.masterLoan.customer.customerUniqueId,
       loanAmount: data.masterLoan.finalLoanAmount,
       outstandingAmount: data.masterLoan.outstandingAmount,
       loanId: loanIdArr.join(', ')
