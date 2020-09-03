@@ -112,8 +112,10 @@
                             <button *ngxPermissionsOnly="['loanDetailsView']" mat-menu-item
                                 (click)="viewLoan(loan)">View Loan</button>
                             <ng-container *ngIf="!(loan.partRelease || loan.fullRelease)">
-                                <button mat-menu-item (click)="interestEmi(loan)">Quick Pay</button>
-                                <button mat-menu-item (click)="partPayment(loan)">Part Payment</button>
+                                <button *ngxPermissionsOnly="['addQuickPay']" mat-menu-item
+                                    (click)="interestEmi(loan)">Quick Pay</button>
+                                <button *ngxPermissionsOnly="['addPartPayment']" mat-menu-item
+                                    (click)="partPayment(loan)">Part Payment</button>
                                 <!-- <button mat-menu-item (click)="topUp(loan)">Top Up</button> -->
                                 <button *ngxPermissionsOnly="['partReleaseAdd', 'fullReleaseAdd']" mat-menu-item
                                     (click)="jewelleryRelease(loan)">Jewellery

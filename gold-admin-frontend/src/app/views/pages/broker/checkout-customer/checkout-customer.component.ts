@@ -73,7 +73,7 @@ export class CheckoutCustomerComponent implements OnInit {
       panCardNumber: ['', Validators.compose([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])],
       nameOnPanCard: ['', Validators.compose([Validators.required, Validators.pattern("^[a-zA-Z ]*$")])],
       panCardFileId: [''],
-      kycRequired: [false],
+      kycRequired: [false]
     });
     this.setPanDetailsValidators();
 
@@ -103,18 +103,13 @@ export class CheckoutCustomerComponent implements OnInit {
     const panCardFileIdControl = this.checkoutCustomerForm.get('panCardFileId');
 
     this.checkoutCustomerForm.get('kycRequired').valueChanges.subscribe((val) => {
-      if (val) {
+
         panCardNumberControl.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]);
         nameOnPanCardControl.setValidators([Validators.required]);
         panCardFileIdControl.setValidators([Validators.required]);
-      } else {
-        panCardNumberControl.setValidators([]);
-        nameOnPanCardControl.setValidators([]);
-        panCardFileIdControl.setValidators([]);
-      }
-      panCardNumberControl.updateValueAndValidity();
-      nameOnPanCardControl.updateValueAndValidity();
-      panCardFileIdControl.updateValueAndValidity();
+        panCardNumberControl.updateValueAndValidity();
+        nameOnPanCardControl.updateValueAndValidity();
+        panCardFileIdControl.updateValueAndValidity();
     });
   }
 

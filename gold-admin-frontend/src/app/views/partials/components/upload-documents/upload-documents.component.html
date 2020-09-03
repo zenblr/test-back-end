@@ -23,7 +23,7 @@
             <div class="col form-label" *ngIf="showLoanTransferFlag || showLoanFlag">
                 <label class="kt-padding-l-10 kt-padding-r-25">Pawn Ticket/Copy of Pledge</label>
                 <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"
-                    *ngIf="showLoanFlag && !controls?.pawnCopyImage?.value"></kt-button>
+                    *ngIf="showLoanFlag && buttonValue =='save'"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showLoanFlag">
                 <label class="kt-padding-l-10">Scheme Confirmation Copy</label>
@@ -66,18 +66,22 @@
                 <mat-error *ngIf="controls.processingCharges.touched && controls.processingCharges.invalid">
                     Field Required</mat-error>
             </div>
+            <div class="col">
             <div class="col" *ngIf="showScrapAcknowledgementFlag">
-                <select class="form-control" formControlName="standardDeduction"
-                    [class.isError]="controls.standardDeduction.touched && controls.standardDeduction.invalid">
-                    <option value="" [disabled]="true" [selected]="controls.standardDeduction.value == '' ||
-                            controls.standardDeduction.value == null">Select Standard Deduction</option>
-                    <option [value]="sd.standardDeduction" *ngFor="let sd of standardDeductionArr">
-                        {{sd.standardDeduction}}
-                    </option>
-                </select>
-                <mat-error *ngIf="controls.standardDeduction.touched && controls.standardDeduction.invalid">
-                    <span *ngIf="controls.standardDeduction.errors?.required">Field Required</span>
-                </mat-error>
+                <input type="text" class="form-control"  (keyup)= "calculateAfterDeduction()" placeholder="0" formControlName="standardDeduction"
+                numbersOnly
+                [class.isError]="controls.standardDeduction.touched && controls.standardDeduction.invalid">
+            <mat-error *ngIf="controls.standardDeduction.errors?.max || controls.standardDeduction.errors?.min">
+                Invalid Number</mat-error>
+            </div>
+            <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
+                <label>Before Standard Deduction - <span class="currency">
+                    {{totalAmt | indianCurrencyFormat}}</span></label>
+            </div>
+            <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
+                <label>After Standard Deduction - <span class="currency">
+                    {{total | indianCurrencyFormat}}</span></label>
+            </div>
             </div>
             <div class="col" *ngIf="showScrapAcknowledgementFlag">
                 <select class="form-control" formControlName="customerConfirmationStatus"

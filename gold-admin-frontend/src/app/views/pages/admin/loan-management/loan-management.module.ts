@@ -32,7 +32,6 @@ import { LoanTransferListComponent } from './loan-transfer-list/loan-transfer-li
 import { ViewPacketLogComponent } from './packets/view-packet-log/view-packet-log.component';
 import { ViewLocationComponent } from './packets/view-location/view-location.component';
 import { AgmCoreModule } from '@agm/core';
-import { LocationComponent } from './packets/view-location/tabs/location/location.component';
 import { PacketAssignAppraiserComponent } from './packets/packet-assign-appraiser/packet-assign-appraiser.component';
 const rout: Routes = [
   {
@@ -114,7 +113,6 @@ const rout: Routes = [
     LoanTransferListComponent,
     ViewPacketLogComponent,
     ViewLocationComponent,
-    LocationComponent,
     PacketAssignAppraiserComponent,
   ],
   imports: [

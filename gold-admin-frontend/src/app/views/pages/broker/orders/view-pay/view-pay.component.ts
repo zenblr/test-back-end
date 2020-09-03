@@ -102,10 +102,15 @@ export class ViewPayComponent implements OnInit {
         this.razorpayPaymentService.razorpayOptions.prefill.email = this.orderData.customerDetails.email || 'info@augmont.in';
         this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
         this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
+        this.router.navigate(['/broker/orders/']);
         } else {
           const dialogRef = this.dialog.open(PaymentDialogComponent, {
-            data: { paymentData: res, isEMI: true,
-              orderId: this.orderId},
+            data: { paymentData: res, 
+              isEMI: true,
+              orderId: this.orderId,
+              paymentMode: this.paymentForm.controls.paymentMode.value
+
+            },
             width: '70vw'
           });
           dialogRef.afterClosed().subscribe(res => {
@@ -134,8 +139,10 @@ export class ViewPayComponent implements OnInit {
         transactionDetails: response,
         transactionAmount: Number(this.emiAmount),
         emiId: this.emi,
-        orderId: this.orderId
-      }
+        orderId: this.orderId,
+        paymentMode: this.paymentForm.controls.paymentMode.value
+        
+     }
       this.shopService.payEMI(payEMIData).subscribe(res => {
         console.log(payEMIData)
         this.toastr.successToastr("EMI Paid Successfully");

@@ -73,7 +73,9 @@ export class AssignAppraiserComponent implements OnInit {
         this.appraiserForm.patchValue({ customerName: this.data.customer.firstName + ' ' + this.data.customer.lastName })
         this.appraiserForm.controls.customerUniqueId.patchValue(this.data.customer.customerUniqueId)
         this.appraiserForm.controls.customerId.patchValue(this.data.id)
-        this.appraiserForm.controls.id.patchValue(this.data.requestData.id)
+        if (this.data.requestData) {
+          this.appraiserForm.controls.id.patchValue(this.data.requestData.id)
+        }
       }
       // if (this.data.partReleaseId) this.appraiserForm.controls.partReleaseId.patchValue(this.data.partReleaseId)
 
@@ -87,7 +89,9 @@ export class AssignAppraiserComponent implements OnInit {
       this.startTime = this.convertTime24To12(this.data.appraiser.startTime);
       this.endTime = this.convertTime24To12(this.data.appraiser.endTime);
       this.appraiserForm.patchValue({ startTime: this.startTime, endTime: this.endTime })
-      this.appraiserForm.controls.id.patchValue(this.data.requestData.id)
+      if (this.data.requestData) {
+        this.appraiserForm.controls.id.patchValue(this.data.requestData.id)
+      }
 
 
       if (this.data.customer) {

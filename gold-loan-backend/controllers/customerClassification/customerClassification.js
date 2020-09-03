@@ -117,6 +117,8 @@ exports.operationalTeamKycRating = async (req, res, next) => {
             return res.status(200).json({ message: 'success' })
         } else {
             await sequelize.transaction(async (t) => {
+                await models.customer.update({ kycStatus: kycStatusFromOperationalTeam }, { where: { id: customerId }, transaction: t })
+
                 await models.customerKyc.update(
                     { operationalTeamVerifiedBy: operationalTeamId },
                     { where: { customerId: customerId }, transaction: t })
