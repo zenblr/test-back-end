@@ -3,6 +3,7 @@ const models = require('../../models');
 const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
+const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
 const loanTransferHistory = require('../../utils/customerLoanTransferHistory')
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
@@ -299,8 +300,9 @@ exports.getLoanTransferList = async (req, res, next) => {
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
-    if (req.userData.userTypeId != 4) {
-        internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
+        // internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+        internalBranchWhere = { isActive: true }
     } else {
         internalBranchWhere = { isActive: true }
     }
