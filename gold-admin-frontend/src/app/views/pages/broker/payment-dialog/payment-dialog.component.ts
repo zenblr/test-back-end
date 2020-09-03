@@ -39,6 +39,9 @@ export class PaymentDialogComponent implements OnInit {
     if(this.data.orderId) {
       this.paymentForm.controls['orderId'].patchValue(this.data.orderId)
     }
+    if(this.data.paymentMode) {
+      this.paymentForm.controls['paymentMode'].patchValue(this.data.paymentMode)
+    }
     console.log(this.data.paymentData);
     console.log(this.paymentForm.value);
   }
