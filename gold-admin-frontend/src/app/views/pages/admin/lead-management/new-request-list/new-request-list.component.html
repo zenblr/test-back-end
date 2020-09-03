@@ -61,23 +61,24 @@
                 <ng-container matColumnDef="update">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let row">
-                        <button style="width: 120px;" class="apply-kyc" (click)="editProduct(row)"
-                            *ngIf="!row.isAssigned">
-                            Update
-                        </button>
+                        <div *ngxPermissionsOnly="['updateNewRequest']">
+                            <button style="width: 120px;" class="apply-kyc" (click)="editProduct(row)"
+                                *ngIf="!row.isAssigned">
+                                Update
+                            </button>
+                        </div>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="appraiser">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let row">
-                        <div [ngStyle]="{'display': 'inherit'}">
+                        <div *ngxPermissionsOnly="['assignAppraiserAdd']" [ngStyle]="{'display': 'inherit'}">
                             <button style="width: 120px;" class="apply-kyc" (click)="assignAppraiser(row)"
                                 *ngIf="!row.isAssigned">Assign
                                 Appraiser</button>
                         </div>
-                        <div [ngStyle]="{'display': 'inherit'}">
-
+                        <div *ngxPermissionsOnly="['assignAppraiserEdit']" [ngStyle]="{'display': 'inherit'}">
                             <button style="width: 120px;" class="apply-kyc" (click)="updateAppraiser(row)"
                                 *ngIf="row.isAssigned">Update
                                 Appraiser</button>

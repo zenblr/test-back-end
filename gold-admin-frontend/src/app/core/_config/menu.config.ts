@@ -90,7 +90,7 @@ export class MenuConfig {
 							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-05.svg",
 							page: "/admin/lead-management",
-							permission: !(this.permissionsArr.includes('leadManagmentView')),
+							permission: !(this.permissionsArr.includes('leadManagmentView') || this.permissionsArr.includes('viewNewRequest')),
 							submenu: [
 								{
 									title: "All Leads",
@@ -100,7 +100,7 @@ export class MenuConfig {
 								{
 									title: "Appraiser Requests",
 									page: "/admin/lead-management/new-requests",
-									permission: false,
+									permission: !this.permissionsArr.includes('viewNewRequest'),
 								},
 								// {
 								// 	title: "My Requests",

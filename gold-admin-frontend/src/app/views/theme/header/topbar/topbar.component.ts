@@ -103,7 +103,7 @@ export class TopbarComponent implements OnInit {
 	sortImg = "../../../../../assets/media/icons/sort.svg";
 	sortType: number = 1;
 	sortFlag: boolean = false;
-	notTitleCase: boolean =false;
+	notTitleCase: boolean = false;
 
 	constructor(
 		public sharedService: SharedService,
@@ -368,9 +368,9 @@ export class TopbarComponent implements OnInit {
 			this.showfilter = false;
 			this.showInput = true;
 		}
-		if(location.href.includes('loan-details/')){
+		if (location.href.includes('loan-details/')) {
 			this.rightButton = true;
-			this.notTitleCase=true;
+			this.notTitleCase = true;
 			this.value2 = "Generate S.O.A.";
 			this.type2 = "button";
 		}
@@ -701,6 +701,9 @@ export class TopbarComponent implements OnInit {
 			this.showBackButton = true;
 		}
 		if (location.href.includes('/admin/loan-management/loan-transfer?customerID=')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/admin/loan-management/loan-application-form?transferLoanCustomerID=')) {
 			this.showBackButton = true;
 		}
 		if (this.path == 'standard-deduction') {

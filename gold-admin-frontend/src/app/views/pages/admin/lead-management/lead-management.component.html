@@ -141,13 +141,15 @@
                 <ng-container matColumnDef="menu">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-
-                        <button mat-button [matMenuTriggerFor]="menu">
-                            <mat-icon>more_vert</mat-icon>
-                        </button>
-                        <mat-menu #menu="matMenu" xPosition="before">
-                            <button mat-menu-item (click)="newRequest(loan)">New Request</button>
-                        </mat-menu>
+                        <div *ngxPermissionsOnly="['addNewRequest']">
+                            <button mat-button [matMenuTriggerFor]="menu">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu" xPosition="before">
+                                <button *ngxPermissionsOnly="['addNewRequest']" mat-menu-item
+                                    (click)="newRequest(loan)">New Request</button>
+                            </mat-menu>
+                        </div>
                     </mat-cell>
                 </ng-container>
 
