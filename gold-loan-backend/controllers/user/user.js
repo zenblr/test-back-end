@@ -67,7 +67,7 @@ exports.sendOtp = async (req, res, next) => {
     let userDetails = await models.user.findOne({ where: { mobileNumber } });
     if (userDetails) {
         // let otp = Math.floor(1000 + Math.random() * 9000);
-        let opt = 1234;
+        let otp = 1234;
         const referenceCode = await createReferenceCode(5);
         let createdTime = moment(new Date());
         let expiryTime = moment.utc(createdTime).add(10, 'm');
