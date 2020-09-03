@@ -59,10 +59,26 @@ exports.customerValidation = [
     .exists()
     .isInt()
     .withMessage("statusId is required"),
-
+  body('panCardNumber')
+    .exists()
+    .withMessage('Pan Card Number is required')
+    .custom(async value => {
+      return await models.customer.findOne({
+        where: {
+          panCardNumber: {
+            [op.iLike]: value
+          },
+          isActive: true
+        }
+      }).then(panCardNumber => {
+        if (panCardNumber) {
+          return Promise.reject("Pan Card Number already exist !");
+        }
+      })
+    }),
 ]
 
-exports.customerUpdateValidation=[
+exports.customerUpdateValidation = [
 
   body('firstName')
     .exists()
@@ -88,7 +104,7 @@ exports.customerUpdateValidation=[
         return Promise.reject("Invalid mobile number");
       }
 
-   }),
+    }),
 
   // body('email')
   //   .exists()

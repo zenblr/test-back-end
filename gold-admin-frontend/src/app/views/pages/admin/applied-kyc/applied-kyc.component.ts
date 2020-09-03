@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AppliedKycDatasource } from '../../../../core/applied-kyc/datasources/applied-kyc.datasource';
 import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
-import { MatPaginator, MatSort, MatDialog } from '@angular/material';
+import { MatPaginator, MatSort, MatDialog,MatTooltipModule,TooltipPosition } from '@angular/material';
 import { Subject, Subscription, merge } from 'rxjs';
 import { tap, takeUntil, skip, distinctUntilChanged, map } from 'rxjs/operators';
 import { DataTableService } from '../../../../core/shared/services/data-table.service';
