@@ -103,7 +103,7 @@ export class TopbarComponent implements OnInit {
 	sortImg = "../../../../../assets/media/icons/sort.svg";
 	sortType: number = 1;
 	sortFlag: boolean = false;
-	notTitleCase: boolean =false;
+	notTitleCase: boolean = false;
 	showSubHeader: boolean;
 
 	constructor(
@@ -201,7 +201,7 @@ export class TopbarComponent implements OnInit {
 
 		this.packetService.disableBtn$.pipe(
 			takeUntil(this.destroy$)
-			).subscribe(res => this.isDisabled = res)
+		).subscribe(res => this.isDisabled = res)
 
 		this.subscriptions.push(
 			this.sharedService.totalCount$
@@ -258,11 +258,11 @@ export class TopbarComponent implements OnInit {
 		this.subscriptions.forEach((sb) => sb.unsubscribe());
 	}
 
-	checkForSubHeader(){
-		if(this.showInput || this.showDropdown || this.value4 || this.downloadbtn || this.toogle || this.showfilter || this.sortFlag){
+	checkForSubHeader() {
+		if (this.showInput || this.rightButton || this.showDropdown || this.value4 || this.downloadbtn || this.toogle || this.showfilter || this.sortFlag) {
 			this.showSubHeader = true;
 			this.sharedService.isSubHeaderVisible.next(true)
-		}else{
+		} else {
 			this.showSubHeader = false;
 			this.sharedService.isSubHeaderVisible.next(false)
 
@@ -388,9 +388,9 @@ export class TopbarComponent implements OnInit {
 			this.showfilter = false;
 			this.showInput = true;
 		}
-		if(location.href.includes('loan-details/')){
+		if (location.href.includes('loan-details/')) {
 			this.rightButton = true;
-			this.notTitleCase=true;
+			this.notTitleCase = true;
 			this.value2 = "Generate S.O.A.";
 			this.type2 = "button";
 		}
