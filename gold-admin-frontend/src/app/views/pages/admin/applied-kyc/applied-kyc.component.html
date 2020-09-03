@@ -41,13 +41,19 @@
                         <span class="text-success"
                             *ngIf="role.customerKycClassification?.kycStatusFromCce == 'approved'">
                             {{role.customerKycClassification?.kycStatusFromCce | titlecase}} </span>
-                        <span class="text-warning"
-                            *ngIf="role.customerKycClassification?.kycStatusFromCce == 'pending'">
-                            {{role.customerKycClassification?.kycStatusFromCce | titlecase}}
+                        <span *ngIf="role.customerKycClassification?.kycStatusFromCce == 'pending'">
+                            <span
+                                class="text-warning">{{role.customerKycClassification?.kycStatusFromCce | titlecase}}</span>
+
                         </span>
-                        <span class="text-danger"
-                            *ngIf="role.customerKycClassification?.kycStatusFromCce == 'rejected'">
-                            {{role.customerKycClassification?.kycStatusFromCce | titlecase}}
+                        <span *ngIf="role.customerKycClassification?.kycStatusFromCce == 'rejected'">
+                            <span
+                                class="text-danger kt-padding-r-5">{{role.customerKycClassification?.kycStatusFromCce | titlecase}}</span>
+                            <span class="material-icons custom-icon" mat-raised-button
+                                matTooltip={{role.customerKycClassification?.reasonFromCce}} matTooltipPosition="above"
+                                matTooltipClass="custom-tooltip-white">
+                                info
+                            </span>
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -58,14 +64,26 @@
                         <span class="text-success" *ngIf="role.customer?.kycStatus == 'approved'">
                             {{role.customer?.kycStatus | titlecase}}
                         </span>
-                        <span class="text-warning" *ngIf="role.customer?.kycStatus == 'incomplete'">
-                            {{role.customer?.kycStatus | titlecase}}
+                        <span *ngIf="role.customer?.kycStatus == 'incomplete'">
+                            <span class="text-warning">{{role.customer?.kycStatus | titlecase}}</span>
+
+                            <span class="material-icons custom-icon" mat-raised-button
+                                matTooltip={{role.customerKycClassification?.reasonFromOperationalTeam}}
+                                matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                                info
+                            </span>
                         </span>
                         <span class="text-warning" *ngIf="role.customer?.kycStatus == 'pending'">
                             {{role.customer?.kycStatus | titlecase}}
                         </span>
-                        <span class="text-danger" *ngIf="role.customer?.kycStatus == 'rejected'">
-                            {{role.customer?.kycStatus | titlecase}}
+                        <span *ngIf="role.customer?.kycStatus == 'rejected'">
+                            <span class="text-danger">{{role.customer?.kycStatus | titlecase}}</span>
+
+                            <span class="material-icons  custom-icon" mat-raised-button
+                                matTooltip={{role.customerKycClassification?.reasonFromOperationalTeam}}
+                                matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                                info
+                            </span>
                         </span>
                     </mat-cell>
                 </ng-container>
