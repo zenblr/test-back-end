@@ -105,12 +105,11 @@ export class ViewPayComponent implements OnInit {
         this.router.navigate(['/broker/orders/']);
         } else {
           const dialogRef = this.dialog.open(PaymentDialogComponent, {
-            data: { 
-              paymentData: res, 
+            data: { paymentData: res, 
               isEMI: true,
               orderId: this.orderId,
               paymentMode: this.paymentForm.controls.paymentMode.value
-     
+
             },
             width: '70vw'
           });
@@ -142,8 +141,8 @@ export class ViewPayComponent implements OnInit {
         emiId: this.emi,
         orderId: this.orderId,
         paymentMode: this.paymentForm.controls.paymentMode.value
-
-      }
+        
+     }
       this.shopService.payEMI(payEMIData).subscribe(res => {
         console.log(payEMIData)
         this.toastr.successToastr("EMI Paid Successfully");

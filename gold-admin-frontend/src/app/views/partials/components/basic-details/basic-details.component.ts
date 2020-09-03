@@ -138,6 +138,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
         this.basicForm.patchValue(changes.details.currentValue.customer)
         this.basicForm.controls.loanId.patchValue(changes.details.currentValue.id)
+        this.basicForm.controls.requestId.patchValue(changes.details.currentValue.masterLoan.appraiserRequestId)
         this.ref.detectChanges()
       }
     }
