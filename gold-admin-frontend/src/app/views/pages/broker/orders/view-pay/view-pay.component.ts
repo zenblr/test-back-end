@@ -102,6 +102,7 @@ export class ViewPayComponent implements OnInit {
         this.razorpayPaymentService.razorpayOptions.prefill.email = this.orderData.customerDetails.email || 'info@augmont.in';
         this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
         this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
+        this.router.navigate(['/broker/orders/']);
         } else {
           const dialogRef = this.dialog.open(PaymentDialogComponent, {
             data: { paymentData: res, 
