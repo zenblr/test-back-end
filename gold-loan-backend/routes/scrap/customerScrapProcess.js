@@ -37,7 +37,7 @@ route.post('/ops-rating', checkAuth, wrapper(scrapOpsTeamRating)); // ADD OPERAT
 
 route.post('/scrap-disbursement', checkAuth, wrapper(disbursementOfScrapAmount)); // DISBURSEMENT OF SCRAP AMOUNT
 
-route.get('/applied-scrap-details', checkAuth, wrapper(appliedScrapDetails)); // FETCH APLLIED SCRAP DETAILS
+route.get('/applied-scrap-details', checkAuth,checkRolePermission, wrapper(appliedScrapDetails)); // FETCH APLLIED SCRAP DETAILS
 
 route.get('/scrap-details', checkAuth, wrapper(getScrapDetails)); // FETCH APLLIED SCRAP DETAILS
 

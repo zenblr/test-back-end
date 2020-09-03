@@ -52,6 +52,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    console.log(changes, this.details);
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         if (changes.details.currentValue && changes.details.currentValue.loanBankDetail) {
@@ -84,11 +85,14 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       }
     }
 
-    if (changes.finalScrapAmt) {
+    if (changes.finalScrapAmt && changes.finalScrapAmt.currentValue) {
+      console.log(changes.finalScrapAmt)
+      this.controls.finalScrapAmountAfterMelting.patchValue(changes.finalScrapAmt.currentValue)
       if (Number(changes.finalScrapAmt.currentValue) > 200000) {
         this.controls.paymentType.patchValue('bank')
         this.controls.paymentType.disable()
       }
+      this.ref.detectChanges()
     }
 
     if (this.disable) {
@@ -99,7 +103,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   initForm() {
     this.bankForm = this.fb.group({
       paymentType: ['', Validators.required],
-      // finalScrapAmountAfterMelting: [],
+      finalScrapAmountAfterMelting: [],
       bankName: [, [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
       accountNumber: [, [Validators.required, Validators.pattern('^(?=.*\\d)(?=.*[1-9]).{3,21}$')]],
       ifscCode: ['', [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],

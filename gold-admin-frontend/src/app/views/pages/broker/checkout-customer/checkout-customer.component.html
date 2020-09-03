@@ -21,7 +21,7 @@
                             <input type="text" aria-label="Mobile Number" placeholder="Mobile Number"
                                 class="form-control" formControlName="mobileNo"
                                 [class.isError]="numberSearchForm.controls.mobileNo.touched && numberSearchForm.controls.mobileNo.invalid"
-                                numbersOnly>
+                                maxlength="10" numbersOnly>
                             <mat-error
                                 *ngIf="numberSearchForm.controls.mobileNo.errors?.required && numberSearchForm.controls.mobileNo.touched">
                                 Field is required
@@ -74,7 +74,7 @@
                             <input type="text" aria-label="Mobile Number" placeholder="Mobile Number"
                                 class="form-control" formControlName="mobileNumber"
                                 [class.isError]="controls.mobileNumber.touched && controls.mobileNumber.invalid"
-                                numbersOnly>
+                                maxlength="10" numbersOnly>
                             <mat-error *ngIf="controls.mobileNumber.errors?.required && controls.mobileNumber.touched">
                                 Field is required
                             </mat-error>

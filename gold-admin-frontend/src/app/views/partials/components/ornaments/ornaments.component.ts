@@ -95,7 +95,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   ) { }
 
   ngOnInit() {
-    console.log(this.data.modal)
     this.url = this.router.url.split('/')[3]
     if (!this.karatFlag) {
       this.getKarat()
@@ -286,7 +285,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
             this.totalAmount += Number(element.loanAmount)
             this.fullAmount += Number(element.ornamentFullAmount)
           });
-          console.log(this.fullAmount)
           this.totalAmount = Math.round(this.totalAmount)
           this.fullAmount = Math.round(this.fullAmount)
           this.totalAmt.emit(this.totalAmount)

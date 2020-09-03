@@ -123,6 +123,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'created_by'
         },
+        appraiserRequestId:{
+            type: DataTypes.INTEGER,
+            field: 'appraiser_request_id'
+        },
         modifiedBy: {
             type: DataTypes.INTEGER,
             field: 'modified_by'
@@ -156,7 +160,7 @@ module.exports = (sequelize, DataTypes) => {
         CustomerScrap.hasMany(models.scrapPacket, { foreignKey: 'scrapId', as: 'scrapPacket' });
         CustomerScrap.hasOne(models.customerScrapDisbursement, {foreignKey: 'scrapId', as: 'scrapDisbursement'});
         CustomerScrap.hasOne(models.scrapQuickPay, {foreignKey: 'scrapId', as: 'scrapQuickPay'});
-
+        CustomerScrap.belongsTo(models.appraiserRequest, { foreignKey: 'appraiserRequestId', as: 'appraiserRequest' });
     }
 
     CustomerScrap.prototype.toJSON = function () {
