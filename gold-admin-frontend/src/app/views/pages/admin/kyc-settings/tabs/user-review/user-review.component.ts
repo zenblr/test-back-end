@@ -617,6 +617,10 @@ export class UserReviewComponent implements OnInit {
     this.userBankService.kycSubmit(data).pipe(
       map(res => {
         this.next.emit(true);
+      }),catchError(err => {
+        if (err.error.message)
+        this.toastr.error(err.error.message);
+        throw (err)
       })
     ).subscribe()
 
