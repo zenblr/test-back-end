@@ -304,9 +304,9 @@ exports.addCustomerPacketTracking = async (req, res) => {
     });
 
     if (packetTrackingData) {
-        return res.status(201).json({ message: 'Loaction Added' });
+        return res.status(200).json({ message: 'Location Added' });
     } else {
-        return res.status(400).json({ message: 'Loaction not added' });
+        return res.status(400).json({ message: 'Location not added' });
     }
 }
 
@@ -380,7 +380,7 @@ exports.getMapDetails = async (req, res, next) => {
         include: {
             model: models.customerLoanMaster,
             as: 'masterLoan',
-            attributes:['id'],
+            attributes: ['id'],
             include: {
                 model: models.packet,
                 as: 'packet'
