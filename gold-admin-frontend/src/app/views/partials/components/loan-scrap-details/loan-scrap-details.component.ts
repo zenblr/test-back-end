@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
 import { PdfViewerComponent } from '../pdf-viewer/pdf-viewer.component';
 import { SharedService } from '../../../../core/shared/services/shared.service';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, distinctUntilChanged, skip } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 @Component({
   selector: 'kt-loan-scrap-details',
@@ -34,7 +34,10 @@ export class LoanScrapDetailsComponent implements OnInit {
     private sharedService:SharedService
   ) { 
     this.sharedService.exportExcel$
-    .pipe(takeUntil(this.destroy$))
+    .pipe(
+      skip(1),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$))
     .subscribe((res) => {
       if (res) {
         this.soaDownload();

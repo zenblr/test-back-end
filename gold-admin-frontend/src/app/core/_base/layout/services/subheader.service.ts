@@ -23,7 +23,7 @@ export interface BreadcrumbTitle {
 @Injectable()
 export class SubheaderService {
 	// Public properties
-	title$: BehaviorSubject<BreadcrumbTitle> = new BehaviorSubject<BreadcrumbTitle>({title: '', desc: ''});
+	title$: BehaviorSubject<BreadcrumbTitle> = new BehaviorSubject<BreadcrumbTitle>({ title: '', desc: '' });
 	breadcrumbs$: BehaviorSubject<Breadcrumb[]> = new BehaviorSubject<Breadcrumb[]>([]);
 	disabled$: Subject<boolean> = new Subject<boolean>();
 
@@ -158,7 +158,7 @@ export class SubheaderService {
 	 */
 	setTitle(title: string) {
 		this.manualTitle[this.router.url] = title;
-		this.title$.next({title});
+		this.title$.next({ title });
 	}
 
 	/**

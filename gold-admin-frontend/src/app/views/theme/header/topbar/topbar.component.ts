@@ -104,6 +104,7 @@ export class TopbarComponent implements OnInit {
 	sortType: number = 1;
 	sortFlag: boolean = false;
 	notTitleCase: boolean = false;
+	showSubHeader: boolean;
 
 	constructor(
 		public sharedService: SharedService,
@@ -163,6 +164,7 @@ export class TopbarComponent implements OnInit {
 		this.router.events.subscribe(val => {
 			this.reset()
 			this.setTopbar(location.path())
+			this.checkForSubHeader()
 		})
 
 		this.walletPriceService.download$
@@ -189,11 +191,18 @@ export class TopbarComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.packetService.disableBtn$.pipe(takeUntil(this.destroy$)).subscribe(res => this.isDisabled = res)
 		this.setTopbar(this.router.url);
+		this.checkForSubHeader()
+
 	}
 
 	ngAfterViewInit(): void {
+
+
+		this.packetService.disableBtn$.pipe(
+			takeUntil(this.destroy$)
+		).subscribe(res => this.isDisabled = res)
+
 		this.subscriptions.push(
 			this.sharedService.totalCount$
 				.pipe(takeUntil(this.destroy$))
@@ -247,6 +256,17 @@ export class TopbarComponent implements OnInit {
 	 */
 	ngOnDestroy(): void {
 		this.subscriptions.forEach((sb) => sb.unsubscribe());
+	}
+
+	checkForSubHeader() {
+		if (this.showInput || this.rightButton || this.showDropdown || this.value4 || this.downloadbtn || this.toogle || this.showfilter || this.sortFlag) {
+			this.showSubHeader = true;
+			this.sharedService.isSubHeaderVisible.next(true)
+		} else {
+			this.showSubHeader = false;
+			this.sharedService.isSubHeaderVisible.next(false)
+
+		}
 	}
 
 	reset() {
