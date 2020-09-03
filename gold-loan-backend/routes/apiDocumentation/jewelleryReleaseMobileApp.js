@@ -92,7 +92,7 @@
  *          description: request submitted
  *       400:
  *          description: failed
- * /customer/app/jewellery-release/customer/{customerId}:
+ * /customer/app/jewellery-release/data/{customerId}:
  *   get:
  *     tags:
  *       - Ornament release customer app
