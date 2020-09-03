@@ -88,12 +88,13 @@ export class UserDetailsComponent implements OnInit {
         this.controls.panCardNumber.reset()
         this.controls.panCardNumber.patchValue('')
         this.controls.panCardNumber.clearValidators()
+        this.controls.panCardNumber.updateValueAndValidity()
       }
       if (res == 'pan') {
         this.controls.form60.reset()
         this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
+        this.controls.panCardNumber.updateValueAndValidity()
       }
-      this.controls.panCardNumber.updateValueAndValidity()
     });
 
     this.controls.otp.valueChanges.subscribe(res => {
@@ -248,14 +249,14 @@ export class UserDetailsComponent implements OnInit {
     const basicForm = this.userBasicForm.value;
     this.userDetailsService.basicDetails(basicForm).pipe(
       map(res => {
-       
+
         if (res) {
           // this.next.emit(true);
           this.next.emit(res.customerKycCurrentStage);
         }
       }),
       catchError(err => {
-        
+
         if (err.error.message == 'This customer Kyc information is already created.' && err.status == 404) {
           //   const kycStage = 2;
           // this.next.emit(true);
