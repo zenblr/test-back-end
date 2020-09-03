@@ -125,6 +125,11 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 			// tslint:disable-next-line:max-line-length
 			this.render.setAttribute(this.asideMenu.nativeElement, 'data-ktmenu-dropdown-timeout', objectPath.get(config, 'aside.menu.submenu.dropdown.hover-timeout'));
 		}
+
+		if (document.body.classList.contains('kt-aside--minimize-hover')) {
+			// hide the left aside menu
+			this.render.removeClass(document.body, 'kt-aside--minimize-hover');
+		}
 	}
 
 	/**

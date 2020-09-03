@@ -182,7 +182,7 @@ export class LeadManagementComponent implements OnInit {
   assign(item) {
     // this.router.navigate(['/admin/user-management/redirect-assign-appraiser'])
     item.customer = { firstName: item.firstName, lastName: item.lastName }
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', from: 'lead', customer: item.customer, id: item.id }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', from: 'lead', customer: item.customer, id: item.id, internalBranchId: item.customer.internalBranchId }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadLeadsPage();
@@ -193,7 +193,7 @@ export class LeadManagementComponent implements OnInit {
   updateAppraiser(item) {
     item.customer = { firstName: item.firstName, lastName: item.lastName }
     item.customer.customerUniqueId = item.customerUniqueId
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit', from: 'lead', appraiser: item.customerAssignAppraiser, customer: item.customer, id: item.id }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit', from: 'lead', appraiser: item.customerAssignAppraiser, customer: item.customer, id: item.id, internalBranchId: item.customer.internalBranchId }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadLeadsPage();

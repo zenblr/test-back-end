@@ -38,6 +38,7 @@ export class LoanApplicationFormComponent implements OnInit {
   ornamentDetails: any;
   loanTransferdata: any;
   disbursed: boolean = false;
+  partPaymentdata: any;
 
   constructor(
     public ref: ChangeDetectorRef,
@@ -74,7 +75,6 @@ export class LoanApplicationFormComponent implements OnInit {
       this.masterAndLoanIds = { loanId: res.data.id, masterLoanId: res.data.masterLoanId }
       this.loanStage = this.customerDetail.masterLoan.loanStage
       this.ornamentDetails = res.data.ornamentType
-      console.log(this.loanStage)
       if(this.loanStage.id == 5){
         this.disbursed = true
       }
@@ -117,7 +117,6 @@ export class LoanApplicationFormComponent implements OnInit {
   getOrnamentType() {
     this.ornamentTypeService.getOrnamentType(1, -1, '').pipe(
       map(res => {
-        console.log(res);
         this.ornamentType = res.data;
       })
     ).subscribe();
@@ -151,7 +150,7 @@ export class LoanApplicationFormComponent implements OnInit {
   }
 
   partPayment(event) {
-    this.loanTransferdata = event
+    this.partPaymentdata = event
   }
 
   loanTransfer(event){

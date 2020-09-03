@@ -189,12 +189,12 @@ export class MenuConfig {
 								}
 							],
 						},
-						// {
-						// 	title: "Global Map",
-						// 	root: true,
-						// 	src: "assets/media/aside-icons/icons-08.svg",
-						// 	page: "/admin/global-map",
-						// },
+						{
+							title: "Global Map",
+							root: true,
+							src: "assets/media/aside-icons/icons-08.svg",
+							page: "/admin/global-map",
+						},
 						{
 							title: "Customer Management",
 							root: true,
@@ -246,7 +246,7 @@ export class MenuConfig {
 								{
 									title: "Deposit",
 									page: "/admin/funds-approvals/deposit",
-									permission: false,
+									permission: !this.permissionsArr.includes('viewDeposit'),
 								},
 								{
 									title: "Top-Up Approval",

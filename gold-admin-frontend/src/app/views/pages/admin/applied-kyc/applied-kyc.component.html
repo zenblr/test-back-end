@@ -55,21 +55,17 @@
                 <ng-container matColumnDef="kycStatus">
                     <mat-header-cell *matHeaderCellDef>KYC Status</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span class="text-success"
-                            *ngIf="role.customerKycClassification?.kycStatusFromOperationalTeam == 'approved'">
-                            {{role.customerKycClassification?.kycStatusFromOperationalTeam | titlecase}}
+                        <span class="text-success" *ngIf="role.customer?.kycStatus == 'approved'">
+                            {{role.customer?.kycStatus | titlecase}}
                         </span>
-                        <span class="text-warning"
-                            *ngIf="role.customerKycClassification?.kycStatusFromOperationalTeam == 'incomplete'">
-                            {{role.customerKycClassification?.kycStatusFromOperationalTeam | titlecase}}
+                        <span class="text-warning" *ngIf="role.customer?.kycStatus == 'incomplete'">
+                            {{role.customer?.kycStatus | titlecase}}
                         </span>
-                        <span class="text-warning"
-                            *ngIf="role.customerKycClassification?.kycStatusFromOperationalTeam == 'pending'">
-                            {{role.customerKycClassification?.kycStatusFromOperationalTeam | titlecase}}
+                        <span class="text-warning" *ngIf="role.customer?.kycStatus == 'pending'">
+                            {{role.customer?.kycStatus | titlecase}}
                         </span>
-                        <span class="text-danger"
-                            *ngIf="role.customerKycClassification?.kycStatusFromOperationalTeam == 'rejected'">
-                            {{role.customerKycClassification?.kycStatusFromOperationalTeam | titlecase}}
+                        <span class="text-danger" *ngIf="role.customer?.kycStatus == 'rejected'">
+                            {{role.customer?.kycStatus | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
