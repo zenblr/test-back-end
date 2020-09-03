@@ -44,7 +44,12 @@
                         <span *ngIf="role.customerKycClassification?.kycStatusFromCce == 'pending'">
                             <span
                                 class="text-warning">{{role.customerKycClassification?.kycStatusFromCce | titlecase}}</span>
-
+                            <span *ngIf="role.customerKycClassification?.reasonFromCce"
+                                class="material-icons custom-icon" mat-raised-button
+                                matTooltip={{role.customerKycClassification?.reasonFromCce}} matTooltipPosition="above"
+                                matTooltipClass="custom-tooltip-white">
+                                info
+                            </span>
                         </span>
                         <span *ngIf="role.customerKycClassification?.kycStatusFromCce == 'rejected'">
                             <span
@@ -73,8 +78,15 @@
                                 info
                             </span>
                         </span>
-                        <span class="text-warning" *ngIf="role.customer?.kycStatus == 'pending'">
-                            {{role.customer?.kycStatus | titlecase}}
+                        <span *ngIf="role.customer?.kycStatus == 'pending'">
+                            <span class="text-warning"> {{role.customer?.kycStatus | titlecase}}</span>
+
+                            <span *ngIf="role.customerKycClassification?.reasonFromOperationalTeam"
+                                class="material-icons custom-icon" mat-raised-button
+                                matTooltip={{role.customerKycClassification?.reasonFromOperationalTeam}}
+                                matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                                info
+                            </span>
                         </span>
                         <span *ngIf="role.customer?.kycStatus == 'rejected'">
                             <span class="text-danger">{{role.customer?.kycStatus | titlecase}}</span>
