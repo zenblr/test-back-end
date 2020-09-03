@@ -8,7 +8,7 @@ const customerCheckAuth = require('../middleware/customerCheckAuth');
 
 
 
-route.get('/:customerId', customerCheckAuth, wrapper(getCustomerDetails)); 
+route.get('/data/:customerId', customerCheckAuth, wrapper(getCustomerDetails)); 
 
 route.get('/:masterLoanId', customerCheckAuth, wrapper(ornamentsDetails)); 
 
