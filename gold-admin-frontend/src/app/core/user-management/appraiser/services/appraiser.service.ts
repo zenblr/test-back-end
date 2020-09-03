@@ -24,7 +24,7 @@ export class AppraiserService {
     )
   }
   assignAppraiser(value): Observable<any> {
-    return this.http.post(`/api/assign-appraiser`, value).pipe(
+    return this.http.post(`/api/appraiser-request/assign-appraiser`, value).pipe(
       map(res => res),
       catchError((err) => {
         if (err.error.message) {
@@ -34,8 +34,8 @@ export class AppraiserService {
       }))
   }
 
-  updateAppraiser(id, value): Observable<any> {
-    return this.http.put(`/api/assign-appraiser/${id}`, value).pipe(
+  updateAppraiser(value): Observable<any> {
+    return this.http.put(`/api/appraiser-request/update-appraiser`, value).pipe(
       map(res => res),
       catchError((err) => {
         if (err.error.message) {
@@ -69,6 +69,38 @@ export class AppraiserService {
 
   updateAppraiserPartRelease(value): Observable<any> {
     return this.http.put(`/api/jewellery-release/update-appraiser`, value).pipe(
+      map(res => res),
+      catchError((err) => {
+        if (err.error.message) {
+          this.toastr.error(err.error.message)
+        }
+        throw (err)
+      }))
+  }
+
+  getAllReleaser(internalBranchId?): Observable<any> {
+    const reqParams: any = {}
+    if (internalBranchId) {
+      reqParams.internalBranchId = internalBranchId
+    }
+    return this.http.get(`api/user/releaser-list`, { params: reqParams }).pipe(
+      map(res => res)
+    )
+  }
+
+  assignReleaserFullRelease(value): Observable<any> {
+    return this.http.post(`/api/jewellery-release/assign-releaser`, value).pipe(
+      map(res => res),
+      catchError((err) => {
+        if (err.error.message) {
+          this.toastr.error(err.error.message)
+        }
+        throw (err)
+      }))
+  }
+
+  updateReleaserFullRelease(value): Observable<any> {
+    return this.http.put(`/api/jewellery-release/update-releaser`, value).pipe(
       map(res => res),
       catchError((err) => {
         if (err.error.message) {

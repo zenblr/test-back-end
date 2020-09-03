@@ -96,7 +96,7 @@ exports.editAppKyc = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let createdBy = req.userData.id;
 
-    
+
     let customerRating = await models.customerKycClassification.findOne({ where: { customerId } })
 
     if (customerRating.kycStatusFromCce == "approved") {
@@ -174,131 +174,90 @@ exports.getAssignedCustomer = async (req, res, next) => {
         }],
         appraiserId: id
     };
-    let includeArray = [{
-        model: models.customer,
-        as: 'customer',
-        subQuery: false,
-        include: [
-            {
-                model: models.customerKyc,
-                as: "customerKyc",
-                attributes: ['id']
-            },
-            {
-                model: models.customerKycAddressDetail,
-                as: 'customerKycAddress',
-                attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
-                include: [{
+    let includeArray = [
+        {
+            model: models.customer,
+            as: 'customer',
+            subQuery: false,
+            include: [
+                {
+                    model: models.customerKyc,
+                    as: "customerKyc",
+                    attributes: ['id']
+                },
+                {
+                    model: models.customerKycAddressDetail,
+                    as: 'customerKycAddress',
+                    attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
+                    include: [{
+                        model: models.state,
+                        as: 'state'
+                    }, {
+                        model: models.city,
+                        as: 'city'
+                    }, {
+                        model: models.addressProofType,
+                        as: 'addressProofType'
+                    }],
+                    order: [["id", "ASC"]]
+                },
+                {
+                    model: models.customerKycClassification,
+                    as: "customerKycClassification",
+                },
+                {
                     model: models.state,
                     as: 'state'
-                }, {
+                },
+                {
                     model: models.city,
                     as: 'city'
-                }, {
-                    model: models.addressProofType,
-                    as: 'addressProofType'
-                }],
-                order: [["id", "ASC"]]
-            },
-            {
-                model: models.customerKycClassification,
-                as: "customerKycClassification",
-            },
-            {
-                model: models.state,
-                as: 'state'
-            },
-            {
-                model: models.city,
-                as: 'city'
-            },
-            {
-                model: models.status,
-                as: 'status',
-                attributes: ['id', 'statusName']
-            },
-            {
-                model: models.customerKycClassification,
-                as: 'customerKycClassification',
-                attributes: ['id', 'kycStatusFromCce', 'kycStatusFromOperationalTeam']
-            },
-            {
-                model: models.customerLoanMaster,
-                as: "masterLoan",
-                include: [
-                    {
-                        model: models.customerLoan,
-                        as: 'customerLoan',
-                        attributes: ['id'],
-                        where: { loanType: 'secured' }
-                    },
-                    {
-                        model: models.customerLoanDocument,
-                        as: 'customerLoanDocument',
-                        attributes: { exclude: ['createdAt', 'modifiedBy', 'createdAt', 'updatedAt', 'isActive'] },
+                },
+                {
+                    model: models.status,
+                    as: 'status',
+                    attributes: ['id', 'statusName']
+                },
+            ]
+        }, {
+            model: models.customerLoanMaster,
+            as: "masterLoan",
+            include: [
+                {
+                    model: models.customerLoan,
+                    as: 'customerLoan',
+                    attributes: ['id'],
+                    where: { loanType: 'secured' }
+                },
+                {
+                    model: models.customerLoanDocument,
+                    as: 'customerLoanDocument',
+                    attributes: { exclude: ['createdAt', 'modifiedBy', 'createdAt', 'updatedAt', 'isActive'] },
 
-                    }
-                ]
-            }]
-    }]
-    
-    let data = await models.customerAssignAppraiser.findAll({
+                }
+            ]
+        }
+    ]
+
+    let data = await models.appraiserRequest.findAll({
         where: searchQuery,
         attributes: ['appraiserId', 'appoinmentDate', 'startTime', 'endTime'],
         subQuery: false,
         include: includeArray,
         order: [
             ['id', 'DESC'],
+            [models.customer, { model: models.customerKycAddressDetail, as: 'customerKycAddress' }, 'id', 'asc']
         ],
         offset: offset,
         limit: pageSize
     })
 
-    let tempData = []
-    for (let i = 0; i < data.length; i++) {
-        let singleCustomer = extend(data[i].dataValues);
-        if (singleCustomer.customer.masterLoan.length > 1) {
-            let customer = extend(singleCustomer.customer.dataValues);
-            let masterLoans = customer.masterLoan.slice();
-            delete singleCustomer.customer;
-            for (let j = 0; j < masterLoans.length; j++) {
-                let masterLoan = extend(masterLoans[j].dataValues);
-                singleCustomer['customer'] = { ...customer };
-                delete singleCustomer.customer.masterLoan;
-                singleCustomer.customer['masterLoan'] = [masterLoan];//.slice();
-                tempData.push({ ...singleCustomer });
-            }
-        } else {
-            tempData.push(singleCustomer);
-        }
-
-    }
-    data = tempData;
-
-    let count = await models.customerAssignAppraiser.findAll({
+    let count = await models.appraiserRequest.findAll({
         where: searchQuery,
         subQuery: false,
         include: includeArray,
     });
-    let tempCount = []
-    for (let i = 0; i < count.length; i++) {
-        let singleCustomer = extend(count[i].dataValues);
-        if (singleCustomer.customer.masterLoan.length > 1) {
-            let customer = extend(singleCustomer.customer.dataValues);
-            let masterLoans = customer.masterLoan.slice();
-            delete singleCustomer.customer;
-            for (let j = 0; j < masterLoans.length; j++) {
-                let masterLoan = extend(masterLoans[j].dataValues);
-                singleCustomer['customer'] = { ...customer };
-                delete singleCustomer.customer.masterLoan;
-                singleCustomer.customer['masterLoan'] = [masterLoan];//.slice();
-                tempCount.push({ ...singleCustomer });
-            }
-        } else {
-            tempCount.push(singleCustomer);
-        }
-    }
-    count = tempCount;
+
 
     if (data.length === 0) {
         return res.status(200).json([]);

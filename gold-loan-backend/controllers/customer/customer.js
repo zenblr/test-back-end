@@ -25,7 +25,7 @@ exports.getOtp = async (req, res, next) => {
 }
 
 exports.addCustomer = async (req, res, next) => {
-  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId, source, panType, panImage, leadSourceId } = req.body;
+  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId, source, panType, panImage, leadSourceId, moduleId } = req.body;
   // cheanges needed here
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
@@ -52,9 +52,12 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, panImage, leadSourceId },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId },
       { transaction: t }
     );
+
+    await models.appraiserRequest.create({ customerId: customer.id, moduleId, createdBy, modifiedBy }, { transaction: t })
+
   });
   return res.status(200).json({ messgae: `Customer created` });
 };
@@ -128,7 +131,7 @@ exports.sendOtp = async (req, res, next) => {
 exports.verifyOtp = async (req, res, next) => {
   let { referenceCode, otp } = req.body;
   var todayDateTime = new Date();
-
+  console.log('abc')
   let verifyUser = await models.customerOtp.findOne({
     where: {
       referenceCode,
@@ -139,7 +142,7 @@ exports.verifyOtp = async (req, res, next) => {
     },
   });
   if (check.isEmpty(verifyUser)) {
-    return res.status(404).json({ message: `Invalid otp.` });
+    return res.status(404).json({ message: `INVALID OTP.` });
   }
 
   let verifyFlag = await models.customerOtp.update(
@@ -156,8 +159,7 @@ exports.editCustomer = async (req, res, next) => {
   let modifiedBy = req.userData.id;
   const { customerId } = req.params;
 
-  let { cityId, stateId, pinCode, internalBranchId, statusId, comment, source, panType, panImage, leadSourceId } = req.body;
-
+  let { cityId, stateId, pinCode, internalBranchId, statusId, comment, source, panType, panImage, leadSourceId, moduleId } = req.body;
   let { id } = await models.status.findOne({ where: { statusName: "confirm" } })
 
   let customerExist = await models.customer.findOne({ where: { id: customerId } });
@@ -280,14 +282,10 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     attributes: ['id', 'leadName'],
   },
   {
-    model: models.customerAssignAppraiser,
-    as: "customerAssignAppraiser",
-    include: [{
-      model: models.user,
-      as: "appraiser",
-      attributes: ['id', 'firstName', 'lastName']
-    }]
-  },
+    model: models.module,
+    as: 'module',
+    attributes: ['id', 'moduleName']
+  }
 
   ]
   let internalBranchId = req.userData.internalBranchId
@@ -311,7 +309,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     include: includeArray,
   });
   if (allCustomers.length == 0) {
-    return res.status(200).json({ data: [], count: count.length });
+    return res.status(200).json({ data: [] });
   }
   return res.status(200).json({ data: allCustomers, count: count.length });
 };
@@ -456,7 +454,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
     subQuery: false
   });
   if (allCustomers.length === 0) {
-    return res.status(200).json({ data: [], count: count.length });
+    return res.status(200).json({ data: [] });
   } else {
     return res.status(200).json({ message: 'Success', data: allCustomers, count: count.length });
   }
@@ -493,6 +491,10 @@ exports.getsingleCustomerManagement = async (req, res) => {
         model: models.customerLoanMaster,
         as: 'masterLoan',
         where: { loanStageId: stageId.id },
+        order: [
+          [models.customerLoan, 'id', 'asc'],
+          ['id', 'DESC']
+        ],
         include: [
           {
             model: models.customerLoan,

@@ -20,7 +20,7 @@ import { NewRequestService } from '../../../../../core/lead-management/services/
 export class NewRequestListComponent implements OnInit {
 
   dataSource: NewRequestDatasource;
-  displayedColumns = ['customerId', 'fullName', 'mobileNumber', 'product', 'update', 'appraiser'];
+  displayedColumns = ['customerId', 'fullName', 'product', 'apprasierName', 'appointmentDate', 'appointmentTime', 'status', 'update', 'appraiser', 'apply'];
   results = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   queryParamsData = {
@@ -41,6 +41,7 @@ export class NewRequestListComponent implements OnInit {
     public dialog: MatDialog,
     private newRequestService: NewRequestService,
     private dataTableService: DataTableService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -102,7 +103,7 @@ export class NewRequestListComponent implements OnInit {
 
   assignAppraiser(item) {
     // item.customer = { firstName: item.firstName, lastName: item.lastName }
-    const dialogRef = this.dialog.open(NewRequestAssignAppraiserComponent, { data: { action: 'add', requestData: item }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', requestData: item, customer: item.customer, id: item.customerId, internalBranchId: item.customer.internalBranchId }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
@@ -113,12 +114,34 @@ export class NewRequestListComponent implements OnInit {
   updateAppraiser(item) {
     // item.customer = { firstName: item.firstName, lastName: item.lastName }
     // item.customer.customerUniqueId = item.customerUniqueId
-    const dialogRef = this.dialog.open(NewRequestAssignAppraiserComponent, { data: { action: 'edit', requestData: item }, width: '500px' });
+    item.appraiser.startTime = item.startTime;
+    item.appraiser.endTime = item.endTime;
+    item.appraiser.appoinmentDate = item.appoinmentDate;
+    item.appraiser.appraiserId = item.appraiserId;
+
+    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit', requestData: item, appraiser: item.appraiser, customer: item.customer, internalBranchId: item.customer.internalBranchId }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
       }
     });
+  }
+
+  applyKyc(data) {
+    let mobile = data.customer.mobileNumber ? data.customer.mobileNumber : ''
+    this.router.navigate(['/admin/kyc-setting'], { queryParams: { mob: mobile } });
+  }
+
+  applyLoan(loan) {
+    this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerID: loan.id } })
+  }
+
+  applyScrapBuy(item) {
+    this.router.navigate(['/admin/scrap-management/scrap-buying-application-form/'], { queryParams: { customerID: item.id } })
+  }
+
+  applyLoanTransfer(loan) {
+    this.router.navigate(['/admin/loan-management/loan-transfer'], { queryParams: { customerID: loan.id } })
   }
 
 }

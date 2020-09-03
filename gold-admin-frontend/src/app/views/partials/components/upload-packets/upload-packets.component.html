@@ -57,8 +57,8 @@
                                 <label class="m-0">{{packet.controls.ornamentsName.value | uppercase  }}</label>
                             </td>
                             <td class="text-gray text-center" *ngIf="!(url == 'view-loan' || url == 'view-scrap')">
-                                <img src="../../../../../../../assets/media/icons/cancel.png" alt="" height="15"
-                                    (click)="removeSelectedPacketsData(idx)">
+                                <img class="kt-pointer" src="../../../../../../../assets/media/icons/cancel.png" alt=""
+                                    height="15" (click)="removeSelectedPacketsData(idx)">
                             </td>
                         </ng-container>
                     </tr>
@@ -74,7 +74,7 @@
             <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
         </div>
         <img class="packets position-relative" [src]="packetImg.controls.emptyPacketWithNoOrnamentImage.value"
-            *ngIf="packetImg.controls.emptyPacketWithNoOrnamentImage.value">
+            *ngIf="packetImg.controls.emptyPacketWithNoOrnamentImage.value"  (click)="previewImage(packetImg.controls.emptyPacketWithNoOrnamentImage.value)">
         <img *ngIf="packetImg.controls.emptyPacketWithNoOrnamentImage.value && !(url == 'view-loan' || url == 'view-scrap')"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
             (click)="webcam('emptyPacketWithNoOrnament','emptyPacketWithNoOrnamentImage')">
@@ -94,7 +94,7 @@
             <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
         </div>
         <img class="packets position-relative" [src]="packetImg.controls.sealingPacketWithWeightImage.value"
-            *ngIf="packetImg.controls.sealingPacketWithWeightImage.value">
+            *ngIf="packetImg.controls.sealingPacketWithWeightImage.value" (click)="previewImage(packetImg.controls.sealingPacketWithWeightImage.value)">
         <img *ngIf="packetImg.controls.sealingPacketWithWeightImage.value && !(url == 'view-loan' || url == 'view-scrap')"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
             (click)="webcam('sealingPacketWithWeight','sealingPacketWithWeightImage')">
@@ -114,7 +114,7 @@
             <img class="placeholder" src="../../../../../assets/media/icons/image-placeholder.png" alt="">
         </div>
         <img class="packets position-relative" [src]="packetImg.controls.sealingPacketWithCustomerImage.value"
-            *ngIf="packetImg.controls.sealingPacketWithCustomerImage.value">
+            *ngIf="packetImg.controls.sealingPacketWithCustomerImage.value" (click)="previewImage(packetImg.controls.sealingPacketWithCustomerImage.value)">
         <img *ngIf="packetImg.controls.sealingPacketWithCustomerImage.value && !(url == 'view-loan' || url == 'view-scrap')"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
             (click)="webcam('sealingPacketWithCustomer','sealingPacketWithCustomerImage')">

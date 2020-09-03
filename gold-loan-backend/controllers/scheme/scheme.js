@@ -136,7 +136,11 @@ exports.readSchemeByPartnerId = async (req, res, next) => {
         where: { isActive: true, id: partnerId },
         include: [{
             model: models.scheme,
-            where: { isActive: true }
+            where: { isActive: true },
+            include: [{
+                model: models.schemeInterest,
+                as: 'schemeInterest'
+            }]
         }],
     })
     if (!readSchemeByPartner) {
@@ -233,54 +237,6 @@ exports.deactiveScheme = async (req, res, next) => {
 
     return res.status(200).json({ message: 'Success' });
 }
-
-// filter scheme
-
-exports.filterScheme = async (req, res, next) => {
-    var { isActive } = req.query;
-    const query = {};
-    if (isActive) {
-        query.isActive = isActive;
-    }
-    let schemeFilterData = await models.scheme.findAll({
-        where: query,
-        include: {
-            model: models.partner
-        }
-    });
-    if (!schemeFilterData[0]) {
-        return res.status(404).json({ message: "data not found" });
-    }
-    return res.status(200).json({ schemeFilterData });
-}
-
-// update Scheme By id
-
-// exports.updateScheme = async (req, res, next) => {
-//     const schemeId = req.params.id;
-//     const {schemeName,schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
-//         interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually } = req.body;
-
-//     if (schemeAmountStart >= schemeAmountEnd) {
-//         return res.status(400).json({ message: `Your Scheme start amount is must be greater than your Scheme end amount` })
-//     }
-//     let schemeNameExist = await models.scheme.findOne({ where: { schemeName } });
-
-//     if (!check.isEmpty(schemeNameExist)) {
-//         return res.status(404).json({ message: 'This Scheme Name is already Exist' });
-//     }
-//     const updateSchemeData = await models.scheme.update({
-//        schemeName, schemeAmountStart, schemeAmountEnd, interestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly,
-//         interestRateOneHundredEightyDaysMonthly, interestRateThirtyDaysAnnually, interestRateNinetyDaysAnnually, interestRateOneHundredEightyDaysAnnually
-//     }, { where: { id: schemeId, isActive: true } });
-
-//     if (!updateSchemeData[0]) {
-//         return res.status(404).json({ message: 'data not found' });
-//     }
-//     return res.status(200).json({ message: 'Success' });
-// }
-
-//edit scheme
 
 exports.UpdateDefault = async (req, res, next) => {
     let { id } = req.params;

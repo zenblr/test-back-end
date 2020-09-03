@@ -55,21 +55,17 @@
                 <ng-container matColumnDef="kycStatus">
                     <mat-header-cell *matHeaderCellDef>KYC Status</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span class="text-success"
-                            *ngIf="role.customerKycClassification?.kycStatusFromOperationalTeam == 'approved'">
-                            {{role.customerKycClassification?.kycStatusFromOperationalTeam | titlecase}}
+                        <span class="text-success" *ngIf="role.customer?.kycStatus == 'approved'">
+                            {{role.customer?.kycStatus | titlecase}}
                         </span>
-                        <span class="text-warning"
-                            *ngIf="role.customerKycClassification?.kycStatusFromOperationalTeam == 'incomplete'">
-                            {{role.customerKycClassification?.kycStatusFromOperationalTeam | titlecase}}
+                        <span class="text-warning" *ngIf="role.customer?.kycStatus == 'incomplete'">
+                            {{role.customer?.kycStatus | titlecase}}
                         </span>
-                        <span class="text-warning"
-                            *ngIf="role.customerKycClassification?.kycStatusFromOperationalTeam == 'pending'">
-                            {{role.customerKycClassification?.kycStatusFromOperationalTeam | titlecase}}
+                        <span class="text-warning" *ngIf="role.customer?.kycStatus == 'pending'">
+                            {{role.customer?.kycStatus | titlecase}}
                         </span>
-                        <span class="text-danger"
-                            *ngIf="role.customerKycClassification?.kycStatusFromOperationalTeam == 'rejected'">
-                            {{role.customerKycClassification?.kycStatusFromOperationalTeam | titlecase}}
+                        <span class="text-danger" *ngIf="role.customer?.kycStatus == 'rejected'">
+                            {{role.customer?.kycStatus | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -101,7 +97,8 @@
                         </div>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="appraiser">
+
+                <!-- <ng-container matColumnDef="appraiser">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let role" class="kt-pointer">
                         <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserAdd']">
@@ -116,7 +113,7 @@
                                 Appraiser</button>
                         </div>
                     </mat-cell>
-                </ng-container>
+                </ng-container> -->
 
                 <ng-container matColumnDef="appraiserName">
                     <mat-header-cell *matHeaderCellDef>Appraiser Name</mat-header-cell>
@@ -134,7 +131,7 @@
                     </mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="menu">
+                <!-- <ng-container matColumnDef="menu">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <ng-container
@@ -154,19 +151,8 @@
                                 </mat-menu>
                             </ng-container>
                         </ng-container>
-                        <!-- <div ngbDropdown class="dropdown dropdown-inline" #customerActionDropdown1="ngbDropdown"
-                            aria-haspopup="true" aria-expanded="false" [autoClose]="false">
-                            <button mat-icon-button class="btn-transparent" ngbDropdownToggle>
-                                <mat-icon>more_vert</mat-icon>
-                            </button>
-                            <div ngbDropdownMenu aria-labelledby="navbarDropdown2"
-                                class="dropdown-menu dropdown-menu-right">
-                                <a (click)="applyLoan(loan)">Apply Loan</a>
-                                <a (click)="transferLoan(loan)">Transfer Loan</a>
-                            </div>
-                        </div> -->
                     </mat-cell>
-                </ng-container>
+                </ng-container> -->
 
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 
@@ -179,7 +165,7 @@
         <div class="mat-table__bottom">
             <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
 
-            <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
                 [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
         </div>
     </kt-portlet-body>

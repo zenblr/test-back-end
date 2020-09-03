@@ -5,21 +5,42 @@
     <kt-portlet-body>
         <div class="kt-form">
             <form [formGroup]="paymentForm">
-                <div class="kt-portlet__body">
+                <!-- <div class="kt-portlet__body"> -->
                     <div>
+                        <div *ngIf="controls.depositStatus.value">
+                            <div class="row kt-margin-b-15">
+                                <div class="col-4 form-label mandatory">
+                                    <mat-label class="kt-padding-l-10">Transaction ID</mat-label>
+                                </div>
+                                <div class="col-8">
+                                    <input class="form-control" formControlName="depositTransactionId"
+                                        style="text-transform: uppercase;" placeholder="TRAN04041995"
+                                        [class.isError]="controls.depositTransactionId.touched && controls.depositTransactionId.invalid" />
+
+                                    <mat-error
+                                        *ngIf="controls.depositTransactionId.touched && controls.depositTransactionId.invalid">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+
+                        </div>
 
                         <div class="row kt-margin-b-15">
-                            <div class="col-4 form-label mandatory">
-                                <mat-label>Mode of Payment</mat-label>
+                            <div class="col-4 form-label ">
+                                <mat-label class="kt-padding-l-10 mandatory">Mode of Payment</mat-label>
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="paymentType"
                                     (change)="setValidation($event)"
                                     [class.isError]="controls.paymentType.touched && controls.paymentType.invalid">
                                     <option value="" selected disabled>Select Payment</option>
-                                    <option value="cash">CASH</option>
+                                    <!-- <option value="cash">CASH</option>
                                     <option value="IMPS">RTGS/NEFT/IMPS</option>
-                                    <option value="cheque">CHEQUE</option>
+                                    <option value="cheque">CHEQUE</option> -->
+                                    <option [value]="item.value" *ngFor="let item of paymentTypeList;">
+                                        {{item.name | uppercase}}
+                                    </option>
                                 </select>
 
                                 <mat-error
@@ -31,10 +52,10 @@
 
                         <div>
                             <div
-                                *ngIf="controls.paymentType.value === 'IMPS' || controls.paymentType.value === 'cheque'">
+                                *ngIf="controls.paymentType.value && (controls.paymentType.value != 'gateway' && controls.paymentType.value != 'cash')">
                                 <div class="row kt-margin-b-15">
                                     <div class="col-4 form-label mandatory">
-                                        <mat-label>Deposit Bank Name</mat-label>
+                                        <mat-label class="kt-padding-l-10">Deposit Bank Name</mat-label>
                                     </div>
                                     <div class="col-8">
                                         <input class="form-control" formControlName="bankName" placeholder="Bank Name"
@@ -49,7 +70,7 @@
 
                                 <div class="row kt-margin-b-15">
                                     <div class="col-4 form-label mandatory">
-                                        <mat-label>Deposit Branch Name</mat-label>
+                                        <mat-label class="kt-padding-l-10">Deposit Branch Name</mat-label>
                                     </div>
                                     <div class="col-8">
                                         <input class="form-control" formControlName="branchName"
@@ -63,9 +84,9 @@
                                     </div>
                                 </div>
 
-                                <div *ngIf="controls.paymentType.value === 'IMPS'" class="row kt-margin-b-15">
+                                <div *ngIf="controls.paymentType.value != 'cheque'" class="row kt-margin-b-15">
                                     <div class="col-4 form-label mandatory">
-                                        <mat-label>Bank Transaction ID</mat-label>
+                                        <mat-label class="kt-padding-l-10">Bank Transaction ID</mat-label>
                                     </div>
                                     <div class="col-8">
                                         <input class="form-control" formControlName="transactionId"
@@ -82,7 +103,7 @@
 
                                 <div *ngIf="controls.paymentType.value === 'cheque'" class="row kt-margin-b-15">
                                     <div class="col-4 form-label mandatory">
-                                        <mat-label>Cheque Number</mat-label>
+                                        <mat-label class="kt-padding-l-10">Cheque Number</mat-label>
                                     </div>
                                     <div class="col-8">
                                         <input numbersOnly class="form-control" formControlName="chequeNumber"
@@ -103,11 +124,11 @@
 
                             <div class="row kt-margin-b-15">
                                 <div class="col-4 form-label mandatory">
-                                    <mat-label>Deposit Date</mat-label>
+                                    <mat-label class="kt-padding-l-10">Deposit Date</mat-label>
                                 </div>
                                 <div class="col-8">
                                     <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                                        formControlName="depositDate"
+                                        formControlName="depositDate" [min]="minDate"
                                         [class.isError]="controls.depositDate.touched && controls.depositDate.invalid"
                                         readonly placeholder="4/5/2020" />
                                     <mat-datepicker #picker></mat-datepicker>
@@ -121,7 +142,7 @@
 
                             <div class="row kt-margin-b-15">
                                 <div class="col-4 form-label mandatory">
-                                    <mat-label>Deposit Amount </mat-label>
+                                    <mat-label class="kt-padding-l-10">Deposit Amount </mat-label>
                                 </div>
                                 <div class="col-8">
                                     <input numbersOnly class="form-control" formControlName="paidAmount" placeholder="0"
@@ -135,12 +156,39 @@
                             </div>
                         </div>
 
+                        <div *ngIf="controls.depositStatus.value">
+                            <div class="row kt-margin-b-15">
+                                <div class="col-4 form-label mandatory">
+                                    <mat-label class="kt-padding-l-10">Deposit Status</mat-label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-control" formControlName="depositStatus"
+                                        (change)="setValidation($event)"
+                                        [class.isError]="controls.depositStatus.touched && controls.depositStatus.invalid">
+                                        <option value="" selected disabled>Select Status</option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Rejected">Rejected</option>
+                                    </select>
 
-                        <kt-modal-footer (action)="action($event)" [value]="'Update'">
-                        </kt-modal-footer>
+                                    <mat-error
+                                        *ngIf="controls.depositStatus.touched && controls.depositStatus.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="p-3">
+                            <kt-modal-footer (action)="action($event)" [value]="'Update'">
+                            </kt-modal-footer>
+                            
+                        </div>
 
                     </div>
-                </div>
+                <!-- </div> -->
             </form>
         </div>
     </kt-portlet-body>

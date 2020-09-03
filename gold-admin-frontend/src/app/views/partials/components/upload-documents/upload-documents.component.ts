@@ -40,6 +40,7 @@ export class UploadDocumentsComponent implements OnInit {
   @Input() standardDeductionArr
   @Input() loanStage
   @Input() scrapStage
+  @Input() scrapAcknowledgmentStage
   @ViewChild('loanAgreementCopy', { static: false }) loanAgreementCopy
   @ViewChild('pawnCopy', { static: false }) pawnCopy
   @ViewChild('schemeConfirmationCopy', { static: false }) schemeConfirmationCopy
@@ -124,6 +125,11 @@ export class UploadDocumentsComponent implements OnInit {
         this.buttonValue = 'Next'
       }
       if (changes.scrapStage.currentValue.id == 9 || changes.scrapStage.currentValue.id == 10) {
+        this.documentsForm.disable()
+      }
+    }
+    if (changes.scrapAcknowledgmentStage && changes.scrapAcknowledgmentStage.currentValue) {
+      if (changes.scrapAcknowledgmentStage.currentValue.id == 9 || changes.scrapAcknowledgmentStage.currentValue.id == 10) {
         this.documentsForm.disable()
       }
     }
@@ -212,7 +218,6 @@ export class UploadDocumentsComponent implements OnInit {
     if (changes.totalAmt) {
       if (Number(changes.totalAmt.currentValue) && this.globalValue) {
         const calculateProcessingCharges = Math.round(this.totalAmt * this.globalValue.processingChargesInPercent / 100);
-        console.log(calculateProcessingCharges);
         if (calculateProcessingCharges > this.globalValue.processingChargesFixed) {
           this.controls.processingCharges.patchValue(calculateProcessingCharges);
         } else {
@@ -412,7 +417,6 @@ export class UploadDocumentsComponent implements OnInit {
           } else {
             this.pdf[value] = false
           }
-          console.log(this.pdf)
         }), finalize(() => {
           this[value].nativeElement.value = ''
           this.ref.detectChanges()
@@ -472,7 +476,7 @@ export class UploadDocumentsComponent implements OnInit {
     // loan
     if (!this.isEdit) {
       if (this.showScrapAcknowledgementFlag) {
-        this.next.emit(4)
+        this.next.emit(3)
       } else {
         this.next.emit(7)
       }

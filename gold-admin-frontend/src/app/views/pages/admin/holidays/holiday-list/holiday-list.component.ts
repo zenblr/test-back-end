@@ -99,7 +99,7 @@ export class HolidayListComponent implements OnInit {
   }
 
   editHoliday(holiday) {
-    console.log(holiday)
+    // console.log(holiday)
     const dialogRef = this.dialog.open(HolidayAddComponent,
       {
         data: { holidayData: holiday, action: 'edit' },

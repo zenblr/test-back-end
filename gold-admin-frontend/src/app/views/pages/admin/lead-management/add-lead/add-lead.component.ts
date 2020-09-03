@@ -11,6 +11,7 @@ import { map, catchError } from 'rxjs/operators';
 import { LeadService } from '../../../../../core/lead-management/services/lead.service';
 import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { LeadSourceService } from '../../../../../core/masters/lead-source/services/lead-source.service';
+import { RolesService } from '../../../../../core/user-management/roles';
 
 @Component({
   selector: 'kt-add-lead',
@@ -42,6 +43,7 @@ export class AddLeadComponent implements OnInit {
   details: any;
   showCommentBox = false;
   leadSources = [];
+  modules = [];
 
   constructor(
     public dialogRef: MatDialogRef<AddLeadComponent>,
@@ -51,10 +53,11 @@ export class AddLeadComponent implements OnInit {
     private leadService: LeadService,
     private dialog: MatDialog,
     private leadSourceService: LeadSourceService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private roleService: RolesService
   ) {
     this.details = this.sharedService.getDataFromStorage()
-    console.log(this.details)
+
   }
 
   ngOnInit() {
@@ -64,6 +67,7 @@ export class AddLeadComponent implements OnInit {
     this.getInternalBranhces();
     this.getStates();
     this.getStatus();
+    this.getModules();
 
     this.controls.mobileNumber.valueChanges.subscribe(res => {
       if (this.controls.mobileNumber.valid) {
@@ -142,13 +146,14 @@ export class AddLeadComponent implements OnInit {
       pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       dateTime: [this.currentDate, [Validators.required]],
       statusId: [, [Validators.required]],
-      panType: [''],
+      panType: [],
       form60: [''],
       panImage: [null],
       panImg: [null],
       comment: [''],
       leadSourceId: [null],
       source: [''],
+      moduleId: [, [Validators.required]]
     });
     this.getCities()
   }
@@ -159,6 +164,7 @@ export class AddLeadComponent implements OnInit {
       this.modalTitle = 'Edit Lead'
       this.viewOnly = true;
       this.leadForm.controls.mobileNumber.disable()
+      this.leadForm.controls.moduleId.disable()
       this.leadForm.controls.otp.disable()
     } else if (this.data.action == 'view') {
       this.getLeadById(this.data['id']);
@@ -194,6 +200,12 @@ export class AddLeadComponent implements OnInit {
     });
   }
 
+  getModules() {
+    this.roleService.getAllModuleAppraiser().pipe(map(res => {
+      this.modules = res;
+    })).subscribe()
+  }
+
   getStatus() {
     this.leadService.getStatus().pipe(
       map(res => {
@@ -207,7 +219,7 @@ export class AddLeadComponent implements OnInit {
       this.leadForm.patchValue(res.singleCustomer);
       this.leadForm.patchValue({ panImage: res.singleCustomer.panImage })
       this.leadForm.patchValue({ panImg: res.singleCustomer.panImg })
-      console.log(this.leadForm.value)
+
       this.getCities();
       this.commentBox()
     },
@@ -295,7 +307,7 @@ export class AddLeadComponent implements OnInit {
   getFileInfo(event) {
     var name = event.target.files[0].name
     var ext = name.split('.')
-    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg' || ext[ext.length - 1] == 'pdf') {
       const params = {
         reason: 'lead'
       }
@@ -315,7 +327,7 @@ export class AddLeadComponent implements OnInit {
   }
 
   preview() {
-    console.log(this.controls.panImg.value)
+
     let img = [this.controls.panImg.value]
     this.dialog.open(ImagePreviewDialogComponent, {
       data: {
@@ -345,7 +357,7 @@ export class AddLeadComponent implements OnInit {
             this.toastr.errorToastr('Upload Form 60 Image')
           }
         }
-        console.log(this.leadForm.value)
+
         return
       }
 
@@ -374,7 +386,7 @@ export class AddLeadComponent implements OnInit {
       const leadData = this.leadForm.value;
 
       this.leadService.addLead(leadData).subscribe(res => {
-        // console.log(res);
+
         if (res) {
           const msg = 'Lead Added Successfully';
           this.toastr.successToastr(msg);
@@ -382,7 +394,7 @@ export class AddLeadComponent implements OnInit {
         }
       },
         error => {
-          console.log(error.error.message);
+
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
         });
@@ -398,7 +410,7 @@ export class AddLeadComponent implements OnInit {
             this.toastr.errorToastr('Upload Form 60 Image')
           }
         }
-        console.log(this.leadForm.value)
+
         return
       }
 
@@ -418,9 +430,9 @@ export class AddLeadComponent implements OnInit {
         this.leadForm.get('pinCode').patchValue(Number(this.controls.pinCode.value));
       }
       const leadData = this.leadForm.value;
-      console.log('edit')
+
       this.leadService.editLead(this.data.id, leadData).subscribe(res => {
-        // console.log(res);
+
         if (res) {
           const msg = 'Lead Edited Successfully';
           this.toastr.successToastr(msg);

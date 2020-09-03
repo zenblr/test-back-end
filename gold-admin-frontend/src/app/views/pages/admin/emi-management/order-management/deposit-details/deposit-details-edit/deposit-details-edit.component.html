@@ -1,0 +1,94 @@
+<kt-toastr #toastr></kt-toastr>
+<kt-portlet>
+    <kt-modal-header [title]='title' (action)="action($event)"></kt-modal-header>
+    <div class="kt-portlet__body position-relative">
+        <div class="row justify-content-center scroll kt-padding-t-10 kt-padding-b-10">
+            <div class="col-8">
+                <form [formGroup]="depositForm">
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Transaction ID</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" formControlName="transactionId" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Deposit Mode Of Payment</label>
+                        </div>
+                        <div class="col-7">
+                            <select formControlName="paymentMode" class="form-control" disabled>
+                                <option value="">Select Payment Type</option>
+                                <option value="cash">CASH</option>
+                                <option value="imps">IMPS</option>
+                                <option value="neft">NEFT</option>
+                                <option value="rtgs">RTGS</option>
+                                <option value="cheque">CHEQUE</option>
+                                <option value="upi">UPI</option>
+                                <option value="paymentGateway">PAYMENT GATEWAY</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Deposit Bank Name</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" formControlName="bankName" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Deposit Branch Name</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" formControlName="bankBranch" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Deposit Date</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" formControlName="paymentRecievedDate" class="form-control"
+                                [value]="controls?.paymentRecievedDate?.value | date: 'MMM d, y, h:mm a'" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Deposit Amount</label>
+                        </div>
+                        <div class="col-7">
+                            <input type="text" formControlName="transactionAmount" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-5 align-self-center">
+                            <label class="font-weight-500 text-color">Transaction Status</label>
+                        </div>
+                        <div class="col-7">
+                            <select class="form-control" formControlName="transactionStatusId"
+                                [class.isError]="controls.transactionStatusId.touched && controls.transactionStatusId.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select Transaction Status</option>
+                                <option [value]="status.statusId" *ngFor="let status of transactionStatusList">
+                                    {{status.statusName | titlecase}}</option>
+                            </select>
+                            <div *ngIf="controls.transactionStatusId.touched && controls.transactionStatusId.invalid">
+                                <mat-error
+                                    *ngIf="controls.transactionStatusId.touched && controls.transactionStatusId.errors?.required">
+                                    Field is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <kt-portlet-footer *ngIf="hiddenFlag">
+        <div class="p-3">
+            <kt-modal-footer (action)="action($event)" [value]="'Update'">
+            </kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</kt-portlet>

@@ -25,9 +25,9 @@ exports.loginWithOtpValidation = [
 ]
 
 exports.customerLoginValidation = [
-  body('firstName')
+  body('mobileNumber')
   .exists()
-  .withMessage('first Name is required'),
+  .withMessage('Mobile number is required'),
 
 body('password')
   .exists()

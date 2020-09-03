@@ -1,16 +1,21 @@
 const { wrapper } = require('../utils/errorWrap');
 const checkAuth = require('../middleware/checkAuth');
-const { getInterestInfo, checkPartAmount, partPayment, payableAmountConfirmPartPayment } = require('../controllers/partPayment/partPayment');
+const { viewLog, getInterestInfo, checkPartAmount, partPayment, payableAmountConfirmPartPayment, confirmPartPaymentTranscation } = require('../controllers/partPayment/partPayment');
+const checkRolePermission = require('../middleware/checkRolesPermissions');
 
 const express = require('express');
 const route = express.Router();
 
-route.get('/interest-info', checkAuth, wrapper(getInterestInfo))
+route.get('/view-log', checkAuth, checkRolePermission, wrapper(viewLog))
 
-route.post('/check-part-amount', checkAuth, wrapper(checkPartAmount))
+route.get('/part-payment-info', checkAuth, checkRolePermission, wrapper(getInterestInfo))
 
-route.get('/confirm-payment-info', checkAuth, wrapper(payableAmountConfirmPartPayment))
+route.post('/check-part-amount', checkAuth, checkRolePermission, wrapper(checkPartAmount))
 
-route.post('/payment', checkAuth, wrapper(partPayment))
+route.post('/confirm-payment-info', checkAuth, checkRolePermission, wrapper(payableAmountConfirmPartPayment))
+
+route.post('/payment', checkAuth, checkRolePermission, wrapper(partPayment))
+
+route.post('/confirm-payment', checkAuth, checkRolePermission, wrapper(confirmPartPaymentTranscation))
 
 module.exports = route;   

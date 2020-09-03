@@ -1,13 +1,16 @@
 :host{
     .mat-column-customerID{
         padding-left: 10px !important;
-        flex : 0 0 10% !important;
+        flex : 0 0 9% !important;
+    }
+    .mat-column-customerName{
+        flex : 0 0 12% !important;
     }
     .mat-column-loanId{
-        flex : 0 0 7% !important;
+        flex : 0 0 8% !important;
     }
     .mat-column-schemeName {
-        flex: 0 0 10% !important;
+        flex: 0 0 13% !important;
     }
     .mat-column-amount{
         flex: 0 0 10% !important;
@@ -19,16 +22,16 @@
         flex: 0 0 9% !important;
     }
     .mat-column-interestRestDays {
-        flex: 0 0 14% !important;
+        flex: 0 0 8% !important;
     }
     .mat-column-startDate  {
-        flex: 0 0 9% !important;
+        flex: 0 0 8% !important;
     }
     .mat-column-endDate  {
-        flex: 0 0 9% !important;
+        flex: 0 0 8% !important;
     }
     .mat-column-actions  {
-        flex: 0 0 8% !important;
+        flex: 0 0 3% !important;
     }
     .mat-column-new  {
         flex: 0 0 10% !important;
@@ -39,5 +42,9 @@
     }
     .nav-link {
         padding: 0 !important;
+    }
+    button.mat-menu-trigger.mat-button.mat-button-base {
+        min-width: 15px;
+        padding: 0 5px;
     }
 }

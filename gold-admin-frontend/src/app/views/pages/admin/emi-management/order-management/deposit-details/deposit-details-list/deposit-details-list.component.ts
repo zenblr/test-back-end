@@ -25,6 +25,7 @@ import {
 import { ToastrComponent } from "../../../../../../partials/components/toastr/toastr.component";
 import { DataTableService } from "../../../../../../../core/shared/services/data-table.service";
 import { SharedService } from "../../../../../../../core/shared/services/shared.service";
+import { DepositDetailsEditComponent } from '../deposit-details-edit/deposit-details-edit.component';
 
 @Component({
 	selector: "kt-deposit-details-list",
@@ -57,6 +58,8 @@ export class DepositDetailsListComponent implements OnInit {
 		"emiRemaining",
 		"orderStatus",
 		"productType",
+		"paymentStatus",
+		"action",
 	];
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 	@ViewChild("sort1", { static: true }) sort: MatSort;
@@ -84,7 +87,7 @@ export class DepositDetailsListComponent implements OnInit {
 		private layoutUtilsService: LayoutUtilsService,
 		private depositDetailsService: DepositDetailsService,
 		private dataTableService: DataTableService,
-		private sharedService: SharedService
+		private sharedService: SharedService,
 	) {
 		this.depositDetailsService.exportExcel$
 			.pipe(takeUntil(this.destroy$))
@@ -196,6 +199,21 @@ export class DepositDetailsListComponent implements OnInit {
 		this.depositData.orderCurrentStatus = data.data.status;
 		this.dataSource.loadDepositDetails(this.depositData);
 		this.filteredDataList = data.list;
+	}
+
+	updateStatus(details) {
+		const dialogRef = this.dialog.open(DepositDetailsEditComponent, {
+			data: {
+				depositDetailsData: details
+			},
+			width: '60vw'
+		})
+		dialogRef.afterClosed().subscribe(res => {
+			if (res) {
+				this.toastr.successToastr('Transaction Status Updated Successfully');
+				this.loadDepositDetailsPage();
+			}
+		})
 	}
 
 	/**

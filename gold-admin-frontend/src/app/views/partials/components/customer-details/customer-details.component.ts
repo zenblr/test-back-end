@@ -52,8 +52,8 @@ export class CustomerDetailsComponent implements OnInit {
       })).subscribe();
   }
 
-  viewLoan(loanId, masterLoanId) {
-    this.router.navigate([`/admin/customer-management/loan-details/${loanId}/${masterLoanId}`])
+  viewLoan( masterLoanId) {
+    this.router.navigate([`/admin/customer-management/loan-details/${masterLoanId}`])
   }
 
   viewScrap(scrap) {

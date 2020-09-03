@@ -183,7 +183,7 @@ export class UserDetailsComponent implements OnInit {
   getFileInfo(event) {
     var name = event.target.files[0].name
     var ext = name.split('.')
-    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg' || ext[ext.length - 1] == 'pdf') {
       const params = {
         reason: 'lead',
         customerId: this.controls.id.value
@@ -248,14 +248,14 @@ export class UserDetailsComponent implements OnInit {
     const basicForm = this.userBasicForm.value;
     this.userDetailsService.basicDetails(basicForm).pipe(
       map(res => {
-        console.log(res);
+       
         if (res) {
           // this.next.emit(true);
           this.next.emit(res.customerKycCurrentStage);
         }
       }),
       catchError(err => {
-        console.log(err.error.message);
+        
         if (err.error.message == 'This customer Kyc information is already created.' && err.status == 404) {
           //   const kycStage = 2;
           // this.next.emit(true);

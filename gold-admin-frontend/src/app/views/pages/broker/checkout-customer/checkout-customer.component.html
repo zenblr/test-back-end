@@ -201,9 +201,9 @@
                 </div>
             </div> -->
             <div class="row pt-3">
-                <div class="col-12 text-right">
+                <div class="col-12 text-right font-weight-500">
                     <label class="custom-checkbox position-relative">
-                        <span class="label-checkbox">Shipping Address same as Billing Address</span>
+                        <span class="label-checkbox pl-2">Shipping Address same as Billing Address</span>
                         <input type="checkbox" (change)="sameAddress($event.target.checked)">
                         <span class="checkmark top-0"></span>
                     </label>
@@ -527,8 +527,11 @@
                 </div>
                 <div class="col-6 pl-4">
                     <form [formGroup]="otpForm">
-                        <div class="row">
-                            <div class="col-6">
+                        <div class="row py-3">
+                            <div class="col-4 align-self-center">
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">OTP</label>
+                            </div>
+                            <div class="col-8">
                                 <input *ngIf="!finalOrderData" type="text" aria-label="Enter OTP"
                                     placeholder="Enter OTP" class="form-control" formControlName="otp" disabled>
                                 <input *ngIf="finalOrderData" type="text" aria-label="Enter OTP" placeholder="Enter OTP"
@@ -543,7 +546,39 @@
                                     Invalid Input
                                 </mat-error>
                             </div>
-                            <div class="col-6">
+                        </div>
+                        <div class="row py-3">
+                            <div class="col-4 align-self-center">
+                                <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">Payment
+                                    Mode</label>
+                            </div>
+                            <div class="col-8">
+                                <select *ngIf="!finalOrderData" formControlName="paymentMode" class="form-control"
+                                    [class.isError]="otpForm.controls.paymentMode.touched && otpForm.controls.paymentMode.invalid"
+                                    disabled>
+                                    <option value="">Select Payment Type</option>
+                                </select>
+                                <select *ngIf="finalOrderData" formControlName="paymentMode" class="form-control"
+                                    [class.isError]="otpForm.controls.paymentMode.touched && otpForm.controls.paymentMode.invalid">
+                                    <option value="">Select Payment Type</option>
+                                    <option value="cash">CASH</option>
+                                    <option value="imps">IMPS</option>
+                                    <option value="neft">NEFT</option>
+                                    <option value="rtgs">RTGS</option>
+                                    <option value="cheque">CHEQUE</option>
+                                    <option value="upi">UPI</option>
+                                    <option value="paymentGateway">PAYMENT GATEWAY</option>
+                                </select>
+                                <div
+                                    *ngIf="otpForm.controls.paymentMode.touched && otpForm.controls.paymentMode.invalid">
+                                    <mat-error *ngIf="otpForm.controls.paymentMode.errors?.required">
+                                        Field is required
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row py-3">
+                            <div class="col-12 text-center">
                                 <kt-button [value]="'Place Order'" [type]="'submit'" (action)="verifyOTP()"
                                     [isDisabled]="!(finalOrderData && otpForm?.valid)"></kt-button>
                             </div>

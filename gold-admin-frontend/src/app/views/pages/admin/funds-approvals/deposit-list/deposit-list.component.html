@@ -5,71 +5,91 @@
 
                 <ng-container matColumnDef="transactionId">
                     <mat-header-cell *matHeaderCellDef>Transaction ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.transactionUniqueId }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="bankTransactionId">
                     <mat-header-cell *matHeaderCellDef>Bank Transaction ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.bankTransactionUniqueId | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.masterLoan.customer.customerUniqueId | uppercase}}
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">
+                        <div class="loanID">
+                            <span *ngFor="let item of deposit.masterLoan.customerLoan">
+                                {{ item.loanUniqueId | uppercase }}
+                            </span>
+                        </div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="depositDate">
                     <mat-header-cell *matHeaderCellDef>Deposit Date</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.depositDate  | date: 'mediumDate'}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="fullName">
                     <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">
+                        {{deposit.masterLoan.customer.firstName | titlecase}}&nbsp;
+                        {{deposit.masterLoan.customer.lastName | titlecase}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="mobileNumber">
+                <!-- <ng-container matColumnDef="mobileNumber">
                     <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
-                </ng-container>
+                    <mat-cell *matCellDef="let deposit">{{deposit.masterLoan.customer.mobileNumber}}</mat-cell>
+                </ng-container> -->
 
                 <ng-container matColumnDef="modeOfPayment">
                     <mat-header-cell *matHeaderCellDef>Mode of Payment</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.paymentType | uppercase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="depositBankName">
                     <mat-header-cell *matHeaderCellDef>Deposit Bank Name</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.bankName | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="depositBranchName">
                     <mat-header-cell *matHeaderCellDef>Deposit Branch Name</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.branchName| titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="depositAmount">
                     <mat-header-cell *matHeaderCellDef>Deposit Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">
+                        <div class="currency">
+                            {{deposit.transactionAmont | indianCurrencyFormat}}
+                        </div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="depositStatus">
                     <mat-header-cell *matHeaderCellDef>Deposit Status</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">
+                        <span
+                            [ngClass]="deposit.depositStatus  == 'Pending' ? 'text-warning' :deposit.depositStatus == 'Completed' ? 'text-success' : 'text-danger' ">
+                            {{deposit.depositStatus | titlecase}}
+                        </span>
+                    </mat-cell>
+
                 </ng-container>
 
                 <ng-container matColumnDef="update">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-                    <mat-cell *matCellDef="let item">
-                        <ng-container>
-                            <button style="width: 120px;" class="apply-kyc" (click)="updateStatus(item)">Update
+                    <mat-cell *matCellDef="let deposit">
+                        <div *ngxPermissionsOnly="['approveDeposit']">
+                            <button *ngIf="deposit.depositStatus == 'Pending'" style="width: 120px;" class="apply-kyc"
+                                (click)="updateStatus(deposit)">Edit
                             </button>
-                        </ng-container>
+                        </div>
 
                     </mat-cell>
                 </ng-container>
@@ -83,7 +103,7 @@
         </div>
         <div class="mat-table__bottom d-none">
             <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
-            <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
                 [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
         </div>
     </kt-portlet-body>

@@ -49,7 +49,7 @@ export class NewRequestAssignAppraiserComponent implements OnInit {
   }
 
   setForm() {
-    console.log(this.data.requestData)
+    
     this.appraiserForm.patchValue(this.data.requestData)
     if (this.data.action === 'edit') {
       this.appraiserForm.patchValue({
@@ -94,7 +94,7 @@ export class NewRequestAssignAppraiserComponent implements OnInit {
   }
 
   submit() {
-    console.log(this.appraiserForm.value)
+    
     if (this.appraiserForm.invalid) return this.appraiserForm.markAllAsTouched()
 
     this.newRequestService.newRequestAssignAppraiser(this.appraiserForm.value).pipe(map(res => {

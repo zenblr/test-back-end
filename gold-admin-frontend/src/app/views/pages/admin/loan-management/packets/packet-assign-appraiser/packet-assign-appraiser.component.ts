@@ -77,7 +77,7 @@ export class PacketAssignAppraiserComponent implements OnInit {
 
     this.packetsService.assignAppraiserToPacket(this.packetForm.value).pipe(map(res => {
       if (res) {
-        this.toastr.success('Branch Assigned Successfully')
+        this.toastr.success(res.message)
         this.dialogRef.close(true);
       }
     })).subscribe()

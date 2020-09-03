@@ -22,6 +22,11 @@
                     <mat-cell *matCellDef="let lead">{{lead.internalBranch.name | titlecase}}</mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="module">
+                    <mat-header-cell *matHeaderCellDef>Product</mat-header-cell>
+                    <mat-cell *matCellDef="let row">{{row.module?.moduleName | titlecase}}</mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="state">
                     <mat-header-cell *matHeaderCellDef>State</mat-header-cell>
                     <mat-cell *matCellDef="let lead">{{lead.state.name | titlecase}}</mat-cell>
@@ -118,7 +123,7 @@
                             View</div>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="appraiser">
+                <!-- <ng-container matColumnDef="appraiser">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let lead">
                         <ng-container *ngIf="lead.status.id == '1'">
@@ -131,7 +136,7 @@
                         </ng-container>
 
                     </mat-cell>
-                </ng-container>
+                </ng-container> -->
 
                 <ng-container matColumnDef="menu">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
@@ -160,7 +165,7 @@
         <div class="mat-table__bottom">
             <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
 
-            <mat-paginator [pageSize]="25" [pageSizeOptions]="[10,25,50,100]"
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
                 [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
         </div>
     </kt-portlet-body>

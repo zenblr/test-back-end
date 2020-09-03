@@ -368,12 +368,6 @@ exports.appliedKyc = async (req, res, next) => {
                 "$customer.mobile_number$": { [Op.iLike]: search + "%" },
                 "$customer.pan_card_number$": { [Op.iLike]: search + "%" },
                 "$customer.customer_unique_id$": { [Op.iLike]: search + "%" },
-                "$customer.customerAssignAppraiser.appraiser.first_name$": {
-                    [Op.iLike]: search + "%",
-                },
-                "$customer.customerAssignAppraiser.appraiser.last_name$": {
-                    [Op.iLike]: search + "%",
-                },
                 kyc_status: sequelize.where(
                     sequelize.cast(sequelize.col("customer.kyc_status"), "varchar"),
                     {
@@ -402,16 +396,12 @@ exports.appliedKyc = async (req, res, next) => {
     let internalBranchWhere;
 
     let assignAppraiser;
-    // if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-    //     internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
-    // } else {
-    //     internalBranchWhere = { isActive: true }
-    // }
+    
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
         internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
-        if (req.userData.userTypeId == 7) {
-            assignAppraiser = { appraiserId: req.userData.id }
-        }
+        // if (req.userData.userTypeId == 7) {
+        //     assignAppraiser = { appraiserId: req.userData.id }
+        // }
     } else {
         internalBranchWhere = { isActive: true }
     }
@@ -439,17 +429,6 @@ exports.appliedKyc = async (req, res, next) => {
             as: 'customer',
             attributes: ['firstName', 'lastName', 'panCardNumber', 'kycStatus', 'customerUniqueId'],
             where: internalBranchWhere,
-            include: [{
-                model: models.customerAssignAppraiser,
-                as: 'customerAssignAppraiser',
-                where: assignAppraiser,
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                include: [{
-                    model: models.user,
-                    as: 'appraiser',
-                    attributes: ['id', 'firstName', 'lastName']
-                }]
-            }]
         }
     ]
 
@@ -472,7 +451,7 @@ exports.appliedKyc = async (req, res, next) => {
         include: includeArray,
     });
     if (getAppliedKyc.length == 0) {
-        return res.status(200).json({data:[],count: count.length})
+        return res.status(200).json({data:[]})
     }
     return res.status(200).json({ data: getAppliedKyc, count:count.length })
 

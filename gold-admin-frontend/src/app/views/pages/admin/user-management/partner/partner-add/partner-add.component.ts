@@ -44,7 +44,7 @@ export class PartnerAddComponent implements OnInit {
   ngOnInit() {
     this.formInitialize();
     // this.getStates();
-    // console.log(this.data);
+   
     if (this.data.action !== 'add') {
       this.getPartnerById(this.data['partnerId']);
       this.title = 'Edit Partner'
@@ -77,9 +77,9 @@ export class PartnerAddComponent implements OnInit {
   }
 
   getCities(event) {
-    // console.log(event);
+    
     const stateId = this.controls.state.value;
-    // console.log(stateId);
+   
     this.sharedService.getCities(stateId).subscribe(res => {
       this.cities = res.data;
     },
@@ -90,7 +90,7 @@ export class PartnerAddComponent implements OnInit {
 
   getPartnerById(id) {
     this.partnerService.getPartnerById(id).subscribe(res => {
-      console.log(res);
+    
       this.partnerForm.patchValue(res);
     },
       error => {
@@ -113,7 +113,7 @@ export class PartnerAddComponent implements OnInit {
   }
 
   onSubmit() {
-    // console.log(this.partnerForm.value);
+   
     if (this.partnerForm.invalid) {
       this.partnerForm.markAllAsTouched()
       return
@@ -124,7 +124,7 @@ export class PartnerAddComponent implements OnInit {
     if (this.data.action == 'edit') {
       const id = this.controls.id.value;
       this.partnerService.updatePartner(id, partnerData).subscribe(res => {
-        // console.log(res);
+       
         if (res) {
           const msg = 'Partner Updated Successfully';
           this.toastr.successToastr(msg);
@@ -132,13 +132,13 @@ export class PartnerAddComponent implements OnInit {
         }
       },
         error => {
-          console.log(error.error.message);
+          //console.log(error.error.message);
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
         });
     } else {
       this.partnerService.addPartner(partnerData).subscribe(res => {
-        // console.log(res);
+      
         if (res) {
           const msg = 'Partner Added Successfully';
           this.toastr.successToastr(msg);
@@ -146,7 +146,7 @@ export class PartnerAddComponent implements OnInit {
         }
       },
         error => {
-          console.log(error.error.message);
+          //console.log(error.error.message);
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
         });

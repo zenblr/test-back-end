@@ -86,7 +86,7 @@
                                     [class.isError]="controls.scrapStatusForAppraiser.invalid && controls.scrapStatusForAppraiser.touched">
                                     <option value=null [disabled]="true" [selected]="true">Select Status</option>
                                     <option [value]="status.value" [disabled]="checkforApprovalAppraiser(status)"
-                                        *ngFor="let status of appraiser">
+                                        *ngFor="let status of appraiserScrap">
                                         {{status.name | titlecase}}
                                     </option>
                                 </select>
@@ -114,7 +114,7 @@
                                     [class.isError]="controls.scrapStatusForBM.invalid && controls.scrapStatusForBM.touched">
                                     <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
                                     <option [value]="status.value" [disabled]="checkforApprovalBM(status)"
-                                        *ngFor="let status of branchManager">
+                                        *ngFor="let status of branchManagerScrap">
                                         {{status.name | titlecase}}</option>
                                 </select>
 
@@ -126,24 +126,23 @@
                             <td class="rating-bm" *ngIf="!scrapIds && (viewBMForm || url == 'view-loan')">
                                 <select class="form-control" formControlName="loanStatusForBM"
                                     (change)="resetBM();statusBM()"
-                                    [class.isError]="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
+                                    [class.isError]="controls.loanStatusForBM.value == 'pending' && controls.loanStatusForBM.touched">
                                     <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
                                     <option [value]="status.value" [disabled]="checkforApprovalBM(status)"
-                                        *ngFor="let status of branchManager">
+                                        *ngFor="let status of branchManagerLoan">
                                         {{status.name | titlecase}}</option>
                                 </select>
-
-                                <mat-error *ngIf="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
+                                <mat-error *ngIf="controls.loanStatusForBM.value == 'pending'&&  controls.loanStatusForBM.touched">
                                     Field
                                     Required</mat-error>
                             </td>
                             <td class="rating-bm" *ngIf="scrapIds && (viewOpertaionalForm )">
                                 <select class="form-control" formControlName="scrapStatusForOperatinalTeam"
                                     (change)="resetOT();statusOT()"
-                                    [class.isError]="controls.scrapStatusForOperatinalTeam.invalid && controls.scrapStatusForOperatinalTeam.touched">
+                                    [class.isError]="controls.scrapStatusForOperatinalTeam.invalid &&  controls.scrapStatusForOperatinalTeam.touched">
                                     <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
                                     <option [value]="status.value" [disabled]="checkforApprovalOT(status)"
-                                        *ngFor="let status of branchManager">
+                                        *ngFor="let status of branchManagerScrap">
                                         {{status.name | titlecase}}</option>
                                 </select>
                                 <mat-error
@@ -154,14 +153,14 @@
                             <td class="rating-bm" *ngIf="!scrapIds && (viewOpertaionalForm || url == 'view-loan')">
                                 <select class="form-control" formControlName="loanStatusForOperatinalTeam"
                                     (change)="resetOT();statusOT()"
-                                    [class.isError]="controls.loanStatusForOperatinalTeam.invalid && controls.loanStatusForOperatinalTeam.touched">
+                                    [class.isError]=" controls.loanStatusForOperatinalTeam.value == 'pending' && controls.loanStatusForOperatinalTeam.touched">
                                     <option value="pending" [disabled]="true" [selected]="true">Select Status</option>
                                     <option [value]="status.value" [disabled]="checkforApprovalOT(status)"
-                                        *ngFor="let status of branchManager">
+                                        *ngFor="let status of branchManagerLoan">
                                         {{status.name | titlecase}}</option>
                                 </select>
                                 <mat-error
-                                    *ngIf="controls.loanStatusForOperatinalTeam.invalid && controls.loanStatusForOperatinalTeam.touched">
+                                    *ngIf="controls.loanStatusForOperatinalTeam.value == 'pending' && controls.loanStatusForOperatinalTeam.touched">
                                     Field
                                     Required</mat-error>
                             </td>

@@ -436,7 +436,7 @@ export class UserReviewComponent implements OnInit {
     this.userType = res.userDetails.userTypeId;
 
     if (this.modalData.action) {
-      console.log(this.data);
+     
       this.viewOnly = false;
     }
   }
@@ -455,15 +455,15 @@ export class UserReviewComponent implements OnInit {
       }
     })
 
-    console.log(this.data)
 
     this.initForm();
 
+    this.getStates();
+    this.getIdentityType();
+    this.getAddressProofType();
+    this.getOccupation();
+
     let identityArray = this.data.customerKycReview.customerKycPersonal
-    // identityArray.forEach(element => {
-    //   this.identityImageArray.push(element.identityProof.URL)
-    //   this.identityIdArray.push(element.identityProof.id)
-    // });
     this.identityImageArray = identityArray.identityProofImage
     this.identityIdArray = identityArray.identityProof
     this.reviewForm.controls.identityProof.patchValue(this.identityIdArray);
@@ -471,20 +471,12 @@ export class UserReviewComponent implements OnInit {
 
 
     let addressArray1 = this.data.customerKycReview.customerKycAddress[0]
-    // addressArray1.forEach(element => {
-    //   this.addressImageArray1.push(element.addressProof.URL)
-    //   this.addressIdArray1.push(element.addressProof.id)
-    // });
     this.addressImageArray1 = addressArray1.addressProofImage
     this.addressIdArray1 = addressArray1.addressProof
     this.customerKycAddressOne.controls.addressProof.patchValue(this.addressIdArray1);
 
 
     let addressArray2 = this.data.customerKycReview.customerKycAddress[1]
-    // addressArray2.forEach(element => {
-    //   this.addressImageArray2.push(element.addressProof.URL)
-    //   this.addressIdArray2.push(element.addressProof.id)
-    // });
     this.addressImageArray2 = addressArray2.addressProofImage
     this.addressIdArray2 = addressArray2.addressProof
     this.customerKycAddressTwo.controls.addressProof.patchValue(this.addressIdArray2);
@@ -498,10 +490,7 @@ export class UserReviewComponent implements OnInit {
       this.customerKycAddressTwo.disable();
 
     }
-    this.getStates();
-    this.getIdentityType();
-    this.getAddressProofType();
-    this.getOccupation();
+
   }
 
   initForm() {
@@ -624,7 +613,7 @@ export class UserReviewComponent implements OnInit {
 
     // this.customerKycAddressOne.enable()
     // this.customerKycAddressTwo.enable()
-// 
+    // 
     this.userBankService.kycSubmit(data).pipe(
       map(res => {
         this.next.emit(true);
@@ -678,11 +667,12 @@ export class UserReviewComponent implements OnInit {
   getOccupation() {
     this.userPersonalService.getOccupation().subscribe(res => {
       this.occupations = res.data;
+      this.ref.detectChanges();
     })
   }
 
   removeImages(index, type) {
-    // console.log(index, type)
+  
     if (this.userType == 5) {
       return;
     }
@@ -726,7 +716,7 @@ export class UserReviewComponent implements OnInit {
     }
     this.file = event.target.files[0];
     var name = event.target.files[0].name
-    console.log(name)
+    
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
       const params = {
@@ -740,7 +730,7 @@ export class UserReviewComponent implements OnInit {
             this.identityImageArray.push(res.uploadFile.URL)
             this.identityIdArray.push(res.uploadFile.path)
             this.identityFileNameArray.push(event.target.files[0].name)
-            console.log(this.identityFileNameArray)
+           
             this.customerKycPersonal.patchValue({ identityProof: this.identityIdArray })
             this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
           } else
@@ -817,7 +807,7 @@ export class UserReviewComponent implements OnInit {
           customerId: this.customerKycAddressOne.controls.customerId.value
         }
         this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
-          console.log(res)
+          
           this.data.customerKycReview.customerKycPersonal.profileImg = res.uploadFile.URL
           this.customerKycPersonal.get('profileImage').patchValue(res.uploadFile.path);
           this.ref.detectChanges()

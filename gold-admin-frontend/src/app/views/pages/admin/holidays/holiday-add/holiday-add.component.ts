@@ -46,7 +46,7 @@ export class HolidayAddComponent implements OnInit {
       this.title = "Edit Holiday";
       this.fillingForm.patchValue(this.data.holidayData);
       setTimeout(() => this.disableCsv = true);
-      console.log(this.data)
+      // console.log(this.data)
     }
   }
 
@@ -84,7 +84,7 @@ export class HolidayAddComponent implements OnInit {
 
   submit() {
     if (this.tabGroup.selectedIndex == 0) {
-      console.log(this.fillingForm.value);
+      // console.log(this.fillingForm.value);
 
       if (this.fillingForm.invalid) {
         this.fillingForm.markAllAsTouched()
