@@ -25,6 +25,11 @@ export class SharedService {
 	exportExcel = new BehaviorSubject<any>(false);
 	exportExcel$ = this.exportExcel.asObservable();
 
+	isSubHeaderVisible = new BehaviorSubject<boolean>(false);
+	isSubHeaderVisible$ = this.isSubHeaderVisible.asObservable();
+
+
+
 	appraiserOrCCE = [
 		{ value: 'pending', name: 'pending' },
 		{ value: 'approved', name: 'approved' },
@@ -169,6 +174,9 @@ export class SharedService {
 			return of(decodedValue);
 		}
 	}
+
+
+
 	soaDownload(masterLoanId): Observable<any> {
 		let endDate =""
 		let startDate =""

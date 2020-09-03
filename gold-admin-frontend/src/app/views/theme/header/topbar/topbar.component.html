@@ -15,7 +15,7 @@
         <kt-user-profile></kt-user-profile>
     </div>
     <div class="row justify-content-center"
-        [ngClass]="{'heightLowerTopbar': showInput || showDropdown || value4 || downloadbtn || toogle || showfilter || sortFlag}">
+        [ngClass]="{'heightLowerTopbar': showSubHeader}">
         <div class="col-6 offset-4 align-self-center">
             <kt-search *ngIf="showInput"></kt-search>
             <kt-dropdown *ngIf="showDropdown" [dropdownValue]="dropdownValue" [isDisabled]="isDisabled"
