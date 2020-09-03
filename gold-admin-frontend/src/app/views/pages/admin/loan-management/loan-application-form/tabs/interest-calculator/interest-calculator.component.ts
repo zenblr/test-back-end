@@ -338,7 +338,7 @@ export class InterestCalculatorComponent implements OnInit {
 
   eligibleCheck(amt, data) {
     if (amt > this.totalAmt) {
-      if (this.transferLoan) {
+      if (this.transferLoan || this.isNewLoanFromPartRelease) {
         this.checkForLoanType(data, amt,)
       } else
         this.controls.finalLoanAmount.setErrors({ eligible: true })
