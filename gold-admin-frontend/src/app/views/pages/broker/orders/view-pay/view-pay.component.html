@@ -127,10 +127,6 @@
                         <div class="col-8">
                             <select formControlName="paymentMode" class="form-control"
                                 [class.isError]="paymentForm.controls.paymentMode.touched && paymentForm.controls.paymentMode.invalid">
-                                <!-- <option value="">Select Payment Type</option>
-                            </select>
-                            <select formControlName="paymentMode" class="form-control"
-                                [class.isError]="paymentForm.controls.paymentMode.touched && paymentForm.controls.paymentMode.invalid"> -->
                                 <option value="">Select Payment Type</option>
                                 <option value="cash">CASH</option>
                                 <option value="imps">IMPS</option>
@@ -154,7 +150,7 @@
             </div>
             <button
             *ngIf="orderData.orderCurrentStatus.id == 2 || orderData.orderCurrentStatus.id == 3 || orderData.orderCurrentStatus.id == 15"
-            type="button" [type]="'submit'" class="btn btn-outline my-3" (click)="getEmiAmount()" [disabled]="emi.length == 0">Pay
+            type="button" [type]="'submit'" class="btn btn-outline my-3" (click)="getEmiAmount()" [disabled]="emi.length == 0 || paymentForm.controls.paymentMode.value == ''">Pay
             EMI</button>
             </div>
     </kt-portlet-footer>
