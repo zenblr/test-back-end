@@ -139,7 +139,7 @@ exports.partPayment = async (req, res, next) => {
 
     paymentDetails.masterLoanId = masterLoanId
     paymentDetails.transactionAmont = paidAmount
-    paymentDetails.depositDate = depositDate
+    paymentDetails.depositDate = moment(depositDate).utcOffset("+05:30").format("YYYY-MM-DD");
     paymentDetails.transactionUniqueId = transactionUniqueId //ye chanege hoyega
     paymentDetails.bankTransactionUniqueId = transactionId
     paymentDetails.depositStatus = "Pending"

@@ -273,7 +273,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
         let addPartRelease;
         let partRelease = await sequelize.transaction(async t => {
             if (['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'UPI', 'gateway'].includes(paymentType)) {
-                let loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: uniqid.time().toUpperCase(), bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "partRelease", depositDate, createdBy, modifiedBy }, { transaction: t });
+                let loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: uniqid.time().toUpperCase(), bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "partRelease", depositDate: moment(depositDate).utcOffset("+05:30").format("YYYY-MM-DD"), createdBy, modifiedBy }, { transaction: t });
                 await models.customerTransactionSplitUp.create({ customerLoanTransactionId: loanTransaction.id, loanId: securedLoanId, masterLoanId, payableOutstanding: securedRatio, penal: securedPenalInterest, interest: securedInterest, loanOutstanding: newSecuredOutstandingAmount }, { transaction: t });
                 if (isUnsecuredSchemeApplied == true) {
                     await models.customerTransactionSplitUp.create({ customerLoanTransactionId: loanTransaction.id, loanId: unsecuredLoanId, masterLoanId, payableOutstanding: unsecuredRatio, penal: unsecuredPenalInterest, interest: unsecuredInterest, loanOutstanding: newUnsecuredOutstandingAmount, isSecured: false }, { transaction: t });
@@ -336,7 +336,7 @@ exports.getPartReleaseList = async (req, res, next) => {
     let includeArray = [{
         model: models.customerLoanTransaction,
         as: 'transaction'
-    },{
+    }, {
         model: models.customerLoanMaster,
         as: 'masterLoan',
         attributes: ['customerId', 'outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
@@ -592,7 +592,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
     let includeArray = [{
         model: models.customerLoanTransaction,
         as: 'transaction'
-    },{
+    }, {
         model: models.customerLoanMaster,
         as: 'masterLoan',
         subQuery: false,
@@ -827,11 +827,11 @@ exports.getPartReleaseNewLonaAmount = async (req, res, next) => {
         where: { id: partReleaseId },
         attributes: ['amountStatus', 'partReleaseStatus', 'masterLoanId', 'newLoanAmount']
     });
-    if(partReleaseData){
-        return res.status(200).json({ newLoanAmount:partReleaseData.newLoanAmount,partReleaseId });
-    }else{
-        return res.status(404).json({ message:"Data not found"});
-    }  
+    if (partReleaseData) {
+        return res.status(200).json({ newLoanAmount: partReleaseData.newLoanAmount, partReleaseId });
+    } else {
+        return res.status(404).json({ message: "Data not found" });
+    }
 }
 
 //Full release 
@@ -853,7 +853,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
         let addFullRelease;
         let fullRelease = await sequelize.transaction(async t => {
             if (['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'UPI', 'gateway'].includes(paymentType)) {
-                let loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: uniqid.time().toUpperCase(), bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "fullRelease", depositDate, createdBy, modifiedBy }, { transaction: t });
+                let loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: uniqid.time().toUpperCase(), bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "fullRelease", depositDate: moment(depositDate).utcOffset("+05:30").format("YYYY-MM-DD"), createdBy, modifiedBy }, { transaction: t });
                 await models.customerTransactionSplitUp.create({ customerLoanTransactionId: loanTransaction.id, loanId: securedLoanId, masterLoanId, payableOutstanding: securedRatio, penal: securedPenalInterest, interest: securedInterest, loanOutstanding: newSecuredOutstandingAmount }, { transaction: t });
                 if (isUnsecuredSchemeApplied == true) {
                     await models.customerTransactionSplitUp.create({ customerLoanTransactionId: loanTransaction.id, loanId: unsecuredLoanId, masterLoanId, payableOutstanding: unsecuredRatio, penal: unsecuredPenalInterest, interest: unsecuredInterest, loanOutstanding: newUnsecuredOutstandingAmount, isSecured: false }, { transaction: t });
@@ -915,7 +915,7 @@ exports.getFullReleaseList = async (req, res, next) => {
     let includeArray = [{
         model: models.customerLoanTransaction,
         as: 'transaction'
-    },{
+    }, {
         model: models.customerLoanMaster,
         as: 'masterLoan',
         attributes: ['customerId', 'outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
@@ -1174,7 +1174,7 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
     let includeArray = [{
         model: models.customerLoanTransaction,
         as: 'transaction'
-    },{
+    }, {
         model: models.customerLoanMaster,
         as: 'masterLoan',
         attributes: ['customerId', 'outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],

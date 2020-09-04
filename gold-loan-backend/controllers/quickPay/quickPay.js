@@ -96,7 +96,7 @@ exports.quickPayment = async (req, res, next) => {
 
     paymentDetails.masterLoanId = masterLoanId
     paymentDetails.transactionAmont = payableAmount
-    paymentDetails.depositDate = depositDate
+    paymentDetails.depositDate = moment(depositDate).utcOffset("+05:30").format("YYYY-MM-DD");
     paymentDetails.transactionUniqueId = transactionUniqueId //ye change karna h
     paymentDetails.bankTransactionUniqueId = transactionId
     paymentDetails.depositStatus = "Pending"
