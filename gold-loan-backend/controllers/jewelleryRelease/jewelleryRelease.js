@@ -355,7 +355,8 @@ exports.getPartReleaseList = async (req, res, next) => {
                 model: models.customerLoanPersonalDetail,
                 as: 'loanPersonalDetail',
                 attributes: ['customerUniqueId']
-            }]
+            }
+        ]
     },
     {
         model: models.customerLoanOrnamentsDetail,
@@ -384,6 +385,10 @@ exports.getPartReleaseList = async (req, res, next) => {
                 attributes: ['firstName', 'lastName', 'mobileNumber']
             }
         ]
+    },
+    {
+        model: models.customerLoanTransaction,
+        as: 'transaction'
     }
     ]
     let partRelease = await models.partRelease.findAll({
