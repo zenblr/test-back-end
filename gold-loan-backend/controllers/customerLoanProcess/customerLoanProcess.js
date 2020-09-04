@@ -1535,28 +1535,26 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
         await sequelize.transaction(async (t) => {
 
             if (isUnsecuredSchemeApplied) {
+               
+                let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, debit: processingCharge, description: `Processing charges debit` }, { transaction: t })
+                await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${processingDebit.id}` }, { where: { id: processingDebit.id }, transaction: t })
+
                 let amountPaid = fullUnsecuredAmount - processingCharge;
                 let unsecuredDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, debit: amountPaid, description: `Loan amount disbursed to customer` }, { transaction: t })
                 await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${unsecuredDisbursed.id}` }, { where: { id: unsecuredDisbursed.id }, transaction: t })
 
-                let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, debit: processingCharge, description: `Processing charges debit` }, { transaction: t })
-                await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${processingDebit.id}` }, { where: { id: processingDebit.id }, transaction: t })
-
-                let processing = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, credit: processingCharge, description: `Processing charges for current loan from the customer` }, { transaction: t })
-                await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${processing.id}` }, { where: { id: processing.id }, transaction: t })
-
                 let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: fullSecuredAmount, description: `Loan amount disbursed to customer` }, { transaction: t })
                 await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
             } else {
+                
+                let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: processingCharge, description: `Processing charges debit` }, { transaction: t })
+                await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${processingDebit.id}` }, { where: { id: processingDebit.id }, transaction: t })
+
                 let amountPaid = fullSecuredAmount - processingCharge;
                 let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: amountPaid, description: `Loan amount disbursed to customer` }, { transaction: t })
                 await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
 
-                let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: processingCharge, description: `Processing charges debit` }, { transaction: t })
-                await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${processingDebit.id}` }, { where: { id: processingDebit.id }, transaction: t })
-
-                let processing = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, credit: processingCharge, description: `Processing charges for current loan from the customer` }, { transaction: t })
-                await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${processing.id}` }, { where: { id: processing.id }, transaction: t })
+              
             }
 
             await models.customerLoanMaster.update({ loanStartDate: newStartDate, loanEndDate: newEndDate, loanStageId: stageId.id }, { where: { id: masterLoanId }, transaction: t })
