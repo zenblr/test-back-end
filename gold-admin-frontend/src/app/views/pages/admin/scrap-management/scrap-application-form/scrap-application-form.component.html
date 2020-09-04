@@ -43,6 +43,7 @@
                     <mat-tab label="Bank Details" [disabled]="disabled[4]"
                         *ngIf="!((url == 'view-scrap' && scrapStage?.id == 9) || (url == 'view-scrap' && scrapStage?.id == 10))">
                         <kt-bank-details [action]="action" [scrapIds]="scrapIds" [details]="customerDetail"
+                            
                             [disable]="disabledForm" [finalScrapAmt]="finalScrapAmt" (next)="next($event)"
                             [showButton]="showButton" [accountHolderName]="accountHolderName">
                         </kt-bank-details>

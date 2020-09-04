@@ -174,43 +174,47 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
+    let searchQuery = { loanId: loanId, masterLoanId: masterLoanId }
+
+    let includeArray = [
+        {
+            model: models.packetLocation,
+            as: 'packetLocation',
+            attributes: { exclude: ['createdAt', 'updatedAt'] },
+        },
+        {
+            model: models.user,
+            as: 'senderUser',
+            attributes: ['id', 'firstName', 'lastName']
+        },
+        {
+            model: models.customer,
+            as: 'customer',
+            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName'],
+        },
+        {
+            model: models.user,
+            as: 'receiverUser',
+            attributes: ['id', 'firstName', 'lastName']
+        },
+        {
+            model: models.partnerBranchUser,
+            as: 'senderPartner',
+            attributes: ['id', 'firstName', 'lastName']
+        },
+        {
+            model: models.partnerBranchUser,
+            as: 'receiverPartner',
+            attributes: ['id', 'firstName', 'lastName']
+        }
+    ]
+
     let logDetails = await models.customerPacketTracking.findAll({
-        where: { loanId: loanId, masterLoanId: masterLoanId },
+        where: searchQuery,
         order: [
             ['id', 'DESC']
         ],
-        include: [
-            {
-                model: models.packetLocation,
-                as: 'packetLocation',
-                attributes: { exclude: ['createdAt', 'updatedAt'] },
-            },
-            {
-                model: models.user,
-                as: 'senderUser',
-                attributes: ['id', 'firstName', 'lastName']
-            },
-            {
-                model: models.customer,
-                as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName'],
-            },
-            {
-                model: models.user,
-                as: 'receiverUser',
-                attributes: ['id', 'firstName', 'lastName']
-            },
-            {
-                model: models.partnerBranchUser,
-                as: 'senderPartner',
-                attributes: ['id', 'firstName', 'lastName']
-            },
-            {
-                model: models.partnerBranchUser,
-                as: 'receiverPartner',
-                attributes: ['id', 'firstName', 'lastName']
-            }
-        ],
+        include: includeArray,
         offset: offset,
         limit: pageSize,
     });
@@ -274,9 +278,19 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
     }
 
 
+    let count = await models.customerPacketTracking.findAll({
+        where: searchQuery,
+        order: [
+            ['id', 'DESC']
+        ],
+        include: includeArray
+
+    });
+
+
     //console.log(logDetails)
     if (logDetail.length != 0) {
-        return res.status(200).json({ data: logDetail });
+        return res.status(200).json({ data: logDetail, count: count.length });
     }
     else {
         return res.status(404).json({ message: 'Data not found!' });
@@ -304,9 +318,9 @@ exports.addCustomerPacketTracking = async (req, res) => {
     });
 
     if (packetTrackingData) {
-        return res.status(201).json({ message: 'Loaction Added' });
+        return res.status(200).json({ message: 'Location Added' });
     } else {
-        return res.status(400).json({ message: 'Loaction not added' });
+        return res.status(400).json({ message: 'Location not added' });
     }
 }
 
@@ -380,7 +394,7 @@ exports.getMapDetails = async (req, res, next) => {
         include: {
             model: models.customerLoanMaster,
             as: 'masterLoan',
-            attributes:['id'],
+            attributes: ['id'],
             include: {
                 model: models.packet,
                 as: 'packet'

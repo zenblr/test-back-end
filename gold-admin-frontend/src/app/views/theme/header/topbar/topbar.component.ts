@@ -325,7 +325,7 @@ export class TopbarComponent implements OnInit {
 			this.value2 = "Add Ornaments";
 			this.type2 = "button";
 			this.rightButton = true;
-			this.permissionType = "addOrnament";
+			this.permissionType = "addOrnamentType";
 		}
 		if (this.path == "reasons") {
 			this.value2 = "Add Reason";
@@ -721,6 +721,9 @@ export class TopbarComponent implements OnInit {
 			this.showBackButton = true;
 		}
 		if (location.href.includes('/admin/loan-management/loan-transfer?customerID=')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/admin/loan-management/loan-application-form?transferLoanCustomerID=')) {
 			this.showBackButton = true;
 		}
 		if (this.path == 'standard-deduction') {

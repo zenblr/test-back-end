@@ -37,6 +37,16 @@ exports.submitAppKyc = async (req, res, next) => {
         return res.status(404).json({ message: "Your status is not confirm" });
     }
 
+    let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: identityProofNumber } });
+    if (!check.isEmpty(findIdentityNumber)) {
+        return res.status(400).json({ message: "Identity Proof Number already exists! " })
+    }
+
+    let findPanCardNumber = await models.customer.findOne({ where:{ panCardNumber: panCardNumber}});
+    if(!check.isEmpty(findPanCardNumber)){
+        return res.status(400).json({ message: "Pan Card Number already exists! " });
+    }
+
     let kycInfo = await sequelize.transaction(async t => {
 
         await models.customer.update({ panCardNumber: panCardNumber, panType, panImage }, { where: { id: customerId }, transaction: t })

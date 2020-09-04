@@ -63,6 +63,7 @@ export class UploadDocumentsComponent implements OnInit {
     saleInvoice: false
   }
   documentsForm: FormGroup
+  total;
   show: boolean;
   url: string;
   scrapUrl: string;
@@ -156,6 +157,7 @@ export class UploadDocumentsComponent implements OnInit {
           standardDeduction: documents.standardDeduction,
           customerConfirmationStatus: documents.customerConfirmationStatus
         })
+        this.calculateAfterDeduction();
         if (documents.customerConfirmation) {
           this.documentsForm.patchValue({
             customerConfirmation: documents.customerConfirmation,
@@ -254,7 +256,17 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.globalSettingService.globalSetting$.subscribe(global => this.globalValue = global);
+    this.globalSettingService.getScrapGlobalSetting().subscribe(global => {
+      console.log(global)
+      this.globalValue = global
+      // this.globalValue.beforeSD = this.globalValue.;
+      // this.globalValue.afterSD = 10;
+      this.documentsForm.controls.standardDeduction.setValidators
+      ([Validators.min(this.globalValue.standardDeductionMin), 
+        Validators.max(this.globalValue.standardDeductionMax)]);
+      this.documentsForm.controls.standardDeduction.updateValueAndValidity();
+    });
+
     if (this.scrapUrl == "scrap-management") {
       this.documentsForm.controls['customerConfirmationStatus'].valueChanges.subscribe((val) => {
         if (val == 'confirmed') {
@@ -297,7 +309,7 @@ export class UploadDocumentsComponent implements OnInit {
       schemeConfirmationCopyImage: [],
       //acknowledgment
       processingCharges: [],
-      standardDeduction: [''],
+      standardDeduction: [],
       customerConfirmation: [],
       customerConfirmationImage: [],
       customerConfirmationImageName: [],
@@ -333,7 +345,7 @@ export class UploadDocumentsComponent implements OnInit {
         this.documentsForm.controls.pawnCopy.updateValueAndValidity()
       this.documentsForm.controls.processingCharges.setValidators(Validators.required),
         this.documentsForm.controls.processingCharges.updateValueAndValidity()
-      this.documentsForm.controls.standardDeduction.setValidators(Validators.required),
+      this.documentsForm.controls.standardDeduction.setValidators( [Validators.min(0), Validators.max(10), Validators.required]),
         this.documentsForm.controls.standardDeduction.updateValueAndValidity()
       this.documentsForm.controls.customerConfirmationStatus.setValidators(Validators.required),
         this.documentsForm.controls.customerConfirmationStatus.updateValueAndValidity()
@@ -463,6 +475,17 @@ export class UploadDocumentsComponent implements OnInit {
     } else {
       this.loanService.getPdf(this.masterAndLoanIds.masterLoanId).subscribe()
     }
+  }
+
+
+  calculateAfterDeduction() {
+    const controls = this.documentsForm as FormGroup;
+    if (controls.controls.standardDeduction.valid && controls.controls.standardDeduction.value) {
+      let standardDeduction = controls.controls.standardDeduction.value
+      this.total = ( this.totalAmt - (this.totalAmt * standardDeduction / 100))
+      console.log(this.total)
+    }
+    console.log(this.documentsForm.value);
   }
 
   save() {

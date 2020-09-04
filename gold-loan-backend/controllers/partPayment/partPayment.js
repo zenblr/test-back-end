@@ -144,7 +144,6 @@ exports.partPayment = async (req, res, next) => {
     paymentDetails.bankTransactionUniqueId = transactionId
     paymentDetails.depositStatus = "Pending"
     paymentDetails.paymentFor = 'partPayment'
-    paymentDetails.createdBy = createdBy
 
     let data = await sequelize.transaction(async t => {
         let customerLoanTransaction = await models.customerLoanTransaction.create(paymentDetails, { transaction: t })

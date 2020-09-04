@@ -136,6 +136,7 @@ export class PaymentDialogComponent implements OnInit {
       return this.paymentForm.markAllAsTouched();
     }
     if (this.data.isEMI) {
+      console.log(this.paymentForm.value)
       this.shopService.payEMI(this.paymentForm.value).subscribe(res => {
         if (res) {
           this.dialogRef.close(true);

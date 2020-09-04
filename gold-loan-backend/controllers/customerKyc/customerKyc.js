@@ -133,13 +133,13 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
 
         let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, customerKycCurrentStage: "2" }, { transaction: t })
 
-        await models.customer.update({ panCardNumber: panCardNumber, panType, panImage }, { where: { id: getCustomerInfo.id }, transaction: t })
+        await models.customer.update({ firstName: firstName, lastName: lastName, panCardNumber: panCardNumber, panType, panImage }, { where: { id: getCustomerInfo.id }, transaction: t })
 
         let createCustomerKyc = await models.customerKycPersonalDetail.create({
             customerId: getCustomerInfo.id,
             customerKycId: customerKycAdd.id,
-            firstName: getCustomerInfo.firstName,
-            lastName: getCustomerInfo.lastName,
+            firstName: firstName,
+            lastName: lastName,
             panCardNumber: panCardNumber,
             createdBy,
             modifiedBy
@@ -172,6 +172,11 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
 
     if (!check.isEmpty(findCustomerKyc)) {
         return res.status(404).json({ message: "This customer address details is already filled." });
+    }
+
+    let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: identityProofNumber } });
+    if (!check.isEmpty(findIdentityNumber)) {
+        return res.status(400).json({ message: "Identity Proof Number already exists! " })
     }
 
 
@@ -295,6 +300,11 @@ exports.submitAllKycInfo = async (req, res, next) => {
     // if (check.isEmpty(findCustomerKyc)) {
     //     return res.status(404).json({ message: "This customer kyc detailes is not filled." });
     // }
+    let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { customerId: { [Op.not]: customerId }, identityProofNumber: customerKycPersonal.identityProofNumber } });
+    if (!check.isEmpty(findIdentityNumber)) {
+        return res.status(400).json({ message: "Identity Proof Number already exists! " })
+    }
+
     let modifiedBy = req.userData.id;
     customerKycPersonal['modifiedBy'] = modifiedBy
 
@@ -318,8 +328,16 @@ exports.submitAllKycInfo = async (req, res, next) => {
     let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
 
     let KycClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId } })
+    let kycRating = await models.customerKyc.findOne({ where: { customerId: customerId } })
+
+    if (!kycRating.isVerifiedByCce) {
+        ratingStage = 1
+    } else {
+        ratingStage = 2
+    }
+
     // console.log(KycClassification);
-    return res.status(200).json({ message: `successful`, customerId, customerKycId, customerKycCurrentStage, KycClassification })
+    return res.status(200).json({ message: `successful`, customerId, customerKycId, customerKycCurrentStage, KycClassification, ratingStage })
 
 }
 
@@ -396,7 +414,7 @@ exports.appliedKyc = async (req, res, next) => {
     let internalBranchWhere;
 
     let assignAppraiser;
-    
+
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
         internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
         // if (req.userData.userTypeId == 7) {
@@ -451,9 +469,9 @@ exports.appliedKyc = async (req, res, next) => {
         include: includeArray,
     });
     if (getAppliedKyc.length == 0) {
-        return res.status(200).json({data:[]})
+        return res.status(200).json({ data: [] })
     }
-    return res.status(200).json({ data: getAppliedKyc, count:count.length })
+    return res.status(200).json({ data: getAppliedKyc, count: count.length })
 
 
 }

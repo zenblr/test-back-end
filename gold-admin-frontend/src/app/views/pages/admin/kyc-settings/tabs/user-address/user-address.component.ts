@@ -227,6 +227,11 @@ export class UserAddressComponent implements OnInit {
         this.identityForm.controls.identityTypeId.disable()
 
       })),
+      catchError(err => {
+        if (err.error.message)
+        this.toastr.error(err.error.message);
+        throw (err)
+      })
     ).subscribe();
 
     // this.next.emit(true);
