@@ -601,6 +601,7 @@ export class UserReviewComponent implements OnInit {
       customerKycId: this.data.customerKycId,
       customerKycPersonal: this.customerKycPersonal.value,
       customerKycAddress: customerKycAddress,
+      customerKycReview:this.reviewForm.value
     }
 
     if (this.customerKycPersonal.invalid || this.customerKycAddressOne.invalid || this.customerKycAddressTwo.invalid) {
