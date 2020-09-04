@@ -4,7 +4,7 @@ const sequelize = models.sequelize;
 const Op = Sequelize.Op;
 const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
 const _ = require('lodash');
-
+const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 const moment = require('moment')
 const { paginationWithFromTo } = require("../../utils/pagination");
 
@@ -313,6 +313,37 @@ exports.addCustomerPacketTracking = async (req, res) => {
 
     let { customerReceiverId, userReceiverId, partnerReceiverId, receiverType, packetLocationId, loanId, masterLoanId } = req.body;
 
+    // let verifyUser
+    //  var todayDateTime = new Date();
+    // switch (receiverType) {
+    //     case "Customer":
+    //          verifyUser = await models.customerOtp.findOne({
+    //             where: {
+    //                 referenceCode,
+    //                 otp,
+    //                 expiryTime: {
+    //                     [Op.gte]: todayDateTime,
+    //                 },
+    //             },
+    //         });
+    //         if (check.isEmpty(verifyUser)) {
+    //             return res.status(404).json({ message: `INVALID OTP.` });
+    //         }
+    //         break;
+    //     case "InternalUser":
+    //         verifyUser = await models.userOtp.findOne({
+    //             where: {
+    //                 referenceCode, otp,
+    //                 expiryTime: {
+    //                     [Op.gte]: todayDateTime
+    //                 }
+    //             }
+    //         })
+    //         if (check.isEmpty(verifyUser)) {
+    //             return res.status(400).json({ message: `INVALID OTP.` })
+    //         }
+    //         break;
+    // }
     let packetTrackingData = await models.customerPacketTracking.create({
         customerReceiverId, userReceiverId, partnerReceiverId, receiverType, loanId, masterLoanId, packetLocationId, userSenderId, partnerSenderId, senderType
     });

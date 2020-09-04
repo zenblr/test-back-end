@@ -141,7 +141,7 @@ export class UserDetailsComponent implements OnInit {
         this.controls.panImage.patchValue(res.customerInfo.panImage);
         this.controls.panImg.patchValue(res.customerInfo.panImg);
         if (res.customerInfo.panCardNumber !== null) {
-          this.controls.panCardNumber.disable();
+          //this.controls.panCardNumber.disable();
           this.controls.panType.disable();
           this.isPanVerified = true;
         } else {
@@ -265,6 +265,8 @@ export class UserDetailsComponent implements OnInit {
       }),
       finalize(() => {
         this.userBasicForm.disable();
+        this.userBasicForm.controls.firstName.enable()
+        this.userBasicForm.controls.lastName.enable()
         this.userBasicForm.controls.mobileNumber.enable()
         this.userBasicForm.controls.panCardNumber.enable()
       })

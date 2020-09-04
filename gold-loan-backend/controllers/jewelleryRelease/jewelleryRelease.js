@@ -11,6 +11,8 @@ const { getCustomerInterestAmount, customerLoanDetailsByMasterLoanDetails, getGl
 const moment = require('moment')
 const uniqid = require('uniqid');
 const _ = require('lodash');
+const razorpay = require('../../utils/razorpay');
+let crypto = require('crypto');
 
 exports.ornamentsDetails = async (req, res, next) => {
 
@@ -295,8 +297,18 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
 //     }
 // }
 
+exports.razorPayCreateOrderForOrnament = async (req, res, next) => {
+    let { masterLoanId, ornamentId } = req.body;
+    let releaseData = await getAllPartAndFullReleaseData(masterLoanId, ornamentId);
+    let amount = releaseData.loanInfo.totalPayableAmount;
+    let transactionUniqueId = uniqid.time().toUpperCase();
+    let payableAmount = await amount * 100;
+    let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId}`, payment_capture: 0, notes: "gold loan" });
+    return res.status(200).json({ razorPayOrder, razerPayConfig: razorpay.razorPayConfig.key_id });
+}
+
 exports.ornamentsPartRelease = async (req, res, next) => {
-    let { paymentType, paidAmount, bankName, chequeNumber, ornamentId, depositDate, branchName, transactionId, masterLoanId } = req.body;
+    let { paymentType, paidAmount, bankName, chequeNumber, ornamentId, depositDate, transactionDetails, branchName, transactionId, masterLoanId } = req.body;
     // let createdBy = req.userData.id;
     // let modifiedBy = req.userData.id;
     let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
@@ -312,7 +324,35 @@ exports.ornamentsPartRelease = async (req, res, next) => {
         let addPartRelease;
         let partRelease = await sequelize.transaction(async t => {
             if (['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'UPI', 'gateway'].includes(paymentType)) {
-                let loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: uniqid.time().toUpperCase(), bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "partRelease", depositDate }, { transaction: t });
+                let transactionUniqueId = uniqid.time().toUpperCase();
+                let loanTransaction;
+                let signatureVerification = false;
+                let isRazorPay = false;
+                let razorPayTransactionId;
+                if (paymentType == 'gateway') {
+                    let razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
+                    transactionUniqueId = razerpayData.receipt;
+                    const generated_signature = crypto
+                        .createHmac(
+                            "SHA256",
+                            razorpay.razorPayConfig.key_secret
+                        )
+                        .update(transactionDetails.razorpay_order_id + "|" + transactionDetails.razorpay_payment_id)
+                        .digest("hex");
+                    if (generated_signature == transactionDetails.razorpay_signature) {
+                        signatureVerification = true;
+                        isRazorPay = true;
+                        razorPayTransactionId = transactionDetails.razorpay_order_id;
+                    }
+                    if (signatureVerification == false) {
+                        return res.status(422).json({ message: "razorpay payment verification failed" });
+                    }
+                }
+                if (isRazorPay) {
+                    loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "partRelease", depositDate: moment(depositDate).utcOffset("+05:30").format("YYYY-MM-DD"), razorPayTransactionId }, { transaction: t });
+                } else {
+                    loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "partRelease", depositDate: moment(depositDate).utcOffset("+05:30").format("YYYY-MM-DD") }, { transaction: t });
+                }
                 await models.customerTransactionSplitUp.create({ customerLoanTransactionId: loanTransaction.id, loanId: securedLoanId, masterLoanId, payableOutstanding: securedRatio, penal: securedPenalInterest, interest: securedInterest, loanOutstanding: newSecuredOutstandingAmount }, { transaction: t });
                 if (isUnsecuredSchemeApplied == true) {
                     await models.customerTransactionSplitUp.create({ customerLoanTransactionId: loanTransaction.id, loanId: unsecuredLoanId, masterLoanId, payableOutstanding: unsecuredRatio, penal: unsecuredPenalInterest, interest: unsecuredInterest, loanOutstanding: newUnsecuredOutstandingAmount, isSecured: false }, { transaction: t });
@@ -376,7 +416,7 @@ exports.getPartReleaseList = async (req, res, next) => {
     let includeArray = [{
         model: models.customerLoanTransaction,
         as: 'transaction'
-    },{
+    }, {
         model: models.customerLoanMaster,
         as: 'masterLoan',
         attributes: ['customerId', 'outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
@@ -637,7 +677,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
     let includeArray = [{
         model: models.customerLoanTransaction,
         as: 'transaction'
-    },{
+    }, {
         model: models.customerLoanMaster,
         as: 'masterLoan',
         subQuery: false,
@@ -872,11 +912,11 @@ exports.getPartReleaseNewLonaAmount = async (req, res, next) => {
         where: { id: partReleaseId },
         attributes: ['amountStatus', 'partReleaseStatus', 'masterLoanId', 'newLoanAmount']
     });
-    if(partReleaseData){
-        return res.status(200).json({ newLoanAmount:partReleaseData.newLoanAmount,partReleaseId });
-    }else{
-        return res.status(404).json({ message:"Data not found"});
-    }  
+    if (partReleaseData) {
+        return res.status(200).json({ newLoanAmount: partReleaseData.newLoanAmount, partReleaseId });
+    } else {
+        return res.status(404).json({ message: "Data not found" });
+    }
 }
 
 //Full release 
@@ -920,7 +960,7 @@ exports.getPartReleaseNewLonaAmount = async (req, res, next) => {
 
 
 exports.ornamentsFullRelease = async (req, res, next) => {
-    let { paymentType, paidAmount, bankName, chequeNumber, ornamentId, depositDate, branchName, transactionId, masterLoanId } = req.body;
+    let { paymentType, paidAmount, bankName, chequeNumber, ornamentId, depositDate, branchName, transactionId, masterLoanId, transactionDetails } = req.body;
     // let createdBy = req.userData.id;
     // let modifiedBy = req.userData.id;
     let releaseData = await getAllPartAndFullReleaseData(masterLoanId, ornamentId);
@@ -936,7 +976,35 @@ exports.ornamentsFullRelease = async (req, res, next) => {
         let addFullRelease;
         let fullRelease = await sequelize.transaction(async t => {
             if (['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'UPI', 'gateway'].includes(paymentType)) {
-                let loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: uniqid.time().toUpperCase(), bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "fullRelease", depositDate }, { transaction: t });
+                let transactionUniqueId = uniqid.time().toUpperCase();
+                let loanTransaction;
+                let signatureVerification = false;
+                let isRazorPay = false;
+                let razorPayTransactionId;
+                if (paymentType == 'gateway') {
+                    let razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
+                    transactionUniqueId = razerpayData.receipt;
+                    const generated_signature = crypto
+                        .createHmac(
+                            "SHA256",
+                            razorpay.razorPayConfig.key_secret
+                        )
+                        .update(transactionDetails.razorpay_order_id + "|" + transactionDetails.razorpay_payment_id)
+                        .digest("hex");
+                    if (generated_signature == transactionDetails.razorpay_signature) {
+                        signatureVerification = true;
+                        isRazorPay = true;
+                        razorPayTransactionId = transactionDetails.razorpay_order_id;
+                    }
+                    if (signatureVerification == false) {
+                        return res.status(422).json({ message: "razorpay payment verification failed" });
+                    }
+                }
+                if (isRazorPay) {
+                    loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "fullRelease", depositDate: moment(depositDate).utcOffset("+05:30").format("YYYY-MM-DD"), razorPayTransactionId }, { transaction: t });
+                } else {
+                    loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "fullRelease", depositDate: moment(depositDate).utcOffset("+05:30").format("YYYY-MM-DD") }, { transaction: t });
+                }
                 await models.customerTransactionSplitUp.create({ customerLoanTransactionId: loanTransaction.id, loanId: securedLoanId, masterLoanId, payableOutstanding: securedRatio, penal: securedPenalInterest, interest: securedInterest, loanOutstanding: newSecuredOutstandingAmount }, { transaction: t });
                 if (isUnsecuredSchemeApplied == true) {
                     await models.customerTransactionSplitUp.create({ customerLoanTransactionId: loanTransaction.id, loanId: unsecuredLoanId, masterLoanId, payableOutstanding: unsecuredRatio, penal: unsecuredPenalInterest, interest: unsecuredInterest, loanOutstanding: newUnsecuredOutstandingAmount, isSecured: false }, { transaction: t });
@@ -953,7 +1021,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
         })
         return res.status(200).json({ message: "success", fullRelease });
     } else {
-        return res.status(400).json({ message: "can't proceed further as you have already applied for pat released or full release" });
+        return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
     }
 }
 
@@ -998,7 +1066,7 @@ exports.getFullReleaseList = async (req, res, next) => {
     let includeArray = [{
         model: models.customerLoanTransaction,
         as: 'transaction'
-    },{
+    }, {
         model: models.customerLoanMaster,
         as: 'masterLoan',
         attributes: ['customerId', 'outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
@@ -1257,7 +1325,7 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
     let includeArray = [{
         model: models.customerLoanTransaction,
         as: 'transaction'
-    },{
+    }, {
         model: models.customerLoanMaster,
         as: 'masterLoan',
         attributes: ['customerId', 'outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],

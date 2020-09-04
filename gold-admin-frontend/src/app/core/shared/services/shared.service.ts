@@ -175,6 +175,19 @@ export class SharedService {
 		}
 	}
 
+	//  for quick pay and part payment 
+	paymentGateWay(amount):Observable<any>{
+		return this.http.post(`api/quick-pay/razor-pay`,{amount}).pipe(
+		  map(res=> res)
+		  )
+	  }
+
+	  //  for quick pay and part payment 
+	paymentGateWayForFullAndPart(masterLoanId,ornamentId):Observable<any>{
+		return this.http.post(`api/jewellery-release/razor-pay`,{masterLoanId,ornamentId}).pipe(
+		  map(res=> res)
+		  )
+	  }
 
 
 	soaDownload(masterLoanId): Observable<any> {

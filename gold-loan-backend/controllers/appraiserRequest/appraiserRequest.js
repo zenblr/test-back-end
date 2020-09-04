@@ -5,6 +5,8 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
 const _ = require('lodash');
+let { sendMessageAssignedCustomerToAppraiser, sendMessageCustomerForAssignAppraiser } = require('../../utils/SMS')
+
 
 //FUNCTION TO ADD NEW REQUEST 
 exports.addAppraiserRequest = async (req, res, next) => {
@@ -117,10 +119,17 @@ exports.assignAppraiser = async (req, res) => {
     // let requestId = req.params.id;
     const { id, appraiserId, appoinmentDate, startTime, endTime } = req.body;
     let modifiedBy = req.userData.id;
-
+    let requestInfo = await models.appraiserRequest.findOne({ where: { id: id } });
+    let customerInfo = await models.customer.findOne({ where: { id: requestInfo.customerId } })
+    let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } })
 
     const data = await models.appraiserRequest.update({ appraiserId, appoinmentDate, startTime, endTime, modifiedBy, isAssigned: true }, { where: { id: id } })
-    //console.log(data)
+
+    // await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerUniqueId);
+
+    // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+
+
     if (data.length === 0) {
         return res.status(404).json({ message: "Appraiser not assigned to request" });
     } else {
@@ -129,12 +138,24 @@ exports.assignAppraiser = async (req, res) => {
 }
 
 exports.updateAppraiser = async (req, res) => {
-     let requestId = req.params.id
+    let requestId = req.params.id
     const { id, appraiserId, appoinmentDate, startTime, endTime } = req.body;
     let modifiedBy = req.userData.id;
 
+    let requestInfo = await models.appraiserRequest.findOne({ where: { id: id } });
+    let customerInfo = await models.customer.findOne({ where: { id: requestInfo.customerId } })
+    let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } })
+
     const data = await models.appraiserRequest.update({ appraiserId, appoinmentDate, startTime, endTime, modifiedBy, isAssigned: true }, { where: { id: id } })
     //console.log(data)
+    if (requestInfo.appraiserId != appraiserId) {
+        // await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
+
+        // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+
+    }
+
+
     if (data.length === 0) {
         return res.status(404).json({ message: "Appraiser not assigned to request" });
     } else {

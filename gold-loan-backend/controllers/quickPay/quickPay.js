@@ -9,12 +9,22 @@ const request = require("request");
 const moment = require("moment");
 const CONSTANT = require("../../utils/constant");
 var uniqid = require('uniqid');
+const razorpay = require('../../utils/razorpay');
+let crypto = require('crypto');
 
 
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
 let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getSingleDayInterestAmount, getAmountLoanSplitUpData } = require('../../utils/loanFunction')
+
+exports.razorPayCreateOrder = async (req, res, next) => {
+    let { amount } = req.body;
+    let transactionUniqueId = uniqid.time().toUpperCase();
+    let payableAmount = await amount * 100;
+    let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId}`, payment_capture: 0, notes: "gold loan" });
+    return res.status(200).json({ razorPayOrder, razerPayConfig: razorpay.razorPayConfig.key_id });
+}
 
 //INTEREST TABLE 
 exports.getInterestTable = async (req, res, next) => {
@@ -74,12 +84,11 @@ exports.payableAmountConfirm = async (req, res, next) => {
     return res.status(200).json({ data: loan });
 }
 
-
 exports.quickPayment = async (req, res, next) => {
 
     let createdBy = req.userData.id
 
-    let { paymentDetails, payableAmount, masterLoanId } = req.body;
+    let { paymentDetails, payableAmount, masterLoanId,transactionDetails } = req.body;
     let { bankName, branchName, chequeNumber, depositDate, depositTransactionId, paymentType, transactionId } = paymentDetails
 
     let amount = await getCustomerInterestAmount(masterLoanId);
@@ -89,15 +98,56 @@ exports.quickPayment = async (req, res, next) => {
     if (!['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'UPI', 'gateway'].includes(paymentType)) {
         return res.status(400).json({ message: "Invalid payment type" })
     }
+    let signatureVerification = false;
+    let razorPayTransactionId;
+    let isRazorPay = false;
+    if(paymentType == 'gateway'){
+        let razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
+        transactionUniqueId = razerpayData.receipt;
+        const  generated_signature = crypto
+            .createHmac(
+                "SHA256",
+                razorpay.razorPayConfig.key_secret
+            )
+            .update(transactionDetails.razorpay_order_id + "|" + transactionDetails.razorpay_payment_id)
+            .digest("hex");  
+            if (generated_signature == transactionDetails.razorpay_signature){
+                signatureVerification = true;
+                isRazorPay = true;
+                razorPayTransactionId = transactionDetails.razorpay_order_id;
+            } 
+            if(signatureVerification == false){
+                return res.status(422).json({message:"razorpay payment verification failed"});
+            }
+    }
     let { penalInterest } = await payableAmountForLoan(amount, loan)
     let splitUpAmount = payableAmount - penalInterest
+    if (splitUpAmount <= 0) {
+        let penalInterestRatio = await getAmountLoanSplitUpData(loan, amount, payableAmount)
+        splitUpAmount = 0
+    }
 
-    let { isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest, securedLoanId, unsecuredLoanId } = await getAmountLoanSplitUpData(loan, amount, splitUpAmount)
+
+    let data = await getAmountLoanSplitUpData(loan, amount, splitUpAmount);
+    let { isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedInterest, unsecuredInterest, securedLoanId, unsecuredLoanId } = data
+
+    let securedPenalInterest = 0;
+    let unsecuredPenalInterest = 0;
+    if (splitUpAmount <= 0) {
+        securedPenalInterest = penalInterestRatio.securedRatio
+        unsecuredPenalInterest = penalInterestRatio.unsecuredRatio
+    } else {
+        securedPenalInterest = data.securedPenalInterest
+        unsecuredPenalInterest = data.unsecuredPenalInterest
+    }
 
     paymentDetails.masterLoanId = masterLoanId
     paymentDetails.transactionAmont = payableAmount
-    paymentDetails.depositDate = depositDate
+    paymentDetails.depositDate = moment(depositDate).utcOffset("+05:30").format("YYYY-MM-DD");
     paymentDetails.transactionUniqueId = transactionUniqueId //ye change karna h
+    if(isRazorPay){
+        paymentDetails.razorPayTransactionId = razorPayTransactionId
+    }
     paymentDetails.bankTransactionUniqueId = transactionId
     paymentDetails.depositStatus = "Pending"
     paymentDetails.paymentFor = 'quickPay'
@@ -109,7 +159,7 @@ exports.quickPayment = async (req, res, next) => {
             customerLoanTransactionId: customerLoanTransaction.id,
             loanId: securedLoanId,
             masterLoanId: masterLoanId,
-            penal: securedPenalInterest,
+            penal: securedPenalInterest.toFixed(2),
             interest: securedRatio,
             isSecured: true
         }, { transaction: t })
@@ -119,7 +169,7 @@ exports.quickPayment = async (req, res, next) => {
                 customerLoanTransactionId: customerLoanTransaction.id,
                 loanId: unsecuredLoanId,
                 masterLoanId: masterLoanId,
-                penal: unsecuredPenalInterest,
+                penal: unsecuredPenalInterest.toFixed(2),
                 interest: unsecuredRatio,
                 isSecured: false
             }, { transaction: t })
@@ -226,9 +276,8 @@ exports.confirmationForPayment = async (req, res, next) => {
         })
 
     }
-    return res.status(200).json({ message: "success",payment });
+    return res.status(200).json({ message: "success", payment });
 
 
 
 }
-

@@ -44,15 +44,33 @@
                 <div class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
-                            <div class="offset-1 col-3 form-label">
+                            <div class=" col-3 offset-1  form-label">
                                 <label [class.mandatory]="viewOnly" class="">Full Name</label>
                             </div>
-                            <div class="col-7">
-                                <input type="text" class="form-control" placeholder="Full Name"
+                            <div class="col-4">
+                                <input type="text" class="form-control" placeholder="First Name"
                                     formControlName="firstName"
-                                    value="{{this.data.customerKycReview.firstName | titlecase}} &nbsp;&nbsp;{{this.data.customerKycReview.lastName | titlecase}}"
-                                    readonly />
+                                    value="{{this.data.customerKycReview.firstName | titlecase}}"
+                                    [class.isError]=" controls.firstName.touched && controls.firstName.invalid " />
+                                <mat-error *ngIf=" controls.firstName.errors?.required && controls.firstName.touched ">
+                                    Required field
+                                </mat-error>
                             </div>
+                            <div class=" col-4">
+                                <input type="text" aria-label="Last name" placeholder="Last Name" ktAlphabets
+                                    class="form-control" formControlName="lastName"
+                                    value="{{this.data.customerKycReview.lastName | titlecase}}" [class.isError]="
+                                        controls.lastName.touched &&
+                                        controls.lastName.invalid
+                                    " />
+                                <mat-error *ngIf="
+                                        controls.lastName.errors?.required &&
+                                        controls.lastName.touched
+                                    ">
+                                    Required field
+                                </mat-error>
+                            </div>
+
                         </div>
                     </div>
                     <div class="col-6">
@@ -93,8 +111,7 @@
                                     <div [ngClass]="viewOnly ? 'col-8': 'col'">
                                         <input type="text" class="form-control" placeholder="PAN"
                                             formControlName="panCardNumber"
-                                            value="{{ this.data.customerKycReview.panCardNumber | uppercase }}"
-                                            readonly />
+                                            value="{{ this.data.customerKycReview.panCardNumber | uppercase }}" />
 
                                     </div>
                                     <div class="col pl-0" *ngIf="viewOnly">
