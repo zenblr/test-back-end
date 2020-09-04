@@ -133,13 +133,13 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
 
         let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, customerKycCurrentStage: "2" }, { transaction: t })
 
-        await models.customer.update({ panCardNumber: panCardNumber, panType, panImage }, { where: { id: getCustomerInfo.id }, transaction: t })
+        await models.customer.update({ firstName: firstName, lastName: lastName, panCardNumber: panCardNumber, panType, panImage }, { where: { id: getCustomerInfo.id }, transaction: t })
 
         let createCustomerKyc = await models.customerKycPersonalDetail.create({
             customerId: getCustomerInfo.id,
             customerKycId: customerKycAdd.id,
-            firstName: getCustomerInfo.firstName,
-            lastName: getCustomerInfo.lastName,
+            firstName: firstName,
+            lastName: lastName,
             panCardNumber: panCardNumber,
             createdBy,
             modifiedBy
@@ -300,7 +300,7 @@ exports.submitAllKycInfo = async (req, res, next) => {
     // if (check.isEmpty(findCustomerKyc)) {
     //     return res.status(404).json({ message: "This customer kyc detailes is not filled." });
     // }
-    let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: {  customerId:{[Op.not]:customerId}, identityProofNumber: customerKycPersonal.identityProofNumber } });
+    let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { customerId: { [Op.not]: customerId }, identityProofNumber: customerKycPersonal.identityProofNumber } });
     if (!check.isEmpty(findIdentityNumber)) {
         return res.status(400).json({ message: "Identity Proof Number already exists! " })
     }
