@@ -103,7 +103,8 @@ export class TopbarComponent implements OnInit {
 	sortImg = "../../../../../assets/media/icons/sort.svg";
 	sortType: number = 1;
 	sortFlag: boolean = false;
-	notTitleCase: boolean =false;
+	notTitleCase: boolean = false;
+	showSubHeader: boolean;
 
 	constructor(
 		public sharedService: SharedService,
@@ -163,6 +164,7 @@ export class TopbarComponent implements OnInit {
 		this.router.events.subscribe(val => {
 			this.reset()
 			this.setTopbar(location.path())
+			this.checkForSubHeader()
 		})
 
 		this.walletPriceService.download$
@@ -189,11 +191,18 @@ export class TopbarComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.packetService.disableBtn$.pipe(takeUntil(this.destroy$)).subscribe(res => this.isDisabled = res)
 		this.setTopbar(this.router.url);
+		this.checkForSubHeader()
+
 	}
 
 	ngAfterViewInit(): void {
+
+
+		this.packetService.disableBtn$.pipe(
+			takeUntil(this.destroy$)
+		).subscribe(res => this.isDisabled = res)
+
 		this.subscriptions.push(
 			this.sharedService.totalCount$
 				.pipe(takeUntil(this.destroy$))
@@ -247,6 +256,17 @@ export class TopbarComponent implements OnInit {
 	 */
 	ngOnDestroy(): void {
 		this.subscriptions.forEach((sb) => sb.unsubscribe());
+	}
+
+	checkForSubHeader() {
+		if (this.showInput || this.rightButton || this.showDropdown || this.value4 || this.downloadbtn || this.toogle || this.showfilter || this.sortFlag) {
+			this.showSubHeader = true;
+			this.sharedService.isSubHeaderVisible.next(true)
+		} else {
+			this.showSubHeader = false;
+			this.sharedService.isSubHeaderVisible.next(false)
+
+		}
 	}
 
 	reset() {
@@ -305,7 +325,7 @@ export class TopbarComponent implements OnInit {
 			this.value2 = "Add Ornaments";
 			this.type2 = "button";
 			this.rightButton = true;
-			this.permissionType = "addOrnament";
+			this.permissionType = "addOrnamentType";
 		}
 		if (this.path == "reasons") {
 			this.value2 = "Add Reason";
@@ -368,9 +388,9 @@ export class TopbarComponent implements OnInit {
 			this.showfilter = false;
 			this.showInput = true;
 		}
-		if(location.href.includes('loan-details/')){
+		if (location.href.includes('loan-details/')) {
 			this.rightButton = true;
-			this.notTitleCase=true;
+			this.notTitleCase = true;
 			this.value2 = "Generate S.O.A.";
 			this.type2 = "button";
 		}
@@ -695,6 +715,15 @@ export class TopbarComponent implements OnInit {
 			this.showBackButton = true;
 		}
 		if (location.href.includes('/repayment/interest-emi/')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/loan-management/loan-application-form?customerID=')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/admin/loan-management/loan-transfer?customerID=')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/admin/loan-management/loan-application-form?transferLoanCustomerID=')) {
 			this.showBackButton = true;
 		}
 		if (this.path == 'standard-deduction') {

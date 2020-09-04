@@ -1,5 +1,5 @@
 const express = require('express');
-const { partReleaseApplyLoan,getFullReleaseList,uploadDocument,updateAppraiser,updatePartReleaseStatus,partReleaseApprovedList,partReleaseAssignAppraiser,ornamentsDetails, ornamentsAmountDetails,ornamentsPartRelease,getPartReleaseList,updateAmountStatus,getCustomerDetails,ornamentsFullRelease,updateAmountStatusFullRelease,fullReleaseAssignReleaser,updateReleaser,getFullReleaseApprovedList,updatePartReleaseReleaserStatus,uploadDocumentFullRelease } = require('../controllers/jewelleryRelease/jewelleryRelease');
+const { partReleaseApplyLoan,getFullReleaseList,uploadDocument,updateAppraiser,updatePartReleaseStatus,partReleaseApprovedList,partReleaseAssignAppraiser,ornamentsDetails, ornamentsAmountDetails,ornamentsPartRelease,getPartReleaseList,updateAmountStatus,getCustomerDetails,ornamentsFullRelease,updateAmountStatusFullRelease,fullReleaseAssignReleaser,updateReleaser,getFullReleaseApprovedList,updatePartReleaseReleaserStatus,uploadDocumentFullRelease,getPartReleaseNewLonaAmount } = require('../controllers/jewelleryRelease/jewelleryRelease');
 const route = express.Router();
 const { partReleaseValidation,partReleasePayment,amountStatusValidation,documentValidation, assignAppriserValidation,documentValidationFullRelease,fullReleaseValidation,assignReleaserValidationFullRelease,
 amountStatusValidationfullRelease,fullReleasePayment } = require('../validations/jewelleryRelease');
@@ -16,6 +16,8 @@ route.get('/full-release',checkAuth,checkRolePermission,wrapper(getFullReleaseLi
 route.get('/part-release-approved_list',checkAuth,checkRolePermission,wrapper(partReleaseApprovedList));
 
 route.get('/full-release-approved_list',checkAuth,checkRolePermission,wrapper(getFullReleaseApprovedList));
+
+route.get('/apply-loan', checkAuth, wrapper(getPartReleaseNewLonaAmount)); 
 
 route.get('/apply-loan/:customerUniqueId', checkAuth, wrapper(partReleaseApplyLoan)); 
 

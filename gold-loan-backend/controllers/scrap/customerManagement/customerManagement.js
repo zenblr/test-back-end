@@ -277,6 +277,12 @@ exports.getsingleCustomerManagement = async (req, res) => {
                         model: models.customerScrapDisbursement,
                         as: 'scrapDisbursement',
                         attributes: ['date']
+                    },
+                    {
+                        model: models.customerScrapBankDetails,
+                        as: 'scrapBankDetails',
+                        where: { isActive: true },
+                        attributes: ['id', 'scrapId', 'paymentType', 'bankName', 'bankBranch', 'acHolderName', 'acNumber', 'ifscCode', 'passbookProof', 'isActive']
                     }
                 ] 
                 

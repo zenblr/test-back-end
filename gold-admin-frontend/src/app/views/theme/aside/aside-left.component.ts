@@ -130,7 +130,6 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 			// hide the left aside menu
 			this.render.removeClass(document.body, 'kt-aside--minimize-hover');
 		}
-
 	}
 
 	/**

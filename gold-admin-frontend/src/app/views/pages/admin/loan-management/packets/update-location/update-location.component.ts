@@ -165,7 +165,13 @@ export class UpdateLocationComponent implements OnInit {
   }
 
   getDetailsByMobile() {
-    if (this.locationForm.controls.mobileNumber.invalid || this.locationForm.controls.receiverType.invalid) return
+    if (this.locationForm.controls.mobileNumber.invalid || this.locationForm.controls.receiverType.invalid) {
+      if (this.locationForm.controls.otp.value) {
+        this.locationForm.controls.otp.reset()
+        this.otpVerfied = false
+      }
+      return
+    }
     const mobileNumber = this.locationForm.controls.mobileNumber.value
     const receiverType = this.locationForm.controls.receiverType.value
 
@@ -270,6 +276,7 @@ export class UpdateLocationComponent implements OnInit {
     this.locationForm.controls.referenceCode.patchValue(null);
     this.locationForm.controls.mobileNumber.patchValue(null);
     this.locationForm.controls.user.patchValue(null);
+    this.otpVerfied = false
   }
 
   verifyBarcode(index) {

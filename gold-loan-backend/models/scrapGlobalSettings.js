@@ -26,6 +26,14 @@ module.exports = (sequelize, DataTypes) => {
             field: 'gst',
             allowNull: false,
         },
+        standardDeductionMin: {
+            type: DataTypes.STRING,
+            field: 'standard_deduction_min',
+        },
+        standardDeductionMax: {
+            type: DataTypes.STRING,
+            field: 'standard_deduction_max',
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by',

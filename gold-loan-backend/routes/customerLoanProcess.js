@@ -59,7 +59,7 @@ route.get('/get-print-details', checkAuth, wrapper(getDetailsForPrint)); //Print
 
 route.get('/get-loan-ornamets', checkAuth, wrapper(getLoanOrnaments)) //GET LOAN ORNAMENTS
 
-// backoffice app 
+// appraiseApp 
 route.post('/loan-request', checkAuth, wrapper(loanRequest)); //apply loan for backoffice app 
 
 module.exports = route; // EXPORTING ALL ROUTES

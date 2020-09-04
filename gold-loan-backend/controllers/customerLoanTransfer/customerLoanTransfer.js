@@ -3,6 +3,7 @@ const models = require('../../models');
 const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
+const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
 const loanTransferHistory = require('../../utils/customerLoanTransferHistory')
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
@@ -10,30 +11,36 @@ const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB
 
 exports.customerDetails = async (req, res, next) => {
 
-    let customerUniqueId = req.params.customerUniqueId;
+    let appraiserRequestId = req.params.customerUniqueId;
     let reqId = req.userData.id;
-    let getCustomer = await models.customer.findOne({ where: { customerUniqueId } })
+    let getAppraiserRequest = await models.appraiserRequest.findOne({ where: { id: appraiserRequestId, appraiserId: reqId } });
+
+    if (check.isEmpty(getAppraiserRequest)) {
+        return res.status(400).json({ message: `This customer is not assign to you` })
+    }
+
+    let getCustomer = await models.customer.findOne({ where: { id: getAppraiserRequest.customerId } })
 
     if (getCustomer.kycStatus != "approved") {
         return res.status(400).json({ message: 'This customer Kyc is not completed' })
     }
-    let getAppraiserId = await models.customerAssignAppraiser.findOne({ where: { customerId: getCustomer.id } })
 
-    if (check.isEmpty(getAppraiserId)) {
-        return res.status(400).json({ message: 'This customer Did not assign in to anyone' })
-    }
-    if (reqId != getAppraiserId.appraiserId) {
-        return res.status(400).json({ message: `This customer is not assign to you` })
-    }
+
+    // if (check.isEmpty(getAppraiserId)) {
+    //     return res.status(400).json({ message: 'This customer Did not assign in to anyone' })
+    // }
+    // if (reqId != getAppraiserId.appraiserId) {
+    //     return res.status(400).json({ message: `This customer is not assign to you` })
+    // }
 
     let customerData = await models.customer.findOne({
-        where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
+        where: { customerUniqueId: getCustomer.customerUniqueId, isActive: true, kycStatus: 'approved' },
         attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
 
     })
 
     let customerLoanStage = await models.customerLoanMaster.findOne({
-        where: { customerId: customerData.id, isLoanSubmitted: false },
+        where: { customerId: customerData.id, appraiserRequestId: appraiserRequestId, isLoanSubmitted: false },
         include: [{
             model: models.customerLoanTransfer,
             as: "loanTransfer",
@@ -63,23 +70,31 @@ exports.customerDetails = async (req, res, next) => {
 }
 
 exports.loanTransferBasicDeatils = async (req, res, next) => {
-    let { customerId, customerUniqueId, kycStatus, startDate, masterLoanId } = req.body
+    let { customerId, customerUniqueId, kycStatus, startDate, masterLoanId, requestId } = req.body
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let stageId = await models.loanStage.findOne({ where: { name: 'loan transfer' } })
 
     if (masterLoanId != null) {
-        let customerLoanMaster = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
+        let customerLoanMaster = await models.customerLoanMaster.findOne({ where: { id: masterLoanId, appraiserRequestId: requestId } })
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanMaster.id, loanType: 'secured' } })
         if (!check.isEmpty(customerLoanMaster)) {
             return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanMaster.id, loanCurrentStage: '2' })
         }
     }
     let loanData = await sequelize.transaction(async t => {
+        await models.appraiserRequest.update({ status: 'complete' }, { where: { id: requestId }, transaction: t })
+
+
+
         let createLoanTransfer = await models.customerLoanTransfer.create({ loanTransferCurrentStage: '2', createdBy, modifiedBy }, { transaction: t });
+
         await models.customerLoanTransferHistory.create({ loanTransferId: createLoanTransfer.id, action: loanTransferHistory.BASIC_DETAILS_SUBMIT, createdBy, modifiedBy }, { transaction: t })
-        let masterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, customerLoanCurrentStage: '1', createdBy, modifiedBy, loanTransferId: createLoanTransfer.id, isLoanTransfer: true }, { transaction: t })
+
+        let masterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, customerLoanCurrentStage: '1', createdBy, modifiedBy, internalBranchId: req.userData.internalBranchId, loanTransferId: createLoanTransfer.id, appraiserRequestId: requestId, isLoanTransfer: true }, { transaction: t })
+
         let loan = await models.customerLoan.create({ customerId, masterLoanId: masterLoan.id, loanType: 'secured', createdBy, modifiedBy }, { transaction: t })
+
         await models.customerLoanPersonalDetail.create({ loanId: loan.id, masterLoanId: masterLoan.id, customerUniqueId, startDate, kycStatus, createdBy, modifiedBy }, { transaction: t })
         return loan
     })
@@ -132,6 +147,9 @@ exports.loanTransferAppraiserRating = async (req, res, next) => {
     });
     await sequelize.transaction(async t => {
         if (masterLoan.loanTransfer.loanTransferStatusForBM == "incomplete" || masterLoan.loanTransfer.loanTransferStatusForBM == "pending" || masterLoan.loanTransfer.loanTransferStatusForAppraiser == "pending" || masterLoan.loanTransfer.loanTransferStatusForAppraiser == "incomplete") {
+            await models.appraiserRequest.update({ isProcessComplete: true }, { where: { id: masterLoan.appraiserRequestId }, transaction: t })
+
+
             if (loanTransferStatusForAppraiser == "approved") {
                 await models.customerLoanTransfer.update({ loanTransferStatusForAppraiser, modifiedBy, reasonByAppraiser, loanTransferCurrentStage: '4' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.APPRAISER_RATING_APPROVED, createdBy, modifiedBy }, { transaction: t })
@@ -282,8 +300,9 @@ exports.getLoanTransferList = async (req, res, next) => {
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
-    if (req.userData.userTypeId != 4) {
-        internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
+        // internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+        internalBranchWhere = { isActive: true }
     } else {
         internalBranchWhere = { isActive: true }
     }
@@ -310,7 +329,7 @@ exports.getLoanTransferList = async (req, res, next) => {
         where: searchQuery,
         subQuery: false,
         include: associateModel,
-        attributes: ['loanTransferId', 'isLoanSubmitted', 'loanStatusForAppraiser'],
+        attributes: ['loanTransferId', 'isLoanSubmitted', 'loanStatusForAppraiser', 'appraiserRequestId'],
         order: [
             [models.customerLoan, 'id', 'asc'],
             ['id', 'DESC']
@@ -332,30 +351,29 @@ exports.getLoanTransferList = async (req, res, next) => {
 
 exports.customerDetailsLoanTransfer = async (req, res, next) => {
 
-    let customerUniqueId = req.params.customerUniqueId;
+
+    let appraiserRequestId = req.params.customerUniqueId;
     let reqId = req.userData.id;
-    let getCustomer = await models.customer.findOne({ where: { customerUniqueId } })
+    let getAppraiserRequest = await models.appraiserRequest.findOne({ where: { id: appraiserRequestId, appraiserId: reqId } });
+
+    if (check.isEmpty(getAppraiserRequest)) {
+        return res.status(400).json({ message: `This customer is not assign to you` })
+    }
+
+    let getCustomer = await models.customer.findOne({ where: { id: getAppraiserRequest.customerId } })
 
     if (getCustomer.kycStatus != "approved") {
         return res.status(400).json({ message: 'This customer Kyc is not completed' })
     }
-    let getAppraiserId = await models.customerAssignAppraiser.findOne({ where: { customerId: getCustomer.id } })
-
-    if (check.isEmpty(getAppraiserId)) {
-        return res.status(400).json({ message: 'This customer Did not assign in to anyone' })
-    }
-    if (reqId != getAppraiserId.appraiserId) {
-        return res.status(400).json({ message: `This customer is not assign to you` })
-    }
 
     let customerData = await models.customer.findOne({
-        where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
+        where: { customerUniqueId: getCustomer.customerUniqueId, isActive: true, kycStatus: 'approved' },
         attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
 
     })
 
     let customerLoanStage = await models.customerLoanMaster.findOne({
-        where: { customerId: customerData.id, isLoanTransfer: true, isLoanSubmitted: false },
+        where: { customerId: customerData.id, appraiserRequestId: appraiserRequestId, isLoanTransfer: true, isLoanSubmitted: false },
         include: [{
             model: models.customerLoanTransfer,
             as: "loanTransfer",

@@ -25,7 +25,7 @@ exports.getOtp = async (req, res, next) => {
 }
 
 exports.addCustomer = async (req, res, next) => {
-  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId, source, panType, panImage, leadSourceId } = req.body;
+  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId, source, panType, panImage, leadSourceId, moduleId } = req.body;
   // cheanges needed here
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
@@ -52,9 +52,12 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, panImage, leadSourceId },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId },
       { transaction: t }
     );
+
+    await models.appraiserRequest.create({ customerId: customer.id, moduleId, createdBy, modifiedBy }, { transaction: t })
+
   });
   return res.status(200).json({ messgae: `Customer created` });
 };
@@ -158,8 +161,7 @@ exports.editCustomer = async (req, res, next) => {
   let modifiedBy = req.userData.id;
   const { customerId } = req.params;
 
-  let { cityId, stateId, pinCode, internalBranchId, statusId, comment, source, panType, panImage, leadSourceId } = req.body;
-
+  let { cityId, stateId, pinCode, internalBranchId, statusId, comment, source, panType, panImage, leadSourceId, moduleId } = req.body;
   let { id } = await models.status.findOne({ where: { statusName: "confirm" } })
 
   let customerExist = await models.customer.findOne({ where: { id: customerId } });
@@ -282,14 +284,10 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     attributes: ['id', 'leadName'],
   },
   {
-    model: models.customerAssignAppraiser,
-    as: "customerAssignAppraiser",
-    include: [{
-      model: models.user,
-      as: "appraiser",
-      attributes: ['id', 'firstName', 'lastName']
-    }]
-  },
+    model: models.module,
+    as: 'module',
+    attributes: ['id', 'moduleName']
+  }
 
   ]
   let internalBranchId = req.userData.internalBranchId

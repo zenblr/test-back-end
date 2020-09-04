@@ -27,8 +27,8 @@ var server = http.createServer(app);
 
 var models = require('../models');
 
-models.sequelize.sync().then(function() {
-    server.listen(port, function() {
+models.sequelize.authenticate().then(function () {
+    server.listen(port, function () {
         debug('Express server listening on port ' + server.address().port);
     });
     server.on('error', onError);

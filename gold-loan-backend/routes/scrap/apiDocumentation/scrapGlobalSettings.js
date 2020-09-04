@@ -26,12 +26,18 @@
  *               type: number
  *             gst:
  *               type: number
+ *             standardDeductionMin:
+ *               type: number
+ *             standardDeductionMax:
+ *               type: number
  *         required:
  *           - ltvGoldValue
  *           - cashTransactionLimit
  *           - processingChargesFixed
  *           - processingChargesInPercent
  *           - gst
+ *           - standardDeductionMin
+ *           - standardDeductionMax
  *     responses:
  *       200:
  *          description: success

@@ -23,7 +23,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="col-6" *ngIf="bankForm">
+                <div class="col-6" *ngIf="bankForm && scrapIds">
                     <div class="row kt-margin-t-15">
                         <div class="col-4 form-label">
                             <label class="text-color mandatory my-auto">Final Scrap Amount</label>
@@ -33,7 +33,7 @@
                                 formControlName="finalScrapAmountAfterMelting" readonly>
                         </div>
                     </div>
-                </div> -->
+                </div>
 
             </div>
             <span *ngIf="controls.paymentType.value != 'cash'">
