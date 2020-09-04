@@ -12,6 +12,8 @@ import { FullReleaseFinalDatasource } from '../../../../../../core/funds-approva
 import { FullReleaseFinalService } from '../../../../../../core/funds-approvals/jewellery-release-final/full-release-final/services/full-release-final.service';
 import { UpdateStatusComponent } from '../../update-status/update-status.component';
 import { Router } from '@angular/router';
+import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
 
 @Component({
   selector: 'kt-full-release-final',
@@ -21,7 +23,7 @@ import { Router } from '@angular/router';
 export class FullReleaseFinalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'appointmentDate', 'appointmentTime', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'principalOutstandingAmountLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'updateStatus'];
+  displayedColumns = ['customerId', 'loanId', 'appointmentDate', 'appointmentTime', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'principalOutstandingAmountLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'view', 'updateStatus'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -103,4 +105,41 @@ export class FullReleaseFinalComponent implements OnInit {
     this.router.navigate([`admin/funds-approvals/upload-document/fullRelease/${item.id}`])
   }
 
+  view(value) {
+    // this.dialog.open(ImagePreviewDialogComponent, {
+    //   data: {
+    //     images: [value],
+    //     index: 0,
+    //     modal: false
+    //   },
+    //   width: "75%",
+    //   height: "75%"
+    // })
+
+    var ext = value.split('.')
+    if (ext[ext.length - 1] == 'pdf') {
+
+      this.dialog.open(PdfViewerComponent, {
+        data: {
+          pdfSrc: value,
+          page: 1,
+          showAll: true
+        },
+        width: "80%"
+      })
+
+    } else {
+      this.dialog.open(ImagePreviewDialogComponent, {
+        data: {
+          images: [value],
+          index: 0,
+          modal: false
+        },
+        maxWidth: "75%",
+        width: "auto",
+        // maxHeight: '85%',
+        height: "75%",
+      })
+    }
+  }
 }

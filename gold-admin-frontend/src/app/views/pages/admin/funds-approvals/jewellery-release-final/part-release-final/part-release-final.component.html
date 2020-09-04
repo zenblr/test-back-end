@@ -113,6 +113,16 @@
                     </mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="view">
+                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        <div *ngIf="item.documentsImages?.length" class="kt-pointer"
+                            (click)="view(item.documentsImages[0])">
+                            View
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="updateStatus">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let item">
