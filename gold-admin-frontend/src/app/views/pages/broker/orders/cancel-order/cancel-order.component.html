@@ -160,9 +160,6 @@
                         <div class="col-4">
                             <input class="form-control" formControlName="ifscCode" type="text" maxlength="11"
                                 [class.isError]="controls.ifscCode.touched && controls.ifscCode.invalid">
-                             <mat-error *ngIf="controls.ifscCode.errors?.maxlength && controls.ifscCode.touched">
-                                Maximum 11 digits Only
-                            </mat-error>
                             <mat-error *ngIf="controls.ifscCode.errors?.required && controls.ifscCode.touched">
                                 Required field
                             </mat-error>

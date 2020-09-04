@@ -21,7 +21,7 @@ export class CheckoutCustomerComponent implements OnInit {
   stateList = [];
   cityList = [];
   shippingCityList = [];
-  kycRequired: boolean;
+  customerKyc: any;
   showformFlag = false;
   showPlaceOrderFlag = false;
   showNumberSearchFlag = true;
@@ -77,6 +77,7 @@ export class CheckoutCustomerComponent implements OnInit {
       panCardNumber: ['', Validators.compose([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])],
       nameOnPanCard: ['', Validators.compose([Validators.required, Validators.pattern("^[a-zA-Z ]*$")])],
       panCardFileId: [''],
+      kycRequired: [false],
     });
     this.setPanDetailsValidators();
 
@@ -105,9 +106,8 @@ export class CheckoutCustomerComponent implements OnInit {
     const nameOnPanCardControl = this.checkoutCustomerForm.get('nameOnPanCard');
     const panCardFileIdControl = this.checkoutCustomerForm.get('panCardFileId');
 
-    this.shoppingCartService.getCheckoutCart().subscribe((val) => {
-      if(val.kycRequired){
-    
+    this.checkoutCustomerForm.get('kycRequired').valueChanges.subscribe((val) => {
+      if(val){
         panCardNumberControl.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]);
         nameOnPanCardControl.setValidators([Validators.required]);
         panCardFileIdControl.setValidators([Validators.required]);
@@ -132,6 +132,7 @@ export class CheckoutCustomerComponent implements OnInit {
         this.checkoutData = res;
         this.shoppingCartService.orderVerifyBlock(blockData).subscribe();
         this.controls['kycRequired'].patchValue(this.checkoutData.kycRequired);
+        this.customerKyc = this.checkoutData.kycRequired;
       }
     },
       error => {
@@ -144,18 +145,14 @@ export class CheckoutCustomerComponent implements OnInit {
   checkCustomerType(type) {
     this.existingCustomerData = null;
     this.finalOrderData = null;
-    // this.numberSearchForm.reset();
     this.checkoutCustomerForm.reset();
-    this.shoppingCartService.getCheckoutCart().subscribe(res => {
-      console.log(res);
-      this.kycRequired = res.kycRequired;
-      
-    });
-    this.otpForm.controls.otp.reset();
+    this.otpForm.reset();
+    this.otpForm.controls['paymentMode'].patchValue('');
     this.controls['stateName'].patchValue('');
     this.controls['cityName'].patchValue('');
     this.controls['shippingStateName'].patchValue('');
     this.controls['shippingCityName'].patchValue('');
+    this.controls['kycRequired'].patchValue(this.customerKyc);
 
     if (type == 'new') {
       this.showformFlag = true;
