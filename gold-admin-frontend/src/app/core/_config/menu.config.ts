@@ -864,12 +864,12 @@ export class MenuConfig {
 									page: "/admin/scrap-management/global-settings",
 									permission: !this.permissionsArr.includes('viewScrapGlobalSetting')
 								},
-								{
-									title: "Standard Deduction",
-									root: true,
-									permission: !this.permissionsArr.includes('viewStandardDeduction'),
-									page: "/admin/scrap-management/standard-deduction"
-								},
+								// {
+								// 	title: "Standard Deduction",
+								// 	root: true,
+								// 	permission: !this.permissionsArr.includes('viewStandardDeduction'),
+								// 	page: "/admin/scrap-management/standard-deduction"
+								// },
 							]
 						},
 						{

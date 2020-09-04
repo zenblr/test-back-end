@@ -318,9 +318,9 @@ exports.addCustomerPacketTracking = async (req, res) => {
     });
 
     if (packetTrackingData) {
-        return res.status(200).json({ message: 'Loaction Added' });
+        return res.status(200).json({ message: 'Location Added' });
     } else {
-        return res.status(400).json({ message: 'Loaction not added' });
+        return res.status(400).json({ message: 'Location not added' });
     }
 }
 

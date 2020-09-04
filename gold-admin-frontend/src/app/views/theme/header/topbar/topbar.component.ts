@@ -325,7 +325,7 @@ export class TopbarComponent implements OnInit {
 			this.value2 = "Add Ornaments";
 			this.type2 = "button";
 			this.rightButton = true;
-			this.permissionType = "addOrnament";
+			this.permissionType = "addOrnamentType";
 		}
 		if (this.path == "reasons") {
 			this.value2 = "Add Reason";
