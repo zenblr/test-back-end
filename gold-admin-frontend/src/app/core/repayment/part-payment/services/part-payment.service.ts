@@ -39,8 +39,8 @@ export class PartPaymentService {
     )
   }
 
-  confirmPayment(masterLoanId, paidAmount, paymentDetails): Observable<any> {
-    return this.http.post(`/api/part-payment/payment`, { masterLoanId, paidAmount, paymentDetails }).pipe(
+  confirmPayment(data): Observable<any> {
+    return this.http.post(`/api/part-payment/payment`, data).pipe(
       map(res => res)
     )
   }
@@ -50,5 +50,7 @@ export class PartPaymentService {
       map(res => res)
     )
   }
+
+  
 
 }
