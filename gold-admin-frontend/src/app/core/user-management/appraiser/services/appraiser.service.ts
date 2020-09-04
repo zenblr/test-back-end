@@ -24,7 +24,7 @@ export class AppraiserService {
     )
   }
   assignAppraiser(value): Observable<any> {
-    return this.http.post(`/api/assign-appraiser`, value).pipe(
+    return this.http.post(`/api/appraiser-request/assign-appraiser`, value).pipe(
       map(res => res),
       catchError((err) => {
         if (err.error.message) {
@@ -34,8 +34,8 @@ export class AppraiserService {
       }))
   }
 
-  updateAppraiser(id, value): Observable<any> {
-    return this.http.put(`/api/assign-appraiser/${id}`, value).pipe(
+  updateAppraiser(value): Observable<any> {
+    return this.http.put(`/api/appraiser-request/update-appraiser`, value).pipe(
       map(res => res),
       catchError((err) => {
         if (err.error.message) {

@@ -8,12 +8,13 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class DepositService {
+  applyFilter = new BehaviorSubject<any>({});
+  applyFilter$ = this.applyFilter.asObservable();
 
   openModal = new BehaviorSubject<any>(false);
   openModal$ = this.openModal.asObservable();
 
-  applyFilter = new BehaviorSubject<any>({});
-  applyFilter$ = this.applyFilter.asObservable();
+ 
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 

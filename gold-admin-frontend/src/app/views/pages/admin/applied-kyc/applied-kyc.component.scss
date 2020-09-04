@@ -1,7 +1,7 @@
 
 :host {
 	mat-row, mat-header-row {
-		width: 130%;
+		width: 100%;
 	}
 	.mat-column-fullName {
         // flex: 0 0 15% !important;
@@ -34,4 +34,11 @@
 	// .mat-column-customerId {
 	// 	flex: 0 0 10% !important;
 	// }
+	.custom-icon {
+		position: relative;
+		top: 6px;
+		color: gray;
+	 }
+	 
+	 
 }

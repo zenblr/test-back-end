@@ -35,6 +35,7 @@ export class BaseComponent implements OnInit, OnDestroy {
 
 	// Private properties
 	private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
+	isHeaderVisible: boolean;
 
 	constructor(
 		private layoutConfigService: LayoutConfigService,
@@ -92,6 +93,10 @@ export class BaseComponent implements OnInit, OnDestroy {
 				this.ref.detectChanges();
 			})).subscribe();
 		}
+
+		this.sharedService.isSubHeaderVisible$.subscribe(res=>{
+			this.isHeaderVisible = res
+		})
 	}
 
 	ngOnDestroy(): void {

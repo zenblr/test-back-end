@@ -7,42 +7,51 @@ const check = require("../../../lib/checkLib"); // IMPORTING CHECKLIB
 const moment = require('moment');
 var pdf = require("pdf-creator-node"); // PDF CREATOR PACKAGE
 var fs = require('fs');
+const { VIEW_ALL_CUSTOMER } = require('../../../utils/permissionCheck')
+
 
 const { BASIC_DETAILS_SUBMIT, CUSTOMER_ACKNOWLEDGEMENT, ORNAMENTES_DETAILS, ORNAMENTES_MELTING_DETAILS, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, SCRAP_DOCUMENTS, SCRAP_DISBURSEMENT, PROCESS_COMPLETED } = require('../../../utils/customerScrapHistory')
 
 //  FUNCTION FOR GET CUSTOMER DETAILS AFTER ENTER UNIQUE ID DONE
 exports.customerDetails = async (req, res, next) => {
     let customerUniqueId = req.params.customerUniqueId;
-    let reqId = req.userData.id;
-    let getAppraiserId = await models.customerAssignAppraiser.findOne({ where: { customerUniqueId } })
 
-    if (check.isEmpty(getAppraiserId)) {
-        return res.status(400).json({ message: 'This customer Did not assign in to anyone' })
-    }
-    if (reqId != getAppraiserId.appraiserId) {
+    let appraiserRequestId = req.params.customerUniqueId;
+    let reqId = req.userData.id;
+    let getAppraiserRequest = await models.appraiserRequest.findOne({ where: { id: appraiserRequestId, appraiserId: reqId } });
+
+    if (check.isEmpty(getAppraiserRequest)) {
         return res.status(400).json({ message: `This customer is not assign to you` })
     }
 
-    let incompleteStageId = await models.scrapStage.findOne({ where: { stageName: "incomplete" } });
-    let completedStageId = await models.scrapStage.findOne({ where: { stageName: "completed" } });
+    let getCustomer = await models.customer.findOne({ where: { id: getAppraiserRequest.customerId } })
+
+    if (getCustomer.kycStatus != "approved") {
+        return res.status(400).json({ message: 'This customer Kyc is not completed' })
+    }
+
 
     let customerData = await models.customer.findOne({
-        where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
+        where: { customerUniqueId: getCustomer.customerUniqueId, isActive: true, kycStatus: 'approved' },
         attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
 
     })
 
+    let disbursedPendingId = await models.loanStage.findOne({ where: { name: 'disbursement pending' } })
+    let bmRatingId = await models.loanStage.findOne({ where: { name: 'bm rating' } })
+    let opsRatingId = await models.loanStage.findOne({ where: { name: 'OPS team rating' } })
+
+    let incompleteStageId = await models.scrapStage.findOne({ where: { stageName: "incomplete" } });
+    let completedStageId = await models.scrapStage.findOne({ where: { stageName: "completed" } });
+
     let customerScrapStage = await models.customerScrap.findOne({
-        where: { customerId: customerData.id, isScrapSubmitted: false, scrapStageId: { [Op.notIn]: [incompleteStageId.id,completedStageId.id ] }, },
+        where: { customerId: customerData.id,appraiserRequestId: appraiserRequestId, isScrapSubmitted: false, scrapStageId: { [Op.notIn]: [incompleteStageId.id,completedStageId.id ] }, },
         include: [{
             model: models.customer,
             as: 'customer'
         }]
     });
-    console.log(customerScrapStage);
-   
 
-    
     if (!check.isEmpty(customerScrapStage)) {
 
         // if (customerScrapStage.scrapStageId == incompleteStageId.id ) {
@@ -52,6 +61,18 @@ exports.customerDetails = async (req, res, next) => {
         //     return res.status(200).json({ message: 'customer details fetch successfully', customerData });
         // }
         
+        let { scrapStatusForAppraiser, scrapStatusForBM, scrapStatusForOperatinalTeam } = customerScrapStage;
+        if (scrapStatusForAppraiser != 'rejected' || scrapStatusForBM != 'rejected' || scrapStatusForOperatinalTeam != 'rejected') {
+            if (customerScrapStage.scrapStageId == bmRatingId.id) {
+                return res.status(400).json({ message: 'This customer previous scrap bm rating is pending' })
+            } else if (customerScrapStage.scrapStageId == opsRatingId.id) {
+                return res.status(400).json({ message: 'This customer previous scrap ops rating is pending' })
+            }
+            // else if (customerLoanStage.loanStageId == disbursedPendingId.id) {
+            //     return res.status(400).json({ message: 'This customer previous Loan disbursement is pending' })
+            // }
+        }
+
         const firstName = customerScrapStage.customer.firstName
         const lastName = customerScrapStage.customer.lastName
 
@@ -76,16 +97,17 @@ exports.customerDetails = async (req, res, next) => {
         res.status(200).json({ message: 'customer details fetch successfully', customerData });
     }
 
+
 }
 
 exports.scrapBasicDeatils = async (req, res, next) => {
-    let { customerId, customerUniqueId, kycStatus, startDate, scrapId } = req.body
+    let { customerId, customerUniqueId, kycStatus, startDate, scrapId, requestId } = req.body
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let stageId = await models.scrapStage.findOne({ where: { stageName: 'applying' } });
 
     if (scrapId != null) {
-        let customerScrap = await models.customerScrap.findOne({ where: { id: scrapId } });
+        let customerScrap = await models.customerScrap.findOne({ where: { id: scrapId, appraiserRequestId: requestId } });
 
         if (!check.isEmpty(customerScrap)) {
             return res.status(200).json({ message: 'success', scrapId: customerScrap.id, scrapCurrentStage: '2' });
@@ -94,7 +116,9 @@ exports.scrapBasicDeatils = async (req, res, next) => {
 
     let scrapData = await sequelize.transaction(async t => {
 
-        let scrap = await models.customerScrap.create({ customerId: customerId, scrapStageId: stageId.id, customerScrapCurrentStage: "2", internalBranchId: req.userData.internalBranchId, createdBy, modifiedBy, }, { transaction: t });
+        let scrap = await models.customerScrap.create({ customerId: customerId, scrapStageId: stageId.id, customerScrapCurrentStage: "2", internalBranchId: req.userData.internalBranchId,appraiserRequestId: requestId, createdBy, modifiedBy, }, { transaction: t });
+
+        await models.appraiserRequest.update({ status: 'complete' }, { where: { id: requestId }, transaction: t });
 
         await models.customerScrapHistory.create({ scrapId: scrap.id, action: BASIC_DETAILS_SUBMIT, modifiedBy }, { transaction: t });
 
@@ -336,6 +360,9 @@ exports.scrapAppraiserRating = async (req, res, next) => {
     });
 
     let scrapData = await sequelize.transaction(async t => {
+
+        await models.appraiserRequest.update({ isProcessComplete: true }, { where: { id: ornament.appraiserRequestId }, transaction: t })
+
         if (scrapStatusForAppraiser == "approved") {
             if (goldValuationForAppraiser == false || applicationFormForAppraiser == false) {
                 return res.status(400).json({ message: 'One field is not verified' })
@@ -889,10 +916,19 @@ exports.appliedScrapDetails = async (req, res, next) => {
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
-    if (req.userData.userTypeId != 4) {
+
+    
+    // if (req.userData.userTypeId != 4) {
+    //     internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+    // } else {
+    //     internalBranchWhere = { isActive: true }
+    // }
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
         internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+
     } else {
         internalBranchWhere = { isActive: true }
+    
     }
 
     let associateModel =

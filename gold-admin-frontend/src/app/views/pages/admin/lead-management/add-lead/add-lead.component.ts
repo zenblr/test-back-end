@@ -11,6 +11,7 @@ import { map, catchError } from 'rxjs/operators';
 import { LeadService } from '../../../../../core/lead-management/services/lead.service';
 import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { LeadSourceService } from '../../../../../core/masters/lead-source/services/lead-source.service';
+import { RolesService } from '../../../../../core/user-management/roles';
 
 @Component({
   selector: 'kt-add-lead',
@@ -42,6 +43,7 @@ export class AddLeadComponent implements OnInit {
   details: any;
   showCommentBox = false;
   leadSources = [];
+  modules = [];
 
   constructor(
     public dialogRef: MatDialogRef<AddLeadComponent>,
@@ -51,10 +53,11 @@ export class AddLeadComponent implements OnInit {
     private leadService: LeadService,
     private dialog: MatDialog,
     private leadSourceService: LeadSourceService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private roleService: RolesService
   ) {
     this.details = this.sharedService.getDataFromStorage()
-    
+
   }
 
   ngOnInit() {
@@ -64,6 +67,8 @@ export class AddLeadComponent implements OnInit {
     this.getInternalBranhces();
     this.getStates();
     this.getStatus();
+    this.getModules();
+    this.disable();
 
     this.controls.mobileNumber.valueChanges.subscribe(res => {
       if (this.controls.mobileNumber.valid) {
@@ -149,6 +154,7 @@ export class AddLeadComponent implements OnInit {
       comment: [''],
       leadSourceId: [null],
       source: [''],
+      moduleId: [, [Validators.required]]
     });
     this.getCities()
   }
@@ -159,6 +165,7 @@ export class AddLeadComponent implements OnInit {
       this.modalTitle = 'Edit Lead'
       this.viewOnly = true;
       this.leadForm.controls.mobileNumber.disable()
+      this.leadForm.controls.moduleId.disable()
       this.leadForm.controls.otp.disable()
     } else if (this.data.action == 'view') {
       this.getLeadById(this.data['id']);
@@ -194,6 +201,12 @@ export class AddLeadComponent implements OnInit {
     });
   }
 
+  getModules() {
+    this.roleService.getAllModuleAppraiser().pipe(map(res => {
+      this.modules = res;
+    })).subscribe()
+  }
+
   getStatus() {
     this.leadService.getStatus().pipe(
       map(res => {
@@ -207,7 +220,7 @@ export class AddLeadComponent implements OnInit {
       this.leadForm.patchValue(res.singleCustomer);
       this.leadForm.patchValue({ panImage: res.singleCustomer.panImage })
       this.leadForm.patchValue({ panImg: res.singleCustomer.panImg })
-     
+
       this.getCities();
       this.commentBox()
     },
@@ -295,7 +308,7 @@ export class AddLeadComponent implements OnInit {
   getFileInfo(event) {
     var name = event.target.files[0].name
     var ext = name.split('.')
-    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg' || ext[ext.length - 1] == 'pdf') {
       const params = {
         reason: 'lead'
       }
@@ -315,7 +328,7 @@ export class AddLeadComponent implements OnInit {
   }
 
   preview() {
-   
+
     let img = [this.controls.panImg.value]
     this.dialog.open(ImagePreviewDialogComponent, {
       data: {
@@ -331,7 +344,16 @@ export class AddLeadComponent implements OnInit {
     this.controls.panImage.patchValue(null)
     this.controls.panImg.patchValue(null)
   }
-
+  disable() {
+    this.leadForm.controls.internalBranchId.disable();
+    this.leadForm.controls.stateId.disable();
+    this.leadForm.controls.cityId.disable();
+  }
+  enable() {
+    this.leadForm.controls.internalBranchId.enable();
+    this.leadForm.controls.stateId.enable();
+    this.leadForm.controls.cityId.enable();
+  }
   onSubmit() {
 
     if (this.data.action == 'add') {
@@ -345,7 +367,7 @@ export class AddLeadComponent implements OnInit {
             this.toastr.errorToastr('Upload Form 60 Image')
           }
         }
-        
+
         return
       }
 
@@ -370,11 +392,11 @@ export class AddLeadComponent implements OnInit {
         this.leadForm.get('panType').patchValue(null);
         this.controls.panImage.patchValue(null)
       }
-
+      this.enable();
       const leadData = this.leadForm.value;
-
+      
       this.leadService.addLead(leadData).subscribe(res => {
-       
+
         if (res) {
           const msg = 'Lead Added Successfully';
           this.toastr.successToastr(msg);
@@ -382,10 +404,13 @@ export class AddLeadComponent implements OnInit {
         }
       },
         error => {
-        
+
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
-        });
+        }, () => {
+          this.disable();
+        }
+      );
     } else if (this.data.action == 'edit') {
 
       if (this.leadForm.invalid) {
@@ -398,7 +423,7 @@ export class AddLeadComponent implements OnInit {
             this.toastr.errorToastr('Upload Form 60 Image')
           }
         }
-        
+
         return
       }
 
@@ -417,15 +442,18 @@ export class AddLeadComponent implements OnInit {
       if (this.controls.pinCode.valid) {
         this.leadForm.get('pinCode').patchValue(Number(this.controls.pinCode.value));
       }
+      this.enable();
       const leadData = this.leadForm.value;
-     
+      
       this.leadService.editLead(this.data.id, leadData).subscribe(res => {
-       
+
         if (res) {
           const msg = 'Lead Edited Successfully';
           this.toastr.successToastr(msg);
           this.dialogRef.close(true);
         }
+      }, () => {
+        this.disable();
       });
     }
 

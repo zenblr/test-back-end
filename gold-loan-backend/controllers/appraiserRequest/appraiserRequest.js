@@ -7,31 +7,30 @@ const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATIO
 const _ = require('lodash');
 
 //FUNCTION TO ADD NEW REQUEST 
-exports.addLeadNewRequest = async (req, res, next) => {
+exports.addAppraiserRequest = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let { customerId, moduleId } = req.body;
-    let requestExist = await models.leadNewRequest.findOne({ where: { moduleId: moduleId, customerId: customerId } })
+    let requestExist = await models.appraiserRequest.findOne({ where: { moduleId: moduleId, customerId: customerId, status: 'incomplete' } })
 
     if (!check.isEmpty(requestExist)) {
-        return res.status(400).json({ message: 'This Lead Request already Exists' });
+        return res.status(400).json({ message: 'This product Request already Exists' });
     }
-    let LeadNewRequest = await models.leadNewRequest.create({ customerId, moduleId, createdBy, modifiedBy })
+    let appraiserRequest = await models.appraiserRequest.create({ customerId, moduleId, createdBy, modifiedBy })
     return res.status(201).json({ message: `Request Created` })
 }
 
 //FUNCTION TO UPDATE NEW REQUEST
-exports.updateLeadNewRequest = async (req, res, next) => {
+exports.updateAppraiserRequest = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let id = req.params.id;
     let { moduleId, customerId } = req.body;
-    let requestExist = await models.leadNewRequest.findOne({ where: { moduleId: moduleId, customerId: customerId } })
-
+    let requestExist = await models.appraiserRequest.findOne({ where: { moduleId: moduleId, customerId: customerId, status: 'incomplete' } })
     if (!check.isEmpty(requestExist)) {
-        return res.status(400).json({ message: 'This Lead Request already Exists' });
+        return res.status(400).json({ message: 'This product Request already Exists' });
     }
 
-    let LeadNewRequest = await models.leadNewRequest.update({ moduleId, modifiedBy }, { where: { id, isAssigned: false } })
+    let appraiserRequest = await models.appraiserRequest.update({ moduleId, modifiedBy }, { where: { id } })
     return res.status(200).json({ message: `Request updated` })
 
 }
@@ -59,21 +58,35 @@ exports.getAllNewRequest = async (req, res, next) => {
             required: false,
             as: 'customer',
             where: { isActive: true },
-            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'kycStatus', 'internalBranchId']
+            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'kycStatus', 'internalBranchId'],
+            include: [
+                {
+                    model: models.customerKyc,
+                    as: 'customerKyc',
+                    attributes: ['id', 'isKycSubmitted']
+                }
+            ]
+        },
+        {
+            model: models.customerLoanMaster,
+            as: 'masterLoan',
+            attributes: ['id', 'isLoanTransfer']
         },
         {
             model: models.module,
             as: 'module',
-            attributes: ['id', 'moduleName']
-
         },
         {
             model: models.user,
-            as: 'appraiser'
-        }
+            as: 'appraiser',
+        },
     ]
-
-    let allRequest = await models.leadNewRequest.findAll({
+    console.log(req.userData)
+    if (req.userData.userTypeId == 7) {
+        searchQuery.appraiserId = req.userData.id
+    }
+    // console.log(searchQuery)
+    let allRequest = await models.appraiserRequest.findAll({
         where: searchQuery,
         subQuery: false,
         include: associateModel,
@@ -84,7 +97,7 @@ exports.getAllNewRequest = async (req, res, next) => {
         limit: pageSize,
     });
 
-    let count = await models.leadNewRequest.findAll({
+    let count = await models.appraiserRequest.findAll({
         where: searchQuery,
         subQuery: false,
         include: associateModel,
@@ -101,12 +114,26 @@ exports.getAllNewRequest = async (req, res, next) => {
 //FUNCTION TO ASSIGN APPRAISER 
 exports.assignAppraiser = async (req, res) => {
     //console.log(req.body)
-    let requestId = req.params.id;
-    const { appraiserId } = req.body;
+    // let requestId = req.params.id;
+    const { id, appraiserId, appoinmentDate, startTime, endTime } = req.body;
     let modifiedBy = req.userData.id;
 
 
-    const data = await models.leadNewRequest.update({ appraiserId, modifiedBy, isAssigned: true }, { where: { id: requestId } })
+    const data = await models.appraiserRequest.update({ appraiserId, appoinmentDate, startTime, endTime, modifiedBy, isAssigned: true }, { where: { id: id } })
+    //console.log(data)
+    if (data.length === 0) {
+        return res.status(404).json({ message: "Appraiser not assigned to request" });
+    } else {
+        return res.status(200).json({ message: "Appraiser assigned to request" });
+    }
+}
+
+exports.updateAppraiser = async (req, res) => {
+     let requestId = req.params.id
+    const { id, appraiserId, appoinmentDate, startTime, endTime } = req.body;
+    let modifiedBy = req.userData.id;
+
+    const data = await models.appraiserRequest.update({ appraiserId, appoinmentDate, startTime, endTime, modifiedBy, isAssigned: true }, { where: { id: id } })
     //console.log(data)
     if (data.length === 0) {
         return res.status(404).json({ message: "Appraiser not assigned to request" });
@@ -149,10 +176,10 @@ exports.getAssignedRequest = async (req, res) => {
             as: 'module',
             attributes: ['id', 'moduleName']
 
-        }
+        },
     ]
 
-    let allRequest = await models.leadNewRequest.findAll({
+    let allRequest = await models.appraiserRequest.findAll({
         where: searchQuery,
         subQuery: false,
         include: associateModel,
@@ -168,7 +195,7 @@ exports.getAssignedRequest = async (req, res) => {
         .map((value, key) => ({ customerId: key, users: value }))
         .value()
 
-    let allCount = await models.leadNewRequest.findAll({
+    let allCount = await models.appraiserRequest.findAll({
         where: searchQuery,
         subQuery: false,
         include: associateModel,

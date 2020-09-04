@@ -16,7 +16,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 export class LoanTransferListComponent implements OnInit {
 
   dataSource: LoanTranferDatasource;
-  displayedColumns = ['fullName', 'customerID', 'loanId', 'mobile', 'date', 'amount','appraiserStatus', 'bmStatus','action','applyLoan'];
+  displayedColumns = ['fullName', 'customerID', 'loanId', 'mobile', 'date', 'amount', 'appraiserStatus', 'bmStatus', 'action', 'applyLoan'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
@@ -31,9 +31,9 @@ export class LoanTransferListComponent implements OnInit {
     private dataTableService: DataTableService,
     private router: Router,
     // private sharedService: SharedService
-    private ngxPermission:NgxPermissionsService,
-  ) { 
-    this.ngxPermission.permissions$.subscribe(res=>{
+    private ngxPermission: NgxPermissionsService,
+  ) {
+    this.ngxPermission.permissions$.subscribe(res => {
       this.permission = res
     })
   }
@@ -87,17 +87,17 @@ export class LoanTransferListComponent implements OnInit {
   }
 
   navigate(loan) {
-    
-      
-      if((this.permission.loanTransferAppraiserRating && loan.loanTransfer.loanTransferCurrentStage == '3')
-        || (this.permission.loanTransferRating && loan.loanTransfer.loanTransferCurrentStage == '4')
-       || (this.permission.loanTransferDisbursal && loan.loanTransfer.loanTransferCurrentStage == '5') ){
-        this.router.navigate(['/admin/loan-management/loan-transfer/', loan.customerLoan[0].id])
-      }
+
+
+    if ((this.permission.loanTransferAppraiserRating && loan.loanTransfer.loanTransferCurrentStage == '3')
+      || (this.permission.loanTransferRating && loan.loanTransfer.loanTransferCurrentStage == '4')
+      || (this.permission.loanTransferDisbursal && loan.loanTransfer.loanTransferCurrentStage == '5')) {
+      this.router.navigate(['/admin/loan-management/loan-transfer/', loan.customerLoan[0].id])
+    }
   }
 
-  applyLoan(loan){
-    this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { transferLoanCustomerID: loan.customer.customerUniqueId } })
+  applyLoan(loan) {
+    this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { transferLoanCustomerID: loan.appraiserRequestId } })
   }
 
 }

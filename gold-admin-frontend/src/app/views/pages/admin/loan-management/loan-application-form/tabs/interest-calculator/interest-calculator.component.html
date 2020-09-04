@@ -53,7 +53,7 @@
                         <label class="mandatory">Tenure</label>
                     </div>
                     <div class="col-7">
-                        <select formControlName="tenure" class="form-control" (change)="setEndDate()"
+                        <select formControlName="tenure" class="form-control" (change)="setEndDate();checkForPaymentFrequency()"
                             [class.isError]="controls.tenure.touched && controls.tenure.invalid">
                             <option value="null" [selected]="true" [disabled]="true">Select Tenure</option>
                             <option [value]="ten" *ngFor="let ten of tenure;index as i">
@@ -157,7 +157,7 @@
                         <select class="form-control" formControlName="paymentFrequency" (change)="getIntrest(true)"
                             [class.isError]="controls.paymentFrequency.touched && controls.paymentFrequency.invalid">
                             <option value=null [selected]="true" [disabled]="true">Select Payment Frequency</option>
-                            <option [value]="pay.days" *ngFor="let pay of paymentFrequency">{{pay.days}}</option>
+                            <option [value]="pay.days" *ngFor="let pay of tempPaymentFrequency">{{pay.days}}</option>
                         </select>
                         <mat-error
                             *ngIf="controls.paymentFrequency.errors?.required && controls.paymentFrequency.touched">
@@ -172,7 +172,7 @@
                         <label class="mandatory">Interest Rate% (p.m.)</label>
                     </div>
                     <div class="col-7">
-                        <input type="number" class="form-control" formControlName="interestRate" placeholder="00%"
+                        <input type="number" class="form-control cursor-not-allowed" formControlName="interestRate" placeholder="00%"
                             [class.isError]="controls.interestRate.touched && controls.interestRate.invalid" readonly />
                         <mat-error *ngIf="controls.interestRate.errors?.required && controls.interestRate.touched">
                             Required field
@@ -193,7 +193,7 @@
                     </div>
                     <div class="col-7">
                         <input type="number" class="form-control cursor-not-allowed" formControlName="processingCharge"
-                            placeholder="00"
+                            placeholder="00" readonly
                             [class.isError]="controls.processingCharge.touched && controls.processingCharge.invalid" />
                         <mat-error
                             *ngIf="controls.processingCharge.errors?.pattern && controls.processingCharge.touched">
