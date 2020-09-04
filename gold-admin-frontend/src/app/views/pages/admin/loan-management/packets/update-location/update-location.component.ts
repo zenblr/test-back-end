@@ -20,9 +20,10 @@ export class UpdateLocationComponent implements OnInit {
   packetLocations: [any];
   userTypeList = [{ name: 'Customer', value: 'Customer' }, { name: 'Internal User', value: 'InternalUser' }, { name: 'Partner User', value: 'PartnerUser' }]
   filteredPacketArray: any[];
-  private verifiedPacketsArray = []
+  verifiedPacketsArray = []
   refCode: number; //reference code
   otpSent: boolean = false;
+  otpVerfied: boolean;
 
   constructor(
     public dialogRef: MatDialogRef<UpdateLocationComponent>,
@@ -107,8 +108,15 @@ export class UpdateLocationComponent implements OnInit {
 
     const isVerified = this.verifiedPacketsArray.every(e => e.isVerified === true)
     //console.log(this.verifiedPacketsArray)
-    if (!isVerified) return console.log(`Packets are not completely verified!`)
-
+    if (!isVerified) {
+      console.log(`Packets are not completely verified!`)
+      for (const iterator of this.barcodeNumber.controls) {
+        if (iterator.get('Barcode').invalid) {
+          iterator.get('Barcode').markAsTouched()
+        }
+      }
+      return this.toastr.error('Packets are not completely verified')
+    }
     this.updateLocationService.addPacketLocation(this.locationForm.value).subscribe(res => {
       // console.log(res);
       if (res) {
@@ -157,7 +165,13 @@ export class UpdateLocationComponent implements OnInit {
   }
 
   getDetailsByMobile() {
-    if (this.locationForm.controls.mobileNumber.invalid || this.locationForm.controls.receiverType.invalid) return
+    if (this.locationForm.controls.mobileNumber.invalid || this.locationForm.controls.receiverType.invalid) {
+      if (this.locationForm.controls.otp.value) {
+        this.locationForm.controls.otp.reset()
+        this.otpVerfied = false
+      }
+      return
+    }
     const mobileNumber = this.locationForm.controls.mobileNumber.value
     const receiverType = this.locationForm.controls.receiverType.value
 
@@ -230,6 +244,7 @@ export class UpdateLocationComponent implements OnInit {
         this.leadService.verifyOtp(params).subscribe(res => {
           if (res) {
             this.otpSent = true;
+            this.otpVerfied = true;
             const msg = 'Otp has been verified!'
             this.toastr.success(msg);
           }
@@ -243,6 +258,7 @@ export class UpdateLocationComponent implements OnInit {
         this.authService.verifyotp(params.referenceCode, params.otp, params.type).subscribe(res => {
           if (res) {
             this.otpSent = true;
+            this.otpVerfied = true;
             const msg = 'Otp has been verified!'
             this.toastr.success(msg);
           }
@@ -260,5 +276,22 @@ export class UpdateLocationComponent implements OnInit {
     this.locationForm.controls.referenceCode.patchValue(null);
     this.locationForm.controls.mobileNumber.patchValue(null);
     this.locationForm.controls.user.patchValue(null);
+    this.otpVerfied = false
+  }
+
+  verifyBarcode(index) {
+    const formGroup = this.barcodeNumber.at(index)
+    const filteredFormGroup = this.filteredPacketArray[index]
+    const isVerified = (JSON.stringify(formGroup.value)).toLowerCase() === (JSON.stringify(filteredFormGroup)).toLowerCase()
+
+    console.log(isVerified)
+    if (!isVerified) {
+      formGroup.get('Barcode').setErrors({ unverified: true })
+      this.verifiedPacketsArray.splice(index, 1, { isVerified })
+      // console.log(formGroup)
+    } else {
+      this.verifiedPacketsArray.splice(index, 1, { isVerified })
+      // formGroup.get('Barcode').disable()
+    }
   }
 }

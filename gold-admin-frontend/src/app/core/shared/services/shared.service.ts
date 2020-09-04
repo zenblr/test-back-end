@@ -25,6 +25,11 @@ export class SharedService {
 	exportExcel = new BehaviorSubject<any>(false);
 	exportExcel$ = this.exportExcel.asObservable();
 
+	isSubHeaderVisible = new BehaviorSubject<boolean>(false);
+	isSubHeaderVisible$ = this.isSubHeaderVisible.asObservable();
+
+
+
 	appraiserOrCCE = [
 		{ value: 'pending', name: 'pending' },
 		{ value: 'approved', name: 'approved' },
@@ -161,6 +166,29 @@ export class SharedService {
 			return of(details);
 		}
 	}
+
+	getTokenDecode(): Observable<any> {
+		let token = localStorage.getItem("UserDetails");
+		if (token) {
+			let decodedValue = JSON.parse(atob(token.split(".")[1]));
+			return of(decodedValue);
+		}
+	}
+
+	//  for quick pay and part payment 
+	paymentGateWay(amount):Observable<any>{
+		return this.http.post(`api/quick-pay/razor-pay`,{amount}).pipe(
+		  map(res=> res)
+		  )
+	  }
+
+	  //  for quick pay and part payment 
+	paymentGateWayForFullAndPart(masterLoanId,ornamentId):Observable<any>{
+		return this.http.post(`api/jewellery-release/razor-pay`,{masterLoanId,ornamentId}).pipe(
+		  map(res=> res)
+		  )
+	  }
+
 
 	soaDownload(masterLoanId): Observable<any> {
 		let endDate =""

@@ -368,28 +368,17 @@ exports.checkForLoanType = async (req, res, next) => {
 
             if ((ltvPercent[0].ltvGoldValue / 100) >= (unsecureSchemeMaximumAmtAllowed + secureSchemeMaximumAmtAllowed)) {
 
-
-
-                // if(securedScheme.isSplitAtBeginning &&
-                // Math.round(loanAmount) >= Math.round(securedLoanAmount + unsecuredAmount)) ||
-                // Math.round(loanAmount) >= Math.round(securedLoanAmount + unsecuredAmount)) ||
-                // isLoanTransfer) {
                 if (Math.round(loanAmount) > Math.round(securedLoanAmount + unsecuredAmount)) {
                     return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
-
                 }
+
                 if (isLoanTransfer || isNewLoanFromPartRelease) {
                     if (Number(loanAmount) > totalEligibleAmt) {
-                        // if (!securedScheme.isSplitAtBeginning) {
                         securedLoanAmount = fullAmount * secureSchemeMaximumAmtAllowed
                     }
                 }
                 unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
-                // } else if (Math.round(loanAmount) > Math.round(securedLoanAmount + unsecuredAmount)) {
-                //     return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
-
-                // }
-
+                
                 processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
                 let newUnsecuredScheme = await selectScheme(unsecured, securedScheme)
@@ -405,13 +394,8 @@ exports.checkForLoanType = async (req, res, next) => {
                 if (isLoanTransfer || isNewLoanFromPartRelease) {
                     if (Number(loanAmount) > totalEligibleAmt) {
                         securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
-                        //     unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
                     }
 
-                    //  else {
-
-
-                    // }
                     unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
 
                     processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
@@ -422,12 +406,9 @@ exports.checkForLoanType = async (req, res, next) => {
 
                 if (!securedScheme.isSplitAtBeginning) {
                     securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
-                    // unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
 
                 }
-                // else {
-
-                // }
+                
                 unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
 
                 processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
@@ -616,8 +597,17 @@ exports.unsecuredTableGeneration = async (req, res, next) => {
         let date = new Date()
         let data = {
             emiDueDate: moment(new Date(date.setDate(date.getDate() + (paymentFrequency * (index + 1)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
+            month: "Month " + (index + 1).toString(),
             paymentType: paymentFrequency,
             unsecuredInterestAmount: unsecuredInterestAmount,
+        }
+        if (Number(paymentFrequency) != 30) {
+            if (index == 0) {
+                data.month = "Month 1"
+            }
+            else {
+                data.month = "Month " + (((paymentFrequency / 30) * (index)) + 1)
+            }
         }
         interestTable.push(data)
     }
@@ -1554,28 +1544,26 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
         await sequelize.transaction(async (t) => {
 
             if (isUnsecuredSchemeApplied) {
+               
+                let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, debit: processingCharge, description: `Processing charges debit` }, { transaction: t })
+                await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${processingDebit.id}` }, { where: { id: processingDebit.id }, transaction: t })
+
                 let amountPaid = fullUnsecuredAmount - processingCharge;
                 let unsecuredDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, debit: amountPaid, description: `Loan amount disbursed to customer` }, { transaction: t })
                 await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${unsecuredDisbursed.id}` }, { where: { id: unsecuredDisbursed.id }, transaction: t })
 
-                let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, debit: processingCharge, description: `Processing charges debit` }, { transaction: t })
-                await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${processingDebit.id}` }, { where: { id: processingDebit.id }, transaction: t })
-
-                let processing = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, credit: processingCharge, description: `Processing charges for current loan from the customer` }, { transaction: t })
-                await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${processing.id}` }, { where: { id: processing.id }, transaction: t })
-
                 let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: fullSecuredAmount, description: `Loan amount disbursed to customer` }, { transaction: t })
                 await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
             } else {
+                
+                let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: processingCharge, description: `Processing charges debit` }, { transaction: t })
+                await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${processingDebit.id}` }, { where: { id: processingDebit.id }, transaction: t })
+
                 let amountPaid = fullSecuredAmount - processingCharge;
                 let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: amountPaid, description: `Loan amount disbursed to customer` }, { transaction: t })
                 await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
 
-                let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: processingCharge, description: `Processing charges debit` }, { transaction: t })
-                await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${processingDebit.id}` }, { where: { id: processingDebit.id }, transaction: t })
-
-                let processing = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, credit: processingCharge, description: `Processing charges for current loan from the customer` }, { transaction: t })
-                await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${processing.id}` }, { where: { id: processing.id }, transaction: t })
+              
             }
 
             await models.customerLoanMaster.update({ loanStartDate: newStartDate, loanEndDate: newEndDate, loanStageId: stageId.id }, { where: { id: masterLoanId }, transaction: t })
@@ -2002,7 +1990,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
             [models.customerLoan, "id", "asc"],
 
         ],
-        attributes: ['id', 'loanStatusForAppraiser', 'loanStatusForBM', 'loanStatusForOperatinalTeam', 'loanStartDate', 'securedLoanAmount', 'unsecuredLoanAmount', 'finalLoanAmount', 'loanStageId', 'isLoanSubmitted'],
+        attributes: ['id', 'loanStatusForAppraiser', 'loanStatusForBM', 'loanStatusForOperatinalTeam', 'loanStartDate', 'securedLoanAmount', 'unsecuredLoanAmount', 'finalLoanAmount', 'loanStageId', 'isLoanSubmitted', 'commentByAppraiser', 'commentByBM', 'commentByOperatinalTeam'],
         offset: offset,
         limit: pageSize,
 

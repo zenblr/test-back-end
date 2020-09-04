@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ElementRef, NgZone } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PartPaymentService } from '../../../../../core/repayment/part-payment/services/part-payment.service';
 import { FormControl, Validators } from '@angular/forms';
@@ -8,6 +8,8 @@ import { PaymentDialogComponent } from '../../../../partials/components/payment-
 import { Router } from '@angular/router';
 import { PartPaymentLogDialogComponent } from '../part-payment-log-dialog/part-payment-log-dialog.component';
 import { ToastrService } from 'ngx-toastr';
+import { RazorpayPaymentService } from '../../../../../core/shared/services/razorpay-payment.service';
+import { SharedService } from '../../../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-part-payment',
@@ -30,7 +32,10 @@ export class PartPaymentComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private ele: ElementRef,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private razorpayPaymentService:RazorpayPaymentService,
+    private zone:NgZone,
+    private sharedService:SharedService
   ) { }
 
   ngOnInit() {
@@ -104,12 +109,49 @@ export class PartPaymentComponent implements OnInit {
       return this.toastr.error('Please select a payment method')
     }
 
-    this.partPaymentService.confirmPayment(this.masterLoanId, Number(this.partAmount.value), this.paymentValue).subscribe(res => {
+    if (this.paymentValue.paymentType == 'gateway') {
+      this.sharedService.paymentGateWay(this.partAmount.value).subscribe(
+        res => {
+          this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
+          this.razorpayPaymentService.razorpayOptions.amount = res.razorPayOrder.amount;
+          this.razorpayPaymentService.razorpayOptions.order_id = res.razorPayOrder.id;
+          this.razorpayPaymentService.razorpayOptions.paymentMode = res.paymentMode;
+          this.razorpayPaymentService.razorpayOptions.prefill.contact = '000000000';
+          this.razorpayPaymentService.razorpayOptions.prefill.email = 'info@augmont.in';
+          this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
+          this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
+        }
+      )
+      return
+    }
+    let data = {
+      masterLoanId: this.masterLoanId,
+      paidAmount: Number(this.partAmount.value),
+      paymentDetails: this.paymentValue,
+    }
+    this.partPaymentService.confirmPayment(data).subscribe(res => {
       if (res) {
         this.toastr.success('Payment done Successfully')
         this.router.navigate(['/admin/loan-management/all-loan'])
       }
     });
+  }
+
+  razorPayResponsehandler(response){
+    console.log(response)
+    this.zone.run(() => {
+      let data = {
+        masterLoanId: this.masterLoanId,
+        paidAmount: Number(this.partAmount.value),
+        paymentDetails: this.paymentValue,
+        transactionDetails:response
+      }
+      this.partPaymentService.confirmPayment(data).subscribe(res => {
+        this.toastr.success('Payment done Successfully')
+        this.router.navigate(['/admin/loan-management/all-loan'])
+        this.ref.detectChanges()
+      })
+    })
   }
 
   cancelPaymentConfirmation() {

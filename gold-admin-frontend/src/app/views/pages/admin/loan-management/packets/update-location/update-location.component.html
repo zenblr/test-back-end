@@ -34,29 +34,42 @@
                                                 {{ item.get('packetId').value | uppercase }}
                                             </div>
                                             <div class="col text-right">
-                                                <kt-button [type]="'button'" (click)="scanBarcode(idx)"
-                                                    [value]="'Scan'"></kt-button>
+                                                <kt-button [type]="'button'" [value]="'Scan'" [myClass]="'w-100'">
+                                                </kt-button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row justify-content-center kt-margin-t-15">
                                     <div class="col-8 offset-4">
-                                        <input type="text" class="form-control" placeholder="Enter Barcode No."
-                                            formControlName="Barcode"
-                                            [class.isError]="item.get('Barcode').invalid &&  item.get('Barcode').touched">
-                                        <small>
-                                            <mat-error
-                                                *ngIf="item.get('Barcode').errors?.required &&  item.get('Barcode').touched">
-                                                Field Required
-                                            </mat-error>
-                                        </small>
-                                        <small>
-                                            <mat-error
-                                                *ngIf="item.get('Barcode').errors?.unverified &&  item.get('Barcode').touched">
-                                                Packet ID and Barcode does not match
-                                            </mat-error>
-                                        </small>
+                                        <div class="row">
+                                            <div class="col-7">
+                                                <input type="text" class="form-control" placeholder="Enter Barcode No."
+                                                    formControlName="Barcode"
+                                                    [class.isError]="item.get('Barcode').invalid &&  item.get('Barcode').touched"
+                                                    [readOnly]="verifiedPacketsArray[idx].isVerified"
+                                                    [class.cursor-not-allowed]="verifiedPacketsArray[idx].isVerified">
+                                                <small>
+                                                    <mat-error
+                                                        *ngIf="item.get('Barcode').errors?.required &&  item.get('Barcode').touched">
+                                                        Field Required
+                                                    </mat-error>
+                                                </small>
+                                                <small>
+                                                    <mat-error
+                                                        *ngIf="item.get('Barcode').errors?.unverified &&  item.get('Barcode').touched">
+                                                        Packet ID and Barcode does not match
+                                                    </mat-error>
+                                                </small>
+                                            </div>
+                                            <div class="col">
+                                                <kt-button *ngIf="!verifiedPacketsArray[idx].isVerified"
+                                                    [type]="'button'" (click)="verifyBarcode(idx)" [value]="'Verify'"
+                                                    [myClass]="'w-100'"></kt-button>
+                                                <button *ngIf="verifiedPacketsArray[idx].isVerified" type="button"
+                                                    mat-raised-button class="w-100 success-button"> Verified </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -112,7 +125,8 @@
                     </div>
                     <div class="row justify-content-center kt-margin-t-15">
                         <div class="col-4 offset-4">
-                            <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Send OTP'" (action)="generateOTP()"></kt-button>
+                            <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Send OTP'"
+                                (action)="generateOTP()"></kt-button>
                         </div>
                         <div class="col-4 d-flex justify-content-center align-items-center ">
                             <label class="kt-pointer kt-link kt-link--brand kt-font-bolder" (click)="generateOTP()">
@@ -123,12 +137,15 @@
                     <div class="row justify-content-center kt-margin-t-15">
                         <div class="col offset-4">
                             <input type="text" class="form-control" placeholder="Enter OTP" formControlName="otp"
-                                [class.isError]="locationForm.controls.otp.invalid &&  locationForm.controls.otp.touched">
+                                [class.isError]="locationForm.controls.otp.invalid &&  locationForm.controls.otp.touched"
+                                [readonly]="otpVerfied" [class.cursor-not-allowed]="otpVerfied">
                         </div>
-                        <div  class="col-4" *ngIf="otpSent">
-                            <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Verify'"
-                             (action)="verifyOTP()">
+                        <div class="col-4" *ngIf="otpSent">
+                            <kt-button *ngIf="!otpVerfied" [myClass]="'w-100'" [type]="'button'" [value]="'Verify'"
+                                (action)="verifyOTP()">
                             </kt-button>
+                            <button *ngIf="otpVerfied" type="button" mat-raised-button class="w-100 success-button">
+                                Verified </button>
                         </div>
                     </div>
                 </div>
