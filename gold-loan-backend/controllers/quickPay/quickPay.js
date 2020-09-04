@@ -91,8 +91,24 @@ exports.quickPayment = async (req, res, next) => {
     }
     let { penalInterest } = await payableAmountForLoan(amount, loan)
     let splitUpAmount = payableAmount - penalInterest
+    if (splitUpAmount <= 0) {
+        let penalInterestRatio = await getAmountLoanSplitUpData(loan, amount, payableAmount)
+        splitUpAmount = 0
+    }
 
-    let { isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest, securedLoanId, unsecuredLoanId } = await getAmountLoanSplitUpData(loan, amount, splitUpAmount)
+
+    let data = await getAmountLoanSplitUpData(loan, amount, splitUpAmount);
+    let { isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedInterest, unsecuredInterest, securedLoanId, unsecuredLoanId } = data
+
+    let securedPenalInterest = 0;
+    let unsecuredPenalInterest = 0;
+    if (splitUpAmount <= 0) {
+        securedPenalInterest = penalInterestRatio.securedRatio
+        unsecuredPenalInterest = penalInterestRatio.unsecuredRatio
+    } else {
+        securedPenalInterest = data.securedPenalInterest
+        unsecuredPenalInterest = data.unsecuredPenalInterest
+    }
 
     paymentDetails.masterLoanId = masterLoanId
     paymentDetails.transactionAmont = payableAmount
@@ -109,7 +125,7 @@ exports.quickPayment = async (req, res, next) => {
             customerLoanTransactionId: customerLoanTransaction.id,
             loanId: securedLoanId,
             masterLoanId: masterLoanId,
-            penal: securedPenalInterest,
+            penal: securedPenalInterest.toFixed(2),
             interest: securedRatio,
             isSecured: true
         }, { transaction: t })
@@ -119,7 +135,7 @@ exports.quickPayment = async (req, res, next) => {
                 customerLoanTransactionId: customerLoanTransaction.id,
                 loanId: unsecuredLoanId,
                 masterLoanId: masterLoanId,
-                penal: unsecuredPenalInterest,
+                penal: unsecuredPenalInterest.toFixed(2),
                 interest: unsecuredRatio,
                 isSecured: false
             }, { transaction: t })
@@ -226,7 +242,7 @@ exports.confirmationForPayment = async (req, res, next) => {
         })
 
     }
-    return res.status(200).json({ message: "success",payment });
+    return res.status(200).json({ message: "success", payment });
 
 
 
