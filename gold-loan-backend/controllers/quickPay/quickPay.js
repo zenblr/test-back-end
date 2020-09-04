@@ -88,7 +88,7 @@ exports.quickPayment = async (req, res, next) => {
 
     let createdBy = req.userData.id
 
-    let { paymentDetails, payableAmount, masterLoanId,transactionDetails } = req.body;
+    let { paymentDetails, payableAmount, masterLoanId, transactionDetails } = req.body;
     let { bankName, branchName, chequeNumber, depositDate, depositTransactionId, paymentType, transactionId } = paymentDetails
 
     let amount = await getCustomerInterestAmount(masterLoanId);
@@ -101,29 +101,30 @@ exports.quickPayment = async (req, res, next) => {
     let signatureVerification = false;
     let razorPayTransactionId;
     let isRazorPay = false;
-    if(paymentType == 'gateway'){
+    if (paymentType == 'gateway') {
         let razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
         transactionUniqueId = razerpayData.receipt;
-        const  generated_signature = crypto
+        const generated_signature = crypto
             .createHmac(
                 "SHA256",
                 razorpay.razorPayConfig.key_secret
             )
             .update(transactionDetails.razorpay_order_id + "|" + transactionDetails.razorpay_payment_id)
-            .digest("hex");  
-            if (generated_signature == transactionDetails.razorpay_signature){
-                signatureVerification = true;
-                isRazorPay = true;
-                razorPayTransactionId = transactionDetails.razorpay_order_id;
-            } 
-            if(signatureVerification == false){
-                return res.status(422).json({message:"razorpay payment verification failed"});
-            }
+            .digest("hex");
+        if (generated_signature == transactionDetails.razorpay_signature) {
+            signatureVerification = true;
+            isRazorPay = true;
+            razorPayTransactionId = transactionDetails.razorpay_order_id;
+        }
+        if (signatureVerification == false) {
+            return res.status(422).json({ message: "razorpay payment verification failed" });
+        }
     }
     let { penalInterest } = await payableAmountForLoan(amount, loan)
     let splitUpAmount = payableAmount - penalInterest
+    let penalInterestRatio;
     if (splitUpAmount <= 0) {
-        let penalInterestRatio = await getAmountLoanSplitUpData(loan, amount, payableAmount)
+        penalInterestRatio = await getAmountLoanSplitUpData(loan, amount, payableAmount)
         splitUpAmount = 0
     }
 
@@ -145,7 +146,7 @@ exports.quickPayment = async (req, res, next) => {
     paymentDetails.transactionAmont = payableAmount
     paymentDetails.depositDate = moment(depositDate).utcOffset("+05:30").format("YYYY-MM-DD");
     paymentDetails.transactionUniqueId = transactionUniqueId //ye change karna h
-    if(isRazorPay){
+    if (isRazorPay) {
         paymentDetails.razorPayTransactionId = razorPayTransactionId
     }
     paymentDetails.bankTransactionUniqueId = transactionId
