@@ -153,7 +153,7 @@ exports.quickPayment = async (req, res, next) => {
     paymentDetails.depositStatus = "Pending"
     paymentDetails.paymentFor = 'quickPay'
 
-    let data = await sequelize.transaction(async t => {
+    await sequelize.transaction(async t => {
         let customerLoanTransaction = await models.customerLoanTransaction.create(paymentDetails, { transaction: t })
 
         await models.customerTransactionSplitUp.create({
