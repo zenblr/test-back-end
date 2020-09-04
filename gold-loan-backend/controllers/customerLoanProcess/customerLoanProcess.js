@@ -597,8 +597,17 @@ exports.unsecuredTableGeneration = async (req, res, next) => {
         let date = new Date()
         let data = {
             emiDueDate: moment(new Date(date.setDate(date.getDate() + (paymentFrequency * (index + 1)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
+            month: "Month " + (index + 1).toString(),
             paymentType: paymentFrequency,
             unsecuredInterestAmount: unsecuredInterestAmount,
+        }
+        if (Number(paymentFrequency) != 30) {
+            if (index == 0) {
+                data.month = "Month 1"
+            }
+            else {
+                data.month = "Month " + (((paymentFrequency / 30) * (index)) + 1)
+            }
         }
         interestTable.push(data)
     }

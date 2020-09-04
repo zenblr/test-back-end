@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'bank_transaction_unique_id'
         },
+        razorPayTransactionId: {
+            type: DataTypes.STRING,
+            field: 'razor_pay_transaction_id'
+        },
         paymentType:{
             type: DataTypes.STRING,
             field: 'payment_type',
