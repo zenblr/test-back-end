@@ -334,6 +334,9 @@ exports.getPartReleaseList = async (req, res, next) => {
         isActive: true
     }
     let includeArray = [{
+        model: models.customerLoanTransaction,
+        as: 'transaction'
+    },{
         model: models.customerLoanMaster,
         as: 'masterLoan',
         attributes: ['customerId', 'outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
@@ -587,6 +590,9 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         appriserSearch.appraiserId = userId;
     }
     let includeArray = [{
+        model: models.customerLoanTransaction,
+        as: 'transaction'
+    },{
         model: models.customerLoanMaster,
         as: 'masterLoan',
         subQuery: false,
@@ -907,6 +913,9 @@ exports.getFullReleaseList = async (req, res, next) => {
         isActive: true
     }
     let includeArray = [{
+        model: models.customerLoanTransaction,
+        as: 'transaction'
+    },{
         model: models.customerLoanMaster,
         as: 'masterLoan',
         attributes: ['customerId', 'outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
@@ -1163,6 +1172,9 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
         isActive: true
     }
     let includeArray = [{
+        model: models.customerLoanTransaction,
+        as: 'transaction'
+    },{
         model: models.customerLoanMaster,
         as: 'masterLoan',
         attributes: ['customerId', 'outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
