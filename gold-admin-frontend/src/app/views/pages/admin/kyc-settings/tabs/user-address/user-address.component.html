@@ -88,10 +88,11 @@
                                 <div class="kt-margin-r-15" *ngFor="let img of images.identityProof, index as idx">
                                     <div class="img-container">
                                         <img class="border-rad-15 fetched-image" [src]="img" alt=""
-                                            (click)="preview(img, idx)">
-                                        <!-- <img src="../../../../../assets/media/icons/edit.svg" alt=""
-                                            class="kt-pointer edit-icon"
-                                            (click)="editImages(idx, 'identityProof');"> -->
+                                            (click)="preview(img, idx)" *ngIf="!isPdf(img)">
+                                        <div class="iframeWrapper" (click)="previewPdf(img)">
+                                            <iframe [src]="img | safe : 'resourceUrl'" height="250" width="290"
+                                                scrolling="no" *ngIf="isPdf(img)"></iframe>
+                                        </div>
                                         <img src="../../../../../assets/media/icons/cancel.svg" alt=""
                                             class="kt-pointer remove-icon"
                                             (click)="removeImages(idx, 'identityProof');">
@@ -379,8 +380,8 @@
                                                     <div class="col-6" [class.offset-4]="images.residential.length == 1"
                                                         *ngFor="let img of images.residential, index as idx">
                                                         <div class="img-container">
-                                                            <img class="fetched-image" [src]="img" alt=""
-                                                                (click)="preview(img, idx)">
+                                                            <img *ngIf="!isPdf(img)" class="fetched-image" [src]="img"
+                                                                alt="" (click)="preview(img, idx)">
                                                             <!-- <img src="../../../../../assets/media/icons/edit.svg" alt=""
                                                                 class="kt-pointer edit-icon"
                                                                 (click)="editImages(idx, 'residential');"> -->
@@ -388,6 +389,11 @@
                                                                 src="../../../../../assets/media/icons/cancel.svg"
                                                                 alt="" class="kt-pointer remove-icon"
                                                                 (click)="removeImages(idx, 'residential');">
+                                                            <div class="iframeWrapper" (click)="previewPdf(img)">
+                                                                <iframe [src]="img | safe : 'resourceUrl'" height="250"
+                                                                    width="290" scrolling="no"
+                                                                    *ngIf="isPdf(img)"></iframe>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -398,8 +404,8 @@
                                                     <div class="col-6" [class.offset-4]="images.permanent.length == 1"
                                                         *ngFor="let img of images.permanent, index as idx">
                                                         <div class="img-container">
-                                                            <img class="fetched-image" [src]="img" alt=""
-                                                                (click)="preview(img, idx)">
+                                                            <img *ngIf="!isPdf(img)" class="fetched-image" [src]="img"
+                                                                alt="" (click)="preview(img, idx)">
                                                             <!-- <img src="../../../../../assets/media/icons/dit.svg" alt=""
                                                                 class="kt-pointer edit-icon"
                                                             (click)="editImages(idx, 'permanent');"> -->
@@ -407,6 +413,11 @@
                                                                 src="../../../../../assets/media/icons/cancel.svg"
                                                                 alt="" class="kt-pointer remove-icon"
                                                                 (click)="removeImages(idx, 'permanent');">
+                                                            <div class="iframeWrapper" (click)="previewPdf(img)">
+                                                                <iframe [src]="img | safe : 'resourceUrl'" height="250"
+                                                                    width="290" scrolling="no"
+                                                                    *ngIf="isPdf(img)"></iframe>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>

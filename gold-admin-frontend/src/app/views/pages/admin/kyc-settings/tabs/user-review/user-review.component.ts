@@ -8,6 +8,7 @@ import { AppliedKycService } from '../../../../../../core/applied-kyc/services/a
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { WebcamDialogComponent } from '../../webcam-dialog/webcam-dialog.component';
 import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
 
 @Component({
   selector: 'kt-user-review',
@@ -436,7 +437,7 @@ export class UserReviewComponent implements OnInit {
     this.userType = res.userDetails.userTypeId;
 
     if (this.modalData.action) {
-     
+
       this.viewOnly = false;
     }
   }
@@ -617,9 +618,9 @@ export class UserReviewComponent implements OnInit {
     this.userBankService.kycSubmit(data).pipe(
       map(res => {
         this.next.emit(true);
-      }),catchError(err => {
+      }), catchError(err => {
         if (err.error.message)
-        this.toastr.error(err.error.message);
+          this.toastr.error(err.error.message);
         throw (err)
       })
     ).subscribe()
@@ -676,7 +677,7 @@ export class UserReviewComponent implements OnInit {
   }
 
   removeImages(index, type) {
-  
+
     if (this.userType == 5) {
       return;
     }
@@ -719,10 +720,10 @@ export class UserReviewComponent implements OnInit {
       return;
     }
     this.file = event.target.files[0];
-    var name = event.target.files[0].name
-    
-    var ext = name.split('.')
-    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+    // var name = event.target.files[0].name
+
+    // var ext = name.split('.')
+    if (this.sharedService.fileValidator(event)) {
       const params = {
         reason: 'customer',
         customerId: this.customerKycAddressOne.controls.customerId.value
@@ -734,7 +735,7 @@ export class UserReviewComponent implements OnInit {
             this.identityImageArray.push(res.uploadFile.URL)
             this.identityIdArray.push(res.uploadFile.path)
             this.identityFileNameArray.push(event.target.files[0].name)
-           
+
             this.customerKycPersonal.patchValue({ identityProof: this.identityIdArray })
             this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
           } else
@@ -769,7 +770,8 @@ export class UserReviewComponent implements OnInit {
 
 
           this.ref.detectChanges();
-        }), catchError(err => {
+        }),
+        catchError(err => {
           this.toastr.error(err.error.message);
           throw err
         }),
@@ -780,9 +782,10 @@ export class UserReviewComponent implements OnInit {
           this.pass.nativeElement.value = '';
         })
       ).subscribe()
-    } else {
-      this.toastr.error('Upload Valid File Format');
     }
+    // else {
+    //   this.toastr.error('Upload Valid File Format');
+    // }
 
   }
 
@@ -811,7 +814,7 @@ export class UserReviewComponent implements OnInit {
           customerId: this.customerKycAddressOne.controls.customerId.value
         }
         this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
-          
+
           this.data.customerKycReview.customerKycPersonal.profileImg = res.uploadFile.URL
           this.customerKycPersonal.get('profileImage').patchValue(res.uploadFile.path);
           this.ref.detectChanges()
@@ -821,23 +824,37 @@ export class UserReviewComponent implements OnInit {
   }
 
   previewImage(value) {
-    // let concatArray = [];
-    // concatArray
-    // .push(this.data.customerKycReview.customerKycPersonal.profileImage, 
-    //   this.data.customerKycReview.customerKycPersonal.signatureProof)
-    // const temp = concatArray
-    // .concat(this.data.customerKycReview.customerKycPersonal.identityProof,
-    //   this.data.customerKycReview.customerKycAddress[0].addressProof,
-    //   this.data.customerKycReview.customerKycAddress[1].addressProof)
 
-    // let index = temp.indexOf(value)
-    // this.dialog.open(ImagePreviewDialogComponent, {
-    //   data: {
-    //     images: temp,
-    //     index: index
-    //   },
-    //   width: "auto"
-    // })
+    let temp = [...this.identityImageArray, ...this.addressImageArray1, ...this.addressImageArray2,
+    ...this.data.customerKycReview.customerKycPersonal.profileImg,
+    ...this.data.customerKycReview.panImg,
+    ...this.data.customerKycReview.customerKycPersonal.signatureProofImg
+    ]
+
+    temp = temp.filter(e => {
+      let ext = this.sharedService.getExtension(e)
+      return ext !== 'pdf'
+    })
+
+    let index = temp.indexOf(value)
+    this.dialog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: temp,
+        index: index
+      },
+      width: "auto"
+    })
+  }
+
+  previewPdf(img) {
+    this.dialog.open(PdfViewerComponent, {
+      data: {
+        pdfSrc: img,
+        page: 1,
+        showAll: true
+      },
+      width: "80%"
+    })
   }
 
   checkForAadhar(key) {
@@ -901,6 +918,12 @@ export class UserReviewComponent implements OnInit {
     if (event.target.value == 'null') {
       this.customerKycPersonal.controls.occupationId.patchValue(null)
     }
+  }
+
+  isPdf(image: string): boolean {
+    const ext = this.sharedService.getExtension(image)
+    const isPdf = ext == 'pdf' ? true : false
+    return isPdf
   }
 
 }

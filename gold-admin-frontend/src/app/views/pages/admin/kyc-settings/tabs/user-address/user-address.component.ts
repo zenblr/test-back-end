@@ -7,6 +7,7 @@ import { map, catchError, finalize } from 'rxjs/operators';
 import { MatCheckbox, MatDialog } from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
 
 @Component({
   selector: 'kt-user-address',
@@ -44,12 +45,12 @@ export class UserAddressComponent implements OnInit {
     private sharedService: SharedService,
     private ref: ChangeDetectorRef,
     private toastr: ToastrService,
-    public dilaog: MatDialog,
+    public dialog: MatDialog,
   ) { }
 
   ngOnInit() {
     this.initForm();
-    
+
     this.getStates();
     this.getIdentityType();
     this.getAddressProofType()
@@ -113,11 +114,12 @@ export class UserAddressComponent implements OnInit {
 
   getFileInfo(event, type: any) {
     this.files = event.target.files[0];
-   
-    var name = event.target.files[0].name
-  
-    var ext = name.split('.')
-    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+
+    // var name = event.target.files[0].name
+
+    // var ext = name.split('.')
+
+    if (this.sharedService.fileValidator(event)) {
       const params = {
         reason: 'customer',
         customerId: this.controls.customerId.value
@@ -132,7 +134,7 @@ export class UserAddressComponent implements OnInit {
             // identityProofImg
 
             this.identityFileNameArray.push(event.target.files[0].name)
-          
+
             this.identityForm.patchValue({ identityProofImg: this.images.identityProof });
             this.identityForm.patchValue({ identityProof: this.imageId.identityProof });
             //this.identityForm.get('identityProofFileName').patchValue(event.target.files[0].name);
@@ -160,7 +162,7 @@ export class UserAddressComponent implements OnInit {
             this.toastr.error("Cannot upload more than two images")
           }
           this.ref.detectChanges();
-         
+
         }), catchError(err => {
           this.toastr.error(err.error.message);
           throw err
@@ -171,9 +173,10 @@ export class UserAddressComponent implements OnInit {
           this.residential.nativeElement.value = '';
         })
       ).subscribe()
-    } else {
-      this.toastr.error('Upload Valid File Format');
     }
+    // else {
+    //   this.toastr.error('Upload Valid File Format');
+    // }
 
   }
 
@@ -184,9 +187,9 @@ export class UserAddressComponent implements OnInit {
   }
 
   getCities(index) {
-  
+
     const stateId = this.addressControls.controls[index]['controls'].stateId.value;
-   
+
     this.sharedService.getCities(stateId).subscribe(res => {
       if (index == 0) {
         this.cities0 = res.data;
@@ -205,7 +208,7 @@ export class UserAddressComponent implements OnInit {
   }
 
   submit() {
-   
+
     if (this.identityForm.invalid) {
       this.identityForm.markAllAsTouched()
       return
@@ -216,20 +219,20 @@ export class UserAddressComponent implements OnInit {
     this.addressControls.at(0)['controls'].addressProofNumber.enable()
 
     const data = this.identityForm.value;
-  
+
     this.userAddressService.addressDetails(data).pipe(
       map(res => {
         if (res) {
           this.next.emit(true);
         }
-      
+
       }, finalize(() => {
         this.identityForm.controls.identityTypeId.disable()
 
       })),
       catchError(err => {
         if (err.error.message)
-        this.toastr.error(err.error.message);
+          this.toastr.error(err.error.message);
         throw (err)
       })
     ).subscribe();
@@ -259,10 +262,10 @@ export class UserAddressComponent implements OnInit {
       this.images.residential = this.images.permanent;
       this.addressControls.at(1).disable();
       this.addressControls.at(1).patchValue(this.addressControls.at(0).value)
-     
+
       this.addressControls.at(1)['controls'].addressType.patchValue('residential')
       this.addressFileNameArray2 = this.addressFileNameArray1
-    
+
       this.addressControls.at(1)['controls'].addressProofFileName.patchValue(this.addressFileNameArray2[this.addressFileNameArray2.length - 1])
     } else {
       this.sameAdd = false
@@ -277,7 +280,7 @@ export class UserAddressComponent implements OnInit {
   }
 
   removeImages(index, type) {
-  
+
     if (type == 'identityProof') {
       this.images.identityProof.splice(index, 1);
       this.imageId.identityProof.splice(index, 1);
@@ -307,25 +310,34 @@ export class UserAddressComponent implements OnInit {
   }
 
   preview(value, formIndex) {
-    // let filterImage = []
-    // // filterImage = Object.values(this.images)
-    // Object.keys(this.images).forEach(res => {
+    let filterImage = []
+    Object.keys(this.images).forEach(res => {
+      Array.prototype.push.apply(filterImage, this.images[res]);
+    })
+    var temp = []
+    temp = filterImage.filter(e => {
+      let ext = this.sharedService.getExtension(e)
+      return ext !== 'pdf'
+    })
+    let index = temp.indexOf(value)
+    this.dialog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: temp,
+        index: index
+      },
+      width: "auto"
+    })
+  }
 
-    //   Array.prototype.push.apply(filterImage, this.images[res]);
-    // })
-    // console.log(filterImage)
-    // var temp = []
-    // temp = filterImage.filter(el => {
-    //   return el != ''
-    // })
-    // let index = temp.indexOf(value)
-    // this.dilaog.open(ImagePreviewDialogComponent, {
-    //   data: {
-    //     images: temp,
-    //     index: index
-    //   },
-    //   width: "auto"
-    // })
+  previewPdf(img) {
+    this.dialog.open(PdfViewerComponent, {
+      data: {
+        pdfSrc: img,
+        page: 1,
+        showAll: true
+      },
+      width: "80%"
+    })
   }
 
   // editImages(index, type) {
@@ -389,7 +401,13 @@ export class UserAddressComponent implements OnInit {
         this.addressFileNameArray1 = []
       }
     }
-    
+
+  }
+
+  isPdf(image: string): boolean {
+    const ext = this.sharedService.getExtension(image)
+    const isPdf = ext == 'pdf' ? true : false
+    return isPdf
   }
 
 }
