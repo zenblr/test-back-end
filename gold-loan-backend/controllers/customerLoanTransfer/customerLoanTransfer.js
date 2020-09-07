@@ -247,7 +247,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             {
                 model: models.customerLoanMaster,
                 as: 'masterLoan',
-                attributes: ['id', 'loanTransferId'],
+                attributes: ['id', 'loanTransferId','appraiserRequestId'],
                 include: [{
                     model: models.customerLoanTransfer,
                     as: "loanTransfer",

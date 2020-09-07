@@ -255,7 +255,7 @@
                                     <div class="row kt-margin-t-15">
                                         <div class="col-4 form-label">
                                             <label class="text-color mandatory kt-padding-l-10">Purity Reading(XRF
-                                                machine)</label>
+                                                machine reading in %)</label>
                                         </div>
                                         <div class="col-8">
                                             <input type="text" class="form-control" placeholder="90 %"
@@ -275,10 +275,10 @@
                                         <div class="col-4 form-label">
                                             <label class="text-color mandatory kt-padding-l-10">Approx Purity
                                                 Reading(XRF
-                                                machine)</label>
+                                                machine reading in %)</label>
                                         </div>
                                         <div class="col-8">
-                                            <input type="text" class="form-control" placeholder="90 %"
+                                            <input type="text" class="form-control" placeholder="90"
                                                 formControlName="approxPurityReading" numbersOnly
                                                 [class.isError]="ornament.controls.approxPurityReading.touched && ornament.controls.approxPurityReading.invalid"
                                                 (input)="calculateScrapAmount(idx)">

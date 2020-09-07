@@ -16,7 +16,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 export class LoanTransferListComponent implements OnInit {
 
   dataSource: LoanTranferDatasource;
-  displayedColumns = ['fullName', 'customerID', 'loanId', 'mobile', 'date', 'amount', 'appraiserStatus', 'bmStatus', 'action', 'applyLoan'];
+  displayedColumns = ['fullName', 'customerID', 'loanId', 'date', 'amount', 'appraiserStatus', 'bmStatus', 'action', 'applyLoan'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();

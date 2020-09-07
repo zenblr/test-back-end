@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         scrapStatusForAppraiser: {
             type: DataTypes.ENUM,
             field: 'scrap_status_for_appraiser',
-            values: ['approved', 'pending', 'rejected'],
+            values: ['approved', 'pending', 'rejected', 'incomplete'],
         },
         commentByAppraiser: {
             type: DataTypes.TEXT,

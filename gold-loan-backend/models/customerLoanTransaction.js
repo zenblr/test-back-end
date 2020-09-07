@@ -31,12 +31,16 @@ module.exports = (sequelize, DataTypes) => {
             field: 'transaction_amont'
         },
         paymentReceivedDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             field: 'payment_received_date'
         },
         depositDate:{
             type: DataTypes.DATE,
             field: 'deposit_date'
+        },
+        depositApprovedDate:{
+            type: DataTypes.DATE,
+            field: 'deposit_approved_date'
         },
         chequeNumber:{
             type: DataTypes.STRING,

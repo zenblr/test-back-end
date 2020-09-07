@@ -263,7 +263,7 @@ export class UploadDocumentsComponent implements OnInit {
       // this.globalValue.afterSD = 10;
       this.documentsForm.controls.standardDeduction.setValidators
       ([Validators.min(this.globalValue.standardDeductionMin), 
-        Validators.max(this.globalValue.standardDeductionMax)]);
+        Validators.max(this.globalValue.standardDeductionMax), Validators.required]);
       this.documentsForm.controls.standardDeduction.updateValueAndValidity();
     });
 
@@ -345,7 +345,7 @@ export class UploadDocumentsComponent implements OnInit {
         this.documentsForm.controls.pawnCopy.updateValueAndValidity()
       this.documentsForm.controls.processingCharges.setValidators(Validators.required),
         this.documentsForm.controls.processingCharges.updateValueAndValidity()
-      this.documentsForm.controls.standardDeduction.setValidators( [Validators.min(0), Validators.max(10), Validators.required]),
+      this.documentsForm.controls.standardDeduction.setValidators( Validators.required),
         this.documentsForm.controls.standardDeduction.updateValueAndValidity()
       this.documentsForm.controls.customerConfirmationStatus.setValidators(Validators.required),
         this.documentsForm.controls.customerConfirmationStatus.updateValueAndValidity()
@@ -489,7 +489,6 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   save() {
-
     // loan transfer
     if (!this.isEdit && this.documentsForm.status == 'DISABLED') {
       this.next.emit(3)
