@@ -18,10 +18,7 @@
                     <mat-cell *matCellDef="let loan"> {{loan?.customer?.firstName | titlecase}}
                         {{loan?.customer?.lastName | titlecase}}</mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="mobile">
-                    <mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan?.customer?.mobileNumber}}</mat-cell>
-                </ng-container>
+                
 
                 <ng-container matColumnDef="amount">
                     <mat-header-cell *matHeaderCellDef>Outstanding Loan Amount</mat-header-cell>
