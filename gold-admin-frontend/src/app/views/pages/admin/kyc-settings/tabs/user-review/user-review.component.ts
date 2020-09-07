@@ -496,20 +496,6 @@ export class UserReviewComponent implements OnInit {
       // this.verifyPAN()
     });
 
-    this.controls.panType.valueChanges.subscribe(res => {
-      if (res == 'form60') {
-        this.controls.panCardNumber.reset()
-        this.controls.panCardNumber.patchValue('')
-        this.controls.panCardNumber.clearValidators()
-        this.controls.panCardNumber.updateValueAndValidity()
-      }
-      if (res == 'pan') {
-        this.controls.form60.reset()
-        this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
-        this.controls.panCardNumber.updateValueAndValidity()
-      }
-    });
-
     if (!this.viewOnly || this.userType == 5) {
       this.reviewForm.disable();
       this.customerKycPersonal.disable();
@@ -531,7 +517,7 @@ export class UserReviewComponent implements OnInit {
       panType: [this.data.customerKycReview.panType, Validators.required],
       form60: [],
       panImage: [],
-      panImg: [this.data.customerKycReview.panImg],
+      panImg: [this.data.customerKycReview.panImg, [Validators.required]],
       identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
       identityProof: [, [Validators.required]],
       identityProofFileName: [],
@@ -589,11 +575,31 @@ export class UserReviewComponent implements OnInit {
       this.customerKycPersonal.controls.signatureProof.patchValue(this.data.customerKycReview.customerKycPersonal.signatureProof)
     }
 
+    this.panTypeValidation();
+
     if (this.data.customerKycReview.panCardNumber) {
       this.isPanVerified = true
+      this.ref.detectChanges()
     }
 
     this.ref.detectChanges()
+  }
+
+  panTypeValidation() {
+    // this.controls.panType.valueChanges.subscribe(res => {
+    const value = this.controls.panType.value
+    if (value == 'form60') {
+      this.controls.panCardNumber.reset()
+      this.controls.panCardNumber.patchValue('')
+      this.controls.panCardNumber.clearValidators()
+      this.controls.panCardNumber.updateValueAndValidity()
+    }
+    if (value == 'pan') {
+      this.controls.form60.reset()
+      this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
+      this.controls.panCardNumber.updateValueAndValidity()
+    }
+    // });
   }
 
   public calculateAge(dateOfBirth: any) {
@@ -645,6 +651,16 @@ export class UserReviewComponent implements OnInit {
       return this.toastr.error('PAN is not Verfied')
     }
 
+    this.customerKycPersonal.patchValue({
+      identityTypeId: this.reviewForm.get('identityTypeId').value,
+      identityProofNumber: this.reviewForm.get('identityProofNumber').value,
+      panCardNumber: this.reviewForm.get('panCardNumber').value ? this.reviewForm.get('panCardNumber').value.toUpperCase() : null
+    })
+
+    this.reviewForm.patchValue({
+      panCardNumber: this.reviewForm.get('panCardNumber').value ? this.reviewForm.get('panCardNumber').value.toUpperCase() : null
+    })
+
     const data = {
       customerId: this.data.customerId,
       customerKycId: this.data.customerKycId,
@@ -652,14 +668,6 @@ export class UserReviewComponent implements OnInit {
       customerKycAddress: customerKycAddress,
       customerKycReview: this.reviewForm.value
     }
-
-    this.customerKycPersonal.patchValue({
-      identityTypeId: this.reviewForm.get('identityTypeId').value,
-      identityProofNumber: this.reviewForm.get('identityProofNumber').value,
-      panCardNumber: this.reviewForm.get('panCardNumber').value.toUpperCase()
-    })
-
-    this.reviewForm.controls.panCardNumber.patchValue(this.reviewForm.get('panCardNumber').value.toUpperCase())
 
     this.userBankService.kycSubmit(data).pipe(
       map(res => {
@@ -767,6 +775,7 @@ export class UserReviewComponent implements OnInit {
     else if (type == 'panType') {
       this.data.customerKycReview.panImage = ''
       this.reviewForm.controls.panCardNumber.patchValue(null)
+      this.customerKycPersonal.controls.panCardNumber.patchValue(null)
       this.reviewForm.controls.form60.patchValue(null)
       this.reviewForm.controls.panImage.patchValue(null)
       this.reviewForm.controls.panImg.patchValue(null)
@@ -909,7 +918,8 @@ export class UserReviewComponent implements OnInit {
     this.dialog.open(ImagePreviewDialogComponent, {
       data: {
         images: temp,
-        index: index
+        index: index,
+        modal: !this.viewOnly
       },
       width: "auto"
     })
