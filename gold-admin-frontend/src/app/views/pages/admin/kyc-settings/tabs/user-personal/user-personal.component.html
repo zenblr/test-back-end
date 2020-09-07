@@ -224,12 +224,18 @@
                                 <div class="img-container">
                                     <img *ngIf="!controls.signatureProof.value" class=""
                                         src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
-                                    <img class="fetched-image" *ngIf="controls.signatureProof.value"
+                                    <img class="fetched-image"
+                                        *ngIf="controls.signatureProof.value && !isPdf(controls.signatureProofImg.value)"
                                         [src]="controls.signatureProofImg.value" style="border-radius: 15px;" alt=""
                                         (click)="previewImage(controls.signatureProofImg.value)" />
                                     <img *ngIf="controls.signatureProof.value"
                                         src="../../../../../assets/media/icons/cancel.svg" alt=""
                                         class="kt-pointer remove-icon" (click)="removeImage();">
+                                    <div class="iframeWrapper" (click)="previewImage(controls.signatureProofImg.value)">
+                                        <iframe [src]="controls.signatureProofImg.value | safe : 'resourceUrl'"
+                                            height="250" width="290" scrolling="no"
+                                            *ngIf="isPdf(controls.signatureProofImg.value)"></iframe>
+                                    </div>
                                 </div>
                                 <div class="kt-margin-t-20 text-color font-11">
                                     (Please verify the detail before moving forward)

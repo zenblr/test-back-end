@@ -81,8 +81,8 @@
                             <div class="col-7">
                                 <div class="row">
                                     <div [ngClass]="viewOnly ? 'col-8': 'col'">
-                                        <input type="text" class="form-control cursor-not-allowed" placeholder="Mobile Number"
-                                            formControlName="mobileNumber"
+                                        <input type="text" class="form-control cursor-not-allowed"
+                                            placeholder="Mobile Number" formControlName="mobileNumber"
                                             value="{{ this.data.customerKycReview.mobileNumber | titlecase }}"
                                             readonly />
                                     </div>
@@ -141,7 +141,7 @@
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="panType"
-                                    (change)='removeImages(-1,panType)'>
+                                    (change)='removeImages(-1, "panType")'>
                                     <option value=null selected disabled>Select</option>
                                     <option value="pan">PAN</option>
                                     <option value="form60">FORM 60</option>
@@ -179,7 +179,7 @@
 
                             <div class="col">
                                 <div *ngIf="!isPanVerified">
-                                    <kt-button [myClass]="'w-100'" [isDisabled]="panButton" [type]="'button'"
+                                    <kt-button [myClass]="'w-100'" [type]="'button'"
                                         [value]="'Verify'" (action)="verifyPAN()">
                                     </kt-button>
                                 </div>
@@ -344,10 +344,14 @@
                     <ng-container *ngIf="identityImageArray?.length > 0">
                         <div class="col-4" *ngFor="let pass of identityImageArray, index as idx">
                             <div class="img-container">
-                                <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt=""
-                                    (click)="previewImage(pass)" />
+                                <img *ngIf="!isPdf(pass)" class="fetched-image" [src]="pass"
+                                    style="border-radius: 15px;" alt="" (click)="previewImage(pass)" />
                                 <img *ngIf="viewOnly" src="../../../../../assets/media/icons/cancel.svg" alt=""
                                     class="kt-pointer remove-icon" (click)="removeImages(idx, 'identityProof');">
+                                <div class="iframeWrapper" (click)="previewPdf(pass)">
+                                    <iframe [src]="pass | safe : 'resourceUrl'" height="250" width="290" scrolling="no"
+                                        *ngIf="isPdf(pass)"></iframe>
+                                </div>
                             </div>
                         </div>
                     </ng-container>
@@ -531,10 +535,14 @@
                     <ng-container *ngIf="addressImageArray1?.length > 0">
                         <div class="col-4" *ngFor="let pass of addressImageArray1, index as idx">
                             <div class="img-container">
-                                <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt=""
-                                    (click)="previewImage(pass)" />
+                                <img *ngIf="!isPdf(pass)" class="fetched-image" [src]="pass"
+                                    style="border-radius: 15px;" alt="" (click)="previewImage(pass)" />
                                 <img *ngIf="viewOnly" src="../../../../../assets/media/icons/cancel.svg" alt=""
                                     class="kt-pointer remove-icon" (click)="removeImages(idx, 'permanent');">
+                                <div class="iframeWrapper" (click)="previewPdf(pass)">
+                                    <iframe [src]="pass | safe : 'resourceUrl'" height="250" width="290" scrolling="no"
+                                        *ngIf="isPdf(pass)"></iframe>
+                                </div>
                             </div>
                         </div>
                     </ng-container>
@@ -733,10 +741,14 @@
                     <ng-container *ngIf="addressImageArray2?.length > 0">
                         <div class="col-4" *ngFor="let pass of addressImageArray2, index as idx">
                             <div class="img-container">
-                                <img class="fetched-image" [src]="pass" style="border-radius: 15px;" alt=""
-                                    (click)="previewImage(pass)" />
+                                <img *ngIf="!isPdf(pass)" class="fetched-image" [src]="pass"
+                                    style="border-radius: 15px;" alt="" (click)="previewImage(pass)" />
                                 <img *ngIf="viewOnly" src="../../../../../assets/media/icons/cancel.svg" alt=""
                                     class="kt-pointer remove-icon" (click)="removeImages(idx, 'residential');">
+                                <div class="iframeWrapper" (click)="previewPdf(pass)">
+                                    <iframe [src]="pass | safe : 'resourceUrl'" height="250" width="290" scrolling="no"
+                                        *ngIf="isPdf(pass)"></iframe>
+                                </div>
                             </div>
                         </div>
                     </ng-container>
@@ -968,10 +980,18 @@
                         <div class="col-8 offset-4">
                             <div class="img-container kt-margin-r-15">
                                 <ng-container>
-                                    <img class="fetched-image"
+                                    <img *ngIf="!isPdf(data.customerKycReview.customerKycPersonal.signatureProofImg)"
+                                        class="fetched-image"
                                         [src]="data.customerKycReview.customerKycPersonal.signatureProofImg"
                                         style="border-radius: 15px;" alt=""
                                         (click)="previewImage(data.customerKycReview.customerKycPersonal.signatureProofImg)" />
+                                    <div class="iframeWrapper"
+                                        (click)="previewPdf(data.customerKycReview.customerKycPersonal.signatureProofImg)">
+                                        <iframe
+                                            [src]="data.customerKycReview.customerKycPersonal.signatureProofImg | safe : 'resourceUrl'"
+                                            height="250" width="290" scrolling="no"
+                                            *ngIf="isPdf(data.customerKycReview.customerKycPersonal.signatureProofImg)"></iframe>
+                                    </div>
                                     <ng-container *ngIf="viewOnly">
                                         <img *ngIf="data.customerKycReview.customerKycPersonal.signatureProofImg"
                                             src="../../../../../assets/media/icons/cancel.svg" alt=""

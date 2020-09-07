@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject, of } from "rxjs";
 import { API_ENDPOINT } from '../../../app.constant';
 import { map, tap } from 'rxjs/operators';
 import { ExcelService } from '../../_base/crud/services/excel.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
 	providedIn: "root",
@@ -53,7 +54,8 @@ export class SharedService {
 
 	constructor(
 		private http: HttpClient,
-		private excelService:ExcelService) { }
+		private excelService: ExcelService,
+		private toastr: ToastrService) { }
 
 	getStatus() {
 		return of({ apprsiserOrCCE: this.appraiserOrCCE, appraiserOrCCEScrap: this.appraiserOrCCEScrap, bm: this.branchManagerScrap, bml: this.branchManagerLoan })
@@ -191,9 +193,9 @@ export class SharedService {
 
 
 	soaDownload(masterLoanId): Observable<any> {
-		let endDate =""
-		let startDate =""
-		return this.http.post(`api/loan-soa`, { masterLoanId ,startDate,endDate},{ responseType: "arraybuffer" }).pipe(
+		let endDate = ""
+		let startDate = ""
+		return this.http.post(`api/loan-soa`, { masterLoanId, startDate, endDate }, { responseType: "arraybuffer" }).pipe(
 			map((res) => {
 				return res;
 			}),
@@ -206,5 +208,25 @@ export class SharedService {
 				(error) => console.log(error)
 			)
 		);
+	}
+
+	fileValidator(event) {
+		const validFormats = ['jpg', 'jpeg', 'png', 'pdf']
+		const name = event.target.files[0].name
+		const split = name.split('.')
+		const ext = (split[split.length - 1]).toLowerCase()
+		const isValid = validFormats.some(e => e === ext)
+		if (isValid) {
+			return true
+		} else {
+			this.toastr.error('Upload Valid File Format')
+			return false
+		}
+	}
+
+	getExtension(name): string {
+		const split = name.split('.')
+		const ext = (split[split.length - 1]).toLowerCase()
+		return ext
 	}
 }

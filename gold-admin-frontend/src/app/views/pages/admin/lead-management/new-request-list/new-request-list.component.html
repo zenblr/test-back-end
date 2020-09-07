@@ -112,6 +112,7 @@
                         </ng-container>
                         <div *ngIf="!row.isProcessComplete">
                             <div *ngIf="row.customer.kycStatus === 'approved' && row.isAssigned">
+                                <div *ngxPermissionsOnly="['loanApplicationAdd', 'addLoanTransfer', 'scrapApplicationAdd']">
 
                                 <button mat-button [matMenuTriggerFor]="menu">
                                     <mat-icon>more_vert</mat-icon>
@@ -145,6 +146,7 @@
                                     </ng-container>
 
                                 </mat-menu>
+                            </div>
 
                                 <!-- <ng-container *ngxPermissionsOnly="['loanApplicationAdd']">
             <button style="width: 120px;" class="apply-kyc" (click)="applyLoan(row)"

@@ -761,3 +761,17 @@ mat-header-row {
 	color: #000000 !important;
 	font-size:14px;
  }
+
+//  pdf viewer
+
+.iframeWrapper{
+	display:inline-block;
+	position:relative;
+}
+  
+.iframeWrapper iframe{
+	vertical-align:top;
+	pointer-events: none;
+	margin-top: -65px;
+	margin-left: -7px;
+}

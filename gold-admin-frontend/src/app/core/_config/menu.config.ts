@@ -117,11 +117,11 @@ export class MenuConfig {
 							permission: !(this.permissionsArr.includes('customerKycView') ||
 								this.permissionsArr.includes('appliedKycView')),
 							submenu: [
-								{
-									title: "KYC Application",
-									page: "/admin/kyc-setting",
-									permission: !this.permissionsArr.includes('customerKycAdd'),
-								},
+								// {
+								// 	title: "KYC Application",
+								// 	page: "/admin/kyc-setting",
+								// 	permission: !this.permissionsArr.includes('customerKycAdd'),
+								// },
 								{
 									title: "Applied KYC",
 									page: "/admin/applied-kyc",
@@ -147,12 +147,12 @@ export class MenuConfig {
 									bullet: 'dot',
 									permission: false,
 								},
-								{
-									title: "Loan Application Form",
-									page: "/admin/loan-management/loan-application-form",
-									bullet: 'dot',
-									permission: !this.permissionsArr.includes('loanApplicationAdd'),
-								},
+								// {
+								// 	title: "Loan Application Form",
+								// 	page: "/admin/loan-management/loan-application-form",
+								// 	bullet: 'dot',
+								// 	permission: !this.permissionsArr.includes('loanApplicationAdd'),
+								// },
 								{
 									title: "Packet",
 									page: "/admin/loan-management/packet",
@@ -552,13 +552,13 @@ export class MenuConfig {
 							src: "assets/media/aside-icons/icons-15.svg",
 							permission: !this.permissionsArr.includes('internalBranchView'),
 						},
-						{
-							title: "Assign Appraiser",
-							root: true,
-							page: "/admin/user-management/assign-appraiser",
-							src: "assets/media/aside-icons/icons-16.svg",
-							permission: !this.permissionsArr.includes('assignAppraiserView'),
-						},
+						// {
+						// 	title: "Assign Appraiser",
+						// 	root: true,
+						// 	page: "/admin/user-management/assign-appraiser",
+						// 	src: "assets/media/aside-icons/icons-16.svg",
+						// 	permission: !this.permissionsArr.includes('assignAppraiserView'),
+						// },
 						{
 							title: "Merchant",
 							root: true,
