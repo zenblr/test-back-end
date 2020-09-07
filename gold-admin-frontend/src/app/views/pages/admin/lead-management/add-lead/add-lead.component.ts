@@ -68,6 +68,10 @@ export class AddLeadComponent implements OnInit {
     this.getStates();
     this.getStatus();
     this.getModules();
+    if(this.details.userDetails.userTypeId != 4){
+      this.disable();
+    }
+    
 
     this.controls.mobileNumber.valueChanges.subscribe(res => {
       if (this.controls.mobileNumber.valid) {
@@ -343,7 +347,16 @@ export class AddLeadComponent implements OnInit {
     this.controls.panImage.patchValue(null)
     this.controls.panImg.patchValue(null)
   }
-
+  disable() {
+    this.leadForm.controls.internalBranchId.disable();
+   // this.leadForm.controls.stateId.disable();
+   // this.leadForm.controls.cityId.disable();
+  }
+  enable() {
+    this.leadForm.controls.internalBranchId.enable();
+   // this.leadForm.controls.stateId.enable();
+    ///this.leadForm.controls.cityId.enable();
+  }
   onSubmit() {
 
     if (this.data.action == 'add') {
@@ -382,9 +395,9 @@ export class AddLeadComponent implements OnInit {
         this.leadForm.get('panType').patchValue(null);
         this.controls.panImage.patchValue(null)
       }
-
+      this.enable();
       const leadData = this.leadForm.value;
-
+      
       this.leadService.addLead(leadData).subscribe(res => {
 
         if (res) {
@@ -397,7 +410,12 @@ export class AddLeadComponent implements OnInit {
 
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
-        });
+        }, () => {
+          if(this.details.userDetails.userTypeId != 4){
+            this.disable();
+          }
+        }
+      );
     } else if (this.data.action == 'edit') {
 
       if (this.leadForm.invalid) {
@@ -429,14 +447,19 @@ export class AddLeadComponent implements OnInit {
       if (this.controls.pinCode.valid) {
         this.leadForm.get('pinCode').patchValue(Number(this.controls.pinCode.value));
       }
+      this.enable();
       const leadData = this.leadForm.value;
-
+      
       this.leadService.editLead(this.data.id, leadData).subscribe(res => {
 
         if (res) {
           const msg = 'Lead Edited Successfully';
           this.toastr.successToastr(msg);
           this.dialogRef.close(true);
+        }
+      }, () => {
+        if(this.details.userDetails.userTypeId != 4){
+          this.disable();
         }
       });
     }

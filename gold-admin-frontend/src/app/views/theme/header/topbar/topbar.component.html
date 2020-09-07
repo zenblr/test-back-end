@@ -12,7 +12,11 @@
                 <label *ngIf="totalRecords" class="kt-subheader__desc">{{totalRecords}} Total</label>
             </div>
         </div>
-        <div class="col-6 align-self-center">
+        <kt-user-profile></kt-user-profile>
+    </div>
+    <div class="row justify-content-center"
+        [ngClass]="{'heightLowerTopbar': showSubHeader}">
+        <div class="col-6 offset-4 align-self-center">
             <kt-search *ngIf="showInput"></kt-search>
             <kt-dropdown *ngIf="showDropdown" [dropdownValue]="dropdownValue" [isDisabled]="isDisabled"
                 [title]="dropdownTitle" (dropdownResult)="selectedValue($event)">
@@ -40,7 +44,7 @@
                 </mat-button-toggle-group>
             </span>
         </div>
-        <div class="col-2 justify-content-end d-inline-flex p-0">
+        <div class="col-2 justify-content-end d-inline-flex align-self-center">
             <div *ngxPermissionsOnly="permissionType; then thenBlock"></div>
             <kt-filter *ngIf="showfilter" (filterApplyEvent)="applyFilter($event)" [filterName]="filterName"
                 [listType]="listType" [filterWidth]="filterWidth"></kt-filter>
@@ -68,7 +72,7 @@
     <kt-button *ngIf="value1" [value]='value1' [type]='type1' (click)="action($event)" (action)="buttonValue($event)"
         class="kt-margin-r-10 kt-margin-l-10">
     </kt-button>
-    <kt-button [value]='value5' [type]='type5' (click)="action($event)" (action)="buttonValue($event)"
+    <kt-button *ngIf="value5" [value]='value5' [type]='type5' (click)="action($event)" (action)="buttonValue($event)"
         class="kt-margin-r-10 kt-margin-l-10">
     </kt-button>
 </ng-template>

@@ -9,6 +9,9 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class PacketsService {
 
+  disableBtn = new BehaviorSubject<any>(false);
+  disableBtn$ = this.disableBtn.asObservable();
+
   openModal = new BehaviorSubject<any>(false);
   openModal$ = this.openModal.asObservable();
 
@@ -18,8 +21,7 @@ export class PacketsService {
   applyFilter = new BehaviorSubject<any>({});
   applyFilter$ = this.applyFilter.asObservable();
 
-  disableBtn = new BehaviorSubject<any>(false);
-  disableBtn$ = this.disableBtn.asObservable();
+
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 

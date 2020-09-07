@@ -1,5 +1,5 @@
 const express = require('express');
-const { partReleaseApplyLoan,getFullReleaseList,uploadDocument,updateAppraiser,updatePartReleaseStatus,partReleaseApprovedList,partReleaseAssignAppraiser,ornamentsDetails, ornamentsAmountDetails,ornamentsPartRelease,getPartReleaseList,updateAmountStatus,getCustomerDetails,ornamentsFullRelease,updateAmountStatusFullRelease,fullReleaseAssignReleaser,updateReleaser,getFullReleaseApprovedList,updatePartReleaseReleaserStatus,uploadDocumentFullRelease,getPartReleaseNewLonaAmount } = require('../controllers/jewelleryRelease/jewelleryRelease');
+const { partReleaseApplyLoan,getFullReleaseList,uploadDocument,updateAppraiser,updatePartReleaseStatus,partReleaseApprovedList,partReleaseAssignAppraiser,ornamentsDetails, ornamentsAmountDetails,ornamentsPartRelease,getPartReleaseList,updateAmountStatus,getCustomerDetails,ornamentsFullRelease,updateAmountStatusFullRelease,fullReleaseAssignReleaser,updateReleaser,getFullReleaseApprovedList,updatePartReleaseReleaserStatus,uploadDocumentFullRelease,getPartReleaseNewLonaAmount,razorPayCreateOrderForOrnament } = require('../controllers/jewelleryRelease/jewelleryRelease');
 const route = express.Router();
 const { partReleaseValidation,partReleasePayment,amountStatusValidation,documentValidation, assignAppriserValidation,documentValidationFullRelease,fullReleaseValidation,assignReleaserValidationFullRelease,
 amountStatusValidationfullRelease,fullReleasePayment } = require('../validations/jewelleryRelease');
@@ -26,6 +26,8 @@ route.get('/customer/:customerId', checkAuth, wrapper(getCustomerDetails));
 route.get('/:masterLoanId', checkAuth,checkRolePermission, wrapper(ornamentsDetails)); 
 
 route.post('/', checkAuth,checkRolePermission, wrapper(ornamentsAmountDetails)); 
+
+route.post('/razor-pay', checkAuth, wrapper(razorPayCreateOrderForOrnament)); 
 
 route.post('/part-release', checkAuth,checkRolePermission,partReleasePayment,validatiError, wrapper(ornamentsPartRelease)); 
 

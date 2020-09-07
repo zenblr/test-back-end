@@ -8,6 +8,8 @@ import { PaymentDialogComponent } from '../../../../partials/components/payment-
 import { ToastrService } from 'ngx-toastr';
 import { TitleCasePipe } from '@angular/common';
 import { LayoutUtilsService } from '../../../../../core/_base/crud';
+import { SharedService } from '../../../../../core/shared/services/shared.service';
+import { RazorpayPaymentService } from '../../../../../core/shared/services/razorpay-payment.service';
 
 @Component({
   selector: 'kt-part-release',
@@ -38,7 +40,9 @@ export class PartReleaseComponent implements OnInit {
     private toastr: ToastrService,
     private titleCasePipe: TitleCasePipe,
     private ele: ElementRef,
-    private layoutUtilsService: LayoutUtilsService
+    private layoutUtilsService: LayoutUtilsService,
+    private sharedService:SharedService,
+    private razorpayPaymentService:RazorpayPaymentService
   ) { }
 
   ngOnInit() {
@@ -138,9 +142,44 @@ export class PartReleaseComponent implements OnInit {
 
   pay() {
 
+    
+
+    const ornamnentIds = this.selectedOrnaments.map(e => e.id)
+    // let payObject = {
+    //   ornamentId: ornamnentIds,
+    //   masterLoanId: Number(this.id),
+    //   // releaseAmount: this.totalSelectedOrnamentDetails.ornamentWeight.releaseAmount,
+    //   interestAmount: this.totalSelectedOrnamentDetails.loanInfo.interestAmount,
+    //   penalInterest: this.totalSelectedOrnamentDetails.loanInfo.penalInterest,
+    //   payableAmount: this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount,
+    // }
+    // Object.assign(payObject, this.paymentValue, this.totalSelectedOrnamentDetails.ornamentWeight)
+    // console.log(payObject)
+    if (this.paymentValue.paymentType == 'gateway') {
+      this.sharedService.paymentGateWayForFullAndPart(Number(this.id),ornamnentIds).subscribe(
+        res => {
+          this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
+          this.razorpayPaymentService.razorpayOptions.amount = res.razorPayOrder.amount;
+          this.razorpayPaymentService.razorpayOptions.order_id = res.razorPayOrder.id;
+          this.razorpayPaymentService.razorpayOptions.paymentMode = res.paymentMode;
+          this.razorpayPaymentService.razorpayOptions.prefill.contact = '000000000';
+          this.razorpayPaymentService.razorpayOptions.prefill.email = 'info@augmont.in';
+          this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
+          this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
+        }
+      )
+    
+    }else{
+      this.apiHit(null)
+    }
+  }
+  razorPayResponsehandler(response){
+   this.apiHit(response)
+  }
+
+  apiHit(transactionDetails){
     const path = this.url.split('/');
     const url = path[path.length - 2];
-
     const ornamnentIds = this.selectedOrnaments.map(e => e.id)
     let payObject = {
       ornamentId: ornamnentIds,
@@ -149,10 +188,9 @@ export class PartReleaseComponent implements OnInit {
       interestAmount: this.totalSelectedOrnamentDetails.loanInfo.interestAmount,
       penalInterest: this.totalSelectedOrnamentDetails.loanInfo.penalInterest,
       payableAmount: this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount,
+      transactionDetails:transactionDetails
     }
     Object.assign(payObject, this.paymentValue, this.totalSelectedOrnamentDetails.ornamentWeight)
-    // console.log(payObject)
-
     // return
     if (url === 'part-release') {
       this.jewelleryReleaseService.partReleasePayment(payObject).pipe(map(res => {
@@ -171,6 +209,7 @@ export class PartReleaseComponent implements OnInit {
       })).subscribe()
     }
   }
+
 
   cancelPayment() {
     this.showPaymentConfirmation = false

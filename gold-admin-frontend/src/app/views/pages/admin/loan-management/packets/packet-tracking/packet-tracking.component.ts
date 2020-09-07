@@ -126,7 +126,7 @@ export class PacketTrackingComponent implements OnInit {
     const dialogRef = this.dialog.open(UpdateLocationComponent,
       {
         data: { packetData: packet.loanPacketDetails[0].packets, action: 'edit' },
-        width: '400px'
+        width: '450px'
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {

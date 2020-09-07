@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ElementRef, NgZone } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { EmiLogsDialogComponent } from '../emi-logs-dialog/emi-logs-dialog.component';
 import { QuickPayService } from '../../../../../core/repayment/quick-pay/quick-pay.service';
@@ -6,6 +6,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentDialogComponent } from '../../../../../views/partials/components/payment-dialog/payment-dialog.component';
 import { FormControl, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { RazorpayPaymentService } from '../../../../../core/shared/services/razorpay-payment.service';
+import { SharedService } from '../../../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-quick-pay',
@@ -27,7 +29,10 @@ export class QuickPayComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private toastr: ToastrService,
     private router: Router,
-    private ele: ElementRef
+    private ele: ElementRef,
+    private razorpayPaymentService:RazorpayPaymentService,
+    private zone:NgZone,
+    private sharedService:SharedService
   ) { }
 
   ngOnInit() {
@@ -98,6 +103,23 @@ export class QuickPayComponent implements OnInit {
     if (!(this.paymentValue && this.paymentValue.paymentType)) {
       return this.toastr.error('Please select a payment method')
     }
+
+    if (this.paymentValue.paymentType == 'gateway') {
+      this.sharedService.paymentGateWay(this.payableAmt.value).subscribe(
+        res => {
+          this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
+          this.razorpayPaymentService.razorpayOptions.amount = res.razorPayOrder.amount;
+          this.razorpayPaymentService.razorpayOptions.order_id = res.razorPayOrder.id;
+          this.razorpayPaymentService.razorpayOptions.paymentMode = res.paymentMode;
+          this.razorpayPaymentService.razorpayOptions.prefill.contact = '000000000';
+          this.razorpayPaymentService.razorpayOptions.prefill.email = 'info@augmont.in';
+          this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
+          this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
+        }
+      )
+      return
+    }
+
     let data = {
       masterLoanId: this.masterLoanId,
       payableAmount: this.payableAmt.value,
@@ -107,6 +129,23 @@ export class QuickPayComponent implements OnInit {
       this.toastr.success('Payment done Successfully')
       this.router.navigate(['/admin/loan-management/all-loan'])
       this.ref.detectChanges()
+    })
+  }
+
+  razorPayResponsehandler(response){
+    console.log(response)
+    this.zone.run(() => {
+      let data = {
+        masterLoanId: this.masterLoanId,
+        payableAmount: this.payableAmt.value,
+        paymentDetails: this.paymentValue,
+        transactionDetails:response
+      }
+      this.quickPayServie.payment(data).subscribe(res => {
+        this.toastr.success('Payment done Successfully')
+        this.router.navigate(['/admin/loan-management/all-loan'])
+        this.ref.detectChanges()
+      })
     })
   }
 

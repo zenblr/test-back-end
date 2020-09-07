@@ -12,11 +12,11 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let item">
                         <div [ngStyle]="{'display': 'inherit'}"
-                            *ngxPermissionsOnly="['editOrnament', 'deleteOrnament']">
-                            <span *ngxPermissionsOnly="['editOrnament']" class="kt-pointer"
+                            *ngxPermissionsOnly="['editOrnamentType', 'deleteOrnamentType']">
+                            <span *ngxPermissionsOnly="['editOrnamentType']" class="kt-pointer"
                                 (click)="editOrnament(item)">Edit</span>
                             <div class="px-2">|</div>
-                            <span *ngxPermissionsOnly="['deleteOrnament']" class="kt-pointer text-danger"
+                            <span *ngxPermissionsOnly="['deleteOrnamentType']" class="kt-pointer text-danger"
                                 (click)="deleteOrnament(item)">Delete</span>
                         </div>
                     </mat-cell>

@@ -73,9 +73,9 @@ export class UserClassificationComponent implements OnInit {
     private sharedService: SharedService,
     private titlecase: TitleCasePipe,
     private ref: ChangeDetectorRef,
-    private permissionService:NgxPermissionsService
+    private permissionService: NgxPermissionsService
   ) {
-    this.permissionService.permissions$.subscribe(res=> this.permission = res)
+    this.permissionService.permissions$.subscribe(res => this.permission = res)
 
     let res = this.sharedService.getDataFromStorage()
     this.userType = res.userDetails.userTypeId;
@@ -86,8 +86,12 @@ export class UserClassificationComponent implements OnInit {
 
   ngOnInit() {
     if (this.userBankService.kycDetails) {
-      if (this.userBankService.kycDetails.KycClassification !== null)
+      if (this.userBankService.kycDetails.KycClassification !== null) {
         this.customerDetails = this.userBankService.kycDetails.KycClassification
+        this.customerDetails.ratingStage = this.userBankService.kycDetails.ratingStage
+      } else {
+        this.customerDetails.ratingStage = this.userBankService.kycDetails.ratingStage
+      }
     } else {
       this.customerDetails = this.userDetailsService.userData;
     }
@@ -130,29 +134,36 @@ export class UserClassificationComponent implements OnInit {
       kycRatingFromBM: [false, [Validators.required]],
       kycStatusFromCce: ['', [Validators.required]],
       reasonFromCce: [],
-      reasonForOther: [''],
+      reasonForOther: [],
       kycStatusFromOperationalTeam: ['pending', [Validators.required]],
       reasonFromOperationalTeam: ['']
     })
 
-    if (this.permission.cceKycRating) {
-      // this.custClassificationForm.disable()
-      // this.custClassificationForm.controls.behaviourRatingVerifiedByBm.disable();
-      // this.custClassificationForm.controls.idProofRatingVerifiedByBm.disable();
-      // this.custClassificationForm.controls.addressProofRatingVerifiedBm.disable();
+    if (this.permission.cceKycRating && !this.permission.opsKycRating && this.customerDetails.ratingStage == 1) {
       this.custClassificationForm.controls.kycRatingFromBM.disable();
       this.custClassificationForm.controls.kycStatusFromOperationalTeam.disable();
       this.custClassificationForm.controls.reasonFromOperationalTeam.disable();
       this.viewBMForm = false;
-    } else if (this.permission.opsKycRating) {
-      //   this.custClassificationForm.controls.behaviourRatingCce.disable();
-      //   this.custClassificationForm.controls.idProofRatingCce.disable();
-      //   this.custClassificationForm.controls.addressProofRatingCce.disable();
+    } else if (this.permission.opsKycRating && !this.permission.cceKycRating && this.customerDetails.ratingStage == 2) {
       this.custClassificationForm.controls.kycRatingFromCce.disable();
       this.custClassificationForm.controls.kycStatusFromCce.disable();
       this.custClassificationForm.controls.reasonFromCce.disable();
-    } else {
-      this.custClassificationForm.disable()
+    } else if (this.permission.cceKycRating && this.permission.opsKycRating && this.customerDetails.ratingStage == 2) {
+      this.custClassificationForm.controls.kycRatingFromCce.disable();
+      this.custClassificationForm.controls.kycStatusFromCce.disable();
+      this.custClassificationForm.controls.reasonFromCce.disable();
+    } else if (this.permission.cceKycRating && this.permission.opsKycRating && this.customerDetails.ratingStage == 1) {
+      this.custClassificationForm.controls.kycRatingFromBM.disable();
+      this.custClassificationForm.controls.kycStatusFromOperationalTeam.disable();
+      this.custClassificationForm.controls.reasonFromOperationalTeam.disable();
+    }
+    else if (this.permission.cceKycRating && this.permission.opsKycRating && !this.customerDetails) {
+      this.custClassificationForm.controls.kycRatingFromBM.disable();
+      this.custClassificationForm.controls.kycStatusFromOperationalTeam.disable();
+      this.custClassificationForm.controls.reasonFromOperationalTeam.disable();
+    }
+    else {
+      // this.custClassificationForm.disable()
     }
   }
 
@@ -225,7 +236,7 @@ export class UserClassificationComponent implements OnInit {
       // addressProofRatingCce: +(this.custClassificationForm.get('addressProofRatingCce').value),
     })
 
-    if (this.viewBMForm) {
+    if (this.customerDetails.ratingStage === 2) {
       this.custClassificationService.opsTeamRating(this.custClassificationForm.value).pipe(
         map(res => {
           if (res) {

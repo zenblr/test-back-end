@@ -88,12 +88,13 @@ export class UserDetailsComponent implements OnInit {
         this.controls.panCardNumber.reset()
         this.controls.panCardNumber.patchValue('')
         this.controls.panCardNumber.clearValidators()
+        this.controls.panCardNumber.updateValueAndValidity()
       }
       if (res == 'pan') {
         this.controls.form60.reset()
         this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
+        this.controls.panCardNumber.updateValueAndValidity()
       }
-      this.controls.panCardNumber.updateValueAndValidity()
     });
 
     this.controls.otp.valueChanges.subscribe(res => {
@@ -137,11 +138,10 @@ export class UserDetailsComponent implements OnInit {
         this.refCode = res.referenceCode;
         this.controls.referenceCode.patchValue(this.refCode);
         this.userBasicForm.patchValue(res.customerInfo);
-        this.controls.panImage.patchValue(res.customerInfo.panImage);
-        this.controls.panImg.patchValue(res.customerInfo.panImg);
+        
         if (res.customerInfo.panCardNumber !== null) {
-          this.controls.panCardNumber.disable();
-          this.controls.panType.disable();
+          //this.controls.panCardNumber.disable();
+          //this.controls.panType.disable();
           this.isPanVerified = true;
         } else {
           this.showVerifyPAN = true;
@@ -240,6 +240,10 @@ export class UserDetailsComponent implements OnInit {
       this.userBasicForm.markAllAsTouched()
       return
     }
+    if(!this.isPanVerified && this.userBasicForm.controls.panType.value == 'pan'){
+      return this.toastr.error('PAN is not Verfied')
+     
+    }
     this.userBasicForm.enable()
     if (this.controls.panCardNumber.value) {
       const PAN = this.controls.panCardNumber.value.toUpperCase();
@@ -248,14 +252,14 @@ export class UserDetailsComponent implements OnInit {
     const basicForm = this.userBasicForm.value;
     this.userDetailsService.basicDetails(basicForm).pipe(
       map(res => {
-       
+
         if (res) {
           // this.next.emit(true);
           this.next.emit(res.customerKycCurrentStage);
         }
       }),
       catchError(err => {
-        
+
         if (err.error.message == 'This customer Kyc information is already created.' && err.status == 404) {
           //   const kycStage = 2;
           // this.next.emit(true);
@@ -263,14 +267,16 @@ export class UserDetailsComponent implements OnInit {
         throw (err);
       }),
       finalize(() => {
-        this.userBasicForm.disable();
-        this.userBasicForm.controls.mobileNumber.enable()
-        this.userBasicForm.controls.panCardNumber.enable()
+        this.userBasicForm.controls.id.disable();
+        this.userBasicForm.controls.otp.disable();
+        this.userBasicForm.controls.referenceCode.disable();
+        this.userBasicForm.enable()
       })
     ).subscribe();
   }
 
   remove() {
+    this.controls.panCardNumber.patchValue(null)
     this.controls.form60.patchValue(null)
     this.controls.panImage.patchValue(null)
     this.controls.panImg.patchValue(null)

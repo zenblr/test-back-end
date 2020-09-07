@@ -17,7 +17,8 @@ export class PaymentDialogComponent implements OnInit {
   branches = [];
   details: any;
   file: any;
-  currentDate = new Date();
+  minDate: Date;
+  // currentDate = new Date();
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -33,7 +34,13 @@ export class PaymentDialogComponent implements OnInit {
     this.title = 'Payment Mode';
     if (this.data.paymentData) {
       this.paymentForm.patchValue(this.data.paymentData)
-      this.paymentForm.controls['transactionAmount'].patchValue(this.data.paymentData.amount)
+      
+      if(this.data.paymentData.amount){
+        this.paymentForm.controls['transactionAmount'].patchValue(this.data.paymentData.amount)
+      }
+      if(this.data.paymentData.totalInitialAmount){
+        this.paymentForm.controls['transactionAmount'].patchValue(this.data.paymentData.totalInitialAmount)
+      }
       this.setValidation(this.paymentForm.controls.paymentMode.value)
     }
     if(this.data.orderId) {
@@ -53,7 +60,7 @@ export class PaymentDialogComponent implements OnInit {
       bankBranch: [, [Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]],
       transactionId: [],
       chequeNumber: [],
-      depositDate: [this.currentDate, Validators.required],
+      depositDate: [, [Validators.required]],
       customerId: [],
       blockId: [],
       orderId: [],
@@ -76,6 +83,7 @@ export class PaymentDialogComponent implements OnInit {
           this.paymentForm.controls.transactionId.updateValueAndValidity()
         this.paymentForm.controls.chequeNumber.setValidators([]),
           this.paymentForm.controls.chequeNumber.updateValueAndValidity()
+        this.paymentForm.controls.depositDate.setValidators([Validators.required])
         break;
       case 'imps': case 'neft': case 'rtgs':
         this.paymentForm.controls.chequeNumber.setValidators([]),

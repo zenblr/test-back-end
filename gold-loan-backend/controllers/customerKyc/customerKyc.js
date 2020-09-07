@@ -36,7 +36,7 @@ exports.getCustomerDetails = async (req, res, next) => {
 
 
 exports.submitCustomerKycinfo = async (req, res, next) => {
-
+    console.log(req.body)
     let { firstName, lastName, mobileNumber, panCardNumber, panType, panImage } = req.body
 
     let status = await models.status.findOne({ where: { statusName: "confirm" } })
@@ -48,6 +48,20 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
         where: { mobileNumber: mobileNumber, statusId },
         attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage'],
     })
+    if (panCardNumber) {
+        let findPanCardNumber = await models.customer.findOne({
+            where: {
+                id: { [Op.not]: getCustomerInfo.id },
+                panCardNumber: { [Op.iLike]: panCardNumber },
+                isActive: true
+            }
+        });
+        if (!check.isEmpty(findPanCardNumber)) {
+            return res.status(400).json({ message: "Pan Card Number already exists! " })
+        }
+    }
+
+
     if (check.isEmpty(getCustomerInfo)) {
         return res.status(404).json({ message: "Your status is not confirm" });
     }
@@ -133,19 +147,20 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
 
         let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, customerKycCurrentStage: "2" }, { transaction: t })
 
-        await models.customer.update({ panCardNumber: panCardNumber, panType, panImage }, { where: { id: getCustomerInfo.id }, transaction: t })
+        await models.customer.update({ firstName: firstName, lastName: lastName, panCardNumber: panCardNumber, panType: panType, panImage: panImage }, { where: { id: getCustomerInfo.id }, transaction: t })
 
         let createCustomerKyc = await models.customerKycPersonalDetail.create({
             customerId: getCustomerInfo.id,
             customerKycId: customerKycAdd.id,
-            firstName: getCustomerInfo.firstName,
-            lastName: getCustomerInfo.lastName,
+            firstName: firstName,
+            lastName: lastName,
             panCardNumber: panCardNumber,
             createdBy,
             modifiedBy
         }, { transaction: t });
         return customerKycAdd
     })
+
     return res.status(200).json({
         customerId: getCustomerInfo.id,
         customerKycId: kyc.id,
@@ -174,6 +189,11 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
         return res.status(404).json({ message: "This customer address details is already filled." });
     }
 
+    let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: identityProofNumber } });
+    if (!check.isEmpty(findIdentityNumber)) {
+        return res.status(400).json({ message: "Identity Proof Number already exists! " })
+    }
+
 
     let addressArray = []
     for (let i = 0; i < address.length; i++) {
@@ -184,8 +204,8 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
         address[i]['modifiedBy'] = modifiedBy
         addressArray.push(address[i])
     }
-    let { id, firstName, lastName } = await models.customerKycPersonalDetail.findOne({ where: { customerKycId: customerKycId } })
-    let name = `${firstName} ${lastName}`;
+    let customerDetail = await models.customerKycPersonalDetail.findOne({ where: { customerKycId: customerKycId } })
+    let name = `${customerDetail.firstName} ${customerDetail.lastName}`;
 
     await sequelize.transaction(async t => {
         await models.customerKycPersonalDetail.update({
@@ -289,12 +309,31 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
 
 exports.submitAllKycInfo = async (req, res, next) => {
 
-    let { customerId, customerKycId, customerKycPersonal, customerKycAddress, customerKycBank } = req.body;
+    let { customerId, customerKycId, customerKycPersonal, customerKycAddress, customerKycBank, customerKycReview } = req.body;
 
     // let findCustomerKyc = await models.customerKyc.findOne({ where: { id: customerKycId } })
     // if (check.isEmpty(findCustomerKyc)) {
     //     return res.status(404).json({ message: "This customer kyc detailes is not filled." });
     // }
+
+    let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { customerId: { [Op.not]: customerId }, identityProofNumber: customerKycPersonal.identityProofNumber } });
+    if (!check.isEmpty(findIdentityNumber)) {
+        return res.status(400).json({ message: "Identity Proof Number already exists! " })
+    }
+    if (customerKycReview.panCardNumber) {
+        let findPanCardNumber = await models.customer.findOne({
+            where: {
+                id: { [Op.not]: customerId },
+                panCardNumber: { [Op.iLike]: customerKycReview.panCardNumber },
+                isActive: true
+            }
+        });
+        if (!check.isEmpty(findPanCardNumber)) {
+            return res.status(400).json({ message: "Pan Card Number already exists! " })
+        }
+    }
+
+
     let modifiedBy = req.userData.id;
     customerKycPersonal['modifiedBy'] = modifiedBy
 
@@ -308,6 +347,8 @@ exports.submitAllKycInfo = async (req, res, next) => {
     await sequelize.transaction(async (t) => {
         let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
 
+        await models.customer.update({ firstName: customerKycReview.firstName, lastName: customerKycReview.lastName, panCardNumber: customerKycReview.panCardNumber, panType: customerKycReview.panType, panImage: customerKycReview.panImage }, { where: { id: customerId }, transaction: t })
+
         await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });
 
         await models.customerKycAddressDetail.bulkCreate(addressArray, { updateOnDuplicate: ["addressType", "address", "stateId", "cityId", "pinCode", "addressProofTypeId", "addressProof", "addressProofNumber", "modifiedBy"] }, { transaction: t })
@@ -318,8 +359,16 @@ exports.submitAllKycInfo = async (req, res, next) => {
     let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
 
     let KycClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId } })
+    let kycRating = await models.customerKyc.findOne({ where: { customerId: customerId } })
+
+    if (!kycRating.isVerifiedByCce) {
+        ratingStage = 1
+    } else {
+        ratingStage = 2
+    }
+
     // console.log(KycClassification);
-    return res.status(200).json({ message: `successful`, customerId, customerKycId, customerKycCurrentStage, KycClassification })
+    return res.status(200).json({ message: `successful`, customerId, customerKycId, customerKycCurrentStage, KycClassification, ratingStage })
 
 }
 
@@ -396,7 +445,7 @@ exports.appliedKyc = async (req, res, next) => {
     let internalBranchWhere;
 
     let assignAppraiser;
-    
+
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
         internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
         // if (req.userData.userTypeId == 7) {
@@ -451,9 +500,9 @@ exports.appliedKyc = async (req, res, next) => {
         include: includeArray,
     });
     if (getAppliedKyc.length == 0) {
-        return res.status(200).json({data:[]})
+        return res.status(200).json({ data: [] })
     }
-    return res.status(200).json({ data: getAppliedKyc, count:count.length })
+    return res.status(200).json({ data: getAppliedKyc, count: count.length })
 
 
 }

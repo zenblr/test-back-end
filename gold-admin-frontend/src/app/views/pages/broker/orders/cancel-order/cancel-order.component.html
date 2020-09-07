@@ -158,7 +158,7 @@
                             <label class="font-weight-500 text-color" [class.mandatory]="isMandatory">IFSC Code</label>
                         </div>
                         <div class="col-4">
-                            <input class="form-control" formControlName="ifscCode" type="text"
+                            <input class="form-control" formControlName="ifscCode" type="text" maxlength="11"
                                 [class.isError]="controls.ifscCode.touched && controls.ifscCode.invalid">
                             <mat-error *ngIf="controls.ifscCode.errors?.required && controls.ifscCode.touched">
                                 Required field

@@ -14,7 +14,7 @@ exports.submitAppKyc = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let createdBy = req.userData.id;
 
-    let { customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address, panCardNumber, panType, panImage } = req.body
+    let { firstName, lastName, customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address, panCardNumber, panType, panImage } = req.body
     // var date = dateOfBirth.split("-").reverse().join("-");
     var date = dateOfBirth
 
@@ -37,17 +37,27 @@ exports.submitAppKyc = async (req, res, next) => {
         return res.status(404).json({ message: "Your status is not confirm" });
     }
 
+    let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: identityProofNumber } });
+    if (!check.isEmpty(findIdentityNumber)) {
+        return res.status(400).json({ message: "Identity Proof Number already exists! " })
+    }
+
+    let findPanCardNumber = await models.customer.findOne({ where: { panCardNumber: panCardNumber } });
+    if (!check.isEmpty(findPanCardNumber)) {
+        return res.status(400).json({ message: "Pan Card Number already exists! " });
+    }
+
     let kycInfo = await sequelize.transaction(async t => {
 
-        await models.customer.update({ panCardNumber: panCardNumber, panType, panImage }, { where: { id: customerId }, transaction: t })
+        await models.customer.update({ firstName, lastName, panCardNumber: panCardNumber, panType, panImage }, { where: { id: customerId }, transaction: t })
 
         let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerKycCurrentStage: '4', customerId: getCustomerInfo.id, createdBy, modifiedBy }, { transaction: t })
 
         let abcd = await models.customerKycPersonalDetail.create({
             customerId: getCustomerInfo.id,
             customerKycId: customerKycAdd.id,
-            firstName: getCustomerInfo.firstName,
-            lastName: getCustomerInfo.lastName,
+            firstName: firstName,
+            lastName: lastName,
             panCardNumber: panCardNumber,
             profileImage: profileImage,
             dateOfBirth: date,
@@ -118,6 +128,14 @@ exports.editAppKyc = async (req, res, next) => {
 
     await sequelize.transaction(async (t) => {
         let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
+
+        await models.customer.update({
+            firstName: customerKycPersonal.firstName,
+            lastName: customerKycPersonal.lastName,
+            panCardNumber: customerKycPersonal.panCardNumber,
+            panType: customerKycPersonal.panType,
+            panImage: customerKycPersonal.panImage
+        }, { where: { id: customerId }, transaction: t })
 
         await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });
 

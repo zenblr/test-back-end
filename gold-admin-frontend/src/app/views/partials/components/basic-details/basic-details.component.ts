@@ -86,7 +86,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
           this.basicForm.controls.purpose.clearValidators();
           this.basicForm.controls.purpose.updateValueAndValidity();
         } else {
-          this.controls.customerUniqueId.patchValue(res.transferLoanCustomerID)
+          this.controls.requestId.patchValue(res.transferLoanCustomerID)
           this.getTransferLoanDetailsToApplyLoan()
         }
       }
@@ -215,8 +215,8 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   getTransferLoanDetailsToApplyLoan() {
-    if (this.controls.customerUniqueId.valid) {
-      this.loanTransferFormService.getTransferLoanDetailsToApplyLoan(this.controls.customerUniqueId.value).pipe(
+    if (this.controls.requestId.value) {
+      this.loanTransferFormService.getTransferLoanDetailsToApplyLoan(this.controls.requestId.value).pipe(
         map(res => {
           if (res.loanCurrentStage) {
             let stage = res.loanCurrentStage
