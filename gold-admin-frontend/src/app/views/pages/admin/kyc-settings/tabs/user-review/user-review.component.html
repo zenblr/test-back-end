@@ -81,7 +81,7 @@
                             <div class="col-7">
                                 <div class="row">
                                     <div [ngClass]="viewOnly ? 'col-8': 'col'">
-                                        <input type="text" class="form-control" placeholder="Mobile Number"
+                                        <input type="text" class="form-control cursor-not-allowed" placeholder="Mobile Number"
                                             formControlName="mobileNumber"
                                             value="{{ this.data.customerKycReview.mobileNumber | titlecase }}"
                                             readonly />
@@ -97,7 +97,7 @@
                     </div>
                 </div>
 
-                <div class="row kt-margin-t-20">
+                <!-- <div class="row kt-margin-t-20">
 
 
                     <div class="col-6">
@@ -131,7 +131,116 @@
                             </div>
                         </div>
                     </div>
+                </div> -->
+
+                <div class="row kt-padding-t-15">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-3  offset-1  form-label">
+                                <label class="mandatory  text-color font-weight-500">PAN / FORM 60 </label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-control" formControlName="panType"
+                                    (change)='removeImages(-1,panType)'>
+                                    <option value=null selected disabled>Select</option>
+                                    <option value="pan">PAN</option>
+                                    <option value="form60">FORM 60</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-3  offset-1 form-label">
+                                <label class="mandatory  text-color font-weight-500">PAN</label>
+                            </div>
+
+                            <div class="col-4">
+                                <input class="form-control" formControlName="panCardNumber" autocomplete="off"
+                                    placeholder="PAN"
+                                    [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
+                                    maxlength="10" style="text-transform: uppercase;" />
+                                <mat-error *ngIf="
+                                controls.panCardNumber.errors?.required &&
+                                controls.panCardNumber.touched
+                            ">
+                                    Required field
+                                </mat-error>
+                                <mat-error *ngIf="
+                                controls.panCardNumber.errors?.pattern &&
+                                controls.panCardNumber.touched
+                            ">
+                                    Invalid Input
+                                </mat-error>
+                            </div>
+
+                            <div class="col">
+                                <div *ngIf="!isPanVerified">
+                                    <kt-button [myClass]="'w-100'" [isDisabled]="panButton" [type]="'button'"
+                                        [value]="'Verify'" (action)="verifyPAN()">
+                                    </kt-button>
+                                </div>
+
+                                <div *ngIf="isPanVerified">
+                                    <button class="w-100 success-button" mat-raised-button matTooltip="Pan Verified">
+                                        Verified
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-padding-t-15" *ngIf="!controls.panImage.value && controls.panType.value">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-3  offset-1  form-label">
+                                <label *ngIf="controls.panType.value == ''"
+                                    ngClass="{'mandatory': controls.panType.value != ''}"
+                                    class="text-color font-weight-500">
+                                </label>
+                                <label *ngIf="controls.panType.value != ''"
+                                    class="mandatory  text-color font-weight-500">{{ controls.panType.value | uppercase }}
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Select File"
+                                        aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                        formControlName="form60"
+                                        [class.isError]="controls.form60.touched && controls.form60.invalid" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                            (click)="form60.click()">Attach</span>
+                                    </div>
+                                    <input type="file" class="d-none" accept="image/png, image/jpeg" #form60
+                                        (input)="getFileInfo($event,'panType')">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row kt-margin-t-20 kt-margin-b-20" *ngIf="controls.panType.value">
+                    <div class="col offset-2">
+                        <div class="img-container" *ngIf="controls.panImg.value">
+                            <img *ngIf="!controls.panImg.value" class=""
+                                src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
+                            <img class="fetched-image" *ngIf="controls.panImg.value" [src]="controls.panImg.value"
+                                style="border-radius: 15px;" alt="" />
+                            <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer remove-icon"
+                                (click)="form60.click()"
+                                *ngIf="controls.panImg.value && !(controls.panType.status == 'DISABLED')">
+                            <input type="file" class="d-none" accept="image/png, image/jpeg" #form60
+                                (input)="getFileInfo($event ,'panType')">
+                        </div>
+                    </div>
+                </div>
+
 
                 <!-- Address Details -->
                 <div class="row kt-margin-t-50">
