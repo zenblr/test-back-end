@@ -74,11 +74,11 @@ exports.checkPartAmount = async (req, res, next) => {
     let amount = await getCustomerInterestAmount(masterLoanId);
     let loan = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
     let data = await payableAmountForLoan(amount, loan.loan)
-    
+
     if (data.payableAmount > paidAmount) {
         return res.status(400).json({ message: `Your payable amount is greater than paid amount. You have to pay ${data.payableAmount}` })
     }
-    
+
     let partPaymentAmount = Number(paidAmount) - Number(data.payableAmount)
     data.partPaymentAmount = (partPaymentAmount.toFixed(2))
     data.paidAmount = paidAmount
@@ -100,19 +100,17 @@ exports.payableAmountConfirmPartPayment = async (req, res, next) => {
     let { masterLoanId, paidAmount } = req.body
     let amount = await getCustomerInterestAmount(masterLoanId);
     let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId)
-    let { payableAmount } = await payableAmountForLoan(amount, loan)
+    let { payableAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest } = await payableAmountForLoan(amount, loan)
     let partPaymentAmount = paidAmount - payableAmount
+    if (payableAmount > paidAmount) {
+        return res.status(400).json({ message: `Your payable amount is greater than paid amount. You have to pay ${payableAmount}` })
+    }
 
-    let { isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest, securedLoanId, unsecuredLoanId } = await getAmountLoanSplitUpData(loan, amount, partPaymentAmount)
-
-    loan.dataValues.newOutstandingAmount = newMasterOutstandingAmount
-
-    loan.dataValues.customerLoan[0].dataValues.partPayment = securedRatio.toFixed(2)
-    loan.dataValues.customerLoan[0].dataValues.newOutstandingAmount = newSecuredOutstandingAmount.toFixed(2)
+    let { securedRatio, unsecuredRatio } = await getAmountLoanSplitUpData(loan, amount, paidAmount)
+    loan.dataValues.customerLoan[0].dataValues.partPayment = (securedRatio - securedInterest - securedPenalInterest).toFixed(2)
 
     if (loan.isUnsecuredSchemeApplied) {
-        loan.dataValues.customerLoan[1].dataValues.partPayment = unsecuredRatio.toFixed(2)
-        loan.dataValues.customerLoan[1].dataValues.newOutstandingAmount = newUnsecuredOutstandingAmount.toFixed(2)
+        loan.dataValues.customerLoan[1].dataValues.partPayment = (unsecuredRatio - unsecuredInterest - unsecuredPenalInterest).toFixed(2)
     }
 
     return res.status(200).json({ data: loan });
@@ -120,12 +118,16 @@ exports.payableAmountConfirmPartPayment = async (req, res, next) => {
 
 
 exports.partPayment = async (req, res, next) => {
-    let { masterLoanId, paidAmount, paymentDetails,transactionDetails } = req.body
+    let { masterLoanId, paidAmount, paymentDetails, transactionDetails } = req.body
     let { bankName, branchName, chequeNumber, depositDate, depositTransactionId, paymentType, transactionId } = paymentDetails
     let createdBy = req.userData.id
     let amount = await getCustomerInterestAmount(masterLoanId);
     let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
-    let { payableAmount } = await payableAmountForLoan(amount, loan)
+    let { payableAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest } = await payableAmountForLoan(amount, loan)
+
+    if (payableAmount > paidAmount) {
+        return res.status(400).json({ message: `Your payable amount is greater than paid amount. You have to pay ${payableAmount}` })
+    }
 
     let transactionUniqueId = uniqid.time().toUpperCase();
 
@@ -135,67 +137,74 @@ exports.partPayment = async (req, res, next) => {
     let signatureVerification = false;
     let razorPayTransactionId;
     let isRazorPay = false;
-    if(paymentType == 'gateway'){
+    if (paymentType == 'gateway') {
         let razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
         transactionUniqueId = razerpayData.receipt;
-        const  generated_signature = crypto
+        const generated_signature = crypto
             .createHmac(
                 "SHA256",
                 razorpay.razorPayConfig.key_secret
             )
             .update(transactionDetails.razorpay_order_id + "|" + transactionDetails.razorpay_payment_id)
-            .digest("hex");  
-            if (generated_signature == transactionDetails.razorpay_signature){
-                signatureVerification = true;
-                isRazorPay = true;
-                razorPayTransactionId = transactionDetails.razorpay_order_id;
-            } 
-            if(signatureVerification == false){
-                return res.status(422).json({message:"razorpay payment verification failed"});
-            }
+            .digest("hex");
+        if (generated_signature == transactionDetails.razorpay_signature) {
+            signatureVerification = true;
+            isRazorPay = true;
+            razorPayTransactionId = transactionDetails.razorpay_order_id;
+        }
+        if (signatureVerification == false) {
+            return res.status(422).json({ message: "razorpay payment verification failed" });
+        }
     }
 
     let partPaymentAmount = paidAmount - payableAmount
     if (payableAmount > paidAmount) {
         return res.status(400).json({ message: `Your payable amount is greater than paid amount. You have to pay ${payableAmount}` })
     }
-    let { isUnsecuredSchemeApplied, securedOutstandingAmount, unsecuredOutstandingAmount, totalOutstandingAmount, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, newMasterOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest, securedLoanId, unsecuredLoanId } = await getAmountLoanSplitUpData(loan, amount, partPaymentAmount)
+    let { securedRatio, unsecuredRatio, isUnsecuredSchemeApplied } = await getAmountLoanSplitUpData(loan, amount, paidAmount)
 
     paymentDetails.masterLoanId = masterLoanId
     paymentDetails.transactionAmont = paidAmount
     paymentDetails.depositDate = moment(depositDate).utcOffset("+05:30").format("YYYY-MM-DD");
     paymentDetails.transactionUniqueId = transactionUniqueId //ye chanege hoyega
-    if(isRazorPay){
+    if (isRazorPay) {
         paymentDetails.razorPayTransactionId = razorPayTransactionId
     }
     paymentDetails.bankTransactionUniqueId = transactionId
     paymentDetails.depositStatus = "Pending"
     paymentDetails.paymentFor = 'partPayment'
 
+    let securedPayableOutstanding = (Number(securedRatio - securedInterest - securedPenalInterest)).toFixed(2)
+    let unsecuredPayableOutstanding = 0
+    if (isUnsecuredSchemeApplied) {
+        unsecuredPayableOutstanding = (Number(unsecuredRatio - unsecuredInterest - unsecuredPenalInterest)).toFixed(2)
+    }
+
+
     let data = await sequelize.transaction(async t => {
         let customerLoanTransaction = await models.customerLoanTransaction.create(paymentDetails, { transaction: t })
 
         await models.customerTransactionSplitUp.create({
             customerLoanTransactionId: customerLoanTransaction.id,
-            loanId: securedLoanId,
+            loanId: loan.customerLoan[0].id,
             masterLoanId: masterLoanId,
-            payableOutstanding: securedRatio,
+            payableOutstanding: securedPayableOutstanding,
             penal: securedPenalInterest,
             interest: securedInterest,
             isSecured: true,
-            loanOutstanding: Number(securedOutstandingAmount) - Number(securedRatio)
+            loanOutstanding: Number(loan.customerLoan[0].outstandingAmount) - Number(securedPayableOutstanding)
         }, { transaction: t })
 
         if (isUnsecuredSchemeApplied) {
             await models.customerTransactionSplitUp.create({
                 customerLoanTransactionId: customerLoanTransaction.id,
-                loanId: unsecuredLoanId,
+                loanId: loan.customerLoan[1].id,
                 masterLoanId: masterLoanId,
-                payableOutstanding: unsecuredRatio,
+                payableOutstanding: unsecuredPayableOutstanding,
                 penal: unsecuredPenalInterest,
                 interest: unsecuredInterest,
                 isSecured: false,
-                loanOutstanding: Number(unsecuredOutstandingAmount) - Number(unsecuredRatio)
+                loanOutstanding: Number(loan.customerLoan[1].outstandingAmount) - Number(unsecuredPayableOutstanding)
             }, { transaction: t })
         }
 

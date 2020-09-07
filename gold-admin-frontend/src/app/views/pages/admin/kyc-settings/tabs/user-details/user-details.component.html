@@ -213,13 +213,18 @@
 							<div class="img-container" *ngIf="controls.panImg.value">
 								<img *ngIf="!controls.panImg.value" class=""
 									src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
-								<img class="fetched-image" *ngIf="controls.panImg.value" [src]="controls.panImg.value"
+								<img class="fetched-image" *ngIf="controls.panImg.value && !pdf.panImg"
+									(click)="preview(controls?.panImg.value)" [src]="controls.panImg.value"
 									style="border-radius: 15px;" alt="" />
 								<img src="../../../../../assets/media/icons/edit.svg" alt=""
 									class="kt-pointer remove-icon" (click)="form60.click()"
 									*ngIf="controls.panImg.value && !(controls.panType.status == 'DISABLED')">
 								<input type="file" class="d-none" accept="image/png, image/jpeg" #form60
 									(input)="getFileInfo($event)">
+								<div class="iframeWrapper" (click)="preview(controls?.panImg.value)">
+									<iframe [src]="controls?.panImg.value | safe : 'resourceUrl'" height="250"
+										width="290" scrolling="no" *ngIf="pdf.panImg"></iframe>
+								</div>
 							</div>
 						</div>
 					</div>

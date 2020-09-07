@@ -12,6 +12,7 @@ import { LeadService } from '../../../../../core/lead-management/services/lead.s
 import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { LeadSourceService } from '../../../../../core/masters/lead-source/services/lead-source.service';
 import { RolesService } from '../../../../../core/user-management/roles';
+import { PdfViewerComponent } from '../../../../partials/components/pdf-viewer/pdf-viewer.component';
 
 @Component({
   selector: 'kt-add-lead',
@@ -309,9 +310,7 @@ export class AddLeadComponent implements OnInit {
 
 
   getFileInfo(event) {
-    var name = event.target.files[0].name
-    var ext = name.split('.')
-    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg' || ext[ext.length - 1] == 'pdf') {
+    if (this.sharedService.fileValidator(event)) {
       const params = {
         reason: 'lead'
       }
@@ -325,22 +324,32 @@ export class AddLeadComponent implements OnInit {
         }), catchError(err => {
           throw err
         })).subscribe()
-    } else {
-      this.toastr.errorToastr('Upload Valid File Format')
     }
   }
 
   preview() {
+    const img = this.controls.panImg.value
+    const ext = this.sharedService.getExtension(img)
+    if (ext == 'pdf') {
+      this.dialog.open(PdfViewerComponent, {
+        data: {
+          pdfSrc: img,
+          page: 1,
+          showAll: true
+        },
+        width: "80%"
+      })
+    } else {
+      this.dialog.open(ImagePreviewDialogComponent, {
+        data: {
+          images: [img],
+          index: 0,
+          modal: true
+        },
+        width: "auto"
+      })
+    }
 
-    let img = [this.controls.panImg.value]
-    this.dialog.open(ImagePreviewDialogComponent, {
-      data: {
-        images: img,
-        index: 0,
-        modal: true
-      },
-      width: "auto"
-    })
   }
 
   remove() {
@@ -397,7 +406,7 @@ export class AddLeadComponent implements OnInit {
       }
       this.enable();
       const leadData = this.leadForm.value;
-      
+
       this.leadService.addLead(leadData).subscribe(res => {
 
         if (res) {
@@ -449,7 +458,7 @@ export class AddLeadComponent implements OnInit {
       }
       this.enable();
       const leadData = this.leadForm.value;
-      
+
       this.leadService.editLead(this.data.id, leadData).subscribe(res => {
 
         if (res) {

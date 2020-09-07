@@ -17,7 +17,7 @@ export class AppliedScrapComponent implements OnInit {
   filteredDataList: any = {};
   userType: any
   dataSource: AppliedScrapDatasource;
-  displayedColumns = ['fullName', 'customerID', 'mobile', 'pan', 'date', 'scrapAmount', 'processCharge', 'appraisalApproval', 'bMApproval', 'oTApproval', 'actions', 'view'];
+  displayedColumns = ['fullName', 'customerID', 'pan', 'date', 'scrapAmount', 'processCharge', 'appraisalApproval', 'bMApproval', 'oTApproval', 'actions', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   queryParamsData = {

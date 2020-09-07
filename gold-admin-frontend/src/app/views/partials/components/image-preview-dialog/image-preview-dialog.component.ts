@@ -7,7 +7,7 @@ import { ImageFunctionalityDialogComponent } from '../image-functionality-dialog
   templateUrl: './image-preview-dialog.html',
   styles: [`.mat-dialog-container:{background:transparent !important}
   .px-40 {padding : 0px 40px !important}
-  img{ border-radius:15px !important; }
+  img{ border-radius:15px !important; max-width: 100%; height: auto }
   :focus { outline: none; }
   .viewImage { max-height: 300px; max-width: 300px; }
   .cancel{     position: absolute;
@@ -16,7 +16,12 @@ import { ImageFunctionalityDialogComponent } from '../image-functionality-dialog
     height: 30px;
     z-index:1;
   cursor:pointer}
-  .picsum-img-wrapper { border-radius:15px !important; overflow: hidden }
+  .picsum-img-wrapper { 
+    border-radius:15px !important; 
+    overflow-x: hidden; 
+    max-width: 75vw; 
+    width: auto;
+    max-height: 75vh;}
   `]
 })
 export class ImagePreviewDialogComponent implements OnInit, AfterViewInit {

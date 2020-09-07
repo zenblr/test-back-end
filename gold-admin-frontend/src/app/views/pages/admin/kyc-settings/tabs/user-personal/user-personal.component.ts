@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material';
 import { WebcamDialogComponent } from '../../webcam-dialog/webcam-dialog.component';
 import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
 
 @Component({
   selector: 'kt-user-personal',
@@ -35,7 +36,7 @@ export class UserPersonalComponent implements OnInit {
     private dialog: MatDialog) { }
 
   ngOnInit() {
-   
+
     this.getOccupation();
     this.initForm();
   }
@@ -62,8 +63,6 @@ export class UserPersonalComponent implements OnInit {
   getOccupation() {
     this.userPersonalService.getOccupation().subscribe(res => {
       this.occupations = res.data;
-    }, err => {
-      // console.log(err);
     })
   }
 
@@ -80,22 +79,19 @@ export class UserPersonalComponent implements OnInit {
           customerId: this.controls.customerId.value
         }
         this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
-         
-          // this.profile = res.uploadFile.id
           this.personalForm.controls.profileImage.patchValue(res.uploadFile.path);
           this.personalForm.controls.profileImg.patchValue(res.uploadFile.URL);
           this.ref.detectChanges()
         })
-        // this.controls.
       }
     });
   }
 
   getFileInfo(event, type: any) {
     this.file = event.target.files[0];
-    var name = event.target.files[0].name
-    var ext = name.split('.')
-    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+    // var name = event.target.files[0].name
+    // var ext = name.split('.')
+    if (this.sharedService.fileValidator(event)) {
       const params = {
         reason: 'customer',
         customerId: this.controls.customerId.value
@@ -103,15 +99,10 @@ export class UserPersonalComponent implements OnInit {
       this.sharedService.uploadFile(this.file, params).pipe(
         map(res => {
           if (type == "profile") {
-            // this.profile = res.uploadFile.id;
-            // this.personalForm.get('profileImage').patchValue(event.target.files[0].name);
             this.personalForm.controls.profileImage.patchValue(res.uploadFile.path);
             this.personalForm.controls.profileImg.patchValue(res.uploadFile.URL);
 
           } else if (type == "signature") {
-            // this.signatureJSON = { url: null, isImage: false };
-            // this.signatureJSON.url = res.uploadFile.id;
-            // this.signatureJSON.isImage = true;
             this.personalForm.get('signatureProofFileName').patchValue(event.target.files[0].name);
             this.personalForm.get('signatureProof').patchValue(res.uploadFile.path);
             this.personalForm.get('signatureProofImg').patchValue(res.uploadFile.URL);
@@ -128,9 +119,10 @@ export class UserPersonalComponent implements OnInit {
           this.signature.nativeElement.value = '';
         })
       ).subscribe()
-    } else {
-      this.toastr.error('Upload Valid File Format');
     }
+    // else {
+    //   this.toastr.error('Upload Valid File Format');
+    // }
   }
 
   public calculateAge(dateOfBirth: any) {
@@ -172,7 +164,7 @@ export class UserPersonalComponent implements OnInit {
 
     this.userPersonalService.personalDetails(basicForm).pipe(
       map(res => {
-      
+
         if (res) {
           this.next.emit(true);
         }
@@ -202,6 +194,36 @@ export class UserPersonalComponent implements OnInit {
     //   },
     //   width: "auto"
     // })
+
+    const img = value
+    let images = []
+    images = [this.controls.profileImg.value, this.controls.signatureProofImg.value]
+
+    images = images.filter(e => {
+      let ext = this.sharedService.getExtension(e)
+      return ext !== 'pdf' && e != ''
+    })
+    const index = images.indexOf(img)
+
+    const ext = this.sharedService.getExtension(img)
+    if (ext == 'pdf') {
+      this.dialog.open(PdfViewerComponent, {
+        data: {
+          pdfSrc: img,
+          page: 1,
+          showAll: true
+        },
+        width: "80%"
+      })
+    } else {
+      this.dialog.open(ImagePreviewDialogComponent, {
+        data: {
+          images: images,
+          index: index,
+        },
+        width: "auto"
+      })
+    }
   }
 
   removeImage() {
@@ -217,6 +239,11 @@ export class UserPersonalComponent implements OnInit {
     if (event.target.value == 'null') {
       this.controls.occupationId.patchValue(null)
     }
-    
+  }
+
+  isPdf(image: string): boolean {
+    const ext = this.sharedService.getExtension(image)
+    const isPdf = ext == 'pdf' ? true : false
+    return isPdf
   }
 }
