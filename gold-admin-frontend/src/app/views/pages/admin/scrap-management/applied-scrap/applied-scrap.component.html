@@ -13,10 +13,10 @@
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item?.customer?.customerUniqueId}}</mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="mobile">
+                <!-- <ng-container matColumnDef="mobile">
                     <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item?.customer?.mobileNumber}}</mat-cell>
-                </ng-container>
+                </ng-container> -->
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN Number</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item?.customer?.panCardNumber | uppercase}}</mat-cell>
