@@ -178,6 +178,7 @@ export class InterestCalculatorComponent implements OnInit {
               unsecuredSchemeId: finalLoan.unsecuredLoan.scheme.id,
               unsecuredInterestRate: finalLoan.unsecuredLoan.interestRate
             })
+            this.getUnsecuredScheme()
             for (let index = 0; index < temp.length; index++) {
               temp[index].unsecuredInterestAmount = finalLoan.unsecuredLoan.customerLoanInterest[index].interestAmount
               temp[index].totalAmount = Number(temp[index].securedInterestAmount) +
@@ -212,6 +213,16 @@ export class InterestCalculatorComponent implements OnInit {
         this.ref.detectChanges()
       })
     }
+  }
+
+  getUnsecuredScheme(){
+    this.loanFormService.getUnsecuredScheme(
+      this.controls.partnerId.value,
+      Number(this.controls.unsecuredLoanAmount.value),
+      this.controls.schemeId.value
+      ).subscribe(res=>{
+        this.unSecuredScheme = res.data 
+      })
   }
 
   reset() {
@@ -275,6 +286,7 @@ export class InterestCalculatorComponent implements OnInit {
     } else {
       this.controls.loanStartDate.markAsTouched()
     }
+    this.controls.interestRate.reset()
   }
 
   filterScheme() {
@@ -402,12 +414,13 @@ export class InterestCalculatorComponent implements OnInit {
       this.loanFormService.getInterest(data).subscribe(res => {
         if (res.data) {
           this.paymentType = this.controls.paymentFrequency.value
-          this.dateOfPayment = [];
           this.controls.interestRate.patchValue(res.data.securedinterestRate.interestRate)
           this.controls.unsecuredInterestRate.patchValue(res.data.unsecuredinterestRate.interestRate)
           if (!event)
-            this.calcInterestAmount()
+          this.calcInterestAmount()
         }
+        this.dateOfPayment = [];
+        this.ref.detectChanges()
       })
 
     }

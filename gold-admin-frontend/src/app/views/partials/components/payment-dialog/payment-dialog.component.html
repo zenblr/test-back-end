@@ -156,6 +156,24 @@
                             </div>
                         </div>
 
+                        <div class="row kt-margin-b-15" *ngIf="data.name == 'deposit'">
+                            <div class="col-4 form-label mandatory">
+                                <mat-label class="kt-padding-l-10">Payment Received Date</mat-label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" [matDatepicker]="picker1" (click)="picker1.open()"
+                                    formControlName="paymentReceivedDate" [min]="minDate"
+                                    [class.isError]="controls.paymentReceivedDate.touched && controls.paymentReceivedDate.invalid"
+                                    readonly placeholder="4/5/2020" />
+                                <mat-datepicker #picker1></mat-datepicker>
+
+                                <mat-error
+                                    *ngIf="controls.paymentReceivedDate.touched && controls.paymentReceivedDate.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+
                         <div *ngIf="controls.depositStatus.value">
                             <div class="row kt-margin-b-15">
                                 <div class="col-4 form-label mandatory">
