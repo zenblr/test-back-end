@@ -14,6 +14,8 @@ const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
 let { checkPaidInterest, getCustomerInterestAmount, newSlabRateInterestCalcultaion, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getTransactionPrincipalAmount, calculationDataOneLoan, splitAmountIntoSecuredAndUnsecured } = require('../../utils/loanFunction')
+const razorpay = require('../../utils/razorpay');
+let crypto = require('crypto');
 
 exports.getInterestInfo = async (req, res, next) => {
     let { loanId, masterLoanId } = req.query;
@@ -118,7 +120,7 @@ exports.payableAmountConfirmPartPayment = async (req, res, next) => {
 
 
 exports.partPayment = async (req, res, next) => {
-    let { masterLoanId, paidAmount, paymentDetails } = req.body
+    let { masterLoanId, paidAmount, paymentDetails,transactionDetails } = req.body
     let { bankName, branchName, chequeNumber, depositDate, depositTransactionId, paymentType, transactionId } = paymentDetails
     let createdBy = req.userData.id
     let amount = await getCustomerInterestAmount(masterLoanId);
@@ -130,6 +132,28 @@ exports.partPayment = async (req, res, next) => {
     if (!['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'UPI', 'gateway'].includes(paymentType)) {
         return res.status(400).json({ message: "Invalid payment type" })
     }
+    let signatureVerification = false;
+    let razorPayTransactionId;
+    let isRazorPay = false;
+    if(paymentType == 'gateway'){
+        let razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
+        transactionUniqueId = razerpayData.receipt;
+        const  generated_signature = crypto
+            .createHmac(
+                "SHA256",
+                razorpay.razorPayConfig.key_secret
+            )
+            .update(transactionDetails.razorpay_order_id + "|" + transactionDetails.razorpay_payment_id)
+            .digest("hex");  
+            if (generated_signature == transactionDetails.razorpay_signature){
+                signatureVerification = true;
+                isRazorPay = true;
+                razorPayTransactionId = transactionDetails.razorpay_order_id;
+            } 
+            if(signatureVerification == false){
+                return res.status(422).json({message:"razorpay payment verification failed"});
+            }
+    }
 
     let partPaymentAmount = paidAmount - payableAmount
     if (payableAmount > paidAmount) {
@@ -139,12 +163,14 @@ exports.partPayment = async (req, res, next) => {
 
     paymentDetails.masterLoanId = masterLoanId
     paymentDetails.transactionAmont = paidAmount
-    paymentDetails.depositDate = depositDate
+    paymentDetails.depositDate = moment(depositDate).utcOffset("+05:30").format("YYYY-MM-DD");
     paymentDetails.transactionUniqueId = transactionUniqueId //ye chanege hoyega
+    if(isRazorPay){
+        paymentDetails.razorPayTransactionId = razorPayTransactionId
+    }
     paymentDetails.bankTransactionUniqueId = transactionId
     paymentDetails.depositStatus = "Pending"
     paymentDetails.paymentFor = 'partPayment'
-    paymentDetails.createdBy = createdBy
 
     let data = await sequelize.transaction(async t => {
         let customerLoanTransaction = await models.customerLoanTransaction.create(paymentDetails, { transaction: t })

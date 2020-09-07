@@ -69,7 +69,10 @@ export class AddLeadComponent implements OnInit {
     this.getStates();
     this.getStatus();
     this.getModules();
-    this.disable();
+    if(this.details.userDetails.userTypeId != 4){
+      this.disable();
+    }
+    
 
     this.controls.mobileNumber.valueChanges.subscribe(res => {
       if (this.controls.mobileNumber.valid) {
@@ -355,13 +358,13 @@ export class AddLeadComponent implements OnInit {
   }
   disable() {
     this.leadForm.controls.internalBranchId.disable();
-    this.leadForm.controls.stateId.disable();
-    this.leadForm.controls.cityId.disable();
+   // this.leadForm.controls.stateId.disable();
+   // this.leadForm.controls.cityId.disable();
   }
   enable() {
     this.leadForm.controls.internalBranchId.enable();
-    this.leadForm.controls.stateId.enable();
-    this.leadForm.controls.cityId.enable();
+   // this.leadForm.controls.stateId.enable();
+    ///this.leadForm.controls.cityId.enable();
   }
   onSubmit() {
 
@@ -417,7 +420,9 @@ export class AddLeadComponent implements OnInit {
           const msg = error.error.message;
           this.toastr.errorToastr(msg);
         }, () => {
-          this.disable();
+          if(this.details.userDetails.userTypeId != 4){
+            this.disable();
+          }
         }
       );
     } else if (this.data.action == 'edit') {
@@ -462,7 +467,9 @@ export class AddLeadComponent implements OnInit {
           this.dialogRef.close(true);
         }
       }, () => {
-        this.disable();
+        if(this.details.userDetails.userTypeId != 4){
+          this.disable();
+        }
       });
     }
 

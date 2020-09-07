@@ -40,6 +40,8 @@ export class QuickPayService {
     )
   }
 
+  
+
   confirmPayment(transactionId, status): Observable<any> {
     return this.http.post(`/api/quick-pay/confirm-payment`, { transactionId, status }).pipe(
       map(res => res)

@@ -52,13 +52,15 @@
                 <ng-container matColumnDef="panCardName">
                     <mat-header-cell *matHeaderCellDef>Name on PAN Card</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.kycDetails?.nameOnPanCard ? element?.kycDetails?.nameOnPanCard : '-'}}
+                        <!-- {{element?.kycDetails?.nameOnPanCard ? element?.kycDetails?.nameOnPanCard : '-'}} -->
+                        <span *ngIf = "element?.kycDetails?.nameOnPanCard else blank">{{element?.kycDetails?.nameOnPanCard | titlecase}}</span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="panCardNumber">
                     <mat-header-cell *matHeaderCellDef>PAN Card No.</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.kycDetails?.panCardNumber ? element?.kycDetails?.panCardNumber : '-'}}
+                        <!-- {{element?.kycDetails?.panCardNumber ? element?.kycDetails?.panCardNumber | uppercase : '-'}} -->
+                        <span *ngIf = "element?.kycDetails?.panCardNumber else blank">{{element?.kycDetails?.panCardNumber | uppercase}}</span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="viewPanCard">
@@ -68,6 +70,7 @@
                             (click)="open(element.kycDetails.panCard.URL)">View</span>
                     </mat-cell>
                 </ng-container>
+                <ng-template #blank>-</ng-template>
                 <mat-header-row *matHeaderRowDef="displayedColumns;" style="width: 140%;"></mat-header-row>
 
                 <mat-row *matRowDef="let row; columns: displayedColumns" style="width: 140%;"></mat-row>

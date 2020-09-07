@@ -417,7 +417,8 @@ export class UserReviewComponent implements OnInit {
   identityFileNameArray = [];
   addressFileNameArray1 = [];
   addressFileNameArray2 = [];
-
+  panButton = true;
+  isPanVerified = false;
 
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
@@ -482,7 +483,32 @@ export class UserReviewComponent implements OnInit {
     this.addressIdArray2 = addressArray2.addressProof
     this.customerKycAddressTwo.controls.addressProof.patchValue(this.addressIdArray2);
 
+    this.controls.panCardNumber.valueChanges.subscribe(res => {
+      if (this.controls.panCardNumber.valid) {
+        this.panButton = false;
+        // this.isPanVerified = true;
 
+      } else {
+        this.panButton = true;
+        this.isPanVerified = false;
+      }
+
+      // this.verifyPAN()
+    });
+
+    this.controls.panType.valueChanges.subscribe(res => {
+      if (res == 'form60') {
+        this.controls.panCardNumber.reset()
+        this.controls.panCardNumber.patchValue('')
+        this.controls.panCardNumber.clearValidators()
+        this.controls.panCardNumber.updateValueAndValidity()
+      }
+      if (res == 'pan') {
+        this.controls.form60.reset()
+        this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
+        this.controls.panCardNumber.updateValueAndValidity()
+      }
+    });
 
     if (!this.viewOnly || this.userType == 5) {
       this.reviewForm.disable();
@@ -496,11 +522,16 @@ export class UserReviewComponent implements OnInit {
 
   initForm() {
     this.reviewForm = this.fb.group({
+      id: [this.data.customerKycReview.id],
       profileImage: [this.data.customerKycReview.customerKycPersonal.profileImage, [Validators.required]],
       firstName: [this.data.customerKycReview.firstName, [Validators.required]],
       lastName: [this.data.customerKycReview.lastName, [Validators.required]],
       mobileNumber: [this.data.customerKycReview.mobileNumber, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       panCardNumber: [this.data.customerKycReview.panCardNumber, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
+      panType: [this.data.customerKycReview.panType, Validators.required],
+      form60: [],
+      panImage: [],
+      panImg: [this.data.customerKycReview.panImg],
       identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
       identityProof: [, [Validators.required]],
       identityProofFileName: [],
@@ -549,14 +580,17 @@ export class UserReviewComponent implements OnInit {
       identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
       identityProof: [, [Validators.required]],
       identityProofNumber: [this.data.customerKycReview.customerKycPersonal.identityProofNumber, [Validators.required]],
-
+      panCardNumber: [this.data.customerKycReview.panCardNumber]
     })
     if (this.data.customerKycReview.customerKycPersonal.occupation !== null) {
       this.customerKycPersonal.get('occupationId').patchValue(this.data.customerKycReview.customerKycPersonal.occupation.id)
     }
     if (this.data.customerKycReview.customerKycPersonal.signatureProofData !== null) {
       this.customerKycPersonal.controls.signatureProof.patchValue(this.data.customerKycReview.customerKycPersonal.signatureProof)
+    }
 
+    if (this.data.customerKycReview.panCardNumber) {
+      this.isPanVerified = true
     }
 
     this.ref.detectChanges()
@@ -589,32 +623,44 @@ export class UserReviewComponent implements OnInit {
 
   submit() {
 
-    this.customerKycPersonal.patchValue({
-      identityTypeId: this.reviewForm.get('identityTypeId').value,
-      identityProofNumber: this.reviewForm.get('identityProofNumber').value,
-    })
+    // this.customerKycPersonal.patchValue({
+    //   identityTypeId: this.reviewForm.get('identityTypeId').value,
+    //   identityProofNumber: this.reviewForm.get('identityProofNumber').value,
+    //   panCardNumber: this.reviewForm.get('panCardNumber').value.toUpperCase()
+    // })
 
     let customerKycAddress = [];
     customerKycAddress.push(this.customerKycAddressOne.value, this.customerKycAddressTwo.value);
+
+    if (this.reviewForm.invalid || this.customerKycPersonal.invalid || this.customerKycAddressOne.invalid || this.customerKycAddressTwo.invalid) {
+      this.customerKycPersonal.markAllAsTouched();
+      this.customerKycAddressOne.markAllAsTouched();
+      this.customerKycAddressTwo.markAllAsTouched();
+      this.reviewForm.markAllAsTouched()
+      // this.customerKycBank.markAllAsTouched();
+      return;
+    }
+
+    if (!this.isPanVerified && this.reviewForm.controls.panType.value == 'pan') {
+      return this.toastr.error('PAN is not Verfied')
+    }
 
     const data = {
       customerId: this.data.customerId,
       customerKycId: this.data.customerKycId,
       customerKycPersonal: this.customerKycPersonal.value,
       customerKycAddress: customerKycAddress,
+      customerKycReview: this.reviewForm.value
     }
 
-    if (this.customerKycPersonal.invalid || this.customerKycAddressOne.invalid || this.customerKycAddressTwo.invalid) {
-      this.customerKycPersonal.markAllAsTouched();
-      this.customerKycAddressOne.markAllAsTouched();
-      this.customerKycAddressTwo.markAllAsTouched();
-      // this.customerKycBank.markAllAsTouched();
-      return;
-    }
+    this.customerKycPersonal.patchValue({
+      identityTypeId: this.reviewForm.get('identityTypeId').value,
+      identityProofNumber: this.reviewForm.get('identityProofNumber').value,
+      panCardNumber: this.reviewForm.get('panCardNumber').value.toUpperCase()
+    })
 
-    // this.customerKycAddressOne.enable()
-    // this.customerKycAddressTwo.enable()
-    // 
+    this.reviewForm.controls.panCardNumber.patchValue(this.reviewForm.get('panCardNumber').value.toUpperCase())
+
     this.userBankService.kycSubmit(data).pipe(
       map(res => {
         this.next.emit(true);
@@ -675,12 +721,17 @@ export class UserReviewComponent implements OnInit {
       this.ref.detectChanges();
     })
   }
+  verifyPAN() {
+    this.isPanVerified = true;
+  }
+
 
   removeImages(index, type) {
 
-    if (this.userType == 5) {
-      return;
-    }
+    // if (this.userType == 5) {
+    //   return;
+    // }
+
     if (type == 'identityProof') {
       this.identityImageArray.splice(index, 1)
       this.identityIdArray.splice(index, 1)
@@ -713,6 +764,13 @@ export class UserReviewComponent implements OnInit {
     // this.data.customerKycReview.customerKycBank[0].passbookProof.splice(index, 1)
     // this.customerKycBank.patchValue({ passbookProofFileName: '' });
     // }
+    else if (type == 'panType') {
+      this.data.customerKycReview.panImage = ''
+      this.reviewForm.controls.panCardNumber.patchValue(null)
+      this.reviewForm.controls.form60.patchValue(null)
+      this.reviewForm.controls.panImage.patchValue(null)
+      this.reviewForm.controls.panImg.patchValue(null)
+    }
   }
 
   getFileInfo(event, type: any) {
@@ -728,6 +786,13 @@ export class UserReviewComponent implements OnInit {
         reason: 'customer',
         customerId: this.customerKycAddressOne.controls.customerId.value
       }
+
+      // const params = {
+      //   reason: 'lead',
+      //   customerId:  this.reviewForm.controls.id.value
+      // }
+
+
       this.sharedService.uploadFile(this.file, params).pipe(
         map(res => {
 
@@ -763,6 +828,10 @@ export class UserReviewComponent implements OnInit {
                   this.data.customerKycReview.customerKycPersonal.profileImg = res.uploadFile.URL;
                   this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.path })
                   this.ref.markForCheck();
+                } else if (type == "panType") {
+                  this.reviewForm.controls.form60.patchValue(event.target.files[0].name)
+                  this.reviewForm.controls.panImage.patchValue(res.uploadFile.path)
+                  this.reviewForm.controls.panImg.patchValue(res.uploadFile.URL)
                 }
                 else {
                   this.toastr.error("Cannot upload more than two images")

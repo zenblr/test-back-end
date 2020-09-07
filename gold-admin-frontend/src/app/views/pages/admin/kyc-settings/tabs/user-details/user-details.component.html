@@ -97,7 +97,8 @@
 								class="form-control" formControlName="firstName" [class.isError]="
 									controls.firstName.touched &&
 									controls.firstName.invalid
-								" [readOnly]="true" style="text-transform: capitalize;" />
+								"  />
+								<!-- [readOnly]="true" style="text-transform: capitalize;" -->
 							<mat-error *ngIf="
 									controls.firstName.errors?.required &&
 									controls.firstName.touched
@@ -110,8 +111,8 @@
 								class="form-control" formControlName="lastName" [class.isError]="
 									controls.lastName.touched &&
 									controls.lastName.invalid
-								" [readOnly]="true" style="text-transform: capitalize;" />
-
+								"  />
+								<!-- [readOnly]="true" style="text-transform: capitalize;" -->
 							<mat-error *ngIf="
 									controls.lastName.errors?.required &&
 									controls.lastName.touched
@@ -191,7 +192,7 @@
 						<div class="col-8">
 							<div class="input-group mb-3">
 								<input type="text" class="form-control" placeholder="Select File"
-									aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
+									aria-label="Recipient's username" aria-describedby="basic-addon2"
 									formControlName="form60"
 									[class.isError]="controls.form60.touched && controls.form60.invalid" />
 								<div class="input-group-append">

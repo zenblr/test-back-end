@@ -116,12 +116,20 @@
                             </div>
                             <div class="col-6">
                                 <div class="row">
-                                    <div class="col-4 form-label">
-                                        <label class="text-color mandatory kt-padding-l-10">Date & Time</label>
+                                    <div class="col-4 form-label mandatory">
+                                        <mat-label class="kt-padding-l-10">Deposit Date</mat-label>
                                     </div>
-                                    <div class="col-6">
-                                        <input type="text" class="form-control" formControlName="depositDate"
-                                            value="{{currentDate| date:'medium'}}" readonly>
+                                    <div class="col-8">
+                                        <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
+                                            formControlName="depositDate" [min]="minDate"
+                                            [class.isError]="controls.depositDate.touched && controls.depositDate.invalid"
+                                            readonly placeholder="4/5/2020" />
+                                        <mat-datepicker #picker></mat-datepicker>
+    
+                                        <mat-error
+                                            *ngIf="controls.depositDate.touched && controls.depositDate.errors?.required">
+                                            Required field
+                                        </mat-error>
                                     </div>
                                 </div>
                             </div>
@@ -175,12 +183,20 @@
                         <div class="row kt-margin-t-15">
                             <div class="col-6">
                                 <div class="row">
-                                    <div class="col-4 form-label">
-                                        <label class="text-color mandatory kt-padding-l-10">Date & Time</label>
+                                    <div class="col-4 form-label mandatory">
+                                        <mat-label class="kt-padding-l-10">Deposit Date</mat-label>
                                     </div>
-                                    <div class="col-6">
-                                        <input type="text" class="form-control" formControlName="depositDate"
-                                            value="{{currentDate| date:'medium'}}" readonly>
+                                    <div class="col-8">
+                                        <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
+                                            formControlName="depositDate" [min]="minDate"
+                                            [class.isError]="controls.depositDate.touched && controls.depositDate.invalid"
+                                            readonly placeholder="4/5/2020" />
+                                        <mat-datepicker #picker></mat-datepicker>
+    
+                                        <mat-error
+                                            *ngIf="controls.depositDate.touched && controls.depositDate.errors?.required">
+                                            Required field
+                                        </mat-error>
                                     </div>
                                 </div>
                             </div>
@@ -191,15 +207,15 @@
                                     </div>
                                     <div class="col-6">
                                         <input type="text" class="form-control" placeholder="1050"
-                                            formControlName="totalInitialAmount"
-                                            [class.isError]="controls.totalInitialAmount.touched && controls.totalInitialAmount.invalid"
+                                            formControlName="transactionAmount"
+                                            [class.isError]="controls.transactionAmount.touched && controls.transactionAmount.invalid"
                                             readonly>
                                         <mat-error
-                                            *ngIf="controls.totalInitialAmount.errors?.required && controls.totalInitialAmount.touched">
+                                            *ngIf="controls.transactionAmount.errors?.required && controls.transactionAmount.touched">
                                             Required field
                                         </mat-error>
                                         <mat-error
-                                            *ngIf="controls.totalInitialAmount.errors?.pattern && controls.totalInitialAmount.touched">
+                                            *ngIf="controls.transactionAmount.errors?.pattern && controls.transactionAmount.touched">
                                             <small>Invalid Input</small>
                                         </mat-error>
                                     </div>
