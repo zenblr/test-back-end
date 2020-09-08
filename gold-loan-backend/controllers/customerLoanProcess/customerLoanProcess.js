@@ -276,23 +276,8 @@ exports.checkForLoanType = async (req, res, next) => {
 
     let ltvPercent = await models.globalSetting.findAll()
 
-    let securedScheme = await models.scheme.findOne({
-        where: { id: securedSchemeId },
-        // attributes: ['id'],
-        order: [
-            [models.schemeInterest, 'days', 'asc']
-        ],
-        include: [{
-            model: models.schemeInterest,
-            as: 'schemeInterest',
-            attributes: ['days', 'interestRate']
-        }]
-    })
+    let securedScheme = await getSecuredScheme(securedSchemeId)
 
-    // if (securedScheme.isSplitAtBeginning) {
-
-    //     fullAmount = loanAmount       //During split at the beginning consider loan amount as full amount 
-    // }
 
     let secureSchemeMaximumAmtAllowed = (securedScheme.maximumPercentageAllowed / 100)
 
@@ -307,35 +292,8 @@ exports.checkForLoanType = async (req, res, next) => {
             unsecuredSchemeAmount = loanAmount - securedLoanAmount
         }
 
-        unsecuredScheme = await models.partner.findOne({
-            where: { id: partnerId },
-            // attributes: ['id'],
-            order: [
-                [models.scheme, 'id', 'asc'],
-                [models.scheme, models.schemeInterest, 'days', 'asc']
-            ],
-            include: [
-                {
-                    model: models.scheme,
-                    // attributes: ['id', 'default'],
-                    where: {
-                        isActive: true,
-                        schemeType: 'unsecured',
-                        [Op.and]: {
-                            schemeAmountStart: { [Op.lte]: unsecuredSchemeAmount },
-                            schemeAmountEnd: { [Op.gte]: unsecuredSchemeAmount },
-                        }
-                    },
-                    include: [
-                        {
-                            model: models.schemeInterest,
-                            as: 'schemeInterest',
-                            attributes: ['days', 'interestRate']
-                        }
-                    ]
-                }
-            ]
-        })
+        unsecuredScheme = await getUnsecuredScheme(partnerId, unsecuredSchemeAmount)
+
         let unsecured = unsecuredScheme.schemes
         var unsecuredSchemeApplied;
 
@@ -378,7 +336,7 @@ exports.checkForLoanType = async (req, res, next) => {
                     }
                 }
                 unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
-                
+
                 processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
 
                 let newUnsecuredScheme = await selectScheme(unsecured, securedScheme)
@@ -408,7 +366,7 @@ exports.checkForLoanType = async (req, res, next) => {
                     securedLoanAmount = Math.round(fullAmount * secureSchemeMaximumAmtAllowed)
 
                 }
-                
+
                 unsecuredAmount = Number((Number(loanAmount) - Number(securedLoanAmount)).toFixed(2))
 
                 processingCharge = await processingChargeSecuredScheme(securedLoanAmount, securedScheme, unsecuredSchemeApplied, unsecuredAmount)
@@ -532,22 +490,15 @@ exports.generateInterestTable = async (req, res, next) => {
     let length = (tenure * 30) / paymentFrequency
     console.log(length)
     for (let index = 0; index < Number(length); index++) {
+        // let date = new Date("2020/03/08")
         let date = new Date()
         let data = {
             emiDueDate: moment(new Date(date.setDate(date.getDate() + (paymentFrequency * (index + 1)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
-            month: "Month " + (index + 1).toString(),
+            month: "Month " + ((paymentFrequency / 30) * (index + 1)).toString(),
             paymentType: paymentFrequency,
             securedInterestAmount: securedInterestAmount,
             unsecuredInterestAmount: unsecuredInterestAmount,
             totalAmount: Number(securedInterestAmount) + Number(unsecuredInterestAmount)
-        }
-        if (Number(paymentFrequency) != 30) {
-            if (index == 0) {
-                data.month = "Month 1"
-            }
-            else {
-                data.month = "Month " + (((paymentFrequency / 30) * (index)) + 1)
-            }
         }
         interestTable.push(data)
     }
@@ -557,7 +508,8 @@ exports.generateInterestTable = async (req, res, next) => {
         const lastElementOfTable = interestTable[interestTable.length - 1]
         const oneMonthSecured = securedInterestAmount / (paymentFrequency / 30)
         let secure = (oneMonthSecured * noOfMonths).toFixed(2)
-        lastElementOfTable.securedInterestAmount = secure
+        lastElementOfTable.securedInterestAmount = secure;
+        lastElementOfTable.month = "Month " + tenure;
 
         if (isUnsecuredSchemeApplied) {
             const oneMonthUnsecured = unsecuredInterestAmount / (paymentFrequency / 30)
@@ -597,18 +549,18 @@ exports.unsecuredTableGeneration = async (req, res, next) => {
         let date = new Date()
         let data = {
             emiDueDate: moment(new Date(date.setDate(date.getDate() + (paymentFrequency * (index + 1)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
-            month: "Month " + (index + 1).toString(),
+            month: "Month " + ((paymentFrequency / 30) * (index + 1)).toString(),
             paymentType: paymentFrequency,
             unsecuredInterestAmount: unsecuredInterestAmount,
         }
-        if (Number(paymentFrequency) != 30) {
-            if (index == 0) {
-                data.month = "Month 1"
-            }
-            else {
-                data.month = "Month " + (((paymentFrequency / 30) * (index)) + 1)
-            }
-        }
+        // if (Number(paymentFrequency) != 30) {
+        //     if (index == 0) {
+        //         data.month = "Month 1"
+        //     }
+        //     else {
+        //         data.month = "Month " + (((paymentFrequency / 30) * (index)) + 1)
+        //     }
+        // }
         interestTable.push(data)
     }
 
@@ -617,7 +569,7 @@ exports.unsecuredTableGeneration = async (req, res, next) => {
 
         let unsecure = (unsecuredInterestAmount / Math.ceil(length)).toFixed(2)
         lastElementOfTable.unsecuredInterestAmount = unsecure
-
+        lastElementOfTable.month = "Month " + tenure;
 
     }
 
@@ -631,6 +583,86 @@ async function interestCalcultaion(amount, interestRate, paymentFrequency) {
     let interest = ((Number(amount) * (Number(interestRate) * 12 / 100)) * Number(paymentFrequency)
         / 360).toFixed(2)
     return interest
+}
+
+// function for unsecured scheme
+
+exports.getUnsecuredScheme = async (req, res, next) => {
+
+    let { partnerId, amount, securedSchemeId } = req.query
+    amount = Number(amount)
+
+    let securedScheme = await getSecuredScheme(securedSchemeId)
+
+    let unsecuredScheme = await getUnsecuredScheme(partnerId, amount)
+
+
+    let unsecured = unsecuredScheme.schemes
+    var unsecuredSchemeApplied;
+
+    var defaultUnsecuredScheme = unsecuredScheme.schemes.filter(scheme => { return scheme.default })
+    let defaultFind = await selectScheme(defaultUnsecuredScheme, securedScheme)
+
+    if (!check.isEmpty(defaultFind)) {
+        unsecuredSchemeApplied = defaultFind[0]
+    } else {
+        let checkScheme = await selectScheme(unsecured, securedScheme)
+        if (checkScheme.length === 0) {
+            return res.status(400).json({ message: "No Unsecured Scheme Availabe" })
+        }
+        unsecuredSchemeApplied = checkScheme
+    }
+    return res.status(200).json({ data: unsecuredSchemeApplied })
+}
+
+async function getSecuredScheme(securedSchemeId) {
+    let securedScheme = await models.scheme.findOne({
+        where: { id: securedSchemeId },
+        // attributes: ['id'],
+        order: [
+            [models.schemeInterest, 'days', 'asc']
+        ],
+        include: [{
+            model: models.schemeInterest,
+            as: 'schemeInterest',
+            attributes: ['days', 'interestRate']
+        }]
+    })
+    return securedScheme
+}
+
+
+async function getUnsecuredScheme(partnerId, amount) {
+    unsecuredScheme = await models.partner.findOne({
+        where: { id: partnerId },
+        // attributes: ['id'],
+        order: [
+            [models.scheme, 'id', 'asc'],
+            [models.scheme, models.schemeInterest, 'days', 'asc']
+        ],
+        include: [
+            {
+                model: models.scheme,
+                // attributes: ['id', 'default'],
+                where: {
+                    isActive: true,
+                    schemeType: 'unsecured',
+                    [Op.and]: {
+                        schemeAmountStart: { [Op.lte]: amount },
+                        schemeAmountEnd: { [Op.gte]: amount },
+                    }
+                },
+                include: [
+                    {
+                        model: models.schemeInterest,
+                        as: 'schemeInterest',
+                        attributes: ['days', 'interestRate']
+                    }
+                ]
+            }
+        ]
+    })
+    return unsecuredScheme
 }
 
 //FUNCTION for final loan calculator
@@ -1544,7 +1576,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
         await sequelize.transaction(async (t) => {
 
             if (isUnsecuredSchemeApplied) {
-               
+
                 let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, debit: processingCharge, description: `Processing charges debit` }, { transaction: t })
                 await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${processingDebit.id}` }, { where: { id: processingDebit.id }, transaction: t })
 
@@ -1555,7 +1587,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
                 let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: fullSecuredAmount, description: `Loan amount disbursed to customer` }, { transaction: t })
                 await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
             } else {
-                
+
                 let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: processingCharge, description: `Processing charges debit` }, { transaction: t })
                 await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${processingDebit.id}` }, { where: { id: processingDebit.id }, transaction: t })
 
@@ -1563,7 +1595,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
                 let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: amountPaid, description: `Loan amount disbursed to customer` }, { transaction: t })
                 await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
 
-              
+
             }
 
             await models.customerLoanMaster.update({ loanStartDate: newStartDate, loanEndDate: newEndDate, loanStageId: stageId.id }, { where: { id: masterLoanId }, transaction: t })

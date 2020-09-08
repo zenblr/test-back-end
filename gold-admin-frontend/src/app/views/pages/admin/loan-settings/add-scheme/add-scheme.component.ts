@@ -247,6 +247,10 @@ export class AddSchemeComponent implements OnInit {
     if (index) {
       currentSlab = this.schemeInterest.at(index)
       previousSlab = this.schemeInterest.at(index - 1)
+    } else {
+      if (this.schemeInterest.at(index).get('days').value % 30 !== 0) {
+        this.schemeInterest.at(index).get('days').setErrors({ 'incorrect': true })
+      }
     }
 
     if (!currentSlab && !previousSlab) return
@@ -254,7 +258,7 @@ export class AddSchemeComponent implements OnInit {
     const previousSlabControls = previousSlab.controls
     const currentSlabControls = currentSlab.controls
 
-    if (previousSlabControls.days.value >= currentSlabControls.days.value || (currentSlabControls.days.value % 30)) {
+    if (previousSlabControls.days.value >= currentSlabControls.days.value || (currentSlabControls.days.value % 30 !== 0)) {
       currentSlabControls.days.setErrors({ 'incorrect': true })
     } else {
       currentSlabControls.days.setErrors(null)

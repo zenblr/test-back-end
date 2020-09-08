@@ -197,6 +197,7 @@ export class ScrapApplicationFormComponent implements OnInit {
   }
 
   customerDetails(event) {
+    console.log(event.controls.customerUniqueId.value)
     this.scrapApplicationFormService.customerDetails(event.controls.customerUniqueId.value).pipe(
       map(res => {
         this.customerDetail = res.customerData

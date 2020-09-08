@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map, tap,catchError } from 'rxjs/operators';
+import { map, tap, catchError } from 'rxjs/operators';
 import printJS from 'print-js';
 import { ToastrService } from 'ngx-toastr';
 
@@ -146,7 +146,7 @@ export class LoanApplicationFormService {
 
   getPdf(id): Observable<any> {
     return this.http.get(`/api/loan-process/get-print-details?customerLoanId=${id}`,
-    { responseType: "arraybuffer" }
+      { responseType: "arraybuffer" }
     ).pipe(
       tap(res => {
         if (res) {
@@ -170,6 +170,12 @@ export class LoanApplicationFormService {
           this.toastr.error(err.error.message);
         throw (err);
       })
+    )
+  }
+
+  getUnsecuredScheme(partnerId, amount, securedSchemeId): Observable<any> {
+    return this.http.get(`/api/loan-process/unsecured-scheme?partnerId=${partnerId}&amount=${amount}&securedSchemeId=${securedSchemeId}`).pipe(
+      map(res => res)
     )
   }
 

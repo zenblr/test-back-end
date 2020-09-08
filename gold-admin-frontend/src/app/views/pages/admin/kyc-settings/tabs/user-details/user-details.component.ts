@@ -8,6 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
 
 @Component({
   selector: 'kt-user-details',
@@ -27,6 +28,9 @@ export class UserDetailsComponent implements OnInit {
   // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   showVerifyPAN = false;
+  pdf = {
+    panImg: false
+  }
 
 
   constructor(
@@ -37,7 +41,9 @@ export class UserDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private sharedServices: SharedService,
     private dialog: MatDialog,
-    private toast: ToastrService) { }
+    private toast: ToastrService,
+    private sharedService: SharedService
+  ) { }
 
   ngOnInit() {
     this.initForm();
@@ -138,11 +144,10 @@ export class UserDetailsComponent implements OnInit {
         this.refCode = res.referenceCode;
         this.controls.referenceCode.patchValue(this.refCode);
         this.userBasicForm.patchValue(res.customerInfo);
-        this.controls.panImage.patchValue(res.customerInfo.panImage);
-        this.controls.panImg.patchValue(res.customerInfo.panImg);
+        
         if (res.customerInfo.panCardNumber !== null) {
           //this.controls.panCardNumber.disable();
-          this.controls.panType.disable();
+          //this.controls.panType.disable();
           this.isPanVerified = true;
         } else {
           this.showVerifyPAN = true;
@@ -182,9 +187,9 @@ export class UserDetailsComponent implements OnInit {
   }
 
   getFileInfo(event) {
-    var name = event.target.files[0].name
-    var ext = name.split('.')
-    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg' || ext[ext.length - 1] == 'pdf') {
+    // var name = event.target.files[0].name
+    // var ext = name.split('.')
+    if (this.sharedService.fileValidator(event)) {
       const params = {
         reason: 'lead',
         customerId: this.controls.id.value
@@ -195,24 +200,49 @@ export class UserDetailsComponent implements OnInit {
             this.controls.form60.patchValue(event.target.files[0].name)
             this.controls.panImage.patchValue(res.uploadFile.path)
             this.controls.panImg.patchValue(res.uploadFile.URL)
+            const ext = this.sharedService.getExtension(event.target.files[0].name)
+
+            this.pdf.panImg = (ext === 'pdf') ? true : false
           }
         }), catchError(err => {
           throw err
         })).subscribe()
-    } else {
-      this.toast.error('Upload Valid File Format')
     }
+    // else {
+    //   this.toast.error('Upload Valid File Format')
+    // }
   }
 
-  preview() {
-    let img = [this.controls.panImage.value]
-    this.dialog.open(ImagePreviewDialogComponent, {
-      data: {
-        images: img,
-        index: 0
-      },
-      width: "auto"
-    })
+  preview(value) {
+    // let img = [this.controls.panImage.value]
+    // this.dialog.open(ImagePreviewDialogComponent, {
+    //   data: {
+    //     images: img,
+    //     index: 0
+    //   },
+    //   width: "auto"
+    // })
+
+    const img = value
+    const ext = this.sharedService.getExtension(img)
+    if (ext == 'pdf') {
+      this.dialog.open(PdfViewerComponent, {
+        data: {
+          pdfSrc: img,
+          page: 1,
+          showAll: true
+        },
+        width: "80%"
+      })
+    } else {
+      this.dialog.open(ImagePreviewDialogComponent, {
+        data: {
+          images: [img],
+          index: 0,
+        },
+        width: "auto"
+      })
+    }
   }
 
 
@@ -241,6 +271,10 @@ export class UserDetailsComponent implements OnInit {
       this.userBasicForm.markAllAsTouched()
       return
     }
+    if(!this.isPanVerified && this.userBasicForm.controls.panType.value == 'pan'){
+      return this.toastr.error('PAN is not Verfied')
+     
+    }
     this.userBasicForm.enable()
     if (this.controls.panCardNumber.value) {
       const PAN = this.controls.panCardNumber.value.toUpperCase();
@@ -264,16 +298,16 @@ export class UserDetailsComponent implements OnInit {
         throw (err);
       }),
       finalize(() => {
-        this.userBasicForm.disable();
-        this.userBasicForm.controls.firstName.enable()
-        this.userBasicForm.controls.lastName.enable()
-        this.userBasicForm.controls.mobileNumber.enable()
-        this.userBasicForm.controls.panCardNumber.enable()
+        this.userBasicForm.controls.id.disable();
+        this.userBasicForm.controls.otp.disable();
+        this.userBasicForm.controls.referenceCode.disable();
+        this.userBasicForm.enable()
       })
     ).subscribe();
   }
 
   remove() {
+    this.controls.panCardNumber.patchValue(null)
     this.controls.form60.patchValue(null)
     this.controls.panImage.patchValue(null)
     this.controls.panImg.patchValue(null)

@@ -8,6 +8,7 @@ import { AppliedKycService } from '../../../../../../core/applied-kyc/services/a
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { WebcamDialogComponent } from '../../webcam-dialog/webcam-dialog.component';
 import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
 
 @Component({
   selector: 'kt-user-review',
@@ -416,7 +417,8 @@ export class UserReviewComponent implements OnInit {
   identityFileNameArray = [];
   addressFileNameArray1 = [];
   addressFileNameArray2 = [];
-
+  panButton = true;
+  isPanVerified = false;
 
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
@@ -436,7 +438,7 @@ export class UserReviewComponent implements OnInit {
     this.userType = res.userDetails.userTypeId;
 
     if (this.modalData.action) {
-     
+
       this.viewOnly = false;
     }
   }
@@ -481,7 +483,18 @@ export class UserReviewComponent implements OnInit {
     this.addressIdArray2 = addressArray2.addressProof
     this.customerKycAddressTwo.controls.addressProof.patchValue(this.addressIdArray2);
 
+    this.controls.panCardNumber.valueChanges.subscribe(res => {
+      if (this.controls.panCardNumber.valid) {
+        this.panButton = false;
+        // this.isPanVerified = true;
 
+      } else {
+        this.panButton = true;
+        this.isPanVerified = false;
+      }
+
+      // this.verifyPAN()
+    });
 
     if (!this.viewOnly || this.userType == 5) {
       this.reviewForm.disable();
@@ -495,11 +508,16 @@ export class UserReviewComponent implements OnInit {
 
   initForm() {
     this.reviewForm = this.fb.group({
+      id: [this.data.customerKycReview.id],
       profileImage: [this.data.customerKycReview.customerKycPersonal.profileImage, [Validators.required]],
       firstName: [this.data.customerKycReview.firstName, [Validators.required]],
       lastName: [this.data.customerKycReview.lastName, [Validators.required]],
       mobileNumber: [this.data.customerKycReview.mobileNumber, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       panCardNumber: [this.data.customerKycReview.panCardNumber, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
+      panType: [this.data.customerKycReview.panType, Validators.required],
+      form60: [],
+      panImage: [],
+      panImg: [this.data.customerKycReview.panImg, [Validators.required]],
       identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
       identityProof: [, [Validators.required]],
       identityProofFileName: [],
@@ -548,17 +566,40 @@ export class UserReviewComponent implements OnInit {
       identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
       identityProof: [, [Validators.required]],
       identityProofNumber: [this.data.customerKycReview.customerKycPersonal.identityProofNumber, [Validators.required]],
-
+      panCardNumber: [this.data.customerKycReview.panCardNumber]
     })
     if (this.data.customerKycReview.customerKycPersonal.occupation !== null) {
       this.customerKycPersonal.get('occupationId').patchValue(this.data.customerKycReview.customerKycPersonal.occupation.id)
     }
     if (this.data.customerKycReview.customerKycPersonal.signatureProofData !== null) {
       this.customerKycPersonal.controls.signatureProof.patchValue(this.data.customerKycReview.customerKycPersonal.signatureProof)
+    }
 
+    this.panTypeValidation();
+
+    if (this.data.customerKycReview.panCardNumber) {
+      this.isPanVerified = true
+      this.ref.detectChanges()
     }
 
     this.ref.detectChanges()
+  }
+
+  panTypeValidation() {
+    // this.controls.panType.valueChanges.subscribe(res => {
+    const value = this.controls.panType.value
+    if (value == 'form60') {
+      this.controls.panCardNumber.reset()
+      this.controls.panCardNumber.patchValue('')
+      this.controls.panCardNumber.clearValidators()
+      this.controls.panCardNumber.updateValueAndValidity()
+    }
+    if (value == 'pan') {
+      this.controls.form60.reset()
+      this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
+      this.controls.panCardNumber.updateValueAndValidity()
+    }
+    // });
   }
 
   public calculateAge(dateOfBirth: any) {
@@ -588,39 +629,52 @@ export class UserReviewComponent implements OnInit {
 
   submit() {
 
-    this.customerKycPersonal.patchValue({
-      identityTypeId: this.reviewForm.get('identityTypeId').value,
-      identityProofNumber: this.reviewForm.get('identityProofNumber').value,
-    })
+    // this.customerKycPersonal.patchValue({
+    //   identityTypeId: this.reviewForm.get('identityTypeId').value,
+    //   identityProofNumber: this.reviewForm.get('identityProofNumber').value,
+    //   panCardNumber: this.reviewForm.get('panCardNumber').value.toUpperCase()
+    // })
 
     let customerKycAddress = [];
     customerKycAddress.push(this.customerKycAddressOne.value, this.customerKycAddressTwo.value);
+
+    if (this.reviewForm.invalid || this.customerKycPersonal.invalid || this.customerKycAddressOne.invalid || this.customerKycAddressTwo.invalid) {
+      this.customerKycPersonal.markAllAsTouched();
+      this.customerKycAddressOne.markAllAsTouched();
+      this.customerKycAddressTwo.markAllAsTouched();
+      this.reviewForm.markAllAsTouched()
+      // this.customerKycBank.markAllAsTouched();
+      return;
+    }
+
+    if (!this.isPanVerified && this.reviewForm.controls.panType.value == 'pan') {
+      return this.toastr.error('PAN is not Verfied')
+    }
+
+    this.customerKycPersonal.patchValue({
+      identityTypeId: this.reviewForm.get('identityTypeId').value,
+      identityProofNumber: this.reviewForm.get('identityProofNumber').value,
+      panCardNumber: this.reviewForm.get('panCardNumber').value ? this.reviewForm.get('panCardNumber').value.toUpperCase() : null
+    })
+
+    this.reviewForm.patchValue({
+      panCardNumber: this.reviewForm.get('panCardNumber').value ? this.reviewForm.get('panCardNumber').value.toUpperCase() : null
+    })
 
     const data = {
       customerId: this.data.customerId,
       customerKycId: this.data.customerKycId,
       customerKycPersonal: this.customerKycPersonal.value,
       customerKycAddress: customerKycAddress,
-      customerKycReview:this.reviewForm.value
+      customerKycBasicDetails: this.reviewForm.value
     }
 
-    if (this.customerKycPersonal.invalid || this.customerKycAddressOne.invalid || this.customerKycAddressTwo.invalid) {
-      this.customerKycPersonal.markAllAsTouched();
-      this.customerKycAddressOne.markAllAsTouched();
-      this.customerKycAddressTwo.markAllAsTouched();
-      // this.customerKycBank.markAllAsTouched();
-      return;
-    }
-
-    // this.customerKycAddressOne.enable()
-    // this.customerKycAddressTwo.enable()
-    // 
     this.userBankService.kycSubmit(data).pipe(
       map(res => {
         this.next.emit(true);
-      }),catchError(err => {
+      }), catchError(err => {
         if (err.error.message)
-        this.toastr.error(err.error.message);
+          this.toastr.error(err.error.message);
         throw (err)
       })
     ).subscribe()
@@ -675,12 +729,17 @@ export class UserReviewComponent implements OnInit {
       this.ref.detectChanges();
     })
   }
+  verifyPAN() {
+    this.isPanVerified = true;
+  }
+
 
   removeImages(index, type) {
-  
-    if (this.userType == 5) {
-      return;
-    }
+
+    // if (this.userType == 5) {
+    //   return;
+    // }
+
     if (type == 'identityProof') {
       this.identityImageArray.splice(index, 1)
       this.identityIdArray.splice(index, 1)
@@ -713,6 +772,14 @@ export class UserReviewComponent implements OnInit {
     // this.data.customerKycReview.customerKycBank[0].passbookProof.splice(index, 1)
     // this.customerKycBank.patchValue({ passbookProofFileName: '' });
     // }
+    else if (type == 'panType') {
+      this.data.customerKycReview.panImage = ''
+      this.reviewForm.controls.panCardNumber.patchValue(null)
+      this.customerKycPersonal.controls.panCardNumber.patchValue(null)
+      this.reviewForm.controls.form60.patchValue(null)
+      this.reviewForm.controls.panImage.patchValue(null)
+      this.reviewForm.controls.panImg.patchValue(null)
+    }
   }
 
   getFileInfo(event, type: any) {
@@ -720,14 +787,21 @@ export class UserReviewComponent implements OnInit {
       return;
     }
     this.file = event.target.files[0];
-    var name = event.target.files[0].name
-    
-    var ext = name.split('.')
-    if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
+    // var name = event.target.files[0].name
+
+    // var ext = name.split('.')
+    if (this.sharedService.fileValidator(event)) {
       const params = {
         reason: 'customer',
         customerId: this.customerKycAddressOne.controls.customerId.value
       }
+
+      // const params = {
+      //   reason: 'lead',
+      //   customerId:  this.reviewForm.controls.id.value
+      // }
+
+
       this.sharedService.uploadFile(this.file, params).pipe(
         map(res => {
 
@@ -735,7 +809,7 @@ export class UserReviewComponent implements OnInit {
             this.identityImageArray.push(res.uploadFile.URL)
             this.identityIdArray.push(res.uploadFile.path)
             this.identityFileNameArray.push(event.target.files[0].name)
-           
+
             this.customerKycPersonal.patchValue({ identityProof: this.identityIdArray })
             this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
           } else
@@ -763,6 +837,10 @@ export class UserReviewComponent implements OnInit {
                   this.data.customerKycReview.customerKycPersonal.profileImg = res.uploadFile.URL;
                   this.customerKycPersonal.patchValue({ profileImage: res.uploadFile.path })
                   this.ref.markForCheck();
+                } else if (type == "panType") {
+                  this.reviewForm.controls.form60.patchValue(event.target.files[0].name)
+                  this.reviewForm.controls.panImage.patchValue(res.uploadFile.path)
+                  this.reviewForm.controls.panImg.patchValue(res.uploadFile.URL)
                 }
                 else {
                   this.toastr.error("Cannot upload more than two images")
@@ -770,7 +848,8 @@ export class UserReviewComponent implements OnInit {
 
 
           this.ref.detectChanges();
-        }), catchError(err => {
+        }),
+        catchError(err => {
           this.toastr.error(err.error.message);
           throw err
         }),
@@ -781,9 +860,10 @@ export class UserReviewComponent implements OnInit {
           this.pass.nativeElement.value = '';
         })
       ).subscribe()
-    } else {
-      this.toastr.error('Upload Valid File Format');
     }
+    // else {
+    //   this.toastr.error('Upload Valid File Format');
+    // }
 
   }
 
@@ -812,7 +892,7 @@ export class UserReviewComponent implements OnInit {
           customerId: this.customerKycAddressOne.controls.customerId.value
         }
         this.sharedService.uploadBase64File(res.imageAsDataUrl, params).subscribe(res => {
-          
+
           this.data.customerKycReview.customerKycPersonal.profileImg = res.uploadFile.URL
           this.customerKycPersonal.get('profileImage').patchValue(res.uploadFile.path);
           this.ref.detectChanges()
@@ -822,23 +902,38 @@ export class UserReviewComponent implements OnInit {
   }
 
   previewImage(value) {
-    // let concatArray = [];
-    // concatArray
-    // .push(this.data.customerKycReview.customerKycPersonal.profileImage, 
-    //   this.data.customerKycReview.customerKycPersonal.signatureProof)
-    // const temp = concatArray
-    // .concat(this.data.customerKycReview.customerKycPersonal.identityProof,
-    //   this.data.customerKycReview.customerKycAddress[0].addressProof,
-    //   this.data.customerKycReview.customerKycAddress[1].addressProof)
 
-    // let index = temp.indexOf(value)
-    // this.dialog.open(ImagePreviewDialogComponent, {
-    //   data: {
-    //     images: temp,
-    //     index: index
-    //   },
-    //   width: "auto"
-    // })
+    let temp = [...this.identityImageArray, ...this.addressImageArray1, ...this.addressImageArray2,
+    ...this.data.customerKycReview.customerKycPersonal.profileImg,
+    ...this.data.customerKycReview.panImg,
+    ...this.data.customerKycReview.customerKycPersonal.signatureProofImg
+    ]
+
+    temp = temp.filter(e => {
+      let ext = this.sharedService.getExtension(e)
+      return ext !== 'pdf'
+    })
+
+    let index = temp.indexOf(value)
+    this.dialog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: temp,
+        index: index,
+        modal: !this.viewOnly
+      },
+      width: "auto"
+    })
+  }
+
+  previewPdf(img) {
+    this.dialog.open(PdfViewerComponent, {
+      data: {
+        pdfSrc: img,
+        page: 1,
+        showAll: true
+      },
+      width: "80%"
+    })
   }
 
   checkForAadhar(key) {
@@ -902,6 +997,12 @@ export class UserReviewComponent implements OnInit {
     if (event.target.value == 'null') {
       this.customerKycPersonal.controls.occupationId.patchValue(null)
     }
+  }
+
+  isPdf(image: string): boolean {
+    const ext = this.sharedService.getExtension(image)
+    const isPdf = ext == 'pdf' ? true : false
+    return isPdf
   }
 
 }

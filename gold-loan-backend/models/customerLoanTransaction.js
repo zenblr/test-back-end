@@ -22,41 +22,45 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'razor_pay_transaction_id'
         },
-        paymentType:{
+        paymentType: {
             type: DataTypes.STRING,
             field: 'payment_type',
         },
         transactionAmont: {
-            type: DataTypes.DECIMAL(10,2),
+            type: DataTypes.DECIMAL(10, 2),
             field: 'transaction_amont'
         },
         paymentReceivedDate: {
             type: DataTypes.DATE,
             field: 'payment_received_date'
         },
-        depositDate:{
+        depositDate: {
             type: DataTypes.DATE,
             field: 'deposit_date'
         },
-        chequeNumber:{
+        depositApprovedDate: {
+            type: DataTypes.DATE,
+            field: 'deposit_approved_date'
+        },
+        chequeNumber: {
             type: DataTypes.STRING,
             field: 'cheque_number',
         },
-        bankName:{
+        bankName: {
             type: DataTypes.STRING,
             field: 'bank_name',
         },
-        branchName:{
+        branchName: {
             type: DataTypes.STRING,
             field: 'branch_name',
         },
-        depositStatus:{
+        depositStatus: {
             type: DataTypes.ENUM,
             field: 'deposit_status',
-            values:['Pending','Completed','Rejected'],
+            values: ['Pending', 'Completed', 'Rejected'],
             defaultValue: 'Pending'
         },
-        paymentFor:{
+        paymentFor: {
             type: DataTypes.STRING,
             field: 'payment_for',
         },

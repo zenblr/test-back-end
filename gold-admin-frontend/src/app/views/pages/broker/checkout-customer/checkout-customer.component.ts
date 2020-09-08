@@ -7,6 +7,7 @@ import { CheckoutCustomerService, ShoppingCartService } from '../../../../core/b
 import { RazorpayPaymentService } from '../../../../core/shared/services/razorpay-payment.service';
 import { MatCheckbox, MatDialog } from '@angular/material';
 import { PaymentDialogComponent } from '../payment-dialog/payment-dialog.component';
+import { element } from 'protractor';
 
 @Component({
   selector: 'kt-checkout-customer',
@@ -35,6 +36,8 @@ export class CheckoutCustomerComponent implements OnInit {
   finalOrderData: any;
   finalOrderOld: any;
   finalOrderNew: any;
+  shippingCityCounter = 1;
+  isSameAddress: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -221,6 +224,9 @@ export class CheckoutCustomerComponent implements OnInit {
             shippingPostalCode: res.customerDetails.customerOrderAddress[0].shippingPostalCode,
           });
           this.showShippingCustomerFlag = true;
+
+          this.checkIfbillingandShippingSameOnLoad();
+
         } else {
           this.showShippingCustomerFlag = false;
         }
@@ -301,6 +307,12 @@ export class CheckoutCustomerComponent implements OnInit {
         stateData = this.controls.shippingStateName.value.id;
       }
       this.sharedService.getCities(stateData).subscribe(res => {
+
+        if(this.shippingCityCounter > 1){
+          this.controls.shippingCityName.patchValue('');
+        }
+        this.shippingCityCounter ++
+ 
         this.shippingCityList = res.data;
         this.ref.detectChanges();
       });
@@ -309,6 +321,7 @@ export class CheckoutCustomerComponent implements OnInit {
 
   sameAddress(event: MatCheckbox) {
     if (event) {
+      this.isSameAddress = true;
       this.shippingCityList = this.cityList;
       this.checkoutCustomerForm.patchValue({
         shippingAddress: this.controls.address.value,
@@ -318,6 +331,7 @@ export class CheckoutCustomerComponent implements OnInit {
         shippingPostalCode: this.controls.postalCode.value,
       });
     } else {
+      this.isSameAddress = false;
       this.checkoutCustomerForm.patchValue({
         shippingAddress: null,
         shippingLandMark: null,
@@ -359,9 +373,25 @@ export class CheckoutCustomerComponent implements OnInit {
       generateOTPData.cityName = this.existingCustomerData.customerDetails.customeraddress[0].city.name;
     }
     if (this.showShippingCustomerFlag && this.existingCustomerData.customerDetails.customerOrderAddress.length) {
-      generateOTPData.shippingStateName = this.existingCustomerData.customerDetails.customerOrderAddress[0].shippingState.name;
-      generateOTPData.shippingCityName = this.existingCustomerData.customerDetails.customerOrderAddress[0].shippingCity.name;
+      if(this.checkCityStateIfSame()){
+        if(this.isSameAddress){
+          generateOTPData.shippingStateName = this.existingCustomerData.customerDetails.customeraddress[0].state.name;
+          generateOTPData.shippingCityName = this.existingCustomerData.customerDetails.customeraddress[0].city.name;
+        }else{
+          generateOTPData.shippingStateName = this.existingCustomerData.customerDetails.customerOrderAddress[0].shippingState.name;
+          generateOTPData.shippingCityName = this.existingCustomerData.customerDetails.customerOrderAddress[0].shippingCity.name;
+        }
+       
+      }else{
+        let stateData = this.stateList.find(ele => (ele.id == this.controls.shippingStateName.value));
+        let cityData = this.shippingCityList.find(data => (data.id == this.controls.shippingCityName.value));
+        console.log(stateData, cityData);
+          generateOTPData.shippingStateName = stateData.name;
+          generateOTPData.shippingCityName = cityData.name;
+      }
+      
     }
+
     console.log(generateOTPData)
     this.checkoutCustomerService.generateOTPAdmin(generateOTPData).subscribe(res => {
       console.log(res);
@@ -456,4 +486,34 @@ export class CheckoutCustomerComponent implements OnInit {
         });
     });
   }
+
+
+checkCityStateIfSame() {
+
+  const stateName = this.controls.stateName.value;
+  const cityName = this.controls.cityName.value;
+  const shippingStateName = this.controls.shippingStateName.value;
+  const shippingCityName = this.controls.shippingCityName.value;
+  if(stateName == shippingStateName && cityName == shippingCityName){
+  return true
+    
+  }else{
+    return false
+  }
+}
+
+checkIfbillingandShippingSameOnLoad(){
+
+  const stateName = this.controls.stateName.value == this.controls.shippingStateName.value? true: false;
+  const cityName = this.controls.cityName.value == this.controls.shippingCityName.value? true: false;
+  const address = this.controls.address.value == this.controls.shippingAddress.value? true: false;
+  const landMark = this.controls.landMark.value == this.controls.shippingLandMark.value? true: false;
+  const postalCode = this.controls.postalCode.value == this.controls.shippingPostalCode.value? true: false;
+
+  if(stateName && cityName && address && landMark && postalCode){
+    this.isSameAddress = true;
+  }else{
+    this.isSameAddress = false;
+  }
+}
 }

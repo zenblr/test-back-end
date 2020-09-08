@@ -135,10 +135,10 @@ export class FullReleaseFinalComponent implements OnInit {
           index: 0,
           modal: false
         },
-        maxWidth: "75%",
+        // maxWidth: "75%",
         width: "auto",
         // maxHeight: '85%',
-        height: "75%",
+        // height: "75%",
       })
     }
   }

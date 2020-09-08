@@ -111,7 +111,7 @@
                     <div class="col-6 form-label text-color d-flex align-items-center mandatory">Processing Charges (%)
                     </div>
                     <div class="col-6 per-gram align-items-center">
-                        <input type="text" class="form-control" formControlName="processingChargesInPercent"
+                        <input type="text" class="form-control" numbersOnly formControlName="processingChargesInPercent"
                             placeholder="8"
                             [class.isError]="controls.processingChargesInPercent.invalid && controls.processingChargesInPercent.touched">
                         <mat-error
@@ -129,7 +129,7 @@
                     </div>
                     <div class="col-6 per-gram align-items-center">
                         <input type="text" class="form-control" formControlName="gst" placeholder="8"
-                            [class.isError]="controls.gst.invalid && controls.gst.touched">
+                            [class.isError]="controls.gst.invalid && controls.gst.touched" >
                         <mat-error *ngIf="controls.gst.invalid && controls.gst.touched">
                             Field required</mat-error>
                     </div>
@@ -144,7 +144,7 @@
                         Deduction (min)
                     </div>
                     <div class="col-6 per-gram align-items-center">
-                        <input type="text" class="form-control" formControlName="standardDeductionMin"
+                        <input type="text" class="form-control" numbersOnly formControlName="standardDeductionMin"
                             placeholder="8"
                             [class.isError]="controls.standardDeductionMin.invalid && controls.standardDeductionMin.touched">
                         <mat-error
@@ -165,7 +165,7 @@
                         Deduction (max)
                     </div>
                     <div class="col-6 per-gram align-items-center">
-                        <input type="text" class="form-control" formControlName="standardDeductionMax" placeholder="99"
+                        <input type="text" class="form-control" numbersOnly formControlName="standardDeductionMax" placeholder="99"
                             [class.isError]="controls.standardDeductionMax.invalid && controls.standardDeductionMax.touched">
                         <mat-error
                             *ngIf="controls.standardDeductionMax.invalid && controls.standardDeductionMax.touched">
