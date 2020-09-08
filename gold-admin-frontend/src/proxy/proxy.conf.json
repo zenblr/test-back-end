@@ -1,6 +1,6 @@
 {
     "/api/*": {
-        "target": "http://556a0aa89c6b.ngrok.io/",
+        "target": "http://71c2c6d49dc0.ngrok.io/",
         "secure": false,
         "logLevel": "debug",
         "changeOrigin": true
