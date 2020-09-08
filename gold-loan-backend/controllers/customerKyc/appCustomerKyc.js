@@ -41,11 +41,13 @@ exports.submitAppKyc = async (req, res, next) => {
     if (!check.isEmpty(findIdentityNumber)) {
         return res.status(400).json({ message: "Identity Proof Number already exists! " })
     }
-
-    let findPanCardNumber = await models.customer.findOne({ where: { panCardNumber: panCardNumber } });
-    if (!check.isEmpty(findPanCardNumber)) {
-        return res.status(400).json({ message: "Pan Card Number already exists! " });
+    if (panCardNumber) {
+        let findPanCardNumber = await models.customer.findOne({ where: { panCardNumber: panCardNumber } });
+        if (!check.isEmpty(findPanCardNumber)) {
+            return res.status(400).json({ message: "Pan Card Number already exists! " });
+        }
     }
+
 
     let kycInfo = await sequelize.transaction(async t => {
 
@@ -126,6 +128,19 @@ exports.editAppKyc = async (req, res, next) => {
         addressArray.push(customerKycAddress[i])
     }
 
+    if (customerKycPersonal.panCardNumber) {
+        let findPanCardNumber = await models.customer.findOne({
+            where: {
+                id: { [Op.not]: customerId },
+                panCardNumber: { [Op.iLike]: customerKycPersonal.panCardNumber },
+                isActive: true
+            }
+        });
+        if (!check.isEmpty(findPanCardNumber)) {
+            return res.status(400).json({ message: "Pan Card Number already exists! " })
+        }
+    }
+    
     await sequelize.transaction(async (t) => {
         let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
 
