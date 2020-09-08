@@ -10,6 +10,7 @@ import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { AssignAppraiserComponent } from '../../../user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
 import { UpdateStatusComponent } from '../../update-status/update-status.component';
 import { OrnamentsComponent } from '../../../../../partials/components/ornaments/ornaments.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-full-release-approval',
@@ -19,7 +20,7 @@ import { OrnamentsComponent } from '../../../../../partials/components/ornaments
 export class FullReleaseApprovalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'principalOutstandingAmountLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'updateStatus'];
+  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'transactionId', 'bankTransactionId', 'appraiserName', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'updateStatus'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -33,6 +34,7 @@ export class FullReleaseApprovalComponent implements OnInit {
     public dialog: MatDialog,
     private toastr: ToastrService,
     private layoutUtilsService: LayoutUtilsService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -159,6 +161,10 @@ export class FullReleaseApprovalComponent implements OnInit {
       },
       width: '90%'
     })
+  }
+
+  viewLoan(loan) {
+    this.router.navigate(['/admin/customer-management/loan-details', loan.masterLoanId])
   }
 
 }

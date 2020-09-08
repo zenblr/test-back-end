@@ -3,6 +3,24 @@
         <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
+                <ng-container matColumnDef="transactionId">
+                    <mat-header-cell *matHeaderCellDef>Transaction ID</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{ item.transaction?.transactionUniqueId }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="bankTransactionId">
+                    <mat-header-cell *matHeaderCellDef>Bank Transaction ID</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{ item.transaction?.bankTransactionUniqueId }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="appraiserName">
+                    <mat-header-cell *matHeaderCellDef>Appraiser Name</mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        {{ item.appraiserData?.appraiser?.firstName | titlecase }}
+                        {{ item.appraiserData?.appraiser?.lastName | titlecase }}
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="loanAmount">
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{ item.masterLoan.finalLoanAmount }}</mat-cell>
@@ -69,13 +87,15 @@
                     <mat-header-cell *matHeaderCellDef> Current LTV </mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.currentLtv}}</mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="principalOutstandingAmountLTV">
+
+                <!-- <ng-container matColumnDef="principalOutstandingAmountLTV">
                     <mat-header-cell *matHeaderCellDef>
                         <div>Principal Outstanding Amount</div>
                         <div>(based on Current LTV Price)</div>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.currentOutstandingAmount}}</mat-cell>
-                </ng-container>
+                </ng-container> -->
+
                 <ng-container matColumnDef="previousLTV">
                     <mat-header-cell *matHeaderCellDef>
                         Previous LTV
@@ -148,10 +168,13 @@
                 </ng-container>
 
                 <ng-container matColumnDef="ornaments">
-                    <mat-header-cell *matHeaderCellDef> Ornaments </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let item">
-                        <button class="apply-kyc" (click)="ornamentsDetails(item.masterLoan.loanOrnamentsDetail)">View
+                        <!-- <button class="apply-kyc" (click)="ornamentsDetails(item.masterLoan.loanOrnamentsDetail)">View
                             Details
+                        </button> -->
+                        <button class="apply-kyc" (click)="viewLoan(item)">View
+                            Loan
                         </button>
                     </mat-cell>
                 </ng-container>
