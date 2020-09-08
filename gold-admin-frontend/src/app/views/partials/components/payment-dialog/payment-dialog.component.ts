@@ -39,7 +39,7 @@ export class PaymentDialogComponent implements OnInit {
       paidAmount: [, [Validators.required]],
       chequeNumber: [],
       depositTransactionId: [],
-      paymentReceivedDate: ['', [Validators.required]],
+      paymentReceivedDate: [, [Validators.required]],
       depositStatus: ['', [Validators.required]]
     })
   }
