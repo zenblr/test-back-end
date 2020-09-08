@@ -2187,8 +2187,8 @@ exports.getLoanDetails = async (req, res, next) => {
         subQuery: false,
         include: associateModel,
         order: [
+            ["updatedAt", "DESC"],
             [models.customerLoan, 'id', 'asc'],
-            ['id', 'DESC']
         ],
         offset: offset,
         limit: pageSize
