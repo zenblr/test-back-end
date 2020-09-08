@@ -75,13 +75,13 @@
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Bank Details</div>
-                   
+
                     <div class="text-color font-weight-500 kt-margin-b-5"
-                    [ngStyle]="{'width':'65%','line-height':'1.5'}">
-                    {{cutomerDetails?.customerScrap[0]?.scrapBankDetails?.bankName | titlecase}}<br>
-                    {{cutomerDetails?.customerScrap[0]?.scrapBankDetails?.bankBranch | titlecase}}<br>
-                    {{cutomerDetails?.customerScrap[0]?.scrapBankDetails?.acNumber | titlecase}}
-                </div>
+                        [ngStyle]="{'width':'65%','line-height':'1.5'}">
+                        <!-- {{cutomerDetails?.customerScrap[0]?.scrapBankDetails?.bankName | titlecase}}<br>
+                        {{cutomerDetails?.customerScrap[0]?.scrapBankDetails?.bankBranch | titlecase}}<br>
+                        {{cutomerDetails?.customerScrap[0]?.scrapBankDetails?.acNumber | titlecase}} -->
+                    </div>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">KYC Document</div>
@@ -129,16 +129,24 @@
                 <div class="col">
                     <div class="card kt-padding-15" [class.kt-margin-r-15]="(i+1)%4!=0">
                         <div class="text-gray font-weight-500 kt-margin-b-5">Loan ID</div>
-                        <div class="text-color font-weight-500 kt-margin-b-5 d-block">
-                            <div>
-                                {{masterLoan.customerLoan[0].loanUniqueId}}
+                        <div class="row kt-margin-b-5 text-color font-weight-500">
+                            <div class="col-5  ">
+                                <div>
+                                    {{masterLoan.customerLoan[0].loanUniqueId}} <br>
+                                </div>
+                                <div>
+                                    {{masterLoan?.customerLoan[1]?.loanUniqueId}}
+                                </div>
+    
                             </div>
-                            <div>
-                                {{masterLoan?.customerLoan[1]?.loanUniqueId}}
+                            <div class="col">
+                                <span *ngIf="masterLoan?.isLoanTransfer">Loan Transfer <br> </span> 
+                                <span *ngIf="masterLoan?.isOrnamentsReleased &&!masterLoan?.isFullOrnamentsReleased">Part Released Master Loan <br> </span> 
+                                <span *ngIf="masterLoan?.isNewLoanFromPartRelease ">Part Release New Loan <br> </span>
+                                <span *ngIf="masterLoan?.isOrnamentsReleased && masterLoan?.isFullOrnamentsReleased">Full Released Master Loan <br> </span>
                             </div>
-
-
                         </div>
+                        
                         <mat-divider class="kt-margin-b-10 kt-margin-t-10"></mat-divider>
                         <div class="row kt-margin-b-15">
                             <div class="col-6">
@@ -172,7 +180,7 @@
                                 </div>
                             </div>
                         </div>
-                       
+
                         <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10"
                             (click)="viewLoan(masterLoan.id)" *ngxPermissionsOnly="['loanDetailsView']">View
                             Details</div>
