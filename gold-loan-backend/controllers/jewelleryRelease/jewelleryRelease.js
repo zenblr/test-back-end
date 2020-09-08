@@ -779,7 +779,8 @@ exports.partReleaseApprovedList = async (req, res, next) => {
             },
         }],
         isActive: true,
-        amountStatus: "completed"
+        amountStatus: "completed",
+        newLoanId: null
     }
     let appriserSearch = { isActive: true }
     if (req.userData.userTypeId != 4) {
@@ -893,7 +894,7 @@ exports.updatePartReleaseStatus = async (req, res, next) => {
             } else if (partReleaseStatus == "released") {
                 await sequelize.transaction(async t => {
                     await models.partRelease.update({ partReleaseStatus, modifiedBy, releaseDate }, { where: { id: partReleaseId }, transaction: t });
-                    await models.customerLoanMaster.update({ isOrnamentsReleased: true, modifiedBy }, { where: { id: partReleaseData.masterLoanId }, transaction: t });
+                    await models.customerLoanMaster.update({ isOrnamentsReleased: true,isFullOrnamentsReleased: true, modifiedBy }, { where: { id: partReleaseData.masterLoanId }, transaction: t });
                     await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_STATUS_R, createdBy, modifiedBy }, { transaction: t });
                 });
                 return res.status(200).json({ message: "success" });
@@ -980,7 +981,7 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
     let bmRatingId = await models.loanStage.findOne({ where: { name: 'bm rating' } });
     let opsRatingId = await models.loanStage.findOne({ where: { name: 'OPS team rating' } });
     let customerLoanStage = await models.customerLoanMaster.findOne({
-        where: { customerId: customerData.id, isLoanSubmitted: false, isLoanTransfer: false },
+        where: { customerId: customerData.id, isLoanSubmitted: false, isLoanTransfer: false, parentLoanId: partReleaseData.masterLoanId },
         include: [{
             model: models.customer,
             as: 'customer'
@@ -1000,7 +1001,9 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
 
         let customerCurrentStage = customerLoanStage.customerLoanCurrentStage
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanStage.id, loanType: 'secured' } })
-        if (customerCurrentStage == '2') {
+        if (customerCurrentStage == '1') {
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount })
+        } else if (customerCurrentStage == '2') {
             return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount })
         } else if (customerCurrentStage == '3') {
             return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount })
@@ -1018,7 +1021,7 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
         //old loan get
         let oldOrnaments = await models.customerLoanOrnamentsDetail.findAll({
             where: { masterLoanId: partReleaseData.masterLoanId, isReleased: false },
-            attributes: { exclude: ['loanId', 'masterLoanId', 'ltvPercent', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive', 'ltvAmount', 'currentLtvAmount', 'loanAmount', 'ornamentFullAmount'] }
+            attributes: { exclude: ['loanId', 'masterLoanId', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive', 'ltvAmount', 'currentLtvAmount', 'loanAmount', 'ornamentFullAmount'] }
         })
         let stageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' } })
         let customerLoan = await models.customerLoan.findOne({ where: { masterLoanId: partReleaseData.masterLoanId, loanType: "secured" } });
@@ -1063,12 +1066,15 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                 guardianName: oldLoanData.loanNomineeDetail[0].guardianName,
                 guardianAge: oldLoanData.loanNomineeDetail[0].guardianAge,
                 guardianRelationship: oldLoanData.loanNomineeDetail[0].guardianRelationship,
-                nomineeAge:oldLoanData.loanNomineeDetail[0].nomineeAge,
+                nomineeAge: oldLoanData.loanNomineeDetail[0].nomineeAge,
                 createdBy: createdBy,
                 modifiedBy: modifiedBy
             }
             await models.customerLoanNomineeDetail.create(customerLoanNomineeData, { transaction: t });
             // //step 3
+            let globalSettings = await getGlobalSetting();
+            let goldRate = await getGoldRate();
+            let currentLtvAmount = goldRate * (globalSettings.ltvGoldValue / 100);
             let allOrnmanets = [];
             for (let i = 0; i < oldOrnaments.length; i++) {
                 let ornamentData = {
@@ -1087,11 +1093,13 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                     acidTest: oldOrnaments[i]['acidTest'],
                     purityTest: oldOrnaments[i]['purityTest'],
                     karat: oldOrnaments[i]['karat'],
-                    purity: oldOrnaments[i]['purity'],
+                    purity: oldOrnaments[i]['ltvPercent'],
                     ltvRange: oldOrnaments[i]['ltvRange'],
                     ornamentImage: oldOrnaments[i]['ornamentImage'],
                     finalNetWeight: oldOrnaments[i]['finalNetWeight'],
-                    isReleased: false
+                    isReleased: false,
+                    currentLtvAmount: currentLtvAmount,
+                    ltvPercent: oldOrnaments[i]['ltvPercent']
                 }
 
                 allOrnmanets.push(ornamentData);
@@ -1104,19 +1112,19 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                 masterLoanId: masterLoan.id,
                 createdBy: createdBy,
                 modifiedBy: modifiedBy,
-                paymentType:oldLoanData.loanBankDetail.paymentType,
-                bankName:oldLoanData.loanBankDetail.bankName,
-                accountNumber:oldLoanData.loanBankDetail.accountNumber,
-                ifscCode:oldLoanData.loanBankDetail.ifscCode,
-                bankBranchName:oldLoanData.loanBankDetail.bankBranchName,
-                accountHolderName:oldLoanData.loanBankDetail.accountHolderName,
-                passbookProof:oldLoanData.loanBankDetail.passbookProof
+                paymentType: oldLoanData.loanBankDetail.paymentType,
+                bankName: oldLoanData.loanBankDetail.bankName,
+                accountNumber: oldLoanData.loanBankDetail.accountNumber,
+                ifscCode: oldLoanData.loanBankDetail.ifscCode,
+                bankBranchName: oldLoanData.loanBankDetail.bankBranchName,
+                accountHolderName: oldLoanData.loanBankDetail.accountHolderName,
+                passbookProof: oldLoanData.loanBankDetail.passbookProof
             }
             await models.customerLoanBankDetail.create(bankData, { transaction: t });
             return loan
         });
         ////////
-        res.status(200).json({ message: 'customer details fetch successfully', customerData, partReleaseId, newLoanAmount, oldLoanData, masterLoanId: loanData.masterLoanId, loanId: loanData.id });
+        res.status(200).json({ message: 'customer details fetch successfully', customerData, partReleaseId, newLoanAmount, masterLoanId: loanData.masterLoanId, loanId: loanData.id, loanCurrentStage: '2' });
     }
 }
 
@@ -1535,7 +1543,12 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
                     sequelize.cast(sequelize.col("masterLoan.final_loan_amount"), "varchar"), { [Op.iLike]: search + "%" })
             },
         }],
-        isActive: true
+        isActive: true,
+        [Op.or]: {
+            fullReleaseStatus: { [Op.in]: ['pending'] },
+            documents: null
+        }
+
     }
     let includeArray = [{
         model: models.customerLoanTransaction,
