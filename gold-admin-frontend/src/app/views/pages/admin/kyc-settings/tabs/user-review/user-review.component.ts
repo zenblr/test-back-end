@@ -666,7 +666,7 @@ export class UserReviewComponent implements OnInit {
       customerKycId: this.data.customerKycId,
       customerKycPersonal: this.customerKycPersonal.value,
       customerKycAddress: customerKycAddress,
-      customerKycReview: this.reviewForm.value
+      customerKycBasicDetails: this.reviewForm.value
     }
 
     this.userBankService.kycSubmit(data).pipe(
