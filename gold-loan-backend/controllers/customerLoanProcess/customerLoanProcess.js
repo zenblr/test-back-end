@@ -1978,15 +1978,9 @@ exports.appliedLoanDetails = async (req, res, next) => {
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
-    // if (req.userData.userTypeId != 4) {
-    //     internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
-    // } else {
-    //     internalBranchWhere = { isActive: true }
-    // }
+   
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-        internalBranchWhere = { isActive: true }
-    } else {
-        internalBranchWhere = { isActive: true }
+        searchQuery.internalBranchId = internalBranchId
     }
 
     let associateModel = [{
@@ -1996,7 +1990,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
     }, {
         model: models.customer,
         as: 'customer',
-        where: internalBranchWhere,
+        // where: internalBranchWhere,
         attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'customerUniqueId']
     }, {
         model: models.customerLoan,
@@ -2083,16 +2077,9 @@ exports.getLoanDetails = async (req, res, next) => {
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
-    // if (req.userData.userTypeId != 4) {
-    //     internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
-    // } else {
-    //     internalBranchWhere = { isActive: true }
-    // }
 
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-        internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
-    } else {
-        internalBranchWhere = { isActive: true }
+        searchQuery.internalBranchId = internalBranchId
     }
 
     let associateModel = [
@@ -2109,7 +2096,7 @@ exports.getLoanDetails = async (req, res, next) => {
         {
             model: models.customer,
             as: 'customer',
-            where: internalBranchWhere,
+            // where: internalBranchWhere,
             attributes: { exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
         },
         {
