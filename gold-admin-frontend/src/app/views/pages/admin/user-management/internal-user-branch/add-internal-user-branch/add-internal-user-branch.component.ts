@@ -35,7 +35,7 @@ export class AddInternalUserBranchComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-   
+
     this.getAllPartners()
     this.getStates()
     this.initForm()
@@ -57,12 +57,12 @@ export class AddInternalUserBranchComponent implements OnInit {
       this.title = 'Edit Internal User Branch'
       this.button = 'update'
       this.addInternalBranchForm.patchValue(this.data.branch)
-    
+
       this.getCites()
     } else {
       this.title = 'View Internal User'
       this.addInternalBranchForm.patchValue(this.data.branch)
-     
+
       this.getCites()
       this.addInternalBranchForm.disable();
     }
@@ -100,6 +100,10 @@ export class AddInternalUserBranchComponent implements OnInit {
     this.sharedService.getCities(this.controls.stateId.value).pipe(
       map(res => {
         this.cities = res.data;
+        const cityExists = this.cities.find(e => e.id === this.controls.cityId.value)
+        if (!cityExists) {
+          this.controls.cityId.patchValue('');
+        }
       })).subscribe()
   }
 

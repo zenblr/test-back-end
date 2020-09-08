@@ -46,7 +46,6 @@ module.exports = (sequelize, DataTypes) => {
         panCardNumber: {
             type: DataTypes.STRING,
             field: 'pan_card_number',
-            allowNull: false
         },
         age: {
             type: DataTypes.STRING,
