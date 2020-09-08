@@ -58,6 +58,11 @@
                             [ngClass]="loan.loanStatusForAppraiser == 'pending' ? 'text-warning' :loan.loanStatusForAppraiser == 'approved' ? 'text-success' : 'text-danger'">
                             {{loan.loanStatusForAppraiser | titlecase}}
                         </span>
+                        <span *ngIf="loan.loanStatusForAppraiser == 'pending' &&  loan.commentByAppraiser"
+                            class="material-icons custom-icon" mat-raised-button matTooltip={{loan.commentByAppraiser}}
+                            matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                            info
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="bMApproval">
@@ -67,6 +72,17 @@
                             [ngClass]="loan.loanStatusForBM == 'pending' ? 'text-warning' :loan.loanStatusForBM == 'approved' ? 'text-success' : 'text-danger'">
                             {{loan.loanStatusForBM | titlecase}}
                         </span>
+                        <span *ngIf="loan.loanStatusForBM == 'pending' && loan.commentByBM "
+                            class="material-icons custom-icon" mat-raised-button matTooltip={{loan.commentByBM}}
+                            matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                            info
+                        </span>
+
+                        <span *ngIf="loan.loanStatusForBM == 'incomplete' && loan.commentByBM "
+                            class="material-icons custom-icon" mat-raised-button matTooltip={{loan.commentByBM}}
+                            matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                            info
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="oTApproval">
@@ -75,6 +91,12 @@
                         <span
                             [ngClass]="loan.loanStatusForOperatinalTeam == 'pending' ? 'text-warning' :loan.loanStatusForOperatinalTeam == 'approved' ? 'text-success' : 'text-danger'">
                             {{loan.loanStatusForOperatinalTeam | titlecase}}
+                        </span>
+                        <span *ngIf="loan.loanStatusForOperatinalTeam == 'pending' && loan.commentByOperatinalTeam"
+                            class="material-icons custom-icon" mat-raised-button
+                            matTooltip={{loan.commentByOperatinalTeam}} matTooltipPosition="above"
+                            matTooltipClass="custom-tooltip-white">
+                            info
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -93,21 +115,24 @@
                             <div *ngIf="loan.loanStage.id == 1 ">
                                 <div class="kt-pointer">
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
-                                    <button (click)="editLoan(loan)" [ngClass]="{'cursor-not-allowed':  !permission.addAppraiserRating}"
+                                    <button (click)="editLoan(loan)"
+                                        [ngClass]="{'cursor-not-allowed':  !permission.addAppraiserRating}"
                                         class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                                 </div>
                             </div>
                             <div *ngIf="loan.loanStage.id == 2">
                                 <div class="kt-pointer">
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
-                                    <button (click)="editLoan(loan)" [ngClass]="{'cursor-not-allowed': !permission.addBmRating}"
+                                    <button (click)="editLoan(loan)"
+                                        [ngClass]="{'cursor-not-allowed': !permission.addBmRating}"
                                         class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                                 </div>
                             </div>
                             <div *ngIf="loan.loanStage.id == 7">
                                 <div class="kt-pointer">
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
-                                    <button (click)="editLoan(loan)" [ngClass]="{'cursor-not-allowed': !permission.addOpsRating}"
+                                    <button (click)="editLoan(loan)"
+                                        [ngClass]="{'cursor-not-allowed': !permission.addOpsRating}"
                                         class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                                 </div>
                             </div>
@@ -122,7 +147,8 @@
                             <div *ngIf="loan.loanStage.id == 4">
                                 <div class="kt-pointer">
                                     <button (click)="editLoan(loan)"
-                                        [ngClass]="{'cursor-not-allowed':!permission.loanDisbursement}" class="green-button">Disburse
+                                        [ngClass]="{'cursor-not-allowed':!permission.loanDisbursement}"
+                                        class="green-button">Disburse
                                         Amount</button>
                                 </div>
                             </div>
@@ -136,7 +162,8 @@
                             <div *ngIf="loan.loanStage.id == 8">
                                 <div class="kt-pointer">
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
-                                    <button (click)="editLoan(loan)" [ngClass]="{'cursor-not-allowed': !permission.uploadDocuments}"
+                                    <button (click)="editLoan(loan)"
+                                        [ngClass]="{'cursor-not-allowed': !permission.uploadDocuments}"
                                         class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                                 </div>
                             </div>

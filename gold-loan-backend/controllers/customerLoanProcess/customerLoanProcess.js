@@ -276,7 +276,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
     let ltvPercent = await models.globalSetting.findAll()
 
-    let securedScheme = getSecuredScheme(securedSchemeId)
+    let securedScheme = await getSecuredScheme(securedSchemeId)
 
 
     let secureSchemeMaximumAmtAllowed = (securedScheme.maximumPercentageAllowed / 100)
@@ -292,7 +292,7 @@ exports.checkForLoanType = async (req, res, next) => {
             unsecuredSchemeAmount = loanAmount - securedLoanAmount
         }
 
-        unsecuredScheme = await getUnsecuredScheme(partnerId,unsecuredSchemeAmount)
+        unsecuredScheme = await getUnsecuredScheme(partnerId, unsecuredSchemeAmount)
 
         let unsecured = unsecuredScheme.schemes
         var unsecuredSchemeApplied;
@@ -490,6 +490,7 @@ exports.generateInterestTable = async (req, res, next) => {
     let length = (tenure * 30) / paymentFrequency
     console.log(length)
     for (let index = 0; index < Number(length); index++) {
+        // let date = new Date("2020/03/08")
         let date = new Date()
         let data = {
             emiDueDate: moment(new Date(date.setDate(date.getDate() + (paymentFrequency * (index + 1)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
@@ -593,9 +594,9 @@ exports.getUnsecuredScheme = async (req, res, next) => {
 
     let securedScheme = await getSecuredScheme(securedSchemeId)
 
-    let unsecuredScheme = await getUnsecuredScheme(partnerId,amount)
+    let unsecuredScheme = await getUnsecuredScheme(partnerId, amount)
 
-  
+
     let unsecured = unsecuredScheme.schemes
     var unsecuredSchemeApplied;
 
@@ -631,7 +632,7 @@ async function getSecuredScheme(securedSchemeId) {
 }
 
 
-async function getUnsecuredScheme(partnerId,amount){
+async function getUnsecuredScheme(partnerId, amount) {
     unsecuredScheme = await models.partner.findOne({
         where: { id: partnerId },
         // attributes: ['id'],
