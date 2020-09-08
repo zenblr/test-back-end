@@ -18,7 +18,7 @@ const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMEN
 
 exports.loanRequest = async (req, res, next) => {
 
-    let { customerId, customerUniqueId, kycStatus, startDate, purpose, masterLoanId, isEdit, loanId, isNewLoanFromPartRelease,partReleaseId } = req.body //basic details
+    let { customerId, appraiserRequestId, customerUniqueId, kycStatus, startDate, purpose, masterLoanId, isEdit, loanId, isNewLoanFromPartRelease, partReleaseId } = req.body //basic details
     let { nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship } = req.body //nominee
     let { loanOrnaments, totalEligibleAmt, fullAmount } = req.body //ornaments
     let allOrnmanets = []
@@ -31,7 +31,7 @@ exports.loanRequest = async (req, res, next) => {
     let appraiserId = req.userData.id;
     let stageId = await models.loanStage.findOne({ where: { name: 'applying' } })
     let ornamentType = [];
-    if(!isNewLoanFromPartRelease){
+    if (!isNewLoanFromPartRelease) {
         isNewLoanFromPartRelease = false
     }
 
@@ -77,7 +77,7 @@ exports.loanRequest = async (req, res, next) => {
             //     createdOrnaments.push(ornaments)
             // }
         } else {
-            let masterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, internalBranchId: req.userData.internalBranchId, fullAmount, totalEligibleAmt, createdBy, modifiedBy,isNewLoanFromPartRelease }, { transaction: t })
+            let masterLoan = await models.customerLoanMaster.create({ appraiserRequestId, customerId: customerId, loanStageId: stageId.id, internalBranchId: req.userData.internalBranchId, fullAmount, totalEligibleAmt, createdBy, modifiedBy, isNewLoanFromPartRelease }, { transaction: t })
 
             let loan = await models.customerLoan.create({ customerId, masterLoanId: masterLoan.id, loanType: 'secured', createdBy, modifiedBy }, { transaction: t })
             if (isNewLoanFromPartRelease) {
