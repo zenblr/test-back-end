@@ -10,6 +10,7 @@ import { AssignAppraiserComponent } from '../../../user-management/assign-apprai
 import { PartReleaseApprovalService } from '../../../../../../core/funds-approvals/jewellery-release-approval/part-release-approval/services/part-release-approval.service';
 import { OrnamentsComponent } from '../../../../../partials/components/ornaments/ornaments.component';
 import { UpdateStatusComponent } from '../../update-status/update-status.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-part-release-approval',
@@ -19,7 +20,7 @@ import { UpdateStatusComponent } from '../../update-status/update-status.compone
 export class PartReleaseApprovalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'updateStatus'];
+  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'transactionId', 'bankTransactionId', 'appraiserName', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'updateStatus'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -33,6 +34,7 @@ export class PartReleaseApprovalComponent implements OnInit {
     public dialog: MatDialog,
     private toastr: ToastrService,
     private layoutUtilsService: LayoutUtilsService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -90,6 +92,11 @@ export class PartReleaseApprovalComponent implements OnInit {
       },
       width: '90%'
     })
+
+  }
+
+  viewLoan(loan) {
+    this.router.navigate(['/admin/customer-management/loan-details', loan.masterLoanId])
   }
 
   assign(item) {
