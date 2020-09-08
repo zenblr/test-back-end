@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'master_loan_unique_id'
         },
-        appraiserRequestId:{
+        appraiserRequestId: {
             type: DataTypes.INTEGER,
             field: 'appraiser_request_id'
         },
@@ -95,31 +95,31 @@ module.exports = (sequelize, DataTypes) => {
             field: 'operatinal_team_id'
         },
         totalEligibleAmt: {
-            type: DataTypes.DECIMAL(10,2),
+            type: DataTypes.DECIMAL(10, 2),
             field: 'total_eligible_amt'
         },
         fullAmount: {
-            type: DataTypes.DECIMAL(10,2),
+            type: DataTypes.DECIMAL(10, 2),
             field: 'full_amount'
         },
         securedLoanAmount: {
-            type: DataTypes.DECIMAL(10,2),
+            type: DataTypes.DECIMAL(10, 2),
             field: 'secured_loan_amount',
         },
         unsecuredLoanAmount: {
-            type: DataTypes.DECIMAL(10,2),
+            type: DataTypes.DECIMAL(10, 2),
             field: 'unsecured_loan_amount',
         },
         finalLoanAmount: {
-            type: DataTypes.DECIMAL(10,2),
+            type: DataTypes.DECIMAL(10, 2),
             field: 'final_loan_amount',
         },
         totalFinalInterestAmt: {
-            type: DataTypes.DECIMAL(10,2),
+            type: DataTypes.DECIMAL(10, 2),
             field: 'total_final_interest_amt'
         },
         outstandingAmount: {
-            type: DataTypes.DECIMAL(10,2),
+            type: DataTypes.DECIMAL(10, 2),
             field: 'outstanding_amount'
         },
         tenure: {
@@ -183,7 +183,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_ornaments_released',
             defaultValue: false
         },
-        isNewLoanFromPartRelease:{
+        isNewLoanFromPartRelease: {
             type: DataTypes.BOOLEAN,
             field: 'is_new_loan_from_part_release',
             defaultValue: false
@@ -212,6 +212,8 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanMaster.hasMany(models.customerLoanPackageDetails, { foreignKey: 'masterLoanId', as: 'loanPacketDetails' });
         CustomerLoanMaster.hasMany(models.packet, { foreignKey: 'masterLoanId', as: 'packet' });
         CustomerLoanMaster.hasMany(models.customerLoanInterest, { foreignKey: 'masterLoanId', as: 'customerLoanInterest' });
+        CustomerLoanMaster.hasMany(models.customerLoanInitialInterest, { foreignKey: 'masterLoanId', as: 'initialInterest' });
+
         CustomerLoanMaster.hasMany(models.customerLoanDisbursement, { foreignKey: 'masterLoanId', as: 'customerLoanDisbursement' });
         CustomerLoanMaster.hasOne(models.customerLoanDocument, { foreignKey: 'masterLoanId', as: 'customerLoanDocument' });
 

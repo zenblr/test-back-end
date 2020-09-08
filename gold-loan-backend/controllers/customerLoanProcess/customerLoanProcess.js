@@ -13,9 +13,73 @@ var fs = require('fs');
 let { sendMessageLoanIdGeneration } = require('../../utils/SMS');
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 const _ = require('lodash');
-const { getSingleLoanDetail } = require('../../utils/loanFunction')
+const { getSingleLoanDetail, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan } = require('../../utils/loanFunction')
 
 const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory');
+
+//LOAN DATE CHANGE
+exports.loanDateChange = async (req, res, next) => {
+    let { loanStartDate, masterLoanId } = req.body
+    let data = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        attributes: ['tenure', 'id', 'paymentFrequency', 'loanStartDate'],
+        order: [[models.customerLoanInterest, 'id', 'asc']],
+        include: [
+            {
+                model: models.customerLoanInterest,
+                as: 'customerLoanInterest'
+            },
+            {
+                model: models.customerLoanInitialInterest,
+                as: 'initialInterest'
+            }
+        ]
+    })
+
+    let loanEndDate = null
+    let diff = moment(data.loanStartDate).diff(loanStartDate, 'days');
+
+    await sequelize.transaction(async t => {
+        for (let i = 0; i < data.customerLoanInterest.length; i++) {
+            let id = data.customerLoanInterest[i].id
+            let emiDueDate
+            let emiStartDate
+            let emiEndDate
+            if (diff < 0) {
+                let poss = Math.abs(diff)
+                emiDueDate = moment(data.customerLoanInterest[i].emiDueDate).add(poss, 'd').format('YYYY-MM-DD');
+                emiStartDate = moment(data.customerLoanInterest[i].emiStartDate).add(poss, 'd').format('YYYY-MM-DD');
+                emiEndDate = moment(data.customerLoanInterest[i].emiEndDate).add(poss, 'd').format('YYYY-MM-DD');
+            } else {
+                emiDueDate = moment(data.customerLoanInterest[i].emiDueDate).subtract(diff, 'd').format('YYYY-MM-DD');
+                emiStartDate = moment(data.customerLoanInterest[i].emiStartDate).subtract(diff, 'd').format('YYYY-MM-DD');
+                emiEndDate = moment(data.customerLoanInterest[i].emiEndDate).subtract(diff, 'd').format('YYYY-MM-DD');
+            }
+            loanEndDate = emiDueDate
+            await models.customerLoanInterest.update({ emiDueDate, emiStartDate, emiEndDate }, { where: { id: id }, transaction: t })
+        }
+
+        for (let i = 0; i < data.initialInterest.length; i++) {
+            let id = data.customerLoanInterest[i].id
+            let emiDueDate
+            if (diff < 0) {
+                let poss = Math.abs(diff)
+                emiDueDate = moment(data.initialInterest[i].emiDueDate).add(poss, 'd').format('YYYY-MM-DD');
+            } else {
+                emiDueDate = moment(data.initialInterest[i].emiDueDate).subtract(diff, 'd').format('YYYY-MM-DD');
+            }
+            await models.customerLoanInitialInterest.update({ emiDueDate }, { where: { id: id }, transaction: t })
+        }
+        await models.customerLoanMaster.update({ loanStartDate, loanEndDate }, { where: { id: masterLoanId }, transaction: t })
+
+    })
+    let date = moment();
+    await intrestCalculationForSelectedLoan(date, masterLoanId);
+    await penalInterestCalculationForSelectedLoan(date, masterLoanId)
+
+    return res.status(200).json({ loanEndDate })
+}
+
 
 //  FUNCTION FOR GET CUSTOMER DETAILS AFTER ENTER UNIQUE ID DONE
 exports.customerDetails = async (req, res, next) => {
@@ -973,7 +1037,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
             if (loanDetail.loanUniqueId == null) {
                 var loanUniqueId = null;
                 //secured loan Id
-                loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+                loanUniqueId = `${masterLoanId}LOAN${Math.floor(1000 + Math.random() * 9000)}`;
 
                 await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { id: loanId }, transaction: t })
             }
@@ -1978,7 +2042,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
-   
+
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
         searchQuery.internalBranchId = internalBranchId
     }
