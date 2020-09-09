@@ -256,7 +256,6 @@ export class UploadDocumentsComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-
     if (this.showScrapAcknowledgementFlag) {
       this.globalSettingService.getScrapGlobalSetting().subscribe(global => {
         console.log(global)
@@ -269,7 +268,6 @@ export class UploadDocumentsComponent implements OnInit {
         this.documentsForm.controls.standardDeduction.updateValueAndValidity();
       });
     }
-
 
     if (this.scrapUrl == "scrap-management") {
       this.documentsForm.controls['customerConfirmationStatus'].valueChanges.subscribe((val) => {

@@ -39,7 +39,7 @@
                         </div>
                         <div class="col-4">
                             <input class="form-control" formControlName="fromPercentage" autocomplete="off"
-                                placeholder="from %"
+                                placeholder="from %" (blur)="checkPercent()"
                                 [class.isError]="controls.fromPercentage.touched && controls.fromPercentage.invalid">
                             <mat-error
                                 *ngIf="controls.fromPercentage.touched && controls.fromPercentage.errors?.required">
@@ -49,16 +49,24 @@
                                 *ngIf="controls.fromPercentage.touched && controls.fromPercentage.errors?.pattern">
                                 Invalid Percentage
                             </mat-error>
+                            <mat-error
+                                *ngIf="controls.fromPercentage.touched && controls.fromPercentage.errors?.mustBeLesser">
+                                Must be lesser than to percentage
+                            </mat-error>
                         </div>
                         <div class="col-4">
                             <input class="form-control" formControlName="toPercentage" autocomplete="off"
-                                placeholder="To %"
+                                placeholder="To %" (blur)="checkPercent()"
                                 [class.isError]="controls.toPercentage.touched && controls.toPercentage.invalid">
                             <mat-error *ngIf="controls.toPercentage.touched && controls.toPercentage.errors?.required">
                                 Required
                                 field</mat-error>
                             <mat-error *ngIf="controls.toPercentage.touched && controls.toPercentage.errors?.pattern">
                                 Invalid Percentage
+                            </mat-error>
+                            <mat-error
+                                *ngIf="controls.toPercentage.touched && controls.toPercentage.errors?.mustBeGreater">
+                                Must be greater than from percentage
                             </mat-error>
                         </div>
                     </div>

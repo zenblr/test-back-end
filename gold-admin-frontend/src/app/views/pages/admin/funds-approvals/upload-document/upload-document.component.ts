@@ -23,6 +23,8 @@ export class UploadDocumentComponent implements OnInit {
   @ViewChild('documents', { static: false }) documents
   id: any;
   releaseType: string;
+  customerUniqueId: string;
+  partReleaseId: string;
 
   constructor(
     private fb: FormBuilder,
@@ -37,12 +39,16 @@ export class UploadDocumentComponent implements OnInit {
   ) {
     this.route.paramMap.subscribe(res => this.id = res.get('id'));
     this.route.paramMap.subscribe(res => this.releaseType = res.get('name'));
-    // this.route.queryParamMap.subscribe(res => this.releaseType = res.get('name'));
+    this.route.queryParamMap.subscribe(res => {
+      this.customerUniqueId = res.get('customerUniqueId')
+      this.partReleaseId = res.get('partReleaseId')
+    });
   }
 
   ngOnInit() {
     this.initForm()
     this.patchForm()
+    console.log(this.customerUniqueId, this.partReleaseId)
   }
 
   initForm() {
@@ -147,7 +153,8 @@ export class UploadDocumentComponent implements OnInit {
         this.partReleaseFinalService.uploadDocument(this.documentsForm.value).pipe(
           map(res => {
             this.toastr.success(res['message'])
-            this.router.navigate(['/admin/funds-approvals/part-release-final'])
+            // this.router.navigate(['/admin/funds-approvals/part-release-final'])
+            this.newLoan()
           })).subscribe()
 
         break;
@@ -165,6 +172,14 @@ export class UploadDocumentComponent implements OnInit {
         break;
     }
 
+  }
+
+  newLoan() {
+    const params = {
+      customerUniqueId: this.customerUniqueId,
+      partReleaseId: this.partReleaseId
+    }
+    this.router.navigate(['/admin/loan-management/loan-application-form/'], { queryParams: { customerUniqueId: params.customerUniqueId, partReleaseId: params.partReleaseId } })
   }
 
 }

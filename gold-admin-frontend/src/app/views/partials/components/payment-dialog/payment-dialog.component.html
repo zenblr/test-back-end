@@ -6,206 +6,201 @@
         <div class="kt-form">
             <form [formGroup]="paymentForm">
                 <!-- <div class="kt-portlet__body"> -->
-                    <div>
-                        <div *ngIf="controls.depositStatus.value">
-                            <div class="row kt-margin-b-15">
-                                <div class="col-4 form-label mandatory">
-                                    <mat-label class="kt-padding-l-10">Transaction ID</mat-label>
-                                </div>
-                                <div class="col-8">
-                                    <input class="form-control" formControlName="depositTransactionId"
-                                        style="text-transform: uppercase;" placeholder="TRAN04041995"
-                                        [class.isError]="controls.depositTransactionId.touched && controls.depositTransactionId.invalid" />
-
-                                    <mat-error
-                                        *ngIf="controls.depositTransactionId.touched && controls.depositTransactionId.invalid">
-                                        Required field
-                                    </mat-error>
-                                </div>
-                            </div>
-
-                        </div>
-
+                <div>
+                    <div *ngIf="controls.depositStatus.value">
                         <div class="row kt-margin-b-15">
-                            <div class="col-4 form-label ">
-                                <mat-label class="kt-padding-l-10 mandatory">Mode of Payment</mat-label>
-                            </div>
-                            <div class="col-8">
-                                <select class="form-control" formControlName="paymentType"
-                                    (change)="setValidation($event)"
-                                    [class.isError]="controls.paymentType.touched && controls.paymentType.invalid">
-                                    <option value="" selected disabled>Select Payment</option>
-                                    <!-- <option value="cash">CASH</option>
-                                    <option value="IMPS">RTGS/NEFT/IMPS</option>
-                                    <option value="cheque">CHEQUE</option> -->
-                                    <option [value]="item.value" *ngFor="let item of paymentTypeList;">
-                                        {{item.name | uppercase}}
-                                    </option>
-                                </select>
-
-                                <mat-error
-                                    *ngIf="controls.paymentType.touched && controls.paymentType.errors?.required">
-                                    Required field
-                                </mat-error>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div
-                                *ngIf="controls.paymentType.value && (controls.paymentType.value != 'gateway' && controls.paymentType.value != 'cash')">
-                                <div class="row kt-margin-b-15">
-                                    <div class="col-4 form-label mandatory">
-                                        <mat-label class="kt-padding-l-10">Deposit Bank Name</mat-label>
-                                    </div>
-                                    <div class="col-8">
-                                        <input class="form-control" formControlName="bankName" placeholder="Bank Name"
-                                            [class.isError]="controls.bankName.touched && controls.bankName.invalid" />
-
-                                        <mat-error
-                                            *ngIf="controls.bankName.touched && controls.bankName.errors?.required">
-                                            Required field
-                                        </mat-error>
-                                    </div>
-                                </div>
-
-                                <div class="row kt-margin-b-15">
-                                    <div class="col-4 form-label mandatory">
-                                        <mat-label class="kt-padding-l-10">Deposit Branch Name</mat-label>
-                                    </div>
-                                    <div class="col-8">
-                                        <input class="form-control" formControlName="branchName"
-                                            placeholder="Branch Name"
-                                            [class.isError]="controls.branchName.touched && controls.branchName.invalid" />
-
-                                        <mat-error
-                                            *ngIf="controls.branchName.touched && controls.branchName.errors?.required">
-                                            Required field
-                                        </mat-error>
-                                    </div>
-                                </div>
-
-                                <div *ngIf="controls.paymentType.value != 'cheque'" class="row kt-margin-b-15">
-                                    <div class="col-4 form-label mandatory">
-                                        <mat-label class="kt-padding-l-10">Bank Transaction ID</mat-label>
-                                    </div>
-                                    <div class="col-8">
-                                        <input class="form-control" formControlName="transactionId"
-                                            style="text-transform: uppercase;" placeholder="TRAN04041995"
-                                            [class.isError]="controls.transactionId.touched && controls.transactionId.invalid" />
-
-                                        <mat-error
-                                            *ngIf="controls.transactionId.touched && controls.transactionId.errors?.required">
-                                            Required field
-                                        </mat-error>
-                                    </div>
-                                </div>
-
-
-                                <div *ngIf="controls.paymentType.value === 'cheque'" class="row kt-margin-b-15">
-                                    <div class="col-4 form-label mandatory">
-                                        <mat-label class="kt-padding-l-10">Cheque Number</mat-label>
-                                    </div>
-                                    <div class="col-8">
-                                        <input numbersOnly class="form-control" formControlName="chequeNumber"
-                                            placeholder="491995" maxlength="6"
-                                            [class.isError]="controls.chequeNumber.touched && controls.chequeNumber.invalid" />
-
-                                        <mat-error
-                                            *ngIf="controls.chequeNumber.touched && controls.chequeNumber.errors?.required">
-                                            Required field
-                                        </mat-error>
-                                        <mat-error
-                                            *ngIf="controls.chequeNumber.touched && controls.chequeNumber.errors?.pattern">
-                                            Invalid Input
-                                        </mat-error>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row kt-margin-b-15">
-                                <div class="col-4 form-label mandatory">
-                                    <mat-label class="kt-padding-l-10">Deposit Date</mat-label>
-                                </div>
-                                <div class="col-8">
-                                    <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                                        formControlName="depositDate" [min]="minDate"
-                                        [class.isError]="controls.depositDate.touched && controls.depositDate.invalid"
-                                        readonly placeholder="4/5/2020" />
-                                    <mat-datepicker #picker></mat-datepicker>
-
-                                    <mat-error
-                                        *ngIf="controls.depositDate.touched && controls.depositDate.errors?.required">
-                                        Required field
-                                    </mat-error>
-                                </div>
-                            </div>
-
-                            <div class="row kt-margin-b-15">
-                                <div class="col-4 form-label mandatory">
-                                    <mat-label class="kt-padding-l-10">Deposit Amount </mat-label>
-                                </div>
-                                <div class="col-8">
-                                    <input numbersOnly class="form-control" formControlName="paidAmount" placeholder="0"
-                                        [class.isError]="controls.paidAmount.touched && controls.paidAmount.invalid" />
-
-                                    <mat-error
-                                        *ngIf="controls.paidAmount.touched && controls.paidAmount.errors?.required">
-                                        Required field
-                                    </mat-error>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row kt-margin-b-15" *ngIf="data.name == 'deposit'">
                             <div class="col-4 form-label mandatory">
-                                <mat-label class="kt-padding-l-10">Payment Received Date</mat-label>
+                                <mat-label class="kt-padding-l-10">Transaction ID</mat-label>
                             </div>
                             <div class="col-8">
-                                <input class="form-control" [matDatepicker]="picker1" (click)="picker1.open()"
-                                    formControlName="paymentReceivedDate" [min]="minDate"
-                                    [class.isError]="controls.paymentReceivedDate.touched && controls.paymentReceivedDate.invalid"
-                                    readonly placeholder="4/5/2020" />
-                                <mat-datepicker #picker1></mat-datepicker>
+                                <input class="form-control" formControlName="depositTransactionId"
+                                    style="text-transform: uppercase;" placeholder="TRAN04041995"
+                                    [class.isError]="controls.depositTransactionId.touched && controls.depositTransactionId.invalid" />
 
                                 <mat-error
-                                    *ngIf="controls.paymentReceivedDate.touched && controls.paymentReceivedDate.errors?.required">
+                                    *ngIf="controls.depositTransactionId.touched && controls.depositTransactionId.invalid">
                                     Required field
                                 </mat-error>
                             </div>
-                        </div>
-
-                        <div *ngIf="controls.depositStatus.value">
-                            <div class="row kt-margin-b-15">
-                                <div class="col-4 form-label mandatory">
-                                    <mat-label class="kt-padding-l-10">Deposit Status</mat-label>
-                                </div>
-                                <div class="col-8">
-                                    <select class="form-control" formControlName="depositStatus"
-                                        (change)="setValidation($event)"
-                                        [class.isError]="controls.depositStatus.touched && controls.depositStatus.invalid">
-                                        <option value="" selected disabled>Select Status</option>
-                                        <option value="Pending">Pending</option>
-                                        <option value="Completed">Completed</option>
-                                        <option value="Rejected">Rejected</option>
-                                    </select>
-
-                                    <mat-error
-                                        *ngIf="controls.depositStatus.touched && controls.depositStatus.errors?.required">
-                                        Required field
-                                    </mat-error>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                        <div class="p-3">
-                            <kt-modal-footer (action)="action($event)" [value]="'Update'">
-                            </kt-modal-footer>
-                            
                         </div>
 
                     </div>
+
+                    <div class="row kt-margin-b-15">
+                        <div class="col-4 form-label ">
+                            <mat-label class="kt-padding-l-10 mandatory">Mode of Payment</mat-label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" formControlName="paymentType" (change)="setValidation($event)"
+                                [class.isError]="controls.paymentType.touched && controls.paymentType.invalid">
+                                <option value="" selected disabled>Select Payment</option>
+                                <!-- <option value="cash">CASH</option>
+                                    <option value="IMPS">RTGS/NEFT/IMPS</option>
+                                    <option value="cheque">CHEQUE</option> -->
+                                <option [value]="item.value" *ngFor="let item of paymentTypeList;">
+                                    {{item.name | uppercase}}
+                                </option>
+                            </select>
+
+                            <mat-error *ngIf="controls.paymentType.touched && controls.paymentType.errors?.required">
+                                Required field
+                            </mat-error>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div
+                            *ngIf="controls.paymentType.value && (controls.paymentType.value != 'gateway' && controls.paymentType.value != 'cash')">
+                            <div class="row kt-margin-b-15">
+                                <div class="col-4 form-label mandatory">
+                                    <mat-label class="kt-padding-l-10">Deposit Bank Name</mat-label>
+                                </div>
+                                <div class="col-8">
+                                    <input class="form-control" formControlName="bankName" placeholder="Bank Name"
+                                        [class.isError]="controls.bankName.touched && controls.bankName.invalid" />
+
+                                    <mat-error *ngIf="controls.bankName.touched && controls.bankName.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+
+                            <div class="row kt-margin-b-15">
+                                <div class="col-4 form-label mandatory">
+                                    <mat-label class="kt-padding-l-10">Deposit Branch Name</mat-label>
+                                </div>
+                                <div class="col-8">
+                                    <input class="form-control" formControlName="branchName" placeholder="Branch Name"
+                                        [class.isError]="controls.branchName.touched && controls.branchName.invalid" />
+
+                                    <mat-error
+                                        *ngIf="controls.branchName.touched && controls.branchName.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+
+                            <div *ngIf="controls.paymentType.value != 'cheque'" class="row kt-margin-b-15">
+                                <div class="col-4 form-label mandatory">
+                                    <mat-label class="kt-padding-l-10">Bank Transaction ID</mat-label>
+                                </div>
+                                <div class="col-8">
+                                    <input class="form-control" formControlName="transactionId"
+                                        style="text-transform: uppercase;" placeholder="TRAN04041995"
+                                        [class.isError]="controls.transactionId.touched && controls.transactionId.invalid" />
+
+                                    <mat-error
+                                        *ngIf="controls.transactionId.touched && controls.transactionId.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+
+
+                            <div *ngIf="controls.paymentType.value === 'cheque'" class="row kt-margin-b-15">
+                                <div class="col-4 form-label mandatory">
+                                    <mat-label class="kt-padding-l-10">Cheque Number</mat-label>
+                                </div>
+                                <div class="col-8">
+                                    <input numbersOnly class="form-control" formControlName="chequeNumber"
+                                        placeholder="491995" maxlength="6"
+                                        [class.isError]="controls.chequeNumber.touched && controls.chequeNumber.invalid" />
+
+                                    <mat-error
+                                        *ngIf="controls.chequeNumber.touched && controls.chequeNumber.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                    <mat-error
+                                        *ngIf="controls.chequeNumber.touched && controls.chequeNumber.errors?.pattern">
+                                        Invalid Input
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="controls.paymentType.value != 'gateway'" class="row kt-margin-b-15">
+                            <div class="col-4 form-label mandatory">
+                                <mat-label class="kt-padding-l-10">Deposit Date</mat-label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
+                                    formControlName="depositDate" [min]="minDate"
+                                    [class.isError]="controls.depositDate.touched && controls.depositDate.invalid"
+                                    readonly placeholder="4/5/2020" />
+                                <mat-datepicker #picker></mat-datepicker>
+
+                                <mat-error
+                                    *ngIf="controls.depositDate.touched && controls.depositDate.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+
+                        <div *ngIf="controls.paymentType.value != 'gateway'" class="row kt-margin-b-15">
+                            <div class="col-4 form-label mandatory">
+                                <mat-label class="kt-padding-l-10">Deposit Amount </mat-label>
+                            </div>
+                            <div class="col-8">
+                                <input numbersOnly class="form-control" formControlName="paidAmount" placeholder="0"
+                                    [class.isError]="controls.paidAmount.touched && controls.paidAmount.invalid" />
+
+                                <mat-error *ngIf="controls.paidAmount.touched && controls.paidAmount.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row kt-margin-b-15" *ngIf="data.name == 'deposit'">
+                        <div class="col-4 form-label mandatory">
+                            <mat-label class="kt-padding-l-10">Payment Received Date</mat-label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" [matDatepicker]="picker1" (click)="picker1.open()"
+                                formControlName="paymentReceivedDate" [min]="minDate"
+                                [class.isError]="controls.paymentReceivedDate.touched && controls.paymentReceivedDate.invalid"
+                                readonly placeholder="4/5/2020" />
+                            <mat-datepicker #picker1></mat-datepicker>
+
+                            <mat-error
+                                *ngIf="controls.paymentReceivedDate.touched && controls.paymentReceivedDate.errors?.required">
+                                Required field
+                            </mat-error>
+                        </div>
+                    </div>
+
+                    <div *ngIf="controls.depositStatus.value">
+                        <div class="row kt-margin-b-15">
+                            <div class="col-4 form-label mandatory">
+                                <mat-label class="kt-padding-l-10">Deposit Status</mat-label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-control" formControlName="depositStatus"
+                                    (change)="setValidation($event)"
+                                    [class.isError]="controls.depositStatus.touched && controls.depositStatus.invalid">
+                                    <option value="" selected disabled>Select Status</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Rejected">Rejected</option>
+                                </select>
+
+                                <mat-error
+                                    *ngIf="controls.depositStatus.touched && controls.depositStatus.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="p-3">
+                        <kt-modal-footer (action)="action($event)" [value]="'Update'">
+                        </kt-modal-footer>
+
+                    </div>
+
+                </div>
                 <!-- </div> -->
             </form>
         </div>
