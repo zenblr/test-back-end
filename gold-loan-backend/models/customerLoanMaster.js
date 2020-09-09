@@ -183,7 +183,12 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_ornaments_released',
             defaultValue: false
         },
-        isNewLoanFromPartRelease: {
+        isFullOrnamentsReleased:{
+            type: DataTypes.BOOLEAN,
+            field: 'is_full_ornaments_released',
+            defaultValue: false
+        },
+        isNewLoanFromPartRelease:{
             type: DataTypes.BOOLEAN,
             field: 'is_new_loan_from_part_release',
             defaultValue: false
