@@ -78,19 +78,20 @@ exports.penalInterestCalculation = async (req, res) => {
 }
 
 exports.interestCalculationOneLoan = async (req, res) => {
-    let data;
+    let interestData;
+    let penalData;
     let { date, masterLoanId } = req.body;
     if (date) {
-        data = await intrestCalculationForSelectedLoan(date, masterLoanId);
-        await penalInterestCalculationForSelectedLoan(date, masterLoanId)
+        interestData = await intrestCalculationForSelectedLoan(date, masterLoanId);
+        penalData = await penalInterestCalculationForSelectedLoan(date, masterLoanId)
 
     } else {
         date = moment();
-        data = await intrestCalculationForSelectedLoan(date, masterLoanId);
-        await penalInterestCalculationForSelectedLoan(date, masterLoanId)
+        interestData = await intrestCalculationForSelectedLoan(date, masterLoanId);
+        penalData = await penalInterestCalculationForSelectedLoan(date, masterLoanId)
 
     }
-    return res.status(200).json(data);
+    return res.status(200).json({ interestData, penalData });
 }
 
 exports.interestCalculationUpdate = async (req, res) => {
