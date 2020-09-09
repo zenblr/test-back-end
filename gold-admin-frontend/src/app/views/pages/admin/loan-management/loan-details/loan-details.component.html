@@ -96,6 +96,39 @@
                     </mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="partRelease">
+                    <mat-header-cell *matHeaderCellDef>Part Release</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <div *ngIf="!loan?.partRelease">
+                            -
+                        </div>
+                        <div *ngIf="loan?.partRelease">
+                            <div *ngIf="loan?.partRelease?.partReleaseStatus == 'pending'">
+                                Release <br> Initiated
+                            </div>
+                            <div *ngIf="loan?.partRelease?.partReleaseStatus == 'released'">
+                                Release <br> Completed
+                            </div>
+                        </div>
+
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="fullRelease">
+                    <mat-header-cell *matHeaderCellDef>Full Release</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <div *ngIf="!loan?.fullRelease"> - </div>
+                        <div *ngIf="loan?.fullRelease">
+                            <div *ngIf="loan?.fullRelease?.fullReleaseStatus == 'pending'">
+                                Release <br> Initiated
+                            </div>
+                            <div *ngIf="loan?.fullRelease?.fullReleaseStatus == 'released'">
+                                Release <br> Completed
+                            </div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="packets">
                     <mat-header-cell *matHeaderCellDef>Packets ID</mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan?.loanPacketDetails[0].packets[0].packetUniqueId}}</mat-cell>

@@ -14,6 +14,7 @@ export class PaymentDialogComponent implements OnInit {
   paymentForm: FormGroup;
   title: string = ''
   minDate: Date;
+  maxDate = new Date()
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<PaymentDialogComponent>,
@@ -39,7 +40,7 @@ export class PaymentDialogComponent implements OnInit {
       paidAmount: [, [Validators.required]],
       chequeNumber: [],
       depositTransactionId: [],
-      paymentReceivedDate: ['', [Validators.required]],
+      paymentReceivedDate: [, [Validators.required]],
       depositStatus: ['', [Validators.required]]
     })
   }
