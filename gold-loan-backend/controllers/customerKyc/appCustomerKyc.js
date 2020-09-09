@@ -274,7 +274,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
 
     let data = await models.appraiserRequest.findAll({
         where: searchQuery,
-        attributes: ['appraiserId', 'appoinmentDate', 'startTime', 'endTime'],
+        attributes: ['appraiserId', 'appoinmentDate', 'startTime', 'endTime','id'],
         subQuery: false,
         include: includeArray,
         order: [
