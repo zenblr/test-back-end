@@ -840,7 +840,7 @@ let allInterestPayment = async (transactionId, createdBy) => {
     }
     // console.log(securedLoanDetails)
 
-    if ( securedInterest > 0) {
+    if (securedInterest > 0) {
         newSecuredDetails = await generateTranscationAndUpdateInterestValue(securedLoanDetails, securedInterest, createdBy)
         securedLoanDetails = newSecuredDetails.loanArray
         Array.prototype.push.apply(transactionDetails, newSecuredDetails.transaction)
@@ -1380,6 +1380,52 @@ let penalInterestCalculationForSelectedLoan = async (date, masterLaonId) => {
     }
 }
 
+let stepDown = async (paymentDate, loan, noOfDays) => {
+
+    let emiTable = await models.customerLoanInterest.findAll({
+        where: {
+            loanId: loan.customerLoan[0].id,
+            emiDueDate: paymentDate,
+            emiStatus: { [Op.notIn]: ['paid'] }
+        }
+    })
+
+    let emiTableDetails
+    if (emiTable.length > 0) {
+
+        let interestData = await models.customerLoanSlabRate.findAll({
+            where: { loanId: loan.customerLoan[0].id },
+            order: [['days', 'asc']]
+        })
+        let index = interestData.findIndex(ele => {
+            return ele.interestRate == emiTable[0].interestRate
+        })
+
+        var stepDownInterest = interestData[index - 1].interestRate
+
+        var currentSlabRate = interestData[index - 1].days
+        var newEmiTable = await models.customerLoanInterest.findAll({
+            where: {
+                loanId: loan.customerLoan[0].id,
+                emiStatus: { [Op.notIn]: ['paid'] }
+            }
+        })
+
+        for (let index = 0; index < newEmiTable.length; index++) {
+            const element = newEmiTable[index].dataValues;
+            element.interestRate = stepDownInterest;
+        }
+
+    }
+
+    else {
+        // comming soon
+    }
+
+
+    return { newEmiTable, currentSlabRate, securedInterest: stepDownInterest }
+}
+
 module.exports = {
     getGlobalSetting: getGlobalSetting,
     getAllCustomerLoanId: getAllCustomerLoanId,
@@ -1420,5 +1466,6 @@ module.exports = {
     getSingleDayInterestAmount: getSingleDayInterestAmount,
     getSingleMasterLoanDetail: getSingleMasterLoanDetail,
     splitAmountIntoSecuredAndUnsecured: splitAmountIntoSecuredAndUnsecured,
-    penalInterestCalculationForSelectedLoan: penalInterestCalculationForSelectedLoan
+    penalInterestCalculationForSelectedLoan: penalInterestCalculationForSelectedLoan,
+    stepDown: stepDown
 }
