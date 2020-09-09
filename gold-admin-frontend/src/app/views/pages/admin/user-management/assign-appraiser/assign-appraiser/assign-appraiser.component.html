@@ -127,6 +127,10 @@
                                     (dateChange)="setMinimumStartTime($event)">
                                 <mat-datepicker #picker></mat-datepicker>
                             </div>
+                            <mat-error
+                                *ngIf="controls.appoinmentDate.touched && controls.appoinmentDate.errors?.required">
+                                Required field
+                            </mat-error>
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
@@ -135,15 +139,26 @@
 
                             <div class="col-4">
                                 <input [ngxTimepicker]="picker1" class="form-control" formControlName="startTime"
-                                    placeholder="From" [min]="addStartTime">
+                                    placeholder="From" [min]="addStartTime" [max]="'06:00 pm'"
+                                    [class.isError]="controls.startTime.touched && controls.startTime.invalid">
                                 <ngx-material-timepicker #picker1 (timeChanged)="setStartTime($event)">
                                 </ngx-material-timepicker>
+                                <mat-error *ngIf="controls.startTime.touched && controls.startTime.errors?.required">
+                                    Required field
+                                </mat-error>
                             </div>
+                            
                             <div class="col-4">
                                 <input [ngxTimepicker]="picker2" class="form-control" formControlName="endTime"
-                                    placeholder="To" [min]="startTime">
+                                    placeholder="To" [min]="startTime" [max]="'06:00 pm'"
+                                    [class.isError]="controls.endTime.touched && controls.endTime.invalid">
                                 <ngx-material-timepicker #picker2></ngx-material-timepicker>
+                                <mat-error *ngIf="controls.endTime.touched && controls.endTime.errors?.required">
+                                    Required field
+                                </mat-error>
                             </div>
+                            
+
                         </div>
                     </div>
                 </div>

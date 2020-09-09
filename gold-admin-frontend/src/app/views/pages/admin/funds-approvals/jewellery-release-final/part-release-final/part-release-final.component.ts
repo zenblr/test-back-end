@@ -103,7 +103,12 @@ export class PartReleaseFinalComponent implements OnInit {
   }
 
   updateDocument(item) {
-    this.router.navigate([`admin/funds-approvals/upload-document/partRelease/${item.id}`])
+    const params = {
+      customerUniqueId: item.masterLoan.customer.customerUniqueId,
+      partReleaseId: item.id
+    }
+    this.router.navigate([`admin/funds-approvals/upload-document/partRelease/${item.id}`],
+      { queryParams: { customerUniqueId: params.customerUniqueId, partReleaseId: params.partReleaseId } })
   }
 
   newLoan(item) {

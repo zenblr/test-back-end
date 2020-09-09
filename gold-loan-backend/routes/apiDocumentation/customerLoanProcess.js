@@ -1,5 +1,28 @@
 /**
  * @swagger
+ * /loan-process/loan-date-change:
+ *   post:
+ *     tags:
+ *       - Customer Loan Process
+ *     summary: TO CHANGE LOAN DATES (date= YYYY/MM/DD)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             loanUniqueId:
+ *               type: string
+ *             loanStartDate:
+ *               type: string
+ *     responses:
+ *       200:
+ *          description: date chanes success
+ *       400:
+ *          description: failed
+ * 
  * /loan-process/customer-loan-details/{customerUniqueId}:
  *   get:
  *     tags:
