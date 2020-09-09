@@ -13,8 +13,8 @@
  *         schema:
  *           type: object
  *           properties:
- *             masterLoanId:
- *               type: integer
+ *             loanUniqueId:
+ *               type: string
  *             loanStartDate:
  *               type: string
  *     responses:

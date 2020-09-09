@@ -19,7 +19,10 @@ const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMEN
 
 //LOAN DATE CHANGE
 exports.loanDateChange = async (req, res, next) => {
-    let { loanStartDate, masterLoanId } = req.body
+    let { loanStartDate, loanUniqueId } = req.body
+
+    let { masterLoanId } = await models.customerLoan.findOne({ where: { loanUniqueId: loanUniqueId } })
+
     let data = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
         attributes: ['tenure', 'id', 'paymentFrequency', 'loanStartDate'],
