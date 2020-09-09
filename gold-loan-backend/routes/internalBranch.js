@@ -11,7 +11,7 @@ const checkAuth = require('../middleware/checkAuth');
 route.post('/', addInternalBranchValidation, validatiError, checkAuth, checkRolePermission, wrapper(addInternalBranch));// add internal branch
 route.get('/', checkAuth, checkRolePermission, wrapper(readInternalBranch)); // read internal branch
 route.delete('/', checkAuth, checkRolePermission, wrapper(deactiveInternalBranch)); // delete internal branch
-route.get('/:id', checkAuth, checkRolePermission, wrapper(readInternalBranchById)); // read internal branch by id
+route.get('/single-branch', checkAuth, wrapper(readInternalBranchById)); // read internal branch by id
 route.put('/:id', updateInternalBranchValidation, validatiError, checkAuth, checkRolePermission, wrapper(updateInternalBranch)); // update Internal branch
 
 module.exports = route;
