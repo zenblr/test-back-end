@@ -246,7 +246,7 @@ export class MenuConfig {
 								{
 									title: "Deposit",
 									page: "/admin/funds-approvals/deposit",
-									permission: false,
+									permission: !this.permissionsArr.includes('viewDeposit'),
 								},
 								{
 									title: "Top-Up Approval",
