@@ -2,9 +2,9 @@
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
-const { addPackageImagesForLoan, disbursementOfLoanAmount, interestRate, generateInterestTable, unsecuredTableGeneration,
+const { loanDateChange, addPackageImagesForLoan, disbursementOfLoanAmount, interestRate, generateInterestTable, unsecuredTableGeneration,
   disbursementOfLoanBankDetails, getLoanDetails, getSingleLoanDetails, appliedLoanDetails, customerDetails, loanBmRating, loanOpsTeamRating, checkForLoanType,
-  loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getSingleLoanInCustomerManagment, getDetailsForPrint, getLoanOrnaments,getUnsecuredScheme } =
+  loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getSingleLoanInCustomerManagment, getDetailsForPrint, getLoanOrnaments, getUnsecuredScheme } =
   require('../controllers/customerLoanProcess/customerLoanProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
@@ -12,6 +12,8 @@ const checkRolePermission = require('../middleware/checkRolesPermissions');
 const { loanRequest } = require('../controllers/customerLoanProcess/customerLoanProcessForApp')
 
 const checkAuth = require('../middleware/checkAuth'); // IMPORTING CHECK AUTH MIDDLEWARE
+
+route.post('/loan-date-change', checkAuth, wrapper(loanDateChange))
 
 route.post('/basic-details', checkAuth, wrapper(loanBasicDeatils)); // ADD CUSTOMER BANK DETAIL
 

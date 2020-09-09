@@ -726,6 +726,9 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/admin/loan-management/loan-application-form?transferLoanCustomerID=')) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes('/admin/funds-approvals/upload-document/')) {
+			this.showBackButton = true;
+		}
 		if (this.path == 'standard-deduction') {
 			this.dataSourceHeader();
 			this.value1 = "Add Standard Deduction";
