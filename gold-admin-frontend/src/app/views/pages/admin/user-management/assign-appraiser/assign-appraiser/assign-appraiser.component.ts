@@ -84,11 +84,12 @@ export class AssignAppraiserComponent implements OnInit {
     }
     else if (this.data.action == 'edit') {
       this.title = this.data.isReleaser ? 'Update Releaser' : 'Update Appraiser'
-
+      
       this.appraiserForm.patchValue(this.data.appraiser)
       this.startTime = this.convertTime24To12(this.data.appraiser.startTime);
       this.endTime = this.convertTime24To12(this.data.appraiser.endTime);
       this.appraiserForm.patchValue({ startTime: this.startTime, endTime: this.endTime })
+     
       if (this.data.requestData) {
         this.appraiserForm.controls.id.patchValue(this.data.requestData.id)
       }
@@ -127,8 +128,8 @@ export class AssignAppraiserComponent implements OnInit {
       appraiserId: [, [Validators.required]],
       releaserId: [, [Validators.required]],
       appoinmentDate: [],
-      startTime: [this.addStartTime],
-      endTime: [],
+      startTime: [this.addStartTime,[Validators.required]],
+      endTime: [,[Validators.required]],
       partReleaseId: [],
       fullReleaseId: []
     });
@@ -203,6 +204,9 @@ export class AssignAppraiserComponent implements OnInit {
         if (element.invalid) console.log({ key, element })
       }
       return
+    }
+    if(this.appraiserForm.controls.startTime.value == this.appraiserForm.controls.endTime.value){
+      return this.toastr.errorToastr('Time should not be same!')
     }
 
     const appoinmentDate = new Date(this.controls.appoinmentDate.value)
@@ -317,7 +321,8 @@ export class AssignAppraiserComponent implements OnInit {
     let timeDifference = selectedDate.getTime() - currentDate.getTime();
     var daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
     if (daysDifference > 0) {
-      this.addStartTime = null
+      this.addStartTime =  '09:00 am'
+      this.startTime = '09:00 am'
       this.controls.startTime.reset()
       this.controls.endTime.reset()
     } else {
