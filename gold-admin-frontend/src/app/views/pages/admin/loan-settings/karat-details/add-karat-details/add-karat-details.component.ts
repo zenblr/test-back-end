@@ -36,10 +36,10 @@ export class AddKaratDetailsComponent implements OnInit {
   formInitialize() {
     this.karatDetailsForm = this.fb.group({
       id: [''],
-      karat: ['', [Validators.required],[]],
-      fromPercentage: ['', [Validators.required,Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
-      toPercentage:['', [Validators.required,Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
-      range:[]
+      karat: ['', [Validators.required], []],
+      fromPercentage: ['', [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
+      toPercentage: ['', [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
+      range: []
     });
   }
   getKaratDetailsById(id) {
@@ -75,7 +75,7 @@ export class AddKaratDetailsComponent implements OnInit {
     for (let index = from; index <= to; index++) {
       range.push(+(index));
     }
-    this.karatDetailsForm.patchValue({range:range,fromPercentage:from,toPercentage:to});
+    this.karatDetailsForm.patchValue({ range: range, fromPercentage: from, toPercentage: to });
     console.log(this.karatDetailsForm.value)
 
     const karatData = this.karatDetailsForm.value;
@@ -99,6 +99,22 @@ export class AddKaratDetailsComponent implements OnInit {
         }
       })
     }
+  }
+
+  checkPercent() {
+    // if (this.controls.fromPercentage.invalid || this.controls.toPercentage.invalid) return
+
+    if (Number(this.controls.fromPercentage.value) >= Number(this.controls.toPercentage.value)) {
+      if (Number(this.controls.toPercentage.value) == 100) {
+        this.controls.fromPercentage.setErrors({ mustBeLesser: true })
+      } else {
+        this.controls.toPercentage.setErrors({ mustBeGreater: true })
+      }
+    }
+
+    // if (this.controls.fromPercentage.valid && this.controls.toPercentage.valid) {
+    //   this.controls.toPercentage.setErrors(null)
+    // }
   }
 
 }

@@ -39,7 +39,7 @@ export class PaymentDialogComponent implements OnInit {
       paidAmount: [, [Validators.required]],
       chequeNumber: [],
       depositTransactionId: [],
-      paymentReceivedDate: ['', [Validators.required]],
+      paymentReceivedDate: [, [Validators.required]],
       depositStatus: ['', [Validators.required]]
     })
   }
@@ -88,6 +88,7 @@ export class PaymentDialogComponent implements OnInit {
       case 'RTGS':
       case 'UPI':
         this.paymentForm.clearValidators();
+        this.paymentForm.updateValueAndValidity()
 
         for (const key in this.paymentForm.controls) {
           if (key !== 'chequeNumber') {
@@ -101,6 +102,7 @@ export class PaymentDialogComponent implements OnInit {
 
       case 'cheque':
         this.paymentForm.clearValidators();
+        this.paymentForm.updateValueAndValidity()
 
         for (const key in this.paymentForm.controls) {
           if (key != 'transactionId') {
@@ -115,6 +117,12 @@ export class PaymentDialogComponent implements OnInit {
           }
         }
         break;
+
+      case 'gateway':
+        for (const key in this.paymentForm.controls) {
+          this.paymentForm.controls[key].setValidators([])
+          this.paymentForm.controls[key].updateValueAndValidity()
+        }
 
       default:
         break;

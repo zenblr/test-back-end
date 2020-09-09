@@ -103,7 +103,12 @@ export class PartReleaseFinalComponent implements OnInit {
   }
 
   updateDocument(item) {
-    this.router.navigate([`admin/funds-approvals/upload-document/partRelease/${item.id}`])
+    const params = {
+      customerUniqueId: item.masterLoan.customer.customerUniqueId,
+      partReleaseId: item.id
+    }
+    this.router.navigate([`admin/funds-approvals/upload-document/partRelease/${item.id}`],
+      { queryParams: { customerUniqueId: params.customerUniqueId, partReleaseId: params.partReleaseId } })
   }
 
   newLoan(item) {
@@ -134,10 +139,10 @@ export class PartReleaseFinalComponent implements OnInit {
           index: 0,
           modal: false
         },
-        maxWidth: "75%",
+        // maxWidth: "75%",
         width: "auto",
         // maxHeight: '85%',
-        height: "75%",
+        // height: "75%",
       })
     }
   }

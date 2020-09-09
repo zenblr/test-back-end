@@ -309,7 +309,7 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
 
 exports.submitAllKycInfo = async (req, res, next) => {
 
-    let { customerId, customerKycId, customerKycPersonal, customerKycAddress, customerKycBank, customerKycReview } = req.body;
+    let { customerId, customerKycId, customerKycPersonal, customerKycAddress, customerKycBank,customerKycBasicDetails } = req.body;
 
     // let findCustomerKyc = await models.customerKyc.findOne({ where: { id: customerKycId } })
     // if (check.isEmpty(findCustomerKyc)) {
@@ -320,11 +320,11 @@ exports.submitAllKycInfo = async (req, res, next) => {
     if (!check.isEmpty(findIdentityNumber)) {
         return res.status(400).json({ message: "Identity Proof Number already exists! " })
     }
-    if (customerKycReview.panCardNumber) {
+    if (customerKycBasicDetails.panCardNumber) {
         let findPanCardNumber = await models.customer.findOne({
             where: {
                 id: { [Op.not]: customerId },
-                panCardNumber: { [Op.iLike]: customerKycReview.panCardNumber },
+                panCardNumber: { [Op.iLike]: customerKycBasicDetails.panCardNumber },
                 isActive: true
             }
         });
@@ -347,7 +347,7 @@ exports.submitAllKycInfo = async (req, res, next) => {
     await sequelize.transaction(async (t) => {
         let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
 
-        await models.customer.update({ firstName: customerKycReview.firstName, lastName: customerKycReview.lastName, panCardNumber: customerKycReview.panCardNumber, panType: customerKycReview.panType, panImage: customerKycReview.panImage }, { where: { id: customerId }, transaction: t })
+        await models.customer.update({ firstName: customerKycBasicDetails.firstName, lastName: customerKycBasicDetails.lastName, panCardNumber: customerKycBasicDetails.panCardNumber, panType: customerKycBasicDetails.panType, panImage: customerKycBasicDetails.panImage }, { where: { id: customerId }, transaction: t })
 
         await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });
 

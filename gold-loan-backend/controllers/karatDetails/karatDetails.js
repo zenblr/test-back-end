@@ -5,8 +5,11 @@ exports.addKaratDetails = async (req, res) => {
     const { karat, fromPercentage, toPercentage, range } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
-    if (toPercentage < fromPercentage) {
-        return res.status(400).json({ message: 'from percentage should less than to percentage' })
+    if (toPercentage <= fromPercentage) {
+        return res.status(400).json({ message: 'From percentage should less than to percentage' })
+    }
+    if (fromPercentage == 0 || toPercentage == 0 || karat == 0) {
+        return res.status(400).json({ message: 'Value cannot be zero!' })
     }
     let addKaratDetails = await models.karatDetails.create({ karat, fromPercentage, toPercentage, range, createdBy, modifiedBy })
     if (!addKaratDetails) {
@@ -60,10 +63,14 @@ exports.readKaratDetailsById = async (req, res) => {
 
 exports.updateKaratDetails = async (req, res) => {
     let karatDetailsId = req.params.id;
+   
     const { karat, fromPercentage, toPercentage } = req.body;
     let modifiedBy = req.userData.id;
-    if (fromPercentage >= toPercentage) {
-        return res.status(400).json({ message: 'from percentage should less than to percentage' })
+    if (toPercentage <= fromPercentage) {
+        return res.status(400).json({ message: 'From percentage should less than to percentage' })
+    }
+    if (fromPercentage == 0 || toPercentage == 0 || karat == 0) {
+        return res.status(400).json({ message: 'Value cannot be zero!' })
     }
     let updateKaratDetails = await models.karatDetails.update({ karat, fromPercentage, toPercentage, modifiedBy }, { where: { id: karatDetailsId, isActive: true } });
     if (!updateKaratDetails[0]) {
