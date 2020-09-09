@@ -123,6 +123,7 @@ export class PaymentDialogComponent implements OnInit {
           this.paymentForm.controls[key].setValidators([])
           this.paymentForm.controls[key].updateValueAndValidity()
         }
+        this.controls.depositDate.patchValue(new Date())
 
       default:
         break;
