@@ -28,7 +28,6 @@ exports.addScrapPacket = async (req, res, next) => {
     if (!check.isEmpty(barcodeExist)) {
         return res.status(400).json({ message: `This barcode number already exist` })
     }
-    console.log(packetUniqueId, barcodeNumber, createdBy, modifiedBy, internalUserBranchId);
     let packetAdded = await models.scrapPacket.addPacket(
         packetUniqueId, barcodeNumber, createdBy, modifiedBy, internalUserBranchId);
     res.status(201).json({ message: 'you adeed packet successfully' }); 
