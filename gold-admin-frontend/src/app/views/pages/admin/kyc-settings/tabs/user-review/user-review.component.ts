@@ -516,7 +516,7 @@ export class UserReviewComponent implements OnInit {
       panCardNumber: [this.data.customerKycReview.panCardNumber, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       panType: [this.data.customerKycReview.panType, Validators.required],
       form60: [],
-      panImage: [],
+      panImage: [this.data.customerKycReview.panImage],
       panImg: [this.data.customerKycReview.panImg, [Validators.required]],
       identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
       identityProof: [, [Validators.required]],
@@ -1003,6 +1003,10 @@ export class UserReviewComponent implements OnInit {
     const ext = this.sharedService.getExtension(image)
     const isPdf = ext == 'pdf' ? true : false
     return isPdf
+  }
+
+  changeMaritalStatus() {
+    this.customerKycPersonal.controls.spouseName.reset()
   }
 
 }

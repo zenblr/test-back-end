@@ -349,6 +349,7 @@ let mergeInterestTable = async (masterLoanId) => {
             attributes: ['id'],
             include: [{
                 model: models.customerLoanInterest,
+                where: { isExtraDaysInterest: false },
                 as: 'customerLoanInterest',
                 attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
             }]
@@ -1136,9 +1137,11 @@ let getSingleDayInterestAmount = async (loan) => {
     let securedPerDayInterestAmount = ((securedInterest / 100) * securedOutstandingAmount * (paymentFrequency / 30)) / paymentFrequency
 
     let secured = await models.customerLoanInterest.findAll({
-        where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[0].id, },
+        where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[0].id, isExtraDaysInterest: false },
         order: [['emiEndDate', 'asc']]
     });
+    var securedTotalInterest = 0
+    var unsecuredTotalInterest = 0
     if (secured.length > 0) {
         let startDate = moment(secured[0].emiStartDate)
         let index = secured.findIndex(ele => {
@@ -1147,26 +1150,29 @@ let getSingleDayInterestAmount = async (loan) => {
             return a.getTime() > b.getTime()
         })
 
-        let partialPaidSecuredIndex = secured.findIndex(ele => {
-            return ele.emiStatus == 'partially paid'
-        })
-        let paidAmount = 0
-        if (partialPaidSecuredIndex >= 0) {
-            paidAmount = secured[partialPaidSecuredIndex].paidAmount
+        if (index < 0) {
+            securedTotalInterest = 0
+        } else {
+            let partialPaidSecuredIndex = secured.findIndex(ele => {
+                return ele.emiStatus == 'partially paid'
+            })
+            let paidAmount = 0
+            if (partialPaidSecuredIndex >= 0) {
+                paidAmount = secured[partialPaidSecuredIndex].paidAmount
+            }
+
+            let dueDate = moment(secured[index].emiEndDate)
+
+            let noOfDays = dueDate.diff(startDate, 'days')
+            let months = Math.ceil(noOfDays / 30)
+            securedTotalInterest = (securedPerDayInterestAmount * (months * 30)) - paidAmount;
+            securedTotalInterest = securedTotalInterest.toFixed(2)
         }
-
-        let dueDate = moment(secured[index].emiEndDate)
-
-        let noOfDays = dueDate.diff(startDate, 'days')
-        let months = Math.ceil(noOfDays / 30)
-        var securedTotalInterest = (securedPerDayInterestAmount * (months * 30)) - paidAmount;
-        securedTotalInterest = securedTotalInterest.toFixed(2)
     }
     if (loan.customerLoan.length > 1) {
         let unsecuredInterest = loan.customerLoan[1].currentInterestRate
         let unsecuredOutstandingAmount = loan.customerLoan[1].outstandingAmount
         var unsecuredPerDayInterestAmount = ((unsecuredInterest / 100) * unsecuredOutstandingAmount * (paymentFrequency / 30)) / paymentFrequency
-
 
         let unsecured = await models.customerLoanInterest.findAll({
             where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[1].id, },
@@ -1180,22 +1186,30 @@ let getSingleDayInterestAmount = async (loan) => {
                 return a.getTime() > b.getTime()
             })
 
-            let partialPaidSecuredIndex = unsecured.findIndex(ele => {
-                return ele.emiStatus == 'partially paid'
-            })
+
+            if (index < 0) {
+                unsecuredTotalInterest = 0
+
+            } else {
+                let partialPaidSecuredIndex = unsecured.findIndex(ele => {
+                    return ele.emiStatus == 'partially paid'
+                })
 
 
-            let unsecuredPaidAmount = 0
-            if (partialPaidSecuredIndex >= 0) {
-                unsecuredPaidAmount = unsecured[partialPaidSecuredIndex].paidAmount
+                let unsecuredPaidAmount = 0
+                if (partialPaidSecuredIndex >= 0) {
+                    unsecuredPaidAmount = unsecured[partialPaidSecuredIndex].paidAmount
+                }
+
+                let dueDate = moment(unsecured[index].emiEndDate)
+
+                let noOfDays = dueDate.diff(startDate, 'days')
+                let months = Math.ceil(noOfDays / 30)
+                unsecuredTotalInterest = (unsecuredPerDayInterestAmount * (months * 30)) - unsecuredPaidAmount
+                unsecuredTotalInterest = unsecuredTotalInterest.toFixed(2)
             }
 
-            let dueDate = moment(unsecured[index].emiEndDate)
 
-            let noOfDays = dueDate.diff(startDate, 'days')
-            let months = Math.ceil(noOfDays / 30)
-            var unsecuredTotalInterest = (unsecuredPerDayInterestAmount * (months * 30)) - unsecuredPaidAmount
-            unsecuredTotalInterest = unsecuredTotalInterest.toFixed(2)
         }
     }
 

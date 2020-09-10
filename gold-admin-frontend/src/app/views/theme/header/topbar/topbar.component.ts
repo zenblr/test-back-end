@@ -203,6 +203,10 @@ export class TopbarComponent implements OnInit {
 			takeUntil(this.destroy$)
 		).subscribe(res => this.isDisabled = res)
 
+		this.scrapPacketsService.disableBtn$.pipe(
+			takeUntil(this.destroy$)
+		).subscribe(res => this.isDisabled = res)
+
 		this.subscriptions.push(
 			this.sharedService.totalCount$
 				.pipe(takeUntil(this.destroy$))

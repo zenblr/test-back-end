@@ -248,42 +248,42 @@ export class MenuConfig {
 									page: "/admin/funds-approvals/deposit",
 									permission: !this.permissionsArr.includes('viewDeposit'),
 								},
-								{
-									title: "Top-Up Approval",
-									page: "/admin/funds-approvals/top-up-approval",
-									permission: false,
-								},
+								// {
+								// 	title: "Top-Up Approval",
+								// 	page: "/admin/funds-approvals/top-up-approval",
+								// 	permission: false,
+								// },
 								{
 									title: "Jewellery Release Approval",
-									permission: false,
 									bullet: 'dot',
+									permission: !(this.permissionsArr.includes('partReleaseApprovalView') || this.permissionsArr.includes('fullReleaseApprovalView')),
 									submenu: [
 										{
 											title: "Part Release Approval",
 											page: "/admin/funds-approvals/part-release-approval",
-											permission: !this.permissionsArr.includes('partReleaseView'),
+											permission: !this.permissionsArr.includes('partReleaseApprovalView'),
 										},
 										{
 											title: "Full Release Approval",
 											page: "/admin/funds-approvals/full-release-approval",
-											permission: !this.permissionsArr.includes('fullReleaseView'),
+											permission: !this.permissionsArr.includes('fullReleaseApprovalView'),
 										},
 									]
 								},
 								{
 									title: "Jewellery Release Final Process",
-									permission: false,
 									bullet: 'dot',
+									permission: !(this.permissionsArr.includes('partReleaseApprovedView') || this.permissionsArr.includes('fullReleaseApprovedView')),
 									submenu: [
 										{
 											title: "Final Part Release",
 											page: "/admin/funds-approvals/part-release-final",
-											permission: !this.permissionsArr.includes('partReleaseView'),
+											permission: !this.permissionsArr.includes('partReleaseApprovedView'),
 										},
 										{
 											title: "Final Full Release",
 											page: "/admin/funds-approvals/full-release-final",
-											permission: !this.permissionsArr.includes('fullReleaseView'),
+											permission: !this.permissionsArr.includes('fullReleaseApprovedView'),
 										},
 									]
 								},

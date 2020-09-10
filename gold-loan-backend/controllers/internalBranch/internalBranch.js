@@ -131,7 +131,7 @@ exports.readInternalBranch = async (req, res) => {
 // read internal branch by id
 
 exports.readInternalBranchById = async (req, res) => {
-    let internalBranchId = req.params.id;
+    let internalBranchId = req.query.id;
     let readInternalBranchById = await models.internalBranch.findOne({
         where: { id: internalBranchId, isActive: true },
         include: [

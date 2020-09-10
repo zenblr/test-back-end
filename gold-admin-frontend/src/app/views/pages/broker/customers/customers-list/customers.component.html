@@ -67,7 +67,12 @@
                     <mat-header-cell *matHeaderCellDef>View PAN Card</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <span class="text-primary kt-pointer" *ngIf="element?.kycDetails?.panCard.URL;else elseBlock"
-                            (click)="open(element.kycDetails.panCard.URL)">View</span>
+                            (click)="previewImage(element.kycDetails.panCard.URL)">View</span>
+                        <!-- <div class="iframeWrapper" (click)="previewImage(element?.kycDetails?.panCard.URL)">
+                                <iframe [src]="controls.signatureProofImg.value | safe : 'resourceUrl'"
+                                    height="250" width="290" scrolling="no"
+                                    *ngIf="isPdf(controls.signatureProofImg.value)"></iframe>
+                        </div> -->
                     </mat-cell>
                 </ng-container>
                 <ng-template #blank>-</ng-template>
