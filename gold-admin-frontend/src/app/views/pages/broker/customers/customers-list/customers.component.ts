@@ -16,6 +16,7 @@ import {
 import { skip, distinctUntilChanged, tap, takeUntil } from "rxjs/operators";
 import { SharedService } from "../../../../../core/shared/services/shared.service";
 import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { PdfViewerComponent } from '../../../../../../app/views/partials/components/pdf-viewer/pdf-viewer.component';
 
 
 @Component({
@@ -105,18 +106,48 @@ export class CustomersComponent implements OnInit {
     this.dataSource.loadCustomersDetails(this.customersData);
   }
 
-  open(image) {
-    let images = [];
-    images.push(image)
-    this.dialog.open(ImagePreviewDialogComponent, {
-      data: {
-        images: images,
-        index: 0
-      },
-      width: "auto"
-    })
-  }
+  // open(image) {
+  //   let images = [];
+  //   images.push(image)
+  //   this.dialog.open(ImagePreviewDialogComponent, {
+  //     data: {
+  //       images: images,
+  //       index: 0
+  //     },
+  //     width: "auto"
+  //   })
+  // }
+  previewImage(value) {
+    const img = value
+    let images = []
+    // images = [this.controls.profileImg.value, this.controls.signatureProofImg.value]
 
+    // images = images.filter(e => {
+    //   let ext = this.sharedService.getExtension(e)
+    //   return ext !== 'pdf' && e != ''
+    // })
+    // const index = images.indexOf(img)
+
+    const ext = this.sharedService.getExtension(img)
+    if (ext == 'pdf') {
+      this.dialog.open(PdfViewerComponent, {
+        data: {
+          pdfSrc: img,
+          page: 1,
+          showAll: true
+        },
+        width: "80%"
+      })
+    } else {
+      this.dialog.open(ImagePreviewDialogComponent, {
+        data: {
+          images: [img],
+          index: 0,
+        },
+        width: "auto"
+      })
+    }
+  }
   /**
  * On Destroy
  */
