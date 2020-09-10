@@ -124,7 +124,7 @@
                             </div>
                             <div class="col-8">
                                 <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                                    formControlName="depositDate" [min]="minDate"
+                                    formControlName="depositDate" [min]="minDate" [max]="maxDate"
                                     [class.isError]="controls.depositDate.touched && controls.depositDate.invalid"
                                     readonly placeholder="4/5/2020" />
                                 <mat-datepicker #picker></mat-datepicker>
@@ -157,7 +157,7 @@
                         </div>
                         <div class="col-8">
                             <input class="form-control" [matDatepicker]="picker1" (click)="picker1.open()"
-                                formControlName="paymentReceivedDate" [min]="minDate"
+                                formControlName="paymentReceivedDate" [min]="minDate" [max]="maxDate"
                                 [class.isError]="controls.paymentReceivedDate.touched && controls.paymentReceivedDate.invalid"
                                 readonly placeholder="4/5/2020" />
                             <mat-datepicker #picker1></mat-datepicker>

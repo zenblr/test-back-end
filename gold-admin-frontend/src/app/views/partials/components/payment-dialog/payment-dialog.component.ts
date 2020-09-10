@@ -14,6 +14,7 @@ export class PaymentDialogComponent implements OnInit {
   paymentForm: FormGroup;
   title: string = ''
   minDate: Date;
+  maxDate = new Date()
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<PaymentDialogComponent>,
@@ -123,6 +124,7 @@ export class PaymentDialogComponent implements OnInit {
           this.paymentForm.controls[key].setValidators([])
           this.paymentForm.controls[key].updateValueAndValidity()
         }
+        this.controls.depositDate.patchValue(new Date())
 
       default:
         break;
