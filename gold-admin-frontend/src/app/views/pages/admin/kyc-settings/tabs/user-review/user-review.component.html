@@ -865,6 +865,7 @@
                                 </ng-container> -->
 
                                 <select formControlName="martialStatus" class="form-control"
+                                    (change)="changeMaritalStatus()"
                                     [class.isError]="customerKycPersonal.controls.martialStatus.touched && customerKycPersonal.controls.martialStatus.invalid">
                                     <option value="" selected disabled>Select Status</option>
                                     <option value="single">Single</option>

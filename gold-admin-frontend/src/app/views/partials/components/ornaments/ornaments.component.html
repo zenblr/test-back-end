@@ -258,8 +258,8 @@
                                                 machine reading in %)</label>
                                         </div>
                                         <div class="col-8">
-                                            <input type="text" class="form-control" placeholder="90 %"
-                                                formControlName="purityReading" numbersOnly
+                                            <input type="text" class="form-control" placeholder="90"
+                                                formControlName="purityReading" ktZeroToHundredWhole
                                                 [class.isError]="ornament.controls.purityReading.touched && ornament.controls.purityReading.invalid"
                                                 (input)="calculateMeltingScrapAmount(idx)">
                                             <mat-error
@@ -267,6 +267,9 @@
                                                 <span *ngIf="ornament.controls.purityReading.errors?.required">Field
                                                     Required</span>
                                             </mat-error>
+                                            <mat-error *ngIf="ornament.controls.purityReading.errors?.pattern && ornament.controls.purityReading.touched">
+                                                Invalid Number
+                                     </mat-error>
                                         </div>
                                     </div>
                                 </div>
@@ -278,8 +281,8 @@
                                                 machine reading in %)</label>
                                         </div>
                                         <div class="col-8">
-                                            <input type="text" class="form-control" placeholder="90"
-                                                formControlName="approxPurityReading" numbersOnly
+                                            <input type="text" class="form-control" placeholder= "90"
+                                                formControlName="approxPurityReading" ktZeroToHundredWhole
                                                 [class.isError]="ornament.controls.approxPurityReading.touched && ornament.controls.approxPurityReading.invalid"
                                                 (input)="calculateScrapAmount(idx)">
                                             <mat-error
@@ -288,6 +291,9 @@
                                                     *ngIf="ornament.controls.approxPurityReading.errors?.required">Field
                                                     Required</span>
                                             </mat-error>
+                                            <mat-error *ngIf="ornament.controls.approxPurityReading.errors?.pattern && ornament.controls.approxPurityReading.touched">
+                                                Invalid Number
+                                     </mat-error>
                                         </div>
                                     </div>
                                 </div>

@@ -7,6 +7,8 @@ import { tap, debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs/o
 import { ToastrComponent } from '../../../../../partials/components/toastr/toastr.component';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
 import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { SharedService } from '../../../../../../core/shared/services/shared.service';
+import { PdfViewerComponent } from '../../../../../../../app/views/partials/components/pdf-viewer/pdf-viewer.component';
 
 
 @Component({
@@ -36,7 +38,9 @@ export class CustomerDetailsListComponent implements OnInit {
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
     private customerDetailsService: CustomerDetailsService,
-    private dataTableService: DataTableService
+    private dataTableService: DataTableService,
+    private sharedService: SharedService
+
   ) {
     this.customerDetailsService.exportExcel$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
@@ -119,15 +123,30 @@ export class CustomerDetailsListComponent implements OnInit {
   }
 
   open(image) {
-    let images = [];
-    images.push(image)
-    this.dialog.open(ImagePreviewDialogComponent, {
-      data: {
-        images: images,
-        index: 0
-      },
-      width: "auto"
-    })
+    // let images = [];
+    // images.push(image)
+
+    const img = image
+    const ext = this.sharedService.getExtension(img)
+    if (ext == 'pdf') {
+      this.dialog.open(PdfViewerComponent, {
+        data: {
+          pdfSrc: img,
+          page: 1,
+          showAll: true
+        },
+        width: "80%"
+      })
+    }else{
+      this.dialog.open(ImagePreviewDialogComponent, {
+        data: {
+          images: [image],
+          index: 0
+        },
+        width: "auto"
+      })
+    }
+    
   }
 
   /**

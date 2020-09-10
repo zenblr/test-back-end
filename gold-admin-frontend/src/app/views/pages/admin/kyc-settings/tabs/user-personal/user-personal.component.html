@@ -114,6 +114,7 @@
                                     </div>
                                     <div class="col-7">
                                         <select name="" id="" formControlName="martialStatus" class="form-control"
+                                            (change)="changeMaritalStatus()"
                                             [class.isError]="controls.martialStatus.touched && controls.martialStatus.invalid">
                                             <option value="" [selected]="true" [disabled]="true">Select Status</option>
                                             <option value="single">Single</option>

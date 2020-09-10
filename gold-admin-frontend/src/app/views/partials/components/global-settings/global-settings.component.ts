@@ -62,9 +62,9 @@ export class GlobalSettingsComponent implements OnInit {
         this.globalSettingForm.controls.processingChargesFixed.updateValueAndValidity()
       this.globalSettingForm.controls.processingChargesInPercent.setValidators(Validators.required),
         this.globalSettingForm.controls.processingChargesInPercent.updateValueAndValidity()
-        this.globalSettingForm.controls.standardDeductionMin.setValidators([Validators.required, Validators.maxLength(1)]),
+        this.globalSettingForm.controls.standardDeductionMin.setValidators([Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]),
         this.globalSettingForm.controls.standardDeductionMin.updateValueAndValidity()
-        this.globalSettingForm.controls.standardDeductionMax.setValidators([Validators.required, Validators.maxLength(2)]),
+        this.globalSettingForm.controls.standardDeductionMax.setValidators([Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]),
         this.globalSettingForm.controls.standardDeductionMax.updateValueAndValidity()
     } else {
       this.globalSettingForm.controls.minimumLoanAmountAllowed.setValidators(Validators.required),

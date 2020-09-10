@@ -124,7 +124,7 @@
                             </div>
                             <div class="col-8">
                                 <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                                    formControlName="depositDate" [min]="minDate"
+                                    formControlName="depositDate" [min]="minDate" [max]="maxDate"
                                     [class.isError]="controls.depositDate.touched && controls.depositDate.invalid"
                                     readonly placeholder="4/5/2020" />
                                 <mat-datepicker #picker></mat-datepicker>
@@ -152,12 +152,12 @@
                     </div>
 
                     <div class="row kt-margin-b-15" *ngIf="data.name == 'deposit'">
-                        <div class="col-4 form-label mandatory">
-                            <mat-label class="kt-padding-l-10">Payment Received Date</mat-label>
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10 mandatory">Payment Received Date</label>
                         </div>
                         <div class="col-8">
                             <input class="form-control" [matDatepicker]="picker1" (click)="picker1.open()"
-                                formControlName="paymentReceivedDate" [min]="minDate"
+                                formControlName="paymentReceivedDate" [min]="minDate" [max]="maxDate"
                                 [class.isError]="controls.paymentReceivedDate.touched && controls.paymentReceivedDate.invalid"
                                 readonly placeholder="4/5/2020" />
                             <mat-datepicker #picker1></mat-datepicker>
@@ -175,11 +175,15 @@
                                 <mat-label class="kt-padding-l-10">Deposit Status</mat-label>
                             </div>
                             <div class="col-8">
+                                <!-- {{controls.depositStatus.value}} -->
                                 <select class="form-control" formControlName="depositStatus"
                                     (change)="setValidation($event)"
                                     [class.isError]="controls.depositStatus.touched && controls.depositStatus.invalid">
                                     <option value="" selected disabled>Select Status</option>
-                                    <option value="Pending">Pending</option>
+                                    <option *ngIf="data.name != 'deposit'" value="Pending" selected disabled>Select
+                                        Status
+                                    </option>
+                                    <option *ngIf="data.name != 'deposit'" value="Pending">Pending</option>
                                     <option value="Completed">Completed</option>
                                     <option value="Rejected">Rejected</option>
                                 </select>

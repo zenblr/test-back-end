@@ -71,7 +71,7 @@ exports.updatePacketLocation = async (req, res, next) => {
     if (!check.isEmpty(pocketExist)) {
         return res.status(404).json({ message: 'This Packet Location already Exists' });
     }
-    let UpdateData = await models.pocketLocation.update({ location }, { where: { id: id } })
+    let UpdateData = await models.packetLocation.update({ location }, { where: { id: id } })
     if (UpdateData[0] === 0) {
         return res.status(404).json({ message: 'Data not updated' });
     }

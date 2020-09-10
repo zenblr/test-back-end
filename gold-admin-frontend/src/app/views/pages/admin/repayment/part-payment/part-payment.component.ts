@@ -33,9 +33,9 @@ export class PartPaymentComponent implements OnInit {
     private ele: ElementRef,
     private router: Router,
     private toastr: ToastrService,
-    private razorpayPaymentService:RazorpayPaymentService,
-    private zone:NgZone,
-    private sharedService:SharedService
+    private razorpayPaymentService: RazorpayPaymentService,
+    private zone: NgZone,
+    private sharedService: SharedService
   ) { }
 
   ngOnInit() {
@@ -137,14 +137,14 @@ export class PartPaymentComponent implements OnInit {
     });
   }
 
-  razorPayResponsehandler(response){
+  razorPayResponsehandler(response) {
     console.log(response)
     this.zone.run(() => {
       let data = {
         masterLoanId: this.masterLoanId,
         paidAmount: Number(this.partAmount.value),
         paymentDetails: this.paymentValue,
-        transactionDetails:response
+        transactionDetails: response
       }
       this.partPaymentService.confirmPayment(data).subscribe(res => {
         this.toastr.success('Payment done Successfully')

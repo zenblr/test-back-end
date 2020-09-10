@@ -11,6 +11,7 @@ const { getCustomerInterestAmount, customerLoanDetailsByMasterLoanDetails, getGl
 const moment = require('moment')
 const uniqid = require('uniqid');
 const _ = require('lodash');
+const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 const razorpay = require('../../utils/razorpay');
 let crypto = require('crypto');
 const { BASIC_DETAILS_SUBMIT } = require('../../utils/customerLoanHistory');
@@ -492,6 +493,7 @@ exports.getPartReleaseList = async (req, res, next) => {
         req.query.from,
         req.query.to
     );
+   
     let query = {};
     const searchQuery = {
         [Op.and]: [query, {
@@ -524,6 +526,15 @@ exports.getPartReleaseList = async (req, res, next) => {
         }],
         isActive: true
     }
+     //
+     let internalBranchId = req.userData.internalBranchId;
+     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
+         searchQuery["$masterLoan.customer.internal_branch_id$"]=internalBranchId;
+         searchQuery["$masterLoan.customer.is_active$"]=true 
+     } else {
+         searchQuery["$masterLoan.customer.is_active$"]=true 
+     }
+     //
     let includeArray = [{
         model: models.customerLoanTransaction,
         as: 'transaction'
@@ -535,7 +546,7 @@ exports.getPartReleaseList = async (req, res, next) => {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber','internalBranchId']
             },
             {
                 model: models.customerLoan,
@@ -783,7 +794,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         newLoanId: null
     }
     let appriserSearch = { isActive: true }
-    if (req.userData.userTypeId != 4) {
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
         appriserSearch.appraiserId = userId;
     }
     let includeArray = [{
@@ -1286,6 +1297,15 @@ exports.getFullReleaseList = async (req, res, next) => {
         }],
         isActive: true
     }
+    //
+    let internalBranchId = req.userData.internalBranchId;
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
+        searchQuery["$masterLoan.customer.internal_branch_id$"]=internalBranchId;
+        searchQuery["$masterLoan.customer.is_active$"]=true 
+    } else {
+        searchQuery["$masterLoan.customer.is_active$"]=true 
+    }
+    //
     let includeArray = [{
         model: models.customerLoanTransaction,
         as: 'transaction'
@@ -1510,7 +1530,7 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
     );
     let userId = req.userData.id;
     let releaserSearch = { isActive: true }
-    if (req.userData.userTypeId != 4) {
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
         releaserSearch.releaserId = userId;
     }
     let query = {};
