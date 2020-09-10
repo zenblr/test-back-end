@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { PaymentDialogComponent } from '../../../../partials/components/payment-dialog/payment-dialog.component';
 import { Router } from '@angular/router';
-import { PartPaymentLogDialogComponent } from '../part-payment-log-dialog/part-payment-log-dialog.component';
+import { PartPaymentLogDialogComponent } from '../../../../partials/components/part-payment-log-dialog/part-payment-log-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { RazorpayPaymentService } from '../../../../../core/shared/services/razorpay-payment.service';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
