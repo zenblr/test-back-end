@@ -189,9 +189,9 @@ exports.confirmationForPayment = async (req, res, next) => {
 
     let transactionDetail = await models.customerLoanTransaction.findOne({ where: { id: transactionId } })
 
-    if (transactionDetail.depositStatus == "Completed" || transactionDetail.depositStatus == "Rejected") {
-        return res.status(400).json({ message: `You can not change the status from this stage.` })
-    }
+    // if (transactionDetail.depositStatus == "Completed" || transactionDetail.depositStatus == "Rejected") {
+    //     return res.status(400).json({ message: `You can not change the status from this stage.` })
+    // }
 
     if (status == "Rejected") {
         await models.customerLoanTransaction.update({ depositStatus: status }, { where: { id: transactionId } });
@@ -216,18 +216,25 @@ exports.confirmationForPayment = async (req, res, next) => {
                 var a = moment(receivedDate);
                 var b = moment(todaysDate);
                 let difference = a.diff(b, 'days')
-                var { newEmiTable, currentSlabRate, securedInterest } = await stepDown(receivedDate, loan, difference)
+                var { newEmiTable, currentSlabRate, securedInterest, unsecuredInterest } = await stepDown(receivedDate, loan, difference)
                 console.log(newEmiTable)
-                for (let stepDownIndex = 0; stepDownIndex < newEmiTable.length; stepDownIndex++) {
-                    const element = newEmiTable[stepDownIndex];
+                if (newEmiTable.length > 0) {
+                    for (let stepDownIndex = 0; stepDownIndex < newEmiTable.length; stepDownIndex++) {
+                        const element = newEmiTable[stepDownIndex];
 
-                    await models.customerLoanInterest.update({ interestRate: element.interestRate },
-                        { where: { id: element.id }})
+                        let c = await models.customerLoanInterest.update({ interestRate: element.interestRate },
+                            { where: { id: element.id } })
+                    }
+                }
+
+                let d = await models.customerLoan.update({ currentSlab: currentSlabRate, currentInterestRate: securedInterest },
+                    { where: { id: loan.customerLoan[0].id } })
+
+                if (loan.customerLoan.length > 1) {
+                    await models.customerLoan.update({ currentSlab: currentSlabRate, currentInterestRate: unsecuredInterest },
+                        { where: { id: loan.customerLoan[1].id } })
                 }
             }
-
-            await models.customerLoan.update({ currentSlab: currentSlabRate, currentInterestRate: securedInterest },
-                { where: { id: loan.customerLoan[0].id } })
 
             await intrestCalculationForSelectedLoan(receivedDate, loan.id)
             await penalInterestCalculationForSelectedLoan(receivedDate, loan.id) // right
