@@ -241,6 +241,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       }
       this.bankForm.reset()
       this.bankForm.controls.paymentType.patchValue('cash')
+      this.bankForm.controls.finalScrapAmountAfterMelting.patchValue(this.finalScrapAmt)
       this.bankForm.controls.passbookProof.patchValue([])
       this.bankForm.controls.passbookProofImage.patchValue([])
     }

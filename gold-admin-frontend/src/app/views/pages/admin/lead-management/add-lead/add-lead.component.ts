@@ -509,4 +509,17 @@ export class AddLeadComponent implements OnInit {
     }
   }
 
+  patchStateCity(internalBranchId) {
+    this.leadService.patchStateCityAdmin(internalBranchId).pipe(
+      map(res => {
+        // console.log(res)
+        this.leadForm.patchValue({
+          stateId: res.stateId,
+          cityId: res.cityId
+        })
+        this.getCities()
+      })
+    ).subscribe()
+  }
+
 }

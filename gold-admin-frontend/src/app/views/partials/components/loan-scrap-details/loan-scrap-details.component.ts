@@ -8,6 +8,8 @@ import { PdfViewerComponent } from '../pdf-viewer/pdf-viewer.component';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { takeUntil, distinctUntilChanged, skip } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { EmiLogsDialogComponent } from '../emi-logs-dialog/emi-logs-dialog.component';
+import { PartPaymentLogDialogComponent } from '../part-payment-log-dialog/part-payment-log-dialog.component';
 @Component({
   selector: 'kt-loan-scrap-details',
   templateUrl: './loan-scrap-details.component.html',
@@ -239,6 +241,22 @@ export class LoanScrapDetailsComponent implements OnInit {
         width: "auto"
       })
     }
+  }
+
+  viewPartPaymnetsLogs(){
+  
+      const dialogRef = this.dialog.open(PartPaymentLogDialogComponent, {
+        data: { id: this.details.id },
+        width: 'auto'
+      })
+  
+  }
+
+  viewEmiLogs() {
+    const dialogRef = this.dialog.open(EmiLogsDialogComponent, {
+      data: { id: this.details.id },
+      width: '850px'
+    })
   }
 
   soaDownload(){

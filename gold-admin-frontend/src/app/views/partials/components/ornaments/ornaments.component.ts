@@ -445,7 +445,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       controls.controls.karat.setValidators([]),
         controls.controls.karat.updateValueAndValidity()
       if (this.meltingOrnament) {
-        controls.controls.purityReading.setValidators(Validators.required),
+        controls.controls.purityReading.setValidators([Validators.required, Validators.pattern('^[0-9][0-9]?$|^100$')]),
           controls.controls.purityReading.updateValueAndValidity()
         controls.controls.customerConfirmation.setValidators(Validators.required),
           controls.controls.customerConfirmation.updateValueAndValidity()
@@ -454,7 +454,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         controls.controls.quantity.setValidators([]),
           controls.controls.quantity.updateValueAndValidity()
       } else {
-        controls.controls.approxPurityReading.setValidators([Validators.required]),
+        controls.controls.approxPurityReading.setValidators([Validators.required, Validators.pattern('^[0-9][0-9]?$|^100$')]),
           controls.controls.approxPurityReading.updateValueAndValidity()
       }
     }

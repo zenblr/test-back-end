@@ -13,10 +13,10 @@ import { HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../.
 import { MonthlyPaymentAddComponent } from './monthly-payment-add/monthly-payment-add.component';
 import { QuickPayComponent } from './quick-pay/quick-pay.component';
 import { PartReleaseComponent } from './part-release/part-release.component';
-import { EmiLogsDialogComponent } from './emi-logs-dialog/emi-logs-dialog.component';
+import { EmiLogsDialogComponent } from '../../../partials/components/emi-logs-dialog/emi-logs-dialog.component';
 import { PaymentDialogComponent } from '../../../../views/partials/components/payment-dialog/payment-dialog.component';
 import { PartPaymentComponent } from './part-payment/part-payment.component';
-import { PartPaymentLogDialogComponent } from './part-payment-log-dialog/part-payment-log-dialog.component';
+import { PartPaymentLogDialogComponent } from '../../../partials/components/part-payment-log-dialog/part-payment-log-dialog.component';
 
 const routes: Routes = [
   {
@@ -46,10 +46,8 @@ const routes: Routes = [
     MonthlyPaymentComponent,
     MonthlyPaymentAddComponent,
     QuickPayComponent,
-    EmiLogsDialogComponent,
     PartReleaseComponent,
     PartPaymentComponent,
-    PartPaymentLogDialogComponent,
   ],
   imports: [
     CommonModule,

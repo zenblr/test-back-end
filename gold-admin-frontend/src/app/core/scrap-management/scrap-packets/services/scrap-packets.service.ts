@@ -8,6 +8,10 @@ import { ToastrService } from 'ngx-toastr';
   providedIn: 'root'
 })
 export class ScrapPacketsService {
+  
+  disableBtn = new BehaviorSubject<any>(false);
+  disableBtn$ = this.disableBtn.asObservable();
+
   openModal = new BehaviorSubject<any>(false);
   openModal$ = this.openModal.asObservable();
 
