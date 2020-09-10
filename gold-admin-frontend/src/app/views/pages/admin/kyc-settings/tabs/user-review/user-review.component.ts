@@ -909,6 +909,8 @@ export class UserReviewComponent implements OnInit {
     ...this.data.customerKycReview.customerKycPersonal.signatureProofImg
     ]
 
+    temp = temp.filter(e => e)
+
     temp = temp.filter(e => {
       let ext = this.sharedService.getExtension(e)
       return ext !== 'pdf'

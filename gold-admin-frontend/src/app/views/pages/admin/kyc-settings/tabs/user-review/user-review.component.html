@@ -26,7 +26,7 @@
                                         (click)="previewImage(data.customerKycReview.customerKycPersonal.profileImg)" />
                                 </div>
                             </div>
-                            <div class="col-7 d-flex" *ngIf="viewOnly">
+                            <div class="col-7 d-flex" *ngIf="viewOnly && (userType == 4 || userType == 6)">
                                 <div class="align-self-center">
                                     <input type="file" accept="image/png, image/jpeg" #profile class="d-none"
                                         (input)="getFileInfo($event, 'profile')" />

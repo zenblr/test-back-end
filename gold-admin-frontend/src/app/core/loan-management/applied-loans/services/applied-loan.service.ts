@@ -30,7 +30,7 @@ export class AppliedLoanService {
     if (data && data.appraiserApproval) {
       reqParams.appraiserApproval = data.appraiserApproval;
     }
-    return this.http.get(`/api/loan-process/applied-loan-details`,{ params: reqParams }).pipe(
+    return this.http.get(`/api/loan-process/applied-loan-details`, { params: reqParams }).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message) {
@@ -52,7 +52,7 @@ export class AppliedLoanService {
   }
 
 
-  getBankDetails(loanId,masterLoanId): Observable<any> {
+  getBankDetails(loanId, masterLoanId): Observable<any> {
     return this.http.get(`/api/loan-process/disbursement-loan-bank-detail?loanId=${loanId}&masterLoanId=${masterLoanId}`).pipe(
       map(res => res),
       catchError(err => {
@@ -70,6 +70,15 @@ export class AppliedLoanService {
         if (err.error.message) {
           this.toastr.error(err.error.message)
         }
+        throw (err);
+      }))
+  }
+
+  checkout(id) {
+    return this.http.post(`/api/loan-process`, { params: { id } }).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message)
         throw (err);
       }))
   }
