@@ -1598,14 +1598,39 @@ let stepDown = async (paymentDate, loan, noOfDays) => {
             element.interestRate = stepDownInterest;
         }
 
+        if (loan.customerLoan.length > 1) {
+            let unsecuredInterestData = await models.customerLoanSlabRate.findAll({
+                where: { loanId: loan.customerLoan[0].id },
+                order: [['days', 'asc']]
+            })
+            let unsecuredIndex = unsecuredInterestData.findIndex(ele => {
+                return ele.interestRate == emiTable[0].interestRate
+            })
+
+            var unsecuredStepDownInterest = unsecuredInterestData[unsecuredIndex - 1].interestRate
+
+            var unsecuredcurrentSlabRate = interestData[index - 1].days
+            var unsecurednewEmiTable = await models.customerLoanInterest.findAll({
+                where: {
+                    loanId: loan.customerLoan[1].id,
+                    emiStatus: { [Op.notIn]: ['paid'] }
+                }
+            })
+
+            for (let index = 0; index < unsecurednewEmiTable.length; index++) {
+                const element = unsecurednewEmiTable[index].dataValues;
+                element.interestRate = unsecuredStepDownInterest;
+            }
+            newEmiTable = [ ...newEmiTable, ...unsecurednewEmiTable]
+        }
     }
 
     else {
-        // comming soon
+        newEmiTable = []
     }
 
 
-    return { newEmiTable, currentSlabRate, securedInterest: stepDownInterest }
+    return { newEmiTable, currentSlabRate, securedInterest: stepDownInterest, unsecuredInterest: unsecuredStepDownInterest }
 }
 
 module.exports = {
