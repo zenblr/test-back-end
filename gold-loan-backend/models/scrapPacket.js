@@ -65,7 +65,7 @@ module.exports = (sequelize, DataTypes) => {
         });
 
     ScrapPacket.updatePacket =
-        (id, packetUniqueId,barcodeNumber, internalUserBranchId, modifiedBy) => ScrapPacket.update({ packetUniqueId,barcodeNumber, internalUserBranchId, modifiedBy }, { where: { id, isActive: true, packetAssigned: false } });
+        (id, packetUniqueId,barcodeNumber, internalUserBranchId, modifiedBy, appraiserId) => ScrapPacket.update({ packetUniqueId,barcodeNumber, internalUserBranchId, modifiedBy, appraiserId }, { where: { id, isActive: true, packetAssigned: false } });
 
 
     return ScrapPacket;
