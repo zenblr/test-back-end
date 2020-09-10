@@ -82,5 +82,10 @@
     }
     .cursor-not-allowed{
 		cursor: not-allowed !important;
-	}
+    }
+    .custom-icon {
+		position: relative;
+		// top: 6px;
+		color: gray;
+	 }
 }

@@ -144,15 +144,15 @@
                         Deduction (min)
                     </div>
                     <div class="col-6 per-gram align-items-center">
-                        <input type="text" class="form-control" numbersOnly formControlName="standardDeductionMin"
+                        <input type="text" class="form-control" ktWeight formControlName="standardDeductionMin"
                             placeholder="8"
                             [class.isError]="controls.standardDeductionMin.invalid && controls.standardDeductionMin.touched">
                         <mat-error
-                            *ngIf="controls.standardDeductionMin.invalid && controls.standardDeductionMin.touched">
+                            *ngIf="controls.standardDeductionMin.errors?.required && controls.standardDeductionMin.touched">
                             Field required</mat-error>
-                        <mat-error *ngIf="controls.standardDeductionMin.errors?.maxlength">
-                                 Invalid Number
-                    </mat-error>
+                        <mat-error *ngIf="controls.standardDeductionMin.errors?.pattern && controls.standardDeductionMin.touched">
+                            Invalid Number
+                 </mat-error>
                     </div>
                 </div>
             </div>
@@ -165,12 +165,12 @@
                         Deduction (max)
                     </div>
                     <div class="col-6 per-gram align-items-center">
-                        <input type="text" class="form-control" numbersOnly formControlName="standardDeductionMax" placeholder="99"
+                        <input type="text" class="form-control" ktWeight formControlName="standardDeductionMax" placeholder="99"
                             [class.isError]="controls.standardDeductionMax.invalid && controls.standardDeductionMax.touched">
                         <mat-error
-                            *ngIf="controls.standardDeductionMax.invalid && controls.standardDeductionMax.touched">
+                            *ngIf="controls.standardDeductionMax.errors?.required && controls.standardDeductionMax.touched">
                             Field required</mat-error>
-                            <mat-error *ngIf="controls.standardDeductionMax.errors?.maxlength">
+                            <mat-error *ngIf="controls.standardDeductionMax.errors?.pattern && controls.standardDeductionMax.touched">
                                 Invalid Number
                      </mat-error>
                     </div>
