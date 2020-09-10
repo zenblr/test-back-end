@@ -7,6 +7,8 @@ const _ = require('lodash');
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 const moment = require('moment')
 const { paginationWithFromTo } = require("../../utils/pagination");
+const CONSTANT = require('../../utils/constant');
+
 
 
 //FUNCTION TO GET ALL PACKET DETAILS
@@ -472,6 +474,32 @@ exports.getLocationDetails = async (req, res, next) => {
         res.status(200).json([])
 
     }
+
+}
+
+exports.checkOutPacket = async (req, res, next) => {
+    let { customerId } = req.query
+
+    let custDetail = await models.customer.findOne({ where: { id: customerId } })
+
+    await models.customerOtp.destroy({ where: { mobileNumber: custD.mobileNumber } });
+
+    const referenceCode = await createReferenceCode(5);
+    // let otp = Math.floor(1000 + Math.random() * 9000);
+    let otp = 1234;
+    let createdTime = new Date();
+    let expiryTime = moment.utc(createdTime).add(10, "m");
+
+    // var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
+
+    await models.customerOtp.create({ mobileNumber: custD.mobileNumber, otp, createdTime, expiryTime, referenceCode, });
+
+    request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${custD.mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`);
+
+    return res.status(200).json({ message: `success` })
+}
+
+exports.verifyCheckOut = async (req, res, next) => {
 
 }
 

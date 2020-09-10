@@ -1611,7 +1611,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
 
     let loanDetails = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } });
     let matchStageId = await models.loanStage.findOne({ where: { name: 'disbursement pending' } })
-    let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
+    let stageId = await models.loanStage.findOne({ where: { name: 'check out' } })
 
     let Loan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
