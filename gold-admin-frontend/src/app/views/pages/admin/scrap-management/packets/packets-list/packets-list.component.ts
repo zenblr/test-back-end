@@ -82,6 +82,7 @@ export class PacketsListComponent implements OnInit {
     this.unsubscribeSearch$.complete();
     this.destroy$.next();
     this.destroy$.complete();
+    this.scrapPacketsService.disableBtn.next(false)
   }
 
   loadPackets() {
@@ -140,18 +141,18 @@ export class PacketsListComponent implements OnInit {
 
   isAllSelected(): boolean {
     const numSelected = this.selection.selected.length;
-    const totalAssignablePackets = this.packetsResult.filter(e => e.isAppraiserAssign === false)
+    const totalAssignablePackets = this.packetsResult.filter(e => e.packetAssigned === false)
     const numRows = totalAssignablePackets.length;
     return numSelected === numRows;
   }
 
   masterToggle() {
-    const totalAssignablePackets = this.packetsResult.filter(e => e.isAppraiserAssign === false)
+    const totalAssignablePackets = this.packetsResult.filter(e => e.packetAssigned === false)
     if (this.selection.selected.length === totalAssignablePackets.length) {
       this.selection.clear();
     } else {
       this.packetsResult.forEach((row) => {
-        if (!row.isAppraiserAssign)
+        if (!row.packetAssigned)
           this.selection.select(row)
       });
       this.checkForSameBranch()
@@ -181,8 +182,11 @@ export class PacketsListComponent implements OnInit {
     const selectedPackets = this.selection.selected
     const isBranchSame = selectedPackets.every(e => e.internalUserBranch === selectedPackets[0].internalUserBranch)
     const isSelectionEmpty = this.selection.isEmpty()
-    const isUsed = selectedPackets.every(e => e.isAppraiserAssign === false)
-    const isAssignAppraiserValid = !(isSelectionEmpty) && isBranchSame && isUsed ? true : false
+    const isUsed = selectedPackets.every(e => e.packetAssigned === false)
+    const isAppraiserSame = selectedPackets.length && selectedPackets.every(e => e.appraiserId === selectedPackets[0].appraiserId)
+    console.log(isAppraiserSame)
+    const isAssignAppraiserValid = !(isSelectionEmpty) && isBranchSame && isUsed && isAppraiserSame? true : false
+    this.scrapPacketsService.disableBtn.next(!isAppraiserSame)
     return { isAssignAppraiserValid, isBranchSame, isSelectionEmpty, isUsed }
   }
 }
