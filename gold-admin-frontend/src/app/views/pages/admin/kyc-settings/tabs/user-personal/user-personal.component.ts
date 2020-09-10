@@ -246,4 +246,8 @@ export class UserPersonalComponent implements OnInit {
     const isPdf = ext == 'pdf' ? true : false
     return isPdf
   }
+
+  changeMaritalStatus() {
+    this.controls.spouseName.reset()
+  }
 }

@@ -248,11 +248,11 @@ export class MenuConfig {
 									page: "/admin/funds-approvals/deposit",
 									permission: !this.permissionsArr.includes('viewDeposit'),
 								},
-								{
-									title: "Top-Up Approval",
-									page: "/admin/funds-approvals/top-up-approval",
-									permission: false,
-								},
+								// {
+								// 	title: "Top-Up Approval",
+								// 	page: "/admin/funds-approvals/top-up-approval",
+								// 	permission: false,
+								// },
 								{
 									title: "Jewellery Release Approval",
 									bullet: 'dot',

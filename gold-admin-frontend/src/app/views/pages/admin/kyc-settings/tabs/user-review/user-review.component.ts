@@ -1005,4 +1005,8 @@ export class UserReviewComponent implements OnInit {
     return isPdf
   }
 
+  changeMaritalStatus() {
+    this.customerKycPersonal.controls.spouseName.reset()
+  }
+
 }

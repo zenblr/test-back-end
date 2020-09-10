@@ -58,7 +58,7 @@ export class PaymentDialogComponent implements OnInit {
         this.paymentForm.controls.depositStatus.patchValue(this.data.value.depositStatus);
         this.paymentForm.disable();
         this.paymentForm.controls.depositStatus.enable();
-        this.paymentForm.controls.paymentReceivedInBank.enable();
+        this.paymentForm.controls.paymentReceivedDate.enable();
       } else {
         this.minDate = this.data.date;
         this.paymentForm.patchValue(this.data.value)
