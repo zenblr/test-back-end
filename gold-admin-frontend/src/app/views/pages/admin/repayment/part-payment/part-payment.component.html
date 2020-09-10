@@ -68,7 +68,7 @@
                                     <label for="" class="mb-0"> Enter Amount </label>
                                 </div>
                                 <div class="col">
-                                    <input [class.isError]="partAmount.touched && partAmount.invalid"
+                                    <input ktWeight [class.isError]="partAmount.touched && partAmount.invalid"
                                         class="form-control" type="text" [formControl]="partAmount" ktWeight />
                                     <mat-error *ngIf="partAmount.errors?.required && partAmount.touched">
                                         Field Required

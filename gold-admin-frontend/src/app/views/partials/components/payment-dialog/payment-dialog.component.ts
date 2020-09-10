@@ -147,7 +147,10 @@ export class PaymentDialogComponent implements OnInit {
     if (this.paymentForm.invalid)
       return this.paymentForm.markAllAsTouched()
     if (this.data.name == "deposit") {
-      this.dialogRef.close(this.paymentForm.controls.depositStatus.value)
+      this.dialogRef.close({
+        depositStatus: this.paymentForm.controls.depositStatus.value,
+        paymentReceivedDate: this.paymentForm.controls.paymentReceivedDate.value
+      })
     } else {
       this.paymentForm.controls.paidAmount.enable();
       this.paymentForm.patchValue({ paidAmount: Number(this.controls.paidAmount.value) })
