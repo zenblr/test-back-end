@@ -74,8 +74,17 @@ export class AppliedLoanService {
       }))
   }
 
-  checkout(id) {
-    return this.http.post(`/api/loan-process`, { params: { id } }).pipe(
+  checkout(customerId): Observable<any> {
+    return this.http.get(`/api/packet-tracking/check-out-packet`, { params: { customerId } }).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message)
+        throw (err);
+      }))
+  }
+
+  verifyOtp(data): Observable<any> {
+    return this.http.post(`/api/packet-tracking/verify-check-out`, data).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message) this.toastr.error(err.error.message)

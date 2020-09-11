@@ -17,13 +17,14 @@ import { LeadService } from '../../../../../../core/lead-management/services/lea
 export class UpdateLocationComponent implements OnInit {
 
   locationForm: FormGroup
-  packetLocations: [any];
+  packetLocations: any[];
   userTypeList = [{ name: 'Customer', value: 'Customer' }, { name: 'Internal User', value: 'InternalUser' }, { name: 'Partner User', value: 'PartnerUser' }]
   filteredPacketArray: any[];
   verifiedPacketsArray = []
   refCode: number; //reference code
   otpSent: boolean = false;
   otpVerfied: boolean;
+  partnerBranches: any[];
 
   constructor(
     public dialogRef: MatDialogRef<UpdateLocationComponent>,
@@ -38,6 +39,7 @@ export class UpdateLocationComponent implements OnInit {
 
   ngOnInit() {
     this.getPacketLocationList()
+
     this.locationForm = this.fb.group({
       packetLocationId: [, [Validators.required]],
       barcodeNumber: this.fb.array([]),
@@ -51,7 +53,9 @@ export class UpdateLocationComponent implements OnInit {
       partnerReceiverId: [null],
       loanId: [null],
       masterLoanId: [null],
-
+      partnerId: [],
+      partnerName: [],
+      partnerBranchId: []
     })
 
     this.initBarcodeArray()
@@ -60,10 +64,7 @@ export class UpdateLocationComponent implements OnInit {
 
   setForm() {
     const packetArray = this.data.packetData
-    //console.log(this.data.packetData)
     this.locationForm.controls.masterLoanId.patchValue(this.data.packetData[0].masterLoanId)
-    console.log(this.data.packetData[0].masterLoanId, 'masterLoanId')
-    console.log(this.data.packetData[0].loanId, 'loanId')
     this.locationForm.controls.loanId.patchValue(this.data.packetData[0].loanId)
 
     this.filteredPacketArray = []
@@ -85,7 +86,10 @@ export class UpdateLocationComponent implements OnInit {
 
   getPacketLocationList() {
     this.packetLocationService.getpacketsTrackingDetails(1, -1, '').pipe(map(res => {
-      this.packetLocations = res.data
+      this.packetLocations = res.data;
+      if (this.data.stage == 11) {
+        this.packetLocations = this.packetLocations.filter(e => e.id === 2 || e.id === 4)
+      }
 
     })).subscribe()
   }
@@ -295,5 +299,34 @@ export class UpdateLocationComponent implements OnInit {
       this.verifiedPacketsArray.splice(index, 1, { isVerified })
       // formGroup.get('Barcode').disable()
     }
+  }
+
+  get controls() {
+    return this.locationForm.controls
+  }
+
+  getPartnerBranch() {
+    if (this.data.stage != 11) return
+
+    if (this.controls.packetLocationId.value != 4) this.clearPartnerData()
+
+    const params = {
+      packetLocationId: this.locationForm.controls.packetLocationId.value,
+      masterLoanId: this.locationForm.controls.masterLoanId.value,
+    }
+
+    this.updateLocationService.getLocation(params).pipe(map(res => {
+      this.controls.partnerId.patchValue(res.data.id)
+      this.controls.partnerName.patchValue(res.data.name)
+      this.partnerBranches = res.data.partnerBranch
+      // console.log(res)
+    })).subscribe()
+  }
+
+  clearPartnerData() {
+    this.controls.partnerId.reset()
+    this.controls.partnerName.reset()
+
+    console.log(this.locationForm.value)
   }
 }
