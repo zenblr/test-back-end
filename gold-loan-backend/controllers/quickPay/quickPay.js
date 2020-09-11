@@ -236,7 +236,7 @@ exports.confirmationForPayment = async (req, res, next) => {
                 }
             }
 
-            await intrestCalculationForSelectedLoan(receivedDate, loan.id)
+            let cal = await intrestCalculationForSelectedLoanWithOutT(receivedDate, loan.id)
             await penalInterestCalculationForSelectedLoan(receivedDate, loan.id) // right
             let amount = await getCustomerInterestAmount(masterLoanId);
 
@@ -351,7 +351,7 @@ exports.confirmationForPayment = async (req, res, next) => {
             }
 
 
-            await intrestCalculationForSelectedLoan(moment(), loan.id)
+            await intrestCalculationForSelectedLoanWithOutT(moment(), loan.id)
             await penalInterestCalculationForSelectedLoan(moment(), loan.id)
         })
 

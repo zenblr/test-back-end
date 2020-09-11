@@ -13,7 +13,7 @@ const _ = require('lodash');
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { checkPaidInterest, getCustomerInterestAmount, newSlabRateInterestCalcultaion, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getTransactionPrincipalAmount, calculationDataOneLoan, splitAmountIntoSecuredAndUnsecured } = require('../../utils/loanFunction')
+let { checkPaidInterest, getCustomerInterestAmount, newSlabRateInterestCalcultaion, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getTransactionPrincipalAmount, calculationDataOneLoan, splitAmountIntoSecuredAndUnsecured,intrestCalculationForSelectedLoanWithOutT,penalInterestCalculationForSelectedLoan } = require('../../utils/loanFunction')
 const razorpay = require('../../utils/razorpay');
 let crypto = require('crypto');
 
@@ -269,7 +269,7 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
                 }
             }
 
-            await intrestCalculationForSelectedLoan(receivedDate, loan.id)
+            await intrestCalculationForSelectedLoanWithOutT(receivedDate, loan.id)
             await penalInterestCalculationForSelectedLoan(receivedDate, loan.id) // right
             let amount = await getCustomerInterestAmount(masterLoanId);
 
@@ -316,6 +316,9 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
                     isSecured: false
                 }, { transaction: t })
             }
+
+        let payment = await allInterestPayment(transactionId);
+
 
             await models.customerLoanTransaction.update({ depositStatus: status, paymentReceivedDate: receivedDate }, { where: { id: transactionId }, transaction: t });
 
@@ -397,8 +400,8 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
 
             // interest calculation after part payment
             // let updateInterestAftertOutstandingAmount = async (date, masterLoanId) => {
-            let data = await calculationDataOneLoan(masterLoanId);
-            let loanInfo = data.loanInfo;
+            let loanData = await calculationDataOneLoan(masterLoanId);
+            let loanInfo = loanData.loanInfo;
             let currentDate = moment();
             let date = moment()
             let noOfDays = 0;
