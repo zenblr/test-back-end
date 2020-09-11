@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { InternalUserService } from '../../../../../../core/user-management/internal-user';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, finalize } from 'rxjs/operators';
 import { InternalUserBranchService } from '../../../../../../core/user-management/internal-user-branch'
 import { RolesService } from '../../../../../../core/user-management/roles'
 import { ToastrService } from 'ngx-toastr';
@@ -46,6 +46,7 @@ export class AddInternalUserComponent implements OnInit {
       this.addUserForm.patchValue(this.data.user)
       this.addUserForm.patchValue({ roleId: this.data.user.roles[0].id })
       this.addUserForm.patchValue({ internalBranchId: this.data.user.internalBranches[0].id })
+      this.addUserForm.controls.userUniqueId.disable()
     } else {
       this.title = 'View Internal User'
       this.addUserForm.disable();
@@ -116,6 +117,7 @@ export class AddInternalUserComponent implements OnInit {
           throw err
         })).subscribe()
     } else {
+      this.addUserForm.controls.userUniqueId.enable()
       this.internalUser.editUser(this.addUserForm.value, this.data.user.id).pipe(
         map(res => {
           this.toast.success(res.message)
@@ -123,6 +125,8 @@ export class AddInternalUserComponent implements OnInit {
         }), catchError(err => {
           this.toast.error(err.error.message)
           throw err
+        }), finalize(() => {
+          this.addUserForm.controls.userUniqueId.disable()
         })).subscribe()
     }
   }
