@@ -43,7 +43,7 @@
                             {{role.customerKycClassification?.kycStatusFromCce | titlecase}} </span>
                         <span *ngIf="role.customerKycClassification?.kycStatusFromCce == 'pending'">
                             <span
-                                class="text-warning">{{role.customerKycClassification?.kycStatusFromCce | titlecase}}</span>
+                                class="text-warning kt-padding-r-5">{{role.customerKycClassification?.kycStatusFromCce | titlecase}}</span>
                             <span *ngIf="role.customerKycClassification?.reasonFromCce"
                                 class="material-icons custom-icon" mat-raised-button
                                 matTooltip={{role.customerKycClassification?.reasonFromCce}} matTooltipPosition="above"
@@ -79,7 +79,7 @@
                             </span>
                         </span>
                         <span *ngIf="role.customer?.kycStatus == 'pending'">
-                            <span class="text-warning"> {{role.customer?.kycStatus | titlecase}}</span>
+                            <span class="text-warning kt-padding-r-5"> {{role.customer?.kycStatus | titlecase}}</span>
 
                             <span *ngIf="role.customerKycClassification?.reasonFromOperationalTeam"
                                 class="material-icons custom-icon" mat-raised-button
@@ -89,7 +89,7 @@
                             </span>
                         </span>
                         <span *ngIf="role.customer?.kycStatus == 'rejected'">
-                            <span class="text-danger">{{role.customer?.kycStatus | titlecase}}</span>
+                            <span class="text-danger kt-padding-r-5">{{role.customer?.kycStatus | titlecase}}</span>
 
                             <span class="material-icons  custom-icon" mat-raised-button
                                 matTooltip={{role.customerKycClassification?.reasonFromOperationalTeam}}

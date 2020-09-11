@@ -104,6 +104,8 @@ import { CustomerDetailsComponent } from './components/customer-details/customer
 import { LoanScrapDetailsComponent } from './components/loan-scrap-details/loan-scrap-details.component';
 import { PaymentDialogComponent } from './components/payment-dialog/payment-dialog.component';
 import { LocationComponent} from './components/location/location.component'
+import { EmiLogsDialogComponent } from './components/emi-logs-dialog/emi-logs-dialog.component';
+import { PartPaymentLogDialogComponent } from './components/part-payment-log-dialog/part-payment-log-dialog.component';
 
 @NgModule({
 	declarations: [
@@ -170,7 +172,9 @@ import { LocationComponent} from './components/location/location.component'
 		CustomerDetailsComponent,
 		LoanScrapDetailsComponent,
 		PaymentDialogComponent,
-		LocationComponent
+		LocationComponent,
+		EmiLogsDialogComponent,
+		PartPaymentLogDialogComponent
 
 	],
 	exports: [
@@ -246,7 +250,9 @@ import { LocationComponent} from './components/location/location.component'
 		CustomerDetailsComponent,
 		LoanScrapDetailsComponent,
 		PaymentDialogComponent,
-		LocationComponent
+		LocationComponent,
+		EmiLogsDialogComponent,
+		PartPaymentLogDialogComponent
 	],
 	imports: [
 		PdfViewerModule,
@@ -281,7 +287,9 @@ import { LocationComponent} from './components/location/location.component'
 		ImagePreviewDialogComponent,
 		ImageFunctionalityDialogComponent,
 		OrnamentsComponent,
-		WebcamDialogComponent
+		WebcamDialogComponent,
+		PartPaymentLogDialogComponent,
+		EmiLogsDialogComponent
 	],
 })
 export class PartialsModule {

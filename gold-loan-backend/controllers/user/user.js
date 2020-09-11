@@ -407,3 +407,22 @@ exports.getUserTypeInternal = async (req, res, next) => {
 
     return res.status(200).json({ data: userType })
 }
+
+exports.getUserDetails = async (req, res, next) => {
+
+    let id = req.userData.id
+
+    let userDetails = await models.user.findOne({
+        where: { id: id },
+        include: [{
+            model: models.role,
+        }, {
+            model: models.internalBranch,
+        }, {
+            model: models.userType,
+            as: 'Usertype',
+        }]
+    });
+
+    return res.status(200).json({ message: 'success', data: userDetails })
+}

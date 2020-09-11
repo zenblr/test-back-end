@@ -171,13 +171,13 @@ export class DisburseComponent implements OnInit {
           this.controls.unsecuredTransactionId.updateValueAndValidity()
         }
         this.disburseForm.patchValue({ loanAmount: res.data.finalLoanAmount })
+        this.calcfinalLoanAmount()
         if (Number(this.globalValue.cashTransactionLimit) < Number(this.disburseForm.controls.loanAmount.value)) {
           this.disburseForm.controls.paymentMode.patchValue('bank')
           this.disburseForm.controls.paymentMode.disable()
           return
         }
         this.disburseForm.controls.paymentMode.patchValue(res.data.paymentType)
-        this.calcfinalLoanAmount()
       }
     })
   }

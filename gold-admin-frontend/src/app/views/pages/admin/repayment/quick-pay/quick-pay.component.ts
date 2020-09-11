@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, ElementRef, NgZone } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { EmiLogsDialogComponent } from '../emi-logs-dialog/emi-logs-dialog.component';
+import { EmiLogsDialogComponent } from '../../../../partials/components/emi-logs-dialog/emi-logs-dialog.component';
 import { QuickPayService } from '../../../../../core/repayment/quick-pay/quick-pay.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentDialogComponent } from '../../../../../views/partials/components/payment-dialog/payment-dialog.component';

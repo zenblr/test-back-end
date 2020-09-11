@@ -97,7 +97,7 @@
                                 </td>
 
                                 <td>{{payableAmount?.payableAmount}}</td>
-                                <td><input type="text" class="form-control" [formControl]="payableAmt"
+                                <td><input ktWeight type="text" class="form-control" [formControl]="payableAmt"
                                         [class.isError]="payableAmt.touched && payableAmt.invalid">
                                     <mat-error *ngIf="payableAmt.errors?.required && payableAmt.touched">
                                         Field Required
