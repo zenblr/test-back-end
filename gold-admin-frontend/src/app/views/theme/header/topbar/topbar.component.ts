@@ -299,6 +299,8 @@ export class TopbarComponent implements OnInit {
 		this.listType = "";
 		this.sortFlag = false;
 		this.globalMap = false;
+		this.sortType = 1;
+		this.sortImg = "../../../../../assets/media/icons/sort.svg";
 		this.clear = false;
 	}
 
@@ -780,7 +782,7 @@ export class TopbarComponent implements OnInit {
 
 		}
 
-		if(location.href.includes('/admin/global-map')){
+		if (location.href.includes('/admin/global-map')) {
 			this.showBackButton = true;
 		}
 	}
@@ -1000,7 +1002,7 @@ export class TopbarComponent implements OnInit {
 		}
 	}
 
-	navigate(){
+	navigate() {
 		this.router.navigate(['/admin/global-map'])
 	}
 
