@@ -23,8 +23,11 @@ const models = require('./models');
 const moment = require('moment')
 
 
-
+var useragent = require('express-useragent');
+ 
 var app = express();
+
+app.use(useragent.express());
 
 //swagger _setup
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swagger.swaggerSpec));

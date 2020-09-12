@@ -53,6 +53,11 @@ module.exports = (sequelize, DataTypes) => {
         packetStatus: {
             type: DataTypes.TEXT,
             field: 'packet_status'
+        },
+        isDelivered: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_delivered',
+            defaultValue: false,
         }
     }, {
         freezeTableName: true,

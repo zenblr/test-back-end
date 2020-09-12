@@ -2146,7 +2146,8 @@ exports.getLoanDetails = async (req, res, next) => {
             },
         }],
         isActive: true,
-        loanStageId: stageId.id
+        // loanStageId: stageId.id
+        isLoanCompleted: true
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;

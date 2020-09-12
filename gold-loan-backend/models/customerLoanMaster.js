@@ -156,6 +156,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_loan_submitted',
             defaultValue: false
         },
+        isLoanCompleted: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_loan_completed',
+            defaultValue: true
+        },
         internalBranchId: {
             type: DataTypes.INTEGER,
             field: 'internal_branch_id'
@@ -183,12 +188,12 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_ornaments_released',
             defaultValue: false
         },
-        isFullOrnamentsReleased:{
+        isFullOrnamentsReleased: {
             type: DataTypes.BOOLEAN,
             field: 'is_full_ornaments_released',
             defaultValue: false
         },
-        isNewLoanFromPartRelease:{
+        isNewLoanFromPartRelease: {
             type: DataTypes.BOOLEAN,
             field: 'is_new_loan_from_part_release',
             defaultValue: false

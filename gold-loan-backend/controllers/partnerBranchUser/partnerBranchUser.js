@@ -3,10 +3,76 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
+const CONSTANT = require('../../utils/constant');
+const { createReferenceCode } = require("../../utils/referenceCode");
+const request = require("request");
+
+
+//FUNCTION FOR SEND OTP PARTNER BRANCH USER
+exports.sendOtp = async (req, res, next) => {
+    const { mobileNumber } = req.body;
+
+    let partnerBranchUserExist = await models.partnerBranchUser.findOne({
+        where: { mobileNumber, isActive: true },
+    });
+
+    if (check.isEmpty(partnerBranchUserExist)) {
+        return res.status(200).json({ message: `Mobile number is not Exist.` });
+    }
+
+    await models.partnerBranchOtp.destroy({ where: { mobileNumber } });
+
+    const referenceCode = await createReferenceCode(5);
+    // let otp = Math.floor(1000 + Math.random() * 9000);
+    let otp = 1234;
+    let createdTime = new Date();
+    let expiryTime = moment.utc(createdTime).add(10, "m");
+    await models.partnerBranchOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
+    // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
+    // await sms.sendSms(mobileNumber, message);
+    request(
+        `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`
+    );
+
+    return res
+        .status(200)
+        .json({
+            message: `Otp send to your entered mobile number.`,
+            referenceCode,
+        });
+};
+
+
+//FUNCTION FOR VERI OTP PARTNER BRANCH USER
+exports.verifyOtp = async (req, res, next) => {
+    let { referenceCode, otp } = req.body;
+    var todayDateTime = new Date();
+
+    let partnerBranchUser = await models.partnerBranchOtp.findOne({
+        where: {
+            referenceCode,
+            otp,
+            expiryTime: {
+                [Op.gte]: todayDateTime,
+            },
+        },
+    });
+    if (check.isEmpty(partnerBranchUser)) {
+        return res.status(404).json({ message: `INVALID OTP.` });
+    }
+
+    let verifyFlag = await models.partnerBranchOtp.update(
+        { isVerified: true },
+        { where: { id: verifyUser.id } }
+    );
+
+    return res.status(200).json({ message: "Success", referenceCode });
+};
+
 
 //FUNCTION TO ADD PARTNER BRANCH USER
 exports.addPartnerBranchUser = async (req, res) => {
-    let { partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode,partnerBranchUserUniqueId, isActive } = req.body;
+    let { partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode, partnerBranchUserUniqueId, isActive } = req.body;
 
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
@@ -14,7 +80,7 @@ exports.addPartnerBranchUser = async (req, res) => {
     await sequelize.transaction(async t => {
 
         let PartnerBranchUser = await models.partnerBranchUser.create({
-            partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode,partnerBranchUserUniqueId, isActive, createdBy, modifiedBy
+            partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode, partnerBranchUserUniqueId, isActive, createdBy, modifiedBy
         }, { transaction: t });
         //console.log(PartnerBranchUser)
         //id = PartnerBranchUser.dataValues.id
@@ -76,10 +142,10 @@ exports.readPartnerBranchUser = async (req, res) => {
             [Op.or]: {
                 firstName: { [Op.iLike]: search + '%' },
                 lastName: { [Op.iLike]: search + '%' },
-                mobileNumber:{ [Op.iLike]: search + '%' },
-                email:{ [Op.iLike]: search + '%' },
-                "$partner.name$":{ [Op.iLike]: search + '%' },
-                "$partnerBranch.name$":{ [Op.iLike]: search + '%' }
+                mobileNumber: { [Op.iLike]: search + '%' },
+                email: { [Op.iLike]: search + '%' },
+                "$partner.name$": { [Op.iLike]: search + '%' },
+                "$partnerBranch.name$": { [Op.iLike]: search + '%' }
             }
         },
         ],
@@ -103,7 +169,7 @@ exports.readPartnerBranchUser = async (req, res) => {
     });
 
     if (partnerBranchUser.length === 0) {
-        return res.status(200).json({ data:[]})
+        return res.status(200).json({ data: [] })
     } else {
         return res.status(200).json({ Data: partnerBranchUser, count: count.length })
     }
