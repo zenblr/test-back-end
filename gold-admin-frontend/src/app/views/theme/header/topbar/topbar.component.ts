@@ -295,8 +295,10 @@ export class TopbarComponent implements OnInit {
 		this.permissionType = "";
 		this.filterName = "";
 		this.filterWidth = "";
-		this.listType = "",
+		this.listType = "";
 			this.sortFlag = false;
+			this.sortType = 1;
+			this.sortImg = "../../../../../assets/media/icons/sort.svg";
 		this.clear = false;
 	}
 
