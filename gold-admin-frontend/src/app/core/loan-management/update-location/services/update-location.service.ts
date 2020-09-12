@@ -52,4 +52,13 @@ export class UpdateLocationService {
     )
   }
 
+  getNextPacketLocation(reqParams): Observable<any> {
+    return this.http.get(`/api/packet-tracking/next-packet-location`, { params: reqParams }).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      }))
+  }
+
 }

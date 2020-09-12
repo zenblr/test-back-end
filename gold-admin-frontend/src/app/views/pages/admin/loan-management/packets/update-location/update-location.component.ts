@@ -26,6 +26,7 @@ export class UpdateLocationComponent implements OnInit {
   otpVerfied: boolean;
   partnerBranches: any[];
   deliveryLocations: any[];
+  deliveryPartnerBranches: any[];
 
   constructor(
     public dialogRef: MatDialogRef<UpdateLocationComponent>,
@@ -57,7 +58,7 @@ export class UpdateLocationComponent implements OnInit {
       partnerId: [],
       partnerName: [],
       partnerBranchId: [],
-      internalBranchId: [''],
+      internalBranchId: [],
       deliveryPacketLocationId: [],
       deliveryInternalBranchId: [],
       deliveryPartnerBranchId: []
@@ -90,13 +91,26 @@ export class UpdateLocationComponent implements OnInit {
   }
 
   getPacketLocationList() {
-    this.packetLocationService.getpacketsTrackingDetails(1, -1, '').pipe(map(res => {
-      this.packetLocations = res.data;
-      if (this.data.stage == 11) {
-        this.packetLocations = this.packetLocations.filter(e => e.id === 2 || e.id === 4)
-      }
 
-    })).subscribe()
+    if (this.data.isOut) {
+      this.updateLocationService.getNextPacketLocation({ masterLoanId: this.data.packetData[0].masterLoanId }).pipe(map(res => {
+        this.packetLocations = res.data;
+      })).subscribe()
+    } else {
+      this.packetLocationService.getpacketsTrackingDetails(1, -1, '').pipe(map(res => {
+        this.packetLocations = res.data;
+        if (this.data.stage == 11) {
+          this.packetLocations = this.packetLocations.filter(e => e.id === 2 || e.id === 4)
+        }
+        this.deliveryLocations = res.data
+      })).subscribe()
+    }
+
+    if (this.data.isOut) {
+      this.packetLocationService.getpacketsTrackingDetails(1, -1, '').pipe(map(res => {
+        this.deliveryLocations = res.data.filter(e => e.id === 2 || e.id === 4)
+      })).subscribe()
+    }
   }
 
   action(event) {
@@ -346,6 +360,27 @@ export class UpdateLocationComponent implements OnInit {
     })).subscribe()
   }
 
+  getdeliveryPartnerBranch() {
+    const params = {
+      packetLocationId: this.locationForm.controls.deliveryPacketLocationId.value,
+      masterLoanId: this.locationForm.controls.masterLoanId.value,
+    }
+
+    this.updateLocationService.getLocation(params).pipe(map(res => {
+      if (this.controls.deliveryPacketLocationId.value == 2) {
+        this.controls.deliveryInternalBranchId.patchValue(res.data[0].id)
+        this.clearPartnerData()
+      }
+      if (this.controls.deliveryPacketLocationId.value == 4) {
+        this.controls.deliveryPartnerBranchId.patchValue(res.data.id)
+        // this.controls.partnerName.patchValue(res.data.name)
+        this.deliveryPartnerBranches = res.data.partnerBranch
+        this.clearInternalBranchData()
+      }
+      // console.log(res)
+    })).subscribe()
+  }
+
   clearPartnerData() {
     this.controls.partnerId.reset()
     this.controls.partnerName.reset()
@@ -353,5 +388,13 @@ export class UpdateLocationComponent implements OnInit {
 
   clearInternalBranchData() {
     this.controls.internalBranchId.reset()
+  }
+
+  clearDeliveryPartnerData() {
+    this.controls.deliveryPartnerBranchId.reset()
+  }
+
+  clearDeliveryInternalBranchData() {
+    this.controls.deliveryInternalBranchId.reset()
   }
 }
