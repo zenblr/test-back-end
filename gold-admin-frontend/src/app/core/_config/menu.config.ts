@@ -289,44 +289,44 @@ export class MenuConfig {
 								},
 							],
 						},
-						{
-							title: "Report",
-							root: true,
-							bullet: 'dot',
-							src: "assets/media/aside-icons/icons-27.svg",
-							permission: false,
-							submenu: [
-								{
-									title: "KYC",
-									page: "/admin/kyc",
-									bullet: 'dot',
-									permission: false,
-								},
-								{
-									title: "Loan Status Report",
-									page: "/admin/loan-status",
-									bullet: 'dot',
-									permission: false,
-								},
-								{
-									title: "Branch Report",
-									page: "/admin/branch",
-									bullet: 'dot',
-									permission: false,
-								},
-								{
-									title: "Loan Type Reports",
-									page: "/admin/loan-type",
-									bullet: 'dot',
-									permission: false,
-								},
-								{
-									title: "Margin Reports",
-									page: "/admin/marign",
-									permission: false,
-								},
-							],
-						},
+						// {
+						// 	title: "Report",
+						// 	root: true,
+						// 	bullet: 'dot',
+						// 	src: "assets/media/aside-icons/icons-27.svg",
+						// 	permission: false,
+						// 	submenu: [
+						// 		{
+						// 			title: "KYC",
+						// 			page: "/admin/kyc",
+						// 			bullet: 'dot',
+						// 			permission: false,
+						// 		},
+						// 		{
+						// 			title: "Loan Status Report",
+						// 			page: "/admin/loan-status",
+						// 			bullet: 'dot',
+						// 			permission: false,
+						// 		},
+						// 		{
+						// 			title: "Branch Report",
+						// 			page: "/admin/branch",
+						// 			bullet: 'dot',
+						// 			permission: false,
+						// 		},
+						// 		{
+						// 			title: "Loan Type Reports",
+						// 			page: "/admin/loan-type",
+						// 			bullet: 'dot',
+						// 			permission: false,
+						// 		},
+						// 		{
+						// 			title: "Margin Reports",
+						// 			page: "/admin/marign",
+						// 			permission: false,
+						// 		},
+						// 	],
+						// },
 						{
 							title: "EMI Management",
 							root: true,
