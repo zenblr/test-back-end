@@ -170,6 +170,12 @@ export class MenuConfig {
 										this.permissionsArr.includes('packetView')),
 								},
 								{
+									title: "My Packets",
+									page: "/admin/loan-management/my-packets",
+									bullet: 'dot',
+									permission: false
+								},
+								{
 									title: "Applied Loan",
 									page: "/admin/loan-management/applied-loan",
 									bullet: 'dot',

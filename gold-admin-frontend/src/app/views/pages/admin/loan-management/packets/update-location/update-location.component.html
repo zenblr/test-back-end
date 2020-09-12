@@ -29,12 +29,6 @@
                                 <label class="kt-padding-l-10 mandatory">Select Partner</label>
                             </div>
                             <div class="col-8">
-                                <!-- <select class="form-control" formControlName="partnerName"
-                                    [class.isError]="locationForm.controls.partnerName.invalid &&  locationForm.controls.partnerName.touched">
-                                    <option selected disabled value=null>Select Branch</option>
-                                    <option [value]="item.id" *ngFor="let item of partnerBranches">
-                                        {{item.name | titlecase}}</option>
-                                </select> -->
                                 <input class="form-control cursor-not-allowed" formControlName="partnerName"
                                     [class.isError]="locationForm.controls.partnerName.invalid && locationForm.controls.partnerName.touched"
                                     readonly>
@@ -118,6 +112,51 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Deliver To -->
+                    <!-- <div class="row">
+                        <div class="col-12">
+                            <div class="row kt-margin-t-15">
+                                <div class="col-4 form-label">
+                                    <label class="kt-padding-l-10 mandatory">Deliver To</label>
+                                </div>
+                                <div class="col-8">
+                                        <select class="form-control" formControlName="deliveryPacketLocationId"
+                                        (change)="getPartnerBranch()"
+                                        [class.isError]="locationForm.controls.deliveryPacketLocationId.invalid &&  locationForm.controls.deliveryPacketLocationId.touched">
+                                        <option selected disabled value=null>Select Location</option>
+                                        <option [value]="item.id" *ngFor="let item of deliveryLocations">
+                                            {{item.location | titlecase}}</option>
+                                    </select>
+                                    <mat-error
+                                        *ngIf="locationForm.controls.deliverydeliveryPacketLocationId.touched && locationForm.controls.deliverydeliveryPacketLocationId.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="row kt-margin-t-15">
+                                <div class="col-4 form-label">
+                                    <label class="kt-padding-l-10 mandatory">Select Partner Branch</label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-control" formControlName="partnerBranchId"
+                                        [class.isError]="locationForm.controls.partnerBranchId.invalid &&  locationForm.controls.partnerBranchId.touched">
+                                        <option selected disabled value=null>Select Branch</option>
+                                        <option [value]="item.id" *ngFor="let item of partnerBranches">
+                                            {{item.name | titlecase}}</option>
+                                    </select>
+                                    <mat-error
+                                        *ngIf="locationForm.controls.partnerBranchId.touched && locationForm.controls.partnerBranchId.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <!-- Deliver To ends -->
+
                     <div class="row justify-content-center kt-margin-t-15">
                         <div class="col-4 form-label">
                             <label class="kt-padding-l-10 mandatory">User Type</label>

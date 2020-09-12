@@ -25,6 +25,7 @@ export class UpdateLocationComponent implements OnInit {
   otpSent: boolean = false;
   otpVerfied: boolean;
   partnerBranches: any[];
+  deliveryLocations: any[];
 
   constructor(
     public dialogRef: MatDialogRef<UpdateLocationComponent>,
@@ -55,7 +56,11 @@ export class UpdateLocationComponent implements OnInit {
       masterLoanId: [null],
       partnerId: [],
       partnerName: [],
-      partnerBranchId: []
+      partnerBranchId: [],
+      InternalBranchId: [],
+      deliveryPacketLocationId: [],
+      deliveryInternalBranchId: [],
+      deliveryPartnerBranchId: []
     })
 
     this.initBarcodeArray()
