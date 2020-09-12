@@ -16,8 +16,8 @@
                 <ng-container matColumnDef="appraiserName">
                     <mat-header-cell *matHeaderCellDef>Appraiser Name</mat-header-cell>
                     <mat-cell *matCellDef="let item">
-                        {{ item.appraiserData?.appraiser?.firstName | titlecase }}
-                        {{ item.appraiserData?.appraiser?.lastName | titlecase }}
+                        {{ item.releaser?.appraiser?.firstName | titlecase }}
+                        {{ item.releaser?.appraiser?.lastName | titlecase }}
                     </mat-cell>
                 </ng-container>
 
