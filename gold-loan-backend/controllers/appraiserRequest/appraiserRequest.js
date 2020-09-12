@@ -125,9 +125,9 @@ exports.assignAppraiser = async (req, res) => {
 
     const data = await models.appraiserRequest.update({ appraiserId, appoinmentDate, startTime, endTime, modifiedBy, isAssigned: true }, { where: { id: id } })
 
-    // await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerUniqueId);
+    await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
-    // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+    await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
 
     if (data.length === 0) {
@@ -149,9 +149,9 @@ exports.updateAppraiser = async (req, res) => {
     const data = await models.appraiserRequest.update({ appraiserId, appoinmentDate, startTime, endTime, modifiedBy, isAssigned: true }, { where: { id: id } })
     //console.log(data)
     if (requestInfo.appraiserId != appraiserId) {
-        // await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
+        await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
-        // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+        await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
     }
 

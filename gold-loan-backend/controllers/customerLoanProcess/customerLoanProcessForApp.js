@@ -35,6 +35,8 @@ exports.loanRequest = async (req, res, next) => {
         isNewLoanFromPartRelease = false
     }
 
+    let customerDetails = await models.customer.findOne({ where: { id: customerId } })
+
 
     let loanData = await sequelize.transaction(async t => {
         if (isEdit) {
@@ -288,17 +290,21 @@ exports.loanRequest = async (req, res, next) => {
                 var loanUniqueId = null;
                 //secured loan Id
                 loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+                let loanSendId = loanUniqueId
 
                 await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { id: loanId }, transaction: t })
-            }
-            if (loanDetail.unsecuredLoanId != null) {
-                if (loanDetail.unsecuredLoanId.loanUniqueId == null) {
-                    var unsecuredLoanUniqueId = null;
-                    // unsecured loan Id
-                    unsecuredLoanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
-                    await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: loanDetail.unsecuredLoanId }, transaction: t });
+                if (loanDetail.unsecuredLoanId != null) {
+                    if (loanDetail.unsecuredLoanId.loanUniqueId == null) {
+                        var unsecuredLoanUniqueId = null;
+                        // unsecured loan Id
+                        unsecuredLoanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+                        await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: loanDetail.unsecuredLoanId }, transaction: t });
+                        loanSendId = `secured Loan ID ${loanUniqueId}, unsecured Loan ID ${unsecuredLoanUniqueId}`
+                    }
                 }
+                await sendMessageLoanIdGeneration(customerDetails.mobileNumber, customerDetails.firstName, loanSendId)
             }
+
         } else {
             let stageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' }, transaction: t })
 
