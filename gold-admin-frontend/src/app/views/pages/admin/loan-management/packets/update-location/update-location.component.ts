@@ -143,10 +143,12 @@ export class UpdateLocationComponent implements OnInit {
   }
 
   initBarcodeArray() {
-    for (let index = 0; index < this.data.packetData.length; index++) {
-      this.barcodeNumber.push(this.newBarcode())
-      const packetObject = { isVerified: false }
-      this.verifiedPacketsArray.push(packetObject)
+    if (this.data.packetData.length) {
+      for (let index = 0; index < this.data.packetData.length; index++) {
+        this.barcodeNumber.push(this.newBarcode())
+        const packetObject = { isVerified: false }
+        this.verifiedPacketsArray.push(packetObject)
+      }
     }
   }
 

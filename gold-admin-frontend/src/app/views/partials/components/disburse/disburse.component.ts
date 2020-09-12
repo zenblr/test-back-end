@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Inject, Input, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AppliedLoanService } from '../../../../core/loan-management';
@@ -37,6 +37,7 @@ export class DisburseComponent implements OnInit {
     public globalSettingService: GlobalSettingService,
     public router: Router,
     public location: Location,
+    private ref: ChangeDetectorRef
   ) {
     this.globalSettingService.globalSetting$.subscribe(res => {
       // console.log(res)
@@ -46,6 +47,9 @@ export class DisburseComponent implements OnInit {
   }
 
   ngOnInit() { }
+
+  ngAfterViewInit(): void {
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.masterAndLoanIds && changes.masterAndLoanIds.currentValue) {
@@ -118,7 +122,8 @@ export class DisburseComponent implements OnInit {
       processingCharge: [],
       isUnsecuredSchemeApplied: [],
       securedLoanUniqueId: [],
-      unsecuredLoanUniqueId: []
+      unsecuredLoanUniqueId: [],
+      finalAmount: []
     })
     this.disableSchemeRelatedField()
   }
@@ -166,13 +171,13 @@ export class DisburseComponent implements OnInit {
           this.controls.unsecuredTransactionId.updateValueAndValidity()
         }
         this.disburseForm.patchValue({ loanAmount: res.data.finalLoanAmount })
+        this.calcfinalLoanAmount()
         if (Number(this.globalValue.cashTransactionLimit) < Number(this.disburseForm.controls.loanAmount.value)) {
           this.disburseForm.controls.paymentMode.patchValue('bank')
           this.disburseForm.controls.paymentMode.disable()
           return
         }
         this.disburseForm.controls.paymentMode.patchValue(res.data.paymentType)
-
       }
     })
   }
@@ -285,7 +290,7 @@ export class DisburseComponent implements OnInit {
       this.loanService.disburse(this.disburseForm.value).pipe(
         map(res => {
           this.toast.success(res.message)
-          this.router.navigate(['/admin/loan-management/applied-loan'])
+          this.router.navigate(['/admin/loan-management/all-loan'])
         }),
         catchError(err => {
           if (err.error.message)
@@ -331,6 +336,20 @@ export class DisburseComponent implements OnInit {
         this.formDisable()
       }
     }
+  }
+
+  calcfinalLoanAmount() {
+
+    const fullUnsecuredAmount = this.controls.fullUnsecuredAmount.value ? this.controls.fullUnsecuredAmount.value : 0;
+
+    const finalAmount = this.controls.securedLoanAmount.value + fullUnsecuredAmount - this.controls.processingCharge.value
+
+    this.controls.finalAmount.patchValue(finalAmount)
+
+    this.ref.detectChanges()
+    // console.log(this.disburseForm.value)
+    return
+
   }
 
 }

@@ -42,10 +42,11 @@ export class AssignAppraiserComponent implements OnInit {
       clockFaceTimeInactiveColor: '#454d67'
     }
   };
-  startTime: string;
+  startTime: string = '09:00 am';
   endTime: string;
   addStartTime: string;
   internalBranchId: any;
+  max: string = '06:00 pm';
 
   constructor(
     public dialogRef: MatDialogRef<AssignAppraiserComponent>,
@@ -84,12 +85,12 @@ export class AssignAppraiserComponent implements OnInit {
     }
     else if (this.data.action == 'edit') {
       this.title = this.data.isReleaser ? 'Update Releaser' : 'Update Appraiser'
-      
+
       this.appraiserForm.patchValue(this.data.appraiser)
       this.startTime = this.convertTime24To12(this.data.appraiser.startTime);
       this.endTime = this.convertTime24To12(this.data.appraiser.endTime);
       this.appraiserForm.patchValue({ startTime: this.startTime, endTime: this.endTime })
-     
+
       if (this.data.requestData) {
         this.appraiserForm.controls.id.patchValue(this.data.requestData.id)
       }
@@ -128,8 +129,8 @@ export class AssignAppraiserComponent implements OnInit {
       appraiserId: [, [Validators.required]],
       releaserId: [, [Validators.required]],
       appoinmentDate: [],
-      startTime: [this.addStartTime,[Validators.required]],
-      endTime: [,[Validators.required]],
+      startTime: [this.addStartTime, [Validators.required]],
+      endTime: [, [Validators.required]],
       partReleaseId: [],
       fullReleaseId: []
     });
@@ -205,7 +206,7 @@ export class AssignAppraiserComponent implements OnInit {
       }
       return
     }
-    if(this.appraiserForm.controls.startTime.value == this.appraiserForm.controls.endTime.value){
+    if (this.appraiserForm.controls.startTime.value == this.appraiserForm.controls.endTime.value) {
       return this.toastr.errorToastr('Time should not be same!')
     }
 
@@ -292,8 +293,17 @@ export class AssignAppraiserComponent implements OnInit {
   }
 
   setStartTime(event) {
-    this.startTime = event;
-    this.ref.detectChanges()
+    if (this.controls.startTime.valid) {
+      this.startTime = event;
+      this.ref.detectChanges()
+    }
+
+  }
+  setMaxStartTime(event) {
+    if (this.controls.endTime.valid) {
+      this.max = event;
+      this.ref.detectChanges()
+    }
   }
 
   convertTime24To12(timeString) {
@@ -313,6 +323,7 @@ export class AssignAppraiserComponent implements OnInit {
       hour: "numeric",
       minute: "numeric"
     });
+    this.startTime = '09:00 am'
   }
 
   setMinimumStartTime(event) {
@@ -321,7 +332,7 @@ export class AssignAppraiserComponent implements OnInit {
     let timeDifference = selectedDate.getTime() - currentDate.getTime();
     var daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
     if (daysDifference > 0) {
-      this.addStartTime =  '09:00 am'
+      this.addStartTime = '09:00 am'
       this.startTime = '09:00 am'
       this.controls.startTime.reset()
       this.controls.endTime.reset()

@@ -1150,7 +1150,7 @@ let getSingleDayInterestAmount = async (loan) => {
             return a.getTime() > b.getTime()
         })
 
-        if (index <= 0) {
+        if (index < 0) {
             securedTotalInterest = 0
         } else {
             let partialPaidSecuredIndex = secured.findIndex(ele => {
@@ -1187,7 +1187,7 @@ let getSingleDayInterestAmount = async (loan) => {
             })
 
 
-            if (index <= 0) {
+            if (index < 0) {
                 unsecuredTotalInterest = 0
 
             } else {

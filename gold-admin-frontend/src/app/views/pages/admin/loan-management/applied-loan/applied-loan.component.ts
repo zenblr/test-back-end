@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 // import { DisburseDialogComponent } from '../disburse-dialog/disburse-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { CheckoutComponent } from '../packets/checkout/checkout.component';
+import { UpdateLocationComponent } from '../packets/update-location/update-location.component';
 @Component({
   selector: 'kt-applied-loan',
   templateUrl: './applied-loan.component.html',
@@ -131,7 +133,7 @@ export class AppliedLoanComponent implements OnInit {
     this.dataSource.loadAppliedLoans(this.queryParamsData);
   }
 
- 
+
 
   editLoan(loan) {
     if (loan.loanStage.id == 2 && this.permission.addBmRating) {
@@ -166,5 +168,33 @@ export class AppliedLoanComponent implements OnInit {
   viewLoan(loan) {
     this.router.navigate(['/admin/loan-management/view-loan', loan.customerLoan[0].id])
   }
+
+  // checkout(item?) {
+  //   let customerData;
+  //   this.AppliedLoanService.checkout(item.customer.id).pipe(map(res => {
+  //     customerData = res
+  //   })).subscribe()
+
+  //   const dialogRef = this.dialog.open(CheckoutComponent, {
+  //     data: customerData,
+  //     width: '500px',
+  //   })
+
+  //   dialogRef.afterClosed().subscribe(res => {
+  //     if (res) this.loadAppliedLoansPage();
+  //   });
+  // }
+
+  // submitPacket() {
+  //   let customerData;
+  //   const dialogRef = this.dialog.open(UpdateLocationComponent, {
+  //     data: customerData,
+  //     width: '500px',
+  //   })
+
+  //   dialogRef.afterClosed().subscribe(res => {
+  //     if (res) this.loadAppliedLoansPage();
+  //   });
+  // }
 
 }
