@@ -136,7 +136,14 @@ export class DepositListComponent implements OnInit {
             this.loadPage();
           })
         } else {
-          this.quickPayService.confirmPayment(deposit.id, res.depositStatus).subscribe(result => {
+          let data = {
+            transactionId:deposit.id, 
+            status:res.depositStatus,
+            paymentReceivedDate:res.paymentReceivedDate,
+            masterLoanId:deposit.masterLoanId,
+            depositAmount:deposit.transactionAmont
+          }
+          this.quickPayService.confirmPayment(data).subscribe(result => {
             this.toaster(res.depositStatus)
             this.loadPage();
           })

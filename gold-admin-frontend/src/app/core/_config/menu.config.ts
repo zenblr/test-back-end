@@ -170,6 +170,12 @@ export class MenuConfig {
 										this.permissionsArr.includes('packetView')),
 								},
 								{
+									title: "My Packets",
+									page: "/admin/loan-management/my-packets",
+									bullet: 'dot',
+									permission: false
+								},
+								{
 									title: "Applied Loan",
 									page: "/admin/loan-management/applied-loan",
 									bullet: 'dot',
@@ -248,11 +254,11 @@ export class MenuConfig {
 									page: "/admin/funds-approvals/deposit",
 									permission: !this.permissionsArr.includes('viewDeposit'),
 								},
-								{
-									title: "Top-Up Approval",
-									page: "/admin/funds-approvals/top-up-approval",
-									permission: false,
-								},
+								// {
+								// 	title: "Top-Up Approval",
+								// 	page: "/admin/funds-approvals/top-up-approval",
+								// 	permission: false,
+								// },
 								{
 									title: "Jewellery Release Approval",
 									bullet: 'dot',

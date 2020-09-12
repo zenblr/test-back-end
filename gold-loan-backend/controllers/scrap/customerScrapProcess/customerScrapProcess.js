@@ -961,7 +961,7 @@ exports.appliedScrapDetails = async (req, res, next) => {
         order: [
             ["updatedAt", "DESC"]
         ],
-        attributes: ['id', 'customerId', 'scrapUniqueId', 'scrapStatusForAppraiser', 'scrapStatusForBM', 'scrapStatusForOperatinalTeam', 'finalScrapAmountAfterMelting', 'eligibleScrapAmount', 'customerScrapCurrentStage', 'scrapStageId', 'isScrapSubmitted', 'isDisbursed'],
+        attributes: ['id', 'customerId', 'scrapUniqueId', 'scrapStatusForAppraiser','commentByAppraiser', 'scrapStatusForBM', 'commentByBM', 'scrapStatusForOperatinalTeam', 'commentByOperatinalTeam', 'finalScrapAmountAfterMelting', 'eligibleScrapAmount', 'customerScrapCurrentStage', 'scrapStageId', 'isScrapSubmitted', 'isDisbursed'],
         offset: offset,
         limit: pageSize,
 

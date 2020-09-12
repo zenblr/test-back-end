@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { QuickPayService } from '../../../../../core/repayment/quick-pay/quick-pay.service';
+import { QuickPayService } from '../../../../core/repayment/quick-pay/quick-pay.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({

@@ -909,6 +909,8 @@ export class UserReviewComponent implements OnInit {
     ...this.data.customerKycReview.customerKycPersonal.signatureProofImg
     ]
 
+    temp = temp.filter(e => e)
+
     temp = temp.filter(e => {
       let ext = this.sharedService.getExtension(e)
       return ext !== 'pdf'
@@ -1003,6 +1005,10 @@ export class UserReviewComponent implements OnInit {
     const ext = this.sharedService.getExtension(image)
     const isPdf = ext == 'pdf' ? true : false
     return isPdf
+  }
+
+  changeMaritalStatus() {
+    this.customerKycPersonal.controls.spouseName.reset()
   }
 
 }

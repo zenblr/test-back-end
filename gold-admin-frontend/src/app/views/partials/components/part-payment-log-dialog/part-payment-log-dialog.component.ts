@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { PartPaymentService } from '../../../../../core/repayment/part-payment/services/part-payment.service';
+import { PartPaymentService } from '../../../../core/repayment/part-payment/services/part-payment.service';
 
 @Component({
   selector: 'kt-part-payment-log-dialog',

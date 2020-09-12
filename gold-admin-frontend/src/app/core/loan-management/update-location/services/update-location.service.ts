@@ -19,18 +19,46 @@ export class UpdateLocationService {
       })
     )
   }
-  sendCustomerOtp(mobileNumber:string): Observable<any> {
-    return this.http.post<any>(`/api/customer/send-otp`,{mobileNumber} ); //mobile
+  sendCustomerOtp(mobileNumber: string): Observable<any> {
+    return this.http.post<any>(`/api/customer/send-otp`, { mobileNumber }); //mobile
   }
 
-  addPacketLocation(data):Observable<any> {
+  addPacketLocation(data): Observable<any> {
     return this.http.post<any>(`/api/packet-tracking`, data).pipe(
       map(res => res),
       catchError(err => {
-        if (err.error.message)
-          this.toastr.error(err.error.message);
+        if (err.error.message) this.toastr.error(err.error.message);
         throw (err);
       })
     );
   }
+
+  submitPacketLocation(data): Observable<any> {
+    return this.http.post<any>(`/api/packet-tracking/submit-packet-location`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
+  getLocation(query): Observable<any> {
+    return this.http.get(`/api/packet-tracking/get-particular-location`, { params: query }).pipe(map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      })
+    )
+  }
+
+  getNextPacketLocation(reqParams): Observable<any> {
+    return this.http.get(`/api/packet-tracking/next-packet-location`, { params: reqParams }).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      }))
+  }
+
 }

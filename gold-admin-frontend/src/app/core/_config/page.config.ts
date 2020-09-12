@@ -358,6 +358,9 @@ export class PageConfig {
 						page: { title: "View Location", desc: "" },
 					}
 				},
+				"my-packets": {
+					page: { title: "My Packets", desc: "" },
+				},
 			},
 			"scrap-management": {
 				"scrap-buying-calculator": {

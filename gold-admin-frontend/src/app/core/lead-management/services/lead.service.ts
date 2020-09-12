@@ -108,6 +108,15 @@ export class LeadService {
     return this.http.get<any>(`api/internal-branch?from=1&to=-1`);
   }
 
-
+  patchStateCityAdmin(id): Observable<any> {
+    return this.http.get<any>(`api/internal-branch/single-branch`, { params: { id } }).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message)
+        throw (err)
+      })
+    );
+  }
 
 }

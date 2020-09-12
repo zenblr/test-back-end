@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ScrapPacketsService } from '../../../../../../core/scrap-management';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { map, catchError } from 'rxjs/operators';
+import { AppraiserService } from '../../../../../../core/user-management/appraiser';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class AddPacketsComponent implements OnInit {
   branches = [];
   details: any;
   file: any;
+  appraisers: any;
 
 
   constructor(
@@ -29,6 +31,7 @@ export class AddPacketsComponent implements OnInit {
     private fb: FormBuilder,
     private toastr: ToastrService,
     private scrapPacketsService: ScrapPacketsService,
+    private appraiserService: AppraiserService,
     private sharedService: SharedService,
     private ref: ChangeDetectorRef,
     private ele: ElementRef
@@ -47,8 +50,17 @@ export class AddPacketsComponent implements OnInit {
     if (this.data.action == 'add') {
       this.title = 'Add Packet';
     } else if (this.data.action == 'edit') {
+      this.getAllAppraiser();
       this.title = 'Edit Packet';
       this.packetForm.patchValue(this.data.packetData);
+      if (this.controls.appraiserId.value) {
+        this.controls.appraiserId.setValidators([Validators.required])
+        this.controls.appraiserId.updateValueAndValidity()
+      } else {
+        this.controls.appraiserId.setValidators([])
+        this.controls.appraiserId.updateValueAndValidity()
+      }
+    
     }
   }
 
@@ -65,12 +77,13 @@ export class AddPacketsComponent implements OnInit {
       id: [],
       packetUniqueId: ['', [Validators.required]],
       internalUserBranchId: ['', [Validators.required]],
+      appraiserId: [],
       barcodeNumber: ['', [Validators.required]]
 
     })
 
     this.csvForm = this.fb.group({
-      internalUserBranch: ['', [Validators.required]],
+      internalUserBranchId: ['', [Validators.required]],
       csv: ['', Validators.required]
     })
   }
@@ -96,6 +109,13 @@ export class AddPacketsComponent implements OnInit {
       }
       const packetUniqueId = this.packetForm.get('packetUniqueId').value;
       this.packetForm.controls.packetUniqueId.patchValue(packetUniqueId.toLowerCase());
+      if (this.controls.appraiserId.value) {
+        this.packetForm.patchValue({ appraiserId: Number(this.controls.appraiserId.value) })
+      } else {
+        this.packetForm.patchValue({ appraiserId: null })
+      }
+      this.controls.internalUserBranchId.patchValue(Number(this.controls.internalUserBranchId.value))
+ 
       const partnerData = this.packetForm.value;
       const id = this.controls.id.value;
 
@@ -124,7 +144,7 @@ export class AddPacketsComponent implements OnInit {
         }
         var fb = new FormData()
         fb.append('packetcsv', this.file)
-        fb.append('internalUserBranch', this.csvForm.controls.internalUserBranch.value)
+        fb.append('internalUserBranchId', this.csvForm.controls.internalUserBranchId.value)
         console.log(fb)
         this.scrapPacketsService.uplaodCSV(fb).pipe(
           map((res) => {
@@ -158,5 +178,24 @@ export class AddPacketsComponent implements OnInit {
     this.scrapPacketsService.getInternalBranhces().subscribe(res => {
       this.branches = res.data;
     });
+  }
+
+  getAllAppraiser(branchId = null) {
+    if (this.data.packetData && this.data.packetData.internalUserBranchId) {
+      console.log(this.data.packetData)
+      const selectedBranchId = branchId ? branchId : this.data.packetData.internalUserBranchId
+
+      this.appraiserService.getAllAppraiser(selectedBranchId).subscribe(res => {
+        this.appraisers = res.data;
+        this.ref.markForCheck()
+      })
+    }
+  }
+  changeBranch(event) {
+    let branchId = event.target.value
+    console.log(branchId)
+    // this.controls.appraiserId.reset()
+    this.controls.appraiserId.patchValue('')
+    this.getAllAppraiser(branchId)
   }
 }

@@ -47,7 +47,7 @@ export class OrderCancelDialogComponent implements OnInit {
       amtPayable: [''],
       customerBankName: ['', Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z \-\']+')])],
       customerAccountNo: ['', Validators.compose([Validators.required, Validators.pattern('^[0-9]*[1-9][0-9]*$')])],
-      ifscCode: ['', Validators.compose([Validators.required, Validators.pattern('A-Za-z]{4}[a-zA-Z0-9]{7}')])],
+      ifscCode: ['', Validators.compose([Validators.required, Validators.pattern('^[A-Za-z]{4}[a-zA-Z0-9]{7}')])],
       cancellationCharges: ['', Validators.required],
       passbookId: [null],
       checkCopyId: [null],

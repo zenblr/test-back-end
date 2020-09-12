@@ -9,9 +9,10 @@
                             <label class="kt-padding-l-10 mandatory">Select Location</label>
                         </div>
                         <div class="col-8">
-                            <select name="" id="" class="form-control" formControlName="packetLocationId"
+                            <select class="form-control" formControlName="packetLocationId"
+                                (change)="getPartnerBranch()"
                                 [class.isError]="locationForm.controls.packetLocationId.invalid &&  locationForm.controls.packetLocationId.touched">
-                                <option selected disabled value="">Select Location</option>
+                                <option selected disabled value=null>Select Location</option>
                                 <option [value]="item.id" *ngFor="let item of packetLocations">
                                     {{item.location | titlecase}}</option>
                             </select>
@@ -20,6 +21,42 @@
                                 Required field
                             </mat-error>
                         </div>
+                    </div>
+                    <!-- Partner Branch ID -->
+                    <div *ngIf="controls.packetLocationId.value == 4" class=" justify-content-center">
+                        <div class="row kt-margin-t-15">
+                            <div class="col-4 form-label">
+                                <label class="kt-padding-l-10 mandatory">Select Partner</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control cursor-not-allowed" formControlName="partnerName"
+                                    [class.isError]="locationForm.controls.partnerName.invalid && locationForm.controls.partnerName.touched"
+                                    readonly>
+                                <mat-error
+                                    *ngIf="locationForm.controls.partnerName.touched && locationForm.controls.partnerName.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+
+                        <div class="row kt-margin-t-15">
+                            <div class="col-4 form-label">
+                                <label class="kt-padding-l-10 mandatory">Select Partner Branch</label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-control" formControlName="partnerBranchId"
+                                    [class.isError]="locationForm.controls.partnerBranchId.invalid &&  locationForm.controls.partnerBranchId.touched">
+                                    <option selected disabled value=null>Select Branch</option>
+                                    <option [value]="item.id" *ngFor="let item of partnerBranches">
+                                        {{item.name | titlecase}}</option>
+                                </select>
+                                <mat-error
+                                    *ngIf="locationForm.controls.partnerBranchId.touched && locationForm.controls.partnerBranchId.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+
                     </div>
                     <div formArrayName="barcodeNumber">
                         <div *ngFor="let item of barcodeNumber.controls; index as idx">
@@ -75,6 +112,51 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Deliver To -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row kt-margin-t-15">
+                                <div class="col-4 form-label">
+                                    <label class="kt-padding-l-10 mandatory">Deliver To</label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-control" formControlName="deliveryPacketLocationId"
+                                        (change)="getdeliveryPartnerBranch()"
+                                        [class.isError]="locationForm.controls.deliveryPacketLocationId.invalid &&  locationForm.controls.deliveryPacketLocationId.touched">
+                                        <option selected disabled value=null>Select Location</option>
+                                        <option [value]="item.id" *ngFor="let item of deliveryLocations">
+                                            {{item.location | titlecase}}</option>
+                                    </select>
+                                    <mat-error
+                                        *ngIf="locationForm.controls.deliveryPacketLocationId.touched && locationForm.controls.deliveryPacketLocationId.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="row kt-margin-t-15">
+                                <div class="col-4 form-label">
+                                    <label class="kt-padding-l-10 mandatory">Select Partner Branch</label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-control" formControlName="partnerBranchId"
+                                        [class.isError]="locationForm.controls.partnerBranchId.invalid &&  locationForm.controls.partnerBranchId.touched">
+                                        <option selected disabled value=null>Select Branch</option>
+                                        <option [value]="item.id" *ngFor="let item of deliveryPartnerBranches">
+                                            {{item.name | titlecase}}</option>
+                                    </select>
+                                    <mat-error
+                                        *ngIf="locationForm.controls.partnerBranchId.touched && locationForm.controls.partnerBranchId.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Deliver To ends -->
+
                     <div class="row justify-content-center kt-margin-t-15">
                         <div class="col-4 form-label">
                             <label class="kt-padding-l-10 mandatory">User Type</label>
