@@ -57,7 +57,7 @@ export class UpdateLocationComponent implements OnInit {
       partnerId: [],
       partnerName: [],
       partnerBranchId: [],
-      InternalBranchId: [],
+      internalBranchId: [''],
       deliveryPacketLocationId: [],
       deliveryInternalBranchId: [],
       deliveryPartnerBranchId: []
@@ -126,14 +126,25 @@ export class UpdateLocationComponent implements OnInit {
       }
       return this.toastr.error('Packets are not completely verified')
     }
-    this.updateLocationService.addPacketLocation(this.locationForm.value).subscribe(res => {
-      // console.log(res);
-      if (res) {
-        const msg = 'Packet Location Added Successfully';
-        this.toastr.success(msg);
-        this.dialogRef.close(true);
-      }
-    });
+
+    if (this.data.stage == 11) {
+      // return console.log(this.locationForm.value)
+      this.updateLocationService.submitPacketLocation(this.locationForm.value).subscribe(res => {
+        if (res) {
+          const msg = 'Packet Location Submitted Successfully';
+          this.toastr.success(msg);
+          this.dialogRef.close(true);
+        }
+      });
+    } else {
+      this.updateLocationService.addPacketLocation(this.locationForm.value).subscribe(res => {
+        if (res) {
+          const msg = 'Packet Location Added Successfully';
+          this.toastr.success(msg);
+          this.dialogRef.close(true);
+        }
+      });
+    }
   }
 
   get barcodeNumber() {
@@ -313,7 +324,7 @@ export class UpdateLocationComponent implements OnInit {
   getPartnerBranch() {
     if (this.data.stage != 11) return
 
-    if (this.controls.packetLocationId.value != 4) this.clearPartnerData()
+    // if (this.controls.packetLocationId.value != 4) this.clearPartnerData()
 
     const params = {
       packetLocationId: this.locationForm.controls.packetLocationId.value,
@@ -321,9 +332,16 @@ export class UpdateLocationComponent implements OnInit {
     }
 
     this.updateLocationService.getLocation(params).pipe(map(res => {
-      this.controls.partnerId.patchValue(res.data.id)
-      this.controls.partnerName.patchValue(res.data.name)
-      this.partnerBranches = res.data.partnerBranch
+      if (this.controls.packetLocationId.value == 2) {
+        this.controls.internalBranchId.patchValue(res.data[0].id)
+        this.clearPartnerData()
+      }
+      if (this.controls.packetLocationId.value == 4) {
+        this.controls.partnerId.patchValue(res.data.id)
+        this.controls.partnerName.patchValue(res.data.name)
+        this.partnerBranches = res.data.partnerBranch
+        this.clearInternalBranchData()
+      }
       // console.log(res)
     })).subscribe()
   }
@@ -331,7 +349,9 @@ export class UpdateLocationComponent implements OnInit {
   clearPartnerData() {
     this.controls.partnerId.reset()
     this.controls.partnerName.reset()
+  }
 
-    console.log(this.locationForm.value)
+  clearInternalBranchData() {
+    this.controls.internalBranchId.reset()
   }
 }
