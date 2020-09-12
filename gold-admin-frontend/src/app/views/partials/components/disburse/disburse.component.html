@@ -55,7 +55,7 @@
                         <label class="kt-padding-l-10 mandatory">Loan Amount</label>
                     </div>
                     <div class="col-8">
-                        <input type="text" class="form-control" formControlName="securedLoanAmount">
+                        <input type="text" class="form-control" formControlName="fullSecuredAmount">
                     </div>
                 </div>
             </div>
@@ -185,12 +185,12 @@
                 </div>
             </div>
             <div class="col-6">
-                <div class="row justify-content-center kt-margin-t-10">
+                <div class="row justify-content-center kt-margin-t-10" *ngIf="!scrapIds">
                     <div class="col-4 form-label">
                         <label class="kt-padding-l-10 mandatory">Final Loan Amount</label>
                     </div>
                     <div class="col-8">
-                        <input type="text" class="form-control" formControlName="finalAmount">
+                        <input type="text" class="form-control" formControlName="fullAmount">
                     </div>
                 </div>
             </div>
@@ -240,7 +240,16 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6"></div>
+            <div class="col-6">
+                <div class="row justify-content-center kt-margin-t-10">
+                    <div class="col-4 form-label">
+                        <label class="kt-padding-l-10 mandatory">Amount to be Disbursed</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" formControlName="finalAmount">
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="row">
