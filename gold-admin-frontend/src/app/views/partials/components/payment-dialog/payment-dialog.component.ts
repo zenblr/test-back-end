@@ -65,6 +65,8 @@ export class PaymentDialogComponent implements OnInit {
         this.paymentForm.controls.depositStatus.disable();
         this.paymentForm.controls.paidAmount.disable();
         this.paymentForm.controls.depositTransactionId.disable();
+        this.paymentForm.controls.paymentReceivedDate.disable();
+
       }
     }
   }
