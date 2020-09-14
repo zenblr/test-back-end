@@ -24,6 +24,7 @@ export class UserDetailsComponent implements OnInit {
   isMobileVerified = false;
   otpSent = false;
   isOpverified = true;
+  @ViewChild("form60", { static: false }) form60;
 
   // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
@@ -204,8 +205,13 @@ export class UserDetailsComponent implements OnInit {
 
             // this.pdf.panImg = (ext === 'pdf') ? true : false
           }
-        }), catchError(err => {
+        }),
+        catchError(err => {
+          if (err.error.message) this.toast.error(err.error.message)
           throw err
+        }),
+        finalize(() => {
+          this.form60.nativeElement.value = ''
         })).subscribe()
     }
     // else {
