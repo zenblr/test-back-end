@@ -46,11 +46,14 @@
         </div>
         <div class="col-2 justify-content-end d-inline-flex align-self-center">
             <div *ngxPermissionsOnly="permissionType; then thenBlock"></div>
+            <kt-button  [value]="'G'" [type]='"button"' (click)="navigate()"
+                class="kt-margin-r-10 kt-margin-l-10" *ngIf="globalMap">
+            </kt-button>
             <kt-filter *ngIf="showfilter" (filterApplyEvent)="applyFilter($event)" [filterName]="filterName"
                 [listType]="listType" [filterWidth]="filterWidth"></kt-filter>
             <div *ngIf="sortFlag" [ngStyle]="{'display':'contents'}">
-                <p class="my-auto"><b>Sort By :</b>&nbsp;</p>
-                <select class="form-control" [ngStyle]="{'width':'60%'}" (change)="sortValue($event.target.value)">
+                <p class="my-auto"><b>Sort By</b></p>
+                <select class="form-control" [ngStyle]="{'width':'50%'}" (change)="sortValue($event.target.value)">
                     <option value="price">Price</option>
                     <option value="name">Name</option>
                 </select>&nbsp;

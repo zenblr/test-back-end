@@ -1,3 +1,5 @@
+import { Title } from '@angular/platform-browser'
+
 export class PageConfig {
 	public defaults = {
 		'admin': {
@@ -408,55 +410,58 @@ export class PageConfig {
 				"standard-deduction": {
 					page: { title: "Standard deduction", desc: "" },
 				},
-			}
+			},
+			"global-map": {
+				page: { title: "Global Map", desc: "" }, 
+			},
 		},
-		'broker': {
-			'dashboard': {
-				page: { title: "Dashboard", desc: "" },
-			},
-			"customers": {
-				page: { title: "Customers", desc: "" },
-			},
-			"orders": {
+'broker': {
+	'dashboard': {
+		page: { title: "Dashboard", desc: "" },
+	},
+	"customers": {
+		page: { title: "Customers", desc: "" },
+	},
+	"orders": {
+		page: { title: "Orders", desc: "" },
+		'view-pay': {
+			id: {
 				page: { title: "Orders", desc: "" },
-				'view-pay': {
-					id: {
-						page: { title: "Orders", desc: "" },
-					},
-				},
-				'cancel-order': {
-					id: {
-						page: { title: "Cancel Order", desc: "" },
-					},
-				},
 			},
-			"shop": {
-				page: { title: "Shop", desc: "" },
-				'product': {
-					id: {
-						page: { title: "Product Details", desc: "" },
-					},
-				},
+		},
+		'cancel-order': {
+			id: {
+				page: { title: "Cancel Order", desc: "" },
 			},
-			"cart": {
-				page: { title: "Shopping Cart", desc: "" },
+		},
+	},
+	"shop": {
+		page: { title: "Shop", desc: "" },
+		'product': {
+			id: {
+				page: { title: "Product Details", desc: "" },
 			},
-			"profile": {
-				page: { title: "Profile", desc: "" },
-			},
-			"checkout-customer-address": {
-				page: { title: "Customer Address", desc: "" },
-			},
-			"order-received": {
-				page: { title: "Order Received", desc: "" },
-				id: {
-					page: { title: "Order Received", desc: "" },
-				}
-			},
+		},
+	},
+	"cart": {
+		page: { title: "Shopping Cart", desc: "" },
+	},
+	"profile": {
+		page: { title: "Profile", desc: "" },
+	},
+	"checkout-customer-address": {
+		page: { title: "Customer Address", desc: "" },
+	},
+	"order-received": {
+		page: { title: "Order Received", desc: "" },
+		id: {
+			page: { title: "Order Received", desc: "" },
 		}
+	},
+}
 	};
 
 	public get configs() {
-		return this.defaults;
-	}
+	return this.defaults;
+}
 }

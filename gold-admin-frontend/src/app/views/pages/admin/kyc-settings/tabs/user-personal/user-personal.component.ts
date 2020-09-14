@@ -140,7 +140,7 @@ export class UserPersonalComponent implements OnInit {
   }
 
   ageValidation() {
-    if (this.controls.gender.value) {
+    if (this.controls.gender.value && this.controls.dateOfBirth.value) {
       if (this.controls.gender.value == 'm') {
         this.controls.age.setValidators(Validators.pattern('^0*(2[1-9]|[3-9][0-9]|100)$'))
       } else {
