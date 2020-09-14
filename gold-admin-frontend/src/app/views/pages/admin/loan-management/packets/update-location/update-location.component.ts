@@ -40,7 +40,7 @@ export class UpdateLocationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getPacketLocationList()
+    if (!this.data.deliver) this.getPacketLocationList()
 
     this.locationForm = this.fb.group({
       packetLocationId: [, [Validators.required]],
@@ -61,11 +61,23 @@ export class UpdateLocationComponent implements OnInit {
       internalBranchId: [],
       deliveryPacketLocationId: [],
       deliveryInternalBranchId: [],
-      deliveryPartnerBranchId: []
+      deliveryPartnerBranchId: [],
+      id: []
     })
 
-    this.initBarcodeArray()
-    this.setForm()
+    if (!this.data.deliver) {
+      this.initBarcodeArray()
+      this.setForm()
+    }
+
+    if (this.data.deliver) {
+      this.locationForm.patchValue({
+        id: this.data.id,
+        receiverType: this.data.receiverType
+      })
+      this.locationForm.controls.packetLocationId.setValidators([])
+      this.locationForm.controls.packetLocationId.updateValueAndValidity()
+    }
   }
 
   setForm() {
@@ -126,19 +138,21 @@ export class UpdateLocationComponent implements OnInit {
 
     console.log(this.locationForm.value)
 
+    if (!this.data.deliver) {
 
-    if (this.verifiedPacketsArray.length != this.data.packetData.length) return
+      if (this.verifiedPacketsArray.length != this.data.packetData.length) return
 
-    const isVerified = this.verifiedPacketsArray.every(e => e.isVerified === true)
-    //console.log(this.verifiedPacketsArray)
-    if (!isVerified) {
-      console.log(`Packets are not completely verified!`)
-      for (const iterator of this.barcodeNumber.controls) {
-        if (iterator.get('Barcode').invalid) {
-          iterator.get('Barcode').markAsTouched()
+      const isVerified = this.verifiedPacketsArray.every(e => e.isVerified === true)
+      //console.log(this.verifiedPacketsArray)
+      if (!isVerified) {
+        console.log(`Packets are not completely verified!`)
+        for (const iterator of this.barcodeNumber.controls) {
+          if (iterator.get('Barcode').invalid) {
+            iterator.get('Barcode').markAsTouched()
+          }
         }
+        return this.toastr.error('Packets are not completely verified')
       }
-      return this.toastr.error('Packets are not completely verified')
     }
 
     if (this.data.stage == 11) {
@@ -147,6 +161,14 @@ export class UpdateLocationComponent implements OnInit {
         if (res) {
           const msg = 'Packet Location Submitted Successfully';
           this.toastr.success(msg);
+          this.dialogRef.close(true);
+        }
+      });
+    }
+    else if (this.data.deliver) {
+      this.updateLocationService.deliverPartnerBranch(this.locationForm.value).subscribe(res => {
+        if (res) {
+          this.toastr.success(res.message);
           this.dialogRef.close(true);
         }
       });

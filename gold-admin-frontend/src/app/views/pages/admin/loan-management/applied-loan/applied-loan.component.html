@@ -184,6 +184,10 @@
                                 <button class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                             </div>
 
+                            <div *ngIf="loan.loanStage.id == 13">
+                                <button class="primary-button">{{loan.loanStage.name | uppercase}}</button>
+                            </div>
+
                         </div>
                     </mat-cell>
                 </ng-container>

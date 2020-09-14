@@ -21,8 +21,8 @@ export class MyPacketsService {
     )
   }
 
-  deliver(): Observable<any> {
-    return this.http.get(`/api/packet-tracking/my-delivery-packet`).pipe(
+  deliver(id): Observable<any> {
+    return this.http.get(`/api/packet-tracking/delivery-user-type`, { params: id }).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message) this.toastr.error(err.error.message);

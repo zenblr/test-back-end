@@ -40,13 +40,13 @@ export class UpdateLocationService {
 
   verifyPartnerOtp(params): Observable<any> {
     return this.http.post<any>(`/api/partner-branch-user/verify-otp`, params).pipe(
-        map(res => res),
-        catchError(err => {
-          if (err.error.message) this.toastr.error(err.error.message);
-          throw (err);
-        })
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      })
     )
-}
+  }
 
   addPacketLocation(data): Observable<any> {
     return this.http.post<any>(`/api/packet-tracking`, data).pipe(
@@ -84,6 +84,16 @@ export class UpdateLocationService {
         if (err.error.message) this.toastr.error(err.error.message);
         throw (err);
       }))
+  }
+
+  deliverPartnerBranch(data): Observable<any> {
+    return this.http.post<any>(`/api/packet-tracking/delivery-approval`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
   }
 
 }
