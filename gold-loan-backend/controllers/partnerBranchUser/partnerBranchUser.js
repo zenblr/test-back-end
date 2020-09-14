@@ -6,6 +6,9 @@ const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATIO
 const CONSTANT = require('../../utils/constant');
 const { createReferenceCode } = require("../../utils/referenceCode");
 const request = require("request");
+const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
+const moment = require('moment')
+
 
 
 //FUNCTION FOR SEND OTP PARTNER BRANCH USER
@@ -63,7 +66,7 @@ exports.verifyOtp = async (req, res, next) => {
 
     let verifyFlag = await models.partnerBranchOtp.update(
         { isVerified: true },
-        { where: { id: verifyUser.id } }
+        { where: { id: partnerBranchUser.id } }
     );
 
     return res.status(200).json({ message: "Success", referenceCode });

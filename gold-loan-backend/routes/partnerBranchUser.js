@@ -20,9 +20,9 @@ route.get('/single-user', checkAuth, wrapper(readPartnerBranchUserById));//FETCH
 
 route.delete('/', checkAuth, wrapper(deactivatePartnerBranchUser));//DEACTIVATE USER
 
-route.get('/send-otp', checkAuth, wrapper(sendOtp));// BRANCH USER SEND OTP
+route.post('/send-otp', checkAuth, wrapper(sendOtp));// BRANCH USER SEND OTP
 
-route.get('/verify-otp', checkAuth, wrapper(verifyOtp));//PARTNER BRANCH USER VERIFY OTP
+route.post('/verify-otp', checkAuth, wrapper(verifyOtp));//PARTNER BRANCH USER VERIFY OTP
 
 
 

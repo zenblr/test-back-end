@@ -749,10 +749,33 @@ exports.myDeliveryPacket = async (req, res, next) => {
     let id = req.userData.id
 
     let myDeliveryPacket = await models.customerPacketTracking.findAll({
-        where: { userSenderId: id, isDelivered: false }
+        where: { userSenderId: id, isDelivered: false },
+        // order: [[models.customerLoan, 'id', 'asc']],
+        include: [
+            {
+                model: models.customerLoanMaster,
+                as: 'masterLoan',
+                attributes: ['id'],
+                include: [
+                    {
+                        model: models.customerLoan,
+                        as: 'customerLoan'
+                    },
+                    {
+                        model: models.internalBranch,
+                        as: 'internalBranch'
+                    },
+                    {
+                        model: models.customer,
+                        as: 'customer'
+                    }
+                ]
+            },
+
+        ]
     })
 
-    return res.status(200).json({ data: myDeliveryPacket })
+    return res.status(200).json({ data: myDeliveryPacket, count: myDeliveryPacket.length })
 
 }
 
@@ -775,51 +798,51 @@ exports.deliveryApproval = async (req, res, next) => {
     let verifyUser
     var todayDateTime = new Date();
     switch (receiverType) {
-        //     case "Customer":
-        //         verifyUser = await models.customerOtp.findOne({
-        //             where: {
-        //                 referenceCode,
-        //                 otp,
-        //                 expiryTime: {
-        //                     [Op.gte]: todayDateTime,
-        //                 },
-        //             },
-        //         });
-        //         if (check.isEmpty(verifyUser)) {
-        //             return res.status(404).json({ message: `INVALID OTP.` });
-        //         }
-        //         break;
-        //     case "InternalUser":
-        //         verifyUser = await models.userOtp.findOne({
-        //             where: {
-        //                 referenceCode, otp,
-        //                 expiryTime: {
-        //                     [Op.gte]: todayDateTime
-        //                 }
-        //             }
-        //         })
-        //         if (check.isEmpty(verifyUser)) {
-        //             return res.status(400).json({ message: `INVALID OTP.` })
-        //         }
-        //         break;
-        //     case "PartnerUser":
-        //         verifyUser = await models.partnerBranchOtp.findOne({
-        //             where: {
-        //                 referenceCode, otp,
-        //                 expiryTime: {
-        //                     [Op.gte]: todayDateTime
-        //                 }
-        //             }
-        //         })
-        //         if (check.isEmpty(verifyUser)) {
-        //             return res.status(400).json({ message: `INVALID OTP.` })
-        //         }
-        //         break;
+        case "Customer":
+            verifyUser = await models.customerOtp.findOne({
+                where: {
+                    referenceCode,
+                    otp,
+                    expiryTime: {
+                        [Op.gte]: todayDateTime,
+                    },
+                },
+            });
+            if (check.isEmpty(verifyUser)) {
+                return res.status(404).json({ message: `INVALID OTP.` });
+            }
+            break;
+        case "InternalUser":
+            verifyUser = await models.userOtp.findOne({
+                where: {
+                    referenceCode, otp,
+                    expiryTime: {
+                        [Op.gte]: todayDateTime
+                    }
+                }
+            })
+            if (check.isEmpty(verifyUser)) {
+                return res.status(400).json({ message: `INVALID OTP.` })
+            }
+            break;
+        case "PartnerUser":
+            verifyUser = await models.partnerBranchOtp.findOne({
+                where: {
+                    referenceCode, otp,
+                    expiryTime: {
+                        [Op.gte]: todayDateTime
+                    }
+                }
+            })
+            if (check.isEmpty(verifyUser)) {
+                return res.status(400).json({ message: `INVALID OTP.` })
+            }
+            break;
     }
 
     await sequelize.transaction(async (t) => {
 
-        let partnerBranchInLocation = await models.packetLocation.findOne({ where: { Location: 'partner branch in' }, transaction: t })
+        let partnerBranchInLocation = await models.packetLocation.findOne({ where: { location: 'partner branch in' }, transaction: t })
         let packetInBranch = await models.loanStage.findOne({ where: { name: 'packet in branch' }, transaction: t })
         let packetSubmitted = await models.loanStage.findOne({ where: { name: 'packet submitted' }, transaction: t })
 

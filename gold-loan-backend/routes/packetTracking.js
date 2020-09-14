@@ -39,7 +39,7 @@ route.get('/my-delivery-packet', checkAuth, wrapper(myDeliveryPacket))
 
 route.get('/delivery-user-type', checkAuth, wrapper(deliveryUserType))
 
-route.get('/delivery-approval', checkAuth, wrapper(deliveryApproval))
+route.post('/delivery-approval', checkAuth, wrapper(deliveryApproval))
 
 route.get('/next-packet-location', checkAuth, wrapper(getNextPacketLoaction))
 
