@@ -105,6 +105,7 @@ export class TopbarComponent implements OnInit {
 	sortFlag: boolean = false;
 	notTitleCase: boolean = false;
 	showSubHeader: boolean;
+	globalMap: boolean;
 
 	constructor(
 		public sharedService: SharedService,
@@ -295,8 +296,11 @@ export class TopbarComponent implements OnInit {
 		this.permissionType = "";
 		this.filterName = "";
 		this.filterWidth = "";
-		this.listType = "",
-			this.sortFlag = false;
+		this.listType = "";
+		this.sortFlag = false;
+		this.globalMap = false;
+		this.sortType = 1;
+		this.sortImg = "../../../../../assets/media/icons/sort.svg";
 		this.clear = false;
 	}
 
@@ -771,6 +775,16 @@ export class TopbarComponent implements OnInit {
 			this.filterName = 'deposit';
 			this.filterWidth = '400px';
 		}
+
+		if (this.path == "packet-tracking") {
+			this.filterName = "packet-tracking"
+			this.globalMap = true;
+
+		}
+
+		if (location.href.includes('/admin/global-map')) {
+			this.showBackButton = true;
+		}
 	}
 
 	action(event: Event) {
@@ -986,6 +1000,10 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "deposit") {
 			this.depositService.applyFilter.next(data)
 		}
+	}
+
+	navigate() {
+		this.router.navigate(['/admin/global-map'])
 	}
 
 	goBack() {
