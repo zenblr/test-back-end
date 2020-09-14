@@ -42,7 +42,12 @@ exports.submitAppKyc = async (req, res, next) => {
         return res.status(400).json({ message: "Identity Proof Number already exists! " })
     }
     if (panCardNumber) {
-        let findPanCardNumber = await models.customer.findOne({ where: { panCardNumber: panCardNumber } });
+        let findPanCardNumber = await models.customer.findOne({
+            where: {
+                id: { [Op.not]: customerId },
+                panCardNumber: panCardNumber
+            }
+        });
         if (!check.isEmpty(findPanCardNumber)) {
             return res.status(400).json({ message: "Pan Card Number already exists! " });
         }
@@ -140,7 +145,7 @@ exports.editAppKyc = async (req, res, next) => {
             return res.status(400).json({ message: "Pan Card Number already exists! " })
         }
     }
-    
+
     await sequelize.transaction(async (t) => {
         let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
 
@@ -274,7 +279,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
 
     let data = await models.appraiserRequest.findAll({
         where: searchQuery,
-        attributes: ['id','appraiserId', 'appoinmentDate', 'startTime', 'endTime'],
+        attributes: ['id', 'appraiserId', 'appoinmentDate', 'startTime', 'endTime'],
         subQuery: false,
         include: includeArray,
         order: [
