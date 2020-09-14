@@ -117,7 +117,7 @@ export class InterestCalculatorComponent implements OnInit {
 
     if (changes.totalAmt) {
       if (changes.totalAmt.currentValue != changes.totalAmt.previousValue && changes.totalAmt.currentValue != 0) {
-        // this.partner()
+        this.controls.finalLoanAmount.reset()
       }
     }
 
@@ -189,7 +189,6 @@ export class InterestCalculatorComponent implements OnInit {
           }
 
           this.dateOfPayment = temp
-          console.log(this.dateOfPayment)
           this.finalLoanAmount.emit(this.controls.finalLoanAmount.value)
           this.returnScheme()
           this.ref.detectChanges()

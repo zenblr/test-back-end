@@ -84,6 +84,10 @@
                         <span>{{loan?.paymentFrequency}} Days</span>
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="applicationDate">
+                    <mat-header-cell *matHeaderCellDef>Application Date</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">{{loan?.createdAt | date : 'mediumDate'}}</mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="startDate">
                     <mat-header-cell *matHeaderCellDef>Start Date</mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan?.loanStartDate | date : 'mediumDate'}}</mat-cell>
