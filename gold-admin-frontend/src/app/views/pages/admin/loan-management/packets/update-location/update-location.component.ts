@@ -238,10 +238,21 @@ export class UpdateLocationComponent implements OnInit {
     switch (this.locationForm.controls.receiverType.value) {
       case 'Customer':
         this.updateLocationService.sendCustomerOtp(mobileNumber).subscribe(res => {
-          console.log(res)
           if (res) {
             this.refCode = res.referenceCode;
-            this.locationForm.controls.referenceCode.patchValue(this.refCode);
+            this.locationForm.controls.referenceCode.patchValue(res.referenceCode);
+            const msg = 'Otp has been sent to the registered mobile number';
+            this.toastr.success(msg);
+          }
+        })
+
+        break;
+
+      case 'InternalUser':
+        this.authService.generateOtp(mobileNumber, 'lead').subscribe(res => {
+          if (res) {
+            this.refCode = res.referenceCode;
+            this.locationForm.controls.referenceCode.patchValue(res.referenceCode);
             const msg = 'Otp has been sent to the registered mobile number';
             this.toastr.success(msg);
           }
@@ -251,20 +262,16 @@ export class UpdateLocationComponent implements OnInit {
           })
 
         break;
-      case 'InternalUser':
-        this.authService.generateOtp(mobileNumber, 'lead').subscribe(res => {
-          console.log(res)
+
+      case 'PartnerUser':
+        this.updateLocationService.sendPartnerOtp(mobileNumber).subscribe(res => {
           if (res) {
             this.refCode = res.referenceCode;
-            this.locationForm.controls.referenceCode.patchValue(this.refCode);
+            this.locationForm.controls.referenceCode.patchValue(res.referenceCode);
             const msg = 'Otp has been sent to the registered mobile number';
             this.toastr.success(msg);
           }
-        },
-          err => {
-            this.toastr.error(err.error.message)
-          })
-
+        })
         break;
     }
   }
@@ -290,8 +297,24 @@ export class UpdateLocationComponent implements OnInit {
           }
         );
         break;
+
       case 'InternalUser':
         this.authService.verifyotp(params.referenceCode, params.otp, params.type).subscribe(res => {
+          if (res) {
+            this.otpSent = true;
+            this.otpVerfied = true;
+            const msg = 'Otp has been verified!'
+            this.toastr.success(msg);
+          }
+        }
+          ,
+          err => {
+            this.toastr.error(err.error.message)
+          });
+        break;
+
+      case 'PartnerUser':
+        this.updateLocationService.verifyPartnerOtp(params).subscribe(res => {
           if (res) {
             this.otpSent = true;
             this.otpVerfied = true;

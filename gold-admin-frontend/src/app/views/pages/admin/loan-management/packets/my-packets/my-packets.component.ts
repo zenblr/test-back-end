@@ -96,5 +96,8 @@ export class MyPacketsComponent implements OnInit {
     });
   }
 
+  deliver(packet) {
+    this.myPacketsService.deliver()
+  }
 
 }

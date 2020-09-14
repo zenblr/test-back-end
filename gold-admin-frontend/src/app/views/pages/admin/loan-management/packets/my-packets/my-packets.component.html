@@ -68,8 +68,12 @@
                     <mat-cell *matCellDef="let packet">
 
                         <button (click)="viewPackets(packet)" class="btn-transparent kt-margin-r-15">View
-                            Packets</button>
+                            Packets
+                        </button>
 
+                        <button (click)="deliver(packet)" class="btn-transparent kt-margin-r-15">
+                            Deliver
+                        </button>
                     </mat-cell>
                 </ng-container>
 

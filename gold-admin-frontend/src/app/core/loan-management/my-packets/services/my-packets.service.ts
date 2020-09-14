@@ -12,7 +12,7 @@ export class MyPacketsService {
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
   getpackets(search, from, to): Observable<any> {
-    return this.http.get(`/api/packet-tracking/tracking-details?search=${search}&from=${from}&to=${to}`).pipe(
+    return this.http.get(`/api/packet-tracking/my-delivery-packet?search=${search}&from=${from}&to=${to}`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message) this.toastr.error(err.error.message);
@@ -20,4 +20,15 @@ export class MyPacketsService {
       })
     )
   }
+
+  deliver(): Observable<any> {
+    return this.http.get(`/api/packet-tracking/my-delivery-packet`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      })
+    )
+  }
+
 }
