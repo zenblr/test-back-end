@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MyPacketsDatasource, MyPacketsService } from '../../../../../../core/loan-management';
 import { merge, Subject, Subscription } from 'rxjs';
-import { tap, takeUntil, skip, distinctUntilChanged } from 'rxjs/operators';
+import { tap, takeUntil, skip, distinctUntilChanged, map } from 'rxjs/operators';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
 import { MatPaginator, MatDialog } from '@angular/material';
 import { LayoutUtilsService } from '../../../../../../core/_base/crud';
@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { Router } from '@angular/router';
 import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.component';
+import { UpdateLocationComponent } from '../update-location/update-location.component';
 
 @Component({
   selector: 'kt-my-packets',
@@ -96,5 +97,39 @@ export class MyPacketsComponent implements OnInit {
     });
   }
 
+  deliver(packet) {
+    const queryParams = {
+      id: packet.id
+    }
+    this.myPacketsService.deliver(queryParams).pipe(
+      map(res => {
+        // console.log(res)
+        this.deliverModal({ id: packet.id, receiverType: res.data.receiverType })
+      }))
+      .subscribe()
+  }
+
+  deliverModal(params) {
+    // const dialogRef = this.dialog.open(UpdateLocationComponent, 
+    //   {
+    //     data: { deliver: true, params }
+    //   }
+
+    //   dialogRef.afterClosed().subscribe(res => {
+    //     if (res) this.loadPackets()
+    //   });
+    // )
+
+    const dialogRef = this.dialog.open(UpdateLocationComponent,
+      {
+        data: { deliver: true, id: params.id, receiverType: params.receiverType },
+        width: '450px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPackets();
+      }
+    });
+  }
 
 }

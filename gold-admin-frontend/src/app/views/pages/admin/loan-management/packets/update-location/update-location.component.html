@@ -4,138 +4,42 @@
         <form [formGroup]="locationForm">
             <div class="row ">
                 <div class="col-12">
-                    <div class="row justify-content-center">
-                        <div class="col-4 form-label">
-                            <label class="kt-padding-l-10 mandatory">Select Location</label>
-                        </div>
-                        <div class="col-8">
-                            <select class="form-control" formControlName="packetLocationId"
-                                (change)="getPartnerBranch()"
-                                [class.isError]="locationForm.controls.packetLocationId.invalid &&  locationForm.controls.packetLocationId.touched">
-                                <option selected disabled value=null>Select Location</option>
-                                <option [value]="item.id" *ngFor="let item of packetLocations">
-                                    {{item.location | titlecase}}</option>
-                            </select>
-                            <mat-error
-                                *ngIf="locationForm.controls.packetLocationId.touched && locationForm.controls.packetLocationId.errors?.required">
-                                Required field
-                            </mat-error>
-                        </div>
-                    </div>
-                    <!-- Partner Branch ID -->
-                    <div *ngIf="controls.packetLocationId.value == 4" class=" justify-content-center">
-                        <div class="row kt-margin-t-15">
+                    <div *ngIf="!data.deliver">
+                        <div class="row justify-content-center">
                             <div class="col-4 form-label">
-                                <label class="kt-padding-l-10 mandatory">Select Partner</label>
+                                <label class="kt-padding-l-10 mandatory">Select Location</label>
                             </div>
                             <div class="col-8">
-                                <input class="form-control cursor-not-allowed" formControlName="partnerName"
-                                    [class.isError]="locationForm.controls.partnerName.invalid && locationForm.controls.partnerName.touched"
-                                    readonly>
-                                <mat-error
-                                    *ngIf="locationForm.controls.partnerName.touched && locationForm.controls.partnerName.errors?.required">
-                                    Required field
-                                </mat-error>
-                            </div>
-                        </div>
-
-                        <div class="row kt-margin-t-15">
-                            <div class="col-4 form-label">
-                                <label class="kt-padding-l-10 mandatory">Select Partner Branch</label>
-                            </div>
-                            <div class="col-8">
-                                <select class="form-control" formControlName="partnerBranchId"
-                                    [class.isError]="locationForm.controls.partnerBranchId.invalid &&  locationForm.controls.partnerBranchId.touched">
-                                    <option selected disabled value=null>Select Branch</option>
-                                    <option [value]="item.id" *ngFor="let item of partnerBranches">
-                                        {{item.name | titlecase}}</option>
+                                <select class="form-control" formControlName="packetLocationId"
+                                    (change)="getPartnerBranch()"
+                                    [class.isError]="locationForm.controls.packetLocationId.invalid &&  locationForm.controls.packetLocationId.touched">
+                                    <option selected disabled value=null>Select Location</option>
+                                    <option [value]="item.id" *ngFor="let item of packetLocations">
+                                        {{item.location | titlecase}}</option>
                                 </select>
                                 <mat-error
-                                    *ngIf="locationForm.controls.partnerBranchId.touched && locationForm.controls.partnerBranchId.errors?.required">
+                                    *ngIf="locationForm.controls.packetLocationId.touched && locationForm.controls.packetLocationId.errors?.required">
                                     Required field
                                 </mat-error>
                             </div>
                         </div>
-
-                    </div>
-                    <div formArrayName="barcodeNumber">
-                        <div *ngFor="let item of barcodeNumber.controls; index as idx">
-                            <div [formGroupName]="idx">
-                                <div class="row justify-content-center kt-margin-t-15">
-                                    <div class="col-4 form-label">
-                                        <label class="kt-padding-l-10 mandatory">Barcode No.</label>
-                                    </div>
-                                    <div class="col-8">
-                                        <div class="row">
-                                            <div class="col-7 d-flex align-items-center">
-                                                {{ item.get('packetId').value | uppercase }}
-                                            </div>
-                                            <div class="col text-right">
-                                                <kt-button [type]="'button'" [value]="'Scan'" [myClass]="'w-100'">
-                                                </kt-button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center kt-margin-t-15">
-                                    <div class="col-8 offset-4">
-                                        <div class="row">
-                                            <div class="col-7">
-                                                <input type="text" class="form-control" placeholder="Enter Barcode No."
-                                                    formControlName="Barcode"
-                                                    [class.isError]="item.get('Barcode').invalid &&  item.get('Barcode').touched"
-                                                    [readOnly]="verifiedPacketsArray[idx].isVerified"
-                                                    [class.cursor-not-allowed]="verifiedPacketsArray[idx].isVerified">
-                                                <small>
-                                                    <mat-error
-                                                        *ngIf="item.get('Barcode').errors?.required &&  item.get('Barcode').touched">
-                                                        Field Required
-                                                    </mat-error>
-                                                </small>
-                                                <small>
-                                                    <mat-error
-                                                        *ngIf="item.get('Barcode').errors?.unverified &&  item.get('Barcode').touched">
-                                                        Packet ID and Barcode does not match
-                                                    </mat-error>
-                                                </small>
-                                            </div>
-                                            <div class="col">
-                                                <kt-button *ngIf="!verifiedPacketsArray[idx].isVerified"
-                                                    [type]="'button'" (click)="verifyBarcode(idx)" [value]="'Verify'"
-                                                    [myClass]="'w-100'"></kt-button>
-                                                <button *ngIf="verifiedPacketsArray[idx].isVerified" type="button"
-                                                    mat-raised-button class="w-100 success-button"> Verified </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Deliver To -->
-                    <div class="row">
-                        <div class="col-12">
+                        <!-- Partner Branch ID -->
+                        <div *ngIf="controls.packetLocationId.value == 4" class=" justify-content-center">
                             <div class="row kt-margin-t-15">
                                 <div class="col-4 form-label">
-                                    <label class="kt-padding-l-10 mandatory">Deliver To</label>
+                                    <label class="kt-padding-l-10 mandatory">Select Partner</label>
                                 </div>
                                 <div class="col-8">
-                                    <select class="form-control" formControlName="deliveryPacketLocationId"
-                                        (change)="getdeliveryPartnerBranch()"
-                                        [class.isError]="locationForm.controls.deliveryPacketLocationId.invalid &&  locationForm.controls.deliveryPacketLocationId.touched">
-                                        <option selected disabled value=null>Select Location</option>
-                                        <option [value]="item.id" *ngFor="let item of deliveryLocations">
-                                            {{item.location | titlecase}}</option>
-                                    </select>
+                                    <input class="form-control cursor-not-allowed" formControlName="partnerName"
+                                        [class.isError]="locationForm.controls.partnerName.invalid && locationForm.controls.partnerName.touched"
+                                        readonly>
                                     <mat-error
-                                        *ngIf="locationForm.controls.deliveryPacketLocationId.touched && locationForm.controls.deliveryPacketLocationId.errors?.required">
+                                        *ngIf="locationForm.controls.partnerName.touched && locationForm.controls.partnerName.errors?.required">
                                         Required field
                                     </mat-error>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-12">
+
                             <div class="row kt-margin-t-15">
                                 <div class="col-4 form-label">
                                     <label class="kt-padding-l-10 mandatory">Select Partner Branch</label>
@@ -144,7 +48,7 @@
                                     <select class="form-control" formControlName="partnerBranchId"
                                         [class.isError]="locationForm.controls.partnerBranchId.invalid &&  locationForm.controls.partnerBranchId.touched">
                                         <option selected disabled value=null>Select Branch</option>
-                                        <option [value]="item.id" *ngFor="let item of deliveryPartnerBranches">
+                                        <option [value]="item.id" *ngFor="let item of partnerBranches">
                                             {{item.name | titlecase}}</option>
                                     </select>
                                     <mat-error
@@ -153,27 +57,128 @@
                                     </mat-error>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <!-- Deliver To ends -->
-
-                    <div class="row justify-content-center kt-margin-t-15">
-                        <div class="col-4 form-label">
-                            <label class="kt-padding-l-10 mandatory">User Type</label>
-                        </div>
-                        <div class="col-8">
-                            <select class="form-control" formControlName="receiverType" (change)="remove()"
-                                [class.isError]="locationForm.controls.receiverType.invalid &&  locationForm.controls.receiverType.touched">
-                                <option value="" disabled selected>Select User Type</option>
-                                <option [value]="item.value" *ngFor="let item of userTypeList">{{ item.name }}</option>
-                            </select>
-                            <mat-error
-                                *ngIf="locationForm.controls.receiverType.touched && locationForm.controls.receiverType.errors?.required">
-                                Required field
-                            </mat-error>
 
                         </div>
+                        <div formArrayName="barcodeNumber">
+                            <div *ngFor="let item of barcodeNumber.controls; index as idx">
+                                <div [formGroupName]="idx">
+                                    <div class="row justify-content-center kt-margin-t-15">
+                                        <div class="col-4 form-label">
+                                            <label class="kt-padding-l-10 mandatory">Barcode No.</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <div class="row">
+                                                <div class="col-7 d-flex align-items-center">
+                                                    {{ item.get('packetId').value | uppercase }}
+                                                </div>
+                                                <div class="col text-right">
+                                                    <kt-button [type]="'button'" [value]="'Scan'" [myClass]="'w-100'">
+                                                    </kt-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center kt-margin-t-15">
+                                        <div class="col-8 offset-4">
+                                            <div class="row">
+                                                <div class="col-7">
+                                                    <input type="text" class="form-control"
+                                                        placeholder="Enter Barcode No." formControlName="Barcode"
+                                                        [class.isError]="item.get('Barcode').invalid &&  item.get('Barcode').touched"
+                                                        [readOnly]="verifiedPacketsArray[idx].isVerified"
+                                                        [class.cursor-not-allowed]="verifiedPacketsArray[idx].isVerified">
+                                                    <small>
+                                                        <mat-error
+                                                            *ngIf="item.get('Barcode').errors?.required &&  item.get('Barcode').touched">
+                                                            Field Required
+                                                        </mat-error>
+                                                    </small>
+                                                    <small>
+                                                        <mat-error
+                                                            *ngIf="item.get('Barcode').errors?.unverified &&  item.get('Barcode').touched">
+                                                            Packet ID and Barcode does not match
+                                                        </mat-error>
+                                                    </small>
+                                                </div>
+                                                <div class="col">
+                                                    <kt-button *ngIf="!verifiedPacketsArray[idx].isVerified"
+                                                        [type]="'button'" (click)="verifyBarcode(idx)"
+                                                        [value]="'Verify'" [myClass]="'w-100'"></kt-button>
+                                                    <button *ngIf="verifiedPacketsArray[idx].isVerified" type="button"
+                                                        mat-raised-button class="w-100 success-button"> Verified
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Deliver To -->
+                        <div class="row" *ngIf="data.isOut">
+                            <div class="col-12">
+                                <div class="row kt-margin-t-15">
+                                    <div class="col-4 form-label">
+                                        <label class="kt-padding-l-10 mandatory">Deliver To</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <select class="form-control" formControlName="deliveryPacketLocationId"
+                                            (change)="getdeliveryPartnerBranch()"
+                                            [class.isError]="locationForm.controls.deliveryPacketLocationId.invalid &&  locationForm.controls.deliveryPacketLocationId.touched">
+                                            <option selected disabled value=null>Select Location</option>
+                                            <option [value]="item.id" *ngFor="let item of deliveryLocations">
+                                                {{item.location | titlecase}}</option>
+                                        </select>
+                                        <mat-error
+                                            *ngIf="locationForm.controls.deliveryPacketLocationId.touched && locationForm.controls.deliveryPacketLocationId.errors?.required">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="row kt-margin-t-15">
+                                    <div class="col-4 form-label">
+                                        <label class="kt-padding-l-10 mandatory">Select Partner Branch</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <select class="form-control" formControlName="partnerBranchId"
+                                            [class.isError]="locationForm.controls.partnerBranchId.invalid &&  locationForm.controls.partnerBranchId.touched">
+                                            <option selected disabled value=null>Select Branch</option>
+                                            <option [value]="item.id" *ngFor="let item of deliveryPartnerBranches">
+                                                {{item.name | titlecase}}</option>
+                                        </select>
+                                        <mat-error
+                                            *ngIf="locationForm.controls.partnerBranchId.touched && locationForm.controls.partnerBranchId.errors?.required">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Deliver To ends -->
+
+                        <div class="row justify-content-center kt-margin-t-15">
+                            <div class="col-4 form-label">
+                                <label class="kt-padding-l-10 mandatory">User Type</label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-control" formControlName="receiverType" (change)="remove()"
+                                    [class.isError]="locationForm.controls.receiverType.invalid &&  locationForm.controls.receiverType.touched">
+                                    <option value="" disabled selected>Select User Type</option>
+                                    <option [value]="item.value" *ngFor="let item of userTypeList">{{ item.name }}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="locationForm.controls.receiverType.touched && locationForm.controls.receiverType.errors?.required">
+                                    Required field
+                                </mat-error>
+
+                            </div>
+                        </div>
                     </div>
+
                     <div class="row justify-content-center kt-margin-t-15">
                         <div class="col-4 form-label">
                             <label class="kt-padding-l-10 mandatory">Mobile Number</label>

@@ -19,8 +19,33 @@ export class UpdateLocationService {
       })
     )
   }
+
   sendCustomerOtp(mobileNumber: string): Observable<any> {
-    return this.http.post<any>(`/api/customer/send-otp`, { mobileNumber }); //mobile
+    return this.http.post<any>(`/api/customer/send-otp`, { mobileNumber }).pipe(map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      })
+    )
+  }
+
+  sendPartnerOtp(mobileNumber: string): Observable<any> {
+    return this.http.post<any>(`/api/partner-branch-user/send-otp`, { mobileNumber }).pipe(map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      })
+    )
+  }
+
+  verifyPartnerOtp(params): Observable<any> {
+    return this.http.post<any>(`/api/partner-branch-user/verify-otp`, params).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      })
+    )
   }
 
   addPacketLocation(data): Observable<any> {
@@ -59,6 +84,16 @@ export class UpdateLocationService {
         if (err.error.message) this.toastr.error(err.error.message);
         throw (err);
       }))
+  }
+
+  deliverPartnerBranch(data): Observable<any> {
+    return this.http.post<any>(`/api/packet-tracking/delivery-approval`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
   }
 
 }

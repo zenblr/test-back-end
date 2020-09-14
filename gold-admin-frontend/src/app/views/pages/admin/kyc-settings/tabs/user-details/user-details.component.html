@@ -199,7 +199,7 @@
 									<span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
 										(click)="form60.click()">Attach</span>
 								</div>
-								<input type="file" class="d-none" accept="image/png, image/jpeg" #form60
+								<input type="file" class="d-none" accept="image/*,application/pdf" #form60
 									(input)="getFileInfo($event)">
 							</div>
 						</div>
@@ -220,7 +220,7 @@
 								<img src="../../../../../assets/media/icons/edit.svg" alt=""
 									class="kt-pointer remove-icon" (click)="form60.click()"
 									*ngIf="controls.panImg.value && !(controls.panType.status == 'DISABLED')">
-								<input type="file" class="d-none" accept="image/png, image/jpeg" #form60
+								<input type="file" class="d-none" accept="image/*,application/pdf" #form60
 									(input)="getFileInfo($event)">
 								<div class="iframeWrapper" (click)="preview(controls?.panImg.value)">
 									<iframe [src]="controls?.panImg.value | safe : 'resourceUrl'" height="250"

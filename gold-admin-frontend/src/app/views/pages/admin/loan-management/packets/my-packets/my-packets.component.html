@@ -3,18 +3,18 @@
     <kt-portlet-body>
         <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
-                <ng-container matColumnDef="userName">
+                <!-- <ng-container matColumnDef="userName">
                     <mat-header-cell *matHeaderCellDef>User Name</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
                         {{packet.loanPacketDetails[0].packets[0].appraiser.firstName + " " + 
                         packet.loanPacketDetails[0].packets[0].appraiser.lastName | titlecase}}</mat-cell>
-                </ng-container>
+                </ng-container> -->
 
                 <ng-container matColumnDef="internalBranch">
                     <mat-header-cell *matHeaderCellDef>Branch</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngIf="packet.customer">
-                            {{packet.loanPacketDetails[0].packets[0].internalBranch.name | titlecase}}
+                        <span *ngIf="packet.masterLoan?.internalBranch">
+                            {{packet.masterLoan?.internalBranch?.name | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -22,45 +22,44 @@
                 <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngIf="packet.customer">
-                            {{packet.customer.customerUniqueId}}
+                        <span *ngIf="packet?.masterLoan?.customer">
+                            {{packet?.masterLoan?.customer.customerUniqueId}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <div *ngFor="let item of packet.customerLoan">
-                            <span *ngIf="item.loanType === 'secured'">
+                        <div class="multiple" *ngFor="let item of packet?.masterLoan?.customerLoan">
+                            <!-- <span *ngIf="item.loanType === 'secured'">
                                 {{ item.loanUniqueId | uppercase }}
-                            </span>
+                            </span> -->
+                            <div>{{ item.loanUniqueId }}</div>
                         </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="customerName">
                     <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngIf="packet.customerLoan">
-                            {{packet.customer.firstName + " " + packet.customer.lastName |titlecase}}
+                        <span *ngIf="packet.masterLoan?.customer">
+                            {{packet?.masterLoan?.customer?.firstName + " " + packet?.masterLoan?.customer?.lastName |titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="loanAmount">
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <div *ngFor="let item of packet.customerLoan">
-                            <span *ngIf="item.loanType === 'secured'">
-                                {{ item.loanAmount | uppercase }}
-                            </span>
+                        <div class="multiple" *ngFor="let item of packet?.masterLoan?.customerLoan">
+                            <div>{{ item.outstandingAmount }}</div>
                         </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="currentLocation">
                     <mat-header-cell *matHeaderCellDef>Current Location</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngIf="packet.customerPacketTracking.length">
+                        <!-- <span *ngIf="packet.customerPacketTracking.length">
                             {{packet?.customerPacketTracking[0].packetLocation.location |titlecase}}
-                        </span>
+                        </span> -->
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="actions">
@@ -68,8 +67,12 @@
                     <mat-cell *matCellDef="let packet">
 
                         <button (click)="viewPackets(packet)" class="btn-transparent kt-margin-r-15">View
-                            Packets</button>
+                            Packets
+                        </button>
 
+                        <button (click)="deliver(packet)" class="btn-transparent kt-margin-r-15">
+                            Deliver
+                        </button>
                     </mat-cell>
                 </ng-container>
 
