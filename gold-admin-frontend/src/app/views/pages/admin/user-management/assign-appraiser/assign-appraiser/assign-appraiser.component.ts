@@ -338,7 +338,8 @@ export class AssignAppraiserComponent implements OnInit {
       this.controls.endTime.reset()
     } else {
       this.minStartTime()
-
+      this.controls.startTime.reset()
+      this.controls.endTime.reset()
     }
 
   }
