@@ -67,7 +67,7 @@
 
                                 </div>
                                 <label class="mandatory  file d-none">
-                                    <input type="file" accept="image/png, image/jpeg" id="file"
+                                    <input type="file" accept="image/*,application/pdf" id="file"
                                         aria-label="File browser example" #identity
                                         (input)="getFileInfo($event,'identityProof')">
                                     <span class="file-custom"></span>
@@ -321,7 +321,7 @@
                                                     Required field
                                                 </mat-error>
                                                 <label class="mandatory  file d-none">
-                                                    <input type="file" accept="image/png, image/jpeg" id="file"
+                                                    <input type="file" accept="image/*,application/pdf" id="file"
                                                         aria-label="File browser example" #permanent
                                                         (input)="getFileInfo($event,i)">
                                                     <span class="file-custom"></span>
@@ -349,7 +349,7 @@
                                                     Required field
                                                 </mat-error>
                                                 <label class="mandatory  file d-none">
-                                                    <input type="file" accept="image/png, image/jpeg" id="file"
+                                                    <input type="file" accept="image/*,application/pdf" id="file"
                                                         aria-label="File browser example" #residential
                                                         (input)="getFileInfo($event,i)">
                                                     <span class="file-custom"></span>

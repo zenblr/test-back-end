@@ -28,7 +28,7 @@
                             </div>
                             <div class="col-7 d-flex" *ngIf="viewOnly && (userType == 4 || userType == 6)">
                                 <div class="align-self-center">
-                                    <input type="file" accept="image/png, image/jpeg" #profile class="d-none"
+                                    <input type="file" accept="image/*" #profile class="d-none"
                                         (input)="getFileInfo($event, 'profile')" />
                                     <label [class.mandatory]="viewOnly"
                                         [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
@@ -218,7 +218,7 @@
                                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
                                             (click)="form60.click()">Attach</span>
                                     </div>
-                                    <input type="file" class="d-none" accept="image/png, image/jpeg" #form60
+                                    <input type="file" class="d-none" accept="image/*,application/pdf" #form60
                                         (input)="getFileInfo($event,'panType')">
                                 </div>
                             </div>
@@ -237,7 +237,7 @@
                             <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer remove-icon"
                                 (click)="form60.click()"
                                 *ngIf="controls.panImg.value && !(controls.panType.status == 'DISABLED')">
-                            <input type="file" class="d-none" accept="image/png, image/jpeg" #form60
+                            <input type="file" class="d-none" accept="image/*,application/pdf" #form60
                                 (input)="getFileInfo($event ,'panType')">
                             <div class="iframeWrapper" (click)="previewPdf(controls.panImg.value)">
                                 <iframe [src]="controls.panImg.value | safe : 'resourceUrl'" height="250" width="290"
@@ -311,13 +311,14 @@
                                     <input type="text" class="form-control" placeholder="Select File"
                                         aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
                                         formControlName="identityProofFileName" />
+
                                     <div class="input-group-append">
                                         <span [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
                                             class="input-group-text bgx font-weight" id="basic-addon2"
                                             (click)="userType != 5 && identity.click()"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
-                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #identity
+                                    <input type="file" accept="image/*,application/pdf" class="d-none" #identity
                                         (input)="getFileInfo($event, 'identityProof')">
                                 </div>
                             </div>
@@ -504,7 +505,7 @@
                                             [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
-                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #permanent
+                                    <input type="file" accept="image/*,application/pdf" class="d-none" #permanent
                                         (input)="getFileInfo($event, 'permanent')">
                                 </div>
                             </div>
@@ -710,7 +711,7 @@
                                             [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
-                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #residential
+                                    <input type="file" accept="image/*,application/pdf" class="d-none" #residential
                                         (input)="getFileInfo($event, 'residential')">
                                 </div>
                             </div>
@@ -951,7 +952,7 @@
                                             [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
-                                    <input type="file" accept="image/png, image/jpeg" class="d-none" #signature
+                                    <input type="file" accept="image/*,application/pdf" class="d-none" #signature
                                         (input)="getFileInfo($event, 'signature')">
                                 </div>
                             </div>
