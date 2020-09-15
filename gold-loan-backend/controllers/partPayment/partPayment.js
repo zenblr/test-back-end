@@ -269,7 +269,7 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
                 }
             }
 
-            await intrestCalculationForSelectedLoanWithOutT(receivedDate, loan.id)
+            await intrestCalculationForSelectedLoanWithOutT(receivedDate, loan.id,securedInterest, unsecuredInterest,currentSlabRate)
             await penalInterestCalculationForSelectedLoan(receivedDate, loan.id) // right
             let amount = await getCustomerInterestAmount(masterLoanId);
 
