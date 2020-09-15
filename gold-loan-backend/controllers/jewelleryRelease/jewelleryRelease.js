@@ -978,7 +978,7 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
             as: 'appraiserData',
             subQuery: false,
             where: appriserSearch,
-            attributes: ['appraiserId']
+            attributes: ['appraiserId', 'appoinmentDate', 'startTime', 'endTime']
         }]
     });
     if (!partReleaseData) {
@@ -1046,8 +1046,11 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                 customerId: oldLoanData.masterLoan.customerId,
                 moduleId: moduleId.id,
                 appraiserId: partReleaseData.appraiserData.appraiserId,
-                status: 'incomplete',
+                status: 'complete',
                 isAssigned: true,
+                appoinmentDate: partReleaseData.appraiserData.appoinmentDate,
+                startTime: partReleaseData.appraiserData.startTime,
+                endTime: partReleaseData.appraiserData.endTime,
             })
 
             let loanData = {
