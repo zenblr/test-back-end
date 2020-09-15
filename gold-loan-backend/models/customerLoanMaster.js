@@ -159,7 +159,7 @@ module.exports = (sequelize, DataTypes) => {
         isLoanCompleted: {
             type: DataTypes.BOOLEAN,
             field: 'is_loan_completed',
-            defaultValue: true
+            defaultValue: false
         },
         internalBranchId: {
             type: DataTypes.INTEGER,
