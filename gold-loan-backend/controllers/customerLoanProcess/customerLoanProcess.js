@@ -2046,7 +2046,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
                 )
             },
         }],
-        // loanStageId: { [Op.notIn]: [stage.id, transfer.id, disbursed.id] },
+        loanStageId: { [Op.notIn]: [stage.id, transfer.id, disbursed.id] },
         isLoanCompleted: false,
         isActive: true
     };
