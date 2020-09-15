@@ -17,13 +17,16 @@ import { LeadService } from '../../../../../../core/lead-management/services/lea
 export class UpdateLocationComponent implements OnInit {
 
   locationForm: FormGroup
-  packetLocations: [any];
+  packetLocations: any[];
   userTypeList = [{ name: 'Customer', value: 'Customer' }, { name: 'Internal User', value: 'InternalUser' }, { name: 'Partner User', value: 'PartnerUser' }]
   filteredPacketArray: any[];
   verifiedPacketsArray = []
   refCode: number; //reference code
   otpSent: boolean = false;
   otpVerfied: boolean;
+  partnerBranches: any[];
+  deliveryLocations: any[];
+  deliveryPartnerBranches: any[];
 
   constructor(
     public dialogRef: MatDialogRef<UpdateLocationComponent>,
@@ -37,7 +40,8 @@ export class UpdateLocationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getPacketLocationList()
+    if (!this.data.deliver) this.getPacketLocationList()
+
     this.locationForm = this.fb.group({
       packetLocationId: [, [Validators.required]],
       barcodeNumber: this.fb.array([]),
@@ -51,19 +55,34 @@ export class UpdateLocationComponent implements OnInit {
       partnerReceiverId: [null],
       loanId: [null],
       masterLoanId: [null],
-
+      partnerId: [],
+      partnerName: [],
+      partnerBranchId: [],
+      internalBranchId: [],
+      deliveryPacketLocationId: [],
+      deliveryInternalBranchId: [],
+      deliveryPartnerBranchId: [],
+      id: []
     })
 
-    this.initBarcodeArray()
-    this.setForm()
+    if (!this.data.deliver) {
+      this.initBarcodeArray()
+      this.setForm()
+    }
+
+    if (this.data.deliver) {
+      this.locationForm.patchValue({
+        id: this.data.id,
+        receiverType: this.data.receiverType
+      })
+      this.locationForm.controls.packetLocationId.setValidators([])
+      this.locationForm.controls.packetLocationId.updateValueAndValidity()
+    }
   }
 
   setForm() {
     const packetArray = this.data.packetData
-    //console.log(this.data.packetData)
     this.locationForm.controls.masterLoanId.patchValue(this.data.packetData[0].masterLoanId)
-    console.log(this.data.packetData[0].masterLoanId, 'masterLoanId')
-    console.log(this.data.packetData[0].loanId, 'loanId')
     this.locationForm.controls.loanId.patchValue(this.data.packetData[0].loanId)
 
     this.filteredPacketArray = []
@@ -84,10 +103,26 @@ export class UpdateLocationComponent implements OnInit {
   }
 
   getPacketLocationList() {
-    this.packetLocationService.getpacketsTrackingDetails(1, -1, '').pipe(map(res => {
-      this.packetLocations = res.data
 
-    })).subscribe()
+    if (this.data.isOut) {
+      this.updateLocationService.getNextPacketLocation({ masterLoanId: this.data.packetData[0].masterLoanId }).pipe(map(res => {
+        this.packetLocations = res.data;
+      })).subscribe()
+    } else {
+      this.packetLocationService.getpacketsTrackingDetails(1, -1, '').pipe(map(res => {
+        this.packetLocations = res.data;
+        if (this.data.stage == 11) {
+          this.packetLocations = this.packetLocations.filter(e => e.id === 2 || e.id === 4)
+        }
+        this.deliveryLocations = res.data
+      })).subscribe()
+    }
+
+    if (this.data.isOut) {
+      this.packetLocationService.getpacketsTrackingDetails(1, -1, '').pipe(map(res => {
+        this.deliveryLocations = res.data.filter(e => e.id === 2 || e.id === 4)
+      })).subscribe()
+    }
   }
 
   action(event) {
@@ -103,28 +138,49 @@ export class UpdateLocationComponent implements OnInit {
 
     console.log(this.locationForm.value)
 
+    if (!this.data.deliver) {
 
-    if (this.verifiedPacketsArray.length != this.data.packetData.length) return
+      if (this.verifiedPacketsArray.length != this.data.packetData.length) return
 
-    const isVerified = this.verifiedPacketsArray.every(e => e.isVerified === true)
-    //console.log(this.verifiedPacketsArray)
-    if (!isVerified) {
-      console.log(`Packets are not completely verified!`)
-      for (const iterator of this.barcodeNumber.controls) {
-        if (iterator.get('Barcode').invalid) {
-          iterator.get('Barcode').markAsTouched()
+      const isVerified = this.verifiedPacketsArray.every(e => e.isVerified === true)
+      //console.log(this.verifiedPacketsArray)
+      if (!isVerified) {
+        console.log(`Packets are not completely verified!`)
+        for (const iterator of this.barcodeNumber.controls) {
+          if (iterator.get('Barcode').invalid) {
+            iterator.get('Barcode').markAsTouched()
+          }
         }
+        return this.toastr.error('Packets are not completely verified')
       }
-      return this.toastr.error('Packets are not completely verified')
     }
-    this.updateLocationService.addPacketLocation(this.locationForm.value).subscribe(res => {
-      // console.log(res);
-      if (res) {
-        const msg = 'Packet Location Added Successfully';
-        this.toastr.success(msg);
-        this.dialogRef.close(true);
-      }
-    });
+
+    if (this.data.stage == 11) {
+      // return console.log(this.locationForm.value)
+      this.updateLocationService.submitPacketLocation(this.locationForm.value).subscribe(res => {
+        if (res) {
+          const msg = 'Packet Location Submitted Successfully';
+          this.toastr.success(msg);
+          this.dialogRef.close(true);
+        }
+      });
+    }
+    else if (this.data.deliver) {
+      this.updateLocationService.deliverPartnerBranch(this.locationForm.value).subscribe(res => {
+        if (res) {
+          this.toastr.success(res.message);
+          this.dialogRef.close(true);
+        }
+      });
+    } else {
+      this.updateLocationService.addPacketLocation(this.locationForm.value).subscribe(res => {
+        if (res) {
+          const msg = 'Packet Location Added Successfully';
+          this.toastr.success(msg);
+          this.dialogRef.close(true);
+        }
+      });
+    }
   }
 
   get barcodeNumber() {
@@ -143,10 +199,12 @@ export class UpdateLocationComponent implements OnInit {
   }
 
   initBarcodeArray() {
-    for (let index = 0; index < this.data.packetData.length; index++) {
-      this.barcodeNumber.push(this.newBarcode())
-      const packetObject = { isVerified: false }
-      this.verifiedPacketsArray.push(packetObject)
+    if (this.data.packetData.length) {
+      for (let index = 0; index < this.data.packetData.length; index++) {
+        this.barcodeNumber.push(this.newBarcode())
+        const packetObject = { isVerified: false }
+        this.verifiedPacketsArray.push(packetObject)
+      }
     }
   }
 
@@ -202,10 +260,21 @@ export class UpdateLocationComponent implements OnInit {
     switch (this.locationForm.controls.receiverType.value) {
       case 'Customer':
         this.updateLocationService.sendCustomerOtp(mobileNumber).subscribe(res => {
-          console.log(res)
           if (res) {
             this.refCode = res.referenceCode;
-            this.locationForm.controls.referenceCode.patchValue(this.refCode);
+            this.locationForm.controls.referenceCode.patchValue(res.referenceCode);
+            const msg = 'Otp has been sent to the registered mobile number';
+            this.toastr.success(msg);
+          }
+        })
+
+        break;
+
+      case 'InternalUser':
+        this.authService.generateOtp(mobileNumber, 'lead').subscribe(res => {
+          if (res) {
+            this.refCode = res.referenceCode;
+            this.locationForm.controls.referenceCode.patchValue(res.referenceCode);
             const msg = 'Otp has been sent to the registered mobile number';
             this.toastr.success(msg);
           }
@@ -215,20 +284,16 @@ export class UpdateLocationComponent implements OnInit {
           })
 
         break;
-      case 'InternalUser':
-        this.authService.generateOtp(mobileNumber, 'lead').subscribe(res => {
-          console.log(res)
+
+      case 'PartnerUser':
+        this.updateLocationService.sendPartnerOtp(mobileNumber).subscribe(res => {
           if (res) {
             this.refCode = res.referenceCode;
-            this.locationForm.controls.referenceCode.patchValue(this.refCode);
+            this.locationForm.controls.referenceCode.patchValue(res.referenceCode);
             const msg = 'Otp has been sent to the registered mobile number';
             this.toastr.success(msg);
           }
-        },
-          err => {
-            this.toastr.error(err.error.message)
-          })
-
+        })
         break;
     }
   }
@@ -254,8 +319,24 @@ export class UpdateLocationComponent implements OnInit {
           }
         );
         break;
+
       case 'InternalUser':
         this.authService.verifyotp(params.referenceCode, params.otp, params.type).subscribe(res => {
+          if (res) {
+            this.otpSent = true;
+            this.otpVerfied = true;
+            const msg = 'Otp has been verified!'
+            this.toastr.success(msg);
+          }
+        }
+          ,
+          err => {
+            this.toastr.error(err.error.message)
+          });
+        break;
+
+      case 'PartnerUser':
+        this.updateLocationService.verifyPartnerOtp(params).subscribe(res => {
           if (res) {
             this.otpSent = true;
             this.otpVerfied = true;
@@ -293,5 +374,72 @@ export class UpdateLocationComponent implements OnInit {
       this.verifiedPacketsArray.splice(index, 1, { isVerified })
       // formGroup.get('Barcode').disable()
     }
+  }
+
+  get controls() {
+    return this.locationForm.controls
+  }
+
+  getPartnerBranch() {
+    if (this.data.stage != 11) return
+
+    // if (this.controls.packetLocationId.value != 4) this.clearPartnerData()
+
+    const params = {
+      packetLocationId: this.locationForm.controls.packetLocationId.value,
+      masterLoanId: this.locationForm.controls.masterLoanId.value,
+    }
+
+    this.updateLocationService.getLocation(params).pipe(map(res => {
+      if (this.controls.packetLocationId.value == 2) {
+        this.controls.internalBranchId.patchValue(res.data[0].id)
+        this.clearPartnerData()
+      }
+      if (this.controls.packetLocationId.value == 4) {
+        this.controls.partnerId.patchValue(res.data.id)
+        this.controls.partnerName.patchValue(res.data.name)
+        this.partnerBranches = res.data.partnerBranch
+        this.clearInternalBranchData()
+      }
+      // console.log(res)
+    })).subscribe()
+  }
+
+  getdeliveryPartnerBranch() {
+    const params = {
+      packetLocationId: this.locationForm.controls.deliveryPacketLocationId.value,
+      masterLoanId: this.locationForm.controls.masterLoanId.value,
+    }
+
+    this.updateLocationService.getLocation(params).pipe(map(res => {
+      if (this.controls.deliveryPacketLocationId.value == 2) {
+        this.controls.deliveryInternalBranchId.patchValue(res.data[0].id)
+        this.clearPartnerData()
+      }
+      if (this.controls.deliveryPacketLocationId.value == 4) {
+        this.controls.deliveryPartnerBranchId.patchValue(res.data.id)
+        // this.controls.partnerName.patchValue(res.data.name)
+        this.deliveryPartnerBranches = res.data.partnerBranch
+        this.clearInternalBranchData()
+      }
+      // console.log(res)
+    })).subscribe()
+  }
+
+  clearPartnerData() {
+    this.controls.partnerId.reset()
+    this.controls.partnerName.reset()
+  }
+
+  clearInternalBranchData() {
+    this.controls.internalBranchId.reset()
+  }
+
+  clearDeliveryPartnerData() {
+    this.controls.deliveryPartnerBranchId.reset()
+  }
+
+  clearDeliveryInternalBranchData() {
+    this.controls.deliveryInternalBranchId.reset()
   }
 }

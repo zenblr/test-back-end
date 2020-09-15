@@ -3,6 +3,8 @@
 <kt-portlet>
 
     <kt-portlet-body>
+        <!-- <button (click)="checkout()"></button>
+        <button (click)="submitPacket()"></button> -->
 
         <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
@@ -168,6 +170,23 @@
                                 </div>
                             </div>
 
+                            <div *ngIf="loan.loanStage.id == 10">
+                                <button (click)="checkout(loan)"
+                                    class="primary-button">{{loan.loanStage.name | uppercase}}</button>
+                            </div>
+
+                            <div *ngIf="loan.loanStage.id == 11">
+                                <button (click)="getPacketDetails(loan)"
+                                    class="primary-button">{{loan.loanStage.name | uppercase}}</button>
+                            </div>
+
+                            <div *ngIf="loan.loanStage.id == 12">
+                                <button class="primary-button">{{loan.loanStage.name | uppercase}}</button>
+                            </div>
+
+                            <div *ngIf="loan.loanStage.id == 13">
+                                <button class="primary-button">{{loan.loanStage.name | uppercase}}</button>
+                            </div>
 
                         </div>
                     </mat-cell>

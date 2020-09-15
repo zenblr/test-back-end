@@ -1162,7 +1162,14 @@ let getSingleDayInterestAmount = async (loan) => {
 
             let noOfDays = dueDate.diff(startDate, 'days')
             let months = Math.ceil(noOfDays / 30)
-            securedTotalInterest = (securedPerDayInterestAmount * (months * 30)) - paidAmount;
+            let securedMonthInterest = (securedPerDayInterestAmount * (months * 30))
+            if(securedMonthInterest > Number(paidAmount)){
+            securedTotalInterest = securedMonthInterest - paidAmount;
+            }
+            else{
+            securedTotalInterest =  paidAmount - securedMonthInterest;
+
+            }
             securedTotalInterest = securedTotalInterest.toFixed(2)
         }
     }
@@ -1202,7 +1209,14 @@ let getSingleDayInterestAmount = async (loan) => {
 
                 let noOfDays = dueDate.diff(startDate, 'days')
                 let months = Math.ceil(noOfDays / 30)
-                unsecuredTotalInterest = (unsecuredPerDayInterestAmount * (months * 30)) - unsecuredPaidAmount
+                let monthsViseInterest = (unsecuredPerDayInterestAmount * (months * 30))
+                
+                if(monthsViseInterest > Number(unsecuredPaidAmount)){
+                unsecuredTotalInterest = monthsViseInterest - unsecuredPaidAmount
+                }else{
+                unsecuredTotalInterest = unsecuredPaidAmount - monthsViseInterest 
+
+                }
                 unsecuredTotalInterest = unsecuredTotalInterest.toFixed(2)
             }
 

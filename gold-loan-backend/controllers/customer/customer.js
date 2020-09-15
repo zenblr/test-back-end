@@ -12,7 +12,7 @@ const CONSTANT = require("../../utils/constant");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { sendOtpToLeadVerification } = require('../../utils/SMS');
+let { sendOtpToLeadVerification, sendOtpForLogin, forgetPasswordOtp } = require('../../utils/SMS');
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 
 exports.getOtp = async (req, res, next) => {
@@ -64,7 +64,7 @@ exports.addCustomer = async (req, res, next) => {
 
 
 exports.registerCustomerSendOtp = async (req, res, next) => {
-  const { mobileNumber } = req.body;
+  const { mobileNumber, firstName } = req.body;
 
   let customerExist = await models.customer.findOne({
     where: { mobileNumber, isActive: true },
@@ -82,14 +82,14 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
 
-  // var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
+  var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
 
   await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
 
-  //await sendOtpToLeadVerification(customerExist.firstName, customerExist.mobileNumber, otp, expiryTimeToUser)
+  await sendOtpToLeadVerification(mobileNumber, firstName, otp, expiryTimeToUser)
 
-  let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
-  await sms.sendSms(mobileNumber, message);
+  // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
+  // await sms.sendSms(mobileNumber, message);
 
 
   return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, });
@@ -97,7 +97,7 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
 
 
 exports.sendOtp = async (req, res, next) => {
-  const { mobileNumber } = req.body;
+  const { mobileNumber, type } = req.body;
 
   let customerExist = await models.customer.findOne({
     where: { mobileNumber, isActive: true },
@@ -115,8 +115,15 @@ exports.sendOtp = async (req, res, next) => {
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
   await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
-  let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
-  await sms.sendSms(mobileNumber, message);
+
+  if (type == "login") {
+    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTimeToUser)
+  } else if (type == "forget") {
+    await forgetPasswordOtp(customerExist.mobileNumber, customerExist.firstName, otp, expiryTimeToUser)
+  }
+
+  // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
+  // await sms.sendSms(mobileNumber, message);
   // request(
   //   `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`
   // );
@@ -133,7 +140,7 @@ exports.sendOtp = async (req, res, next) => {
 exports.verifyOtp = async (req, res, next) => {
   let { referenceCode, otp } = req.body;
   var todayDateTime = new Date();
-  console.log('abc')
+  // console.log('abc')
   let verifyUser = await models.customerOtp.findOne({
     where: {
       referenceCode,

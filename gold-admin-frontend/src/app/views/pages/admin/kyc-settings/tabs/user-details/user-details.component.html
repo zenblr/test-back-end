@@ -97,8 +97,8 @@
 								class="form-control" formControlName="firstName" [class.isError]="
 									controls.firstName.touched &&
 									controls.firstName.invalid
-								"  />
-								<!-- [readOnly]="true" style="text-transform: capitalize;" -->
+								" />
+							<!-- [readOnly]="true" style="text-transform: capitalize;" -->
 							<mat-error *ngIf="
 									controls.firstName.errors?.required &&
 									controls.firstName.touched
@@ -111,8 +111,8 @@
 								class="form-control" formControlName="lastName" [class.isError]="
 									controls.lastName.touched &&
 									controls.lastName.invalid
-								"  />
-								<!-- [readOnly]="true" style="text-transform: capitalize;" -->
+								" />
+							<!-- [readOnly]="true" style="text-transform: capitalize;" -->
 							<mat-error *ngIf="
 									controls.lastName.errors?.required &&
 									controls.lastName.touched
@@ -199,7 +199,7 @@
 									<span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
 										(click)="form60.click()">Attach</span>
 								</div>
-								<input type="file" class="d-none" accept="image/png, image/jpeg" #form60
+								<input type="file" class="d-none" accept="image/*,application/pdf" #form60
 									(input)="getFileInfo($event)">
 							</div>
 						</div>
@@ -213,17 +213,18 @@
 							<div class="img-container" *ngIf="controls.panImg.value">
 								<img *ngIf="!controls.panImg.value" class=""
 									src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
-								<img class="fetched-image" *ngIf="controls.panImg.value && !pdf.panImg"
+								<img class="fetched-image"
+									*ngIf="controls.panImg.value && !isPdf(controls?.panImg.value)"
 									(click)="preview(controls?.panImg.value)" [src]="controls.panImg.value"
 									style="border-radius: 15px;" alt="" />
 								<img src="../../../../../assets/media/icons/edit.svg" alt=""
 									class="kt-pointer remove-icon" (click)="form60.click()"
 									*ngIf="controls.panImg.value && !(controls.panType.status == 'DISABLED')">
-								<input type="file" class="d-none" accept="image/png, image/jpeg" #form60
+								<input type="file" class="d-none" accept="image/*,application/pdf" #form60
 									(input)="getFileInfo($event)">
 								<div class="iframeWrapper" (click)="preview(controls?.panImg.value)">
 									<iframe [src]="controls?.panImg.value | safe : 'resourceUrl'" height="250"
-										width="290" scrolling="no" *ngIf="pdf.panImg"></iframe>
+										width="290" scrolling="no" *ngIf="isPdf(controls?.panImg.value)"></iframe>
 								</div>
 							</div>
 						</div>

@@ -1,0 +1,45 @@
+<kt-portlet>
+    <kt-modal-header [title]='"Enter OTP"' [noTitleCase]="true" (action)="action($event)"></kt-modal-header>
+    <kt-portlet-body>
+        <form [formGroup]="checkoutForm">
+
+
+
+            <div class="row justify-content-center kt-margin-t-15">
+                <div class="col-4 form-label">
+                    <label class="kt-padding-l-10 mandatory">Enter OTP</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" placeholder="Enter OTP" formControlName="otp"
+                        [class.isError]="controls.otp.invalid &&  controls.otp.touched" [readonly]="otpVerfied"
+                        [class.cursor-not-allowed]="otpVerfied" maxlength="4">
+                    <mat-error *ngIf="controls.otp.errors?.required && controls.otp.touched">Field Required </mat-error>
+                    <mat-error *ngIf="controls.otp.errors?.invalidOTP && controls.otp.touched">Invalid OTP </mat-error>
+
+                </div>
+                <!-- <div class="col-4" *ngIf="otpSent">
+                    <kt-button *ngIf="!otpVerfied" [myClass]="'w-100'" [type]="'button'" [value]="'Verify'">
+                    </kt-button>
+                    <button *ngIf="otpVerfied" type="button" mat-raised-button class="w-100 success-button">
+                        Verified </button>
+                </div> -->
+            </div>
+
+            <div class="row justify-content-center kt-margin-t-15">
+                <!-- <div class="col-4 offset-4">
+                        <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Send OTP'">
+                        </kt-button>
+                    </div> -->
+                <div class="col-4 offset-8 d-flex justify-content-end align-items-center ">
+                    <label (click)="resendOTP()" class="kt-pointer kt-link kt-link--brand kt-font-bolder">
+                        Resend OTP</label>
+                </div>
+            </div>
+        </form>
+    </kt-portlet-body>
+    <kt-portlet-footer>
+        <div class="p-3">
+            <kt-modal-footer (action)="action($event)" [value]="'Submit'"></kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</kt-portlet>

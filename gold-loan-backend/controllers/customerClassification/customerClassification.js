@@ -144,20 +144,20 @@ exports.operationalTeamKycRating = async (req, res, next) => {
         let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
         let cusMobile = getMobileNumber.mobileNumber
 
-        // await sendCustomerUniqueId(cusMobile, getMobileNumber.firstName, customerUniqueId)
+        await sendCustomerUniqueId(cusMobile, getMobileNumber.firstName, customerUniqueId)
         //message for customer
-        request(
-            `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is  ${customerUniqueId} `
-        );
+        // request(
+        //     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is  ${customerUniqueId} `
+        // );
         let getBm = await models.user.findOne({ where: { id: operationalTeamId } });
         let bmMobile = getBm.mobileNumber
 
-        // await sendMessageToOperationsTeam(bmMobile, customerUniqueId)
+        await sendMessageToOperationsTeam(bmMobile, customerUniqueId)
 
         //message for BranchManager
-        request(
-            `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is  ${customerUniqueId} Assign appraiser for further process.`
-        );
+        // request(
+        //     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is  ${customerUniqueId} Assign appraiser for further process.`
+        // );
         return res.status(200).json({ message: 'success' })
 
 

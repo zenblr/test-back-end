@@ -235,7 +235,16 @@ export class AddLeadComponent implements OnInit {
 
   sendOTP() {
     const mobileNumber = this.controls.mobileNumber.value;
-    this.leadService.sendOtp({ mobileNumber, type: 'lead' }).subscribe(res => {
+    const firstName = this.controls.firstName.value;
+    const lastName = this.controls.lastName.value;
+
+    if (this.controls.firstName.invalid || this.controls.lastName.invalid) {
+      this.controls.firstName.markAsTouched()
+      this.controls.lastName.markAsTouched()
+      return
+    }
+
+    this.leadService.sendOtp({ mobileNumber, firstName, lastName, type: 'lead' }).subscribe(res => {
       if (res.message == 'Mobile number is already exist.') {
         this.toastr.errorToastr('Mobile Number already exists');
         this.mobileAlreadyExists = true;
@@ -322,6 +331,7 @@ export class AddLeadComponent implements OnInit {
             this.controls.panImage.patchValue(res.uploadFile.path)
           }
         }), catchError(err => {
+          if (err.error.message) this.toastr.errorToastr(err.error.message)
           throw err
         })).subscribe()
     }

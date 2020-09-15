@@ -326,7 +326,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
             // let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate( allOrnmanets, { transaction: t });
 
             let createdOrnaments
-                = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { updateOnDuplicate: ["loanAmount","ornamentTypeId", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest", "karat", "ltvRange", "ornamentImage", "ltvPercent", "ltvAmount", "currentLtvAmount", "ornamentFullAmount"] }, { transaction: t })
+                = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { updateOnDuplicate: ["loanAmount", "ornamentTypeId", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest", "karat", "ltvRange", "ornamentImage", "ltvPercent", "ltvAmount", "currentLtvAmount", "ornamentFullAmount"] }, { transaction: t })
 
             return createdOrnaments
         })
@@ -1014,8 +1014,9 @@ exports.loanAppraiserRating = async (req, res, next) => {
                 }
             ]
         }]
-
     });
+
+    let customerDetails = await models.customer.findOne({ where: { id: ornament.customerId } })
 
     let loanData = await sequelize.transaction(async t => {
 
@@ -1042,15 +1043,20 @@ exports.loanAppraiserRating = async (req, res, next) => {
                 //secured loan Id
                 loanUniqueId = `${masterLoanId}LOAN${Math.floor(1000 + Math.random() * 9000)}`;
 
+                let loanSendId = loanUniqueId
+
                 await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { id: loanId }, transaction: t })
-            }
-            if (loanDetail.unsecuredLoanId != null) {
-                if (loanDetail.unsecuredLoanId.loanUniqueId == null) {
-                    var unsecuredLoanUniqueId = null;
-                    // unsecured loan Id
-                    unsecuredLoanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
-                    await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: loanDetail.unsecuredLoanId }, transaction: t });
+                if (loanDetail.unsecuredLoanId != null) {
+                    if (loanDetail.unsecuredLoanId.loanUniqueId == null) {
+                        var unsecuredLoanUniqueId = null;
+                        // unsecured loan Id
+                        unsecuredLoanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+                        await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: loanDetail.unsecuredLoanId }, transaction: t });
+                        loanSendId = `secured Loan ID ${loanUniqueId}, unsecured Loan ID ${unsecuredLoanUniqueId}`
+                    }
                 }
+
+                await sendMessageLoanIdGeneration(customerDetails.mobileNumber, customerDetails.firstName, loanSendId)
             }
 
         } else {
@@ -1389,7 +1395,7 @@ exports.loanOpsTeamRating = async (req, res, next) => {
         await sequelize.transaction(async (t) => {
             // loan transfer changes complete
             if (loanMaster.isLoanTransfer == true || loanMaster.isNewLoanFromPartRelease == true) {
-                let stageIdTransfer = await models.loanStage.findOne({ where: { name: 'disbursed' }, transaction: t })
+                let stageIdTransfer = await models.loanStage.findOne({ where: { name: 'check out' }, transaction: t })
                 let dateChnage = await disbursementOfLoanTransfer(masterLoanId);
 
                 let loan = await models.customerLoanMaster.findOne({
@@ -1611,7 +1617,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
 
     let loanDetails = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } });
     let matchStageId = await models.loanStage.findOne({ where: { name: 'disbursement pending' } })
-    let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
+    let stageId = await models.loanStage.findOne({ where: { name: 'check out' } })
 
     let Loan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
@@ -2041,6 +2047,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
             },
         }],
         loanStageId: { [Op.notIn]: [stage.id, transfer.id, disbursed.id] },
+        isLoanCompleted: false,
         isActive: true
     };
     let internalBranchId = req.userData.internalBranchId
@@ -2140,7 +2147,8 @@ exports.getLoanDetails = async (req, res, next) => {
             },
         }],
         isActive: true,
-        loanStageId: stageId.id
+        // loanStageId: stageId.id
+        isLoanCompleted: true
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;

@@ -1,13 +1,13 @@
 :host{
     mat-header-row, mat-row {
-        width: 120%
+        width: 140%
     }
     .mat-column-customerID{
         padding-left: 10px !important;
-        flex : 0 0 9% !important;
+        flex : 0 0 8% !important;
     }
     .mat-column-customerName{
-        flex : 0 0 12% !important;
+        flex : 0 0 10% !important;
     }
     .mat-column-loanId{
         flex : 0 0 7% !important;
@@ -39,6 +39,11 @@
     .mat-column-new  {
         flex: 0 0 10% !important;
     }
+
+    .mat-column-applicationDate  {
+        flex: 0 0 8% !important;
+    }
+
     
     .dropdown-menu > li > a, .dropdown-menu > .dropdown-item {
         padding: 0 10px !important;

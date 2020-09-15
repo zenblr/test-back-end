@@ -123,7 +123,8 @@ export class DisburseComponent implements OnInit {
       isUnsecuredSchemeApplied: [],
       securedLoanUniqueId: [],
       unsecuredLoanUniqueId: [],
-      finalAmount: []
+      finalAmount: [],
+      fullAmount:[]
     })
     this.disableSchemeRelatedField()
   }
@@ -171,13 +172,13 @@ export class DisburseComponent implements OnInit {
           this.controls.unsecuredTransactionId.updateValueAndValidity()
         }
         this.disburseForm.patchValue({ loanAmount: res.data.finalLoanAmount })
+        this.calcfinalLoanAmount()
         if (Number(this.globalValue.cashTransactionLimit) < Number(this.disburseForm.controls.loanAmount.value)) {
           this.disburseForm.controls.paymentMode.patchValue('bank')
           this.disburseForm.controls.paymentMode.disable()
           return
         }
         this.disburseForm.controls.paymentMode.patchValue(res.data.paymentType)
-        this.calcfinalLoanAmount()
       }
     })
   }
@@ -343,6 +344,10 @@ export class DisburseComponent implements OnInit {
     const fullUnsecuredAmount = this.controls.fullUnsecuredAmount.value ? this.controls.fullUnsecuredAmount.value : 0;
 
     const finalAmount = this.controls.securedLoanAmount.value + fullUnsecuredAmount - this.controls.processingCharge.value
+
+    const fullAmount = this.controls.securedLoanAmount.value + fullUnsecuredAmount + this.controls.processingCharge.value
+
+    this.controls.fullAmount.patchValue(fullAmount)
 
     this.controls.finalAmount.patchValue(finalAmount)
 

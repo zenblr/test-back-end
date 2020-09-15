@@ -140,19 +140,28 @@
 
     <div class="row kt-margin-t-15">
         <!-- loan ornaments -->
-        <div class="col-12 text-center card">
+        <div class="col-12 card">
             <div class="row justify-content-center py-3">
-                <div class="col-3 form-label">
-                    <label for="">Principal Outstanding </label>  <br>
-                    <span class="d-block">{{details.customerLoan[0].outstandingAmount}}  </span>
-                    <br>
-                    <span class="d-block" *ngIf="details.customerLoan.length > 1">{{details.customerLoan[1].outstandingAmount}}</span>
+                <div class="col-3 form-label" style="display: flex; flex-direction: column; align-items: flex-start">
+                    <div>
+                        <div>
+                            <label for="">Principal Outstanding </label>
+                        </div>
+                        <div>
+                            <span>{{details.customerLoan[0].outstandingAmount}} </span>
+                        </div>
+                        <div>
+                            <span
+                                *ngIf="details.customerLoan.length > 1">{{details.customerLoan[1].outstandingAmount}}</span>
+                        </div>
+                    </div>
+
                 </div>
-                <div class="col-3">
+                <div class="col-3 my-auto d-flex align-item-center">
                     <kt-button [value]="'View Part Payment Logs'" [type]="'button'" (click)="viewPartPaymnetsLogs()">
                     </kt-button>
                 </div>
-                <div class="col-3">
+                <div class="col-3 my-auto d-flex align-item-center">
                     <kt-button [value]="'View Interest EMI Logs'" [type]="'button'" (click)="viewEmiLogs()"></kt-button>
 
                 </div>
@@ -235,17 +244,21 @@
                                     <div class="text-gray font-weight-500 kt-margin-b-5">LTV %</div>
                                     <div class="text-color font-weight-500">{{ornaments.ltvPercent}}%</div>
                                 </div>
-                                <div class="col-3">
+                                <!-- <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">LTV Amount</div>
                                     <div class="text-color font-weight-500">{{ornaments.ltvAmount}}</div>
-                                </div>
-                            </div>
-                            <div class="row kt-margin-t-25">
+                                </div> -->
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Loan Amount </div>
                                     <div class="text-color font-weight-500">{{ornaments.loanAmount}}</div>
                                 </div>
                             </div>
+                            <!-- <div class="row kt-margin-t-25">
+                                <div class="col-3">
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Loan Amount </div>
+                                    <div class="text-color font-weight-500">{{ornaments.loanAmount}}</div>
+                                </div>
+                            </div> -->
                         </div>
                     </div>
                 </mat-tab>

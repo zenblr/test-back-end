@@ -75,7 +75,7 @@ export class LoanApplicationFormComponent implements OnInit {
       this.masterAndLoanIds = { loanId: res.data.id, masterLoanId: res.data.masterLoanId }
       this.loanStage = this.customerDetail.masterLoan.loanStage
       this.ornamentDetails = res.data.ornamentType
-      if(this.loanStage.id == 5){
+      if(this.loanStage.id == 5 || this.loanStage.id == 10){
         this.disbursed = true
       }
       // this.totalAmount = res.data.totalEligibleAmt
