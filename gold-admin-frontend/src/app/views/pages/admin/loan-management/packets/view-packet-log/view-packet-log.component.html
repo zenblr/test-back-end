@@ -108,6 +108,15 @@
                     </mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="timeTaken">
+                    <mat-header-cell *matHeaderCellDef>Time Taken</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.processingTime">
+                            {{ role.processingTime}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
                 <ng-template #blank>
                     -
                 </ng-template>
