@@ -24,15 +24,12 @@ export class UserDetailsComponent implements OnInit {
   isMobileVerified = false;
   otpSent = false;
   isOpverified = true;
-  @ViewChild("form60", { static: false }) form60;
+  @ViewChild("pan", { static: false }) pan;
+  @ViewChild('editPan', { static: false }) editPan;
 
-  // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   showVerifyPAN = false;
-  // pdf = {
-  //   panImg: false
-  // }
-
+  organizationTypes: any;
 
   constructor(
     public fb: FormBuilder,
@@ -131,7 +128,11 @@ export class UserDetailsComponent implements OnInit {
       panImage: [, Validators.required],
       panImg: [],
       panCardNumber: [''],
-      id: []
+      id: [],
+      userType: [null],
+      moduleId: [null],
+      organizationTypeId: [null],
+      dateOfIncorporation: [null],
     })
   }
 
@@ -146,18 +147,14 @@ export class UserDetailsComponent implements OnInit {
         this.controls.referenceCode.patchValue(this.refCode);
         this.userBasicForm.patchValue(res.customerInfo);
 
+        this.setValidation()
+
         if (res.customerInfo.panCardNumber !== null) {
-          //this.controls.panCardNumber.disable();
-          //this.controls.panType.disable();
           this.isPanVerified = true;
         } else {
           this.showVerifyPAN = true;
         }
-        // const msg = 'Otp has been sent to the registered mobile number';
-        // this.toastr.success(msg);
       }
-    }, err => {
-      // console.log(err.message);
     });
   }
 
@@ -188,8 +185,6 @@ export class UserDetailsComponent implements OnInit {
   }
 
   getFileInfo(event) {
-    // var name = event.target.files[0].name
-    // var ext = name.split('.')
     if (this.sharedService.fileValidator(event)) {
       const params = {
         reason: 'lead',
@@ -201,9 +196,6 @@ export class UserDetailsComponent implements OnInit {
             this.controls.form60.patchValue(event.target.files[0].name)
             this.controls.panImage.patchValue(res.uploadFile.path)
             this.controls.panImg.patchValue(res.uploadFile.URL)
-            // const ext = this.sharedService.getExtension(event.target.files[0].name)
-
-            // this.pdf.panImg = (ext === 'pdf') ? true : false
           }
         }),
         catchError(err => {
@@ -211,24 +203,13 @@ export class UserDetailsComponent implements OnInit {
           throw err
         }),
         finalize(() => {
-          this.form60.nativeElement.value = ''
+          this.editPan.nativeElement.value = ''
+          this.pan.nativeElement.value = ''
         })).subscribe()
     }
-    // else {
-    //   this.toast.error('Upload Valid File Format')
-    // }
   }
 
   preview(value) {
-    // let img = [this.controls.panImage.value]
-    // this.dialog.open(ImagePreviewDialogComponent, {
-    //   data: {
-    //     images: img,
-    //     index: 0
-    //   },
-    //   width: "auto"
-    // })
-
     const img = value
     const ext = this.sharedService.getExtension(img)
     if (ext == 'pdf') {
@@ -323,6 +304,50 @@ export class UserDetailsComponent implements OnInit {
     const ext = this.sharedService.getExtension(image)
     const isPdf = ext == 'pdf' ? true : false
     return isPdf
+  }
+
+  changeUserType(value) {
+    if (value === 'Corporate') {
+      this.getOrganizationTypes()
+      this.setOrganizationValidation()
+    }
+    if (value === 'Individual') {
+      this.unsetOrganizationValidation()
+    }
+
+  }
+
+  getOrganizationTypes() {
+    if (!this.organizationTypes) {
+      this.userDetailsService.getOrganizationTypes().pipe(
+        map(res => {
+          console.log(res)
+          this.organizationTypes = res
+        })).subscribe()
+    }
+  }
+
+  setValidation() {
+    if (this.controls.moduleId.value == 3) {
+      this.controls.userType.setValidators([Validators.required])
+      this.controls.userType.updateValueAndValidity()
+    }
+  }
+
+  setOrganizationValidation() {
+    this.controls.organizationTypeId.setValidators([Validators.required])
+    this.controls.organizationTypeId.updateValueAndValidity()
+    this.controls.dateOfIncorporation.setValidators([Validators.required])
+    this.controls.dateOfIncorporation.updateValueAndValidity()
+  }
+
+  unsetOrganizationValidation() {
+    this.controls.organizationTypeId.reset()
+    this.controls.dateOfIncorporation.reset()
+    this.controls.organizationTypeId.setValidators([])
+    this.controls.organizationTypeId.updateValueAndValidity()
+    this.controls.dateOfIncorporation.setValidators([])
+    this.controls.dateOfIncorporation.updateValueAndValidity()
   }
 
 }
