@@ -65,7 +65,7 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
             ]
         }
     ]
-    let stage = await models.loanStage.findAll({ where: { name: { [Op.in]: ['packet in branch', 'packet submitted'] } } })
+    let stage = await models.loanStage.findAll({ where: { name: { [Op.in]: ['submit packet', 'packet in branch', 'packet submitted'] } } })
     let stageId = stage.map(ele => ele.id)
 
     let searchQuery = {
@@ -82,7 +82,7 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
         loanStageId: stageId
     };
     let packetDetails = await models.customerLoanMaster.findAll({
-        attributes: ['id'],
+        attributes: ['id', 'loanStageId'],
         where: searchQuery,
         subQuery: false,
         include: associateModel,
@@ -182,7 +182,7 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
-    let searchQuery = { loanId: loanId, masterLoanId: masterLoanId }
+    let searchQuery = { masterLoanId: masterLoanId }
 
     let includeArray = [
         {
@@ -214,11 +214,25 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
             model: models.partnerBranchUser,
             as: 'receiverPartner',
             attributes: ['id', 'firstName', 'lastName']
+        },
+        {
+            model: models.internalBranch,
+            as: 'internalBranch'
+        },
+        {
+            model: models.partnerBranch,
+            as: 'partnerBranch',
+            include: [
+                {
+                    model: models.partner,
+                    as: 'partner'
+                }
+            ]
         }
     ]
 
     let logDetails = await models.customerPacketTracking.findAll({
-        where: searchQuery,
+        where: { masterLoanId },
         order: [
             ['id', 'DESC']
         ],
@@ -249,7 +263,7 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
                     dateAndTime: log.updatedAt,
                     senderType: log.senderType
                 })
-            } else {
+            } else if (log.senderPartner != null) {
                 senderData.push({
                     id: log.id,
                     firstName: log.senderPartner.firstName,
@@ -273,7 +287,7 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
                     lastName: log.receiverUser.lastName,
                     receiverType: log.receiverType,
                 });
-            } else {
+            } else if (log.receiverPartner != null) {
                 receiverData.push({
                     id: log.id,
                     firstName: log.receiverPartner.firstName,
@@ -291,12 +305,11 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
         order: [
             ['id', 'DESC']
         ],
-        include: includeArray
+        // include: includeArray
 
     });
 
 
-    //console.log(logDetails)
     if (logDetail.length != 0) {
         return res.status(200).json({ data: logDetail, count: count.length });
     }
@@ -789,7 +802,7 @@ exports.deliveryUserType = async (req, res, next) => {
 }
 
 exports.deliveryApproval = async (req, res, next) => {
-    let { referenceCode, otp, id } = req.body
+    let { referenceCode, otp, id, partnerReceiverId, userReceiverId, customerReceiverId } = req.body
 
     let { receiverType, packetLocationId, masterLoanId } = await models.customerPacketTracking.findOne({ where: { id: id } })
 
@@ -854,7 +867,7 @@ exports.deliveryApproval = async (req, res, next) => {
 
         await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId }, { transaction: t })
 
-        await models.customerPacketTracking.update({ isDelivered: true }, { where: { id: id }, transaction: t })
+        await models.customerPacketTracking.update({ isDelivered: true, partnerReceiverId, userReceiverId, customerReceiverId }, { where: { id: id }, transaction: t })
     })
 
     return res.status(200).json({ message: 'success' })
