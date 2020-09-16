@@ -44,7 +44,9 @@
                     <mat-header-cell *matHeaderCellDef>Updated By</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <span *ngFor="let sender of role.senderData">
-                            {{sender.firstName | titlecase}}&nbsp; {{sender.lastName | titlecase}}
+                            <span *ngIf="sender.firstName">
+                                {{sender.firstName | titlecase}}&nbsp; {{sender.lastName | titlecase}}
+                            </span>
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -57,6 +59,37 @@
                         </span>
                     </mat-cell>
                 </ng-container>
+
+                <ng-container matColumnDef="internalBranch">
+                    <mat-header-cell *matHeaderCellDef>Internal Branch</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.internalBranch else blank">
+                            {{role?.internalBranch?.name | titlecase}}
+                        </span>
+
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="partner">
+                    <mat-header-cell *matHeaderCellDef>Partner</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.partnerBranch else blank">
+                            {{role?.partnerBranch?.partner?.name | titlecase}}
+                        </span>
+
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="partnerBranch">
+                    <mat-header-cell *matHeaderCellDef>Partner Branch</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.partnerBranch else blank">
+                            {{role?.partnerBranch?.name | titlecase}}
+                        </span>
+
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="date">
                     <mat-header-cell *matHeaderCellDef>Date </mat-header-cell>
                     <mat-cell *matCellDef="let role">
@@ -72,9 +105,12 @@
                         <span *ngIf="role.updatedAt">
                             {{ role.updatedAt | date:'shortTime'}}
                         </span>
-
                     </mat-cell>
                 </ng-container>
+
+                <ng-template #blank>
+                    -
+                </ng-template>
 
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 
