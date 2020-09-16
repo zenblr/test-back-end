@@ -31,10 +31,7 @@
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
                         <div class="multiple" *ngFor="let item of packet?.masterLoan?.customerLoan">
-                            <!-- <span *ngIf="item.loanType === 'secured'">
-                                {{ item.loanUniqueId | uppercase }}
-                            </span> -->
-                            <div>{{ item.loanUniqueId }}</div>
+                            {{ item.loanUniqueId }}
                         </div>
                     </mat-cell>
                 </ng-container>

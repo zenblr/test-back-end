@@ -27,6 +27,7 @@ export class UpdateLocationComponent implements OnInit {
   partnerBranches: any[];
   deliveryLocations: any[];
   deliveryPartnerBranches: any[];
+  userTypeListFiltered = this.userTypeList
 
   constructor(
     public dialogRef: MatDialogRef<UpdateLocationComponent>,
@@ -120,7 +121,7 @@ export class UpdateLocationComponent implements OnInit {
 
     if (this.data.isOut) {
       this.packetLocationService.getpacketsTrackingDetails(1, -1, '').pipe(map(res => {
-        this.deliveryLocations = res.data.filter(e => e.id === 2 || e.id === 4)
+        this.deliveryLocations = res.data.filter(e => e.id === 4)
       })).subscribe()
     }
   }
@@ -441,5 +442,32 @@ export class UpdateLocationComponent implements OnInit {
 
   clearDeliveryInternalBranchData() {
     this.controls.deliveryInternalBranchId.reset()
+  }
+
+  setUserType() {
+    const packetLocationId = this.controls.packetLocationId.value
+    this.controls.receiverType.patchValue('')
+
+    switch (Number(packetLocationId)) {
+      case 2:
+        this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
+        break;
+
+      case 4:
+        if (this.data.isOut) {
+          this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
+        } else {
+          this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'PartnerUser')
+        }
+        break
+
+      case 3:
+        this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
+        break;
+
+      default:
+        this.userTypeListFiltered = this.userTypeList
+        break;
+    }
   }
 }

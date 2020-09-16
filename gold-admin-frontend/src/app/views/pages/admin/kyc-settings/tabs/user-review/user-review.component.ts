@@ -363,8 +363,12 @@ export class UserReviewComponent implements OnInit {
       this.ref.detectChanges();
     })
   }
+
   verifyPAN() {
-    this.isPanVerified = true;
+    if (this.reviewForm.controls.panCardNumber.invalid)
+      return this.reviewForm.controls.panCardNumber.markAsTouched()
+    if (this.reviewForm.controls.panType.value == 'pan' && this.reviewForm.controls.panCardNumber.valid)
+      this.isPanVerified = true;
   }
 
 
