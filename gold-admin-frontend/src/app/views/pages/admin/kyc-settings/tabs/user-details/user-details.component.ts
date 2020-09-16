@@ -30,6 +30,7 @@ export class UserDetailsComponent implements OnInit {
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   showVerifyPAN = false;
   organizationTypes: any;
+  maxDate = new Date()
 
   constructor(
     public fb: FormBuilder,
@@ -48,30 +49,32 @@ export class UserDetailsComponent implements OnInit {
     this.route.queryParamMap.subscribe(params => {
       // if (params) {
       const MOB = params.get("mob");
+      const moduleId = params.get("moduleId");
       if (MOB) {
         this.controls.mobileNumber.patchValue(MOB);
         this.sendOTP();
       }
 
-      // this.ref.detectChanges();
-      // }
-    })
-    this.controls.mobileNumber.valueChanges.subscribe(res => {
-      if (this.controls.mobileNumber.valid) {
-        this.sendOTP();
-        this.otpButton = false;
-      } else {
-        this.otpButton = true;
-        this.isMobileVerified = false;
-        this.otpSent = false;
-
-        Object.keys(this.controls).forEach(key => {
-          if (key != 'mobileNumber') {
-            this.userBasicForm.get(key).reset();
-          }
-        })
-
+      if (moduleId) {
+        this.controls.moduleId.patchValue(moduleId);
       }
+    })
+
+    this.controls.mobileNumber.valueChanges.subscribe(res => {
+      // if (this.controls.mobileNumber.valid) {
+      //   this.sendOTP();
+      //   this.otpButton = false;
+      // } else {
+      //   this.otpButton = true;
+      //   this.isMobileVerified = false;
+      //   this.otpSent = false;
+
+      //   Object.keys(this.controls).forEach(key => {
+      //     if (key != 'mobileNumber') {
+      //       this.userBasicForm.get(key).reset();
+      //     }
+      //   })
+      // }
     });
 
     this.controls.panCardNumber.valueChanges.subscribe(res => {
@@ -110,6 +113,23 @@ export class UserDetailsComponent implements OnInit {
     });
   }
 
+  inputNumber() {
+    if (this.controls.mobileNumber.valid) {
+      this.sendOTP();
+      this.otpButton = false;
+    } else {
+      this.otpButton = true;
+      this.isMobileVerified = false;
+      this.otpSent = false;
+
+      Object.keys(this.controls).forEach(key => {
+        if (key != 'mobileNumber') {
+          this.userBasicForm.get(key).reset();
+        }
+      })
+    }
+  }
+
   get controls() {
     if (this.userBasicForm) {
       return this.userBasicForm.controls
@@ -123,7 +143,7 @@ export class UserDetailsComponent implements OnInit {
       mobileNumber: [, [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
       otp: [, [, Validators.pattern('^[0-9]{4}$')]],
       referenceCode: [],
-      panType: ['', Validators.required],
+      panType: [, Validators.required],
       form60: [''],
       panImage: [, Validators.required],
       panImg: [],

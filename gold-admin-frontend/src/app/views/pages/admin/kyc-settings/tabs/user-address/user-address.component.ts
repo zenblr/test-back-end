@@ -36,7 +36,7 @@ export class UserAddressComponent implements OnInit {
   identityFileNameArray = [];
   addressFileNameArray1 = [];
   addressFileNameArray2 = [];
-  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456 }
+  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456, moduleId: 1 }
 
   constructor(
     private fb: FormBuilder,
@@ -65,6 +65,8 @@ export class UserAddressComponent implements OnInit {
       identityProofImg: [[]],
       identityProofFileName: [[], [Validators.required]],
       identityProofNumber: ['', [Validators.required, Validators.minLength(12)]],
+      moduleId: [this.customerDetails.moduleId],
+      userType: [this.customerDetails.userType],
       address: this.fb.array([
         this.fb.group({
           addressType: ['permanent'],
@@ -76,7 +78,7 @@ export class UserAddressComponent implements OnInit {
           pinCode: [this.customerDetails.pinCode, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
           addressProof: ['', [Validators.required]],
           addressProofImg: [],
-          addressProofFileName: [[], [Validators.required]]
+          addressProofFileName: [[], [Validators.required]],
         }),
         this.fb.group({
           addressType: ['residential'],
@@ -92,6 +94,22 @@ export class UserAddressComponent implements OnInit {
         })
       ])
     });
+
+    if (this.identityForm.controls.moduleId.value == 3) {
+      if (this.identityForm.controls.userType.value === 'Individual') {
+        this.addressControls.removeAt(1)
+      } else {
+        const controls = this.addressControls.at(1)
+        controls.get('addressType').patchValue('communication')
+      }
+
+      this.identityForm.controls.identityTypeId.disable()
+      this.identityForm.controls.identityProof.disable()
+      this.identityForm.controls.identityProofFileName.disable()
+      this.identityForm.controls.identityProofNumber.disable()
+
+    }
+
     this.identityForm.controls.identityTypeId.disable()
     this.getCities(0)
   }
@@ -213,8 +231,14 @@ export class UserAddressComponent implements OnInit {
       this.identityForm.markAllAsTouched()
       return
     }
-    this.addressControls.at(1).enable();
-    this.identityForm.controls.identityTypeId.enable()
+
+    if (this.addressControls.length > 1) {
+      this.addressControls.at(1).enable();
+    }
+
+    if (this.controls.moduleId.value == 1) {
+      this.identityForm.controls.identityTypeId.enable()
+    }
 
     this.addressControls.at(0)['controls'].addressProofNumber.enable()
 
@@ -227,8 +251,9 @@ export class UserAddressComponent implements OnInit {
         }
 
       }, finalize(() => {
-        this.identityForm.controls.identityTypeId.disable()
-
+        if (this.controls.moduleId.value == 1) {
+          this.identityForm.controls.identityTypeId.disable()
+        }
       })),
       catchError(err => {
         if (err.error.message)
@@ -356,6 +381,8 @@ export class UserAddressComponent implements OnInit {
 
   checkForAadhar(index) {
     // console.log(index)
+    if (this.identityForm.controls.moduleId.value == 3) return
+
     if (index === 0) {
       if (this.addressControls.at(0).value.addressProofTypeId == 2) {
         this.images.permanent = [];

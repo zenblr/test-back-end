@@ -10,12 +10,13 @@
 						</div>
 						<div class="col-8">
 							<select class="form-control" formControlName="userType"
-								(change)='changeUserType($event.target.value)'>
+								(change)='changeUserType($event.target.value)'
+								[class.isError]="controls.userType.invalid && controls.userType.touched">
 								<option value=null selected disabled>Select User Type</option>
 								<option value="Individual">Individual</option>
 								<option value="Corporate">Corporate</option>
 							</select>
-							<mat-error *ngIf="controls.userType.invalid && controls.userType.invalid">
+							<mat-error *ngIf="controls.userType.invalid && controls.userType.touched">
 								Field Required
 							</mat-error>
 						</div>
@@ -33,7 +34,7 @@
 								autocomplete="off" placeholder="Enter mobile number" margin [class.isError]="
 											controls.mobileNumber.touched &&
 											controls.mobileNumber.invalid
-										" />
+										" maxlength="10" (input)="inputNumber()" />
 							<mat-error *ngIf="
 											controls.mobileNumber.errors?.required &&
 											controls.mobileNumber.touched
@@ -145,7 +146,7 @@
 						</div>
 						<div class="col-8">
 							<select class="form-control" formControlName="panType" (change)='remove()'>
-								<option value='' selected disabled>Select</option>
+								<option value=null selected disabled>Select</option>
 								<option value="pan">PAN</option>
 								<option value="form60">FORM 60</option>
 							</select>
@@ -210,7 +211,7 @@
 							<div class="input-group mb-3">
 								<input type="text" class="form-control" placeholder="Select File"
 									aria-label="Recipient's username" aria-describedby="basic-addon2"
-									formControlName="form60"
+									formControlName="form60" readonly
 									[class.isError]="controls.form60.touched && controls.form60.invalid" />
 								<div class="input-group-append">
 									<span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
@@ -253,13 +254,14 @@
 								<label class="mandatory">Organization Type</label>
 							</div>
 							<div class="col-8">
-								<select class="form-control" formControlName="organizationTypeId">
-									<option value=null selected disabled>Select User Type</option>
-									<option [value]="item.name" *ngFor="let item of organizationTypes">
-										{{ item.name | titlecase }}</option>
+								<select class="form-control" formControlName="organizationTypeId"
+									[class.isError]="controls.organizationTypeId.invalid && controls.organizationTypeId.touched">
+									<option value=null selected disabled>Select Organization</option>
+									<option [value]="item.id" *ngFor="let item of organizationTypes">
+										{{ item.organizationType }}</option>
 								</select>
 								<mat-error
-									*ngIf="controls.organizationTypeId.invalid && controls.organizationTypeId.invalid">
+									*ngIf="controls.organizationTypeId.invalid && controls.organizationTypeId.touched">
 									Field Required
 								</mat-error>
 							</div>
@@ -271,12 +273,12 @@
 							</div>
 							<div class="col-8">
 								<input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-									formControlName="dateOfIncorporation"
+									formControlName="dateOfIncorporation" [max]="maxDate"
 									[class.isError]="controls.dateOfIncorporation.touched && controls.dateOfIncorporation.invalid"
 									readonly placeholder="DD/MM/YYYY">
 								<mat-datepicker #picker></mat-datepicker>
 								<mat-error
-									*ngIf="controls.dateOfIncorporation.invalid && controls.dateOfIncorporation.invalid">
+									*ngIf="controls.dateOfIncorporation.invalid && controls.dateOfIncorporation.touched">
 									Field Required
 								</mat-error>
 							</div>

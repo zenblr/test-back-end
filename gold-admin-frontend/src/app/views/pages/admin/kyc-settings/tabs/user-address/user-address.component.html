@@ -2,100 +2,103 @@
     <kt-portlet-body>
         <div class="min-height">
             <form [formGroup]="identityForm">
-                <div class="row">
-                    <div class="col-6 kt-margin-t-20">
-                        <div class="row">
-                            <div class="col-3 offset-1 p-0">
-                                <label class="mandatory  font-weight-500 text-color">Identity</label>
-                            </div>
-                            <div class="col-7">
-                                <select class="form-control" formControlName="identityTypeId" placeholder="Select Proof"
-                                    [class.isError]="controls.identityTypeId.invalid && controls.identityTypeId.touched">
-                                    <option value="" [disabled]="true"> Select Proof</option>
-                                    <option *ngFor="let proof of identityProofs" [selected]="selectAadhar()"
-                                        [value]="proof.id">
-                                        {{ proof.name | titlecase}}
-                                    </option>
-                                </select>
-                                <mat-error
-                                    *ngIf="controls.identityTypeId.errors?.required && controls.identityTypeId.touched">
-                                    Required field
-                                </mat-error>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-6 kt-margin-t-20">
-                        <div class="row">
-                            <div class="col-3 offset-1 p-0">
-                                <label class="mandatory font-weight-500 text-color">Aadhaar No.</label>
-                            </div>
-                            <div class="col-7">
-                                <input formControlName="identityProofNumber" type="text" aria-label="Pin Code"
-                                    placeholder="Aadhaar Number" class="form-control" numbersOnly maxlength="12"
-                                    [class.isError]="controls.identityProofNumber.touched && controls.identityProofNumber.invalid">
-                                <mat-error
-                                    *ngIf="controls.identityProofNumber.errors?.required && controls.identityProofNumber.touched">
-                                    Required field
-                                </mat-error>
-                                <mat-error
-                                    *ngIf="controls.identityProofNumber.errors?.minlength && controls.identityProofNumber.touched">
-                                    Invalid Input
-                                </mat-error>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-6 kt-margin-t-20">
-                        <div class="row">
-                            <div class="col-3 offset-1 p-0">
-                                <label class="mandatory  font-weight-500 text-color">Attach Aadhaar</label>
-                            </div>
-                            <div class="col-7">
-                                <div class="input-group mb-3">
-                                    <input type="text" class="form-control" formControlName="identityProofFileName"
-                                        placeholder="image.jpg" aria-label="Image" aria-describedby="basic-addon2"
-                                        readonly
-                                        [class.isError]="controls.identityProofFileName.invalid && controls.identityProofFileName.touched">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                                            (click)="identity.click()"
-                                            style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
-                                    </div>
-
+                <div *ngIf="identityForm.controls.moduleId.value == 1">
+                    <div class="row">
+                        <div class="col-6 kt-margin-t-20">
+                            <div class="row">
+                                <div class="col-3 offset-1 p-0">
+                                    <label class="mandatory  font-weight-500 text-color">Identity</label>
                                 </div>
-                                <label class="mandatory  file d-none">
-                                    <input type="file" accept="image/*,application/pdf" id="file"
-                                        aria-label="File browser example" #identity
-                                        (input)="getFileInfo($event,'identityProof')">
-                                    <span class="file-custom"></span>
-                                </label>
+                                <div class="col-7">
+                                    <select class="form-control" formControlName="identityTypeId"
+                                        placeholder="Select Proof"
+                                        [class.isError]="controls.identityTypeId.invalid && controls.identityTypeId.touched">
+                                        <option value="" [disabled]="true"> Select Proof</option>
+                                        <option *ngFor="let proof of identityProofs" [selected]="selectAadhar()"
+                                            [value]="proof.id">
+                                            {{ proof.name | titlecase}}
+                                        </option>
+                                    </select>
+                                    <mat-error
+                                        *ngIf="controls.identityTypeId.errors?.required && controls.identityTypeId.touched">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 kt-margin-t-20">
+                            <div class="row">
+                                <div class="col-3 offset-1 p-0">
+                                    <label class="mandatory font-weight-500 text-color">Aadhaar No.</label>
+                                </div>
+                                <div class="col-7">
+                                    <input formControlName="identityProofNumber" type="text" aria-label="Pin Code"
+                                        placeholder="Aadhaar Number" class="form-control" numbersOnly maxlength="12"
+                                        [class.isError]="controls.identityProofNumber.touched && controls.identityProofNumber.invalid">
+                                    <mat-error
+                                        *ngIf="controls.identityProofNumber.errors?.required && controls.identityProofNumber.touched">
+                                        Required field
+                                    </mat-error>
+                                    <mat-error
+                                        *ngIf="controls.identityProofNumber.errors?.minlength && controls.identityProofNumber.touched">
+                                        Invalid Input
+                                    </mat-error>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="row kt-margin-t-20 kt-margin-b-20">
-                    <div class="offset-2 col">
-                        <div *ngIf="images.identityProof.length==0" class="img-container">
-                            <img class="placeholder-image"
-                                src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder">
-                        </div>
-                        <div *ngIf="images.identityProof.length>0">
-                            <div class="row ">
-                                <div class="kt-margin-r-15" *ngFor="let img of images.identityProof, index as idx">
-                                    <div class="img-container">
-                                        <img class="border-rad-15 fetched-image" [src]="img" alt=""
-                                            (click)="preview(img, idx)" *ngIf="!isPdf(img)">
-                                        <div class="iframeWrapper" (click)="previewPdf(img)">
-                                            <iframe [src]="img | safe : 'resourceUrl'" height="250" width="290"
-                                                scrolling="no" *ngIf="isPdf(img)"></iframe>
+                    <div class="row">
+                        <div class="col-6 kt-margin-t-20">
+                            <div class="row">
+                                <div class="col-3 offset-1 p-0">
+                                    <label class="mandatory  font-weight-500 text-color">Attach Aadhaar</label>
+                                </div>
+                                <div class="col-7">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" formControlName="identityProofFileName"
+                                            placeholder="image.jpg" aria-label="Image" aria-describedby="basic-addon2"
+                                            readonly
+                                            [class.isError]="controls.identityProofFileName.invalid && controls.identityProofFileName.touched">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                                (click)="identity.click()"
+                                                style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                         </div>
-                                        <img src="../../../../../assets/media/icons/cancel.svg" alt=""
-                                            class="kt-pointer remove-icon"
-                                            (click)="removeImages(idx, 'identityProof');">
+
+                                    </div>
+                                    <label class="mandatory  file d-none">
+                                        <input type="file" accept="image/*,application/pdf" id="file"
+                                            aria-label="File browser example" #identity
+                                            (input)="getFileInfo($event,'identityProof')">
+                                        <span class="file-custom"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row kt-margin-t-20 kt-margin-b-20">
+                        <div class="offset-2 col">
+                            <div *ngIf="images.identityProof.length==0" class="img-container">
+                                <img class="placeholder-image"
+                                    src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder">
+                            </div>
+                            <div *ngIf="images.identityProof.length>0">
+                                <div class="row ">
+                                    <div class="kt-margin-r-15" *ngFor="let img of images.identityProof, index as idx">
+                                        <div class="img-container">
+                                            <img class="border-rad-15 fetched-image" [src]="img" alt=""
+                                                (click)="preview(img, idx)" *ngIf="!isPdf(img)">
+                                            <div class="iframeWrapper" (click)="previewPdf(img)">
+                                                <iframe [src]="img | safe : 'resourceUrl'" height="250" width="290"
+                                                    scrolling="no" *ngIf="isPdf(img)"></iframe>
+                                            </div>
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                class="kt-pointer remove-icon"
+                                                (click)="removeImages(idx, 'identityProof');">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -103,7 +106,7 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div *ngIf="identityForm.controls.userType.value !== 'Individual'" class="row">
                     <div class="offset-6">
                         <!-- <div class="">
                             <label class="custom-checkbox ">
@@ -118,8 +121,14 @@
                         <div class="row">
                             <div class="offset-1 col">
                                 <label class="custom-checkbox ">
-                                    <span class="label-checkbox">Current Residential Address same as Permanent
-                                        Address</span>
+                                    <span *ngIf="identityForm.controls.moduleId.value == 1" class="label-checkbox">
+                                        Current Residential Address same as Permanent Address
+                                    </span>
+                                    <span
+                                        *ngIf="identityForm.controls.moduleId.value != 1 && identityForm.controls.userType.value === 'Corporate'"
+                                        class="label-checkbox">
+                                        Current Communication Address same as Permanent Address
+                                    </span>
                                     <input type="checkbox" class="" (change)="sameAddress($event.target.checked)">
                                     <span class="checkmark top-0"></span>
                                 </label>
@@ -137,10 +146,15 @@
                             <div class=" kt-margin-t-20">
                                 <div class="row">
                                     <div class="col-3 offset-1 p-0">
-                                        <label class="mandatory  font-weight-500 text-color" *ngIf="i == 1">Current
-                                            Residential Address</label>
-                                        <label class="mandatory  font-weight-500 text-color" *ngIf="i == 0"> Permanent
-                                            Address</label>
+                                        <label class="mandatory  font-weight-500 text-color" *ngIf="i == 1">
+                                            <span *ngIf="identityForm.controls.userType.value !== 'Corporate'">Current
+                                                Residential Address</span>
+                                            <span
+                                                *ngIf="identityForm.controls.userType.value === 'Corporate'">Communication
+                                                Address</span>
+                                        </label>
+                                        <label class="mandatory  font-weight-500 text-color" *ngIf="i == 0">
+                                            Permanent Address</label>
                                     </div>
                                     <div class="col-7">
                                         <textarea formControlName="address" type="text" rows="5"
@@ -310,9 +324,10 @@
                                                         formControlName="addressProofFileName">
                                                     <div class="input-group-append">
                                                         <span class="input-group-text bg kt-pointer font-weight"
-                                                            [class.cursor-not-allowed]="addressForm.controls.addressProofTypeId.value == 2"
+                                                            [class.cursor-not-allowed]="identityForm.controls.moduleId.value == 1 && addressForm.controls.addressProofTypeId.value == 2"
                                                             id="basic-addon2"
-                                                            (click)="addressForm.controls.addressProofTypeId.value != 2 && permanent.click()"
+                                                            (click)="(identityForm.controls.moduleId.value == 1 && addressForm.controls.addressProofTypeId.value != 2 && permanent.click()) || 
+                                                            (identityForm.controls.moduleId.value == 3 && permanent.click())"
                                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                                     </div>
                                                 </div>
