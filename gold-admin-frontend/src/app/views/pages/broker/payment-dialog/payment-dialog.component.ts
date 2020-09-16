@@ -17,7 +17,8 @@ export class PaymentDialogComponent implements OnInit {
   branches = [];
   details: any;
   file: any;
-  minDate: Date;
+  minDate = new Date()
+  maxDate = new Date()
   // currentDate = new Date();
 
   constructor(
@@ -27,26 +28,28 @@ export class PaymentDialogComponent implements OnInit {
     private toastr: ToastrService,
     private checkoutCustomerService: CheckoutCustomerService,
     private shopService: ShopService,
-  ) { }
+  ) {
+    this.minDate.setDate(this.minDate.getDate() - 1);
+  }
 
   ngOnInit() {
     this.initForm();
     this.title = 'Payment Mode';
     if (this.data.paymentData) {
       this.paymentForm.patchValue(this.data.paymentData)
-      
-      if(this.data.paymentData.amount){
+
+      if (this.data.paymentData.amount) {
         this.paymentForm.controls['transactionAmount'].patchValue(this.data.paymentData.amount)
       }
-      if(this.data.paymentData.totalInitialAmount){
+      if (this.data.paymentData.totalInitialAmount) {
         this.paymentForm.controls['transactionAmount'].patchValue(this.data.paymentData.totalInitialAmount)
       }
       this.setValidation(this.paymentForm.controls.paymentMode.value)
     }
-    if(this.data.orderId) {
+    if (this.data.orderId) {
       this.paymentForm.controls['orderId'].patchValue(this.data.orderId)
     }
-    if(this.data.paymentMode) {
+    if (this.data.paymentMode) {
       this.paymentForm.controls['paymentMode'].patchValue(this.data.paymentMode)
     }
     console.log(this.data.paymentData);
@@ -65,7 +68,7 @@ export class PaymentDialogComponent implements OnInit {
       blockId: [],
       orderId: [],
       totalInitialAmount: [],
-      transactionAmount: []  
+      transactionAmount: []
     })
     this.paymentForm.valueChanges.subscribe(val => console.log(val))
   }
@@ -108,20 +111,20 @@ export class PaymentDialogComponent implements OnInit {
       default:
         break;
     }
-    if(this.data.isEMI){
+    if (this.data.isEMI) {
       this.paymentForm.controls.transactionAmount.setValidators(Validators.required),
-      this.paymentForm.controls.transactionAmount.updateValueAndValidity()
+        this.paymentForm.controls.transactionAmount.updateValueAndValidity()
       this.paymentForm.controls.orderId.setValidators(Validators.required),
-      this.paymentForm.controls.orderId.updateValueAndValidity()
-     
+        this.paymentForm.controls.orderId.updateValueAndValidity()
+
     }
-    else{
+    else {
       this.paymentForm.controls.totalInitialAmount.setValidators(Validators.required),
-      this.paymentForm.controls.totalInitialAmount.updateValueAndValidity()
+        this.paymentForm.controls.totalInitialAmount.updateValueAndValidity()
       this.paymentForm.controls.customerId.setValidators(Validators.required),
-      this.paymentForm.controls.customerId.updateValueAndValidity()
+        this.paymentForm.controls.customerId.updateValueAndValidity()
       this.paymentForm.controls.blockId.setValidators(Validators.required),
-      this.paymentForm.controls.blockId.updateValueAndValidity()
+        this.paymentForm.controls.blockId.updateValueAndValidity()
     }
   }
 
@@ -140,9 +143,17 @@ export class PaymentDialogComponent implements OnInit {
 
   submit() {
     if (this.paymentForm.invalid) {
-     console.log(this.paymentForm.invalid)
+      console.log(this.paymentForm.invalid)
       return this.paymentForm.markAllAsTouched();
     }
+    // const depositDateTimeDiff = this.controls.depositDate.value
+    // if (depositDateTimeDiff) {
+    //   let depositDate = new Date(depositDateTimeDiff.getTime() - depositDateTimeDiff.getTimezoneOffset() * 60000).toISOString()
+    //   this.paymentForm.patchValue({
+    //     depositDate: depositDate
+    //   })
+    // }
+
     if (this.data.isEMI) {
       console.log(this.paymentForm.value)
       this.shopService.payEMI(this.paymentForm.value).subscribe(res => {
@@ -152,11 +163,11 @@ export class PaymentDialogComponent implements OnInit {
       });
     }
     else {
-          this.checkoutCustomerService.placeOrder(this.paymentForm.value).subscribe(res => {
-            if (res) {
-              this.dialogRef.close(true);
-            }
-          });
+      this.checkoutCustomerService.placeOrder(this.paymentForm.value).subscribe(res => {
+        if (res) {
+          this.dialogRef.close(true);
         }
-      }
+      });
+    }
+  }
 }
