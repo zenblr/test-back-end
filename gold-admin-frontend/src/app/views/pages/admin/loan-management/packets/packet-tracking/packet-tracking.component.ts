@@ -123,16 +123,29 @@ export class PacketTrackingComponent implements OnInit {
 
   updatePacket(packet) {
     // console.log(packet)
-    const dialogRef = this.dialog.open(UpdateLocationComponent,
-      {
-        data: { packetData: packet.loanPacketDetails[0].packets, action: 'edit', isOut: true },
-        width: '450px'
+    if (packet.loanStageId === 11) {
+      const dialogRef = this.dialog.open(UpdateLocationComponent,
+        {
+          data: { packetData: packet.loanPacketDetails[0].packets, action: 'edit', stage: packet.loanStageId },
+          width: '450px'
+        });
+      dialogRef.afterClosed().subscribe(res => {
+        if (res) {
+          this.loadPackets();
+        }
       });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        this.loadPackets();
-      }
-    });
+    } else {
+      const dialogRef = this.dialog.open(UpdateLocationComponent,
+        {
+          data: { packetData: packet.loanPacketDetails[0].packets, action: 'edit', isOut: true },
+          width: '450px'
+        });
+      dialogRef.afterClosed().subscribe(res => {
+        if (res) {
+          this.loadPackets();
+        }
+      });
+    }
   }
 
   viewPacketLog(packet) {

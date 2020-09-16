@@ -11,7 +11,7 @@
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="packetLocationId"
-                                    (change)="getPartnerBranch()"
+                                    (change)="getPartnerBranch(); setUserType()"
                                     [class.isError]="locationForm.controls.packetLocationId.invalid &&  locationForm.controls.packetLocationId.touched">
                                     <option selected disabled value=null>Select Location</option>
                                     <option [value]="item.id" *ngFor="let item of packetLocations">
@@ -167,7 +167,8 @@
                                 <select class="form-control" formControlName="receiverType" (change)="remove()"
                                     [class.isError]="locationForm.controls.receiverType.invalid &&  locationForm.controls.receiverType.touched">
                                     <option value="" disabled selected>Select User Type</option>
-                                    <option [value]="item.value" *ngFor="let item of userTypeList">{{ item.name }}
+                                    <option [value]="item.value" *ngFor="let item of userTypeListFiltered">
+                                        {{ item.name }}
                                     </option>
                                 </select>
                                 <mat-error

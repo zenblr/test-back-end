@@ -33,8 +33,8 @@
                 <ng-container matColumnDef="location">
                     <mat-header-cell *matHeaderCellDef>Location</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span *ngFor="let sender of role.senderData">
-                            {{sender.location | titlecase}}
+                        <span *ngIf="role.packetLocation">
+                            {{role?.packetLocation?.location | titlecase}}
                         </span>
 
                     </mat-cell>
@@ -60,8 +60,8 @@
                 <ng-container matColumnDef="date">
                     <mat-header-cell *matHeaderCellDef>Date </mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span *ngFor="let sender of role.senderData">
-                            {{sender.dateAndTime | date:'mediumDate'}}
+                        <span *ngIf="role.updatedAt">
+                            {{role.updatedAt | date:'mediumDate'}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -69,10 +69,10 @@
                 <ng-container matColumnDef="time">
                     <mat-header-cell *matHeaderCellDef>Time</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span *ngFor="let sender of role.senderData">
-                            {{ sender.dateAndTime | date:'shortTime'}}
+                        <span *ngIf="role.updatedAt">
+                            {{ role.updatedAt | date:'shortTime'}}
                         </span>
-                        
+
                     </mat-cell>
                 </ng-container>
 
