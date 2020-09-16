@@ -108,8 +108,8 @@ export class ViewPayComponent implements OnInit {
               paymentData: res,
               isEMI: true,
               orderId: this.orderId,
-              paymentMode: this.paymentForm.controls.paymentMode.value
-
+              paymentMode: this.paymentForm.controls.paymentMode.value,
+              createdAt: this.orderData.createdAt
             },
             width: '70vw'
           });

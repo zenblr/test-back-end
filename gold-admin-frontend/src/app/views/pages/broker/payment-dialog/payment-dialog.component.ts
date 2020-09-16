@@ -29,7 +29,10 @@ export class PaymentDialogComponent implements OnInit {
     private checkoutCustomerService: CheckoutCustomerService,
     private shopService: ShopService,
   ) {
-    this.minDate.setDate(this.minDate.getDate() - 1);
+    // this.minDate.setDate(this.minDate.getDate() - 1);
+    if (this.data.isEMI) {
+      this.minDate = this.data.createdAt
+    }
   }
 
   ngOnInit() {

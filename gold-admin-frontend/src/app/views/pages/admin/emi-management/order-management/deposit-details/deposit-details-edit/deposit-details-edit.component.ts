@@ -35,7 +35,7 @@ export class DepositDetailsEditComponent implements OnInit {
 		private toast: ToastrService,
 		private router: Router
 	) {
-		this.minDate.setDate(this.minDate.getDate() - 1);
+		// this.minDate.setDate(this.minDate.getDate() - 1);
 	}
 
 	ngOnInit() {
@@ -43,6 +43,7 @@ export class DepositDetailsEditComponent implements OnInit {
 		this.title = 'Update Deposit Status';
 		if (this.data.depositDetailsData) {
 			this.depositInfo = this.data.depositDetailsData;
+			this.minDate = this.depositInfo.order.createdAt
 			this.editDeposit();
 			this.getTransactionStatus();
 		}
