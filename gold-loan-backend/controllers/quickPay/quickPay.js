@@ -224,12 +224,12 @@ exports.confirmationForPayment = async (req, res, next) => {
                 //         await models.customerLoanInterest.update({ interestRate: element.interestRate }, { where: { id: element.id }, transaction: t })
                 //     }
                 // }
-                if(currentSlabRate){
+                if (currentSlabRate) {
                     await models.customerLoan.update({ currentSlab: currentSlabRate, currentInterestRate: securedInterest }, { where: { id: loan.customerLoan[0].id }, transaction: t })
 
-                if (loan.customerLoan.length > 1) {
-                    await models.customerLoan.update({ currentSlab: currentSlabRate, currentInterestRate: unsecuredInterest }, { where: { id: loan.customerLoan[1].id }, transaction: t })
-                }
+                    if (loan.customerLoan.length > 1) {
+                        await models.customerLoan.update({ currentSlab: currentSlabRate, currentInterestRate: unsecuredInterest }, { where: { id: loan.customerLoan[1].id }, transaction: t })
+                    }
                 }
             }
 
@@ -263,15 +263,77 @@ exports.confirmationForPayment = async (req, res, next) => {
             }
 
 
-            let amount = await getCustomerInterestAmount(masterLoanId);
+            // let amount = await getCustomerInterestAmount(masterLoanId);
 
-            let newLoan = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
+            let loanDataNew = await models.customerLoanMaster.findOne({
+                where: { id: masterLoanId },
+                include: [{
+                    model: models.customerLoan,
+                    as: 'customerLoan',
+                    attributes: ['id', 'loanType'],
+                    where: { isActive: true }
+                }]
+            });
+            let loan = {}
+            await loanDataNew.customerLoan.map((data) => {
+                if (data.loanType == "secured") {
+                    loan.secured = data.id;
+                } else {
+                    loan.unsecured = data.id
+                }
+            });
+            let amount = {};
+            if (loan.secured) {
+                let totalAmount = {
+                    interest: 0,
+                    penalInterest: 0
+                }
+                let interest = await models.customerLoanInterest.findAll({ where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.secured }, transaction: t });
+                let interestAmount = await interest.map((data) => Number(data.interestAccrual));
+                let penalInterest = await interest.map((data) => Number(data.penalOutstanding));
+                totalAmount.interest = Number((_.sum(interestAmount)).toFixed(2));
+                totalAmount.penalInterest = Number((_.sum(penalInterest)).toFixed(2));
+                amount.secured = totalAmount
+            }
+            if (loan.unsecured) {
+                let totalAmount = {
+                    interest: 0,
+                    penalInterest: 0
+                }
+                let interest = await models.customerLoanInterest.findAll({ where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.unsecured }, transaction: t });
+                let interestAmount = await interest.map((data) => Number(data.interestAccrual));
+                let penalInterest = await interest.map((data) => Number(data.penalOutstanding));
+                totalAmount.interest = Number((_.sum(interestAmount)).toFixed(2));
+                totalAmount.penalInterest = Number((_.sum(penalInterest)).toFixed(2));
 
-            let { penalInterest } = await payableAmountForLoan(amount, newLoan.loan)
+                amount.unsecured = totalAmount
+            }
+
+            //new loan
+            let newLoan = await models.customerLoanMaster.findOne({
+                where: { isActive: true, id: masterLoanId }, transaction: t,
+                order: [
+                    [models.customerLoan, 'id', 'asc']
+                ],
+                include: [{
+                    model: models.customerLoan,
+                    as: 'customerLoan',
+                    where: { isActive: true },
+                    include: [
+                        {
+                            model: models.scheme,
+                            as: 'scheme',
+                            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                        }
+                    ]
+                }]
+            });
+
+            let { penalInterest } = await payableAmountForLoan(amount, newLoan)
             let splitUpAmount = depositAmount - penalInterest
             let penalInterestRatio;
             if (splitUpAmount <= 0) {
-                penalInterestRatio = await getAmountLoanSplitUpData(newLoan.loan, amount, depositAmount)
+                penalInterestRatio = await getAmountLoanSplitUpData(newLoan, amount, depositAmount)
                 splitUpAmount = 0
             }
 
