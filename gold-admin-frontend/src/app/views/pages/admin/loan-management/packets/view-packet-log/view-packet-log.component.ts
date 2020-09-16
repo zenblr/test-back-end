@@ -15,7 +15,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 })
 export class ViewPacketLogComponent implements OnInit {
   dataSource: PacketTrackingDatasource;
-  displayedColumns = ['location', 'updatedBy', 'handover', 'internalBranch', 'partner', 'partnerBranch', 'date', 'time'];
+  displayedColumns = ['location', 'updatedBy', 'handover', 'internalBranch', 'partner', 'partnerBranch', 'date', 'time', 'timeTaken'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
