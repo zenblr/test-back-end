@@ -1163,11 +1163,11 @@ let getSingleDayInterestAmount = async (loan) => {
             let noOfDays = dueDate.diff(startDate, 'days')
             let months = Math.ceil(noOfDays / 30)
             let securedMonthInterest = (securedPerDayInterestAmount * (months * 30))
-            if(securedMonthInterest > Number(paidAmount)){
-            securedTotalInterest = securedMonthInterest - paidAmount;
+            if (securedMonthInterest > Number(paidAmount)) {
+                securedTotalInterest = securedMonthInterest - paidAmount;
             }
-            else{
-            securedTotalInterest =  paidAmount - securedMonthInterest;
+            else {
+                securedTotalInterest = paidAmount - securedMonthInterest;
 
             }
             securedTotalInterest = securedTotalInterest.toFixed(2)
@@ -1210,11 +1210,11 @@ let getSingleDayInterestAmount = async (loan) => {
                 let noOfDays = dueDate.diff(startDate, 'days')
                 let months = Math.ceil(noOfDays / 30)
                 let monthsViseInterest = (unsecuredPerDayInterestAmount * (months * 30))
-                
-                if(monthsViseInterest > Number(unsecuredPaidAmount)){
-                unsecuredTotalInterest = monthsViseInterest - unsecuredPaidAmount
-                }else{
-                unsecuredTotalInterest = unsecuredPaidAmount - monthsViseInterest 
+
+                if (monthsViseInterest > Number(unsecuredPaidAmount)) {
+                    unsecuredTotalInterest = monthsViseInterest - unsecuredPaidAmount
+                } else {
+                    unsecuredTotalInterest = unsecuredPaidAmount - monthsViseInterest
 
                 }
                 unsecuredTotalInterest = unsecuredTotalInterest.toFixed(2)
@@ -1518,9 +1518,9 @@ let penalInterestCalculationForSelectedLoanWithOutT = async (date, masterLaonId)
             const currentDate = moment(date);
             let daysCount = currentDate.diff(dueDate, 'days');
             let daysCount2 = nextDueDate.diff(dueDate, 'days');
-           if (daysCount < Number(gracePeriodDays)) {
+            if (daysCount < Number(gracePeriodDays)) {
                 break
-            } 
+            }
             if (daysCount < Number(selectedSlab)) {
                 daysCount2 = currentDate.diff(dueDate, 'days');
             }
@@ -1779,7 +1779,7 @@ let intrestCalculationForSelectedLoanWithOutT = async (date, masterLoanId, secur
             ////////////////////////////////////////////////
         }
     });
-    return { noOfDays, transactionData, interestDataObject };
+    return { noOfDays, transactionData, interestDataObject, customerLoanData };
 
 }
 
