@@ -263,8 +263,6 @@ exports.confirmationForPayment = async (req, res, next) => {
             }
 
 
-            // let amount = await getCustomerInterestAmount(masterLoanId);
-
             let loanDataNew = await models.customerLoanMaster.findOne({
                 where: { id: masterLoanId },
                 include: [{
@@ -311,7 +309,8 @@ exports.confirmationForPayment = async (req, res, next) => {
 
             //new loan
             let newLoan = await models.customerLoanMaster.findOne({
-                where: { isActive: true, id: masterLoanId }, transaction: t,
+                where: { isActive: true, id: masterLoanId },
+                transaction: t,
                 order: [
                     [models.customerLoan, 'id', 'asc']
                 ],
