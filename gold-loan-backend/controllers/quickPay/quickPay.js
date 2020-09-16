@@ -211,7 +211,7 @@ exports.confirmationForPayment = async (req, res, next) => {
         // let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(transactionId);
 
         let quickPayData = await sequelize.transaction(async (t) => {
-            let loanIds = loan.customerLoan.map(ele => ele.id)
+            // let loanIds = loan.customerLoan.map(ele => ele.id)
             if (receivedDate != todaysDate) {
                 var a = moment(receivedDate);
                 var b = moment(todaysDate);
@@ -272,33 +272,33 @@ exports.confirmationForPayment = async (req, res, next) => {
                     where: { isActive: true }
                 }]
             });
-            let loan = {}
+            let dataLoan = {}
             await loanDataNew.customerLoan.map((data) => {
                 if (data.loanType == "secured") {
-                    loan.secured = data.id;
+                    dataLoan.secured = data.id;
                 } else {
-                    loan.unsecured = data.id
+                    dataLoan.unsecured = data.id
                 }
             });
             let amount = {};
-            if (loan.secured) {
+            if (dataLoan.secured) {
                 let totalAmount = {
                     interest: 0,
                     penalInterest: 0
                 }
-                let interest = await models.customerLoanInterest.findAll({ where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.secured }, transaction: t });
+                let interest = await models.customerLoanInterest.findAll({ where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: dataLoan.secured }, transaction: t });
                 let interestAmount = await interest.map((data) => Number(data.interestAccrual));
                 let penalInterest = await interest.map((data) => Number(data.penalOutstanding));
                 totalAmount.interest = Number((_.sum(interestAmount)).toFixed(2));
                 totalAmount.penalInterest = Number((_.sum(penalInterest)).toFixed(2));
                 amount.secured = totalAmount
             }
-            if (loan.unsecured) {
+            if (dataLoan.unsecured) {
                 let totalAmount = {
                     interest: 0,
                     penalInterest: 0
                 }
-                let interest = await models.customerLoanInterest.findAll({ where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.unsecured }, transaction: t });
+                let interest = await models.customerLoanInterest.findAll({ where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: dataLoan.unsecured }, transaction: t });
                 let interestAmount = await interest.map((data) => Number(data.interestAccrual));
                 let penalInterest = await interest.map((data) => Number(data.penalOutstanding));
                 totalAmount.interest = Number((_.sum(interestAmount)).toFixed(2));
@@ -337,7 +337,7 @@ exports.confirmationForPayment = async (req, res, next) => {
             }
 
 
-            let data = await getAmountLoanSplitUpData(loan, amount, splitUpAmount);
+            let data = await getAmountLoanSplitUpData(newLoan, amount, splitUpAmount);
             let { isUnsecuredSchemeApplied, securedRatio, unsecuredRatio, securedLoanId, unsecuredLoanId } = data
 
             let securedPenalInterest = 0;
