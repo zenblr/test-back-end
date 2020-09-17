@@ -272,6 +272,11 @@ exports.getAssignedCustomer = async (req, res, next) => {
                     as: 'customerLoanDocument',
                     attributes: { exclude: ['createdAt', 'modifiedBy', 'createdAt', 'updatedAt', 'isActive'] },
 
+                },
+                {
+                    model: models.loanStage,
+                    as: 'loanStage',
+                    attributes: ['id', 'name']
                 }
             ]
         }

@@ -54,6 +54,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'packet_status'
         },
+        processingTime: {
+            type: DataTypes.STRING,
+            field: 'processing_time',
+        },
         isDelivered: {
             type: DataTypes.BOOLEAN,
             field: 'is_delivered',

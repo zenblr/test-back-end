@@ -493,7 +493,7 @@ exports.getPartReleaseList = async (req, res, next) => {
         req.query.from,
         req.query.to
     );
-   
+
     let query = {};
     const searchQuery = {
         [Op.and]: [query, {
@@ -526,15 +526,15 @@ exports.getPartReleaseList = async (req, res, next) => {
         }],
         isActive: true
     }
-     //
-     let internalBranchId = req.userData.internalBranchId;
-     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-         searchQuery["$masterLoan.customer.internal_branch_id$"]=internalBranchId;
-         searchQuery["$masterLoan.customer.is_active$"]=true 
-     } else {
-         searchQuery["$masterLoan.customer.is_active$"]=true 
-     }
-     //
+    //
+    let internalBranchId = req.userData.internalBranchId;
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
+        searchQuery["$masterLoan.customer.internal_branch_id$"] = internalBranchId;
+        searchQuery["$masterLoan.customer.is_active$"] = true
+    } else {
+        searchQuery["$masterLoan.customer.is_active$"] = true
+    }
+    //
     let includeArray = [{
         model: models.customerLoanTransaction,
         as: 'transaction'
@@ -546,7 +546,7 @@ exports.getPartReleaseList = async (req, res, next) => {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber','internalBranchId']
+                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'internalBranchId']
             },
             {
                 model: models.customerLoan,
@@ -905,7 +905,7 @@ exports.updatePartReleaseStatus = async (req, res, next) => {
             } else if (partReleaseStatus == "released") {
                 await sequelize.transaction(async t => {
                     await models.partRelease.update({ partReleaseStatus, modifiedBy, releaseDate }, { where: { id: partReleaseId }, transaction: t });
-                    await models.customerLoanMaster.update({ isOrnamentsReleased: true,isFullOrnamentsReleased: true, modifiedBy }, { where: { id: partReleaseData.masterLoanId }, transaction: t });
+                    await models.customerLoanMaster.update({ isOrnamentsReleased: true, isFullOrnamentsReleased: true, modifiedBy }, { where: { id: partReleaseData.masterLoanId }, transaction: t });
                     await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_STATUS_R, createdBy, modifiedBy }, { transaction: t });
                 });
                 return res.status(200).json({ message: "success" });
@@ -978,7 +978,7 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
             as: 'appraiserData',
             subQuery: false,
             where: appriserSearch,
-            attributes: ['appraiserId']
+            attributes: ['appraiserId', 'appoinmentDate', 'startTime', 'endTime']
         }]
     });
     if (!partReleaseData) {
@@ -1039,6 +1039,20 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
         let oldLoanData = await getOldLoanData(customerLoan.id)
         // update data
         let loanData = await sequelize.transaction(async t => {
+
+            let moduleId = await models.module.findOne({ where: { moduleName: 'gold loan' } })
+
+            let appraiserRequestId = await models.appraiserRequest.create({
+                customerId: oldLoanData.masterLoan.customerId,
+                moduleId: moduleId.id,
+                appraiserId: partReleaseData.appraiserData.appraiserId,
+                status: 'complete',
+                isAssigned: true,
+                appoinmentDate: partReleaseData.appraiserData.appoinmentDate,
+                startTime: partReleaseData.appraiserData.startTime,
+                endTime: partReleaseData.appraiserData.endTime,
+            })
+
             let loanData = {
                 customerId: oldLoanData.masterLoan.customerId,
                 loanStageId: stageId.id,
@@ -1047,7 +1061,8 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                 createdBy: createdBy,
                 modifiedBy: modifiedBy,
                 isNewLoanFromPartRelease: true,
-                parentLoanId: partReleaseData.masterLoanId
+                parentLoanId: partReleaseData.masterLoanId,
+                appraiserRequestId: appraiserRequestId.id
             }
             let masterLoan = await models.customerLoanMaster.create(loanData, { transaction: t });
             let loan = await models.customerLoan.create({ customerId: oldLoanData.masterLoan.customerId, masterLoanId: masterLoan.id, loanType: 'secured', createdBy, modifiedBy }, { transaction: t })
@@ -1300,10 +1315,10 @@ exports.getFullReleaseList = async (req, res, next) => {
     //
     let internalBranchId = req.userData.internalBranchId;
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-        searchQuery["$masterLoan.customer.internal_branch_id$"]=internalBranchId;
-        searchQuery["$masterLoan.customer.is_active$"]=true 
+        searchQuery["$masterLoan.customer.internal_branch_id$"] = internalBranchId;
+        searchQuery["$masterLoan.customer.is_active$"] = true
     } else {
-        searchQuery["$masterLoan.customer.is_active$"]=true 
+        searchQuery["$masterLoan.customer.is_active$"] = true
     }
     //
     let includeArray = [{
