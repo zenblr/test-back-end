@@ -83,7 +83,7 @@ export class AddKaratDetailsComponent implements OnInit {
       const id = this.controls.id.value;
       this.karatDetailsService.updateKaratDetails(id, karatData).subscribe(res => {
         if (res) {
-          const msg = ' Karat Details Updated SuccessFully'
+          const msg = ' Karat Details Updated Successfully'
           this.toast.success(msg);
           this.dialogRef.close(true);
 
