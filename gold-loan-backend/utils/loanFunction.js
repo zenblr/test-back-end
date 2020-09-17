@@ -56,7 +56,10 @@ let payableAmountForLoan = async (amount, loan) => {
         unsecuredPenalInterest = Number(amount.unsecured.penalInterest)
     }
     let data = {}
-    data.outstandingAmount = loan.outstandingAmount
+    data.securedOutstandingAmount = loan.customerLoan[0].outstandingAmount
+    if(loan.customerLoan.length > 1){
+        data.unsecuredOutstandingAmount = loan.customerLoan[1].outstandingAmount
+    }
     data.securedPenalInterest = securedPenalInterest
     data.unsecuredPenalInterest = unsecuredPenalInterest
     data.securedInterest = Number((securedInterest).toFixed(2))
