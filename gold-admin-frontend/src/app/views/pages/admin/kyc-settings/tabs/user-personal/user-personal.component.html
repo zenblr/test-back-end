@@ -2,7 +2,8 @@
     <kt-portlet-body>
         <div class="container">
             <form action="" [formGroup]="personalForm">
-                <div class="row justify-content-center kt-margin-t-30">
+                <div *ngIf="controls.userType.value === 'Individual' || controls.userType.value === ''"
+                    class="row justify-content-center kt-margin-t-30">
                     <div class="col-12">
                         <div class="row">
                             <div class="col-6">
@@ -247,6 +248,162 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div *ngIf="controls.userType.value === 'Corporate'" class="kt-margin-t-30">
+                    <div class="row  kt-margin-t-20">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-3 offset-1 form-label">
+                                    <label class="mandatory">Email</label>
+                                </div>
+                                <div class="col-7">
+                                    <input type="text" class="form-control" formControlName="email"
+                                        placeholder="abc@gmail.com"
+                                        [class.isError]="controls.email.touched && controls.email.invalid">
+                                    <mat-error *ngIf="controls.email.errors?.required && controls.email.touched">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-3 offset-1 form-label">
+                                    <label>Alternate Email ID</label>
+                                </div>
+                                <div class="col-7">
+                                    <input type="text" class="form-control" formControlName="alternateEmail"
+                                        placeholder="abc@gmail.com"
+                                        [class.isError]="controls.alternateEmail.touched && controls.alternateEmail.invalid">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row  kt-margin-t-20">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-3 offset-1 form-label">
+                                    <label>Landline Number</label>
+                                </div>
+                                <div class="col-7">
+                                    <input type="text" class="form-control" formControlName="landLineNumber"
+                                        [class.isError]="controls.landLineNumber.touched && controls.landLineNumber.invalid">
+                                    <mat-error
+                                        *ngIf="controls.landLineNumber.errors?.required && controls.landLineNumber.touched">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-3 offset-1 form-label">
+                                    <label class="mandatory">GSTIN Number</label>
+                                </div>
+                                <div class="col-7">
+                                    <input type="text" class="form-control" formControlName="gstinNumber"
+                                        [class.isError]="controls.gstinNumber.touched && controls.gstinNumber.invalid">
+                                    <mat-error
+                                        *ngIf="controls.gstinNumber.errors?.required && controls.gstinNumber.touched">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row  kt-margin-t-20">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-3 offset-1 form-label">
+                                    <label>Cin Number</label>
+                                </div>
+                                <div class="col-7">
+                                    <input type="text" class="form-control" formControlName="cinNumber"
+                                        placeholder="abc@gmail.com"
+                                        [class.isError]="controls.cinNumber.touched && controls.cinNumber.invalid">
+                                    <mat-error
+                                        *ngIf="controls.cinNumber.errors?.required && controls.cinNumber.touched">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6"></div>
+                    </div>
+
+                    <div class="row kt-margin-t-20">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-3 offset-1 form-label">
+                                    <label class="">Partnership / Constitutions Deed, MOA</label>
+                                </div>
+                                <div class="col-7">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Select File"
+                                            aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
+                                            formControlName="constitutionsDeedFileName"
+                                            [class.isError]="controls.constitutionsDeedFileName.touched && controls.constitutionsDeedFileName.invalid" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                                (click)="constitutionsDeed.click()"
+                                                style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                        </div>
+                                        <input type="file" accept="image/*,application/pdf" class="d-none"
+                                            #constitutionsDeed (input)="getFileInfo($event,'constitutionsDeed')">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-3 offset-1 form-label">
+                                    <label class="">GST Certificate</label>
+                                </div>
+                                <div class="col-7">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Select File"
+                                            aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
+                                            formControlName="gstCertificateFileName"
+                                            [class.isError]="controls.gstCertificateFileName.touched && controls.gstCertificateFileName.invalid" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                                (click)="gstCertificate.click()"
+                                                style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                        </div>
+                                        <input type="file" accept="image/*,application/pdf" class="d-none"
+                                            #gstCertificate (input)="getFileInfo($event,'gstCertificate')">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div *ngIf="images.residential.length > 0">
+                        <div class="row">
+                            <div class="col-6" [class.offset-4]="images.residential.length == 1"
+                                *ngFor="let img of images.residential, index as idx">
+                                <div class="img-container">
+                                    <img *ngIf="!isPdf(img)" class="fetched-image" [src]="img" alt=""
+                                        (click)="preview(img, idx)">
+                                    <img *ngIf="!sameAdd && addressForm.controls.addressProofTypeId.value != 2"
+                                        src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                        class="kt-pointer remove-icon" (click)="removeImages(idx, 'residential');">
+                                    <div class="iframeWrapper" (click)="previewPdf(img)">
+                                        <iframe [src]="img | safe : 'resourceUrl'" height="250" width="290"
+                                            scrolling="no" *ngIf="isPdf(img)"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+
                 </div>
             </form>
         </div>

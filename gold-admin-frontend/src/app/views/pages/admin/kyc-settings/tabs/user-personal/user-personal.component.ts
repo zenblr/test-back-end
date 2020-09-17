@@ -28,6 +28,10 @@ export class UserPersonalComponent implements OnInit {
   minDate = new Date();
   @ViewChild("files", { static: false }) files;
   @ViewChild("signature", { static: false }) signature;
+  @ViewChild("constitutionsDeed", { static: false }) constitutionsDeed;
+  @ViewChild("gstCertificate", { static: false }) gstCertificate;
+
+  images = { constitutionsDeed: [], gstCertificate: [] }
 
   constructor(private fb: FormBuilder, private userDetailsService: UserDetailsService,
     private userPersonalService: UserPersonalService,
@@ -56,8 +60,43 @@ export class UserPersonalComponent implements OnInit {
       signatureProofFileName: [''],
       occupationId: [null],
       dateOfBirth: ['', [Validators.required]],
-      age: []
+      age: [],
+      moduleId: [this.customerDetails.moduleId],
+      userType: [this.customerDetails.userType],
+      email: [null],
+      alternateEmail: [null],
+      landLineNumber: [null],
+      gstinNumber: [null],
+      cinNumber: [null],
+      constitutionsDeed: [[]],
+      constitutionsDeedFileName: [],
+      constitutionsDeedImg: [],
+      gstCertificate: [[]],
+      gstCertificateFileName: [],
+      gstCertificateImg: [],
     })
+
+    this.setFormValidation()
+  }
+
+  setFormValidation() {
+    if (this.controls.moduleId.value == 3) {
+      for (const key in this.personalForm.controls) {
+        this.personalForm.controls[key].setValidators([]);
+        this.personalForm.controls[key].updateValueAndValidity();
+      }
+      if (this.controls.userType.value == 'Individual') {
+        this.controls.dateOfBirth.setValidators([Validators.required])
+        this.controls.gender.setValidators([Validators.required])
+        this.controls.dateOfBirth.updateValueAndValidity()
+        this.controls.gender.updateValueAndValidity()
+      } else {
+        this.controls.gstinNumber.setValidators([Validators.required])
+        this.controls.gstinNumber.updateValueAndValidity()
+        this.controls.email.setValidators([Validators.required])
+        this.controls.email.updateValueAndValidity()
+      }
+    }
   }
 
   getOccupation() {
@@ -109,14 +148,36 @@ export class UserPersonalComponent implements OnInit {
 
             this.ref.detectChanges();
           }
+          if (type == "constitutionsDeed" && this.images.constitutionsDeed.length < 2) {
+            this.images.constitutionsDeed.push({ path: res.uploadFile.path, URL: res.uploadFile.URL })
+            console.log(this.images)
+            const temp = []
+            this.images.constitutionsDeed.forEach(value => {
+              temp.push(value.path)
+            })
+            this.personalForm.get('constitutionsDeedFileName').patchValue(res.uploadFile.originalname);
+            this.personalForm.get('constitutionsDeed').patchValue(temp);
+          }
+          if (type == "gstCertificate" && this.images.gstCertificate.length < 2) {
+            this.images.gstCertificate.push({ path: res.uploadFile.path, URL: res.uploadFile.URL })
+            console.log(this.images)
+            const temp = []
+            this.images.constitutionsDeed.forEach(value => {
+              temp.push(value.path)
+            })
+            this.personalForm.get('gstCertificateFileName').patchValue(res.uploadFile.originalname);
+            this.personalForm.get('gstCertificate').patchValue(temp);
+          }
 
         }), catchError(err => {
           this.toastr.error(err.error.message);
           throw err
         }),
         finalize(() => {
-          this.files.nativeElement.value = '';
-          this.signature.nativeElement.value = '';
+          if (this.files && this.files.nativeElement.value) this.files.nativeElement.value = '';
+          if (this.signature && this.signature.nativeElement.value) this.signature.nativeElement.value = '';
+          if (this.constitutionsDeed && this.constitutionsDeed.nativeElement.value) this.constitutionsDeed.nativeElement.value = '';
+          if (this.gstCertificate && this.gstCertificate.nativeElement.value) this.gstCertificate.nativeElement.value = '';
         })
       ).subscribe()
     }

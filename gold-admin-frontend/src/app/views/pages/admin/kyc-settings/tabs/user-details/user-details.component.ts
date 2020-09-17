@@ -167,6 +167,12 @@ export class UserDetailsComponent implements OnInit {
         this.controls.referenceCode.patchValue(this.refCode);
         this.userBasicForm.patchValue(res.customerInfo);
 
+        if (this.controls.moduleId.value == 3) {
+          if (this.controls.userType.value == 'Corporate') {
+            this.getOrganizationTypes()
+          }
+        }
+
         this.setValidation()
 
         if (res.customerInfo.panCardNumber !== null) {
@@ -341,7 +347,7 @@ export class UserDetailsComponent implements OnInit {
     if (!this.organizationTypes) {
       this.userDetailsService.getOrganizationTypes().pipe(
         map(res => {
-          console.log(res)
+          // console.log(res)
           this.organizationTypes = res
         })).subscribe()
     }

@@ -155,7 +155,6 @@ export class UserAddressComponent implements OnInit {
 
             this.identityForm.patchValue({ identityProofImg: this.images.identityProof });
             this.identityForm.patchValue({ identityProof: this.imageId.identityProof });
-            //this.identityForm.get('identityProofFileName').patchValue(event.target.files[0].name);
 
             this.identityForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
 
@@ -166,7 +165,6 @@ export class UserAddressComponent implements OnInit {
             this.addressFileNameArray2.push(event.target.files[0].name)
             this.addressControls.controls[1].patchValue({ addressProof: this.imageId.residential });
             this.addressControls.controls[1].patchValue({ addressProofImg: this.images.residential });
-            //this.addressControls.at(1)['controls'].addressProofFileName.patchValue(event.target.files[0].name)
             this.addressControls.controls[1].patchValue({ addressProofFileName: this.addressFileNameArray2[this.addressFileNameArray2.length - 1] });
           } else if (type == 0 && this.images.permanent.length < 2) {
             this.images.permanent.push(res.uploadFile.URL)
@@ -174,7 +172,6 @@ export class UserAddressComponent implements OnInit {
             this.addressFileNameArray1.push(event.target.files[0].name)
             this.addressControls.controls[0].patchValue({ addressProof: this.imageId.permanent });
             this.addressControls.controls[0].patchValue({ addressProofImg: this.images.permanent });
-            //this.addressControls.at(0)['controls'].addressProofFileName.patchValue(event.target.files[0].name)
             this.addressControls.controls[0].patchValue({ addressProofFileName: this.addressFileNameArray1[this.addressFileNameArray1.length - 1] });
           } else {
             this.toastr.error("Cannot upload more than two images")
