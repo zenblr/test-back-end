@@ -79,7 +79,31 @@ exports.payableAmount = async (req, res, next) => {
 //CALCULATE PAYABLE AMOUNT
 exports.payableAmountConfirm = async (req, res, next) => {
     let { masterLoanId, amount } = req.query
-    let loan = await customerLoanDetailsByMasterLoanDetails(masterLoanId)
+
+    let payableAmount = 0;
+
+    let interestTable = await models.customerLoanInterest.findAll({
+        where: {
+            masterLoanId: masterLoanId,
+            emiStatus: { [Op.notIn]: ['paid'] },
+        }
+    })
+
+    for (const emi of interestTable) {
+        payableAmount += Number(emi.outstandingInterest)
+        if (emi.penalInterest) {
+            payableAmount += Number(emi.penalInterest)
+
+        }
+    }
+
+    if (payableAmount < Number(amount)) {
+        return res.status(403).json({ message: "Amount should Be less than payable amount" });
+
+    }
+
+
+    loan = await customerLoanDetailsByMasterLoanDetails(masterLoanId)
 
     return res.status(200).json({ data: loan });
 }
@@ -264,7 +288,7 @@ exports.confirmationForPayment = async (req, res, next) => {
                             let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: transactionId, masterLoanId: amount.masterLoanId, loanId: amount.loanId, credit: amount.credit, description: `Extra days interest received`, paymentDate: moment(), }, { transaction: t });
                             await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
                         } else {
-                            let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: transactionId, masterLoanId: amount.masterLoanId, loanInterestId:amount.loanInterestId,loanId: amount.loanId, credit: amount.credit, description: `interest received ${amount.emiDueDate}`, paymentDate: moment(), }, { transaction: t });
+                            let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: transactionId, masterLoanId: amount.masterLoanId, loanInterestId: amount.loanInterestId, loanId: amount.loanId, credit: amount.credit, description: `interest received ${amount.emiDueDate}`, paymentDate: moment(), }, { transaction: t });
                             await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
                         }
 
@@ -280,5 +304,21 @@ exports.confirmationForPayment = async (req, res, next) => {
     return res.status(200).json({ message: "success", payment });
 
 
+
+}
+
+exports.transcationHistory = async (req, res, next) => {
+
+    let { masterLoanId } = req.query;
+
+    let data = await models.customerLoanTransaction.findAll({
+        where: {
+            masterLoanId: masterLoanId,
+            paymentFor: 'quickPay',
+        },
+        attributes: ['transactionUniqueId', 'transactionAmont', 'paymentReceivedDate', 'depositStatus']
+    })
+
+    return res.status(200).json({ data: data })
 
 }

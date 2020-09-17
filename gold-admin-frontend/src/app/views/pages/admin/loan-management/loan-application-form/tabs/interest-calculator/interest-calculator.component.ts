@@ -286,6 +286,7 @@ export class InterestCalculatorComponent implements OnInit {
       this.controls.loanStartDate.markAsTouched()
     }
     this.controls.interestRate.reset()
+    this.controls.paymentFrequency.reset()
   }
 
   filterScheme() {
@@ -380,6 +381,7 @@ export class InterestCalculatorComponent implements OnInit {
         this.paymentFrequency = res.data.securedScheme.schemeInterest;
         this.checkForPaymentFrequency()
         this.controls.paymentFrequency.reset()
+        console.log(this.controls.paymentFrequency.value);
       }
 
 
@@ -391,7 +393,7 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   checkForPaymentFrequency() {
-    if (this.controls.tenure.valid) {
+    if (this.controls.tenure.valid && this.paymentFrequency.length) {
       this.tempPaymentFrequency = []
       this.paymentFrequency.forEach(month => {
         let tenure = this.controls.tenure.value
