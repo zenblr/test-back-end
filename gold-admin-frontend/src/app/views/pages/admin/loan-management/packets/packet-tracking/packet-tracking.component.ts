@@ -122,7 +122,9 @@ export class PacketTrackingComponent implements OnInit {
   }
 
   updatePacket(packet) {
-    // console.log(packet)
+    let lastIndex = packet.locationData[packet.locationData.length - 1]
+    if (lastIndex.packetLocation.id == 4) return
+
     if (packet.loanStageId === 11) {
       const dialogRef = this.dialog.open(UpdateLocationComponent,
         {
@@ -153,7 +155,7 @@ export class PacketTrackingComponent implements OnInit {
     const dialogRef = this.dialog.open(ViewPacketLogComponent,
       {
         data: { packetData: packet, action: 'edit' },
-        width: '80%',
+        width: '90%',
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -203,6 +205,12 @@ export class PacketTrackingComponent implements OnInit {
       })
     }
     )).subscribe()
+  }
+
+  checkForPartnerBranchIn(packet) {
+    const lastIndex = packet.locationData[packet.locationData.length - 1]
+    const isNotAllowed = lastIndex.packetLocation.id == 4 ? true : false
+    return isNotAllowed
   }
 
 }

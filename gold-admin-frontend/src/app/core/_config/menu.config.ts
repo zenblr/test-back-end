@@ -165,15 +165,13 @@ export class MenuConfig {
 									title: "Packet Tracking",
 									page: "/admin/loan-management/packet-tracking",
 									bullet: 'dot',
-									permission: !(this.permissionsArr.includes('packetEdit') ||
-										this.permissionsArr.includes('packetAdd') ||
-										this.permissionsArr.includes('packetView')),
+									permission: !this.permissionsArr.includes('packetTrackingView'),
 								},
 								{
 									title: "My Packets",
 									page: "/admin/loan-management/my-packets",
 									bullet: 'dot',
-									permission: false
+									permission: !this.permissionsArr.includes('myPacket'),
 								},
 								{
 									title: "Applied Loan",

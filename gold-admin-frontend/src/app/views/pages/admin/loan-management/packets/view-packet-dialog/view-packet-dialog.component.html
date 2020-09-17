@@ -1,0 +1,37 @@
+<kt-portlet>
+    <kt-modal-header [title]='"Packet Details"' (action)="action($event)"></kt-modal-header>
+
+    <kt-portlet-body>
+        <div class="kt-margin-t-30 kt-margin-b-30">
+            <div class="row kt-margin-b-20">
+                <div class="col-5 font-weight-500">
+                    Number of Packets:
+                </div>
+                <div class="col-7">
+                    {{ data.packetData.length }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-5 font-weight-500">
+                    Packets:
+                </div>
+                <div class="col-7">
+                    <span *ngFor="let item of data.packetData; first as f; last as l">
+                        <span *ngIf="data.packetData.length > 1">
+                            <span *ngIf="f"> {{ item.packetUniqueId | uppercase }} </span>
+                            <span *ngIf="!f">, {{ item.packetUniqueId | uppercase }} </span>
+                        </span>
+
+                        <span *ngIf="data.packetData.length == 1">
+                            <span> {{ item.packetUniqueId | uppercase }} </span>
+                        </span>
+
+                        <!-- {{ item.packetUniqueId | uppercase }} -->
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </kt-portlet-body>
+</kt-portlet>

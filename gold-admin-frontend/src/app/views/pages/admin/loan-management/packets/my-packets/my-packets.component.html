@@ -19,6 +19,24 @@
                     </mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="partner">
+                    <mat-header-cell *matHeaderCellDef>Partner</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngIf="packet.partnerBranch?.partner">
+                            {{packet.partnerBranch?.partner?.name | titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="partnerBranch">
+                    <mat-header-cell *matHeaderCellDef>Partner Branch</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngIf="packet.partnerBranch">
+                            {{packet.partnerBranch?.name | titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
@@ -55,9 +73,12 @@
                 <ng-container matColumnDef="currentLocation">
                     <mat-header-cell *matHeaderCellDef>Current Location</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <!-- <span *ngIf="packet.customerPacketTracking.length">
-                            {{packet?.customerPacketTracking[0].packetLocation.location |titlecase}}
-                        </span> -->
+
+                        <span *ngFor="let item of packet.masterLoan?.locationData; last as l">
+                            <span *ngIf="l">
+                                {{item?.packetLocation?.location |titlecase}}
+                            </span>
+                        </span>
                     </mat-cell>
                 </ng-container>
 

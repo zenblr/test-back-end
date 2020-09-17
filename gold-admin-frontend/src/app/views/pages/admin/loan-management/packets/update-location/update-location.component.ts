@@ -74,7 +74,9 @@ export class UpdateLocationComponent implements OnInit {
     if (this.data.deliver) {
       this.locationForm.patchValue({
         id: this.data.id,
-        receiverType: this.data.receiverType
+        receiverType: this.data.receiverType,
+        partnerBranchId: this.data.partnerBranchId,
+        masterLoanId: this.data.masterLoanId
       })
       this.locationForm.controls.packetLocationId.setValidators([])
       this.locationForm.controls.packetLocationId.updateValueAndValidity()
@@ -233,8 +235,14 @@ export class UpdateLocationComponent implements OnInit {
     }
     const mobileNumber = this.locationForm.controls.mobileNumber.value
     const receiverType = this.locationForm.controls.receiverType.value
+    const partnerBranchId = this.locationForm.controls.partnerBranchId.value
+    const masterLoanId = this.locationForm.controls.masterLoanId.value
 
-    this.updateLocationService.getDetailsByMobile({ mobileNumber, receiverType }).subscribe(res => {
+    if (this.controls.receiverType.value === 'PartnerUser') {
+      if (this.controls.partnerBranchId.invalid) return this.controls.partnerBranchId.markAsTouched()
+    }
+
+    this.updateLocationService.getDetailsByMobile({ mobileNumber, receiverType, partnerBranchId, masterLoanId }).subscribe(res => {
       switch (res.receiverType) {
         case 'Customer':
           this.locationForm.controls.customerReceiverId.patchValue(res.data.id)
@@ -394,12 +402,16 @@ export class UpdateLocationComponent implements OnInit {
     this.updateLocationService.getLocation(params).pipe(map(res => {
       if (this.controls.packetLocationId.value == 2) {
         this.controls.internalBranchId.patchValue(res.data[0].id)
+        this.controls.partnerBranchId.setValidators([])
+        this.controls.partnerBranchId.updateValueAndValidity()
         this.clearPartnerData()
       }
       if (this.controls.packetLocationId.value == 4) {
         this.controls.partnerId.patchValue(res.data.id)
         this.controls.partnerName.patchValue(res.data.name)
         this.partnerBranches = res.data.partnerBranch
+        this.controls.partnerBranchId.setValidators([Validators.required])
+        this.controls.partnerBranchId.updateValueAndValidity()
         this.clearInternalBranchData()
       }
       // console.log(res)
@@ -418,7 +430,7 @@ export class UpdateLocationComponent implements OnInit {
         this.clearPartnerData()
       }
       if (this.controls.deliveryPacketLocationId.value == 4) {
-        this.controls.deliveryPartnerBranchId.patchValue(res.data.id)
+        // this.controls.deliveryPartnerBranchId.patchValue(res.data.id)
         // this.controls.partnerName.patchValue(res.data.name)
         this.deliveryPartnerBranches = res.data.partnerBranch
         this.clearInternalBranchData()
