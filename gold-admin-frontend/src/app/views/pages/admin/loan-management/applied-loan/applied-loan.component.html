@@ -171,12 +171,13 @@
                             </div>
 
                             <div *ngIf="loan.loanStage.id == 10">
-                                <button (click)="checkout(loan)"
+                                <button (click)="checkout(loan)" [class.cursor-not-allowed]="getPermission(loan)"
                                     class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                             </div>
 
                             <div *ngIf="loan.loanStage.id == 11">
                                 <button (click)="getPacketDetails(loan)"
+                                    [class.cursor-not-allowed]="getPermission(loan)"
                                     class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                             </div>
 

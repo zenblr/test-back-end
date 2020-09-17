@@ -35,6 +35,7 @@ import { AgmCoreModule } from '@agm/core';
 import { PacketAssignAppraiserComponent } from './packets/packet-assign-appraiser/packet-assign-appraiser.component';
 import { CheckoutComponent } from './packets/checkout/checkout.component';
 import { MyPacketsComponent } from './packets/my-packets/my-packets.component';
+import { ViewPacketDialogComponent } from './packets/view-packet-dialog/view-packet-dialog.component';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -122,6 +123,7 @@ const rout: Routes = [
     PacketAssignAppraiserComponent,
     CheckoutComponent,
     MyPacketsComponent,
+    ViewPacketDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -155,7 +157,8 @@ const rout: Routes = [
     UserReviewComponent,
     ViewPacketLogComponent,
     PacketAssignAppraiserComponent,
-    CheckoutComponent
+    CheckoutComponent,
+    ViewPacketDialogComponent
   ]
 })
 export class LoanManagementModule { }
