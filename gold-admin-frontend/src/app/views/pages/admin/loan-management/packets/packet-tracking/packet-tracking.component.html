@@ -30,10 +30,10 @@
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <div *ngFor="let item of packet.customerLoan">
-                            <span *ngIf="item.loanType === 'secured'">
+                        <div class="multiple">
+                            <div *ngFor="let item of packet.customerLoan">
                                 {{ item.loanUniqueId | uppercase }}
-                            </span>
+                            </div>
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -48,18 +48,22 @@
                 <ng-container matColumnDef="loanAmount">
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <div *ngFor="let item of packet.customerLoan">
-                            <span *ngIf="item.loanType === 'secured'">
+                        <div class="multiple">
+                            <div *ngFor="let item of packet.customerLoan">
+                                <!-- <span *ngIf="item.loanType === 'secured'"> -->
                                 {{ item.loanAmount | uppercase }}
-                            </span>
+                                <!-- </span> -->
+                            </div>
                         </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="currentLocation">
                     <mat-header-cell *matHeaderCellDef>Current Location</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngIf="packet.customerPacketTracking.length">
-                            {{packet?.customerPacketTracking[0].packetLocation.location |titlecase}}
+                        <span *ngFor="let item of packet.locationData; last as l">
+                            <span *ngIf="l">
+                                {{item?.packetLocation?.location |titlecase}}
+                            </span>
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -67,7 +71,8 @@
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let packet">
                         <button (click)="ornaments(packet)" class="btn-transparent kt-margin-r-15">View Packets</button>
-                        <button (click)="updatePacket(packet)" class="btn-transparent kt-margin-r-15">Update
+                        <button [class.cursor-not-allowed]="checkForPartnerBranchIn(packet)"
+                            (click)="updatePacket(packet)" class="btn-transparent kt-margin-r-15">Update
                             Location</button>
                         <button (click)="viewPacketLog(packet)" class="btn-transparent kt-margin-r-15">View Log</button>
                         <button (click)="viewLocation(packet)" class="btn-transparent kt-margin-r-15">View

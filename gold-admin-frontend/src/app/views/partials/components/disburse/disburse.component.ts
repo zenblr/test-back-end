@@ -124,7 +124,7 @@ export class DisburseComponent implements OnInit {
       securedLoanUniqueId: [],
       unsecuredLoanUniqueId: [],
       finalAmount: [],
-      fullAmount:[]
+      fullAmount: []
     })
     this.disableSchemeRelatedField()
   }
@@ -291,7 +291,7 @@ export class DisburseComponent implements OnInit {
       this.loanService.disburse(this.disburseForm.value).pipe(
         map(res => {
           this.toast.success(res.message)
-          this.router.navigate(['/admin/loan-management/all-loan'])
+          this.router.navigate(['/admin/loan-management/applied-loan'])
         }),
         catchError(err => {
           if (err.error.message)
