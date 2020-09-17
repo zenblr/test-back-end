@@ -47,4 +47,10 @@ export class QuickPayService {
       map(res => res)
     )
   }
+
+  getTranscationHistory(id): Observable<any> {
+    return this.http.get(`api/quick-pay/transcation-history?masterLoanId=${id}`).pipe(
+      map(res => res)
+    )
+  }
 }
