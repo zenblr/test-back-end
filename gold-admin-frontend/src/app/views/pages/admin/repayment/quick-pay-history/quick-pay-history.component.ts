@@ -24,4 +24,10 @@ export class QuickPayHistoryComponent implements OnInit {
 
   }
 
+  action(event) {
+    if (!event) {
+      this.dialogRef.close();
+    }
+  }
+
 }
