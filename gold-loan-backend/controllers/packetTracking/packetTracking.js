@@ -140,11 +140,20 @@ exports.checkBarcode = async (req, res) => {
 
 //FUNCTION TO GET USER NAME
 exports.getUserName = async (req, res) => {
-    let { mobileNumber, receiverType } = req.query
+    let { mobileNumber, receiverType, masterLoanId, partnerBranchId } = req.query
+
+    let masterLoan = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
     if (receiverType == 'InternalUser') {
         let User = await models.user.findOne({
             where: { mobileNumber: mobileNumber },
-            attributes: ['id', 'firstName', 'lastName']
+            attributes: ['id', 'firstName', 'lastName'],
+            include: [
+                {
+                    model: models.internalBranch,
+                    where: { id: masterLoan.internalBranchId },
+                    attributes: ['id']
+                }
+            ]
         });
         if (User) {
             return res.status(200).json({ data: User, receiverType });
@@ -163,7 +172,7 @@ exports.getUserName = async (req, res) => {
         }
     } else if (receiverType == 'PartnerUser') {
         let User = await models.partnerBranchUser.findOne({
-            where: { mobileNumber: mobileNumber },
+            where: { mobileNumber: mobileNumber, branchId: Number(partnerBranchId) },
             attributes: ['id', 'firstName', 'lastName']
         });
         if (User) {
@@ -814,16 +823,29 @@ exports.myDeliveryPacket = async (req, res, next) => {
                         as: 'customerLoan'
                     },
                     {
-                        model: models.internalBranch,
-                        as: 'internalBranch'
-                    },
-                    {
                         model: models.customer,
                         as: 'customer'
+                    },
+                    {
+                        model: models.customerLoanPacketData,
+                        as: 'locationData'
                     }
                 ]
             },
-
+            {
+                model: models.internalBranch,
+                as: 'internalBranch'
+            },
+            {
+                models: models.partnerBranch,
+                as: 'partnerBranch',
+                include: [
+                    {
+                        model: models.partner,
+                        as: 'partner'
+                    }
+                ]
+            }
         ]
     })
 

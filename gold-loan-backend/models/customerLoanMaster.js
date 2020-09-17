@@ -244,6 +244,7 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanMaster.hasOne(models.partRelease, { foreignKey: 'masterLoanId', as: 'partRelease' });
         CustomerLoanMaster.hasOne(models.fullRelease, { foreignKey: 'masterLoanId', as: 'fullRelease' });
         CustomerLoanMaster.hasMany(models.customerPacketTracking, { foreignKey: 'masterLoanId', as: 'customerPacketTracking' });
+        CustomerLoanMaster.hasMany(models.customerLoanPacketData, { foreignKey: 'masterLoanId', as: 'locationData' });
 
         CustomerLoanMaster.hasMany(models.packetTracking, { foreignKey: 'masterLoanId', as: 'packetTracking' });
         CustomerLoanMaster.hasMany(models.customerTransactionSplitUp, { foreignKey: 'masterLoanId', as: 'transactionSplitUp' });
