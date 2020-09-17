@@ -48,10 +48,12 @@
                 <ng-container matColumnDef="loanAmount">
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <div *ngFor="let item of packet.customerLoan">
-                            <span *ngIf="item.loanType === 'secured'">
+                        <div class="multiple">
+                            <div *ngFor="let item of packet.customerLoan">
+                                <!-- <span *ngIf="item.loanType === 'secured'"> -->
                                 {{ item.loanAmount | uppercase }}
-                            </span>
+                                <!-- </span> -->
+                            </div>
                         </div>
                     </mat-cell>
                 </ng-container>

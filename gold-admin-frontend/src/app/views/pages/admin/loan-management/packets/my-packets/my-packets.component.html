@@ -30,8 +30,8 @@
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <div class="multiple" *ngFor="let item of packet?.masterLoan?.customerLoan">
-                            {{ item.loanUniqueId }}
+                        <div class="multiple">
+                            <div *ngFor="let item of packet?.masterLoan?.customerLoan">{{ item.loanUniqueId }}</div>
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -46,8 +46,9 @@
                 <ng-container matColumnDef="loanAmount">
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <div class="multiple" *ngFor="let item of packet?.masterLoan?.customerLoan">
-                            <div>{{ item.outstandingAmount }}</div>
+                        <div class="multiple">
+                            <div *ngFor="let item of packet?.masterLoan?.customerLoan">{{ item.outstandingAmount }}
+                            </div>
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -59,14 +60,19 @@
                         </span> -->
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="actions">
+
+                <ng-container matColumnDef="viewPackets">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-
                         <button (click)="viewPackets(packet)" class="btn-transparent kt-margin-r-15">View
                             Packets
                         </button>
+                    </mat-cell>
+                </ng-container>
 
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
                         <button (click)="deliver(packet)" class="btn-transparent kt-margin-r-15">
                             Deliver
                         </button>

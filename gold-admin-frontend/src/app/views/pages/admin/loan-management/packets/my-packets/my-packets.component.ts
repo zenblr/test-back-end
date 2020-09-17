@@ -19,7 +19,7 @@ import { UpdateLocationComponent } from '../update-location/update-location.comp
 export class MyPacketsComponent implements OnInit {
 
   dataSource: MyPacketsDatasource;
-  displayedColumns = ['customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'actions'];
+  displayedColumns = ['customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'viewPackets', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
