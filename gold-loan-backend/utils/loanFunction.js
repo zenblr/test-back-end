@@ -699,9 +699,10 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
             transactionData.credit = pendingSecuredAmount.toFixed(2)
             transactionData.loanUniqueId = loanArray[index]['customerLoan'].loanUniqueId
             transaction.push(transactionData)
-            pendingSecuredAmount = (loanArray[index]['outstandingInterest'] - pendingSecuredAmount).toFixed(2)
+            // pendingSecuredAmount = (loanArray[index]['outstandingInterest'] - pendingSecuredAmount).toFixed(2)
             loanArray[index]['outstandingInterest'] = loanArray[index]['outstandingInterest'] - loanArray[index]['paidAmount'];
             pendingSecuredAmount = 0.00;
+            loanArray[index]['emiReceivedDate'] = Date.now()
 
         } else if (pendingSecuredAmount >= Number(loanArray[index]['outstandingInterest'])) {
 
@@ -719,18 +720,19 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
             transaction.push(transactionData)
             pendingSecuredAmount = Number(pendingSecuredAmount) - Number(loanArray[index]['outstandingInterest'])
             loanArray[index]['outstandingInterest'] = 0.00
+            loanArray[index]['emiReceivedDate'] = Date.now()
         }
-        loanArray[index]['emiReceivedDate'] = Date.now()
 
     }
     for (let index = 0; index < loanArray.length; index++) {
         const element = loanArray[index];
         if (Number(element.interestAccrual) >= Number(interestAccrualAmount)) {
             element.interestAccrual = element.interestAccrual - interestAccrualAmount
+            element.totalInterestAccrual = element.interestAccrual
             interestAccrualAmount = element.interestAccrual
         } else if (Number(element.interestAccrual) < Number(interestAccrualAmount)) {
             element.interestAccrual = 0.00;
-
+            element.totalInterestAccrual = element.interestAccrual
         }
     }
     return { loanArray, transaction }
@@ -774,7 +776,7 @@ let lastPenalPaidDate = async (loan, appliedPenalInterest, paidAmount) => {
     return newDate
 }
 
-let allInterestPayment = async (transactionId, newTransactionSplitUp) => {
+let allInterestPayment = async (transactionId, newTransactionSplitUp,securedLoanDetails,unsecuredLoanDetails) => {
 
     let createdBy = 1
     let transactionSplitUp = await models.customerTransactionSplitUp.findAll(
@@ -812,18 +814,7 @@ let allInterestPayment = async (transactionId, newTransactionSplitUp) => {
 
     let transactionDetails = []
 
-    let securedLoanDetails = await models.customerLoanInterest.findAll({
-        where: {
-            loanId: transactionSplitUp[0].loanId,
-            emiStatus: { [Op.in]: ['pending', 'partially paid'] }
-        },
-        order: [['emiDueDate']],
-        include: {
-            model: models.customerLoan,
-            as: 'customerLoan',
-            attributes: ['loanUniqueId']
-        }
-    })
+    
     let temp = []
     for (let index = 0; index < securedLoanDetails.length; index++) {
         temp.push(securedLoanDetails[index].dataValues)
@@ -844,23 +835,12 @@ let allInterestPayment = async (transactionId, newTransactionSplitUp) => {
         Array.prototype.push.apply(transactionDetails, newSecuredDetails.transaction)
 
     }
-    let unsecuredLoanDetails
+    // let unsecuredLoanDetails
     // unsecure
     if (transactionSplitUp.length > 1) {
 
 
-        unsecuredLoanDetails = await models.customerLoanInterest.findAll({
-            where: {
-                loanId: transactionSplitUp[1].loanId,
-                emiStatus: { [Op.in]: ['pending', 'partially paid'] }
-            },
-            order: [['emiDueDate']],
-            include: {
-                model: models.customerLoan,
-                as: 'customerLoan',
-                attributes: ['loanUniqueId']
-            }
-        })
+        
 
         let temp = []
         for (let index = 0; index < unsecuredLoanDetails.length; index++) {

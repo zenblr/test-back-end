@@ -183,7 +183,7 @@ exports.quickPayment = async (req, res, next) => {
 }
 
 exports.confirmationForPayment = async (req, res, next) => {
-
+    var payment
     let { transactionId, status, paymentReceivedDate, masterLoanId, depositAmount } = req.body
     let modifiedBy = req.userData.id
 
@@ -377,7 +377,37 @@ exports.confirmationForPayment = async (req, res, next) => {
             }
 
             //payment adjustment
-            var payment = await allInterestPayment(transactionId, newTransactionSplitUp);
+
+            let securedLoanDetails = await models.customerLoanInterest.findAll({
+                where: {
+                    loanId: securedLoanId,
+                    emiStatus: { [Op.in]: ['pending', 'partially paid'] }
+                },
+                transaction:t,
+                order: [['emiDueDate']],
+                include: {
+                    model: models.customerLoan,
+                    as: 'customerLoan',
+                    attributes: ['loanUniqueId']
+                }
+            })
+            let unsecuredLoanDetails
+            if (isUnsecuredSchemeApplied) {
+                 unsecuredLoanDetails = await models.customerLoanInterest.findAll({
+                    where: {
+                        loanId: unsecuredLoanId,
+                        emiStatus: { [Op.in]: ['pending', 'partially paid'] }
+                    },
+                    transaction:t,
+                    order: [['emiDueDate']],
+                    include: {
+                        model: models.customerLoan,
+                        as: 'customerLoan',
+                        attributes: ['loanUniqueId']
+                    }
+                })
+            }
+             payment = await allInterestPayment(transactionId, newTransactionSplitUp,securedLoanDetails,unsecuredLoanDetails);
 
             await models.customerLoanTransaction.update({ depositStatus: status, paymentReceivedDate: receivedDate }, { where: { id: transactionId }, transaction: t });
 
@@ -443,11 +473,11 @@ exports.confirmationForPayment = async (req, res, next) => {
 
         })
 
-        await intrestCalculationForSelectedLoan(moment(), masterLoanId)
-        await penalInterestCalculationForSelectedLoan(moment(), masterLoanId)
+        // await intrestCalculationForSelectedLoan(moment(), masterLoanId)
+        // await penalInterestCalculationForSelectedLoan(moment(), masterLoanId)
 
     }
-    return res.status(200).json({ message: "success" });
+    return res.status(200).json({ message: "success" ,data:payment});
 
 
 
