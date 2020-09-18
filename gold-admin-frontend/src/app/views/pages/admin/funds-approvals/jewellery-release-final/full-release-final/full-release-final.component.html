@@ -110,7 +110,7 @@
                 </ng-container>
                 <ng-container matColumnDef="currentLocation">
                     <mat-header-cell *matHeaderCellDef>Current Location</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item?.masterLoan?.locationData[item?.masterLoan?.locationData?.length -1]?.packetLocation?.location | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item?.masterLoan?.locationData[0]?.packetLocation?.location | titlecase}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="view">
                     <mat-header-cell *matHeaderCellDef>Acknowledgement Receipt</mat-header-cell>
@@ -144,10 +144,10 @@
                             </ng-container>
                         </ng-container>
                         <ng-container>
-                            <button *ngIf="item?.masterLoan?.locationData[item?.masterLoan?.locationData?.length -1]?.packetLocation?.location == 'partner branch in'" style="width: 130px;" class="apply-kyc" (click)="collect(item?.masterLoanId,item.masterLoan.packet,item.masterLoan)">Collect</button>
+                            <button *ngIf="item?.masterLoan?.locationData[0]?.packetLocation?.location == 'partner branch in'" style="width: 130px;" class="apply-kyc" (click)="collect(item?.masterLoanId,item.masterLoan.packet,item.masterLoan)">Collect</button>
                         </ng-container>
                         <ng-container>
-                            <button *ngIf="item?.masterLoan?.locationData[item?.masterLoan?.locationData?.length -1]?.packetLocation?.location == 'partner branch out'" style="width: 130px;" class="apply-kyc" (click)="homeIn(item?.masterLoanId,item.masterLoan.packet,item.id)">Customer Home In</button>
+                            <button *ngIf="item?.masterLoan?.locationData[0]?.packetLocation?.location == 'partner branch out'" style="width: 130px;" class="apply-kyc" (click)="homeIn(item?.masterLoanId,item.masterLoan.packet,item.id)">Customer Home In</button>
                         </ng-container>
                     </mat-cell>
                 </ng-container>

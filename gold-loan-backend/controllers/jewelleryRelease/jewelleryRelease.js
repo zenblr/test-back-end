@@ -884,8 +884,8 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         order: [
             ["updatedAt", "DESC"],
-            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'asc'],
-            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'asc']
+            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'desc'],
+            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'asc'],
         ],
         offset: offset,
         subQuery: false,
@@ -1699,7 +1699,7 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         order: [
             ["updatedAt", "DESC"],
-            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'asc'],
+            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'desc'],
             [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'asc']
         ],
         offset: offset,
