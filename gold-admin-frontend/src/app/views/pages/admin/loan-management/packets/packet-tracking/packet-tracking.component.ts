@@ -8,7 +8,7 @@ import { AssignPacketsComponent } from '../assign-packets/assign-packets.compone
 import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { UpdateLocationComponent } from '../update-location/update-location.component';
+import { UpdateLocationComponent } from '../../../../../partials/components/update-location/update-location.component';
 import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.component';
 import { Router } from '@angular/router';
 import { OrnamentsComponent } from '../../../../../partials/components/ornaments/ornaments.component';

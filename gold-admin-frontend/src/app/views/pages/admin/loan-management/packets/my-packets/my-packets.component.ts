@@ -9,7 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { Router } from '@angular/router';
 import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.component';
-import { UpdateLocationComponent } from '../update-location/update-location.component';
+import { UpdateLocationComponent } from '../../../../../partials/components/update-location/update-location.component';
 import { ViewPacketDialogComponent } from '../view-packet-dialog/view-packet-dialog.component';
 
 @Component({
