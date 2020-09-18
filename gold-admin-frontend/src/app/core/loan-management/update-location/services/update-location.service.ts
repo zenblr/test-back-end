@@ -71,6 +71,27 @@ export class UpdateLocationService {
     );
   }
 
+  customerHomeOut(data,isFullRelease):Observable<any> {
+    data.isFullRelease = isFullRelease
+    return this.http.post<any>(`/api/packet-tracking/packet-release-home-in`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
+  collectPacket(data): Observable<any> {
+    return this.http.post<any>(`/api/packet-tracking/packet-release-collect`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
   submitPacketLocation(data): Observable<any> {
     return this.http.post<any>(`/api/packet-tracking/submit-packet-location`, data).pipe(
       map(res => res),

@@ -2,12 +2,12 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { PacketLocationService } from '../../../../../../core/masters/packet-location/service/packet-location.service';
+import { PacketLocationService } from '../../../../core/masters/packet-location/service/packet-location.service';
 import { map, catchError } from 'rxjs/operators';
-import { UpdateLocationService } from '../../../../../../core/loan-management/update-location/services/update-location.service';
-import { AuthService } from '../../../../../../core/auth';
+import { UpdateLocationService } from '../../../../core/loan-management/update-location/services/update-location.service';
+import { AuthService } from '../../../../core/auth';
 import { BehaviorSubject } from 'rxjs';
-import { LeadService } from '../../../../../../core/lead-management/services/lead.service';
+import { LeadService } from '../../../../core/lead-management/services/lead.service';
 
 @Component({
   selector: 'kt-update-location',
@@ -41,6 +41,7 @@ export class UpdateLocationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log(this.data)
     if (!this.data.deliver) this.getPacketLocationList()
 
     this.locationForm = this.fb.group({
@@ -63,8 +64,13 @@ export class UpdateLocationComponent implements OnInit {
       deliveryPacketLocationId: [],
       deliveryInternalBranchId: [],
       deliveryPartnerBranchId: [],
-      id: []
+      id: [],
+      releaseId :[]
     })
+
+    if (this.data.isPartnerOut) {
+      this.controls.partnerBranchId.patchValue(this.data.partnerBranchId)
+    }
 
     if (!this.data.deliver) {
       this.initBarcodeArray()
@@ -80,6 +86,21 @@ export class UpdateLocationComponent implements OnInit {
       })
       this.locationForm.controls.packetLocationId.setValidators([])
       this.locationForm.controls.packetLocationId.updateValueAndValidity()
+    }
+
+    if (this.data.isCustomerHomeIn) {
+      this.locationForm.patchValue({
+        id: this.data.response.id,
+        receiverType: this.data.response.receiverType,
+        masterLoanId: this.data.masterLoanId,
+        mobileNumber: this.data.response.mobileNumber,
+        releaseId: this.data.releaseId,
+        user: this.data.response.firstName + '' + this.data.response.lastName
+      })
+
+      this.controls.receiverType.disable();
+      this.controls.mobileNumber.disable();
+      this.getDetailsByMobile()
     }
   }
 
@@ -106,9 +127,14 @@ export class UpdateLocationComponent implements OnInit {
   }
 
   getPacketLocationList() {
-
-    if (this.data.isOut) {
-      this.updateLocationService.getNextPacketLocation({ masterLoanId: this.data.packetData[0].masterLoanId }).pipe(map(res => {
+    let masterLoanId
+    if (this.data.isOut || this.data.isPartnerOut) {
+      if (this.data.masterLoanId) {
+        masterLoanId = this.data.masterLoanId;
+      } else {
+        masterLoanId = this.data.packetData[0].masterLoanId
+      }
+      this.updateLocationService.getNextPacketLocation({ masterLoanId }).pipe(map(res => {
         this.packetLocations = res.data;
       })).subscribe()
     } else {
@@ -116,6 +142,10 @@ export class UpdateLocationComponent implements OnInit {
         this.packetLocations = res.data;
         if (this.data.stage == 11) {
           this.packetLocations = this.packetLocations.filter(e => e.id === 2 || e.id === 4)
+        }
+        if (this.data.isCustomerHomeIn) {
+          this.packetLocations = this.packetLocations.filter(e => e.id === 7)
+
         }
         this.deliveryLocations = res.data
       })).subscribe()
@@ -175,6 +205,26 @@ export class UpdateLocationComponent implements OnInit {
           this.dialogRef.close(true);
         }
       });
+    } else if (this.data.isPartnerOut) {
+      this.updateLocationService.collectPacket(this.locationForm.value).subscribe(res => {
+        if (res) {
+          const msg = 'Packet Location Updated Successfully';
+          this.toastr.success(msg);
+          this.dialogRef.close(true);
+        }
+      })
+    } else if (this.data.isCustomerHomeIn) {
+      this.controls.receiverType.enable();
+      this.updateLocationService.customerHomeOut(this.locationForm.value, true).subscribe(res => {
+        if (res) {
+          const msg = 'Packet Location Updated Successfully';
+          this.toastr.success(msg);
+          this.dialogRef.close(true);
+        }
+      }, err => { },
+        () => {
+          this.controls.receiverType.disable();
+        })
     } else {
       this.updateLocationService.addPacketLocation(this.locationForm.value).subscribe(res => {
         if (res) {
@@ -202,7 +252,7 @@ export class UpdateLocationComponent implements OnInit {
   }
 
   initBarcodeArray() {
-    if (this.data.packetData.length) {
+    if (this.data.packetData && this.data.packetData.length) {
       for (let index = 0; index < this.data.packetData.length; index++) {
         this.barcodeNumber.push(this.newBarcode())
         const packetObject = { isVerified: false }
@@ -457,29 +507,35 @@ export class UpdateLocationComponent implements OnInit {
   }
 
   setUserType() {
-    const packetLocationId = this.controls.packetLocationId.value
-    this.controls.receiverType.patchValue('')
+    if (!this.data.isCustomerHomeIn) {
+      const packetLocationId = this.controls.packetLocationId.value
+      this.controls.receiverType.patchValue('')
 
-    switch (Number(packetLocationId)) {
-      case 2:
-        this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
-        break;
-
-      case 4:
-        if (this.data.isOut) {
+      switch (Number(packetLocationId)) {
+        case 2:
           this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
-        } else {
+          break;
+
+        case 4:
+          if (this.data.isOut) {
+            this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
+          } else {
+            this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'PartnerUser')
+          }
+          break
+
+        case 3:
+          this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
+          break;
+
+        case 5:
           this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'PartnerUser')
-        }
-        break
+          break;
 
-      case 3:
-        this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
-        break;
-
-      default:
-        this.userTypeListFiltered = this.userTypeList
-        break;
+        default:
+          this.userTypeListFiltered = this.userTypeList
+          break;
+      }
     }
   }
 }
