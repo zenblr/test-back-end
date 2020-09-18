@@ -71,8 +71,9 @@ export class UpdateLocationService {
     );
   }
 
-  customerHomeOut(data,isFullRelease):Observable<any> {
-    data.isFullRelease = isFullRelease
+  customerHomeOut(data, isFullRelease, isPartRelease): Observable<any> {
+    data.isFullRelease = isFullRelease;
+    data.isPartRelease = isPartRelease
     return this.http.post<any>(`/api/packet-tracking/packet-release-home-in`, data).pipe(
       map(res => res),
       catchError(err => {
