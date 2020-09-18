@@ -171,6 +171,8 @@ export class AppliedLoanComponent implements OnInit {
   }
 
   checkout(item?) {
+    if (!this.permission.submitPacketLocation) return
+
     let loanData: any = {};
     this.AppliedLoanService.checkout(item.customer.id).pipe(map(res => {
       loanData.referenceCode = res.referenceCode
@@ -207,6 +209,9 @@ export class AppliedLoanComponent implements OnInit {
   }
 
   getPacketDetails(item) {
+
+    if (!this.permission.submitPacketLocation) return
+
     const masterLoanId = item.id
     this.packetTrackingService.viewPackets({ masterLoanId }).pipe(map(res => {
       // console.log(res.data[0].packets)
@@ -216,4 +221,8 @@ export class AppliedLoanComponent implements OnInit {
     )).subscribe()
   }
 
+  getPermission() {
+    const notAllowed = this.permission.submitPacketLocation ? false : true
+    return notAllowed
+  }
 }

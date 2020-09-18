@@ -143,14 +143,14 @@
                                         <label class="kt-padding-l-10 mandatory">Select Partner Branch</label>
                                     </div>
                                     <div class="col-8">
-                                        <select class="form-control" formControlName="partnerBranchId"
-                                            [class.isError]="locationForm.controls.partnerBranchId.invalid &&  locationForm.controls.partnerBranchId.touched">
+                                        <select class="form-control" formControlName="deliveryPartnerBranchId"
+                                            [class.isError]="locationForm.controls.deliveryPartnerBranchId.invalid &&  locationForm.controls.deliveryPartnerBranchId.touched">
                                             <option selected disabled value=null>Select Branch</option>
                                             <option [value]="item.id" *ngFor="let item of deliveryPartnerBranches">
                                                 {{item.name | titlecase}}</option>
                                         </select>
                                         <mat-error
-                                            *ngIf="locationForm.controls.partnerBranchId.touched && locationForm.controls.partnerBranchId.errors?.required">
+                                            *ngIf="locationForm.controls.deliveryPartnerBranchId.touched && locationForm.controls.deliveryPartnerBranchId.errors?.required">
                                             Required field
                                         </mat-error>
                                     </div>

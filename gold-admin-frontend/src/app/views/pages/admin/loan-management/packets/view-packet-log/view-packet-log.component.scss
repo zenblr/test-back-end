@@ -3,4 +3,16 @@
         font-weight: 500;
         color: #454D67;
     }
+    .mat-column-location {
+        padding-left: 0; 
+    }
+    .mat-column-timeTaken {
+        flex: 0 0 8%;
+    }
+    .mat-column-time {
+        flex: 0 0 8%;
+    }
+    .mat-column-date {
+        flex: 0 0 8%;
+    }
 }

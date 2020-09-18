@@ -785,6 +785,9 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/admin/global-map')) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes('/admin/loan-management/view-location/')) {
+			this.showBackButton = true;
+		}
 	}
 
 	action(event: Event) {
