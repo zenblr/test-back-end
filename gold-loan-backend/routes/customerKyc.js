@@ -3,7 +3,7 @@ const route = express.Router();
 const { wrapper } = require('../utils/errorWrap');
 const validationError = require('../middleware/validationError');
 const { submitCustomerKycAddressValidation, submitAllKycInfoValidation, submitCustomerKycBankDetailValidation,
-    submitCustomerKycInfoValidation, submitCustomerKycpersonalDetailValidation, getCustomerDetailsValidation, submitCustomerKycDetailValidation,z } = require('../validations/customerKyc');
+    submitCustomerKycInfoValidation, submitCustomerKycpersonalDetailValidation, getCustomerDetailsValidation, submitCustomerKycDetailValidation,checkDuplicatePan } = require('../validations/customerKyc');
 const { getCustomerDetails, submitCustomerKycinfo, submitCustomerKycAddress, submitCustomerKycPersonalDetail, submitCustomerKycBankDetail, submitAllKycInfo, appliedKyc, getReviewAndSubmit } = require('../controllers/customerKyc/customerKyc')
 
 const { submitAppKyc, getAssignedCustomer,editAppKyc } = require('../controllers/customerKyc/appCustomerKyc')
@@ -33,7 +33,7 @@ route.post('/submit-kyc', submitCustomerKycDetailValidation, validationError, ch
 
 route.post('/edit-kyc', submitCustomerKycDetailValidation, validationError, checkAuth, wrapper(editAppKyc))
 
-
+route.post('/check-pan-card', checkAuth, wrapper(checkDuplicatePan));
 
 route.get('/get-assigned-customer', checkAuth, wrapper(getAssignedCustomer))
 
