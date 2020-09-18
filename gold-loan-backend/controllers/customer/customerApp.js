@@ -141,8 +141,9 @@ exports.readPartnerBranch = async (req, res, next) => {
 exports.readMyLoan = async (req, res, next) => {
     let customerId = req.userData.id;
     let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
+
     let loanDetails = await models.customerLoanMaster.findAll({
-        where: { isActive: true, customerId: customerId, loanStageId: stageId.id },
+        where: { isActive: true, customerId: customerId, isLoanCompleted: true },
         order: [
             [models.customerLoan, 'id', 'asc'],
             [models.customerLoan, models.customerLoanInterest, 'id', 'asc']
