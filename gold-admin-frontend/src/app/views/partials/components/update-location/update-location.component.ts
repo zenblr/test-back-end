@@ -215,7 +215,14 @@ export class UpdateLocationComponent implements OnInit {
       })
     } else if (this.data.isCustomerHomeIn) {
       this.controls.receiverType.enable();
-      this.updateLocationService.customerHomeOut(this.locationForm.value, true).subscribe(res => {
+      let isPartRelease = false
+      let isFullRelease = false
+      if(this.data.isPartRelease){
+        isPartRelease = true
+      }else{
+        isFullRelease = true
+      }
+      this.updateLocationService.customerHomeOut(this.locationForm.value, isFullRelease,isPartRelease).subscribe(res => {
         if (res) {
           const msg = 'Packet Location Updated Successfully';
           this.toastr.success(msg);
