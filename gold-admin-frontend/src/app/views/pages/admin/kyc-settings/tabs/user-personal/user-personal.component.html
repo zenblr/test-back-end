@@ -264,6 +264,9 @@
                                     <mat-error *ngIf="controls.email.errors?.required && controls.email.touched">
                                         Required field
                                     </mat-error>
+                                    <mat-error *ngIf="controls.email.errors?.pattern && controls.email.touched">
+                                        Invalid Input
+                                    </mat-error>
                                 </div>
                             </div>
                         </div>
@@ -277,6 +280,9 @@
                                     <input type="text" class="form-control" formControlName="alternateEmail"
                                         placeholder="abc@gmail.com"
                                         [class.isError]="controls.alternateEmail.touched && controls.alternateEmail.invalid">
+                                        <mat-error *ngIf="controls.alternateEmail.errors?.pattern && controls.alternateEmail.touched">
+                                            Invalid Input
+                                        </mat-error>
                                 </div>
                             </div>
                         </div>
@@ -289,7 +295,7 @@
                                     <label>Landline Number</label>
                                 </div>
                                 <div class="col-7">
-                                    <input type="text" class="form-control" formControlName="landLineNumber"
+                                    <input type="text" class="form-control" formControlName="landLineNumber" numbersOnly
                                         [class.isError]="controls.landLineNumber.touched && controls.landLineNumber.invalid">
                                     <mat-error
                                         *ngIf="controls.landLineNumber.errors?.required && controls.landLineNumber.touched">
@@ -324,7 +330,6 @@
                                 </div>
                                 <div class="col-7">
                                     <input type="text" class="form-control" formControlName="cinNumber"
-                                        placeholder="abc@gmail.com"
                                         [class.isError]="controls.cinNumber.touched && controls.cinNumber.invalid">
                                     <mat-error
                                         *ngIf="controls.cinNumber.errors?.required && controls.cinNumber.touched">
@@ -385,25 +390,106 @@
                         </div>
                     </div>
 
-                    <!-- <div *ngIf="images.residential.length > 0">
-                        <div class="row">
-                            <div class="col-6" [class.offset-4]="images.residential.length == 1"
-                                *ngFor="let img of images.residential, index as idx">
-                                <div class="img-container">
-                                    <img *ngIf="!isPdf(img)" class="fetched-image" [src]="img" alt=""
-                                        (click)="preview(img, idx)">
-                                    <img *ngIf="!sameAdd && addressForm.controls.addressProofTypeId.value != 2"
-                                        src="../../../../../assets/media/icons/cancel.svg" alt=""
-                                        class="kt-pointer remove-icon" (click)="removeImages(idx, 'residential');">
-                                    <div class="iframeWrapper" (click)="previewPdf(img)">
-                                        <iframe [src]="img | safe : 'resourceUrl'" height="250" width="290"
-                                            scrolling="no" *ngIf="isPdf(img)"></iframe>
+                    <div class="row">
+                        <div class="col">
+                            <div class="offset-4 img-container" *ngIf="images.constitutionsDeed.length == 0">
+                                <img class="placeholder-image"
+                                    src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder">
+                            </div>
+                            <div *ngIf="images.constitutionsDeed.length > 0">
+                                <div class="row">
+                                    <div class="col-6" [class.offset-4]="images.constitutionsDeed.length == 1"
+                                        *ngFor="let img of images.constitutionsDeed, index as idx">
+                                        <div class="img-container">
+                                            <img *ngIf="!isPdf(img.URL)" class="fetched-image" [src]="img.URL" alt=""
+                                                (click)="preview(img.URL, idx)">
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                class="kt-pointer remove-icon"
+                                                (click)="removeImages(idx, 'constitutionsDeed');">
+                                            <div class="iframeWrapper" (click)="previewPdf(img.URL)">
+                                                <iframe [src]="img.URL | safe : 'resourceUrl'" height="250" width="290"
+                                                    scrolling="no" *ngIf="isPdf(img.URL)"></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="offset-4 img-container" *ngIf="images.gstCertificate.length == 0">
+                                <img class="placeholder-image"
+                                    src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder">
+                            </div>
+                            <div *ngIf="images.gstCertificate.length > 0">
+                                <div class="row">
+                                    <div class="col-6" [class.offset-4]="images.gstCertificate.length == 1"
+                                        *ngFor="let img of images.gstCertificate, index as idx">
+                                        <div class="img-container">
+                                            <img *ngIf="!isPdf(img.URL)" class="fetched-image" [src]="img.URL" alt=""
+                                                (click)="preview(img.URL, idx)">
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                class="kt-pointer remove-icon"
+                                                (click)="removeImages(idx, 'gstCertificate');">
+                                            <div class="iframeWrapper" (click)="previewPdf(img.URL)">
+                                                <iframe [src]="img.URL | safe : 'resourceUrl'" height="250" width="290"
+                                                    scrolling="no" *ngIf="isPdf(img.URL)"></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="row">
+                        <div class="col">
+                            <div *ngIf="images.constitutionsDeed.length > 0">
+                                <div class="row">
+                                    <div class="col-6" [class.offset-4]="images.constitutionsDeed.length == 1"
+                                        *ngFor="let img of images.constitutionsDeed, index as idx">
+                                        <div class="img-container">
+                                            <img *ngIf="!isPdf(img.URL)" class="fetched-image" [src]="img.URL" alt=""
+                                                (click)="preview(img.URL, idx)">
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                class="kt-pointer remove-icon"
+                                                (click)="removeImages(idx, 'constitutionsDeed');">
+                                            <div class="iframeWrapper" (click)="previewPdf(img.URL)">
+                                                <iframe [src]="img.URL | safe : 'resourceUrl'" height="250" width="290"
+                                                    scrolling="no" *ngIf="isPdf(img.URL)"></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div *ngIf="images.gstCertificate.length > 0">
+                                <div class="row">
+                                    <div class="col-6" [class.offset-4]="images.gstCertificate.length == 1"
+                                        *ngFor="let img of images.gstCertificate, index as idx">
+                                        <div class="img-container">
+                                            <img *ngIf="!isPdf(img.URL)" class="fetched-image" [src]="img.URL" alt=""
+                                                (click)="preview(img.URL, idx)">
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                class="kt-pointer remove-icon"
+                                                (click)="removeImages(idx, 'gstCertificate');">
+                                            <div class="iframeWrapper" (click)="previewPdf(img.URL)">
+                                                <iframe [src]="img.URL | safe : 'resourceUrl'" height="250" width="290"
+                                                    scrolling="no" *ngIf="isPdf(img.URL)"></iframe>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div> -->
 
+
+                    <div class="kt-margin-t-20 offset-2">
+                        <kt-button [value]="'Next'" [type]="'button'" (action)="submit()"></kt-button>
+                    </div>
                 </div>
             </form>
         </div>

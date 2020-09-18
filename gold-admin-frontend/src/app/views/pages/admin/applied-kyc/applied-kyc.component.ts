@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AppliedKycDatasource } from '../../../../core/applied-kyc/datasources/applied-kyc.datasource';
 import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
-import { MatPaginator, MatSort, MatDialog,MatTooltipModule,TooltipPosition } from '@angular/material';
+import { MatPaginator, MatSort, MatDialog, MatTooltipModule, TooltipPosition } from '@angular/material';
 import { Subject, Subscription, merge } from 'rxjs';
 import { tap, takeUntil, skip, distinctUntilChanged, map } from 'rxjs/operators';
 import { DataTableService } from '../../../../core/shared/services/data-table.service';
@@ -20,7 +20,7 @@ export class AppliedKycComponent implements OnInit {
 
   filteredDataList: any = {};
   dataSource: AppliedKycDatasource;
-  displayedColumns = ['fullName', 'pan', 'customerId', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view'];
+  displayedColumns = ['fullName', 'pan', 'customerId', 'date', 'cceApprovalStatus', 'kycStatus', 'scrapCceApprovalStatus', 'scrapKycStatus', 'action', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;

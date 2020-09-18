@@ -93,8 +93,10 @@ export class UserPersonalComponent implements OnInit {
       } else {
         this.controls.gstinNumber.setValidators([Validators.required])
         this.controls.gstinNumber.updateValueAndValidity()
-        this.controls.email.setValidators([Validators.required])
+        this.controls.email.setValidators([Validators.required, Validators.pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')])
         this.controls.email.updateValueAndValidity()
+        this.controls.alternateEmail.setValidators([Validators.pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')])
+        this.controls.alternateEmail.updateValueAndValidity()
       }
     }
   }
@@ -148,7 +150,7 @@ export class UserPersonalComponent implements OnInit {
 
             this.ref.detectChanges();
           }
-          if (type == "constitutionsDeed" && this.images.constitutionsDeed.length < 2) {
+          else if (type == "constitutionsDeed" && this.images.constitutionsDeed.length < 2) {
             this.images.constitutionsDeed.push({ path: res.uploadFile.path, URL: res.uploadFile.URL })
             console.log(this.images)
             const temp = []
@@ -157,16 +159,17 @@ export class UserPersonalComponent implements OnInit {
             })
             this.personalForm.get('constitutionsDeedFileName').patchValue(res.uploadFile.originalname);
             this.personalForm.get('constitutionsDeed').patchValue(temp);
-          }
-          if (type == "gstCertificate" && this.images.gstCertificate.length < 2) {
+          } else if (type == "gstCertificate" && this.images.gstCertificate.length < 2) {
             this.images.gstCertificate.push({ path: res.uploadFile.path, URL: res.uploadFile.URL })
             console.log(this.images)
             const temp = []
-            this.images.constitutionsDeed.forEach(value => {
+            this.images.gstCertificate.forEach(value => {
               temp.push(value.path)
             })
             this.personalForm.get('gstCertificateFileName').patchValue(res.uploadFile.originalname);
             this.personalForm.get('gstCertificate').patchValue(temp);
+          } else {
+            this.toastr.error("Cannot upload more than two images")
           }
 
         }), catchError(err => {
@@ -243,18 +246,6 @@ export class UserPersonalComponent implements OnInit {
   }
 
   previewImage(value) {
-    // let temp = [];
-    // temp.push(this.controls.profileImage.value, this.controls.signatureProof.value);
-    // var filteredArray = temp.filter(value => value != '');
-
-    // let index = temp.indexOf(value);
-    // this.dialog.open(ImagePreviewDialogComponent, {
-    //   data: {
-    //     images: filteredArray,
-    //     index: index
-    //   },
-    //   width: "auto"
-    // })
 
     const img = value
     let images = []
@@ -287,6 +278,37 @@ export class UserPersonalComponent implements OnInit {
     }
   }
 
+  preview(value, formIndex) {
+    let filterImage = []
+    Object.keys(this.images).forEach(res => {
+      Array.prototype.push.apply(filterImage, this.getURLArray(res));
+    })
+    var temp = []
+    temp = filterImage.filter(e => {
+      let ext = this.sharedService.getExtension(e)
+      return ext !== 'pdf'
+    })
+    let index = temp.indexOf(value)
+    this.dialog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: temp,
+        index: index
+      },
+      width: "auto"
+    })
+  }
+
+  previewPdf(img) {
+    this.dialog.open(PdfViewerComponent, {
+      data: {
+        pdfSrc: img,
+        page: 1,
+        showAll: true
+      },
+      width: "80%"
+    })
+  }
+
   removeImage() {
     this.personalForm.patchValue({
       signatureProof: null,
@@ -310,5 +332,32 @@ export class UserPersonalComponent implements OnInit {
 
   changeMaritalStatus() {
     this.controls.spouseName.reset()
+  }
+
+  removeImages(index, type) {
+    if (type == 'constitutionsDeed') {
+      this.images.constitutionsDeed.splice(index, 1);
+      this.personalForm.get('constitutionsDeed').patchValue(this.getPathArray('constitutionsDeed'));
+    }
+    if (type == 'gstCertificate') {
+      this.images.gstCertificate.splice(index, 1);
+      this.personalForm.get('gstCertificate').patchValue(this.getPathArray('gstCertificate'));
+    }
+  }
+
+  getPathArray(type: string) {
+    const temp = []
+    this.images[type].forEach(value => {
+      temp.push(value.path)
+    })
+    return temp
+  }
+
+  getURLArray(type: string) {
+    const temp = []
+    this.images[type].forEach(value => {
+      temp.push(value.URL)
+    })
+    return temp
   }
 }

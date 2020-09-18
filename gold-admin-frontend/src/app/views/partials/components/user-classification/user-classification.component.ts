@@ -89,8 +89,12 @@ export class UserClassificationComponent implements OnInit {
       if (this.userBankService.kycDetails.KycClassification !== null) {
         this.customerDetails = this.userBankService.kycDetails.KycClassification
         this.customerDetails.ratingStage = this.userBankService.kycDetails.ratingStage
+        this.customerDetails.moduleId = this.userBankService.kycDetails.moduleId
+        this.customerDetails.userType = this.userBankService.kycDetails.userType
       } else {
         this.customerDetails.ratingStage = this.userBankService.kycDetails.ratingStage
+        this.customerDetails.moduleId = this.userBankService.kycDetails.moduleId
+        this.customerDetails.userType = this.userBankService.kycDetails.userType
       }
     } else {
       this.customerDetails = this.userDetailsService.userData;
@@ -111,6 +115,15 @@ export class UserClassificationComponent implements OnInit {
     if (editable.editable) {
       this.editRating = true;
       // console.log(this.customerDetails)
+
+      if (this.customerDetails.moduleId == 3) {
+        this.customerDetails.kycRatingFromCce = this.customerDetails.scrapKycRatingFromCce
+        this.customerDetails.kycStatusFromCce = this.customerDetails.scrapKycStatusFromCce
+        this.customerDetails.reasonFromCce = this.customerDetails.scrapReasonFromCce
+        this.customerDetails.kycStatusFromOperationalTeam = this.customerDetails.scrapKycStatusFromOperationalTeam
+        this.customerDetails.reasonFromOperationalTeam = this.customerDetails.scrapReasonFromOperationalTeam
+      }
+
       this.custClassificationForm.patchValue(this.customerDetails)
       this.custClassificationForm.patchValue({ reasonForOther: this.customerDetails.reasonFromCce })
 
@@ -122,6 +135,7 @@ export class UserClassificationComponent implements OnInit {
           this.cceControls.reasonForOther.patchValue('Other')
         }
       }
+
       this.ref.detectChanges();
     }
   }
@@ -136,7 +150,8 @@ export class UserClassificationComponent implements OnInit {
       reasonFromCce: [],
       reasonForOther: [],
       kycStatusFromOperationalTeam: ['pending', [Validators.required]],
-      reasonFromOperationalTeam: ['']
+      reasonFromOperationalTeam: [''],
+      moduleId: [this.customerDetails.moduleId]
     })
 
     if (this.permission.cceKycRating && !this.permission.opsKycRating && this.customerDetails.ratingStage == 1) {
@@ -216,10 +231,6 @@ export class UserClassificationComponent implements OnInit {
   }
 
   submit() {
-
-    // console.log(this.custClassificationForm.value)
-
-
     if (this.custClassificationForm.invalid) {
       this.custClassificationForm.markAllAsTouched();
       if (this.custClassificationForm.controls.reasonFromCce.invalid) {
@@ -232,12 +243,20 @@ export class UserClassificationComponent implements OnInit {
 
     this.custClassificationForm.patchValue({
       behaviourRatingCce: +(this.custClassificationForm.get('kycRatingFromCce').value),
-      // idProofRatingCce: +(this.custClassificationForm.get('idProofRatingCce').value),
-      // addressProofRatingCce: +(this.custClassificationForm.get('addressProofRatingCce').value),
     })
 
     if (this.customerDetails.ratingStage === 2) {
-      this.custClassificationService.opsTeamRating(this.custClassificationForm.value).pipe(
+      const otDataScrap = {
+        customerId: this.customerDetails.customerId,
+        customerKycId: this.customerDetails.customerKycId,
+        moduleId: this.custClassificationForm.controls.moduleId.value,
+        scrapKycStatusFromOperationalTeam: this.custClassificationForm.controls.kycStatusFromOperationalTeam.value,
+        scrapReasonFromOperationalTeam: this.custClassificationForm.controls.reasonFromOperationalTeam.value
+      }
+
+      const otData = this.customerDetails.moduleId == 3 ? otDataScrap : this.custClassificationForm.value
+
+      this.custClassificationService.opsTeamRating(otData).pipe(
         map(res => {
           if (res) {
             this.toastr.success(this.titlecase.transform(res.message));
@@ -247,7 +266,17 @@ export class UserClassificationComponent implements OnInit {
         })
       ).subscribe();
     } else {
-      this.custClassificationService.cceRating(this.custClassificationForm.value).pipe(
+      const cceDataScrap = {
+        customerId: this.customerDetails.customerId,
+        customerKycId: this.customerDetails.customerKycId,
+        moduleId: this.custClassificationForm.controls.moduleId.value,
+        scrapKycRatingFromCce: Number(this.custClassificationForm.controls.kycRatingFromCce.value),
+        scrapKycStatusFromCce: this.custClassificationForm.controls.kycStatusFromCce.value,
+        scrapReasonFromCce: this.custClassificationForm.controls.reasonFromCce.value
+      }
+
+      const cceData = this.customerDetails.moduleId == 3 ? cceDataScrap : this.custClassificationForm.value
+      this.custClassificationService.cceRating(cceData).pipe(
         map(res => {
           if (res) {
             this.toastr.success(this.titlecase.transform(res.message));

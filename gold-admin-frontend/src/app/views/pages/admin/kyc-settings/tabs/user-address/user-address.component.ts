@@ -105,6 +105,7 @@ export class UserAddressComponent implements OnInit {
 
       this.identityForm.controls.identityTypeId.disable()
       this.identityForm.controls.identityProof.disable()
+      this.identityForm.controls.identityProofImg.disable()
       this.identityForm.controls.identityProofFileName.disable()
       this.identityForm.controls.identityProofNumber.disable()
 
@@ -183,9 +184,9 @@ export class UserAddressComponent implements OnInit {
           throw err
         }),
         finalize(() => {
-          this.identity.nativeElement.value = '';
-          this.permanent.nativeElement.value = '';
-          this.residential.nativeElement.value = '';
+          if (this.identity && this.identity.nativeElement.value) this.identity.nativeElement.value = '';
+          if (this.permanent && this.permanent.nativeElement.value) this.permanent.nativeElement.value = '';
+          if (this.residential && this.residential.nativeElement.value) this.residential.nativeElement.value = '';
         })
       ).subscribe()
     }
@@ -285,7 +286,15 @@ export class UserAddressComponent implements OnInit {
       this.addressControls.at(1).disable();
       this.addressControls.at(1).patchValue(this.addressControls.at(0).value)
 
-      this.addressControls.at(1)['controls'].addressType.patchValue('residential')
+      if (this.identityForm.controls.moduleId.value == 3) {
+        if (this.identityForm.controls.userType.value === 'Corporate') {
+        this.addressControls.at(1)['controls'].addressType.patchValue('communication')
+        }
+      }
+      if (this.identityForm.controls.moduleId.value == 1) {
+        this.addressControls.at(1)['controls'].addressType.patchValue('residential')
+      }
+
       this.addressFileNameArray2 = this.addressFileNameArray1
 
       this.addressControls.at(1)['controls'].addressProofFileName.patchValue(this.addressFileNameArray2[this.addressFileNameArray2.length - 1])
@@ -294,7 +303,17 @@ export class UserAddressComponent implements OnInit {
       this.cities1 = [];
       this.images.residential = [];
       this.addressControls.at(1).reset();
-      this.addressControls.at(1)['controls'].addressType.patchValue('residential')
+
+      if (this.identityForm.controls.moduleId.value == 3) {
+        if (this.identityForm.controls.userType.value === 'Corporate') {
+        this.addressControls.at(1)['controls'].addressType.patchValue('communication')
+        }
+      }
+      if (this.identityForm.controls.moduleId.value == 1) {
+        this.addressControls.at(1)['controls'].addressType.patchValue('residential')
+      }
+
+      // this.addressControls.at(1)['controls'].addressType.patchValue('residential')
       this.addressControls.at(1).enable();
       this.addressFileNameArray2 = []
     }

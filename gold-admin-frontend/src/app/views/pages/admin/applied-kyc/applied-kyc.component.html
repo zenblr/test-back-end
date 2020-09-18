@@ -100,6 +100,73 @@
                     </mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="scrapCceApprovalStatus">
+                    <mat-header-cell *matHeaderCellDef>Scrap CCE Approval Status</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span class="text-success"
+                            *ngIf="role.customerKycClassification?.scrapKycStatusFromCce == 'approved'">
+                            {{role.customerKycClassification?.scrapKycStatusFromCce | titlecase}} </span>
+                        <span *ngIf="role.customerKycClassification?.scrapKycStatusFromCce == 'pending'">
+                            <span
+                                class="text-warning kt-padding-r-5">{{role.customerKycClassification?.scrapKycStatusFromCce | titlecase}}</span>
+                            <span *ngIf="role.customerKycClassification?.scrapReasonFromCce"
+                                class="material-icons custom-icon" mat-raised-button
+                                matTooltip={{role.customerKycClassification?.scrapReasonFromCce}}
+                                matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                                info
+                            </span>
+                        </span>
+                        <span *ngIf="role.customerKycClassification?.scrapKycStatusFromCce == 'rejected'">
+                            <span
+                                class="text-danger kt-padding-r-5">{{role.customerKycClassification?.scrapKycStatusFromCce | titlecase}}</span>
+                            <span class="material-icons custom-icon" mat-raised-button
+                                matTooltip={{role.customerKycClassification?.scrapReasonFromCce}}
+                                matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                                info
+                            </span>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="scrapKycStatus">
+                    <mat-header-cell *matHeaderCellDef>Scrap KYC Status</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span class="text-success" *ngIf="role.customer?.scrapKycStatus == 'approved'">
+                            {{role.customer?.scrapKycStatus | titlecase}}
+                        </span>
+                        <span *ngIf="role.customer?.scrapKycStatus == 'incomplete'">
+                            <span class="text-warning">{{role.customer?.scrapKycStatus | titlecase}}</span>
+
+                            <span class="material-icons custom-icon" mat-raised-button
+                                matTooltip={{role.customerKycClassification?.scrapReasonFromOperationalTeam}}
+                                matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                                info
+                            </span>
+                        </span>
+                        <span *ngIf="role.customer?.scrapKycStatus == 'pending'">
+                            <span class="text-warning kt-padding-r-5">
+                                {{role.customer?.scrapKycStatus | titlecase}}</span>
+
+                            <span *ngIf="role.customerKycClassification?.scrapReasonFromOperationalTeam"
+                                class="material-icons custom-icon" mat-raised-button
+                                matTooltip={{role.customerKycClassification?.scrapReasonFromOperationalTeam}}
+                                matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                                info
+                            </span>
+                        </span>
+                        <span *ngIf="role.customer?.scrapKycStatus == 'rejected'">
+                            <span
+                                class="text-danger kt-padding-r-5">{{role.customer?.scrapKycStatus | titlecase}}</span>
+
+                            <span class="material-icons  custom-icon" mat-raised-button
+                                matTooltip={{role.customerKycClassification?.scrapReasonFromOperationalTeam}}
+                                matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                                info
+                            </span>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let role">
@@ -111,7 +178,12 @@
                                     *ngIf="(permission.cceKycRating  && role.customerKycClassification?.kycStatusFromCce == 'pending') 
                                     || (permission.opsKycRating && role.customerKycClassification?.kycStatusFromCce == 'approved' && 
                                     (role.customerKycClassification?.kycStatusFromOperationalTeam == 'incomplete' || role.customerKycClassification?.kycStatusFromOperationalTeam == 'pending'))">
-                                    <!-- <img src="../../../../assets/media/icons/action.svg"> -->
+                                    <strong>Action ></strong>
+                                </span>
+                                <span
+                                    *ngIf="(permission.cceKycRating  && role.customerKycClassification?.scrapKycStatusFromCce == 'pending') 
+                                    || (permission.opsKycRating && role.customerKycClassification?.scrapKycStatusFromCce == 'approved' && 
+                                    (role.customerKycClassification?.scrapKycStatusFromOperationalTeam == 'incomplete' || role.customerKycClassification?.scrapKycStatusFromOperationalTeam == 'pending'))">
                                     <strong>Action ></strong>
                                 </span>
                             </div>

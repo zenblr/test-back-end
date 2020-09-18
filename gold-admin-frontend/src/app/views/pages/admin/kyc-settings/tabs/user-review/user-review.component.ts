@@ -53,6 +53,8 @@ export class UserReviewComponent implements OnInit {
   addressFileNameArray2 = [];
   panButton = true;
   isPanVerified = false;
+  customerOrganizationDetail: FormGroup;
+  organizationTypes: any;
 
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
@@ -95,27 +97,35 @@ export class UserReviewComponent implements OnInit {
     this.initForm();
 
     this.getStates();
-    this.getIdentityType();
+    if (this.data.moduleId == 1) {
+      this.getIdentityType();
+    }
     this.getAddressProofType();
-    this.getOccupation();
+    if (this.data.userType && this.data.userType === "Corporate") {
+      this.getOrganizationTypes()
+    } else {
+      this.getOccupation();
+    }
 
-    let identityArray = this.data.customerKycReview.customerKycPersonal
-    this.identityImageArray = identityArray.identityProofImage
-    this.identityIdArray = identityArray.identityProof
-    this.reviewForm.controls.identityProof.patchValue(this.identityIdArray);
-    this.customerKycPersonal.controls.identityProof.patchValue(this.identityIdArray);
-
+    if (this.data.moduleId == 1) {
+      let identityArray = this.data.customerKycReview.customerKycPersonal
+      this.identityImageArray = identityArray.identityProofImage
+      this.identityIdArray = identityArray.identityProof
+      this.reviewForm.controls.identityProof.patchValue(this.identityIdArray);
+      this.customerKycPersonal.controls.identityProof.patchValue(this.identityIdArray);
+    }
 
     let addressArray1 = this.data.customerKycReview.customerKycAddress[0]
     this.addressImageArray1 = addressArray1.addressProofImage
     this.addressIdArray1 = addressArray1.addressProof
     this.customerKycAddressOne.controls.addressProof.patchValue(this.addressIdArray1);
 
-
-    let addressArray2 = this.data.customerKycReview.customerKycAddress[1]
-    this.addressImageArray2 = addressArray2.addressProofImage
-    this.addressIdArray2 = addressArray2.addressProof
-    this.customerKycAddressTwo.controls.addressProof.patchValue(this.addressIdArray2);
+    if (this.data.moduleId == 1 || (this.data.moduleId == 3 && this.data.userType == 'Corporate')) {
+      let addressArray2 = this.data.customerKycReview.customerKycAddress[1]
+      this.addressImageArray2 = addressArray2.addressProofImage
+      this.addressIdArray2 = addressArray2.addressProof
+      this.customerKycAddressTwo.controls.addressProof.patchValue(this.addressIdArray2);
+    }
 
     this.controls.panCardNumber.valueChanges.subscribe(res => {
       if (this.controls.panCardNumber.valid) {
@@ -143,7 +153,7 @@ export class UserReviewComponent implements OnInit {
   initForm() {
     this.reviewForm = this.fb.group({
       id: [this.data.customerKycReview.id],
-      profileImage: [this.data.customerKycReview.customerKycPersonal.profileImage, [Validators.required]],
+      profileImage: [, [Validators.required]],
       firstName: [this.data.customerKycReview.firstName, [Validators.required]],
       lastName: [this.data.customerKycReview.lastName, [Validators.required]],
       mobileNumber: [this.data.customerKycReview.mobileNumber, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
@@ -152,11 +162,24 @@ export class UserReviewComponent implements OnInit {
       form60: [],
       panImage: [this.data.customerKycReview.panImage],
       panImg: [this.data.customerKycReview.panImg, [Validators.required]],
-      identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
+      identityTypeId: [, [Validators.required]],
       identityProof: [, [Validators.required]],
       identityProofFileName: [],
-      identityProofNumber: [this.data.customerKycReview.customerKycPersonal.identityProofNumber, [Validators.required, Validators.pattern('[0-9]{12}')]],
+      identityProofNumber: [, [Validators.required, Validators.pattern('[0-9]{12}')]],
+      userType: [],
+      organizationTypeId: [],
+      dateOfIncorporation: []
     })
+
+    // User Corporate
+    if (this.data.userType && this.data.userType == 'Corporate') {
+      this.reviewForm.controls.profileImage.disable()
+      this.reviewForm.controls.identityTypeId.disable()
+      this.reviewForm.controls.identityProof.disable()
+      this.reviewForm.controls.identityProofFileName.disable()
+      this.reviewForm.controls.identityProofNumber.disable()
+    }
+
     this.customerKycAddressOne = this.fb.group({
       id: this.data.customerKycReview.customerKycAddress[0].id,
       customerKycId: this.data.customerKycReview.customerKycAddress[0].customerKycId,
@@ -170,44 +193,86 @@ export class UserReviewComponent implements OnInit {
       addressProofFileName: [],
       addressProofTypeId: [this.data.customerKycReview.customerKycAddress[0].addressProofType.id, [Validators.required]],
       addressProofNumber: [this.data.customerKycReview.customerKycAddress[0].addressProofNumber, [Validators.required]],
+    })
 
-    })
-    this.customerKycAddressTwo = this.fb.group({
-      id: this.data.customerKycReview.customerKycAddress[1].id,
-      customerKycId: this.data.customerKycReview.customerKycAddress[1].customerKycId,
-      customerId: this.data.customerKycReview.customerKycAddress[1].customerId,
-      addressType: [this.data.customerKycReview.customerKycAddress[1].addressType, [Validators.required]],
-      address: [this.data.customerKycReview.customerKycAddress[1].address, [Validators.required]],
-      stateId: [this.data.customerKycReview.customerKycAddress[1].state.id, [Validators.required]],
-      cityId: [this.data.customerKycReview.customerKycAddress[1].city.id, [Validators.required]],
-      pinCode: [this.data.customerKycReview.customerKycAddress[1].pinCode, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
-      addressProof: [, [Validators.required]],
-      addressProofFileName: [],
-      addressProofTypeId: [this.data.customerKycReview.customerKycAddress[1].addressProofType.id, [Validators.required]],
-      addressProofNumber: [this.data.customerKycReview.customerKycAddress[1].addressProofNumber, [Validators.required]],
-    })
-    this.customerKycPersonal = this.fb.group({
-      profileImage: [this.data.customerKycReview.customerKycPersonal.profileImage, [Validators.required]],
-      alternateMobileNumber: [this.data.customerKycReview.customerKycPersonal.alternateMobileNumber, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      gender: [this.data.customerKycReview.customerKycPersonal.gender, [Validators.required]],
-      spouseName: [this.data.customerKycReview.customerKycPersonal.spouseName, [Validators.required]],
-      martialStatus: [this.data.customerKycReview.customerKycPersonal.martialStatus, [Validators.required]],
-      signatureProof: [],
-      signatureProofFileName: [],
-      occupationId: [],
-      dateOfBirth: [this.data.customerKycReview.customerKycPersonal.dateOfBirth, [Validators.required]],
-      age: [this.data.customerKycReview.customerKycPersonal.age, [Validators.required]],
-      identityTypeId: [this.data.customerKycReview.customerKycPersonal.identityType.id, [Validators.required]],
-      identityProof: [, [Validators.required]],
-      identityProofNumber: [this.data.customerKycReview.customerKycPersonal.identityProofNumber, [Validators.required]],
-      panCardNumber: [this.data.customerKycReview.panCardNumber]
-    })
-    if (this.data.customerKycReview.customerKycPersonal.occupation !== null) {
-      this.customerKycPersonal.get('occupationId').patchValue(this.data.customerKycReview.customerKycPersonal.occupation.id)
+    if (this.data.moduleId == 1 || (this.data.moduleId == 3 && this.data.userType == 'Corporate')) {
+      this.customerKycAddressTwo = this.fb.group({
+        id: this.data.customerKycReview.customerKycAddress[1].id,
+        customerKycId: this.data.customerKycReview.customerKycAddress[1].customerKycId,
+        customerId: this.data.customerKycReview.customerKycAddress[1].customerId,
+        addressType: [this.data.customerKycReview.customerKycAddress[1].addressType, [Validators.required]],
+        address: [this.data.customerKycReview.customerKycAddress[1].address, [Validators.required]],
+        stateId: [this.data.customerKycReview.customerKycAddress[1].state.id, [Validators.required]],
+        cityId: [this.data.customerKycReview.customerKycAddress[1].city.id, [Validators.required]],
+        pinCode: [this.data.customerKycReview.customerKycAddress[1].pinCode, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
+        addressProof: [, [Validators.required]],
+        addressProofFileName: [],
+        addressProofTypeId: [this.data.customerKycReview.customerKycAddress[1].addressProofType.id, [Validators.required]],
+        addressProofNumber: [this.data.customerKycReview.customerKycAddress[1].addressProofNumber, [Validators.required]],
+      })
     }
-    if (this.data.customerKycReview.customerKycPersonal.signatureProofData !== null) {
-      this.customerKycPersonal.controls.signatureProof.patchValue(this.data.customerKycReview.customerKycPersonal.signatureProof)
+
+    if (this.data.userType && this.data.userType == 'Corporate') {
+      this.customerOrganizationDetail = this.fb.group({
+        customerId: [],
+        customerKycId: [],
+        email: [],
+        alternateEmail: [null],
+        landLineNumber: [null],
+        gstinNumber: [null],
+        cinNumber: [null],
+        constitutionsDeed: [[]],
+        constitutionsDeedFileName: [],
+        constitutionsDeedImages: [],
+        gstCertificate: [[]],
+        gstCertificateFileName: [],
+        gstCertificateImages: [],
+      })
+
+      this.customerOrganizationDetail.patchValue(this.data.customerKycReview.organizationDetail)
+      this.reviewForm.patchValue({
+        userType: this.data.userType,
+        organizationTypeId: this.data.customerKycReview.organizationType.id,
+        dateOfIncorporation: this.data.customerKycReview.dateOfIncorporation
+      })
+    } else {
+      this.customerKycPersonal = this.fb.group({
+        profileImage: [, [Validators.required]],
+        alternateMobileNumber: [, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+        gender: [, [Validators.required]],
+        spouseName: [, [Validators.required]],
+        martialStatus: [, [Validators.required]],
+        signatureProof: [],
+        signatureProofFileName: [],
+        occupationId: [],
+        dateOfBirth: [, [Validators.required]],
+        age: [, [Validators.required]],
+        identityTypeId: [, [Validators.required]],
+        identityProof: [, [Validators.required]],
+        identityProofNumber: [, [Validators.required]],
+        panCardNumber: [this.data.customerKycReview.panCardNumber]
+      })
     }
+
+    if (this.data.moduleId == 3) {
+      if (this.data.userType == 'Individual') {
+        if (this.data.customerKycReview.customerKycPersonal.occupation !== null) {
+          this.customerKycPersonal.get('occupationId').patchValue(this.data.customerKycReview.customerKycPersonal.occupation.id)
+        }
+        if (this.data.customerKycReview.customerKycPersonal.signatureProofData !== null) {
+          this.customerKycPersonal.controls.signatureProof.patchValue(this.data.customerKycReview.customerKycPersonal.signatureProof)
+        }
+      }
+    } else {
+      if (this.data.customerKycReview.customerKycPersonal.occupation !== null) {
+        this.customerKycPersonal.get('occupationId').patchValue(this.data.customerKycReview.customerKycPersonal.occupation.id)
+      }
+      if (this.data.customerKycReview.customerKycPersonal.signatureProofData !== null) {
+        this.customerKycPersonal.controls.signatureProof.patchValue(this.data.customerKycReview.customerKycPersonal.signatureProof)
+      }
+
+    }
+
 
     this.panTypeValidation();
 
@@ -272,12 +337,13 @@ export class UserReviewComponent implements OnInit {
     let customerKycAddress = [];
     customerKycAddress.push(this.customerKycAddressOne.value, this.customerKycAddressTwo.value);
 
-    if (this.reviewForm.invalid || this.customerKycPersonal.invalid || this.customerKycAddressOne.invalid || this.customerKycAddressTwo.invalid) {
-      this.customerKycPersonal.markAllAsTouched();
+    if (this.reviewForm.invalid || this.customerKycPersonal && this.customerKycPersonal.invalid || this.customerKycAddressOne.invalid ||
+      this.customerKycAddressTwo.invalid || (this.customerOrganizationDetail && this.customerOrganizationDetail.invalid)) {
+      if (this.customerKycPersonal && this.customerKycPersonal.invalid) this.customerKycPersonal.markAllAsTouched();
       this.customerKycAddressOne.markAllAsTouched();
       this.customerKycAddressTwo.markAllAsTouched();
       this.reviewForm.markAllAsTouched()
-      // this.customerKycBank.markAllAsTouched();
+      if (this.customerOrganizationDetail && this.customerOrganizationDetail.invalid) this.customerOrganizationDetail.markAllAsTouched()
       return;
     }
 
@@ -285,11 +351,13 @@ export class UserReviewComponent implements OnInit {
       return this.toastr.error('PAN is not Verfied')
     }
 
-    this.customerKycPersonal.patchValue({
-      identityTypeId: this.reviewForm.get('identityTypeId').value,
-      identityProofNumber: this.reviewForm.get('identityProofNumber').value,
-      panCardNumber: this.reviewForm.get('panCardNumber').value ? this.reviewForm.get('panCardNumber').value.toUpperCase() : null
-    })
+    if (this.customerKycPersonal) {
+      this.customerKycPersonal.patchValue({
+        identityTypeId: this.reviewForm.get('identityTypeId').value,
+        identityProofNumber: this.reviewForm.get('identityProofNumber').value,
+        panCardNumber: this.reviewForm.get('panCardNumber').value ? this.reviewForm.get('panCardNumber').value.toUpperCase() : null
+      })
+    }
 
     this.reviewForm.patchValue({
       panCardNumber: this.reviewForm.get('panCardNumber').value ? this.reviewForm.get('panCardNumber').value.toUpperCase() : null
@@ -298,9 +366,12 @@ export class UserReviewComponent implements OnInit {
     const data = {
       customerId: this.data.customerId,
       customerKycId: this.data.customerKycId,
-      customerKycPersonal: this.customerKycPersonal.value,
+      customerKycPersonal: this.customerKycPersonal ? this.customerKycPersonal.value : null,
       customerKycAddress: customerKycAddress,
-      customerKycBasicDetails: this.reviewForm.value
+      customerKycBasicDetails: this.reviewForm.value,
+      moduleId: this.data.moduleId,
+      userType: this.data.userType,
+      customerOrganizationDetail: this.customerOrganizationDetail ? this.customerOrganizationDetail.value : null
     }
 
     this.userBankService.kycSubmit(data).pipe(
@@ -492,10 +563,10 @@ export class UserReviewComponent implements OnInit {
           throw err
         }),
         finalize(() => {
-          this.identity.nativeElement.value = '';
-          this.permanent.nativeElement.value = '';
-          this.residential.nativeElement.value = '';
-          this.pass.nativeElement.value = '';
+          if (this.identity && this.identity.nativeElement.value) this.identity.nativeElement.value = '';
+          if (this.permanent && this.permanent.nativeElement.value) this.permanent.nativeElement.value = '';
+          if (this.residential && this.residential.nativeElement.value) this.residential.nativeElement.value = '';
+          if (this.pass && this.pass.nativeElement.value) this.pass.nativeElement.value = '';
         })
       ).subscribe()
     }
@@ -647,6 +718,16 @@ export class UserReviewComponent implements OnInit {
 
   changeMaritalStatus() {
     this.customerKycPersonal.controls.spouseName.reset()
+  }
+
+  getOrganizationTypes() {
+    if (!this.organizationTypes) {
+      this.userDetailsService.getOrganizationTypes().pipe(
+        map(res => {
+          // console.log(res)
+          this.organizationTypes = res
+        })).subscribe()
+    }
   }
 
 }
