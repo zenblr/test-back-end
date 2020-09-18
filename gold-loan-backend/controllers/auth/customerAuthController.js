@@ -20,7 +20,7 @@ exports.customerLogin = async (req, res, next) => {
             mobile: checkCustomer.dataValues.mobileNumber,
             firstName: checkCustomer.dataValues.firstName,
             lastName: checkCustomer.dataValues.lastName,
-            userBelongsTo: "customeruser"
+            userBelongsTo: "CustomerUser"
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME

@@ -797,67 +797,96 @@ exports.partReleaseApprovedList = async (req, res, next) => {
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
         appriserSearch.appraiserId = userId;
     }
-    let includeArray = [{
-        model: models.customerLoanTransaction,
-        as: 'transaction'
-    }, {
-        model: models.customerLoanMaster,
-        as: 'masterLoan',
-        subQuery: false,
-        attributes: ['id', 'outstandingAmount', 'customerId', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
-        include: [
-            {
-                model: models.customer,
-                as: 'customer',
-                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
-            },
-            {
-                model: models.customerLoan,
-                as: 'customerLoan',
-                attributes: ['masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId']
-            },
-            {
-                model: models.customerLoanPersonalDetail,
-                as: 'loanPersonalDetail',
-                attributes: ['customerUniqueId']
-            }
-        ]
-    }, {
-        model: models.customerLoanOrnamentsDetail,
-        include: [
-            {
-                model: models.packet
-            }, {
-                model: models.ornamentType,
-                as: "ornamentType"
-            }
-        ]
-    }, {
-        model: models.partReleaseAppraiser,
-        as: 'appraiserData',
-        where: appriserSearch,
-        attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
-        include: [
-            {
-                model: models.customer,
-                as: 'customer',
-                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
-            },
-            {
-                model: models.user,
-                as: 'appraiser',
-                attributes: ['firstName', 'lastName', 'mobileNumber']
-            }
-        ]
-    }, {
-        model: models.customerLoanMaster,
-        as: 'newLoan',
-        attributes: ['loanStatusForAppraiser'],
-    }]
+    let includeArray = [
+        {
+            model: models.customerLoanTransaction,
+            as: 'transaction'
+        },
+        {
+            model: models.customerLoanMaster,
+            as: 'masterLoan',
+            subQuery: false,
+            attributes: ['id', 'outstandingAmount', 'customerId', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
+            include: [
+                {
+                    model: models.customer,
+                    as: 'customer',
+                    attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+                },
+                {
+                    model: models.customerLoan,
+                    as: 'customerLoan',
+                    attributes: ['masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId']
+                },
+                {
+                    model: models.customerLoanPersonalDetail,
+                    as: 'loanPersonalDetail',
+                    attributes: ['customerUniqueId']
+                },
+                {
+                    model: models.packet,
+                    as: 'packet'
+                },
+                {
+                    model: models.customerLoanPacketData,
+                    as: 'locationData',
+                    include: [
+                        {
+                            model: models.packetLocation,
+                            as: 'packetLocation',
+                            attributes: ['id', 'location']
+                        }
+                    ]
+                },
+                {
+                    model: models.customerPacketTracking,
+                    as: 'customerPacketTracking',
+                }
+            ]
+        },
+        {
+            model: models.customerLoanOrnamentsDetail,
+            include: [
+                {
+                    model: models.packet
+                }, {
+                    model: models.ornamentType,
+                    as: "ornamentType"
+                }
+            ]
+        },
+        {
+            model: models.partReleaseAppraiser,
+            as: 'appraiserData',
+            where: appriserSearch,
+            attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            include: [
+                {
+                    model: models.customer,
+                    as: 'customer',
+                    attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+                },
+                {
+                    model: models.user,
+                    as: 'appraiser',
+                    attributes: ['firstName', 'lastName', 'mobileNumber']
+                }
+            ]
+        },
+        {
+            model: models.customerLoanMaster,
+            as: 'newLoan',
+            attributes: ['loanStatusForAppraiser'],
+        }
+    ]
     let partRelease = await models.partRelease.findAll({
         where: searchQuery,
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
-        order: [["updatedAt", "DESC"]],
+        order: [
+            ["updatedAt", "DESC"],
+            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'asc'],
+            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'asc']
+        ],
         offset: offset,
         subQuery: false,
         limit: pageSize,
@@ -929,7 +958,7 @@ exports.uploadDocument = async (req, res, next) => {
     }
     let partReleaseData = await models.partRelease.findOne({
         where: { id: partReleaseId },
-        attributes: ['amountStatus', 'partReleaseStatus', 'masterLoanId'],
+        attributes: ['amountStatus', 'partReleaseStatus', 'masterLoanId', 'isCustomerReceivedPacket'],
         include: [{
             model: models.partReleaseAppraiser,
             as: 'appraiserData',
@@ -938,6 +967,10 @@ exports.uploadDocument = async (req, res, next) => {
             attributes: ['appraiserId']
         }]
     });
+
+    if (!partReleaseData.isCustomerReceivedPacket) {
+        return res.status(400).json({ message: "Customer did not received packets!" })
+    }
     if (partReleaseData) {
         await sequelize.transaction(async t => {
             await models.partRelease.update({ documents, modifiedBy }, { where: { id: partReleaseId }, transaction: t });
@@ -1591,7 +1624,7 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
     }, {
         model: models.customerLoanMaster,
         as: 'masterLoan',
-        attributes: ['customerId', 'outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
+        attributes: ['id', 'customerId', 'outstandingAmount', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
         include: [
             {
                 model: models.customer,
@@ -1607,7 +1640,8 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
                 model: models.customerLoanPersonalDetail,
                 as: 'loanPersonalDetail',
                 attributes: ['customerUniqueId']
-            }, {
+            },
+            {
                 model: models.customerLoanOrnamentsDetail,
                 as: 'loanOrnamentsDetail',
                 include: [
@@ -1620,6 +1654,25 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
                     }
                 ]
             },
+            {
+                model: models.packet,
+                as: 'packet'
+            },
+            {
+                model: models.customerLoanPacketData,
+                as: 'locationData',
+                include: [
+                    {
+                        model: models.packetLocation,
+                        as: 'packetLocation',
+                        attributes: ['id', 'location']
+                    }
+                ]
+            },
+            {
+                model: models.customerPacketTracking,
+                as: 'customerPacketTracking',
+            }
         ]
     },
     {
@@ -1644,7 +1697,11 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
     let fullRelease = await models.fullRelease.findAll({
         where: searchQuery,
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
-        order: [["updatedAt", "DESC"]],
+        order: [
+            ["updatedAt", "DESC"],
+            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'asc'],
+            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'asc']
+        ],
         offset: offset,
         limit: pageSize,
         subQuery: false,
@@ -1716,7 +1773,7 @@ exports.uploadDocumentFullRelease = async (req, res, next) => {
     }
     let fullReleaseData = await models.fullRelease.findOne({
         where: { id: fullReleaseId },
-        attributes: ['amountStatus', 'fullReleaseStatus', 'masterLoanId'],
+        attributes: ['amountStatus', 'fullReleaseStatus', 'masterLoanId', 'isCustomerReceivedPacket'],
         include: [{
             model: models.fullReleaseReleaser,
             as: 'releaser',
@@ -1725,6 +1782,10 @@ exports.uploadDocumentFullRelease = async (req, res, next) => {
             attributes: ['releaserId']
         }]
     });
+    if (!fullReleaseData.isCustomerReceivedPacket) {
+        return res.status(400).json({ message: "Customer did not received packets!" })
+    }
+
     if (fullReleaseData) {
         await sequelize.transaction(async t => {
             await models.fullRelease.update({ documents, modifiedBy }, { where: { id: fullReleaseId }, transaction: t });

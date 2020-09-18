@@ -564,11 +564,11 @@ exports.submitLoanPacketLocation = async (req, res, next) => {
 
     let { internalBranchId, partnerBranchId, customerReceiverId, userReceiverId, partnerReceiverId, receiverType, packetLocationId, loanId, masterLoanId } = req.body
 
-    if (req.userData.userBelongsTo === "internaluser") {
+    if (req.userData.userBelongsTo === "InternalUser") {
         userSenderId = req.userData.id
         senderType = req.userData.userBelongsTo
         partnerSenderId = null
-    } else if (req.userData.userBelongsTo === "partneruser") {
+    } else if (req.userData.userBelongsTo === "PartnerUser") {
         partnerSenderId = req.userData.id
         senderType = req.userData.userBelongsTo
         userSenderId = null
@@ -710,11 +710,11 @@ exports.addCustomerPacketTracking = async (req, res, next) => {
     //console.log(req.userData.userBelongsTo)
 
     let senderInternalBranch = req.userData.internalBranchId
-    if (req.userData.userBelongsTo === "internaluser") {
+    if (req.userData.userBelongsTo === "InternalUser") {
         userSenderId = req.userData.id
         senderType = req.userData.userBelongsTo
         partnerSenderId = null
-    } else if (req.userData.userBelongsTo === "partneruser") {
+    } else if (req.userData.userBelongsTo === "PartnerUser") {
         partnerSenderId = req.userData.id
         senderType = req.userData.userBelongsTo
         userSenderId = null
@@ -1019,4 +1019,230 @@ exports.getNextPacketLoaction = async (req, res, next) => {
 
     return res.status(200).json({ message: 'success', data: locationData })
 
+}
+
+exports.submitLoanPacketLocationForCollect = async (req, res, next) => {
+
+    let { internalBranchId, partnerBranchId, customerReceiverId, userReceiverId, partnerReceiverId, receiverType, packetLocationId, loanId, masterLoanId, isFullRelease, releaseId } = req.body
+
+    if (req.userData.userBelongsTo === "InternalUser") {
+        userSenderId = req.userData.id
+        senderType = req.userData.userBelongsTo
+        partnerSenderId = null
+    } else if (req.userData.userBelongsTo === "PartnerUser") {
+        partnerSenderId = req.userData.id
+        senderType = req.userData.userBelongsTo
+        userSenderId = null
+    }
+
+    let verifyUser
+    var todayDateTime = new Date();
+    switch (receiverType) {
+        //     case "Customer":
+        //         verifyUser = await models.customerOtp.findOne({
+        //             where: {
+        //                 referenceCode,
+        //                 otp,
+        //                 expiryTime: {
+        //                     [Op.gte]: todayDateTime,
+        //                 },
+        //             },
+        //         });
+        //         if (check.isEmpty(verifyUser)) {
+        //             return res.status(404).json({ message: `INVALID OTP.` });
+        //         }
+        //         break;
+        //     case "InternalUser":
+        //         verifyUser = await models.userOtp.findOne({
+        //             where: {
+        //                 referenceCode, otp,
+        //                 expiryTime: {
+        //                     [Op.gte]: todayDateTime
+        //                 }
+        //             }
+        //         })
+        //         if (check.isEmpty(verifyUser)) {
+        //             return res.status(400).json({ message: `INVALID OTP.` })
+        //         }
+        //         break;
+        //     case "PartnerUser":
+        //         verifyUser = await models.partnerBranchOtp.findOne({
+        //             where: {
+        //                 referenceCode, otp,
+        //                 expiryTime: {
+        //                     [Op.gte]: todayDateTime
+        //                 }
+        //             }
+        //         })
+        //         if (check.isEmpty(verifyUser)) {
+        //             return res.status(400).json({ message: `INVALID OTP.` })
+        //         }
+        //         break;
+    }
+
+    let { location } = await models.packetLocation.findOne({ where: { id: packetLocationId } });
+
+    // let loanStage = await models.loanStage.findOne({ where: { name: 'packet release from' } });
+
+    if (location == 'partner branch out') {
+        await sequelize.transaction(async (t) => {
+
+            // await models.customerLoanMaster.update({ loanStageId: loanStage.id }, { where: { id: masterLoanId }, transaction: t })
+
+            await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId }, { transaction: t })
+
+            let packetTrackingData = await models.customerPacketTracking.create({
+                internalBranchId: req.userData.internalBranchId,
+                userReceiverId: req.userData.id,
+                receiverType: 'InternalUser',
+                loanId,
+                masterLoanId,
+                packetLocationId: packetLocationId,
+                partnerSenderId: partnerReceiverId,
+                senderType: 'PartnerUser',
+                isDelivered: true
+            }, { transaction: t });
+
+            let allPacketTrackingData = await models.customerPacketTracking.findAll({
+                where: { masterLoanId: masterLoanId, isDelivered: true },
+                transaction: t,
+                order: [['id', 'desc']]
+            })
+
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+
+            await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
+        })
+
+        return res.status(200).json({ message: `packet location submitted` })
+
+    } else {
+        return res.satus(200).json({ message: 'please select partner branch out location for this process' })
+    }
+
+}
+
+exports.submitLoanPacketLocationForHomeIn = async (req, res, next) => {
+
+    let { internalBranchId, partnerBranchId, customerReceiverId, userReceiverId, partnerReceiverId, receiverType, packetLocationId, loanId, masterLoanId, isFullRelease, releaseId } = req.body
+
+    let modifiedBy = req.userData.id
+    let userSenderId;
+    let partnerSenderId;
+    let senderType;
+    if (req.userData.userBelongsTo === "InternalUser") {
+        userSenderId = req.userData.id
+        senderType = req.userData.userBelongsTo
+        partnerSenderId = null
+    } else if (req.userData.userBelongsTo === "PartnerUser") {
+        partnerSenderId = req.userData.id
+        senderType = req.userData.userBelongsTo
+        userSenderId = null
+    }
+
+    let verifyUser
+    var todayDateTime = new Date();
+    switch (receiverType) {
+        //     case "Customer":
+        //         verifyUser = await models.customerOtp.findOne({
+        //             where: {
+        //                 referenceCode,
+        //                 otp,
+        //                 expiryTime: {
+        //                     [Op.gte]: todayDateTime,
+        //                 },
+        //             },
+        //         });
+        //         if (check.isEmpty(verifyUser)) {
+        //             return res.status(404).json({ message: `INVALID OTP.` });
+        //         }
+        //         break;
+        //     case "InternalUser":
+        //         verifyUser = await models.userOtp.findOne({
+        //             where: {
+        //                 referenceCode, otp,
+        //                 expiryTime: {
+        //                     [Op.gte]: todayDateTime
+        //                 }
+        //             }
+        //         })
+        //         if (check.isEmpty(verifyUser)) {
+        //             return res.status(400).json({ message: `INVALID OTP.` })
+        //         }
+        //         break;
+        //     case "PartnerUser":
+        //         verifyUser = await models.partnerBranchOtp.findOne({
+        //             where: {
+        //                 referenceCode, otp,
+        //                 expiryTime: {
+        //                     [Op.gte]: todayDateTime
+        //                 }
+        //             }
+        //         })
+        //         if (check.isEmpty(verifyUser)) {
+        //             return res.status(400).json({ message: `INVALID OTP.` })
+        //         }
+        //         break;
+    }
+
+    let { location } = await models.packetLocation.findOne({ where: { id: packetLocationId } });
+    if (location == "customer home in") {
+        // let loanStage = await models.loanStage.findOne({ where: { name: 'packet in branch' } })
+
+        await sequelize.transaction(async (t) => {
+
+            // await models.customerLoanMaster.update({ loanStageId: loanStage.id }, { where: { id: masterLoanId }, transaction: t })
+
+            await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId }, { transaction: t })
+
+            let packetTrackingData = await models.customerPacketTracking.create({
+                internalBranchId, customerReceiverId, userReceiverId, partnerReceiverId, receiverType, loanId, masterLoanId, packetLocationId, userSenderId, partnerSenderId, senderType, isDelivered: true
+            }, { transaction: t });
+
+            let allPacketTrackingData = await models.customerPacketTracking.findAll({
+                where: { masterLoanId: masterLoanId, isDelivered: true },
+                transaction: t,
+                order: [['id', 'desc']]
+            })
+
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+
+            await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
+
+            let releaseDate = moment();
+
+            if (isFullRelease) {
+                await models.fullRelease.update({ fullReleaseStatus: 'released', modifiedBy, releaseDate, isCustomerReceivedPacket: true }, { where: { id: releaseId }, transaction: t })
+
+                await models.customerLoanMaster.update({ isOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
+
+            } else {
+                await models.partRelease.update({ partReleaseStatus: 'released', modifiedBy, releaseDate, isCustomerReceivedPacket: true }, { where: { id: releaseId }, transaction: t })
+                await models.customerLoanMaster.update({ isOrnamentsReleased: true, isFullOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
+            }
+
+        })
+        return res.status(200).json({ message: `packet location submitted` })
+
+    } else {
+        return res.satus(200).json({ message: 'please select customer home in location for this process' })
+    }
+
+}
+
+exports.getCustomerInfo = async (req, res, next) => {
+    let { masterLoanId } = req.query
+
+    let masterLoan = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId }
+    })
+
+    let customerInfo = await models.customer.findOne({
+        where: { id: masterLoan.customerId },
+        attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
+    })
+
+    customerInfo.dataValues.receiverType = "Customer"
+
+    return res.status(200).json({ data: customerInfo })
 }
