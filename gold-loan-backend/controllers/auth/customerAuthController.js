@@ -39,7 +39,7 @@ exports.customerLogin = async (req, res, next) => {
             createdDate: createdTime
         });
 
-        return res.status(200).json({ message: 'login successful', Token });
+        return res.status(200).json({ message: 'login successful', token:Token });
     } else {
         return res.status(401).json({ message: 'Wrong Credentials' });
     }
