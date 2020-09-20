@@ -938,6 +938,106 @@
                         <div class="col-6"></div>
                     </div>
 
+                    <div class="row kt-margin-t-20">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-3 offset-1 form-label">
+                                    <label class="">Partnership / Constitutions Deed, MOA</label>
+                                </div>
+                                <div class="col-7">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Select File"
+                                            aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
+                                            formControlName="constitutionsDeedFileName"
+                                            [class.isError]="customerOrganizationDetail.controls.constitutionsDeedFileName.touched && customerOrganizationDetail.controls.constitutionsDeedFileName.invalid" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                                (click)="constitutionsDeed.click()"
+                                                style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                        </div>
+                                        <input type="file" accept="image/*,application/pdf" class="d-none"
+                                            #constitutionsDeed (input)="getFileInfo($event,'constitutionsDeed')">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-3 offset-1 form-label">
+                                    <label class="">GST Certificate</label>
+                                </div>
+                                <div class="col-7">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Select File"
+                                            aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
+                                            formControlName="gstCertificateFileName"
+                                            [class.isError]="customerOrganizationDetail.controls.gstCertificateFileName.touched && customerOrganizationDetail.controls.gstCertificateFileName.invalid" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                                (click)="gstCertificate.click()"
+                                                style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                        </div>
+                                        <input type="file" accept="image/*,application/pdf" class="d-none"
+                                            #gstCertificate (input)="getFileInfo($event,'gstCertificate')">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="offset-4 img-container" *ngIf="images.constitutionsDeed.length == 0">
+                                <img class="placeholder-image"
+                                    src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder">
+                            </div>
+                            <div *ngIf="images.constitutionsDeed.length > 0">
+                                <div class="row">
+                                    <div class="col-6" [class.offset-4]="images.constitutionsDeed.length == 1"
+                                        *ngFor="let img of images.constitutionsDeed, index as idx">
+                                        <div class="img-container">
+                                            <img *ngIf="!isPdf(img.URL)" class="fetched-image" [src]="img.URL" alt=""
+                                                (click)="preview(img.URL)">
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                class="kt-pointer remove-icon"
+                                                (click)="removeImages(idx, 'constitutionsDeed');">
+                                            <div class="iframeWrapper" (click)="previewPdf(img.URL)">
+                                                <iframe [src]="img.URL | safe : 'resourceUrl'" height="250" width="290"
+                                                    scrolling="no" *ngIf="isPdf(img.URL)"></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="offset-4 img-container" *ngIf="images.gstCertificate.length == 0">
+                                <img class="placeholder-image"
+                                    src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder">
+                            </div>
+                            <div *ngIf="images.gstCertificate.length > 0">
+                                <div class="row">
+                                    <div class="col-6" [class.offset-4]="images.gstCertificate.length == 1"
+                                        *ngFor="let img of images.gstCertificate, index as idx">
+                                        <div class="img-container">
+                                            <img *ngIf="!isPdf(img.URL)" class="fetched-image" [src]="img.URL" alt=""
+                                                (click)="preview(img.URL, idx)">
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                class="kt-pointer remove-icon"
+                                                (click)="removeImages(idx, 'gstCertificate');">
+                                            <div class="iframeWrapper" (click)="previewPdf(img.URL)">
+                                                <iframe [src]="img.URL | safe : 'resourceUrl'" height="250" width="290"
+                                                    scrolling="no" *ngIf="isPdf(img.URL)"></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </form>
             </div>
 

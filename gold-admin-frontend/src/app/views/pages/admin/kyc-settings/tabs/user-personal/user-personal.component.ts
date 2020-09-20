@@ -152,7 +152,7 @@ export class UserPersonalComponent implements OnInit {
           }
           else if (type == "constitutionsDeed" && this.images.constitutionsDeed.length < 2) {
             this.images.constitutionsDeed.push({ path: res.uploadFile.path, URL: res.uploadFile.URL })
-            console.log(this.images)
+            // console.log(this.images)
             const temp = []
             this.images.constitutionsDeed.forEach(value => {
               temp.push(value.path)
@@ -161,7 +161,7 @@ export class UserPersonalComponent implements OnInit {
             this.personalForm.get('constitutionsDeed').patchValue(temp);
           } else if (type == "gstCertificate" && this.images.gstCertificate.length < 2) {
             this.images.gstCertificate.push({ path: res.uploadFile.path, URL: res.uploadFile.URL })
-            console.log(this.images)
+            // console.log(this.images)
             const temp = []
             this.images.gstCertificate.forEach(value => {
               temp.push(value.path)
