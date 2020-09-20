@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { UserPersonalService } from '../../../../../../core/kyc-settings/services/user-personal.service';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
 import { catchError, map, finalize } from 'rxjs/operators';
@@ -21,7 +21,7 @@ export class UserPersonalComponent implements OnInit {
   personalForm: FormGroup;
   occupations = [];
   customerDetails = this.userDetailsService.userData;
-  // customerDetails = { customerId: 1, customerKycId: 2 }
+  // customerDetails = { customerId: 1, customerKycId: 2, moduleId: 1, userType: null }
   file: any;
   profile = '';
   signatureJSON = { url: null, isImage: false };
@@ -52,7 +52,7 @@ export class UserPersonalComponent implements OnInit {
       profileImage: ['', [Validators.required]],
       profileImg: ['', [Validators.required]],
       alternateMobileNumber: ['', [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
-      gender: ['', [Validators.required]],
+      gender: [''],
       spouseName: ['', [Validators.required]],
       martialStatus: ['', [Validators.required]],
       signatureProof: [null],
@@ -70,10 +70,8 @@ export class UserPersonalComponent implements OnInit {
       cinNumber: [null],
       constitutionsDeed: [[]],
       constitutionsDeedFileName: [],
-      constitutionsDeedImg: [],
       gstCertificate: [[]],
       gstCertificateFileName: [],
-      gstCertificateImg: [],
     })
 
     this.setFormValidation()
@@ -97,8 +95,11 @@ export class UserPersonalComponent implements OnInit {
         this.controls.email.updateValueAndValidity()
         this.controls.alternateEmail.setValidators([Validators.pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')])
         this.controls.alternateEmail.updateValueAndValidity()
+        this.controls.gstCertificateFileName.setValidators([Validators.required])
+        this.controls.gstCertificateFileName.updateValueAndValidity()
       }
     }
+
   }
 
   getOccupation() {
@@ -151,23 +152,14 @@ export class UserPersonalComponent implements OnInit {
             this.ref.detectChanges();
           }
           else if (type == "constitutionsDeed" && this.images.constitutionsDeed.length < 2) {
-            this.images.constitutionsDeed.push({ path: res.uploadFile.path, URL: res.uploadFile.URL })
-            // console.log(this.images)
-            const temp = []
-            this.images.constitutionsDeed.forEach(value => {
-              temp.push(value.path)
-            })
+            this.images.constitutionsDeed.push({ path: res.uploadFile.path, URL: res.uploadFile.URL, fileName: res.uploadFile.originalname })
             this.personalForm.get('constitutionsDeedFileName').patchValue(res.uploadFile.originalname);
-            this.personalForm.get('constitutionsDeed').patchValue(temp);
-          } else if (type == "gstCertificate" && this.images.gstCertificate.length < 2) {
-            this.images.gstCertificate.push({ path: res.uploadFile.path, URL: res.uploadFile.URL })
-            // console.log(this.images)
-            const temp = []
-            this.images.gstCertificate.forEach(value => {
-              temp.push(value.path)
-            })
+            this.personalForm.get('constitutionsDeed').patchValue(this.getPathArray('constitutionsDeed'));
+          }
+          else if (type == "gstCertificate" && this.images.gstCertificate.length < 2) {
+            this.images.gstCertificate.push({ path: res.uploadFile.path, URL: res.uploadFile.URL, fileName: res.uploadFile.originalname })
             this.personalForm.get('gstCertificateFileName').patchValue(res.uploadFile.originalname);
-            this.personalForm.get('gstCertificate').patchValue(temp);
+            this.personalForm.get('gstCertificate').patchValue(this.getPathArray('gstCertificate'));
           } else {
             this.toastr.error("Cannot upload more than two images")
           }
@@ -218,9 +210,9 @@ export class UserPersonalComponent implements OnInit {
   submit() {
     if (this.personalForm.invalid) {
       this.personalForm.markAllAsTouched()
-      if (this.controls.profileImage.invalid) {
-        this.toastr.error('Please upload a Profile Image');
-      }
+      // if (this.controls.profileImage.invalid) {
+      //   this.toastr.error('Please upload a Profile Image');
+      // }
       return
     }
 
@@ -338,26 +330,34 @@ export class UserPersonalComponent implements OnInit {
     if (type == 'constitutionsDeed') {
       this.images.constitutionsDeed.splice(index, 1);
       this.personalForm.get('constitutionsDeed').patchValue(this.getPathArray('constitutionsDeed'));
+
+      if (this.images.constitutionsDeed.length) {
+        this.personalForm.get('constitutionsDeedFileName').patchValue(this.images.constitutionsDeed[0].fileName);
+      } else {
+        this.personalForm.get('constitutionsDeedFileName').patchValue('');
+      }
     }
+
     if (type == 'gstCertificate') {
       this.images.gstCertificate.splice(index, 1);
       this.personalForm.get('gstCertificate').patchValue(this.getPathArray('gstCertificate'));
+
+      if (this.images.gstCertificate.length) {
+        this.personalForm.get('gstCertificateFileName').patchValue(this.images.gstCertificate[0].fileName);
+      } else {
+        this.personalForm.get('gstCertificateFileName').patchValue('');
+      }
     }
   }
 
   getPathArray(type: string) {
-    const temp = []
-    this.images[type].forEach(value => {
-      temp.push(value.path)
-    })
-    return temp
+    const pathArray = this.images[type].map(e => e.path)
+    return pathArray
   }
 
   getURLArray(type: string) {
-    const temp = []
-    this.images[type].forEach(value => {
-      temp.push(value.URL)
-    })
-    return temp
+    const urlArray = this.images[type].map(e => e.URL)
+    return urlArray
   }
+
 }

@@ -58,6 +58,142 @@ export class UserReviewComponent implements OnInit {
   organizationTypes: any;
   images = { constitutionsDeed: [], gstCertificate: [] }
 
+  // data = {
+  //   "customerKycReview": {
+  //     "id": 211,
+  //     "firstName": "diksha",
+  //     "lastName": "mane",
+  //     "panCardNumber": null,
+  //     "mobileNumber": "8796777777",
+  //     "panType": "form60",
+  //     "panImage": "uploads/images/1599721456376.pdf",
+  //     "customerKycPersonal": {
+  //       "id": 173,
+  //       "customerId": 211,
+  //       "firstName": "diksha",
+  //       "lastName": "mane",
+  //       "profileImg": "https://goldapi.nimapinfotech.com/uploads/images/1599721455730.jpeg",
+  //       "profileImage": "uploads/images/1599721455730.jpeg",
+  //       "dateOfBirth": "1997-09-26",
+  //       "alternateMobileNumber": "9854222145",
+  //       "panCardNumber": null,
+  //       "gender": "o",
+  //       "age": "23",
+  //       "martialStatus": "married",
+  //       "occupationId": null,
+  //       "identityTypeId": 2,
+  //       "identityProofNumber": "568552222122",
+  //       "identityProof": [
+  //         "uploads/images/1599721471399.jpeg",
+  //         "uploads/images/1599721471848.pdf"
+  //       ],
+  //       "spouseName": "san",
+  //       "signatureProof": "uploads/customer/121/1599550524016.pdf",
+  //       "signatureProofImg": "https://goldapi.nimapinfotech.com/uploads/customer/121/1599550524016.pdf",
+  //       "occupation": null,
+  //       "identityType": {
+  //         "id": 2,
+  //         "name": "Voter ID",
+  //         "isActive": true,
+  //         "createdAt": "2020-05-04T13:49:55.636Z",
+  //         "updatedAt": "2020-05-04T13:49:55.636Z"
+  //       },
+  //       "identityProofImage": [
+  //         "https://goldapi.nimapinfotech.com/uploads/images/1599721471399.jpeg",
+  //         "https://goldapi.nimapinfotech.com/uploads/images/1599721471848.pdf"
+  //       ]
+  //     },
+  //     "customerKycAddress": [
+  //       {
+  //         "id": 340,
+  //         "customerKycId": 224,
+  //         "customerId": 211,
+  //         "addressType": "permanent",
+  //         "address": "sanik",
+  //         "stateId": 6,
+  //         "cityId": 594,
+  //         "pinCode": 890009,
+  //         "addressProofTypeId": 2,
+  //         "addressProofNumber": "568552222122",
+  //         "addressProof": [
+  //           "uploads/images/1599721485766.jpeg",
+  //           "uploads/images/1599721487266.pdf"
+  //         ],
+  //         "state": {
+  //           "id": 6,
+  //           "name": "Chandigarh",
+  //           "isActive": true
+  //         },
+  //         "city": {
+  //           "id": 594,
+  //           "name": "Chandigarh",
+  //           "stateId": 6,
+  //           "slug": null,
+  //           "isActive": true
+  //         },
+  //         "addressProofType": {
+  //           "id": 2,
+  //           "name": "Aadhaar Card",
+  //           "isActive": true,
+  //           "createdAt": "2020-05-04T13:48:00.807Z",
+  //           "updatedAt": "2020-05-04T13:48:00.807Z"
+  //         },
+  //         "addressProofImage": [
+  //           "https://goldapi.nimapinfotech.com/uploads/images/1599721485766.jpeg",
+  //           "https://goldapi.nimapinfotech.com/uploads/images/1599721487266.pdf"
+  //         ]
+  //       },
+  //       {
+  //         "id": 341,
+  //         "customerKycId": 224,
+  //         "customerId": 211,
+  //         "addressType": "residential",
+  //         "address": "sanik",
+  //         "stateId": 6,
+  //         "cityId": 594,
+  //         "pinCode": 890009,
+  //         "addressProofTypeId": 2,
+  //         "addressProofNumber": "568552222122",
+  //         "addressProof": [
+  //           "uploads/images/1599721485766.jpeg",
+  //           "uploads/images/1599721487266.pdf"
+  //         ],
+  //         "state": {
+  //           "id": 6,
+  //           "name": "Chandigarh",
+  //           "isActive": true
+  //         },
+  //         "city": {
+  //           "id": 594,
+  //           "name": "Chandigarh",
+  //           "stateId": 6,
+  //           "slug": null,
+  //           "isActive": true
+  //         },
+  //         "addressProofType": {
+  //           "id": 2,
+  //           "name": "Aadhaar Card",
+  //           "isActive": true,
+  //           "createdAt": "2020-05-04T13:48:00.807Z",
+  //           "updatedAt": "2020-05-04T13:48:00.807Z"
+  //         },
+  //         "addressProofImage": [
+  //           "https://goldapi.nimapinfotech.com/uploads/images/1599721485766.jpeg",
+  //           "https://goldapi.nimapinfotech.com/uploads/images/1599721487266.pdf"
+  //         ]
+  //       }
+  //     ],
+  //     "organizationDetail": null,
+  //     "organizationType": { id: 2, organizationType: 'asn' },
+  //     "dateOfIncorporation": "2020-09-20T13:27:33.441Z",
+  //     "panImg": "https://goldapi.nimapinfotech.com/uploads/images/1599721456376.pdf"
+  //   },
+  //   "customerId": "211",
+  //   "customerKycId": "224",
+  //   "moduleId": 1,
+  //   "userType": null
+  // }
+
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
     private sharedService: SharedService,
@@ -133,7 +269,6 @@ export class UserReviewComponent implements OnInit {
       const { gstCertificate, gstCertificateImages } = this.data.customerKycReview.organizationDetail
 
       gstCertificate.forEach((key, i) => {
-        // let gstCertificateObject: any = {};
         const gstCertificateObject = { path: gstCertificate[i], URL: gstCertificateImages[i] }
         this.images.gstCertificate.push(gstCertificateObject)
       })
@@ -162,23 +297,23 @@ export class UserReviewComponent implements OnInit {
       this.customerKycPersonal.disable();
       this.customerKycAddressOne.disable();
       this.customerKycAddressTwo.disable();
-
+      this.customerOrganizationDetail.disable();
     }
 
   }
 
   initForm() {
     this.reviewForm = this.fb.group({
-      id: [this.data.customerKycReview.id],
+      id: [],
       profileImage: [, [Validators.required]],
-      firstName: [this.data.customerKycReview.firstName, [Validators.required]],
-      lastName: [this.data.customerKycReview.lastName, [Validators.required]],
-      mobileNumber: [this.data.customerKycReview.mobileNumber, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      panCardNumber: [this.data.customerKycReview.panCardNumber, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
-      panType: [this.data.customerKycReview.panType, Validators.required],
+      firstName: [, [Validators.required]],
+      lastName: [, [Validators.required]],
+      mobileNumber: [, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      panCardNumber: [, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
+      panType: [, Validators.required],
       form60: [],
-      panImage: [this.data.customerKycReview.panImage],
-      panImg: [this.data.customerKycReview.panImg, [Validators.required]],
+      panImage: [],
+      panImg: [, [Validators.required]],
       identityTypeId: [, [Validators.required]],
       identityProof: [, [Validators.required]],
       identityProofFileName: [],
@@ -187,6 +322,8 @@ export class UserReviewComponent implements OnInit {
       organizationTypeId: [],
       dateOfIncorporation: []
     })
+
+    this.reviewForm.patchValue(this.data.customerKycReview)
 
     // User Corporate
     if (this.data.userType && this.data.userType == 'Corporate') {
@@ -214,19 +351,28 @@ export class UserReviewComponent implements OnInit {
 
     if (this.data.moduleId == 1 || (this.data.moduleId == 3 && this.data.userType == 'Corporate')) {
       this.customerKycAddressTwo = this.fb.group({
-        id: this.data.customerKycReview.customerKycAddress[1].id,
-        customerKycId: this.data.customerKycReview.customerKycAddress[1].customerKycId,
-        customerId: this.data.customerKycReview.customerKycAddress[1].customerId,
-        addressType: [this.data.customerKycReview.customerKycAddress[1].addressType, [Validators.required]],
-        address: [this.data.customerKycReview.customerKycAddress[1].address, [Validators.required]],
-        stateId: [this.data.customerKycReview.customerKycAddress[1].state.id, [Validators.required]],
-        cityId: [this.data.customerKycReview.customerKycAddress[1].city.id, [Validators.required]],
-        pinCode: [this.data.customerKycReview.customerKycAddress[1].pinCode, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
+        id: [],
+        customerKycId: [],
+        customerId: [],
+        addressType: [, [Validators.required]],
+        address: [, [Validators.required]],
+        stateId: [, [Validators.required]],
+        cityId: [, [Validators.required]],
+        pinCode: [, [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
         addressProof: [, [Validators.required]],
         addressProofFileName: [],
-        addressProofTypeId: [this.data.customerKycReview.customerKycAddress[1].addressProofType.id, [Validators.required]],
-        addressProofNumber: [this.data.customerKycReview.customerKycAddress[1].addressProofNumber, [Validators.required]],
+        addressProofTypeId: [, [Validators.required]],
+        addressProofNumber: [, [Validators.required]],
       })
+
+      if (this.data.customerKycReview.customerKycAddress.length > 1) {
+        this.customerKycAddressTwo.patchValue(this.data.customerKycReview.customerKycAddress[1])
+        this.customerKycAddressTwo.patchValue({
+          stateId: this.data.customerKycReview.customerKycAddress[1].state.id,
+          cityId: this.data.customerKycReview.customerKycAddress[1].city.id,
+          addressProofTypeId: this.data.customerKycReview.customerKycAddress[1].addressProofType.id,
+        })
+      }
     }
 
     if (this.data.userType && this.data.userType == 'Corporate') {
@@ -298,6 +444,8 @@ export class UserReviewComponent implements OnInit {
       this.isPanVerified = true
       this.ref.detectChanges()
     }
+
+    this.bindScrapToLoan()
 
     this.ref.detectChanges()
   }
@@ -806,6 +954,10 @@ export class UserReviewComponent implements OnInit {
 
     const URLArray = this.images[type].map(e => e.URL)
     return URLArray
+  }
+
+  bindScrapToLoan() {
+
   }
 
 }

@@ -36,7 +36,7 @@ export class UserAddressComponent implements OnInit {
   identityFileNameArray = [];
   addressFileNameArray1 = [];
   addressFileNameArray2 = [];
-  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456, moduleId: 1 }
+  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456, moduleId: 3, userType: "Corporate" }
 
   constructor(
     private fb: FormBuilder,
@@ -288,7 +288,7 @@ export class UserAddressComponent implements OnInit {
 
       if (this.identityForm.controls.moduleId.value == 3) {
         if (this.identityForm.controls.userType.value === 'Corporate') {
-        this.addressControls.at(1)['controls'].addressType.patchValue('communication')
+          this.addressControls.at(1)['controls'].addressType.patchValue('communication')
         }
       }
       if (this.identityForm.controls.moduleId.value == 1) {
@@ -306,7 +306,7 @@ export class UserAddressComponent implements OnInit {
 
       if (this.identityForm.controls.moduleId.value == 3) {
         if (this.identityForm.controls.userType.value === 'Corporate') {
-        this.addressControls.at(1)['controls'].addressType.patchValue('communication')
+          this.addressControls.at(1)['controls'].addressType.patchValue('communication')
         }
       }
       if (this.identityForm.controls.moduleId.value == 1) {
