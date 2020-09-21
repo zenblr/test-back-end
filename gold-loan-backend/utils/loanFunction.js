@@ -135,7 +135,7 @@ let getAllCustomerLoanId = async () => {
         where: {
             isActive: true,
             // loanStageId: stageId.id,
-            isLoanCompleted:true,
+            isLoanCompleted: true,
             "$partRelease$": null,
             "$fullRelease$": null
         },
@@ -791,6 +791,7 @@ let allInterestPayment = async (transactionId, paymentReceivedDate) => {
     // let loan = await getLoanDetails(masterLoanId);
 
     // let loan
+    let createdBy = 1
 
     let transactionSplitUp = await models.customerTransactionSplitUp.findAll(
         {
