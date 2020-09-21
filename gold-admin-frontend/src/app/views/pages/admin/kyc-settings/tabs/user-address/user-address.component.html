@@ -304,6 +304,10 @@
                                                 *ngIf="addressForm.controls.addressProofNumber.errors?.required && addressForm.controls.addressProofNumber.touched">
                                                 Required field
                                             </mat-error>
+                                            <mat-error
+                                                *ngIf="(addressForm.controls.addressProofNumber.errors?.pattern) && addressForm.controls.addressProofNumber.touched">
+                                                Invalid Input
+                                            </mat-error>
                                         </div>
                                     </div>
                                 </div>

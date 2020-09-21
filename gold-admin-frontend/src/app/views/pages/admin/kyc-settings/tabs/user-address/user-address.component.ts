@@ -397,7 +397,13 @@ export class UserAddressComponent implements OnInit {
 
   checkForAadhar(index) {
     // console.log(index)
-    if (this.identityForm.controls.moduleId.value == 3) return
+    if (this.identityForm.controls.moduleId.value == 3) {
+      if (this.customerDetails.userType === 'Individual' && this.addressControls.at(0).value.addressProofTypeId == 2) {
+        this.addressControls.controls[0].get('addressProofNumber').setValidators([Validators.required, Validators.pattern('^\\d{4}\\d{4}\\d{4}$')])
+        this.addressControls.controls[0].get('addressProofNumber').updateValueAndValidity()
+      }
+      return
+    }
 
     if (index === 0) {
       if (this.addressControls.at(0).value.addressProofTypeId == 2) {

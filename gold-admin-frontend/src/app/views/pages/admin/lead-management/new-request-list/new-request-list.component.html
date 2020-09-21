@@ -98,10 +98,13 @@
                             <ng-container
                                 *ngIf="row.customer.kycStatus === 'pending' && row.customer.customerKyc !== null">
                                 <div [ngStyle]="{'display': 'inherit'}"
-                                    *ngIf="!row.customer?.customerKyc?.isKycSubmitted">
-                                    <button (click)="applyKyc(row)" class="apply-kyc">Apply KYC</button>
+                                    *ngIf="!(row.customer?.customerKyc?.isKycSubmitted) && row.module?.id === 1">
+                                    <button (click)="applyKyc(row)" class="apply-kyc">Apply KYC1</button>
                                 </div>
-                                <!-- gere -->
+                                <div [ngStyle]="{'display': 'inherit'}"
+                                    *ngIf="!(row.customer?.customerKyc?.isScrapKycSubmitted) && row.module?.id === 3">
+                                    <button (click)="applyKyc(row)" class="apply-kyc">Apply KYC3</button>
+                                </div>
                             </ng-container>
                             <ng-container
                                 *ngIf="row.customer.kycStatus === 'pending' && row.customer?.customerKyc == null">
@@ -112,41 +115,42 @@
                         </ng-container>
                         <div *ngIf="!row.isProcessComplete">
                             <div *ngIf="row.customer.kycStatus === 'approved' && row.isAssigned">
-                                <div *ngxPermissionsOnly="['loanApplicationAdd', 'addLoanTransfer', 'scrapApplicationAdd']">
+                                <div
+                                    *ngxPermissionsOnly="['loanApplicationAdd', 'addLoanTransfer', 'scrapApplicationAdd']">
 
-                                <button mat-button [matMenuTriggerFor]="menu">
-                                    <mat-icon>more_vert</mat-icon>
-                                </button>
-                                <mat-menu #menu="matMenu" xPosition="before">
+                                    <button mat-button [matMenuTriggerFor]="menu">
+                                        <mat-icon>more_vert</mat-icon>
+                                    </button>
+                                    <mat-menu #menu="matMenu" xPosition="before">
 
-                                    <ng-container *ngIf="row?.module.id === 1 && row?.status === 'complete'">
-                                        <ng-container *ngIf="!row?.masterLoan?.isLoanTransfer">
-                                            <button *ngxPermissionsOnly="['loanApplicationAdd']" mat-menu-item
-                                                (click)="applyLoan(row)">Apply Loan</button>
+                                        <ng-container *ngIf="row?.module.id === 1 && row?.status === 'complete'">
+                                            <ng-container *ngIf="!row?.masterLoan?.isLoanTransfer">
+                                                <button *ngxPermissionsOnly="['loanApplicationAdd']" mat-menu-item
+                                                    (click)="applyLoan(row)">Apply Loan</button>
+                                            </ng-container>
+
+                                            <ng-container *ngIf="row?.masterLoan?.isLoanTransfer">
+                                                <button *ngxPermissionsOnly="['addLoanTransfer']" mat-menu-item
+                                                    (click)="applyLoanTransfer(row)"> Loan Transfer</button>
+                                            </ng-container>
                                         </ng-container>
 
-                                        <ng-container *ngIf="row?.masterLoan?.isLoanTransfer">
+                                        <ng-container *ngIf="row?.module.id === 1 && row?.status === 'incomplete'">
+                                            <button *ngxPermissionsOnly="['loanApplicationAdd']" mat-menu-item
+                                                (click)="applyLoan(row)">Apply Loan</button>
                                             <button *ngxPermissionsOnly="['addLoanTransfer']" mat-menu-item
                                                 (click)="applyLoanTransfer(row)"> Loan Transfer</button>
                                         </ng-container>
-                                    </ng-container>
 
-                                    <ng-container *ngIf="row?.module.id === 1 && row?.status === 'incomplete'">
-                                        <button *ngxPermissionsOnly="['loanApplicationAdd']" mat-menu-item
-                                            (click)="applyLoan(row)">Apply Loan</button>
-                                        <button *ngxPermissionsOnly="['addLoanTransfer']" mat-menu-item
-                                            (click)="applyLoanTransfer(row)"> Loan Transfer</button>
-                                    </ng-container>
+                                        <!-- scrap -->
+                                        <ng-container *ngIf="row.module.id === 3">
+                                            <button *ngxPermissionsOnly="['scrapApplicationAdd']" mat-menu-item
+                                                (click)="applyScrapBuy(row)">Apply
+                                                Scrap Gold</button>
+                                        </ng-container>
 
-                                    <!-- scrap -->
-                                    <ng-container *ngIf="row.module.id === 3">
-                                        <button *ngxPermissionsOnly="['scrapApplicationAdd']" mat-menu-item
-                                            (click)="applyScrapBuy(row)">Apply
-                                            Scrap Gold</button>
-                                    </ng-container>
-
-                                </mat-menu>
-                            </div>
+                                    </mat-menu>
+                                </div>
 
                                 <!-- <ng-container *ngxPermissionsOnly="['loanApplicationAdd']">
             <button style="width: 120px;" class="apply-kyc" (click)="applyLoan(row)"

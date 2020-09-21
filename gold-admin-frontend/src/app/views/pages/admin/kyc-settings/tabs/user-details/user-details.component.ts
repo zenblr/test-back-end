@@ -31,6 +31,7 @@ export class UserDetailsComponent implements OnInit {
   showVerifyPAN = false;
   organizationTypes: any;
   maxDate = new Date()
+  moduleId: any
 
   constructor(
     public fb: FormBuilder,
@@ -49,14 +50,16 @@ export class UserDetailsComponent implements OnInit {
     this.route.queryParamMap.subscribe(params => {
       // if (params) {
       const MOB = params.get("mob");
-      const moduleId = params.get("moduleId");
+      this.moduleId = params.get("moduleId");
       if (MOB) {
         this.controls.mobileNumber.patchValue(MOB);
         this.sendOTP();
       }
 
-      if (moduleId) {
-        this.controls.moduleId.patchValue(moduleId);
+      if (this.moduleId) {
+        this.controls.moduleId.patchValue(this.moduleId);
+        console.log(this.userBasicForm.value)
+        // this.ref.detectChanges()
       }
     })
 
@@ -166,6 +169,10 @@ export class UserDetailsComponent implements OnInit {
         this.refCode = res.referenceCode;
         this.controls.referenceCode.patchValue(this.refCode);
         this.userBasicForm.patchValue(res.customerInfo);
+        this.userBasicForm.patchValue({ moduleId: this.moduleId })
+        if (this.controls.moduleId.value == 1) {
+          this.userBasicForm.patchValue({ userType: null })
+        }
 
         if (this.controls.moduleId.value == 3) {
           if (this.controls.userType.value == 'Corporate') {

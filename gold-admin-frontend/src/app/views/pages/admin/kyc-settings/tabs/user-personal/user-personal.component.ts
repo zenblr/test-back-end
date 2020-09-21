@@ -52,7 +52,7 @@ export class UserPersonalComponent implements OnInit {
       profileImage: ['', [Validators.required]],
       profileImg: ['', [Validators.required]],
       alternateMobileNumber: ['', [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
-      gender: [''],
+      gender: ['', [Validators.required]],
       spouseName: ['', [Validators.required]],
       martialStatus: ['', [Validators.required]],
       signatureProof: [null],
@@ -216,6 +216,9 @@ export class UserPersonalComponent implements OnInit {
       return
     }
 
+    this.personalForm.patchValue({
+      martialStatus: this.controls.martialStatus.value == '' ? null : this.controls.martialStatus.value
+    })
     const basicForm = this.personalForm.value;
 
     this.userPersonalService.personalDetails(basicForm).pipe(

@@ -20,12 +20,19 @@
                         <div class="col-6">
                             <div class="row">
                                 <div class="offset-1 col-3 form-label">
-                                    <div class="profile-div">
+                                    <div class="profile-div"
+                                        [class.profileRequired]="reviewForm.controls.profileImage.invalid">
                                         <!-- <img class="" src="../../../../../../assets/media/icons/user.png" alt="" /> -->
-                                        <img *ngIf="data" class="profile-pic"
+                                        <img *ngIf="data.customerKycReview?.customerKycPersonal.profileImg"
+                                            class="profile-pic"
                                             [src]="data.customerKycReview?.customerKycPersonal?.profileImg" alt=""
                                             (click)="previewImage(data.customerKycReview?.customerKycPersonal.profileImg)" />
+                                        <img *ngIf="!data.customerKycReview?.customerKycPersonal.profileImg" class=""
+                                            src="../../../../../../assets/media/icons/user.png" alt="" />
                                     </div>
+                                    <!-- {{reviewForm.controls.profileImage.touched}}
+                                    {{reviewForm.controls.profileImage.invalid}}
+                                    {{reviewForm.controls.profileImage.value}} -->
                                 </div>
                                 <div class="col-7 d-flex" *ngIf="viewOnly && (userType == 4 || userType == 6)">
                                     <div class="align-self-center">
@@ -696,7 +703,6 @@
                                 <div class="col-7">
                                     <textarea type="text" class="form-control" placeholder="Enter Address"
                                         formControlName="address" rows="4"
-                                        value="{{ data.customerKycReview.customerKycAddress[1].address }}"
                                         [class.isError]="customerKycAddressTwo.controls.address.touched && customerKycAddressTwo.controls.address.invalid">
                                 </textarea>
                                     <mat-error
@@ -714,8 +720,7 @@
                                 </div>
                                 <div class="col-7">
                                     <input type="text" class="form-control" placeholder="Pin Code"
-                                        formControlName="pinCode"
-                                        value="{{ data.customerKycReview.customerKycAddress[1].pinCode }}"
+                                        formControlName="pinCode" maxlength="6" numbersOnly
                                         [class.isError]="customerKycAddressTwo.controls.pinCode.touched && customerKycAddressTwo.controls.pinCode.invalid" />
                                     <mat-error
                                         *ngIf="customerKycAddressTwo.controls.pinCode.errors?.required && customerKycAddressTwo.controls.pinCode.touched">

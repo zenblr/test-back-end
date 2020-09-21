@@ -119,7 +119,9 @@
                                         <select name="" id="" formControlName="martialStatus" class="form-control"
                                             (change)="changeMaritalStatus()"
                                             [class.isError]="controls.martialStatus.touched && controls.martialStatus.invalid">
-                                            <option value="" [selected]="true" [disabled]="true">Select Status</option>
+                                            <option value="" [selected]="true"
+                                                [disabled]="customerDetails.moduleId == 1">Select Status
+                                            </option>
                                             <option value="single">Single</option>
                                             <option value="married">Married</option>
                                             <option value="divorced">Divorced</option>
@@ -163,6 +165,7 @@
                                             class="mandatory">Father's Name</label>
                                         <label *ngIf="controls.martialStatus.value == 'married'" class="mandatory">
                                             Spouse Name</label>
+
                                     </div>
                                     <div class="col-7">
                                         <input type="text" formControlName="spouseName" class="form-control"
