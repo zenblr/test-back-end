@@ -425,7 +425,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
   let includeArray = [{
     model: models.customerLoanMaster,
     as: 'masterLoan',
-    where: { loanStageId: stageId.id },
+    where: { isLoanCompleted: true },
     attributes: [],
   }, {
     model: models.state,
@@ -499,7 +499,7 @@ exports.getsingleCustomerManagement = async (req, res) => {
       {
         model: models.customerLoanMaster,
         as: 'masterLoan',
-        where: { loanStageId: stageId.id },
+        where: { isLoanCompleted: true },
         order: [
           [models.customerLoan, 'id', 'asc'],
           ['id', 'DESC']
