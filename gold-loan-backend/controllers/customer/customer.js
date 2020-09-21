@@ -256,7 +256,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
   let includeArray = [{
     model: models.customerKyc,
     as: "customerKyc",
-    attributes: ['isKycSubmitted']
+    attributes: ['isKycSubmitted', 'isScrapKycSubmitted']
   }, {
     model: models.state,
     as: "state",

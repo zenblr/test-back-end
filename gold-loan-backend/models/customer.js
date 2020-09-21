@@ -183,6 +183,7 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.module, { foreignKey: 'moduleId', as: 'module' });
 
         Customer.belongsTo(models.organizationType, { foreignKey: 'organizationTypeId', as: 'organizationType' });
+        Customer.hasOne(models.customerKycOrganizationDetail, { foreignKey: 'customerId', as: 'organizationDetail' });
 
     }
 

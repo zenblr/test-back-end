@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
         email: {
             type: DataTypes.STRING,
             field: 'email',
-            allowNull: false,
         },
         alternateEmail: {
             type: DataTypes.STRING,
@@ -24,29 +23,26 @@ module.exports = (sequelize, DataTypes) => {
         gstinNumber: {
             type: DataTypes.STRING,
             field: 'gstin_number',
-            allowNull: false,
         },
         cinNumber: {
             type: DataTypes.STRING,
             field: 'cin_number',
         },
         constitutionsDeed: {
-            type: DataTypes.TEXT,
+            type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'constitutions_deed',
         },
         gstCertificate: {
-            type: DataTypes.TEXT,
+            type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'gst_certificate',
         },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by',
-            allowNull: false,
         },
         modifiedBy: {
             type: DataTypes.INTEGER,
             field: 'modified_by',
-            allowNull: false,
         },
         isActive: {
             type: DataTypes.BOOLEAN,
@@ -64,6 +60,30 @@ module.exports = (sequelize, DataTypes) => {
         CustomerKycOrganizationDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         CustomerKycOrganizationDetail.belongsTo(models.customerKyc, { foreignKey: 'customerKycId', as: 'customerKyc' });
        
+    }
+
+    CustomerKycOrganizationDetail.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get({ plain: true }));
+
+        let gstCertificateImages = []
+        if (values.gstCertificate.length != 0) {
+            for (imgUrl of values.gstCertificate) {
+                let URL = process.env.BASE_URL + imgUrl;
+                gstCertificateImages.push(URL)
+            }
+        }
+
+        let constitutionsDeedImages = []
+        if (values.constitutionsDeed.length != 0) {
+            for (imgUrl of values.constitutionsDeed) {
+                let URL = process.env.BASE_URL + imgUrl;
+                constitutionsDeedImages.push(URL)
+            }
+        }
+
+        values.constitutionsDeedImages = constitutionsDeedImages
+        values.gstCertificateImages = gstCertificateImages
+        return values;
     }
 
     return CustomerKycOrganizationDetail;

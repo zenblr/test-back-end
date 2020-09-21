@@ -65,7 +65,7 @@ exports.getAllNewRequest = async (req, res, next) => {
                 {
                     model: models.customerKyc,
                     as: 'customerKyc',
-                    attributes: ['id', 'isKycSubmitted']
+                    attributes: ['id', 'isKycSubmitted', 'isScrapKycSubmitted']
                 }
             ]
         },
