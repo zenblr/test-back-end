@@ -24,7 +24,7 @@ import { NgxPermissionsModule } from 'ngx-permissions';
 import { UnSecuredSchemeComponent } from './loan-application-form/un-secured-scheme/un-secured-scheme.component';
 import { WebcamDialogComponent } from '../kyc-settings/webcam-dialog/webcam-dialog.component';
 import { PacketTrackingComponent } from './packets/packet-tracking/packet-tracking.component';
-import { UpdateLocationComponent } from './packets/update-location/update-location.component';
+import { UpdateLocationComponent } from '../../../partials/components/update-location/update-location.component';
 import { TopUpComponent } from './top-up/top-up.component';
 import { UserReviewComponent } from '../kyc-settings/tabs/user-review/user-review.component';
 import { LoanTransferComponent } from './loan-transfer/loan-transfer.component';
@@ -114,7 +114,6 @@ const rout: Routes = [
     LoanDetailsComponent,
     UnSecuredSchemeComponent,
     PacketTrackingComponent,
-    UpdateLocationComponent,
     TopUpComponent,
     LoanTransferComponent,
     LoanTransferListComponent,

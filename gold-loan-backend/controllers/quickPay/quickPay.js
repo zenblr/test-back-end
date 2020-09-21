@@ -208,7 +208,7 @@ exports.quickPayment = async (req, res, next) => {
 
 exports.confirmationForPayment = async (req, res, next) => {
 
-    let { transactionId, status } = req.body
+    let { transactionId, status, paymentReceivedDate } = req.body
     let modifiedBy = req.userData.id
 
     let transactionDetail = await models.customerLoanTransaction.findOne({ where: { id: transactionId } })
@@ -228,7 +228,7 @@ exports.confirmationForPayment = async (req, res, next) => {
 
 
 
-        var payment = await allInterestPayment(transactionId);
+        var payment = await allInterestPayment(transactionId,paymentReceivedDate);
         // let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(transactionId);
 
         let quickPayData = await sequelize.transaction(async (t) => {

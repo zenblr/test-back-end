@@ -672,7 +672,7 @@ let customerLoanDetailsByMasterLoanDetails = async (masterLoanId) => {
 }
 
 
-let generateTranscationAndUpdateInterestValue = async (loanArray, amount, createdBy) => {
+let generateTranscationAndUpdateInterestValue = async (loanArray, amount, createdBy,paymentReceivedDate) => {
 
 
     let transaction = []
@@ -706,6 +706,8 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
             pendingSecuredAmount = (loanArray[index]['outstandingInterest'] - pendingSecuredAmount).toFixed(2)
             loanArray[index]['outstandingInterest'] = loanArray[index]['outstandingInterest'] - loanArray[index]['paidAmount'];
             pendingSecuredAmount = 0.00;
+            loanArray[index]['emiReceivedDate'] = paymentReceivedDate
+
 
         } else if (pendingSecuredAmount >= Number(loanArray[index]['outstandingInterest'])) {
 
@@ -723,8 +725,8 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
             transaction.push(transactionData)
             pendingSecuredAmount = Number(pendingSecuredAmount) - Number(loanArray[index]['outstandingInterest'])
             loanArray[index]['outstandingInterest'] = 0.00
+            loanArray[index]['emiReceivedDate'] = paymentReceivedDate
         }
-        loanArray[index]['emiReceivedDate'] = Date.now()
 
     }
     for (let index = 0; index < loanArray.length; index++) {
@@ -778,7 +780,7 @@ let lastPenalPaidDate = async (loan, appliedPenalInterest, paidAmount) => {
     return newDate
 }
 
-let allInterestPayment = async (transactionId, createdBy) => {
+let allInterestPayment = async (transactionId, paymentReceivedDate) => {
 
     // let amount = await getCustomerInterestAmount(masterLoanId);
 
@@ -845,7 +847,7 @@ let allInterestPayment = async (transactionId, createdBy) => {
     // console.log(securedLoanDetails)
 
     if (securedInterest > 0) {
-        newSecuredDetails = await generateTranscationAndUpdateInterestValue(securedLoanDetails, securedInterest, createdBy)
+        newSecuredDetails = await generateTranscationAndUpdateInterestValue(securedLoanDetails, securedInterest, createdBy,paymentReceivedDate)
         securedLoanDetails = newSecuredDetails.loanArray
         Array.prototype.push.apply(transactionDetails, newSecuredDetails.transaction)
 
@@ -884,7 +886,7 @@ let allInterestPayment = async (transactionId, createdBy) => {
         }
 
         if (unsecuredInterest > 0) {
-            let newUnsecuredDetails = await generateTranscationAndUpdateInterestValue(unsecuredLoanDetails, unsecuredInterest, createdBy)
+            let newUnsecuredDetails = await generateTranscationAndUpdateInterestValue(unsecuredLoanDetails, unsecuredInterest, createdBy,paymentReceivedDate)
             unsecuredLoanDetails = newUnsecuredDetails.loanArray
             Array.prototype.push.apply(transactionDetails, newUnsecuredDetails.transaction)
         }

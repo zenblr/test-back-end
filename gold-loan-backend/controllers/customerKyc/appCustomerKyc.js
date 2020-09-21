@@ -310,3 +310,28 @@ exports.getAssignedCustomer = async (req, res, next) => {
 
 
 }
+
+exports.checkDuplicatePan = async (req, res, next) => {
+
+    let { customerId, panCardNumber } = req.body
+
+    let checkPan = await models.customer.findOne({
+        where: { panCardNumber: panCardNumber }
+    })
+    if (customerId == null) {
+        if (!check.isEmpty(checkPan)) {
+            return res.status(400).json({ message: 'Duplicate PAN card' })
+        } else {
+            return res.status(400).json({ message: 'success' })
+        }
+    } else {
+        if (checkPan.customerId != customerId) {
+            return res.status(400).json({ message: 'Duplicate PAN card' })
+        } else {
+            return res.status(400).json({ message: 'success' })
+        }
+    }
+
+
+
+}
