@@ -3,6 +3,8 @@ const Sequelize = models.Sequelize;
 const sequelize = models.sequelize;
 const Op = Sequelize.Op;
 const { getSingleLoanDetail } = require('../../utils/loanFunction')
+const check = require("../../lib/checkLib");
+
 exports.readBanner = async (req, res, next) => {
     console.log("banner")
     let banner = await models.banner.readBanner()
@@ -237,4 +239,25 @@ exports.addFeedBack = async (req, res) => {
         }
         return res.status(201).json({ message: 'created' });
     })
+}
+
+exports.updatePassword = async (req, res, next) => {
+    const { referenceCode, otp, newPassword } = req.body
+    var todayDateTime = new Date();
+
+    let verifyUser = await models.customerOtp.findOne({ where: { referenceCode, isVerified: true } })
+
+    if (check.isEmpty(verifyUser)) {
+        return res.status(400).json({ message: `Invalid OTP.` })
+    }
+    let user = await models.customer.findOne({ where: { mobileNumber: verifyUser.mobileNumber } });
+
+    if (check.isEmpty(user)) {
+        return res.status(404).json({ message: 'Customer not found.' });
+    }
+    let updatePassword = await user.update({ otp: null, password: newPassword }, { where: { id: user.dataValues.id } });
+    if (updatePassword[0] == 0) {
+        return res.status(400).json({ message: `Password update failed.` })
+    }
+    return res.status(200).json({ message: 'Password Updated.' });
 }
