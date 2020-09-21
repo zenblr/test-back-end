@@ -6,15 +6,15 @@
                 <ng-container matColumnDef="userName">
                     <mat-header-cell *matHeaderCellDef>User Name</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        {{packet.loanPacketDetails[0].packets[0].appraiser.firstName + " " + 
-                        packet.loanPacketDetails[0].packets[0].appraiser.lastName | titlecase}}</mat-cell>
+                        {{packet.Createdby.firstName + " " + 
+                        packet.Createdby.lastName | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="internalBranch">
                     <mat-header-cell *matHeaderCellDef>Branch</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
                         <span *ngIf="packet.customer">
-                            {{packet.loanPacketDetails[0].packets[0].internalBranch.name | titlecase}}
+                            {{packet.internalBranch.name | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
