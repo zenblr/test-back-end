@@ -57,7 +57,7 @@ let payableAmountForLoan = async (amount, loan) => {
     }
     let data = {}
     data.securedOutstandingAmount = loan.customerLoan[0].outstandingAmount
-    if(loan.customerLoan.length > 1){
+    if (loan.customerLoan.length > 1) {
         data.unsecuredOutstandingAmount = loan.customerLoan[1].outstandingAmount
     }
     data.securedPenalInterest = securedPenalInterest
@@ -134,7 +134,8 @@ let getAllCustomerLoanId = async () => {
         ],
         where: {
             isActive: true,
-            loanStageId: stageId.id,
+            // loanStageId: stageId.id,
+            isLoanCompleted: true,
             "$partRelease$": null,
             "$fullRelease$": null
         },
@@ -155,6 +156,7 @@ let getAllCustomerLoanId = async () => {
             }],
     });
     let customerLoanId = [];
+    console.log(customerLoanId)
     for (const masterLoanData of masterLona) {
         await masterLoanData.customerLoan.map((data) => { customerLoanId.push(data.id) });
     }
@@ -672,7 +674,7 @@ let customerLoanDetailsByMasterLoanDetails = async (masterLoanId) => {
 }
 
 
-let generateTranscationAndUpdateInterestValue = async (loanArray, amount, createdBy,paymentReceivedDate) => {
+let generateTranscationAndUpdateInterestValue = async (loanArray, amount, createdBy, paymentReceivedDate) => {
 
 
     let transaction = []
@@ -789,6 +791,7 @@ let allInterestPayment = async (transactionId, paymentReceivedDate) => {
     // let loan = await getLoanDetails(masterLoanId);
 
     // let loan
+    let createdBy = 1
 
     let transactionSplitUp = await models.customerTransactionSplitUp.findAll(
         {
@@ -847,7 +850,7 @@ let allInterestPayment = async (transactionId, paymentReceivedDate) => {
     // console.log(securedLoanDetails)
 
     if (securedInterest > 0) {
-        newSecuredDetails = await generateTranscationAndUpdateInterestValue(securedLoanDetails, securedInterest, createdBy,paymentReceivedDate)
+        newSecuredDetails = await generateTranscationAndUpdateInterestValue(securedLoanDetails, securedInterest, createdBy, paymentReceivedDate)
         securedLoanDetails = newSecuredDetails.loanArray
         Array.prototype.push.apply(transactionDetails, newSecuredDetails.transaction)
 
@@ -886,7 +889,7 @@ let allInterestPayment = async (transactionId, paymentReceivedDate) => {
         }
 
         if (unsecuredInterest > 0) {
-            let newUnsecuredDetails = await generateTranscationAndUpdateInterestValue(unsecuredLoanDetails, unsecuredInterest, createdBy,paymentReceivedDate)
+            let newUnsecuredDetails = await generateTranscationAndUpdateInterestValue(unsecuredLoanDetails, unsecuredInterest, createdBy, paymentReceivedDate)
             unsecuredLoanDetails = newUnsecuredDetails.loanArray
             Array.prototype.push.apply(transactionDetails, newUnsecuredDetails.transaction)
         }
@@ -1171,11 +1174,11 @@ let getSingleDayInterestAmount = async (loan) => {
             let noOfDays = dueDate.diff(startDate, 'days')
             let months = Math.ceil(noOfDays / 30)
             let securedMonthInterest = (securedPerDayInterestAmount * (months * 30))
-            if(securedMonthInterest > Number(paidAmount)){
-            securedTotalInterest = securedMonthInterest - paidAmount;
+            if (securedMonthInterest > Number(paidAmount)) {
+                securedTotalInterest = securedMonthInterest - paidAmount;
             }
-            else{
-            securedTotalInterest =  paidAmount - securedMonthInterest;
+            else {
+                securedTotalInterest = paidAmount - securedMonthInterest;
 
             }
             securedTotalInterest = securedTotalInterest.toFixed(2)
@@ -1218,11 +1221,11 @@ let getSingleDayInterestAmount = async (loan) => {
                 let noOfDays = dueDate.diff(startDate, 'days')
                 let months = Math.ceil(noOfDays / 30)
                 let monthsViseInterest = (unsecuredPerDayInterestAmount * (months * 30))
-                
-                if(monthsViseInterest > Number(unsecuredPaidAmount)){
-                unsecuredTotalInterest = monthsViseInterest - unsecuredPaidAmount
-                }else{
-                unsecuredTotalInterest = unsecuredPaidAmount - monthsViseInterest 
+
+                if (monthsViseInterest > Number(unsecuredPaidAmount)) {
+                    unsecuredTotalInterest = monthsViseInterest - unsecuredPaidAmount
+                } else {
+                    unsecuredTotalInterest = unsecuredPaidAmount - monthsViseInterest
 
                 }
                 unsecuredTotalInterest = unsecuredTotalInterest.toFixed(2)
