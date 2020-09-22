@@ -12,7 +12,7 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let quick of details">
-                        <td >{{quick?.transactionUniqueId}}</td>
+                        <td >{{quick?.transactionUniqueId | uppercase}}</td>
                         <td >{{quick?.transactionAmont}}</td>
                         <td >
                             <span *ngIf="quick.paymentReceivedDate;else noData">

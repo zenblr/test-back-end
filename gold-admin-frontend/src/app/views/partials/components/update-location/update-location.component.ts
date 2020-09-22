@@ -65,7 +65,7 @@ export class UpdateLocationComponent implements OnInit {
       deliveryInternalBranchId: [],
       deliveryPartnerBranchId: [],
       id: [],
-      releaseId :[]
+      releaseId: []
     })
 
     if (this.data.isPartnerOut) {
@@ -167,8 +167,9 @@ export class UpdateLocationComponent implements OnInit {
   }
 
   submit() {
-    if (this.locationForm.invalid) return this.locationForm.markAllAsTouched()
-
+    if (this.locationForm.invalid) {
+      return this.locationForm.markAllAsTouched()
+    }
     console.log(this.locationForm.value)
 
     if (!this.data.deliver) {
@@ -187,6 +188,9 @@ export class UpdateLocationComponent implements OnInit {
         return this.toastr.error('Packets are not completely verified')
       }
     }
+
+    if (!this.otpVerfied)
+      return this.toastr.error('OTP not verified!')
 
     if (this.data.stage == 11) {
       // return console.log(this.locationForm.value)
@@ -217,12 +221,12 @@ export class UpdateLocationComponent implements OnInit {
       this.controls.receiverType.enable();
       let isPartRelease = false
       let isFullRelease = false
-      if(this.data.isPartRelease){
+      if (this.data.isPartRelease) {
         isPartRelease = true
-      }else{
+      } else {
         isFullRelease = true
       }
-      this.updateLocationService.customerHomeOut(this.locationForm.value, isFullRelease,isPartRelease).subscribe(res => {
+      this.updateLocationService.customerHomeOut(this.locationForm.value, isFullRelease, isPartRelease).subscribe(res => {
         if (res) {
           const msg = 'Packet Location Updated Successfully';
           this.toastr.success(msg);

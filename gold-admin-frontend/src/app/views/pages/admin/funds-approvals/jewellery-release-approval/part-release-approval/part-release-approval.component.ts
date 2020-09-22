@@ -20,7 +20,7 @@ import { Router } from '@angular/router';
 export class PartReleaseApprovalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'transactionId', 'bankTransactionId', 'appraiserName', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'updateStatus'];
+  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'transactionId', 'bankTransactionId', 'appraiserName', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'updateStatus','uploadDocument'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -144,4 +144,12 @@ export class PartReleaseApprovalComponent implements OnInit {
     });
   }
 
+  updateDocument(item) {
+    const params = {
+      customerUniqueId: item.masterLoan.customer.customerUniqueId,
+      partReleaseId: item.id
+    }
+    this.router.navigate([`admin/funds-approvals/upload-document/partRelease/${item.id}`],
+      { queryParams: { customerUniqueId: params.customerUniqueId, partReleaseId: params.partReleaseId } })
+  }
 }

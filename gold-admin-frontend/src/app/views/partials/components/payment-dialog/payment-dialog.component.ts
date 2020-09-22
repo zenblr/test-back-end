@@ -79,9 +79,11 @@ export class PaymentDialogComponent implements OnInit {
           this.paymentForm.controls[key].updateValueAndValidity()
         }
         this.paymentForm.controls.paymentType.setValidators([Validators.required])
+        this.paymentForm.controls.paymentType.updateValueAndValidity()
         this.paymentForm.controls.paidAmount.setValidators([Validators.required])
+        this.paymentForm.controls.paidAmount.updateValueAndValidity()
         this.paymentForm.controls.depositDate.setValidators([Validators.required])
-        this.paymentForm.updateValueAndValidity()
+        this.paymentForm.controls.depositDate.updateValueAndValidity()
         break;
 
       case 'IMPS':
@@ -127,7 +129,7 @@ export class PaymentDialogComponent implements OnInit {
         this.controls.depositDate.patchValue(new Date())
 
       default:
-       
+
         break;
     }
     this.controls.depositStatus.setValidators([Validators.required])
@@ -147,8 +149,10 @@ export class PaymentDialogComponent implements OnInit {
   }
 
   submit() {
-    if (this.paymentForm.invalid)
+    if (this.paymentForm.invalid) {
       return this.paymentForm.markAllAsTouched()
+    }
+
     if (this.data.name == "deposit") {
       this.dialogRef.close({
         depositStatus: this.paymentForm.controls.depositStatus.value,
@@ -167,5 +171,6 @@ export class PaymentDialogComponent implements OnInit {
       }
     }
     this.dialogRef.close(this.paymentForm.value)
+
   }
 }

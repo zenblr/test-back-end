@@ -137,10 +137,10 @@
 
                         <ng-container *ngxPermissionsOnly="['partReleaseStatus']">
                             <ng-container *ngIf="item.partReleaseStatus == 'released'">
-                                <button *ngIf="!item.documents" style="width: 130px;" class="apply-kyc"
+                                <!-- <button *ngIf="!item.documents" style="width: 130px;" class="apply-kyc"
                                     (click)="updateDocument(item)">Upload
                                     Documents
-                                </button>
+                                </button> -->
                                 <button *ngIf="item.documents && !(item.newLoan && item.newLoan.loanStatusForAppraiser)"
                                     style="width: 130px;" class="apply-kyc" (click)="newLoan(item)">New Loan
                                 </button>

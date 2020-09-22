@@ -5,12 +5,13 @@
 
                 <ng-container matColumnDef="transactionId">
                     <mat-header-cell *matHeaderCellDef>Transaction ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{ item.transaction?.transactionUniqueId }}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{ item.transaction?.transactionUniqueId | uppercase }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="bankTransactionId">
                     <mat-header-cell *matHeaderCellDef>Bank Transaction ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{ item.transaction?.bankTransactionUniqueId }}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{ item.transaction?.bankTransactionUniqueId | uppercase }}
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="appraiserName">
