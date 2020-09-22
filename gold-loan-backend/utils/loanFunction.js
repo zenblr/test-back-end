@@ -556,11 +556,13 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                                 let amount
                                 if(pendingDaysAmount > Number(nextInterest.paidAmount)){
                                  amount = pendingDaysAmount - nextInterest.paidAmount;
+                                 
+                                 await models.customerLoanInterest.update({ interestAccrual: amount, totalInterestAccrual: pendingDaysAmount }, { where: { id: nextInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                                 }else{
                                     amount =   nextInterest.paidAmount - pendingDaysAmount;
 
+                                    await models.customerLoanInterest.update({ interestAccrual: pendingDaysAmount, totalInterestAccrual: pendingDaysAmount }, { where: { id: nextInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                                 }
-                                await models.customerLoanInterest.update({ interestAccrual: amount, totalInterestAccrual: pendingDaysAmount }, { where: { id: nextInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                             }
                         }
                     }
@@ -742,11 +744,11 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
         const element = loanArray[index];
         if (Number(element.interestAccrual) >= Number(interestAccrualAmount)) {
             element.interestAccrual = element.interestAccrual - interestAccrualAmount
-            element.totalInterestAccrual = element.interestAccrual
+            // element.totalInterestAccrual = element.interestAccrual
             interestAccrualAmount = element.interestAccrual
         } else if (Number(element.interestAccrual) < Number(interestAccrualAmount)) {
             element.interestAccrual = 0.00;
-            element.totalInterestAccrual = element.interestAccrual
+            // element.totalInterestAccrual = element.interestAccrual
         }
     }
     return { loanArray, transaction }
@@ -1668,7 +1670,12 @@ let intrestCalculationForSelectedLoanWithOutT = async (date, masterLoanId, secur
                     let pendingDaysAmount = pendingNoOfDays * oneDayAmount;
                     let nextInterest = await getPendingNoOfDaysInterest(loan.id, date);
                     if (nextInterest) {
-                        let amount = pendingDaysAmount - nextInterest.paidAmount;
+                        let amount ;
+                        if(pendingDaysAmount > Number(nextInterest.paidAmount)){
+                            amount = pendingDaysAmount - nextInterest.paidAmount;
+                        }else{
+                            amount =   nextInterest.paidAmount - pendingDaysAmount;
+                        }
                         // await models.customerLoanInterest.update({ totalInterestAccrual: pendingDaysAmount, interestAccrual: amount, interestRate: loan.currentInterestRate, outstandingInterest: amount }, { where: { id: nextInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
 
                         //
@@ -1713,6 +1720,13 @@ let intrestCalculationForSelectedLoanWithOutT = async (date, masterLoanId, secur
                         let amount = pendingDaysAmount;
                         let interestAccrual = amount - extraInterest.paidAmount;
                         let outstandingInterest = amount - extraInterest.paidAmount;
+                        if(amount > Number(extraInterest.paidAmount)){
+                             interestAccrual = amount - extraInterest.paidAmount;
+                         outstandingInterest = amount - extraInterest.paidAmount;
+                        }else{
+                             interestAccrual =  extraInterest.paidAmount - amount  ;
+                         outstandingInterest =  extraInterest.paidAmount - amount ;
+                        }
                         // await models.customerLoanInterest.update({ interestAmount: amount, emiDueDate: date, emiEndDate: date, interestAccrual, totalInterestAccrual: amount, outstandingInterest, interestRate: loan.currentInterestRate }, { where: { id: extraInterest.id }, transaction: t });
 
                         //
