@@ -109,7 +109,17 @@ export class PartReleaseApprovalComponent implements OnInit {
   }
 
   updateAppraiser(item) {
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit', appraiser: item.appraiserData, customer: item.masterLoan.customer, partReleaseId: item.id }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent,
+      {
+        data:
+        {
+          action: 'edit',
+          appraiser: item.appraiserData,
+          customer: item.masterLoan.customer,
+          partReleaseId: item.id
+        },
+        width: '500px'
+      });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
