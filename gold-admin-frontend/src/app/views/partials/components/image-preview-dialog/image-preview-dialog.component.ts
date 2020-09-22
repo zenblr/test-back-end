@@ -14,7 +14,7 @@ import { ImageFunctionalityDialogComponent } from '../image-functionality-dialog
     top: 0;
     right: 0;
     height: 30px;
-    z-index:1;
+    z-index:10;
   cursor:pointer}
   .picsum-img-wrapper { 
     border-radius:15px !important; 
