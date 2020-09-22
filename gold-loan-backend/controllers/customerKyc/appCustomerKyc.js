@@ -312,7 +312,6 @@ exports.getAssignedCustomer = async (req, res, next) => {
 }
 
 exports.checkDuplicatePan = async (req, res, next) => {
-
     let { customerId, panCardNumber } = req.body
 
     let checkPan = await models.customer.findOne({
@@ -325,13 +324,32 @@ exports.checkDuplicatePan = async (req, res, next) => {
             return res.status(200).json({ message: 'success' })
         }
     } else {
-        if (checkPan.customerId != customerId) {
+        if (checkPan.id != customerId) {
             return res.status(400).json({ message: 'Duplicate PAN card' })
         } else {
             return res.status(200).json({ message: 'success' })
         }
     }
+}
 
 
+exports.checkDuplicateAadhar = async (req, res, next) => {
+    let { customerId, identityProofNumber } = req.body
 
+    let checkAadhar = await models.customerKycPersonalDetail.findOne({
+        where: { identityProofNumber: identityProofNumber }
+    })
+    if (customerId == null) {
+        if (!check.isEmpty(checkPan)) {
+            return res.status(400).json({ message: 'Duplicate Aadhar card' })
+        } else {
+            return res.status(200).json({ message: 'success' })
+        }
+    } else {
+        if (checkAadhar.customerId != customerId) {
+            return res.status(400).json({ message: 'Duplicate Aadhar card' })
+        } else {
+            return res.status(200).json({ message: 'success' })
+        }
+    }
 }
