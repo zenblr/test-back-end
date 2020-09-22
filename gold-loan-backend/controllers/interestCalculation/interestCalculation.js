@@ -8,7 +8,7 @@ const _ = require('lodash');
 const moment = require('moment')
 const { dailyIntrestCalculation, cronForDailyPenalInterest } = require('../../utils/interestCron');
 const { getCustomerInterestAmount, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan, updateInterestAftertOutstandingAmount,
-    calculationData, getInterestTableOfSingleLoan, getAllPaidInterest } = require('../../utils/loanFunction');
+    calculationData, getInterestTableOfSingleLoan, getAllPaidInterest, intrestCalculationForSelectedLoanWithOutT, penalInterestCalculationForSelectedLoanWithOutT } = require('../../utils/loanFunction');
 
 
 // add internal branch
@@ -78,19 +78,20 @@ exports.penalInterestCalculation = async (req, res) => {
 }
 
 exports.interestCalculationOneLoan = async (req, res) => {
-    let data;
+    let interestData;
+    let penalData;
     let { date, masterLoanId } = req.body;
     if (date) {
-        data = await intrestCalculationForSelectedLoan(date, masterLoanId);
-        await penalInterestCalculationForSelectedLoan(date, masterLoanId)
+        interestData = await intrestCalculationForSelectedLoan(date, masterLoanId);
+        penalData = await penalInterestCalculationForSelectedLoan(date, masterLoanId)
 
     } else {
         date = moment();
-        data = await intrestCalculationForSelectedLoan(date, masterLoanId);
-        await penalInterestCalculationForSelectedLoan(date, masterLoanId)
+        interestData = await intrestCalculationForSelectedLoan(date, masterLoanId);
+        penalData = await penalInterestCalculationForSelectedLoan(date, masterLoanId)
 
     }
-    return res.status(200).json(data);
+    return res.status(200).json({ interestData, penalData });
 }
 
 exports.interestCalculationUpdate = async (req, res) => {
@@ -245,3 +246,37 @@ exports.app = async (req, res) => {
     return res.status(200).json({ data: [] })
 
 }
+
+
+
+// await sequelize.transaction(async (t) => {
+
+
+//     let interestFinalCal = await intrestCalculationForSelectedLoanWithOutT(date, masterLoanId)
+
+//     for (let i = 0; i < interestFinalCal.transactionData.length; i++) {
+//         let element = interestFinalCal.transactionData[i]
+//         let transactionNew = await models.customerTransactionDetail.create(element, { transaction: t })
+//         let a = await models.customerTransactionDetail.update({ referenceId: `${element.loanUniqueId}-${transactionNew.id}` }, { where: { id: transactionNew.id }, transaction: t });
+//     }
+
+//     for (let i = 0; i < interestFinalCal.interestDataObject.length; i++) {
+//         const element = interestFinalCal.interestDataObject[i]
+//         if (element.id) {
+//             let a = await models.customerLoanInterest.update(element, { where: { id: element.id }, transaction: t })
+//         } else {
+//             let b = await models.customerLoanInterest.create(element, { transaction: t })
+//         }
+//     }
+
+//     for (let i = 0; i < interestFinalCal.customerLoanData.length; i++) {
+//         let element = interestFinalCal.customerLoanData[i]
+//         let a = await models.customerLoan.update(element, { where: { id: element.id }, transaction: t })
+//     }
+
+//     let penalFinalCal = await penalInterestCalculationForSelectedLoanWithOutT(date, masterLoanId)
+//     for (let i = 0; i < penalFinalCal.penalData.length; i++) {
+//         const element = penalFinalCal.penalData[i]
+//         let a = await models.customerLoanInterest.update(element, { where: { id: element.id }, transaction: t })
+//     }
+// })

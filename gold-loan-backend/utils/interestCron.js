@@ -94,7 +94,7 @@ exports.dailyIntrestCalculation = async (date) => {
                 }
                 //update last interest if changed
                 if (!Number.isInteger(interest.length)) {
-                    const noOfMonths = ((( loan.masterLoan.tenure * 30) - ((interest.length - 1) * loan.selectedSlab))/30)
+                    const noOfMonths = (((loan.masterLoan.tenure * 30) - ((interest.length - 1) * loan.selectedSlab)) / 30)
                     let oneMonthAmount = interest.amount / (stepUpSlab.days / 30);
                     let amount = (oneMonthAmount * noOfMonths).toFixed(2);
                     let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
@@ -170,12 +170,18 @@ exports.cronForDailyPenalInterest = async (date) => {
 
     let info = await calculationData();
     let data = info.loanInfo
+
+    let penalData = []
+
     let { gracePeriodDays, noOfDaysInYear } = info
     for (let i = 0; i < data.length; i++) {
         let penal = (data[i].penalInterest / 100)
         let selectedSlab = data[i].selectedSlab
         let dataInfo = await getInterestTableOfSingleLoan(data[i].id)
         for (let j = 0; j < dataInfo.length; j++) {
+
+            let penalObject = {}
+
             //due date from db
             const dueDate = moment(dataInfo[j].emiDueDate);
             let nextDueDate
@@ -202,13 +208,25 @@ exports.cronForDailyPenalInterest = async (date) => {
             let penalOutstanding;
             if (dataInfo[j + 1] != undefined) {
                 penalOutstanding = penalAccrual - dataInfo[j + 1].penalPaid
-                console.log("update", penalAccrual, dataInfo[j + 1].id)
+                // console.log("update", penalAccrual, dataInfo[j + 1].id)
                 await models.customerLoanInterest.update({ penalInterest: penalAccrual, penalAccrual: penalAccrual, penalOutstanding: penalOutstanding }, { where: { id: dataInfo[j + 1].id } })
+                penalObject.id = dataInfo[j + 1].id
+                penalObject.penalInterest = penalAccrual
+                penalObject.penalAccrual = penalAccrual
+                penalObject.penalOutstanding = penalOutstanding
+                penalData.push(penalObject)
             } else {
                 penalAccrual = Number(penalAccrual) + Number(dataInfo[dataInfo.length - 1].penalAccrual)
                 penalOutstanding = penalAccrual - dataInfo[j].penalPaid
-                console.log("update", penalAccrual, dataInfo[j].id)
+                // console.log("update", penalAccrual, dataInfo[j].id)
                 await models.customerLoanInterest.update({ penalInterest: penalAccrual, penalAccrual: penalAccrual, penalOutstanding: penalOutstanding }, { where: { id: dataInfo[j].id } })
+                
+                penalObject.id = dataInfo[j + 1].id
+                penalObject.penalInterest = penalAccrual
+                penalObject.penalAccrual = penalAccrual
+                penalObject.penalOutstanding = penalOutstanding
+                penalData.push(penalObject)
+
             }
         }
     }
