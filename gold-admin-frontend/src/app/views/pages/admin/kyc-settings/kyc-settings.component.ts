@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { NgbNavChangeEvent, NgbNav } from '@ng-bootstrap/ng-bootstrap';
 import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
 import { ActivatedRoute } from '@angular/router';
+import { UserDetailsComponent } from './tabs/user-details/user-details.component';
 
 @Component({
   selector: 'kt-kyc-settings',
@@ -14,6 +15,7 @@ export class KycSettingsComponent implements OnInit {
   disabled: boolean[] = [false, true, true, true, true];
   // disabled: boolean[] = [false, false, false, false, false, false]; // delete this line
   @ViewChild('NgbNav', { static: true }) nav: NgbNav;
+  moduleId: any;
 
   constructor(
     private ref: ChangeDetectorRef,
@@ -21,10 +23,7 @@ export class KycSettingsComponent implements OnInit {
     private route: ActivatedRoute) { }
 
   ngOnInit() {
-    // this.next();
- 
-    // this.active = 1;
-   
+
     if (this.route.snapshot.queryParams.mob) {
       this.active = 1;
     } else {
@@ -38,6 +37,7 @@ export class KycSettingsComponent implements OnInit {
       }
 
     }
+
   }
 
   onNavChange(changeEvent: NgbNavChangeEvent) {
@@ -49,7 +49,7 @@ export class KycSettingsComponent implements OnInit {
   next(event) {
 
     if (event !== true) {
-     
+
       for (let i = 0; i < this.disabled.length; i++) {
         this.disabled[i] = true;
         this.active = +(event);
@@ -82,6 +82,10 @@ export class KycSettingsComponent implements OnInit {
     this.appliedKycService.userData.next(undefined)
   }
 
+  setModule(event) {
+    this.moduleId = event
+    console.log(this.moduleId)
+  }
 
 
 }

@@ -174,7 +174,7 @@ export class LeadManagementComponent implements OnInit {
     this.leadService.getLeadById(data.id).pipe(
       map(res => {
         mobile = res.singleCustomer.mobileNumber
-        this.router.navigate(['/admin/kyc-setting'], { queryParams: { mob: mobile } });
+        this.router.navigate(['/admin/kyc-setting'], { queryParams: { mob: mobile, moduleId: data.module.id } });
       }))
       .subscribe();
   }

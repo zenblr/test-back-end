@@ -58,141 +58,131 @@ export class UserReviewComponent implements OnInit {
   organizationTypes: any;
   images = { constitutionsDeed: [], gstCertificate: [] }
 
-  // data = {
-  //   "customerKycReview": {
-  //     "id": 211,
-  //     "firstName": "diksha",
-  //     "lastName": "mane",
-  //     "panCardNumber": null,
-  //     "mobileNumber": "8796777777",
-  //     "panType": "form60",
-  //     "panImage": "uploads/images/1599721456376.pdf",
-  //     "customerKycPersonal": {
-  //       "id": 173,
-  //       "customerId": 211,
-  //       "firstName": "diksha",
-  //       "lastName": "mane",
-  //       "profileImg": "https://goldapi.nimapinfotech.com/uploads/images/1599721455730.jpeg",
-  //       "profileImage": "uploads/images/1599721455730.jpeg",
-  //       "dateOfBirth": "1997-09-26",
-  //       "alternateMobileNumber": "9854222145",
-  //       "panCardNumber": null,
-  //       "gender": "o",
-  //       "age": "23",
-  //       "martialStatus": "married",
-  //       "occupationId": null,
-  //       "identityTypeId": 2,
-  //       "identityProofNumber": "568552222122",
-  //       "identityProof": [
-  //         "uploads/images/1599721471399.jpeg",
-  //         "uploads/images/1599721471848.pdf"
-  //       ],
-  //       "spouseName": "san",
-  //       "signatureProof": "uploads/customer/121/1599550524016.pdf",
-  //       "signatureProofImg": "https://goldapi.nimapinfotech.com/uploads/customer/121/1599550524016.pdf",
-  //       "occupation": null,
-  //       "identityType": {
-  //         "id": 2,
-  //         "name": "Voter ID",
-  //         "isActive": true,
-  //         "createdAt": "2020-05-04T13:49:55.636Z",
-  //         "updatedAt": "2020-05-04T13:49:55.636Z"
-  //       },
-  //       "identityProofImage": [
-  //         "https://goldapi.nimapinfotech.com/uploads/images/1599721471399.jpeg",
-  //         "https://goldapi.nimapinfotech.com/uploads/images/1599721471848.pdf"
-  //       ]
-  //     },
-  //     "customerKycAddress": [
-  //       {
-  //         "id": 340,
-  //         "customerKycId": 224,
-  //         "customerId": 211,
-  //         "addressType": "permanent",
-  //         "address": "sanik",
-  //         "stateId": 6,
-  //         "cityId": 594,
-  //         "pinCode": 890009,
-  //         "addressProofTypeId": 2,
-  //         "addressProofNumber": "568552222122",
-  //         "addressProof": [
-  //           "uploads/images/1599721485766.jpeg",
-  //           "uploads/images/1599721487266.pdf"
-  //         ],
-  //         "state": {
-  //           "id": 6,
-  //           "name": "Chandigarh",
-  //           "isActive": true
-  //         },
-  //         "city": {
-  //           "id": 594,
-  //           "name": "Chandigarh",
-  //           "stateId": 6,
-  //           "slug": null,
-  //           "isActive": true
-  //         },
-  //         "addressProofType": {
-  //           "id": 2,
-  //           "name": "Aadhaar Card",
-  //           "isActive": true,
-  //           "createdAt": "2020-05-04T13:48:00.807Z",
-  //           "updatedAt": "2020-05-04T13:48:00.807Z"
-  //         },
-  //         "addressProofImage": [
-  //           "https://goldapi.nimapinfotech.com/uploads/images/1599721485766.jpeg",
-  //           "https://goldapi.nimapinfotech.com/uploads/images/1599721487266.pdf"
-  //         ]
-  //       },
-  //       {
-  //         "id": 341,
-  //         "customerKycId": 224,
-  //         "customerId": 211,
-  //         "addressType": "residential",
-  //         "address": "sanik",
-  //         "stateId": 6,
-  //         "cityId": 594,
-  //         "pinCode": 890009,
-  //         "addressProofTypeId": 2,
-  //         "addressProofNumber": "568552222122",
-  //         "addressProof": [
-  //           "uploads/images/1599721485766.jpeg",
-  //           "uploads/images/1599721487266.pdf"
-  //         ],
-  //         "state": {
-  //           "id": 6,
-  //           "name": "Chandigarh",
-  //           "isActive": true
-  //         },
-  //         "city": {
-  //           "id": 594,
-  //           "name": "Chandigarh",
-  //           "stateId": 6,
-  //           "slug": null,
-  //           "isActive": true
-  //         },
-  //         "addressProofType": {
-  //           "id": 2,
-  //           "name": "Aadhaar Card",
-  //           "isActive": true,
-  //           "createdAt": "2020-05-04T13:48:00.807Z",
-  //           "updatedAt": "2020-05-04T13:48:00.807Z"
-  //         },
-  //         "addressProofImage": [
-  //           "https://goldapi.nimapinfotech.com/uploads/images/1599721485766.jpeg",
-  //           "https://goldapi.nimapinfotech.com/uploads/images/1599721487266.pdf"
-  //         ]
-  //       }
-  //     ],
-  //     "organizationDetail": null,
-  //     "organizationType": { id: 2, organizationType: 'asn' },
-  //     "dateOfIncorporation": "2020-09-20T13:27:33.441Z",
-  //     "panImg": "https://goldapi.nimapinfotech.com/uploads/images/1599721456376.pdf"
-  //   },
-  //   "customerId": "211",
-  //   "customerKycId": "224",
-  //   "moduleId": 1,
-  //   "userType": null
-  // }
+  //   data = {
+  //     "customerId":206,
+  //     "customerKycId":237,
+  //     "customerKycCurrentStage":"4",
+  //     "customerKycReview":{
+  //        "id":206,
+  //        "firstName":"bhupen",
+  //        "lastName":"corporate",
+  //        "panCardNumber":"ASDAS1234F",
+  //        "mobileNumber":"9908324987",
+  //        "userType":"Corporate",
+  //        "organizationTypeId":3,
+  //        "dateOfIncorporation":"2020-08-31T18:30:00.000Z",
+  //        "moduleId":3,
+  //        "customerKycPersonal":null,
+  //        "organizationDetail":{
+  //           "id":7,
+  //           "customerId":206,
+  //           "customerKycId":237,
+  //           "email":"abc213@gmail.com",
+  //           "alternateEmail":"bbb@gmail.com",
+  //           "landLineNumber":null,
+  //           "gstinNumber":"gstin667323",
+  //           "cinNumber":null,
+  //           "constitutionsDeed":[
+  //              "uploads/customer/206/1600706045103.png",
+  //              "uploads/customer/206/1600706082987.png"
+  //           ],
+  //           "gstCertificate":[
+  //              "uploads/customer/206/1600705999142.pdf",
+  //              "uploads/customer/206/1600706018546.pdf"
+  //           ],
+  //           "gstCertificateImages":[
+  //              "https://8283d907b8a4.ngrok.io/uploads/customer/206/1600705999142.pdf",
+  //              "https://8283d907b8a4.ngrok.io/uploads/customer/206/1600706018546.pdf"
+  //           ],
+  //           "constitutionsDeedImages":[
+  //              "https://8283d907b8a4.ngrok.io/uploads/customer/206/1600706045103.png",
+  //              "https://8283d907b8a4.ngrok.io/uploads/customer/206/1600706082987.png"
+  //           ]
+  //        },
+  //        "customerKycAddress":[
+  //           {
+  //              "id":343,
+  //              "customerKycId":237,
+  //              "customerId":206,
+  //              "addressType":"permanent",
+  //              "address":"test per",
+  //              "stateId":6,
+  //              "cityId":594,
+  //              "pinCode":400501,
+  //              "addressProofTypeId":1,
+  //              "addressProofNumber":"13242424",
+  //              "addressProof":[
+  //                 "uploads/customer/206/1600705796198.pdf"
+  //              ],
+  //              "state":{
+  //                 "id":6,
+  //                 "name":"Chandigarh",
+  //                 "isActive":true
+  //              },
+  //              "city":{
+  //                 "id":594,
+  //                 "name":"Chandigarh",
+  //                 "stateId":6,
+  //                 "slug":null,
+  //                 "isActive":true
+  //              },
+  //              "addressProofType":{
+  //                 "id":1,
+  //                 "name":"Voter ID",
+  //                 "isActive":true,
+  //                 "createdAt":"2020-05-04T13:48:00.807Z",
+  //                 "updatedAt":"2020-05-04T13:48:00.807Z"
+  //              },
+  //              "addressProofImage":[
+  //                 "https://8283d907b8a4.ngrok.io/uploads/customer/206/1600705796198.pdf"
+  //              ]
+  //           },
+  //           {
+  //              "id":344,
+  //              "customerKycId":237,
+  //              "customerId":206,
+  //              "addressType":"communication",
+  //              "address":"test comunicion",
+  //              "stateId":19,
+  //              "cityId":1844,
+  //              "pinCode":800091,
+  //              "addressProofTypeId":6,
+  //              "addressProofNumber":"4000050001000",
+  //              "addressProof":[
+  //                 "uploads/customer/206/1600705834845.png",
+  //                 "uploads/customer/206/1600705840844.png"
+  //              ],
+  //              "state":{
+  //                 "id":19,
+  //                 "name":"Kerala",
+  //                 "isActive":true
+  //              },
+  //              "city":{
+  //                 "id":1844,
+  //                 "name":"Adoor",
+  //                 "stateId":19,
+  //                 "slug":null,
+  //                 "isActive":true
+  //              },
+  //              "addressProofType":{
+  //                 "id":6,
+  //                 "name":"Utility bills",
+  //                 "isActive":true,
+  //                 "createdAt":"2020-05-18T11:41:50.724Z",
+  //                 "updatedAt":"2020-05-18T11:41:50.724Z"
+  //              },
+  //              "addressProofImage":[
+  //                 "https://8283d907b8a4.ngrok.io/uploads/customer/206/1600705834845.png",
+  //                 "https://8283d907b8a4.ngrok.io/uploads/customer/206/1600705840844.png"
+  //              ]
+  //           }
+  //        ],
+  //        "organizationType":{
+  //           "id":3,
+  //           "organizationType":"Company"
+  //        }
+  //     }
+  //  }
 
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
@@ -296,10 +286,10 @@ export class UserReviewComponent implements OnInit {
 
     if (!this.viewOnly || this.userType == 5) {
       this.reviewForm.disable();
-      this.customerKycPersonal.disable();
+      if (this.customerKycPersonal) this.customerKycPersonal.disable();
       this.customerKycAddressOne.disable();
-      this.customerKycAddressTwo.disable();
-      this.customerOrganizationDetail.disable();
+      if (this.customerKycAddressTwo) this.customerKycAddressTwo.disable();
+      if (this.customerOrganizationDetail) this.customerOrganizationDetail.disable();
     }
 
   }
@@ -326,7 +316,9 @@ export class UserReviewComponent implements OnInit {
     })
 
     this.reviewForm.patchValue(this.data.customerKycReview)
-    this.reviewForm.patchValue(this.data.customerKycReview.customerKycPersonal)
+    if (this.data.customerKycReview.customerKycPersonal) {
+      this.reviewForm.patchValue(this.data.customerKycReview.customerKycPersonal)
+    }
 
     // User Corporate
     if (this.data.userType && (this.data.userType == 'Corporate' || this.data.userType == 'Individual')) {
@@ -824,9 +816,9 @@ export class UserReviewComponent implements OnInit {
   previewImage(value) {
 
     let temp = [...this.identityImageArray, ...this.addressImageArray1, ...this.addressImageArray2,
-    ...this.data.customerKycReview.customerKycPersonal.profileImg,
+    ...(this.data.customerKycReview.customerKycPersonal ? this.data.customerKycReview.customerKycPersonal.profileImg : []),
     ...this.data.customerKycReview.panImg,
-    ...this.data.customerKycReview.customerKycPersonal.signatureProofImg
+    ...(this.data.customerKycReview.customerKycPersonal ? this.data.customerKycReview.customerKycPersonal.signatureProofImg : [])
     ]
 
     temp = temp.filter(e => e)
@@ -864,7 +856,8 @@ export class UserReviewComponent implements OnInit {
     this.dialog.open(ImagePreviewDialogComponent, {
       data: {
         images: temp,
-        index: index
+        index: index,
+        modal: !this.viewOnly
       },
       width: "auto"
     })
@@ -960,6 +953,7 @@ export class UserReviewComponent implements OnInit {
         map(res => {
           // console.log(res)
           this.organizationTypes = res
+          this.ref.detectChanges()
         })).subscribe()
     }
   }

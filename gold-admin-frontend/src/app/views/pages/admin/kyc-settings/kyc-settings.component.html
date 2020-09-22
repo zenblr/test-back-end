@@ -12,7 +12,7 @@
         </a>
 
         <ng-template ngbNavContent>
-            <kt-user-details (next)=next($event)></kt-user-details>
+            <kt-user-details (next)=next($event) (setModule)="setModule($event)"></kt-user-details>
         </ng-template>
     </ng-container>
 
@@ -38,7 +38,10 @@
                 <div class="step-number">
                     3
                 </div>
-                <p class="step-name">Personal Details</p>
+                <p *ngIf="moduleId == 1" class="step-name">Personal Details</p>
+                <p *ngIf="moduleId == 3" class="step-name">Organization Details</p>
+                <p *ngIf="!moduleId" class="step-name">Personal Details</p>
+
                 <!-- <p class="step-details"> User's Personal Details</p> -->
             </div>
         </a>

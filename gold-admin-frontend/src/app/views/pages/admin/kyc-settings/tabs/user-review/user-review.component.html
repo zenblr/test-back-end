@@ -3,6 +3,22 @@
     </kt-modal-header>
     <kt-portlet-body>
         <div *ngIf="data">
+            <div class="row kt-margin-t-30">
+                <div class="col-6">
+                    <div class="row">
+                        <div *ngIf="data.moduleId == 1" class="offset-1 col-12 form-label header">
+                            <h4> Gold Loan KYC</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div *ngIf="data.moduleId == 3" class="offset-1 col-12 form-label header">
+                            <h4> Scrap Gold KYC </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <h4> KYC for  </h4> -->
             <form [formGroup]=reviewForm>
                 <!-- Basic Details -->
                 <div class="row kt-margin-t-30">
@@ -57,7 +73,7 @@
                                 <label [class.mandatory]="viewOnly">User Type </label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="userType"
+                                <select class="form-control" formControlName="userType" disabled
                                     [class.isError]="controls.userType.invalid && controls.userType.touched">
                                     <option value=null selected disabled>Select User Type</option>
                                     <option value="Individual">Individual</option>
@@ -140,7 +156,7 @@
                                         {{ item.organizationType }}</option>
                                 </select>
                                 <mat-error
-                                    *ngIf="controls.dateOfIncorporation.invalid && controls.dateOfIncorporation.touched">
+                                    *ngIf="controls.organizationTypeId.invalid && controls.organizationTypeId.touched">
                                     Field Required
                                 </mat-error>
                             </div>
@@ -225,7 +241,7 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="col-3  offset-1 form-label">
-                                <label class="mandatory  text-color font-weight-500">PAN CARD NUMBER</label>
+                                <label class="mandatory  text-color font-weight-500">PAN CARD Number</label>
                             </div>
 
                             <div class="col-8">
@@ -302,7 +318,8 @@
                         <div class="img-container" *ngIf="controls.panImg.value">
                             <img *ngIf="!controls.panImg.value" class=""
                                 src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
-                            <img class="fetched-image" *ngIf="controls.panImg.value && !isPdf(controls.panImg.value)"
+                            <img (click)="previewImage(controls.panImg.value)" class="fetched-image"
+                                *ngIf="controls.panImg.value && !isPdf(controls.panImg.value)"
                                 [src]="controls.panImg.value" style="border-radius: 15px;" alt="" />
                             <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer remove-icon"
                                 (click)="form60.click()"
@@ -874,7 +891,7 @@
                         <div class="col-6">
                             <div class="row">
                                 <div class="offset-1 col-3 form-label">
-                                    <label [class.mandatory]="viewOnly">Alternate Email ID</label>
+                                    <label>Alternate Email ID</label>
                                 </div>
                                 <div class="col-7">
                                     <input type="text" class="form-control" formControlName="alternateEmail"
@@ -893,7 +910,7 @@
                         <div class="col-6">
                             <div class="row">
                                 <div class="offset-1 col-3 form-label">
-                                    <label [class.mandatory]="viewOnly"> Landline Number </label>
+                                    <label> Landline Number </label>
                                 </div>
                                 <div class="col-7">
                                     <input type="text" class="form-control" formControlName="landLineNumber" numbersOnly
@@ -927,7 +944,7 @@
                         <div class="col-6">
                             <div class="row">
                                 <div class="offset-1 col-3 form-label">
-                                    <label [class.mandatory]="viewOnly"> Cin Number </label>
+                                    <label> Cin Number </label>
                                 </div>
                                 <div class="col-7">
                                     <input type="text" class="form-control" formControlName="cinNumber"
@@ -950,7 +967,7 @@
                                     <label class="">Partnership / Constitutions Deed, MOA</label>
                                 </div>
                                 <div class="col-7">
-                                    <div class="input-group mb-3">
+                                    <div *ngIf="viewOnly" class="input-group mb-3">
                                         <input type="text" class="form-control" placeholder="Select File"
                                             aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
                                             formControlName="constitutionsDeedFileName"
@@ -970,10 +987,10 @@
                         <div class="col-6">
                             <div class="row">
                                 <div class="col-3 offset-1 form-label">
-                                    <label class="">GST Certificate</label>
+                                    <label [class.mandatory]="viewOnly">GST Certificate</label>
                                 </div>
                                 <div class="col-7">
-                                    <div class="input-group mb-3">
+                                    <div *ngIf="viewOnly" class="input-group mb-3">
                                         <input type="text" class="form-control" placeholder="Select File"
                                             aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
                                             formControlName="gstCertificateFileName"
@@ -998,14 +1015,15 @@
                                     src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder">
                             </div>
                             <div *ngIf="images.constitutionsDeed.length > 0">
-                                <div class="row">
-                                    <div class="col-6" [class.offset-4]="images.constitutionsDeed.length == 1"
+                                <div [class.row]="viewOnly">
+                                    <div class="col-6"
+                                        [ngClass]="{'offset-4 kt-margin-b-20' : !viewOnly, 'offset-4': images.constitutionsDeed.length == 1 && !viewOnly}"
                                         *ngFor="let img of images.constitutionsDeed, index as idx">
                                         <div class="img-container">
                                             <img *ngIf="!isPdf(img.URL)" class="fetched-image" [src]="img.URL" alt=""
                                                 (click)="preview(img.URL)">
-                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
-                                                class="kt-pointer remove-icon"
+                                            <img *ngIf="viewOnly" src="../../../../../assets/media/icons/cancel.svg"
+                                                alt="" class="kt-pointer remove-icon"
                                                 (click)="removeImages(idx, 'constitutionsDeed');">
                                             <div class="iframeWrapper" (click)="previewPdf(img.URL)">
                                                 <iframe [src]="img.URL | safe : 'resourceUrl'" height="250" width="290"
@@ -1023,14 +1041,15 @@
                                     src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder">
                             </div>
                             <div *ngIf="images.gstCertificate.length > 0">
-                                <div class="row">
-                                    <div class="col-6" [class.offset-4]="images.gstCertificate.length == 1"
+                                <div [class.row]="viewOnly">
+                                    <div class="col-6"
+                                        [ngClass]="{'offset-4 kt-margin-b-20' : !viewOnly, 'offset-4': images.constitutionsDeed.length == 1 && viewOnly}"
                                         *ngFor="let img of images.gstCertificate, index as idx">
                                         <div class="img-container">
                                             <img *ngIf="!isPdf(img.URL)" class="fetched-image" [src]="img.URL" alt=""
                                                 (click)="preview(img.URL, idx)">
-                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
-                                                class="kt-pointer remove-icon"
+                                            <img *ngIf="viewOnly" src="../../../../../assets/media/icons/cancel.svg"
+                                                alt="" class="kt-pointer remove-icon"
                                                 (click)="removeImages(idx, 'gstCertificate');">
                                             <div class="iframeWrapper" (click)="previewPdf(img.URL)">
                                                 <iframe [src]="img.URL | safe : 'resourceUrl'" height="250" width="290"

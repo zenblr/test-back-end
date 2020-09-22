@@ -99,11 +99,11 @@
                                 *ngIf="row.customer.kycStatus === 'pending' && row.customer.customerKyc !== null">
                                 <div [ngStyle]="{'display': 'inherit'}"
                                     *ngIf="!(row.customer?.customerKyc?.isKycSubmitted) && row.module?.id === 1">
-                                    <button (click)="applyKyc(row)" class="apply-kyc">Apply KYC1</button>
+                                    <button (click)="applyKyc(row)" class="apply-kyc">Apply KYC</button>
                                 </div>
                                 <div [ngStyle]="{'display': 'inherit'}"
                                     *ngIf="!(row.customer?.customerKyc?.isScrapKycSubmitted) && row.module?.id === 3">
-                                    <button (click)="applyKyc(row)" class="apply-kyc">Apply KYC3</button>
+                                    <button (click)="applyKyc(row)" class="apply-kyc">Apply KYC</button>
                                 </div>
                             </ng-container>
                             <ng-container

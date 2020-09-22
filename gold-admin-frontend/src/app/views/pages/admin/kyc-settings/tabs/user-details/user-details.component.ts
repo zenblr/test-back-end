@@ -28,6 +28,8 @@ export class UserDetailsComponent implements OnInit {
   @ViewChild('editPan', { static: false }) editPan;
 
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
+  @Output() setModule: EventEmitter<any> = new EventEmitter<any>();
+
   showVerifyPAN = false;
   organizationTypes: any;
   maxDate = new Date()
@@ -179,6 +181,7 @@ export class UserDetailsComponent implements OnInit {
             this.getOrganizationTypes()
           }
         }
+        this.setModule.emit(this.moduleId)
 
         this.setValidation()
 
