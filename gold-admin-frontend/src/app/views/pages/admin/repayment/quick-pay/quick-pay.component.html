@@ -85,7 +85,7 @@
                             <tr>
                                 <td> {{payableAmount?.securedOutstandingAmount}}<br>
                                     <span *ngIf="loanDetails?.customerLoan[1]">
-                                        {{payableAmount?.securedTotalInterest}}
+                                        {{payableAmount?.unsecuredOutstandingAmount}}
                                     </span>
                                 </td>
                                 <td>{{payableAmount?.securedTotalInterest}}<br>

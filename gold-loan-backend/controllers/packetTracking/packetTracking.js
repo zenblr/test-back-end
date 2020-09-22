@@ -28,44 +28,33 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
         {
             model: models.customerLoanPackageDetails,
             as: 'loanPacketDetails',
+            subQuery: false,
             attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
             include: [{
                 model: models.packet,
+                subQuery: false,
                 attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                include: [
-                    {
-                        model: models.internalBranch,
-                        as: 'internalBranch',
-                        attributes: ['id', 'internalBranchUniqueId', 'name']
-                    },
-                    {
-                        model: models.user,
-                        as: 'appraiser',
-                        attributes: ['id', 'firstName', 'lastName']
-                    }
-                ]
             }]
+        },
+        {
+            model: models.user,
+            as: 'Createdby',
+            attributes: ['id', 'firstName', 'lastName']
+        },
+        {
+            model: models.internalBranch,
+            as: 'internalBranch',
+            attributes: ['id', 'internalBranchUniqueId', 'name']
         },
         {
             model: models.customer,
             as: 'customer',
             attributes: ['id', 'customerUniqueId', 'firstName', 'lastName'],
         },
-        // {
-        //     model: models.customerPacketTracking,
-        //     as: 'customerPacketTracking',
-        //     where: { isDelivered: true },
-        //     include: [
-        //         {
-        //             model: models.packetLocation,
-        //             as: 'packetLocation',
-        //             attributes: { exclude: ['createdAt', 'updatedAt'] },
-        //         },
-        //     ]
-        // },
         {
             model: models.customerLoanPacketData,
             as: 'locationData',
+            subQuery: false,
             include: [
                 {
                     model: models.packetLocation,
@@ -80,26 +69,25 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
 
     let searchQuery = {
         [Op.and]: [query, {
-            [Op.or]: {
-                "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
-                "$loanPacketDetails.packets.internalBranch.name$": { [Op.iLike]: search + '%' },
-                "$customer.first_name$": { [Op.iLike]: search + '%' },
-                "$customer.last_name$": { [Op.iLike]: search + '%' },
-                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-            },
+            // [Op.or]: {
+            // "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
+            //     "$loanPacketDetails.packets.internalBranch.name$": { [Op.iLike]: search + '%' },
+            //     "$customer.first_name$": { [Op.iLike]: search + '%' },
+            //     "$customer.last_name$": { [Op.iLike]: search + '%' },
+            //     "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+            // },
         }],
         isActive: true,
         loanStageId: stageId
     };
     let packetDetails = await models.customerLoanMaster.findAll({
-        attributes: ['id', 'loanStageId'],
+        // subQuery: false,
         where: searchQuery,
-        subQuery: false,
         include: associateModel,
-        order: [['id', 'DESC'],
-        [models.customerLoan, 'id', 'asc'],
-        // [models.customerPacketTracking, 'id', 'desc'],
-        [{ model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'asc']
+        order: [
+            ['id', 'DESC'],
+            [models.customerLoan, 'id', 'asc'],
+            [{ model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'asc']
         ],
         offset: offset,
         limit: pageSize,
@@ -108,9 +96,7 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
     let count = await models.customerLoanMaster.findAll({
         include: associateModel,
         where: searchQuery,
-        subQuery: false,
-        offset: offset,
-        limit: pageSize,
+        // subQuery: false,
     });
     return res.status(200).json({ message: 'packet details fetched successfully', data: packetDetails, count: count.length });
 }

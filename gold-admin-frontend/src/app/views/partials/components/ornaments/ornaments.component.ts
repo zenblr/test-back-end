@@ -401,7 +401,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       purityTest: [[]],
       ltvPercent: [, [Validators.required]],
       ltvAmount: [],
-      loanAmount: [''],
+      loanAmount: ['',[Validators.required]],
       id: [],
       currentLtvAmount: [this.ltvGoldRate],
       ornamentImageData: [, Validators.required],
