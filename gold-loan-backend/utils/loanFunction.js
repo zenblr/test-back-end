@@ -561,7 +561,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                                 }else{
                                     amount =   nextInterest.paidAmount - pendingDaysAmount;
 
-                                    await models.customerLoanInterest.update({ interestAccrual: pendingDaysAmount, totalInterestAccrual: pendingDaysAmount }, { where: { id: nextInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                                    await models.customerLoanInterest.update({ interestAccrual: 0.00, totalInterestAccrual: pendingDaysAmount }, { where: { id: nextInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                                 }
                             }
                         }
