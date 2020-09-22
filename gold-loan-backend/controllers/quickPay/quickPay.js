@@ -236,14 +236,20 @@ exports.confirmationForPayment = async (req, res, next) => {
                 await models.customerTransactionDetail.update({ referenceId: `${element.loanUniqueId}-${transactionNew.id}` }, { where: { id: transactionNew.id }, transaction: t });
             }
 
+            let interestAccrualId = []
             for (let i = 0; i < interestCal.interestDataObject.length; i++) {
                 const element = interestCal.interestDataObject[i]
                 if (element.id) {
+                    if (element.interestAccrual) {
+                        interestAccrualId.push(element.id)
+                    }
                     await models.customerLoanInterest.update(element, { where: { id: element.id }, transaction: t })
                 } else {
                     await models.customerLoanInterest.create(element, { transaction: t })
                 }
             }
+
+            await models.customerLoanInterest.update({ interestAccrual: 0.00, totalInterestAccural: 0.00 }, { where: { masterLoanId: masterLoanId, id: { [Op.notIn]: interestAccrualId }, emiStatus: 'pending' }, transaction: t })
             //removed
             // for (let i = 0; i < interestCal.customerLoanData.length; i++) {
             //     let element = interestCal.customerLoanData[i]
@@ -383,7 +389,7 @@ exports.confirmationForPayment = async (req, res, next) => {
                     loanId: securedLoanId,
                     emiStatus: { [Op.in]: ['pending', 'partially paid'] }
                 },
-                transaction:t,
+                transaction: t,
                 order: [['emiDueDate']],
                 include: {
                     model: models.customerLoan,
@@ -393,12 +399,12 @@ exports.confirmationForPayment = async (req, res, next) => {
             })
             let unsecuredLoanDetails
             if (isUnsecuredSchemeApplied) {
-                 unsecuredLoanDetails = await models.customerLoanInterest.findAll({
+                unsecuredLoanDetails = await models.customerLoanInterest.findAll({
                     where: {
                         loanId: unsecuredLoanId,
                         emiStatus: { [Op.in]: ['pending', 'partially paid'] }
                     },
-                    transaction:t,
+                    transaction: t,
                     order: [['emiDueDate']],
                     include: {
                         model: models.customerLoan,
@@ -407,7 +413,7 @@ exports.confirmationForPayment = async (req, res, next) => {
                     }
                 })
             }
-             payment = await allInterestPayment(transactionId, newTransactionSplitUp,securedLoanDetails,unsecuredLoanDetails);
+            payment = await allInterestPayment(transactionId, newTransactionSplitUp, securedLoanDetails, unsecuredLoanDetails);
 
             await models.customerLoanTransaction.update({ depositStatus: status, paymentReceivedDate: receivedDate }, { where: { id: transactionId }, transaction: t });
 
@@ -477,7 +483,7 @@ exports.confirmationForPayment = async (req, res, next) => {
         await penalInterestCalculationForSelectedLoan(moment(), masterLoanId)
 
     }
-    return res.status(200).json({ message: "success" ,data:payment});
+    return res.status(200).json({ message: "success", data: payment });
 
 
 
