@@ -473,8 +473,8 @@ exports.confirmationForPayment = async (req, res, next) => {
 
         })
 
-        // await intrestCalculationForSelectedLoan(moment(), masterLoanId)
-        // await penalInterestCalculationForSelectedLoan(moment(), masterLoanId)
+        await intrestCalculationForSelectedLoan(moment(), masterLoanId)
+        await penalInterestCalculationForSelectedLoan(moment(), masterLoanId)
 
     }
     return res.status(200).json({ message: "success" ,data:payment});
