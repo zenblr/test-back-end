@@ -1399,8 +1399,11 @@ let stepDown = async (paymentDate, loan, noOfDays) => {
         }
     })
 
+    let lastDueDate = emiTable[emiTable.length - 1].emiDueDate;
+    let diff = moment(paymentDate).diff(moment(lastDueDate), 'days')
+    
     let emiTableDetails
-    if (emiTable.length > 0) {
+    if (emiTable.length > 0 && paymentDate == lastDueDate) {
 
         let interestData = await models.customerLoanSlabRate.findAll({
             where: { loanId: loan.customerLoan[0].id },
