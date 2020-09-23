@@ -5,7 +5,7 @@
         <div class="table-div kt-padding-20">
             <table class="table outer-border">
                 <thead>
-                    <th class="transparent" >Transaction ID</th>
+                    <th class="transparent">Transaction ID</th>
                     <th class="transparent">Loan Id</th>
                     <th class="transparent">Loan Amount</th>
                     <th class="transparent">Payment Date</th>
@@ -15,7 +15,7 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let loanDetail of partPaymentHistory">
-                        <td>{{loanDetail.transactionUniqueId}}</td>
+                        <td>{{loanDetail.transactionUniqueId | uppercase}}</td>
                         <td>
                             {{loanDetail.transactionSplitUp[0].customerLoan?.loanUniqueId}}
                             <br>
