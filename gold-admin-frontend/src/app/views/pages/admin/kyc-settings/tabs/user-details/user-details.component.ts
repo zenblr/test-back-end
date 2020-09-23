@@ -181,7 +181,7 @@ export class UserDetailsComponent implements OnInit {
             this.getOrganizationTypes()
           }
         }
-        this.setModule.emit(this.moduleId)
+        this.setModule.emit({moduleId: this.moduleId, userType: this.controls.userType.value ? this.controls.userType.value : null})
 
         this.setValidation()
 

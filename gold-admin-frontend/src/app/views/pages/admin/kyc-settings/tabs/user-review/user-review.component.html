@@ -54,7 +54,7 @@
                                     <div class="align-self-center">
                                         <input type="file" accept="image/*" #profile class="d-none"
                                             (input)="getFileInfo($event, 'profile')" />
-                                        <label [class.mandatory]="viewOnly"
+                                        <label [class.mandatory]="viewOnly && data?.moduleId == 1"
                                             [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
                                             (click)="userType != 5 && webcam()" class=" text-primary"
                                             style="font-weight: 600;">Change Profile
@@ -1158,23 +1158,15 @@
                         <div class="col-6">
                             <div class="row">
                                 <div class="offset-1 col-3 form-label">
-                                    <label [class.mandatory]="viewOnly" class="">Marital Status</label>
+                                    <label [class.mandatory]="viewOnly && data?.moduleId == 1" class="">Marital
+                                        Status</label>
                                 </div>
                                 <div class="col-7">
-                                    <!-- <ng-container *ngIf="data.customerKycReview.customerKycPersonal.martialStatus == 'single'">
-                                        <input type="text" class="form-control" placeholder="" value="Single" />
-                                    </ng-container>
-                                    <ng-container *ngIf="data.customerKycReview.customerKycPersonal.martialStatus == 'married'">
-                                        <input type="text" class="form-control" placeholder="" value="Married" />
-                                    </ng-container>
-                                    <ng-container *ngIf="data.customerKycReview.customerKycPersonal.martialStatus == 'divorced'">
-                                        <input type="text" class="form-control" placeholder="" value="Divorced" />
-                                    </ng-container> -->
-
                                     <select formControlName="martialStatus" class="form-control"
                                         (change)="changeMaritalStatus()"
                                         [class.isError]="customerKycPersonal.controls.martialStatus.touched && customerKycPersonal.controls.martialStatus.invalid">
-                                        <option value="" selected disabled>Select Status</option>
+                                        <option value="" selected [disabled]="data?.moduleId == 1">Select Status
+                                        </option>
                                         <option value="single">Single</option>
                                         <option value="married">Married</option>
                                         <option value="divorced">Divorced</option>
@@ -1222,11 +1214,13 @@
                                 <div class="offset-1 col-3 form-label">
                                     <label
                                         *ngIf="customerKycPersonal.controls.martialStatus.value == 'single' || customerKycPersonal.controls.martialStatus.value == 'divorced' || customerKycPersonal.controls.martialStatus.value == ''"
-                                        [class.mandatory]="viewOnly">Father's Name</label>
+                                        [class.mandatory]="viewOnly && data?.moduleId == 1">Father's Name</label>
                                     <label *ngIf="customerKycPersonal.controls.martialStatus.value == 'married'"
-                                        [class.mandatory]="viewOnly">
+                                        [class.mandatory]="viewOnly && data?.moduleId == 1">
                                         Spouse Name</label>
-                                    <!-- <label [class.mandatory]="viewOnly" class="">Father/Spouse Name</label> -->
+                                    <label *ngIf="customerKycPersonal.controls.martialStatus.value == null"
+                                        [class.mandatory]="viewOnly && data?.moduleId == 1" class="">Father/Spouse
+                                        Name</label>
                                 </div>
                                 <div class="col-7">
                                     <input type="text" class="form-control" placeholder="" formControlName="spouseName"
@@ -1268,7 +1262,8 @@
                         <div class="col-6">
                             <div class="row">
                                 <div class="offset-1 col-3 form-label">
-                                    <label [class.mandatory]="viewOnly" class=""> Alternate No. </label>
+                                    <label [class.mandatory]="viewOnly && data?.moduleId == 1" class=""> Alternate No.
+                                    </label>
                                 </div>
                                 <div class="col-7">
                                     <input type="text" class="form-control" placeholder="Mobile Number"

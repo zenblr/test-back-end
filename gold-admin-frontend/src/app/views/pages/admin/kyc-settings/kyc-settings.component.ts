@@ -15,7 +15,7 @@ export class KycSettingsComponent implements OnInit {
   disabled: boolean[] = [false, true, true, true, true];
   // disabled: boolean[] = [false, false, false, false, false, false]; // delete this line
   @ViewChild('NgbNav', { static: true }) nav: NgbNav;
-  moduleId: any;
+  module: any;
 
   constructor(
     private ref: ChangeDetectorRef,
@@ -83,8 +83,8 @@ export class KycSettingsComponent implements OnInit {
   }
 
   setModule(event) {
-    this.moduleId = event
-    console.log(this.moduleId)
+    this.module = event
+    console.log(this.module)
   }
 
 

@@ -57,6 +57,8 @@ export class UserReviewComponent implements OnInit {
   customerOrganizationDetail: FormGroup;
   organizationTypes: any;
   images = { constitutionsDeed: [], gstCertificate: [] }
+  @Output() setModule: EventEmitter<any> = new EventEmitter<any>();
+
 
   //   data = {
   //     "customerId":206,
@@ -221,6 +223,7 @@ export class UserReviewComponent implements OnInit {
       }
     })
 
+    this.setModule.next({ moduleId: this.data.moduleId, userType: this.data.userType })
 
     this.initForm();
 
@@ -406,7 +409,7 @@ export class UserReviewComponent implements OnInit {
         alternateMobileNumber: [, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
         gender: [, [Validators.required]],
         spouseName: [, [Validators.required]],
-        martialStatus: [, [Validators.required]],
+        martialStatus: ['', [Validators.required]],
         signatureProof: [],
         signatureProofFileName: [],
         occupationId: [],
@@ -419,6 +422,9 @@ export class UserReviewComponent implements OnInit {
       })
 
       this.customerKycPersonal.patchValue(this.data.customerKycReview.customerKycPersonal)
+      this.customerKycPersonal.patchValue({
+        martialStatus: this.data.customerKycReview.customerKycPersonal.martialStatus == null ? '' : this.data.customerKycReview.customerKycPersonal.martialStatus
+      })
     }
 
     if (this.data.moduleId == 3) {
@@ -525,7 +531,9 @@ export class UserReviewComponent implements OnInit {
         identityProofNumber: this.reviewForm.get('identityProofNumber').value,
         panCardNumber: this.reviewForm.get('panCardNumber').value ? this.reviewForm.get('panCardNumber').value.toUpperCase() : null
       })
+      this.patchNullToEmptyString()
     }
+
 
     this.reviewForm.patchValue({
       panCardNumber: this.reviewForm.get('panCardNumber').value ? this.reviewForm.get('panCardNumber').value.toUpperCase() : null
@@ -945,6 +953,12 @@ export class UserReviewComponent implements OnInit {
 
   changeMaritalStatus() {
     this.customerKycPersonal.controls.spouseName.reset()
+  }
+
+  patchNullToEmptyString() {
+    if (this.customerKycPersonal.controls.martialStatus.value == '') {
+      this.customerKycPersonal.patchValue({ martialStatus: null })
+    }
   }
 
   getOrganizationTypes() {

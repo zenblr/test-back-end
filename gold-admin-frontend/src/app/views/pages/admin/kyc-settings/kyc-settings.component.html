@@ -38,9 +38,11 @@
                 <div class="step-number">
                     3
                 </div>
-                <p *ngIf="moduleId == 1" class="step-name">Personal Details</p>
-                <p *ngIf="moduleId == 3" class="step-name">Organization Details</p>
-                <p *ngIf="!moduleId" class="step-name">Personal Details</p>
+                <p *ngIf="module && module.moduleId == 1 || (module && module.moduleId == 3 && module.userType == 'Individual')"
+                    class="step-name">Personal Details</p>
+                <p *ngIf="module && module.moduleId == 3 && module.userType == 'Corporate'" class="step-name">
+                    Organization Details
+                </p>
 
                 <!-- <p class="step-details"> User's Personal Details</p> -->
             </div>
@@ -76,7 +78,7 @@
             </div>
         </a>
         <ng-template ngbNavContent>
-            <kt-user-review (next)=next($event)></kt-user-review>
+            <kt-user-review (next)=next($event) (setModule)="setModule($event)"></kt-user-review>
         </ng-template>
     </ng-container>
     <ng-container [ngbNavItem]="5" [disabled]="disabled[4]">
