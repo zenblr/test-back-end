@@ -836,6 +836,22 @@ let allInterestPayment = async (transactionId, newTransactionSplitUp, securedLoa
 
     let transactionDetails = []
 
+    if(!securedLoanDetails){
+
+     securedLoanDetails = await models.customerLoanInterest.findAll({
+        where: {
+            loanId: transactionSplitUp[0].loanId,
+            emiStatus: { [Op.in]: ['pending', 'partially paid'] }
+        },
+        order: [['emiDueDate']],
+        include: {
+            model: models.customerLoan,
+            as: 'customerLoan',
+            attributes: ['loanUniqueId']
+        }
+    })
+}
+
 
     let temp = []
     for (let index = 0; index < securedLoanDetails.length; index++) {
@@ -860,6 +876,22 @@ let allInterestPayment = async (transactionId, newTransactionSplitUp, securedLoa
     // let unsecuredLoanDetails
     // unsecure
     if (transactionSplitUp.length > 1) {
+
+        if(!unsecuredLoanDetails){
+
+        unsecuredLoanDetails = await models.customerLoanInterest.findAll({
+            where: {
+                loanId: transactionSplitUp[1].loanId,
+                emiStatus: { [Op.in]: ['pending', 'partially paid'] }
+            },
+            order: [['emiDueDate']],
+            include: {
+                model: models.customerLoan,
+                as: 'customerLoan',
+                attributes: ['loanUniqueId']
+            }
+        })
+    }
 
 
         let temp = []
@@ -1367,8 +1399,11 @@ let stepDown = async (paymentDate, loan, noOfDays) => {
         }
     })
 
+    let lastDueDate = emiTable[emiTable.length - 1].emiDueDate;
+    let diff = moment(paymentDate).diff(moment(lastDueDate), 'days')
+    
     let emiTableDetails
-    if (emiTable.length > 0) {
+    if (emiTable.length > 0 && paymentDate == lastDueDate) {
 
         let interestData = await models.customerLoanSlabRate.findAll({
             where: { loanId: loan.customerLoan[0].id },
@@ -1416,6 +1451,10 @@ let stepDown = async (paymentDate, loan, noOfDays) => {
                     let unsecuredIndex = unsecuredInterestData.findIndex(ele => {
                         return ele.interestRate == unsecuredEmiTable[0].interestRate
                     })
+
+                    if(unsecuredIndex == 0 ){
+                        unsecuredIndex = 1;
+                    }
 
                     var unsecuredStepDownInterest = unsecuredInterestData[unsecuredIndex - 1].interestRate
 
