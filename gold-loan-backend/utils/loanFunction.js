@@ -1449,6 +1449,10 @@ let stepDown = async (paymentDate, loan, noOfDays) => {
                         return ele.interestRate == unsecuredEmiTable[0].interestRate
                     })
 
+                    if(unsecuredIndex == 0 ){
+                        unsecuredIndex = 1;
+                    }
+
                     var unsecuredStepDownInterest = unsecuredInterestData[unsecuredIndex - 1].interestRate
 
                     var unsecuredcurrentSlabRate = interestData[index - 1].days
