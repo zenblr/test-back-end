@@ -19,7 +19,7 @@
                         <td class="text-center">{{emi?.paidAmount}}</td>
                         <td class="text-center">
                             <span *ngIf="emi.emiReceivedDate;else noData">
-                                {{emi?.emiReceivedDate}}
+                                {{emi?.emiReceivedDate | date :'mediumDate'}}
                             </span>
                             <ng-template #noData>
                                 -
