@@ -11,6 +11,8 @@ import { AssignAppraiserComponent } from '../../../user-management/assign-apprai
 import { UpdateStatusComponent } from '../../update-status/update-status.component';
 import { OrnamentsComponent } from '../../../../../partials/components/ornaments/ornaments.component';
 import { Router } from '@angular/router';
+import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
 
 @Component({
   selector: 'kt-full-release-approval',
@@ -20,7 +22,7 @@ import { Router } from '@angular/router';
 export class FullReleaseApprovalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'transactionId', 'bankTransactionId', 'appraiserName', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'updateStatus'];
+  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'transactionId', 'bankTransactionId', 'appraiserName', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'view', 'updateStatus'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -165,6 +167,31 @@ export class FullReleaseApprovalComponent implements OnInit {
 
   viewLoan(loan) {
     this.router.navigate(['/admin/customer-management/loan-details', loan.masterLoanId])
+  }
+
+  view(value) {
+    var ext = value.split('.')
+    if (ext[ext.length - 1] == 'pdf') {
+
+      this.dialog.open(PdfViewerComponent, {
+        data: {
+          pdfSrc: value,
+          page: 1,
+          showAll: true
+        },
+        width: "80%"
+      })
+
+    } else {
+      this.dialog.open(ImagePreviewDialogComponent, {
+        data: {
+          images: [value],
+          index: 0,
+          modal: false
+        },
+        width: "auto",
+      })
+    }
   }
 
 }
