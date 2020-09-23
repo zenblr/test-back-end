@@ -2,7 +2,7 @@
     "development": {
         "username": "postgres",
         "password": "nimap@123",
-        "database": "packet_trakking",
+        "database": "roll_back",
         "host": "127.0.0.1",
         "port": "6432",
         "dialect": "postgres",

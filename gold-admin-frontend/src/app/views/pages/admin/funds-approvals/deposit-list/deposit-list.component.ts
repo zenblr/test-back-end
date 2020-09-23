@@ -130,19 +130,20 @@ export class DepositListComponent implements OnInit {
         if (res.depositStatus == 'Pending') {
           return
         }
+        let data = {
+          transactionId:deposit.id, 
+          status:res.depositStatus,
+          paymentReceivedDate:res.paymentReceivedDate,
+          masterLoanId:deposit.masterLoanId,
+          depositAmount:deposit.transactionAmont
+        }
         if (deposit.paymentFor == "partPayment") {
-          this.partPaymentService.finalPaymentConfirm(deposit.id, res.depositStatus, deposit.masterLoanId).subscribe(result => {
+          this.partPaymentService.finalPaymentConfirm(data).subscribe(result => {
             this.toaster(res.depositStatus)
             this.loadPage();
           })
         } else {
-          let data = {
-            transactionId:deposit.id, 
-            status:res.depositStatus,
-            paymentReceivedDate:res.paymentReceivedDate,
-            masterLoanId:deposit.masterLoanId,
-            depositAmount:deposit.transactionAmont
-          }
+          
           this.quickPayService.confirmPayment(data).subscribe(result => {
             this.toaster(res.depositStatus)
             this.loadPage();

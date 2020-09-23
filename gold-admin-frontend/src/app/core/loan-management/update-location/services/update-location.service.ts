@@ -12,7 +12,20 @@ export class UpdateLocationService {
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
   getDetailsByMobile(query): Observable<any> {
-    return this.http.get(`/api/packet-tracking/user-name`, { params: query }).pipe(map(res => res),
+    const reqParams: any = {};
+    if (query && query.mobileNumber) {
+      reqParams.mobileNumber = query.mobileNumber;
+    }
+    if (query && query.receiverType) {
+      reqParams.receiverType = query.receiverType;
+    }
+    if (query && query.partnerBranchId) {
+      reqParams.partnerBranchId = query.partnerBranchId;
+    }
+    if (query && query.masterLoanId) {
+      reqParams.masterLoanId = query.masterLoanId;
+    }
+    return this.http.get(`/api/packet-tracking/user-name`, { params: reqParams }).pipe(map(res => res),
       catchError(err => {
         if (err.error.message) this.toastr.error(err.error.message);
         throw (err);
@@ -50,6 +63,28 @@ export class UpdateLocationService {
 
   addPacketLocation(data): Observable<any> {
     return this.http.post<any>(`/api/packet-tracking`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
+  customerHomeOut(data, isFullRelease, isPartRelease): Observable<any> {
+    data.isFullRelease = isFullRelease;
+    data.isPartRelease = isPartRelease
+    return this.http.post<any>(`/api/packet-tracking/packet-release-home-in`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
+  collectPacket(data): Observable<any> {
+    return this.http.post<any>(`/api/packet-tracking/packet-release-collect`, data).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message) this.toastr.error(err.error.message);

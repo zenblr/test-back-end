@@ -145,11 +145,18 @@
 							<label class="mandatory  text-color font-weight-500">PAN / FORM 60 </label>
 						</div>
 						<div class="col-8">
-							<select class="form-control" formControlName="panType" (change)='remove()'>
+							<select class="form-control" formControlName="panType" (change)='remove()'
+								[class.isError]="controls.panType.touched && controls.panType.invalid">
 								<option value=null selected disabled>Select</option>
 								<option value="pan">PAN</option>
 								<option value="form60">FORM 60</option>
 							</select>
+							<mat-error *ngIf="
+									controls.panType.errors?.required &&
+									controls.panType.touched
+								">
+								Required field
+							</mat-error>
 						</div>
 					</div>
 

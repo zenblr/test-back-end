@@ -37,6 +37,18 @@ exports.loanRequest = async (req, res, next) => {
 
     let customerDetails = await models.customer.findOne({ where: { id: customerId } })
 
+    let getAppraiserRequest = await models.appraiserRequest.findOne({ where: { id: appraiserRequestId, appraiserId: appraiserId } });
+
+    if (check.isEmpty(getAppraiserRequest)) {
+        return res.status(400).json({ message: `This customer is not assign to you` })
+    }
+
+    let getCustomer = await models.customer.findOne({ where: { id: getAppraiserRequest.customerId } })
+
+    if (getCustomer.kycStatus != "approved") {
+        return res.status(400).json({ message: 'This customer Kyc is not completed' })
+    }
+
 
     let loanData = await sequelize.transaction(async t => {
         if (isEdit) {

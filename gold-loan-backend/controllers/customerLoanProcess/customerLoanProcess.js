@@ -146,17 +146,27 @@ exports.customerDetails = async (req, res, next) => {
         const lastName = customerLoanStage.customer.lastName
 
         let customerCurrentStage = customerLoanStage.customerLoanCurrentStage
+
+        let partReleaseData;
+        if (customerLoanStage.isNewLoanFromPartRelease) {
+            partReleaseData = await models.partRelease.findOne({ where: { newLoanId: customerLoanStage.id } });
+        }
+        let newLoanAmount = null;
+        if (partReleaseData) {
+            newLoanAmount = partReleaseData.newLoanAmount;
+        }
+
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanStage.id, loanType: 'secured' } })
         if (customerCurrentStage == '2') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, newLoanAmount })
         } else if (customerCurrentStage == '3') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, newLoanAmount })
         } else if (customerCurrentStage == '4') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt, newLoanAmount })
         } else if (customerCurrentStage == '5') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount, firstName, lastName })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount, firstName, lastName, newLoanAmount })
         } else if (customerCurrentStage == '6') {
-            return res.status(200).json({ message: 'success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage })
+            return res.status(200).json({ message: 'success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage, newLoanAmount })
         }
     }
 
@@ -1932,6 +1942,17 @@ exports.getSingleLoanDetails = async (req, res, next) => {
         ]
     })
 
+
+    let partReleaseData;
+    if (customerLoan.masterLoan.isNewLoanFromPartRelease) {
+        partReleaseData = await models.partRelease.findOne({ where: { newLoanId: customerLoan.masterLoan.id } });
+    }
+    let newLoanAmount = null;
+    if (partReleaseData) {
+        newLoanAmount = partReleaseData.newLoanAmount;
+    }
+    customerLoan.dataValues.newLoanAmount = newLoanAmount
+
     customerLoan.dataValues.loanPacketDetails = packet
     customerLoan.dataValues.customerLoanDisbursement = disbursement
 
@@ -1959,7 +1980,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
         customerLoan.dataValues.ornamentType = ornamentType;
     }
 
-    return res.status(200).json({ message: 'success', data: customerLoan })
+    return res.status(200).json({ message: 'success', data: customerLoan, newLoanAmount })
 }
 
 //get function for single loan in CUSTOMER-MANAGMENT
@@ -2046,7 +2067,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
                 )
             },
         }],
-        // loanStageId: { [Op.notIn]: [stage.id, transfer.id, disbursed.id] },
+        loanStageId: { [Op.notIn]: [stage.id, transfer.id, disbursed.id] },
         isLoanCompleted: false,
         isActive: true
     };

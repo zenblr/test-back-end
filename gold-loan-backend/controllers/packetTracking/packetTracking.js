@@ -28,24 +28,23 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
         {
             model: models.customerLoanPackageDetails,
             as: 'loanPacketDetails',
+            subQuery: false,
             attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
             include: [{
                 model: models.packet,
+                subQuery: false,
                 attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                include: [
-                    {
-                        model: models.internalBranch,
-                        as: 'internalBranch',
-                        where: { isActive: true },
-                        attributes: ['id', 'internalBranchUniqueId', 'name']
-                    },
-                    {
-                        model: models.user,
-                        as: 'appraiser',
-                        attributes: ['id', 'firstName', 'lastName']
-                    }
-                ]
             }]
+        },
+        {
+            model: models.user,
+            as: 'Createdby',
+            attributes: ['id', 'firstName', 'lastName']
+        },
+        {
+            model: models.internalBranch,
+            as: 'internalBranch',
+            attributes: ['id', 'internalBranchUniqueId', 'name']
         },
         {
             model: models.customer,
@@ -53,42 +52,42 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
             attributes: ['id', 'customerUniqueId', 'firstName', 'lastName'],
         },
         {
-            model: models.customerPacketTracking,
-            as: 'customerPacketTracking',
-            where: { isDelivered: true },
+            model: models.customerLoanPacketData,
+            as: 'locationData',
+            subQuery: false,
             include: [
                 {
                     model: models.packetLocation,
                     as: 'packetLocation',
-                    attributes: { exclude: ['createdAt', 'updatedAt'] },
-                },
+                    attributes: ['id', 'location']
+                }
             ]
-        }
+        },
     ]
-    let stage = await models.loanStage.findAll({ where: { name: { [Op.in]: ['packet in branch', 'packet submitted'] } } })
+    let stage = await models.loanStage.findAll({ where: { name: { [Op.in]: ['submit packet', 'packet in branch', 'packet submitted'] } } })
     let stageId = stage.map(ele => ele.id)
 
     let searchQuery = {
         [Op.and]: [query, {
-            [Op.or]: {
-                "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
-                "$loanPacketDetails.packets.internalBranch.name$": { [Op.iLike]: search + '%' },
-                "$customer.first_name$": { [Op.iLike]: search + '%' },
-                "$customer.last_name$": { [Op.iLike]: search + '%' },
-                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-            },
+            // [Op.or]: {
+            // "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
+            //     "$loanPacketDetails.packets.internalBranch.name$": { [Op.iLike]: search + '%' },
+            //     "$customer.first_name$": { [Op.iLike]: search + '%' },
+            //     "$customer.last_name$": { [Op.iLike]: search + '%' },
+            //     "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+            // },
         }],
         isActive: true,
         loanStageId: stageId
     };
     let packetDetails = await models.customerLoanMaster.findAll({
-        attributes: ['id'],
+        // subQuery: false,
         where: searchQuery,
-        subQuery: false,
         include: associateModel,
-        order: [['id', 'DESC'],
-        [models.customerLoan, 'id', 'asc'],
-        [models.customerPacketTracking, 'id', 'desc']
+        order: [
+            ['id', 'DESC'],
+            [models.customerLoan, 'id', 'asc'],
+            [{ model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'asc']
         ],
         offset: offset,
         limit: pageSize,
@@ -97,9 +96,7 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
     let count = await models.customerLoanMaster.findAll({
         include: associateModel,
         where: searchQuery,
-        subQuery: false,
-        offset: offset,
-        limit: pageSize,
+        // subQuery: false,
     });
     return res.status(200).json({ message: 'packet details fetched successfully', data: packetDetails, count: count.length });
 }
@@ -140,11 +137,20 @@ exports.checkBarcode = async (req, res) => {
 
 //FUNCTION TO GET USER NAME
 exports.getUserName = async (req, res) => {
-    let { mobileNumber, receiverType } = req.query
+    let { mobileNumber, receiverType, masterLoanId, partnerBranchId } = req.query
+
+    let masterLoan = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
     if (receiverType == 'InternalUser') {
         let User = await models.user.findOne({
             where: { mobileNumber: mobileNumber },
-            attributes: ['id', 'firstName', 'lastName']
+            attributes: ['id', 'firstName', 'lastName'],
+            include: [
+                {
+                    model: models.internalBranch,
+                    where: { id: masterLoan.internalBranchId },
+                    attributes: ['id']
+                }
+            ]
         });
         if (User) {
             return res.status(200).json({ data: User, receiverType });
@@ -163,7 +169,7 @@ exports.getUserName = async (req, res) => {
         }
     } else if (receiverType == 'PartnerUser') {
         let User = await models.partnerBranchUser.findOne({
-            where: { mobileNumber: mobileNumber },
+            where: { mobileNumber: mobileNumber, branchId: Number(partnerBranchId) },
             attributes: ['id', 'firstName', 'lastName']
         });
         if (User) {
@@ -182,7 +188,10 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
-    let searchQuery = { loanId: loanId, masterLoanId: masterLoanId }
+    let searchQuery = {
+        masterLoanId: masterLoanId,
+        isDelivered: true
+    }
 
     let includeArray = [
         {
@@ -214,6 +223,20 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
             model: models.partnerBranchUser,
             as: 'receiverPartner',
             attributes: ['id', 'firstName', 'lastName']
+        },
+        {
+            model: models.internalBranch,
+            as: 'internalBranch'
+        },
+        {
+            model: models.partnerBranch,
+            as: 'partnerBranch',
+            include: [
+                {
+                    model: models.partner,
+                    as: 'partner'
+                }
+            ]
         }
     ]
 
@@ -249,7 +272,7 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
                     dateAndTime: log.updatedAt,
                     senderType: log.senderType
                 })
-            } else {
+            } else if (log.senderPartner != null) {
                 senderData.push({
                     id: log.id,
                     firstName: log.senderPartner.firstName,
@@ -273,7 +296,7 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
                     lastName: log.receiverUser.lastName,
                     receiverType: log.receiverType,
                 });
-            } else {
+            } else if (log.receiverPartner != null) {
                 receiverData.push({
                     id: log.id,
                     firstName: log.receiverPartner.firstName,
@@ -296,7 +319,6 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
     });
 
 
-    //console.log(logDetails)
     if (logDetail.length != 0) {
         return res.status(200).json({ data: logDetail, count: count.length });
     }
@@ -452,6 +474,7 @@ exports.verifyCheckOut = async (req, res, next) => {
 
     let { referenceCode, otp, masterLoanId, loanId } = req.body
     let id = req.userData.id
+    let internalBranchId = req.userData.internalBranchId
 
     var todayDateTime = new Date();
     let verifyUser = await models.customerOtp.findOne({
@@ -487,7 +510,7 @@ exports.verifyCheckOut = async (req, res, next) => {
 
         await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocation.id }, { transaction: t });
 
-        await models.customerPacketTracking.create({ masterLoanId, loanId, packetLocationId: packetLocation.id, userReceiverId: id, isDelivered: true }, { transaction: t });
+        await models.customerPacketTracking.create({ masterLoanId, loanId, internalBranchId: internalBranchId, packetLocationId: packetLocation.id, userSenderId: id, isDelivered: true }, { transaction: t });
     })
 
     return res.status(200).json({ message: 'success' })
@@ -527,11 +550,11 @@ exports.submitLoanPacketLocation = async (req, res, next) => {
 
     let { internalBranchId, partnerBranchId, customerReceiverId, userReceiverId, partnerReceiverId, receiverType, packetLocationId, loanId, masterLoanId } = req.body
 
-    if (req.userData.userBelongsTo === "internaluser") {
+    if (req.userData.userBelongsTo === "InternalUser") {
         userSenderId = req.userData.id
         senderType = req.userData.userBelongsTo
         partnerSenderId = null
-    } else if (req.userData.userBelongsTo === "partneruser") {
+    } else if (req.userData.userBelongsTo === "PartnerUser") {
         partnerSenderId = req.userData.id
         senderType = req.userData.userBelongsTo
         userSenderId = null
@@ -595,6 +618,18 @@ exports.submitLoanPacketLocation = async (req, res, next) => {
             let packetTrackingData = await models.customerPacketTracking.create({
                 internalBranchId, customerReceiverId, userReceiverId, partnerReceiverId, receiverType, loanId, masterLoanId, packetLocationId, userSenderId, partnerSenderId, senderType, isDelivered: true
             }, { transaction: t });
+
+            let allPacketTrackingData = await models.customerPacketTracking.findAll({
+                where: { masterLoanId: masterLoanId, isDelivered: true },
+                transaction: t,
+                order: [['id', 'desc']]
+            })
+
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+
+            await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
+
+
         })
 
     } else if (location == "partner branch in") {
@@ -612,6 +647,16 @@ exports.submitLoanPacketLocation = async (req, res, next) => {
             let packetTrackingData = await models.customerPacketTracking.create({
                 partnerBranchId, customerReceiverId, userReceiverId, partnerReceiverId, receiverType, loanId, masterLoanId, packetLocationId, userSenderId, partnerSenderId, senderType, isDelivered: true
             });
+
+            let allPacketTrackingData = await models.customerPacketTracking.findAll({
+                where: { masterLoanId: masterLoanId, isDelivered: true },
+                transaction: t,
+                order: [['id', 'desc']]
+            })
+
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+
+            await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
         })
     }
 
@@ -649,16 +694,18 @@ exports.getDeliveryLocation = async (req, res, next) => {
 //FUNCTION TO UPDATE  LOCATION IN PACKET TRACKING 
 exports.addCustomerPacketTracking = async (req, res, next) => {
     //console.log(req.userData.userBelongsTo)
-    if (req.userData.userBelongsTo === "internaluser") {
+
+    let senderInternalBranch = req.userData.internalBranchId
+    if (req.userData.userBelongsTo === "InternalUser") {
         userSenderId = req.userData.id
         senderType = req.userData.userBelongsTo
         partnerSenderId = null
-    } else if (req.userData.userBelongsTo === "partneruser") {
+    } else if (req.userData.userBelongsTo === "PartnerUser") {
         partnerSenderId = req.userData.id
         senderType = req.userData.userBelongsTo
         userSenderId = null
     }
-    let { deliveryPacketLocationId, deliveryInternalBranchId, deliveryPartnerBranchId, internalBranchId, partnerBranchId, customerReceiverId, userReceiverId, partnerReceiverId, receiverType, packetLocationId, loanId, masterLoanId } = req.body;
+    let { deliveryPacketLocationId, deliveryInternalBranchId, deliveryPartnerBranchId, partnerBranchId, customerReceiverId, userReceiverId, partnerReceiverId, receiverType, packetLocationId, loanId, masterLoanId } = req.body;
 
     let { location } = await models.packetLocation.findOne({ where: { id: deliveryPacketLocationId } });
 
@@ -733,8 +780,19 @@ exports.addCustomerPacketTracking = async (req, res, next) => {
         await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId }, { transaction: t })
 
         let packetTrackingData = await models.customerPacketTracking.create({
-            customerReceiverId, internalBranchId, partnerBranchId, userReceiverId, partnerReceiverId, receiverType, loanId, masterLoanId, packetLocationId, userSenderId, partnerSenderId, senderType, isDelivered: true
+            customerReceiverId, internalBranchId: senderInternalBranch, partnerBranchId, userReceiverId, partnerReceiverId, receiverType, loanId, masterLoanId, packetLocationId, userSenderId, partnerSenderId, senderType, isDelivered: true
         }, { transaction: t });
+
+        let allPacketTrackingData = await models.customerPacketTracking.findAll({
+            where: { masterLoanId: masterLoanId, isDelivered: true },
+            transaction: t,
+            order: [['id', 'desc']]
+        })
+
+        var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+
+        await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
+
 
         await models.customerPacketTracking.create({
             packetLocationId: deliveryPacketLocationId, internalBranchId: deliveryInternalBranchId, partnerBranchId: deliveryPartnerBranchId, senderType: receiverType, loanId, masterLoanId, userSenderId: userReceiverId, partnerSenderId: partnerReceiverId, receiverType: deliveryReceiverType
@@ -748,34 +806,87 @@ exports.addCustomerPacketTracking = async (req, res, next) => {
 exports.myDeliveryPacket = async (req, res, next) => {
     let id = req.userData.id
 
-    let myDeliveryPacket = await models.customerPacketTracking.findAll({
-        where: { userSenderId: id, isDelivered: false },
-        // order: [[models.customerLoan, 'id', 'asc']],
-        include: [
-            {
-                model: models.customerLoanMaster,
-                as: 'masterLoan',
-                attributes: ['id'],
-                include: [
-                    {
-                        model: models.customerLoan,
-                        as: 'customerLoan'
-                    },
-                    {
-                        model: models.internalBranch,
-                        as: 'internalBranch'
-                    },
-                    {
-                        model: models.customer,
-                        as: 'customer'
-                    }
-                ]
-            },
+    let { search, offset, pageSize } =
+        paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
-        ]
-    })
+    let searchQuery = {
+        isDelivered: false,
+        userSenderId: id
+    }
 
-    return res.status(200).json({ data: myDeliveryPacket, count: myDeliveryPacket.length })
+    let includeArray = [
+        {
+            model: models.customerLoanMaster,
+            as: 'masterLoan',
+            attributes: ['id'],
+            include: [
+                {
+                    model: models.internalBranch,
+                    as: 'internalBranch',
+                    attributes: ['id', 'name']
+                },
+                {
+                    model: models.customerLoan,
+                    as: 'customerLoan'
+                },
+                {
+                    model: models.customer,
+                    as: 'customer',
+                    attributes: ['id', 'customerUniqueId', 'firstName', 'lastName'],
+                },
+                {
+                    model: models.customerLoanPacketData,
+                    as: 'locationData',
+                    include: [
+                        {
+                            model: models.packetLocation,
+                            as: 'packetLocation',
+                            attributes: ['id', 'location']
+                        }
+                    ]
+                },
+                {
+                    model: models.packet,
+                    as: 'packet',
+                    attributes: ['packetUniqueId']
+                }
+            ]
+        },
+        {
+            model: models.partnerBranch,
+            as: 'partnerBranch',
+            attributes: ['id', 'name', 'branchId'],
+            include: [
+                {
+                    model: models.partner,
+                    as: 'partner',
+                    attributes: ['id', 'name', 'partnerId'],
+                }
+            ]
+        }
+    ]
+
+    let logDetails = await models.customerPacketTracking.findAll({
+        where: searchQuery,
+        order: [
+            ['id', 'DESC'],
+            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'asc']
+        ],
+        include: includeArray,
+        offset: offset,
+        limit: pageSize,
+    });
+
+    let count = await models.customerPacketTracking.findAll({
+        where: searchQuery,
+        order: [
+            ['id', 'DESC']
+        ],
+        include: includeArray
+
+    });
+
+    return res.status(200).json({ data: logDetails, count: count.length })
 
 }
 
@@ -789,9 +900,9 @@ exports.deliveryUserType = async (req, res, next) => {
 }
 
 exports.deliveryApproval = async (req, res, next) => {
-    let { referenceCode, otp, id } = req.body
+    let { referenceCode, otp, id, partnerReceiverId, userReceiverId, customerReceiverId } = req.body
 
-    let { receiverType, packetLocationId, masterLoanId } = await models.customerPacketTracking.findOne({ where: { id: id } })
+    let { receiverType, packetLocationId, masterLoanId, updatedAt, createdAt } = await models.customerPacketTracking.findOne({ where: { id: id } })
 
     let masterLoan = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
 
@@ -852,9 +963,20 @@ exports.deliveryApproval = async (req, res, next) => {
             }
         }
 
+        let allPacketTrackingData = await models.customerPacketTracking.findAll({
+            where: { masterLoanId: masterLoanId, isDelivered: true },
+            transaction: t,
+            order: [['id', 'desc']]
+        })
+
         await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId }, { transaction: t })
 
-        await models.customerPacketTracking.update({ isDelivered: true }, { where: { id: id }, transaction: t })
+        await models.customerPacketTracking.update({ isDelivered: true, partnerReceiverId, userReceiverId, customerReceiverId, processingTime: processingTime }, { where: { id: id }, transaction: t })
+
+        let letestPreTime = await models.customerPacketTracking.findOne({ where: { id: id }, transaction: t })
+
+        var processingTime = moment.utc(moment(letestPreTime.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[0].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: id }, transaction: t })
     })
 
     return res.status(200).json({ message: 'success' })
@@ -883,4 +1005,230 @@ exports.getNextPacketLoaction = async (req, res, next) => {
 
     return res.status(200).json({ message: 'success', data: locationData })
 
+}
+
+exports.submitLoanPacketLocationForCollect = async (req, res, next) => {
+
+    let { internalBranchId, partnerBranchId, customerReceiverId, userReceiverId, partnerReceiverId, receiverType, packetLocationId, loanId, masterLoanId, isFullRelease, releaseId } = req.body
+
+    if (req.userData.userBelongsTo === "InternalUser") {
+        userSenderId = req.userData.id
+        senderType = req.userData.userBelongsTo
+        partnerSenderId = null
+    } else if (req.userData.userBelongsTo === "PartnerUser") {
+        partnerSenderId = req.userData.id
+        senderType = req.userData.userBelongsTo
+        userSenderId = null
+    }
+
+    let verifyUser
+    var todayDateTime = new Date();
+    switch (receiverType) {
+        //     case "Customer":
+        //         verifyUser = await models.customerOtp.findOne({
+        //             where: {
+        //                 referenceCode,
+        //                 otp,
+        //                 expiryTime: {
+        //                     [Op.gte]: todayDateTime,
+        //                 },
+        //             },
+        //         });
+        //         if (check.isEmpty(verifyUser)) {
+        //             return res.status(404).json({ message: `INVALID OTP.` });
+        //         }
+        //         break;
+        //     case "InternalUser":
+        //         verifyUser = await models.userOtp.findOne({
+        //             where: {
+        //                 referenceCode, otp,
+        //                 expiryTime: {
+        //                     [Op.gte]: todayDateTime
+        //                 }
+        //             }
+        //         })
+        //         if (check.isEmpty(verifyUser)) {
+        //             return res.status(400).json({ message: `INVALID OTP.` })
+        //         }
+        //         break;
+        //     case "PartnerUser":
+        //         verifyUser = await models.partnerBranchOtp.findOne({
+        //             where: {
+        //                 referenceCode, otp,
+        //                 expiryTime: {
+        //                     [Op.gte]: todayDateTime
+        //                 }
+        //             }
+        //         })
+        //         if (check.isEmpty(verifyUser)) {
+        //             return res.status(400).json({ message: `INVALID OTP.` })
+        //         }
+        //         break;
+    }
+
+    let { location } = await models.packetLocation.findOne({ where: { id: packetLocationId } });
+
+    // let loanStage = await models.loanStage.findOne({ where: { name: 'packet release from' } });
+
+    if (location == 'partner branch out') {
+        await sequelize.transaction(async (t) => {
+
+            // await models.customerLoanMaster.update({ loanStageId: loanStage.id }, { where: { id: masterLoanId }, transaction: t })
+
+            await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId }, { transaction: t })
+
+            let packetTrackingData = await models.customerPacketTracking.create({
+                internalBranchId: req.userData.internalBranchId,
+                userReceiverId: req.userData.id,
+                receiverType: 'InternalUser',
+                loanId,
+                masterLoanId,
+                packetLocationId: packetLocationId,
+                partnerSenderId: partnerReceiverId,
+                senderType: 'PartnerUser',
+                isDelivered: true
+            }, { transaction: t });
+
+            let allPacketTrackingData = await models.customerPacketTracking.findAll({
+                where: { masterLoanId: masterLoanId, isDelivered: true },
+                transaction: t,
+                order: [['id', 'desc']]
+            })
+
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+
+            await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
+        })
+
+        return res.status(200).json({ message: `packet location submitted` })
+
+    } else {
+        return res.satus(200).json({ message: 'please select partner branch out location for this process' })
+    }
+
+}
+
+exports.submitLoanPacketLocationForHomeIn = async (req, res, next) => {
+
+    let { internalBranchId, partnerBranchId, customerReceiverId, userReceiverId, partnerReceiverId, receiverType, packetLocationId, loanId, masterLoanId, isFullRelease, releaseId } = req.body
+
+    let modifiedBy = req.userData.id
+    let userSenderId;
+    let partnerSenderId;
+    let senderType;
+    if (req.userData.userBelongsTo === "InternalUser") {
+        userSenderId = req.userData.id
+        senderType = req.userData.userBelongsTo
+        partnerSenderId = null
+    } else if (req.userData.userBelongsTo === "PartnerUser") {
+        partnerSenderId = req.userData.id
+        senderType = req.userData.userBelongsTo
+        userSenderId = null
+    }
+
+    let verifyUser
+    var todayDateTime = new Date();
+    switch (receiverType) {
+        //     case "Customer":
+        //         verifyUser = await models.customerOtp.findOne({
+        //             where: {
+        //                 referenceCode,
+        //                 otp,
+        //                 expiryTime: {
+        //                     [Op.gte]: todayDateTime,
+        //                 },
+        //             },
+        //         });
+        //         if (check.isEmpty(verifyUser)) {
+        //             return res.status(404).json({ message: `INVALID OTP.` });
+        //         }
+        //         break;
+        //     case "InternalUser":
+        //         verifyUser = await models.userOtp.findOne({
+        //             where: {
+        //                 referenceCode, otp,
+        //                 expiryTime: {
+        //                     [Op.gte]: todayDateTime
+        //                 }
+        //             }
+        //         })
+        //         if (check.isEmpty(verifyUser)) {
+        //             return res.status(400).json({ message: `INVALID OTP.` })
+        //         }
+        //         break;
+        //     case "PartnerUser":
+        //         verifyUser = await models.partnerBranchOtp.findOne({
+        //             where: {
+        //                 referenceCode, otp,
+        //                 expiryTime: {
+        //                     [Op.gte]: todayDateTime
+        //                 }
+        //             }
+        //         })
+        //         if (check.isEmpty(verifyUser)) {
+        //             return res.status(400).json({ message: `INVALID OTP.` })
+        //         }
+        //         break;
+    }
+
+    let { location } = await models.packetLocation.findOne({ where: { id: packetLocationId } });
+    if (location == "customer home in") {
+        // let loanStage = await models.loanStage.findOne({ where: { name: 'packet in branch' } })
+
+        await sequelize.transaction(async (t) => {
+
+            // await models.customerLoanMaster.update({ loanStageId: loanStage.id }, { where: { id: masterLoanId }, transaction: t })
+
+            await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId }, { transaction: t })
+
+            let packetTrackingData = await models.customerPacketTracking.create({
+                internalBranchId, customerReceiverId, userReceiverId, partnerReceiverId, receiverType, loanId, masterLoanId, packetLocationId, userSenderId, partnerSenderId, senderType, isDelivered: true
+            }, { transaction: t });
+
+            let allPacketTrackingData = await models.customerPacketTracking.findAll({
+                where: { masterLoanId: masterLoanId, isDelivered: true },
+                transaction: t,
+                order: [['id', 'desc']]
+            })
+
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+
+            await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
+
+            let releaseDate = moment();
+
+            if (isFullRelease) {
+                await models.fullRelease.update({ fullReleaseStatus: 'released', modifiedBy, releaseDate, isCustomerReceivedPacket: true }, { where: { id: releaseId }, transaction: t })
+
+                await models.customerLoanMaster.update({ isOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
+
+            } else {
+                await models.partRelease.update({ partReleaseStatus: 'released', modifiedBy, releaseDate, isCustomerReceivedPacket: true }, { where: { id: releaseId }, transaction: t })
+                await models.customerLoanMaster.update({ isOrnamentsReleased: true, isFullOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
+            }
+
+        })
+        return res.status(200).json({ message: `packet location submitted` })
+
+    } else {
+        return res.satus(200).json({ message: 'please select customer home in location for this process' })
+    }
+
+}
+
+exports.getCustomerInfo = async (req, res, next) => {
+    let { masterLoanId } = req.query
+
+    let masterLoan = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId }
+    })
+
+    let customerInfo = await models.customer.findOne({
+        where: { id: masterLoan.customerId },
+        attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
+    })
+
+    customerInfo.dataValues.receiverType = "Customer"
+
+    return res.status(200).json({ data: customerInfo })
 }

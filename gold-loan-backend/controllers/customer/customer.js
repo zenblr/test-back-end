@@ -64,7 +64,7 @@ exports.addCustomer = async (req, res, next) => {
 
 
 exports.registerCustomerSendOtp = async (req, res, next) => {
-  const { mobileNumber } = req.body;
+  const { mobileNumber, firstName } = req.body;
 
   let customerExist = await models.customer.findOne({
     where: { mobileNumber, isActive: true },
@@ -82,11 +82,11 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
 
-  // var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
+  var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
 
   await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
 
-  await sendOtpToLeadVerification(customerExist.firstName, customerExist.mobileNumber, otp, expiryTimeToUser)
+  await sendOtpToLeadVerification(mobileNumber, firstName, otp, expiryTimeToUser)
 
   // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
   // await sms.sendSms(mobileNumber, message);
@@ -425,7 +425,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
   let includeArray = [{
     model: models.customerLoanMaster,
     as: 'masterLoan',
-    where: { loanStageId: stageId.id },
+    where: { isLoanCompleted: true },
     attributes: [],
   }, {
     model: models.state,
@@ -499,7 +499,7 @@ exports.getsingleCustomerManagement = async (req, res) => {
       {
         model: models.customerLoanMaster,
         as: 'masterLoan',
-        where: { loanStageId: stageId.id },
+        where: { isLoanCompleted: true },
         order: [
           [models.customerLoan, 'id', 'asc'],
           ['id', 'DESC']

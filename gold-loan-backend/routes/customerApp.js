@@ -13,7 +13,7 @@ const quickPay = require('./quickPayCustomerApp');  //upload Packets List
 const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetailsOfCustomer, readBankDetailsOfCustomer, readNomineeDetailsOfCustomer, readAddressDetailsOfCustomer,
     readPanCardImageOfCustomer, readAddressImageOfCustomer, readPartnerBranch, readAllScheme, readMyLoan
     , schemeBasedOnPriceRange, readLoanDetails,
-    readFeedBack, addFeedBack } = require('../controllers/customer/customerApp')
+    readFeedBack, addFeedBack,updatePassword } = require('../controllers/customer/customerApp')
 
 
 //customer App
@@ -53,7 +53,7 @@ router.get('/customer-feedback', customerCheckAuth, wrapper(readFeedBack)); // r
 router.post('/customer-feedback', customerCheckAuth, wrapper(addFeedBack)); // add customer feedback
 
 //customer App
-
+router.post('/update-password', wrapper(updatePassword));//To change password of customer
 
 router.use('/jewellery-release', jewelleryRelease)
 

@@ -9,7 +9,8 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { Router } from '@angular/router';
 import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.component';
-import { UpdateLocationComponent } from '../update-location/update-location.component';
+import { UpdateLocationComponent } from '../../../../../partials/components/update-location/update-location.component';
+import { ViewPacketDialogComponent } from '../view-packet-dialog/view-packet-dialog.component';
 
 @Component({
   selector: 'kt-my-packets',
@@ -19,7 +20,7 @@ import { UpdateLocationComponent } from '../update-location/update-location.comp
 export class MyPacketsComponent implements OnInit {
 
   dataSource: MyPacketsDatasource;
-  displayedColumns = ['customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'actions'];
+  displayedColumns = ['customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'partner', 'partnerBranch', 'currentLocation', 'viewPackets', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
@@ -70,8 +71,6 @@ export class MyPacketsComponent implements OnInit {
     this.subscriptions.forEach(el => el.unsubscribe());
     this.unsubscribeSearch$.next();
     this.unsubscribeSearch$.complete();
-    // this.destroy$.next();
-    // this.destroy$.complete();
   }
 
 
@@ -85,10 +84,10 @@ export class MyPacketsComponent implements OnInit {
   }
 
   viewPackets(packet) {
-    const dialogRef = this.dialog.open(ViewPacketLogComponent,
+    const dialogRef = this.dialog.open(ViewPacketDialogComponent,
       {
-        data: { packetData: packet, action: 'edit' },
-        width: '80%',
+        data: { packetData: packet.masterLoan.packet },
+        width: '400px',
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -104,25 +103,28 @@ export class MyPacketsComponent implements OnInit {
     this.myPacketsService.deliver(queryParams).pipe(
       map(res => {
         // console.log(res)
-        this.deliverModal({ id: packet.id, receiverType: res.data.receiverType })
+        this.deliverModal(
+          {
+            id: packet.id,
+            receiverType: res.data.receiverType,
+            partnerBranchId: res.data.partnerBranchId,
+            masterLoanId: res.data.masterLoanId,
+          })
       }))
       .subscribe()
   }
 
   deliverModal(params) {
-    // const dialogRef = this.dialog.open(UpdateLocationComponent, 
-    //   {
-    //     data: { deliver: true, params }
-    //   }
-
-    //   dialogRef.afterClosed().subscribe(res => {
-    //     if (res) this.loadPackets()
-    //   });
-    // )
 
     const dialogRef = this.dialog.open(UpdateLocationComponent,
       {
-        data: { deliver: true, id: params.id, receiverType: params.receiverType },
+        data: {
+          deliver: true,
+          id: params.id,
+          receiverType: params.receiverType,
+          partnerBranchId: params.partnerBranchId,
+          masterLoanId: params.masterLoanId
+        },
         width: '450px'
       });
     dialogRef.afterClosed().subscribe(res => {

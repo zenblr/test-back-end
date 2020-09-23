@@ -11,7 +11,7 @@
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="packetLocationId"
-                                    (change)="getPartnerBranch()"
+                                    (change)="getPartnerBranch(); setUserType()"
                                     [class.isError]="locationForm.controls.packetLocationId.invalid &&  locationForm.controls.packetLocationId.touched">
                                     <option selected disabled value=null>Select Location</option>
                                     <option [value]="item.id" *ngFor="let item of packetLocations">
@@ -143,14 +143,14 @@
                                         <label class="kt-padding-l-10 mandatory">Select Partner Branch</label>
                                     </div>
                                     <div class="col-8">
-                                        <select class="form-control" formControlName="partnerBranchId"
-                                            [class.isError]="locationForm.controls.partnerBranchId.invalid &&  locationForm.controls.partnerBranchId.touched">
+                                        <select class="form-control" formControlName="deliveryPartnerBranchId"
+                                            [class.isError]="locationForm.controls.deliveryPartnerBranchId.invalid &&  locationForm.controls.deliveryPartnerBranchId.touched">
                                             <option selected disabled value=null>Select Branch</option>
                                             <option [value]="item.id" *ngFor="let item of deliveryPartnerBranches">
                                                 {{item.name | titlecase}}</option>
                                         </select>
                                         <mat-error
-                                            *ngIf="locationForm.controls.partnerBranchId.touched && locationForm.controls.partnerBranchId.errors?.required">
+                                            *ngIf="locationForm.controls.deliveryPartnerBranchId.touched && locationForm.controls.deliveryPartnerBranchId.errors?.required">
                                             Required field
                                         </mat-error>
                                     </div>
@@ -167,7 +167,8 @@
                                 <select class="form-control" formControlName="receiverType" (change)="remove()"
                                     [class.isError]="locationForm.controls.receiverType.invalid &&  locationForm.controls.receiverType.touched">
                                     <option value="" disabled selected>Select User Type</option>
-                                    <option [value]="item.value" *ngFor="let item of userTypeList">{{ item.name }}
+                                    <option [value]="item.value" *ngFor="let item of userTypeListFiltered">
+                                        {{ item.name }}
                                     </option>
                                 </select>
                                 <mat-error
@@ -212,7 +213,7 @@
                     </div>
                     <div class="row justify-content-center kt-margin-t-15">
                         <div class="col-4 offset-4">
-                            <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Send OTP'"
+                            <kt-button [myClass]="'w-100'" [type]="'button'" [notTitleCase]="true" [value]="'Send OTP'"
                                 (action)="generateOTP()"></kt-button>
                         </div>
                         <div class="col-4 d-flex justify-content-center align-items-center ">

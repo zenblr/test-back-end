@@ -19,6 +19,24 @@
                     </mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="partner">
+                    <mat-header-cell *matHeaderCellDef>Partner</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngIf="packet.partnerBranch?.partner">
+                            {{packet.partnerBranch?.partner?.name | titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="partnerBranch">
+                    <mat-header-cell *matHeaderCellDef>Partner Branch</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngIf="packet.partnerBranch">
+                            {{packet.partnerBranch?.name | titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
@@ -30,11 +48,8 @@
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <div class="multiple" *ngFor="let item of packet?.masterLoan?.customerLoan">
-                            <!-- <span *ngIf="item.loanType === 'secured'">
-                                {{ item.loanUniqueId | uppercase }}
-                            </span> -->
-                            <div>{{ item.loanUniqueId }}</div>
+                        <div class="multiple">
+                            <div *ngFor="let item of packet?.masterLoan?.customerLoan">{{ item.loanUniqueId }}</div>
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -49,27 +64,36 @@
                 <ng-container matColumnDef="loanAmount">
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <div class="multiple" *ngFor="let item of packet?.masterLoan?.customerLoan">
-                            <div>{{ item.outstandingAmount }}</div>
+                        <div class="multiple">
+                            <div *ngFor="let item of packet?.masterLoan?.customerLoan">{{ item.outstandingAmount }}
+                            </div>
                         </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="currentLocation">
                     <mat-header-cell *matHeaderCellDef>Current Location</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <!-- <span *ngIf="packet.customerPacketTracking.length">
-                            {{packet?.customerPacketTracking[0].packetLocation.location |titlecase}}
-                        </span> -->
+
+                        <span *ngFor="let item of packet.masterLoan?.locationData; last as l">
+                            <span *ngIf="l">
+                                {{item?.packetLocation?.location |titlecase}}
+                            </span>
+                        </span>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="actions">
+
+                <ng-container matColumnDef="viewPackets">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-
                         <button (click)="viewPackets(packet)" class="btn-transparent kt-margin-r-15">View
                             Packets
                         </button>
+                    </mat-cell>
+                </ng-container>
 
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
                         <button (click)="deliver(packet)" class="btn-transparent kt-margin-r-15">
                             Deliver
                         </button>

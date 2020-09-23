@@ -9,7 +9,7 @@ import { SharedService } from '../../../../../core/shared/services/shared.servic
 // import { DisburseDialogComponent } from '../disburse-dialog/disburse-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { CheckoutComponent } from '../packets/checkout/checkout.component';
-import { UpdateLocationComponent } from '../packets/update-location/update-location.component';
+import { UpdateLocationComponent } from '../../../../partials/components/update-location/update-location.component';
 @Component({
   selector: 'kt-applied-loan',
   templateUrl: './applied-loan.component.html',
@@ -171,6 +171,8 @@ export class AppliedLoanComponent implements OnInit {
   }
 
   checkout(item?) {
+    if (!this.permission.submitPacketLocation) return
+
     let loanData: any = {};
     this.AppliedLoanService.checkout(item.customer.id).pipe(map(res => {
       loanData.referenceCode = res.referenceCode
@@ -207,6 +209,9 @@ export class AppliedLoanComponent implements OnInit {
   }
 
   getPacketDetails(item) {
+
+    if (!this.permission.submitPacketLocation) return
+
     const masterLoanId = item.id
     this.packetTrackingService.viewPackets({ masterLoanId }).pipe(map(res => {
       // console.log(res.data[0].packets)
@@ -216,4 +221,8 @@ export class AppliedLoanComponent implements OnInit {
     )).subscribe()
   }
 
+  getPermission() {
+    const notAllowed = this.permission.submitPacketLocation ? false : true
+    return notAllowed
+  }
 }

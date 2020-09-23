@@ -28,6 +28,10 @@
         flex: 0 0 12% !important;
     }
     mat-row,mat-header-row{
-        width: 125% !important;
+        width: 130% !important;
+    }
+    .multiple {
+        display: flex;
+        flex-direction: column;
     }
 }

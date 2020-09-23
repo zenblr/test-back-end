@@ -106,6 +106,7 @@ import { PaymentDialogComponent } from './components/payment-dialog/payment-dial
 import { LocationComponent} from './components/location/location.component'
 import { EmiLogsDialogComponent } from './components/emi-logs-dialog/emi-logs-dialog.component';
 import { PartPaymentLogDialogComponent } from './components/part-payment-log-dialog/part-payment-log-dialog.component';
+import { UpdateLocationComponent } from './components/update-location/update-location.component';
 
 @NgModule({
 	declarations: [
@@ -174,7 +175,8 @@ import { PartPaymentLogDialogComponent } from './components/part-payment-log-dia
 		PaymentDialogComponent,
 		LocationComponent,
 		EmiLogsDialogComponent,
-		PartPaymentLogDialogComponent
+		PartPaymentLogDialogComponent,
+		UpdateLocationComponent
 
 	],
 	exports: [
@@ -252,7 +254,8 @@ import { PartPaymentLogDialogComponent } from './components/part-payment-log-dia
 		PaymentDialogComponent,
 		LocationComponent,
 		EmiLogsDialogComponent,
-		PartPaymentLogDialogComponent
+		PartPaymentLogDialogComponent,
+		UpdateLocationComponent
 	],
 	imports: [
 		PdfViewerModule,

@@ -8,7 +8,7 @@ import { AssignPacketsComponent } from '../assign-packets/assign-packets.compone
 import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { UpdateLocationComponent } from '../update-location/update-location.component';
+import { UpdateLocationComponent } from '../../../../../partials/components/update-location/update-location.component';
 import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.component';
 import { Router } from '@angular/router';
 import { OrnamentsComponent } from '../../../../../partials/components/ornaments/ornaments.component';
@@ -122,17 +122,36 @@ export class PacketTrackingComponent implements OnInit {
   }
 
   updatePacket(packet) {
-    // console.log(packet)
-    const dialogRef = this.dialog.open(UpdateLocationComponent,
-      {
-        data: { packetData: packet.loanPacketDetails[0].packets, action: 'edit', isOut: true },
-        width: '450px'
+    // let lastIndex = packet.locationData[packet.locationData.length - 1]
+    // if (lastIndex.packetLocation.id == 4 || lastIndex.packetLocation.id == 3) return
+
+    const isNotAllowed = this.checkForPartnerBranchIn(packet)
+
+    if (isNotAllowed) return
+
+    if (packet.loanStageId === 11) {
+      const dialogRef = this.dialog.open(UpdateLocationComponent,
+        {
+          data: { packetData: packet.loanPacketDetails[0].packets, action: 'edit', stage: packet.loanStageId },
+          width: '450px'
+        });
+      dialogRef.afterClosed().subscribe(res => {
+        if (res) {
+          this.loadPackets();
+        }
       });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        this.loadPackets();
-      }
-    });
+    } else {
+      const dialogRef = this.dialog.open(UpdateLocationComponent,
+        {
+          data: { packetData: packet.loanPacketDetails[0].packets, action: 'edit', isOut: true },
+          width: '450px'
+        });
+      dialogRef.afterClosed().subscribe(res => {
+        if (res) {
+          this.loadPackets();
+        }
+      });
+    }
   }
 
   viewPacketLog(packet) {
@@ -140,7 +159,7 @@ export class PacketTrackingComponent implements OnInit {
     const dialogRef = this.dialog.open(ViewPacketLogComponent,
       {
         data: { packetData: packet, action: 'edit' },
-        width: '80%',
+        width: '90%',
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -190,6 +209,13 @@ export class PacketTrackingComponent implements OnInit {
       })
     }
     )).subscribe()
+  }
+
+  checkForPartnerBranchIn(packet) {
+    const lastIndex = packet.locationData[packet.locationData.length - 1]
+    const id = lastIndex.packetLocation.id
+    const isNotAllowed = id == 4 || id == 3 ? true : false
+    return isNotAllowed
   }
 
 }
