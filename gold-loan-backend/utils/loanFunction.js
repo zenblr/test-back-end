@@ -836,6 +836,22 @@ let allInterestPayment = async (transactionId, newTransactionSplitUp, securedLoa
 
     let transactionDetails = []
 
+    if(!securedLoanDetails){
+
+     securedLoanDetails = await models.customerLoanInterest.findAll({
+        where: {
+            loanId: transactionSplitUp[0].loanId,
+            emiStatus: { [Op.in]: ['pending', 'partially paid'] }
+        },
+        order: [['emiDueDate']],
+        include: {
+            model: models.customerLoan,
+            as: 'customerLoan',
+            attributes: ['loanUniqueId']
+        }
+    })
+}
+
 
     let temp = []
     for (let index = 0; index < securedLoanDetails.length; index++) {
@@ -860,6 +876,22 @@ let allInterestPayment = async (transactionId, newTransactionSplitUp, securedLoa
     // let unsecuredLoanDetails
     // unsecure
     if (transactionSplitUp.length > 1) {
+
+        if(!unsecuredLoanDetails){
+
+        unsecuredLoanDetails = await models.customerLoanInterest.findAll({
+            where: {
+                loanId: transactionSplitUp[1].loanId,
+                emiStatus: { [Op.in]: ['pending', 'partially paid'] }
+            },
+            order: [['emiDueDate']],
+            include: {
+                model: models.customerLoan,
+                as: 'customerLoan',
+                attributes: ['loanUniqueId']
+            }
+        })
+    }
 
 
         let temp = []
