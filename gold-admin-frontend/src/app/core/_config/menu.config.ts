@@ -165,9 +165,13 @@ export class MenuConfig {
 									title: "Packet Tracking",
 									page: "/admin/loan-management/packet-tracking",
 									bullet: 'dot',
-									permission: !(this.permissionsArr.includes('packetEdit') ||
-										this.permissionsArr.includes('packetAdd') ||
-										this.permissionsArr.includes('packetView')),
+									permission: !this.permissionsArr.includes('packetTrackingView'),
+								},
+								{
+									title: "My Packets",
+									page: "/admin/loan-management/my-packets",
+									bullet: 'dot',
+									permission: !this.permissionsArr.includes('myPacket'),
 								},
 								{
 									title: "Applied Loan",
@@ -189,12 +193,12 @@ export class MenuConfig {
 								}
 							],
 						},
-						{
-							title: "Global Map",
-							root: true,
-							src: "assets/media/aside-icons/icons-08.svg",
-							page: "/admin/global-map",
-						},
+						// {
+						// 	title: "Global Map",
+						// 	root: true,
+						// 	src: "assets/media/aside-icons/icons-08.svg",
+						// 	page: "/admin/global-map",
+						// },
 						{
 							title: "Customer Management",
 							root: true,
@@ -289,44 +293,44 @@ export class MenuConfig {
 								},
 							],
 						},
-						{
-							title: "Report",
-							root: true,
-							bullet: 'dot',
-							src: "assets/media/aside-icons/icons-27.svg",
-							permission: false,
-							submenu: [
-								{
-									title: "KYC",
-									page: "/admin/kyc",
-									bullet: 'dot',
-									permission: false,
-								},
-								{
-									title: "Loan Status Report",
-									page: "/admin/loan-status",
-									bullet: 'dot',
-									permission: false,
-								},
-								{
-									title: "Branch Report",
-									page: "/admin/branch",
-									bullet: 'dot',
-									permission: false,
-								},
-								{
-									title: "Loan Type Reports",
-									page: "/admin/loan-type",
-									bullet: 'dot',
-									permission: false,
-								},
-								{
-									title: "Margin Reports",
-									page: "/admin/marign",
-									permission: false,
-								},
-							],
-						},
+						// {
+						// 	title: "Report",
+						// 	root: true,
+						// 	bullet: 'dot',
+						// 	src: "assets/media/aside-icons/icons-27.svg",
+						// 	permission: false,
+						// 	submenu: [
+						// 		{
+						// 			title: "KYC",
+						// 			page: "/admin/kyc",
+						// 			bullet: 'dot',
+						// 			permission: false,
+						// 		},
+						// 		{
+						// 			title: "Loan Status Report",
+						// 			page: "/admin/loan-status",
+						// 			bullet: 'dot',
+						// 			permission: false,
+						// 		},
+						// 		{
+						// 			title: "Branch Report",
+						// 			page: "/admin/branch",
+						// 			bullet: 'dot',
+						// 			permission: false,
+						// 		},
+						// 		{
+						// 			title: "Loan Type Reports",
+						// 			page: "/admin/loan-type",
+						// 			bullet: 'dot',
+						// 			permission: false,
+						// 		},
+						// 		{
+						// 			title: "Margin Reports",
+						// 			page: "/admin/marign",
+						// 			permission: false,
+						// 		},
+						// 	],
+						// },
 						{
 							title: "EMI Management",
 							root: true,

@@ -114,15 +114,15 @@
     <kt-portlet-footer class="text-center">
         <button *ngIf="orderData.orderCurrentStatus.id == 8" type="button" class="btn btn-outline my-3"
             (click)="printEmiReceipt(orderData.id)">Print Receipt</button>
-            <div class="row">
-      
+        <div class="row">
+
             <div class="col-6 pl-4">
                 <form [formGroup]="paymentForm">
-                    
+
                     <div class="row py-3"
-                    *ngIf="(orderData.orderCurrentStatus.id == 2 && orderData.paymentType.id !=4) || orderData.orderCurrentStatus.id == 15 || orderData.orderCurrentStatus.id == 3">
+                        *ngIf="(orderData.orderCurrentStatus.id == 2 && orderData.paymentType.id !=4) || orderData.orderCurrentStatus.id == 15 || orderData.orderCurrentStatus.id == 3">
                         <div class="col-4 align-self-center">
-                            <label class="font-weight-500 text-color" [class.mandatory]="isMandatory" >Payment
+                            <label class="font-weight-500 text-color mandatory">Payment
                                 Mode</label>
                         </div>
                         <div class="col-8">
@@ -145,16 +145,17 @@
                             </div>
                         </div>
                     </div>
-                  
+
                 </form>
-               
+
             </div>
             <div>
-            <button
-            *ngIf="(orderData.orderCurrentStatus.id == 2 && orderData.paymentType.id !=4) || orderData.orderCurrentStatus.id == 3 || orderData.orderCurrentStatus.id == 15"
-            type="button" [type]="'submit'" class="btn btn-outline my-3" (click)="getEmiAmount()" [disabled]="emi.length == 0 || paymentForm.controls.paymentMode.value == ''">Pay
-            EMI</button>
+                <button
+                    *ngIf="(orderData.orderCurrentStatus.id == 2 && orderData.paymentType.id !=4) || orderData.orderCurrentStatus.id == 3 || orderData.orderCurrentStatus.id == 15"
+                    type="button" [type]="'submit'" class="btn btn-outline my-3" (click)="getEmiAmount()"
+                    [disabled]="emi.length == 0 || paymentForm.controls.paymentMode.value == ''">Pay
+                    EMI</button>
             </div>
-            </div>
+        </div>
     </kt-portlet-footer>
 </kt-portlet>

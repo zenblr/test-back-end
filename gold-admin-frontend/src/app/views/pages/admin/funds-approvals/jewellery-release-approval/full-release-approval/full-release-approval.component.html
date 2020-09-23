@@ -5,19 +5,20 @@
 
                 <ng-container matColumnDef="transactionId">
                     <mat-header-cell *matHeaderCellDef>Transaction ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{ item.transaction?.transactionUniqueId }}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{ item.transaction?.transactionUniqueId | uppercase }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="bankTransactionId">
                     <mat-header-cell *matHeaderCellDef>Bank Transaction ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{ item.transaction?.bankTransactionUniqueId }}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{ item.transaction?.bankTransactionUniqueId | uppercase }}
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="appraiserName">
                     <mat-header-cell *matHeaderCellDef>Appraiser Name</mat-header-cell>
                     <mat-cell *matCellDef="let item">
-                        {{ item.appraiserData?.appraiser?.firstName | titlecase }}
-                        {{ item.appraiserData?.appraiser?.lastName | titlecase }}
+                        {{ item.releaser?.appraiser?.firstName | titlecase }}
+                        {{ item.releaser?.appraiser?.lastName | titlecase }}
                     </mat-cell>
                 </ng-container>
 
@@ -60,7 +61,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="principalAmount">
-                    <mat-header-cell *matHeaderCellDef>Principal Outstanding Amount</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Principal Outstanding</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.masterLoan.outstandingAmount}}</mat-cell>
                 </ng-container>
 

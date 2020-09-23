@@ -336,7 +336,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.controls['merchant'].value.multiSelect.splice(index, 1);
 				break;
 			case 'states':
-				this.controls['states'].patchValue('');
+				this.controls['states'].patchValue(null);
 				break;
 			case 'cities':
 				this.controls['cities'].value.multiSelect.splice(index, 1);

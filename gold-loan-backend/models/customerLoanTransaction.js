@@ -34,8 +34,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'payment_received_date'
         },
-        depositDate: {
-            type: DataTypes.DATE,
+        depositDate:{
+            type: DataTypes.DATEONLY,
             field: 'deposit_date'
         },
         depositApprovedDate: {

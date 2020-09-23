@@ -24,13 +24,14 @@ export class UserDetailsComponent implements OnInit {
   isMobileVerified = false;
   otpSent = false;
   isOpverified = true;
+  @ViewChild("form60", { static: false }) form60;
 
   // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   showVerifyPAN = false;
-  pdf = {
-    panImg: false
-  }
+  // pdf = {
+  //   panImg: false
+  // }
 
 
   constructor(
@@ -144,7 +145,7 @@ export class UserDetailsComponent implements OnInit {
         this.refCode = res.referenceCode;
         this.controls.referenceCode.patchValue(this.refCode);
         this.userBasicForm.patchValue(res.customerInfo);
-        
+
         if (res.customerInfo.panCardNumber !== null) {
           //this.controls.panCardNumber.disable();
           //this.controls.panType.disable();
@@ -200,12 +201,17 @@ export class UserDetailsComponent implements OnInit {
             this.controls.form60.patchValue(event.target.files[0].name)
             this.controls.panImage.patchValue(res.uploadFile.path)
             this.controls.panImg.patchValue(res.uploadFile.URL)
-            const ext = this.sharedService.getExtension(event.target.files[0].name)
+            // const ext = this.sharedService.getExtension(event.target.files[0].name)
 
-            this.pdf.panImg = (ext === 'pdf') ? true : false
+            // this.pdf.panImg = (ext === 'pdf') ? true : false
           }
-        }), catchError(err => {
+        }),
+        catchError(err => {
+          if (err.error.message) this.toast.error(err.error.message)
           throw err
+        }),
+        finalize(() => {
+          this.form60.nativeElement.value = ''
         })).subscribe()
     }
     // else {
@@ -271,9 +277,9 @@ export class UserDetailsComponent implements OnInit {
       this.userBasicForm.markAllAsTouched()
       return
     }
-    if(!this.isPanVerified && this.userBasicForm.controls.panType.value == 'pan'){
+    if (!this.isPanVerified && this.userBasicForm.controls.panType.value == 'pan') {
       return this.toastr.error('PAN is not Verfied')
-     
+
     }
     this.userBasicForm.enable()
     if (this.controls.panCardNumber.value) {
@@ -311,6 +317,12 @@ export class UserDetailsComponent implements OnInit {
     this.controls.form60.patchValue(null)
     this.controls.panImage.patchValue(null)
     this.controls.panImg.patchValue(null)
+  }
+
+  isPdf(image: string): boolean {
+    const ext = this.sharedService.getExtension(image)
+    const isPdf = ext == 'pdf' ? true : false
+    return isPdf
   }
 
 }

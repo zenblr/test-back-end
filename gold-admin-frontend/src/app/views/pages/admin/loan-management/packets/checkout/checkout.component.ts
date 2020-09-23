@@ -3,6 +3,8 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { LeadService } from '../../../../../../core/lead-management/services/lead.service';
+import { AppliedLoanService } from '../../../../../../core/loan-management';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'kt-checkout',
@@ -14,13 +16,14 @@ export class CheckoutComponent implements OnInit {
   checkoutForm: FormGroup
   otpVerfied: boolean
   otpSent: boolean
+  refCode: string
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<CheckoutComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private toastr: ToastrService,
-    private leadService: LeadService
+    private appliedLoanService: AppliedLoanService
   ) { }
 
   ngOnInit() {
@@ -29,11 +32,16 @@ export class CheckoutComponent implements OnInit {
 
   initForm() {
     this.checkoutForm = this.fb.group({
-      mobileNumber: [, [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
+      customerId: [],
+      // mobileNumber: [, [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
       otp: [, [Validators.required]],
       loanId: [null],
       masterLoanId: [null],
+      referenceCode: [this.refCode]
     })
+
+    this.checkoutForm.patchValue(this.data.loanData)
+    // console.log(this.checkoutForm.value)
   }
 
   action(event) {
@@ -45,29 +53,42 @@ export class CheckoutComponent implements OnInit {
   }
 
   submit() {
-    console.log(this.checkoutForm.value)
+    // console.log(this.checkoutForm.value)
 
-    const params = {
-      otp: this.controls.otp.value,
-      referenceCode: this.controls.referenceCode.value,
-      type: 'lead'
-    };
+    if (this.checkoutForm.invalid) {
+      return this.checkoutForm.markAllAsTouched()
+    }
 
-    this.leadService.verifyOtp(params).subscribe(res => {
+    let params = this.checkoutForm.value
+    params.type = 'lead'
+
+    this.appliedLoanService.verifyOtp(params).subscribe(res => {
       if (res) {
-        this.otpSent = true;
-        this.otpVerfied = true;
+        // this.otpSent = true;
+        // this.otpVerfied = true;
         const msg = 'Otp has been verified!'
         this.toastr.success(msg);
+        this.dialogRef.close(true);
       }
     },
       err => {
-        this.toastr.error(err.error.message)
+        if (err.error.message == 'INVALID OTP.') {
+          this.controls.otp.setErrors({ invalidOTP: true })
+        }
       }
     );
   }
 
   get controls() {
     return this.checkoutForm.controls;
+  }
+
+  resendOTP() {
+    this.appliedLoanService.checkout(this.controls.customerId.value).pipe(map(res => {
+      if (res) {
+        this.toastr.success('OTP has been sent sucessfully')
+        this.controls.referenceCode.patchValue(res.referenceCode)
+      }
+    })).subscribe()
   }
 }

@@ -46,6 +46,9 @@
         </div>
         <div class="col-2 justify-content-end d-inline-flex align-self-center">
             <div *ngxPermissionsOnly="permissionType; then thenBlock"></div>
+            <kt-button  [value]="'../../../../../assets/media/icons/globe.svg'" [type]='"image"' (click)="navigate()"
+                class="kt-margin-r-10 kt-margin-l-10" *ngIf="globalMap">
+            </kt-button>
             <kt-filter *ngIf="showfilter" (filterApplyEvent)="applyFilter($event)" [filterName]="filterName"
                 [listType]="listType" [filterWidth]="filterWidth"></kt-filter>
             <div *ngIf="sortFlag" [ngStyle]="{'display':'contents'}">

@@ -123,7 +123,8 @@ export class DisburseComponent implements OnInit {
       isUnsecuredSchemeApplied: [],
       securedLoanUniqueId: [],
       unsecuredLoanUniqueId: [],
-      finalAmount: []
+      finalAmount: [],
+      fullAmount: []
     })
     this.disableSchemeRelatedField()
   }
@@ -290,7 +291,7 @@ export class DisburseComponent implements OnInit {
       this.loanService.disburse(this.disburseForm.value).pipe(
         map(res => {
           this.toast.success(res.message)
-          this.router.navigate(['/admin/loan-management/all-loan'])
+          this.router.navigate(['/admin/loan-management/applied-loan'])
         }),
         catchError(err => {
           if (err.error.message)
@@ -342,9 +343,15 @@ export class DisburseComponent implements OnInit {
 
     const fullUnsecuredAmount = this.controls.fullUnsecuredAmount.value ? this.controls.fullUnsecuredAmount.value : 0;
 
-    const finalAmount = this.controls.securedLoanAmount.value + fullUnsecuredAmount - this.controls.processingCharge.value
+    const finalAmount = this.controls.fullSecuredAmount.value + fullUnsecuredAmount - this.controls.processingCharge.value
+
+    const fullAmount = this.controls.fullSecuredAmount.value + fullUnsecuredAmount + this.controls.processingCharge.value
+
+    this.controls.fullAmount.patchValue(fullAmount)
 
     this.controls.finalAmount.patchValue(finalAmount)
+
+    this.controls.finalAmount.disable()
 
     this.ref.detectChanges()
     // console.log(this.disburseForm.value)

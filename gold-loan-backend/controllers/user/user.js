@@ -79,13 +79,13 @@ exports.sendOtp = async (req, res, next) => {
             await models.userOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode }, { transaction: t })
         })
 
-        // if (type == "login") {
-        //     await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
-        // }else if(type == "forget"){
-        //     await forgetPasswordOtp(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
-        // }
-        let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
-        await sms.sendSms(mobileNumber, message);
+        if (type == "login") {
+            await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
+        }else if(type == "forget"){
+            await forgetPasswordOtp(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
+        }
+        // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
+        // await sms.sendSms(mobileNumber, message);
         // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`);
 
         return res.status(200).json({ message: 'Otp send to your Mobile number.', referenceCode: referenceCode });

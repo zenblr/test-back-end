@@ -3,13 +3,13 @@ import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { Subscription, merge, Subject, from } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
 import { DataTableService } from '../../../../../core/shared/services/data-table.service';
-import { AppliedLoanDatasource, AppliedLoanService } from '../../../../../core/loan-management'
+import { AppliedLoanDatasource, AppliedLoanService, PacketTrackingService } from '../../../../../core/loan-management'
 import { Router } from '@angular/router';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 // import { DisburseDialogComponent } from '../disburse-dialog/disburse-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { CheckoutComponent } from '../packets/checkout/checkout.component';
-import { UpdateLocationComponent } from '../packets/update-location/update-location.component';
+import { UpdateLocationComponent } from '../../../../partials/components/update-location/update-location.component';
 @Component({
   selector: 'kt-applied-loan',
   templateUrl: './applied-loan.component.html',
@@ -47,7 +47,8 @@ export class AppliedLoanComponent implements OnInit {
     private dataTableService: DataTableService,
     private router: Router,
     private sharedService: SharedService,
-    private ngxPermission: NgxPermissionsService
+    private ngxPermission: NgxPermissionsService,
+    private packetTrackingService: PacketTrackingService
   ) {
     this.ngxPermission.permissions$.subscribe(res => {
       this.permission = res
@@ -169,32 +170,59 @@ export class AppliedLoanComponent implements OnInit {
     this.router.navigate(['/admin/loan-management/view-loan', loan.customerLoan[0].id])
   }
 
-  // checkout(item?) {
-  //   let customerData;
-  //   this.AppliedLoanService.checkout(item.customer.id).pipe(map(res => {
-  //     customerData = res
-  //   })).subscribe()
+  checkout(item?) {
+    if (!this.permission.submitPacketLocation) return
 
-  //   const dialogRef = this.dialog.open(CheckoutComponent, {
-  //     data: customerData,
-  //     width: '500px',
-  //   })
+    let loanData: any = {};
+    this.AppliedLoanService.checkout(item.customer.id).pipe(map(res => {
+      loanData.referenceCode = res.referenceCode
+      loanData.masterLoanId = item.id
+      loanData.loanId = item.customerLoan[0].id
+      loanData.customerId = item.customer.id
 
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) this.loadAppliedLoansPage();
-  //   });
-  // }
+      this.openOTPModal(loanData)
+    })).subscribe()
+  }
 
-  // submitPacket() {
-  //   let customerData;
-  //   const dialogRef = this.dialog.open(UpdateLocationComponent, {
-  //     data: customerData,
-  //     width: '500px',
-  //   })
+  openOTPModal(loanData) {
+    const dialogRef = this.dialog.open(CheckoutComponent, {
+      data: { loanData },
+      width: '500px',
+    })
 
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) this.loadAppliedLoansPage();
-  //   });
-  // }
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) this.loadAppliedLoansPage();
+    });
+  }
 
+  submitPacket(packetData) {
+
+    // let customerData = this.getPacketDetails(item.id);
+    const dialogRef = this.dialog.open(UpdateLocationComponent, {
+      data: { packetData, stage: 11 },
+      width: '500px',
+    })
+
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) this.loadAppliedLoansPage();
+    });
+  }
+
+  getPacketDetails(item) {
+
+    if (!this.permission.submitPacketLocation) return
+
+    const masterLoanId = item.id
+    this.packetTrackingService.viewPackets({ masterLoanId }).pipe(map(res => {
+      // console.log(res.data[0].packets)
+      let data = res.data[0].packets
+      this.submitPacket(data)
+    }
+    )).subscribe()
+  }
+
+  getPermission() {
+    const notAllowed = this.permission.submitPacketLocation ? false : true
+    return notAllowed
+  }
 }

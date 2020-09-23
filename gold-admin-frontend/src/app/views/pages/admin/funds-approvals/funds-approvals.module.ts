@@ -17,6 +17,7 @@ import { FullReleaseFinalComponent } from './jewellery-release-final/full-releas
 import { UpdateStatusComponent } from './update-status/update-status.component';
 import { UploadDocumentComponent } from './upload-document/upload-document.component';
 import { PaymentDialogComponent } from '../../../../views/partials/components/payment-dialog/payment-dialog.component';
+import { UpdateLocationComponent } from '../../../../views/partials/components/update-location/update-location.component';
 
 const routes = [
   {
@@ -76,7 +77,8 @@ const routes = [
   ],
   entryComponents: [
     UpdateStatusComponent,
-    PaymentDialogComponent
+    PaymentDialogComponent,
+    UpdateLocationComponent
   ]
 })
 export class FundsApprovalsModule { }

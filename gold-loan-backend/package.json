@@ -19,6 +19,7 @@
         "debug": "~2.6.9",
         "excel4node": "^1.7.2",
         "express": "~4.16.1",
+        "express-useragent": "^1.0.15",
         "express-validator": "^6.6.0",
         "extend": "^3.0.2",
         "http-errors": "^1.8.0",

@@ -92,7 +92,7 @@ export class InterestCalculatorComponent implements OnInit {
       debounceTime(500),
       distinctUntilChanged()
     ).subscribe(res => {
-      if (!this.transferLoan) {
+      if (!this.transferLoan && ! this.isNewLoanFromPartRelease) {
         this.partner();
       }
     })
@@ -104,20 +104,20 @@ export class InterestCalculatorComponent implements OnInit {
     if (changes.partPaymentdata && changes.partPaymentdata.currentValue) {
       this.controls.finalLoanAmount.patchValue(changes.partPaymentdata.currentValue)
       this.controls.finalLoanAmount.disable()
-      this.transferLoan = true;
+      this.isNewLoanFromPartRelease = true;
       this.partner()
     }
-
+    
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
       this.controls.finalLoanAmount.patchValue(changes.loanTransfer.currentValue)
       this.controls.finalLoanAmount.disable()
-      this.isNewLoanFromPartRelease = true;
+      this.transferLoan = true;
       this.partner()
     }
 
     if (changes.totalAmt) {
       if (changes.totalAmt.currentValue != changes.totalAmt.previousValue && changes.totalAmt.currentValue != 0) {
-        // this.partner()
+        this.controls.finalLoanAmount.reset()
       }
     }
 
@@ -126,7 +126,12 @@ export class InterestCalculatorComponent implements OnInit {
         if (changes.details.currentValue && changes.details.currentValue) {
 
           const finalLoan = changes.details.currentValue
-
+          if (finalLoan.masterLoan.loanStartDate) {
+            this.finalInterestForm.patchValue(finalLoan.masterLoan)
+            this.finalInterestForm.patchValue(finalLoan)
+            this.currentDate = new Date(finalLoan.masterLoan.loanStartDate)
+            this.finalInterestForm.controls.loanStartDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
+          }
           if (finalLoan.masterLoan.isLoanTransfer) {
             this.controls.finalLoanAmount.disable()
             this.transferLoan = true;
@@ -134,6 +139,7 @@ export class InterestCalculatorComponent implements OnInit {
 
           }
           if (finalLoan.masterLoan.isNewLoanFromPartRelease) {
+            this.controls.finalLoanAmount.patchValue(finalLoan.newLoanAmount)
             this.controls.finalLoanAmount.disable()
             this.isNewLoanFromPartRelease = true;
             this.partner()
@@ -143,12 +149,7 @@ export class InterestCalculatorComponent implements OnInit {
             this.approved = true;
 
           // this.finalInterestForm.controls.loanStartDate.patchValue(new Date(finalLoan.loanStartDate))
-          if (finalLoan.masterLoan.loanStartDate) {
-            this.finalInterestForm.patchValue(finalLoan.masterLoan)
-            this.finalInterestForm.patchValue(finalLoan)
-            this.currentDate = new Date(finalLoan.masterLoan.loanStartDate)
-            this.finalInterestForm.controls.loanStartDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
-          }
+          
 
           if (finalLoan.scheme) {
             this.selectedScheme = finalLoan.scheme
@@ -189,7 +190,6 @@ export class InterestCalculatorComponent implements OnInit {
           }
 
           this.dateOfPayment = temp
-          console.log(this.dateOfPayment)
           this.finalLoanAmount.emit(this.controls.finalLoanAmount.value)
           this.returnScheme()
           this.ref.detectChanges()
@@ -287,6 +287,7 @@ export class InterestCalculatorComponent implements OnInit {
       this.controls.loanStartDate.markAsTouched()
     }
     this.controls.interestRate.reset()
+    this.controls.paymentFrequency.reset()
   }
 
   filterScheme() {
@@ -381,6 +382,7 @@ export class InterestCalculatorComponent implements OnInit {
         this.paymentFrequency = res.data.securedScheme.schemeInterest;
         this.checkForPaymentFrequency()
         this.controls.paymentFrequency.reset()
+        console.log(this.controls.paymentFrequency.value);
       }
 
 
@@ -392,7 +394,7 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   checkForPaymentFrequency() {
-    if (this.controls.tenure.valid) {
+    if (this.controls.tenure.valid && this.paymentFrequency.length) {
       this.tempPaymentFrequency = []
       this.paymentFrequency.forEach(month => {
         let tenure = this.controls.tenure.value

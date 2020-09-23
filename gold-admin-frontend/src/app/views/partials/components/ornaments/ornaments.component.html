@@ -615,7 +615,12 @@
                                         </div>
                                         <div class="col-8">
                                             <input type="text" class="form-control" placeholder="100.00"
-                                                formControlName="loanAmount" readonly>
+                                                formControlName="loanAmount" readonly [class.isError]="ornament.controls.loanAmount.touched && ornament.controls.loanAmount.invalid">
+                                                <mat-error
+                                                *ngIf="ornament.controls.loanAmount.touched && ornament.controls.loanAmount.invalid">
+                                                <span *ngIf="ornament.controls.loanAmount.errors?.required">Field
+                                                    Required</span>
+                                            </mat-error>
                                         </div>
                                     </div>
                                 </div>
