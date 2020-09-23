@@ -66,23 +66,23 @@ module.exports = (sequelize, DataTypes) => {
         var values = Object.assign({}, this.get({ plain: true }));
 
         let gstCertificateImages = []
-        if (values.gstCertificate.length != 0) {
+        if (values.gstCertificate && values.gstCertificate.length != 0) {
             for (imgUrl of values.gstCertificate) {
                 let URL = process.env.BASE_URL + imgUrl;
                 gstCertificateImages.push(URL)
             }
+        values.gstCertificateImages = gstCertificateImages
         }
 
         let constitutionsDeedImages = []
-        if (values.constitutionsDeed.length != 0) {
+        if (values.constitutionsDeed && values.constitutionsDeed.length != 0) {
             for (imgUrl of values.constitutionsDeed) {
                 let URL = process.env.BASE_URL + imgUrl;
                 constitutionsDeedImages.push(URL)
             }
+        values.constitutionsDeedImages = constitutionsDeedImages
         }
 
-        values.constitutionsDeedImages = constitutionsDeedImages
-        values.gstCertificateImages = gstCertificateImages
         return values;
     }
 

@@ -13,6 +13,20 @@ exports.addAppraiserRequest = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let { customerId, moduleId } = req.body;
+
+    let status = await models.status.findOne({ where: { statusName: "confirm" } })
+    let statusId = status.id
+
+    let checkStatusCustomer = await models.customer.findOne({
+        where: { statusId, id: customerId },
+    });
+
+    if(checkStatusCustomer.scrapKycStatus == "approved"){
+        if(checkStatusCustomer.userType == "Corporate"){
+            return res.status(400).json({ message: "Please create new customer since you have completed Corporate kyc" });
+        }   
+    }
+
     let requestExist = await models.appraiserRequest.findOne({ where: { moduleId: moduleId, customerId: customerId, status: 'incomplete' } })
 
     if (!check.isEmpty(requestExist)) {
@@ -60,7 +74,7 @@ exports.getAllNewRequest = async (req, res, next) => {
             required: false,
             as: 'customer',
             where: { isActive: true },
-            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'kycStatus', 'internalBranchId'],
+            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'kycStatus', 'internalBranchId', 'scrapKycStatus'],
             include: [
                 {
                     model: models.customerKyc,

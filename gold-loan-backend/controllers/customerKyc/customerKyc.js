@@ -86,7 +86,6 @@ exports.getCustomerDetails = async (req, res, next) => {
 
 
 exports.submitCustomerKycinfo = async (req, res, next) => {
-    try {
 
         let { firstName, lastName, mobileNumber, panCardNumber, panType, panImage, moduleId, organizationTypeId, dateOfIncorporation, userType } = req.body;
 
@@ -303,14 +302,10 @@ exports.submitCustomerKycinfo = async (req, res, next) => {
             userType: userType
 
         })
-    } catch (err) {
-        console.log(err)
-    }
 }
 
 
 exports.submitCustomerKycAddress = async (req, res, next) => {
-    try {
 
         let { customerId, customerKycId, identityProof, identityTypeId, identityProofNumber, address, moduleId, userType } = req.body
         let createdBy = req.userData.id;
@@ -417,15 +412,10 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
         let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
 
         return res.status(200).json({ customerId, customerKycId, name, customerKycCurrentStage, moduleId, userType })
-    } catch (err) {
-        console.log(err);
-    }
 }
 
 
 exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
-    try {
-
 
         let { customerId, customerKycId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, email, alternateEmail, landLineNumber, gstinNumber, cinNumber, constitutionsDeed, gstCertificate, moduleId, userType } = req.body
 
@@ -563,7 +553,7 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
         } else if (moduleId == 3) {
             customerKycReview = await models.customer.findOne({
                 where: { id: customerId },
-                attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'userType', 'organizationTypeId', 'dateOfIncorporation', 'moduleId'],
+                attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'userType', 'organizationTypeId', 'dateOfIncorporation', 'moduleId', 'panType', 'panImage'],
                 include: [
                     {
                         model: models.customerKycPersonalDetail,
@@ -583,7 +573,8 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
                         as: 'organizationDetail',
                         required: false,
                         attributes: ['id', 'customerId', 'customerKycId', 'email', 'alternateEmail', 'landLineNumber', 'gstinNumber', 'cinNumber', 'constitutionsDeed', 'gstCertificate'],
-                    }, {
+                    },
+                    {
                         model: models.customerKycAddressDetail,
                         as: 'customerKycAddress',
                         attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
@@ -609,11 +600,8 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
 
         let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
 
-        return res.status(200).json({ customerId, customerKycId, customerKycCurrentStage, customerKycReview })
+        return res.status(200).json({ customerId, customerKycId, customerKycCurrentStage, customerKycReview, moduleId, userType})
 
-    } catch (err) {
-        console.log(err)
-    }
 }
 
 
@@ -623,7 +611,6 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
 
 
 exports.submitAllKycInfo = async (req, res, next) => {
-    try{
 
     let { customerId, customerKycId, customerKycPersonal, customerKycAddress, customerKycBank, customerKycBasicDetails, customerOrganizationDetail, moduleId, userType } = req.body;
     let modifiedBy = req.userData.id;
@@ -728,9 +715,6 @@ exports.submitAllKycInfo = async (req, res, next) => {
     // console.log(KycClassification);
     return res.status(200).json({ message: `successful`, customerId, customerKycId, customerKycCurrentStage, KycClassification, ratingStage, moduleId, userType })
 
-}catch(err){
-    console.log(err);
-}
 }
 
 exports.appliedKyc = async (req, res, next) => {
@@ -789,24 +773,24 @@ exports.appliedKyc = async (req, res, next) => {
                         [Op.iLike]: search + "%",
                     }
                 ),
-                kyc_rating_cce: sequelize.where(
-                    sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_cce"), "varchar"),
-                    {
-                        [Op.iLike]: search + "%",
-                    }
-                ),
-                scrap_kyc_status_from_cce: sequelize.where(
-                    sequelize.cast(sequelize.col("customerKycClassification.scrap_kyc_status_from_cce"), "varchar"),
-                    {
-                        [Op.iLike]: search + "%",
-                    }
-                ),
-                kyc_rating_bm: sequelize.where(
-                    sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_operational_team"), "varchar"),
-                    {
-                        [Op.iLike]: search + "%",
-                    }
-                )
+                // kyc_rating_cce: sequelize.where(
+                //     sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_cce"), "varchar"),
+                //     {
+                //         [Op.iLike]: search + "%",
+                //     }
+                // ),
+                // scrap_kyc_status_from_cce: sequelize.where(
+                //     sequelize.cast(sequelize.col("customerKycClassification.scrap_kyc_status_from_cce"), "varchar"),
+                //     {
+                //         [Op.iLike]: search + "%",
+                //     }
+                // ),
+                // kyc_rating_bm: sequelize.where(
+                //     sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_operational_team"), "varchar"),
+                //     {
+                //         [Op.iLike]: search + "%",
+                //     }
+                // )
             }
         }],
         isActive: true,
@@ -849,8 +833,12 @@ exports.appliedKyc = async (req, res, next) => {
         {
             model: models.customer,
             as: 'customer',
-            attributes: ['firstName', 'lastName', 'panCardNumber', 'kycStatus', 'customerUniqueId', 'moduleId', 'userType', 'scrapKycStatus'],
+            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'kycStatus', 'customerUniqueId', 'moduleId', 'userType', 'scrapKycStatus'],
             where: internalBranchWhere,
+            include:{
+                model: models.appraiserRequest,
+                as: 'appraiserRequest',
+            }
         }
     ]
 
@@ -862,8 +850,8 @@ exports.appliedKyc = async (req, res, next) => {
 
     let getAppliedKyc = await models.customerKyc.findAll({
         where: searchQuery,
-        attributes: ['id', 'customerId', 'createdAt'],
-        order: [["updatedAt", "DESC"]],
+        attributes: ['id', 'customerId', 'createdAt', 'updatedAt'],
+        order: [["updatedAt", "DESC"], [models.customer, models.appraiserRequest ,'id' , 'DESC']],
         offset: offset,
         limit: pageSize,
         include: includeArray
@@ -885,10 +873,15 @@ exports.appliedKyc = async (req, res, next) => {
 exports.getReviewAndSubmit = async (req, res, next) => {
 
     let { customerId, customerKycId } = req.query;
-
+    let appraiserRequestData = await models.appraiserRequest.findAll({
+        where:{
+            customerId : customerId
+        },
+        order: [["updatedAt", "DESC"]]
+    })
     let customerKycReview = await models.customer.findOne({
         where: { id: customerId },
-        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'moduleId', 'userType'],
+        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'moduleId', 'userType', 'dateOfIncorporation'],
         include: [{
             model: models.customerKycPersonalDetail,
             as: 'customerKycPersonal',
@@ -927,10 +920,15 @@ exports.getReviewAndSubmit = async (req, res, next) => {
         }
 ]
     })
-    let moduleId = customerKycReview.moduleId;
-    let userType = customerKycReview.userType;
+    let userType = null;
+    let moduleId = appraiserRequestData[0].moduleId;
+    if(moduleId == 3){
 
-    return res.status(200).json({ customerKycReview, moduleId, userType, customerId, customerKycId })
+        userType = customerKycReview.userType;
+    }
+    
+
+    return res.status(200).json({ customerKycReview, moduleId , userType, customerId, customerKycId })
 }
 
 
