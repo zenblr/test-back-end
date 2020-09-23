@@ -122,8 +122,12 @@ export class PacketTrackingComponent implements OnInit {
   }
 
   updatePacket(packet) {
-    let lastIndex = packet.locationData[packet.locationData.length - 1]
-    if (lastIndex.packetLocation.id == 4) return
+    // let lastIndex = packet.locationData[packet.locationData.length - 1]
+    // if (lastIndex.packetLocation.id == 4 || lastIndex.packetLocation.id == 3) return
+
+    const isNotAllowed = this.checkForPartnerBranchIn(packet)
+
+    if (isNotAllowed) return
 
     if (packet.loanStageId === 11) {
       const dialogRef = this.dialog.open(UpdateLocationComponent,
@@ -209,7 +213,8 @@ export class PacketTrackingComponent implements OnInit {
 
   checkForPartnerBranchIn(packet) {
     const lastIndex = packet.locationData[packet.locationData.length - 1]
-    const isNotAllowed = lastIndex.packetLocation.id == 4 ? true : false
+    const id = lastIndex.packetLocation.id
+    const isNotAllowed = id == 4 || id == 3 ? true : false
     return isNotAllowed
   }
 
