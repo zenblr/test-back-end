@@ -324,7 +324,7 @@ exports.checkDuplicatePan = async (req, res, next) => {
             return res.status(200).json({ message: 'success' })
         }
     } else {
-        if (checkPan.id != customerId) {
+        if (checkPan && checkPan.id != customerId) {
             return res.status(400).json({ message: 'Duplicate PAN card' })
         } else {
             return res.status(200).json({ message: 'success' })
