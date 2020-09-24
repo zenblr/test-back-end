@@ -6,7 +6,7 @@ const { submitCustomerKycAddressValidation, submitAllKycInfoValidation, submitCu
     submitCustomerKycInfoValidation, submitCustomerKycpersonalDetailValidation, getCustomerDetailsValidation, submitCustomerKycDetailValidation } = require('../validations/customerKyc');
 const { getCustomerDetails, submitCustomerKycinfo, submitCustomerKycAddress, submitCustomerKycPersonalDetail, submitCustomerKycBankDetail, submitAllKycInfo, appliedKyc, getReviewAndSubmit } = require('../controllers/customerKyc/customerKyc')
 
-const { submitAppKyc, getAssignedCustomer, editAppKyc, checkDuplicatePan,checkDuplicateAadhar } = require('../controllers/customerKyc/appCustomerKyc')
+const { submitAppKyc, getAssignedCustomer, editAppKyc, checkDuplicatePan, checkDuplicateAadhar, checkLoanAppraiser } = require('../controllers/customerKyc/appCustomerKyc')
 const checkAuth = require('../middleware/checkAuth');
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
@@ -38,6 +38,8 @@ route.post('/check-pan-card', checkAuth, wrapper(checkDuplicatePan));
 route.post('/check-aadhar-card', checkAuth, wrapper(checkDuplicateAadhar));
 
 route.get('/get-assigned-customer', checkAuth, wrapper(getAssignedCustomer))
+
+route.get('/check-loan-assign', checkAuth, wrapper(checkLoanAppraiser))
 
 //appraiserApp
 
