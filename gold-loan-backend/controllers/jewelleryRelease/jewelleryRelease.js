@@ -816,7 +816,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
                 {
                     model: models.customerLoan,
                     as: 'customerLoan',
-                    attributes: ['masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId']
+                    attributes: ['masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId', 'outstandingAmount']
                 },
                 {
                     model: models.customerLoanPersonalDetail,
