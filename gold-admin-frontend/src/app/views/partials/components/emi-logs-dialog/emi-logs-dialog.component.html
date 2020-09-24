@@ -7,7 +7,9 @@
                 <thead>
                     <th class="transparent">EMI DUE DATE</th>
                     <th class="transparent">INTEREST AMOUNT</th>
-                    <th class="transparent">PAID AMOUNT</th>
+                    <th class="transparent">INTEREST PAID AMOUNT</th>
+                    <th class="transparent">PENAL AMOUNT</th>
+                    <th class="transparent">PENAL PAID AMOUNT</th>
                     <th class="transparent">Payment Date</th>
                     <th class="transparent">Pending Interest EMI</th>
                     <th class="transparent">Status</th>
@@ -17,6 +19,8 @@
                         <td>{{emi?.emiDueDate | date :'mediumDate'}}</td>
                         <td class="text-center">{{emi?.interestAmount}}</td>
                         <td class="text-center">{{emi?.paidAmount}}</td>
+                        <td class="text-center">{{emi?.penalInterest}}</td>
+                        <td class="text-center">{{emi?.penalPaid}}</td>
                         <td class="text-center">
                             <span *ngIf="emi.emiReceivedDate;else noData">
                                 {{emi?.emiReceivedDate | date :'mediumDate'}}
