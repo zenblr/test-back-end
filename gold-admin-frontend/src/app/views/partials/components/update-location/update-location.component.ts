@@ -326,6 +326,8 @@ export class UpdateLocationComponent implements OnInit {
   }
 
   generateOTP() {
+    if (this.locationForm.controls.mobileNumber.invalid) return this.controls.mobileNumber.markAsTouched()
+    
     const mobileNumber = this.locationForm.controls.mobileNumber.value
     switch (this.locationForm.controls.receiverType.value) {
       case 'Customer':

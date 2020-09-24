@@ -180,6 +180,16 @@
                     </mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="view">
+                    <mat-header-cell *matHeaderCellDef> Acknowledgement Receipt </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        <div *ngIf="item.documentsImages?.length" class="kt-pointer"
+                            (click)="view(item.documentsImages[0])">
+                            View
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
