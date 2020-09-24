@@ -47,7 +47,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() karatArr
   @Input() customerConfirmationArr
   @Input() karatFlag
-  @Output() partPayment:EventEmitter<any> = new EventEmitter();
+  @Output() partPayment: EventEmitter<any> = new EventEmitter();
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
   @ViewChild('stoneTouch', { static: false }) stoneTouch: ElementRef
@@ -106,7 +106,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.getOrnamentType()
       this.setModalData()
     }
-    
+
   }
 
   setModalData() {
@@ -257,6 +257,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     })
 
     this.ornamentsForm.valueChanges.subscribe(() => {
+      // console.log(this.ornamentsForm.value)
       if (this.ornamentsForm.valid) {
         this.totalAmount = 0;
         this.fullAmount = 0;
@@ -312,7 +313,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       return this.ornamentsForm.controls.ornamentData as FormArray;
   }
 
-  
+
   createPurityImageArray(purity) {
     let data = { URL: [], path: [] }
     // console.log(purity)
@@ -401,7 +402,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       purityTest: [[]],
       ltvPercent: [, [Validators.required]],
       ltvAmount: [],
-      loanAmount: ['',[Validators.required]],
+      loanAmount: ['', [Validators.required]],
       id: [],
       currentLtvAmount: [this.ltvGoldRate],
       ornamentImageData: [, Validators.required],
@@ -444,6 +445,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         controls.controls.ornamentImageData.updateValueAndValidity()
       controls.controls.karat.setValidators([]),
         controls.controls.karat.updateValueAndValidity()
+      controls.controls.loanAmount.setValidators([]),
+        controls.controls.loanAmount.updateValueAndValidity()
       if (this.meltingOrnament) {
         controls.controls.purityReading.setValidators([Validators.required, Validators.pattern('^[0-9][0-9]?$|^100$')]),
           controls.controls.purityReading.updateValueAndValidity()
@@ -877,9 +880,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     return Array.isArray(obj)
   }
 
-close(event: Event){
-if(!event){
-  this.dialogRef.close()
-}
-}
+  close(event: Event) {
+    if (!event) {
+      this.dialogRef.close()
+    }
+  }
 }

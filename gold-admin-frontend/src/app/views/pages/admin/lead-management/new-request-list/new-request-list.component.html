@@ -115,7 +115,8 @@
                         </ng-container>
 
                         <div *ngIf="!row.isProcessComplete">
-                            <div *ngIf="row.customer.kycStatus === 'approved' && row.isAssigned">
+                            <div
+                                *ngIf="row.customer.kycStatus === 'approved' && row.isAssigned && row?.module.id === 1">
                                 <div *ngIf="permission.loanApplicationAdd || permission.addLoanTransfer">
 
                                     <button mat-button [matMenuTriggerFor]="menu">
@@ -146,7 +147,8 @@
                             </div>
 
                             <!-- scrap -->
-                            <div *ngIf="row.customer.scrapKycStatus === 'approved' && row.isAssigned">
+                            <div
+                                *ngIf="row.customer.scrapKycStatus === 'approved' && row.isAssigned && row?.module.id === 3">
                                 <div *ngIf="permission.scrapApplicationAdd && row.module.id === 3">
                                     <button mat-button [matMenuTriggerFor]="menuScrap">
                                         <mat-icon>more_vert</mat-icon>
