@@ -1017,7 +1017,7 @@
                             <div *ngIf="images.constitutionsDeed.length > 0">
                                 <div [class.row]="viewOnly">
                                     <div class="col-6"
-                                        [ngClass]="{'offset-4 kt-margin-b-20' : !viewOnly, 'offset-4': images.constitutionsDeed.length == 1 && !viewOnly}"
+                                        [ngClass]="{'kt-margin-b-20 offset-4' : !viewOnly && images.constitutionsDeed.length == 2, 'offset-4': images.constitutionsDeed.length == 1}"
                                         *ngFor="let img of images.constitutionsDeed, index as idx">
                                         <div class="img-container">
                                             <img *ngIf="!isPdf(img.URL)" class="fetched-image" [src]="img.URL" alt=""
@@ -1043,7 +1043,7 @@
                             <div *ngIf="images.gstCertificate.length > 0">
                                 <div [class.row]="viewOnly">
                                     <div class="col-6"
-                                        [ngClass]="{'offset-4 kt-margin-b-20' : !viewOnly, 'offset-4': images.constitutionsDeed.length == 1 && viewOnly}"
+                                        [ngClass]="{'offset-4 kt-margin-b-20' : !viewOnly, 'offset-4': images.gstCertificate.length == 1}"
                                         *ngFor="let img of images.gstCertificate, index as idx">
                                         <div class="img-container">
                                             <img *ngIf="!isPdf(img.URL)" class="fetched-image" [src]="img.URL" alt=""

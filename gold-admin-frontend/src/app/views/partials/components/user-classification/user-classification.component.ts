@@ -151,7 +151,8 @@ export class UserClassificationComponent implements OnInit {
       reasonForOther: [],
       kycStatusFromOperationalTeam: ['pending', [Validators.required]],
       reasonFromOperationalTeam: [''],
-      moduleId: [this.customerDetails.moduleId]
+      moduleId: [this.customerDetails.moduleId],
+      userType: [this.customerDetails.userType]
     })
 
     if (this.permission.cceKycRating && !this.permission.opsKycRating && this.customerDetails.ratingStage == 1) {
@@ -250,6 +251,7 @@ export class UserClassificationComponent implements OnInit {
         customerId: this.customerDetails.customerId,
         customerKycId: this.customerDetails.customerKycId,
         moduleId: this.custClassificationForm.controls.moduleId.value,
+        userType: this.custClassificationForm.controls.userType.value,
         scrapKycStatusFromOperationalTeam: this.custClassificationForm.controls.kycStatusFromOperationalTeam.value,
         scrapReasonFromOperationalTeam: this.custClassificationForm.controls.reasonFromOperationalTeam.value
       }
@@ -270,6 +272,7 @@ export class UserClassificationComponent implements OnInit {
         customerId: this.customerDetails.customerId,
         customerKycId: this.customerDetails.customerKycId,
         moduleId: this.custClassificationForm.controls.moduleId.value,
+        userType: this.custClassificationForm.controls.userType.value,
         scrapKycRatingFromCce: Number(this.custClassificationForm.controls.kycRatingFromCce.value),
         scrapKycStatusFromCce: this.custClassificationForm.controls.kycStatusFromCce.value,
         scrapReasonFromCce: this.custClassificationForm.controls.reasonFromCce.value

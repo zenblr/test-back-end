@@ -44,7 +44,8 @@
                     Organization Details
                 </p>
 
-                <!-- <p class="step-details"> User's Personal Details</p> -->
+                <p *ngIf="module && module.moduleId == 3 && module.userType == null" class="step-details">Personal
+                    Details</p>
             </div>
         </a>
 
