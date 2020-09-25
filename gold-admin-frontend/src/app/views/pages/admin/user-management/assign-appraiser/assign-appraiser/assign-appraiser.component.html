@@ -142,7 +142,7 @@
                                 <input [ngxTimepicker]="picker1" class="form-control" formControlName="startTime"
                                     placeholder="From" [min]="addStartTime" [max]="max"
                                     [class.isError]="controls.startTime.touched && controls.startTime.invalid">
-                                <ngx-material-timepicker #picker1 (timeChanged)="setStartTime($event)">
+                                <ngx-material-timepicker #picker1 (timeSet)="setStartTime($event)">
                                 </ngx-material-timepicker>
                                 <mat-error *ngIf="controls.startTime.touched && controls.startTime.errors?.required">
                                     Required field
