@@ -791,7 +791,8 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         }],
         isActive: true,
         amountStatus: "completed",
-        newLoanId: null
+        newLoanId: null,
+        isAppraiserAssigned: true
     }
     let appriserSearch = { isActive: true }
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
@@ -860,6 +861,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
             as: 'appraiserData',
             where: appriserSearch,
             required: false,
+            // subQuery: false,
             attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
             // include: [
             //     {
@@ -1584,32 +1586,32 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
     let query = {};
     const searchQuery = {
         [Op.and]: [query, {
-            [Op.or]: {
-                release_gross_weight: sequelize.where(
-                    sequelize.cast(sequelize.col("release_gross_weight"), "varchar"), { [Op.iLike]: search + "%" }),
-                amount_status: sequelize.where(
-                    sequelize.cast(sequelize.col("amount_status"), "varchar"), { [Op.iLike]: search + "%" }),
-                release_deduction_weight: sequelize.where(
-                    sequelize.cast(sequelize.col("release_deduction_weight"), "varchar"), { [Op.iLike]: search + "%" }),
-                release_net_weight: sequelize.where(
-                    sequelize.cast(sequelize.col("release_net_weight"), "varchar"), { [Op.iLike]: search + "%" }),
-                release_amount: sequelize.where(
-                    sequelize.cast(sequelize.col("release_amount"), "varchar"), { [Op.iLike]: search + "%" }),
-                payable_amount: sequelize.where(
-                    sequelize.cast(sequelize.col("payable_amount"), "varchar"), { [Op.iLike]: search + "%" }),
-                interest_amount: sequelize.where(
-                    sequelize.cast(sequelize.col("interest_amount"), "varchar"), { [Op.iLike]: search + "%" }),
-                penal_interest: sequelize.where(
-                    sequelize.cast(sequelize.col("penal_interest"), "varchar"), { [Op.iLike]: search + "%" }),
-                remaining_net_weight: sequelize.where(
-                    sequelize.cast(sequelize.col("remaining_net_weight"), "varchar"), { [Op.iLike]: search + "%" }),
-                "$masterLoan.loanPersonalDetail.customer_unique_id$": { [Op.iLike]: search + "%" },
-                "$masterLoan.outstanding_amount$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.outstanding_amount"), "varchar"), { [Op.iLike]: search + "%" }),
-                "$masterLoan.tenure$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"), { [Op.iLike]: search + "%" }),
-                "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" },
-                final_loan_amount: sequelize.where(
-                    sequelize.cast(sequelize.col("masterLoan.final_loan_amount"), "varchar"), { [Op.iLike]: search + "%" })
-            },
+            // [Op.or]: {
+            //     release_gross_weight: sequelize.where(
+            //         sequelize.cast(sequelize.col("release_gross_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+            //     amount_status: sequelize.where(
+            //         sequelize.cast(sequelize.col("amount_status"), "varchar"), { [Op.iLike]: search + "%" }),
+            //     release_deduction_weight: sequelize.where(
+            //         sequelize.cast(sequelize.col("release_deduction_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+            //     release_net_weight: sequelize.where(
+            //         sequelize.cast(sequelize.col("release_net_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+            //     release_amount: sequelize.where(
+            //         sequelize.cast(sequelize.col("release_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+            //     payable_amount: sequelize.where(
+            //         sequelize.cast(sequelize.col("payable_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+            //     interest_amount: sequelize.where(
+            //         sequelize.cast(sequelize.col("interest_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+            //     penal_interest: sequelize.where(
+            //         sequelize.cast(sequelize.col("penal_interest"), "varchar"), { [Op.iLike]: search + "%" }),
+            //     remaining_net_weight: sequelize.where(
+            //         sequelize.cast(sequelize.col("remaining_net_weight"), "varchar"), { [Op.iLike]: search + "%" }),
+            //     "$masterLoan.loanPersonalDetail.customer_unique_id$": { [Op.iLike]: search + "%" },
+            //     "$masterLoan.outstanding_amount$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.outstanding_amount"), "varchar"), { [Op.iLike]: search + "%" }),
+            //     "$masterLoan.tenure$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"), { [Op.iLike]: search + "%" }),
+            //     "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" },
+            //     final_loan_amount: sequelize.where(
+            //         sequelize.cast(sequelize.col("masterLoan.final_loan_amount"), "varchar"), { [Op.iLike]: search + "%" })
+            // },
         }],
         isActive: true,
         [Op.or]: {
@@ -1704,13 +1706,13 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
         ],
         offset: offset,
         limit: pageSize,
-        subQuery: false,
+        // subQuery: false,
         include: includeArray
     })
 
     let count = await models.fullRelease.findAll({
         where: searchQuery,
-        subQuery: false,
+        // subQuery: false,
         include: includeArray
     })
 
