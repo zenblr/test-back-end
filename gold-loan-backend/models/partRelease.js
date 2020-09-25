@@ -115,6 +115,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_appraiser_assigned',
             defaultValue: false
         },
+        isCustomerReceivedPacket: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_customer_received_packet',
+            defaultValue: false
+        },
         isActive:{
             type: DataTypes.BOOLEAN,
             field: 'is_active',

@@ -11,7 +11,7 @@ export class JewelleryReleaseService {
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   getPartReleaseInfo(id) {
-    return this.http.get(` /api/jewellery-release/${id}`).pipe(map(res => res),
+    return this.http.get(`/api/jewellery-release/${id}`).pipe(map(res => res),
       catchError(err => {
         if (err.error.message) {
           this.toastr.error(err.error.message)

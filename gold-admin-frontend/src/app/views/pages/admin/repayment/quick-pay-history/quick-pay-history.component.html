@@ -1,0 +1,40 @@
+<kt-portlet>
+    <kt-modal-header [title]='"Transaction History"' (action)="action($event)"></kt-modal-header>
+    <kt-portlet-body>
+        <!-- <h5 class="kt-padding-t-25 kt-padding-l-20">Interest EMI</h5> -->
+        <div class="table-div kt-padding-20">
+            <table class="table outer-border">
+                <thead>
+                    <th class="transparent">Transaction ID</th>
+                    <th class="transparent">PAID AMOUNT</th>
+                    <th class="transparent">Payment Date</th>
+                    <th class="transparent">Status</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let quick of details">
+                        <td >{{quick?.transactionUniqueId | uppercase}}</td>
+                        <td >{{quick?.transactionAmont}}</td>
+                        <td >
+                            <span *ngIf="quick.paymentReceivedDate;else noData">
+                                {{quick?.paymentReceivedDate | date:'mediumDate'}}
+                            </span>
+                            <ng-template #noData>
+                                -
+                            </ng-template>
+                        </td>
+                        <td>
+                            <span *ngIf="quick?.depositStatus == 'Completed'" class="text-success">
+                                {{quick?.depositStatus | titlecase}}
+                            </span>
+                            <span *ngIf="quick?.depositStatus == 'Pending'" class="text-warning">
+                               Waiting For Approval 
+                            </span>
+                            <span *ngIf="quick?.depositStatus == 'Rejected'" class="text-danger">
+                                {{quick?.depositStatus | titlecase}}
+                            </span>
+                        </td>
+                    </tr>
+            </table>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

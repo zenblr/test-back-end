@@ -1,7 +1,7 @@
 :host{
     ::ng-deep.mat-row,
     ::ng-deep.mat-header-row{
-        width: 250% !important;
+        width: 270% !important;
     }
 
     .mat-column-netWeightReleaseOrnament{
@@ -23,7 +23,7 @@
 
     }
     .mat-column-ornaments{
-        flex: 0 0 4%;
+        flex: 0 0 3%;
     }
     .mat-column-tenure{
         flex: 0 0 3%;
@@ -33,6 +33,9 @@
     }
     .mat-column-loanAmount{
         flex: 0 0 4%;
+    }
+    .mat-column-uploadDocument{
+        flex: 0 0 5%;
     }
 
 }
