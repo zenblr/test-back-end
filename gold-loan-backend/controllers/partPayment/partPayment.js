@@ -298,7 +298,7 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
                 for (let i = 0; i < penalCal.penalData.length; i++) {
                     //penal calculation pending
                     const element = penalCal.penalData[i]
-                    await models.customerLoanInterest.update(element, { where: { id: element.id }, transaction: t })
+                    await models.customerLoanInterest.update({ penalInterest: element.penalInterest, penalAccrual: element.penalAccrual, penalOutstanding: element.penalOutstanding }, { where: { id: element.id }, transaction: t })
                 }
             }
 
