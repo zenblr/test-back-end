@@ -75,7 +75,7 @@ export class QuickPayComponent implements OnInit {
   viewEmiLogs() {
     const dialogRef = this.dialog.open(EmiLogsDialogComponent, {
       data: { id: this.loanDetails.id },
-      width: '850px'
+      width: '1200px'
     })
   }
 

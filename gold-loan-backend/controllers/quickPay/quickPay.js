@@ -16,7 +16,7 @@ let crypto = require('crypto');
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getSingleDayInterestAmount, getAmountLoanSplitUpData, stepDown, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoanWithOutT, intrestCalculationForSelectedLoanWithOutT } = require('../../utils/loanFunction')
+let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getSingleDayInterestAmount, getAmountLoanSplitUpData, stepDown, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoanWithOutT, intrestCalculationForSelectedLoanWithOutT, getCustomerLoanId } = require('../../utils/loanFunction')
 
 exports.razorPayCreateOrder = async (req, res, next) => {
     let { amount } = req.body;
@@ -252,6 +252,7 @@ exports.confirmationForPayment = async (req, res, next) => {
                 }
             }
 
+
             let interestCal = await intrestCalculationForSelectedLoanWithOutT(receivedDate, loan.id, securedInterest, unsecuredInterest, currentSlabRate)
 
             for (let i = 0; i < interestCal.transactionData.length; i++) {
@@ -267,13 +268,16 @@ exports.confirmationForPayment = async (req, res, next) => {
                     if (element.interestAccrual) {
                         interestAccrualId.push(element.id)
                     }
-                    await models.customerLoanInterest.update(element, { where: { id: element.id }, transaction: t })
+                    let z = await models.customerLoanInterest.update(element, { where: { id: element.id }, transaction: t })
+                    console.log(z)
                 } else {
                     await models.customerLoanInterest.create(element, { transaction: t })
                 }
             }
 
             await models.customerLoanInterest.update({ interestAccrual: 0.00, totalInterestAccural: 0.00 }, { where: { masterLoanId: masterLoanId, id: { [Op.notIn]: interestAccrualId }, emiStatus: 'pending' }, transaction: t })
+
+
             //removed
             // for (let i = 0; i < interestCal.customerLoanData.length; i++) {
             //     let element = interestCal.customerLoanData[i]
@@ -287,20 +291,24 @@ exports.confirmationForPayment = async (req, res, next) => {
 
             } else {
                 for (let i = 0; i < penalCal.penalData.length; i++) {
+                    console.log(penalCal)
                     //penal calculation pending
                     const element = penalCal.penalData[i]
-                    await models.customerLoanInterest.update(element, { where: { id: element.id }, transaction: t })
+                    await models.customerLoanInterest.update({ penalInterest: element.penalInterest, penalAccrual: element.penalAccrual, penalOutstanding: element.penalOutstanding }, { where: { id: element.id }, transaction: t })
                 }
             }
 
             let loanDataNew = await models.customerLoanMaster.findOne({
                 where: { id: masterLoanId },
                 transaction: t,
+                order: [
+                    [models.customerLoan, 'id', 'asc'],
+                ],
                 include: [{
                     model: models.customerLoan,
                     as: 'customerLoan',
                     attributes: ['id', 'loanType'],
-                    where: { isActive: true }
+                    where: { isActive: true },
                 }]
             });
             let dataLoan = {}
@@ -317,6 +325,7 @@ exports.confirmationForPayment = async (req, res, next) => {
                     interest: 0,
                     penalInterest: 0
                 }
+                
                 let interest = await models.customerLoanInterest.findAll({ where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: dataLoan.secured }, transaction: t });
                 let interestAmount = await interest.map((data) => Number(data.interestAccrual));
                 let penalInterest = await interest.map((data) => Number(data.penalOutstanding));
