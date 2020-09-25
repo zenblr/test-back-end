@@ -51,8 +51,13 @@
                             <label class="font-weight-500 text-color">Deposit Date</label>
                         </div>
                         <div class="col-7">
-                            <input type="text" formControlName="paymentRecievedDate" class="form-control"
-                                [value]="controls?.paymentRecievedDate?.value | date: 'MMM d, y, h:mm a'" disabled>
+                            <!-- <input type="text" formControlName="paymentRecievedDate" class="form-control"
+                                [value]="controls?.paymentRecievedDate?.value | date: 'MMM d, y'"> -->
+                            <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
+                                formControlName="paymentRecievedDate" [min]="minDate" [max]="maxDate"
+                                [class.isError]="controls.paymentRecievedDate.touched && controls.paymentRecievedDate.invalid"
+                                readonly placeholder="4/5/2020" />
+                            <mat-datepicker #picker></mat-datepicker>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">

@@ -59,7 +59,7 @@ export class ViewPayComponent implements OnInit {
   getOrderDetails() {
     this.shopService.getOrderDetails(this.orderId).subscribe(res => this.orderData = res.orderData);
   }
-  
+
   selectedEmi(event, id, index) {
     if (event.checked) {
       this.emi = [];
@@ -89,27 +89,27 @@ export class ViewPayComponent implements OnInit {
     const params = {
       emiId: this.emi,
       paymentMode: this.paymentForm.controls.paymentMode.value,
-     
+
     }
     if (this.emi) {
       this.shopService.getEmiAmount(params).subscribe(res => {
         this.emiAmount = res.amount;
         if (res.paymentMode == 'paymentGateway') {
-        this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
-        this.razorpayPaymentService.razorpayOptions.amount = res.razorPayOrder.amount;
-        this.razorpayPaymentService.razorpayOptions.order_id = res.razorPayOrder.id;
-        this.razorpayPaymentService.razorpayOptions.prefill.contact = this.orderData.customerDetails.mobileNumber;
-        this.razorpayPaymentService.razorpayOptions.prefill.email = this.orderData.customerDetails.email || 'info@augmont.in';
-        this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
-        this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
-        this.router.navigate(['/broker/orders/']);
+          this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
+          this.razorpayPaymentService.razorpayOptions.amount = res.razorPayOrder.amount;
+          this.razorpayPaymentService.razorpayOptions.order_id = res.razorPayOrder.id;
+          this.razorpayPaymentService.razorpayOptions.prefill.contact = this.orderData.customerDetails.mobileNumber;
+          this.razorpayPaymentService.razorpayOptions.prefill.email = this.orderData.customerDetails.email || 'info@augmont.in';
+          this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
+          this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
         } else {
           const dialogRef = this.dialog.open(PaymentDialogComponent, {
-            data: { paymentData: res, 
+            data: {
+              paymentData: res,
               isEMI: true,
               orderId: this.orderId,
-              paymentMode: this.paymentForm.controls.paymentMode.value
-
+              paymentMode: this.paymentForm.controls.paymentMode.value,
+              createdAt: this.orderData.createdAt
             },
             width: '70vw'
           });
@@ -120,11 +120,11 @@ export class ViewPayComponent implements OnInit {
               this.toastr.successToastr(msg);
               this.router.navigate(['/broker/orders/']);
 
-                         }
+            }
           });
         }
       },
-      
+
         error => {
           this.emi = [];
           this.toastr.errorToastr(error.error.message);
@@ -132,7 +132,7 @@ export class ViewPayComponent implements OnInit {
         });
     }
   }
-  
+
   razorPayResponsehandler(response) {
     this.zone.run(() => {
       const payEMIData = {
@@ -141,13 +141,14 @@ export class ViewPayComponent implements OnInit {
         emiId: this.emi,
         orderId: this.orderId,
         paymentMode: this.paymentForm.controls.paymentMode.value
-        
-     }
+
+      }
       this.shopService.payEMI(payEMIData).subscribe(res => {
         console.log(payEMIData)
         this.toastr.successToastr("EMI Paid Successfully");
         this.emi = [];
         this.getOrderDetails();
+        this.router.navigate(['/broker/orders/']);
       },
         error => {
           this.toastr.errorToastr(error.error);
@@ -158,5 +159,5 @@ export class ViewPayComponent implements OnInit {
   printEmiReceipt(id) {
     this.emiDetailsService.emiReceipt(id).subscribe();
   }
- 
+
 }
