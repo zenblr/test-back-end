@@ -446,6 +446,11 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
                 }
 
                 if (alternateEmail) {
+
+                    if(email == alternateEmail){
+                        return res.status(400).json({ message: "your email id and alternate email id is same." });
+                    }
+
                     let customerAlternateEmail = await models.customer.findOne({ where: { email: alternateEmail } });
 
                     let customerOrganizationAlternateEmail = await models.customerKycOrganizationDetail.findOne({ where: { alternateEmail } });

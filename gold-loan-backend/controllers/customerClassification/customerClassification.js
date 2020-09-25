@@ -159,7 +159,7 @@ exports.cceKycRating = async (req, res, next) => {
 
 
 exports.operationalTeamKycRating = async (req, res, next) => {
-        let { kycStatusFromOperationalTeam, reasonFromOperationalTeam, customerId, customerKycId, moduleId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam } = req.body
+        let { kycStatusFromOperationalTeam, reasonFromOperationalTeam, customerId, customerKycId, moduleId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, userType } = req.body
 
         if (moduleId == 1) {
 
@@ -300,17 +300,35 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                     return res.status(200).json({ message: 'success' })
                 } else {
 
-                    let kycClassificationData = await models.customerKycClassification.findOne({ where: { customerId } });
+                    if(userType == "Corporate"){
 
-                    await sequelize.transaction(async (t) => {
-                        await models.customer.update({ scrapKycStatus: scrapKycStatusFromOperationalTeam, kycStatus: scrapKycStatusFromOperationalTeam }, { where: { id: customerId }, transaction: t })
+                        await sequelize.transaction(async (t) => {
+                            await models.customer.update({ scrapKycStatus: scrapKycStatusFromOperationalTeam }, { where: { id: customerId }, transaction: t })
+    
+                            // await models.customerKyc.update(
+                            //     { operationalTeamVerifiedBy: scrapOperationalTeamId },
+                            //     { where: { customerId: customerId }, transaction: t })
+    
+                            await models.customerKycClassification.update({ customerId, customerKycId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, scrapOperationalTeamId: scrapOperationalTeamId,
+                                //  kycRatingFromCce: kycClassificationData.scrapKycRatingFromCce, kycStatusFromCce: kycClassificationData.scrapKycStatusFromCce, reasonFromCce: kycClassificationData.scrapReasonFromCce, cceId: kycClassificationData.scrapCceId, kycStatusFromOperationalTeam: scrapKycStatusFromOperationalTeam, reasonFromOperationalTeam: scrapReasonFromOperationalTeam, operationalTeamId: scrapOperationalTeamId 
+                                }, { where: { customerId }, transaction: t })
+                        });
 
-                        // await models.customerKyc.update(
-                        //     { operationalTeamVerifiedBy: scrapOperationalTeamId },
-                        //     { where: { customerId: customerId }, transaction: t })
+                    }else{
+                        let kycClassificationData = await models.customerKycClassification.findOne({ where: { customerId } });
 
-                        await models.customerKycClassification.update({ customerId, customerKycId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, scrapOperationalTeamId: scrapOperationalTeamId, kycRatingFromCce: kycClassificationData.scrapKycRatingFromCce, kycStatusFromCce: kycClassificationData.scrapKycStatusFromCce, reasonFromCce: kycClassificationData.scrapReasonFromCce, cceId: kycClassificationData.scrapCceId, kycStatusFromOperationalTeam: scrapKycStatusFromOperationalTeam, reasonFromOperationalTeam: scrapReasonFromOperationalTeam, operationalTeamId: scrapOperationalTeamId }, { where: { customerId }, transaction: t })
-                    });
+                        await sequelize.transaction(async (t) => {
+                            await models.customer.update({ scrapKycStatus: scrapKycStatusFromOperationalTeam, kycStatus: scrapKycStatusFromOperationalTeam }, { where: { id: customerId }, transaction: t })
+    
+                            // await models.customerKyc.update(
+                            //     { operationalTeamVerifiedBy: scrapOperationalTeamId },
+                            //     { where: { customerId: customerId }, transaction: t })
+    
+                            await models.customerKycClassification.update({ customerId, customerKycId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, scrapOperationalTeamId: scrapOperationalTeamId, kycRatingFromCce: kycClassificationData.scrapKycRatingFromCce, kycStatusFromCce: kycClassificationData.scrapKycStatusFromCce, reasonFromCce: kycClassificationData.scrapReasonFromCce, cceId: kycClassificationData.scrapCceId, kycStatusFromOperationalTeam: scrapKycStatusFromOperationalTeam, reasonFromOperationalTeam: scrapReasonFromOperationalTeam, operationalTeamId: scrapOperationalTeamId }, { where: { customerId }, transaction: t })
+                        });
+                    }
+
+                    
                     return res.status(200).json({ message: 'success' })
                 }
 
@@ -509,16 +527,33 @@ exports.updateRating = async (req, res, next) => {
                     });
                     return res.status(200).json({ message: 'success' })
                 } else {
-                    await sequelize.transaction(async (t) => {
 
-                        let kycClassificationData = await models.customerKycClassification.findOne({ where: { customerId } });
+                    if(userType == "Corporate"){
+                        await sequelize.transaction(async (t) => {
 
-                        // await models.customerKyc.update(
-                        //     { operationalTeamVerifiedBy: operationalTeamId },
-                        //     { where: { customerId: customerId }, transaction: t })
+                            let kycClassificationData = await models.customerKycClassification.findOne({ where: { customerId } });
+    
+                            // await models.customerKyc.update(
+                            //     { operationalTeamVerifiedBy: operationalTeamId },
+                            //     { where: { customerId: customerId }, transaction: t })
+    
+                            await models.customerKycClassification.update({ customerId, customerKycId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, scrapOperationalTeamId: operationalTeamId, 
+                                // kycRatingFromCce: kycClassificationData.scrapKycRatingFromCce, kycStatusFromCce: kycClassificationData.scrapKycStatusFromCce, reasonFromCce: kycClassificationData.scrapReasonFromCce, cceId: kycClassificationData.scrapCceId, kycStatusFromOperationalTeam: scrapKycStatusFromOperationalTeam, reasonFromOperationalTeam: scrapReasonFromOperationalTeam, operationalTeamId: operationalTeamId 
+                            }, { where: { customerId }, transaction: t })
+                        });
+                    }else{
+                        await sequelize.transaction(async (t) => {
 
-                        await models.customerKycClassification.update({ customerId, customerKycId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, scrapOperationalTeamId: operationalTeamId, kycRatingFromCce: kycClassificationData.scrapKycRatingFromCce, kycStatusFromCce: kycClassificationData.scrapKycStatusFromCce, reasonFromCce: kycClassificationData.scrapReasonFromCce, cceId: kycClassificationData.scrapCceId, kycStatusFromOperationalTeam: scrapKycStatusFromOperationalTeam, reasonFromOperationalTeam: scrapReasonFromOperationalTeam, operationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
-                    });
+                            let kycClassificationData = await models.customerKycClassification.findOne({ where: { customerId } });
+    
+                            // await models.customerKyc.update(
+                            //     { operationalTeamVerifiedBy: operationalTeamId },
+                            //     { where: { customerId: customerId }, transaction: t })
+    
+                            await models.customerKycClassification.update({ customerId, customerKycId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, scrapOperationalTeamId: operationalTeamId, kycRatingFromCce: kycClassificationData.scrapKycRatingFromCce, kycStatusFromCce: kycClassificationData.scrapKycStatusFromCce, reasonFromCce: kycClassificationData.scrapReasonFromCce, cceId: kycClassificationData.scrapCceId, kycStatusFromOperationalTeam: scrapKycStatusFromOperationalTeam, reasonFromOperationalTeam: scrapReasonFromOperationalTeam, operationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
+                        });
+                    }
+                   
                     return res.status(200).json({ message: 'success' })
                 }
 
