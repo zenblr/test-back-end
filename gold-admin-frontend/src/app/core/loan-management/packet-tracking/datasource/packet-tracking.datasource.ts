@@ -18,9 +18,9 @@ export class PacketTrackingDatasource extends BaseDataSource {
         super();
     }
 
-    loadpackets(from, to, search) {
+    loadpackets(queryParamsData) {
         this.loadingSubject.next(true);
-        this.loanManagementService.getpackets(from, to, search)
+        this.loanManagementService.getpackets(queryParamsData)
             .pipe(
                 map(
                     report => {
