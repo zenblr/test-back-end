@@ -202,6 +202,9 @@ exports.getAssignedCustomer = async (req, res, next) => {
     let { search, offset, pageSize } = paginationWithFromTo(req.query.search, req.query.from, req.query.to);
     let id = req.userData.id;
     let query = {}
+
+    let goldModule = await models.module.findOne({ where: { moduleName: 'gold loan' } })
+
     let searchQuery = {
         [Op.and]: [query, {
             [Op.or]: {
@@ -210,7 +213,8 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
             },
         }],
-        appraiserId: id
+        appraiserId: id,
+        moduleId: goldModule.id
     };
     let includeArray = [
         {
