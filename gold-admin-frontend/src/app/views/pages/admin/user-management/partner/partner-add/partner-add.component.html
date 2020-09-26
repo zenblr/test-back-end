@@ -24,7 +24,8 @@
                         <!-- Partner Name -->
                         <div class="row">
                             <div class="col-4 form-label">
-                                <label [class.mandatory] ="isMandatory " for="">Partner Name</label>
+                                <label class="kt-margin-l-15" [class.mandatory]="isMandatory " for="">Partner
+                                    Name</label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="name" autocomplete="off"
@@ -38,7 +39,8 @@
 
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <label [class.mandatory] ="isMandatory " for="">Commission %</label>
+                                <label class="kt-margin-l-15" [class.mandatory]="isMandatory " for="">Commission
+                                    %</label>
                             </div>
                             <div class="col-8">
                                 <input class="form-control" formControlName="commission" type="number"
@@ -50,6 +52,24 @@
                                 <mat-error
                                     *ngIf="(controls.commission.errors?.min ||controls.commission.errors?.max) && controls.commission.touched">
                                     Invalid Input</mat-error>
+                            </div>
+                        </div>
+
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                            </div>
+                            <div class="col-8">
+                                <mat-slide-toggle formControlName="submitPacketInInternalBranch"
+                                    id="togglePacketSubmit">
+                                    <div class="form-label">
+                                        <label class="mb-0" for="togglePacketSubmit">Packet in Augmont</label>
+                                    </div>
+                                </mat-slide-toggle>
+                                <mat-error
+                                    *ngIf="controls.submitPacketInInternalBranch.errors?.required && controls.submitPacketInInternalBranch.touched">
+                                    Required field
+                                </mat-error>
+
                             </div>
                         </div>
                     </div>

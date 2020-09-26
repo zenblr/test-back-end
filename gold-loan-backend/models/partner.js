@@ -12,6 +12,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'commission'
         },
+        submitPacketInInternalBranch:{
+            type: DataTypes.BOOLEAN,
+            field: 'submit_packet_in_internal_branch',
+            defaultValue: false,
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by',

@@ -20,7 +20,7 @@ import { OrnamentsComponent } from '../../../../../partials/components/ornaments
 })
 export class PacketTrackingComponent implements OnInit {
   dataSource: PacketTrackingDatasource;
-  displayedColumns = ['userName', 'customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'actions'];
+  displayedColumns = ['userName', 'customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'status', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
@@ -222,7 +222,7 @@ export class PacketTrackingComponent implements OnInit {
   checkForPartnerBranchIn(packet) {
     const lastIndex = packet.locationData[packet.locationData.length - 1]
     const id = lastIndex.packetLocation.id
-    const isNotAllowed = id == 4 || id == 3 || id == 7 ? true : false
+    const isNotAllowed = id == 4 || id == 3 || id == 7 || packet.isLoanCompleted ? true : false
     return isNotAllowed
   }
 
