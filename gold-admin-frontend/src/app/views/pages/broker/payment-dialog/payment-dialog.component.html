@@ -121,11 +121,11 @@
                                     </div>
                                     <div class="col-8">
                                         <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                                            formControlName="depositDate" [min]="minDate"
+                                            formControlName="depositDate" [min]="minDate" [max]="maxDate"
                                             [class.isError]="controls.depositDate.touched && controls.depositDate.invalid"
                                             readonly placeholder="4/5/2020" />
                                         <mat-datepicker #picker></mat-datepicker>
-    
+
                                         <mat-error
                                             *ngIf="controls.depositDate.touched && controls.depositDate.errors?.required">
                                             Required field
@@ -188,11 +188,11 @@
                                     </div>
                                     <div class="col-8">
                                         <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                                            formControlName="depositDate" [min]="minDate"
+                                            formControlName="depositDate" [min]="minDate" [max]="maxDate"
                                             [class.isError]="controls.depositDate.touched && controls.depositDate.invalid"
                                             readonly placeholder="4/5/2020" />
                                         <mat-datepicker #picker></mat-datepicker>
-    
+
                                         <mat-error
                                             *ngIf="controls.depositDate.touched && controls.depositDate.errors?.required">
                                             Required field

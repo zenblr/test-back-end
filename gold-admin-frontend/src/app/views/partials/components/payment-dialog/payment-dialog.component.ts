@@ -4,10 +4,12 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DepositService } from '../../../../core/funds-approvals/deposit/services/deposit.service'
 import { map, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'kt-payment-dialog',
   templateUrl: './payment-dialog.component.html',
-  styleUrls: ['./payment-dialog.component.scss']
+  styleUrls: ['./payment-dialog.component.scss'],
+  providers:[DatePipe]
 })
 export class PaymentDialogComponent implements OnInit {
   paymentTypeList = [{ value: 'cash', name: 'cash' }, { value: 'IMPS', name: 'IMPS' }, { value: 'NEFT', name: 'NEFT' }, { value: 'RTGS', name: 'RTGS' }, { value: 'cheque', name: 'cheque' }, { value: 'UPI', name: 'UPI' }, { value: 'gateway', name: 'payment gateway' }]
@@ -21,6 +23,7 @@ export class PaymentDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private depositService: DepositService,
     private toast: ToastrService,
+    private dataPipe:DatePipe
   ) {
   }
 
@@ -152,11 +155,11 @@ export class PaymentDialogComponent implements OnInit {
     if (this.paymentForm.invalid) {
       return this.paymentForm.markAllAsTouched()
     }
-
+    let paymentDate = this.dataPipe.transform(this.paymentForm.controls.paymentReceivedDate.value,'yyyy-MM-dd')
     if (this.data.name == "deposit") {
       this.dialogRef.close({
         depositStatus: this.paymentForm.controls.depositStatus.value,
-        paymentReceivedDate: this.paymentForm.controls.paymentReceivedDate.value
+        paymentReceivedDate: paymentDate
       })
     } else {
       this.paymentForm.controls.paidAmount.enable();

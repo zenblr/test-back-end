@@ -60,12 +60,12 @@ export class QuickPayComponent implements OnInit {
   }
 
   checkPayableAmount() {
-    
-      this.payableAmt.setErrors({ value: true })
-    
+
+    this.payableAmt.setErrors({ value: true })
+
   }
 
-  transcationHistory(){
+  transcationHistory() {
     const dialogRef = this.dialog.open(QuickPayHistoryComponent, {
       data: { id: this.masterLoanId },
       width: '850px'
@@ -75,7 +75,7 @@ export class QuickPayComponent implements OnInit {
   viewEmiLogs() {
     const dialogRef = this.dialog.open(EmiLogsDialogComponent, {
       data: { id: this.loanDetails.id },
-      width: '850px'
+      width: '1200px'
     })
   }
 
@@ -89,8 +89,8 @@ export class QuickPayComponent implements OnInit {
       this.payableAmt.disable()
       this.ref.detectChanges()
       this.scrollToBottom()
-    },err=>{
-      if(err.error.message){
+    }, err => {
+      if (err.error.message) {
         this.checkPayableAmount()
       }
     })

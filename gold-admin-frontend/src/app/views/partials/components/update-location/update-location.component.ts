@@ -65,7 +65,8 @@ export class UpdateLocationComponent implements OnInit {
       deliveryInternalBranchId: [],
       deliveryPartnerBranchId: [],
       id: [],
-      releaseId: []
+      releaseId: [],
+      role: []
     })
 
     if (this.data.isPartnerOut) {
@@ -136,6 +137,11 @@ export class UpdateLocationComponent implements OnInit {
       }
       this.updateLocationService.getNextPacketLocation({ masterLoanId }).pipe(map(res => {
         this.packetLocations = res.data;
+        if (this.packetLocations.length === 1) {
+          this.controls.packetLocationId.patchValue(this.packetLocations[0].id)
+          this.getPartnerBranch()
+          this.setUserType()
+        }
       })).subscribe()
     } else {
       this.packetLocationService.getpacketsTrackingDetails(1, -1, '').pipe(map(res => {
@@ -145,7 +151,9 @@ export class UpdateLocationComponent implements OnInit {
         }
         if (this.data.isCustomerHomeIn) {
           this.packetLocations = this.packetLocations.filter(e => e.id === 7)
-
+          this.controls.packetLocationId.patchValue(this.packetLocations[0].id)
+          this.getPartnerBranch()
+          this.setUserType()
         }
         this.deliveryLocations = res.data
       })).subscribe()
@@ -154,6 +162,8 @@ export class UpdateLocationComponent implements OnInit {
     if (this.data.isOut) {
       this.packetLocationService.getpacketsTrackingDetails(1, -1, '').pipe(map(res => {
         this.deliveryLocations = res.data.filter(e => e.id === 4)
+        this.controls.deliveryPacketLocationId.patchValue(this.deliveryLocations[0].id)
+        this.getdeliveryPartnerBranch()
       })).subscribe()
     }
   }
@@ -327,7 +337,7 @@ export class UpdateLocationComponent implements OnInit {
 
   generateOTP() {
     if (this.locationForm.controls.mobileNumber.invalid) return this.controls.mobileNumber.markAsTouched()
-    
+
     const mobileNumber = this.locationForm.controls.mobileNumber.value
     switch (this.locationForm.controls.receiverType.value) {
       case 'Customer':
@@ -523,22 +533,27 @@ export class UpdateLocationComponent implements OnInit {
       switch (Number(packetLocationId)) {
         case 2:
           this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
+          this.patchUserTye('InternalUser')
           break;
 
         case 4:
           if (this.data.isOut) {
             this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
+            this.patchUserTye('InternalUser')
           } else {
             this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'PartnerUser')
+            this.patchUserTye('PartnerUser')
           }
           break
 
         case 3:
           this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
+          this.patchUserTye('InternalUser')
           break;
 
         case 5:
           this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'PartnerUser')
+          this.patchUserTye('PartnerUser')
           break;
 
         default:
@@ -546,5 +561,9 @@ export class UpdateLocationComponent implements OnInit {
           break;
       }
     }
+  }
+
+  patchUserTye(userType) {
+    this.controls.receiverType.patchValue(userType)
   }
 }

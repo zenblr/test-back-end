@@ -114,7 +114,8 @@
                 </ng-container>
                 <ng-container matColumnDef="currentLocation">
                     <mat-header-cell *matHeaderCellDef>Current Location</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item?.masterLoan?.locationData[0]?.packetLocation?.location | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let item">
+                        {{item?.masterLoan?.locationData[0]?.packetLocation?.location | titlecase}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="view">
                     <mat-header-cell *matHeaderCellDef> Acknowledgement Receipt </mat-header-cell>
@@ -127,7 +128,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="updateStatus">
-                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
                     <mat-cell *matCellDef="let item">
                         <!-- <ng-container *ngIf="item.partReleaseStatus != 'released'">
                             <button *ngxPermissionsOnly="['partReleaseStatus']" style="width: 130px;" class="apply-kyc"
@@ -137,20 +138,29 @@
 
                         <ng-container *ngxPermissionsOnly="['partReleaseStatus']">
                             <ng-container *ngIf="item.partReleaseStatus == 'released'">
-                                <!-- <button *ngIf="!item.documents" style="width: 130px;" class="apply-kyc"
+                                <button *ngIf="!item.documents" style="width: 130px;" class="apply-kyc"
                                     (click)="updateDocument(item)">Upload
                                     Documents
-                                </button> -->
+                                </button>
                                 <button *ngIf="item.documents && !(item.newLoan && item.newLoan.loanStatusForAppraiser)"
                                     style="width: 130px;" class="apply-kyc" (click)="newLoan(item)">New Loan
                                 </button>
                             </ng-container>
                         </ng-container>
-                        <ng-container>
-                            <button *ngIf="item?.masterLoan?.locationData[0]?.packetLocation?.location == 'partner branch in'" style="width: 130px;" class="apply-kyc" (click)="collect(item?.masterLoanId,item.masterLoan.packet,item.masterLoan)">Collect</button>
-                        </ng-container>
-                        <ng-container>
-                            <button *ngIf="item?.masterLoan?.locationData[0]?.packetLocation?.location == 'partner branch out'" style="width: 130px;" class="apply-kyc" (click)="homeIn(item?.masterLoanId,item.masterLoan.packet,item.id)">Customer Home In</button>
+                        <ng-container *ngIf="item.partReleaseStatus == 'pending'">
+                            <ng-container>
+                                <button
+                                    *ngIf="item?.masterLoan?.locationData[0]?.packetLocation?.location == 'partner branch in'"
+                                    style="width: 130px;" class="apply-kyc"
+                                    (click)="collect(item?.masterLoanId,item.masterLoan.packet,item.masterLoan)">Collect</button>
+                            </ng-container>
+                            <ng-container>
+                                <button
+                                    *ngIf="item?.masterLoan?.locationData[0]?.packetLocation?.location == 'partner branch out'"
+                                    style="width: 130px;" class="apply-kyc"
+                                    (click)="homeIn(item?.masterLoanId,item.masterLoan.packet,item.id)">Customer Home
+                                    In</button>
+                            </ng-container>
                         </ng-container>
                         <!-- <button style="width: 130px;" class="apply-kyc" (click)="updateStatus(item)">Update
                         </button> -->
