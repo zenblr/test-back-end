@@ -353,3 +353,15 @@ exports.checkDuplicateAadhar = async (req, res, next) => {
         }
     }
 }
+
+exports.checkLoanAppraiser = async (req, res, next) => {
+    let { appraiserRequestId } = req.body
+
+    let appraiserId = req.userData.id;
+    let getAppraiserRequest = await models.appraiserRequest.findOne({ where: { id: appraiserRequestId, appraiserId: appraiserId } });
+
+    if (check.isEmpty(getAppraiserRequest)) {
+        return res.status(400).json({ message: `This customer is not assign to you` })
+    }
+    return res.status(200).json({ message: 'success' })
+}

@@ -64,7 +64,7 @@
                                 <div [formGroupName]="idx">
                                     <div class="row justify-content-center kt-margin-t-15">
                                         <div class="col-4 form-label">
-                                            <label class="kt-padding-l-10 mandatory">Barcode No.</label>
+                                            <label class="kt-padding-l-10 mandatory">Packet ID</label>
                                         </div>
                                         <div class="col-8">
                                             <div class="row">
@@ -82,8 +82,8 @@
                                         <div class="col-8 offset-4">
                                             <div class="row">
                                                 <div class="col-7">
-                                                    <input type="text" class="form-control"
-                                                        placeholder="Enter Barcode No." formControlName="Barcode"
+                                                    <input type="text" class="form-control" placeholder="Barcode"
+                                                        formControlName="Barcode"
                                                         [class.isError]="item.get('Barcode').invalid &&  item.get('Barcode').touched"
                                                         [readOnly]="verifiedPacketsArray[idx].isVerified"
                                                         [class.cursor-not-allowed]="verifiedPacketsArray[idx].isVerified">
@@ -211,6 +211,21 @@
                             </mat-error>
                         </div>
                     </div>
+
+                    <!-- <div class="row justify-content-center kt-margin-t-15">
+                        <div class="col-4 form-label">
+                            <label class="kt-padding-l-10">Role</label>
+                        </div>
+                        <div class="col-8">
+                            <input readonly class="form-control cursor-not-allowed" formControlName="role"
+                                [class.isError]="locationForm.controls.role.invalid &&  locationForm.controls.role.touched" />
+                            <mat-error
+                                *ngIf="locationForm.controls.role.touched && locationForm.controls.role.errors?.required">
+                                Required field
+                            </mat-error>
+                        </div>
+                    </div> -->
+
                     <div class="row justify-content-center kt-margin-t-15">
                         <div class="col-4 offset-4">
                             <kt-button [myClass]="'w-100'" [type]="'button'" [notTitleCase]="true" [value]="'Send OTP'"
@@ -224,7 +239,8 @@
 
                     <div class="row justify-content-center kt-margin-t-15">
                         <div class="col offset-4">
-                            <input type="text" class="form-control" placeholder="Enter OTP" formControlName="otp"
+                            <input type="text" class="form-control" numbersOnly placeholder="Enter OTP"
+                                formControlName="otp"
                                 [class.isError]="locationForm.controls.otp.invalid &&  locationForm.controls.otp.touched"
                                 [readonly]="otpVerfied" [class.cursor-not-allowed]="otpVerfied">
                         </div>

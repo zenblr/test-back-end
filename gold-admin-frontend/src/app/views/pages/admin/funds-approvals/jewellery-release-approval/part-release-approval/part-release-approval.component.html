@@ -151,7 +151,7 @@
 
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="uploadDocument">
+                <!-- <ng-container matColumnDef="uploadDocument">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let item">
                         <div *ngxPermissionsOnly="['partReleaseStatus']">
@@ -161,6 +161,15 @@
                                     Documents
                                 </button>
                             </div>
+                        </div>
+                    </mat-cell>
+                </ng-container> -->
+                <ng-container matColumnDef="view">
+                    <mat-header-cell *matHeaderCellDef> Acknowledgement Receipt </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        <div *ngIf="item.documentsImages?.length" class="kt-pointer"
+                            (click)="view(item.documentsImages[0])">
+                            View
                         </div>
                     </mat-cell>
                 </ng-container>

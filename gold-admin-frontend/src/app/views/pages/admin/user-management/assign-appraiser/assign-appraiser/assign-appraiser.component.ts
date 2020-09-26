@@ -294,6 +294,7 @@ export class AssignAppraiserComponent implements OnInit {
   }
 
   setStartTime(event) {
+    this.controls.startTime.patchValue(event)
     if (this.controls.startTime.valid) {
       this.startTime = event;
       this.ref.detectChanges()

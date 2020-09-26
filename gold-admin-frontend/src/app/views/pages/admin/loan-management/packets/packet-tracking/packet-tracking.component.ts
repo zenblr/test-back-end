@@ -23,15 +23,18 @@ export class PacketTrackingComponent implements OnInit {
   displayedColumns = ['userName', 'customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  // Filter fields
-  // @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
-  // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   destroy$ = new Subject();
-
+  filter$ = new Subject();
+  queryParamsData = {
+    from: 1,
+    to: 25,
+    search: '',
+    status: '',
+  }
   // Subscriptions
   private subscriptions: Subscription[] = [];
   private unsubscribeSearch$ = new Subject();
-  searchValue = '';
+  filteredDataList = {};
 
   constructor(
     public dialog: MatDialog,
@@ -49,6 +52,14 @@ export class PacketTrackingComponent implements OnInit {
         }
       }),
       takeUntil(this.destroy$)).subscribe();
+
+    this.packetTrackingService.applyFilter$
+      .pipe(takeUntil(this.filter$))
+      .subscribe((res) => {
+        if (Object.entries(res).length) {
+          this.applyFilter(res);
+        }
+      });
   }
 
   ngOnInit() {
@@ -67,7 +78,7 @@ export class PacketTrackingComponent implements OnInit {
 
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
-        this.searchValue = res;
+        this.queryParamsData.search = res;
         this.paginator.pageIndex = 0;
         this.loadPackets();
       });
@@ -82,10 +93,7 @@ export class PacketTrackingComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // First load
-    // this.loadLeadsPage();
-
-    this.dataSource.loadpackets(this.searchValue, 1, 25);
+    this.dataSource.loadpackets(this.queryParamsData);
 
   }
 
@@ -97,6 +105,11 @@ export class PacketTrackingComponent implements OnInit {
     this.destroy$.complete();
   }
 
+  applyFilter(data) {
+    this.queryParamsData.status = data.data.packetTracking;
+    this.dataSource.loadpackets(this.queryParamsData);
+    this.filteredDataList = data.list;
+  }
 
   loadPackets() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
@@ -104,11 +117,10 @@ export class PacketTrackingComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadpackets(this.searchValue, from, to);
+    this.dataSource.loadpackets(this.queryParamsData);
   }
 
   assignPackets() {
-    // console.log(event);
     const dialogRef = this.dialog.open(AssignPacketsComponent, {
       data: { action: 'add' },
       width: '400px'
@@ -155,7 +167,6 @@ export class PacketTrackingComponent implements OnInit {
   }
 
   viewPacketLog(packet) {
-    console.log(packet)
     const dialogRef = this.dialog.open(ViewPacketLogComponent,
       {
         data: { packetData: packet, action: 'edit' },
@@ -178,7 +189,6 @@ export class PacketTrackingComponent implements OnInit {
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        console.log(res);
         this.packetTrackingService.deletePacket(role.id).subscribe(successDelete => {
           this.toastr.success(_deleteMessage);
           this.loadPackets();
@@ -187,8 +197,6 @@ export class PacketTrackingComponent implements OnInit {
             this.toastr.error(errorDelete.error.message);
           });
       }
-      // this.store.dispatch(new RoleDeleted({ id: _item.id }));
-      // this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
     });
   }
 
@@ -214,7 +222,7 @@ export class PacketTrackingComponent implements OnInit {
   checkForPartnerBranchIn(packet) {
     const lastIndex = packet.locationData[packet.locationData.length - 1]
     const id = lastIndex.packetLocation.id
-    const isNotAllowed = id == 4 || id == 3 ? true : false
+    const isNotAllowed = id == 4 || id == 3 || id == 7 ? true : false
     return isNotAllowed
   }
 
