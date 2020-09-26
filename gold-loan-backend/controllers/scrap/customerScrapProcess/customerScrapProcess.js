@@ -32,7 +32,7 @@ exports.customerDetails = async (req, res, next) => {
 
 
     let customerData = await models.customer.findOne({
-        where: { customerUniqueId: getCustomer.customerUniqueId, isActive: true, kycStatus: 'approved' },
+        where: { customerUniqueId: getCustomer.customerUniqueId, isActive: true, scrapKycStatus: 'approved' },
         attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage', 'scrapKycStatus'],
 
     })
