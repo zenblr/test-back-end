@@ -72,4 +72,14 @@ export class UserDetailsService {
     );
   }
 
+  getOrganizationTypes(): Observable<any> {
+    return this.http.get<any>(`/api/organization-type`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this._toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
 }

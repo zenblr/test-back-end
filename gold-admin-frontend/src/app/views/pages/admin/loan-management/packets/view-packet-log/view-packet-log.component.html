@@ -10,8 +10,9 @@
                     </div>
                     <div class="col">
                         <label> Loan ID:
-                            <ng-container *ngFor="let item of modalData.customerLoan">
-                                <span *ngIf="item.loanType === 'secured'">{{ item.loanUniqueId | uppercase }}</span>
+                            <ng-container *ngFor="let item of modalData.customerLoan; last as l">
+                                <span>{{ item.loanUniqueId | uppercase }}</span>
+                                <span *ngIf="!l">, &nbsp;</span>
                             </ng-container>
                         </label>
                     </div>

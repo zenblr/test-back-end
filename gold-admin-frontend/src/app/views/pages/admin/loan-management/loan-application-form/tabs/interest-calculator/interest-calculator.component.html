@@ -7,8 +7,8 @@
                         <label class="mandatory">Loan Amount</label>
                     </div>
                     <div class="col-7">
-                        <input type="number" #amt class="form-control" formControlName="finalLoanAmount"
-                            placeholder="0,00,000" (blur)="amountValidation();" (keyup)="partnerReset()" ktWeight
+                        <input type="text" ktWeight #amt class="form-control" formControlName="finalLoanAmount"
+                            placeholder="0,00,000" (blur)="amountValidation();" (keyup)="partnerReset()"
                             [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
                         <div>
                             <mat-error
@@ -53,7 +53,8 @@
                         <label class="mandatory">Tenure</label>
                     </div>
                     <div class="col-7">
-                        <select formControlName="tenure" class="form-control" (change)="setEndDate();checkForPaymentFrequency()"
+                        <select formControlName="tenure" class="form-control"
+                            (change)="setEndDate();checkForPaymentFrequency()"
                             [class.isError]="controls.tenure.touched && controls.tenure.invalid">
                             <option value="null" [selected]="true" [disabled]="true">Select Tenure</option>
                             <option [value]="ten" *ngFor="let ten of tenure;index as i">
@@ -172,7 +173,8 @@
                         <label class="mandatory">Interest Rate% (p.m.)</label>
                     </div>
                     <div class="col-7">
-                        <input type="number" class="form-control cursor-not-allowed" formControlName="interestRate" placeholder="00%"
+                        <input type="number" class="form-control cursor-not-allowed" formControlName="interestRate"
+                            placeholder="00%"
                             [class.isError]="controls.interestRate.touched && controls.interestRate.invalid" readonly />
                         <mat-error *ngIf="controls.interestRate.errors?.required && controls.interestRate.touched">
                             Required field

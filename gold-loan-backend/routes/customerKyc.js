@@ -39,7 +39,7 @@ route.post('/check-aadhar-card', checkAuth, wrapper(checkDuplicateAadhar));
 
 route.get('/get-assigned-customer', checkAuth, wrapper(getAssignedCustomer))
 
-route.get('/check-loan-assign', checkAuth, wrapper(checkLoanAppraiser))
+route.post('/check-loan-assign', checkAuth, wrapper(checkLoanAppraiser))
 
 //appraiserApp
 

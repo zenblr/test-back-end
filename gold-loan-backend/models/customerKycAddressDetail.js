@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         addressType: {
             type: DataTypes.ENUM,
             field: 'address_type',
-            values: ['permanent', 'residential']
+            values: ['permanent', 'residential', 'communication']
         },
         address: {
             type: DataTypes.TEXT,

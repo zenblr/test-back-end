@@ -214,4 +214,7 @@ router.use('/calculation', interestCalculation);
 const scrapUploadPacket = require('./scrap/uploadScrapPackets');  //upload Packets List 
 router.use('/scrap/upload-packets-file', scrapUploadPacket)
 
+const organizationType = require('./organizationType'); //organization Type Route
+router.use('/organization-type', organizationType)
+
 module.exports = router;

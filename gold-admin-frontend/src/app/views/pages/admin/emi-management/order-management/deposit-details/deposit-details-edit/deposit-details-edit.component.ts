@@ -21,6 +21,8 @@ export class DepositDetailsEditComponent implements OnInit {
 	title: string;
 	transactionStatusList = [];
 	hiddenFlag = false;
+	minDate = new Date()
+	maxDate = new Date()
 
 	constructor(
 		public dialogRef: MatDialogRef<DepositDetailsEditComponent>,
@@ -32,13 +34,16 @@ export class DepositDetailsEditComponent implements OnInit {
 		private route: ActivatedRoute,
 		private toast: ToastrService,
 		private router: Router
-	) { }
+	) {
+		// this.minDate.setDate(this.minDate.getDate() - 1);
+	}
 
 	ngOnInit() {
 		this.formInitialize();
 		this.title = 'Update Deposit Status';
 		if (this.data.depositDetailsData) {
 			this.depositInfo = this.data.depositDetailsData;
+			this.minDate = this.depositInfo.order.createdAt
 			this.editDeposit();
 			this.getTransactionStatus();
 		}
@@ -103,6 +108,7 @@ export class DepositDetailsEditComponent implements OnInit {
 		}
 		const depositData = {
 			transactionStatusId: this.controls.transactionStatusId.value,
+			depositDate: this.controls.paymentRecievedDate.value
 		};
 		console.log(depositData);
 		this.depositDetailsService.editPaymentStatus(depositData, this.controls.id.value)

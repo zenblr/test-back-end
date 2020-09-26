@@ -98,10 +98,13 @@
                             <ng-container
                                 *ngIf="row.customer.kycStatus === 'pending' && row.customer.customerKyc !== null">
                                 <div [ngStyle]="{'display': 'inherit'}"
-                                    *ngIf="!row.customer?.customerKyc?.isKycSubmitted">
+                                    *ngIf="!(row.customer?.customerKyc?.isKycSubmitted) && row.module?.id === 1">
                                     <button (click)="applyKyc(row)" class="apply-kyc">Apply KYC</button>
                                 </div>
-                                <!-- gere -->
+                                <div [ngStyle]="{'display': 'inherit'}"
+                                    *ngIf="!(row.customer?.customerKyc?.isScrapKycSubmitted) && row.module?.id === 3">
+                                    <button (click)="applyKyc(row)" class="apply-kyc">Apply KYC</button>
+                                </div>
                             </ng-container>
                             <ng-container
                                 *ngIf="row.customer.kycStatus === 'pending' && row.customer?.customerKyc == null">
@@ -110,8 +113,10 @@
                                 </div>
                             </ng-container>
                         </ng-container>
+
                         <div *ngIf="!row.isProcessComplete">
-                            <div *ngIf="row.customer.kycStatus === 'approved' && row.isAssigned">
+                            <div
+                                *ngIf="row.customer.kycStatus === 'approved' && row.isAssigned && row?.module.id === 1">
                                 <div *ngIf="permission.loanApplicationAdd || permission.addLoanTransfer">
 
                                     <button mat-button [matMenuTriggerFor]="menu">
@@ -139,8 +144,11 @@
                                         </ng-container>
                                     </mat-menu>
                                 </div>
+                            </div>
 
-                                <!-- scrap -->
+                            <!-- scrap -->
+                            <div
+                                *ngIf="row.customer.scrapKycStatus === 'approved' && row.isAssigned && row?.module.id === 3">
                                 <div *ngIf="permission.scrapApplicationAdd && row.module.id === 3">
                                     <button mat-button [matMenuTriggerFor]="menuScrap">
                                         <mat-icon>more_vert</mat-icon>

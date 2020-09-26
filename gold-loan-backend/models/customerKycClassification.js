@@ -4,12 +4,10 @@ module.exports = (sequelize, DataTypes) => {
         customerId: {
             type: DataTypes.INTEGER,
             field: 'customer_id',
-            allowNull: false
         },
         customerKycId: {
             type: DataTypes.INTEGER,
             field: 'customer_kyc_id',
-            allowNull: false
         },
         kycRatingFromCce: {
             type: DataTypes.INTEGER,
@@ -19,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ENUM,
             field: 'kyc_status_from_cce',
             values: ['approved', 'pending', 'incomplete', 'rejected'],
-            allowNull: false
         },
         reasonFromCce: {
             type: DataTypes.TEXT,
@@ -28,7 +25,6 @@ module.exports = (sequelize, DataTypes) => {
         cceId: {
             type: DataTypes.INTEGER,
             field: 'cce_id',
-            allowNull: false
         },
         kycStatusFromOperationalTeam: {
             type: DataTypes.ENUM,
@@ -43,6 +39,37 @@ module.exports = (sequelize, DataTypes) => {
         operationalTeamId: {
             type: DataTypes.INTEGER,
             field: 'operational_team_id',
+        },
+        scrapKycRatingFromCce: {
+            type: DataTypes.INTEGER,
+            field: 'scrap_kyc_rating_from_cce',
+        },
+        scrapKycStatusFromCce: {
+            type: DataTypes.ENUM,
+            field: 'scrap_kyc_status_from_cce',
+            values: ['approved', 'pending', 'incomplete', 'rejected'],
+        },
+        scrapReasonFromCce: {
+            type: DataTypes.TEXT,
+            field: 'scrap_reason_from_cce',
+        },
+        scrapCceId: {
+            type: DataTypes.INTEGER,
+            field: 'scrap_cce_id',
+        },
+        scrapKycStatusFromOperationalTeam: {
+            type: DataTypes.ENUM,
+            field: 'scrap_kyc_status_from_operational_team',
+            values: ['approved', 'pending', 'incomplete', 'rejected'],
+            defaultValue: "pending"
+        },
+        scrapReasonFromOperationalTeam: {
+            type: DataTypes.TEXT,
+            field: 'scrap_reason_from_operational_team',
+        },
+        scrapOperationalTeamId: {
+            type: DataTypes.INTEGER,
+            field: 'scrap_operational_team_id',
         },
         createdBy: {
             type: DataTypes.INTEGER,

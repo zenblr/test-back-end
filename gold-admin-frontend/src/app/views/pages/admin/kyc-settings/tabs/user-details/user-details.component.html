@@ -4,6 +4,24 @@
 			<div class="col-6 align-self-center">
 				<form action="" [formGroup]="userBasicForm">
 
+					<div *ngIf="controls.moduleId.value == 3" class="row kt-padding-t-15">
+						<div class="col-4 align-self-center form-label">
+							<label class="mandatory">User Type </label>
+						</div>
+						<div class="col-8">
+							<select class="form-control" formControlName="userType"
+								(change)='changeUserType($event.target.value)'
+								[class.isError]="controls.userType.invalid && controls.userType.touched">
+								<option value=null selected disabled>Select User Type</option>
+								<option value="Individual">Individual</option>
+								<option value="Corporate">Corporate</option>
+							</select>
+							<mat-error *ngIf="controls.userType.invalid && controls.userType.touched">
+								Field Required
+							</mat-error>
+						</div>
+					</div>
+
 					<div class="row kt-padding-t-15">
 						<!-- Mobile -->
 						<div class="col-4 align-self-center form-label">
@@ -16,7 +34,7 @@
 								autocomplete="off" placeholder="Enter mobile number" margin [class.isError]="
 											controls.mobileNumber.touched &&
 											controls.mobileNumber.invalid
-										" />
+										" maxlength="10" (input)="inputNumber()" />
 							<mat-error *ngIf="
 											controls.mobileNumber.errors?.required &&
 											controls.mobileNumber.touched
@@ -200,13 +218,13 @@
 							<div class="input-group mb-3">
 								<input type="text" class="form-control" placeholder="Select File"
 									aria-label="Recipient's username" aria-describedby="basic-addon2"
-									formControlName="form60"
+									formControlName="form60" readonly
 									[class.isError]="controls.form60.touched && controls.form60.invalid" />
 								<div class="input-group-append">
 									<span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-										(click)="form60.click()">Attach</span>
+										(click)="pan.click()">Attach</span>
 								</div>
-								<input type="file" class="d-none" accept="image/*,application/pdf" #form60
+								<input type="file" class="d-none" accept="image/*,application/pdf" #pan
 									(input)="getFileInfo($event)">
 							</div>
 						</div>
@@ -225,9 +243,9 @@
 									(click)="preview(controls?.panImg.value)" [src]="controls.panImg.value"
 									style="border-radius: 15px;" alt="" />
 								<img src="../../../../../assets/media/icons/edit.svg" alt=""
-									class="kt-pointer remove-icon" (click)="form60.click()"
+									class="kt-pointer remove-icon" (click)="editPan.click()"
 									*ngIf="controls.panImg.value && !(controls.panType.status == 'DISABLED')">
-								<input type="file" class="d-none" accept="image/*,application/pdf" #form60
+								<input type="file" class="d-none" accept="image/*,application/pdf" #editPan
 									(input)="getFileInfo($event)">
 								<div class="iframeWrapper" (click)="preview(controls?.panImg.value)">
 									<iframe [src]="controls?.panImg.value | safe : 'resourceUrl'" height="250"
@@ -236,6 +254,44 @@
 							</div>
 						</div>
 					</div>
+
+					<div *ngIf="controls.userType.value === 'Corporate'">
+						<div class="row kt-padding-t-15">
+							<div class="col-4 align-self-center form-label">
+								<label class="mandatory">Organization Type</label>
+							</div>
+							<div class="col-8">
+								<select class="form-control" formControlName="organizationTypeId"
+									[class.isError]="controls.organizationTypeId.invalid && controls.organizationTypeId.touched">
+									<option value=null selected disabled>Select Organization</option>
+									<option [value]="item.id" *ngFor="let item of organizationTypes">
+										{{ item.organizationType }}</option>
+								</select>
+								<mat-error
+									*ngIf="controls.organizationTypeId.invalid && controls.organizationTypeId.touched">
+									Field Required
+								</mat-error>
+							</div>
+						</div>
+
+						<div class="row kt-padding-t-15">
+							<div class="col-4 align-self-center form-label">
+								<label class="mandatory">Date of Incorporation</label>
+							</div>
+							<div class="col-8">
+								<input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
+									formControlName="dateOfIncorporation" [max]="maxDate"
+									[class.isError]="controls.dateOfIncorporation.touched && controls.dateOfIncorporation.invalid"
+									readonly placeholder="DD/MM/YYYY">
+								<mat-datepicker #picker></mat-datepicker>
+								<mat-error
+									*ngIf="controls.dateOfIncorporation.invalid && controls.dateOfIncorporation.touched">
+									Field Required
+								</mat-error>
+							</div>
+						</div>
+					</div>
+
 
 					<div class="row kt-margin-t-10 kt-margin-b-20">
 						<div class="col-8 offset-4">
