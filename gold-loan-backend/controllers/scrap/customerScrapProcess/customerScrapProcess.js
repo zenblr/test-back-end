@@ -817,6 +817,9 @@ exports.disbursementOfScrapAmount = async (req, res, next) => {
         accountHolderName, accountNumber, disbursementStatus } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
+    let internalBranchId = req.userData.internalBranchId;
+    let userSenderId = req.userData.id;
+
     let scrapDetails = await models.customerScrap.findOne({ where: { id: scrapId } });
 
     let scrapDisbursementDetails = await models.customerScrapDisbursement.findOne({ where: { id: scrapId } });
@@ -844,6 +847,11 @@ exports.disbursementOfScrapAmount = async (req, res, next) => {
 
             await models.customerScrapHistory.create({ scrapId, action: SCRAP_DISBURSEMENT, modifiedBy }, { transaction: t });
 
+            let packetLocation = await models.scrapPacketLocation.findOne({ where: { location: 'amount disbursed' } });
+
+            await models.customerScrapPacketData.create({ scrapId: scrapId, packetLocationId: packetLocation.id }, { transaction: t });
+
+            await models.customerPacketTracking.create({ scrapId, internalBranchId: internalBranchId, packetLocationId: packetLocation.id, userSenderId: userSenderId }, { transaction: t });
         })
         return res.status(200).json({ message: 'Your scrap amount has been disbursed successfully' });
     } else {
