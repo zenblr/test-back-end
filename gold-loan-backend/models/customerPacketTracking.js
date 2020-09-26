@@ -54,6 +54,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'packet_status'
         },
+        status: {
+            type: DataTypes.ENUM,
+            values: ['transit', 'incomplete', 'complete'],
+            field: 'status'
+        },
         processingTime: {
             type: DataTypes.STRING,
             field: 'processing_time',

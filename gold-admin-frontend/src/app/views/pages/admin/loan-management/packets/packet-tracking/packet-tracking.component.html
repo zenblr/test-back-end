@@ -67,6 +67,19 @@
                         </span>
                     </mat-cell>
                 </ng-container>
+
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngFor="let item of packet.locationData; last as l">
+                            <span *ngIf="l"
+                                [ngClass]="item.status == 'complete' ? item.packetLocation.id === 2 && packet.isLoanSubmitted ? 'text-primary' : 'text-success' : item.status == 'incomplete' ? 'text-danger' : 'text-grey'">
+                                {{item?.status |titlecase}}
+                            </span>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let packet">

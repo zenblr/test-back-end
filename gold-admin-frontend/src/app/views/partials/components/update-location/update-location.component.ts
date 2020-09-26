@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@ang
 import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { PacketLocationService } from '../../../../core/masters/packet-location/service/packet-location.service';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, finalize } from 'rxjs/operators';
 import { UpdateLocationService } from '../../../../core/loan-management/update-location/services/update-location.service';
 import { AuthService } from '../../../../core/auth';
 import { BehaviorSubject } from 'rxjs';
@@ -28,6 +28,7 @@ export class UpdateLocationComponent implements OnInit {
   deliveryLocations: any[];
   deliveryPartnerBranches: any[];
   userTypeListFiltered = this.userTypeList
+  internalBranches: any[];
 
   constructor(
     public dialogRef: MatDialogRef<UpdateLocationComponent>,
@@ -203,14 +204,17 @@ export class UpdateLocationComponent implements OnInit {
       return this.toastr.error('OTP not verified!')
 
     if (this.data.stage == 11) {
-      // return console.log(this.locationForm.value)
-      this.updateLocationService.submitPacketLocation(this.locationForm.value).subscribe(res => {
-        if (res) {
-          const msg = 'Packet Location Submitted Successfully';
-          this.toastr.success(msg);
-          this.dialogRef.close(true);
-        }
-      });
+      this.enableSingleFields()
+      this.enableUserType()
+      this.updateLocationService.submitPacketLocation(this.locationForm.value)
+        .pipe(
+          map(() => {
+            const msg = 'Packet Location Submitted Successfully';
+            this.toastr.success(msg);
+            this.dialogRef.close(true);
+          }),
+          finalize(() => this.disableUserType()))
+        .subscribe();
     }
     else if (this.data.deliver) {
       this.updateLocationService.deliverPartnerBranch(this.locationForm.value).subscribe(res => {
@@ -308,12 +312,14 @@ export class UpdateLocationComponent implements OnInit {
     const receiverType = this.locationForm.controls.receiverType.value
     const partnerBranchId = this.locationForm.controls.partnerBranchId.value
     const masterLoanId = this.locationForm.controls.masterLoanId.value
+    const allUsers = this.locationForm.controls.packetLocationId.value == 2 ? 0 : 1
+    const internalBranchId = this.locationForm.controls.internalBranchId.value
 
     if (this.controls.receiverType.value === 'PartnerUser') {
       if (this.controls.partnerBranchId.invalid) return this.controls.partnerBranchId.markAsTouched()
     }
 
-    this.updateLocationService.getDetailsByMobile({ mobileNumber, receiverType, partnerBranchId, masterLoanId }).subscribe(res => {
+    this.updateLocationService.getDetailsByMobile({ mobileNumber, receiverType, partnerBranchId, masterLoanId, allUsers, internalBranchId }).subscribe(res => {
       switch (res.receiverType) {
         case 'Customer':
           this.locationForm.controls.customerReceiverId.patchValue(res.data.id)
@@ -329,6 +335,7 @@ export class UpdateLocationComponent implements OnInit {
         this.otpSent = true;
       }
       this.locationForm.controls.user.patchValue(`${res.data.firstName} ${res.data.lastName}`)
+      this.controls.role.patchValue(res.data.roles[0].roleName)
     }, err => {
       this.remove()
     }
@@ -435,6 +442,7 @@ export class UpdateLocationComponent implements OnInit {
     this.locationForm.controls.referenceCode.patchValue(null);
     this.locationForm.controls.mobileNumber.patchValue(null);
     this.locationForm.controls.user.patchValue(null);
+    this.locationForm.controls.role.patchValue(null);
     this.otpVerfied = false
   }
 
@@ -470,7 +478,8 @@ export class UpdateLocationComponent implements OnInit {
 
     this.updateLocationService.getLocation(params).pipe(map(res => {
       if (this.controls.packetLocationId.value == 2) {
-        this.controls.internalBranchId.patchValue(res.data[0].id)
+        this.internalBranches = res.data
+        this.controls.internalBranchId.patchValue(res.loanBranchId)
         this.controls.partnerBranchId.setValidators([])
         this.controls.partnerBranchId.updateValueAndValidity()
         this.clearPartnerData()
@@ -534,26 +543,31 @@ export class UpdateLocationComponent implements OnInit {
         case 2:
           this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
           this.patchUserTye('InternalUser')
+          this.disableUserType()
           break;
 
         case 4:
           if (this.data.isOut) {
             this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
             this.patchUserTye('InternalUser')
+            this.disableUserType()
           } else {
             this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'PartnerUser')
             this.patchUserTye('PartnerUser')
+            this.disableUserType()
           }
           break
 
         case 3:
           this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
           this.patchUserTye('InternalUser')
+          this.disableUserType()
           break;
 
         case 5:
           this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'PartnerUser')
           this.patchUserTye('PartnerUser')
+          this.disableUserType()
           break;
 
         default:
@@ -565,5 +579,21 @@ export class UpdateLocationComponent implements OnInit {
 
   patchUserTye(userType) {
     this.controls.receiverType.patchValue(userType)
+  }
+
+  disableSingleFields() {
+    this.controls.packetLocationId.disable()
+  }
+
+  enableSingleFields() {
+    this.controls.packetLocationId.enable()
+  }
+
+  disableUserType() {
+    this.controls.receiverType.disable()
+  }
+
+  enableUserType() {
+    this.controls.receiverType.enable()
   }
 }
