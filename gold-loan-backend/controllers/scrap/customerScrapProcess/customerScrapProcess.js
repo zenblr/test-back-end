@@ -26,14 +26,14 @@ exports.customerDetails = async (req, res, next) => {
 
     let getCustomer = await models.customer.findOne({ where: { id: getAppraiserRequest.customerId } })
 
-    if (getCustomer.kycStatus != "approved") {
+    if (getCustomer.scrapKycStatus != "approved") {
         return res.status(400).json({ message: 'This customer Kyc is not completed' })
     }
 
 
     let customerData = await models.customer.findOne({
-        where: { customerUniqueId: getCustomer.customerUniqueId, isActive: true, kycStatus: 'approved' },
-        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
+        where: { customerUniqueId: getCustomer.customerUniqueId, isActive: true, scrapKycStatus: 'approved' },
+        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage', 'scrapKycStatus'],
 
     })
 
