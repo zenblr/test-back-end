@@ -335,7 +335,9 @@ export class UpdateLocationComponent implements OnInit {
         this.otpSent = true;
       }
       this.locationForm.controls.user.patchValue(`${res.data.firstName} ${res.data.lastName}`)
-      this.controls.role.patchValue(res.data.roles[0].roleName)
+      if (res.data.roles) {
+        this.controls.role.patchValue(res.data.roles[0].roleName)
+      }
     }, err => {
       this.remove()
     }
