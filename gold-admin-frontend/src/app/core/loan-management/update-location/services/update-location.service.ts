@@ -25,6 +25,12 @@ export class UpdateLocationService {
     if (query && query.masterLoanId) {
       reqParams.masterLoanId = query.masterLoanId;
     }
+    if (query && query.internalBranchId) {
+      reqParams.internalBranchId = query.internalBranchId;
+    }
+    if (query) {
+      reqParams.allUsers = query.allUsers;
+    }
     return this.http.get(`/api/packet-tracking/user-name`, { params: reqParams }).pipe(map(res => res),
       catchError(err => {
         if (err.error.message) this.toastr.error(err.error.message);

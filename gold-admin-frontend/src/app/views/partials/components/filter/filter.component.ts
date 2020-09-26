@@ -178,6 +178,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			scheme: [],
 			leadStatus: [''],
 			scrapStatus: [''],
+			packetTracking: ['']
 		});
 
 		this.filterForm.valueChanges.subscribe((val) => {
@@ -286,6 +287,10 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 					this.filterObject.list.scheme = controls['scheme'].value;
 				}
 			}
+			if (controls['packetTracking'].value) {
+				this.filterObject.data.packetTracking = controls['packetTracking'].value;
+				this.filterObject.list.packetTracking = controls['packetTracking'].value;
+			}
 			return this.filterObject;
 		}
 	}
@@ -361,8 +366,13 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				break;
 			case 'packets':
 				this.controls['scheme'].patchValue('');
+				break;
 			case 'deposit':
 				this.controls['scheme'].patchValue('');
+				break;
+			case 'deposit':
+				this.controls['packetTracking'].patchValue('');
+				break;
 			default:
 				break;
 		}

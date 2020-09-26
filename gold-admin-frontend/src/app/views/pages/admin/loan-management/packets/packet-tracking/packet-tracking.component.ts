@@ -20,15 +20,21 @@ import { OrnamentsComponent } from '../../../../../partials/components/ornaments
 })
 export class PacketTrackingComponent implements OnInit {
   dataSource: PacketTrackingDatasource;
-  displayedColumns = ['userName', 'customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'actions'];
+  displayedColumns = ['userName', 'customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'status', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
-
+  filter$ = new Subject();
+  queryParamsData = {
+    from: 1,
+    to: 25,
+    search: '',
+    status: '',
+  }
   // Subscriptions
   private subscriptions: Subscription[] = [];
   private unsubscribeSearch$ = new Subject();
-  searchValue = '';
+  filteredDataList = {};
 
   constructor(
     public dialog: MatDialog,
@@ -46,6 +52,14 @@ export class PacketTrackingComponent implements OnInit {
         }
       }),
       takeUntil(this.destroy$)).subscribe();
+
+    this.packetTrackingService.applyFilter$
+      .pipe(takeUntil(this.filter$))
+      .subscribe((res) => {
+        if (Object.entries(res).length) {
+          this.applyFilter(res);
+        }
+      });
   }
 
   ngOnInit() {
@@ -64,7 +78,7 @@ export class PacketTrackingComponent implements OnInit {
 
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
-        this.searchValue = res;
+        this.queryParamsData.search = res;
         this.paginator.pageIndex = 0;
         this.loadPackets();
       });
@@ -79,7 +93,7 @@ export class PacketTrackingComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    this.dataSource.loadpackets(this.searchValue, 1, 25);
+    this.dataSource.loadpackets(this.queryParamsData);
 
   }
 
@@ -91,6 +105,11 @@ export class PacketTrackingComponent implements OnInit {
     this.destroy$.complete();
   }
 
+  applyFilter(data) {
+    this.queryParamsData.status = data.data.packetTracking;
+    this.dataSource.loadpackets(this.queryParamsData);
+    this.filteredDataList = data.list;
+  }
 
   loadPackets() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
@@ -98,7 +117,7 @@ export class PacketTrackingComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadpackets(this.searchValue, from, to);
+    this.dataSource.loadpackets(this.queryParamsData);
   }
 
   assignPackets() {
@@ -203,7 +222,7 @@ export class PacketTrackingComponent implements OnInit {
   checkForPartnerBranchIn(packet) {
     const lastIndex = packet.locationData[packet.locationData.length - 1]
     const id = lastIndex.packetLocation.id
-    const isNotAllowed = id == 4 || id == 3 || id == 7 ? true : false
+    const isNotAllowed = id == 4 || id == 3 || id == 7 || packet.isLoanCompleted ? true : false
     return isNotAllowed
   }
 

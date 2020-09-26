@@ -23,6 +23,26 @@
                                 </mat-error>
                             </div>
                         </div>
+
+                        <!-- Internal Branch -->
+                        <div *ngIf="controls.packetLocationId.value == 2" class="row kt-margin-t-15">
+                            <div class="col-4 form-label">
+                                <label class="kt-padding-l-10 mandatory">Select Internal Branch</label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-control" formControlName="internalBranchId"
+                                    [class.isError]="locationForm.controls.internalBranchId.invalid &&  locationForm.controls.internalBranchId.touched">
+                                    <option selected disabled value=null>Select Branch</option>
+                                    <option [value]="item.id" *ngFor="let item of internalBranches">
+                                        {{item.name | titlecase}}</option>
+                                </select>
+                                <mat-error
+                                    *ngIf="locationForm.controls.internalBranchId.touched && locationForm.controls.internalBranchId.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+
                         <!-- Partner Branch ID -->
                         <div *ngIf="controls.packetLocationId.value == 4" class=" justify-content-center">
                             <div class="row kt-margin-t-15">
@@ -212,19 +232,17 @@
                         </div>
                     </div>
 
-                    <!-- <div class="row justify-content-center kt-margin-t-15">
+                    <div *ngIf="controls.receiverType.value == 'InternalUser'"
+                        class="row justify-content-center kt-margin-t-15">
                         <div class="col-4 form-label">
                             <label class="kt-padding-l-10">Role</label>
                         </div>
                         <div class="col-8">
                             <input readonly class="form-control cursor-not-allowed" formControlName="role"
                                 [class.isError]="locationForm.controls.role.invalid &&  locationForm.controls.role.touched" />
-                            <mat-error
-                                *ngIf="locationForm.controls.role.touched && locationForm.controls.role.errors?.required">
-                                Required field
-                            </mat-error>
+
                         </div>
-                    </div> -->
+                    </div>
 
                     <div class="row justify-content-center kt-margin-t-15">
                         <div class="col-4 offset-4">

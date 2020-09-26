@@ -71,7 +71,7 @@
                 </select> -->
 
                 <ng-select [items]="states" bindLabel="name" placeholder="Select State" (change)="getCities($event)"
-                  formControlName="states" >
+                  formControlName="states">
 
                 </ng-select>
 
@@ -195,11 +195,31 @@
             <div class="row">
               <div class="col-9">
                 <label>By Deposit Status</label>
-                <select  class="form-control" formControlName="scheme">
+                <select class="form-control" formControlName="scheme">
                   <option value="null" selected disabled>Select Status</option>
                   <option value="Pending">PENDING</option>
                   <option value="Completed">COMPLETED</option>
                   <option value="Rejected">REJECTED</option>
+                </select>
+              </div>
+              <div class="col-3 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="kt-portlet__body" *ngIf="filterName == 'packet-tracking'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col-9">
+                <label>By Tracking Status</label>
+                <select class="form-control" formControlName="packetTracking">
+                  <option value="" selected>All</option>
+                  <option value="inTransit">In Transit</option>
+                  <option value="incomplete">Incomplete</option>
+                  <option value="complete">Complete</option>
                 </select>
               </div>
               <div class="col-3 d-flex align-items-end">
@@ -216,7 +236,7 @@
             <div class="row">
               <div class="col-9">
                 <label>By Scheme Type</label>
-                <select placeholder="Scheme Type" class="form-control" formControlName="scheme" >
+                <select placeholder="Scheme Type" class="form-control" formControlName="scheme">
                   <option selected disabled value="null"> Scheme Type </option>
                   <option value="All">All</option>
                   <option value=true>Active</option>
