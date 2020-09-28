@@ -142,6 +142,7 @@ export class UpdateLocationComponent implements OnInit {
           this.controls.packetLocationId.patchValue(this.packetLocations[0].id)
           this.getPartnerBranch()
           this.setUserType()
+          this.disablePacketLocationId()
         }
       })).subscribe()
     } else {
@@ -165,6 +166,7 @@ export class UpdateLocationComponent implements OnInit {
         this.deliveryLocations = res.data.filter(e => e.id === 4)
         this.controls.deliveryPacketLocationId.patchValue(this.deliveryLocations[0].id)
         this.getdeliveryPartnerBranch()
+        this.disableDeliveryPacketLocationId()
       })).subscribe()
     }
   }
@@ -204,7 +206,7 @@ export class UpdateLocationComponent implements OnInit {
       return this.toastr.error('OTP not verified!')
 
     if (this.data.stage == 11) {
-      this.enableSingleFields()
+      this.enablePacketLocationId()
       this.enableUserType()
       this.updateLocationService.submitPacketLocation(this.locationForm.value)
         .pipe(
@@ -305,6 +307,7 @@ export class UpdateLocationComponent implements OnInit {
       if (this.locationForm.controls.otp.value) {
         this.locationForm.controls.otp.reset()
         this.otpVerfied = false
+        this.otpSent = false
       }
       return
     }
@@ -331,9 +334,9 @@ export class UpdateLocationComponent implements OnInit {
           this.locationForm.controls.partnerReceiverId.patchValue(res.data.id)
           break;
       }
-      if (res) {
-        this.otpSent = true;
-      }
+      // if (res) {
+      //   this.otpSent = true;
+      // }
       this.locationForm.controls.user.patchValue(`${res.data.firstName} ${res.data.lastName}`)
       if (res.data.roles) {
         this.controls.role.patchValue(res.data.roles[0].roleName)
@@ -342,6 +345,11 @@ export class UpdateLocationComponent implements OnInit {
       this.remove()
     }
     );
+  }
+
+  sendOTP() {
+    this.otpSent = true
+    this.generateOTP()
   }
 
   generateOTP() {
@@ -583,12 +591,20 @@ export class UpdateLocationComponent implements OnInit {
     this.controls.receiverType.patchValue(userType)
   }
 
-  disableSingleFields() {
+  disablePacketLocationId() {
     this.controls.packetLocationId.disable()
   }
 
-  enableSingleFields() {
+  enablePacketLocationId() {
     this.controls.packetLocationId.enable()
+  }
+
+  disableDeliveryPacketLocationId() {
+    this.controls.deliveryPacketLocationId.disable()
+  }
+
+  enableDeliveryPacketLocationId() {
+    this.controls.deliveryPacketLocationId.enable()
   }
 
   disableUserType() {
