@@ -1,8 +1,8 @@
 {
-    "/api/*": {
-        "target": "https://gold.nimapinfotech.com//",
-        "secure": false,
-        "logLevel": "debug",
-        "changeOrigin": true
-    }
+        "/api/*": {
+                "target": "https://gold.nimapinfotech.com/",
+                "secure": false,
+                "logLevel": "debug",
+                "changeOrigin": true
+        }
 }

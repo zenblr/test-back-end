@@ -779,13 +779,18 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "packet-tracking") {
 			this.filterName = "packet-tracking"
 			this.globalMap = true;
-
+			this.showfilter = true
+			this.filterName = 'packet-tracking';
+			this.filterWidth = '400px';
 		}
 
 		if (location.href.includes('/admin/global-map')) {
 			this.showBackButton = true;
 		}
 		if (location.href.includes('/admin/loan-management/view-location/')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/admin/user-management/partner/view-schemes/')) {
 			this.showBackButton = true;
 		}
 	}
@@ -1002,6 +1007,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "deposit") {
 			this.depositService.applyFilter.next(data)
+		}
+		if (this.path == "packet-tracking") {
+			this.packetTrackingService.applyFilter.next(data)
 		}
 	}
 

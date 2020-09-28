@@ -5,12 +5,13 @@
 
                 <ng-container matColumnDef="transactionId">
                     <mat-header-cell *matHeaderCellDef>Transaction ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{ item.transaction?.transactionUniqueId }}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{ item.transaction?.transactionUniqueId | uppercase }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="bankTransactionId">
                     <mat-header-cell *matHeaderCellDef>Bank Transaction ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{ item.transaction?.bankTransactionUniqueId }}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{ item.transaction?.bankTransactionUniqueId | uppercase }}
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="appraiserName">
@@ -60,7 +61,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="principalAmount">
-                    <mat-header-cell *matHeaderCellDef>Principal Outstanding Amount</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Principal Outstanding</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.masterLoan.outstandingAmount}}</mat-cell>
                 </ng-container>
 
@@ -176,6 +177,16 @@
                         <button class="apply-kyc" (click)="viewLoan(item)">View
                             Loan
                         </button>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="view">
+                    <mat-header-cell *matHeaderCellDef> Acknowledgement Receipt </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        <div *ngIf="item.documentsImages?.length" class="kt-pointer"
+                            (click)="view(item.documentsImages[0])">
+                            View
+                        </div>
                     </mat-cell>
                 </ng-container>
 

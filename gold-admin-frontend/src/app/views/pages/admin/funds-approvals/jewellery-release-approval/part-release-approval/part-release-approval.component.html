@@ -7,12 +7,13 @@
 
                 <ng-container matColumnDef="transactionId">
                     <mat-header-cell *matHeaderCellDef>Transaction ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{ item.transaction?.transactionUniqueId }}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{ item.transaction?.transactionUniqueId | uppercase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="bankTransactionId">
                     <mat-header-cell *matHeaderCellDef>Bank Transaction ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{ item.transaction?.bankTransactionUniqueId }}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{ item.transaction?.bankTransactionUniqueId | uppercase}}
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="appraiserName">
@@ -62,7 +63,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="principalAmount">
-                    <mat-header-cell *matHeaderCellDef>Principal Outstanding Amount</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Principal Outstanding</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.masterLoan.outstandingAmount}}</mat-cell>
                 </ng-container>
 
@@ -147,6 +148,29 @@
 
                         <!-- <button style="width: 120px;" class="apply-kyc" (click)="updateStatus(item)">Update
                         </button> -->
+
+                    </mat-cell>
+                </ng-container>
+                <!-- <ng-container matColumnDef="uploadDocument">
+                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        <div *ngxPermissionsOnly="['partReleaseStatus']">
+                            <div *ngIf="item.partReleaseStatus == 'released'">
+                                <button *ngIf="!item.documents" style="width: 130px;" class="apply-kyc"
+                                    (click)="updateDocument(item)">Upload
+                                    Documents
+                                </button>
+                            </div>
+                        </div>
+                    </mat-cell>
+                </ng-container> -->
+                <ng-container matColumnDef="view">
+                    <mat-header-cell *matHeaderCellDef> Acknowledgement Receipt </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        <div *ngIf="item.documentsImages?.length" class="kt-pointer"
+                            (click)="view(item.documentsImages[0])">
+                            View
+                        </div>
                     </mat-cell>
                 </ng-container>
 

@@ -55,7 +55,9 @@ export class CheckoutComponent implements OnInit {
   submit() {
     // console.log(this.checkoutForm.value)
 
-    if (this.checkoutForm.invalid) return this.checkoutForm.markAllAsTouched()
+    if (this.checkoutForm.invalid) {
+      return this.checkoutForm.markAllAsTouched()
+    }
 
     let params = this.checkoutForm.value
     params.type = 'lead'

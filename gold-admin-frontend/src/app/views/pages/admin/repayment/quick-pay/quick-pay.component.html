@@ -58,9 +58,11 @@
 
             <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
                 <div class="col-6 text-center">
-                    <kt-button [value]="'Pay EMI'" [type]="'button'" (click)="getPayableAmount()"></kt-button>
+                    <kt-button [value]="'Pay EMI'" [notTitleCase]="true" [type]="'button'" (click)="getPayableAmount()">
+                    </kt-button>
                     <span class="kt-padding-5 "></span>
-                    <kt-button [value]="'View Interest EMI Logs'" [type]="'button'" (click)="viewEmiLogs()"></kt-button>
+                    <kt-button [value]="'View Interest EMI Logs'" [notTitleCase]="true" [type]="'button'"
+                        (click)="viewEmiLogs()"></kt-button>
                     <span class="kt-padding-5 "></span>
                     <kt-button [value]="'Transaction History'" [type]="'button'" (click)="transcationHistory()">
                     </kt-button>
@@ -85,7 +87,7 @@
                             <tr>
                                 <td> {{payableAmount?.securedOutstandingAmount}}<br>
                                     <span *ngIf="loanDetails?.customerLoan[1]">
-                                        {{payableAmount?.securedTotalInterest}}
+                                        {{payableAmount?.unsecuredOutstandingAmount}}
                                     </span>
                                 </td>
                                 <td>{{payableAmount?.securedTotalInterest}}<br>

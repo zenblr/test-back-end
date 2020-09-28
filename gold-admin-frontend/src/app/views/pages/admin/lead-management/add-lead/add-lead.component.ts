@@ -13,7 +13,7 @@ import { ImagePreviewDialogComponent } from '../../../../partials/components/ima
 import { LeadSourceService } from '../../../../../core/masters/lead-source/services/lead-source.service';
 import { RolesService } from '../../../../../core/user-management/roles';
 import { PdfViewerComponent } from '../../../../partials/components/pdf-viewer/pdf-viewer.component';
-
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'kt-add-lead',
   templateUrl: './add-lead.component.html',
@@ -55,7 +55,8 @@ export class AddLeadComponent implements OnInit {
     private dialog: MatDialog,
     private leadSourceService: LeadSourceService,
     private ref: ChangeDetectorRef,
-    private roleService: RolesService
+    private roleService: RolesService,
+    private toaster: ToastrService,
   ) {
     this.details = this.sharedService.getDataFromStorage()
 
@@ -282,6 +283,7 @@ export class AddLeadComponent implements OnInit {
       this.controls.otp.setErrors(null)
     } else if (!this.isMobileVerified) {
       this.controls.otp.setErrors({ verifyOTP: true })
+      return this.toaster.error('Mobile number not verified!')
     }
   }
 

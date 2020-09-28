@@ -1,7 +1,7 @@
 const { wrapper } = require('../utils/errorWrap');
 const express = require('express');
 const checkAuth = require('../middleware/checkAuth');
-const { getAllPacketTrackingDetail, addPacketTracking, viewPackets, checkBarcode, getUserName, getMapDetails, getLocationDetails, addCustomerPacketTracking, viewCustomerPacketTrackingLogs, checkOutPacket, verifyCheckOut, getParticularLocation, submitLoanPacketLocation, getDeliveryLocation, myDeliveryPacket, deliveryUserType, deliveryApproval, getNextPacketLoaction } = require('../controllers/packetTracking/packetTracking');
+const { getAllPacketTrackingDetail, addPacketTracking, viewPackets, checkBarcode, getUserName, getMapDetails, getLocationDetails, addCustomerPacketTracking, viewCustomerPacketTrackingLogs, checkOutPacket, verifyCheckOut, getParticularLocation, submitLoanPacketLocation, getDeliveryLocation, myDeliveryPacket, deliveryUserType, deliveryApproval, getNextPacketLoaction, submitLoanPacketLocationForCollect, submitLoanPacketLocationForHomeIn, getCustomerInfo } = require('../controllers/packetTracking/packetTracking');
 const { addCustomerPacketTrackingValidation } = require('../validations/packetTracking')
 const { getGlobalMapDetails, getGloablMapLocation, getPacketTrackingByLoanId } = require('../controllers/packetTracking/globalMap')
 const validationError = require('../middleware/validationError')
@@ -45,6 +45,12 @@ route.get('/delivery-user-type', checkAuth, wrapper(deliveryUserType))
 route.post('/delivery-approval', checkAuth, wrapper(deliveryApproval))//checkRolePermission
 
 route.get('/next-packet-location', checkAuth, wrapper(getNextPacketLoaction))
+
+route.post('/packet-release-collect', checkAuth, wrapper(submitLoanPacketLocationForCollect))
+
+route.post('/packet-release-home-in', checkAuth, wrapper(submitLoanPacketLocationForHomeIn))
+
+route.get('/customer-info', checkAuth, wrapper(getCustomerInfo))
 
 // global Map 
 

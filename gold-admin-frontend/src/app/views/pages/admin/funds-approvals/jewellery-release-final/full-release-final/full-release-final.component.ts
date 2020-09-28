@@ -14,6 +14,7 @@ import { UpdateStatusComponent } from '../../update-status/update-status.compone
 import { Router } from '@angular/router';
 import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
+import { UpdateLocationComponent } from '../../../../../partials/components/update-location/update-location.component';
 
 @Component({
   selector: 'kt-full-release-final',
@@ -23,7 +24,7 @@ import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewe
 export class FullReleaseFinalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'appointmentDate', 'appointmentTime', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'principalOutstandingAmountLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'view', 'updateStatus'];
+  displayedColumns = ['customerId', 'loanId', 'appointmentDate', 'appointmentTime', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'principalOutstandingAmountLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'currentLocation', 'view', 'updateStatus',];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -141,5 +142,47 @@ export class FullReleaseFinalComponent implements OnInit {
         // height: "75%",
       })
     }
+  }
+
+  collect(masterLoanId, packet, data) {
+    let partnerBranchId = data.customerPacketTracking[data.customerPacketTracking.length - 1].partnerBranchId
+    let dialogRef= this.dialog.open(UpdateLocationComponent, {
+      data: {
+        isPartnerOut: true,
+        masterLoanId: masterLoanId,
+        packetData: packet,
+        partnerBranchId: partnerBranchId
+      },
+      width: "450px",
+    })
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPage();
+      }
+    });
+  }
+
+  homeIn(masterLoanId, packet,id) {
+
+    this.fullReleaseFinalService.getCutsomerDetails(masterLoanId).subscribe(res => {
+      if (res.data) {
+        let dialogRef = this.dialog.open(UpdateLocationComponent, {
+          data: {
+            isCustomerHomeIn: true,
+            response: res.data,
+            masterLoanId: masterLoanId,
+            packetData: packet,
+            releaseId:id
+          },
+          width: "450px",
+        })
+        dialogRef.afterClosed().subscribe(res => {
+          if (res) {
+            this.loadPage();
+          }
+        });
+      }
+    })
+
   }
 }

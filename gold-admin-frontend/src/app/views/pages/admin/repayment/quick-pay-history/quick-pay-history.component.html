@@ -12,7 +12,7 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let quick of details">
-                        <td >{{quick?.transactionUniqueId}}</td>
+                        <td >{{quick?.transactionUniqueId | uppercase}}</td>
                         <td >{{quick?.transactionAmont}}</td>
                         <td >
                             <span *ngIf="quick.paymentReceivedDate;else noData">
@@ -22,7 +22,17 @@
                                 -
                             </ng-template>
                         </td>
-                        <td>{{quick?.depositStatus | titlecase}}</td>
+                        <td>
+                            <span *ngIf="quick?.depositStatus == 'Completed'" class="text-success">
+                                {{quick?.depositStatus | titlecase}}
+                            </span>
+                            <span *ngIf="quick?.depositStatus == 'Pending'" class="text-warning">
+                                {{quick?.depositStatus | titlecase}}
+                            </span>
+                            <span *ngIf="quick?.depositStatus == 'Rejected'" class="text-danger">
+                                {{quick?.depositStatus | titlecase}}
+                            </span>
+                        </td>
                     </tr>
             </table>
         </div>

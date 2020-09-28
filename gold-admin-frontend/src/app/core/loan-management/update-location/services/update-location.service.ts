@@ -25,6 +25,12 @@ export class UpdateLocationService {
     if (query && query.masterLoanId) {
       reqParams.masterLoanId = query.masterLoanId;
     }
+    if (query && query.internalBranchId) {
+      reqParams.internalBranchId = query.internalBranchId;
+    }
+    if (query) {
+      reqParams.allUsers = query.allUsers;
+    }
     return this.http.get(`/api/packet-tracking/user-name`, { params: reqParams }).pipe(map(res => res),
       catchError(err => {
         if (err.error.message) this.toastr.error(err.error.message);
@@ -63,6 +69,28 @@ export class UpdateLocationService {
 
   addPacketLocation(data): Observable<any> {
     return this.http.post<any>(`/api/packet-tracking`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
+  customerHomeOut(data, isFullRelease, isPartRelease): Observable<any> {
+    data.isFullRelease = isFullRelease;
+    data.isPartRelease = isPartRelease
+    return this.http.post<any>(`/api/packet-tracking/packet-release-home-in`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
+  collectPacket(data): Observable<any> {
+    return this.http.post<any>(`/api/packet-tracking/packet-release-collect`, data).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message) this.toastr.error(err.error.message);

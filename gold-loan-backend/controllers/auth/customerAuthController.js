@@ -20,7 +20,7 @@ exports.customerLogin = async (req, res, next) => {
             mobile: checkCustomer.dataValues.mobileNumber,
             firstName: checkCustomer.dataValues.firstName,
             lastName: checkCustomer.dataValues.lastName,
-            userBelongsTo: "customeruser"
+            userBelongsTo: "CustomerUser"
         },
             JWT_SECRETKEY, {
             expiresIn: JWT_EXPIRATIONTIME
@@ -39,7 +39,7 @@ exports.customerLogin = async (req, res, next) => {
             createdDate: createdTime
         });
 
-        return res.status(200).json({ message: 'login successful', token });
+        return res.status(200).json({ message: 'login successful', token:Token });
     } else {
         return res.status(401).json({ message: 'Wrong Credentials' });
     }

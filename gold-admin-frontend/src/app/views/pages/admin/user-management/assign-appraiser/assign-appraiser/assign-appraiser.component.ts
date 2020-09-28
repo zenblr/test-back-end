@@ -8,6 +8,7 @@ import { PartnerService } from '../../../../../../core/user-management/partner/s
 import { AppraiserService } from '../../../../../../core/user-management/appraiser';
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
 import { map, finalize } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'kt-assign-appraiser',
@@ -44,7 +45,7 @@ export class AssignAppraiserComponent implements OnInit {
   };
   startTime: string = '09:00 am';
   endTime: string;
-  addStartTime: string;
+  addStartTime: string =  '09:00 am';
   internalBranchId: any;
   max: string = '06:00 pm';
 
@@ -55,7 +56,8 @@ export class AssignAppraiserComponent implements OnInit {
     private fb: FormBuilder,
     private branchService: BranchService,
     private appraiserService: AppraiserService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private toaster: ToastrService
   ) { }
 
   ngOnInit() {
@@ -128,7 +130,7 @@ export class AssignAppraiserComponent implements OnInit {
       userType: [, [Validators.required]],
       appraiserId: [, [Validators.required]],
       releaserId: [, [Validators.required]],
-      appoinmentDate: [],
+      appoinmentDate: [,[Validators.required]],
       startTime: [this.addStartTime, [Validators.required]],
       endTime: [, [Validators.required]],
       partReleaseId: [],
@@ -209,7 +211,6 @@ export class AssignAppraiserComponent implements OnInit {
     if (this.appraiserForm.controls.startTime.value == this.appraiserForm.controls.endTime.value) {
       return this.toastr.errorToastr('Time should not be same!')
     }
-
     const appoinmentDate = new Date(this.controls.appoinmentDate.value)
     const correctedDate = new Date(appoinmentDate.getTime() - appoinmentDate.getTimezoneOffset() * 60000)
     this.appraiserForm.patchValue({ appoinmentDate: correctedDate })
@@ -293,6 +294,7 @@ export class AssignAppraiserComponent implements OnInit {
   }
 
   setStartTime(event) {
+    this.controls.startTime.patchValue(event)
     if (this.controls.startTime.valid) {
       this.startTime = event;
       this.ref.detectChanges()

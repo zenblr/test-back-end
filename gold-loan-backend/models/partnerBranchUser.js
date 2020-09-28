@@ -12,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
         partnerBranchUserUniqueId: {
             type: DataTypes.STRING,
             field: 'user_unique_id',
-            unique: true
         },
         firstName: {
             type: DataTypes.STRING,
