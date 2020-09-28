@@ -2329,14 +2329,14 @@ exports.getDetailsForPrint = async (req, res, next) => {
     if (customerLoanDetail.loanOrnamentsDetail.length != 0) {
         for (let ornamentsDetail of customerLoanDetail.loanOrnamentsDetail) {
             ornaments.push({
-                name: ornamentsDetail.ornamentType.name,
+                ornamentType: ornamentsDetail.ornamentType.name,
                 quantity: ornamentsDetail.quantity,
                 grossWeight: ornamentsDetail.grossWeight,
                 netWeight: ornamentsDetail.netWeight,
-                deductionWeight: ornamentsDetail.deductionWeight
+                deduction: ornamentsDetail.deductionWeight
             })
         }
-        customerLoanDetail.ornamentType = ornaments;
+        //customerLoanDetail.ornamentType = ornaments;
     }
 
     let customerAddress = []
@@ -2394,7 +2394,6 @@ exports.getDetailsForPrint = async (req, res, next) => {
     }
 
 
-
     var customerSecureLoanData = await [{
         partnerName: customerLoanDetail.customerLoan[0].partner.name,
         Name: customerLoanDetail.customer.firstName + " " + customerLoanDetail.customer.lastName,
@@ -2414,14 +2413,9 @@ exports.getDetailsForPrint = async (req, res, next) => {
         accountNumber: customerLoanDetail.loanBankDetail.accountNumber,
         bankName: customerLoanDetail.loanBankDetail.accountHolderName,
         ifscCode: customerLoanDetail.loanBankDetail.ifscCode,
-        ornamentTypes: customerLoanDetail.ornamentType[0].name,
-        quantity: customerLoanDetail.ornamentType[0].quantity,
-        grossWeight: customerLoanDetail.ornamentType[0].grossWeight,
-        deduction: customerLoanDetail.ornamentType[0].deductionWeight,
-        netWeight: customerLoanDetail.ornamentType[0].netWeight,
-
+        ornaments
     }];
-    //console.log(customerSecureLoanData)
+    //console.log(ornaments)
 
     let fileName = await `AcknowledgeOFPledge${Date.now()}`;
     document = await {

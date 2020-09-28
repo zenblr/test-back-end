@@ -113,12 +113,13 @@
         </div>
         <div class="row  py-3 pr-5 pl-0">
             <div class="col-10 ">
-
+                
                 <table class="align-top text-center table-bordered"
                     style="width:100%;margin:0;font-weight: 500;table-layout: fixed; border: 1px solid black;">
                     <tr>
                         <p class="text-center mb-0">Jewellery Details</p>
                     </tr>
+                    
                     <tr>
                         <!-- <th style="width:20%; height: 40px; ">Sr.No.</th> -->
                         <th style="width:20%; height: 40px;">Ornament Types</th>
@@ -127,16 +128,19 @@
                         <th style="width:20%; height: 40px; ">Deduction</th>
                         <th style="width:20%; height: 40px; ">Net weight</th>
                     </tr>
+                    {{#each  ornaments}}
                     <tr>
                         <!-- <td></td> -->
-                        <td style=" word-break: break-all;">{{this.ornamentTypes}}</td>
+                        <td style=" word-break: break-all;">{{this.ornamentType}}</td>
                         <td>{{this.quantity}}</td>
                         <td>{{this.grossWeight}}</td>
                         <td>{{this.deduction}}</td>
                         <td>{{this.netWeight}}</td>
 
                     </tr>
+                    {{/each}}
                 </table>
+               
 
             </div>
 
