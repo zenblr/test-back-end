@@ -567,7 +567,8 @@ exports.getParticularLocation = async (req, res, next) => {
             where: { id: masterLoan.customerLoan[0].partnerId },
             include: [{
                 model: models.partnerBranch,
-                as: 'partnerBranch'
+                as: 'partnerBranch',
+                isActive: true
             }]
         })
         return res.status(200).json({ data: partnerBranchData, loanBranchId: null })
