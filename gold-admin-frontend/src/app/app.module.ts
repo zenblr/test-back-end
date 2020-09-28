@@ -110,7 +110,10 @@ export function hljsLanguages(): HighlightLanguage[] {
 		NgSelectModule,
 		FormsModule,
 		ReactiveFormsModule,
-		AgmCoreModule.forRoot(),
+		AgmCoreModule.forRoot({
+			apiKey: 'AIzaSyA1__NTCgMO2aEsv9HR35ES66f5N3sIj80',
+			libraries: ['places']
+		})
 		// AgmCoreModule.forRoot({
 			// apiKey: 'AIzaSyA1__NTCgMO2aEsv9HR35ES66f5N3sIj80',
 			// libraries: ['places']

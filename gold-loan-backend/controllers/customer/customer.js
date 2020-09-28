@@ -520,3 +520,27 @@ exports.getsingleCustomerManagement = async (req, res) => {
 
   return res.status(200).json({ message: "Success", data: singleCustomer })
 }
+
+exports.signUpCustomer = async (req, res) => {
+  let { firstName, lastName, mobileNumber } = req.body;
+
+  //To check in customer table 
+  let customerExist = await models.customer.findOne({
+    where: { mobileNumber: mobileNumber },
+  });
+  if (!check.isEmpty(customerExist)) {
+    return res.status(404).json({ message: "This Mobile number already Exists" });
+  }
+
+  //To check in Registered customer from customer website
+  let registerCustomerExist = await models.customerRegister.findOne({
+    where: { mobileNumber: mobileNumber },
+  });
+  if (!check.isEmpty(registerCustomerExist)) {
+    return res.status(404).json({ message: "This Mobile number already Exists" });
+  }
+
+  let createdCustomer = await models.customerRegister.create({ firstName, lastName, mobileNumber, isActive: true });
+  return res.status(200).json({ messgae: `Registered Sucessfully!` });
+
+}

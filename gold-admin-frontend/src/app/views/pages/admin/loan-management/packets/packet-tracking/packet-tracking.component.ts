@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { Subscription, merge, Subject, from } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
@@ -43,7 +43,8 @@ export class PacketTrackingComponent implements OnInit {
     private layoutUtilsService: LayoutUtilsService,
     private toastr: ToastrService,
     private ngxPermissionService: NgxPermissionsService,
-    private router: Router
+    private router: Router,
+    private ref: ChangeDetectorRef
   ) {
     this.packetTrackingService.openModal$.pipe(
       map(res => {
@@ -95,6 +96,10 @@ export class PacketTrackingComponent implements OnInit {
 
     this.dataSource.loadpackets(this.queryParamsData);
 
+  }
+
+  ngAfterContentChecked() {
+    this.ref.detectChanges();
   }
 
   ngOnDestroy() {
