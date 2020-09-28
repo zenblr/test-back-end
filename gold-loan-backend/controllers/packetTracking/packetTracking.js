@@ -1031,7 +1031,7 @@ exports.deliveryApproval = async (req, res, next) => {
         let packetSubmitted = await models.loanStage.findOne({ where: { name: 'packet submitted' }, transaction: t })
         let packetBranchOut = await models.loanStage.findOne({ where: { name: 'packet branch out' }, transaction: t })
 
-        if (masterLoan.loanStageId == packetInBranch.id) {
+        if (masterLoan.loanStageId == packetBranchOut.id) {
             if (packetLocationId == partnerBranchInLocation.id) {
                 await models.customerLoanMaster.update({ loanStageId: packetSubmitted.id, isLoanCompleted: true }, { where: { id: masterLoanId }, transaction: t })
             }
