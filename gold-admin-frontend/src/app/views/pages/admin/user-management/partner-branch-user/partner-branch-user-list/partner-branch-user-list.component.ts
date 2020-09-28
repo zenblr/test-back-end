@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { PartnerBranchUserDatasource ,PartnerBranchUserService } from "../../../../../../core/user-management/partner-branch-user";
+import { PartnerBranchUserDatasource, PartnerBranchUserService } from "../../../../../../core/user-management/partner-branch-user";
 import { ToastrService } from 'ngx-toastr';
 import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
 // RXJS
@@ -20,8 +20,8 @@ import { AddPartnerBranchUserComponent } from "../add-partner-branch-user/add-pa
 export class PartnerBranchUserListComponent implements OnInit {
   searchValue = ''
   unsubscribeSearch$ = new Subject()
-  displayedColumns = ['userId', 'userName', 'email', 'mobileNumber','partnerName', 'branchName', 'action'];
-  dataSource:PartnerBranchUserDatasource;
+  displayedColumns = ['userId', 'userName', 'email', 'mobileNumber', 'partnerName', 'branchName', 'action'];
+  dataSource: PartnerBranchUserDatasource;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
@@ -33,17 +33,17 @@ export class PartnerBranchUserListComponent implements OnInit {
   private subscriptions: Subscription[] = [];
   private destroy$: Subject<any> = new Subject()
   constructor(
-    private userService:PartnerBranchUserService,
-    public toast:ToastrService,
+    private userService: PartnerBranchUserService,
+    public toast: ToastrService,
     private dataTableService: DataTableService,
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private layoutUtilsService: LayoutUtilsService,
 
-  ) { 
-    this.userService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res=>{
-      if(res)
-      this.addUser("add")
+  ) {
+    this.userService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      if (res)
+        this.addUser("add")
     })
   }
 
@@ -67,7 +67,7 @@ export class PartnerBranchUserListComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(res => {
       this.userResult = res;
-      console.log(this.userResult)
+      // console.log(this.userResult)
     });
     this.subscriptions.push(entitiesSubscription);
     this.dataSource.loadUser(this.searchValue, 1, 25);
@@ -145,7 +145,7 @@ export class PartnerBranchUserListComponent implements OnInit {
     });
   }
 
-  viewUser(user,action){
+  viewUser(user, action) {
     const dialogRef = this.dialog.open(AddPartnerBranchUserComponent, {
       data: {
         action: action,
