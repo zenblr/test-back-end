@@ -347,6 +347,10 @@ exports.addPacketLocation = async (req, res) => {
 
     let { latitude, longitude, appraiserId, packetId, masterLoanId, customerLoanId, packetLocationId } = req.body
 
+    await models.packetTracking.update(
+        { isActive: false },
+        { where: { masterLoanId: masterLoanId } })
+
     let packetlocation = await models.packetTracking.create({ latitude, longitude, appraiserId, packetId, masterLoanId, customerLoanId, packetLocationId })
 
     if (packetlocation) {
@@ -378,6 +382,9 @@ exports.addPacketTracking = async (req, res, next) => {
     var date = moment(trackingTime);
     var timeComponent = date.utc(true).format('HH:mm');
 
+
+    
+
     getAll['createdBy'] = createdBy
     getAll['modifiedBy'] = modifiedBy
     getAll['userId'] = userId
@@ -394,6 +401,8 @@ exports.addPacketTracking = async (req, res, next) => {
     getAll['customerLoanId'] = customerLoan[0].id
 
     // let packet = await sequelize.transaction(async t => {
+    let x = await models.packetTracking.update({ isActive: false }, { where: { masterLoanId: getAll.masterLoanId } })
+
     let packetTracking = await models.packetTracking.create(getAll)
     // })
 
