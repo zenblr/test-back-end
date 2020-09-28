@@ -559,7 +559,9 @@ exports.getParticularLocation = async (req, res, next) => {
     if (location == "branch in") {
         let internalBranchDataSingle = await models.internalBranch.findOne({ where: { id: masterLoan.internalBranchId } })
 
-        let internalBranchData = await models.internalBranch.findAll({ where: { cityId: internalBranchDataSingle.cityId } })
+        let internalBranchData = await models.internalBranch.findAll({
+            where: { cityId: internalBranchDataSingle.cityId, isActive: true },
+        })
         return res.status(200).json({ data: internalBranchData, loanBranchId: masterLoan.internalBranchId })
     } else if (location == "partner branch in") {
 
