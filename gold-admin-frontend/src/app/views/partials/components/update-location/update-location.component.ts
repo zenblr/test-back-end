@@ -104,6 +104,11 @@ export class UpdateLocationComponent implements OnInit {
       this.controls.mobileNumber.disable();
       this.getDetailsByMobile()
     }
+
+    if (this.data.isOut) {
+      this.controls.deliveryPartnerBranchId.setValidators([Validators.required])
+      this.controls.deliveryPartnerBranchId.updateValueAndValidity()
+    }
   }
 
   setForm() {
@@ -215,7 +220,10 @@ export class UpdateLocationComponent implements OnInit {
             this.toastr.success(msg);
             this.dialogRef.close(true);
           }),
-          finalize(() => this.disableUserType()))
+          finalize(() => {
+            this.disablePacketLocationId()
+            this.disableUserType()
+          }))
         .subscribe();
     }
     else if (this.data.deliver) {
@@ -242,24 +250,29 @@ export class UpdateLocationComponent implements OnInit {
       } else {
         isFullRelease = true
       }
-      this.updateLocationService.customerHomeOut(this.locationForm.value, isFullRelease, isPartRelease).subscribe(res => {
-        if (res) {
-          const msg = 'Packet Location Updated Successfully';
-          this.toastr.success(msg);
-          this.dialogRef.close(true);
-        }
-      }, err => { },
-        () => {
-          this.controls.receiverType.disable();
-        })
+      this.updateLocationService.customerHomeOut(this.locationForm.value, isFullRelease, isPartRelease)
+        .pipe(
+          map(res => {
+            const msg = 'Packet Location Updated Successfully';
+            this.toastr.success(msg);
+            this.dialogRef.close(true);
+          }),
+          finalize(() => this.controls.receiverType.disable())
+        ).subscribe()
     } else {
-      this.updateLocationService.addPacketLocation(this.locationForm.value).subscribe(res => {
-        if (res) {
-          const msg = 'Packet Location Added Successfully';
-          this.toastr.success(msg);
-          this.dialogRef.close(true);
-        }
-      });
+      this.enablePacketLocationId()
+      this.enableDeliveryPacketLocationId()
+      this.updateLocationService.addPacketLocation(this.locationForm.value)
+        .pipe(
+          map(res => {
+            const msg = 'Packet Location Added Successfully';
+            this.toastr.success(msg);
+            this.dialogRef.close(true);
+          }),
+          finalize(() => {
+            this.disablePacketLocationId()
+            this.disableDeliveryPacketLocationId()
+          })).subscribe();
     }
   }
 
