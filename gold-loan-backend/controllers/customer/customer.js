@@ -533,14 +533,14 @@ exports.signUpCustomer = async (req, res) => {
   }
 
   //To check in Registered customer from customer website
-  let registerCustomerExist = await models.registerCustomer.findOne({
+  let registerCustomerExist = await models.customerRegister.findOne({
     where: { mobileNumber: mobileNumber },
   });
   if (!check.isEmpty(registerCustomerExist)) {
     return res.status(404).json({ message: "This Mobile number already Exists" });
   }
 
-  let createdCustomer = await models.registerCustomer.create({ firstName, lastName, mobileNumber, isActive: true });
+  let createdCustomer = await models.customerRegister.create({ firstName, lastName, mobileNumber, isActive: true });
   return res.status(200).json({ messgae: `Registered Sucessfully!` });
 
 }

@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const registerCustomer = sequelize.define('registerCustomer', {
+    const customerRegister = sequelize.define('customerRegister', {
         firstName: {
             type: DataTypes.STRING,
             field: 'first_name',
@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     },
         {
             freezeTableName: true,
-            tableName: 'register_customer',
+            tableName: 'customer_register',
         })
-    return registerCustomer
+    return customerRegister
 }
