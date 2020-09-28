@@ -103,10 +103,11 @@ import { GlobalSettingsComponent } from './components/global-settings/global-set
 import { CustomerDetailsComponent } from './components/customer-details/customer-details.component';
 import { LoanScrapDetailsComponent } from './components/loan-scrap-details/loan-scrap-details.component';
 import { PaymentDialogComponent } from './components/payment-dialog/payment-dialog.component';
-import { LocationComponent} from './components/location/location.component'
+import { LocationComponent } from './components/location/location.component'
 import { EmiLogsDialogComponent } from './components/emi-logs-dialog/emi-logs-dialog.component';
 import { PartPaymentLogDialogComponent } from './components/part-payment-log-dialog/part-payment-log-dialog.component';
 import { UpdateLocationComponent } from './components/update-location/update-location.component';
+import { ElapsedTimeComponent } from './components/elapsed-time/elapsed-time.component';
 
 @NgModule({
 	declarations: [
@@ -176,7 +177,8 @@ import { UpdateLocationComponent } from './components/update-location/update-loc
 		LocationComponent,
 		EmiLogsDialogComponent,
 		PartPaymentLogDialogComponent,
-		UpdateLocationComponent
+		UpdateLocationComponent,
+		ElapsedTimeComponent
 
 	],
 	exports: [
@@ -255,7 +257,8 @@ import { UpdateLocationComponent } from './components/update-location/update-loc
 		LocationComponent,
 		EmiLogsDialogComponent,
 		PartPaymentLogDialogComponent,
-		UpdateLocationComponent
+		UpdateLocationComponent,
+		ElapsedTimeComponent
 	],
 	imports: [
 		PdfViewerModule,

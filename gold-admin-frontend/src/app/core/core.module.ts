@@ -93,7 +93,8 @@ import { ZeroToHundredWholeDirective } from './_base/layout/directives/zero-to-h
 		Time24to12Pipe,
 	],
 	providers: [AuthService, ExcelService, PdfService,
-		{ provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
+		{ provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+		TimeElapsedPipe
 	],
 })
 export class CoreModule { }

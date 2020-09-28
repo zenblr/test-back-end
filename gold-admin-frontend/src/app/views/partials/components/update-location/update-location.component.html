@@ -246,8 +246,10 @@
 
                     <div class="row justify-content-center kt-margin-t-15">
                         <div class="col-4 offset-4">
-                            <kt-button [myClass]="'w-100'" [type]="'button'" [notTitleCase]="true" [value]="'Send OTP'"
-                                (action)="generateOTP()"></kt-button>
+                            <kt-button *ngIf="!otpSent" [myClass]="'w-100'" [type]="'button'" [notTitleCase]="true"
+                                [value]="'Send OTP'" (action)="sendOTP()"></kt-button>
+                            <kt-button *ngIf="otpSent" [myClass]="'w-100'" [type]="'button'" [value]="'Sent'">
+                            </kt-button>
                         </div>
                         <div class="col-4 d-flex justify-content-center align-items-center ">
                             <label class="kt-pointer kt-link kt-link--brand kt-font-bolder" (click)="generateOTP()">
