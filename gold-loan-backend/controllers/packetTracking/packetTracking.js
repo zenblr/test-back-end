@@ -523,9 +523,9 @@ exports.verifyCheckOut = async (req, res, next) => {
 
         await models.customerLoanMaster.update({ loanStageId: loanStage.id }, { where: { id: masterLoanId }, transaction: t })
 
-        await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocation.id, status: 'transit' }, { transaction: t });
+        await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocation.id, status: 'in transit' }, { transaction: t });
 
-        let packetTrackingData = await models.customerPacketTracking.create({ masterLoanId, loanId, internalBranchId: internalBranchId, packetLocationId: packetLocation.id, userSenderId: id, isDelivered: true, status: 'transit' }, { transaction: t });
+        let packetTrackingData = await models.customerPacketTracking.create({ masterLoanId, loanId, internalBranchId: internalBranchId, packetLocationId: packetLocation.id, userSenderId: id, isDelivered: true, status: 'in transit' }, { transaction: t });
 
         let allPacketTrackingData = await models.customerPacketTracking.findAll({
             where: { masterLoanId: masterLoanId, isDelivered: true },
@@ -846,10 +846,10 @@ exports.addCustomerPacketTracking = async (req, res, next) => {
             }
         }
 
-        await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'transit' }, { transaction: t })
+        await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'in transit' }, { transaction: t })
 
         let packetTrackingData = await models.customerPacketTracking.create({
-            customerReceiverId, internalBranchId: senderInternalBranch, partnerBranchId, userReceiverId, partnerReceiverId, receiverType, loanId, masterLoanId, packetLocationId, userSenderId, partnerSenderId, senderType, isDelivered: true, status: 'transit'
+            customerReceiverId, internalBranchId: senderInternalBranch, partnerBranchId, userReceiverId, partnerReceiverId, receiverType, loanId, masterLoanId, packetLocationId, userSenderId, partnerSenderId, senderType, isDelivered: true, status: 'in transit'
         }, { transaction: t });
 
         let allPacketTrackingData = await models.customerPacketTracking.findAll({
@@ -1149,7 +1149,7 @@ exports.submitLoanPacketLocationForCollect = async (req, res, next) => {
 
             // await models.customerLoanMaster.update({ loanStageId: loanStage.id }, { where: { id: masterLoanId }, transaction: t })
 
-            await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'transit' }, { transaction: t })
+            await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'in transit' }, { transaction: t })
 
             let packetTrackingData = await models.customerPacketTracking.create({
                 internalBranchId: req.userData.internalBranchId,
@@ -1161,7 +1161,7 @@ exports.submitLoanPacketLocationForCollect = async (req, res, next) => {
                 partnerSenderId: partnerReceiverId,
                 senderType: 'PartnerUser',
                 isDelivered: true,
-                status: 'transit'
+                status: 'in transit'
             }, { transaction: t });
 
             let allPacketTrackingData = await models.customerPacketTracking.findAll({

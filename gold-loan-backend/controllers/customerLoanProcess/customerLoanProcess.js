@@ -1722,9 +1722,9 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
             //packet tracking entry
             let packetLocation = await models.packetLocation.findOne({ where: { location: 'amount disbursed' } });
 
-            await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocation.id, status: 'transit' }, { transaction: t });
+            await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocation.id, status: 'in transit' }, { transaction: t });
 
-            await models.customerPacketTracking.create({ masterLoanId, internalBranchId: req.userData.internalBranchId, packetLocationId: packetLocation.id, userSenderId: req.userData.id, isDelivered: true, status: 'transit' }, { transaction: t });
+            await models.customerPacketTracking.create({ masterLoanId, internalBranchId: req.userData.internalBranchId, packetLocationId: packetLocation.id, userSenderId: req.userData.id, isDelivered: true, status: 'in transit' }, { transaction: t });
 
             await models.customerLoanHistory.create({ loanId: securedLoanId, masterLoanId, action: LOAN_DISBURSEMENT, modifiedBy }, { transaction: t });
             if (Loan.isUnsecuredSchemeApplied == true) {
