@@ -231,15 +231,4 @@ export class PacketTrackingComponent implements OnInit {
     return isNotAllowed
   }
 
-  getDate(date) {
-    let d
-    setInterval(() => {
-      // return new Date(date).getTime()
-      let val = 1;
-      val++
-      d = val
-    }, 1000)
-    return d
-  }
-
 }
