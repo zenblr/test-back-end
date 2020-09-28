@@ -468,17 +468,20 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                 let interestGreaterThanDate = await getAllInterestGreaterThanDate(loan.id, date);
                 //update interestAccrual & interest amount //here to debit amount
                 for (const interestData of interestLessThanDate) {
-                    let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, description: { [Op.in]: [`interest due ${interestData.emiDueDate}`, `stepUpInterest ${interestData.emiDueDate}`] } } });
+                    let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id} });
                     if (checkDebitEntry.length == 0) {
-                        let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interest.amount, description: `interest due ${interestData.emiDueDate}` }, { transaction: t });
+                        let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interest.amount, description: `interest due ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`,paymentDate:moment() }, { transaction: t });
                         await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                     } else {
                         let debitedAmount = await checkDebitEntry.map((data) => Number(data.debit));
                         let totalDebitedAmount = _.sum(debitedAmount);
                         let newDebitAmount = interest.amount - totalDebitedAmount;
                         if (newDebitAmount > 0) {
-                            let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: newDebitAmount, description: `stepUpInterest ${interestData.emiDueDate}` }, { transaction: t });
+                            let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: newDebitAmount, description: `stepUpInterest ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`,paymentDate:moment() }, { transaction: t });
                             await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
+                        } else if (newDebitAmount < 0) {
+                            let credit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: Math.abs(newDebitAmount), description: `stepDownInterest ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`,paymentDate:moment() }, { transaction: t });
+                            await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${credit.id}` }, { where: { id: debit.id }, transaction: t });
                         }
                     }
                     let outstandingInterest = interest.amount - interestData.paidAmount;
@@ -545,9 +548,9 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                     for (const interestData of interestLessThanDate) {
                         let isDueDate = moment(date).isSame(interestData.emiDueDate);
                         if (isDueDate) {
-                            let checkDebitEntry = await models.customerTransactionDetail.findOne({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, description: `interest due ${interestData.emiDueDate}` } });
+                            let checkDebitEntry = await models.customerTransactionDetail.findOne({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id } });
                             if (!checkDebitEntry) {
-                                let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interestData.interestAmount, description: `interest due ${interestData.emiDueDate}` }, { transaction: t });
+                                let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interestData.interestAmount, description: `interest due ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`,paymentDate:moment() }, { transaction: t });
                                 await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                             }
                         }
@@ -1746,7 +1749,7 @@ let intrestCalculationForSelectedLoanWithOutT = async ( date, masterLoanId, secu
             let interestGreaterThanDate = await getAllInterestGreaterThanDate(loan.id, date);
             //update interestAccrual & interest amount //here to debit amount
             for (const interestData of interestLessThanDate) {
-                let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, description: { [Op.in]: [`interest due ${interestData.emiDueDate}`, `stepUpInterest ${interestData.emiDueDate}`] } } });
+                let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id } });
                 transactionObject = {}
                 if (checkDebitEntry.length == 0) {
                     // let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interest.amount, description: `interest due ${interestData.emiDueDate}` }, { transaction: t });
@@ -1756,7 +1759,8 @@ let intrestCalculationForSelectedLoanWithOutT = async ( date, masterLoanId, secu
                     transactionObject.loanUniqueId = loan.loanUniqueId
                     transactionObject.loanInterestId = interestData.id
                     transactionObject.debit = interest.amount
-                    transactionObject.description = `interest due ${interestData.emiDueDate}`
+                    transactionObject.description = `interest due ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`
+                    transactionObject.paymentDate = moment()
                     transactionData.push(transactionObject)
                     //
 
@@ -1773,7 +1777,8 @@ let intrestCalculationForSelectedLoanWithOutT = async ( date, masterLoanId, secu
                         transactionObject.loanUniqueId = loan.loanUniqueId
                         transactionObject.loanInterestId = interestData.id
                         transactionObject.debit = newDebitAmount
-                        transactionObject.description = `stepUpInterest ${interestData.emiDueDate}`
+                        transactionObject.description = `stepUpInterest ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`
+                        transactionObject.paymentDate = moment()
                         transactionData.push(transactionObject)
                         //
 
@@ -1785,7 +1790,8 @@ let intrestCalculationForSelectedLoanWithOutT = async ( date, masterLoanId, secu
                         transactionObject.loanUniqueId = loan.loanUniqueId
                         transactionObject.loanInterestId = interestData.id
                         transactionObject.credit = Math.abs(newDebitAmount)
-                        transactionObject.description = `stepDownInterest ${interestData.emiDueDate}`
+                        transactionObject.description = `stepDownInterest ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`
+                        transactionObject.paymentDate = moment()
                         transactionData.push(transactionObject)
                         //
                     }
