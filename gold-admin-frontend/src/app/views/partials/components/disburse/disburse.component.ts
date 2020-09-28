@@ -148,6 +148,7 @@ export class DisburseComponent implements OnInit {
     this.controls.processingCharge.disable()
     this.controls.fullUnsecuredAmount.disable()
     this.controls.disbursementStatus.disable()
+    this.controls.fullSecuredAmount.disable()
   }
 
   enableSchemeRelatedField() {
@@ -158,6 +159,7 @@ export class DisburseComponent implements OnInit {
     this.controls.processingCharge.enable()
     this.controls.fullUnsecuredAmount.enable()
     this.controls.disbursementStatus.enable()
+    this.controls.fullSecuredAmount.enable()
   }
 
   getBankDetails() {
