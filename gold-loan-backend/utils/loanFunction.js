@@ -1582,7 +1582,7 @@ let penalInterestCalculationForSelectedLoan = async (date, masterLaonId) => {
             const currentDate = moment(date);
             let daysCount = currentDate.diff(dueDate, 'days');
             let daysCount2 = nextDueDate.diff(dueDate, 'days');
-            if (daysCount < gracePeriodDays) {
+            if (daysCount <= gracePeriodDays) {
                 break
             }
             if (daysCount < selectedSlab) {
@@ -1634,7 +1634,7 @@ let penalInterestCalculationForSelectedLoanWithOutT = async (date, masterLaonId)
             const currentDate = moment(date);
             let daysCount = currentDate.diff(dueDate, 'days');
             let daysCount2 = nextDueDate.diff(dueDate, 'days');
-            if (daysCount < Number(gracePeriodDays)) {
+            if (daysCount <= Number(gracePeriodDays)) {
                 break
             }
             if (daysCount < Number(selectedSlab)) {
