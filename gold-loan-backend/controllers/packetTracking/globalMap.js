@@ -1,41 +1,50 @@
 const models = require('../../models')
 const { paginationWithFromTo } = require("../../utils/pagination");
-
+const Sequelize = models.Sequelize;
+const sequelize = models.sequelize;
+const Op = Sequelize.Op;
 
 exports.getGlobalMapDetails = async (req, res, next) => {
 
     let { date } = req.query
     console.log(date)
 
-    let getAppraiserList = await models.user.findAll({
-        where: { isActive: true },
-        attributes: ['id', 'firstName', 'lastName'],
+
+    let locationData = await models.packetTracking.findAll({
+        where: { trackingDate: date, isActive: true },
+        order: [['createdAt']],
         include: [{
-            model: models.userType,
-            as: 'Usertype',
-            where: { isInternal: true, userType: 'Appraiser' },
-            attributes: [],
-
-        },
-        {
-            model: models.appraiserRequest,
-            as: 'appraiserRequest',
-            attributes: ['id'],
-            include: [{
-                model: models.customerLoanMaster,
-                as: 'masterLoan',
-                attributes: ['id'],
-                include: [{
-                    model: models.customerLoan,
-                    as: 'customerLoan',
-                    attributes: ['loanUniqueId'],
-                }]
-            }]
-        },]
+            model: models.user,
+            as: 'user',
+            attributes: ['id', 'firstName', 'lastName']
+        }, {
+            model: models.customerLoan,
+            as: 'customerLoan',
+            attributes: ['loanUniqueId'],
+            include: {
+                model: models.packet,
+                as: 'packet',
+                where: { isActive: true }
+            }
+        }],
     })
-    // let internalBranchId = req.userData.id
 
-    res.status(200).json({ data: getAppraiserList })
+   
+
+    let group = locationData.reduce((r, a) => {
+        console.log("a", a);
+        console.log('r', r);
+        r[a.userId] = [...r[a.userId] || [], a];
+        return r;
+    }, {});
+
+    let data = []
+    Object.keys(group).forEach(ele => {
+        data.push(group[ele])
+    })
+
+
+    res.status(200).json({ data: data })
 }
 
 exports.getPacketTrackingByLoanId = async (req, res, next) => {
@@ -85,11 +94,11 @@ exports.getGloablMapLocation = async (req, res, next) => {
         where: { trackingDate: date },
     })
 
-   
-    if(count.length == 0){
-        res.status(200).json([])
-    }else{
 
-        res.status(200).json({ data: locationData,count:count.length })
+    if (count.length == 0) {
+        res.status(200).json([])
+    } else {
+
+        res.status(200).json({ data: locationData, count: count.length })
     }
 }

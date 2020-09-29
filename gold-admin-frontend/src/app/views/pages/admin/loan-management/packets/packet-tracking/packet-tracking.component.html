@@ -62,11 +62,20 @@
                     <mat-cell *matCellDef="let packet">
                         <span *ngFor="let item of packet.locationData; last as l">
                             <span *ngIf="l">
-                                {{item?.packetLocation?.location |titlecase}}
+                                {{item?.packetLocation?.location | titlecase}}
                             </span>
                         </span>
                     </mat-cell>
                 </ng-container>
+
+                <!-- <ng-container matColumnDef="time">
+                    <mat-header-cell *matHeaderCellDef>Elapsed Time</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngIf="packet.updatedAt">
+                            <kt-elapsed-time [startTime]="packet.updatedAt"></kt-elapsed-time>
+                        </span>
+                    </mat-cell>
+                </ng-container> -->
 
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>

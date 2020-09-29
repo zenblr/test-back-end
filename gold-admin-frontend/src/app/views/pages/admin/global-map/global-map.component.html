@@ -36,15 +36,15 @@
                                 (closed)="panelOpenState = false" hideToggle>
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
-                                        {{info?.firstName}}&nbsp;
-                                        {{info?.lastName}}
+                                        {{info[0]?.user.firstName | titlecase}}&nbsp;
+                                        {{info[0]?.user.lastName | titlecase}}
 
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
 
                                 <ng-template matExpansionPanelContent>
-                                    <div *ngFor="let loan of info.appraiserRequest">
-                                        {{loan?.masterLoan?.customerLoan[0].loanUniqueId}}
+                                    <div *ngFor="let loan of info" class="pt-3">
+                                        {{loan?.customerLoan?.loanUniqueId}}
 
                                         <!-- <span *ngIf="info.masterLoan.customerLoan[1].loanUniqueId">
                                         {{info.masterLoan.customerLoan[1].loanUniqueId}}

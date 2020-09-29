@@ -47,13 +47,30 @@ exports.getInterestInfo = async (req, res, next) => {
             ['id', 'asc']
         ]
     })
-    let lastPaymentDate = null
+    let nextDueDate = null
 
-    if (lastPayment.length != 0) {
-        lastPaymentDate = lastPayment[lastPayment.length - 1].depositDate
+    nextDueDate = await models.customerLoanInterest.findOne({
+
+        where: {
+            emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
+            masterLoanId:masterLoanId
+        },
+            attributes: ['emiDueDate','emiStatus'],
+            order: [['id', 'asc']]
+        })
+
+    // if (lastPayment.length != 0) {
+    //     lastPaymentDate = lastPayment[lastPayment.length - 1].depositDate
+    // }
+    if (nextDueDate) {
+        interestInfo.loan.dataValues.nextDueDate = nextDueDate.emiDueDate
+        interestInfo.loan.dataValues.status = nextDueDate.emiStatus
+    } else {
+        interestInfo.loan.dataValues.nextDueDate = nextDueDate
+        interestInfo.loan.dataValues.status = nextDueDate
+
+
     }
-
-    interestInfo.loan.dataValues.lastPaymentDate = lastPaymentDate
 
     return res.status(200).json({ message: "success", data: interestInfo.loan })
 
@@ -325,7 +342,7 @@ exports.confirmationForPayment = async (req, res, next) => {
                     interest: 0,
                     penalInterest: 0
                 }
-                
+
                 let interest = await models.customerLoanInterest.findAll({ where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: dataLoan.secured }, transaction: t });
                 let interestAmount = await interest.map((data) => Number(data.interestAccrual));
                 let penalInterest = await interest.map((data) => Number(data.penalOutstanding));

@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         status: {
             type: DataTypes.ENUM,
-            values: ['transit', 'incomplete', 'complete'],
+            values: ['in transit', 'incomplete', 'complete'],
             field: 'status'
         },
         processingTime: {

@@ -43,15 +43,39 @@ export class GlobalMapComponent implements OnInit {
     date = this.datePipe.transform(date, 'yyyy-MM-dd');
     this.globalMapService.globalMapInfo(date).subscribe(res => {
       this.mapInfo = res.data;
+      this.packetInfo = res.data;
+      this.markers = []
+      if (res.data && res.data.length) {
+        for (const iterator of res.data) {
+          for (const data of iterator) {
+            const { latitude: lat, longitude: lng, trackingTime, trackingDate, address, masterLoanId } = data
+            const { firstName, lastName } = data.user
+            const { loanUniqueId } = data.customerLoan
+            for (const packet of data.customerLoan.packet) {
+              const { packetUniqueId } = packet
+
+              this.markers.push({ lat, lng, trackingTime, trackingDate, address, masterLoanId, isVisible: true, firstName, lastName, loanUniqueId, packetUniqueId });
+            }
+
+          }
+          this.infoToggle = new Array(this.markers.length).fill(true);
+          console.log(this.infoToggle)
+          console.log(this.markers)
+        }
+      }
+      else {
+        this.markers = []
+      }
+      this.ref.detectChanges()
     });
-    this.getGlobalMapPacketInfo(date);
+    // this.getGlobalMapPacketInfo(date);
   }
 
   getGlobalMapPacketInfo(date) {
     this.globalMapService.globalMapPacketInfo(date).subscribe(res => {
       this.packetInfo = res.data;
       this.markers = []
-      if (res.data.length) {
+      if (res.data && res.data.length) {
         for (const iterator of res.data) {
           const { latitude: lat, longitude: lng, trackingTime, trackingDate, address, masterLoanId } = iterator
           const { firstName, lastName } = iterator.user
@@ -77,27 +101,38 @@ export class GlobalMapComponent implements OnInit {
 
   clickedMarker(latitude, longitude, index) {
 
-    this.currentIndex = index;
-    if (this.previousIndex == this.currentIndex) {
-      for (let i = 0; i < this.markers.length; i++) {
-        this.markers[i].isVisible = true
-        this.infoToggle[i] = false
+    for (let i = 0; i < this.markers.length; i++) {
+      if (i != index){
+        this.infoToggle[i] = true
       }
-      this.previousIndex = -1;
+      else{
+        this.infoToggle[index] = !this.infoToggle[index]
     }
-    else {
-      for (let i = 0; i < this.markers.length; i++) {
-        if (this.currentIndex == i) {
-          this.infoToggle[i] = true
-          this.markers[i].isVisible = true
-        }
-        else {
-          this.infoToggle[i] = false
-          this.markers[i].isVisible = false
-        }
-        this.previousIndex = this.currentIndex
-      }
-    }
+  }
+
+
+    this.ref.detectChanges()
+    // this.currentIndex = index;
+    // if (this.previousIndex == this.currentIndex) {
+    //   for (let i = 0; i < this.markers.length; i++) {
+    //     this.markers[i].isVisible = true
+    //     this.infoToggle[i] = false
+    //   }
+    //   this.previousIndex = -1;
+    // }
+    // else {
+    //   for (let i = 0; i < this.markers.length; i++) {
+    //     if (this.currentIndex == i) {
+    //       this.infoToggle[i] = true
+    //       this.markers[i].isVisible = true
+    //     }
+    //     else {
+    //       this.infoToggle[i] = false
+    //       this.markers[i].isVisible = false
+    //     }
+    //     this.previousIndex = this.currentIndex
+    //   }
+    // }
 
   }
 

@@ -5,7 +5,7 @@
             <ng-container matColumnDef="appraiserName">
                 <mat-header-cell *matHeaderCellDef>Appraiser Name</mat-header-cell>
                 <mat-cell *matCellDef="let role">
-                    <span *ngIf="role.distance">
+                    <span *ngIf="role.user">
                         {{role?.user?.firstName}}
                         {{role?.user?.lastName}}
                     </span>

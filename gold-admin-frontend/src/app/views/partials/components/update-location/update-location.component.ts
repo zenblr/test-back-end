@@ -42,7 +42,7 @@ export class UpdateLocationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.data)
+    // console.log(this.data)
     if (!this.data.deliver) this.getPacketLocationList()
 
     this.locationForm = this.fb.group({
@@ -104,6 +104,11 @@ export class UpdateLocationComponent implements OnInit {
       this.controls.mobileNumber.disable();
       this.getDetailsByMobile()
     }
+
+    if (this.data.isOut) {
+      this.controls.deliveryPartnerBranchId.setValidators([Validators.required])
+      this.controls.deliveryPartnerBranchId.updateValueAndValidity()
+    }
   }
 
   setForm() {
@@ -142,6 +147,7 @@ export class UpdateLocationComponent implements OnInit {
           this.controls.packetLocationId.patchValue(this.packetLocations[0].id)
           this.getPartnerBranch()
           this.setUserType()
+          this.disablePacketLocationId()
         }
       })).subscribe()
     } else {
@@ -155,6 +161,7 @@ export class UpdateLocationComponent implements OnInit {
           this.controls.packetLocationId.patchValue(this.packetLocations[0].id)
           this.getPartnerBranch()
           this.setUserType()
+          this.disablePacketLocationId()
         }
         this.deliveryLocations = res.data
       })).subscribe()
@@ -165,6 +172,7 @@ export class UpdateLocationComponent implements OnInit {
         this.deliveryLocations = res.data.filter(e => e.id === 4)
         this.controls.deliveryPacketLocationId.patchValue(this.deliveryLocations[0].id)
         this.getdeliveryPartnerBranch()
+        this.disableDeliveryPacketLocationId()
       })).subscribe()
     }
   }
@@ -204,7 +212,7 @@ export class UpdateLocationComponent implements OnInit {
       return this.toastr.error('OTP not verified!')
 
     if (this.data.stage == 11) {
-      this.enableSingleFields()
+      this.enablePacketLocationId()
       this.enableUserType()
       this.updateLocationService.submitPacketLocation(this.locationForm.value)
         .pipe(
@@ -213,7 +221,10 @@ export class UpdateLocationComponent implements OnInit {
             this.toastr.success(msg);
             this.dialogRef.close(true);
           }),
-          finalize(() => this.disableUserType()))
+          finalize(() => {
+            this.disablePacketLocationId()
+            this.disableUserType()
+          }))
         .subscribe();
     }
     else if (this.data.deliver) {
@@ -224,15 +235,23 @@ export class UpdateLocationComponent implements OnInit {
         }
       });
     } else if (this.data.isPartnerOut) {
-      this.updateLocationService.collectPacket(this.locationForm.value).subscribe(res => {
-        if (res) {
-          const msg = 'Packet Location Updated Successfully';
-          this.toastr.success(msg);
-          this.dialogRef.close(true);
-        }
-      })
+      this.enablePacketLocationId()
+      this.enableUserType()
+      this.updateLocationService.collectPacket(this.locationForm.value)
+        .pipe(
+          map(res => {
+            const msg = 'Packet Location Updated Successfully';
+            this.toastr.success(msg);
+            this.dialogRef.close(true);
+          }),
+          finalize(() => {
+            this.disablePacketLocationId()
+            this.disableUserType()
+          })
+        ).subscribe()
     } else if (this.data.isCustomerHomeIn) {
       this.controls.receiverType.enable();
+      this.enablePacketLocationId()
       let isPartRelease = false
       let isFullRelease = false
       if (this.data.isPartRelease) {
@@ -240,24 +259,32 @@ export class UpdateLocationComponent implements OnInit {
       } else {
         isFullRelease = true
       }
-      this.updateLocationService.customerHomeOut(this.locationForm.value, isFullRelease, isPartRelease).subscribe(res => {
-        if (res) {
-          const msg = 'Packet Location Updated Successfully';
-          this.toastr.success(msg);
-          this.dialogRef.close(true);
-        }
-      }, err => { },
-        () => {
-          this.controls.receiverType.disable();
-        })
+      this.updateLocationService.customerHomeOut(this.locationForm.value, isFullRelease, isPartRelease)
+        .pipe(
+          map(res => {
+            const msg = 'Packet Location Updated Successfully';
+            this.toastr.success(msg);
+            this.dialogRef.close(true);
+          }),
+          finalize(() => {
+            this.controls.receiverType.disable()
+            this.disablePacketLocationId()
+          })
+        ).subscribe()
     } else {
-      this.updateLocationService.addPacketLocation(this.locationForm.value).subscribe(res => {
-        if (res) {
-          const msg = 'Packet Location Added Successfully';
-          this.toastr.success(msg);
-          this.dialogRef.close(true);
-        }
-      });
+      this.enablePacketLocationId()
+      this.enableDeliveryPacketLocationId()
+      this.updateLocationService.addPacketLocation(this.locationForm.value)
+        .pipe(
+          map(res => {
+            const msg = 'Packet Location Added Successfully';
+            this.toastr.success(msg);
+            this.dialogRef.close(true);
+          }),
+          finalize(() => {
+            this.disablePacketLocationId()
+            this.disableDeliveryPacketLocationId()
+          })).subscribe();
     }
   }
 
@@ -305,6 +332,7 @@ export class UpdateLocationComponent implements OnInit {
       if (this.locationForm.controls.otp.value) {
         this.locationForm.controls.otp.reset()
         this.otpVerfied = false
+        this.otpSent = false
       }
       return
     }
@@ -331,15 +359,22 @@ export class UpdateLocationComponent implements OnInit {
           this.locationForm.controls.partnerReceiverId.patchValue(res.data.id)
           break;
       }
-      if (res) {
-        this.otpSent = true;
-      }
+      // if (res) {
+      //   this.otpSent = true;
+      // }
       this.locationForm.controls.user.patchValue(`${res.data.firstName} ${res.data.lastName}`)
-      this.controls.role.patchValue(res.data.roles[0].roleName)
+      if (res.data.roles) {
+        this.controls.role.patchValue(res.data.roles[0].roleName)
+      }
     }, err => {
       this.remove()
     }
     );
+  }
+
+  sendOTP() {
+    this.otpSent = true
+    this.generateOTP()
   }
 
   generateOTP() {
@@ -581,12 +616,20 @@ export class UpdateLocationComponent implements OnInit {
     this.controls.receiverType.patchValue(userType)
   }
 
-  disableSingleFields() {
+  disablePacketLocationId() {
     this.controls.packetLocationId.disable()
   }
 
-  enableSingleFields() {
+  enablePacketLocationId() {
     this.controls.packetLocationId.enable()
+  }
+
+  disableDeliveryPacketLocationId() {
+    this.controls.deliveryPacketLocationId.disable()
+  }
+
+  enableDeliveryPacketLocationId() {
+    this.controls.deliveryPacketLocationId.enable()
   }
 
   disableUserType() {

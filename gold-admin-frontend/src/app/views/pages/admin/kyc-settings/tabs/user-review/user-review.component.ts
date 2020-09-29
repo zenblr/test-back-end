@@ -308,7 +308,7 @@ export class UserReviewComponent implements OnInit {
       panType: [, Validators.required],
       form60: [],
       panImage: [],
-      panImg: [],
+      panImg: [, Validators.required],
       identityTypeId: [, [Validators.required]],
       identityProof: [, [Validators.required]],
       identityProofFileName: [],
