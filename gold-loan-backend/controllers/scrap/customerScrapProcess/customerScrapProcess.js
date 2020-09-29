@@ -834,7 +834,7 @@ exports.disbursementOfScrapAmount = async (req, res, next) => {
 
         await sequelize.transaction(async (t) => {
 
-            let stageId = await models.scrapStage.findOne({ where: { stageName: 'disbursed' } });
+            let stageId = await models.scrapStage.findOne({ where: { stageName: 'submit packet' } });
 
             await models.customerScrap.update({ disbursementAmount: scrapAmount, scrapStageId: stageId.id, isDisbursed: true }, { where: { id: scrapId }, transaction: t });
 

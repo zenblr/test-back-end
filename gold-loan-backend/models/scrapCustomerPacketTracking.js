@@ -17,9 +17,26 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'user_sender_id'
         },
+        senderType: {
+            type: DataTypes.STRING,
+            field: 'sender_type'
+        },
+        receiverType: {
+            type: DataTypes.ENUM,
+            field: 'receiver_type',
+            values: [ 'InternalUser']
+        },
         userReceiverId: {
             type: DataTypes.INTEGER,
             field: 'user_receiver_id'
+        },
+        courier: {
+            type: DataTypes.STRING,
+            field: 'courier'
+        },
+        podNumber: {
+            type: DataTypes.STRING,
+            field: 'pod_number'
         },
         packetStatus: {
             type: DataTypes.TEXT,
@@ -29,6 +46,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'processing_time',
         },
+        isDelivered: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_delivered',
+            defaultValue: false,
+        }
     }, {
         freezeTableName: true,
         tableName: 'scrap_customer_packet_tracking',
