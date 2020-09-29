@@ -42,7 +42,7 @@ export class UpdateLocationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.data)
+    // console.log(this.data)
     if (!this.data.deliver) this.getPacketLocationList()
 
     this.locationForm = this.fb.group({
@@ -161,6 +161,7 @@ export class UpdateLocationComponent implements OnInit {
           this.controls.packetLocationId.patchValue(this.packetLocations[0].id)
           this.getPartnerBranch()
           this.setUserType()
+          this.disablePacketLocationId()
         }
         this.deliveryLocations = res.data
       })).subscribe()
@@ -234,15 +235,23 @@ export class UpdateLocationComponent implements OnInit {
         }
       });
     } else if (this.data.isPartnerOut) {
-      this.updateLocationService.collectPacket(this.locationForm.value).subscribe(res => {
-        if (res) {
-          const msg = 'Packet Location Updated Successfully';
-          this.toastr.success(msg);
-          this.dialogRef.close(true);
-        }
-      })
+      this.enablePacketLocationId()
+      this.enableUserType()
+      this.updateLocationService.collectPacket(this.locationForm.value)
+        .pipe(
+          map(res => {
+            const msg = 'Packet Location Updated Successfully';
+            this.toastr.success(msg);
+            this.dialogRef.close(true);
+          }),
+          finalize(() => {
+            this.disablePacketLocationId()
+            this.disableUserType()
+          })
+        ).subscribe()
     } else if (this.data.isCustomerHomeIn) {
       this.controls.receiverType.enable();
+      this.enablePacketLocationId()
       let isPartRelease = false
       let isFullRelease = false
       if (this.data.isPartRelease) {
@@ -257,7 +266,10 @@ export class UpdateLocationComponent implements OnInit {
             this.toastr.success(msg);
             this.dialogRef.close(true);
           }),
-          finalize(() => this.controls.receiverType.disable())
+          finalize(() => {
+            this.controls.receiverType.disable()
+            this.disablePacketLocationId()
+          })
         ).subscribe()
     } else {
       this.enablePacketLocationId()
