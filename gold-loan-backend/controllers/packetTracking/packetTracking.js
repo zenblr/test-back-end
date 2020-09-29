@@ -21,6 +21,11 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
     let query = {};
     let associateModel = [
         {
+            model: models.customerLoanDisbursement,
+            as: 'customerLoanDisbursement',
+            attributes: ['id', 'createdAt']
+        },
+        {
             model: models.customerLoan,
             as: 'customerLoan',
             attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
