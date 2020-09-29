@@ -16,7 +16,7 @@ let crypto = require('crypto');
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getSingleDayInterestAmount, getAmountLoanSplitUpData, stepDown, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoanWithOutT, intrestCalculationForSelectedLoanWithOutT, getCustomerLoanId } = require('../../utils/loanFunction')
+let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, nextDueDateInterest, getAmountLoanSplitUpData, stepDown, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoanWithOutT, intrestCalculationForSelectedLoanWithOutT, getCustomerLoanId } = require('../../utils/loanFunction')
 
 exports.razorPayCreateOrder = async (req, res, next) => {
     let { amount } = req.body;
@@ -41,23 +41,47 @@ exports.getInterestInfo = async (req, res, next) => {
 
     let interestInfo = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
 
-    let lastPayment = await models.customerLoanTransaction.findAll({
-        where: { masterLoanId: masterLoanId, depositStatus: "Completed", paymentFor: 'quickPay' },
-        order: [
-            ['id', 'asc']
-        ]
+    // let lastPayment = await models.customerLoanTransaction.findAll({
+    //     where: { masterLoanId: masterLoanId, depositStatus: "Completed", paymentFor: 'quickPay' },
+    //     order: [
+    //         ['id', 'asc']
+    //     ]
+    // })
+
+    let secureHighestSlabRate = await models.customerLoanSlabRate.findOne({
+        where: {
+            loanId: interestInfo.loan.customerLoan[0].id
+        },
+        order: [['id', 'desc']],
+        attributes: ['interestRate']
     })
+    interestInfo.loan.dataValues.secureHighestSlabRate = secureHighestSlabRate
+
+    if (interestInfo.loan.customerLoan.length > 1) {
+        var unsecureHighestSlabRate = await models.customerLoanSlabRate.findOne({
+            where: {
+                loanId: interestInfo.loan.customerLoan[1].id
+            },
+            order: [['id', 'desc']],
+            attributes: ['interestRate']
+
+        })
+        interestInfo.loan.dataValues.unsecureHighestSlabRate = unsecureHighestSlabRate
+
+    }
     let nextDueDate = null
+
+
 
     nextDueDate = await models.customerLoanInterest.findOne({
 
         where: {
             emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
-            masterLoanId:masterLoanId
+            masterLoanId: masterLoanId
         },
-            attributes: ['emiDueDate','emiStatus'],
-            order: [['id', 'asc']]
-        })
+        attributes: ['emiDueDate', 'emiStatus'],
+        order: [['id', 'asc']]
+    })
 
     // if (lastPayment.length != 0) {
     //     lastPaymentDate = lastPayment[lastPayment.length - 1].depositDate
@@ -84,7 +108,7 @@ exports.payableAmount = async (req, res, next) => {
 
     let loan = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
 
-    let interest = await getSingleDayInterestAmount(loan.loan)
+    let interest = await nextDueDateInterest(loan.loan)
 
     let data = await payableAmountForLoan(amount, loan.loan)
     data.unsecuredTotalInterest = interest.unsecuredTotalInterest
@@ -99,23 +123,27 @@ exports.payableAmountConfirm = async (req, res, next) => {
 
     let payableAmount = 0;
 
-    let interestTable = await models.customerLoanInterest.findAll({
-        where: {
-            masterLoanId: masterLoanId,
-            emiStatus: { [Op.notIn]: ['paid'] },
-        }
-    })
+    // let interestTable = await models.customerLoanInterest.findAll({
+    //     where: {
+    //         masterLoanId: masterLoanId,
+    //         emiStatus: { [Op.notIn]: ['paid'] },
+    //     }
+    // })
 
-    for (const emi of interestTable) {
-        payableAmount += Number(emi.outstandingInterest)
-        if (emi.penalInterest) {
-            payableAmount += Number(emi.penalInterest)
+    // for (const emi of interestTable) {
+    //     payableAmount += Number(emi.outstandingInterest)
+    //     if (emi.penalInterest) {
+    //         payableAmount += Number(emi.penalInterest)
 
-        }
-    }
+    //     }
+    // }
+    let loan = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
+
+    let interest = await nextDueDateInterest(loan.loan)
+    payableAmount = Number(interest.unsecuredTotalInterest) + Number(interest.securedTotalInterest)
 
     if (payableAmount < Number(amount)) {
-        return res.status(403).json({ message: "Amount should Be less than payable amount" });
+        return res.status(403).json({ message: "Please opt for Part Payment option to pay more amount" });
 
     }
 
@@ -483,14 +511,14 @@ exports.confirmationForPayment = async (req, res, next) => {
                         //debit
                         let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true } });
                         if (checkDebitEntry.length == 0) {
-                            let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true, debit: amount.penalInterest, description: `Penal interest`,paymentDate:moment() }, { transaction: t });
+                            let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true, debit: amount.penalInterest, description: `Penal interest`, paymentDate: moment() }, { transaction: t });
                             await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                         } else {
                             let debitedAmount = await checkDebitEntry.map((data) => Number(data.debit));
                             let totalDebitedAmount = _.sum(debitedAmount);
                             let newDebitAmount = amount.penalInterest - totalDebitedAmount;
                             if (newDebitAmount > 0) {
-                                let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true, debit: newDebitAmount, description: `Penal interest`,paymentDate:moment() }, { transaction: t });
+                                let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true, debit: newDebitAmount, description: `Penal interest`, paymentDate: moment() }, { transaction: t });
                                 await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                             }
                         }
@@ -503,14 +531,14 @@ exports.confirmationForPayment = async (req, res, next) => {
                             //debit
                             let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: false } });
                             if (checkDebitEntry.length == 0) {
-                                let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: amount.interestAmount, description: `Extra days interest`,paymentDate:moment() }, { transaction: t });
+                                let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: amount.interestAmount, description: `Extra days interest`, paymentDate: moment() }, { transaction: t });
                                 await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                             } else {
                                 let debitedAmount = await checkDebitEntry.map((data) => Number(data.debit));
                                 let totalDebitedAmount = _.sum(debitedAmount);
                                 let newDebitAmount = amount.interestAmount - totalDebitedAmount;
                                 if (newDebitAmount > 0) {
-                                    let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: newDebitAmount, description: `Extra days interest`,paymentDate:moment() }, { transaction: t });
+                                    let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: newDebitAmount, description: `Extra days interest`, paymentDate: moment() }, { transaction: t });
                                     await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                                 }
                             }
@@ -527,7 +555,7 @@ exports.confirmationForPayment = async (req, res, next) => {
             }
             //all credit
             //
-            let transactionData = await models.customerLoanTransaction.findOne({where:{id:transactionId}});
+            let transactionData = await models.customerLoanTransaction.findOne({ where: { id: transactionId } });
             let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: transactionId, masterLoanId: masterLoanId, credit: transactionData.transactionAmont, description: `Quick pay amount received`, paymentDate: receivedDate, }, { transaction: t });
             await models.customerTransactionDetail.update({ referenceId: `${uniqid.time().toUpperCase()}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
             // 
