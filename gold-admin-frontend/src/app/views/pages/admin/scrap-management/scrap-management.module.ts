@@ -30,6 +30,7 @@ import { CustomerDetailsComponent } from '../../../partials/components/customer-
 import { LoanScrapDetailsComponent } from '../../../partials/components/loan-scrap-details/loan-scrap-details.component';
 import { StandardDeductionListComponent } from './standard-deduction/standard-deduction-list/standard-deduction-list.component';
 import { AddStandardDeductionComponent } from './standard-deduction/add-standard-deduction/add-standard-deduction.component';
+import { ScrapUpdateLocationComponent } from '../../../partials/components/scrap-update-location/scrap-update-location.component';
 
 const routes: Routes = [
   {
@@ -147,7 +148,7 @@ const routes: Routes = [
     UserReviewComponent,
     QuickPayComponent,
     AddStandardDeductionComponent,
-
+    ScrapUpdateLocationComponent,
   ]
 })
 export class ScrapManagementModule { }

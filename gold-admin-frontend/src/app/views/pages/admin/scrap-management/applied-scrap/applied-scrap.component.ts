@@ -7,6 +7,8 @@ import { AppliedScrapDatasource, AppliedScrapService } from '../../../../../core
 import { Router } from '@angular/router';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { ScrapPacketTrackingService } from '../../../../../core/scrap-management/scrap-packet-tracking/services/scrap-packet-tracking.service';
+import { ScrapUpdateLocationComponent } from '../../../../../views/partials/components/scrap-update-location/scrap-update-location.component';
 
 @Component({
   selector: 'kt-applied-scrap',
@@ -40,7 +42,8 @@ export class AppliedScrapComponent implements OnInit {
     private dataTableService: DataTableService,
     private router: Router,
     private sharedService: SharedService,
-    private ngxPermission: NgxPermissionsService
+    private ngxPermission: NgxPermissionsService,
+    private scrapPacketTrackingService: ScrapPacketTrackingService
   ) {
     this.ngxPermission.permissions$.subscribe(res => {
       this.permission = res
@@ -149,4 +152,33 @@ export class AppliedScrapComponent implements OnInit {
     this.router.navigate(['/admin/scrap-management/view-scrap', scrap.id])
   }
 
+  getPacketDetails(item) {
+    // if (!this.permission.submitPacketLocation) {
+    //   return;
+    // }
+    const scrapId = item.id;
+    this.scrapPacketTrackingService.viewPackets({ scrapId }).pipe(map(res => {
+      let data = res.data[0].scrapPackets;
+      this.submitPacket(data);
+    }
+    )).subscribe();
+  }
+
+  submitPacket(packetData) {
+    const dialogRef = this.dialog.open(ScrapUpdateLocationComponent, {
+      data: { packetData, stage: 11 },
+      width: '500px',
+    })
+
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadAppliedScrapsPage();
+      }
+    });
+  }
+
+  getPermission() {
+    const notAllowed = this.permission.submitPacketLocation ? false : true;
+    return notAllowed;
+  }
 }
