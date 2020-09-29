@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         
         battery:{
-            type:DataTypes.FLOAT,
+            type:DataTypes.STRING,
             field:'battery'
         },
         network:{
@@ -48,6 +48,11 @@ module.exports = (sequelize, DataTypes) => {
         trackingTime:{
             type:DataTypes.TIME,
             field:'tracking_time'
+        },
+        isActive:{
+            type: DataTypes.BOOLEAN,
+            field: 'is_active',
+            defaultValue: true,
         }
 
     },
@@ -63,6 +68,7 @@ module.exports = (sequelize, DataTypes) => {
         PacketTracking.belongsTo(models.customerLoan, { foreignKey: 'customerLoanId', as: 'customerLoan' });
         PacketTracking.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
 
+        PacketTracking.hasMany(models.packetTrackingMasterloan,{foreignKey:'packetTrackingId',as:'packetTrackingMasterloan'})
     }
 
     return PacketTracking

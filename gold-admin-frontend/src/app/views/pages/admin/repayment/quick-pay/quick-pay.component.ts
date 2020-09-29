@@ -39,6 +39,7 @@ export class QuickPayComponent implements OnInit {
   ngOnInit() {
     this.masterLoanId = this.rout.snapshot.params.id
     this.getInterestInfo(this.masterLoanId)
+    this.getPayableAmount()
   }
 
   getInterestInfo(id) {

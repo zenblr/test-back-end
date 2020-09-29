@@ -10,7 +10,7 @@
                         <th class="transparent">Scheme Name</th>
                         <th class="transparent">Tenure</th>
                         <th class="transparent">Interest Rate</th>
-                        <th class="transparent">Last Payment Date</th>
+                        <th class="transparent">Next Due Date</th>
                         <th class="transparent">Status</th>
 
 
@@ -44,9 +44,14 @@
                                 <span *ngIf="loanDetails?.customerLoan[1]">
                                     {{loanDetails?.customerLoan[1]?.currentInterestRate }}%
                                 </span></td>
-                            <td *ngIf="loanDetails?.lastPaymentDate else blankTableValue">
-                                {{loanDetails?.lastPaymentDate | date : 'mediumDate'}}</td>
-                            <td class="text-warning">Pending</td>
+                            <td *ngIf="loanDetails?.nextDueDate else blankTableValue">
+                                {{loanDetails?.nextDueDate | date : 'mediumDate'}}</td>
+                            <td class="text-warning" *ngIf="loanDetails?.status == 'pending' || 'partially paid'">
+                                {{loanDetails?.status | titlecase}}
+                            </td>
+                            <td class="text-success" *ngIf="loanDetails?.status == 'paid'">
+                                {{loanDetails?.status | titlecase}}
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -56,21 +61,7 @@
                 <td>-</td>
             </ng-template>
 
-            <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
-                <div class="col-6 text-center">
-                    <kt-button [value]="'Pay EMI'" [notTitleCase]="true" [type]="'button'" (click)="getPayableAmount()">
-                    </kt-button>
-                    <span class="kt-padding-5 "></span>
-                    <kt-button [value]="'View Interest EMI Logs'" [notTitleCase]="true" [type]="'button'"
-                        (click)="viewEmiLogs()"></kt-button>
-                    <span class="kt-padding-5 "></span>
-                    <kt-button [value]="'Transaction History'" [type]="'button'" (click)="transcationHistory()">
-                    </kt-button>
-
-                    <!-- <kt-button [value]="'View Part Payment EMI'" [type]="'button'"></kt-button> -->
-
-                </div>
-            </div>
+           
             <div *ngIf="payableAmount">
                 <div class="table-div kt-padding-t-10">
                     <table class="table outer-border">
@@ -115,7 +106,7 @@
                                     </mat-error>
                                     <mat-error *ngIf="payableAmt.errors?.value && payableAmt.touched">
                                         <small>
-                                            Amount should Be less than payable amount
+                                            Please opt for Part Payment option to pay more amount
                                         </small>
 
                                     </mat-error>
@@ -125,7 +116,7 @@
                     </table>
                 </div>
 
-                <div class="row justify-content-center kt-padding-t-25 kt-padding-b-10">
+                <!-- <div class="row justify-content-center kt-padding-t-25 kt-padding-b-10">
                     <div class="col-6 text-center">
                         <kt-button [value]="'Proceed'" [type]="'button'" (click)="payment()"></kt-button>
                         <span class="kt-padding-5"></span>
@@ -134,10 +125,28 @@
                         </kt-button>
 
                     </div>
-                </div>
+                </div> -->
             </div>
 
+            <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
+                <div class="col-8 text-center">
+                    <kt-button [value]="'Proceed'" [type]="'button'" (click)="payment()"></kt-button>
+                    <!-- <kt-button [value]="'Pay EMI'" [notTitleCase]="true" [type]="'button'" (click)="getPayableAmount()">
+                    </kt-button> -->
+                    <span class="kt-padding-5 "></span>
+                    <kt-button [value]="'View Interest EMI Logs'" [notTitleCase]="true" [type]="'button'"
+                        (click)="viewEmiLogs()"></kt-button>
+                    <span class="kt-padding-5 "></span>
+                    <kt-button [value]="'Transaction History'" [type]="'button'" (click)="transcationHistory()">
+                    </kt-button>
+                    <span class="kt-padding-5"></span>
+                    <kt-button [value]="'Cancel'" [type]="'reset'"
+                        (click)="paymentDetails = '';payableAmt.enable(); payableAmt.reset();">
+                    </kt-button>
+                    <!-- <kt-button [value]="'View Part Payment EMI'" [type]="'button'"></kt-button> -->
 
+                </div>
+            </div>
             <h5 class="kt-padding-t-20 kt-padding-b-20" *ngIf="paymentDetails">Payment Confirmation</h5>
             <div class="table-div" *ngIf="paymentDetails">
                 <table class="table outer-border ">

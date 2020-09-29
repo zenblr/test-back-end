@@ -21,6 +21,11 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
     let query = {};
     let associateModel = [
         {
+            model: models.customerLoanDisbursement,
+            as: 'customerLoanDisbursement',
+            attributes: ['id', 'createdAt']
+        },
+        {
             model: models.customerLoan,
             as: 'customerLoan',
             attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
@@ -243,6 +248,7 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
             model: models.internalBranch,
             as: 'internalBranch'
         },
+
         {
             model: models.partnerBranch,
             as: 'partnerBranch',
@@ -333,9 +339,19 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
 
     });
 
+    let lastLocation = await models.packetTracking.findOne({
+        where: { isActive: true },
+        attributes: ['address'],
+        include: [{
+            model: models.packetTrackingMasterloan,
+            as: 'packetTrackingMasterloan',
+            where: { masterLoanId },
+            attributes:['id','masterLoanId']
+        }]
+    })
 
     if (logDetail.length != 0) {
-        return res.status(200).json({ data: logDetail, count: count.length });
+        return res.status(200).json({ data: logDetail, count: count.length, lastLocation });
     }
     else {
         return res.status(404).json({ message: 'Data not found!' });
@@ -346,6 +362,10 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
 exports.addPacketLocation = async (req, res) => {
 
     let { latitude, longitude, appraiserId, packetId, masterLoanId, customerLoanId, packetLocationId } = req.body
+
+    await models.packetTracking.update(
+        { isActive: false },
+        { where: { masterLoanId: masterLoanId } })
 
     let packetlocation = await models.packetTracking.create({ latitude, longitude, appraiserId, packetId, masterLoanId, customerLoanId, packetLocationId })
 
@@ -362,40 +382,57 @@ exports.addPacketTracking = async (req, res, next) => {
     let userId = req.userData.id;
 
 
-    let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
-    let master = await models.customerLoanMaster.findAll({
-        where: {
-            isActive: true,
-            loanStageId: stageId.id
-        }
-    })
+    // let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
+    // let master = await models.customerLoanMaster.findAll({
+    //     where: {
+    //         isActive: true,
+    //         loanStageId: stageId.id
+    //     }
+    // })
 
-    if (master.length === 0) {
-        return res.status(200).json({ message: "Loan is not yet disbursed" })
-    }
+    // if (master.length === 0) {
+    //     return res.status(200).json({ message: "Loan is not yet disbursed" })
+    // }
 
     var trackingTime = getAll['trackingDate']
     var date = moment(trackingTime);
     var timeComponent = date.utc(true).format('HH:mm');
 
+
     getAll['createdBy'] = createdBy
     getAll['modifiedBy'] = modifiedBy
     getAll['userId'] = userId
     getAll['trackingTime'] = timeComponent;
+    getAll['isActive'] = true
+
+    let packet = await sequelize.transaction(async t => {
+        let masterLoanArray = []
+        let deActivate = await models.packetTracking.update({ isActive: false },
+            {
+                where: {
+                    userId: userId,
+                    trackingDate: moment().format('YYYY-MM-DD')
+                }, transaction: t,
+            })
+        let packetTracking = await models.packetTracking.create(getAll, { transaction: t })
 
 
 
+        for (let index = 0; index < getAll['masterLoanArray'].length; index++) {
+            const element = getAll['masterLoanArray'][index];
+            let masterLoanObject = {}
+            masterLoanObject.packetTrackingId = packetTracking.id
+            masterLoanObject.masterLoanId = element
 
-    let customerLoan = await models.customerLoan.findAll({
-        where: { masterLoanId: getAll.masterLoanId },
-        order: ['id']
+            masterLoanArray.push(masterLoanObject)
+        }
+
+        let data = await models.packetTrackingMasterloan.bulkCreate(masterLoanArray, { transaction: t })
     })
 
-    getAll['customerLoanId'] = customerLoan[0].id
 
-    // let packet = await sequelize.transaction(async t => {
-    let packetTracking = await models.packetTracking.create(getAll)
-    // })
+
+
 
     return res.status(200).json({ message: "Success" })
 }
