@@ -45,7 +45,7 @@ export class AssignAppraiserComponent implements OnInit {
   };
   startTime: string = '09:00 am';
   endTime: string;
-  addStartTime: string =  '09:00 am';
+  addStartTime: string;
   internalBranchId: any;
   max: string = '06:00 pm';
 
@@ -130,7 +130,7 @@ export class AssignAppraiserComponent implements OnInit {
       userType: [, [Validators.required]],
       appraiserId: [, [Validators.required]],
       releaserId: [, [Validators.required]],
-      appoinmentDate: [,[Validators.required]],
+      appoinmentDate: [, [Validators.required]],
       startTime: [this.addStartTime, [Validators.required]],
       endTime: [, [Validators.required]],
       partReleaseId: [],

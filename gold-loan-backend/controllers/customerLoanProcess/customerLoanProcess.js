@@ -1424,7 +1424,7 @@ exports.loanOpsTeamRating = async (req, res, next) => {
                 })
                 if (loan.isUnsecuredSchemeApplied) {
                     let amount = loan.customerLoan[1].loanAmount;
-                    let unsecuredDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[1].id, debit: amount, description: `Loan amount disbursed to customer` }, { transaction: t })
+                    let unsecuredDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[1].id, debit: amount, description: `Loan amount disbursed to customer`,paymentDate:moment() }, { transaction: t })
                     await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[1].loanUniqueId}-${unsecuredDisbursed.id}` }, { where: { id: unsecuredDisbursed.id }, transaction: t })
 
                     // let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, debit: loan.processingCharge, description: `Processing charges debit` }, { transaction: t })
@@ -1433,11 +1433,11 @@ exports.loanOpsTeamRating = async (req, res, next) => {
                     // let processing = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[1].id, credit: loan.processingCharge, description: `Processing charges for current loan from the customer` }, { transaction: t })
                     // await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[1].loanUniqueId}}-${processing.id}` }, { where: { id: processing.id }, transaction: t })
 
-                    let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[0].id, debit: loan.customerLoan[0].loanAmount, description: `Loan amount disbursed to customer` }, { transaction: t })
+                    let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[0].id, debit: loan.customerLoan[0].loanAmount, description: `Loan amount disbursed to customer`,paymentDate:moment() }, { transaction: t })
                     await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[0].loanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
                 } else {
                     let amount = loan.customerLoan[0].loanAmount - loan.processingCharge;
-                    let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[0].id, debit: amount, description: `Loan amount disbursed to customer` }, { transaction: t })
+                    let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: loan.customerLoan[0].id, debit: amount, description: `Loan amount disbursed to customer`,paymentDate:moment() }, { transaction: t })
                     await models.customerTransactionDetail.update({ referenceId: `${loan.customerLoan[0].loanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
 
                     // let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, debit: loan.processingCharge, description: `Processing charges debit` }, { transaction: t })
@@ -1660,22 +1660,22 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
 
             if (isUnsecuredSchemeApplied) {
 
-                let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, debit: processingCharge, description: `Processing charges debit` }, { transaction: t })
+                let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, debit: processingCharge, description: `Processing charges debit`,paymentDate:moment() }, { transaction: t })
                 await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${processingDebit.id}` }, { where: { id: processingDebit.id }, transaction: t })
 
                 let amountPaid = fullUnsecuredAmount - processingCharge;
-                let unsecuredDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, debit: amountPaid, description: `Loan amount disbursed to customer` }, { transaction: t })
+                let unsecuredDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: unsecuredLoanId, debit: amountPaid, description: `Loan amount disbursed to customer`,paymentDate:moment() }, { transaction: t })
                 await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${unsecuredDisbursed.id}` }, { where: { id: unsecuredDisbursed.id }, transaction: t })
 
-                let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: fullSecuredAmount, description: `Loan amount disbursed to customer` }, { transaction: t })
+                let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: fullSecuredAmount, description: `Loan amount disbursed to customer`,paymentDate:moment() }, { transaction: t })
                 await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
             } else {
 
-                let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: processingCharge, description: `Processing charges debit` }, { transaction: t })
+                let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: processingCharge, description: `Processing charges debit`,paymentDate:moment() }, { transaction: t })
                 await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${processingDebit.id}` }, { where: { id: processingDebit.id }, transaction: t })
 
                 let amountPaid = fullSecuredAmount - processingCharge;
-                let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: amountPaid, description: `Loan amount disbursed to customer` }, { transaction: t })
+                let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: amountPaid, description: `Loan amount disbursed to customer`,paymentDate:moment() }, { transaction: t })
                 await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
 
 
@@ -1718,6 +1718,13 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
                     accountHolderName, accountNumber, disbursementStatus, createdBy, modifiedBy
                 }, { transaction: t })
             }
+
+            //packet tracking entry
+            let packetLocation = await models.packetLocation.findOne({ where: { location: 'amount disbursed' } });
+
+            await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocation.id, status: 'in transit' }, { transaction: t });
+
+            await models.customerPacketTracking.create({ masterLoanId, internalBranchId: req.userData.internalBranchId, packetLocationId: packetLocation.id, userSenderId: req.userData.id, isDelivered: true, status: 'in transit' }, { transaction: t });
 
             await models.customerLoanHistory.create({ loanId: securedLoanId, masterLoanId, action: LOAN_DISBURSEMENT, modifiedBy }, { transaction: t });
             if (Loan.isUnsecuredSchemeApplied == true) {
@@ -2111,7 +2118,7 @@ exports.appliedLoanDetails = async (req, res, next) => {
             [models.customerLoan, "id", "asc"],
 
         ],
-        attributes: ['id', 'loanStatusForAppraiser', 'loanStatusForBM', 'loanStatusForOperatinalTeam', 'loanStartDate', 'securedLoanAmount', 'unsecuredLoanAmount', 'finalLoanAmount', 'loanStageId', 'isLoanSubmitted', 'commentByAppraiser', 'commentByBM', 'commentByOperatinalTeam'],
+        attributes: ['id', 'loanStatusForAppraiser', 'loanStatusForBM', 'loanStatusForOperatinalTeam', 'loanStartDate', 'securedLoanAmount', 'unsecuredLoanAmount', 'finalLoanAmount', 'loanStageId', 'isLoanCompleted', 'isLoanSubmitted', 'commentByAppraiser', 'commentByBM', 'commentByOperatinalTeam'],
         offset: offset,
         limit: pageSize,
 
@@ -2322,14 +2329,14 @@ exports.getDetailsForPrint = async (req, res, next) => {
     if (customerLoanDetail.loanOrnamentsDetail.length != 0) {
         for (let ornamentsDetail of customerLoanDetail.loanOrnamentsDetail) {
             ornaments.push({
-                name: ornamentsDetail.ornamentType.name,
+                ornamentType: ornamentsDetail.ornamentType.name,
                 quantity: ornamentsDetail.quantity,
                 grossWeight: ornamentsDetail.grossWeight,
                 netWeight: ornamentsDetail.netWeight,
-                deductionWeight: ornamentsDetail.deductionWeight
+                deduction: ornamentsDetail.deductionWeight
             })
         }
-        customerLoanDetail.ornamentType = ornaments;
+        //customerLoanDetail.ornamentType = ornaments;
     }
 
     let customerAddress = []
@@ -2387,7 +2394,6 @@ exports.getDetailsForPrint = async (req, res, next) => {
     }
 
 
-
     var customerSecureLoanData = await [{
         partnerName: customerLoanDetail.customerLoan[0].partner.name,
         Name: customerLoanDetail.customer.firstName + " " + customerLoanDetail.customer.lastName,
@@ -2407,14 +2413,9 @@ exports.getDetailsForPrint = async (req, res, next) => {
         accountNumber: customerLoanDetail.loanBankDetail.accountNumber,
         bankName: customerLoanDetail.loanBankDetail.accountHolderName,
         ifscCode: customerLoanDetail.loanBankDetail.ifscCode,
-        ornamentTypes: customerLoanDetail.ornamentType[0].name,
-        quantity: customerLoanDetail.ornamentType[0].quantity,
-        grossWeight: customerLoanDetail.ornamentType[0].grossWeight,
-        deduction: customerLoanDetail.ornamentType[0].deductionWeight,
-        netWeight: customerLoanDetail.ornamentType[0].netWeight,
-
+        ornaments
     }];
-    //console.log(customerSecureLoanData)
+    //console.log(ornaments)
 
     let fileName = await `AcknowledgeOFPledge${Date.now()}`;
     document = await {

@@ -8,6 +8,11 @@ module.exports = (sequelize, DataTypes) => {
         packetLocationId: {
             type: DataTypes.INTEGER,
             field: 'packet_location_id'
+        },
+        status: {
+            type: DataTypes.ENUM,
+            values: ['in transit', 'incomplete', 'complete'],
+            field: 'status'
         }
     },
         {

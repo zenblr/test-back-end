@@ -130,8 +130,8 @@
 
                                 <div class="col-5 kt-padding-t-15">
                                     <!-- <mat-form-field appearance="outline" class="w-100"> -->
-                                    <input class="form-control" formControlName="otp" autocomplete="off"
-                                        placeholder="Enter OTP"
+                                    <input class="form-control" numbersOnly maxlength="4" formControlName="otp"
+                                        autocomplete="off" placeholder="Enter OTP"
                                         [class.isError]="controls.otp.touched && controls.otp.invalid">
                                     <mat-error *ngIf="controls.otp.errors?.required && controls.otp.touched">
                                         Required field

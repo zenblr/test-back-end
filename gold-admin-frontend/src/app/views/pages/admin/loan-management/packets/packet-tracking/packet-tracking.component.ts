@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { Subscription, merge, Subject, from } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
@@ -20,7 +20,7 @@ import { OrnamentsComponent } from '../../../../../partials/components/ornaments
 })
 export class PacketTrackingComponent implements OnInit {
   dataSource: PacketTrackingDatasource;
-  displayedColumns = ['userName', 'customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'actions'];
+  displayedColumns = ['userName', 'customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'status', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
@@ -43,7 +43,8 @@ export class PacketTrackingComponent implements OnInit {
     private layoutUtilsService: LayoutUtilsService,
     private toastr: ToastrService,
     private ngxPermissionService: NgxPermissionsService,
-    private router: Router
+    private router: Router,
+    private ref: ChangeDetectorRef
   ) {
     this.packetTrackingService.openModal$.pipe(
       map(res => {
@@ -95,6 +96,10 @@ export class PacketTrackingComponent implements OnInit {
 
     this.dataSource.loadpackets(this.queryParamsData);
 
+  }
+
+  ngAfterContentChecked() {
+    this.ref.detectChanges();
   }
 
   ngOnDestroy() {
@@ -222,7 +227,7 @@ export class PacketTrackingComponent implements OnInit {
   checkForPartnerBranchIn(packet) {
     const lastIndex = packet.locationData[packet.locationData.length - 1]
     const id = lastIndex.packetLocation.id
-    const isNotAllowed = id == 4 || id == 3 || id == 7 ? true : false
+    const isNotAllowed = id == 4 || id == 3 || id == 7 || packet.isLoanCompleted ? true : false
     return isNotAllowed
   }
 
