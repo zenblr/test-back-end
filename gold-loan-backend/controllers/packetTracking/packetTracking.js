@@ -21,6 +21,11 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
     let query = {};
     let associateModel = [
         {
+            model: models.customerLoanDisbursement,
+            as: 'customerLoanDisbursement',
+            attributes: ['id', 'createdAt']
+        },
+        {
             model: models.customerLoan,
             as: 'customerLoan',
             attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
@@ -333,9 +338,13 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
 
     });
 
+    let lastLocation = await models.packetTracking.findOne({
+        where: { masterLoanId, isActive: true },
+        attributes:['address']
+    })
 
     if (logDetail.length != 0) {
-        return res.status(200).json({ data: logDetail, count: count.length });
+        return res.status(200).json({ data: logDetail, count: count.length, lastLocation });
     }
     else {
         return res.status(404).json({ message: 'Data not found!' });
@@ -396,7 +405,7 @@ exports.addPacketTracking = async (req, res, next) => {
 
             let customerLoan = await models.customerLoan.findAll({
                 where: { masterLoanId: getAll.masterLoanId },
-                order: [['id','asc']]
+                order: [['id', 'asc']]
             })
 
             getAll['customerLoanId'] = customerLoan[0].id
