@@ -20,7 +20,7 @@ import { OrnamentsComponent } from '../../../../../partials/components/ornaments
 })
 export class PacketTrackingComponent implements OnInit {
   dataSource: PacketTrackingDatasource;
-  displayedColumns = ['userName', 'customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'status', 'actions'];
+  displayedColumns = ['userName', 'customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'status', 'time', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
@@ -119,8 +119,8 @@ export class PacketTrackingComponent implements OnInit {
   loadPackets() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
-    let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
-    let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
+    this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
+    this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
     this.dataSource.loadpackets(this.queryParamsData);
   }

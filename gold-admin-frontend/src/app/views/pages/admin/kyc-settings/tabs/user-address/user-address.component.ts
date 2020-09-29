@@ -36,7 +36,7 @@ export class UserAddressComponent implements OnInit {
   identityFileNameArray = [];
   addressFileNameArray1 = [];
   addressFileNameArray2 = [];
-  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456, moduleId: 3, userType: "Corporate" }
+  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456, moduleId: 1, userType: null }
 
   constructor(
     private fb: FormBuilder,
@@ -126,17 +126,11 @@ export class UserAddressComponent implements OnInit {
   getAddressProofType() {
     this.userAddressService.getAddressProofType().subscribe(res => {
       this.addressProofs = res.data;
-    }, err => {
-      // console.log(err);
     })
   }
 
   getFileInfo(event, type: any) {
     this.files = event.target.files[0];
-
-    // var name = event.target.files[0].name
-
-    // var ext = name.split('.')
 
     if (this.sharedService.fileValidator(event)) {
       const params = {
@@ -156,9 +150,7 @@ export class UserAddressComponent implements OnInit {
 
             this.identityForm.patchValue({ identityProofImg: this.images.identityProof });
             this.identityForm.patchValue({ identityProof: this.imageId.identityProof });
-
             this.identityForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
-
 
           } else if (type == 1 && this.images.residential.length < 2) {
             this.imageId.residential.push(res.uploadFile.path)
@@ -271,10 +263,6 @@ export class UserAddressComponent implements OnInit {
 
   get addressControls() {
     return (<FormArray>this.identityForm.controls.address as FormArray);
-
-    // console.log(control);
-    // return control.at(0) as FormGroup;
-
   }
 
   sameAddress(event: MatCheckbox) {
@@ -317,7 +305,7 @@ export class UserAddressComponent implements OnInit {
       this.addressControls.at(1).enable();
       this.addressFileNameArray2 = []
     }
-    this.addressControls.at(0)['controls'].addressProofNumber.disable()
+    // this.addressControls.at(0)['controls'].addressProofNumber.disable()
   }
 
   removeImages(index, type) {
@@ -327,16 +315,12 @@ export class UserAddressComponent implements OnInit {
       this.imageId.identityProof.splice(index, 1);
       this.identityFileNameArray.splice(index, 1);
       this.identityForm.get('identityProofFileName').patchValue(this.identityFileNameArray);
+      // this.removeImageFromAddress(index)           // remove from permanent address
     } else if (type == 'residential') {
       this.images.residential.splice(index, 1);
       this.imageId.residential.splice(index, 1);
       this.addressFileNameArray2.splice(index, 1);
       this.addressControls.at(1)['controls'].addressProofFileName.patchValue(this.addressFileNameArray2)
-      // if (this.sameAdd) {
-      //   this.addressFileNameArray2.splice(index, 1);
-      //   this.addressControls.at(0)['controls'].addressProofFileName.patchValue(this.addressFileNameArray2)
-
-      // }
     } else if (type == 'permanent') {
       this.images.permanent.splice(index, 1);
       this.imageId.permanent.splice(index, 1);
@@ -347,6 +331,16 @@ export class UserAddressComponent implements OnInit {
         this.addressControls.at(1)['controls'].addressProofFileName.patchValue(this.addressFileNameArray2)
 
       }
+    }
+  }
+
+  removeImageFromAddress(index) {
+    const addressControlZero = this.addressControls.at(0)
+    if (addressControlZero.get('addressProofTypeId').value == 2) {
+      this.images.permanent.splice(index, 1);
+      this.imageId.permanent.splice(index, 1);
+      this.addressFileNameArray1.splice(index, 1);
+      this.addressControls.at(0)['controls'].addressProofFileName.patchValue(this.addressFileNameArray1)
     }
   }
 
