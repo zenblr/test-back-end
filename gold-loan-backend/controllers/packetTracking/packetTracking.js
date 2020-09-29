@@ -248,6 +248,7 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
             model: models.internalBranch,
             as: 'internalBranch'
         },
+
         {
             model: models.partnerBranch,
             as: 'partnerBranch',
@@ -339,8 +340,14 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
     });
 
     let lastLocation = await models.packetTracking.findOne({
-        where: { masterLoanId, isActive: true },
-        attributes:['address']
+        where: { isActive: true },
+        attributes: ['address'],
+        include: [{
+            model: models.packetTrackingMasterloan,
+            as: 'packetTrackingMasterloan',
+            where: { masterLoanId },
+            attributes:['id','masterLoanId']
+        }]
     })
 
     if (logDetail.length != 0) {
@@ -391,31 +398,38 @@ exports.addPacketTracking = async (req, res, next) => {
     var date = moment(trackingTime);
     var timeComponent = date.utc(true).format('HH:mm');
 
-    for (let index = 0; index < getAll['masterLoanArray'].length; index++) {
-        const element = getAll['masterLoanArray'][index];
-        getAll['createdBy'] = createdBy
-        getAll['modifiedBy'] = modifiedBy
-        getAll['userId'] = userId
-        getAll['trackingTime'] = timeComponent;
-        getAll['masterLoanId'] = element
-        getAll['isActive'] = true
 
-        let packet = await sequelize.transaction(async t => {
+    getAll['createdBy'] = createdBy
+    getAll['modifiedBy'] = modifiedBy
+    getAll['userId'] = userId
+    getAll['trackingTime'] = timeComponent;
+    getAll['isActive'] = true
 
-
-            let customerLoan = await models.customerLoan.findAll({
-                where: { masterLoanId: getAll.masterLoanId },
-                order: [['id', 'asc']]
+    let packet = await sequelize.transaction(async t => {
+        let masterLoanArray = []
+        let deActivate = await models.packetTracking.update({ isActive: false },
+            {
+                where: {
+                    userId: userId,
+                    trackingDate: moment().format('YYYY-MM-DD')
+                }, transaction: t,
             })
+        let packetTracking = await models.packetTracking.create(getAll, { transaction: t })
 
-            getAll['customerLoanId'] = customerLoan[0].id
 
-            let x = await models.packetTracking.update({ isActive: false }, { where: { masterLoanId: getAll.masterLoanId }, transaction: t })
 
-            let packetTracking = await models.packetTracking.create(getAll, { transaction: t })
-        })
+        for (let index = 0; index < getAll['masterLoanArray'].length; index++) {
+            const element = getAll['masterLoanArray'][index];
+            let masterLoanObject = {}
+            masterLoanObject.packetTrackingId = packetTracking.id
+            masterLoanObject.masterLoanId = element
 
-    }
+            masterLoanArray.push(masterLoanObject)
+        }
+
+        let data = await models.packetTrackingMasterloan.bulkCreate(masterLoanArray, { transaction: t })
+    })
+
 
 
 
