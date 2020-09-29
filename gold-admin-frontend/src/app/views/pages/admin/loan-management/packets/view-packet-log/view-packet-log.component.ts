@@ -30,7 +30,7 @@ export class ViewPacketLogComponent implements OnInit {
   modalData: any;
   masterLoanId: any;
   loanId: any;
-  // currentLocation$ = this.dataSource.currentLocation$;
+  currentLocation$;
 
   constructor(
     public dialog: MatDialog,
@@ -74,9 +74,9 @@ export class ViewPacketLogComponent implements OnInit {
     this.subscriptions.push(entitiesSubscription);
 
     this.dataSource.loadpacketsLog(this.masterLoanId, this.loanId, 1, 25);
-    // setTimeout(() => {
-    //   this.currentLocation = this.dataSource.currentLocation.getValue()
-    // })
+    setTimeout(() => {
+      this.currentLocation$ = this.dataSource.currentLocation$
+    })
   }
 
   setValue() {
@@ -91,6 +91,7 @@ export class ViewPacketLogComponent implements OnInit {
     this.unsubscribeSearch$.complete();
     this.destroy$.next();
     this.destroy$.complete();
+    this.dataSource.currentLocation.next(null)
   }
 
 
