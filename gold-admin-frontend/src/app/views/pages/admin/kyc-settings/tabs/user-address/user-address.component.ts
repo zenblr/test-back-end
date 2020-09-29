@@ -36,7 +36,7 @@ export class UserAddressComponent implements OnInit {
   identityFileNameArray = [];
   addressFileNameArray1 = [];
   addressFileNameArray2 = [];
-  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456, moduleId: 1, userType: null }
+  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456, moduleId: 3, userType: 'Corporate' }
 
   constructor(
     private fb: FormBuilder,
@@ -392,8 +392,11 @@ export class UserAddressComponent implements OnInit {
   checkForAadhar(index) {
     // console.log(index)
     if (this.identityForm.controls.moduleId.value == 3) {
-      if (this.customerDetails.userType === 'Individual' && this.addressControls.at(0).value.addressProofTypeId == 2) {
+      if (this.addressControls.at(0).value.addressProofTypeId == 2) {
         this.addressControls.controls[0].get('addressProofNumber').setValidators([Validators.required, Validators.pattern('^\\d{4}\\d{4}\\d{4}$')])
+        this.addressControls.controls[0].get('addressProofNumber').updateValueAndValidity()
+      } else {
+        this.addressControls.controls[0].get('addressProofNumber').setValidators([Validators.required])
         this.addressControls.controls[0].get('addressProofNumber').updateValueAndValidity()
       }
       return

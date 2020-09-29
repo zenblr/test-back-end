@@ -1,6 +1,6 @@
 {
     "/api/*": {
-        "target": "https://a443009d671e.ngrok.io",
+        "target": "https://gold.nimapinfotech.com",
         "secure": false,
         "logLevel": "debug",
         "changeOrigin": true
