@@ -20,13 +20,17 @@
             </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col-3">
                 <label for="">Packets:
                     <ng-container *ngFor="let item of modalData.loanPacketDetails[0].packets; last as l">
                         <span>{{ item.packetUniqueId | uppercase }}</span>
                         <span *ngIf="!l">, &nbsp;</span>
                     </ng-container>
                 </label>
+            </div>
+            <div class="col">
+                <label *ngIf="currentLocation$" for="">Current Location:</label>
+                {{ currentLocation$.address | async }}
             </div>
         </div>
         <div class="mat-table__wrapper custom" [ngStyle]="{'overflow-x':'hidden'}">
