@@ -196,7 +196,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
         }, 500)
         this.approvalForm.controls.loanStatusForBM.patchValue(changes.details.currentValue.masterLoan.loanStatusForBM)
         this.approvalForm.controls.loanStatusForBM.patchValue(changes.details.currentValue.masterLoan.loanStatusForBM)
-        console.log(this.approvalForm.value)
+        // console.log(this.approvalForm.value)
         // this.statusAppraiser()
         // this.statusBM()
 
@@ -207,7 +207,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
 
       }
 
-      console.log(this.details)
+      // console.log(this.details)
     }
 
     if (changes.scrapDetails && changes.scrapDetails.currentValue) {
@@ -298,7 +298,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   getReasonsList() {
     this.custClassificationService.getReasonsList().pipe(
       map(res => {
-        console.log(res)
+        // console.log(res)
         this.reasons = res.data;
         this.ref.detectChanges()
       })

@@ -48,7 +48,7 @@ export class PacketTrackingDatasource extends BaseDataSource {
                     report => {
                         this.paginatorTotalSubject.next(report.count);
                         this.entitySubject.next(report.data);
-                        this.currentLocation.next(report.lastLocation)
+                        this.currentLocation.next(report.lastLocation.address)
                     }
                 ),
                 catchError(() => of([])),
