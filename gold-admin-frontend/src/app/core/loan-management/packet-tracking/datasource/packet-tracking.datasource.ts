@@ -14,6 +14,9 @@ export class PacketTrackingDatasource extends BaseDataSource {
     public loading$ = this.loadingSubject.asObservable();
     public isPreloadTextViewed$ = this.isPreloadTextViewedSubject.asObservable();
 
+    public currentLocation = new BehaviorSubject<any>(null);
+    public currentLocation$ = this.currentLocation.asObservable();
+
     constructor(private loanManagementService: PacketTrackingService) {
         super();
     }
@@ -37,14 +40,15 @@ export class PacketTrackingDatasource extends BaseDataSource {
             .subscribe();
     }
 
-    loadpacketsLog(masterLoanId,loanId,from, to) {
+    loadpacketsLog(masterLoanId, loanId, from, to) {
         this.loadingSubject.next(true);
-        this.loanManagementService.getPacketLog(masterLoanId,loanId,from, to)
+        this.loanManagementService.getPacketLog(masterLoanId, loanId, from, to)
             .pipe(
                 map(
                     report => {
                         this.paginatorTotalSubject.next(report.count);
                         this.entitySubject.next(report.data);
+                        this.currentLocation.next(report.lastLocation)
                     }
                 ),
                 catchError(() => of([])),

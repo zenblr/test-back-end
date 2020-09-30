@@ -194,7 +194,7 @@ exports.cronForDailyPenalInterest = async (date) => {
             const currentDate = moment(date);
             let daysCount = currentDate.diff(dueDate, 'days');
             let daysCount2 = nextDueDate.diff(dueDate, 'days');
-            if (daysCount < gracePeriodDays) {
+            if (daysCount <= gracePeriodDays) {
                 break
             }
             if (daysCount < selectedSlab) {
@@ -228,6 +228,8 @@ exports.cronForDailyPenalInterest = async (date) => {
                 penalData.push(penalObject)
 
             }
+
+
         }
     }
 }

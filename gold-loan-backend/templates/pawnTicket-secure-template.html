@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href={{bootstrapCss}}>
+    <style>
+        /* html{zoom:0.75;} */
+        .tableHead {
+            width: 20%;
+            height: 40px;
+        }
+
+        body {
+            font-size: 13px !important;
+        }
+    </style>
+</head>
+
+<body>
+    <script src={{jqueryJs}}></script>
+    <script src={{popperJs}}></script>
+    <script src={{bootstrapJs}}></script>
+    <div class="container py-5 pr-5 pl-5 mb-5">
+        {{#each customerLoanDetail}}
+        <div class="text-center col-10 pr-5 " style="font-weight: 500">
+            <div style="width:100%;margin:0;border: 1px solid black;">
+
+                <p><span class="text-center " style="font-size: 24px;"><b>AUGMONT PRIVATE LIMITED</b></span><br>
+                    <span style="font-size: 16px;">CIN-L65990MH1984PLC032403</span><br>
+                    Office 03, 3rd Floor, Bullion House, 115/121, Tambakata Lane, Pydhonie, Mumbai, Maharashtra 400003
+                    <br>Contact details xxxxxxxx
+                </p>
+            </div>
+
+            <p class="pt-5 mb-2">Secured Loan</p>
+        </div>
+
+        <div class="row py-3 pr-5 ">
+
+            <div class="col-5 float-left pl-3 pr-0">
+                <table class="align-top  table-bordered"
+                    style="width:100%;margin:0;font-size: small;font-weight: 500;table-layout: fixed; border: 1px solid black;border-collapse: collapse;">
+                    <tr>
+                        <td class="align-top" style="width:40%;padding-left: 5px;"><b>Customer Name</b></td>
+                        <td style=" word-break: break-all; width:60%;padding-left: 5px;">{{this.Name}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top" style="padding-left: 5px;"><b>DOB</b> </td>
+                        <td style="padding-left: 5px;">{{this.dob}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top" style="padding-left: 5px;"><b>Branch </b></td>
+                        <td style="padding-left: 5px;">{{this.branch}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top" style="padding-left: 5px;"><b>Contact Number</b> </td>
+                        <td style="padding-left: 5px;">{{this.contactNumber}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top" style="padding-left: 5px;"><b>Address</b> </td>
+                        <td style=" word-break: break-all;padding-left: 5px;">{{this.customerAddress}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top" style="width:25%;padding-left: 5px;"><b>Rate of Interest </b></td>
+                        <td style="width:25%;padding-left: 5px;">{{this.interestRate}}%</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top" style="padding-left: 5px;"><b>Processing Fees</b> </td>
+                        <td style="padding-left: 5px;">{{this.processingFee}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top" style="padding-left: 5px;"><b>Loan Date</b> </td>
+                        <td style="padding-left: 5px;">{{this.start_Date}}</td>
+                    </tr>
+
+
+                </table>
+            </div>
+
+            <div class="col-5 float-left pl-0 pr-3">
+                <table class="align-top  table-bordered"
+                    style="width:100%;margin:0;font-size: small;font-weight: 500;table-layout: fixed; border: 1px solid black;border-collapse: collapse;">
+                    <tr>
+                        <td class="align-top" style="padding-left: 5px;"><b>Customer ID</b></td>
+                        <td style="padding-left: 5px;">{{this.customerId}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top" style="padding-left: 5px;"><b>Loan Number</b></td>
+                        <td style="padding-left: 5px;">{{this.loanNumber}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top" style="padding-left: 5px;"><b>Scheme Name</b></td>
+                        <td style=" word-break: break-all;padding-left: 5px;">{{this.loanScheme}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top" style="padding-left: 5px;"><b>Loan Amount</b></td>
+                        <td style="padding-left: 5px;">{{this.loanAmount}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top" style="padding-left: 5px;"><b>Loan Tenure</b></td>
+                        <td style="padding-left: 5px;">{{this.loanTenure}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top" style="padding-left: 5px;"><b>Penal Charges</b></td>
+                        <td style="padding-left: 5px;">{{this.penalCharges}}%</td>
+                    </tr>
+                    <tr>
+                        <td class="align-top" style="padding-left: 5px;"><b>Due Date</b></td>
+                        <td style="padding-left: 5px;">{{this.end_Date}}</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+        <div class="row pt-3 pr-5">
+            <div class="col-10" style="font-size: small;font-weight: 400;">
+                <p class="mb-3 text-center"><b>Loan Repayment</b>
+                </p>
+            </div>
+        </div>
+        <div class="row pr-5">
+            <div class="col-10 pl-5 pr-5" style="font-size: small;font-weight: 400;">
+                <ul style="list-style-type:disc;">
+                    <li>Loan is repayable on demand.</li>
+                    <li>Bullet repayment at the end of of the tenure of the loan.</li>
+                    <li>Interest is payable from the date of loan till full and final repayment of outstanding loan
+                        amount and all other amounts pertaining thereto.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row pr-5 pt-3">
+            <div class="col-10" style="font-size: small;font-weight: 400;">
+                <p class="mb-3 text-center"><b> Default Interest </b>
+                </p>
+            </div>
+        </div>
+        <div class="row pr-5">
+            <div class="col-10 pl-5 pr-5" style="font-size: small;font-weight: 400;">
+                <ul style="list-style-type:disc;">
+                    <li>The default interest shall be payable if this loan is not repaid either on demand or at the
+                        end
+                        of the tenor of the loan.
+                    </li>
+                    <li>The default interest shall be applied from the date of default of the loan and till such
+                        time
+                        the default continues to exist.
+                    </li>
+                    <li>The default interest shall be paid for the period for which outstanding loan amount
+                        (including
+                        principal, interest, other charges, if any) is payable and due.
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row pt-3 pr-5 mb-5">
+            <div class="col-10 " style="font-size: small;font-weight: 400;">
+                <p class="mb-2 text-center"><b>Declaration by Company</b></p>
+                <p>The company has sanctioned to you the loan with details as specified above as per your loan
+                    application
+                    dated XX XX XX and based on the representations made and the information furnished by you.
+                </p>
+            </div>
+        </div>
+        <div class="row pt-5 mb-5" style="page-break-after:always;">
+            <div class="col-5 float-left">Date :</div>
+            <div class="col-5 float-right">Signature of authorized signatory of company </div>
+        </div>
+        <div class="row py-2 pr-5 mb-5 ">
+            <div class="col-10 " style="font-size: small;font-weight: 400;">
+                <p class="mb-2 text-center"><b>Acknowledgment by the Customer/Borrower</b></p>
+                <p>
+                    I, Mr./Ms.<b>{{this.Name}}</b>, have fully read and understood the interest rate and other
+                    terms and conditions as specified in attached T&Cs along with the agreement. I, hereby acknowledge
+                    the receipt of loan amount and the above specified documents. I, hereby authorize the company to use
+                    my Aadhaar number XXXXXXXXXXX for the purpose of KYC compliances. I understand that Augmont Goldtech
+                    Pvt. Ltd. is a technology service provider and is a facilitator in the application/processing/
+                    disbursal and closure of loans.
+                </p>
+            </div>
+        </div>
+        <div class="row py-2 pr-5 mb-2">
+            <div class="col-10 float-left">Date :</div>
+        </div>
+        <div class="row py-2 pr-5 mb-2">
+            <div class=" col-10 float-left">Place :</div>
+        </div>
+        <div class="row py-2 pr-5 mt-2 ">
+            <div class="col-7"></div>
+            <div class=" col-3 float-right pl-0">
+                <b>Signature of Borrower</b>
+            </div>
+        </div>
+
+        {{/each}}
+    </div>
+</body>
+
+</html>

@@ -1162,7 +1162,7 @@ async function getAmountLoanSplitUpData(loan, amount, splitUpRatioAmount) {
 
 }
 
-let getSingleDayInterestAmount = async (loan) => {
+let nextDueDateInterest = async (loan) => {
 
     let paymentFrequency = loan.paymentFrequency
     let securedInterest = loan.customerLoan[0].currentInterestRate
@@ -1283,9 +1283,15 @@ let splitAmountIntoSecuredAndUnsecured = async (customerLoan, paidAmount) => {
 }
 
 
-let getTransactionPrincipalAmount = async (customerLoanTransactionId) => {
+let getTransactionPrincipalAmount = async (customerLoanTransactionId,transactionSecured,transactionUnSecured) => {
     let transactionDataSecured = await models.customerTransactionSplitUp.findOne({ where: { customerLoanTransactionId: customerLoanTransactionId, isSecured: true } });
     let transactionDataUnSecured = await models.customerTransactionSplitUp.findOne({ where: { customerLoanTransactionId: customerLoanTransactionId, isSecured: false } });
+    if(!transactionDataSecured){
+        transactionDataSecured = transactionSecured;
+    }
+    if(!transactionDataUnSecured){
+        transactionDataUnSecured = transactionUnSecured;
+    }
     let securedPayableOutstanding = 0;
     let unSecuredPayableOutstanding = 0;
     let totalPayableOutstanding = 0;
@@ -1585,7 +1591,7 @@ let penalInterestCalculationForSelectedLoan = async (date, masterLaonId) => {
             const currentDate = moment(date);
             let daysCount = currentDate.diff(dueDate, 'days');
             let daysCount2 = nextDueDate.diff(dueDate, 'days');
-            if (daysCount < gracePeriodDays) {
+            if (daysCount <= gracePeriodDays) {
                 break
             }
             if (daysCount < selectedSlab) {
@@ -1637,7 +1643,7 @@ let penalInterestCalculationForSelectedLoanWithOutT = async (date, masterLaonId)
             const currentDate = moment(date);
             let daysCount = currentDate.diff(dueDate, 'days');
             let daysCount2 = nextDueDate.diff(dueDate, 'days');
-            if (daysCount < Number(gracePeriodDays)) {
+            if (daysCount <= Number(gracePeriodDays)) {
                 break
             }
             if (daysCount < Number(selectedSlab)) {
@@ -1979,7 +1985,7 @@ module.exports = {
     getSingleLoanDetail: getSingleLoanDetail,
     getAmountLoanSplitUpData: getAmountLoanSplitUpData,
     getTransactionPrincipalAmount: getTransactionPrincipalAmount,
-    getSingleDayInterestAmount: getSingleDayInterestAmount,
+    nextDueDateInterest: nextDueDateInterest,
     getSingleMasterLoanDetail: getSingleMasterLoanDetail,
     splitAmountIntoSecuredAndUnsecured: splitAmountIntoSecuredAndUnsecured,
     penalInterestCalculationForSelectedLoan: penalInterestCalculationForSelectedLoan,
