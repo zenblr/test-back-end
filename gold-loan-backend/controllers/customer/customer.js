@@ -523,7 +523,7 @@ exports.getsingleCustomerManagement = async (req, res) => {
 
 //To register customer by their own
 exports.signUpCustomer = async (req, res) => {
-  let { firstName, lastName, mobileNumber } = req.body;
+  let { firstName, lastName, mobileNumber, email } = req.body;
 
   //To check in customer table 
   let customerExist = await models.customer.findOne({
@@ -540,8 +540,12 @@ exports.signUpCustomer = async (req, res) => {
   if (!check.isEmpty(registerCustomerExist)) {
     return res.status(404).json({ message: "This Mobile number already Exists" });
   }
+  let isFromApp = false
+  if (req.useragent.isMobile) {
+    isFromApp = true
+  }
 
-  let createdCustomer = await models.customerRegister.create({ firstName, lastName, mobileNumber, isActive: true });
+  let createdCustomer = await models.customerRegister.create({ firstName, lastName, email, mobileNumber, isFromApp, isActive: true });
   return res.status(200).json({ messgae: `Registered Sucessfully!` });
 
 }
