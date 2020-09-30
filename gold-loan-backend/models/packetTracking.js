@@ -37,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
             type:DataTypes.STRING,
             field:'address'
         },
+        distance:{
+            type:DataTypes.FLOAT,
+            field:'distance'
+        },
         totalDistance:{
             type:DataTypes.FLOAT,
             field:'total_distance'
