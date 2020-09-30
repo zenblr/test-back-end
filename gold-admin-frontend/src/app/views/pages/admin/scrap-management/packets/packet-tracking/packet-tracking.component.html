@@ -1,0 +1,111 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="mat-table__wrapper">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
+                <ng-container matColumnDef="userName">
+                    <mat-header-cell *matHeaderCellDef>User Name</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        {{packet?.Createdby?.firstName + ' ' + 
+                        packet?.Createdby?.lastName | titlecase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="mobileNumber">
+                    <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngIf="packet?.customer">
+                            {{packet?.customer?.mobileNumber}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="internalBranch">
+                    <mat-header-cell *matHeaderCellDef>Branch</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngIf="packet.customer">
+                            {{packet.internalBranch.name | titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="customerId">
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngIf="packet?.customer">
+                            {{packet?.customer?.customerUniqueId}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="scrapId">
+                    <mat-header-cell *matHeaderCellDef>Scrap ID</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        {{ packet?.scrapUniqueId | uppercase }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="customerName">
+                    <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngIf="packet.customer">
+                            {{packet?.customer?.firstName + ' ' + packet?.customer?.lastName | titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="scrapAmount">
+                    <mat-header-cell *matHeaderCellDef>Scrap Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        {{ packet?.eligibleScrapAmount }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="currentLocation">
+                    <mat-header-cell *matHeaderCellDef>Current Location</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngFor="let item of packet.locationData; last as l">
+                            <span *ngIf="l">
+                                {{item?.scrapPacketLocation?.location | titlecase}}
+                            </span>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <!-- <ng-container matColumnDef="elapseTime">
+                    <mat-header-cell *matHeaderCellDef>Elapsed Time</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngIf="packet.updatedAt">
+                            <kt-elapsed-time [startTime]="packet.updatedAt"></kt-elapsed-time>
+                        </span>
+                    </mat-cell>
+                </ng-container> -->
+                <!-- <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngFor="let item of packet.locationData; last as l">
+                            <span *ngIf="l"
+                                [ngClass]="item?.status == 'complete' ? item?.scrapPacketLocation?.id === 2 && packet?.isScrapSubmitted ? 'text-primary' : 'text-success' : item?.status == 'incomplete' ? 'text-danger' : 'text-grey'">
+                                {{item?.status | titlecase}}
+                            </span>
+                        </span>
+                    </mat-cell>
+                </ng-container> -->
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <button (click)="ornaments(packet)" class="btn-transparent kt-margin-r-15">View Packets</button>
+                        <button [class.cursor-not-allowed]="checkForPartnerBranchIn(packet)"
+                            (click)="updatePacket(packet)" class="btn-transparent kt-margin-r-15">Update
+                            Location</button>
+                        <button (click)="viewPacketLog(packet)" class="btn-transparent kt-margin-r-15">View Log</button>
+                        <!-- <button (click)="viewLocation(packet)" class="btn-transparent kt-margin-r-15">View
+                            Location</button> -->
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+        </div>
+        <div class="mat-table__bottom">
+            <!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
+            <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+            <!-- MATERIAL PAGINATOR | Binded to dasources -->
+            <!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
+                [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

@@ -387,6 +387,9 @@ export class PageConfig {
 				'packets': {
 					page: { title: "Packets", desc: "" },
 				},
+				"packet-tracking": {
+					page: { title: "Packet Tracking", desc: "" },
+				},
 				"applied-scrap": {
 					page: { title: "Applied Scrap", desc: "" },
 				},

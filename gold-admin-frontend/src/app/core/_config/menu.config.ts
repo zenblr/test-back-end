@@ -836,6 +836,13 @@ export class MenuConfig {
 							permission: !this.permissionsArr.includes('scrapPacketView'),
 						},
 						{
+							title: "Packet Tracking",
+							root: true,
+							src: "assets/media/aside-icons/icons-36.svg",
+							page: "/admin/scrap-management/packet-tracking",
+							permission: false,
+						},
+						{
 							title: "Applied Scrap",
 							root: true,
 							src: "assets/media/aside-icons/icons-37.svg",

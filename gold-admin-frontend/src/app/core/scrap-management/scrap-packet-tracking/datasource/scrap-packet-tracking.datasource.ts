@@ -14,13 +14,13 @@ export class ScrapPacketTrackingDatasource extends BaseDataSource {
     public loading$ = this.loadingSubject.asObservable();
     public isPreloadTextViewed$ = this.isPreloadTextViewedSubject.asObservable();
 
-    constructor(private loanManagementService: ScrapPacketTrackingService) {
+    constructor(private scrapPacketTrackingService: ScrapPacketTrackingService) {
         super();
     }
 
     loadpackets(queryParamsData) {
         this.loadingSubject.next(true);
-        this.loanManagementService.getpackets(queryParamsData)
+        this.scrapPacketTrackingService.getpackets(queryParamsData)
             .pipe(
                 map(
                     report => {
@@ -37,9 +37,9 @@ export class ScrapPacketTrackingDatasource extends BaseDataSource {
             .subscribe();
     }
 
-    loadpacketsLog(masterLoanId,loanId,from, to) {
+    loadpacketsLog(scrapId,from, to) {
         this.loadingSubject.next(true);
-        this.loanManagementService.getPacketLog(masterLoanId,loanId,from, to)
+        this.scrapPacketTrackingService.getPacketLog(scrapId,from, to)
             .pipe(
                 map(
                     report => {

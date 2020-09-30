@@ -402,7 +402,7 @@
                                     <th class="transparent text-center">Packet</th>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let packet of packets?.CustomerScrapPackageDetail;index as idx">
+                                    <tr *ngFor="let packet of packets?.scrapPackets;index as idx">
                                         <ng-container>
                                             <td class="text-color text-center">
                                                 <label class="m-0">{{packet?.packetUniqueId | uppercase}}</label>

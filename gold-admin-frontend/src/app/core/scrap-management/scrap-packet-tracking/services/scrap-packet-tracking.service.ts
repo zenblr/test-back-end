@@ -43,7 +43,7 @@ export class ScrapPacketTrackingService {
     if (data && data.status) {
       reqParams.status = data.status;
     }
-    return this.http.get(`/api/packet-tracking/tracking-details`, { params: reqParams }).pipe(
+    return this.http.get(`/api/scrap/scrap-packet-tracking/tracking-details`, { params: reqParams }).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
@@ -53,8 +53,8 @@ export class ScrapPacketTrackingService {
     )
   }
 
-  getPacketLog(masterLoanId, loanId, from, to): Observable<any> {
-    return this.http.get(`/api/packet-tracking/view-log?masterLoanId=${masterLoanId}&loanId=${loanId}&from=${from}&to=${to}`).pipe(
+  getPacketLog(scrapId, from, to): Observable<any> {
+    return this.http.get(`/api/scrap/scrap-packet-tracking/view-log?scrapId=${scrapId}&from=${from}&to=${to}`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)

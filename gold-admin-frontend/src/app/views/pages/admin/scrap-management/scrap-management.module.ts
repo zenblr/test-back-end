@@ -30,6 +30,8 @@ import { CustomerDetailsComponent } from '../../../partials/components/customer-
 import { LoanScrapDetailsComponent } from '../../../partials/components/loan-scrap-details/loan-scrap-details.component';
 import { StandardDeductionListComponent } from './standard-deduction/standard-deduction-list/standard-deduction-list.component';
 import { AddStandardDeductionComponent } from './standard-deduction/add-standard-deduction/add-standard-deduction.component';
+import { PacketTrackingComponent } from './packets/packet-tracking/packet-tracking.component';
+import { ViewPacketLogComponent } from './packets/view-packet-log/view-packet-log.component';
 import { ScrapUpdateLocationComponent } from '../../../partials/components/scrap-update-location/scrap-update-location.component';
 
 const routes: Routes = [
@@ -65,6 +67,10 @@ const routes: Routes = [
       {
         path: 'packets',
         component: PacketsListComponent
+      },
+      {
+        path: 'packet-tracking',
+        component: PacketTrackingComponent
       },
       {
         path: 'applied-scrap',
@@ -116,6 +122,8 @@ const routes: Routes = [
     QuickPayComponent,
     StandardDeductionListComponent,
     AddStandardDeductionComponent,
+    PacketTrackingComponent,
+    ViewPacketLogComponent,
   ],
   imports: [
     CommonModule,
@@ -149,6 +157,8 @@ const routes: Routes = [
     QuickPayComponent,
     AddStandardDeductionComponent,
     ScrapUpdateLocationComponent,
+    PacketTrackingComponent,
+    ViewPacketLogComponent,
   ]
 })
 export class ScrapManagementModule { }
