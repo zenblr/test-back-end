@@ -41,18 +41,7 @@ exports.getGlobalMapDetails = async (req, res, next) => {
 
 
 
-    // let group = locationData.reduce((r, a) => {
-    //     console.log("a", a);
-    //     console.log('r', r);
-    //     r[a.userId] = [...r[a.userId] || [], a];
-    //     return r;
-    // }, {});
-
-    // let data = []
-    // Object.keys(group).forEach(ele => {
-    //     data.push(group[ele])
-    // })
-
+    
 
     res.status(200).json({ data: locationData })
 }

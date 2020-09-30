@@ -346,7 +346,7 @@ exports.viewCustomerPacketTrackingLogs = async (req, res) => {
             model: models.packetTrackingMasterloan,
             as: 'packetTrackingMasterloan',
             where: { masterLoanId },
-            attributes:['id','masterLoanId']
+            attributes: ['id', 'masterLoanId']
         }]
     })
 
@@ -404,6 +404,7 @@ exports.addPacketTracking = async (req, res, next) => {
     getAll['userId'] = userId
     getAll['trackingTime'] = timeComponent;
     getAll['isActive'] = true
+    getAll['totalDistance'] = 0
 
     let packet = await sequelize.transaction(async t => {
         let masterLoanArray = []
@@ -414,6 +415,21 @@ exports.addPacketTracking = async (req, res, next) => {
                     trackingDate: moment().format('YYYY-MM-DD')
                 }, transaction: t,
             })
+
+        let lastLocation = await models.packetTracking.findOne({
+            where: {
+                userId: userId,
+                trackingDate: moment().format('YYYY-MM-DD')
+            }, transaction: t,
+            order: [['createdAt', 'desc']]
+        })
+        if (lastLocation) {
+            let dist = await calculateDistance(lastLocation.latitude,lastLocation.longitude,getAll.latitude,getAll.longitude,"K")
+            getAll.distance = Number(dist)
+            getAll.totalDistance = Number(lastLocation.totalDistance)+Number(dist)
+              
+        }
+
         let packetTracking = await models.packetTracking.create(getAll, { transaction: t })
 
 
@@ -437,25 +453,47 @@ exports.addPacketTracking = async (req, res, next) => {
     return res.status(200).json({ message: "Success" })
 }
 
+async function calculateDistance(lat1, lon1, lat2, lon2, unit) {
+    var radlat1 = Math.PI * lat1 / 180
+    var radlat2 = Math.PI * lat2 / 180
+    var radlon1 = Math.PI * lon1 / 180
+    var radlon2 = Math.PI * lon2 / 180
+    var theta = lon1 - lon2
+    var radtheta = Math.PI * theta / 180
+    var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+    dist = Math.acos(dist)
+    dist = dist * 180 / Math.PI
+    dist = dist * 60 * 1.1515
+    if (unit == "K") { dist = dist * 1.609344 }
+    if (unit == "N") { dist = dist * 0.8684 }
+    return dist.toFixed(2);
+}
+
 exports.getMapDetails = async (req, res, next) => {
 
     let { masterLoanId, date } = req.query
 
     let data = await models.packetTracking.findAll({
         where: {
-            masterLoanId: masterLoanId,
             trackingDate: date,
 
         },
-        include: {
-            model: models.customerLoanMaster,
-            as: 'masterLoan',
-            attributes: ['id'],
-            include: {
-                model: models.packet,
-                as: 'packet'
-            }
-        }
+        include: [{
+            model: models.packetTrackingMasterloan,
+            as: 'packetTrackingMasterloan',
+            where: { masterLoanId: masterLoanId },
+            include: [{
+                model: models.customerLoanMaster,
+                as: 'masterLoan',
+                attributes: ['id'],
+                include: {
+                    model: models.packet,
+                    as: 'packet',
+                    attributes:['packetUniqueId']
+                }
+            }]
+
+        }]
     })
 
     res.status(200).json({ data: data })
@@ -474,9 +512,12 @@ exports.getLocationDetails = async (req, res, next) => {
 
     let data = await models.packetTracking.findAll({
         where: {
-            masterLoanId: masterLoanId,
-            trackingDate: date,
+            trackingDate: date
         },
+        include: [{
+            model: models.packetTrackingMasterloan,
+            as: 'packetTrackingMasterloan',
+        }],            
         order: [['trackingTime', 'DESC']],
         offset: offset,
         limit: pageSize,
@@ -485,9 +526,13 @@ exports.getLocationDetails = async (req, res, next) => {
 
     let count = await models.packetTracking.findAll({
         where: {
-            masterLoanId: masterLoanId,
             trackingDate: date
-        }
+        },
+        include: [{
+            model: models.packetTrackingMasterloan,
+            as: 'packetTrackingMasterloan',
+            where: { masterLoanId: masterLoanId },
+        }]
     })
 
     if (data.length > 0) {
