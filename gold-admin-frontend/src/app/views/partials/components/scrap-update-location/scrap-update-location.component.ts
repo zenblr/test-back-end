@@ -43,8 +43,9 @@ export class ScrapUpdateLocationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // console.log(this.data)
-    if (!this.data.deliver) this.getPacketLocationList()
+    if (!this.data.deliver) {
+      this.getPacketLocationList();
+    }
 
     this.locationForm = this.fb.group({
       packetLocationId: [, [Validators.required]],
@@ -137,14 +138,14 @@ export class ScrapUpdateLocationComponent implements OnInit {
   }
 
   getPacketLocationList() {
-    let masterLoanId
+    let scrapId
     if (this.data.isOut || this.data.isPartnerOut) {
-      if (this.data.masterLoanId) {
-        masterLoanId = this.data.masterLoanId;
+      if (this.data.scrapId) {
+        scrapId = this.data.scrapId;
       } else {
-        masterLoanId = this.data.packetData[0].masterLoanId
+        scrapId = this.data.packetData[0].scrapId
       }
-      this.scrapUpdateLocationService.getNextPacketLocation({ masterLoanId }).pipe(map(res => {
+      this.scrapUpdateLocationService.getNextPacketLocation({ scrapId }).pipe(map(res => {
         this.packetLocations = res.data;
         if (this.packetLocations.length === 1) {
           this.controls.packetLocationId.patchValue(this.packetLocations[0].id)

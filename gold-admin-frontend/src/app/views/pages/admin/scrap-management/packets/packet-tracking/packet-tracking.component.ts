@@ -8,7 +8,7 @@ import { ScrapPacketTrackingDatasource, ScrapPacketTrackingService } from '../..
 import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { UpdateLocationComponent } from '../../../../../partials/components/update-location/update-location.component';
+import { ScrapUpdateLocationComponent } from '../../../../../partials/components/scrap-update-location/scrap-update-location.component';
 import { Router } from '@angular/router';
 import { OrnamentsComponent } from '../../../../../partials/components/ornaments/ornaments.component';
 import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.component';
@@ -138,17 +138,15 @@ export class PacketTrackingComponent implements OnInit {
   }
 
   updatePacket(packet) {
-    // let lastIndex = packet.locationData[packet.locationData.length - 1]
-    // if (lastIndex.packetLocation.id == 4 || lastIndex.packetLocation.id == 3) return
-
-    const isNotAllowed = this.checkForPartnerBranchIn(packet)
-
-    if (isNotAllowed) return
-
-    if (packet.loanStageId === 11) {
-      const dialogRef = this.dialog.open(UpdateLocationComponent,
+    debugger
+    const isNotAllowed = this.checkForPartnerBranchIn(packet);
+    if (isNotAllowed) {
+      return;
+    }
+    if (packet.scrapStageId === 11) {
+      const dialogRef = this.dialog.open(ScrapUpdateLocationComponent,
         {
-          data: { packetData: packet.loanPacketDetails[0].packets, action: 'edit', stage: packet.loanStageId },
+          data: { packetData: packet.scrapPacketDetails[0].scrapPackets, action: 'edit', stage: packet.scrapStageId },
           width: '450px'
         });
       dialogRef.afterClosed().subscribe(res => {
@@ -157,9 +155,9 @@ export class PacketTrackingComponent implements OnInit {
         }
       });
     } else {
-      const dialogRef = this.dialog.open(UpdateLocationComponent,
+      const dialogRef = this.dialog.open(ScrapUpdateLocationComponent,
         {
-          data: { packetData: packet.loanPacketDetails[0].packets, action: 'edit', isOut: true },
+          data: { packetData: packet.scrapPacketDetails[0].scrapPackets, action: 'edit', isOut: true },
           width: '450px'
         });
       dialogRef.afterClosed().subscribe(res => {
@@ -209,25 +207,25 @@ export class PacketTrackingComponent implements OnInit {
   }
 
   ornaments(packet) {
-    const masterLoanId = packet.loanPacketDetails[0].masterLoanId
-    this.scrapPacketTrackingService.viewPackets({ masterLoanId }).pipe(map(res => {
+    const scrapId = packet.scrapPacketDetails[0].scrapId;
+    this.scrapPacketTrackingService.viewPackets({ scrapId }).pipe(map(res => {
       this.dialog.open(OrnamentsComponent, {
         data: {
-          modal: true,
-          modalData: res.data[0].packets,
+          scrapModal: true,
+          modalData: res.data[0].scrapPackets,
           packetView: true
         },
         width: '90%'
-      })
+      });
     }
-    )).subscribe()
+    )).subscribe();
   }
 
   checkForPartnerBranchIn(packet) {
-    const lastIndex = packet.locationData[packet.locationData.length - 1]
-    const id = lastIndex.scrapPacketLocation.id
-    const isNotAllowed = id == 4 || id == 3 || id == 7 || packet.isLoanCompleted ? true : false
-    return isNotAllowed
+    const lastIndex = packet.locationData[packet.locationData.length - 1];
+    const id = lastIndex.scrapPacketLocation.id;
+    const isNotAllowed = id == 4 || id == 3 || id == 7 || packet.isLoanCompleted ? true : false;
+    return isNotAllowed;
   }
 
 }

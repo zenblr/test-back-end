@@ -72,8 +72,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   buttonValue = 'Next';
   showAddMoreBtn: Boolean = true;
   modalView: any = { details: { currentValue: { loanOrnamentsDetail: [] } }, action: { currentValue: 'edit' } };
+  scrapModalView: any = { details: { currentValue: { scrapOrnamentsDetail: [] } }, action: { currentValue: 'edit' } };
   firstView: boolean;
-
 
   constructor(
     public fb: FormBuilder,
@@ -106,7 +106,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.getOrnamentType()
       this.setModalData()
     }
-
+    if (this.data && this.data.scrapModal) {
+      this.showAddMoreBtn = false;
+      this.disable = true;
+      this.getOrnamentType();
+      this.setScrapModalData();
+    }
   }
 
   setModalData() {
@@ -116,6 +121,15 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.modalView.details.currentValue.loanOrnamentsDetail = this.data.modalData
     }
     this.ngOnChanges(this.modalView)
+  }
+
+  setScrapModalData() {
+    if (this.data.packetView) {
+      Array.prototype.push.apply(this.scrapModalView.details.currentValue.scrapOrnamentsDetail, this.data.modalData[0].customerLoanOrnamentsDetails)
+    } else {
+      this.scrapModalView.details.currentValue.scrapOrnamentsDetail = this.data.modalData;
+    }
+    this.ngOnChanges(this.scrapModalView);
   }
 
   showPacketOrnament(event) {
