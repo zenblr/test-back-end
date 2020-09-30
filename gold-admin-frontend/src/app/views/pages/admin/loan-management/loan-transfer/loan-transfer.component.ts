@@ -31,6 +31,7 @@ export class LoanTransferComponent implements OnInit {
   appraiserOrCCE: { value: string; name: string; }[];
   disabledForm: boolean;
   permission: any;
+  action: any;
 
   constructor(
     private custClassificationService: CustomerClassificationService,
@@ -48,7 +49,7 @@ export class LoanTransferComponent implements OnInit {
       this.permission = res
     })
     this.getReasonsList()
-    this.id = this.rout.snapshot.params.id;;
+    this.id = this.rout.snapshot.params.id;
     if (this.id) {
       this.getSingleDetails(this.id)
     }
@@ -57,6 +58,8 @@ export class LoanTransferComponent implements OnInit {
       this.appraiserOrCCE = res.apprsiserOrCCE
 
     })
+
+    this.rout.queryParams.subscribe(res => this.action = res.action)
 
 
 
