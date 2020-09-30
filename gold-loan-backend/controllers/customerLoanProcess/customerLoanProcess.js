@@ -2365,11 +2365,11 @@ exports.getDetailsForPrint = async (req, res, next) => {
             Name: customerLoanDetail.customer.firstName + " " + customerLoanDetail.customer.lastName,
             dob: dateOfBirth,
             contactNumber: customerLoanDetail.customer.mobileNumber,
-            start_Date: customerLoanDetail.loanStartDate,
+            startDate: customerLoanDetail.loanStartDate,
             customerAddress: `${customerLoanDetail.customerAddress[0].address},${customerLoanDetail.customerAddress[0].pinCode},${customerLoanDetail.customerAddress[0].state},${customerLoanDetail.customerAddress[0].city}`,
             customerId: customerLoanDetail.customer.customerUniqueId,
             loanTenure: customerLoanDetail.tenure,
-            end_Date: customerLoanDetail.loanEndDate,
+            endDate: customerLoanDetail.loanEndDate,
             loanNumber: customerLoanDetail.customerLoan[1].loanUniqueId,
             loanAmount: customerLoanDetail.customerLoan[1].loanAmount,
             loanScheme: customerLoanDetail.customerLoan[1].scheme.schemeName,
@@ -2403,7 +2403,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
         dob: dateOfBirth,
         contactNumber: customerLoanDetail.customer.mobileNumber,
         nomineeDetails: `${customerLoanDetail.loanNomineeDetail[0].nomineeName}, ${customerLoanDetail.loanNomineeDetail[0].nomineeAge}, ${customerLoanDetail.loanNomineeDetail[0].relationship}`,
-        start_Date: customerLoanDetail.loanStartDate,
+        startDate: customerLoanDetail.loanStartDate,
         customerAddress: `${customerLoanDetail.customerAddress[0].address},${customerLoanDetail.customerAddress[0].pinCode},${customerLoanDetail.customerAddress[0].state},${customerLoanDetail.customerAddress[0].city}`,
         interestRate: customerLoanDetail.customerLoan[0].interestRate,
         customerId: customerLoanDetail.customer.customerUniqueId,
@@ -2415,7 +2415,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
         penalCharges: customerLoanDetail.customerLoan[0].scheme.penalInterest,
         processingFee: customerLoanDetail.processingCharge,
         branch: customerLoanDetail.internalBranch.name,
-        //ornaments
+        ornaments
     }];
     //console.log(customerSecureLoanData,'secure)
 
@@ -2427,6 +2427,8 @@ exports.getDetailsForPrint = async (req, res, next) => {
             jqueryJs: `${process.env.URL}/jquery-slim.min.js`,
             popperJs: `${process.env.URL}/popper.min.js`,
             bootstrapJs: `${process.env.URL}/bootstrap.js`,
+            imagePath: `${process.env.URL}/images/augmont_logo.png`,
+            imgPath: `${process.env.URL}/images/Finkurve_logo.png`,
             customerLoanDetail: customerSecureLoanData,
             customerUnsecureLoanDetail: customerUnsecureLoanData
         },
