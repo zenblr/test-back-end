@@ -37,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
             type:DataTypes.STRING,
             field:'address'
         },
+        distance:{
+            type:DataTypes.FLOAT,
+            field:'distance'
+        },
         totalDistance:{
             type:DataTypes.FLOAT,
             field:'total_distance'
@@ -68,6 +72,7 @@ module.exports = (sequelize, DataTypes) => {
         PacketTracking.belongsTo(models.customerLoan, { foreignKey: 'customerLoanId', as: 'customerLoan' });
         PacketTracking.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
 
+        PacketTracking.hasMany(models.packetTrackingMasterloan,{foreignKey:'packetTrackingId',as:'packetTrackingMasterloan'})
     }
 
     return PacketTracking

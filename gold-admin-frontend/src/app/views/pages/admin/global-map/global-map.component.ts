@@ -45,24 +45,30 @@ export class GlobalMapComponent implements OnInit {
       this.mapInfo = res.data;
       this.packetInfo = res.data;
       this.markers = []
+      let packets = []
       if (res.data && res.data.length) {
         for (const iterator of res.data) {
-          for (const data of iterator) {
-            const { latitude: lat, longitude: lng, trackingTime, trackingDate, address, masterLoanId } = data
-            const { firstName, lastName } = data.user
-            const { loanUniqueId } = data.customerLoan
-            for (const packet of data.customerLoan.packet) {
-              const { packetUniqueId } = packet
-
-              this.markers.push({ lat, lng, trackingTime, trackingDate, address, masterLoanId, isVisible: true, firstName, lastName, loanUniqueId, packetUniqueId });
+            const { latitude: lat, longitude: lng, trackingTime, trackingDate, address, masterLoanId } = iterator
+            const { firstName, lastName } = iterator.user
+            let loanUniqueId = []
+            for (const data of iterator.packetTrackingMasterloan) {
+              loanUniqueId.push(data.masterLoan.customerLoan[0].loanUniqueId)
+             
+              for (const packet of data.masterLoan.packet) {
+                packets.push(packet.packetUniqueId)
+              }
+              var  packetUniqueId = packets.join()
+              var loan = loanUniqueId.join()
             }
+            this.markers.push({ lat, lng, trackingTime, trackingDate, address, masterLoanId, isVisible: true, firstName, lastName, loanUniqueId:loan, packetUniqueId });
+           
 
           }
           this.infoToggle = new Array(this.markers.length).fill(true);
-          console.log(this.infoToggle)
-          console.log(this.markers)
+          // console.log(this.infoToggle)
+          // console.log(this.markers)
+          // console.log(this.mapInfo)
         }
-      }
       else {
         this.markers = []
       }
