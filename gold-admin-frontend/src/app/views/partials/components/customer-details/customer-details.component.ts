@@ -57,7 +57,7 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   viewTransfer(masterLoanId) {
-    this.router.navigate([`/admin//loan-management/loan-transfer/${masterLoanId}`])
+    this.router.navigate([`/admin//loan-management/loan-transfer/${masterLoanId}`], { queryParams: { action: 'view' } })
   }
 
   viewScrap(scrap) {
