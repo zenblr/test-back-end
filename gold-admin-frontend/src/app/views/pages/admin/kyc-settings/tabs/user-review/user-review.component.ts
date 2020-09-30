@@ -1040,6 +1040,8 @@ export class UserReviewComponent implements OnInit {
 
   sameAddressAsPermanent(event) {
     this.isAddressSame = event
+    const addressTwo = this.data.customerKycReview.customerKycAddress[1]
+
     if (event) {
       this.customerKycAddressTwo.patchValue(this.customerKycAddressOne.value)
       this.cities1 = this.cities0
@@ -1053,16 +1055,17 @@ export class UserReviewComponent implements OnInit {
       this.addressFileNameArray2 = []
       this.addressIdArray2 = []
       this.addressImageArray2 = []
-      const addressTwo = this.data.customerKycReview.customerKycAddress[1]
       this.customerKycAddressTwo.patchValue({
         stateId: '',
         cityId: '',
         addressProofTypeId: '',
-        id: addressTwo.id,
         customerId: addressTwo.customerId,
         customerKycId: addressTwo.customerKycId
       })
+      this.customerKycAddressTwo.enable()
     }
+
+    this.customerKycAddressTwo.patchValue({ id: addressTwo.id })
 
     if (this.data.moduleId == 1) {
       this.customerKycAddressTwo.controls.addressType.patchValue('residential')
