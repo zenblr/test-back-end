@@ -517,6 +517,7 @@ exports.getLocationDetails = async (req, res, next) => {
         include: [{
             model: models.packetTrackingMasterloan,
             as: 'packetTrackingMasterloan',
+            where: { masterLoanId: masterLoanId },
         }],            
         order: [['trackingTime', 'DESC']],
         offset: offset,
