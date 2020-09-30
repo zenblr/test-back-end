@@ -137,16 +137,20 @@
                                 <div>
                                     {{masterLoan?.customerLoan[1]?.loanUniqueId}}
                                 </div>
-    
+
                             </div>
                             <div class="col">
-                                <span *ngIf="masterLoan?.isLoanTransfer">Loan Transfer <br> </span> 
-                                <span *ngIf="masterLoan?.isOrnamentsReleased &&!masterLoan?.isFullOrnamentsReleased">Part Released Master Loan <br> </span> 
-                                <span *ngIf="masterLoan?.isNewLoanFromPartRelease ">Part Release New Loan <br> </span>
-                                <span *ngIf="masterLoan?.isOrnamentsReleased && masterLoan?.isFullOrnamentsReleased">Full Released Master Loan <br> </span>
+                                <span *ngIf="masterLoan?.isLoanTransfer">Loan Transfer <br> </span>
+                                <span
+                                    *ngIf="masterLoan?.isOrnamentsReleased && !masterLoan?.isFullOrnamentsReleased">Part
+                                    Released Master Loan <br> </span>
+                                <span *ngIf="masterLoan?.isNewLoanFromPartRelease">Part Release New Loan <br> </span>
+                                <span
+                                    *ngIf="masterLoan?.isOrnamentsReleased && masterLoan?.isFullOrnamentsReleased">Full
+                                    Released Master Loan <br> </span>
                             </div>
                         </div>
-                        
+
                         <mat-divider class="kt-margin-b-10 kt-margin-t-10"></mat-divider>
                         <div class="row kt-margin-b-15">
                             <div class="col-6">
@@ -181,9 +185,30 @@
                             </div>
                         </div>
 
-                        <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10"
-                            (click)="viewLoan(masterLoan.id)" *ngxPermissionsOnly="['loanDetailsView']">View
-                            Details</div>
+                        <div class="row">
+                            <div class="text-primary col font-weight-500 kt-pointer kt-margin-b-10"
+                                (click)="viewLoan(masterLoan.id)" *ngxPermissionsOnly="['loanDetailsView']">View
+                                Details
+                            </div>
+
+                            <div class="col" *ngIf="masterLoan.parentLoanId">
+                                <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10"
+                                    (click)="viewLoan(masterLoan.parentLoanId)"
+                                    *ngxPermissionsOnly="['loanDetailsView']">
+                                    View Old Loan
+                                </div>
+                            </div>
+                            <div class="col" *ngIf="masterLoan.isLoanTransfer">
+                                <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10"
+                                    (click)="viewTransfer(masterLoan.customerLoan[0].id)"
+                                    *ngxPermissionsOnly="['loanDetailsView']">
+                                    View Transfer Details
+                                </div>
+                            </div>
+                        </div>
+
+
+
                     </div>
                 </div>
             </div>

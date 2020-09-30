@@ -163,7 +163,7 @@ export class DisburseComponent implements OnInit {
   }
 
   getBankDetails() {
-    console.log(this.masterAndLoanIds)
+    // console.log(this.masterAndLoanIds)
     this.loanService.getBankDetails(this.masterAndLoanIds.loanId, this.masterAndLoanIds.masterLoanId).subscribe(res => {
       if (Object.keys(res.data).length) {
         this.details = res.data

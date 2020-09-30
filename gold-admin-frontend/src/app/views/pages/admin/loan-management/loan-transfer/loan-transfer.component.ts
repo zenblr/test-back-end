@@ -181,7 +181,7 @@ export class LoanTransferComponent implements OnInit {
   getReasonsList() {
     this.custClassificationService.getReasonsList().pipe(
       map(res => {
-        console.log(res)
+        // console.log(res)
         this.reasons = res.data;
       })
     ).subscribe()

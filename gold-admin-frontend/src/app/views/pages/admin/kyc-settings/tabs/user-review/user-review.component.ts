@@ -58,6 +58,7 @@ export class UserReviewComponent implements OnInit {
   organizationTypes: any;
   images = { constitutionsDeed: [], gstCertificate: [] }
   @Output() setModule: EventEmitter<any> = new EventEmitter<any>();
+  isAddressSame: boolean = false;
 
 
   //   data = {
@@ -353,12 +354,12 @@ export class UserReviewComponent implements OnInit {
         customerId: [],
         addressType: [],
         address: [],
-        stateId: [],
-        cityId: [],
+        stateId: [''],
+        cityId: [''],
         pinCode: [, [Validators.pattern('[1-9][0-9]{5}')]],
         addressProof: [],
         addressProofFileName: [],
-        addressProofTypeId: [],
+        addressProofTypeId: [''],
         addressProofNumber: [],
       })
 
@@ -505,6 +506,8 @@ export class UserReviewComponent implements OnInit {
 
   submit() {
 
+    if (this.isAddressSame) this.customerKycAddressTwo.enable()
+
     let customerKycAddress = [];
     let customerKycAddressTwo = this.customerKycAddressTwo ? this.customerKycAddressTwo.value : null
     customerKycAddress.push(this.customerKycAddressOne.value, customerKycAddressTwo);
@@ -553,10 +556,14 @@ export class UserReviewComponent implements OnInit {
     this.userBankService.kycSubmit(data).pipe(
       map(res => {
         this.next.emit(true);
-      }), catchError(err => {
+      }),
+      catchError(err => {
         if (err.error.message)
           this.toastr.error(err.error.message);
         throw (err)
+      }),
+      finalize(() => {
+        if (this.isAddressSame) this.customerKycAddressTwo.disable()
       })
     ).subscribe()
 
@@ -1031,4 +1038,38 @@ export class UserReviewComponent implements OnInit {
     }
   }
 
+  sameAddressAsPermanent(event) {
+    this.isAddressSame = event
+    if (event) {
+      this.customerKycAddressTwo.patchValue(this.customerKycAddressOne.value)
+      this.cities1 = this.cities0
+      this.addressFileNameArray2 = this.addressFileNameArray1
+      this.addressIdArray2 = this.addressIdArray1
+      this.addressImageArray2 = this.addressImageArray1
+      this.customerKycAddressTwo.disable()
+    } else {
+      this.customerKycAddressTwo.reset()
+      this.cities1 = []
+      this.addressFileNameArray2 = []
+      this.addressIdArray2 = []
+      this.addressImageArray2 = []
+      const addressTwo = this.data.customerKycReview.customerKycAddress[1]
+      this.customerKycAddressTwo.patchValue({
+        stateId: '',
+        cityId: '',
+        addressProofTypeId: '',
+        id: addressTwo.id,
+        customerId: addressTwo.customerId,
+        customerKycId: addressTwo.customerKycId
+      })
+    }
+
+    if (this.data.moduleId == 1) {
+      this.customerKycAddressTwo.controls.addressType.patchValue('residential')
+    }
+    if (this.data.moduleId == 3 && this.data.userType === 'Corporate') {
+      this.customerKycAddressTwo.controls.addressType.patchValue('communication')
+    }
+
+  }
 }
