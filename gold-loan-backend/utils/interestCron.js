@@ -37,7 +37,7 @@ exports.dailyIntrestCalculation = async (date) => {
                 let interestGreaterThanDate = await getAllInterestGreaterThanDate(loan.id, date);
                 //update interestAccrual & interest amount //here to debit amount
                 for (const interestData of interestLessThanDate) {
-                    let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id,credit:null,isPenalInterest:false} });
+                    let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: null, isPenalInterest: false } });
                     if (checkDebitEntry.length == 0) {
                         let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interest.amount, description: `interest due ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment() }, { transaction: t });
                         await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
@@ -245,15 +245,23 @@ exports.cronForDailyPenalInterest = async (date) => {
                 break;
             }
 
-            // let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interest.amount, description: `interest due ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`,paymentDate:moment() }, { transaction: t });
+            let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: data[i].masterLoanId, loanId: data[i].id, loanInterestId: dataInfo[j + 1].id, credit: null, isPenalInterest: true } });
+            let penelInterest
+            if (!check.isEmpty(checkDebitEntry)) {
+                penelInterest = Number((((data[i].outstandingAmount * penal) / noOfDaysInYear) * daysCount).toFixed(2))
+                let debitedAmount = await checkDebitEntry.map((data) => Number(data.debit));
+                let totalDebitedAmount = _.sum(debitedAmount);
+                penelInterest = penelInterest - totalDebitedAmount;
+            } else {
+                penelInterest = Number((((data[i].outstandingAmount * penal) / noOfDaysInYear) * daysCount).toFixed(2))
+            }
 
-            let penelInterest = Number((((data[i].outstandingAmount * penal) / noOfDaysInYear) * daysCount).toFixed(2))
             detail.masterLoanId = data[i].masterLoanId
             detail.loanId = data[0].id
             detail.loanInterestId = dataInfo[j + 1].id
             detail.debit = penelInterest
             detail.description = `penal interest`
-            detail.isPenal = true
+            detail.isPenalInterest = true
             transaction.push(detail)
             detail = {}
 
