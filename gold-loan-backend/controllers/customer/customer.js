@@ -521,6 +521,7 @@ exports.getsingleCustomerManagement = async (req, res) => {
   return res.status(200).json({ message: "Success", data: singleCustomer })
 }
 
+//To register customer by their own
 exports.signUpCustomer = async (req, res) => {
   let { firstName, lastName, mobileNumber } = req.body;
 
@@ -543,4 +544,42 @@ exports.signUpCustomer = async (req, res) => {
   let createdCustomer = await models.customerRegister.create({ firstName, lastName, mobileNumber, isActive: true });
   return res.status(200).json({ messgae: `Registered Sucessfully!` });
 
+}
+
+//To get all registered customer
+exports.getAllRegisteredCustomer = async (req, res) => {
+  const { search, offset, pageSize } = paginationWithFromTo(
+    req.query.search,
+    req.query.from,
+    req.query.to
+  );
+  let query = {};
+  const searchQuery = {
+    [Op.and]: [query, {
+      [Op.or]: {
+        mobile_number: { [Op.iLike]: search + "%" },
+      },
+    }],
+    isActive: true,
+  };
+
+  let allCustomers = await models.customerRegister.findAll({
+    where: searchQuery,
+    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+    order: [["id", "DESC"]],
+    subQuery: false,
+    offset: offset,
+    limit: pageSize,
+  });
+
+  let count = await models.customerRegister.findAll({
+    where: searchQuery,
+    subQuery: false
+  });
+
+  if (allCustomers.length === 0) {
+    return res.status(200).json({ data: [] });
+  } else {
+    return res.status(200).json({ message: 'Success', data: allCustomers, count: count.length });
+  }
 }

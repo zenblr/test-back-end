@@ -793,6 +793,9 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/admin/user-management/partner/view-schemes/')) {
 			this.showBackButton = true;
 		}
+		if(this.path == "registered-customers"){
+			this.showInput = true;
+		}
 	}
 
 	action(event: Event) {
