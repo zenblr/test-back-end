@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@
 import { FormGroup, FormControl } from '@angular/forms';
 import { GlobalMapService } from '../../../../core/global-map/global-map.service'
 import { DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 
 interface marker {
   lat: any;
@@ -27,7 +28,7 @@ interface marker {
 })
 export class GlobalMapComponent implements OnInit {
 
-  icon: {url: '../../../../../assets/media/icons/ezgif.com-gif-maker.png', scaledSize: { width: 50, height: 50 }}
+  icon= {url: './assets/media/icons/ezgif.com-gif-maker.png', scaledSize: { width: 50, height: 50 }}
   panelOpenState: boolean;
   latitude: number = 18.969050;
   longitude: number = 72.821180;
@@ -47,7 +48,8 @@ export class GlobalMapComponent implements OnInit {
   constructor(
     private globalMapService: GlobalMapService,
     private datePipe: DatePipe,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private router:Router
   ) { }
 
   ngOnInit() {
@@ -163,6 +165,11 @@ export class GlobalMapComponent implements OnInit {
     //     this.previousIndex = this.currentIndex
     //   }
     // }
+
+  }
+
+  navigate(loan){
+    this.router.navigate([`/admin/loan-management/view-location/${loan.masterLoanId}`])
 
   }
 
