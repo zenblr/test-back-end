@@ -11,7 +11,7 @@
                     <th class="transparent">Payment Date</th>
                     <th class="transparent">Paid Part Amount</th>
                     <th class="transparent">Principal Outstanding</th>
-                    <!-- <th class="transparent">Total Part Payment</th> -->
+                    <th class="transparent">Status</th>
                 </thead>
                 <tbody>
                     <tr *ngFor="let loanDetail of partPaymentHistory">
@@ -51,7 +51,17 @@
                                 {{loanDetail.transactionSplitUp[1].loanOutstanding | indianCurrencyFormat}}
                             </span>
                         </td>
-                        <!-- <td></td> -->
+                        <td>
+                            <span *ngIf="loanDetail?.depositStatus == 'Completed'" class="text-success">
+                                {{loanDetail?.depositStatus | titlecase}}
+                            </span>
+                            <span *ngIf="loanDetail?.depositStatus == 'Pending'" class="text-warning">
+                               Waiting For Approval 
+                            </span>
+                            <span *ngIf="loanDetail?.depositStatus == 'Rejected'" class="text-danger">
+                                {{loanDetail?.depositStatus | titlecase}}
+                            </span>
+                        </td>
                     </tr>
                     <tr *ngIf="partPaymentHistory && !partPaymentHistory.length">
                         <td align="center" colspan="6">No Records Found</td>

@@ -65,6 +65,7 @@ export class UpdateLocationComponent implements OnInit {
       deliveryPacketLocationId: [],
       deliveryInternalBranchId: [],
       deliveryPartnerBranchId: [],
+      deliveryPartnerName: [],
       id: [],
       releaseId: [],
       role: []
@@ -547,6 +548,8 @@ export class UpdateLocationComponent implements OnInit {
       if (this.controls.deliveryPacketLocationId.value == 4) {
         // this.controls.deliveryPartnerBranchId.patchValue(res.data.id)
         // this.controls.partnerName.patchValue(res.data.name)
+        this.controls.deliveryPartnerName.patchValue(res.data.name)
+        this.controls.deliveryPartnerName.disable()
         this.deliveryPartnerBranches = res.data.partnerBranch
         this.clearInternalBranchData()
       }

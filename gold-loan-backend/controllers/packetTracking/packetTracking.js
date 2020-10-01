@@ -68,6 +68,28 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
                 }
             ]
         },
+        {
+            model: models.customerPacketTracking,
+            as: 'customerPacketTracking',
+            where: { isDelivered: true },
+            include: [
+                {
+                    model: models.customer,
+                    as: 'customer',
+                    attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
+                },
+                {
+                    model: models.user,
+                    as: 'receiverUser',
+                    attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
+                },
+                {
+                    model: models.partnerBranchUser,
+                    as: 'receiverPartner',
+                    attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
+                }
+            ]
+        }
     ]
     let stage = await models.loanStage.findAll({ where: { name: { [Op.in]: ['submit packet', 'packet branch out', 'packet in branch', 'packet submitted'] } } })
     let stageId = stage.map(ele => ele.id)
@@ -93,6 +115,7 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
             ['id', 'DESC'],
             [models.customerLoan, 'id', 'asc'],
             [{ model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'asc'],
+            [{ model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'desc']
         ],
         offset: offset,
         limit: pageSize,
@@ -424,10 +447,10 @@ exports.addPacketTracking = async (req, res, next) => {
             order: [['createdAt', 'desc']]
         })
         if (lastLocation) {
-            let dist = await calculateDistance(lastLocation.latitude,lastLocation.longitude,getAll.latitude,getAll.longitude,"K")
+            let dist = await calculateDistance(lastLocation.latitude, lastLocation.longitude, getAll.latitude, getAll.longitude, "K")
             getAll.distance = Number(dist)
-            getAll.totalDistance = Number(lastLocation.totalDistance)+Number(dist)
-              
+            getAll.totalDistance = Number(lastLocation.totalDistance) + Number(dist)
+
         }
 
         let packetTracking = await models.packetTracking.create(getAll, { transaction: t })
@@ -489,7 +512,7 @@ exports.getMapDetails = async (req, res, next) => {
                 include: {
                     model: models.packet,
                     as: 'packet',
-                    attributes:['packetUniqueId']
+                    attributes: ['packetUniqueId']
                 }
             }]
 
@@ -518,7 +541,7 @@ exports.getLocationDetails = async (req, res, next) => {
             model: models.packetTrackingMasterloan,
             as: 'packetTrackingMasterloan',
             where: { masterLoanId: masterLoanId },
-        }],            
+        }],
         order: [['trackingTime', 'DESC']],
         offset: offset,
         limit: pageSize,
@@ -608,7 +631,7 @@ exports.verifyCheckOut = async (req, res, next) => {
 
         await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocation.id, status: 'in transit' }, { transaction: t });
 
-        let packetTrackingData = await models.customerPacketTracking.create({ masterLoanId, loanId, internalBranchId: internalBranchId, packetLocationId: packetLocation.id, userSenderId: id, isDelivered: true, status: 'in transit' }, { transaction: t });
+        let packetTrackingData = await models.customerPacketTracking.create({ masterLoanId, loanId, internalBranchId: internalBranchId, packetLocationId: packetLocation.id, userSenderId: id, userReceiverId: id, isDelivered: true, status: 'in transit' }, { transaction: t });
 
         let allPacketTrackingData = await models.customerPacketTracking.findAll({
             where: { masterLoanId: masterLoanId, isDelivered: true },

@@ -1,6 +1,10 @@
 {
     "/api/*": {
+<<<<<<< HEAD
+        "target": "http://localhost:3000/",
+=======
         "target": "https://gold.nimapinfotech.com",
+>>>>>>> c2e467f43392afe9cd63367c271c30cc7b50f157
         "secure": false,
         "logLevel": "debug",
         "changeOrigin": true

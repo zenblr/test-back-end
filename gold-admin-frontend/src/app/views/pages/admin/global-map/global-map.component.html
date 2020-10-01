@@ -67,6 +67,22 @@
                                             {{m.firstName |titlecase}}&nbsp;{{m.lastName |titlecase}} <span
                                                 *ngIf="infoToggle[i]">| {{m.trackingTime | time24to12}}</span>
                                         </strong>
+                                        <div>
+                                            {{m.masterLoan.locationData | json}}
+                                            <span *ngFor="let item of m.masterLoan.locationData; first as f">
+                                                <span *ngIf="f">
+                                                    <span
+                                                        *ngIf="item.packetLocationId === 6 || item.packetLocationId === 3 || item.packetLocationId === 5 || item.packetLocationId === 1">
+                                                        <kt-elapsed-time [startTime]="item.createdAt"></kt-elapsed-time>
+                                                    </span>
+                                                    <ng-container
+                                                        *ngIf="item.packetLocationId === 2 && !m.masterLoan.isLoanCompleted">
+                                                        <kt-elapsed-time [startTime]="m.masterLoan?.customerLoanDisbursement[0].cr">
+                                                        </kt-elapsed-time>
+                                                    </ng-container>
+                                                </span>
+                                            </span>
+                                        </div>
                                     </span><br>
                                     <span *ngIf="!infoToggle[i]">
                                         <strong>Date :</strong>
