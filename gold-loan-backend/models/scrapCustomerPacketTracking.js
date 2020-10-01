@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
         // attributes
         scrapId: {
             type: DataTypes.INTEGER,
-            field: 'loan_id',
+            field: 'scrap_id',
         },
         packetLocationId: {
             type: DataTypes.INTEGER,

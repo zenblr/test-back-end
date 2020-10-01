@@ -8,13 +8,13 @@ const { paginationWithFromTo } = require("../../../utils/pagination");
 
 
 exports.addPacketLocation = async (req, res, next) => {
-    let { location } = req.body;
-    let pocketExist = await models.scrapPacketLocation.findOne({ where: {isActive: true, location: location } })
-    if (!check.isEmpty(pocketExist)) {
-        return res.status(404).json({ message: 'This Packet Location already Exists' });
-    }
-    let pocket = await models.scrapPacketLocation.create({ location });
-    return res.status(200).json({ message: `Created` })
+        let { location } = req.body;
+        let pocketExist = await models.scrapPacketLocation.findOne({ where: {isActive: true, location: location } })
+        if (!check.isEmpty(pocketExist)) {
+            return res.status(404).json({ message: 'This Packet Location already Exists' });
+        }
+        let pocket = await models.scrapPacketLocation.create({ location: location });
+        return res.status(200).json({ message: `Created` })
 }
 
 exports.getPacketLocation = async (req, res, next) => {

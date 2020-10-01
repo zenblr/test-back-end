@@ -262,16 +262,12 @@ exports.scrapOrnmanetDetails = async (req, res, next) => {
         return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData })
     } else {
 
-        // let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
         let scrapData = await sequelize.transaction(async t => {
-            // if (loanSubmitted.isLoanSubmitted == false) {
             await models.customerScrap.update({ customerScrapCurrentStage: '3', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
-            // }
 
             await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
 
             await models.customerScrapOrnamentsDetail.destroy({ where: { scrapId: scrapId }, transaction: t });
-            // let createdOrnaments = await models.customerScrapOrnamentsDetail.bulkCreate(allOrnmanets, { returning: true }, { transaction: t });
 
             let createdOrnaments = []
             for (let purityTestData of allOrnmanets) {
@@ -319,9 +315,7 @@ exports.scrapOrnmanetMeltingDetails = async (req, res, next) => {
         return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '5', finalScrapAmountAfterMelting, eligibleScrapAmount, ornaments: scrapData, firstName, lastName });
     } else {
 
-        // let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
         let scrapData = await sequelize.transaction(async t => {
-            // if (loanSubmitted.isLoanSubmitted == false) {
             await models.customerScrap.update({ customerScrapCurrentStage: '5', modifiedBy, finalScrapAmountAfterMelting, eligibleScrapAmount }, { where: { id: scrapId }, transaction: t })
             // }
 
@@ -376,12 +370,9 @@ exports.scrapAppraiserRating = async (req, res, next) => {
 
             await models.customerScrapHistory.create({ scrapId, action: APPRAISER_RATING, modifiedBy }, { transaction: t });
 
-            // let loanDetail = await models.customerLoan.findOne({ where: { id: loanId }, transaction: t })
 
-            //loan Id generation
             if (ornament.scrapUniqueId == null) {
                 var scrapUniqueId = null;
-                //secured loan Id
                 scrapUniqueId = `SCRAP${Math.floor(1000 + Math.random() * 9000)}`;
 
                 await models.customerScrap.update({ scrapUniqueId: scrapUniqueId }, { where: { id: scrapId }, transaction: t })
@@ -571,89 +562,85 @@ exports.scrapDocuments = async (req, res, next) => {
 }
 
 exports.singleScrapDetails = async (req, res, next) => {
-    const { scrapId } = req.query;
+    try{
+        const { scrapId } = req.query;
 
-    let customerScrap = await models.customerScrap.findOne({
-        where: { id: scrapId },
-        include: [{
-            model: models.scrapStage,
-            as: 'scrapStage',
-            attributes: ['id', 'stageName']
-        },
-        {
-            model: models.customer,
-            as: 'customer',
-            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'email', 'kycStatus']
-        },
-        {
-            model: models.customerScrapPersonalDetail,
-            as: 'scrapPersonalDetail',
-            attributes: ['scrapId', 'startDate', 'kycStatus']
-        },
-        {
-            model: models.customerScrapBankDetails,
-            as: 'scrapBankDetails',
-            attributes: ['scrapId', 'paymentType', 'bankName', ['bank_branch', 'bankBranchName'], ['ac_number', 'accountNumber'], ['ac_holder_name', 'accountHolderName'], 'ifscCode', 'passbookProof', 'createdBy', 'modifiedBy']
-        },
-        {
-            model: models.customerAcknowledgement,
-            as: 'customerScrapAcknowledgement',
-            attributes: ['scrapId', 'processingCharges', 'standardDeduction', 'customerConfirmation', 'customerConfirmationStatus']
-        },
-        {
-            model: models.customerScrapDocument,
-            as: 'scrapDocument',
-            attributes: ['scrapId', 'purchaseVoucher', 'purchaseInvoice', 'saleInvoice']
-        },
-        {
-            model: models.customerScrapOrnamentsDetail,
-            as: 'scrapOrnamentsDetail',
-            include:
-            {
-                model: models.ornamentType,
-                as: "ornamentType",
-                // attributes: ['name', 'id']
-            },
-            attributes: ['id', 'scrapId', 'ornamentTypeId', 'quantity', 'grossWeight', 'netWeight', 'deductionWeight', 'karat', 'approxPurityReading', 'ornamentImage', 'ornamentImageWithWeight', 'ornamentImageWithXrfMachineReading', 'ltvAmount', 'ltvAmount', 'scrapAmount']
-        },
-        {
-            model: models.scrapMeltingOrnament,
-            as: 'meltingOrnament',
-            attributes: ['id', 'scrapId', 'grossWeight', 'netWeight', 'deductionWeight', 'karat', 'purityReading', 'ornamentImageWithWeight', 'ornamentImageWithXrfMachineReading', 'ornamentImage', 'customerConfirmation']
-        },
-        {
-            model: models.customerScrapPackageDetails,
-            as: 'scrapPacketDetails',
-            attributes: ['scrapId', 'emptyPacketWithRefiningOrnament', 'sealedPacketWithWeight', 'sealedPacketWithCustomer'],
+        let customerScrap = await models.customerScrap.findOne({
+            where: { id: scrapId },
             include: [{
-                model: models.scrapPacket,
-                as: 'CustomerScrapPackageDetail',
-                // include: [{
-                //     model: models.scrapPacketOrnament,
-                //     as: 'scrapPacketOrnament',
-                // include: [{
-                //     model: models.ornamentType,
-                //     as: 'ornamentType'
-                // }]
-                // }]
+                model: models.scrapStage,
+                as: 'scrapStage',
+                attributes: ['id', 'stageName']
+            },
+            {
+                model: models.customer,
+                as: 'customer',
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'email', 'kycStatus']
+            },
+            {
+                model: models.customerScrapPersonalDetail,
+                as: 'scrapPersonalDetail',
+                attributes: ['scrapId', 'startDate', 'kycStatus']
+            },
+            {
+                model: models.customerScrapBankDetails,
+                as: 'scrapBankDetails',
+                attributes: ['scrapId', 'paymentType', 'bankName', ['bank_branch', 'bankBranchName'], ['ac_number', 'accountNumber'], ['ac_holder_name', 'accountHolderName'], 'ifscCode', 'passbookProof', 'createdBy', 'modifiedBy']
+            },
+            {
+                model: models.customerAcknowledgement,
+                as: 'customerScrapAcknowledgement',
+                attributes: ['scrapId', 'processingCharges', 'standardDeduction', 'customerConfirmation', 'customerConfirmationStatus']
+            },
+            {
+                model: models.customerScrapDocument,
+                as: 'scrapDocument',
+                attributes: ['scrapId', 'purchaseVoucher', 'purchaseInvoice', 'saleInvoice']
+            },
+            {
+                model: models.customerScrapOrnamentsDetail,
+                as: 'scrapOrnamentsDetail',
+                include:
+                {
+                    model: models.ornamentType,
+                    as: "ornamentType",
+                    // attributes: ['name', 'id']
+                },
+                attributes: ['id', 'scrapId', 'ornamentTypeId', 'quantity', 'grossWeight', 'netWeight', 'deductionWeight', 'karat', 'approxPurityReading', 'ornamentImage', 'ornamentImageWithWeight', 'ornamentImageWithXrfMachineReading', 'ltvAmount', 'ltvAmount', 'scrapAmount']
+            },
+            {
+                model: models.scrapMeltingOrnament,
+                as: 'meltingOrnament',
+                attributes: ['id', 'scrapId', 'grossWeight', 'netWeight', 'deductionWeight', 'karat', 'purityReading', 'ornamentImageWithWeight', 'ornamentImageWithXrfMachineReading', 'ornamentImage', 'customerConfirmation']
+            },
+            {
+                model: models.customerScrapPackageDetails,
+                as: 'scrapPacketDetails',
+                attributes: ['scrapId', 'emptyPacketWithRefiningOrnament', 'sealedPacketWithWeight', 'sealedPacketWithCustomer'],
+                include: [{
+                    model: models.scrapPacket,
+                }]
+            },
+            {
+                model: models.customerScrapDisbursement,
+                as: 'scrapDisbursement',
+                attributes: ['id', 'scrapId', 'transactionId', 'date', 'paymentMode', 'ifscCode', 'bankName', 'bankBranch', 'acHolderName', 'acNumber', 'disbursementStatus']  
             }]
-        },
-        {
-            model: models.customerScrapDisbursement,
-            as: 'scrapDisbursement',
-            attributes: ['id', 'scrapId', 'transactionId', 'date', 'paymentMode', 'ifscCode', 'bankName', 'bankBranch', 'acHolderName', 'acNumber', 'disbursementStatus']  
-        }]
-    });
-
-    let ornamentTypesss = [];
-    if (customerScrap.scrapOrnamentsDetail.length != 0) {
-        for (let ornamentsDetail of customerScrap.scrapOrnamentsDetail) {
-            ornamentTypesss.push({ ornamentType: ornamentsDetail.ornamentType, id: ornamentsDetail.id })
+        });
+    
+        let ornamentTypesss = [];
+        if (customerScrap.scrapOrnamentsDetail.length != 0) {
+            for (let ornamentsDetail of customerScrap.scrapOrnamentsDetail) {
+                ornamentTypesss.push({ ornamentType: ornamentsDetail.ornamentType, id: ornamentsDetail.id })
+            }
+            customerScrap.dataValues.ornamentType = ornamentTypesss;
         }
-        customerScrap.dataValues.ornamentType = ornamentTypesss;
+    
+        return res.status(200).json({ customerScrap })
+    }catch(err){
+        console.log(err);
     }
-
-    return res.status(200).json({ customerScrap })
+   
 
 }
 
@@ -698,18 +685,6 @@ exports.addPackageImagesForScrap = async (req, res, next) => {
 
             await models.customerScrapPacket.bulkCreate(packetMapping, { transaction: t })
 
-            // let ornamentPacketData = [];
-            // for (let x of packetOrnamentArray) {
-            //     for (let singleOrnamentId of x.ornamentsId) {
-            //         let pushData = {}
-            //         pushData['packetId'] = Number(x.packetId)
-            //         pushData['ornamentTypeId'] = Number(singleOrnamentId)
-            //         ornamentPacketData.push(pushData)
-            //     }
-            // }
-            // console.log(ornamentPacketData)
-            // await models.packetOrnament.bulkCreate(ornamentPacketData, { transaction: t })
-
             await models.scrapPacket.bulkCreate(packetUpdateArray, {
                 updateOnDuplicate: ["customerId", "scrapId", "modifiedBy", "packetAssigned"]
             }, { transaction: t })
@@ -731,7 +706,6 @@ exports.addPackageImagesForScrap = async (req, res, next) => {
 
             let x = await models.customerScrapPacket.destroy({ where: { customerScrapPackageDetailId: getPackets[0].id }, transaction: t })
 
-            // let y = await models.packetOrnament.destroy({ where: { packetId: { [Op.in]: packetId } }, transaction: t })
 
             let z = await models.scrapPacket.update({ customerId: null, scrapId: null, packetAssigned: false }, {
                 where: { id: { [Op.in]: packetId } }, transaction: t
@@ -750,29 +724,12 @@ exports.addPackageImagesForScrap = async (req, res, next) => {
 
             }
 
-            // let ornamentPacketData = [];
-            // for (let x of packetOrnamentArray) {
-            //     for (let singleOrnamentId of x.ornamentsId) {
-            //         let pushData = {}
-            //         pushData['packetId'] = Number(x.packetId)
-            //         pushData['ornamentTypeId'] = Number(singleOrnamentId)
-            //         ornamentPacketData.push(pushData)
-            //     }
-            // }
-            // console.log(ornamentPacketData)
-            // await models.packetOrnament.bulkCreate(ornamentPacketData, { transaction: t })
-
             for (let ele of packetUpdateArray) {
                 await models.scrapPacket.update({
                     customerId: ele.customerId, scrapId: ele.scrapId, modifiedBy: ele.modifiedBy, packetAssigned: true
                 }
                     , { where: { id: { [Op.in]: packetId } }, transaction: t });
             }
-
-            // console.log(packetUpdateArray);
-            // await models.scrapPacket.bulkCreate(packetUpdateArray, {
-            //     updateOnDuplicate: ["customerId", "scrapId", "modifiedBy", "packetAssigned"]
-            // }, { transaction: t });
 
             await models.customerScrapHistory.create({ scrapId, action: PACKET_IMAGES, modifiedBy }, { transaction: t });
         })
@@ -813,50 +770,51 @@ exports.disbursementOfScrapBankDetails = async (req, res, next) => {
 
 //  function for disbursement og scrap amount
 exports.disbursementOfScrapAmount = async (req, res, next) => {
-    let { scrapId, scrapAmount, transactionId, date, paymentMode, ifscCode, bankName, bankBranch,
-        accountHolderName, accountNumber, disbursementStatus } = req.body;
-    let createdBy = req.userData.id;
-    let modifiedBy = req.userData.id;
-    let internalBranchId = req.userData.internalBranchId;
-    let userSenderId = req.userData.id;
-
-    let scrapDetails = await models.customerScrap.findOne({ where: { id: scrapId } });
-
-    let scrapDisbursementDetails = await models.customerScrapDisbursement.findOne({ where: { id: scrapId } });
-
-    if (!check.isEmpty(scrapDisbursementDetails)) {
-        return res.status(400).json({ message: `This scrap is already disbursed` })
-    }
-
-    let matchStageId = await models.scrapStage.findOne({ where: { stageName: 'disbursement pending' } });
-
-    if (scrapDetails.scrapStageId == matchStageId.id) {
-
-        await sequelize.transaction(async (t) => {
-
-            let stageId = await models.scrapStage.findOne({ where: { stageName: 'submit packet' } });
-
-            await models.customerScrap.update({ disbursementAmount: scrapAmount, scrapStageId: stageId.id, isDisbursed: true }, { where: { id: scrapId }, transaction: t });
-
-            await models.customerScrapBankDetails.update({ paymentType: paymentMode, bankName, acNumber: accountNumber, ifscCode, bankBranch, acHolderName: accountHolderName, createdBy, modifiedBy }, { where: { scrapId: scrapId }, transaction: t });
-
-            await models.customerScrapDisbursement.create({
-                scrapId, scrapAmount, transactionId, date, paymentMode, ifscCode, bankName, bankBranch,
-                acHolderName: accountHolderName, acNumber: accountNumber, disbursementStatus, createdBy, modifiedBy
-            }, { transaction: t })
-
-            await models.customerScrapHistory.create({ scrapId, action: SCRAP_DISBURSEMENT, modifiedBy }, { transaction: t });
-
-            let packetLocation = await models.scrapPacketLocation.findOne({ where: { location: 'amount disbursed' } });
-
-            await models.customerScrapPacketData.create({ scrapId: scrapId, packetLocationId: packetLocation.id }, { transaction: t });
-
-            await models.customerPacketTracking.create({ scrapId, internalBranchId: internalBranchId, packetLocationId: packetLocation.id, userSenderId: userSenderId }, { transaction: t });
-        })
-        return res.status(200).json({ message: 'Your scrap amount has been disbursed successfully' });
-    } else {
-        return res.status(404).json({ message: 'Given scrap id is not proper' });
-    }
+    
+        let { scrapId, scrapAmount, transactionId, date, paymentMode, ifscCode, bankName, bankBranch,
+            accountHolderName, accountNumber, disbursementStatus } = req.body;
+        let createdBy = req.userData.id;
+        let modifiedBy = req.userData.id;
+        let internalBranchId = req.userData.internalBranchId;
+        let userSenderId = req.userData.id;
+    
+        let scrapDetails = await models.customerScrap.findOne({ where: { id: scrapId } });
+    
+        let scrapDisbursementDetails = await models.customerScrapDisbursement.findOne({ where: { id: scrapId } });
+    
+        if (!check.isEmpty(scrapDisbursementDetails)) {
+            return res.status(400).json({ message: `This scrap is already disbursed` })
+        }
+    
+        let matchStageId = await models.scrapStage.findOne({ where: { stageName: 'disbursement pending' } });
+    
+        if (scrapDetails.scrapStageId == matchStageId.id) {
+    
+            await sequelize.transaction(async (t) => {
+    
+                let stageId = await models.scrapStage.findOne({ where: { stageName: 'submit packet' } });
+    
+                await models.customerScrap.update({ disbursementAmount: scrapAmount, scrapStageId: stageId.id, isDisbursed: true }, { where: { id: scrapId }, transaction: t });
+    
+                await models.customerScrapBankDetails.update({ paymentType: paymentMode, bankName, acNumber: accountNumber, ifscCode, bankBranch, acHolderName: accountHolderName, createdBy, modifiedBy }, { where: { scrapId: scrapId }, transaction: t });
+    
+                await models.customerScrapDisbursement.create({
+                    scrapId, scrapAmount, transactionId, date, paymentMode, ifscCode, bankName, bankBranch,
+                    acHolderName: accountHolderName, acNumber: accountNumber, disbursementStatus, createdBy, modifiedBy
+                }, { transaction: t })
+    
+                await models.customerScrapHistory.create({ scrapId, action: SCRAP_DISBURSEMENT, modifiedBy }, { transaction: t });
+    
+                let packetLocation = await models.scrapPacketLocation.findOne({ where: { location: 'amount disbursed' } });
+    
+                await models.customerScrapPacketData.create({ scrapId: scrapId, packetLocationId: packetLocation.id }, { transaction: t });
+    
+                await models.scrapCustomerPacketTracking.create({ scrapId, internalBranchId: internalBranchId, packetLocationId: packetLocation.id, userSenderId: userSenderId, isDelivered: true }, { transaction: t });
+            })
+            return res.status(200).json({ message: 'Your scrap amount has been disbursed successfully' });
+        } else {
+            return res.status(404).json({ message: 'Given scrap id is not proper' });
+        }
 
 }
 

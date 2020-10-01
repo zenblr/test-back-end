@@ -352,16 +352,11 @@ exports.getSingleScrapInCustomerManagment = async (req, res, next) => {
                     attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy'] },
                     include: [{
                         model: models.scrapPacket,
-                        as: 'CustomerScrapPackageDetail',
                         attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
                         include: [
                             {
                                 model: models.scrapPacketOrnament,
                                 as: 'scrapPacketOrnament',
-                                // include: [{
-                                //     model: models.ornamentType,
-                                //     as: 'ornamentType'
-                                // }]
                             }
                         ]
                     }]
@@ -376,6 +371,11 @@ exports.getSingleScrapInCustomerManagment = async (req, res, next) => {
                     as: 'customer',
                     where: { isActive: true },
                     attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+                },
+                {
+                    model: models.customerScrapDisbursement,
+                    as: 'scrapDisbursement',
+                    attributes: ['scrapId', 'scrapAmount', 'transactionId', 'date', 'paymentMode', 'ifscCode', 'bankName', 'bankBranch', 'acHolderName', 'acNumber']
                 }
             ]
     
