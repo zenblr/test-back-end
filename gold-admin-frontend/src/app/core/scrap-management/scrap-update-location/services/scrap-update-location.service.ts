@@ -59,7 +59,7 @@ export class ScrapUpdateLocationService {
   }
 
   addPacketLocation(data): Observable<any> {
-    return this.http.post<any>(`/api/packet-tracking`, data).pipe(
+    return this.http.post<any>(`/api/scrap/scrap-packet-tracking`, data).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message) this.toastr.error(err.error.message);
@@ -110,7 +110,7 @@ export class ScrapUpdateLocationService {
   }
 
   getNextPacketLocation(reqParams): Observable<any> {
-    return this.http.get(`/api/packet-tracking/next-packet-location`, { params: reqParams }).pipe(
+    return this.http.get(`/api/scrap/scrap-packet-tracking/next-packet-location`, { params: reqParams }).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message) this.toastr.error(err.error.message);

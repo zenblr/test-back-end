@@ -158,7 +158,7 @@ export class AppliedScrapComponent implements OnInit {
     // }
     const scrapId = item.id;
     this.scrapPacketTrackingService.viewPackets({ scrapId }).pipe(map(res => {
-      let data = res.data[0].scrapPackets;
+      let data = res.data.scrapPacketDetails[0].scrapPackets;
       this.submitPacket(data);
     }
     )).subscribe();

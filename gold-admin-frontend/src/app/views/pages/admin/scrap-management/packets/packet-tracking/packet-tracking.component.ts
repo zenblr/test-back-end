@@ -21,7 +21,8 @@ import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.compo
 export class PacketTrackingComponent implements OnInit {
   dataSource: ScrapPacketTrackingDatasource;
   displayedColumns = ['userName', 'mobileNumber', 'customerId', 'customerName', 'scrapId', 'scrapAmount', 'internalBranch', 'currentLocation', 'actions'];
-  leadsResult = []
+  leadsResult = [];
+  customerConfirmationArr = [];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
   filter$ = new Subject();
@@ -95,6 +96,7 @@ export class PacketTrackingComponent implements OnInit {
 
     this.dataSource.loadpackets(this.queryParamsData);
 
+    this.getcustomerConfirmation();
   }
 
   ngAfterContentChecked() {
@@ -124,6 +126,19 @@ export class PacketTrackingComponent implements OnInit {
     this.dataSource.loadpackets(this.queryParamsData);
   }
 
+  getcustomerConfirmation() {
+    this.customerConfirmationArr = [
+      {
+        "name": "Yes",
+        "value": "yes"
+      },
+      {
+        "name": "No",
+        "value": "no"
+      }
+    ];
+  }
+
   assignPackets() {
     // const dialogRef = this.dialog.open(AssignPacketsComponent, {
     //   data: { action: 'add' },
@@ -138,7 +153,6 @@ export class PacketTrackingComponent implements OnInit {
   }
 
   updatePacket(packet) {
-    debugger
     const isNotAllowed = this.checkForPartnerBranchIn(packet);
     if (isNotAllowed) {
       return;
@@ -212,7 +226,11 @@ export class PacketTrackingComponent implements OnInit {
       this.dialog.open(OrnamentsComponent, {
         data: {
           scrapModal: true,
-          modalData: res.data[0].scrapPackets,
+          modalData: res.data.scrapPacketDetails[0].scrapPackets,
+          scrapId: res.data.scrapPacketDetails[0].scrapId,
+          finalScrapAmountAfterMelting: res.data.finalScrapAmountAfterMelting,
+          customerScrapOrnamentsDetails: res.data.meltingOrnament,
+          customerConfirmationArr: this.customerConfirmationArr,   
           packetView: true
         },
         width: '90%'

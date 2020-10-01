@@ -72,7 +72,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   buttonValue = 'Next';
   showAddMoreBtn: Boolean = true;
   modalView: any = { details: { currentValue: { loanOrnamentsDetail: [] } }, action: { currentValue: 'edit' } };
-  scrapModalView: any = { details: { currentValue: { scrapOrnamentsDetail: [] } }, action: { currentValue: 'edit' } };
+  scrapModalView: any = {
+    meltingDetails: { currentValue: { meltingOrnament: {} } }, action: { currentValue: 'edit' },
+    scrapIds: { currentValue: { scrapId: 0 } },
+    meltingOrnament: { currentValue: true },
+    customerConfirmationArr: { currentValue: [] },
+  };
   firstView: boolean;
 
   constructor(
@@ -125,9 +130,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   setScrapModalData() {
     if (this.data.packetView) {
-      Array.prototype.push.apply(this.scrapModalView.details.currentValue.scrapOrnamentsDetail, this.data.modalData[0].customerLoanOrnamentsDetails)
+      this.scrapModalView.scrapIds.currentValue.scrapId = this.data.scrapId;
+      this.scrapModalView.meltingDetails.currentValue.meltingOrnament = this.data.customerScrapOrnamentsDetails;
+      this.scrapModalView.meltingDetails.currentValue.finalScrapAmountAfterMelting = this.data.finalScrapAmountAfterMelting;
+      Array.prototype.push.apply(this.scrapModalView.customerConfirmationArr.currentValue, this.data.customerConfirmationArr);
     } else {
-      this.scrapModalView.details.currentValue.scrapOrnamentsDetail = this.data.modalData;
+      this.scrapModalView.meltingDetails.currentValue.meltingOrnament = this.data.modalData;
     }
     this.ngOnChanges(this.scrapModalView);
   }
@@ -237,9 +245,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
     if (changes.scrapIds) {
+      this.scrapIds = changes.scrapIds.currentValue;
       this.validation(0);
     }
     if (changes.meltingOrnament) {
+      this.meltingOrnament = changes.meltingOrnament.currentValue;
       const matTabHeader = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
       matTabHeader.style.display = 'none';
     }
@@ -540,7 +550,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.ref.detectChanges()
   }
 
-  uploadFile(index, event, string, ) {
+  uploadFile(index, event, string) {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
