@@ -659,7 +659,7 @@
 
                             </div>
                         </div>
-                        <div class="col form-label" style="margin-left: 4%;">
+                        <div *ngIf="viewOnly" class="col form-label" style="margin-left: 4%;">
                             <label class="custom-checkbox ">
                                 <span *ngIf="!data.userType" class="label-checkbox ml-5">
                                     Current Residential Address same as Permanent Address
