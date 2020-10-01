@@ -95,6 +95,45 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, });
 };
 
+exports.customerSignUp = async (req, res, next) => {
+  const { mobileNumber, firstName } = req.body;
+
+  let customerExist = await models.customer.findOne({
+    where: { mobileNumber, isActive: true },
+  });
+
+  if (check.isEmpty(customerExist)) {
+    await models.customerOtp.destroy({ where: { mobileNumber } });
+
+    const referenceCode = await createReferenceCode(5);
+    // let otp = Math.floor(1000 + Math.random() * 9000);
+    let otp = 1234;
+    let createdTime = new Date();
+    let expiryTime = moment.utc(createdTime).add(10, "m");
+
+    var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
+
+    await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
+
+    await sendOtpToLeadVerification(mobileNumber, 'customer', otp, expiryTimeToUser)
+
+    return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, isCustomer: false });
+  } else {
+
+    const referenceCode = await createReferenceCode(5);
+    // let otp = Math.floor(1000 + Math.random() * 9000);
+    let otp = 1234;
+    let createdTime = new Date();
+    let expiryTime = moment.utc(createdTime).add(10, "m");
+    await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
+
+    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTimeToUser)
+
+    return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, isCustomer: true });
+
+  }
+}
+
 
 exports.sendOtp = async (req, res, next) => {
   const { mobileNumber, type } = req.body;
@@ -523,7 +562,27 @@ exports.getsingleCustomerManagement = async (req, res) => {
 
 //To register customer by their own
 exports.signUpCustomer = async (req, res) => {
-  let { firstName, lastName, mobileNumber, email } = req.body;
+  let { firstName, lastName, mobileNumber, email, referenceCode, otp } = req.body;
+
+  var todayDateTime = new Date();
+  // console.log('abc')
+  let verifyUser = await models.customerOtp.findOne({
+    where: {
+      referenceCode,
+      otp,
+      expiryTime: {
+        [Op.gte]: todayDateTime,
+      },
+    },
+  });
+  if (check.isEmpty(verifyUser)) {
+    return res.status(404).json({ message: `INVALID OTP.` });
+  }
+
+  let verifyFlag = await models.customerOtp.update(
+    { isVerified: true },
+    { where: { id: verifyUser.id } }
+  );
 
   //To check in customer table 
   let customerExist = await models.customer.findOne({
