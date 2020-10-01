@@ -26,19 +26,7 @@
                         <agm-info-window [isOpen]="m.isVisible">
                             <span *ngIf="!infoToggle[i]">
                                 <strong *ngIf="m.trackingTime">{{m.trackingTime | time24to12}}</strong>
-                                <span *ngFor="let item of m.masterLoan.masterLoan.locationData; first as f">
-                                    <span *ngIf="f">
-                                        <span
-                                            *ngIf="item.packetLocationId === 6 || item.packetLocationId === 3 || item.packetLocationId === 5 || item.packetLocationId === 1">
-                                            <kt-elapsed-time [startTime]="item.createdAt"></kt-elapsed-time>
-                                        </span>
-                                        <ng-container
-                                            *ngIf="item.packetLocationId === 2 && !m.masterLoan.isLoanCompleted">
-                                            <kt-elapsed-time [startTime]="m.masterLoan?.customerLoanDisbursement[0].cr">
-                                            </kt-elapsed-time>
-                                        </ng-container>
-                                    </span>
-                                </span>
+                                
                             </span>
                             <div class="font">
                                 <span *ngIf="infoToggle[i]" style="z-index: 999">

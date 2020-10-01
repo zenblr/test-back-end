@@ -14,11 +14,14 @@ exports.getGlobalMapDetails = async (req, res, next) => {
         where: { trackingDate: date, isActive: true },
         order: [
             [
-                models.packetTrackingMasterloan,
-                { model: models.customerLoanMaster, as: 'masterLoan' },
-                { model: models.customerLoanPacketData, as: 'locationData' },
-                'id', 'desc'
-            ]],
+            models.packetTrackingMasterloan,
+            { model: models.customerLoanMaster, as: 'masterLoan' }, 'id', 'desc'],
+        [
+            models.packetTrackingMasterloan,
+            { model: models.customerLoanMaster, as: 'masterLoan' },
+            { model: models.customerLoanPacketData, as: 'locationData' },
+            'id', 'desc'
+        ]],
         include: [{
             model: models.user,
             as: 'user',
@@ -30,19 +33,24 @@ exports.getGlobalMapDetails = async (req, res, next) => {
             include: [{
                 model: models.customerLoanMaster,
                 as: 'masterLoan',
-                attributes: ['id'],
+                attributes: ['id','isLoanCompleted'],
                 include: [{
                     model: models.customerLoan,
                     as: 'customerLoan',
                     attributes: ['loanUniqueId', 'id']
                 },
                 {
+                    model:models.customerLoanDisbursement,
+                    as:'customerLoanDisbursement',
+                    // attributes:['cr']
+                },
+                {
                     model: models.customerLoanPacketData,
                     as: 'locationData',
-                    include: {
-                        model: models.packetLocation,
-                        as: 'packetLocation'
-                    }
+                    // include: {
+                    //     model: models.packetLocation,
+                    //     as: 'packetLocation'
+                    // }
                 },
                 {
                     model: models.packet,
