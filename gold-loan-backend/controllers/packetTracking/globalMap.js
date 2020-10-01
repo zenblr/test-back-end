@@ -11,47 +11,47 @@ exports.getGlobalMapDetails = async (req, res, next) => {
 
 
     let locationData = await models.packetTracking.findAll({
-        where: { trackingDate: date ,isActive:true},
-        // order: [['createdAt']],
+        where: { trackingDate: date, isActive: true },
+        order: [
+            [
+                models.packetTrackingMasterloan,
+                { model: models.customerLoanMaster, as: 'masterLoan' },
+                { model: models.customerLoanPacketData, as: 'locationData' },
+                'id', 'desc'
+            ]],
         include: [{
             model: models.user,
             as: 'user',
             attributes: ['id', 'firstName', 'lastName']
         },
-            {
-                model: models.packetTrackingMasterloan,
-                as: 'packetTrackingMasterloan',
+        {
+            model: models.packetTrackingMasterloan,
+            as: 'packetTrackingMasterloan',
+            include: [{
+                model: models.customerLoanMaster,
+                as: 'masterLoan',
+                attributes: ['id'],
                 include: [{
-                    model: models.customerLoanMaster,
-                    as: 'masterLoan',
-                    attributes:['id'],
-                    include: [{
-                        model: models.customerLoan,
-                        as: 'customerLoan',
-                        attributes: ['loanUniqueId', 'id']
-                    },
-                    {
-                        model: models.packet,
-                        as: 'packet',
-                        attributes: ['packetUniqueId']
-                    }]
+                    model: models.customerLoan,
+                    as: 'customerLoan',
+                    attributes: ['loanUniqueId', 'id']
+                },
+                {
+                    model: models.customerLoanPacketData,
+                    as: 'locationData',
+                    include: {
+                        model: models.packetLocation,
+                        as: 'packetLocation'
+                    }
+                },
+                {
+                    model: models.packet,
+                    as: 'packet',
+                    attributes: ['packetUniqueId']
                 }]
-    } ]
+            }]
+        }]
     })
-
-
-
-    // let group = locationData.reduce((r, a) => {
-    //     console.log("a", a);
-    //     console.log('r', r);
-    //     r[a.userId] = [...r[a.userId] || [], a];
-    //     return r;
-    // }, {});
-
-    // let data = []
-    // Object.keys(group).forEach(ele => {
-    //     data.push(group[ele])
-    // })
 
 
     res.status(200).json({ data: locationData })
@@ -85,13 +85,13 @@ exports.getGloablMapLocation = async (req, res, next) => {
             model: models.user,
             as: 'user',
             attributes: ['id', 'firstName', 'lastName']
-        },  {
+        }, {
             model: models.packetTrackingMasterloan,
             as: 'packetTrackingMasterloan',
             include: [{
                 model: models.customerLoanMaster,
                 as: 'masterLoan',
-                attributes:['id'],
+                attributes: ['id'],
                 include: [{
                     model: models.customerLoan,
                     as: 'customerLoan',
@@ -103,7 +103,7 @@ exports.getGloablMapLocation = async (req, res, next) => {
                     attributes: ['packetUniqueId']
                 }]
             }]
-}
+        }
 
         ],
         offset: offset,
