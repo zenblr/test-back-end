@@ -103,6 +103,15 @@ exports.customerSignUp = async (req, res, next) => {
   });
 
   if (check.isEmpty(customerExist)) {
+
+    //To check in Registered customer from customer website
+    let registerCustomerExist = await models.customerRegister.findOne({
+      where: { mobileNumber: mobileNumber },
+    });
+    if (!check.isEmpty(registerCustomerExist)) {
+      return res.status(404).json({ message: "you already applied for the registration." });
+    }
+
     await models.customerOtp.destroy({ where: { mobileNumber } });
 
     const referenceCode = await createReferenceCode(5);
