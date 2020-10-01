@@ -217,4 +217,10 @@ router.use('/scrap/upload-packets-file', scrapUploadPacket)
 const organizationType = require('./organizationType'); //organization Type Route
 router.use('/organization-type', organizationType)
 
+const scrapPacketTracking = require('./scrap/scrapPacketTracking'); // PACKET TRACKING SCRAP
+router.use('/scrap/scrap-packet-tracking', scrapPacketTracking);
+
+const scrapPacketLocation = require('./scrap/scrapPacketLocation');
+router.use('/scrap/scrap-packet-location', scrapPacketLocation)
+
 module.exports = router;
