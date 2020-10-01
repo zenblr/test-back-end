@@ -304,7 +304,7 @@ export class UserReviewComponent implements OnInit {
       firstName: [, [Validators.required]],
       lastName: [, [Validators.required]],
       mobileNumber: [, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      panCardNumber: [, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
+      panCardNumber: [this.data.customerKycReview.panCardNumber, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       panType: [, Validators.required],
       form60: [],
       panImage: [],
@@ -319,8 +319,12 @@ export class UserReviewComponent implements OnInit {
     })
 
     this.reviewForm.patchValue(this.data.customerKycReview)
+    console.log(this.reviewForm.value)
     if (this.data.customerKycReview.customerKycPersonal) {
       this.reviewForm.patchValue(this.data.customerKycReview.customerKycPersonal)
+      this.reviewForm.patchValue(this.data.customerKycReview.panCardNumber)
+      console.log(this.reviewForm.value)
+
     }
 
     // User Corporate

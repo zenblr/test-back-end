@@ -39,10 +39,10 @@
                                 </span>
                             </td>
                             <td class="">{{loanDetails?.tenure}} Months</td>
-                            <td class="">{{loanDetails?.customerLoan[0]?.currentInterestRate }}%
+                            <td class="">{{loanDetails?.secureHighestSlabRate?.interestRate }}%
                                 <br>
                                 <span *ngIf="loanDetails?.customerLoan[1]">
-                                    {{loanDetails?.customerLoan[1]?.currentInterestRate }}%
+                                    {{loanDetails?.unsecureHighestSlabRate?.interestRate }}%
                                 </span></td>
                             <td *ngIf="loanDetails?.nextDueDate else blankTableValue">
                                 {{loanDetails?.nextDueDate | date : 'mediumDate'}}</td>

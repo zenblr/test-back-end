@@ -74,7 +74,7 @@
                     <tbody>
                         <tr *ngFor="let data of details.calculation;index as idx; last as last">
                             <td *ngIf="approved">{{data.date | date :'mediumDate'}}</td>
-                            <td *ngIf="!approved">{{data.month | titlecase}</td>
+                            <td *ngIf="!approved">{{data.month | titlecase}}</td>
 
                             <td class="text-center currency">
                                 {{data.unsecuredInterestAmount | indianCurrencyFormat}}
