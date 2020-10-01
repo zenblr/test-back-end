@@ -840,7 +840,7 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-36.svg",
 							page: "/admin/scrap-management/packet-tracking",
-							permission: false,
+							permission: !this.permissionsArr.includes('scrapPacketTrackingView'),
 						},
 						{
 							title: "Applied Scrap",

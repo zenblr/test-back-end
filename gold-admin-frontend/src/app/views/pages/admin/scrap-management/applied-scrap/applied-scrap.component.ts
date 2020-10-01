@@ -153,9 +153,9 @@ export class AppliedScrapComponent implements OnInit {
   }
 
   getPacketDetails(item) {
-    // if (!this.permission.submitPacketLocation) {
-    //   return;
-    // }
+    if (!this.permission.scrapSubmitPacketLocation) {
+      return;
+    }
     const scrapId = item.id;
     this.scrapPacketTrackingService.viewPackets({ scrapId }).pipe(map(res => {
       let data = res.data.scrapPacketDetails[0].scrapPackets;
@@ -178,7 +178,7 @@ export class AppliedScrapComponent implements OnInit {
   }
 
   getPermission() {
-    const notAllowed = this.permission.submitPacketLocation ? false : true;
+    const notAllowed = this.permission.scrapSubmitPacketLocation ? false : true;
     return notAllowed;
   }
 }

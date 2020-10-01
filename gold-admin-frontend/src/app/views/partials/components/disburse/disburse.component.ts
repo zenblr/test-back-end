@@ -20,6 +20,7 @@ export class DisburseComponent implements OnInit {
   @Input() disbursementDetails;
   @Input() showButton;
   @Input() loanDetials;
+  @Input() scrapDetails;
   @Input() disable = false;
   @Input() disbursed = false;
   currentDate = new Date()
@@ -67,17 +68,19 @@ export class DisburseComponent implements OnInit {
             unsecuredTransactionId: changes.loanDetials.currentValue.customerLoanDisbursement[1].transactionId
           })
         }
-
         // if (this.disable) {
         //   this.disburseForm.disable()
         // }
+      }
+      if (changes.scrapDetails && changes.scrapDetails.currentValue) {
+        this.disburseForm.patchValue({
+          transactionId: changes.scrapDetails.currentValue.scrapDisbursement.transactionId,
+        })
       }
       if (this.disable) {
         this.disburseForm.disable()
       }
     }
-
-
     if (changes.scrapIds && changes.scrapIds.currentValue) {
       this.disburseForm.patchValue(this.scrapIds)
       this.getScrapBankDetails()

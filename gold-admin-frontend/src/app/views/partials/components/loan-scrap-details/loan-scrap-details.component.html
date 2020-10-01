@@ -138,7 +138,7 @@
         </div>
     </div>
 
-    <div class="row kt-margin-t-15">
+    <div class="row kt-margin-t-15" *ngIf="masterLoanId">
         <!-- loan ornaments -->
         <div class="col-12 card">
             <div class="row justify-content-center py-3">
@@ -148,14 +148,13 @@
                             <label for="">Principal Outstanding </label>
                         </div>
                         <div>
-                            <span>{{details.customerLoan[0].outstandingAmount}} </span>
+                            <span>{{details?.customerLoan[0]?.outstandingAmount}} </span>
                         </div>
                         <div>
                             <span
-                                *ngIf="details.customerLoan.length > 1">{{details.customerLoan[1].outstandingAmount}}</span>
+                                *ngIf="details?.customerLoan?.length > 1">{{details?.customerLoan[1]?.outstandingAmount}}</span>
                         </div>
                     </div>
-
                 </div>
                 <div class="col-3 my-auto d-flex align-item-center">
                     <kt-button [value]="'View Part Payment Logs'" [type]="'button'" (click)="viewPartPaymnetsLogs()">
@@ -167,10 +166,7 @@
 
                 </div>
             </div>
-
-
             <!-- <kt-button [value]="'View Part Payment EMI'" [type]="'button'"></kt-button> -->
-
         </div>
     </div>
 
@@ -521,15 +517,21 @@
     </div>
 
     <div class="row kt-margin-t-15">
-        <div class="col-12 card kt-padding-15">
+        <div class="col-12 card kt-padding-15" *ngIf="masterLoanId">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Disbursement</label>
-
-            <div class="row" *ngIf="masterLoanId">
+            <div class="row">
                 <kt-disburse [disable]="true" [loanDetials]="details" [masterAndLoanIds]="masterAndLoanIds"
                     [disbursed]="true">
                 </kt-disburse>
             </div>
         </div>
-
+        <div class="col-12 card kt-padding-15" *ngIf="scrapId">
+            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Disbursement</label>
+            <div class="row">
+                <kt-disburse [disable]="true" [scrapDetails]="details" [scrapIds]="scrapIds"
+                    [disbursed]="true">
+                </kt-disburse>
+            </div>
+        </div>
     </div>
 </div>

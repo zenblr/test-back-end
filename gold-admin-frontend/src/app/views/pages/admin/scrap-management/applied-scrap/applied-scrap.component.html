@@ -147,6 +147,7 @@
                             </div>
                             <div *ngIf="item?.scrapStage?.id == 11">
                                 <button (click)="getPacketDetails(item)"
+                                    [class.cursor-not-allowed]="getPermission(item)"
                                     class="primary-button">{{item?.scrapStage?.stageName | uppercase}}</button>
                             </div>
                             <div *ngIf="item?.scrapStage?.id == 12">

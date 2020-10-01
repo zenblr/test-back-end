@@ -216,10 +216,6 @@ export class PacketTrackingComponent implements OnInit {
     });
   }
 
-  viewLocation(packet) {
-    this.router.navigate([`/admin/loan-management/view-location/${packet.customerLoan[0].masterLoanId}`])
-  }
-
   ornaments(packet) {
     const scrapId = packet.scrapPacketDetails[0].scrapId;
     this.scrapPacketTrackingService.viewPackets({ scrapId }).pipe(map(res => {
@@ -230,7 +226,7 @@ export class PacketTrackingComponent implements OnInit {
           scrapId: res.data.scrapPacketDetails[0].scrapId,
           finalScrapAmountAfterMelting: res.data.finalScrapAmountAfterMelting,
           customerScrapOrnamentsDetails: res.data.meltingOrnament,
-          customerConfirmationArr: this.customerConfirmationArr,   
+          customerConfirmationArr: this.customerConfirmationArr,
           packetView: true
         },
         width: '90%'
@@ -242,7 +238,7 @@ export class PacketTrackingComponent implements OnInit {
   checkForPartnerBranchIn(packet) {
     const lastIndex = packet.locationData[packet.locationData.length - 1];
     const id = lastIndex.scrapPacketLocation.id;
-    const isNotAllowed = id == 4 || id == 3 || id == 7 || packet.isLoanCompleted ? true : false;
+    const isNotAllowed = id == 3 ? true : false;
     return isNotAllowed;
   }
 
