@@ -15,6 +15,9 @@ exports.getGlobalMapDetails = async (req, res, next) => {
         order: [
             [
                 models.packetTrackingMasterloan,
+                { model: models.customerLoanMaster, as: 'masterLoan' }, 'id', 'desc'],
+            [
+                models.packetTrackingMasterloan,
                 { model: models.customerLoanMaster, as: 'masterLoan' },
                 { model: models.customerLoanPacketData, as: 'locationData' },
                 'id', 'desc'
@@ -30,19 +33,24 @@ exports.getGlobalMapDetails = async (req, res, next) => {
             include: [{
                 model: models.customerLoanMaster,
                 as: 'masterLoan',
-                attributes: ['id'],
+                attributes: ['id', 'isLoanCompleted'],
                 include: [{
                     model: models.customerLoan,
                     as: 'customerLoan',
                     attributes: ['loanUniqueId', 'id']
                 },
                 {
+                    model: models.customerLoanDisbursement,
+                    as: 'customerLoanDisbursement',
+                    // attributes:['cr']
+                },
+                {
                     model: models.customerLoanPacketData,
                     as: 'locationData',
-                    include: {
-                        model: models.packetLocation,
-                        as: 'packetLocation'
-                    }
+                    // include: {
+                    //     model: models.packetLocation,
+                    //     as: 'packetLocation'
+                    // }
                 },
                 {
                     model: models.packet,
@@ -52,9 +60,18 @@ exports.getGlobalMapDetails = async (req, res, next) => {
             }]
         }]
     })
+    newLocationData = []
+    for (let index = 0; index < locationData.length; index++) {
+        const packetTrackingMasterloan = locationData[index].packetTrackingMasterloan;
+        for (let j = 0; j < packetTrackingMasterloan.length; j++) {
+            const element = packetTrackingMasterloan[j];
+            if (element.masterLoan.locationData.length > 0 && element.masterLoan.locationData[0].status == 'in transit') {
+                newLocationData.push(locationData[index])
+            }
+        }
+    }
 
-
-    res.status(200).json({ data: locationData })
+    res.status(200).json({ data: newLocationData })
 }
 
 exports.getPacketTrackingByLoanId = async (req, res, next) => {

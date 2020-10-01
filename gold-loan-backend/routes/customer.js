@@ -5,7 +5,8 @@ const { wrapper } = require('../utils/errorWrap')
 const validationError = require('../middleware/validationError');
 const { customerValidation, customerUpdateValidation, registerCustomerValidation } = require('../validations/customer');
 
-const { getOtp, signUpCustomer, addCustomer, editCustomer, deactivateCustomer, getAllCustomersForLead, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, getCustomerUniqueId, getAllCustomerForCustomerManagement, getsingleCustomerManagement, } = require('../controllers/customer/customer')
+const { getOtp, signUpCustomer, addCustomer, editCustomer, deactivateCustomer, getAllCustomersForLead, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, getCustomerUniqueId,
+    getAllCustomerForCustomerManagement, getsingleCustomerManagement, getAllRegisteredCustomer, customerSignUp } = require('../controllers/customer/customer')
 const checkAuth = require('../middleware/checkAuth');
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
@@ -26,6 +27,8 @@ router.post('/', customerValidation, validationError, checkAuth, checkRolePermis
 
 router.post('/send-register-otp', checkAuth, registerCustomerSendOtp);
 
+router.post('/customer-sign-up', wrapper(customerSignUp))
+
 router.post('/send-otp', sendOtp);
 
 router.post('/verify-otp', verifyOtp);
@@ -33,6 +36,8 @@ router.post('/verify-otp', verifyOtp);
 router.put('/:customerId', validationError, checkAuth, checkRolePermission, wrapper(editCustomer))
 
 router.delete('/', checkAuth, checkRolePermission, wrapper(deactivateCustomer));
+
+router.get('/registered-customer', checkAuth, wrapper(getAllRegisteredCustomer));//To get customers registered by their own
 
 router.get('/', checkAuth, checkRolePermission, wrapper(getAllCustomersForLead));
 

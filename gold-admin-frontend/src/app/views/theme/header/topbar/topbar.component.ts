@@ -796,6 +796,9 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/admin/loan-management/loan-transfer/' && '?action=view')) {
 			this.showBackButton = true;
 		}
+		if (this.path == "registered-customers") {
+			this.showInput = true;
+		}
 	}
 
 	action(event: Event) {

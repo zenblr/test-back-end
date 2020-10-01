@@ -23,6 +23,15 @@ module.exports = (sequelize, DataTypes) => {
             field: 'mobile_number',
             allowNull: false,
         },
+        email: {
+            type: DataTypes.STRING,
+            field: 'email',
+            allowNull: false,
+        },
+        isFromApp: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_from_app',
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
