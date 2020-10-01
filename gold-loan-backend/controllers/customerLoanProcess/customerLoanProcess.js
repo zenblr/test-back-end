@@ -2282,7 +2282,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
                 {
                     model: models.customerKycPersonalDetail,
                     as: 'customerKycPersonal',
-                    attributes: ['dateOfBirth']
+                    attributes: ['dateOfBirth','identityProofNumber']
                 },
                 {
                     model: models.customerKycAddressDetail,
@@ -2376,7 +2376,8 @@ exports.getDetailsForPrint = async (req, res, next) => {
             penalCharges: customerLoanDetail.customerLoan[1].scheme.penalInterest,
             interestRate: customerLoanDetail.customerLoan[1].interestRate,
             processingFee: customerLoanDetail.processingCharge,
-            branch: customerLoanDetail.internalBranch.name
+            branch: customerLoanDetail.internalBranch.name,
+            aadhaarNumber:customerLoanDetail.customer.customerKycPersonal.identityProofNumber
         }]
         //console.log(customerUnsecureLoanData,'unsecure')
     } else {
@@ -2415,6 +2416,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
         penalCharges: customerLoanDetail.customerLoan[0].scheme.penalInterest,
         processingFee: customerLoanDetail.processingCharge,
         branch: customerLoanDetail.internalBranch.name,
+        aadhaarNumber:customerLoanDetail.customer.customerKycPersonal.identityProofNumber,
         ornaments
     }];
     //console.log(customerSecureLoanData,'secure)
