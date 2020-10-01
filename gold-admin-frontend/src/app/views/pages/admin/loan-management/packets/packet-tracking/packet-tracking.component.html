@@ -68,21 +68,30 @@
                     </mat-cell>
                 </ng-container>
 
-                <!-- <ng-container matColumnDef="time">
+                <ng-container matColumnDef="time">
                     <mat-header-cell *matHeaderCellDef>Elapsed Time</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngIf="packet.updatedAt">
-                            <kt-elapsed-time [startTime]="packet.updatedAt"></kt-elapsed-time>
+                        <span *ngFor="let item of packet.locationData; last as l">
+                            <span *ngIf="l">
+                                <ng-container
+                                    *ngIf="item.packetLocationId === 6 || item.packetLocationId === 3 || item.packetLocationId === 5 || item.packetLocationId === 1">
+                                    <kt-elapsed-time [startTime]="item?.createdAt"></kt-elapsed-time>
+                                </ng-container>
+                                <ng-container *ngIf="item.packetLocationId === 2 && !packet.isLoanCompleted">
+                                    <kt-elapsed-time [startTime]="packet?.customerLoanDisbursement[0].createdAt">
+                                    </kt-elapsed-time>
+                                </ng-container>
+                            </span>
                         </span>
                     </mat-cell>
-                </ng-container> -->
+                </ng-container>
 
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
                         <span *ngFor="let item of packet.locationData; last as l">
                             <span *ngIf="l"
-                                [ngClass]="item.status == 'complete' ? item.packetLocation.id === 2 && packet.isLoanSubmitted ? 'text-primary' : 'text-success' : item.status == 'incomplete' ? 'text-danger' : 'text-grey'">
+                                [ngClass]="item.status == 'complete' ? item.packetLocation.id === 2 && packet.isLoanCompleted ? 'text-primary' : 'text-success' : item.status == 'incomplete' ? 'text-danger' : 'text-grey'">
                                 {{item?.status |titlecase}}
                             </span>
                         </span>

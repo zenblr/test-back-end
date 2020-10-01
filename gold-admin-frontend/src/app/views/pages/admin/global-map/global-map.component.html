@@ -34,17 +34,17 @@
                         <mat-accordion>
                             <mat-expansion-panel *ngFor="let info of mapInfo" (opened)="panelOpenState = true"
                                 (closed)="panelOpenState = false" hideToggle>
-                                <mat-expansion-panel-header>
+                                <mat-expansion-panel-header style="height: 50px !important;">
                                     <mat-panel-title>
-                                        {{info[0]?.user.firstName | titlecase}}&nbsp;
-                                        {{info[0]?.user.lastName | titlecase}}
+                                        {{info?.user.firstName | titlecase}}&nbsp;
+                                        {{info?.user.lastName | titlecase}}
 
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
 
                                 <ng-template matExpansionPanelContent>
-                                    <div *ngFor="let loan of info" class="pt-3">
-                                        {{loan?.customerLoan?.loanUniqueId}}
+                                    <div *ngFor="let loan of info.packetTrackingMasterloan;index as i" [ngClass]="i == 0?'p-0':'pt-2'">
+                                        {{loan?.masterLoan?.customerLoan[0]?.loanUniqueId}}
 
                                         <!-- <span *ngIf="info.masterLoan.customerLoan[1].loanUniqueId">
                                         {{info.masterLoan.customerLoan[1].loanUniqueId}}

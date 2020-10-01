@@ -12,39 +12,49 @@ exports.getGlobalMapDetails = async (req, res, next) => {
 
     let locationData = await models.packetTracking.findAll({
         where: { trackingDate: date, isActive: true },
-        order: [['createdAt']],
+        order: [
+            [
+                models.packetTrackingMasterloan,
+                { model: models.customerLoanMaster, as: 'masterLoan' },
+                { model: models.customerLoanPacketData, as: 'locationData' },
+                'id', 'desc'
+            ]],
         include: [{
             model: models.user,
             as: 'user',
             attributes: ['id', 'firstName', 'lastName']
-        }, {
-            model: models.customerLoan,
-            as: 'customerLoan',
-            attributes: ['loanUniqueId'],
-            include: {
-                model: models.packet,
-                as: 'packet',
-                where: { isActive: true }
-            }
-        }],
+        },
+        {
+            model: models.packetTrackingMasterloan,
+            as: 'packetTrackingMasterloan',
+            include: [{
+                model: models.customerLoanMaster,
+                as: 'masterLoan',
+                attributes: ['id'],
+                include: [{
+                    model: models.customerLoan,
+                    as: 'customerLoan',
+                    attributes: ['loanUniqueId', 'id']
+                },
+                {
+                    model: models.customerLoanPacketData,
+                    as: 'locationData',
+                    include: {
+                        model: models.packetLocation,
+                        as: 'packetLocation'
+                    }
+                },
+                {
+                    model: models.packet,
+                    as: 'packet',
+                    attributes: ['packetUniqueId']
+                }]
+            }]
+        }]
     })
 
-   
 
-    let group = locationData.reduce((r, a) => {
-        console.log("a", a);
-        console.log('r', r);
-        r[a.userId] = [...r[a.userId] || [], a];
-        return r;
-    }, {});
-
-    let data = []
-    Object.keys(group).forEach(ele => {
-        data.push(group[ele])
-    })
-
-
-    res.status(200).json({ data: data })
+    res.status(200).json({ data: locationData })
 }
 
 exports.getPacketTrackingByLoanId = async (req, res, next) => {
@@ -76,14 +86,24 @@ exports.getGloablMapLocation = async (req, res, next) => {
             as: 'user',
             attributes: ['id', 'firstName', 'lastName']
         }, {
-            model: models.customerLoan,
-            as: 'customerLoan',
-            include: {
-                model: models.packet,
-                as: 'packet',
-                where: { isActive: true }
-            }
-        },
+            model: models.packetTrackingMasterloan,
+            as: 'packetTrackingMasterloan',
+            include: [{
+                model: models.customerLoanMaster,
+                as: 'masterLoan',
+                attributes: ['id'],
+                include: [{
+                    model: models.customerLoan,
+                    as: 'customerLoan',
+                    attributes: ['loanUniqueId', 'id']
+                },
+                {
+                    model: models.packet,
+                    as: 'packet',
+                    attributes: ['packetUniqueId']
+                }]
+            }]
+        }
 
         ],
         offset: offset,

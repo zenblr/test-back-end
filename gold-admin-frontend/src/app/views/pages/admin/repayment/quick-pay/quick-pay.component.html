@@ -106,7 +106,7 @@
                                     </mat-error>
                                     <mat-error *ngIf="payableAmt.errors?.value && payableAmt.touched">
                                         <small>
-                                            Amount should Be less than payable amount
+                                            Please opt for Part Payment option to pay more amount
                                         </small>
 
                                     </mat-error>
@@ -129,7 +129,7 @@
             </div>
 
             <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
-                <div class="col-6 text-center">
+                <div class="col-8 text-center">
                     <kt-button [value]="'Proceed'" [type]="'button'" (click)="payment()"></kt-button>
                     <!-- <kt-button [value]="'Pay EMI'" [notTitleCase]="true" [type]="'button'" (click)="getPayableAmount()">
                     </kt-button> -->

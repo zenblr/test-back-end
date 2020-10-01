@@ -33,18 +33,18 @@ export class LoanScrapDetailsComponent implements OnInit {
     private scrapCustomerManagementService: ScrapCustomerManagementService,
     private route: ActivatedRoute,
     public dialog: MatDialog,
-    private sharedService:SharedService
-  ) { 
+    private sharedService: SharedService
+  ) {
     this.sharedService.exportExcel$
-    .pipe(
-      skip(1),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$))
-    .subscribe((res) => {
-      if (res) {
-        this.soaDownload();
-      }
-    });
+      .pipe(
+        skip(1),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$))
+      .subscribe((res) => {
+        if (res) {
+          this.soaDownload();
+        }
+      });
   }
 
   ngOnInit() {
@@ -243,13 +243,13 @@ export class LoanScrapDetailsComponent implements OnInit {
     }
   }
 
-  viewPartPaymnetsLogs(){
-  
-      const dialogRef = this.dialog.open(PartPaymentLogDialogComponent, {
-        data: { id: this.details.id },
-        width: 'auto'
-      })
-  
+  viewPartPaymnetsLogs() {
+
+    const dialogRef = this.dialog.open(PartPaymentLogDialogComponent, {
+      data: { id: this.details.id },
+      width: 'auto'
+    })
+
   }
 
   viewEmiLogs() {
@@ -259,7 +259,7 @@ export class LoanScrapDetailsComponent implements OnInit {
     })
   }
 
-  soaDownload(){
+  soaDownload() {
     this.masterLoanId = this.route.snapshot.params.masterLoanId
     this.sharedService.soaDownload(this.masterLoanId).subscribe();
     this.sharedService.exportExcel.next(false);
