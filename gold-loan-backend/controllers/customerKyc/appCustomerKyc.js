@@ -268,7 +268,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 {
                     model: models.customerLoan,
                     as: 'customerLoan',
-                    attributes: ['id'],
+                    // attributes: ['id','lo'],
                     where: { loanType: 'secured' }
                 },
                 {
