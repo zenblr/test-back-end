@@ -107,6 +107,10 @@ export class MenuConfig {
 								// 	page: "/admin/lead-management/my-requests",
 								// 	permission: false,
 								// },
+								{
+									title: "Customer Registration List",
+									page: "/admin/lead-management/registered-customers"
+								}
 							],
 						},
 						{
