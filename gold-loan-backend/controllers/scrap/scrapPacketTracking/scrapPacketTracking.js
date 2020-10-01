@@ -35,7 +35,7 @@ exports.viewPackets = async (req, res) => {
             as: 'scrapPacketDetails',
             include: {
                 model: models.scrapPacket,
-                attributes: ['id', 'packetUniqueId', 'barcodeNumber']
+                attributes: ['id', 'packetUniqueId', 'barcodeNumber', 'scrapId']
             }
         },
         {
