@@ -562,7 +562,6 @@ exports.scrapDocuments = async (req, res, next) => {
 }
 
 exports.singleScrapDetails = async (req, res, next) => {
-    try{
         const { scrapId } = req.query;
 
         let customerScrap = await models.customerScrap.findOne({
@@ -575,7 +574,7 @@ exports.singleScrapDetails = async (req, res, next) => {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'email', 'kycStatus']
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'email', 'kycStatus', 'scrapKycStatus']
             },
             {
                 model: models.customerScrapPersonalDetail,
@@ -637,10 +636,7 @@ exports.singleScrapDetails = async (req, res, next) => {
         }
     
         return res.status(200).json({ customerScrap })
-    }catch(err){
-        console.log(err);
-    }
-   
+
 
 }
 
@@ -1092,6 +1088,7 @@ exports.quickPay = async (req, res, next) => {
 exports.printCustomerAcknowledgement = async (req, res) => {
 
     let { scrapId } = req.query;
+
     let customerScrap = await models.customerScrap.findOne({
         where: { id: scrapId },
         attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
