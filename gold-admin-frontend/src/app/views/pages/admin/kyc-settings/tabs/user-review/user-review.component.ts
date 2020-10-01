@@ -320,11 +320,11 @@ export class UserReviewComponent implements OnInit {
     })
 
     this.reviewForm.patchValue(this.data.customerKycReview)
-    console.log(this.reviewForm.value)
+    // console.log(this.reviewForm.value)
     if (this.data.customerKycReview.customerKycPersonal) {
       this.reviewForm.patchValue(this.data.customerKycReview.customerKycPersonal)
-      this.reviewForm.patchValue(this.data.customerKycReview.panCardNumber)
-      console.log(this.reviewForm.value)
+      this.reviewForm.patchValue({ panCardNumber: this.data.customerKycReview.panCardNumber })
+      // console.log(this.reviewForm.value)
 
     }
 
