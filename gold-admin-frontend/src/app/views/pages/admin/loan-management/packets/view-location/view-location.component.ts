@@ -24,6 +24,7 @@ interface marker {
 })
 export class ViewLocationComponent implements OnInit {
 
+  icon= {url: './assets/media/icons/ezgif.com-gif-maker.png', scaledSize: { width: 50, height: 50 }}
   selected: any = 0;
   latitude: number = 18.969050;
   longitude: number = 72.821180;

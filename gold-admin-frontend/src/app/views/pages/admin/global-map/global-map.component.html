@@ -45,8 +45,8 @@
                                 <ng-template matExpansionPanelContent>
                                     <div *ngFor="let loan of info.packetTrackingMasterloan;index as i" [ngClass]="i == 0?'p-0':'pt-2'">
                                         {{loan?.masterLoan?.customerLoan[0]?.loanUniqueId}}
-                                        <span style="float: right;">
-                                            <img src="../../../../../assets/media/icons/compass.svg" height="20" alt="" ></span>
+                                        <span class="kt-padding-l-25">
+                                            <img src="../../../../../assets/media/icons/compass.svg" height="20" alt="" (click)="navigate(loan)"></span>
                                         <!-- <span *ngIf="info.masterLoan.customerLoan[1].loanUniqueId">
                                         {{info.masterLoan.customerLoan[1].loanUniqueId}}
                                     </span> -->
@@ -57,7 +57,7 @@
 
                     </div>
                     <div class="col-9">
-                        <!-- <img src="../../../../../assets/media/icons/e" alt=""> -->
+                        <!-- <img src="./assets/media/icons/ezgif.com-gif-maker.png" alt=""> -->
                         <agm-map [latitude]='latitude' [longitude]='longitude' [zoom]="15" [fitBounds]="true">
                             <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.lat" [longitude]="m.lng"
                                 [markerDraggable]="m.draggable" (markerClick)="clickedMarker(m.lat, m.lng, i)"

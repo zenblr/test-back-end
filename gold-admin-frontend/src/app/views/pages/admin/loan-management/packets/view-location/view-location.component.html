@@ -22,7 +22,7 @@
                 <agm-map [latitude]='latitude' [longitude]='longitude' [zoom]="15" [fitBounds]="true">
                     <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.lat" [longitude]="m.lng"
                         [markerDraggable]="m.draggable" (markerClick)="clickedMarker(m.lat, m.lng, i)"
-                        [agmFitBounds]="true">
+                        [agmFitBounds]="true" [iconUrl]="icon">
                         <agm-info-window [isOpen]="m.isVisible">
                             <span *ngIf="!infoToggle[i]">
                                 <strong *ngIf="m.trackingTime">{{m.trackingTime | time24to12}}</strong>
