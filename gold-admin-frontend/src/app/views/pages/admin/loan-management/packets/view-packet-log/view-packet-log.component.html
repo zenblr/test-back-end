@@ -30,7 +30,7 @@
             </div>
             <div class="col">
                 <label *ngIf="currentLocation$" for="">Current Location:</label>
-                {{ currentLocation$.address | async }}
+                {{ currentLocation$ | async }}
             </div>
         </div>
         <div class="mat-table__wrapper custom" [ngStyle]="{'overflow-x':'hidden'}">

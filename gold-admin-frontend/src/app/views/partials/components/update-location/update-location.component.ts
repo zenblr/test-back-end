@@ -189,7 +189,7 @@ export class UpdateLocationComponent implements OnInit {
     if (this.locationForm.invalid) {
       return this.locationForm.markAllAsTouched()
     }
-    console.log(this.locationForm.value)
+    // console.log(this.locationForm.value)
 
     if (!this.data.deliver) {
 
@@ -318,7 +318,7 @@ export class UpdateLocationComponent implements OnInit {
     const filteredFormGroup = this.filteredPacketArray[index]
     const isVerified = (JSON.stringify(formGroup.value)).toLowerCase() === (JSON.stringify(filteredFormGroup)).toLowerCase()
 
-    console.log(isVerified)
+    // console.log(isVerified)
     if (!isVerified) {
       formGroup.get('Barcode').setErrors({ unverified: true })
       this.verifiedPacketsArray.splice(index, 1, { isVerified })
@@ -334,6 +334,7 @@ export class UpdateLocationComponent implements OnInit {
         this.otpVerfied = false
         this.otpSent = false
       }
+      this.otpSent = false
       return
     }
     const mobileNumber = this.locationForm.controls.mobileNumber.value
@@ -373,6 +374,7 @@ export class UpdateLocationComponent implements OnInit {
   }
 
   sendOTP() {
+    if (this.locationForm.controls.mobileNumber.invalid) return this.controls.mobileNumber.markAsTouched()
     this.otpSent = true
     this.generateOTP()
   }
@@ -486,7 +488,7 @@ export class UpdateLocationComponent implements OnInit {
     const filteredFormGroup = this.filteredPacketArray[index]
     const isVerified = (JSON.stringify(formGroup.value)).toLowerCase() === (JSON.stringify(filteredFormGroup)).toLowerCase()
 
-    console.log(isVerified)
+    // console.log(isVerified)
     if (!isVerified) {
       formGroup.get('Barcode').setErrors({ unverified: true })
       this.verifiedPacketsArray.splice(index, 1, { isVerified })

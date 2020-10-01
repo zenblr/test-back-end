@@ -302,7 +302,7 @@
                             </div>
                         </div>
                     </mat-tab>
-                    <mat-tab *ngxPermissionsOnly="['loanTransferDisbursal']" label="Disbursal"
+                    <mat-tab *ngIf="permission.loanTransferDisbursal || action === 'view'" label="Disbursal"
                         [formGroup]="disbursalForm" [disabled]="disabled[3]">
 
                         <div class="row justify-content-center kt-padding-t-25">
@@ -349,7 +349,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row kt-padding-t-25">
+                        <div *ngIf="action != 'view'" class="row kt-padding-t-25">
                             <div class="offset-10 col-2">
                                 <kt-button [type]="'button'" [value]="'Save'" (click)="disbursal()"></kt-button>
                             </div>
