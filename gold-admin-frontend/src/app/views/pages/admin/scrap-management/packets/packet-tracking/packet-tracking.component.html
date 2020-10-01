@@ -62,25 +62,22 @@
                         </span>
                     </mat-cell>
                 </ng-container>
-                <!-- <ng-container matColumnDef="elapseTime">
+                <ng-container matColumnDef="elapseTime">
                     <mat-header-cell *matHeaderCellDef>Elapsed Time</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngIf="packet.updatedAt">
-                            <kt-elapsed-time [startTime]="packet.updatedAt"></kt-elapsed-time>
-                        </span>
-                    </mat-cell>
-                </ng-container> -->
-                <!-- <ng-container matColumnDef="status">
-                    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-                    <mat-cell *matCellDef="let packet">
-                        <span *ngFor="let item of packet.locationData; last as l">
-                            <span *ngIf="l"
-                                [ngClass]="item?.status == 'complete' ? item?.scrapPacketLocation?.id === 2 && packet?.isScrapSubmitted ? 'text-primary' : 'text-success' : item?.status == 'incomplete' ? 'text-danger' : 'text-grey'">
-                                {{item?.status | titlecase}}
+                        <span *ngFor="let item of packet?.locationData; last as l">
+                            <span *ngIf="l">
+                                <ng-container *ngIf="item?.packetLocationId === 3 || item?.packetLocationId === 1">
+                                    <kt-elapsed-time [startTime]="item?.createdAt"></kt-elapsed-time>
+                                </ng-container>
+                                <ng-container *ngIf="item?.packetLocationId === 2 && !packet?.isScrapCompleted">
+                                    <kt-elapsed-time [startTime]="packet?.scrapDisbursement[0]?.createdAt">
+                                    </kt-elapsed-time>
+                                </ng-container>
                             </span>
                         </span>
                     </mat-cell>
-                </ng-container> -->
+                </ng-container>
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let packet">

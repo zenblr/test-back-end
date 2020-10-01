@@ -20,7 +20,7 @@ import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.compo
 })
 export class PacketTrackingComponent implements OnInit {
   dataSource: ScrapPacketTrackingDatasource;
-  displayedColumns = ['userName', 'mobileNumber', 'customerId', 'customerName', 'scrapId', 'scrapAmount', 'internalBranch', 'currentLocation', 'actions'];
+  displayedColumns = ['userName', 'mobileNumber', 'customerId', 'customerName', 'scrapId', 'scrapAmount', 'internalBranch', 'currentLocation', 'elapseTime', 'actions'];
   leadsResult = [];
   customerConfirmationArr = [];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

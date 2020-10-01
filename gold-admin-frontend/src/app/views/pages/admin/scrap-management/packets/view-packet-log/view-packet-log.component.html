@@ -46,8 +46,10 @@
                 <ng-container matColumnDef="handover">
                     <mat-header-cell *matHeaderCellDef>Handover</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span *ngFor="let receiver of role?.receiverData">
-                            {{receiver?.firstName | titlecase}}&nbsp; {{receiver?.lastName | titlecase}}
+                        <span *ngIf="role?.receiverData?.length else blank">
+                            <span *ngFor="let receiver of role?.receiverData">
+                                {{receiver?.firstName | titlecase}}&nbsp; {{receiver?.lastName | titlecase}}
+                            </span>
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -94,7 +96,7 @@
                 <ng-container matColumnDef="timeTaken">
                     <mat-header-cell *matHeaderCellDef>Time Taken</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span *ngIf="role?.processingTime">
+                        <span *ngIf="role?.processingTime else blank">
                             {{role?.processingTime}}
                         </span>
                     </mat-cell>
