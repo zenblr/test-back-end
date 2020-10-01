@@ -1,16 +1,33 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { GlobalMapService } from '../../../../core/global-map/global-map.service'
 import { DatePipe } from '@angular/common';
+
+interface marker {
+  lat: any;
+  lng: any;
+  firstName: any;
+  lastName: any;
+  loanUniqueId: any;
+  packetUniqueId: any;
+  masterLoan: any;
+  trackingTime:any;
+  trackingDate:any;
+  address:any;
+  isVisible:boolean;
+}
+
 
 @Component({
   selector: 'kt-global-map',
   templateUrl: './global-map.component.html',
   styleUrls: ['./global-map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DatePipe]
 })
 export class GlobalMapComponent implements OnInit {
 
+  icon: {url: '../../../../../assets/media/icons/ezgif.com-gif-maker.png', scaledSize: { width: 50, height: 50 }}
   panelOpenState: boolean;
   latitude: number = 18.969050;
   longitude: number = 72.821180;
@@ -56,15 +73,15 @@ export class GlobalMapComponent implements OnInit {
           let packets = []
           for (const data of iterator.packetTrackingMasterloan) {
             loanUniqueId.push(data.masterLoan.customerLoan[0].loanUniqueId)
-           
+
             for (const packet of data.masterLoan.packet) {
               packets.push(packet.packetUniqueId)
             }
-            var  packetUniqueId = packets.join()
+            var packetUniqueId = packets.join()
             var loan = loanUniqueId.join()
           }
-          this.markers.push({ lat, lng, trackingTime, trackingDate, address, masterLoanId, isVisible: true, firstName, lastName, loanUniqueId:loan, packetUniqueId,masterLoan });
-         
+          this.markers.push({ lat, lng, trackingTime, trackingDate, address, isVisible: true, firstName, lastName, loanUniqueId: loan, packetUniqueId, masterLoan });
+
         }
         this.infoToggle = new Array(this.markers.length).fill(true);
         console.log(this.infoToggle)
@@ -92,15 +109,15 @@ export class GlobalMapComponent implements OnInit {
           let packets = []
           for (const data of iterator.packetTrackingMasterloan) {
             loanUniqueId.push(data.masterLoan.customerLoan[0].loanUniqueId)
-           
+
             for (const packet of data.masterLoan.packet) {
               packets.push(packet.packetUniqueId)
             }
-            var  packetUniqueId = packets.join()
+            var packetUniqueId = packets.join()
             var loan = loanUniqueId.join()
           }
-          this.markers.push({ lat, lng, trackingTime, trackingDate, address, masterLoanId, isVisible: true, firstName, lastName, loanUniqueId:loan, packetUniqueId,masterLoan });
-         
+          this.markers.push({ lat, lng, trackingTime, trackingDate, address, isVisible: true, firstName, lastName, loanUniqueId: loan, packetUniqueId, masterLoan });
+
         }
         this.infoToggle = new Array(this.markers.length).fill(true);
         console.log(this.infoToggle)
@@ -115,13 +132,13 @@ export class GlobalMapComponent implements OnInit {
   clickedMarker(latitude, longitude, index) {
 
     for (let i = 0; i < this.markers.length; i++) {
-      if (i != index){
+      if (i != index) {
         this.infoToggle[i] = true
       }
-      else{
+      else {
         this.infoToggle[index] = !this.infoToggle[index]
+      }
     }
-  }
 
 
     this.ref.detectChanges()
