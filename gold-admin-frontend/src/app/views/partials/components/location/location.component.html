@@ -3,7 +3,7 @@
     <div class="mat-table__wrapper custom-2" [ngStyle]="{'overflow-x':'hidden'}">
         <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
             <ng-container matColumnDef="appraiserName">
-                <mat-header-cell *matHeaderCellDef>Appraiser Name</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
                 <mat-cell *matCellDef="let role">
                     <span *ngIf="role.user">
                         {{role?.user?.firstName}}

@@ -25,4 +25,7 @@
     ::ng-deep mat-expansion-panel-header{
         height: 50px !important;
     }
+    ::ng-deep .agm-info-window-content{
+        overflow-x:hidden !important ;
+    }
 }

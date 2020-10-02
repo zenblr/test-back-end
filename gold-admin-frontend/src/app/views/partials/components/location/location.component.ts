@@ -28,6 +28,7 @@ export class LocationComponent implements OnInit {
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
+  icon= {url: './assets/media/icons/ezgif.com-gif-maker.png', scaledSize: { width: 50, height: 50 }}
 
   // Subscriptions
   private subscriptions: Subscription[] = [];

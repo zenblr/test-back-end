@@ -247,6 +247,7 @@
                             <div class="col-8">
                                 <div class="row">
                                     <div [ngClass]="viewOnly ? 'col-8': 'col'">
+                                        {{controls.panCardNumber.value}} asdasdada
                                         <input class="form-control" formControlName="panCardNumber" autocomplete="off"
                                             placeholder="PAN"
                                             [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
@@ -659,7 +660,7 @@
 
                             </div>
                         </div>
-                        <div class="col form-label" style="margin-left: 4%;">
+                        <div *ngIf="viewOnly" class="col form-label" style="margin-left: 4%;">
                             <label class="custom-checkbox ">
                                 <span *ngIf="!data.userType" class="label-checkbox ml-5">
                                     Current Residential Address same as Permanent Address
@@ -884,7 +885,7 @@
                         <div class="col-6">
                             <div class="row">
                                 <div class="offset-1 col-3 form-label">
-                                    <label [class.mandatory]="viewOnly"> Email </label>
+                                    <label [class.mandatory]="viewOnly"> Email ID </label>
                                 </div>
                                 <div class="col-7">
                                     <input type="text" class="form-control" formControlName="email"

@@ -37,7 +37,7 @@ module.exports = async (req, res, next) => {
     
             "/api/user/addadmin",
             "/",
-    
+            "/api/customer/customer-sign-up",
             "/api/customer/sign-up",
             "/api/customer/send-otp",
             "/api/customer/verify-otp",

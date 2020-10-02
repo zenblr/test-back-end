@@ -111,6 +111,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_disbursed',
             defaultValue: false
         },
+        isScrapCompleted: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_scrap_completed',
+            defaultValue: false
+        },
         disbursementAmount: {
             type: DataTypes.FLOAT,
             field: 'disbursement_amount'
@@ -161,6 +166,8 @@ module.exports = (sequelize, DataTypes) => {
         CustomerScrap.hasOne(models.customerScrapDisbursement, {foreignKey: 'scrapId', as: 'scrapDisbursement'});
         CustomerScrap.hasOne(models.scrapQuickPay, {foreignKey: 'scrapId', as: 'scrapQuickPay'});
         CustomerScrap.belongsTo(models.appraiserRequest, { foreignKey: 'appraiserRequestId', as: 'appraiserRequest' });
+        CustomerScrap.hasMany(models.scrapCustomerPacketTracking, { foreignKey: 'scrapId', as: 'scrapCustomerPacketTracking' });
+        CustomerScrap.hasMany(models.customerScrapPacketData, { foreignKey: 'scrapId', as: 'locationData' });
     }
 
     CustomerScrap.prototype.toJSON = function () {

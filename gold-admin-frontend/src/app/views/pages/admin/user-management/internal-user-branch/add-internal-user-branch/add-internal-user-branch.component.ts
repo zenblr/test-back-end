@@ -102,6 +102,7 @@ export class AddInternalUserBranchComponent implements OnInit {
         this.cities = res.data;
         const cityExists = this.cities.find(e => e.id === this.controls.cityId.value)
         if (!cityExists) {
+          this.controls.cityId.reset();
           this.controls.cityId.patchValue('');
         }
       })).subscribe()

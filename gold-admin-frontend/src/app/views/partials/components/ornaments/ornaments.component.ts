@@ -72,8 +72,13 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   buttonValue = 'Next';
   showAddMoreBtn: Boolean = true;
   modalView: any = { details: { currentValue: { loanOrnamentsDetail: [] } }, action: { currentValue: 'edit' } };
+  scrapModalView: any = {
+    meltingDetails: { currentValue: { meltingOrnament: {} } }, action: { currentValue: 'edit' },
+    scrapIds: { currentValue: { scrapId: 0 } },
+    meltingOrnament: { currentValue: true },
+    customerConfirmationArr: { currentValue: [] },
+  };
   firstView: boolean;
-
 
   constructor(
     public fb: FormBuilder,
@@ -106,7 +111,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.getOrnamentType()
       this.setModalData()
     }
-
+    if (this.data && this.data.scrapModal) {
+      this.showAddMoreBtn = false;
+      this.disable = true;
+      this.getOrnamentType();
+      this.setScrapModalData();
+    }
   }
 
   setModalData() {
@@ -116,6 +126,18 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.modalView.details.currentValue.loanOrnamentsDetail = this.data.modalData
     }
     this.ngOnChanges(this.modalView)
+  }
+
+  setScrapModalData() {
+    if (this.data.packetView) {
+      this.scrapModalView.scrapIds.currentValue.scrapId = this.data.scrapId;
+      this.scrapModalView.meltingDetails.currentValue.meltingOrnament = this.data.customerScrapOrnamentsDetails;
+      this.scrapModalView.meltingDetails.currentValue.finalScrapAmountAfterMelting = this.data.finalScrapAmountAfterMelting;
+      Array.prototype.push.apply(this.scrapModalView.customerConfirmationArr.currentValue, this.data.customerConfirmationArr);
+    } else {
+      this.scrapModalView.meltingDetails.currentValue.meltingOrnament = this.data.modalData;
+    }
+    this.ngOnChanges(this.scrapModalView);
   }
 
   showPacketOrnament(event) {
@@ -223,9 +245,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
     if (changes.scrapIds) {
+      this.scrapIds = changes.scrapIds.currentValue;
       this.validation(0);
     }
     if (changes.meltingOrnament) {
+      this.meltingOrnament = changes.meltingOrnament.currentValue;
       const matTabHeader = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
       matTabHeader.style.display = 'none';
     }
@@ -274,6 +298,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
             }
             this.totalAmount = Math.round(this.totalAmount)
             this.finaltotalAmt.emit(this.totalAmount)
+            setTimeout(() => {
+              this.OrnamentsData.at(0) as FormGroup;
+              controls.controls.customerConfirmation.setValidators(Validators.required),
+                controls.controls.customerConfirmation.updateValueAndValidity()
+            });
           } else {
             this.OrnamentsData.value.forEach(element => {
               this.totalAmount += Number(element.scrapAmount);
@@ -450,8 +479,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       if (this.meltingOrnament) {
         controls.controls.purityReading.setValidators([Validators.required, Validators.pattern('^[0-9][0-9]?$|^100$')]),
           controls.controls.purityReading.updateValueAndValidity()
-        controls.controls.customerConfirmation.setValidators(Validators.required),
-          controls.controls.customerConfirmation.updateValueAndValidity()
+        // controls.controls.customerConfirmation.setValidators(Validators.required),
+        //   controls.controls.customerConfirmation.updateValueAndValidity()
         controls.controls.ornamentTypeId.setValidators([]),
           controls.controls.ornamentTypeId.updateValueAndValidity()
         controls.controls.quantity.setValidators([]),
@@ -526,7 +555,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.ref.detectChanges()
   }
 
-  uploadFile(index, event, string, ) {
+  uploadFile(index, event, string) {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {

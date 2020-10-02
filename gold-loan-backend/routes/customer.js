@@ -6,7 +6,7 @@ const validationError = require('../middleware/validationError');
 const { customerValidation, customerUpdateValidation, registerCustomerValidation } = require('../validations/customer');
 
 const { getOtp, signUpCustomer, addCustomer, editCustomer, deactivateCustomer, getAllCustomersForLead, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, getCustomerUniqueId,
-    getAllCustomerForCustomerManagement, getsingleCustomerManagement,getAllRegisteredCustomer } = require('../controllers/customer/customer')
+    getAllCustomerForCustomerManagement, getsingleCustomerManagement, getAllRegisteredCustomer, customerSignUp } = require('../controllers/customer/customer')
 const checkAuth = require('../middleware/checkAuth');
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
@@ -26,6 +26,8 @@ router.post('/sign-up', registerCustomerValidation, validationError, wrapper(sig
 router.post('/', customerValidation, validationError, checkAuth, checkRolePermission, wrapper(addCustomer));
 
 router.post('/send-register-otp', checkAuth, registerCustomerSendOtp);
+
+router.post('/customer-sign-up', wrapper(customerSignUp))
 
 router.post('/send-otp', sendOtp);
 

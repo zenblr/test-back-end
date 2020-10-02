@@ -67,25 +67,26 @@
                     Field Required</mat-error>
             </div>
             <div class="col">
-            <div class="col" *ngIf="showScrapAcknowledgementFlag">
-                <input type="text" class="form-control"  (keyup)= "calculateAfterDeduction()" placeholder="0" formControlName="standardDeduction"
-                numbersOnly
-                [class.isError]="controls.standardDeduction.touched && controls.standardDeduction.invalid">
-            <mat-error *ngIf="(controls.standardDeduction.errors?.max || controls.standardDeduction.errors?.min) && controls.standardDeduction.touched">
-                Invalid Number</mat-error>
-                <mat-error
-                *ngIf="controls.standardDeduction.touched && controls.standardDeduction.errors?.required">
-                Field Required
-            </mat-error>
-            </div>
-            <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
-                <label>Before Standard Deduction - <span class="currency">
-                    {{totalAmt | indianCurrencyFormat}}</span></label>
-            </div>
-            <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
-                <label>After Standard Deduction - <span class="currency">
-                    {{total | indianCurrencyFormat}}</span></label>
-            </div>
+                <div class="col" *ngIf="showScrapAcknowledgementFlag">
+                    <input type="text" class="form-control" (keyup)="calculateAfterDeduction()" placeholder="0"
+                        formControlName="standardDeduction" numbersOnly
+                        [class.isError]="controls.standardDeduction.touched && controls.standardDeduction.invalid">
+                    <mat-error
+                        *ngIf="(controls.standardDeduction.errors?.max || controls.standardDeduction.errors?.min) && controls.standardDeduction.touched">
+                        Invalid Number</mat-error>
+                    <mat-error
+                        *ngIf="controls.standardDeduction.touched && controls.standardDeduction.errors?.required">
+                        Field Required
+                    </mat-error>
+                </div>
+                <div class="col pt-3" *ngIf="showScrapAcknowledgementFlag">
+                    <label class="font-weight-500">Before Standard Deduction - <span class="currency">
+                            {{totalAmt | indianCurrencyFormat}}</span></label>
+                </div>
+                <div class="col" *ngIf="showScrapAcknowledgementFlag">
+                    <label class="font-weight-500">After Standard Deduction - <span class="currency">
+                            {{total | indianCurrencyFormat}}</span></label>
+                </div>
             </div>
             <div class="col" *ngIf="showScrapAcknowledgementFlag">
                 <select class="form-control" formControlName="customerConfirmationStatus"

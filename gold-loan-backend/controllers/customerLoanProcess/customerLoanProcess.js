@@ -1067,6 +1067,15 @@ exports.loanAppraiserRating = async (req, res, next) => {
                 }
 
                 await sendMessageLoanIdGeneration(customerDetails.mobileNumber, customerDetails.firstName, loanSendId)
+            }else{
+                if (loanDetail.unsecuredLoanId != null) {
+                    if (loanDetail.unsecuredLoanId.loanUniqueId == null) {
+                        var unsecuredLoanUniqueId = null;
+                        // unsecured loan Id
+                        unsecuredLoanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+                        await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: loanDetail.unsecuredLoanId }, transaction: t });
+                    }
+                }
             }
 
         } else {
