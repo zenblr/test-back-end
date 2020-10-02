@@ -298,6 +298,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
             }
             this.totalAmount = Math.round(this.totalAmount)
             this.finaltotalAmt.emit(this.totalAmount)
+            setTimeout(() => {
+              this.OrnamentsData.at(0) as FormGroup;
+              controls.controls.customerConfirmation.setValidators(Validators.required),
+                controls.controls.customerConfirmation.updateValueAndValidity()
+            });
           } else {
             this.OrnamentsData.value.forEach(element => {
               this.totalAmount += Number(element.scrapAmount);
@@ -474,8 +479,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       if (this.meltingOrnament) {
         controls.controls.purityReading.setValidators([Validators.required, Validators.pattern('^[0-9][0-9]?$|^100$')]),
           controls.controls.purityReading.updateValueAndValidity()
-        controls.controls.customerConfirmation.setValidators(Validators.required),
-          controls.controls.customerConfirmation.updateValueAndValidity()
+        // controls.controls.customerConfirmation.setValidators(Validators.required),
+        //   controls.controls.customerConfirmation.updateValueAndValidity()
         controls.controls.ornamentTypeId.setValidators([]),
           controls.controls.ornamentTypeId.updateValueAndValidity()
         controls.controls.quantity.setValidators([]),

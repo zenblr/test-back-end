@@ -129,11 +129,11 @@ export class ScrapUpdateLocationComponent implements OnInit {
 
   setForm() {
     const packetArray = this.data.packetData;
-    if (this.data.isOut) { 
-      this.locationForm.controls.scrapId.patchValue(this.data.packetData[0].scrapId)
-    } else {
-      this.locationForm.controls.scrapId.patchValue(this.data.packetData[0].id)
-    }
+    // if (this.data.isOut) {
+    this.locationForm.controls.scrapId.patchValue(this.data.packetData[0].scrapId)
+    // } else {
+    //   this.locationForm.controls.scrapId.patchValue(this.data.packetData[0].id)
+    // }
 
     this.filteredPacketArray = []
     packetArray.forEach(element => {
