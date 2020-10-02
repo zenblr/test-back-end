@@ -28,7 +28,7 @@ interface marker {
 })
 export class GlobalMapComponent implements OnInit {
 
-  icon= {url: './assets/media/icons/ezgif.com-gif-maker.png', scaledSize: { width: 50, height: 50 }}
+  icon= {url: './assets/media/icons/ezgif.com-gif-maker.png', scaledSize: { width: 40, height: 40 }}
   panelOpenState: boolean;
   latitude: number = 18.969050;
   longitude: number = 72.821180;

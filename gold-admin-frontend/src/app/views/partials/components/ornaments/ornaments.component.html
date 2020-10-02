@@ -714,7 +714,7 @@
             <kt-button [value]="buttonValue" [type]="'button'" (click)="nextAction()"></kt-button>
         </div>
     </div>
-    <button *ngIf="showAddMoreBtn" (click)="addmore()" class="addmore" [disabled]="disable" [hidden]="meltingOrnament">+
+    <button *ngIf="showAddMoreBtn" (click)="addmore()" class="addmore" [disabled]="disable || isPartRelease" [hidden]="meltingOrnament">+
         Add
         More</button>
 
