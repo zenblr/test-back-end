@@ -39,6 +39,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   @Output() apiHit: EventEmitter<any> = new EventEmitter();
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
   @Output() finalScrapAmount: EventEmitter<any> = new EventEmitter();
+  @Output() isPartRelease: EventEmitter<any> = new EventEmitter();
   @Input() loanTransfer
   @Input() showButton
 
@@ -195,6 +196,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.loanApplicationFormService.applyLoanFromPartRelease(params).pipe(map(res => {
         console.log(res)
         if (res.loanCurrentStage) {
+          this.isPartRelease.emit(true)
           let stage = res.loanCurrentStage
 
           stage = Number(stage) - 1;
@@ -264,10 +266,6 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
               this.basicForm.controls.customerId.patchValue(this.customerDetail.id)
             }
           }
-        }),
-        catchError(err => {
-          this.toast.error(err.error.message)
-          throw err;
         })
       ).subscribe()
     }

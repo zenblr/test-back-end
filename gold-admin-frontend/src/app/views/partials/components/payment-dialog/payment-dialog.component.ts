@@ -143,6 +143,17 @@ export class PaymentDialogComponent implements OnInit {
     return this.paymentForm.controls
   }
 
+  depositStatus(event){
+    const status = event.target.value
+    if(status == 'Rejected'){
+      this.controls.paymentReceivedDate.clearValidators()
+      this.controls.paymentReceivedDate.updateValueAndValidity()
+    }else{
+      this.controls.paymentReceivedDate.setValidators([Validators.required])
+      this.controls.paymentReceivedDate.updateValueAndValidity()
+    }
+  }
+
   action(event: Event) {
     if (event) {
       this.submit()

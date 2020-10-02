@@ -68,6 +68,28 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
                 }
             ]
         },
+        {
+            model: models.customerPacketTracking,
+            as: 'customerPacketTracking',
+            where: { isDelivered: true },
+            include: [
+                {
+                    model: models.customer,
+                    as: 'customer',
+                    attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
+                },
+                {
+                    model: models.user,
+                    as: 'receiverUser',
+                    attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
+                },
+                {
+                    model: models.partnerBranchUser,
+                    as: 'receiverPartner',
+                    attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
+                }
+            ]
+        }
     ]
     let stage = await models.loanStage.findAll({ where: { name: { [Op.in]: ['submit packet', 'packet branch out', 'packet in branch', 'packet submitted'] } } })
     let stageId = stage.map(ele => ele.id)
@@ -93,6 +115,7 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
             ['id', 'DESC'],
             [models.customerLoan, 'id', 'asc'],
             [{ model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'asc'],
+            [{ model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'desc']
         ],
         offset: offset,
         limit: pageSize,
@@ -103,6 +126,25 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
         where: searchQuery,
         // subQuery: false,
     });
+
+    for (let i = 0; i < packetDetails.length; i++) {
+        const masterLoanId = packetDetails[i].id;
+
+        let data = await models.packetTracking.findOne({
+            include: [{
+                model: models.packetTrackingMasterloan,
+                as: 'packetTrackingMasterloan',
+                where: { masterLoanId: masterLoanId },
+            }],
+            order: [['id', 'DESC']],
+        })
+        let createdAt = null
+        if (!check.isEmpty(data)) {
+            createdAt = data.createdAt
+        }
+        packetDetails[i].dataValues.lastSyncTime = createdAt
+    }
+
     return res.status(200).json({ message: 'packet details fetched successfully', data: packetDetails, count: count.length });
 }
 
@@ -394,15 +436,16 @@ exports.addPacketTracking = async (req, res, next) => {
     //     return res.status(200).json({ message: "Loan is not yet disbursed" })
     // }
 
-    var trackingTime = getAll['trackingDate']
-    var date = moment(trackingTime);
-    var timeComponent = date.utc(true).format('HH:mm');
+    var trackingTime = getAll['trackingDate'].slice(-10)
+    let date = new Date(getAll['trackingDate'].split(" ")[0])
+    getAll['trackingDate'] = moment(date).format('YYYY-MM-DD')
+    
 
 
     getAll['createdBy'] = createdBy
     getAll['modifiedBy'] = modifiedBy
     getAll['userId'] = userId
-    getAll['trackingTime'] = timeComponent;
+    getAll['trackingTime'] = trackingTime;
     getAll['isActive'] = true
     getAll['totalDistance'] = 0
 
@@ -424,10 +467,10 @@ exports.addPacketTracking = async (req, res, next) => {
             order: [['createdAt', 'desc']]
         })
         if (lastLocation) {
-            let dist = await calculateDistance(lastLocation.latitude,lastLocation.longitude,getAll.latitude,getAll.longitude,"K")
+            let dist = await calculateDistance(lastLocation.latitude, lastLocation.longitude, getAll.latitude, getAll.longitude, "K")
             getAll.distance = Number(dist)
-            getAll.totalDistance = Number(lastLocation.totalDistance)+Number(dist)
-              
+            getAll.totalDistance = Number(lastLocation.totalDistance) + Number(dist)
+
         }
 
         let packetTracking = await models.packetTracking.create(getAll, { transaction: t })
@@ -489,7 +532,7 @@ exports.getMapDetails = async (req, res, next) => {
                 include: {
                     model: models.packet,
                     as: 'packet',
-                    attributes:['packetUniqueId']
+                    attributes: ['packetUniqueId']
                 }
             }]
 
@@ -518,7 +561,7 @@ exports.getLocationDetails = async (req, res, next) => {
             model: models.packetTrackingMasterloan,
             as: 'packetTrackingMasterloan',
             where: { masterLoanId: masterLoanId },
-        }],            
+        }],
         order: [['trackingTime', 'DESC']],
         offset: offset,
         limit: pageSize,
@@ -608,7 +651,7 @@ exports.verifyCheckOut = async (req, res, next) => {
 
         await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocation.id, status: 'in transit' }, { transaction: t });
 
-        let packetTrackingData = await models.customerPacketTracking.create({ masterLoanId, loanId, internalBranchId: internalBranchId, packetLocationId: packetLocation.id, userSenderId: id, isDelivered: true, status: 'in transit' }, { transaction: t });
+        let packetTrackingData = await models.customerPacketTracking.create({ masterLoanId, loanId, internalBranchId: internalBranchId, packetLocationId: packetLocation.id, userSenderId: id, userReceiverId: id, isDelivered: true, status: 'in transit' }, { transaction: t });
 
         let allPacketTrackingData = await models.customerPacketTracking.findAll({
             where: { masterLoanId: masterLoanId, isDelivered: true },
@@ -789,7 +832,7 @@ exports.submitLoanPacketLocation = async (req, res, next) => {
         await sequelize.transaction(async (t) => {
 
 
-            await models.customerLoanMaster.update({ loanStageId: loanStage.id, isLoanCompleted: true }, { where: { id: masterLoanId }, transaction: t })
+            await models.customerLoanMaster.update({ partnerBranchId: partnerBranchId, loanStageId: loanStage.id, isLoanCompleted: true }, { where: { id: masterLoanId }, transaction: t })
 
             await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'complete' }, { transaction: t })
 
@@ -1057,7 +1100,7 @@ exports.deliveryUserType = async (req, res, next) => {
 exports.deliveryApproval = async (req, res, next) => {
     let { referenceCode, otp, id, partnerReceiverId, userReceiverId, customerReceiverId } = req.body
 
-    let { receiverType, packetLocationId, masterLoanId, updatedAt, createdAt } = await models.customerPacketTracking.findOne({ where: { id: id } })
+    let { receiverType, packetLocationId, masterLoanId, updatedAt, createdAt, partnerBranchId } = await models.customerPacketTracking.findOne({ where: { id: id } })
 
     let masterLoan = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
 
@@ -1116,7 +1159,7 @@ exports.deliveryApproval = async (req, res, next) => {
 
         if (masterLoan.loanStageId == packetBranchOut.id) {
             if (packetLocationId == partnerBranchInLocation.id) {
-                await models.customerLoanMaster.update({ loanStageId: packetSubmitted.id, isLoanCompleted: true }, { where: { id: masterLoanId }, transaction: t })
+                await models.customerLoanMaster.update({ partnerBranchId: partnerBranchId, loanStageId: packetSubmitted.id, isLoanCompleted: true }, { where: { id: masterLoanId }, transaction: t })
             }
             if (packetLocationId == branchOutLocation.id) {
                 await models.customerLoanMaster.update({ loanStageId: packetBranchOut.id }, { where: { id: masterLoanId }, transaction: t })

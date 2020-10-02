@@ -1067,6 +1067,15 @@ exports.loanAppraiserRating = async (req, res, next) => {
                 }
 
                 await sendMessageLoanIdGeneration(customerDetails.mobileNumber, customerDetails.firstName, loanSendId)
+            }else{
+                if (loanDetail.unsecuredLoanId != null) {
+                    if (loanDetail.unsecuredLoanId.loanUniqueId == null) {
+                        var unsecuredLoanUniqueId = null;
+                        // unsecured loan Id
+                        unsecuredLoanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+                        await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: loanDetail.unsecuredLoanId }, transaction: t });
+                    }
+                }
             }
 
         } else {
@@ -1724,7 +1733,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
 
             await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocation.id, status: 'in transit' }, { transaction: t });
 
-            await models.customerPacketTracking.create({ masterLoanId, internalBranchId: req.userData.internalBranchId, packetLocationId: packetLocation.id, userSenderId: req.userData.id, isDelivered: true, status: 'in transit' }, { transaction: t });
+            await models.customerPacketTracking.create({ masterLoanId, internalBranchId: req.userData.internalBranchId, packetLocationId: packetLocation.id, userSenderId: req.userData.id, userReceiverId: req.userData.id, isDelivered: true, status: 'in transit' }, { transaction: t });
 
             await models.customerLoanHistory.create({ loanId: securedLoanId, masterLoanId, action: LOAN_DISBURSEMENT, modifiedBy }, { transaction: t });
             if (Loan.isUnsecuredSchemeApplied == true) {
@@ -1749,7 +1758,8 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
         where: {
             holidayDate: {
                 [Op.between]: [startDate, endDate]
-            }
+            },
+            isActive:true,
         }
     })
 
@@ -1761,8 +1771,8 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
     for (let i = 0; i < interestTable.length; i++) {
         let date = new Date();
         let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency) * (i + 1))))
-        interestTable[i].emiDueDate = newEmiDueDate
-        interestTable[i].emiEndDate = newEmiDueDate
+        interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
+        interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
 
         if (i == 0) {
             console.log(new Date().toISOString(), 'date')
@@ -1773,6 +1783,8 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
             console.log(startDate, i)
             interestTable[i].emiStartDate = new Date(startDate.setDate(startDate.getDate() + 1))
         }
+        let x = interestTable.map(ele => ele.emiDueDate)
+        console.log(x)
 
         for (let j = 0; j < holidayDate.length; j++) {
             let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
@@ -1780,7 +1792,7 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
             let newDate = new Date(newEmiDueDate);
             if (momentDate == holidayDate[j].holidayDate || sunday == 0) {
                 let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
-                interestTable[i].emiDueDate = holidayEmiDueDate
+                interestTable[i].emiDueDate = moment(holidayEmiDueDate).format('YYYY-MM-DD')
 
                 newEmiDueDate = holidayEmiDueDate
                 j = 0
@@ -1791,7 +1803,8 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
         interestTable.loanId = loanId
         interestTable.masterLoanId = masterLoanId
     }
-
+    let y = interestTable.map(ele => ele.emiDueDate)
+    console.log(y)
     return interestTable
 }
 

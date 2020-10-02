@@ -7,9 +7,13 @@ import { TimeElapsedPipe } from '../../../../core/_base/layout';
   styleUrls: ['./elapsed-time.component.scss']
 })
 export class ElapsedTimeComponent implements OnInit, OnDestroy, OnChanges {
-  @Input() startTime
+  @Input() startTime;
+  @Input() locationTracking = 'init';
   totalTime: any;
   interval: NodeJS.Timeout;
+  countTime = 0;
+  permittedInterval = 1; //minutes
+  showAlert: boolean;
 
   constructor(
     private ref: ChangeDetectorRef
@@ -31,6 +35,7 @@ export class ElapsedTimeComponent implements OnInit, OnDestroy, OnChanges {
   change(mindate: Date | string) {
     let timeDifference = new Date().getTime() - new Date(mindate).getTime();
     this.totalTime = this.msToTime(timeDifference)
+    this.trackLocation()
   }
 
   msToTime(seconds) {
@@ -45,5 +50,14 @@ export class ElapsedTimeComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnDestroy() {
     clearInterval(this.interval)
+  }
+
+  trackLocation() {
+    if (!this.locationTracking) {
+      this.countTime++
+      if (this.countTime > this.permittedInterval * 60) this.showAlert = true
+    } else {
+      this.showAlert = false
+    }
   }
 }
