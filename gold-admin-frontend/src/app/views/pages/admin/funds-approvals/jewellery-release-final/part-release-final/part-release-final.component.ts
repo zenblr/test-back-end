@@ -24,7 +24,7 @@ import { FullReleaseFinalService } from '../../../../../../core/funds-approvals/
 export class PartReleaseFinalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'appointmentDate', 'appointmentTime', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPaidAmount', 'status', 'ornaments','currentLocation', 'view', 'updateStatus',];
+  displayedColumns = ['customerName', 'customerId', 'loanId', 'appointmentDate', 'appointmentTime', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPaidAmount', 'status', 'ornaments', 'currentLocation', 'view', 'updateStatus',];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -39,7 +39,7 @@ export class PartReleaseFinalComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private layoutUtilsService: LayoutUtilsService,
-    private fullReleaseFinalService:FullReleaseFinalService
+    private fullReleaseFinalService: FullReleaseFinalService
   ) { }
 
   ngOnInit() {
@@ -152,7 +152,7 @@ export class PartReleaseFinalComponent implements OnInit {
 
   collect(masterLoanId, packet, data) {
     let partnerBranchId = data.customerPacketTracking[data.customerPacketTracking.length - 1].partnerBranchId
-    let dialogRef= this.dialog.open(UpdateLocationComponent, {
+    let dialogRef = this.dialog.open(UpdateLocationComponent, {
       data: {
         isPartnerOut: true,
         masterLoanId: masterLoanId,
@@ -168,7 +168,7 @@ export class PartReleaseFinalComponent implements OnInit {
     });
   }
 
-  homeIn(masterLoanId, packet,id) {
+  homeIn(masterLoanId, packet, id) {
 
     this.fullReleaseFinalService.getCutsomerDetails(masterLoanId).subscribe(res => {
       if (res.data) {
@@ -178,8 +178,8 @@ export class PartReleaseFinalComponent implements OnInit {
             response: res.data,
             masterLoanId: masterLoanId,
             packetData: packet,
-            releaseId:id,
-            isPartRelease:true
+            releaseId: id,
+            isPartRelease: true
           },
           width: "450px",
         })

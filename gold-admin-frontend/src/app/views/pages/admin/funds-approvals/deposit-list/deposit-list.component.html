@@ -91,8 +91,9 @@
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let deposit">
                         <div *ngxPermissionsOnly="['approveDeposit']">
-                            <button *ngIf="deposit.depositStatus == 'Pending'" style="width: 120px;" class="apply-kyc"
-                                (click)="updateStatus(deposit)">Edit
+                            <button
+                                *ngIf="deposit.depositStatus == 'Pending' && (deposit.paymentFor != 'partRelease' && deposit.paymentFor != 'fullRelease')"
+                                style="width: 120px;" class="apply-kyc" (click)="updateStatus(deposit)">Edit
                             </button>
                         </div>
 
