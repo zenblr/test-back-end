@@ -47,6 +47,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() karatArr
   @Input() customerConfirmationArr
   @Input() karatFlag
+  @Input() isPartRelease
   @Output() partPayment: EventEmitter<any> = new EventEmitter();
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
@@ -180,6 +181,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if(changes.isPartRelease){
+      console.log(changes.isPartRelease.currentValue)
+    }
     if (changes.ornamentType) {
       this.ornamentType = changes.ornamentType.currentValue
     }
