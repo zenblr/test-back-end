@@ -1067,6 +1067,15 @@ exports.loanAppraiserRating = async (req, res, next) => {
                 }
 
                 await sendMessageLoanIdGeneration(customerDetails.mobileNumber, customerDetails.firstName, loanSendId)
+            }else{
+                if (loanDetail.unsecuredLoanId != null) {
+                    if (loanDetail.unsecuredLoanId.loanUniqueId == null) {
+                        var unsecuredLoanUniqueId = null;
+                        // unsecured loan Id
+                        unsecuredLoanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+                        await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: loanDetail.unsecuredLoanId }, transaction: t });
+                    }
+                }
             }
 
         } else {
@@ -1724,7 +1733,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
 
             await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocation.id, status: 'in transit' }, { transaction: t });
 
-            await models.customerPacketTracking.create({ masterLoanId, internalBranchId: req.userData.internalBranchId, packetLocationId: packetLocation.id, userSenderId: req.userData.id, isDelivered: true, status: 'in transit' }, { transaction: t });
+            await models.customerPacketTracking.create({ masterLoanId, internalBranchId: req.userData.internalBranchId, packetLocationId: packetLocation.id, userSenderId: req.userData.id, userReceiverId: req.userData.id, isDelivered: true, status: 'in transit' }, { transaction: t });
 
             await models.customerLoanHistory.create({ loanId: securedLoanId, masterLoanId, action: LOAN_DISBURSEMENT, modifiedBy }, { transaction: t });
             if (Loan.isUnsecuredSchemeApplied == true) {

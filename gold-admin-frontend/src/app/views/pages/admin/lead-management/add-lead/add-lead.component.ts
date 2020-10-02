@@ -203,6 +203,11 @@ export class AddLeadComponent implements OnInit {
     const stateId = this.controls.stateId.value;
     this.sharedService.getCities(stateId).subscribe(res => {
       this.cities = res.data;
+      const cityExists = this.cities.find(e => e.id === this.controls.cityId.value)
+      if (!cityExists) {
+        this.controls.cityId.reset();
+        this.controls.cityId.patchValue('');
+      }
     });
   }
 

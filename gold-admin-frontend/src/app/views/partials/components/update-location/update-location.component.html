@@ -160,6 +160,21 @@
                             <div class="col-12">
                                 <div class="row kt-margin-t-15">
                                     <div class="col-4 form-label">
+                                        <label class="kt-padding-l-10 mandatory">Partner</label>
+                                    </div>
+                                    <div class="col-8">
+                                        <input class="form-control" formControlName="deliveryPartnerName"
+                                            [class.isError]="locationForm.controls.deliveryPartnerName.invalid &&  locationForm.controls.deliveryPartnerName.touched">
+                                        <mat-error
+                                            *ngIf="locationForm.controls.deliveryPartnerName.touched && locationForm.controls.deliveryPartnerName.errors?.required">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="row kt-margin-t-15">
+                                    <div class="col-4 form-label">
                                         <label class="kt-padding-l-10 mandatory">Select Partner Branch</label>
                                     </div>
                                     <div class="col-8">
@@ -178,8 +193,8 @@
                             </div>
                         </div>
                         <!-- Deliver To ends -->
-
-                        <div class="row justify-content-center kt-margin-t-15">
+                        <div *ngIf="!(data.isOut || (data.stage == 11 && controls.packetLocationId.value == 2))"
+                            class="row justify-content-center kt-margin-t-15">
                             <div class="col-4 form-label">
                                 <label class="kt-padding-l-10 mandatory">User Type</label>
                             </div>

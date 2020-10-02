@@ -24,6 +24,7 @@ interface marker {
 })
 export class ViewLocationComponent implements OnInit {
 
+  icon= {url: './assets/media/icons/ezgif.com-gif-maker.png', scaledSize: { width: 50, height: 50 }}
   selected: any = 0;
   latitude: number = 18.969050;
   longitude: number = 72.821180;
@@ -79,8 +80,8 @@ export class ViewLocationComponent implements OnInit {
     this.mapService.getMapReport(params).pipe(map(res => {
       if (res.data.length) {
         for (const iterator of res.data) {
-          const { latitude: lat, longitude: lng, trackingTime, address} = iterator
-          const {masterLoan} = iterator.packetTrackingMasterloan[0]
+          const { latitude: lat, longitude: lng, trackingTime, address } = iterator
+          const { masterLoan } = iterator.packetTrackingMasterloan[0]
           this.markers.push({ lat, lng, trackingTime, address, masterLoan, isVisible: true })
         }
         this.infoToggle = new Array(this.markers.length).fill(false);
@@ -94,13 +95,13 @@ export class ViewLocationComponent implements OnInit {
 
   clickedMarker(latitude, longitude, index) {
     for (let i = 0; i < this.markers.length; i++) {
-      if (i != index){
+      if (i != index) {
         this.infoToggle[i] = true
       }
-      else{
+      else {
         this.infoToggle[index] = !this.infoToggle[index]
+      }
     }
-  }
 
 
     this.ref.detectChanges()

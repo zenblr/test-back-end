@@ -138,7 +138,7 @@ export class UploadPacketsComponent implements OnInit, AfterViewInit, OnChanges 
       if (packet) {
         this.packetImg.patchValue(packet)
 
-        packet.CustomerScrapPackageDetail.forEach(ele => {
+        packet.scrapPackets.forEach(ele => {
           this.packetsName = ele.packetUniqueId;
           this.controls.packetId.patchValue(ele.id)
           this.splicedPackets.push(ele)

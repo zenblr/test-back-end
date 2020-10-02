@@ -299,6 +299,14 @@ export class PartReleaseComponent implements OnInit {
     })
   }
 
+  show(){
+    if(new Date() > new Date(this.loanDetails.customerLoan.loanEndDate)){
+      return false
+    }else{
+      return true
+    }
+  }
+
   releaseConfirmation() {
     if (!(this.paymentValue && this.paymentValue.paymentType)) {
       return this.toastr.error('Please select a payment method')
