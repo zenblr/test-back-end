@@ -298,11 +298,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
             }
             this.totalAmount = Math.round(this.totalAmount)
             this.finaltotalAmt.emit(this.totalAmount)
-            setTimeout(() => {
-              this.OrnamentsData.at(0) as FormGroup;
-              controls.controls.customerConfirmation.setValidators(Validators.required),
-                controls.controls.customerConfirmation.updateValueAndValidity()
-            });
           } else {
             this.OrnamentsData.value.forEach(element => {
               this.totalAmount += Number(element.scrapAmount);
@@ -791,6 +786,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.next.emit(3)
         return
       }
+    }
+    if (this.meltingOrnament) { 
+      const controls = this.OrnamentsData.at(0) as FormGroup;
+      controls.controls.customerConfirmation.setValidators(Validators.required),
+        controls.controls.customerConfirmation.updateValueAndValidity()
     }
     if (this.ornamentsForm.invalid) {
       let array = this.OrnamentsData.controls

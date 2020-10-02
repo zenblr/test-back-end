@@ -692,16 +692,8 @@
     </div>
 
     <div class="row justify-content-center" *ngIf="!(data?.modal || data.scrapModal)">
-        <!-- <div class="col-4 py-2" *ngIf="scrapIds">
-        <h3 class="text-center my-3" *ngIf="meltingOrnament">
-            <b *ngIf="buttonValue == 'Pay Processing Charges'">
-                Processing Charges - <span class="currency">
-                    {{'1000' | indianCurrencyFormat}}</span>
-            </b>
-        </h3>
-    </div> -->
-        <div class="col-12 py-2">
-            <h3 class="text-center my-3">
+        <div class="col-12 py-3">
+            <h3 class="text-center m-0">
                 <b *ngIf="buttonValue == 'Pay Processing Charges'" class="float-left">
                     Processing Charges - <span class="currency">
                         {{processingCharges | indianCurrencyFormat}}</span>

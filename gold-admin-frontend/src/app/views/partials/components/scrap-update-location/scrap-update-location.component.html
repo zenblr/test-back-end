@@ -132,68 +132,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Deliver To -->
-                        <!-- <div class="row" *ngIf="data.isOut">
-                            <div class="col-12">
-                                <div class="row kt-margin-t-15">
-                                    <div class="col-4 form-label">
-                                        <label class="kt-padding-l-10 mandatory">Deliver To</label>
-                                    </div>
-                                    <div class="col-8">
-                                        <select class="form-control" formControlName="deliveryPacketLocationId"
-                                            (change)="getdeliveryPartnerBranch()"
-                                            [class.isError]="locationForm.controls.deliveryPacketLocationId.invalid &&  locationForm.controls.deliveryPacketLocationId.touched">
-                                            <option selected disabled value=null>Select Location</option>
-                                            <option [value]="item.id" *ngFor="let item of deliveryLocations">
-                                                {{item.location | titlecase}}</option>
-                                        </select>
-                                        <mat-error
-                                            *ngIf="locationForm.controls.deliveryPacketLocationId.touched && locationForm.controls.deliveryPacketLocationId.errors?.required">
-                                            Required field
-                                        </mat-error>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="row kt-margin-t-15">
-                                    <div class="col-4 form-label">
-                                        <label class="kt-padding-l-10 mandatory">Select Partner Branch</label>
-                                    </div>
-                                    <div class="col-8">
-                                        <select class="form-control" formControlName="deliveryPartnerBranchId"
-                                            [class.isError]="locationForm.controls.deliveryPartnerBranchId.invalid &&  locationForm.controls.deliveryPartnerBranchId.touched">
-                                            <option selected disabled value=null>Select Branch</option>
-                                            <option [value]="item.id" *ngFor="let item of deliveryPartnerBranches">
-                                                {{item.name | titlecase}}</option>
-                                        </select>
-                                        <mat-error
-                                            *ngIf="locationForm.controls.deliveryPartnerBranchId.touched && locationForm.controls.deliveryPartnerBranchId.errors?.required">
-                                            Required field
-                                        </mat-error>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
-                        <!-- Deliver To ends -->
-                        <!-- <div class="row justify-content-center kt-margin-t-15">
-                            <div class="col-4 form-label">
-                                <label class="kt-padding-l-10 mandatory">User Type</label>
-                            </div>
-                            <div class="col-8">
-                                <select class="form-control" formControlName="receiverType" (change)="remove()"
-                                    [class.isError]="locationForm.controls.receiverType.invalid &&  locationForm.controls.receiverType.touched">
-                                    <option value="" disabled selected>Select User Type</option>
-                                    <option [value]="item.value" *ngFor="let item of userTypeListFiltered">
-                                        {{ item.name }}
-                                    </option>
-                                </select>
-                                <mat-error
-                                    *ngIf="locationForm.controls.receiverType.touched && locationForm.controls.receiverType.errors?.required">
-                                    Required field
-                                </mat-error>
-
-                            </div>
-                        </div> -->
                     </div>
                     <div *ngIf="!data.isOut">
                         <div class="row justify-content-center kt-margin-t-15">
