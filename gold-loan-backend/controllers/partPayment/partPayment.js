@@ -171,7 +171,7 @@ exports.partPayment = async (req, res, next) => {
     }else{
 
     }
-    paymentDetails.depositDate = moment(depositDate).utcOffset("+05:30").format("YYYY-MM-DD");
+    paymentDetails.depositDate = moment(moment(depositDate).format("YYYY-MM-DD"));
     paymentDetails.transactionUniqueId = transactionUniqueId //ye chanege hoyega
     if (isRazorPay) {
         paymentDetails.razorPayTransactionId = razorPayTransactionId
