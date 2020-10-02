@@ -1,10 +1,6 @@
 {
     "/api/*": {
-<<<<<<< HEAD
-        "target": "http://localhost:3000/",
-=======
-        "target": "https://gold.nimapinfotech.com",
->>>>>>> c2e467f43392afe9cd63367c271c30cc7b50f157
+        "target": "http://104e3a06a5d3.ngrok.io",
         "secure": false,
         "logLevel": "debug",
         "changeOrigin": true

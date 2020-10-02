@@ -6,8 +6,34 @@
                 <ng-container matColumnDef="userName">
                     <mat-header-cell *matHeaderCellDef>User Name</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        {{packet.Createdby.firstName + " " + 
-                        packet.Createdby.lastName | titlecase}}</mat-cell>
+                        <!-- {{packet.Createdby.firstName + " " + 
+                        packet.Createdby.lastName | titlecase}} -->
+                        <span *ngIf="packet?.customerPacketTracking[0]?.customer">
+                            {{ packet?.customerPacketTracking[0]?.customer.firstName | titlecase }}
+                            {{ packet?.customerPacketTracking[0]?.customer.lastName | titlecase }}
+                        </span>
+                        <span *ngIf="packet?.customerPacketTracking[0]?.receiverPartner">
+                            {{ packet?.customerPacketTracking[0]?.receiverPartner.firstName | titlecase }}
+                            {{ packet?.customerPacketTracking[0]?.receiverPartner.lastName | titlecase }}
+
+                        </span>
+                        <span *ngIf="packet?.customerPacketTracking[0]?.receiverUser">
+                            {{ packet?.customerPacketTracking[0]?.receiverUser.firstName | titlecase }}
+                            {{ packet?.customerPacketTracking[0]?.receiverUser.lastName | titlecase }}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="mobile">
+                    <mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngIf="packet?.customerPacketTracking[0]?.customer">
+                            {{ packet?.customerPacketTracking[0]?.customer.mobileNumber }}</span>
+                        <span *ngIf="packet?.customerPacketTracking[0]?.receiverPartner">
+                            {{ packet?.customerPacketTracking[0]?.receiverPartner.mobileNumber }}</span>
+                        <span *ngIf="packet?.customerPacketTracking[0]?.receiverUser">
+                            {{ packet?.customerPacketTracking[0]?.receiverUser.mobileNumber }}</span>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="internalBranch">
@@ -76,11 +102,11 @@
                                 <ng-container
                                     *ngIf="item.packetLocationId === 6 || item.packetLocationId === 3 || item.packetLocationId === 5 || item.packetLocationId === 1">
                                     <kt-elapsed-time [startTime]="item?.createdAt"
-                                        [locationTracking]="packet.commentByAppraiser"></kt-elapsed-time>
+                                        [locationTracking]="packet?.lastSyncTime"></kt-elapsed-time>
                                 </ng-container>
                                 <ng-container *ngIf="item.packetLocationId === 2 && !packet.isLoanCompleted">
                                     <kt-elapsed-time [startTime]="packet?.customerLoanDisbursement[0].createdAt"
-                                        [locationTracking]="packet.commentByAppraiser">
+                                        [locationTracking]="packet?.lastSyncTime">
                                     </kt-elapsed-time>
                                 </ng-container>
                             </span>

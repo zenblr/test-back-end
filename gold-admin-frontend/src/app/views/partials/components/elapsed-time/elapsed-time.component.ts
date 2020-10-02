@@ -11,9 +11,10 @@ export class ElapsedTimeComponent implements OnInit, OnDestroy, OnChanges {
   @Input() locationTracking = 'init';
   totalTime: any;
   interval: NodeJS.Timeout;
-  countTime = 0;
+  countTime = 5;
   permittedInterval = 1; //minutes
   showAlert: boolean;
+  lastSyncTime: string;
 
   constructor(
     private ref: ChangeDetectorRef
@@ -30,12 +31,13 @@ export class ElapsedTimeComponent implements OnInit, OnDestroy, OnChanges {
         this.ref.detectChanges();
       }
     }, 1000)
+    this.trackLocation()
   }
 
   change(mindate: Date | string) {
     let timeDifference = new Date().getTime() - new Date(mindate).getTime();
     this.totalTime = this.msToTime(timeDifference)
-    this.trackLocation()
+    // this.trackLocation()
   }
 
   msToTime(seconds) {
@@ -52,12 +54,39 @@ export class ElapsedTimeComponent implements OnInit, OnDestroy, OnChanges {
     clearInterval(this.interval)
   }
 
+  // trackLocation() {
+  //   let timeDifference = new Date().getTime() - new Date(this.locationTracking).getTime();
+  //   var milliseconds = timeDifference % 1000;
+  //   timeDifference = (timeDifference - milliseconds) / 1000;
+  //   var secs = timeDifference % 60;
+  //   timeDifference = (timeDifference - secs) / 60;
+  //   var minutes = timeDifference % 60;
+
+  //   if (this.locationTracking) {
+  //     this.countTime++
+  //     if (this.countTime > minutes * 60) this.showAlert = true
+  //   } else {
+  //     this.showAlert = false
+  //   }
+  // }
+
   trackLocation() {
-    if (!this.locationTracking) {
-      this.countTime++
-      if (this.countTime > this.permittedInterval * 60) this.showAlert = true
-    } else {
-      this.showAlert = false
+    if (!this.lastSyncTime) return this.lastSyncTime = this.locationTracking;
+
+    let timeDifference = new Date().getTime() - new Date(this.lastSyncTime).getTime();
+    var milliseconds = timeDifference % 1000;
+    timeDifference = (timeDifference - milliseconds) / 1000;
+    var secs = timeDifference % 60;
+    timeDifference = (timeDifference - secs) / 60;
+    var minutes = timeDifference % 60;
+
+    if (this.locationTracking) {
+      if (minutes > this.countTime) {
+        this.showAlert = true
+      } else {
+        this.showAlert = false
+      }
     }
+
   }
 }

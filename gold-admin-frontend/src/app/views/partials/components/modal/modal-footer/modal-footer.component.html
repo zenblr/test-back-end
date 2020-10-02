@@ -1,7 +1,9 @@
 <div class="row text-right">
     <div class="col-lg-12">
-        <kt-button [type]="'button'" [value]="value" [isDisabled]="isDisabled" (click)="onSubmit()">
-        </kt-button>
+        <!-- <kt-button [type]="'button'" [value]="value" [isDisabled]="isDisabled" (action)="onSubmit()">
+        </kt-button> -->
+        <button class="submit" ktDebounceClick mat-raised-button
+            (debounceClick)="onSubmit()">{{value | titlecase}}</button>
         &nbsp;
         <kt-button [type]="'reset'" [value]="'Cancel'" (click)="closeModal()">
         </kt-button>
