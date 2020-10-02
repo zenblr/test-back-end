@@ -5,7 +5,8 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
 const _ = require('lodash');
-let { sendMessageAssignedCustomerToAppraiser, sendMessageCustomerForAssignAppraiser } = require('../../utils/SMS')
+let { sendMessageAssignedCustomerToAppraiser, sendMessageCustomerForAssignAppraiser } = require('../../utils/SMS');
+const { orderBy } = require('lodash');
 
 
 //FUNCTION TO ADD NEW REQUEST 
@@ -19,12 +20,41 @@ exports.addAppraiserRequest = async (req, res, next) => {
 
     let checkStatusCustomer = await models.customer.findOne({
         where: { statusId, id: customerId },
+        include: {
+            model: models.customerKyc,
+            as: 'customerKyc'
+        }
     });
 
-    if(checkStatusCustomer.scrapKycStatus == "approved"){
-        if(checkStatusCustomer.userType == "Corporate"){
+    // let customerRequest = await models.appraiserRequest.findAll({
+    //     where: { customerId: customerId },
+    //     order: [['id', 'desc']]
+    // })
+
+    if (!check.isEmpty(checkStatusCustomer.customerKyc)) {
+        let oldReqModule = checkStatusCustomer.customerKyc.currentKycModuleId;
+
+        if(oldReqModule != moduleId){
+            if(moduleId == 1){
+                if(checkStatusCustomer.scrapKycStatus != "approved"){
+                    return res.status(404).json({ message: "Kindly complete your pending scrap KYC" });
+                }
+            }
+            if(moduleId == 3){
+                if(checkStatusCustomer.kycStatus != "approved"){
+                    return res.status(404).json({ message: "Kindly complete your pending loan KYC" });
+                }
+            }
+        }
+       
+
+    }
+
+
+    if (checkStatusCustomer.scrapKycStatus == "approved") {
+        if (checkStatusCustomer.userType == "Corporate") {
             return res.status(400).json({ message: "Please create new customer since you have completed Corporate kyc" });
-        }   
+        }
     }
 
     let requestExist = await models.appraiserRequest.findOne({ where: { moduleId: moduleId, customerId: customerId, status: 'incomplete' } })
@@ -79,7 +109,7 @@ exports.getAllNewRequest = async (req, res, next) => {
                 {
                     model: models.customerKyc,
                     as: 'customerKyc',
-                    attributes: ['id', 'isKycSubmitted', 'isScrapKycSubmitted']
+                    attributes: ['id', 'isKycSubmitted', 'isScrapKycSubmitted', 'isAppliedForKyc']
                 }
             ]
         },

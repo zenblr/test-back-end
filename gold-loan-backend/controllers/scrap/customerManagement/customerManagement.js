@@ -70,7 +70,8 @@ exports.getScrapDetailCustomerManagement = async (req, res, next) => {
             },
         }],
         isActive: true,
-        scrapStageId: stageId.id
+        isScrapCompleted: true,
+
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
@@ -191,7 +192,8 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
         {
             model: models.customerScrap,
             as: 'customerScrap',
-            where: { scrapStageId: stageId.id },
+            // where: { scrapStageId: stageId.id },
+            where: {isScrapCompleted: true},
             required: true,
             attributes: ['id', 'customerId', 'scrapUniqueId', 'scrapStageId', 'finalScrapAmountAfterMelting']
         },
@@ -264,7 +266,7 @@ exports.getsingleCustomerManagement = async (req, res) => {
             {
                 model: models.customerScrap,
                 as: 'customerScrap',
-                where: { scrapStageId: stageId.id },
+                where: { isScrapCompleted: true },
                 required: true,
                 attributes: ['id', 'customerId', 'scrapUniqueId', 'finalScrapAmountAfterMelting', 'scrapStageId'],
                 include:[

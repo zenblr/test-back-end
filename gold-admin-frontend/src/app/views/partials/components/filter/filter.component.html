@@ -230,6 +230,26 @@
           </form>
         </div>
 
+        <!-- Scrap Packet Tracking -->
+        <div class="kt-portlet__body" *ngIf="filterName == 'scrap-packet-tracking'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col-9">
+                <label>By Tracking Status</label>
+                <select class="form-control" formControlName="packetTracking">
+                  <option value="" selected>All</option>
+                  <option value="incomplete">Incomplete</option>
+                  <option value="complete">Complete</option>
+                </select>
+              </div>
+              <div class="col-3 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
+        </div>
+
         <!-- scheme -->
         <div class="kt-portlet__body" *ngIf="filterName == 'scheme'">
           <form class="kt-form" [formGroup]="filterForm">

@@ -20,7 +20,7 @@ import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.compo
 })
 export class PacketTrackingComponent implements OnInit {
   dataSource: ScrapPacketTrackingDatasource;
-  displayedColumns = ['userName', 'mobileNumber', 'customerId', 'customerName', 'scrapId', 'scrapAmount', 'internalBranch', 'currentLocation', 'elapseTime', 'actions'];
+  displayedColumns = ['userName', 'mobileNumber', 'customerId', 'customerName', 'scrapId', 'scrapAmount', 'internalBranch', 'currentLocation', 'status', 'elapseTime', 'actions'];
   leadsResult = [];
   customerConfirmationArr = [];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -105,10 +105,13 @@ export class PacketTrackingComponent implements OnInit {
 
   ngOnDestroy() {
     this.subscriptions.forEach(el => el.unsubscribe());
-    this.unsubscribeSearch$.next();
-    this.unsubscribeSearch$.complete();
     this.destroy$.next();
     this.destroy$.complete();
+    this.filter$.next();
+    this.filter$.complete();
+    this.unsubscribeSearch$.next();
+    this.unsubscribeSearch$.complete();
+    this.scrapPacketTrackingService.applyFilter.next({});
   }
 
   applyFilter(data) {
