@@ -258,7 +258,7 @@ export class LoanScrapDetailsComponent implements OnInit {
   viewEmiLogs() {
     const dialogRef = this.dialog.open(EmiLogsDialogComponent, {
       data: { id: this.details.id },
-      width: '850px'
+      width: '1250px'
     })
   }
 
