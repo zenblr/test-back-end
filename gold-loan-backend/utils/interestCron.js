@@ -209,27 +209,28 @@ exports.cronForDailyPenalInterest = async (date) => {
             if (dataInfo[j + 1] != undefined) {
                 penalOutstanding = penalAccrual - dataInfo[j + 1].penalPaid
                 // console.log("update", penalAccrual, dataInfo[j + 1].id)
-                // await models.customerLoanInterest.update({ penalInterest: penalAccrual, penalAccrual: penalAccrual, penalOutstanding: penalOutstanding }, { where: { id: dataInfo[j + 1].id } })
+                await models.customerLoanInterest.update({ penalInterest: penalAccrual, penalAccrual: penalAccrual, penalOutstanding: (penalOutstanding).toFixed(2) }, { where: { id: dataInfo[j + 1].id } })
                 penalObject.id = dataInfo[j + 1].id
                 penalObject.penalInterest = penalAccrual
                 penalObject.penalAccrual = penalAccrual
-                penalObject.penalOutstanding = penalOutstanding
+                penalObject.penalOutstanding = (penalOutstanding).toFixed(2)
                 penalData.push(penalObject)
             } else {
                 penalAccrual = Number(penalAccrual) + Number(dataInfo[dataInfo.length - 1].penalAccrual)
                 penalOutstanding = penalAccrual - dataInfo[j].penalPaid
 
-                // await models.customerLoanInterest.update({ penalInterest: penalAccrual, penalAccrual: penalAccrual, penalOutstanding: penalOutstanding }, { where: { id: dataInfo[j].id } })
+                await models.customerLoanInterest.update({ penalInterest: penalAccrual, penalAccrual: penalAccrual, penalOutstanding: (penalOutstanding).toFixed(2) }, { where: { id: dataInfo[j].id } })
 
                 penalObject.id = dataInfo[j].id
                 penalObject.penalInterest = penalAccrual
                 penalObject.penalAccrual = penalAccrual
-                penalObject.penalOutstanding = penalOutstanding
+                penalObject.penalOutstanding = (penalOutstanding).toFixed(2)
                 penalData.push(penalObject)
 
             }
         }
 
+        //add penal next code
         let transaction = []
         for (let j = 0; j < dataInfo.length; j++) {
 
@@ -240,20 +241,25 @@ exports.cronForDailyPenalInterest = async (date) => {
                 break;
             }
             const nextDueDate = moment(dataInfo[j + 1].emiDueDate)
-            let daysCount = nextDueDate.diff(dueDate, 'days');
-            if (currentDate < dueDate) {
+            let daysCount = currentDate.diff(dueDate, 'days');
+            let daysCount2 = nextDueDate.diff(dueDate, 'days');
+            if (daysCount < selectedSlab) {
+                // daysCount2 = currentDate.diff(dueDate, 'days');
                 break;
+            }
+            if (dueDate > currentDate) {
+                break
             }
 
             let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: data[i].masterLoanId, loanId: data[i].id, loanInterestId: dataInfo[j + 1].id, credit: null, isPenalInterest: true } });
             let penelInterest
             if (!check.isEmpty(checkDebitEntry)) {
-                penelInterest = Number((((data[i].outstandingAmount * penal) / noOfDaysInYear) * daysCount).toFixed(2))
+                penelInterest = Number((((data[i].outstandingAmount * penal) / noOfDaysInYear) * daysCount2).toFixed(2))
                 let debitedAmount = await checkDebitEntry.map((data) => Number(data.debit));
                 let totalDebitedAmount = _.sum(debitedAmount);
                 penelInterest = penelInterest - totalDebitedAmount;
             } else {
-                penelInterest = Number((((data[i].outstandingAmount * penal) / noOfDaysInYear) * daysCount).toFixed(2))
+                penelInterest = Number((((data[i].outstandingAmount * penal) / noOfDaysInYear) * daysCount2).toFixed(2))
             }
 
             detail.masterLoanId = data[i].masterLoanId
@@ -266,6 +272,11 @@ exports.cronForDailyPenalInterest = async (date) => {
             detail = {}
 
         }
+        if (transaction.length != 0) {
+            await models.customerTransactionDetail.bulkCreate(transaction);
+        }
+        //add penal next code
+
         console.log(transaction)
     }
 }
