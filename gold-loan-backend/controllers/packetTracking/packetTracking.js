@@ -126,6 +126,25 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
         where: searchQuery,
         // subQuery: false,
     });
+
+    for (let i = 0; i < packetDetails.length; i++) {
+        const masterLoanId = packetDetails[i].id;
+
+        let data = await models.packetTracking.findOne({
+            include: [{
+                model: models.packetTrackingMasterloan,
+                as: 'packetTrackingMasterloan',
+                where: { masterLoanId: masterLoanId },
+            }],
+            order: [['id', 'DESC']],
+        })
+        let createdAt = null
+        if (!check.isEmpty(data)) {
+            createdAt = data.createdAt
+        }
+        packetDetails[i].dataValues.lastSyncTime = createdAt
+    }
+
     return res.status(200).json({ message: 'packet details fetched successfully', data: packetDetails, count: count.length });
 }
 
