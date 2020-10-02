@@ -33,6 +33,7 @@ import { WeightDirective } from './_base/layout/directives/weight.directive';
 import { Time24to12Pipe } from './_base/layout/pipes/time24to12.pipe';
 import { MAT_DATE_LOCALE } from '@angular/material';
 import { ZeroToHundredWholeDirective } from './_base/layout/directives/zero-to-hundred-whole.directive';
+import { DebounceClickDirective } from './_base/layout/directives/debounce-click.directive';
 
 @NgModule({
 	imports: [CommonModule],
@@ -63,6 +64,7 @@ import { ZeroToHundredWholeDirective } from './_base/layout/directives/zero-to-h
 		WeightDirective,
 		Time24to12Pipe,
 		ZeroToHundredWholeDirective,
+		DebounceClickDirective,
 	],
 	exports: [
 		// directives
@@ -78,6 +80,7 @@ import { ZeroToHundredWholeDirective } from './_base/layout/directives/zero-to-h
 		NumberDirective,
 		WeightDirective,
 		ZeroToHundredWholeDirective,
+		DebounceClickDirective,
 		// pipes
 		TimeElapsedPipe,
 		JoinPipe,

@@ -17,7 +17,10 @@ export class UserDetailsService {
 
 
   sendOtp(data): Observable<any> {
-    return this.http.post<any>(`/api/kyc/get-customer-detail`, data).pipe(
+    let reqParams: any = {};
+    if (data && data.mobileNumber) reqParams.mobileNumber = data.mobileNumber
+    if (data && data.moduleId) reqParams.moduleId = data.moduleId
+    return this.http.post<any>(`/api/kyc/get-customer-detail`, reqParams).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)

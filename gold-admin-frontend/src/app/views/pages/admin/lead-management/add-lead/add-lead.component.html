@@ -317,7 +317,8 @@
 
                             <div class="col-8">
                                 <input class="form-control" formControlName="pinCode" numbersOnly maxlength="6"
-                                    placeholder="000 000">
+                                    placeholder="000 000"
+                                    [class.isError]="controls.pinCode.invalid && controls.pinCode.touched">
                                 <mat-error *ngIf="controls.pinCode.errors?.required && controls.pinCode.touched">
                                     Required field</mat-error>
                                 <mat-error *ngIf="controls.pinCode.errors?.pattern && controls.pinCode.touched">
