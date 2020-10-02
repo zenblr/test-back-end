@@ -26,6 +26,7 @@ export class LoanScrapDetailsComponent implements OnInit {
   }
   masterLoanId: any;
   masterAndLoanIds: { loanId: any; masterLoanId: any; };
+  scrapIds: { scrapId: any; };
   destroy$ = new Subject();
 
   constructor(
@@ -59,6 +60,7 @@ export class LoanScrapDetailsComponent implements OnInit {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
   getLoanDetails() {
     this.loanId = this.route.snapshot.params.loanId
     this.masterLoanId = this.route.snapshot.params.masterLoanId
@@ -74,7 +76,8 @@ export class LoanScrapDetailsComponent implements OnInit {
   getScrapDetails() {
     this.scrapId = this.route.snapshot.params.scrapId;
     this.scrapCustomerManagementService.getScrapDetails(this.scrapId).subscribe(res => {
-      this.details = res.data
+      this.details = res.data;
+      this.scrapIds = { scrapId: res.data.scrapDisbursement.scrapId, }
       this.createOrnamentsImage()
       this.pdfCheck()
       console.log(this.images)

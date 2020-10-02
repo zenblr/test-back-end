@@ -156,6 +156,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
         this.basicForm.patchValue(changes.scrapDetails.currentValue.customer)
         this.basicForm.controls.scrapId.patchValue(changes.scrapDetails.currentValue.id)
+        this.basicForm.controls.kycStatus.patchValue(changes.scrapDetails.currentValue.customer.scrapKycStatus); 
         this.ref.detectChanges()
       }
     }
@@ -321,6 +322,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
           } else {
             this.customerDetail = res.customerData;
             this.basicForm.patchValue(this.customerDetail);
+            this.basicForm.controls.kycStatus.patchValue(this.customerDetail.scrapKycStatus);
             this.basicForm.controls.customerId.patchValue(this.customerDetail.id);
           }
           this.basicForm.disable()

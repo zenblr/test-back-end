@@ -503,6 +503,13 @@ exports.confirmationForPayment = async (req, res, next) => {
                 }
             }
 
+            // for (let i = 0; i < penalCal.transactionPenal.length; i++) {
+            //     let element = penalCal.transactionPenal[i]
+            //     let transactionNew = await models.customerTransactionDetail.create(element, { transaction: t })
+            //     await models.customerTransactionDetail.update({ referenceId: `${element.loanUniqueId}-${transactionNew.id}` }, { where: { id: transactionNew.id }, transaction: t });
+            // }
+
+
             let loanDataNew = await models.customerLoanMaster.findOne({
                 where: { id: masterLoanId },
                 transaction: t,
