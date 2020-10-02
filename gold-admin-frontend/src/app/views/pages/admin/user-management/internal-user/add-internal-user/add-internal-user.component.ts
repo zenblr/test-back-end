@@ -46,7 +46,7 @@ export class AddInternalUserComponent implements OnInit {
       this.addUserForm.patchValue(this.data.user)
       this.addUserForm.patchValue({ roleId: this.data.user.roles[0].id })
       this.addUserForm.patchValue({ internalBranchId: this.data.user.internalBranches[0].id })
-      this.addUserForm.controls.userUniqueId.disable()
+      // this.addUserForm.controls.userUniqueId.disable()
     } else {
       this.title = 'View Internal User'
       this.addUserForm.disable();

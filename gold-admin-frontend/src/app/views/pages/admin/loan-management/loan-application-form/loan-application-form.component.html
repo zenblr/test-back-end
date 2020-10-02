@@ -7,7 +7,7 @@
                         <kt-basic-details [action]="action" (apiHit)="editId($event)" [details]="customerDetail"
                             [disable]="disabledForm" (finalLoanAmount)="finalLoanAmount($event)" (id)="loan($event)"
                             (next)="next($event)" (totalEligibleAmt)="totalEligibleAmt($event)"
-                            [showButton]="showButton" (loanStage)="stage($event)">
+                            [showButton]="showButton" (loanStage)="stage($event)" (isPartRelease)="partRelease($event)">
                         </kt-basic-details>
                     </mat-tab>
                     <!-- <mat-tab label="KYC Details" [disabled]="disabled[1]">
@@ -26,7 +26,7 @@
                                 [details]="customerDetail" (totalAmt)="total($event)" (fullAmt)="fullAmt($event)"
                                 [masterAndLoanIds]="masterAndLoanIds" [ornamentType]="ornamentType"
                                 [showButton]="showButton" (loanTransfer)="loanTransfer($event)"
-                                (partPayment)=partPayment($event)>
+                                (partPayment)=partPayment($event) [isPartRelease]="isPartRelease">
                             </kt-ornaments>
                         </div>
                         <!-- </ng-template> -->

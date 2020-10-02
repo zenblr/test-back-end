@@ -1758,7 +1758,8 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
         where: {
             holidayDate: {
                 [Op.between]: [startDate, endDate]
-            }
+            },
+            isActive:true,
         }
     })
 
@@ -1770,8 +1771,8 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
     for (let i = 0; i < interestTable.length; i++) {
         let date = new Date();
         let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency) * (i + 1))))
-        interestTable[i].emiDueDate = newEmiDueDate
-        interestTable[i].emiEndDate = newEmiDueDate
+        interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
+        interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
 
         if (i == 0) {
             console.log(new Date().toISOString(), 'date')
@@ -1782,6 +1783,8 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
             console.log(startDate, i)
             interestTable[i].emiStartDate = new Date(startDate.setDate(startDate.getDate() + 1))
         }
+        let x = interestTable.map(ele => ele.emiDueDate)
+        console.log(x)
 
         for (let j = 0; j < holidayDate.length; j++) {
             let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
@@ -1789,7 +1792,7 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
             let newDate = new Date(newEmiDueDate);
             if (momentDate == holidayDate[j].holidayDate || sunday == 0) {
                 let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
-                interestTable[i].emiDueDate = holidayEmiDueDate
+                interestTable[i].emiDueDate = moment(holidayEmiDueDate).format('YYYY-MM-DD')
 
                 newEmiDueDate = holidayEmiDueDate
                 j = 0
@@ -1800,7 +1803,8 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
         interestTable.loanId = loanId
         interestTable.masterLoanId = masterLoanId
     }
-
+    let y = interestTable.map(ele => ele.emiDueDate)
+    console.log(y)
     return interestTable
 }
 

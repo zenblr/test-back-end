@@ -560,7 +560,33 @@ exports.getsingleCustomerManagement = async (req, res) => {
           }, {
             model: models.customerLoanNomineeDetail,
             as: 'loanNomineeDetail'
-          }
+          },
+          {
+            model: models.partRelease,
+            as: 'partRelease',
+            attributes: ['amountStatus', 'partReleaseStatus']
+        },
+        {
+            model: models.fullRelease,
+            as: 'fullRelease',
+            attributes: ['amountStatus', 'fullReleaseStatus']
+        },
+        {
+          model: models.customerLoanMaster,
+          as:'parentLoan',
+          attributes:['id'],
+          order: [
+            [models.customerLoan, 'id', 'asc'],
+            ['id', 'DESC']
+          ],
+          include: [
+            {
+              model: models.customerLoan,
+              as: 'customerLoan',
+              attributes:['id','loanUniqueId'],
+              where: { isActive: true }
+            }]
+        }
         ]
       }
     ]
