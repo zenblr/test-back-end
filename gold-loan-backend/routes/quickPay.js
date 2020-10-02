@@ -7,7 +7,7 @@ const route = express.Router();
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
 
-route.get('/interest-table', checkAuth, checkRolePermission, wrapper(getInterestTable));
+route.get('/interest-table', checkAuth, wrapper(getInterestTable));
 
 route.get('/interest-info', checkAuth, checkRolePermission, wrapper(getInterestInfo))
 
