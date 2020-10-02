@@ -123,5 +123,13 @@ export class LoanDetailsComponent implements OnInit {
     this.router.navigate(['/admin/repayment/part-payment', loan.id])
   }
 
+  show(loan){
+    if(new Date() > new Date(loan.loanEndDate)){
+      return false
+    }else{
+      return true
+    }
+    
+  }
 
 }

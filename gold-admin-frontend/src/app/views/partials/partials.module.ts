@@ -108,6 +108,7 @@ import { EmiLogsDialogComponent } from './components/emi-logs-dialog/emi-logs-di
 import { PartPaymentLogDialogComponent } from './components/part-payment-log-dialog/part-payment-log-dialog.component';
 import { UpdateLocationComponent } from './components/update-location/update-location.component';
 import { ElapsedTimeComponent } from './components/elapsed-time/elapsed-time.component';
+import { ScrapUpdateLocationComponent } from './components/scrap-update-location/scrap-update-location.component';
 
 @NgModule({
 	declarations: [
@@ -178,8 +179,8 @@ import { ElapsedTimeComponent } from './components/elapsed-time/elapsed-time.com
 		EmiLogsDialogComponent,
 		PartPaymentLogDialogComponent,
 		UpdateLocationComponent,
-		ElapsedTimeComponent
-
+		ElapsedTimeComponent,
+		ScrapUpdateLocationComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -258,7 +259,8 @@ import { ElapsedTimeComponent } from './components/elapsed-time/elapsed-time.com
 		EmiLogsDialogComponent,
 		PartPaymentLogDialogComponent,
 		UpdateLocationComponent,
-		ElapsedTimeComponent
+		ElapsedTimeComponent,
+		ScrapUpdateLocationComponent,
 	],
 	imports: [
 		PdfViewerModule,

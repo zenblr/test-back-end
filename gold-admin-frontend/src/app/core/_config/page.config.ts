@@ -142,6 +142,9 @@ export class PageConfig {
 				},
 				"my-requests": {
 					page: { title: "My Requests", desc: "" },
+				},
+				"registered-customers": {
+					page: { title: "Customer Registration List", desc: "" }
 				}
 			},
 			"account": {
@@ -387,6 +390,9 @@ export class PageConfig {
 				'packets': {
 					page: { title: "Packets", desc: "" },
 				},
+				"packet-tracking": {
+					page: { title: "Packet Tracking", desc: "" },
+				},
 				"applied-scrap": {
 					page: { title: "Applied Scrap", desc: "" },
 				},
@@ -412,56 +418,56 @@ export class PageConfig {
 				},
 			},
 			"global-map": {
-				page: { title: "Global Map", desc: "" }, 
+				page: { title: "Global Map", desc: "" },
 			},
 		},
-'broker': {
-	'dashboard': {
-		page: { title: "Dashboard", desc: "" },
-	},
-	"customers": {
-		page: { title: "Customers", desc: "" },
-	},
-	"orders": {
-		page: { title: "Orders", desc: "" },
-		'view-pay': {
-			id: {
+		'broker': {
+			'dashboard': {
+				page: { title: "Dashboard", desc: "" },
+			},
+			"customers": {
+				page: { title: "Customers", desc: "" },
+			},
+			"orders": {
 				page: { title: "Orders", desc: "" },
+				'view-pay': {
+					id: {
+						page: { title: "Orders", desc: "" },
+					},
+				},
+				'cancel-order': {
+					id: {
+						page: { title: "Cancel Order", desc: "" },
+					},
+				},
 			},
-		},
-		'cancel-order': {
-			id: {
-				page: { title: "Cancel Order", desc: "" },
+			"shop": {
+				page: { title: "Shop", desc: "" },
+				'product': {
+					id: {
+						page: { title: "Product Details", desc: "" },
+					},
+				},
 			},
-		},
-	},
-	"shop": {
-		page: { title: "Shop", desc: "" },
-		'product': {
-			id: {
-				page: { title: "Product Details", desc: "" },
+			"cart": {
+				page: { title: "Shopping Cart", desc: "" },
 			},
-		},
-	},
-	"cart": {
-		page: { title: "Shopping Cart", desc: "" },
-	},
-	"profile": {
-		page: { title: "Profile", desc: "" },
-	},
-	"checkout-customer-address": {
-		page: { title: "Customer Address", desc: "" },
-	},
-	"order-received": {
-		page: { title: "Order Received", desc: "" },
-		id: {
-			page: { title: "Order Received", desc: "" },
+			"profile": {
+				page: { title: "Profile", desc: "" },
+			},
+			"checkout-customer-address": {
+				page: { title: "Customer Address", desc: "" },
+			},
+			"order-received": {
+				page: { title: "Order Received", desc: "" },
+				id: {
+					page: { title: "Order Received", desc: "" },
+				}
+			},
 		}
-	},
-}
 	};
 
 	public get configs() {
-	return this.defaults;
-}
+		return this.defaults;
+	}
 }

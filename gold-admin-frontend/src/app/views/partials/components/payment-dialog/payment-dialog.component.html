@@ -151,6 +151,33 @@
                         </div>
                     </div>
 
+                    <div *ngIf="data.name == 'deposit'">
+                        <div class="row kt-margin-b-15">
+                            <div class="col-4 form-label mandatory">
+                                <mat-label class="kt-padding-l-10">Deposit Status</mat-label>
+                            </div>
+                            <div class="col-8">
+                                <!-- {{controls.depositStatus.value}} -->
+                                <select class="form-control" formControlName="depositStatus"
+                                    (change)="depositStatus($event)"
+                                    [class.isError]="controls.depositStatus.touched && controls.depositStatus.invalid">
+                                    <option value="" selected disabled>Select Status</option>
+                                    <option *ngIf="data.name != 'deposit'" value="Pending" selected disabled>Select
+                                        Status
+                                    </option>
+                                    <option *ngIf="data.name != 'deposit'" value="Pending">Pending</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Rejected">Rejected</option>
+                                </select>
+
+                                <mat-error
+                                    *ngIf="controls.depositStatus.touched && controls.depositStatus.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row kt-margin-b-15" *ngIf="data.name == 'deposit'">
                         <div class="col-4 form-label">
                             <label class="kt-padding-l-10 mandatory">Payment Received Date</label>
@@ -169,32 +196,7 @@
                         </div>
                     </div>
 
-                    <div *ngIf="data.name == 'deposit'">
-                        <div class="row kt-margin-b-15">
-                            <div class="col-4 form-label mandatory">
-                                <mat-label class="kt-padding-l-10">Deposit Status</mat-label>
-                            </div>
-                            <div class="col-8">
-                                <!-- {{controls.depositStatus.value}} -->
-                                <select class="form-control" formControlName="depositStatus"
-                                    (change)="setValidation($event)"
-                                    [class.isError]="controls.depositStatus.touched && controls.depositStatus.invalid">
-                                    <option value="" selected disabled>Select Status</option>
-                                    <option *ngIf="data.name != 'deposit'" value="Pending" selected disabled>Select
-                                        Status
-                                    </option>
-                                    <option *ngIf="data.name != 'deposit'" value="Pending">Pending</option>
-                                    <option value="Completed">Completed</option>
-                                    <option value="Rejected">Rejected</option>
-                                </select>
-
-                                <mat-error
-                                    *ngIf="controls.depositStatus.touched && controls.depositStatus.errors?.required">
-                                    Required field
-                                </mat-error>
-                            </div>
-                        </div>
-                    </div>
+                  
 
 
 

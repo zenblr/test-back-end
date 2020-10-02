@@ -156,7 +156,7 @@
                 </div>
 
 
-                <div class="row kt-padding-t-15 kt-padding-b-15">
+                <div class="row kt-padding-t-15 kt-padding-b-15" *ngIf="show()">
                     <div class="col mx-auto d-flex justify-content-center">
                         <kt-button [value]="'Release'" [isDisabled]="selectedOrnaments.length == 0" [type]="'button'"
                             (click)="release()">
