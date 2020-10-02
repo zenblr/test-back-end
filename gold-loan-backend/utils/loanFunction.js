@@ -379,8 +379,8 @@ let mergeInterestTable = async (masterLoanId) => {
             data.interestAmount = (Number(securedTable[i].interestAmount) + Number(unsecuredTable[i].interestAmount)).toFixed(2)
             data.balanceAmount = (Number(securedTable[i].outstandingInterest) + Number(unsecuredTable[i].outstandingInterest)).toFixed(2)
             data.paidAmount = (Number(securedTable[i].paidAmount) + Number(unsecuredTable[i].paidAmount)).toFixed(2)
-            data.penalInterest = Number(securedTable[i].penalInterest) + Number(unsecuredTable[i].penalInterest)
-            data.penalPaid = Number(securedTable[i].penalPaid) + Number(unsecuredTable[i].penalPaid)
+            data.penalInterest = (Number(securedTable[i].penalInterest) + Number(unsecuredTable[i].penalInterest)).toFixed(2)
+            data.penalPaid = (Number(securedTable[i].penalPaid) + Number(unsecuredTable[i].penalPaid)).toFixed(2)
             if (securedTable[i].emiStatus == 'partially paid' || unsecuredTable[i].emiStatus == 'partially paid') {
                 data.emiStatus = 'partially paid'
             } else if (securedTable[i].emiStatus == 'pending' || unsecuredTable[i].emiStatus == 'pending') {
@@ -948,7 +948,7 @@ let penalInterestPayment = async (loanArray, totalPenalAmount, createdBy, receiv
                 // transactionAmont: 0,
                 createdBy: createdBy,
             }
-            loanArray[index]['penalPaid'] = pendingPenalAmount.toFixed(2)
+            // loanArray[index]['penalPaid'] = pendingPenalAmount.toFixed(2)
             transactionData.credit = loanArray[index]['penalOutstanding']
             transactionData.loanInterestId = loanArray[index]['id']
             transactionData.isExtraDaysInterest = loanArray[index]['isExtraDaysInterest']
@@ -975,12 +975,16 @@ let penalInterestPayment = async (loanArray, totalPenalAmount, createdBy, receiv
             break;
         } else if (pendingPenalAmount < Number(loanArray[index]['penalInterest']) && Number(loanArray[index]['penalOutstanding']) > 0) {
 
+            loanArray[index]['penalPaid'] = Number(loanArray[index]['penalPaid']) + Number(pendingPenalAmount.toFixed(2))
+            // loanArray[index]['penalPaid'] = pendingPenalAmount.toFixed(2)
             pendingPenalAmount = (Number(loanArray[index]['penalInterest']) - Number(pendingPenalAmount)).toFixed(2)
             loanArray[index]['penalOutstanding'] = Number(loanArray[index]['penalOutstanding']) - Number(loanArray[index]['penalPaid']);
             pendingPenalAmount = 0.00;
 
         } else if (pendingPenalAmount >= Number(loanArray[index]['penalInterest']) && Number(loanArray[index]['penalOutstanding']) > 0) {
 
+            loanArray[index]['penalPaid'] = Number(loanArray[index]['penalPaid']) + Number(loanArray[index]['penalOutstanding'])
+            // loanArray[index]['penalPaid'] = (Number(loanArray[index].penalOutstanding)).toFixed(2)
             pendingPenalAmount = Number(pendingPenalAmount) - Number(loanArray[index]['penalOutstanding'])
             loanArray[index]['penalOutstanding'] = 0;
         }
