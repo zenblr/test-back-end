@@ -436,15 +436,16 @@ exports.addPacketTracking = async (req, res, next) => {
     //     return res.status(200).json({ message: "Loan is not yet disbursed" })
     // }
 
-    var trackingTime = getAll['trackingDate']
-    var date = moment(trackingTime);
-    var timeComponent = date.utc(true).format('HH:mm');
+    var trackingTime = getAll['trackingDate'].slice(-10)
+    let date = new Date(getAll['trackingDate'].split(" ")[0])
+    getAll['trackingDate'] = moment(date).format('YYYY-MM-DD')
+    
 
 
     getAll['createdBy'] = createdBy
     getAll['modifiedBy'] = modifiedBy
     getAll['userId'] = userId
-    getAll['trackingTime'] = timeComponent;
+    getAll['trackingTime'] = trackingTime;
     getAll['isActive'] = true
     getAll['totalDistance'] = 0
 
