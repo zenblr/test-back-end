@@ -39,6 +39,7 @@ export class LoanApplicationFormComponent implements OnInit {
   loanTransferdata: any;
   disbursed: boolean = false;
   partPaymentdata: any;
+  isPartRelease: any;
 
   constructor(
     public ref: ChangeDetectorRef,
@@ -151,6 +152,10 @@ export class LoanApplicationFormComponent implements OnInit {
 
   partPayment(event) {
     this.partPaymentdata = event
+  }
+
+  partRelease(event){
+    this.isPartRelease =event
   }
 
   loanTransfer(event){

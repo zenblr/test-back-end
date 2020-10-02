@@ -218,7 +218,7 @@ exports.quickPayment = async (req, res, next) => {
 
     paymentDetails.masterLoanId = masterLoanId
     paymentDetails.transactionAmont = payableAmount
-    paymentDetails.depositDate = moment(moment(depositDate).utcOffset("+05:30").format("YYYY-MM-DD"));
+    paymentDetails.depositDate = moment(moment(depositDate).format("YYYY-MM-DD"));
     paymentDetails.transactionUniqueId = transactionUniqueId //ye change karna h
     if (isRazorPay) {
         paymentDetails.razorPayTransactionId = razorPayTransactionId
@@ -502,6 +502,13 @@ exports.confirmationForPayment = async (req, res, next) => {
                     await models.customerLoanInterest.update({ penalInterest: element.penalInterest, penalAccrual: element.penalAccrual, penalOutstanding: element.penalOutstanding }, { where: { id: element.id }, transaction: t })
                 }
             }
+
+            // for (let i = 0; i < penalCal.transactionPenal.length; i++) {
+            //     let element = penalCal.transactionPenal[i]
+            //     let transactionNew = await models.customerTransactionDetail.create(element, { transaction: t })
+            //     await models.customerTransactionDetail.update({ referenceId: `${element.loanUniqueId}-${transactionNew.id}` }, { where: { id: transactionNew.id }, transaction: t });
+            // }
+
 
             let loanDataNew = await models.customerLoanMaster.findOne({
                 where: { id: masterLoanId },

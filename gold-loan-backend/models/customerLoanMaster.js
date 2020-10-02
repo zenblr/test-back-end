@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'customer_id',
             allowNull: false
         },
+        partnerBranchId: {
+            type: DataTypes.INTEGER,
+            field: 'partner_branch_id',
+        },
         loanTransferId: {
             type: DataTypes.INTEGER,
             field: 'loan_transfer_id'
@@ -251,6 +255,8 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanMaster.hasMany(models.packetTrackingMasterloan,{foreignKey:'masterLoanId',as:'packetTrackingMasterloan'})
 
         CustomerLoanMaster.belongsTo(models.appraiserRequest, { foreignKey: 'appraiserRequestId', as: 'appraiserRequest' });
+
+        CustomerLoanMaster.belongsTo(models.partnerBranch, { foreignKey: 'partnerBranchId', as: 'partnerBranch' });
 
     }
 
