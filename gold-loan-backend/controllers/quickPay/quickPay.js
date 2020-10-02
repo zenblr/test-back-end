@@ -218,7 +218,7 @@ exports.quickPayment = async (req, res, next) => {
 
     paymentDetails.masterLoanId = masterLoanId
     paymentDetails.transactionAmont = payableAmount
-    paymentDetails.depositDate = moment(moment(depositDate).utcOffset("+05:30").format("YYYY-MM-DD"));
+    paymentDetails.depositDate = moment(moment(depositDate).format("YYYY-MM-DD"));
     paymentDetails.transactionUniqueId = transactionUniqueId //ye change karna h
     if (isRazorPay) {
         paymentDetails.razorPayTransactionId = razorPayTransactionId
