@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href={{bootstrapCss}}>
     <style>
-        /* html{zoom:0.75;} */
-        .tableHead {
-            width: 20%;
-            height: 40px;
+        /* html {
+            zoom: 0.75;
+        } */
+        td {
+            vertical-align: top;
         }
 
         body {
@@ -22,22 +23,22 @@
     <script src={{jqueryJs}}></script>
     <script src={{popperJs}}></script>
     <script src={{bootstrapJs}}></script>
-    <div class="container py-5 pr-5 pl-5 mb-5">
-        {{#each customerLoanDetail}}
-        <div class="text-center col-10 pr-5 " style="font-weight: 500">
-            <div style="width:100%;margin:0;border: 1px solid black;">
+    <div class="container pt-3 pr-5 pl-5 justify-content-center">
 
-                <p><span class="text-center " style="font-size: 24px;"><b>AUGMONT PRIVATE LIMITED</b></span><br>
-                    <span style="font-size: 16px;">CIN-L65990MH1984PLC032403</span><br>
-                    Office 03, 3rd Floor, Bullion House, 115/121, Tambakata Lane, Pydhonie, Mumbai, Maharashtra 400003
-                    <br>Contact details xxxxxxxx
+        <div class="row pr-5" style="font-weight: 500">
+            <div class="text-center col-10 ">
+                <p style="font-size: 16px;"><b>Powered By</b><br>
+                <div class="p-0 mb-0" style="display: block;margin-left: auto;margin-right: auto;width:22%;">
+                    <img src={{imagePath}} alt="augomentLogo" style="height:120px;width:120px;">
+                </div>
+                <span class="text-center " style="font-size: 24px;"><b>AUGMONT GOLDTECH PRIVATE
+                        LIMITED</b></span>
                 </p>
             </div>
-
-            <p class="pt-5 mb-2">Secured Loan</p>
         </div>
 
-        <div class="row py-3 pr-5 ">
+
+        <!-- <div class="row py-3 pr-5 ">
 
             <div class="col-5 float-left pl-3 pr-0">
                 <table class="align-top  table-bordered"
@@ -113,11 +114,151 @@
                 </table>
             </div>
 
+        </div> -->
+
+        {{#each customerLoanDetail}}
+        <div class="row pr-5 py-3 ">
+            <div class="col-10 float-left justify-content-center"
+                style="font-size: small;font-weight: 400;padding-left: 15%;">
+                <table class="align-top " style="width:100%;margin:0;font-weight: 500;table-layout: fixed;">
+                    <tr>
+                        <th>Customer Service</th>
+                        <th>Contact Details</th>
+                        <th>Email</th>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td> 9892545454</td>
+                        <td>support@augmont.com</td>
+                    </tr>
+                </table>
+            </div>
         </div>
 
+        <div class="row py-3 pr-5 ">
+            <div class="col-10 float-left">
+
+                <table class="align-top" style="width:100%;margin:0;font-weight: 500;table-layout: fixed;">
+                    <tr>
+                        <th>Lender</th>
+                        <th>Customer Name</th>
+                        <th>DOB</th>
+                        <th>Branch</th>
+                        <th>Contact Number</th>
+
+                    </tr>
+                    <tr>
+                        <td>{{this.partnerName}}</td>
+                        <td>{{this.Name}}</td>
+                        <td>{{this.dob}}</td>
+                        <td>{{this.branch}}</td>
+                        <td>{{this.contactNumber}}</td>
+
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="row pr-5 ">
+            <div class="col-10 float-left">
+
+                <table class="align-top " style="width:100%;margin:0;font-weight: 500;table-layout: fixed;">
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Loan Number</th>
+                        <th>Scheme Name</th>
+                        <th>Loan Amount</th>
+                        <th>Address</th>
+
+                    </tr>
+                    <tr>
+                        <td>{{this.customerId}}</td>
+                        <td>{{this.loanNumber}}</td>
+                        <td>{{this.loanScheme}}</td>
+                        <td>{{this.loanAmount}}</td>
+                        <td style=" word-break: break-all;">{{this.customerAddress}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row  py-3 pr-5 ">
+            <div class="col-10 float-left ">
+
+                <table class="align-top " style="width:100%;margin:0;font-weight: 500;table-layout: fixed;">
+                    <tr>
+                        <th>Loan Date</th>
+                        <th>Loan Tenure</th>
+                        <th>Penal Charges</th>
+                        <th>Rate of Interest </th>
+                        <th>Processing Fees</th>
+
+                    </tr>
+                    <tr>
+                        <td>{{this.startDate}}</td>
+                        <td>{{this.loanTenure}}</td>
+                        <td>{{this.penalCharges}}%</td>
+                        <td>{{this.interestRate}}%</td>
+                        <td>{{this.processingFee}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="row pr-5 py-3">
+            <div class="col-10 ">
+
+                <table class="align-top text-center" style="width:100%;margin:0;font-weight: 500;table-layout: fixed;">
+                    <tr>
+                        <p class="text-center mb-0" style="font-size: 14px;"><b>Ornament Details</b></p>
+                    </tr>
+                    <tr>
+                        <!-- <th style="width:20%; height: 40px; ">Sr.No.</th> -->
+                        <th class="float-left">Ornament Type</th>
+                        <th>Quantity</th>
+                        <th>Gross weight</th>
+                        <th>Deduction</th>
+                        <th>Net weight</th>
+                    </tr>
+                    {{#each  ornaments}}
+                    <tr>
+                        <!-- <td></td> -->
+                        <td class="float-left" style=" word-break: break-all;">{{this.ornamentType}}</td>
+                        <td>{{this.quantity}}</td>
+                        <td>{{this.grossWeight}}</td>
+                        <td>{{this.deduction}}</td>
+                        <td>{{this.netWeight}}</td>
+                    </tr>
+                    {{/each}}
+                </table>
+            </div>
+        </div>
+
+        <div class="row  py-3 pr-5 ">
+            <div class="col-10 float-left">
+                <table class="align-top "
+                    style="width:100%;margin:0;font-size: small;font-weight: 500;table-layout: fixed;">
+                    <p class="text-center mb-3" style="font-size: 14px;"><b>Bank Details</b></p>
+                    <tr>
+                        <p class="text-center"><b>You can pay for your loan using RTGS/NEFT/IMPS</b></p>
+                    </tr>
+                    <tr>
+                        <th class="align-top text-center" style="width: 5%;">Savings account number</th>
+                        <th class="align-top text-center" style="width: 5%;">Beneficiary Name </th>
+                        <th class="align-top text-center" style="width: 5%;">IFSC code </th>
+
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
         <div class="row pt-3 pr-5">
             <div class="col-10" style="font-size: small;font-weight: 400;">
-                <p class="mb-3 text-center"><b>Loan Repayment</b>
+                <p class="mb-4 text-center"><b>Loan Repayment</b>
                 </p>
             </div>
         </div>
@@ -126,14 +267,18 @@
                 <ul style="list-style-type:disc;">
                     <li>Loan is repayable on demand.</li>
                     <li>Bullet repayment at the end of of the tenure of the loan.</li>
-                    <li>Interest is payable from the date of loan till full and final repayment of outstanding loan
+                    <li>Interest is payable from the date of loan till full and final repayment outstanding loan
                         amount and all other amounts pertaining thereto.</li>
+                    <li>Normal Release (Guaranteed 24-hour door step release)</li>
+                    <li>Please retain this document for release of ornaments
+                    </li>
                 </ul>
             </div>
         </div>
-        <div class="row pr-5 pt-3">
+
+        <div class="row pr-5 pt-3  py-3">
             <div class="col-10" style="font-size: small;font-weight: 400;">
-                <p class="mb-3 text-center"><b> Default Interest </b>
+                <p class="mb-4 text-center"><b> Default Interest </b>
                 </p>
             </div>
         </div>
@@ -155,45 +300,50 @@
                 </ul>
             </div>
         </div>
-        <div class="row pt-3 pr-5 mb-5">
+        <div class="row pt-3 pr-5 mb-5 ">
             <div class="col-10 " style="font-size: small;font-weight: 400;">
                 <p class="mb-2 text-center"><b>Declaration by Company</b></p>
                 <p>The company has sanctioned to you the loan with details as specified above as per your loan
                     application
-                    dated XX XX XX and based on the representations made and the information furnished by you.
+                    dated <b>{{this.startDate}}</b> and based on the representations made and the information furnished
+                    by you.
                 </p>
             </div>
         </div>
-        <div class="row pt-5 mb-5" style="page-break-after:always;">
+        <div class="row mb-5">
             <div class="col-5 float-left">Date :</div>
             <div class="col-5 float-right">Signature of authorized signatory of company </div>
         </div>
-        <div class="row py-2 pr-5 mb-5 ">
+
+        <div class="row py-2 pr-5 ">
             <div class="col-10 " style="font-size: small;font-weight: 400;">
                 <p class="mb-2 text-center"><b>Acknowledgment by the Customer/Borrower</b></p>
                 <p>
                     I, Mr./Ms.<b>{{this.Name}}</b>, have fully read and understood the interest rate and other
                     terms and conditions as specified in attached T&Cs along with the agreement. I, hereby acknowledge
                     the receipt of loan amount and the above specified documents. I, hereby authorize the company to use
-                    my Aadhaar number XXXXXXXXXXX for the purpose of KYC compliances. I understand that Augmont Goldtech
+                    my Aadhaar number <b>{{this.aadhaarNumber}}</b> for the purpose of KYC compliances. I understand
+                    that Augmont Goldtech
                     Pvt. Ltd. is a technology service provider and is a facilitator in the application/processing/
                     disbursal and closure of loans.
                 </p>
             </div>
         </div>
-        <div class="row py-2 pr-5 mb-2">
+        <div class="row  pr-5 mb-2">
             <div class="col-10 float-left">Date :</div>
         </div>
-        <div class="row py-2 pr-5 mb-2">
+        <div class="row pr-5 ">
             <div class=" col-10 float-left">Place :</div>
         </div>
-        <div class="row py-2 pr-5 mt-2 ">
+        <div class="row  pr-5 ">
             <div class="col-7"></div>
-            <div class=" col-3 float-right pl-0">
+            <div class=" col-3 float-right">
                 <b>Signature of Borrower</b>
             </div>
         </div>
-
+        <div class="row pt-2 pr-5">
+            <div class=" col-10"> Repay Your loans at <b>www.Augmont.com</b></div>
+        </div>
         {{/each}}
     </div>
 </body>

@@ -9,7 +9,7 @@ const { loanDateChange, addPackageImagesForLoan, disbursementOfLoanAmount, inter
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
 
-const { loanRequest } = require('../controllers/customerLoanProcess/customerLoanProcessForApp')
+const { loanRequest ,getLoanDetailsForPrint} = require('../controllers/customerLoanProcess/customerLoanProcessForApp')
 
 const checkAuth = require('../middleware/checkAuth'); // IMPORTING CHECK AUTH MIDDLEWARE
 
@@ -64,6 +64,8 @@ route.get('/get-loan-ornamets', checkAuth, wrapper(getLoanOrnaments)) //GET LOAN
 route.get('/unsecured-scheme', checkAuth, wrapper(getUnsecuredScheme)) //GET unsecured Scheme
 
 // appraiseApp 
-route.post('/loan-request', checkAuth, wrapper(loanRequest)); //apply loan for backoffice app 
+route.post('/loan-request', checkAuth, wrapper(loanRequest)); //apply loan for backoffice app
+
+route.get('/get-loanDetails', checkAuth, wrapper(getLoanDetailsForPrint)); //Print details
 
 module.exports = route; // EXPORTING ALL ROUTES
