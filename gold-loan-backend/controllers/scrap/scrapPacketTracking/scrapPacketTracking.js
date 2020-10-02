@@ -117,7 +117,7 @@ exports.submitScrapPacketLocation = async (req, res, next) => {
 
             await models.customerScrap.update({ scrapStageId: scrapStage.id }, { where: { id: scrapId }, transaction: t });
 
-            await models.customerScrapPacketData.create({ scrapId: scrapId, packetLocationId: packetLocationId }, { transaction: t });
+            await models.customerScrapPacketData.create({ scrapId: scrapId, packetLocationId: packetLocationId, status: "incomplete" }, { transaction: t });
 
             let packetTrackingData = await models.scrapCustomerPacketTracking.create({
                 internalBranchId, userReceiverId, receiverType, scrapId, packetLocationId, userSenderId, senderType, isDelivered: true
@@ -165,7 +165,7 @@ exports.addCustomerPacketTracking = async (req, res, next) => {
                 await models.customerScrap.update({ scrapStageId: packetSubmitted.id, isScrapCompleted: true }, { where: { id: scrapId }, transaction: t })
             }
 
-            await models.customerScrapPacketData.create({ scrapId: scrapId, packetLocationId: packetLocationId }, { transaction: t })
+            await models.customerScrapPacketData.create({ scrapId: scrapId, packetLocationId: packetLocationId, status: "complete" }, { transaction: t })
 
             let packetTrackingData = await models.scrapCustomerPacketTracking.create({
                 internalBranchId: senderInternalBranch, receiverType, scrapId, packetLocationId, userSenderId, senderType, isDelivered: true, courier, podNumber
@@ -242,8 +242,8 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
             }
         ];
 
-        if (req.query.scrapStageId) {
-            query["$scrapStage.id$"] = await req.query.scrapStageId.split(',');
+        if (req.query.status) {
+            query["$locationData.status$"] = await req.query.status.split(',');
         }
 
         let stage = await models.scrapStage.findAll({ where: { stageName: { [Op.in]: ['submit packet', 'packet in branch', 'packet submitted'] } } })
