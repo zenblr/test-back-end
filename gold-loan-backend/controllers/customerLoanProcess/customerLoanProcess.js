@@ -2458,9 +2458,6 @@ exports.getDetailsForPrint = async (req, res, next) => {
             }
         });
     }
-
-
-
 }
 
 

@@ -140,18 +140,20 @@
 
                 <table class="align-top" style="width:100%;margin:0;font-weight: 500;table-layout: fixed;">
                     <tr>
+                        <th>Lender</th>
                         <th>Customer Name</th>
                         <th>DOB</th>
                         <th>Branch</th>
                         <th>Contact Number</th>
-                        <th>Address</th>
+
                     </tr>
                     <tr>
+                        <td>{{this.partnerName}}</td>
                         <td>{{this.Name}}</td>
                         <td>{{this.dob}}</td>
                         <td>{{this.branch}}</td>
                         <td>{{this.contactNumber}}</td>
-                        <td style=" word-break: break-all;">{{this.customerAddress}}</td>
+
                     </tr>
                 </table>
             </div>
@@ -166,14 +168,15 @@
                         <th>Loan Number</th>
                         <th>Scheme Name</th>
                         <th>Loan Amount</th>
-                        <th>Loan Date</th>
+                        <th>Address</th>
+
                     </tr>
                     <tr>
                         <td>{{this.customerId}}</td>
                         <td>{{this.loanNumber}}</td>
                         <td>{{this.loanScheme}}</td>
                         <td>{{this.loanAmount}}</td>
-                        <td>{{this.startDate}}</td>
+                        <td style=" word-break: break-all;">{{this.customerAddress}}</td>
                     </tr>
                 </table>
             </div>
@@ -183,18 +186,19 @@
 
                 <table class="align-top " style="width:100%;margin:0;font-weight: 500;table-layout: fixed;">
                     <tr>
+                        <th>Loan Date</th>
                         <th>Loan Tenure</th>
                         <th>Penal Charges</th>
                         <th>Rate of Interest </th>
                         <th>Processing Fees</th>
-                        <th></th>
+
                     </tr>
                     <tr>
+                        <td>{{this.startDate}}</td>
                         <td>{{this.loanTenure}}</td>
                         <td>{{this.penalCharges}}%</td>
                         <td>{{this.interestRate}}%</td>
                         <td>{{this.processingFee}}</td>
-                        <td></td>
                     </tr>
                 </table>
             </div>
