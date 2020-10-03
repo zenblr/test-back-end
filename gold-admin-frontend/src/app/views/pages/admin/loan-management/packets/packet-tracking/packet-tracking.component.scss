@@ -29,6 +29,12 @@
     .mat-column-currentLocation{
         flex: 0 0 10% !important;
     }
+    .mat-column-time{
+        flex: 0 0 6% !important;
+    }
+    .mat-column-status{
+        flex: 0 0 6% !important;
+    }
     mat-row,mat-header-row{
         width: 157% !important;
     }
