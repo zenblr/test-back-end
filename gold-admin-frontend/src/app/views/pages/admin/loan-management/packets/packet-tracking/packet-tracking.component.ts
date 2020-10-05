@@ -233,4 +233,11 @@ export class PacketTrackingComponent implements OnInit {
     return isNotAllowed
   }
 
+  colorCodeEntry(packet) {
+    const locationData = packet.locationData
+    const currentLocation = locationData[locationData.length - 1]
+
+    const colorClass = currentLocation.status == 'complete' ? currentLocation.packetLocation.id === 2 && packet.isLoanCompleted ? 'text-primary' : 'text-success' : currentLocation.status == 'incomplete' ? 'text-danger' : 'text-grey'
+    return colorClass
+  }
 }
