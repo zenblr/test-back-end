@@ -97,6 +97,14 @@ export class AssignAppraiserComponent implements OnInit {
         this.appraiserForm.controls.id.patchValue(this.data.requestData.id)
       }
 
+      if (this.data.fullReleaseId) {
+        this.appraiserForm.patchValue({
+          userType: (this.data.appraiser.appraiser.Usertype.userType).toLowerCase()
+        })
+        if (this.controls.userType.value === 'appraiser' && this.controls.releaserId.value) {
+          this.appraiserForm.patchValue({ appraiserId: this.controls.releaserId.value })
+        }
+      }
 
       if (this.data.customer) {
         this.appraiserForm.patchValue({ customerName: this.data.customer.firstName + ' ' + this.data.customer.lastName })
@@ -118,9 +126,6 @@ export class AssignAppraiserComponent implements OnInit {
 
     if (this.data.fullReleaseId) {
       this.appraiserForm.controls.fullReleaseId.patchValue(this.data.fullReleaseId)
-      this.appraiserForm.patchValue({
-        userType: (this.data.appraiser.appraiser.Usertype.userType).toLowerCase()
-      })
     }
   }
 
