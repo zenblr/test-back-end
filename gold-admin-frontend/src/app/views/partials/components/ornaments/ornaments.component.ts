@@ -183,6 +183,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if(changes.isPartRelease){
       console.log(changes.isPartRelease.currentValue)
+
     }
     if (changes.ornamentType) {
       this.ornamentType = changes.ornamentType.currentValue
@@ -212,6 +213,10 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         for (let index = 0; index < array.length; index++) {
           const group = this.OrnamentsData.at(index) as FormGroup
           group.patchValue(array[index])
+          if(this.isPartRelease){
+            group.patchValue({currentLtvAmount:this.ltvGoldRate,currentGoldRate:this.goldRate})
+            this.calculateLtvAmount(index)
+          }
           // this.calcGoldDeductionWeight(index)
           Object.keys(group.value).forEach(key => {
 

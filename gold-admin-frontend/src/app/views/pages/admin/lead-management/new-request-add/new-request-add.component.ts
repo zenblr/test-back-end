@@ -103,7 +103,8 @@ export class NewRequestAddComponent implements OnInit {
           }
         }),
         catchError(err => {
-          if (err.error.message === 'Kindly complete your pending scrap KYC')
+          const message = err.error.message
+          if (message === 'Kindly complete your pending scrap KYC' || message === 'Kindly complete your pending loan KYC')
             this.router.navigate(['/admin/lead-management/new-requests'])
           throw err
         })

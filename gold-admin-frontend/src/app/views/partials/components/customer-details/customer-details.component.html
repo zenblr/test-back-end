@@ -156,8 +156,8 @@
                                     <span style="margin-left: -10px;">Master Loan</span>
                                     <div>
                                         <span *ngFor="let item of masterLoan.parentLoan.customerLoan; last as l">
-                                            <span>{{ item.loanUniqueId}}</span>
-                                            <span *ngIf="!l"> &nbsp; , </span>
+                                            <span>{{ item.loanUniqueId }}</span>
+                                            <span *ngIf="!l && item.loanUniqueId">,&nbsp; </span>
                                         </span>
                                     </div>
                                     <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10"
