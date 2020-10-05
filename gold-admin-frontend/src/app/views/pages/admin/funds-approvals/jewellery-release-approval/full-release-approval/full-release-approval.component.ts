@@ -83,19 +83,6 @@ export class FullReleaseApprovalComponent implements OnInit {
     this.dataSource.getFullReleaseList(from, to, this.searchValue);
   }
 
-  // assign(item) {
-  //   const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', customer: item.customer, id: item.customerId }, width: '500px' });
-  //   dialogRef.afterClosed().subscribe(res => {
-  //     if (res) {
-  //       this.loadPage();
-  //     }
-  //   });
-  // }
-
-  // updateAppraiser(item) {
-
-  // }
-
   assign(item) {
     const dialogRef = this.dialog.open(AssignAppraiserComponent,
       {
