@@ -1,7 +1,9 @@
 :host{
     .mat-column-customerId{
-        padding-left: 10px !important;
-        flex: 0 0 10% !important;
+        flex: 0 0 6% !important;
+    }
+    .mat-column-mobile{
+        flex: 0 0 6% !important;
     }
     .mat-column-loanId{
         flex: 0 0 8% !important;
@@ -16,7 +18,7 @@
         flex: 0 0 10% !important;
     } 
     .mat-column-userName{
-        flex: 0 0 12% !important;
+        flex: 0 0 10% !important;
     }
     .mat-column-loanAmount{
         flex: 0 0 7% !important;
@@ -27,8 +29,14 @@
     .mat-column-currentLocation{
         flex: 0 0 10% !important;
     }
+    .mat-column-time{
+        flex: 0 0 6% !important;
+    }
+    .mat-column-status{
+        flex: 0 0 6% !important;
+    }
     mat-row,mat-header-row{
-        width: 150% !important;
+        width: 157% !important;
     }
     .multiple {
         display: flex;

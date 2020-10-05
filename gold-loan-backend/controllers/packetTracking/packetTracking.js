@@ -1182,7 +1182,7 @@ exports.deliveryApproval = async (req, res, next) => {
         await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: id }, transaction: t })
     })
 
-    return res.status(200).json({ message: 'success' })
+    return res.status(200).json({ message: 'Success' })
 
 }
 

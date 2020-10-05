@@ -153,4 +153,25 @@
  *          description: request submitted
  *       400:
  *          description: failed
+ * /quick-pay/transcation-history:
+ *   get:
+ *     tags:
+ *       - quick pay 
+ *     name: Read transcation history
+ *     summary: Read transcation history
+ *     parameters:
+ *     - name: "masterLoanId"
+ *       in: "query"
+ *       description: "masterLoanId to get interest table"
+ *       required: true
+ *       type: "integer"
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Success
+ *       404:
+ *         description: data not found
  */

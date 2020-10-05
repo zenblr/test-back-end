@@ -41,8 +41,8 @@ export class PartReleaseComponent implements OnInit {
     private titleCasePipe: TitleCasePipe,
     private ele: ElementRef,
     private layoutUtilsService: LayoutUtilsService,
-    private sharedService:SharedService,
-    private razorpayPaymentService:RazorpayPaymentService
+    private sharedService: SharedService,
+    private razorpayPaymentService: RazorpayPaymentService
   ) { }
 
   ngOnInit() {
@@ -142,7 +142,7 @@ export class PartReleaseComponent implements OnInit {
 
   pay() {
 
-    
+
 
     const ornamnentIds = this.selectedOrnaments.map(e => e.id)
     // let payObject = {
@@ -156,7 +156,7 @@ export class PartReleaseComponent implements OnInit {
     // Object.assign(payObject, this.paymentValue, this.totalSelectedOrnamentDetails.ornamentWeight)
     // console.log(payObject)
     if (this.paymentValue.paymentType == 'gateway') {
-      this.sharedService.paymentGateWayForFullAndPart(Number(this.id),ornamnentIds).subscribe(
+      this.sharedService.paymentGateWayForFullAndPart(Number(this.id), ornamnentIds).subscribe(
         res => {
           this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
           this.razorpayPaymentService.razorpayOptions.amount = res.razorPayOrder.amount;
@@ -168,16 +168,16 @@ export class PartReleaseComponent implements OnInit {
           this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
         }
       )
-    
-    }else{
+
+    } else {
       this.apiHit(null)
     }
   }
-  razorPayResponsehandler(response){
-   this.apiHit(response)
+  razorPayResponsehandler(response) {
+    this.apiHit(response)
   }
 
-  apiHit(transactionDetails){
+  apiHit(transactionDetails) {
     const path = this.url.split('/');
     const url = path[path.length - 2];
     const ornamnentIds = this.selectedOrnaments.map(e => e.id)
@@ -188,7 +188,7 @@ export class PartReleaseComponent implements OnInit {
       interestAmount: this.totalSelectedOrnamentDetails.loanInfo.interestAmount,
       penalInterest: this.totalSelectedOrnamentDetails.loanInfo.penalInterest,
       payableAmount: this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount,
-      transactionDetails:transactionDetails
+      transactionDetails: transactionDetails
     }
     Object.assign(payObject, this.paymentValue, this.totalSelectedOrnamentDetails.ornamentWeight)
     // return
@@ -196,7 +196,7 @@ export class PartReleaseComponent implements OnInit {
       this.jewelleryReleaseService.partReleasePayment(payObject).pipe(map(res => {
         if (res) {
           this.toastr.success(this.titleCasePipe.transform(res['message']))
-          this.router.navigate(['/admin/funds-approvals/part-release-approval'])
+          this.router.navigate(['/admin/loan-management/all-loan'])
         }
       })).subscribe()
     }
@@ -204,7 +204,7 @@ export class PartReleaseComponent implements OnInit {
       this.jewelleryReleaseService.fullReleasePayment(payObject).pipe(map(res => {
         if (res) {
           this.toastr.success(this.titleCasePipe.transform(res['message']))
-          this.router.navigate(['/admin/funds-approvals/full-release-approval'])
+          this.router.navigate(['/admin/loan-management/all-loan'])
         }
       })).subscribe()
     }
@@ -286,7 +286,7 @@ export class PartReleaseComponent implements OnInit {
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
       data: {
         value: this.paymentValue ? this.paymentValue : { paidAmount: this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount },
-        date:this.loanDetails.customerLoan.loanStartDate
+        date: this.loanDetails.customerLoan.loanStartDate
       },
       width: '500px'
     })
@@ -299,10 +299,10 @@ export class PartReleaseComponent implements OnInit {
     })
   }
 
-  show(){
-    if(new Date() > new Date(this.loanDetails.customerLoan.loanEndDate)){
+  show() {
+    if (new Date() > new Date(this.loanDetails.customerLoan.loanEndDate)) {
       return false
-    }else{
+    } else {
       return true
     }
   }

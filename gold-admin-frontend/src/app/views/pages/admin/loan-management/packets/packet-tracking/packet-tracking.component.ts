@@ -20,7 +20,7 @@ import { OrnamentsComponent } from '../../../../../partials/components/ornaments
 })
 export class PacketTrackingComponent implements OnInit {
   dataSource: PacketTrackingDatasource;
-  displayedColumns = ['userName', 'customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'status', 'time', 'actions'];
+  displayedColumns = ['userName', 'mobile', 'customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'status', 'time', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   destroy$ = new Subject();
@@ -94,7 +94,9 @@ export class PacketTrackingComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
+    // setInterval(() => {
     this.dataSource.loadpackets(this.queryParamsData);
+    // }, 30000)
 
   }
 

@@ -11,9 +11,12 @@ export class ElapsedTimeComponent implements OnInit, OnDestroy, OnChanges {
   @Input() locationTracking = 'init';
   totalTime: any;
   interval: NodeJS.Timeout;
-  countTime = 0;
+  countTime = 5;
   permittedInterval = 1; //minutes
   showAlert: boolean;
+  lastSyncTime: string;
+  previousSyncTime: string;
+  currentSyncTime: string;
 
   constructor(
     private ref: ChangeDetectorRef
@@ -30,12 +33,12 @@ export class ElapsedTimeComponent implements OnInit, OnDestroy, OnChanges {
         this.ref.detectChanges();
       }
     }, 1000)
+    this.trackLocation()
   }
 
   change(mindate: Date | string) {
     let timeDifference = new Date().getTime() - new Date(mindate).getTime();
     this.totalTime = this.msToTime(timeDifference)
-    this.trackLocation()
   }
 
   msToTime(seconds) {
@@ -53,11 +56,18 @@ export class ElapsedTimeComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   trackLocation() {
-    if (!this.locationTracking) {
-      this.countTime++
-      if (this.countTime > this.permittedInterval * 60) this.showAlert = true
+    if (!this.previousSyncTime) return this.previousSyncTime = this.locationTracking
+
+    this.currentSyncTime = this.locationTracking
+
+    if (this.previousSyncTime == this.currentSyncTime) {
+      // setTimeout(() => {
+      this.showAlert = true
+      // }, this.permittedInterval * 60000)
     } else {
       this.showAlert = false
+      this.previousSyncTime = this.currentSyncTime
     }
+
   }
 }

@@ -370,7 +370,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'deposit':
 				this.controls['scheme'].patchValue('');
 				break;
-			case 'deposit':
+			case 'packetTracking':
 				this.controls['packetTracking'].patchValue('');
 				break;
 			default:

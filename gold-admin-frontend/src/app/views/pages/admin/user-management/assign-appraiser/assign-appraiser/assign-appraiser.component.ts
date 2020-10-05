@@ -118,6 +118,9 @@ export class AssignAppraiserComponent implements OnInit {
 
     if (this.data.fullReleaseId) {
       this.appraiserForm.controls.fullReleaseId.patchValue(this.data.fullReleaseId)
+      this.appraiserForm.patchValue({
+        userType: (this.data.appraiser.appraiser.Usertype.userType).toLowerCase()
+      })
     }
   }
 
@@ -146,7 +149,7 @@ export class AssignAppraiserComponent implements OnInit {
   getUserDetails() {
     this.sharedService.getUserDetailsFromStorage().pipe(map(res => {
 
-      this.internalBranchId = res.userDetails.internalBranchId
+      this.internalBranchId = res.userDetails.userTypeId == 4 ? this.data.customer.internalBranchId : res.userDetails.internalBranchId
       if (this.data.isReleaser) {
         this.getAllReleaser()
         this.getAllAppraiser()

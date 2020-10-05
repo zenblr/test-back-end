@@ -1,10 +1,12 @@
-<div class="row">
-    <div class="col">
-        {{ totalTime }}
-    </div>
-    <!-- <div *ngIf="locationTracking" class="col">
-        <div *ngIf="showAlert" class="alert-container">
-            <div class="red-alert"></div>
+<div>
+    <div class="row">
+        <div class="col-8">
+            {{ totalTime }}
         </div>
-    </div> -->
+        <div *ngIf="locationTracking" class="col px-0">
+            <div *ngIf="showAlert" class="alert-container">
+                <div class="red-alert"></div>
+            </div>
+        </div>
+    </div>
 </div>

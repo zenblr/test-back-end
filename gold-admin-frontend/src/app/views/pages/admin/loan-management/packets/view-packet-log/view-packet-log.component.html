@@ -59,8 +59,11 @@
                 <ng-container matColumnDef="handover">
                     <mat-header-cell *matHeaderCellDef>Handover</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span *ngFor="let receiver of role.receiverData">
-                            {{receiver.firstName | titlecase}}&nbsp; {{receiver.lastName | titlecase}}
+                        <span
+                            *ngIf="!(role?.packetLocation?.id == 1 || role?.packetLocation?.id == 8 || role?.packetLocation?.id == 5 || role?.packetLocation?.id == 6)">
+                            <span *ngFor="let receiver of role.receiverData">
+                                {{receiver.firstName | titlecase}}&nbsp; {{receiver.lastName | titlecase}}
+                            </span>
                         </span>
                     </mat-cell>
                 </ng-container>

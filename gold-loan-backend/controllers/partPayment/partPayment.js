@@ -535,7 +535,7 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
 
         let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
 
-        let receivedDate = moment(paymentReceivedDate).format('YYYY-MM-DD')
+        let receivedDate = moment(paymentReceivedDate)
         let todaysDate = moment(new Date()).format('YYYY-MM-DD')
 
         let quickPayData = await sequelize.transaction(async (t) => {

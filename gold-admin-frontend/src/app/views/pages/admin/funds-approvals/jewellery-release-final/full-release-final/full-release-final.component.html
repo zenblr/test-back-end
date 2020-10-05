@@ -20,7 +20,14 @@
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.masterLoan.finalLoanAmount}}</mat-cell>
                 </ng-container>
-
+                <ng-container matColumnDef="parnterName">
+                    <mat-header-cell *matHeaderCellDef>Partner Name</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item?.masterLoan?.partnerBranch?.partner?.name }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="partnerBranch">
+                    <mat-header-cell *matHeaderCellDef>Partner Branch</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item?.masterLoan?.partnerBranch?.name }}</mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="loanStartDate">
                     <mat-header-cell *matHeaderCellDef>Loan Start Date</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.masterLoan.loanStartDate | date:'mediumDate'}}</mat-cell>

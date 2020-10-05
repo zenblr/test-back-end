@@ -440,10 +440,7 @@ export class UpdateLocationComponent implements OnInit {
             const msg = 'Otp has been verified!'
             this.toastr.success(msg);
           }
-        },
-          err => {
-            this.toastr.error(err.error.message)
-          }
+        }
         );
         break;
 

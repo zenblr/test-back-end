@@ -46,7 +46,7 @@
                                 </span></td>
                             <td *ngIf="loanDetails?.nextDueDate else blankTableValue">
                                 {{loanDetails?.nextDueDate | date : 'mediumDate'}}</td>
-                            <td class="text-warning" *ngIf="loanDetails?.status == 'pending' || 'partially paid'">
+                            <td class="text-warning" *ngIf="loanDetails?.status == 'pending' || loanDetails?.status == 'partially paid'">
                                 {{loanDetails?.status | titlecase}}
                             </td>
                             <td class="text-success" *ngIf="loanDetails?.status == 'paid'">

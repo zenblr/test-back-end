@@ -2,11 +2,8 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { PacketLocationService } from '../../../../core/masters/packet-location/service/packet-location.service';
 import { map, catchError, finalize } from 'rxjs/operators';
-import { UpdateLocationService } from '../../../../core/loan-management/update-location/services/update-location.service';
 import { AuthService } from '../../../../core/auth';
-import { BehaviorSubject } from 'rxjs';
 import { LeadService } from '../../../../core/lead-management/services/lead.service';
 import { ScrapPacketLocationService } from '../../../../core/masters/scrap-packet-location/service/scrap-packet-location.service';
 import { ScrapUpdateLocationService } from '../../../../core/scrap-management/scrap-update-location/services/scrap-update-location.service';
@@ -26,7 +23,6 @@ export class ScrapUpdateLocationComponent implements OnInit {
   otpSent: boolean = false;
   otpVerfied: boolean;
   partnerBranches: any[];
-  deliveryLocations: any[];
   deliveryPartnerBranches: any[];
   userTypeListFiltered = this.userTypeList
   internalBranches: any[];
@@ -43,10 +39,6 @@ export class ScrapUpdateLocationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    if (!this.data.deliver) {
-      this.getPacketLocationList();
-    }
-
     this.locationForm = this.fb.group({
       packetLocationId: [, [Validators.required]],
       barcodeNumber: this.fb.array([]),
@@ -77,38 +69,10 @@ export class ScrapUpdateLocationComponent implements OnInit {
 
     this.locationForm.valueChanges.subscribe(val => console.log(val))
 
-    // if (this.data.isPartnerOut) {
-    //   this.controls.partnerBranchId.patchValue(this.data.partnerBranchId)
-    // }
-
-    if (!this.data.deliver) {
-      this.initBarcodeArray()
-      this.setForm()
-    }
-
-    // if (this.data.deliver) {
-    //   this.locationForm.patchValue({
-    //     id: this.data.id,
-    //     receiverType: this.data.receiverType,
-    //     partnerBranchId: this.data.partnerBranchId,
-    //     masterLoanId: this.data.masterLoanId
-    //   })
-    //   this.locationForm.controls.packetLocationId.setValidators([])
-    //   this.locationForm.controls.packetLocationId.updateValueAndValidity()
-    // }
-
-    // if (this.data.isCustomerHomeIn) {
-    //   this.locationForm.patchValue({
-    //     id: this.data.response.id,
-    //     receiverType: this.data.response.receiverType,
-    //     masterLoanId: this.data.masterLoanId,
-    //     mobileNumber: this.data.response.mobileNumber,
-    //     releaseId: this.data.releaseId,
-    //     user: this.data.response.firstName + '' + this.data.response.lastName
-    //   })
-    //   this.controls.receiverType.disable();
-    //   this.controls.mobileNumber.disable();
-    //   this.getDetailsByMobile()
+    // if (!this.data.deliver) {
+    this.getPacketLocationList();
+    this.initBarcodeArray();
+    this.setForm();
     // }
 
     if (this.data.isOut) {
@@ -122,37 +86,27 @@ export class ScrapUpdateLocationComponent implements OnInit {
       this.locationForm.controls.courier.updateValueAndValidity(),
         this.locationForm.controls.podNumber.setValidators([Validators.required])
       this.locationForm.controls.podNumber.updateValueAndValidity()
-      // this.controls.deliveryPartnerBranchId.setValidators([Validators.required])
-      // this.controls.deliveryPartnerBranchId.updateValueAndValidity()
     }
   }
 
   setForm() {
     const packetArray = this.data.packetData;
-    // if (this.data.isOut) {
-    this.locationForm.controls.scrapId.patchValue(this.data.packetData[0].scrapId)
-    // } else {
-    //   this.locationForm.controls.scrapId.patchValue(this.data.packetData[0].id)
-    // }
-
-    this.filteredPacketArray = []
+    this.locationForm.controls.scrapId.patchValue(this.data.packetData[0].scrapId);
+    this.filteredPacketArray = [];
     packetArray.forEach(element => {
-      const { barcodeNumber: Barcode, packetUniqueId: packetId } = element
-      this.filteredPacketArray.push({ Barcode, packetId })
+      const { barcodeNumber: Barcode, packetUniqueId: packetId } = element;
+      this.filteredPacketArray.push({ Barcode, packetId });
     });
-
     for (let index = 0; index < this.filteredPacketArray.length; index++) {
       const e = this.filteredPacketArray[index];
-      this.barcodeNumber.at(index).patchValue({ packetId: e.packetId })
+      this.barcodeNumber.at(index).patchValue({ packetId: e.packetId });
     }
-
-    console.log(this.filteredPacketArray)
-
+    console.log(this.filteredPacketArray);
   }
 
   getPacketLocationList() {
-    let scrapId
-    if (this.data.isOut || this.data.isPartnerOut) {
+    let scrapId;
+    if (this.data.isOut) {
       if (this.data.scrapId) {
         scrapId = this.data.scrapId;
       } else {
@@ -162,77 +116,61 @@ export class ScrapUpdateLocationComponent implements OnInit {
         this.packetLocations = res.data;
         if (this.packetLocations.length === 1) {
           this.controls.packetLocationId.patchValue(this.packetLocations[0].id)
-          this.getPartnerBranch()
-          this.setUserType()
-          this.disablePacketLocationId()
+          this.getPartnerBranch();
+          this.setUserType();
+          this.disablePacketLocationId();
         }
       })).subscribe();
     } else {
       this.scrapPacketLocationService.getScrapPacketsTrackingDetails(1, -1, '').pipe(map(res => {
         this.packetLocations = res.data;
         if (this.data.stage == 11) {
-          this.packetLocations = this.packetLocations.filter(e => e.id === 2 || e.id === 4)
+          this.packetLocations = this.packetLocations.filter(e => e.id === 2)
+          this.controls.packetLocationId.patchValue(this.packetLocations[0].id);
+          this.getPartnerBranch();
+          this.setUserType();
+          this.disablePacketLocationId();
         }
-        // if (this.data.isCustomerHomeIn) {
-        //   this.packetLocations = this.packetLocations.filter(e => e.id === 7)
-        //   this.controls.packetLocationId.patchValue(this.packetLocations[0].id)
-        //   this.getPartnerBranch()
-        //   this.setUserType()
-        //   this.disablePacketLocationId()
-        // }
-        this.deliveryLocations = res.data
       })).subscribe();
     }
-
-    // if (this.data.isOut) {
-    //   this.scrapPacketLocationService.getScrapPacketsTrackingDetails(1, -1, '').pipe(map(res => {
-    //     this.deliveryLocations = res.data.filter(e => e.id === 4)
-    //     this.controls.deliveryPacketLocationId.patchValue(this.deliveryLocations[0].id)
-    //     this.getdeliveryPartnerBranch()
-    //     this.disableDeliveryPacketLocationId()
-    //   })).subscribe()
-    // }
   }
 
   action(event) {
     if (event) {
-      this.submit()
+      this.submit();
     } else {
-      this.dialogRef.close()
+      this.dialogRef.close();
     }
   }
 
   submit() {
     if (this.locationForm.invalid) {
-      return this.locationForm.markAllAsTouched()
+      return this.locationForm.markAllAsTouched();
     }
-    console.log(this.locationForm.value)
+    console.log(this.locationForm.value);
 
     if (!this.data.deliver) {
-
-      if (this.verifiedPacketsArray.length != this.data.packetData.length) return
-
-      const isVerified = this.verifiedPacketsArray.every(e => e.isVerified === true)
-      //console.log(this.verifiedPacketsArray)
+      if (this.verifiedPacketsArray.length != this.data.packetData.length) {
+        return;
+      }
+      const isVerified = this.verifiedPacketsArray.every(e => e.isVerified === true);
       if (!isVerified) {
-        console.log(`Packets are not completely verified!`)
+        console.log(`Packets are not completely verified!`);
         for (const iterator of this.barcodeNumber.controls) {
           if (iterator.get('Barcode').invalid) {
-            iterator.get('Barcode').markAsTouched()
+            iterator.get('Barcode').markAsTouched();
           }
         }
-        return this.toastr.error('Packets are not completely verified')
+        return this.toastr.error('Packets are not completely verified');
       }
     }
 
     if (this.data.stage == 11) {
-
       if (!this.otpVerfied) {
         return this.toastr.error('OTP not verified!')
       }
-
-      this.enablePacketLocationId()
-      this.enableUserType()
+      this.enablePacketLocationId();
+      this.enableUserType();
       this.scrapUpdateLocationService.submitScrapPacketLocation(this.locationForm.value)
         .pipe(
           map(() => {
@@ -241,60 +179,15 @@ export class ScrapUpdateLocationComponent implements OnInit {
             this.dialogRef.close(true);
           }),
           finalize(() => {
-            this.disablePacketLocationId()
-            this.disableUserType()
+            this.disablePacketLocationId();
+            this.disableUserType();
           }))
         .subscribe();
     }
-    // else if (this.data.deliver) {
-    //   this.scrapUpdateLocationService.deliverPartnerBranch(this.locationForm.value).subscribe(res => {
-    //     if (res) {
-    //       this.toastr.success(res.message);
-    //       this.dialogRef.close(true);
-    //     }
-    //   });
-    // } else if (this.data.isPartnerOut) {
-    //   this.enablePacketLocationId()
-    //   this.enableUserType()
-    //   this.scrapUpdateLocationService.collectPacket(this.locationForm.value)
-    //     .pipe(
-    //       map(res => {
-    //         const msg = 'Packet Location Updated Successfully';
-    //         this.toastr.success(msg);
-    //         this.dialogRef.close(true);
-    //       }),
-    //       finalize(() => {
-    //         this.disablePacketLocationId()
-    //         this.disableUserType()
-    //       })
-    //     ).subscribe()
-    // } else if (this.data.isCustomerHomeIn) {
-    //   this.controls.receiverType.enable();
-    //   this.enablePacketLocationId()
-    //   let isPartRelease = false
-    //   let isFullRelease = false
-    //   if (this.data.isPartRelease) {
-    //     isPartRelease = true
-    //   } else {
-    //     isFullRelease = true
-    //   }
-    //   this.scrapUpdateLocationService.customerHomeOut(this.locationForm.value, isFullRelease, isPartRelease)
-    //     .pipe(
-    //       map(res => {
-    //         const msg = 'Packet Location Updated Successfully';
-    //         this.toastr.success(msg);
-    //         this.dialogRef.close(true);
-    //       }),
-    //       finalize(() => {
-    //         this.controls.receiverType.disable()
-    //         this.disablePacketLocationId()
-    //       })
-    //     ).subscribe()
-    // } 
     else {
-      this.enablePacketLocationId()
-      this.enableUserType()
-      this.enableDeliveryPacketLocationId()
+      this.enablePacketLocationId();
+      this.enableUserType();
+      this.enableDeliveryPacketLocationId();
       this.scrapUpdateLocationService.addPacketLocation(this.locationForm.value)
         .pipe(
           map(res => {
@@ -303,66 +196,67 @@ export class ScrapUpdateLocationComponent implements OnInit {
             this.dialogRef.close(true);
           }),
           finalize(() => {
-            this.disablePacketLocationId()
-            this.disableDeliveryPacketLocationId()
+            this.disablePacketLocationId();
+            this.disableDeliveryPacketLocationId();
           })).subscribe();
     }
   }
 
   get barcodeNumber() {
-    return this.locationForm.controls.barcodeNumber as FormArray
+    return this.locationForm.controls.barcodeNumber as FormArray;
   }
 
   addBarcode() {
-    this.barcodeNumber.push(this.newBarcode())
+    this.barcodeNumber.push(this.newBarcode());
   }
 
   newBarcode(): FormGroup {
     return this.fb.group({
       Barcode: ['', [Validators.required]],
       packetId: ['', [Validators.required]]
-    })
+    });
   }
 
   initBarcodeArray() {
     if (this.data.packetData && this.data.packetData.length) {
       for (let index = 0; index < this.data.packetData.length; index++) {
-        this.barcodeNumber.push(this.newBarcode())
-        const packetObject = { isVerified: false }
-        this.verifiedPacketsArray.push(packetObject)
+        this.barcodeNumber.push(this.newBarcode());
+        const packetObject = { isVerified: false };
+        this.verifiedPacketsArray.push(packetObject);
       }
     }
   }
 
   scanBarcode(index) {
-    const formGroup = this.barcodeNumber.at(index)
-    const filteredFormGroup = this.filteredPacketArray[index]
-    const isVerified = (JSON.stringify(formGroup.value)).toLowerCase() === (JSON.stringify(filteredFormGroup)).toLowerCase()
-
+    const formGroup = this.barcodeNumber.at(index);
+    const filteredFormGroup = this.filteredPacketArray[index];
+    const isVerified = (JSON.stringify(formGroup.value)).toLowerCase() === (JSON.stringify(filteredFormGroup)).toLowerCase();
     console.log(isVerified)
     if (!isVerified) {
-      formGroup.get('Barcode').setErrors({ unverified: true })
-      this.verifiedPacketsArray.splice(index, 1, { isVerified })
+      formGroup.get('Barcode').setErrors({ unverified: true });
+      this.verifiedPacketsArray.splice(index, 1, { isVerified });
     } else {
-      this.verifiedPacketsArray.splice(index, 1, { isVerified })
+      this.verifiedPacketsArray.splice(index, 1, { isVerified });
     }
   }
 
   getDetailsByMobile() {
     if (this.locationForm.controls.mobileNumber.invalid || this.locationForm.controls.receiverType.invalid) {
       if (this.locationForm.controls.otp.value) {
-        this.locationForm.controls.otp.reset()
-        this.otpVerfied = false
-        this.otpSent = false
+        this.locationForm.controls.otp.reset();
+        this.otpVerfied = false;
+        this.otpSent = false;
       }
-      return
+      return;
     }
-    const mobileNumber = this.locationForm.controls.mobileNumber.value
-    const receiverType = this.locationForm.controls.receiverType.value
-    const scrapId = this.locationForm.controls.scrapId.value
+    const mobileNumber = this.locationForm.controls.mobileNumber.value;
+    const receiverType = this.locationForm.controls.receiverType.value;
+    const scrapId = this.locationForm.controls.scrapId.value;
 
     if (this.controls.receiverType.value === 'PartnerUser') {
-      if (this.controls.partnerBranchId.invalid) return this.controls.partnerBranchId.markAsTouched()
+      if (this.controls.partnerBranchId.invalid) {
+        return this.controls.partnerBranchId.markAsTouched();
+      }
     }
 
     this.scrapUpdateLocationService.getDetailsByMobile({ mobileNumber, receiverType, scrapId }).subscribe(res => {
@@ -380,25 +274,27 @@ export class ScrapUpdateLocationComponent implements OnInit {
       // if (res) {
       //   this.otpSent = true;
       // }
-      this.locationForm.controls.user.patchValue(`${res.data.firstName} ${res.data.lastName}`)
+      this.locationForm.controls.user.patchValue(`${res.data.firstName} ${res.data.lastName}`);
       if (res.data.roles) {
-        this.controls.role.patchValue(res.data.roles[0].roleName)
+        this.controls.role.patchValue(res.data.roles[0].roleName);
       }
     }, err => {
-      this.remove()
+      this.remove();
     }
     );
   }
 
   sendOTP() {
-    this.otpSent = true
-    this.generateOTP()
+    this.otpSent = true;
+    this.generateOTP();
   }
 
   generateOTP() {
-    if (this.locationForm.controls.mobileNumber.invalid) return this.controls.mobileNumber.markAsTouched()
+    if (this.locationForm.controls.mobileNumber.invalid) {
+      return this.controls.mobileNumber.markAsTouched();
+    }
 
-    const mobileNumber = this.locationForm.controls.mobileNumber.value
+    const mobileNumber = this.locationForm.controls.mobileNumber.value;
     switch (this.locationForm.controls.receiverType.value) {
       case 'Customer':
         this.scrapUpdateLocationService.sendCustomerOtp(mobileNumber).subscribe(res => {
@@ -409,9 +305,7 @@ export class ScrapUpdateLocationComponent implements OnInit {
             this.toastr.success(msg);
           }
         })
-
         break;
-
       case 'InternalUser':
         this.authService.generateOtp(mobileNumber, 'lead').subscribe(res => {
           if (res) {
@@ -422,11 +316,9 @@ export class ScrapUpdateLocationComponent implements OnInit {
           }
         },
           err => {
-            this.toastr.error(err.error.message)
+            this.toastr.error(err.error.message);
           })
-
         break;
-
       case 'PartnerUser':
         this.scrapUpdateLocationService.sendPartnerOtp(mobileNumber).subscribe(res => {
           if (res) {
@@ -457,11 +349,10 @@ export class ScrapUpdateLocationComponent implements OnInit {
           }
         },
           err => {
-            this.toastr.error(err.error.message)
+            this.toastr.error(err.error.message);
           }
         );
         break;
-
       case 'InternalUser':
         this.authService.verifyotp(params.referenceCode, params.otp, params.type).subscribe(res => {
           if (res) {
@@ -470,13 +361,11 @@ export class ScrapUpdateLocationComponent implements OnInit {
             const msg = 'Otp has been verified!'
             this.toastr.success(msg);
           }
-        }
-          ,
+        },
           err => {
-            this.toastr.error(err.error.message)
+            this.toastr.error(err.error.message);
           });
         break;
-
       case 'PartnerUser':
         this.scrapUpdateLocationService.verifyPartnerOtp(params).subscribe(res => {
           if (res) {
@@ -496,59 +385,55 @@ export class ScrapUpdateLocationComponent implements OnInit {
     this.locationForm.controls.mobileNumber.patchValue(null);
     this.locationForm.controls.user.patchValue(null);
     this.locationForm.controls.role.patchValue(null);
-    this.otpVerfied = false
+    this.otpVerfied = false;
   }
 
   verifyBarcode(index) {
-    const formGroup = this.barcodeNumber.at(index)
-    const filteredFormGroup = this.filteredPacketArray[index]
-    const isVerified = (JSON.stringify(formGroup.value)).toLowerCase() === (JSON.stringify(filteredFormGroup)).toLowerCase()
-
-    console.log(isVerified)
+    const formGroup = this.barcodeNumber.at(index);
+    const filteredFormGroup = this.filteredPacketArray[index];
+    const isVerified = (JSON.stringify(formGroup.value)).toLowerCase() === (JSON.stringify(filteredFormGroup)).toLowerCase();
+    console.log(isVerified);
     if (!isVerified) {
-      formGroup.get('Barcode').setErrors({ unverified: true })
-      this.verifiedPacketsArray.splice(index, 1, { isVerified })
+      formGroup.get('Barcode').setErrors({ unverified: true });
+      this.verifiedPacketsArray.splice(index, 1, { isVerified });
       // console.log(formGroup)
     } else {
-      this.verifiedPacketsArray.splice(index, 1, { isVerified })
+      this.verifiedPacketsArray.splice(index, 1, { isVerified });
       // formGroup.get('Barcode').disable()
     }
   }
 
   get controls() {
-    return this.locationForm.controls
+    return this.locationForm.controls;
   }
 
   getPartnerBranch() {
     if (this.data.stage != 11) {
       return;
     }
-
     // if (this.controls.packetLocationId.value != 4) this.clearPartnerData()
-
     const params = {
       packetLocationId: this.locationForm.controls.packetLocationId.value,
       scrapId: this.locationForm.controls.scrapId.value,
     }
-
     this.scrapUpdateLocationService.getLocation(params).pipe(map(res => {
       if (this.controls.packetLocationId.value == 2) {
-        this.internalBranches = res.data
-        this.controls.internalBranchId.patchValue(res.scrapBranchId)
-        this.controls.partnerBranchId.setValidators([])
-        this.controls.partnerBranchId.updateValueAndValidity()
-        this.clearPartnerData()
+        this.internalBranches = res.data;
+        this.controls.internalBranchId.patchValue(res.scrapBranchId);
+        this.controls.partnerBranchId.setValidators([]);
+        this.controls.partnerBranchId.updateValueAndValidity();
+        this.clearPartnerData();
       }
       if (this.controls.packetLocationId.value == 4) {
-        this.controls.partnerId.patchValue(res.data.id)
-        this.controls.partnerName.patchValue(res.data.name)
-        this.partnerBranches = res.data.partnerBranch
-        this.controls.partnerBranchId.setValidators([Validators.required])
-        this.controls.partnerBranchId.updateValueAndValidity()
-        this.clearInternalBranchData()
+        this.controls.partnerId.patchValue(res.data.id);
+        this.controls.partnerName.patchValue(res.data.name);
+        this.partnerBranches = res.data.partnerBranch;
+        this.controls.partnerBranchId.setValidators([Validators.required]);
+        this.controls.partnerBranchId.updateValueAndValidity();
+        this.clearInternalBranchData();
       }
       // console.log(res)
-    })).subscribe()
+    })).subscribe();
   }
 
   getdeliveryPartnerBranch() {
@@ -556,107 +441,101 @@ export class ScrapUpdateLocationComponent implements OnInit {
       packetLocationId: this.locationForm.controls.deliveryPacketLocationId.value,
       masterLoanId: this.locationForm.controls.masterLoanId.value,
     }
-
     this.scrapUpdateLocationService.getLocation(params).pipe(map(res => {
       if (this.controls.deliveryPacketLocationId.value == 2) {
-        this.controls.deliveryInternalBranchId.patchValue(res.data[0].id)
-        this.clearPartnerData()
+        this.controls.deliveryInternalBranchId.patchValue(res.data[0].id);
+        this.clearPartnerData();
       }
       if (this.controls.deliveryPacketLocationId.value == 4) {
         // this.controls.deliveryPartnerBranchId.patchValue(res.data.id)
         // this.controls.partnerName.patchValue(res.data.name)
-        this.deliveryPartnerBranches = res.data.partnerBranch
-        this.clearInternalBranchData()
+        this.deliveryPartnerBranches = res.data.partnerBranch;
+        this.clearInternalBranchData();
       }
       // console.log(res)
-    })).subscribe()
+    })).subscribe();
   }
 
   clearPartnerData() {
-    this.controls.partnerId.reset()
-    this.controls.partnerName.reset()
+    this.controls.partnerId.reset();
+    this.controls.partnerName.reset();
   }
 
   clearInternalBranchData() {
-    this.controls.internalBranchId.reset()
+    this.controls.internalBranchId.reset();
   }
 
   clearDeliveryPartnerData() {
-    this.controls.deliveryPartnerBranchId.reset()
+    this.controls.deliveryPartnerBranchId.reset();
   }
 
   clearDeliveryInternalBranchData() {
-    this.controls.deliveryInternalBranchId.reset()
+    this.controls.deliveryInternalBranchId.reset();
   }
 
   setUserType() {
     if (!this.data.isCustomerHomeIn) {
-      const packetLocationId = this.controls.packetLocationId.value
-      this.controls.receiverType.patchValue('')
-
+      const packetLocationId = this.controls.packetLocationId.value;
+      this.controls.receiverType.patchValue('');
       switch (Number(packetLocationId)) {
         case 2:
-          this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
-          this.patchUserTye('InternalUser')
-          this.disableUserType()
+          this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser');
+          this.patchUserTye('InternalUser');
+          this.disableUserType();
           break;
-
         case 4:
           if (this.data.isOut) {
-            this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
-            this.patchUserTye('InternalUser')
-            this.disableUserType()
+            this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser');
+            this.patchUserTye('InternalUser');
+            this.disableUserType();
           } else {
-            this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'PartnerUser')
-            this.patchUserTye('PartnerUser')
-            this.disableUserType()
+            this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'PartnerUser');
+            this.patchUserTye('PartnerUser');
+            this.disableUserType();
           }
-          break
-
+          break;
         case 3:
-          this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser')
-          this.patchUserTye('InternalUser')
-          this.disableUserType()
+          this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'InternalUser');
+          this.patchUserTye('InternalUser');
+          this.disableUserType();
           break;
-
         case 5:
-          this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'PartnerUser')
-          this.patchUserTye('PartnerUser')
-          this.disableUserType()
+          this.userTypeListFiltered = this.userTypeList.filter(e => e.value === 'PartnerUser');
+          this.patchUserTye('PartnerUser');
+          this.disableUserType();
           break;
-
         default:
-          this.userTypeListFiltered = this.userTypeList
+          this.userTypeListFiltered = this.userTypeList;
           break;
       }
     }
   }
 
   patchUserTye(userType) {
-    this.controls.receiverType.patchValue(userType)
+    this.controls.receiverType.patchValue(userType);
   }
 
   disablePacketLocationId() {
-    this.controls.packetLocationId.disable()
+    this.controls.packetLocationId.disable();
   }
 
   enablePacketLocationId() {
-    this.controls.packetLocationId.enable()
+    this.controls.packetLocationId.enable();
   }
 
   disableDeliveryPacketLocationId() {
-    this.controls.deliveryPacketLocationId.disable()
+    this.controls.deliveryPacketLocationId.disable();
   }
 
   enableDeliveryPacketLocationId() {
-    this.controls.deliveryPacketLocationId.enable()
+    this.controls.deliveryPacketLocationId.enable();
   }
 
   disableUserType() {
-    this.controls.receiverType.disable()
+    this.controls.receiverType.disable();
   }
 
   enableUserType() {
-    this.controls.receiverType.enable()
+    this.controls.receiverType.enable();
   }
 }

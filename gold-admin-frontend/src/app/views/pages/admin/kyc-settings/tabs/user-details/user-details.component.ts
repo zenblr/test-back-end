@@ -163,7 +163,7 @@ export class UserDetailsComponent implements OnInit {
 
   sendOTP() {
     const mobileNumber = this.controls.mobileNumber.value;
-    this.userDetailsService.sendOtp({ mobileNumber }).subscribe(res => {
+    this.userDetailsService.sendOtp({ mobileNumber, moduleId: this.moduleId }).subscribe(res => {
       if (res.message == 'Mobile number is already exist.') {
         this.toastr.error('Mobile Number already exists');
       } else {
@@ -181,7 +181,7 @@ export class UserDetailsComponent implements OnInit {
             this.getOrganizationTypes()
           }
         }
-        this.setModule.emit({moduleId: this.moduleId, userType: this.controls.userType.value ? this.controls.userType.value : null})
+        this.setModule.emit({ moduleId: this.moduleId, userType: this.controls.userType.value ? this.controls.userType.value : null })
 
         this.setValidation()
 
