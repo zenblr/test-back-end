@@ -1581,7 +1581,7 @@ exports.getFullReleaseList = async (req, res, next) => {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber','internalBranchId']
             },
             {
                 model: models.customerLoan,
