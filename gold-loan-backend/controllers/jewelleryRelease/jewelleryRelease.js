@@ -1620,7 +1620,14 @@ exports.getFullReleaseList = async (req, res, next) => {
             {
                 model: models.user,
                 as: 'appraiser',
-                attributes: ['firstName', 'lastName', 'mobileNumber']
+                attributes: ['firstName', 'lastName', 'mobileNumber', 'userTypeId'],
+                include: [
+                    {
+                        model: models.userType,
+                        as: 'Usertype',
+                        attributes: ['userType']
+                    }
+                ]
             }
         ]
     }
