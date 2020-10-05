@@ -49,6 +49,11 @@ export class PageConfig {
 			"global-settings": {
 				page: { title: "Global Settings", desc: "" },
 			},
+			"cron-list": {
+				"cron": {
+					page: { title: "Cron Logs", desc: "" },
+				}
+			},
 			roles: {
 				page: { title: "Roles", desc: "" },
 				id: {
