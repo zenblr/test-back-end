@@ -172,9 +172,19 @@ export class PaymentDialogComponent implements OnInit {
     }
     let paymentDate = this.dataPipe.transform(this.paymentForm.controls.paymentReceivedDate.value, 'yyyy-MM-dd')
     if (this.data.name == "deposit") {
-      this.dialogRef.close({
-        depositStatus: this.paymentForm.controls.depositStatus.value,
-        paymentReceivedDate: paymentDate
+
+
+      const _title = 'Update Deposit Status';
+      const _description = 'Are you sure to update deposit status?';
+      const _waitDesciption = 'Deposit Status Updating ...';
+      const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+      dialogRef.afterClosed().subscribe(res => {
+        if (res) {
+          this.dialogRef.close({
+            depositStatus: this.paymentForm.controls.depositStatus.value,
+            paymentReceivedDate: paymentDate
+          })
+        }
       })
 
     } else {
@@ -188,8 +198,8 @@ export class PaymentDialogComponent implements OnInit {
           chequeNumber: null
         })
       }
+      this.dialogRef.close(this.paymentForm.value)
     }
-    this.dialogRef.close(this.paymentForm.value)
 
   }
 }
