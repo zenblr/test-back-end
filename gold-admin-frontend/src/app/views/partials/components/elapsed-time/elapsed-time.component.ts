@@ -15,6 +15,8 @@ export class ElapsedTimeComponent implements OnInit, OnDestroy, OnChanges {
   permittedInterval = 1; //minutes
   showAlert: boolean;
   lastSyncTime: string;
+  previousSyncTime: string;
+  currentSyncTime: string;
 
   constructor(
     private ref: ChangeDetectorRef
@@ -37,7 +39,6 @@ export class ElapsedTimeComponent implements OnInit, OnDestroy, OnChanges {
   change(mindate: Date | string) {
     let timeDifference = new Date().getTime() - new Date(mindate).getTime();
     this.totalTime = this.msToTime(timeDifference)
-    // this.trackLocation()
   }
 
   msToTime(seconds) {
@@ -54,38 +55,18 @@ export class ElapsedTimeComponent implements OnInit, OnDestroy, OnChanges {
     clearInterval(this.interval)
   }
 
-  // trackLocation() {
-  //   let timeDifference = new Date().getTime() - new Date(this.locationTracking).getTime();
-  //   var milliseconds = timeDifference % 1000;
-  //   timeDifference = (timeDifference - milliseconds) / 1000;
-  //   var secs = timeDifference % 60;
-  //   timeDifference = (timeDifference - secs) / 60;
-  //   var minutes = timeDifference % 60;
-
-  //   if (this.locationTracking) {
-  //     this.countTime++
-  //     if (this.countTime > minutes * 60) this.showAlert = true
-  //   } else {
-  //     this.showAlert = false
-  //   }
-  // }
-
   trackLocation() {
-    if (!this.lastSyncTime) return this.lastSyncTime = this.locationTracking;
+    if (!this.previousSyncTime) return this.previousSyncTime = this.locationTracking
 
-    let timeDifference = new Date().getTime() - new Date(this.lastSyncTime).getTime();
-    var milliseconds = timeDifference % 1000;
-    timeDifference = (timeDifference - milliseconds) / 1000;
-    var secs = timeDifference % 60;
-    timeDifference = (timeDifference - secs) / 60;
-    var minutes = timeDifference % 60;
+    this.currentSyncTime = this.locationTracking
 
-    if (this.locationTracking) {
-      if (minutes > this.countTime) {
-        this.showAlert = true
-      } else {
-        this.showAlert = false
-      }
+    if (this.previousSyncTime == this.currentSyncTime) {
+      // setTimeout(() => {
+      this.showAlert = true
+      // }, this.permittedInterval * 60000)
+    } else {
+      this.showAlert = false
+      this.previousSyncTime = this.currentSyncTime
     }
 
   }

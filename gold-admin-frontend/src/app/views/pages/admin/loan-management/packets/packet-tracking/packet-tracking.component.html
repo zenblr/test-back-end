@@ -97,20 +97,21 @@
                 <ng-container matColumnDef="time">
                     <mat-header-cell *matHeaderCellDef>Elapsed Time</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngFor="let item of packet.locationData; last as l">
-                            <span *ngIf="l">
-                                <ng-container
+                        <ng-container *ngFor="let item of packet.locationData; last as l">
+                            <ng-container *ngIf="l">
+                                <div style="width: 100%;"
                                     *ngIf="item.packetLocationId === 6 || item.packetLocationId === 3 || item.packetLocationId === 5 || item.packetLocationId === 1">
                                     <kt-elapsed-time [startTime]="item?.createdAt"
                                         [locationTracking]="packet?.lastSyncTime"></kt-elapsed-time>
-                                </ng-container>
-                                <ng-container *ngIf="item.packetLocationId === 2 && !packet.isLoanCompleted">
+                                </div>
+                                <div style="width: 100%;"
+                                    *ngIf="item.packetLocationId === 2 && !packet.isLoanCompleted">
                                     <kt-elapsed-time [startTime]="packet?.customerLoanDisbursement[0].createdAt"
                                         [locationTracking]="packet?.lastSyncTime">
                                     </kt-elapsed-time>
-                                </ng-container>
-                            </span>
-                        </span>
+                                </div>
+                            </ng-container>
+                        </ng-container>
                     </mat-cell>
                 </ng-container>
 
