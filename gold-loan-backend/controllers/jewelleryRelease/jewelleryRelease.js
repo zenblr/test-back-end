@@ -15,6 +15,7 @@ const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 const razorpay = require('../../utils/razorpay');
 let crypto = require('crypto');
 const { BASIC_DETAILS_SUBMIT } = require('../../utils/customerLoanHistory');
+const { sendMessageAssignedCustomerToAppraiser,sendMessageCustomerForAssignAppraiser} = require('../../utils/SMS')
 
 exports.ornamentsDetails = async (req, res, next) => {
 
@@ -852,8 +853,13 @@ exports.partReleaseAssignAppraiser = async (req, res, next) => {
         await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_ASSIGNED_APPRAISER, createdBy, modifiedBy }, { transaction: t });
     });
     // send sms
-    // let customerInfo = await models.customer.findOne({ where: { id: customerId } })
-    // let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } });
+
+    let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } });
+    let customerInfo = await models.customer.findOne({ where: { id: customerId } })
+     await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
+
+    await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+
     // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=${customerInfo.firstName} is assign for you`);
     return res.status(200).json({ message: 'success' });
 }
@@ -1111,6 +1117,12 @@ exports.updateAppraiser = async (req, res, next) => {
         await models.partReleaseAppraiser.update({ customerId, appraiserId, modifiedBy, appoinmentDate, startTime, endTime }, { where: { partReleaseId }, transaction: t });
         await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_UPDATED_APPRAISER, createdBy, modifiedBy }, { transaction: t });
     });
+    let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } });
+    let customerInfo = await models.customer.findOne({ where: { id: customerId } })
+     await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
+
+    await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+
     return res.status(200).json({ message: 'success' });
 }
 
@@ -1782,6 +1794,12 @@ exports.fullReleaseAssignReleaser = async (req, res, next) => {
         await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_ASSIGNED_RELEASER, createdBy, modifiedBy }, { transaction: t });
     });
     // send sms
+
+    let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: releaserId } });
+    let customerInfo = await models.customer.findOne({ where: { id: customerId } })
+     await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
+
+    await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
     // let customerInfo = await models.customer.findOne({ where: { id: customerId } })
     // let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } });
     // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=${customerInfo.firstName} is assign for you`);
@@ -1796,6 +1814,13 @@ exports.updateReleaser = async (req, res, next) => {
         await models.fullReleaseReleaser.update({ customerId, releaserId, modifiedBy, appoinmentDate, startTime, endTime }, { where: { fullReleaseId }, transaction: t });
         await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_UPDATED_RELEASER, createdBy, modifiedBy }, { transaction: t });
     });
+
+    let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: releaserId } });
+    let customerInfo = await models.customer.findOne({ where: { id: customerId } })
+     await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
+
+    await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+    
     return res.status(200).json({ message: 'success' });
 }
 
