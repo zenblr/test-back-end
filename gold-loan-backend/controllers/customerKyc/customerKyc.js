@@ -748,159 +748,159 @@ exports.submitAllKycInfo = async (req, res, next) => {
 }
 
 exports.appliedKyc = async (req, res, next) => {
-    
-        // let { roleName } = await models.role.findOne({ where: { id: req.userData.roleId[0] } })
+
+    // let { roleName } = await models.role.findOne({ where: { id: req.userData.roleId[0] } })
 
 
-        const { search, offset, pageSize } = paginationWithFromTo(
-            req.query.search,
-            req.query.from,
-            req.query.to
-        );
-        let query = {};
-        // if (req.query.kycStatus) {
-        //     query.kycStatus = sequelize.where(
-        //         sequelize.cast(sequelize.col("customer.kyc_status"), "varchar"),
-        //         {
-        //             [Op.iLike]: req.query.kycStatus + "%",
-        //         }
-        //     );
-        // }
-        // if (req.query.cceStatus) {
-        // query.cceRating = sequelize.where(
-        //     sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_cce"), "varchar"),
-        //     {
-        //         [Op.iLike]: req.query.cceStatus + "%",
-        //     }
-        // );
-        // }
-        if (req.query.cceStatus) {
-            query["$customerKycClassification.kyc_status_from_cce$"] = await req.query.cceStatus;
-        }
-
-        // if (req.query.kycStatusFromOperationalTeam) {
-        //     query.kycStatusFromOperationalTeam = sequelize.where(
-        //         sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_operational_team"), "varchar"),
-        //         {
-        //             [Op.iLike]: search + "%",
-        //         }
-        //     )
-        // }
-
-        const searchQuery = {
-            [Op.and]: [query, {
-                [Op.or]: {
-                    "$customer.first_name$": { [Op.iLike]: search + "%" },
-                    "$customer.last_name$": { [Op.iLike]: search + "%" },
-                    "$customer.mobile_number$": { [Op.iLike]: search + "%" },
-                    "$customer.pan_card_number$": { [Op.iLike]: search + "%" },
-                    "$customer.customer_unique_id$": { [Op.iLike]: search + "%" },
-                    kyc_status: sequelize.where(
-                        sequelize.cast(sequelize.col("customer.kyc_status"), "varchar"),
-                        {
-                            [Op.iLike]: search + "%",
-                        }
-                    ),
-                    scrap_kyc_status: sequelize.where(
-                        sequelize.cast(sequelize.col("customer.scrap_kyc_status"), "varchar"),
-                        {
-                            [Op.iLike]: search + "%",
-                        }
-                    ),
-                    // kyc_rating_cce: sequelize.where(
-                    //     sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_cce"), "varchar"),
-                    //     {
-                    //         [Op.iLike]: search + "%",
-                    //     }
-                    // ),
-                    // scrap_kyc_status_from_cce: sequelize.where(
-                    //     sequelize.cast(sequelize.col("customerKycClassification.scrap_kyc_status_from_cce"), "varchar"),
-                    //     {
-                    //         [Op.iLike]: search + "%",
-                    //     }
-                    // ),
-                    // kyc_rating_bm: sequelize.where(
-                    //     sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_operational_team"), "varchar"),
-                    //     {
-                    //         [Op.iLike]: search + "%",
-                    //     }
-                    // )
-                }
-            }],
-            isActive: true,
-            [Op.or]: { isKycSubmitted: true, isScrapKycSubmitted: true },
-            // isKycSubmitted: true,
-            // isScrapKycSubmitted: true
-        }
-        let internalBranchId = req.userData.internalBranchId
-        let internalBranchWhere;
-
-        let assignAppraiser;
-
-        if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-            internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
-            // if (req.userData.userTypeId == 7) {
-            //     assignAppraiser = { appraiserId: req.userData.id }
-            // }
-        } else {
-            internalBranchWhere = { isActive: true }
-        }
-
-        // if (req.userData.userTypeId == 6) {
-        //     customerKycClassification = {
-        //         kycStatusFromCce: { [Op.in]: ["approved", 'pending', 'incomplete', 'rejected'] },
-        //     }
-        // } else {
-        //     customerKycClassification = {
-        //         kycStatusFromCce: { [Op.in]: ['approved'] },
-        //     }
-        // }
-
-        const includeArray = [
+    const { search, offset, pageSize } = paginationWithFromTo(
+        req.query.search,
+        req.query.from,
+        req.query.to
+    );
+    let query = {};
+    if (req.query.kycStatus) {
+        query.kycStatus = sequelize.where(
+            sequelize.cast(sequelize.col("customer.kyc_status"), "varchar"),
             {
-                model: models.customerKycClassification,
-                as: 'customerKycClassification',
-                required: false,
-                // where: customerKycClassification,
-                attributes: ['kycStatusFromCce', 'reasonFromCce', 'kycStatusFromOperationalTeam', 'reasonFromOperationalTeam', 'scrapKycStatusFromCce', 'scrapReasonFromCce', 'scrapKycStatusFromOperationalTeam', 'scrapReasonFromOperationalTeam']
-            },
-            {
-                model: models.customer,
-                as: 'customer',
-                attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'kycStatus', 'customerUniqueId', 'moduleId', 'userType', 'scrapKycStatus'],
-                where: internalBranchWhere,
-                include: {
-                    model: models.appraiserRequest,
-                    as: 'appraiserRequest',
-                }
+                [Op.iLike]: req.query.kycStatus + "%",
             }
-        ]
+        );
+    }
+    // if (req.query.cceStatus) {
+    // query.cceRating = sequelize.where(
+    //     sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_cce"), "varchar"),
+    //     {
+    //         [Op.iLike]: req.query.cceStatus + "%",
+    //     }
+    // );
+    // }
+    if (req.query.cceStatus) {
+        query["$customerKycClassification.kyc_status_from_cce$"] = await req.query.cceStatus;
+    }
 
-        let user = await models.user.findOne({ where: { id: req.userData.id } });
+    // if (req.query.kycStatusFromOperationalTeam) {
+    //     query.kycStatusFromOperationalTeam = sequelize.where(
+    //         sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_operational_team"), "varchar"),
+    //         {
+    //             [Op.iLike]: search + "%",
+    //         }
+    //     )
+    // }
 
-        // if (user.userTypeId == 5) {
-        //     searchQuery.isVerifiedByCce = true
+    const searchQuery = {
+        [Op.and]: [query, {
+            [Op.or]: {
+                "$customer.first_name$": { [Op.iLike]: search + "%" },
+                "$customer.last_name$": { [Op.iLike]: search + "%" },
+                "$customer.mobile_number$": { [Op.iLike]: search + "%" },
+                "$customer.pan_card_number$": { [Op.iLike]: search + "%" },
+                "$customer.customer_unique_id$": { [Op.iLike]: search + "%" },
+                kyc_status: sequelize.where(
+                    sequelize.cast(sequelize.col("customer.kyc_status"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
+                scrap_kyc_status: sequelize.where(
+                    sequelize.cast(sequelize.col("customer.scrap_kyc_status"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
+                // kyc_rating_cce: sequelize.where(
+                //     sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_cce"), "varchar"),
+                //     {
+                //         [Op.iLike]: search + "%",
+                //     }
+                // ),
+                // scrap_kyc_status_from_cce: sequelize.where(
+                //     sequelize.cast(sequelize.col("customerKycClassification.scrap_kyc_status_from_cce"), "varchar"),
+                //     {
+                //         [Op.iLike]: search + "%",
+                //     }
+                // ),
+                // kyc_rating_bm: sequelize.where(
+                //     sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_operational_team"), "varchar"),
+                //     {
+                //         [Op.iLike]: search + "%",
+                //     }
+                // )
+            }
+        }],
+        isActive: true,
+        [Op.or]: { isKycSubmitted: true, isScrapKycSubmitted: true },
+        // isKycSubmitted: true,
+        // isScrapKycSubmitted: true
+    }
+    let internalBranchId = req.userData.internalBranchId
+    let internalBranchWhere;
+
+    let assignAppraiser;
+
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
+        internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
+        // if (req.userData.userTypeId == 7) {
+        //     assignAppraiser = { appraiserId: req.userData.id }
         // }
+    } else {
+        internalBranchWhere = { isActive: true }
+    }
 
-        let getAppliedKyc = await models.customerKyc.findAll({
-            where: searchQuery,
-            subQuery: false,
-            attributes: ['id', 'customerId', 'createdAt', 'updatedAt'],
-            order: [["updatedAt", "DESC"], [models.customer, models.appraiserRequest, 'id', 'DESC']],
-            offset: offset,
-            limit: pageSize,
-            include: includeArray
-        })
-        let count = await models.customerKyc.findAll({
-            where: searchQuery,
-            include: includeArray,
-        });
-        if (getAppliedKyc.length == 0) {
-            return res.status(200).json({ data: [] })
+    // if (req.userData.userTypeId == 6) {
+    //     customerKycClassification = {
+    //         kycStatusFromCce: { [Op.in]: ["approved", 'pending', 'incomplete', 'rejected'] },
+    //     }
+    // } else {
+    //     customerKycClassification = {
+    //         kycStatusFromCce: { [Op.in]: ['approved'] },
+    //     }
+    // }
+
+    const includeArray = [
+        {
+            model: models.customerKycClassification,
+            as: 'customerKycClassification',
+            required: false,
+            // where: customerKycClassification,
+            attributes: ['kycStatusFromCce', 'reasonFromCce', 'kycStatusFromOperationalTeam', 'reasonFromOperationalTeam', 'scrapKycStatusFromCce', 'scrapReasonFromCce', 'scrapKycStatusFromOperationalTeam', 'scrapReasonFromOperationalTeam']
+        },
+        {
+            model: models.customer,
+            as: 'customer',
+            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'kycStatus', 'customerUniqueId', 'moduleId', 'userType', 'scrapKycStatus'],
+            where: internalBranchWhere,
+            include: {
+                model: models.appraiserRequest,
+                as: 'appraiserRequest',
+            }
         }
-        return res.status(200).json({ data: getAppliedKyc, count: count.length })
+    ]
 
-    
+    let user = await models.user.findOne({ where: { id: req.userData.id } });
+
+    // if (user.userTypeId == 5) {
+    //     searchQuery.isVerifiedByCce = true
+    // }
+
+    let getAppliedKyc = await models.customerKyc.findAll({
+        where: searchQuery,
+        subQuery: false,
+        attributes: ['id', 'customerId', 'createdAt', 'updatedAt'],
+        order: [["updatedAt", "DESC"], [models.customer, models.appraiserRequest, 'id', 'DESC']],
+        offset: offset,
+        limit: pageSize,
+        include: includeArray
+    })
+    let count = await models.customerKyc.findAll({
+        where: searchQuery,
+        include: includeArray,
+    });
+    if (getAppliedKyc.length == 0) {
+        return res.status(200).json({ data: [] })
+    }
+    return res.status(200).json({ data: getAppliedKyc, count: count.length })
+
+
 
 
 }
