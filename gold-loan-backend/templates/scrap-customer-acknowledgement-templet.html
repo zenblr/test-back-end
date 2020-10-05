@@ -2,31 +2,205 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href={{bootstrapCss}}>
-    <style>
-         html{zoom:0.75;}
-        .tableHead {
-            width: 20%;
-            height: 40px;
-        }
 
-        body {
-            font-size: 13px !important;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href={{bootstrapCss}}>
+  <style>
+    html {
+      zoom: 0.75;
+    }
+
+    .tableHead {
+      width: 20%;
+      height: 40px;
+    }
+
+    body {
+      font-size: 13px !important;
+    }
+  </style>
 </head>
 
 <body>
-    <script src={{jqueryJs}}></script>
-    <script src={{popperJs}}></script>
-    <script src={{bootstrapJs}}></script>
-    <div class="container py-5 pr-5 pl-5">
+  <script src={{jqueryJs}}></script>
+  <script src={{popperJs}}></script>
+  <script src={{bootstrapJs}}></script>
 
-        <h3 class="text-center"><b>Customer Acknowledgement</b></h3>
+  <div class="container py-5 pr-5">
+    <div class="py-3">
+        {{#each acknowledgementData}}
+        <div class="row">
+            <div class="col-10 text-center m-auto">
+                <div class="text-left">
+                    <div><span>GST: </span><span>{{this.gstNo}}</span></div>
+                    <div class="pt-3"><span>HSN Code: </span><span></span></div>
+                </div>
+                <p class="pt-3"><b class="text-center">AUGMONT PRIVATE LIMITED</b><br>
+                    <span>3rd Floor, 115/121, BULLION HOUSE, TAMBAKATA LANE,PYDHONIE, Mumbai City, Maharashtra,
+                        400003</span><br>
+                    <span>Contact Number: xxxxxxx Email: xxxxx</span>
+                </p>
+                <br>
+                <h6 class="text-center"><u><b>PURITY TESTING / MELTING CONSENT FORM</b></u></h6>
+            </div>
+        </div>
+        <div class="row text-left">
+            <div class="col-12 container">
+                <div class="row pt-3">
+                    <div class="col-10 m-auto">
+                        <span>Name : </span>
+                        <span><u>{{this.customerName}}</u></span>
+                    </div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col-10 m-auto">
+                        <span>Address : </span>
+                        <span><u>{{this.customerAddress}}</u></span>
+                    </div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col-10 m-auto">
+                        <span>Phone No : </span>
+                        <span><u>{{this.customerMobileNo}}</u></span>
+                    </div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col-10 m-auto">
+                        <span>Passport number/PAN card/Driving license/Aadhar card :
+                        </span>
+                        <span><u>{{this.addressProofNo}}</u></span>
+                    </div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col-10 m-auto">
+                        <span>Issuing authority : </span>
+                        <span><u>{{this.issuingAuthority}}</u></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row pt-3">
+            <div class="col-10 m-auto">
+                <p>I
+                    <span><u>{{this.customerName}}</u></span>
+                    herby request/consent Augmont private limited to do purity test/Melting of the ornaments described
+                    below:</p>
+            </div>
+        </div>
+        {{/each}}
+        <div class="row pt-3">
+            <div class="col-10 m-auto">
+                <p><b>Description of ornaments:</b></p>
+                <table class="align-top text-center table-bordered"
+                    style="width: 100%;margin:0;font-weight: 500;table-layout: fixed;border: 1px solid #b4b4b4;">
+                    <tr >
+                        <th style="width: 10%">sr.No</th>
+                        <th style="width: 50%; word-wrap: break-word">Description</th>
+                        <th style="width: 20%">Quantity (no's)</th>
+                        <th style="width: 20%">Gross weight (gms)</th>
+                    </tr>
+                    {{#each ornamentData}}
+                    <tr>
+                        <td>{{this.srNo}}</td>
+                        <td>{{this.ornamentName}}</td>
+                        <td>{{this.quantity}}</td>
+                        <td>{{this.grossWeight}}</td>
+                    </tr>
+                    {{else}}
+                    <br>
+                    {{/each}}
+                </table>
+            </div>
+        </div>
+        <div class="row py-3">
+            <div class="col-10 m-auto" style="overflow-wrap: break-word;">
+                <ol type="A">
+                    <li>I truly declare and confirm that I am the absolute owner of the gold ornaments mentioned above
+                        which is
+                        free from any third party claim and that The said item(s) are not derived from, or been created
+                        by, as a
+                        result of activity which is either illegal or immoral in either the jurisdiction of India or any
+                        other
+                        country.
+                    </li>
+                    <li>I am desirous of selling the said ornament after ascertaining its actual purity. I am
+                        authorizing
+                        Augmont private limited to adopt any testing methods, including melting of the ornaments, to
+                        ascertain the
+                        actual purity of ornaments.</li>
+                    <li>I request Augmont private limited to remove any stone or any impurities or hindrance while
+                        testing the
+                        purity of the ornaments for the purpose of arriving at an accurate determination of the value of
+                        the
+                        ornaments.
+                    </li>
+                    <li>I declare that there are no precious or valuable stone abandoned in the said gold ornaments.
+                        Further, I
+                        understand that there is a possibility of damage caused to any abandoned stone while separating
+                        the same
+                        before melting the ornament and Augmont private limited shall not be held liable or responsible
+                        for the
+                        same.
+                    </li>
+                    <li>I am aware that Augmont private Is equipped with facilities to ascertain the purity of gold
+                        ornaments
+                        and hence, I request and authorize Augmont Private limited to do purity test of this said
+                        ornament by
+                        melting the same and then testing by using XRF Machine or any other method to arrive at purity
+                        of the
+                        ornaments.</li>
+                    <li>I am ready to pay the melting charges as may be fixed by Augmont Private limited.
+                    </li>
+                    <li>I agree and undertake to receive back the ornament in the form it assumes post its
+                        testing/melting, as I
+                        am aware that once the stone are removed from the gold ornament and/or if the same is melted, it
+                        cannot be
+                        restored to the its original shape/weight/ purity.
+                    </li>
+                    <li>Post such melting, if the price offered by Augmont private limited for purchasing the same is
+                        not
+                        acceptable to me, I agree and undertake to receive back the ornament in the form its assume post
+                        melting,
+                        as I am aware that the gold ornament once melted cannot be restored to its original
+                        shape/weight/ purity.
+                    </li>
+                    <li>I reiterate that, the said ornaments are being melted as per my request and I hereby accept all
+                        responsibility and consequences towards such Testing/Melting by Augmont private Limited and
+                        further,
+                        Augmont Private limited shall not be held liable or responsible for any claim or damage of
+                        whatsoever
+                        nature (including any claim from any third party or otherwise) for the loss off
+                        shape/weight/purity/Value
+                        of my said ornaments.
+                    </li>
+                </ol>
+            </div>
+        </div>
+        {{#each acknowledgementData}}
+        <div class="row pt-4">
+          <div class="col-10 m-auto">
+            <div class="row">
+              <div class="col-4 "><b>Date: </b><u>{{this.date}}</u></div>
+              <div class="col-4"></div>
+              <div class="col-4 text-right"><b>Signature</b>__________</div>
+            </div>
+          </div>
+           
+        </div>
+        <div class="row">
+            <div class="col-10 m-auto"><b>CIN</b><span>__________</span></div>
+        </div>
+        {{/each}}
 
+        <div class="row">
+          <div class="col-10 m-auto">
+            <p>Registered Address:  AUGMONT PRIVATE LIMITED 3rd Floor, 115/121, BULLION HOUSE, TAMBAKATA LANE,PYDHONIE, Mumbai City, Maharashtra, 400003 Contact Number xxxxxxx Email xxxxx
+            </p>
+          </div>
+        </div>
     </div>
+</div>
 </body>
 
 </html>

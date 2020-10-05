@@ -22,15 +22,9 @@ export class PartPaymentLogDialogComponent implements OnInit {
       this.partPaymentHistory = res.data
       let payments = this.partPaymentHistory
       payments.forEach(element => {
-        // let sum = 0
-        // element.transactionSplitUp.forEach(value => {
-        //   sum += Number(value.payableOutstanding)
-        //   console.log(sum)
-        // });
         let sum = element.transactionSplitUp.reduce((acc, val) => acc + Number(val.payableOutstanding), 0)
         this.totalPartPayment += sum
       });
-      console.log(this.totalPartPayment)
 
 
     })

@@ -35,6 +35,20 @@ exports.loanRequest = async (req, res, next) => {
         isNewLoanFromPartRelease = false
     }
 
+    let customerDetails = await models.customer.findOne({ where: { id: customerId } })
+
+    let getAppraiserRequest = await models.appraiserRequest.findOne({ where: { id: appraiserRequestId, appraiserId: appraiserId } });
+
+    if (check.isEmpty(getAppraiserRequest)) {
+        return res.status(400).json({ message: `This customer is not assign to you` })
+    }
+
+    let getCustomer = await models.customer.findOne({ where: { id: getAppraiserRequest.customerId } })
+
+    if (getCustomer.kycStatus != "approved") {
+        return res.status(400).json({ message: 'This customer Kyc is not completed' })
+    }
+
 
     let loanData = await sequelize.transaction(async t => {
         if (isEdit) {
@@ -288,17 +302,21 @@ exports.loanRequest = async (req, res, next) => {
                 var loanUniqueId = null;
                 //secured loan Id
                 loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+                let loanSendId = loanUniqueId
 
                 await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { id: loanId }, transaction: t })
-            }
-            if (loanDetail.unsecuredLoanId != null) {
-                if (loanDetail.unsecuredLoanId.loanUniqueId == null) {
-                    var unsecuredLoanUniqueId = null;
-                    // unsecured loan Id
-                    unsecuredLoanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
-                    await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: loanDetail.unsecuredLoanId }, transaction: t });
+                if (loanDetail.unsecuredLoanId != null) {
+                    if (loanDetail.unsecuredLoanId.loanUniqueId == null) {
+                        var unsecuredLoanUniqueId = null;
+                        // unsecured loan Id
+                        unsecuredLoanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+                        await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: loanDetail.unsecuredLoanId }, transaction: t });
+                        loanSendId = `secured Loan ID ${loanUniqueId}, unsecured Loan ID ${unsecuredLoanUniqueId}`
+                    }
                 }
+                await sendMessageLoanIdGeneration(customerDetails.mobileNumber, customerDetails.firstName, loanSendId)
             }
+
         } else {
             let stageId = await models.loanStage.findOne({ where: { name: 'appraiser rating' }, transaction: t })
 
@@ -340,3 +358,163 @@ async function getSchemeSlab(schemeId, loanId) {
     return newSlab
 }
 
+//FUNCTION FOR PRINT DETAILS
+exports.getLoanDetailsForPrint = async (req, res, next) => {
+    let { customerLoanId } = req.query
+    let includeArray = [
+        {
+            model: models.customerLoan,
+            as: 'customerLoan',
+            attributes: ['id', 'loanUniqueId', 'loanAmount', 'interestRate', 'loanType', 'unsecuredLoanId', 'partnerId', 'schemeId'],
+            include: [
+                {
+                    model: models.scheme,
+                    as: 'scheme',
+                    attributes: ['penalInterest', 'schemeName']
+                }, {
+                    model: models.partner,
+                    as: 'partner',
+                    attributes: ['name']
+                },
+            ]
+        },
+        {
+            model: models.customerLoanBankDetail,
+            as: 'loanBankDetail',
+            attributes: ['accountHolderName', 'accountNumber', 'ifscCode', 'passbookProof']
+        },
+        {
+            model: models.customerLoanNomineeDetail,
+            as: 'loanNomineeDetail',
+            attributes: ['nomineeName', 'nomineeAge', 'relationship']
+        },
+        {
+            model: models.customer,
+            as: 'customer',
+            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber'],
+            include: [
+                {
+                    model: models.customerKycPersonalDetail,
+                    as: 'customerKycPersonal',
+                    attributes: ['dateOfBirth', 'identityProofNumber']
+                },
+                {
+                    model: models.customerKycAddressDetail,
+                    as: 'customerKycAddress',
+                    attributes: ['address', 'pinCode'],
+                    include: [
+                        {
+                            model: models.state,
+                            as: 'state',
+                            attributes: ['name']
+                        }, {
+                            model: models.city,
+                            as: 'city',
+                            attributes: ['name']
+                        }]
+                }
+            ]
+        },
+        {
+            model: models.customerLoanOrnamentsDetail,
+            as: 'loanOrnamentsDetail',
+            attributes: ['quantity', 'grossWeight', 'netWeight', 'deductionWeight', 'purityTest'],
+            include: [
+                {
+                    model: models.ornamentType,
+                    as: "ornamentType",
+                    attributes: ['name']
+                }
+            ]
+        },
+        {
+            model: models.internalBranch,
+            as: 'internalBranch',
+            attributes: ['name']
+        }
+
+    ]
+
+    let customerLoanDetail = await models.customerLoanMaster.findOne({
+        where: { id: customerLoanId },
+        order: [
+            [models.customerLoan, 'id', 'asc'],
+        ],
+        attributes: ['id', 'tenure', 'loanStartDate', 'loanEndDate', 'isUnsecuredSchemeApplied', 'processingCharge'],
+        include: includeArray
+    });
+
+    let ornaments = [];
+    if (customerLoanDetail.loanOrnamentsDetail.length != 0) {
+        for (let ornamentsDetail of customerLoanDetail.loanOrnamentsDetail) {
+            ornaments.push({
+                ornamentType: ornamentsDetail.ornamentType.name,
+                quantity: ornamentsDetail.quantity,
+                grossWeight: ornamentsDetail.grossWeight,
+                netWeight: ornamentsDetail.netWeight,
+                deduction: ornamentsDetail.deductionWeight
+            })
+        }
+    }
+
+    let customerAddress = []
+    if (customerLoanDetail.customer.length != 0) {
+        for (let address of customerLoanDetail.customer.customerKycAddress) {
+            customerAddress.push({
+                address: address.address,
+                pinCode: address.pinCode,
+                state: address.state.name,
+                city: address.city.name
+            })
+        }
+        customerLoanDetail.customerAddress = customerAddress
+    }
+    var d = new Date(customerLoanDetail.customer.customerKycPersonal.dateOfBirth)
+    dateOfBirth = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+    //console.log(customerLoanDetail.customerLoan[1])
+    let customerUnsecureLoanData = [];
+    if (customerLoanDetail.isUnsecuredSchemeApplied) {
+        customerUnsecureLoanData = await [{
+            Name: customerLoanDetail.customer.firstName + " " + customerLoanDetail.customer.lastName,
+            dob: dateOfBirth,
+            contactNumber: customerLoanDetail.customer.mobileNumber,
+            startDate: customerLoanDetail.loanStartDate,
+            customerAddress: `${customerLoanDetail.customerAddress[0].address},${customerLoanDetail.customerAddress[0].pinCode},${customerLoanDetail.customerAddress[0].state},${customerLoanDetail.customerAddress[0].city}`,
+            customerId: customerLoanDetail.customer.customerUniqueId,
+            loanTenure: customerLoanDetail.tenure,
+            endDate: customerLoanDetail.loanEndDate,
+            loanNumber: customerLoanDetail.customerLoan[1].loanUniqueId,
+            loanAmount: customerLoanDetail.customerLoan[1].loanAmount,
+            loanScheme: customerLoanDetail.customerLoan[1].scheme.schemeName,
+            penalCharges: customerLoanDetail.customerLoan[1].scheme.penalInterest,
+            interestRate: customerLoanDetail.customerLoan[1].interestRate,
+            processingFee: customerLoanDetail.processingCharge,
+            branch: customerLoanDetail.internalBranch.name,
+            aadhaarNumber: customerLoanDetail.customer.customerKycPersonal.identityProofNumber
+        }]
+    }
+    //console.log(customerUnsecureLoanData,'unsecure')
+    var customerSecureLoanData = await [{
+        partnerName: customerLoanDetail.customerLoan[0].partner.name,
+        Name: customerLoanDetail.customer.firstName + " " + customerLoanDetail.customer.lastName,
+        dob: dateOfBirth,
+        contactNumber: customerLoanDetail.customer.mobileNumber,
+        nomineeDetails: `${customerLoanDetail.loanNomineeDetail[0].nomineeName}, ${customerLoanDetail.loanNomineeDetail[0].nomineeAge}, ${customerLoanDetail.loanNomineeDetail[0].relationship}`,
+        startDate: customerLoanDetail.loanStartDate,
+        customerAddress: `${customerLoanDetail.customerAddress[0].address},${customerLoanDetail.customerAddress[0].pinCode},${customerLoanDetail.customerAddress[0].state},${customerLoanDetail.customerAddress[0].city}`,
+        interestRate: customerLoanDetail.customerLoan[0].interestRate,
+        customerId: customerLoanDetail.customer.customerUniqueId,
+        loanNumber: customerLoanDetail.customerLoan[0].loanUniqueId,
+        loanAmount: customerLoanDetail.customerLoan[0].loanAmount,
+        loanTenure: customerLoanDetail.tenure,
+        end_Date: customerLoanDetail.loanEndDate,
+        loanScheme: customerLoanDetail.customerLoan[0].scheme.schemeName,
+        penalCharges: customerLoanDetail.customerLoan[0].scheme.penalInterest,
+        processingFee: customerLoanDetail.processingCharge,
+        branch: customerLoanDetail.internalBranch.name,
+        aadhaarNumber: customerLoanDetail.customer.customerKycPersonal.identityProofNumber,
+        ornaments
+    }];
+    //console.log(customerSecureLoanData,'secure)
+    return res.status(200).json({ customerSecureLoanData, customerUnsecureLoanData })
+}

@@ -42,7 +42,12 @@ exports.submitAppKyc = async (req, res, next) => {
         return res.status(400).json({ message: "Identity Proof Number already exists! " })
     }
     if (panCardNumber) {
-        let findPanCardNumber = await models.customer.findOne({ where: { panCardNumber: panCardNumber } });
+        let findPanCardNumber = await models.customer.findOne({
+            where: {
+                id: { [Op.not]: customerId },
+                panCardNumber: panCardNumber
+            }
+        });
         if (!check.isEmpty(findPanCardNumber)) {
             return res.status(400).json({ message: "Pan Card Number already exists! " });
         }
@@ -140,7 +145,7 @@ exports.editAppKyc = async (req, res, next) => {
             return res.status(400).json({ message: "Pan Card Number already exists! " })
         }
     }
-    
+
     await sequelize.transaction(async (t) => {
         let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
 
@@ -197,6 +202,9 @@ exports.getAssignedCustomer = async (req, res, next) => {
     let { search, offset, pageSize } = paginationWithFromTo(req.query.search, req.query.from, req.query.to);
     let id = req.userData.id;
     let query = {}
+
+    let goldModule = await models.module.findOne({ where: { moduleName: 'gold loan' } })
+
     let searchQuery = {
         [Op.and]: [query, {
             [Op.or]: {
@@ -205,7 +213,8 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
             },
         }],
-        appraiserId: id
+        appraiserId: id,
+        moduleId: goldModule.id
     };
     let includeArray = [
         {
@@ -259,14 +268,17 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 {
                     model: models.customerLoan,
                     as: 'customerLoan',
-                    attributes: ['id'],
-                    where: { loanType: 'secured' }
                 },
                 {
                     model: models.customerLoanDocument,
                     as: 'customerLoanDocument',
                     attributes: { exclude: ['createdAt', 'modifiedBy', 'createdAt', 'updatedAt', 'isActive'] },
 
+                },
+                {
+                    model: models.loanStage,
+                    as: 'loanStage',
+                    attributes: ['id', 'name']
                 }
             ]
         }
@@ -274,7 +286,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
 
     let data = await models.appraiserRequest.findAll({
         where: searchQuery,
-        attributes: ['id','appraiserId', 'appoinmentDate', 'startTime', 'endTime'],
+        attributes: ['id', 'appraiserId', 'appoinmentDate', 'startTime', 'endTime'],
         subQuery: false,
         include: includeArray,
         order: [
@@ -299,4 +311,59 @@ exports.getAssignedCustomer = async (req, res, next) => {
     }
 
 
+}
+
+exports.checkDuplicatePan = async (req, res, next) => {
+    let { customerId, panCardNumber } = req.body
+
+    let checkPan = await models.customer.findOne({
+        where: { panCardNumber: panCardNumber }
+    })
+    if (customerId == null) {
+        if (!check.isEmpty(checkPan)) {
+            return res.status(400).json({ message: 'Duplicate PAN card' })
+        } else {
+            return res.status(200).json({ message: 'success' })
+        }
+    } else {
+        if (checkPan && checkPan.id != customerId) {
+            return res.status(400).json({ message: 'Duplicate PAN card' })
+        } else {
+            return res.status(200).json({ message: 'success' })
+        }
+    }
+}
+
+
+exports.checkDuplicateAadhar = async (req, res, next) => {
+    let { customerId, identityProofNumber } = req.body
+
+    let checkAadhar = await models.customerKycPersonalDetail.findOne({
+        where: { identityProofNumber: identityProofNumber }
+    })
+    if (customerId == null) {
+        if (!check.isEmpty(checkPan)) {
+            return res.status(400).json({ message: 'Duplicate Aadhar card' })
+        } else {
+            return res.status(200).json({ message: 'success' })
+        }
+    } else {
+        if (checkAadhar.customerId != customerId) {
+            return res.status(400).json({ message: 'Duplicate Aadhar card' })
+        } else {
+            return res.status(200).json({ message: 'success' })
+        }
+    }
+}
+
+exports.checkLoanAppraiser = async (req, res, next) => {
+    let { appraiserRequestId } = req.body
+
+    let appraiserId = req.userData.id;
+    let getAppraiserRequest = await models.appraiserRequest.findOne({ where: { id: appraiserRequestId, appraiserId: appraiserId } });
+
+    if (check.isEmpty(getAppraiserRequest)) {
+        return res.status(400).json({ message: `This customer is not assign to you` })
+    }
+    return res.status(200).json({ message: 'success' })
 }

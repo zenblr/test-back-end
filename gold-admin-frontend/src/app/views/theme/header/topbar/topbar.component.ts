@@ -45,6 +45,7 @@ import { ReasonsService } from '../../../../core/masters/reasons/services/reason
 import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
 import { LeadSourceService } from '../../../../core/masters/lead-source/services/lead-source.service';
 import { PacketTrackingService } from '../../../../core/loan-management';
+import { ScrapPacketTrackingService } from '../../../../core/scrap-management';
 import { LoanRepaymentService } from '../../../../core/account/loan-repayment/services/loan-repayment.service';
 import { LoanDisbursementService } from '../../../../core/account/loan-disbursement/services/loan-disbursement.service';
 import { ShopService, ShoppingCartService, OrdersService } from '../../../../core/broker';
@@ -148,6 +149,7 @@ export class TopbarComponent implements OnInit {
 		private leadSourceService: LeadSourceService,
 		private shopService: ShopService,
 		private packetTrackingService: PacketTrackingService,
+		private scrapPacketTrackingService: ScrapPacketTrackingService,
 		private loanRepaymentService: LoanRepaymentService,
 		private loanDisbursementService: LoanDisbursementService,
 		private shoppingCartService: ShoppingCartService,
@@ -775,15 +777,33 @@ export class TopbarComponent implements OnInit {
 			this.filterName = 'deposit';
 			this.filterWidth = '400px';
 		}
-
 		if (this.path == "packet-tracking") {
 			this.filterName = "packet-tracking"
 			this.globalMap = true;
-
+			this.showfilter = true
+			this.filterName = 'packet-tracking';
+			this.filterWidth = '400px';
 		}
-
+		if (location.href.includes('/scrap-management/packet-tracking')) {
+			this.filterName = "scrap-packet-tracking"
+			this.globalMap = false;
+			this.showfilter = true;
+			this.filterWidth = '400px';
+		}
 		if (location.href.includes('/admin/global-map')) {
 			this.showBackButton = true;
+		}
+		if (location.href.includes('/admin/loan-management/view-location/')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/admin/user-management/partner/view-schemes/')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/admin/loan-management/loan-transfer/' && '?action=view')) {
+			this.showBackButton = true;
+		}
+		if (this.path == "registered-customers") {
+			this.showInput = true;
 		}
 	}
 
@@ -999,6 +1019,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "deposit") {
 			this.depositService.applyFilter.next(data)
+		}
+		if (this.path == "packet-tracking") {
+			this.packetTrackingService.applyFilter.next(data)
+		}
+		if (location.href.includes('/scrap-management/packet-tracking')) {
+			this.scrapPacketTrackingService.applyFilter.next(data)
 		}
 	}
 

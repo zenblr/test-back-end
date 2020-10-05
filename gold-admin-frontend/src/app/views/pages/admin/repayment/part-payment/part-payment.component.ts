@@ -41,12 +41,12 @@ export class PartPaymentComponent implements OnInit {
   ngOnInit() {
     this.masterLoanId = this.route.snapshot.params.id
     this.getPreviousPartPaymentInfo(this.masterLoanId)
+    this.partPayment()
   }
 
   getPreviousPartPaymentInfo(id) {
     this.partPaymentService.getPreviousPartPaymentInfo(id).subscribe(res => {
       this.loanDetails = res.data
-
       this.ref.detectChanges();
     })
   }

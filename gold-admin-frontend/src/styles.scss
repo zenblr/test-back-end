@@ -350,6 +350,10 @@ input[type="number"] {
 .text-danger {
 	color: #ff7272;
 }
+.text-grey {
+	color: grey;
+}
+
 .kt-portlet .kt-portlet__body {
 	padding: 5px 15px !important;
 }
@@ -774,4 +778,8 @@ mat-header-row {
 	pointer-events: none;
 	margin-top: -65px;
 	margin-left: -7px;
+}
+
+.mat-tooltip {
+	font-size: 12px !important;
 }

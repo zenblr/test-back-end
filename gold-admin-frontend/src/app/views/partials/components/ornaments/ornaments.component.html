@@ -1,19 +1,26 @@
 <!-- <kt-modal-header *ngIf="!viewOnly" [title]='"KYC Details"' (action)="action()"></kt-modal-header> -->
 <kt-portlet>
     <!-- <kt-portlet-header> -->
-    <kt-modal-header [title]='data.packetView ? "Packet Details":"Ornament Details"' (action)="close($event)" *ngIf="data.modal"></kt-modal-header>
+    <kt-modal-header [title]='data.packetView ? "Packet Details":"Ornament Details"' (action)="close($event)"
+        *ngIf="data.modal || data.scrapModal"></kt-modal-header>
     <!-- </kt-portlet-header> -->
     <div class="kt-padding-l-10 kt-padding-r-10" style="background: #fff">
         <div *ngIf="data.packetView" class="row kt-padding-t-10 kt-padding-b-10 kt-padding-l-35">
             <div class="col-2 form-label">
                 Number of Packets: {{ data.modalData.length }}
             </div>
-            <div class="col-3">
+            <div class="col-3" *ngIf="data.modal">
                 <select class="form-control" (change)="showPacketOrnament($event)">
                     <option [value]="i" [selected]="i == 0" *ngFor="let packet of data.modalData; index as i">
                         {{packet.packetUniqueId | uppercase}}
                     </option>
                 </select>
+            </div>
+            <div class="col-3 align-self-center" *ngIf="data.scrapModal">
+                <ng-container *ngFor="let packet of data.modalData; last as l">
+                    <span>{{packet.packetUniqueId | uppercase}}</span>
+                    <span *ngIf="!l">, &nbsp;</span>
+                </ng-container>
             </div>
         </div>
         <mat-tab-group [formGroup]="ornamentsForm" class="position-relative" [(selectedIndex)]="selected">
@@ -267,9 +274,10 @@
                                                 <span *ngIf="ornament.controls.purityReading.errors?.required">Field
                                                     Required</span>
                                             </mat-error>
-                                            <mat-error *ngIf="ornament.controls.purityReading.errors?.pattern && ornament.controls.purityReading.touched">
+                                            <mat-error
+                                                *ngIf="ornament.controls.purityReading.errors?.pattern && ornament.controls.purityReading.touched">
                                                 Invalid Number
-                                     </mat-error>
+                                            </mat-error>
                                         </div>
                                     </div>
                                 </div>
@@ -281,7 +289,7 @@
                                                 machine reading in %)</label>
                                         </div>
                                         <div class="col-8">
-                                            <input type="text" class="form-control" placeholder= "90"
+                                            <input type="text" class="form-control" placeholder="90"
                                                 formControlName="approxPurityReading" ktZeroToHundredWhole
                                                 [class.isError]="ornament.controls.approxPurityReading.touched && ornament.controls.approxPurityReading.invalid"
                                                 (input)="calculateScrapAmount(idx)">
@@ -291,9 +299,10 @@
                                                     *ngIf="ornament.controls.approxPurityReading.errors?.required">Field
                                                     Required</span>
                                             </mat-error>
-                                            <mat-error *ngIf="ornament.controls.approxPurityReading.errors?.pattern && ornament.controls.approxPurityReading.touched">
+                                            <mat-error
+                                                *ngIf="ornament.controls.approxPurityReading.errors?.pattern && ornament.controls.approxPurityReading.touched">
                                                 Invalid Number
-                                     </mat-error>
+                                            </mat-error>
                                         </div>
                                     </div>
                                 </div>
@@ -615,7 +624,13 @@
                                         </div>
                                         <div class="col-8">
                                             <input type="text" class="form-control" placeholder="100.00"
-                                                formControlName="loanAmount" readonly>
+                                                formControlName="loanAmount" readonly
+                                                [class.isError]="ornament.controls.loanAmount.touched && ornament.controls.loanAmount.invalid">
+                                            <mat-error
+                                                *ngIf="ornament.controls.loanAmount.touched && ornament.controls.loanAmount.invalid">
+                                                <span *ngIf="ornament.controls.loanAmount.errors?.required">Field
+                                                    Required</span>
+                                            </mat-error>
                                         </div>
                                     </div>
                                 </div>
@@ -670,23 +685,15 @@
     </div>
 
 
-    <div class="row kt-margin-t-10" *ngIf="!data?.modal">
+    <div class="row kt-margin-t-10" *ngIf="!(data?.modal || data.scrapModal)">
         <div class="col-12">
             <mat-divider></mat-divider>
         </div>
     </div>
 
-    <div class="row justify-content-center" *ngIf="!data?.modal">
-        <!-- <div class="col-4 py-2" *ngIf="scrapIds">
-        <h3 class="text-center my-3" *ngIf="meltingOrnament">
-            <b *ngIf="buttonValue == 'Pay Processing Charges'">
-                Processing Charges - <span class="currency">
-                    {{'1000' | indianCurrencyFormat}}</span>
-            </b>
-        </h3>
-    </div> -->
-        <div class="col-12 py-2">
-            <h3 class="text-center my-3">
+    <div class="row justify-content-center" *ngIf="!(data?.modal || data.scrapModal)">
+        <div class="col-12 py-3">
+            <h3 class="text-center m-0">
                 <b *ngIf="buttonValue == 'Pay Processing Charges'" class="float-left">
                     Processing Charges - <span class="currency">
                         {{processingCharges | indianCurrencyFormat}}</span>
@@ -699,7 +706,7 @@
         </div>
     </div>
 
-    <div class="row" *ngIf="!data?.modal">
+    <div class="row" *ngIf="!(data?.modal || data.scrapModal)">
         <div class="col-12 kt-margin-b-10">
             <mat-divider></mat-divider>
         </div>
@@ -709,7 +716,7 @@
             <kt-button [value]="buttonValue" [type]="'button'" (click)="nextAction()"></kt-button>
         </div>
     </div>
-    <button *ngIf="showAddMoreBtn" (click)="addmore()" class="addmore" [disabled]="disable" [hidden]="meltingOrnament">+
+    <button *ngIf="showAddMoreBtn" (click)="addmore()" class="addmore" [disabled]="disable || isPartRelease" [hidden]="meltingOrnament">+
         Add
         More</button>
 

@@ -9,11 +9,19 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'master_loan_id',
         },
-        packetLocationId:{
+        packetLocationId: {
             type: DataTypes.INTEGER,
             field: 'packet_location_id'
         },
-        senderType:{
+        internalBranchId: {
+            type: DataTypes.INTEGER,
+            field: 'internal_branch_id'
+        },
+        partnerBranchId: {
+            type: DataTypes.INTEGER,
+            field: 'partner_branch_id'
+        },
+        senderType: {
             type: DataTypes.STRING,
             field: 'sender_type'
         },
@@ -45,6 +53,20 @@ module.exports = (sequelize, DataTypes) => {
         packetStatus: {
             type: DataTypes.TEXT,
             field: 'packet_status'
+        },
+        status: {
+            type: DataTypes.ENUM,
+            values: ['in transit', 'incomplete', 'complete'],
+            field: 'status'
+        },
+        processingTime: {
+            type: DataTypes.STRING,
+            field: 'processing_time',
+        },
+        isDelivered: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_delivered',
+            defaultValue: false,
         }
     }, {
         freezeTableName: true,
@@ -61,6 +83,10 @@ module.exports = (sequelize, DataTypes) => {
         customerPacketTracking.belongsTo(models.customer, { foreignKey: 'customerReceiverId', as: 'customer' })
         customerPacketTracking.belongsTo(models.user, { foreignKey: 'userReceiverId', as: 'receiverUser' })
         customerPacketTracking.belongsTo(models.partnerBranchUser, { foreignKey: 'partnerReceiverId', as: 'receiverPartner' })
+        //mapping remaining hasmany in internal and partner branch
+        customerPacketTracking.belongsTo(models.internalBranch, { foreignKey: 'internalBranchId', as: 'internalBranch' })
+        customerPacketTracking.belongsTo(models.partnerBranch, { foreignKey: 'partnerBranchId', as: 'partnerBranch' })
+
     }
     return customerPacketTracking;
 }

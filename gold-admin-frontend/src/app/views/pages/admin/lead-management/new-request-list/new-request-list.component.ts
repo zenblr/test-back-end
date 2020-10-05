@@ -11,6 +11,7 @@ import { Subscription, Subject, merge } from 'rxjs';
 import { AssignAppraiserComponent } from '../../user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
 import { NewRequestAssignAppraiserComponent } from '../new-request-assign-appraiser/new-request-assign-appraiser.component';
 import { NewRequestService } from '../../../../../core/lead-management/services/new-request.service';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 @Component({
   selector: 'kt-new-request-list',
@@ -36,15 +37,21 @@ export class NewRequestListComponent implements OnInit {
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
   filteredDataList = {};
+  permission: any;
 
   constructor(
     public dialog: MatDialog,
     private newRequestService: NewRequestService,
     private dataTableService: DataTableService,
-    private router: Router
+    private router: Router,
+    private ngxPermissionsService: NgxPermissionsService
   ) { }
 
   ngOnInit() {
+
+    this.ngxPermissionsService.permissions$.subscribe(res => {
+      this.permission = res;
+    })
 
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
       tap(() => this.loadPage())
@@ -129,7 +136,8 @@ export class NewRequestListComponent implements OnInit {
 
   applyKyc(data) {
     let mobile = data.customer.mobileNumber ? data.customer.mobileNumber : ''
-    this.router.navigate(['/admin/kyc-setting'], { queryParams: { mob: mobile } });
+    let moduleId = data.moduleId
+    this.router.navigate(['/admin/kyc-setting'], { queryParams: { mob: mobile, moduleId } });
   }
 
   applyLoan(loan) {

@@ -2,12 +2,14 @@
     <kt-portlet-body>
         <div class="container">
             <form action="" [formGroup]="personalForm">
-                <div class="row justify-content-center kt-margin-t-30">
+                <div *ngIf="(customerDetails.moduleId == 3 && customerDetails.userType === 'Individual') || customerDetails.moduleId == 1"
+                    class="row justify-content-center kt-margin-t-30">
                     <div class="col-12">
                         <div class="row">
                             <div class="col-6">
                                 <div class="row">
-                                    <div class="offset-1 kt-margin-r-25 profile-div">
+                                    <div class="offset-1 kt-margin-r-25 profile-div"
+                                        [class.profileRequired]="controls.profileImage.touched && controls.profileImage.invalid">
                                         <img *ngIf="!controls.profileImg.value" class=""
                                             src="../../../../../../assets/media/icons/user.png" alt="" />
                                         <img *ngIf="controls.profileImg.value" class="profile-pic"
@@ -17,7 +19,8 @@
                                     <div class="col align-self-center">
                                         <input type="file" accept="image/*" #files class="d-none"
                                             (input)="getFileInfo($event,'profile')" />
-                                        <label (click)="webcam();" class="kt-pointer text-primary mandatory"
+                                        <label (click)="webcam();" class="kt-pointer text-primary"
+                                            [class.mandatory]="customerDetails.moduleId == 1"
                                             style="font-weight: 600;">Upload Profile
                                             Picture</label>
                                     </div>
@@ -57,7 +60,8 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-3 offset-1 form-label">
-                                        <label class="mandatory">Gender</label>
+                                        <label
+                                            [class.mandatory]="customerDetails.moduleId == 1 || customerDetails.moduleId == 3 && customerDetails.userType === 'Individual'">Gender</label>
                                     </div>
                                     <div class="col-7">
                                         <select formControlName="gender" class="form-control" (change)="ageValidation()"
@@ -110,13 +114,15 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-3 offset-1 form-label">
-                                        <label class="mandatory">Marital Status</label>
+                                        <label [class.mandatory]="customerDetails.moduleId == 1">Marital Status</label>
                                     </div>
                                     <div class="col-7">
                                         <select name="" id="" formControlName="martialStatus" class="form-control"
                                             (change)="changeMaritalStatus()"
                                             [class.isError]="controls.martialStatus.touched && controls.martialStatus.invalid">
-                                            <option value="" [selected]="true" [disabled]="true">Select Status</option>
+                                            <option value="" [selected]="true"
+                                                [disabled]="customerDetails.moduleId == 1">Select Status
+                                            </option>
                                             <option value="single">Single</option>
                                             <option value="married">Married</option>
                                             <option value="divorced">Divorced</option>
@@ -157,9 +163,10 @@
                                     <div class="col-3 offset-1 form-label">
                                         <label
                                             *ngIf="controls.martialStatus.value == 'single' || controls.martialStatus.value == 'divorced' || controls.martialStatus.value == ''"
-                                            class="mandatory">Father's Name</label>
+                                            [class.mandatory]="customerDetails.moduleId == 1">Father's Name</label>
                                         <label *ngIf="controls.martialStatus.value == 'married'" class="mandatory">
                                             Spouse Name</label>
+
                                     </div>
                                     <div class="col-7">
                                         <input type="text" formControlName="spouseName" class="form-control"
@@ -200,7 +207,8 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="offset-1 col-3 form-label">
-                                        <label class="mandatory">Alternate Mobile No.</label>
+                                        <label [class.mandatory]="customerDetails.moduleId == 1">Alternate Mobile
+                                            No.</label>
                                     </div>
                                     <div class="col-7">
                                         <input type="text" formControlName="alternateMobileNumber" class="form-control"
@@ -246,6 +254,249 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div *ngIf="customerDetails.userType === 'Corporate'" class="kt-margin-t-30">
+                    <div class="row  kt-margin-t-20">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-3 offset-1 form-label">
+                                    <label class="mandatory">Email ID</label>
+                                </div>
+                                <div class="col-7">
+                                    <input type="text" class="form-control" formControlName="email"
+                                        placeholder="abc@gmail.com"
+                                        [class.isError]="controls.email.touched && controls.email.invalid">
+                                    <mat-error *ngIf="controls.email.errors?.required && controls.email.touched">
+                                        Required field
+                                    </mat-error>
+                                    <mat-error *ngIf="controls.email.errors?.pattern && controls.email.touched">
+                                        Invalid Input
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-3 offset-1 form-label">
+                                    <label>Alternate Email ID</label>
+                                </div>
+                                <div class="col-7">
+                                    <input type="text" class="form-control" formControlName="alternateEmail"
+                                        placeholder="abc@gmail.com"
+                                        [class.isError]="controls.alternateEmail.touched && controls.alternateEmail.invalid">
+                                    <mat-error
+                                        *ngIf="controls.alternateEmail.errors?.pattern && controls.alternateEmail.touched">
+                                        Invalid Input
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row  kt-margin-t-20">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-3 offset-1 form-label">
+                                    <label>Landline Number</label>
+                                </div>
+                                <div class="col-7">
+                                    <input type="text" class="form-control" formControlName="landLineNumber" numbersOnly
+                                        [class.isError]="controls.landLineNumber.touched && controls.landLineNumber.invalid">
+                                    <mat-error
+                                        *ngIf="controls.landLineNumber.errors?.required && controls.landLineNumber.touched">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-3 offset-1 form-label">
+                                    <label class="mandatory">GSTIN Number</label>
+                                </div>
+                                <div class="col-7">
+                                    <input type="text" class="form-control" formControlName="gstinNumber"
+                                        [class.isError]="controls.gstinNumber.touched && controls.gstinNumber.invalid">
+                                    <mat-error
+                                        *ngIf="controls.gstinNumber.errors?.required && controls.gstinNumber.touched">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row  kt-margin-t-20">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-3 offset-1 form-label">
+                                    <label>Cin Number</label>
+                                </div>
+                                <div class="col-7">
+                                    <input type="text" class="form-control" formControlName="cinNumber"
+                                        [class.isError]="controls.cinNumber.touched && controls.cinNumber.invalid">
+                                    <mat-error
+                                        *ngIf="controls.cinNumber.errors?.required && controls.cinNumber.touched">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6"></div>
+                    </div>
+
+                    <div class="row kt-margin-t-20">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-3 offset-1 form-label">
+                                    <label class="">Partnership / Constitutions Deed, MOA</label>
+                                </div>
+                                <div class="col-7">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Select File"
+                                            aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
+                                            formControlName="constitutionsDeedFileName"
+                                            [class.isError]="controls.constitutionsDeedFileName.touched && controls.constitutionsDeedFileName.invalid" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                                (click)="constitutionsDeed.click()"
+                                                style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                        </div>
+                                        <input type="file" accept="image/*,application/pdf" class="d-none"
+                                            #constitutionsDeed (input)="getFileInfo($event,'constitutionsDeed')">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-3 offset-1 form-label">
+                                    <label class="mandatory">GST Certificate</label>
+                                </div>
+                                <div class="col-7">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Select File"
+                                            aria-label="Recipient's username" aria-describedby="basic-addon2" readonly
+                                            formControlName="gstCertificateFileName"
+                                            [class.isError]="controls.gstCertificateFileName.touched && controls.gstCertificateFileName.invalid" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+                                                (click)="gstCertificate.click()"
+                                                style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                        </div>
+                                        <input type="file" accept="image/*,application/pdf" class="d-none"
+                                            #gstCertificate (input)="getFileInfo($event,'gstCertificate')">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="offset-4 img-container" *ngIf="images.constitutionsDeed.length == 0">
+                                <img class="placeholder-image"
+                                    src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder">
+                            </div>
+                            <div *ngIf="images.constitutionsDeed.length > 0">
+                                <div class="row">
+                                    <div class="col-6" [class.offset-4]="images.constitutionsDeed.length == 1"
+                                        *ngFor="let img of images.constitutionsDeed, index as idx">
+                                        <div class="img-container">
+                                            <img *ngIf="!isPdf(img.URL)" class="fetched-image" [src]="img.URL" alt=""
+                                                (click)="preview(img.URL, idx)">
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                class="kt-pointer remove-icon"
+                                                (click)="removeImages(idx, 'constitutionsDeed');">
+                                            <div class="iframeWrapper" (click)="previewPdf(img.URL)">
+                                                <iframe [src]="img.URL | safe : 'resourceUrl'" height="250" width="290"
+                                                    scrolling="no" *ngIf="isPdf(img.URL)"></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="offset-4 img-container" *ngIf="images.gstCertificate.length == 0">
+                                <img class="placeholder-image"
+                                    src="../../../../../../assets/media/icons/image-placeholder.png" alt="placeholder">
+                            </div>
+                            <div *ngIf="images.gstCertificate.length > 0">
+                                <div class="row">
+                                    <div class="col-6" [class.offset-4]="images.gstCertificate.length == 1"
+                                        *ngFor="let img of images.gstCertificate, index as idx">
+                                        <div class="img-container">
+                                            <img *ngIf="!isPdf(img.URL)" class="fetched-image" [src]="img.URL" alt=""
+                                                (click)="preview(img.URL, idx)">
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                class="kt-pointer remove-icon"
+                                                (click)="removeImages(idx, 'gstCertificate');">
+                                            <div class="iframeWrapper" (click)="previewPdf(img.URL)">
+                                                <iframe [src]="img.URL | safe : 'resourceUrl'" height="250" width="290"
+                                                    scrolling="no" *ngIf="isPdf(img.URL)"></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="row">
+                        <div class="col">
+                            <div *ngIf="images.constitutionsDeed.length > 0">
+                                <div class="row">
+                                    <div class="col-6" [class.offset-4]="images.constitutionsDeed.length == 1"
+                                        *ngFor="let img of images.constitutionsDeed, index as idx">
+                                        <div class="img-container">
+                                            <img *ngIf="!isPdf(img.URL)" class="fetched-image" [src]="img.URL" alt=""
+                                                (click)="preview(img.URL, idx)">
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                class="kt-pointer remove-icon"
+                                                (click)="removeImages(idx, 'constitutionsDeed');">
+                                            <div class="iframeWrapper" (click)="previewPdf(img.URL)">
+                                                <iframe [src]="img.URL | safe : 'resourceUrl'" height="250" width="290"
+                                                    scrolling="no" *ngIf="isPdf(img.URL)"></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div *ngIf="images.gstCertificate.length > 0">
+                                <div class="row">
+                                    <div class="col-6" [class.offset-4]="images.gstCertificate.length == 1"
+                                        *ngFor="let img of images.gstCertificate, index as idx">
+                                        <div class="img-container">
+                                            <img *ngIf="!isPdf(img.URL)" class="fetched-image" [src]="img.URL" alt=""
+                                                (click)="preview(img.URL, idx)">
+                                            <img src="../../../../../assets/media/icons/cancel.svg" alt=""
+                                                class="kt-pointer remove-icon"
+                                                (click)="removeImages(idx, 'gstCertificate');">
+                                            <div class="iframeWrapper" (click)="previewPdf(img.URL)">
+                                                <iframe [src]="img.URL | safe : 'resourceUrl'" height="250" width="290"
+                                                    scrolling="no" *ngIf="isPdf(img.URL)"></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+
+
+                    <div class="kt-margin-t-20 offset-2">
+                        <kt-button [value]="'Next'" [type]="'button'" (action)="submit()"></kt-button>
                     </div>
                 </div>
             </form>

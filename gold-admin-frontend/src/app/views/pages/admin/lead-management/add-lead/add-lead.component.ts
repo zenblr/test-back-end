@@ -13,7 +13,7 @@ import { ImagePreviewDialogComponent } from '../../../../partials/components/ima
 import { LeadSourceService } from '../../../../../core/masters/lead-source/services/lead-source.service';
 import { RolesService } from '../../../../../core/user-management/roles';
 import { PdfViewerComponent } from '../../../../partials/components/pdf-viewer/pdf-viewer.component';
-
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'kt-add-lead',
   templateUrl: './add-lead.component.html',
@@ -55,7 +55,8 @@ export class AddLeadComponent implements OnInit {
     private dialog: MatDialog,
     private leadSourceService: LeadSourceService,
     private ref: ChangeDetectorRef,
-    private roleService: RolesService
+    private roleService: RolesService,
+    private toaster: ToastrService,
   ) {
     this.details = this.sharedService.getDataFromStorage()
 
@@ -202,6 +203,11 @@ export class AddLeadComponent implements OnInit {
     const stateId = this.controls.stateId.value;
     this.sharedService.getCities(stateId).subscribe(res => {
       this.cities = res.data;
+      const cityExists = this.cities.find(e => e.id === this.controls.cityId.value)
+      if (!cityExists) {
+        this.controls.cityId.reset();
+        this.controls.cityId.patchValue('');
+      }
     });
   }
 
@@ -235,7 +241,16 @@ export class AddLeadComponent implements OnInit {
 
   sendOTP() {
     const mobileNumber = this.controls.mobileNumber.value;
-    this.leadService.sendOtp({ mobileNumber, type: 'lead' }).subscribe(res => {
+    const firstName = this.controls.firstName.value;
+    const lastName = this.controls.lastName.value;
+
+    if (this.controls.firstName.invalid || this.controls.lastName.invalid) {
+      this.controls.firstName.markAsTouched()
+      this.controls.lastName.markAsTouched()
+      return
+    }
+
+    this.leadService.sendOtp({ mobileNumber, firstName, lastName, type: 'lead' }).subscribe(res => {
       if (res.message == 'Mobile number is already exist.') {
         this.toastr.errorToastr('Mobile Number already exists');
         this.mobileAlreadyExists = true;
@@ -273,6 +288,7 @@ export class AddLeadComponent implements OnInit {
       this.controls.otp.setErrors(null)
     } else if (!this.isMobileVerified) {
       this.controls.otp.setErrors({ verifyOTP: true })
+      return this.toaster.error('Mobile number not verified!')
     }
   }
 
@@ -322,6 +338,7 @@ export class AddLeadComponent implements OnInit {
             this.controls.panImage.patchValue(res.uploadFile.path)
           }
         }), catchError(err => {
+          if (err.error.message) this.toastr.errorToastr(err.error.message)
           throw err
         })).subscribe()
     }

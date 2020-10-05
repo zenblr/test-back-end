@@ -31,6 +31,7 @@ export class LoanTransferComponent implements OnInit {
   appraiserOrCCE: { value: string; name: string; }[];
   disabledForm: boolean;
   permission: any;
+  action: any;
 
   constructor(
     private custClassificationService: CustomerClassificationService,
@@ -48,7 +49,7 @@ export class LoanTransferComponent implements OnInit {
       this.permission = res
     })
     this.getReasonsList()
-    this.id = this.rout.snapshot.params.id;;
+    this.id = this.rout.snapshot.params.id;
     if (this.id) {
       this.getSingleDetails(this.id)
     }
@@ -57,6 +58,8 @@ export class LoanTransferComponent implements OnInit {
       this.appraiserOrCCE = res.apprsiserOrCCE
 
     })
+
+    this.rout.queryParams.subscribe(res => this.action = res.action)
 
 
 
@@ -181,7 +184,7 @@ export class LoanTransferComponent implements OnInit {
   getReasonsList() {
     this.custClassificationService.getReasonsList().pipe(
       map(res => {
-        console.log(res)
+        // console.log(res)
         this.reasons = res.data;
       })
     ).subscribe()
@@ -200,8 +203,12 @@ export class LoanTransferComponent implements OnInit {
 
     if (this.approvalForm.controls.reason.value == "Other") {
       this.approvalForm.controls[formControl].reset()
+      this.approvalForm.controls[formControl].setValidators([Validators.required])
+      this.approvalForm.controls[formControl].updateValueAndValidity()
     } else {
       this.approvalForm.controls[formControl].patchValue(this.approvalForm.controls.reason.value)
+      this.approvalForm.controls[formControl].setValidators([])
+      this.approvalForm.controls[formControl].updateValueAndValidity()
     }
   }
 
@@ -292,6 +299,7 @@ export class LoanTransferComponent implements OnInit {
       this.approvalForm.controls.reason.updateValueAndValidity();
       this.approvalForm.controls.reason.markAsUntouched()
       this.resetAppraiser()
+      this.clearAppraiser()
     }
   }
 
@@ -315,6 +323,7 @@ export class LoanTransferComponent implements OnInit {
       this.approvalForm.controls.reason.updateValueAndValidity();
       this.approvalForm.controls.reason.markAsUntouched()
       this.resetBM()
+      this.clearBM()
     }
   }
 

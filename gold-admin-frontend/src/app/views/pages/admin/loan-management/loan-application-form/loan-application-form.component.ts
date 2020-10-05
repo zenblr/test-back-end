@@ -39,6 +39,7 @@ export class LoanApplicationFormComponent implements OnInit {
   loanTransferdata: any;
   disbursed: boolean = false;
   partPaymentdata: any;
+  isPartRelease: any;
 
   constructor(
     public ref: ChangeDetectorRef,
@@ -75,11 +76,11 @@ export class LoanApplicationFormComponent implements OnInit {
       this.masterAndLoanIds = { loanId: res.data.id, masterLoanId: res.data.masterLoanId }
       this.loanStage = this.customerDetail.masterLoan.loanStage
       this.ornamentDetails = res.data.ornamentType
-      if(this.loanStage.id == 5){
+      if(this.loanStage.id == 5 || this.loanStage.id == 10){
         this.disbursed = true
       }
       // this.totalAmount = res.data.totalEligibleAmt
-      if (this.url == "packet-image-upload") {
+      if (this.url == "packet-image-upload" || this.loanStage.name == 'assign packet') {
         if (this.customerDetail.loanPacketDetails.length) {
           this.selected = 8;
         } else {
@@ -151,6 +152,10 @@ export class LoanApplicationFormComponent implements OnInit {
 
   partPayment(event) {
     this.partPaymentdata = event
+  }
+
+  partRelease(event){
+    this.isPartRelease =event
   }
 
   loanTransfer(event){

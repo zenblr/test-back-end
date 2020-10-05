@@ -138,7 +138,7 @@
                                                         Field Required</mat-error> -->
                                                     <!-- {{laonTransferDetails.masterLoan.loanTransfer.loanTransferStatusForBM}} -->
                                                     <select name="" id="" class="form-control"
-                                                        (change)="clearAppraiser();statusAppraiser()"
+                                                        (change)="statusAppraiser()"
                                                         [class.isError]="approvalForm.controls.loanTransferStatusForAppraiser.touched && this.approvalForm.controls.loanTransferStatusForAppraiser.invalid"
                                                         formControlName="loanTransferStatusForAppraiser">
                                                         <option value="" disabled selected>
@@ -169,8 +169,7 @@
                                                         *ngIf="controls.loanStatusForBM.invalid && controls.loanStatusForBM.touched">
                                                         Field
                                                         Required</mat-error> -->
-                                                    <select name="" id="" class="form-control"
-                                                        (change)="clearBM();statusBM()"
+                                                    <select name="" id="" class="form-control" (change)="statusBM()"
                                                         [class.isError]="approvalForm.controls.loanTransferStatusForBM.touched && this.approvalForm.controls.loanTransferStatusForBM.value =='pending'"
                                                         formControlName="loanTransferStatusForBM">
                                                         <option value="pending" disabled selected>Select Status</option>
@@ -303,7 +302,7 @@
                             </div>
                         </div>
                     </mat-tab>
-                    <mat-tab *ngxPermissionsOnly="['loanTransferDisbursal']" label="Disbursal"
+                    <mat-tab *ngIf="permission.loanTransferDisbursal || action === 'view'" label="Disbursal"
                         [formGroup]="disbursalForm" [disabled]="disabled[3]">
 
                         <div class="row justify-content-center kt-padding-t-25">
@@ -350,7 +349,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row kt-padding-t-25">
+                        <div *ngIf="action != 'view'" class="row kt-padding-t-25">
                             <div class="offset-10 col-2">
                                 <kt-button [type]="'button'" [value]="'Save'" (click)="disbursal()"></kt-button>
                             </div>

@@ -5,7 +5,8 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
 const _ = require('lodash');
-let { sendMessageAssignedCustomerToAppraiser, sendMessageCustomerForAssignAppraiser } = require('../../utils/SMS')
+let { sendMessageAssignedCustomerToAppraiser, sendMessageCustomerForAssignAppraiser } = require('../../utils/SMS');
+const { orderBy } = require('lodash');
 
 
 //FUNCTION TO ADD NEW REQUEST 
@@ -13,6 +14,49 @@ exports.addAppraiserRequest = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let { customerId, moduleId } = req.body;
+
+    let status = await models.status.findOne({ where: { statusName: "confirm" } })
+    let statusId = status.id
+
+    let checkStatusCustomer = await models.customer.findOne({
+        where: { statusId, id: customerId },
+        include: {
+            model: models.customerKyc,
+            as: 'customerKyc'
+        }
+    });
+
+    // let customerRequest = await models.appraiserRequest.findAll({
+    //     where: { customerId: customerId },
+    //     order: [['id', 'desc']]
+    // })
+
+    if (!check.isEmpty(checkStatusCustomer.customerKyc)) {
+        let oldReqModule = checkStatusCustomer.customerKyc.currentKycModuleId;
+
+        if(oldReqModule != moduleId){
+            if(moduleId == 1){
+                if(checkStatusCustomer.scrapKycStatus != "approved"){
+                    return res.status(404).json({ message: "Kindly complete your pending scrap KYC" });
+                }
+            }
+            if(moduleId == 3){
+                if(checkStatusCustomer.kycStatus != "approved"){
+                    return res.status(404).json({ message: "Kindly complete your pending loan KYC" });
+                }
+            }
+        }
+       
+
+    }
+
+
+    if (checkStatusCustomer.scrapKycStatus == "approved") {
+        if (checkStatusCustomer.userType == "Corporate") {
+            return res.status(400).json({ message: "Please create new customer since you have completed Corporate kyc" });
+        }
+    }
+
     let requestExist = await models.appraiserRequest.findOne({ where: { moduleId: moduleId, customerId: customerId, status: 'incomplete' } })
 
     if (!check.isEmpty(requestExist)) {
@@ -60,12 +104,12 @@ exports.getAllNewRequest = async (req, res, next) => {
             required: false,
             as: 'customer',
             where: { isActive: true },
-            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'kycStatus', 'internalBranchId'],
+            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'kycStatus', 'internalBranchId', 'scrapKycStatus'],
             include: [
                 {
                     model: models.customerKyc,
                     as: 'customerKyc',
-                    attributes: ['id', 'isKycSubmitted']
+                    attributes: ['id', 'isKycSubmitted', 'isScrapKycSubmitted', 'isAppliedForKyc']
                 }
             ]
         },
@@ -125,9 +169,9 @@ exports.assignAppraiser = async (req, res) => {
 
     const data = await models.appraiserRequest.update({ appraiserId, appoinmentDate, startTime, endTime, modifiedBy, isAssigned: true }, { where: { id: id } })
 
-    // await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerUniqueId);
+    await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
-    // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+    await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
 
     if (data.length === 0) {
@@ -149,9 +193,9 @@ exports.updateAppraiser = async (req, res) => {
     const data = await models.appraiserRequest.update({ appraiserId, appoinmentDate, startTime, endTime, modifiedBy, isAssigned: true }, { where: { id: id } })
     //console.log(data)
     if (requestInfo.appraiserId != appraiserId) {
-        // await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
+        await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
-        // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+        await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
     }
 

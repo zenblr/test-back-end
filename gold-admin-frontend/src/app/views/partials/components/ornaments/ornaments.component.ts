@@ -47,7 +47,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() karatArr
   @Input() customerConfirmationArr
   @Input() karatFlag
-  @Output() partPayment:EventEmitter<any> = new EventEmitter();
+  @Input() isPartRelease
+  @Output() partPayment: EventEmitter<any> = new EventEmitter();
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
   @ViewChild('stoneTouch', { static: false }) stoneTouch: ElementRef
@@ -72,8 +73,13 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   buttonValue = 'Next';
   showAddMoreBtn: Boolean = true;
   modalView: any = { details: { currentValue: { loanOrnamentsDetail: [] } }, action: { currentValue: 'edit' } };
+  scrapModalView: any = {
+    meltingDetails: { currentValue: { meltingOrnament: {} } }, action: { currentValue: 'edit' },
+    scrapIds: { currentValue: { scrapId: 0 } },
+    meltingOrnament: { currentValue: true },
+    customerConfirmationArr: { currentValue: [] },
+  };
   firstView: boolean;
-
 
   constructor(
     public fb: FormBuilder,
@@ -106,7 +112,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.getOrnamentType()
       this.setModalData()
     }
-    
+    if (this.data && this.data.scrapModal) {
+      this.showAddMoreBtn = false;
+      this.disable = true;
+      this.getOrnamentType();
+      this.setScrapModalData();
+    }
   }
 
   setModalData() {
@@ -116,6 +127,18 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.modalView.details.currentValue.loanOrnamentsDetail = this.data.modalData
     }
     this.ngOnChanges(this.modalView)
+  }
+
+  setScrapModalData() {
+    if (this.data.packetView) {
+      this.scrapModalView.scrapIds.currentValue.scrapId = this.data.scrapId;
+      this.scrapModalView.meltingDetails.currentValue.meltingOrnament = this.data.customerScrapOrnamentsDetails;
+      this.scrapModalView.meltingDetails.currentValue.finalScrapAmountAfterMelting = this.data.finalScrapAmountAfterMelting;
+      Array.prototype.push.apply(this.scrapModalView.customerConfirmationArr.currentValue, this.data.customerConfirmationArr);
+    } else {
+      this.scrapModalView.meltingDetails.currentValue.meltingOrnament = this.data.modalData;
+    }
+    this.ngOnChanges(this.scrapModalView);
   }
 
   showPacketOrnament(event) {
@@ -158,6 +181,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if(changes.isPartRelease){
+      console.log(changes.isPartRelease.currentValue)
+    }
     if (changes.ornamentType) {
       this.ornamentType = changes.ornamentType.currentValue
     }
@@ -223,9 +249,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
     if (changes.scrapIds) {
+      this.scrapIds = changes.scrapIds.currentValue;
       this.validation(0);
     }
     if (changes.meltingOrnament) {
+      this.meltingOrnament = changes.meltingOrnament.currentValue;
       const matTabHeader = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
       matTabHeader.style.display = 'none';
     }
@@ -257,6 +285,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     })
 
     this.ornamentsForm.valueChanges.subscribe(() => {
+      // console.log(this.ornamentsForm.value)
       if (this.ornamentsForm.valid) {
         this.totalAmount = 0;
         this.fullAmount = 0;
@@ -312,7 +341,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       return this.ornamentsForm.controls.ornamentData as FormArray;
   }
 
-  
+
   createPurityImageArray(purity) {
     let data = { URL: [], path: [] }
     // console.log(purity)
@@ -401,7 +430,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       purityTest: [[]],
       ltvPercent: [, [Validators.required]],
       ltvAmount: [],
-      loanAmount: [''],
+      loanAmount: ['', [Validators.required]],
       id: [],
       currentLtvAmount: [this.ltvGoldRate],
       ornamentImageData: [, Validators.required],
@@ -444,11 +473,13 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         controls.controls.ornamentImageData.updateValueAndValidity()
       controls.controls.karat.setValidators([]),
         controls.controls.karat.updateValueAndValidity()
+      controls.controls.loanAmount.setValidators([]),
+        controls.controls.loanAmount.updateValueAndValidity()
       if (this.meltingOrnament) {
         controls.controls.purityReading.setValidators([Validators.required, Validators.pattern('^[0-9][0-9]?$|^100$')]),
           controls.controls.purityReading.updateValueAndValidity()
-        controls.controls.customerConfirmation.setValidators(Validators.required),
-          controls.controls.customerConfirmation.updateValueAndValidity()
+        // controls.controls.customerConfirmation.setValidators(Validators.required),
+        //   controls.controls.customerConfirmation.updateValueAndValidity()
         controls.controls.ornamentTypeId.setValidators([]),
           controls.controls.ornamentTypeId.updateValueAndValidity()
         controls.controls.quantity.setValidators([]),
@@ -523,7 +554,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.ref.detectChanges()
   }
 
-  uploadFile(index, event, string, ) {
+  uploadFile(index, event, string) {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
@@ -760,6 +791,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         return
       }
     }
+    if (this.meltingOrnament) { 
+      const controls = this.OrnamentsData.at(0) as FormGroup;
+      controls.controls.customerConfirmation.setValidators(Validators.required),
+        controls.controls.customerConfirmation.updateValueAndValidity()
+    }
     if (this.ornamentsForm.invalid) {
       let array = this.OrnamentsData.controls
       for (let index = 0; index < array.length; index++) {
@@ -877,9 +913,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     return Array.isArray(obj)
   }
 
-close(event: Event){
-if(!event){
-  this.dialogRef.close()
-}
-}
+  close(event: Event) {
+    if (!event) {
+      this.dialogRef.close()
+    }
+  }
 }

@@ -130,7 +130,12 @@ ws.cell(11, 6, 11, 7, true).string(`${masterLoan.outstandingAmount}`).style(styl
     ws.cell(17, 13).number(0.00).style(numberStyle).style(style);
     let closingBalance = 0;
     for (let i = 0; account.length > i; i++) {
-        ws.cell(i + 18, 1).date(account[i].createdAt).style(style);
+        if(account[i].paymentDate){
+            ws.cell(i + 18, 1).date(account[i].paymentDate).style(style);
+        }else{
+            ws.cell(i + 18, 1).string('-').style(style);
+        }
+        
         ws.cell(i + 18, 2).string(account[i].description).style(style);
         ws.cell(i + 18, 3).string(account[i].referenceId).style(style);
         //

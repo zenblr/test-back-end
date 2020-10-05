@@ -125,7 +125,26 @@ module.exports = (sequelize, DataTypes) => {
         panImage: {
             type: DataTypes.TEXT,
             field: 'pan_image',
-        }
+        },
+        scrapKycStatus: {
+            type: DataTypes.ENUM,
+            field: 'scrap_kyc_status',
+            defaultValue: "pending",
+            values: ['approved', 'pending', 'rejected']
+        },
+        userType: {
+            type: DataTypes.ENUM,
+            field: 'user_type',
+            values: ['Individual', 'Corporate']
+        },
+        organizationTypeId: {
+            type: DataTypes.INTEGER,
+            field: 'organization_type_id',
+        },
+        dateOfIncorporation:{
+            type: DataTypes.DATE,
+            field: 'date_of_incorporation',
+        },
     }, {
         freezeTableName: true,
         tableName: 'customer',
@@ -163,6 +182,8 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.belongsTo(models.module, { foreignKey: 'moduleId', as: 'module' });
 
+        Customer.belongsTo(models.organizationType, { foreignKey: 'organizationTypeId', as: 'organizationType' });
+        Customer.hasOne(models.customerKycOrganizationDetail, { foreignKey: 'customerId', as: 'organizationDetail' });
 
     }
 

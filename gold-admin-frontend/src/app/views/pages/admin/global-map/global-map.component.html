@@ -34,18 +34,22 @@
                         <mat-accordion>
                             <mat-expansion-panel *ngFor="let info of mapInfo" (opened)="panelOpenState = true"
                                 (closed)="panelOpenState = false" hideToggle>
-                                <mat-expansion-panel-header>
+                                <mat-expansion-panel-header style="height: 50px !important;">
                                     <mat-panel-title>
-                                        {{info?.firstName}}&nbsp;
-                                        {{info?.lastName}}
-
+                                        {{info?.user.firstName | titlecase}}&nbsp;
+                                        {{info?.user.lastName | titlecase}}
+                                       
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
 
                                 <ng-template matExpansionPanelContent>
-                                    <div *ngFor="let loan of info.appraiserRequest">
-                                        {{loan?.masterLoan?.customerLoan[0].loanUniqueId}}
+                                    <div *ngFor="let loan of info.packetTrackingMasterloan;index as i" [ngClass]="i == 0?'p-0':'pt-2'" >
+                                        <span class="w-25">
 
+                                            {{loan?.masterLoan?.customerLoan[0]?.loanUniqueId}}
+                                        </span>
+                                        <span class="kt-padding-l-25">
+                                            <img src="../../../../../assets/media/icons/compass.svg" height="20" alt="" (click)="navigate(loan)"></span>
                                         <!-- <span *ngIf="info.masterLoan.customerLoan[1].loanUniqueId">
                                         {{info.masterLoan.customerLoan[1].loanUniqueId}}
                                     </span> -->
@@ -56,17 +60,32 @@
 
                     </div>
                     <div class="col-9">
+                        <!-- <img src="./assets/media/icons/ezgif.com-gif-maker.png" alt=""> -->
                         <agm-map [latitude]='latitude' [longitude]='longitude' [zoom]="15" [fitBounds]="true">
                             <agm-marker *ngFor="let m of markers; let i = index" [latitude]="m.lat" [longitude]="m.lng"
                                 [markerDraggable]="m.draggable" (markerClick)="clickedMarker(m.lat, m.lng, i)"
-                                [agmFitBounds]="true">
-
-                                <agm-info-window [isOpen]="m.isVisible">
+                                [agmFitBounds]="true" [iconUrl]="icon">
+                                <agm-info-window [isOpen]="m.isVisible" >
                                     <span>
                                         <strong>
                                             {{m.firstName |titlecase}}&nbsp;{{m.lastName |titlecase}} <span
                                                 *ngIf="infoToggle[i]">| {{m.trackingTime | time24to12}}</span>
                                         </strong>
+                                        <div>
+                                            <span *ngFor="let item of m.masterLoan.locationData; first as f">
+                                                <span *ngIf="f"  style="width: 75px;">
+                                                    <span
+                                                        *ngIf="item.packetLocation === 6 || item.packetLocation === 3 || item.packetLocation === 5 || item.packetLocation === 1">
+                                                        <kt-elapsed-time [startTime]="item.createdAt" [locationTracking]="false"></kt-elapsed-time>
+                                                    </span>
+                                                    <ng-container
+                                                        *ngIf="item.packetLocation === 2 && !m.masterLoan.isLoanCompleted">
+                                                        <kt-elapsed-time [startTime]="m.masterLoan?.customerLoanDisbursement[0].cr" [locationTracking]="false">
+                                                        </kt-elapsed-time>
+                                                    </ng-container>
+                                                </span>
+                                            </span>
+                                        </div>
                                     </span><br>
                                     <span *ngIf="!infoToggle[i]">
                                         <strong>Date :</strong>

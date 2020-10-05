@@ -79,13 +79,13 @@ exports.sendOtp = async (req, res, next) => {
             await models.userOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode }, { transaction: t })
         })
 
-        // if (type == "login") {
-        //     await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
-        // }else if(type == "forget"){
-        //     await forgetPasswordOtp(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
-        // }
-        let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
-        await sms.sendSms(mobileNumber, message);
+        if (type == "login") {
+            await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
+        }else if(type == "forget"){
+            await forgetPasswordOtp(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
+        }
+        // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
+        // await sms.sendSms(mobileNumber, message);
         // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`);
 
         return res.status(200).json({ message: 'Otp send to your Mobile number.', referenceCode: referenceCode });
@@ -109,7 +109,7 @@ exports.verifyOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyUser)) {
-        return res.status(400).json({ message: `Invalid otp` })
+        return res.status(400).json({ message: `Invalid OTP.` })
     }
     await sequelize.transaction(async t => {
         let verifyFlag = await models.userOtp.update({ isVerified: true }, { where: { id: verifyUser.id }, transaction: t });
@@ -126,7 +126,7 @@ exports.updatePassword = async (req, res, next) => {
     let verifyUser = await models.userOtp.findOne({ where: { referenceCode, isVerified: true } })
 
     if (check.isEmpty(verifyUser)) {
-        return res.status(400).json({ message: `Invalid otp.` })
+        return res.status(400).json({ message: `Invalid OTP.` })
     }
     let user = await models.user.findOne({ where: { mobileNumber: verifyUser.mobileNumber } });
 
@@ -250,10 +250,10 @@ exports.addInternalUser = async (req, res, next) => {
 
 exports.updateInternalUser = async (req, res, next) => {
     const id = req.params.id;
-    let { firstName, lastName, mobileNumber, email, internalBranchId, userTypeId, roleId } = req.body;
+    let { firstName, lastName, mobileNumber, email, internalBranchId, userTypeId, roleId,userUniqueId } = req.body;
     let modifiedBy = req.userData.id;
     await sequelize.transaction(async t => {
-        const user = await models.user.update({ firstName, lastName, mobileNumber, userTypeId, email, modifiedBy }, { where: { id: id }, transaction: t })
+        const user = await models.user.update({ firstName, lastName, mobileNumber, userTypeId, email, modifiedBy,userUniqueId }, { where: { id: id }, transaction: t })
         await models.userRole.destroy({ where: { userId: id }, transaction: t });
         await models.userRole.create({ userId: id, roleId }, { transaction: t });
         if (internalBranchId != null && internalBranchId != undefined) {

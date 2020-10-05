@@ -20,6 +20,7 @@ export class DisburseComponent implements OnInit {
   @Input() disbursementDetails;
   @Input() showButton;
   @Input() loanDetials;
+  @Input() scrapDetails;
   @Input() disable = false;
   @Input() disbursed = false;
   currentDate = new Date()
@@ -67,17 +68,19 @@ export class DisburseComponent implements OnInit {
             unsecuredTransactionId: changes.loanDetials.currentValue.customerLoanDisbursement[1].transactionId
           })
         }
-
         // if (this.disable) {
         //   this.disburseForm.disable()
         // }
+      }
+      if (changes.scrapDetails && changes.scrapDetails.currentValue) {
+        this.disburseForm.patchValue({
+          transactionId: changes.scrapDetails.currentValue.scrapDisbursement.transactionId,
+        })
       }
       if (this.disable) {
         this.disburseForm.disable()
       }
     }
-
-
     if (changes.scrapIds && changes.scrapIds.currentValue) {
       this.disburseForm.patchValue(this.scrapIds)
       this.getScrapBankDetails()
@@ -124,7 +127,7 @@ export class DisburseComponent implements OnInit {
       securedLoanUniqueId: [],
       unsecuredLoanUniqueId: [],
       finalAmount: [],
-      fullAmount:[]
+      fullAmount: []
     })
     this.disableSchemeRelatedField()
   }
@@ -148,6 +151,7 @@ export class DisburseComponent implements OnInit {
     this.controls.processingCharge.disable()
     this.controls.fullUnsecuredAmount.disable()
     this.controls.disbursementStatus.disable()
+    this.controls.fullSecuredAmount.disable()
   }
 
   enableSchemeRelatedField() {
@@ -158,10 +162,11 @@ export class DisburseComponent implements OnInit {
     this.controls.processingCharge.enable()
     this.controls.fullUnsecuredAmount.enable()
     this.controls.disbursementStatus.enable()
+    this.controls.fullSecuredAmount.enable()
   }
 
   getBankDetails() {
-    console.log(this.masterAndLoanIds)
+    // console.log(this.masterAndLoanIds)
     this.loanService.getBankDetails(this.masterAndLoanIds.loanId, this.masterAndLoanIds.masterLoanId).subscribe(res => {
       if (Object.keys(res.data).length) {
         this.details = res.data
@@ -291,7 +296,7 @@ export class DisburseComponent implements OnInit {
       this.loanService.disburse(this.disburseForm.value).pipe(
         map(res => {
           this.toast.success(res.message)
-          this.router.navigate(['/admin/loan-management/all-loan'])
+          this.router.navigate(['/admin/loan-management/applied-loan'])
         }),
         catchError(err => {
           if (err.error.message)
@@ -343,13 +348,15 @@ export class DisburseComponent implements OnInit {
 
     const fullUnsecuredAmount = this.controls.fullUnsecuredAmount.value ? this.controls.fullUnsecuredAmount.value : 0;
 
-    const finalAmount = this.controls.securedLoanAmount.value + fullUnsecuredAmount - this.controls.processingCharge.value
+    const finalAmount = this.controls.fullSecuredAmount.value + fullUnsecuredAmount - this.controls.processingCharge.value
 
-    const fullAmount = this.controls.securedLoanAmount.value + fullUnsecuredAmount + this.controls.processingCharge.value
+    const fullAmount = this.controls.fullSecuredAmount.value + fullUnsecuredAmount + this.controls.processingCharge.value
 
     this.controls.fullAmount.patchValue(fullAmount)
 
     this.controls.finalAmount.patchValue(finalAmount)
+
+    this.controls.finalAmount.disable()
 
     this.ref.detectChanges()
     // console.log(this.disburseForm.value)

@@ -8,7 +8,7 @@ const check = require("../../lib/checkLib");
 
 //add partner
 exports.addPartner = async (req, res, next) => {
-  const { name, commission } = req.body;
+  const { name, commission, submitPacketInInternalBranch } = req.body;
 
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
@@ -22,7 +22,7 @@ exports.addPartner = async (req, res, next) => {
   let modifiedTime = Date.now();
   await sequelize.transaction(async (t) => {
     let partnerData = await models.partner.create(
-      { name, commission, createdBy, modifiedBy },
+      { name, commission, submitPacketInInternalBranch, createdBy, modifiedBy },
       { transaction: t }
     );
     let id = partnerData.dataValues.id;
@@ -41,7 +41,7 @@ exports.addPartner = async (req, res, next) => {
 
 exports.updatePartner = async (req, res, next) => {
   const partnerId = req.params.id;
-  const { name, commission } = req.body;
+  const { name, commission, submitPacketInInternalBranch } = req.body;
   let modifiedBy = req.userData.id;
   let modifiedTime = Date.now();
 
@@ -50,7 +50,7 @@ exports.updatePartner = async (req, res, next) => {
   await sequelize.transaction(async (t) => {
 
     let updatePartnerData = await models.partner.update(
-      { name, commission, modifiedBy },
+      { name, commission, submitPacketInInternalBranch, modifiedBy },
       { where: { id: partnerId, isActive: true }, transaction: t }
     );
 

@@ -52,8 +52,12 @@ export class CustomerDetailsComponent implements OnInit {
       })).subscribe();
   }
 
-  viewLoan( masterLoanId) {
+  viewLoan(masterLoanId) {
     this.router.navigate([`/admin/customer-management/loan-details/${masterLoanId}`])
+  }
+
+  viewTransfer(masterLoanId) {
+    this.router.navigate([`/admin//loan-management/loan-transfer/${masterLoanId}`], { queryParams: { action: 'view' } })
   }
 
   viewScrap(scrap) {
@@ -61,11 +65,16 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   prepareImages() {
-    Array.prototype.push.apply(this.images, this.cutomerDetails.customerKycAddress[0].addressProofImage)
-    Array.prototype.push.apply(this.images, this.cutomerDetails.customerKycAddress[1].addressProofImage)
+    if (this.cutomerDetails.userType == 'Individual') {
+      Array.prototype.push.apply(this.images, this.cutomerDetails.customerKycAddress[0].addressProofImage)
+    } else {
+      Array.prototype.push.apply(this.images, this.cutomerDetails.customerKycAddress[0].addressProofImage)
+      Array.prototype.push.apply(this.images, this.cutomerDetails.customerKycAddress[1].addressProofImage)
+    }
     // Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycBank[0].passbookProof)
     Array.prototype.push.apply(this.images, this.cutomerDetails.customerKycPersonal.identityProofImage)
-    // console.log(this.images)
+    this.images.push(this.cutomerDetails.panImg)
+    console.log(this.images)
   }
 
   preview(value) {

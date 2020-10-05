@@ -24,6 +24,7 @@ interface marker {
 })
 export class ViewLocationComponent implements OnInit {
 
+  icon= {url: './assets/media/icons/ezgif.com-gif-maker.png', scaledSize: { width: 50, height: 50 }}
   selected: any = 0;
   latitude: number = 18.969050;
   longitude: number = 72.821180;
@@ -79,7 +80,8 @@ export class ViewLocationComponent implements OnInit {
     this.mapService.getMapReport(params).pipe(map(res => {
       if (res.data.length) {
         for (const iterator of res.data) {
-          const { latitude: lat, longitude: lng, trackingTime, address, masterLoan } = iterator
+          const { latitude: lat, longitude: lng, trackingTime, address } = iterator
+          const { masterLoan } = iterator.packetTrackingMasterloan[0]
           this.markers.push({ lat, lng, trackingTime, address, masterLoan, isVisible: true })
         }
         this.infoToggle = new Array(this.markers.length).fill(false);
@@ -92,28 +94,39 @@ export class ViewLocationComponent implements OnInit {
   }
 
   clickedMarker(latitude, longitude, index) {
+    for (let i = 0; i < this.markers.length; i++) {
+      if (i != index) {
+        this.infoToggle[i] = true
+      }
+      else {
+        this.infoToggle[index] = !this.infoToggle[index]
+      }
+    }
 
-    this.currentIndex = index;
-    if (this.previousIndex == this.currentIndex) {
-      for (let i = 0; i < this.markers.length; i++) {
-        this.markers[i].isVisible = true
-        this.infoToggle[i] = false
-      }
-      this.previousIndex = -1;
-    }
-    else {
-      for (let i = 0; i < this.markers.length; i++) {
-        if (this.currentIndex == i) {
-          this.infoToggle[i] = true
-          this.markers[i].isVisible = true
-        }
-        else {
-          this.infoToggle[i] = false
-          this.markers[i].isVisible = false
-        }
-        this.previousIndex = this.currentIndex
-      }
-    }
+
+    this.ref.detectChanges()
+
+    // this.currentIndex = index;
+    // if (this.previousIndex == this.currentIndex) {
+    //   for (let i = 0; i < this.markers.length; i++) {
+    //     this.markers[i].isVisible = true
+    //     this.infoToggle[i] = false
+    //   }
+    //   this.previousIndex = -1;
+    // }
+    // else {
+    //   for (let i = 0; i < this.markers.length; i++) {
+    //     if (this.currentIndex == i) {
+    //       this.infoToggle[i] = true
+    //       this.markers[i].isVisible = true
+    //     }
+    //     else {
+    //       this.infoToggle[i] = false
+    //       this.markers[i].isVisible = false
+    //     }
+    //     this.previousIndex = this.currentIndex
+    //   }
+    // }
 
   }
 

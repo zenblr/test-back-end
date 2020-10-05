@@ -4,10 +4,14 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DepositService } from '../../../../core/funds-approvals/deposit/services/deposit.service'
 import { map, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { DatePipe } from '@angular/common';
+import { LayoutUtilsService } from "../../../../core/_base/crud";
+
 @Component({
   selector: 'kt-payment-dialog',
   templateUrl: './payment-dialog.component.html',
-  styleUrls: ['./payment-dialog.component.scss']
+  styleUrls: ['./payment-dialog.component.scss'],
+  providers: [DatePipe]
 })
 export class PaymentDialogComponent implements OnInit {
   paymentTypeList = [{ value: 'cash', name: 'cash' }, { value: 'IMPS', name: 'IMPS' }, { value: 'NEFT', name: 'NEFT' }, { value: 'RTGS', name: 'RTGS' }, { value: 'cheque', name: 'cheque' }, { value: 'UPI', name: 'UPI' }, { value: 'gateway', name: 'payment gateway' }]
@@ -21,6 +25,8 @@ export class PaymentDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private depositService: DepositService,
     private toast: ToastrService,
+    private dataPipe: DatePipe,
+    private layoutUtilsService: LayoutUtilsService
   ) {
   }
 
@@ -52,10 +58,9 @@ export class PaymentDialogComponent implements OnInit {
         this.paymentForm.patchValue(this.data.value)
         this.paymentForm.controls.depositTransactionId.patchValue(this.data.value.transactionUniqueId);
         this.paymentForm.controls.transactionId.patchValue(this.data.value.bankTransactionUniqueId);
-        this.paymentForm.controls.depositDate.patchValue(this.data.value.depositDate);
         this.paymentForm.controls.paidAmount.patchValue(this.data.value.transactionAmont);
-        this.paymentForm.controls.paymentType.patchValue(this.data.value.paymentType);
-        this.paymentForm.controls.depositStatus.patchValue(this.data.value.depositStatus);
+        this.paymentForm.controls.paymentReceivedDate.patchValue(this.data.value.depositDate)
+        this.paymentForm.controls.depositStatus.patchValue('');
         this.paymentForm.disable();
         this.paymentForm.controls.depositStatus.enable();
         this.paymentForm.controls.paymentReceivedDate.enable();
@@ -65,6 +70,8 @@ export class PaymentDialogComponent implements OnInit {
         this.paymentForm.controls.depositStatus.disable();
         this.paymentForm.controls.paidAmount.disable();
         this.paymentForm.controls.depositTransactionId.disable();
+        this.paymentForm.controls.paymentReceivedDate.disable();
+
       }
     }
   }
@@ -79,9 +86,11 @@ export class PaymentDialogComponent implements OnInit {
           this.paymentForm.controls[key].updateValueAndValidity()
         }
         this.paymentForm.controls.paymentType.setValidators([Validators.required])
+        this.paymentForm.controls.paymentType.updateValueAndValidity()
         this.paymentForm.controls.paidAmount.setValidators([Validators.required])
+        this.paymentForm.controls.paidAmount.updateValueAndValidity()
         this.paymentForm.controls.depositDate.setValidators([Validators.required])
-        this.paymentForm.updateValueAndValidity()
+        this.paymentForm.controls.depositDate.updateValueAndValidity()
         break;
 
       case 'IMPS':
@@ -127,12 +136,26 @@ export class PaymentDialogComponent implements OnInit {
         this.controls.depositDate.patchValue(new Date())
 
       default:
+
         break;
     }
+    this.controls.depositStatus.setValidators([Validators.required])
+    this.controls.depositStatus.updateValueAndValidity()
   }
 
   get controls() {
     return this.paymentForm.controls
+  }
+
+  depositStatus(event) {
+    const status = event.target.value
+    if (status == 'Rejected') {
+      this.controls.paymentReceivedDate.clearValidators()
+      this.controls.paymentReceivedDate.updateValueAndValidity()
+    } else {
+      this.controls.paymentReceivedDate.setValidators([Validators.required])
+      this.controls.paymentReceivedDate.updateValueAndValidity()
+    }
   }
 
   action(event: Event) {
@@ -144,13 +167,16 @@ export class PaymentDialogComponent implements OnInit {
   }
 
   submit() {
-    if (this.paymentForm.invalid)
+    if (this.paymentForm.invalid) {
       return this.paymentForm.markAllAsTouched()
+    }
+    let paymentDate = this.dataPipe.transform(this.paymentForm.controls.paymentReceivedDate.value, 'yyyy-MM-dd')
     if (this.data.name == "deposit") {
       this.dialogRef.close({
         depositStatus: this.paymentForm.controls.depositStatus.value,
-        paymentReceivedDate: this.paymentForm.controls.paymentReceivedDate.value
+        paymentReceivedDate: paymentDate
       })
+
     } else {
       this.paymentForm.controls.paidAmount.enable();
       this.paymentForm.patchValue({ paidAmount: Number(this.controls.paidAmount.value) })
@@ -164,5 +190,6 @@ export class PaymentDialogComponent implements OnInit {
       }
     }
     this.dialogRef.close(this.paymentForm.value)
+
   }
 }

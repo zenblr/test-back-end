@@ -107,6 +107,10 @@ export class MenuConfig {
 								// 	page: "/admin/lead-management/my-requests",
 								// 	permission: false,
 								// },
+								{
+									title: "Customer Registration List",
+									page: "/admin/lead-management/registered-customers"
+								}
 							],
 						},
 						{
@@ -165,9 +169,13 @@ export class MenuConfig {
 									title: "Packet Tracking",
 									page: "/admin/loan-management/packet-tracking",
 									bullet: 'dot',
-									permission: !(this.permissionsArr.includes('packetEdit') ||
-										this.permissionsArr.includes('packetAdd') ||
-										this.permissionsArr.includes('packetView')),
+									permission: !this.permissionsArr.includes('packetTrackingView'),
+								},
+								{
+									title: "My Packets",
+									page: "/admin/loan-management/my-packets",
+									bullet: 'dot',
+									permission: !this.permissionsArr.includes('myPacket'),
 								},
 								{
 									title: "Applied Loan",
@@ -830,6 +838,13 @@ export class MenuConfig {
 							src: "assets/media/aside-icons/icons-36.svg",
 							page: "/admin/scrap-management/packets",
 							permission: !this.permissionsArr.includes('scrapPacketView'),
+						},
+						{
+							title: "Packet Tracking",
+							root: true,
+							src: "assets/media/aside-icons/icons-36.svg",
+							page: "/admin/scrap-management/packet-tracking",
+							permission: !this.permissionsArr.includes('scrapPacketTrackingView'),
 						},
 						{
 							title: "Applied Scrap",

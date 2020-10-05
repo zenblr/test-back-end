@@ -138,7 +138,7 @@
         </div>
     </div>
 
-    <div class="row kt-margin-t-15">
+    <div class="row kt-margin-t-15" *ngIf="masterLoanId">
         <!-- loan ornaments -->
         <div class="col-12 card">
             <div class="row justify-content-center py-3">
@@ -148,28 +148,25 @@
                             <label for="">Principal Outstanding </label>
                         </div>
                         <div>
-                            <span>{{details.customerLoan[0].outstandingAmount}} </span>
+                            <span>{{details?.customerLoan[0]?.outstandingAmount}} </span>
                         </div>
                         <div>
                             <span
-                                *ngIf="details.customerLoan.length > 1">{{details.customerLoan[1].outstandingAmount}}</span>
+                                *ngIf="details?.customerLoan?.length > 1">{{details?.customerLoan[1]?.outstandingAmount}}</span>
                         </div>
                     </div>
-
                 </div>
                 <div class="col-3 my-auto d-flex align-item-center">
                     <kt-button [value]="'View Part Payment Logs'" [type]="'button'" (click)="viewPartPaymnetsLogs()">
                     </kt-button>
                 </div>
                 <div class="col-3 my-auto d-flex align-item-center">
-                    <kt-button [value]="'View Interest EMI Logs'" [type]="'button'" (click)="viewEmiLogs()"></kt-button>
+                    <kt-button [value]="'View Interest EMI Logs'" [notTitleCase]="true" [type]="'button'"
+                        (click)="viewEmiLogs()"></kt-button>
 
                 </div>
             </div>
-
-
             <!-- <kt-button [value]="'View Part Payment EMI'" [type]="'button'"></kt-button> -->
-
         </div>
     </div>
 
@@ -245,16 +242,20 @@
                                     <div class="text-color font-weight-500">{{ornaments.ltvPercent}}%</div>
                                 </div>
                                 <div class="col-3">
-                                    <div class="text-gray font-weight-500 kt-margin-b-5">LTV Amount</div>
-                                    <div class="text-color font-weight-500">{{ornaments.ltvAmount}}</div>
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Karat</div>
+                                    <div class="text-color font-weight-500">{{ornaments.karat + ' K'}}</div>
                                 </div>
-                            </div>
-                            <div class="row kt-margin-t-25">
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Loan Amount </div>
                                     <div class="text-color font-weight-500">{{ornaments.loanAmount}}</div>
                                 </div>
                             </div>
+                            <!-- <div class="row kt-margin-t-25">
+                                <div class="col-3">
+                                    <div class="text-gray font-weight-500 kt-margin-b-5">Loan Amount </div>
+                                    <div class="text-color font-weight-500">{{ornaments.loanAmount}}</div>
+                                </div>
+                            </div> -->
                         </div>
                     </div>
                 </mat-tab>
@@ -397,7 +398,7 @@
                                     <th class="transparent text-center">Packet</th>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let packet of packets?.CustomerScrapPackageDetail;index as idx">
+                                    <tr *ngFor="let packet of packets?.scrapPackets;index as idx">
                                         <ng-container>
                                             <td class="text-color text-center">
                                                 <label class="m-0">{{packet?.packetUniqueId | uppercase}}</label>
@@ -516,15 +517,21 @@
     </div>
 
     <div class="row kt-margin-t-15">
-        <div class="col-12 card kt-padding-15">
+        <div class="col-12 card kt-padding-15" *ngIf="masterLoanId">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Disbursement</label>
-
-            <div class="row" *ngIf="masterLoanId">
+            <div class="row">
                 <kt-disburse [disable]="true" [loanDetials]="details" [masterAndLoanIds]="masterAndLoanIds"
                     [disbursed]="true">
                 </kt-disburse>
             </div>
         </div>
-
+        <div class="col-12 card kt-padding-15" *ngIf="scrapId">
+            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Disbursement</label>
+            <div class="row">
+                <kt-disburse [disable]="true" [scrapDetails]="details" [scrapIds]="scrapIds"
+                    [disbursed]="true">
+                </kt-disburse>
+            </div>
+        </div>
     </div>
 </div>

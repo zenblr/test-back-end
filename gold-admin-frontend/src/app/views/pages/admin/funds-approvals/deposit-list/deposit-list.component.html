@@ -10,7 +10,7 @@
 
                 <ng-container matColumnDef="bankTransactionId">
                     <mat-header-cell *matHeaderCellDef>Bank Transaction ID</mat-header-cell>
-                    <mat-cell *matCellDef="let deposit">{{deposit.bankTransactionUniqueId | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.bankTransactionUniqueId | uppercase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="customerId">
@@ -91,8 +91,9 @@
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let deposit">
                         <div *ngxPermissionsOnly="['approveDeposit']">
-                            <button *ngIf="deposit.depositStatus == 'Pending'" style="width: 120px;" class="apply-kyc"
-                                (click)="updateStatus(deposit)">Edit
+                            <button
+                                *ngIf="deposit.depositStatus == 'Pending' && (deposit.paymentFor != 'partRelease' && deposit.paymentFor != 'fullRelease')"
+                                style="width: 120px;" class="apply-kyc" (click)="updateStatus(deposit)">Edit
                             </button>
                         </div>
 

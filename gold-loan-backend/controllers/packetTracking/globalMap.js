@@ -1,41 +1,77 @@
 const models = require('../../models')
 const { paginationWithFromTo } = require("../../utils/pagination");
-
+const Sequelize = models.Sequelize;
+const sequelize = models.sequelize;
+const Op = Sequelize.Op;
 
 exports.getGlobalMapDetails = async (req, res, next) => {
 
     let { date } = req.query
     console.log(date)
 
-    let getAppraiserList = await models.user.findAll({
-        where: { isActive: true },
-        attributes: ['id', 'firstName', 'lastName'],
-        include: [{
-            model: models.userType,
-            as: 'Usertype',
-            where: { isInternal: true, userType: 'Appraiser' },
-            attributes: [],
 
+    let locationData = await models.packetTracking.findAll({
+        where: { trackingDate: date, isActive: true },
+        order: [
+            [
+                models.packetTrackingMasterloan,
+                { model: models.customerLoanMaster, as: 'masterLoan' }, 'id', 'desc'],
+            [
+                models.packetTrackingMasterloan,
+                { model: models.customerLoanMaster, as: 'masterLoan' },
+                { model: models.customerLoanPacketData, as: 'locationData' },
+                'id', 'desc'
+            ]],
+        include: [{
+            model: models.user,
+            as: 'user',
+            attributes: ['id', 'firstName', 'lastName']
         },
         {
-            model: models.appraiserRequest,
-            as: 'appraiserRequest',
-            attributes: ['id'],
+            model: models.packetTrackingMasterloan,
+            as: 'packetTrackingMasterloan',
             include: [{
                 model: models.customerLoanMaster,
                 as: 'masterLoan',
-                attributes: ['id'],
+                attributes: ['id', 'isLoanCompleted'],
                 include: [{
                     model: models.customerLoan,
                     as: 'customerLoan',
-                    attributes: ['loanUniqueId'],
+                    attributes: ['loanUniqueId', 'id']
+                },
+                {
+                    model: models.customerLoanDisbursement,
+                    as: 'customerLoanDisbursement',
+                    // attributes:['cr']
+                },
+                {
+                    model: models.customerLoanPacketData,
+                    as: 'locationData',
+                    // include: {
+                    //     model: models.packetLocation,
+                    //     as: 'packetLocation'
+                    // }
+                },
+                {
+                    model: models.packet,
+                    as: 'packet',
+                    attributes: ['packetUniqueId']
                 }]
             }]
-        },]
+        }]
     })
-    // let internalBranchId = req.userData.id
+    newLocationData = []
+    for (let index = 0; index < locationData.length; index++) {
+        const packetTrackingMasterloan = locationData[index].packetTrackingMasterloan;
+        for (let j = 0; j < packetTrackingMasterloan.length; j++) {
+            const element = packetTrackingMasterloan[j];
+            if (element.masterLoan.locationData.length > 0 && element.masterLoan.locationData[0].status == 'in transit') {
+                newLocationData.push(locationData[index])
+            }
+        }
+    }
 
-    res.status(200).json({ data: getAppraiserList })
+    res.status(200).json({ data: newLocationData })
 }
 
 exports.getPacketTrackingByLoanId = async (req, res, next) => {
@@ -67,14 +103,24 @@ exports.getGloablMapLocation = async (req, res, next) => {
             as: 'user',
             attributes: ['id', 'firstName', 'lastName']
         }, {
-            model: models.customerLoan,
-            as: 'customerLoan',
-            include: {
-                model: models.packet,
-                as: 'packet',
-                where: { isActive: true }
-            }
-        },
+            model: models.packetTrackingMasterloan,
+            as: 'packetTrackingMasterloan',
+            include: [{
+                model: models.customerLoanMaster,
+                as: 'masterLoan',
+                attributes: ['id'],
+                include: [{
+                    model: models.customerLoan,
+                    as: 'customerLoan',
+                    attributes: ['loanUniqueId', 'id']
+                },
+                {
+                    model: models.packet,
+                    as: 'packet',
+                    attributes: ['packetUniqueId']
+                }]
+            }]
+        }
 
         ],
         offset: offset,
@@ -85,11 +131,11 @@ exports.getGloablMapLocation = async (req, res, next) => {
         where: { trackingDate: date },
     })
 
-   
-    if(count.length == 0){
-        res.status(200).json([])
-    }else{
 
-        res.status(200).json({ data: locationData,count:count.length })
+    if (count.length == 0) {
+        res.status(200).json([])
+    } else {
+
+        res.status(200).json({ data: locationData, count: count.length })
     }
 }

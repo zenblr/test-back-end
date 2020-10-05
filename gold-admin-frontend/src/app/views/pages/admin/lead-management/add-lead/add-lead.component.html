@@ -130,8 +130,8 @@
 
                                 <div class="col-5 kt-padding-t-15">
                                     <!-- <mat-form-field appearance="outline" class="w-100"> -->
-                                    <input class="form-control" formControlName="otp" autocomplete="off"
-                                        placeholder="Enter OTP"
+                                    <input class="form-control" numbersOnly maxlength="4" formControlName="otp"
+                                        autocomplete="off" placeholder="Enter OTP"
                                         [class.isError]="controls.otp.touched && controls.otp.invalid">
                                     <mat-error *ngIf="controls.otp.errors?.required && controls.otp.touched">
                                         Required field
@@ -317,7 +317,8 @@
 
                             <div class="col-8">
                                 <input class="form-control" formControlName="pinCode" numbersOnly maxlength="6"
-                                    placeholder="000 000">
+                                    placeholder="000 000"
+                                    [class.isError]="controls.pinCode.invalid && controls.pinCode.touched">
                                 <mat-error *ngIf="controls.pinCode.errors?.required && controls.pinCode.touched">
                                     Required field</mat-error>
                                 <mat-error *ngIf="controls.pinCode.errors?.pattern && controls.pinCode.touched">

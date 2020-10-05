@@ -8,6 +8,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { RazorpayPaymentService } from '../../../../../core/shared/services/razorpay-payment.service';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
+import { QuickPayHistoryComponent } from '../quick-pay-history/quick-pay-history.component';
 
 @Component({
   selector: 'kt-quick-pay',
@@ -30,14 +31,15 @@ export class QuickPayComponent implements OnInit {
     private toastr: ToastrService,
     private router: Router,
     private ele: ElementRef,
-    private razorpayPaymentService:RazorpayPaymentService,
-    private zone:NgZone,
-    private sharedService:SharedService
+    private razorpayPaymentService: RazorpayPaymentService,
+    private zone: NgZone,
+    private sharedService: SharedService
   ) { }
 
   ngOnInit() {
     this.masterLoanId = this.rout.snapshot.params.id
     this.getInterestInfo(this.masterLoanId)
+    this.getPayableAmount()
   }
 
   getInterestInfo(id) {
@@ -58,10 +60,23 @@ export class QuickPayComponent implements OnInit {
 
   }
 
+  checkPayableAmount() {
+
+    this.payableAmt.setErrors({ value: true })
+
+  }
+
+  transcationHistory() {
+    const dialogRef = this.dialog.open(QuickPayHistoryComponent, {
+      data: { id: this.masterLoanId },
+      width: '850px'
+    })
+  }
+
   viewEmiLogs() {
     const dialogRef = this.dialog.open(EmiLogsDialogComponent, {
       data: { id: this.loanDetails.id },
-      width: '850px'
+      width: '1200px'
     })
   }
 
@@ -75,6 +90,10 @@ export class QuickPayComponent implements OnInit {
       this.payableAmt.disable()
       this.ref.detectChanges()
       this.scrollToBottom()
+    }, err => {
+      if (err.error.message) {
+        this.checkPayableAmount()
+      }
     })
   }
 
@@ -132,14 +151,14 @@ export class QuickPayComponent implements OnInit {
     })
   }
 
-  razorPayResponsehandler(response){
+  razorPayResponsehandler(response) {
     console.log(response)
     this.zone.run(() => {
       let data = {
         masterLoanId: this.masterLoanId,
         payableAmount: this.payableAmt.value,
         paymentDetails: this.paymentValue,
-        transactionDetails:response
+        transactionDetails: response
       }
       this.quickPayServie.payment(data).subscribe(res => {
         this.toastr.success('Payment done Successfully')
