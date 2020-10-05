@@ -35,6 +35,8 @@ export class PacketTrackingComponent implements OnInit {
   private subscriptions: Subscription[] = [];
   private unsubscribeSearch$ = new Subject();
   filteredDataList = {};
+  previousSyncArray: any[];
+  currentSyncArray: any[];
 
   constructor(
     public dialog: MatDialog,
@@ -91,12 +93,25 @@ export class PacketTrackingComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(res => {
       this.leadsResult = res;
+      this.checkPacketTracking(this.leadsResult)
     });
     this.subscriptions.push(entitiesSubscription);
 
     // setInterval(() => {
     this.dataSource.loadpackets(this.queryParamsData);
     // }, 30000)
+
+  }
+
+  checkPacketTracking(packetList) {
+    if (!this.previousSyncArray) {
+      this.previousSyncArray = new Array(packetList.length).fill(null);
+      this.previousSyncArray = packetList.map(e => e.lastSyncTime)
+      // return console.log(this.previousSyncArray)
+    }
+
+    this.currentSyncArray = new Array(packetList.length).fill(null);
+    this.currentSyncArray = packetList.map(e => e.lastSyncTime)
 
   }
 

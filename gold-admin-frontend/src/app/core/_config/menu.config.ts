@@ -90,7 +90,7 @@ export class MenuConfig {
 							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-05.svg",
 							page: "/admin/lead-management",
-							permission: !(this.permissionsArr.includes('leadManagmentView') || this.permissionsArr.includes('viewNewRequest')),
+							permission: !(this.permissionsArr.includes('leadManagmentView') || this.permissionsArr.includes('viewNewRequest') || this.permissionsArr.includes('customerRegistrationView')),
 							submenu: [
 								{
 									title: "All Leads",
@@ -109,7 +109,8 @@ export class MenuConfig {
 								// },
 								{
 									title: "Customer Registration List",
-									page: "/admin/lead-management/registered-customers"
+									page: "/admin/lead-management/registered-customers",
+									permission: !this.permissionsArr.includes('customerRegistrationView')
 								}
 							],
 						},
