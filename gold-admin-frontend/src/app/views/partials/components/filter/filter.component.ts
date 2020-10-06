@@ -63,6 +63,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	approvalStatus: any = [];
 	permissions: any;
 	scrapStatusList = [];
+	cronProductArray: { name: string; value: string; }[];
+	cronStatusArray: { name: string; value: string; }[];
 
 	constructor(
 		private fb: FormBuilder,
@@ -147,8 +149,14 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 							break;
 						case 'leadStatus':
 							this.getLeadStatus();
+							break;
 						case 'scrapStatus':
 							this.scrapStatus();
+							break
+						case 'cron':
+							this.cronProduct();
+							this.cronStatus();
+							break
 					}
 				}
 			}
@@ -178,7 +186,10 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			scheme: [],
 			leadStatus: [''],
 			scrapStatus: [''],
-			packetTracking: ['']
+			packetTracking: [''],
+			cronStatus: [''],
+			product: ['']
+
 		});
 
 		this.filterForm.valueChanges.subscribe((val) => {
@@ -278,6 +289,16 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.loanStatus = controls['loanStatus'].value.multiSelect.map(e => e.id).toString();
 				this.filterObject.list.loanStatus = controls['loanStatus'].value.multiSelect;
 			}
+
+			if (controls['product'].value && (controls['product'].value.multiSelect && controls['product'].value.multiSelect.length)) {
+				this.filterObject.data.product = controls['product'].value.multiSelect.map(e => e.value);
+				this.filterObject.list.product = controls['product'].value.multiSelect;
+			}
+
+			if (controls['cronStatus'].value && (controls['cronStatus'].value.multiSelect && controls['cronStatus'].value.multiSelect.length)) {
+				this.filterObject.data.cronStatus = controls['cronStatus'].value.multiSelect.map(e => e.value);
+				this.filterObject.list.cronStatus = controls['cronStatus'].value.multiSelect;
+			}
 			if (controls['scheme'].value) {
 				console.log(controls['scheme'].value)
 				if (controls['scheme'].value == "All") {
@@ -370,6 +391,12 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'deposit':
 				this.controls['scheme'].patchValue('');
 				break;
+			case 'product':
+				this.controls['product'].value.multiSelect.splice(index, 1);
+				break;
+			case 'cronStatus ':
+				this.controls['status'].value.multiSelect.splice(index, 1);
+				break;
 			case 'packetTracking':
 				this.controls['packetTracking'].patchValue('');
 				break;
@@ -435,6 +462,16 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		this.sharedService.getStatus().subscribe((res) => {
 			this.approvalStatus = res;
 		});
+	}
+
+	cronStatus() {
+		this.cronStatusArray = this.sharedService.getCronStatus()
+
+	}
+
+	cronProduct() {
+		this.cronProductArray = this.sharedService.getCronProduct()
+
 	}
 
 	scrapStatus() {

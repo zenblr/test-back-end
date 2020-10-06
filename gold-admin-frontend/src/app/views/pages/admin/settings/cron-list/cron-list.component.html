@@ -1,3 +1,5 @@
+<kt-filtered-data [filteredList]="filteredDataList"></kt-filtered-data>
+
 <kt-portlet>
     <kt-portlet-body>
 
@@ -27,7 +29,7 @@
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
                     <mat-cell *matCellDef="let data">
-                        <span *ngIf="data?.status == 'success'" class="text-primary">
+                        <span *ngIf="data?.status == 'success'" class="text-success">
                             {{data?.status | uppercase}}
                         </span>
                         <span *ngIf="data?.status == 'failed'" class="text-danger">

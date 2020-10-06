@@ -22,12 +22,12 @@ export class CronListDatasource extends BaseDataSource {
 
 
 
-    getCronList(search,from,to) {
+    getCronList(params) {
         this.loadingSubject.next(true);
 
         // this.entitySubject.next(this.leads); // delete this
 
-        this.cronListService.getCronList(from,to)
+        this.cronListService.getCronList(params)
             .pipe(
                 map(
                     report => {

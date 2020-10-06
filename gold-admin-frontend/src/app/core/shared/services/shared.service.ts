@@ -52,6 +52,16 @@ export class SharedService {
 		{ value: 'rejected', name: 'rejected' },
 	];
 
+	product = [
+		{ name: 'gold', value: 'gold' },
+		{ name: 'emi', value: 'emi' }
+	]
+
+	cronStatus = [
+		{name:'failed',value:'failed'},
+		{name:'success',value:'success'}
+	]
+
 	constructor(
 		private http: HttpClient,
 		private excelService: ExcelService,
@@ -178,18 +188,18 @@ export class SharedService {
 	}
 
 	//  for quick pay and part payment 
-	paymentGateWay(amount):Observable<any>{
-		return this.http.post(`api/quick-pay/razor-pay`,{amount}).pipe(
-		  map(res=> res)
-		  )
-	  }
+	paymentGateWay(amount): Observable<any> {
+		return this.http.post(`api/quick-pay/razor-pay`, { amount }).pipe(
+			map(res => res)
+		)
+	}
 
-	  //  for quick pay and part payment 
-	paymentGateWayForFullAndPart(masterLoanId,ornamentId):Observable<any>{
-		return this.http.post(`api/jewellery-release/razor-pay`,{masterLoanId,ornamentId}).pipe(
-		  map(res=> res)
-		  )
-	  }
+	//  for quick pay and part payment 
+	paymentGateWayForFullAndPart(masterLoanId, ornamentId): Observable<any> {
+		return this.http.post(`api/jewellery-release/razor-pay`, { masterLoanId, ornamentId }).pipe(
+			map(res => res)
+		)
+	}
 
 
 	soaDownload(masterLoanId): Observable<any> {
@@ -228,5 +238,13 @@ export class SharedService {
 		const split = name.split('.')
 		const ext = (split[split.length - 1]).toLowerCase()
 		return ext
+	}
+
+	getCronProduct(){
+		return this.product
+	}
+
+	getCronStatus(){
+		return this.cronStatus
 	}
 }

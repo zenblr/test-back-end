@@ -26,6 +26,15 @@ export class CronListComponent implements OnInit {
   destroy$ = new Subject();
   searchValue = '';
   private subscriptions: Subscription[] = [];
+  private filter$ = new Subject();
+  queryParamsData = {
+    from: 1,
+    to: 25,
+    search: '',
+    status: '',
+    product: '',
+  }
+  filteredDataList: any = {};
 
   constructor(
     private dataTableService: DataTableService,
@@ -35,13 +44,13 @@ export class CronListComponent implements OnInit {
     private layoutUtilsService: LayoutUtilsService
 
   ) {
-    // this.cronListService.openModal$.pipe(
-    //   map(res => {
-    //     if (res) {
-    //       this.addLocation();
-    //     }
-    //   }),
-    //   takeUntil(this.destroy$)).subscribe();
+    this.cronListService.applyFilter$
+    .pipe(takeUntil(this.filter$))
+    .subscribe((res) => {
+      if (Object.entries(res).length) {
+        this.applyFilter(res);
+      }
+    });
   }
 
   ngOnInit() {
@@ -86,7 +95,15 @@ export class CronListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.getCronList(this.searchValue,from,to)
+    this.dataSource.getCronList(this.queryParamsData);
+  }
+
+  applyFilter(data) {
+    console.log(data);
+    this.queryParamsData.status = data.data.cronStatus;
+    this.queryParamsData.product = data.data.product;
+    this.dataSource.getCronList(this.queryParamsData);
+    this.filteredDataList = data.list;
   }
 
   // addLocation() {
