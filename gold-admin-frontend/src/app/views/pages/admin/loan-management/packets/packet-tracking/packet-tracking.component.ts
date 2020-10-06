@@ -12,6 +12,7 @@ import { UpdateLocationComponent } from '../../../../../partials/components/upda
 import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.component';
 import { Router } from '@angular/router';
 import { OrnamentsComponent } from '../../../../../partials/components/ornaments/ornaments.component';
+import { SharedService } from '../../../../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-packet-tracking',
@@ -37,6 +38,7 @@ export class PacketTrackingComponent implements OnInit {
   filteredDataList = {};
   previousSyncArray: any[];
   currentSyncArray: any[];
+  interval: NodeJS.Timeout;
 
   constructor(
     public dialog: MatDialog,
@@ -46,7 +48,8 @@ export class PacketTrackingComponent implements OnInit {
     private toastr: ToastrService,
     private ngxPermissionService: NgxPermissionsService,
     private router: Router,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private sharedService: SharedService
   ) {
     this.packetTrackingService.openModal$.pipe(
       map(res => {
@@ -63,6 +66,8 @@ export class PacketTrackingComponent implements OnInit {
           this.applyFilter(res);
         }
       });
+
+    // this.sharedService.hideLoader.next(true)
   }
 
   ngOnInit() {
@@ -93,12 +98,15 @@ export class PacketTrackingComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(res => {
       this.leadsResult = res;
-      this.checkPacketTracking(this.leadsResult)
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // setInterval(() => {
     this.dataSource.loadpackets(this.queryParamsData);
+    this.checkPacketTracking(this.leadsResult)
+
+    // this.interval = setInterval(() => {
+    //   this.dataSource.loadpackets(this.queryParamsData);
+    //   this.checkPacketTracking(this.leadsResult)
     // }, 30000)
 
   }
@@ -106,13 +114,22 @@ export class PacketTrackingComponent implements OnInit {
   checkPacketTracking(packetList) {
     if (!this.previousSyncArray) {
       this.previousSyncArray = new Array(packetList.length).fill(null);
-      this.previousSyncArray = packetList.map(e => e.lastSyncTime)
+      return this.previousSyncArray = packetList.map(e => e.lastSyncTime)
       // return console.log(this.previousSyncArray)
     }
 
     this.currentSyncArray = new Array(packetList.length).fill(null);
     this.currentSyncArray = packetList.map(e => e.lastSyncTime)
 
+    if (this.previousSyncArray != this.currentSyncArray) {
+      this.previousSyncArray = this.currentSyncArray
+    }
+  }
+
+  isTrackingDisabled(index) {
+    if (!(this.previousSyncArray && this.currentSyncArray)) return
+
+    return this.previousSyncArray[index] === this.currentSyncArray[index] ? true : false
   }
 
   ngAfterContentChecked() {
@@ -125,6 +142,8 @@ export class PacketTrackingComponent implements OnInit {
     this.unsubscribeSearch$.complete();
     this.destroy$.next();
     this.destroy$.complete();
+    clearInterval(this.interval)
+    // this.sharedService.hideLoader.next(false)
   }
 
   applyFilter(data) {

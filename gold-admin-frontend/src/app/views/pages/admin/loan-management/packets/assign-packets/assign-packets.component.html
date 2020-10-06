@@ -20,8 +20,8 @@
                                     <label class="kt-padding-l-10 mandatory">Packet Id</label>
                                 </div>
                                 <div class="col-8">
-                                    <input type="text" class="form-control" formControlName="packetUniqueId"
-                                        placeholder="PAC-01"
+                                    <input ktTrimControl type="text" class="form-control"
+                                        formControlName="packetUniqueId" placeholder="PAC-01"
                                         [class.isError]="packetForm.controls.packetUniqueId.invalid &&  packetForm.controls.packetUniqueId.touched">
                                     <mat-error
                                         *ngIf="controls.packetUniqueId.touched && controls.packetUniqueId.errors?.required">
@@ -83,7 +83,8 @@
                                     <label class="kt-padding-l-10 mandatory">Barcode</label>
                                 </div>
                                 <div class="col-8">
-                                    <input type="text" class="form-control" formControlName="barcodeNumber"
+                                    <input ktTrimControl type="text" class="form-control"
+                                        formControlName="barcodeNumber"
                                         [class.isError]="packetForm.controls.barcodeNumber.invalid &&  packetForm.controls.barcodeNumber.touched">
                                     <mat-error
                                         *ngIf="controls.barcodeNumber.touched && controls.barcodeNumber.errors?.required">
