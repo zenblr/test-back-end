@@ -847,7 +847,7 @@ export class MenuConfig {
 						{
 							title: "Packet Tracking",
 							root: true,
-							src: "assets/media/aside-icons/icons-36.svg",
+							src: "assets/media/aside-icons/shopping-bags.svg",
 							page: "/admin/scrap-management/packet-tracking",
 							permission: !this.permissionsArr.includes('scrapPacketTrackingView'),
 						},

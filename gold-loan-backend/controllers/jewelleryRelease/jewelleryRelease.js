@@ -904,11 +904,11 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         isActive: true,
         amountStatus: "completed",
         newLoanId: null,
-        isAppraiserAssigned: true
+        isAppraiserAssigned: true,
+        '$appraiserData.is_active$':true
     }
-    let appriserSearch = { isActive: true }
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-        appriserSearch.appraiserId = userId;
+        searchQuery['$appraiserData.appraiser_id$']=userId;
     }
     let includeArray = [
         {
@@ -952,21 +952,23 @@ exports.partReleaseApprovedList = async (req, res, next) => {
                     model: models.packet,
                     as: 'packet'
                 },
-                {
-                    model: models.customerLoanPacketData,
-                    as: 'locationData',
-                    include: [
-                        {
-                            model: models.packetLocation,
-                            as: 'packetLocation',
-                            attributes: ['id', 'location']
-                        }
-                    ]
-                },
-                {
-                    model: models.customerPacketTracking,
-                    as: 'customerPacketTracking',
-                }
+                // {
+                //     model: models.customerLoanPacketData,
+                //     as: 'locationData',
+                //     separate: true,
+                //     include: [
+                //         {
+                //             model: models.packetLocation,
+                //             as: 'packetLocation',
+                //             attributes: ['id', 'location']
+                //         }
+                //     ]
+                // },
+                // {
+                //     model: models.customerPacketTracking,
+                //     as: 'customerPacketTracking',
+                //     separate: true,
+                // }
             ]
         },
         {
@@ -983,8 +985,6 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         {
             model: models.partReleaseAppraiser,
             as: 'appraiserData',
-            where: appriserSearch,
-            // required: false,
             subQuery: false,
             attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
             include: [
@@ -1006,19 +1006,46 @@ exports.partReleaseApprovedList = async (req, res, next) => {
             attributes: ['loanStatusForAppraiser'],
         }
     ]
-    let partRelease = await models.partRelease.findAll({
+    let partReleaseData = await models.partRelease.findAll({
         where: searchQuery,
         subQuery: false,
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         order: [
-            // ["updatedAt", "DESC"],
-            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'desc'],
-            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'asc'],
+            ["updatedAt", "DESC"],
+            // [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'desc'],
+            // [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'asc'],
         ],
         offset: offset,
         limit: pageSize,
         include: includeArray
-    })
+    });
+
+    let partRelease = [];
+    for (const data of partReleaseData) {
+        let locationData = [];
+        let data1 = await models.customerLoanPacketData.findOne({
+            where: { masterLoanId: data.masterLoanId },
+            include: [
+                {
+                    model: models.packetLocation,
+                    as: 'packetLocation',
+                    attributes: ['id', 'location']
+                }
+            ],
+            order:[['id','desc']]
+        });
+        locationData.push(data1)
+        data.masterLoan.dataValues.locationData = locationData;
+
+        let customerPacketTracking = [];
+        let data2 = await models.customerPacketTracking.findOne({
+            where: { masterLoanId: data.masterLoanId },
+            order:[['id','desc']]
+        })
+        customerPacketTracking.push(data2)
+        data.masterLoan.dataValues.customerPacketTracking = customerPacketTracking
+        partRelease.push(data);
+    }
 
     let count = await models.partRelease.findAll({
         where: searchQuery,
@@ -1831,10 +1858,6 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
         req.query.to
     );
     let userId = req.userData.id;
-    let releaserSearch = { isActive: true }
-    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-        releaserSearch.releaserId = userId;
-    }
     let query = {};
     const searchQuery = {
         [Op.and]: [query, {
@@ -1869,8 +1892,11 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
         [Op.or]: {
             fullReleaseStatus: { [Op.in]: ['pending'] },
             documents: null
-        }
-
+        },
+        '$releaser.is_active$':true
+    }
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
+        searchQuery['$releaser.releaser_id$']=userId;
     }
     let includeArray = [{
         model: models.customerLoanTransaction,
@@ -1924,27 +1950,28 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
                 model: models.packet,
                 as: 'packet'
             },
-            {
-                model: models.customerLoanPacketData,
-                as: 'locationData',
-                include: [
-                    {
-                        model: models.packetLocation,
-                        as: 'packetLocation',
-                        attributes: ['id', 'location']
-                    }
-                ]
-            },
-            {
-                model: models.customerPacketTracking,
-                as: 'customerPacketTracking',
-            }
+            // {
+            //     model: models.customerLoanPacketData,
+            //     as: 'locationData',
+            //     separate: true,
+            //     include: [
+            //         {
+            //             model: models.packetLocation,
+            //             as: 'packetLocation',
+            //             attributes: ['id', 'location']
+            //         }
+            //     ]
+            // },
+            // {
+            //     model: models.customerPacketTracking,
+            //     as: 'customerPacketTracking',
+            //     separate: true
+            // },
         ]
     },
     {
         model: models.fullReleaseReleaser,
         as: 'releaser',
-        where: releaserSearch,
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         include: [
             {
@@ -1960,19 +1987,44 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
         ]
     }
     ]
-    let fullRelease = await models.fullRelease.findAll({
+    let fullReleaseData = await models.fullRelease.findAll({
         where: searchQuery,
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         order: [
-            // ["updatedAt", "DESC"],
-            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'desc'],
-            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'asc']
+            ["updatedAt", "DESC"]
         ],
         offset: offset,
         limit: pageSize,
         subQuery: false,
         include: includeArray
     })
+
+    let fullRelease = [];
+    for (const data of fullReleaseData) {
+        let locationData = [];
+        let data1 = await models.customerLoanPacketData.findOne({
+            where: { masterLoanId: data.masterLoanId },
+            include: [
+                {
+                    model: models.packetLocation,
+                    as: 'packetLocation',
+                    attributes: ['id', 'location']
+                }
+            ],
+            order:[['id','desc']]
+        });
+        locationData.push(data1)
+        data.masterLoan.dataValues.locationData = locationData;
+
+        let customerPacketTracking = [];
+        let data2 = await models.customerPacketTracking.findOne({
+            where: { masterLoanId: data.masterLoanId },
+            order:[['id','desc']]
+        })
+        customerPacketTracking.push(data2)
+        data.masterLoan.dataValues.customerPacketTracking = customerPacketTracking
+        fullRelease.push(data);
+    }
 
     let count = await models.fullRelease.findAll({
         where: searchQuery,

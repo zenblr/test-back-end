@@ -38,6 +38,14 @@
                     </mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="customerName">
+                    <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        {{ item.masterLoan.customer.firstName | titlecase }}
+                        {{ item.masterLoan.customer.lastName | titlecase }}
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
                     <mat-cell *matCellDef="let item">
