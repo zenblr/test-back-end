@@ -58,7 +58,7 @@
                                 <select class="form-control" name="" id="" formControlName="userType"
                                     (change)="selectUsertype($event.target.value)"
                                     [class.isError]="controls.userType.touched && controls.userType.invalid">
-                                    <option [selected]="true" [disabled]="true" value=null>Select User Type</option>
+                                    <option [disabled]="true" value=null>Select User Type</option>
                                     <option value="appraiser"> Appraiser </option>
                                     <option value="releaser"> Releaser </option>
                                     <!-- <option *ngFor="let appraiser of appraisers" [value]="appraiser.id">
@@ -81,7 +81,7 @@
                             <div class="col-8">
                                 <select class="form-control" name="" id="" formControlName="appraiserId"
                                     [class.isError]="controls.appraiserId.touched && controls.appraiserId.invalid">
-                                    <option [selected]="true" [disabled]="true" value=null>Select Appraiser</option>
+                                    <option [disabled]="true" value=null>Select Appraiser</option>
                                     <option *ngFor="let appraiser of appraisers" [value]="appraiser.id">
                                         {{appraiser.firstName | titlecase}}&nbsp;{{appraiser.lastName | titlecase}}
                                     </option>
@@ -103,7 +103,7 @@
                             <div *ngIf="data.isReleaser" class="col-8">
                                 <select class="form-control" name="" id="" formControlName="releaserId"
                                     [class.isError]="controls.releaserId.touched && controls.releaserId.invalid">
-                                    <option [selected]="true" [disabled]="true" value=null>Select Releaser</option>
+                                    <option [disabled]="true" value=null>Select Releaser</option>
                                     <option *ngFor="let appraiser of releasers" [value]="appraiser.id">
                                         {{appraiser.firstName | titlecase}}&nbsp;{{appraiser.lastName | titlecase}}
                                     </option>

@@ -1097,7 +1097,7 @@ exports.printCustomerAcknowledgement = async (req, res) => {
         include: [{
             model: models.customer,
             as: "customer",
-            attributes: ['id', 'firstName', 'lastName', 'mobileNumber'],
+            attributes: ['id', 'firstName', 'lastName', 'mobileNumber', 'email'],
             include: [{
                 model: models.customerKycAddressDetail,
                 as: 'customerKycAddress',
@@ -1174,6 +1174,7 @@ exports.printCustomerAcknowledgement = async (req, res) => {
         customerName: `${customerScrap.customer.firstName} ${customerScrap.customer.lastName}`,
         customerAddress: custtomerAddress,
         customerMobileNo: customerScrap.customer.mobileNumber,
+        customerEmail: customerScrap.customer.email,
         addressProofNo: addressProofNo,
         issuingAuthority: `${issuingAuthority.firstName} ${issuingAuthority.lastName}`,
         gstNo: gstNo,
@@ -1206,7 +1207,7 @@ exports.printCustomerAcknowledgement = async (req, res) => {
             popperJs: `${process.env.URL}/popper.min.js`,
             bootstrapJs: `${process.env.URL}/bootstrap.js`,
             acknowledgementData: acknowledgementData,
-            ornamentData: ornamentData
+            ornamentData: ornamentData  
         },
         path: `./public/uploads/pdf/${fileName}.pdf`,
         timeout: '60000'
@@ -1282,7 +1283,6 @@ exports.printPurchaseVoucher = async (req, res) => {
             }
         });
     }
-
 }
 
 exports.getScrapStatus = async (req, res) => {
