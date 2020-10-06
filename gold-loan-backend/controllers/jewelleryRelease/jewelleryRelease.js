@@ -1939,7 +1939,7 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
                 model: models.customerPacketTracking,
                 as: 'customerPacketTracking',
                 separate: true
-            }
+            },
         ]
     },
     {
@@ -1965,8 +1965,8 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         order: [
             ["updatedAt", "DESC"],
-            // [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'desc'],
-            // [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'asc']
+            // [ "$masterLoan.locationData.id$", 'desc'],
+            // ['customer_packet_tracking.id', 'asc']
         ],
         offset: offset,
         limit: pageSize,
