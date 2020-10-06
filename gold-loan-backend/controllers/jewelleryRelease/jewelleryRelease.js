@@ -904,11 +904,11 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         isActive: true,
         amountStatus: "completed",
         newLoanId: null,
-        isAppraiserAssigned: true
+        isAppraiserAssigned: true,
+        '$appraiserData.is_active$':true
     }
-    let appriserSearch = { isActive: true }
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-        appriserSearch.appraiserId = userId;
+        searchQuery['$appraiserData.appraiser_id$']=userId;
     }
     let includeArray = [
         {
@@ -983,8 +983,6 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         {
             model: models.partReleaseAppraiser,
             as: 'appraiserData',
-            where: appriserSearch,
-            // required: false,
             subQuery: false,
             attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
             include: [
@@ -1011,7 +1009,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         subQuery: false,
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         order: [
-            // ["updatedAt", "DESC"],
+            ["updatedAt", "DESC"],
             [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'desc'],
             [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'asc'],
         ],
@@ -1831,10 +1829,6 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
         req.query.to
     );
     let userId = req.userData.id;
-    let releaserSearch = { isActive: true }
-    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-        releaserSearch.releaserId = userId;
-    }
     let query = {};
     const searchQuery = {
         [Op.and]: [query, {
@@ -1869,8 +1863,11 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
         [Op.or]: {
             fullReleaseStatus: { [Op.in]: ['pending'] },
             documents: null
-        }
-
+        },
+        '$releaser.is_active$':true
+    }
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
+        searchQuery['$releaser.releaser_id$']=userId;
     }
     let includeArray = [{
         model: models.customerLoanTransaction,
@@ -1944,7 +1941,6 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
     {
         model: models.fullReleaseReleaser,
         as: 'releaser',
-        where: releaserSearch,
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         include: [
             {
