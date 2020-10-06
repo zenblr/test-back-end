@@ -98,7 +98,7 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
         [Op.and]: [query, {
             // [Op.or]: {
             // "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
-            //     "$loanPacketDetails.packets.internalBranch.name$": { [Op.iLike]: search + '%' },
+            //     "$internalBranch.name$": { [Op.iLike]: search + '%' },
             //     "$customer.first_name$": { [Op.iLike]: search + '%' },
             //     "$customer.last_name$": { [Op.iLike]: search + '%' },
             //     "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
