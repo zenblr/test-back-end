@@ -518,6 +518,10 @@ export class MenuConfig {
 									page: "/admin/global-settings",
 									permission: !this.permissionsArr.includes('viewGlobalSetting')
 								},
+								{
+									title: "Cron Logs",
+									page: "/admin/cron-list"
+								},
 							]
 						},
 						{
