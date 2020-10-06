@@ -9,25 +9,29 @@ exports.getAllCronList = async (req, res) => {
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
     let query = {};
-    // if (req.query.depositStatus) {
-    //     query.depositStatus = req.query.depositStatus;
-    // }
+    if (req.query.product) {
+        if(req.query.product == 'emi'){
+            query.cronType = { [Op.notIn]: ['loan Penal Interest', 'loan Interest'] }
+        }
+        if(req.query.product == 'loan'){
+            query.cronType = { [Op.in]: ['loan Penal Interest', 'loan Interest'] }
+        }
+    }
+    if (req.query.status) {
+        query.status = req.query.status;
+    }
 
-    // let searchQuery = {
-    //     [Op.and]: [query, {
-    //         [Op.or]: {
-    //             branchName: { [Op.iLike]: search + '%' },
-    //             bankName: { [Op.iLike]: search + '%' },
-    //             "$masterLoan.customer.first_name$": { [Op.iLike]: search + '%' },
-    //             "$masterLoan.customer.last_name$": { [Op.iLike]: search + '%' },
-    //             "$masterLoan.customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-    //             "$masterLoan.customer.mobile_number$": { [Op.iLike]: search + '%' }
-    //         },
-    //     }]
-    // };
+    let searchQuery = {
+        [Op.and]: [query, {
+            [Op.or]: {
+                cronType: { [Op.iLike]: search + '%' },
+                status: { [Op.iLike]: search + '%' },
+            },
+        }]
+    };
 
     let allCronList = await models.cronLogger.findAll({
-        // where: searchQuery,
+        where: searchQuery,
         order: [
             ['id', 'desc']
         ],
@@ -36,11 +40,11 @@ exports.getAllCronList = async (req, res) => {
     });
 
     let count = await models.cronLogger.findAll({
-        // where: searchQuery,
+        where: searchQuery,
     });
 
     return res.status(200).json({ message: `Fetched all cron successfully`, data: allCronList, count: count.length })
 
-   
+
 }
 
