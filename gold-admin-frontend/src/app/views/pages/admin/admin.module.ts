@@ -7,6 +7,7 @@ import { CoreModule } from '../../../core/core.module';
 import { PartialsModule } from '../../partials/partials.module';
 import { AdminComponent } from './admin.component';
 
+
 @NgModule({
 	imports: [
 		CommonModule,
@@ -80,6 +81,10 @@ import { AdminComponent } from './admin.component';
 					{
 						path: 'global-settings',
 						loadChildren: () => import('./settings/global-settings/global-settings.module').then(m => m.GlobalSettingsModule)
+					},
+					{
+						path: 'cron-list',
+						loadChildren: () => import('./settings/cron-list/cron-list.module').then(m => m.CronListModule)
 					},
 					{
 						path: 'masters',
