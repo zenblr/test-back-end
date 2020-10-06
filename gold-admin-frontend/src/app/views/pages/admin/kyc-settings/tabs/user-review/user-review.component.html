@@ -667,8 +667,8 @@
                                 <span *ngIf="data.userType === 'Corporate'" class="label-checkbox">
                                     Current Communication Address same as Permanent Address
                                 </span>
-                                <input type="checkbox" class=""
-                                    (change)="sameAddressAsPermanent($event.target.checked)">
+                                <input type="checkbox" class="" (change)="sameAddressAsPermanent($event.target.checked)"
+                                    [checked]="isAddressSameCheck()">
                                 <span class="checkmark top-0"></span>
                             </label>
                         </div>

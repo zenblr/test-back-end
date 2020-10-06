@@ -22,7 +22,7 @@ import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewe
 export class FullReleaseApprovalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'transactionId', 'bankTransactionId', 'appraiserName', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'view', 'updateStatus'];
+  displayedColumns = ['customerName', 'customerId', 'loanId', 'loanAmount', 'transactionId', 'bankTransactionId', 'appraiserName', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'view', 'updateStatus'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
