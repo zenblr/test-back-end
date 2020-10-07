@@ -191,6 +191,28 @@
                         </div>
                     </div>
 
+                    <!--  cron -->
+                    <div class="filtered-data" *ngIf="filteredList?.product">
+                        <div class="filtered-title">By Product</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.product; let i = index;">
+                                <span>{{item?.name | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('product',i)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filtered-data" *ngIf="filteredList?.cronStatus">
+                        <div class="filtered-title">By Status</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.cronStatus; let i = index;">
+                                <span>{{item?.name | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('cronStatus',i)">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </kt-portlet-body>

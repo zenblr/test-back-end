@@ -53,6 +53,16 @@ export class SharedService {
 		{ value: 'rejected', name: 'rejected' },
 	];
 
+	product = [
+		{ name: 'gold', value: 'gold' },
+		{ name: 'emi', value: 'emi' }
+	]
+
+	cronStatus = [
+		{name:'failed',value:'failed'},
+		{name:'success',value:'success'}
+	]
+
 	constructor(
 		private http: HttpClient,
 		private excelService: ExcelService,
@@ -229,5 +239,13 @@ export class SharedService {
 		const split = name.split('.')
 		const ext = (split[split.length - 1]).toLowerCase()
 		return ext
+	}
+
+	getCronProduct(){
+		return this.product
+	}
+
+	getCronStatus(){
+		return this.cronStatus
 	}
 }
