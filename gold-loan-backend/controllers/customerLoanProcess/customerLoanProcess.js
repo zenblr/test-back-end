@@ -2098,10 +2098,16 @@ exports.appliedLoanDetails = async (req, res, next) => {
         searchQuery.internalBranchId = internalBranchId
     }
 
+    let getPerticularAppraiser;
+    if (req.userData.userTypeId == 7) {
+        getPerticularAppraiser = { appraiserId: req.userData.id }
+    }
+
     let associateModel = [
         {
             model: models.appraiserRequest,
             as: 'appraiserRequest',
+            where: getPerticularAppraiser,
             attributes: ['appraiserId']
         },
         {

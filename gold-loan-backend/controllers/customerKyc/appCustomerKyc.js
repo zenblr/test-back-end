@@ -264,6 +264,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
         }, {
             model: models.customerLoanMaster,
             as: "masterLoan",
+            //aajchya submitted che ani aajchya date che
             include: [
                 {
                     model: models.partRelease,
