@@ -284,6 +284,18 @@ exports.getAssignedCustomer = async (req, res, next) => {
                     model: models.loanStage,
                     as: 'loanStage',
                     attributes: ['id', 'name']
+                },
+                {
+                    model: models.customerLoanMaster,
+                    as:'parentLoan',
+                    attributes:['id'],
+                    include:[
+                        {
+                            model: models.partRelease,
+                            as: 'partRelease',
+                            attributes: ['amountStatus', 'partReleaseStatus','newLoanAmount']
+                        }
+                    ]
                 }
             ]
         }
