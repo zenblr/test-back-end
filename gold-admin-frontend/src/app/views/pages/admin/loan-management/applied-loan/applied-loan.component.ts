@@ -41,6 +41,7 @@ export class AppliedLoanComponent implements OnInit {
   searchValue = '';
   permission: any;
   filter$ = new Subject();
+  user: any;
   constructor(
     public dialog: MatDialog,
     private AppliedLoanService: AppliedLoanService,
@@ -62,6 +63,8 @@ export class AppliedLoanComponent implements OnInit {
           this.applyFilter(res);
         }
       });
+
+    this.sharedService.getTokenDecode().subscribe(res => this.user = res)
   }
 
   ngOnInit() {
