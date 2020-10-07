@@ -268,7 +268,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 {
                     model: models.partRelease,
                     as: 'partRelease',
-                    attributes: ['amountStatus', 'partReleaseStatus','newLoanAmount']
+                    attributes: ['id','amountStatus', 'partReleaseStatus','newLoanAmount']
                 },
                 {
                     model: models.customerLoan,
@@ -293,7 +293,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
                         {
                             model: models.partRelease,
                             as: 'partRelease',
-                            attributes: ['amountStatus', 'partReleaseStatus','newLoanAmount']
+                            attributes: ['id','amountStatus', 'partReleaseStatus','newLoanAmount']
                         }
                     ]
                 }
