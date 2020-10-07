@@ -10,13 +10,19 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 const CONSTANT = require('../../utils/constant');
 const { createReferenceCode } = require("../../utils/referenceCode");
 const request = require("request");
-
+const { VIEW_ALL_PACKET_TRACKING } = require('../../utils/permissionCheck')
 
 
 //FUNCTION TO GET ALL PACKET DETAILS
 exports.getAllPacketTrackingDetail = async (req, res, next) => {
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
+
+    let customerSearch = { isActive: true }
+
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_PACKET_TRACKING)) {
+        customerSearch = { isActive: true, internalBranchId: req.userData.internalBranchId }
+    }
 
     let query = {};
     let associateModel = [
@@ -63,6 +69,7 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
             model: models.customer,
             as: 'customer',
             distinct: true,
+            where: customerSearch,
             attributes: ['id', 'customerUniqueId', 'firstName', 'lastName'],
         },
         // {

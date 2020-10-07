@@ -10,7 +10,7 @@ const route = express.Router();
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
 //packet-tracking
-route.get('/tracking-details', checkAuth, wrapper(getAllPacketTrackingDetail)); //FETCH PACKET DETAILS FOR TRACKING  checkRolePermission
+route.get('/tracking-details', checkAuth, checkRolePermission, wrapper(getAllPacketTrackingDetail)); //FETCH PACKET DETAILS FOR TRACKING  checkRolePermission
 
 route.get('/view-packets', checkAuth, wrapper(viewPackets)) //FETCH PACKET FOR TRACKING
 
