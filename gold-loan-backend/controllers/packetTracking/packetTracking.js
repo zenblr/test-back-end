@@ -1364,8 +1364,10 @@ exports.submitLoanPacketLocationForCollect = async (req, res, next) => {
                 loanId,
                 masterLoanId,
                 packetLocationId: packetLocationId,
-                partnerSenderId: partnerReceiverId,
-                senderType: 'PartnerUser',
+                userSenderId: req.userData.id,
+                senderType: 'InternalUser',
+                // partnerSenderId: partnerReceiverId,
+                // senderType: 'PartnerUser',
                 isDelivered: true,
                 status: 'in transit'
             }, { transaction: t });

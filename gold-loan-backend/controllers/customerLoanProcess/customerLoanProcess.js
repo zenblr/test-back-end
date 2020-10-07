@@ -1067,7 +1067,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
                 }
 
                 await sendMessageLoanIdGeneration(customerDetails.mobileNumber, customerDetails.firstName, loanSendId)
-            }else{
+            } else {
                 if (loanDetail.unsecuredLoanId != null) {
                     if (loanDetail.unsecuredLoanId.loanUniqueId == null) {
                         var unsecuredLoanUniqueId = null;
@@ -1759,7 +1759,7 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
             holidayDate: {
                 [Op.between]: [startDate, endDate]
             },
-            isActive:true,
+            isActive: true,
         }
     })
 
@@ -2098,29 +2098,35 @@ exports.appliedLoanDetails = async (req, res, next) => {
         searchQuery.internalBranchId = internalBranchId
     }
 
-    let associateModel = [{
-        model: models.loanStage,
-        as: 'loanStage',
-        attributes: ['id', 'name']
-    }, {
-        model: models.customer,
-        as: 'customer',
-        // where: internalBranchWhere,
-        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'customerUniqueId']
-    }, {
-        model: models.customerLoan,
-        as: 'customerLoan',
-        where: { isActive: true },
-        include: [{
-            model: models.scheme,
-            as: 'scheme'
-        }
-            //  {
-            //     model: models.customerLoan,
-            //     as: 'unsecuredLoan'
-            // }
-        ]
-    }]
+    let associateModel = [
+        {
+            model: models.appraiserRequest,
+            as: 'appraiserRequest',
+            attributes: ['appraiserId']
+        },
+        {
+            model: models.loanStage,
+            as: 'loanStage',
+            attributes: ['id', 'name']
+        }, {
+            model: models.customer,
+            as: 'customer',
+            // where: internalBranchWhere,
+            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'customerUniqueId']
+        }, {
+            model: models.customerLoan,
+            as: 'customerLoan',
+            where: { isActive: true },
+            include: [{
+                model: models.scheme,
+                as: 'scheme'
+            }
+                //  {
+                //     model: models.customerLoan,
+                //     as: 'unsecuredLoan'
+                // }
+            ]
+        }]
 
     let appliedLoanDetails = await models.customerLoanMaster.findAll({
         where: searchQuery,
@@ -2295,7 +2301,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
                 {
                     model: models.customerKycPersonalDetail,
                     as: 'customerKycPersonal',
-                    attributes: ['dateOfBirth','identityProofNumber']
+                    attributes: ['dateOfBirth', 'identityProofNumber']
                 },
                 {
                     model: models.customerKycAddressDetail,
@@ -2390,7 +2396,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
             interestRate: customerLoanDetail.customerLoan[1].interestRate,
             processingFee: customerLoanDetail.processingCharge,
             branch: customerLoanDetail.internalBranch.name,
-            aadhaarNumber:customerLoanDetail.customer.customerKycPersonal.identityProofNumber
+            aadhaarNumber: customerLoanDetail.customer.customerKycPersonal.identityProofNumber
         }]
         //console.log(customerUnsecureLoanData,'unsecure')
     } else {
@@ -2429,7 +2435,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
         penalCharges: customerLoanDetail.customerLoan[0].scheme.penalInterest,
         processingFee: customerLoanDetail.processingCharge,
         branch: customerLoanDetail.internalBranch.name,
-        aadhaarNumber:customerLoanDetail.customer.customerKycPersonal.identityProofNumber,
+        aadhaarNumber: customerLoanDetail.customer.customerKycPersonal.identityProofNumber,
         ornaments
     }];
     //console.log(customerSecureLoanData,'secure)
