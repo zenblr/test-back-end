@@ -1069,7 +1069,7 @@ export class UserReviewComponent implements OnInit {
       this.customerKycAddressTwo.enable()
     }
 
-    this.customerKycAddressTwo.patchValue({ id: addressTwo.id })
+    this.customerKycAddressTwo.patchValue({ id: addressTwo ? addressTwo.id : null })
 
     if (this.data.moduleId == 1) {
       this.customerKycAddressTwo.controls.addressType.patchValue('residential')
