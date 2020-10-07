@@ -7,6 +7,7 @@ const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATIO
 const _ = require('lodash');
 let { sendMessageAssignedCustomerToAppraiser, sendMessageCustomerForAssignAppraiser } = require('../../utils/SMS');
 const { orderBy } = require('lodash');
+const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 
 
 //FUNCTION TO ADD NEW REQUEST 
@@ -34,19 +35,19 @@ exports.addAppraiserRequest = async (req, res, next) => {
     if (!check.isEmpty(checkStatusCustomer.customerKyc)) {
         let oldReqModule = checkStatusCustomer.customerKyc.currentKycModuleId;
 
-        if(oldReqModule != moduleId){
-            if(moduleId == 1){
-                if(checkStatusCustomer.scrapKycStatus != "approved"){
+        if (oldReqModule != moduleId) {
+            if (moduleId == 1) {
+                if (checkStatusCustomer.scrapKycStatus != "approved") {
                     return res.status(404).json({ message: "Kindly complete your pending scrap KYC" });
                 }
             }
-            if(moduleId == 3){
-                if(checkStatusCustomer.kycStatus != "approved"){
+            if (moduleId == 3) {
+                if (checkStatusCustomer.kycStatus != "approved") {
                     return res.status(404).json({ message: "Kindly complete your pending loan KYC" });
                 }
             }
         }
-       
+
 
     }
 
@@ -97,13 +98,18 @@ exports.getAllNewRequest = async (req, res, next) => {
             },
         }]
     };
+    let customerSearch = { isActive: true }
+
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
+        customerSearch = { isActive: true, internalBranchId: req.userData.internalBranchId }
+    }
 
     let associateModel = [
         {
             model: models.customer,
-            required: false,
+            // required: false,
             as: 'customer',
-            where: { isActive: true },
+            where: customerSearch,
             attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'kycStatus', 'internalBranchId', 'scrapKycStatus'],
             include: [
                 {
@@ -116,7 +122,7 @@ exports.getAllNewRequest = async (req, res, next) => {
         {
             model: models.customerLoanMaster,
             as: 'masterLoan',
-            attributes: ['id', 'isLoanTransfer']
+            attributes: ['id', 'isLoanTransfer'],
         },
         {
             model: models.module,

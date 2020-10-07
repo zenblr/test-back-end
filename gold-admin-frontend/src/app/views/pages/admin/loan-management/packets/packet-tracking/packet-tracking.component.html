@@ -112,7 +112,7 @@
 
                 <ng-container matColumnDef="time">
                     <mat-header-cell *matHeaderCellDef>Elapsed Time</mat-header-cell>
-                    <mat-cell *matCellDef="let packet">
+                    <mat-cell *matCellDef="let packet; index as i">
                         <ng-container *ngFor="let item of packet.locationData; last as l">
                             <ng-container *ngIf="l">
                                 <div style="width: 100%;" [ngClass]="colorCodeEntry(packet)"
@@ -125,6 +125,9 @@
                                     <kt-elapsed-time [startTime]="packet?.customerLoanDisbursement[0].createdAt"
                                         [locationTracking]="packet?.lastSyncTime">
                                     </kt-elapsed-time>
+                                </div>
+                                <div *ngIf="isTrackingDisabled(i) && !checkForPartnerBranchIn(packet)">
+                                    <!-- asd -->
                                 </div>
                             </ng-container>
                         </ng-container>

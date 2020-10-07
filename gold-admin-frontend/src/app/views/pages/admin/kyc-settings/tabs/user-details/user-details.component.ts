@@ -239,8 +239,8 @@ export class UserDetailsComponent implements OnInit {
           throw err
         }),
         finalize(() => {
-          this.editPan.nativeElement.value = ''
-          this.pan.nativeElement.value = ''
+          if (this.editPan && this.editPan.nativeElement.value) this.editPan.nativeElement.value = ''
+          if (this.pan && this.pan.nativeElement.value) this.pan.nativeElement.value = ''
         })).subscribe()
     }
   }

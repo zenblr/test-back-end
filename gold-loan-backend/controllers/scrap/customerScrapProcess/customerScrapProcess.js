@@ -1158,7 +1158,7 @@ exports.printCustomerAcknowledgement = async (req, res) => {
     var options = {
         format: "A4",
         orientation: "portrait",
-        border: "0.5mm",
+        border: "1mm",
         "header": {
             "height": "2mm",
 
@@ -1166,7 +1166,7 @@ exports.printCustomerAcknowledgement = async (req, res) => {
         "footer": {
             "height": "2mm",
         },
-        "height": "13.69in",
+        "height": "11.69in",
         "width": "10in"
     }
     let acknowledgementData = await [{
@@ -1194,9 +1194,7 @@ exports.printCustomerAcknowledgement = async (req, res) => {
             })
         }
     }
-    console.log(ornamentData);
     // return res.status(200).json({ message: "success", ornamentData, acknowledgementData });
-
 
     let fileName = await `customerAcknowledgement${Date.now()}`;
     document = await {

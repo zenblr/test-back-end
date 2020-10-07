@@ -23,99 +23,117 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
         {
             model: models.customerLoanDisbursement,
             as: 'customerLoanDisbursement',
+            distinct: true,
             attributes: ['id', 'createdAt']
         },
         {
             model: models.customerLoan,
             as: 'customerLoan',
+            separate: true,
+            required: false,
+            distinct: true,
             attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
         },
-        {
-            model: models.customerLoanPackageDetails,
-            as: 'loanPacketDetails',
-            subQuery: false,
-            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-            include: [{
-                model: models.packet,
-                subQuery: false,
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-            }]
-        },
+        // {
+        //     model: models.customerLoanPackageDetails,
+        //     as: 'loanPacketDetails',
+        //     subQuery: false,
+        //     distinct: true,
+        //     attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        //     include: [{
+        //         model: models.packet,
+        //         subQuery: false,
+        //         distinct: true,
+        //         attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        //     }]
+        // },
         {
             model: models.user,
             as: 'Createdby',
+            distinct: true,
             attributes: ['id', 'firstName', 'lastName']
         },
         {
             model: models.internalBranch,
             as: 'internalBranch',
+            distinct: true,
             attributes: ['id', 'internalBranchUniqueId', 'name']
         },
         {
             model: models.customer,
             as: 'customer',
+            distinct: true,
             attributes: ['id', 'customerUniqueId', 'firstName', 'lastName'],
         },
-        {
-            model: models.customerLoanPacketData,
-            as: 'locationData',
-            subQuery: false,
-            include: [
-                {
-                    model: models.packetLocation,
-                    as: 'packetLocation',
-                    attributes: ['id', 'location']
-                }
-            ]
-        },
-        {
-            model: models.customerPacketTracking,
-            as: 'customerPacketTracking',
-            where: { isDelivered: true },
-            include: [
-                {
-                    model: models.customer,
-                    as: 'customer',
-                    attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
-                },
-                {
-                    model: models.user,
-                    as: 'receiverUser',
-                    attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
-                },
-                {
-                    model: models.partnerBranchUser,
-                    as: 'receiverPartner',
-                    attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
-                }
-            ]
-        }
+        // {
+        //     model: models.customerLoanPacketData,
+        //     as: 'locationData',
+        //     subQuery: false,
+        //     distinct: true,
+        //     separate: true,
+        //     include: [
+        //         {
+        //             model: models.packetLocation,
+        //             as: 'packetLocation',
+        //             distinct: true,
+        //             attributes: ['id', 'location']
+        //         }
+        //     ]
+        // },
+        // {
+        //     model: models.customerPacketTracking,
+        //     as: 'customerPacketTracking',
+        //     where: { isDelivered: true },
+        //     separate: true,
+        //     distinct: true,
+        //     include: [
+        //         {
+        //             model: models.customer,
+        //             as: 'customer',
+        //             distinct: true,
+        //             attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
+        //         },
+        //         {
+        //             model: models.user,
+        //             as: 'receiverUser',
+        //             distinct: true,
+        //             attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
+        //         },
+        //         {
+        //             model: models.partnerBranchUser,
+        //             as: 'receiverPartner',
+        //             distinct: true,
+        //             attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
+        //         }
+        //     ]
+        // }
     ]
     let stage = await models.loanStage.findAll({ where: { name: { [Op.in]: ['submit packet', 'packet branch out', 'packet in branch', 'packet submitted'] } } })
     let stageId = stage.map(ele => ele.id)
 
     let searchQuery = {
         [Op.and]: [query, {
-            // [Op.or]: {
-            // "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
-            //     "$loanPacketDetails.packets.internalBranch.name$": { [Op.iLike]: search + '%' },
-            //     "$customer.first_name$": { [Op.iLike]: search + '%' },
-            //     "$customer.last_name$": { [Op.iLike]: search + '%' },
-            //     "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-            // },
+            [Op.or]: {
+                // "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' },
+                "$internalBranch.name$": { [Op.iLike]: search + '%' },
+                "$customer.first_name$": { [Op.iLike]: search + '%' },
+                "$customer.last_name$": { [Op.iLike]: search + '%' },
+                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+            },
         }],
         isActive: true,
         loanStageId: stageId
     };
     let packetDetails = await models.customerLoanMaster.findAll({
-        // subQuery: false,
+        subQuery: false,
+        distinct: true,
         where: searchQuery,
         include: associateModel,
         order: [
-            ['id', 'DESC'],
-            [models.customerLoan, 'id', 'asc'],
-            [{ model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'asc'],
-            [{ model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'desc']
+            ['updatedAt', 'DESC'],
+            // [models.customerLoan, 'id', 'asc'],
+            // [{ model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'asc'],
+            // [{ model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'desc']
         ],
         offset: offset,
         limit: pageSize,
@@ -143,6 +161,58 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
             createdAt = data.createdAt
         }
         packetDetails[i].dataValues.lastSyncTime = createdAt
+        //
+        let customerPacketTracking = []
+        let data2 = await models.customerPacketTracking.findOne({
+            where: { masterLoanId: masterLoanId, isDelivered: true },
+            order: [['id', 'DESC']],
+            include: [
+                {
+                    model: models.customer,
+                    as: 'customer',
+                    attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
+                },
+                {
+                    model: models.user,
+                    as: 'receiverUser',
+                    attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
+                },
+                {
+                    model: models.partnerBranchUser,
+                    as: 'receiverPartner',
+                    attributes: ['id', 'firstName', 'lastName', 'mobileNumber']
+                }
+            ]
+        })
+        customerPacketTracking.push(data2)
+        packetDetails[i].dataValues.customerPacketTracking = customerPacketTracking
+
+        //
+        let locationData = []
+        let data3 = await models.customerLoanPacketData.findOne({
+            order: [['id', 'DESC']],
+            where: { masterLoanId: masterLoanId },
+            include: [
+                {
+                    model: models.packetLocation,
+                    as: 'packetLocation',
+                    attributes: ['id', 'location']
+                }
+            ]
+        })
+        locationData.push(data3)
+        packetDetails[i].dataValues.locationData = locationData
+
+        //
+        let loanPacketDetails = await models.customerLoanPackageDetails.findAll({
+            where: { masterLoanId: masterLoanId },
+            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            include: [{
+                model: models.packet,
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            }]
+        })
+        packetDetails[i].dataValues.loanPacketDetails = loanPacketDetails
     }
 
     return res.status(200).json({ message: 'packet details fetched successfully', data: packetDetails, count: count.length });
@@ -439,7 +509,7 @@ exports.addPacketTracking = async (req, res, next) => {
     var trackingTime = getAll['trackingDate'].slice(-10)
     let date = new Date(getAll['trackingDate'].split(" ")[0])
     getAll['trackingDate'] = moment(date).format('YYYY-MM-DD')
-    
+
 
 
     getAll['createdBy'] = createdBy

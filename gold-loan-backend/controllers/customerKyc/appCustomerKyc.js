@@ -266,6 +266,11 @@ exports.getAssignedCustomer = async (req, res, next) => {
             as: "masterLoan",
             include: [
                 {
+                    model: models.partRelease,
+                    as: 'partRelease',
+                    attributes: ['amountStatus', 'partReleaseStatus','newLoanAmount']
+                },
+                {
                     model: models.customerLoan,
                     as: 'customerLoan',
                 },
@@ -279,6 +284,18 @@ exports.getAssignedCustomer = async (req, res, next) => {
                     model: models.loanStage,
                     as: 'loanStage',
                     attributes: ['id', 'name']
+                },
+                {
+                    model: models.customerLoanMaster,
+                    as:'parentLoan',
+                    attributes:['id'],
+                    include:[
+                        {
+                            model: models.partRelease,
+                            as: 'partRelease',
+                            attributes: ['amountStatus', 'partReleaseStatus','newLoanAmount']
+                        }
+                    ]
                 }
             ]
         }
@@ -291,7 +308,8 @@ exports.getAssignedCustomer = async (req, res, next) => {
         include: includeArray,
         order: [
             ['id', 'DESC'],
-            [models.customer, { model: models.customerKycAddressDetail, as: 'customerKycAddress' }, 'id', 'asc']
+            [models.customer, { model: models.customerKycAddressDetail, as: 'customerKycAddress' }, 'id', 'asc'],
+            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoan, as: 'customerLoan' }, 'id', 'asc']
         ],
         offset: offset,
         limit: pageSize

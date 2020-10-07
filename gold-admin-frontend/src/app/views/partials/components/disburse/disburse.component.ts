@@ -348,7 +348,7 @@ export class DisburseComponent implements OnInit {
 
     const fullUnsecuredAmount = this.controls.fullUnsecuredAmount.value ? this.controls.fullUnsecuredAmount.value : 0;
 
-    const finalAmount = this.controls.fullSecuredAmount.value + fullUnsecuredAmount - this.controls.processingCharge.value
+    const finalAmount = Number((this.controls.fullSecuredAmount.value + fullUnsecuredAmount - this.controls.processingCharge.value).toFixed(2))
 
     const fullAmount = this.controls.fullSecuredAmount.value + fullUnsecuredAmount + this.controls.processingCharge.value
 

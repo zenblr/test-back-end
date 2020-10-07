@@ -1079,4 +1079,33 @@ export class UserReviewComponent implements OnInit {
     }
 
   }
+
+  isAddressSameCheck() {
+    let addressOne: any = {}
+    {
+      addressOne.address = this.customerKycAddressOne.value.address,
+        addressOne.stateId = this.customerKycAddressOne.value.stateId,
+        addressOne.cityId = this.customerKycAddressOne.value.cityId,
+        addressOne.pinCode = this.customerKycAddressOne.value.pinCode,
+        addressOne.addressProof = this.customerKycAddressOne.value.addressProof,
+        addressOne.addressProofTypeId = this.customerKycAddressOne.value.addressProofTypeId,
+        addressOne.addressProofNumber = this.customerKycAddressOne.value.addressProofNumber
+    }
+
+    let addressTwo: any = {}
+    {
+      addressTwo.address = this.customerKycAddressTwo.value.address,
+        addressTwo.stateId = this.customerKycAddressTwo.value.stateId,
+        addressTwo.cityId = this.customerKycAddressTwo.value.cityId,
+        addressTwo.pinCode = this.customerKycAddressTwo.value.pinCode,
+        addressTwo.addressProof = this.customerKycAddressTwo.value.addressProof,
+        addressTwo.addressProofTypeId = this.customerKycAddressTwo.value.addressProofTypeId,
+        addressTwo.addressProofNumber = this.customerKycAddressTwo.value.addressProofNumber
+    }
+
+    // console.log({ addressOne, addressTwo })
+
+    return this.isAddressSame = JSON.stringify(addressOne) === JSON.stringify(addressTwo)
+    console.log(this.isAddressSame)
+  }
 }
