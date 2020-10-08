@@ -1122,10 +1122,10 @@ exports.uploadDocument = async (req, res, next) => {
         }]
     });
 
-    if (!partReleaseData.isCustomerReceivedPacket) {
-        return res.status(400).json({ message: "Customer did not received packets!" })
-    }
     if (partReleaseData) {
+        if (!partReleaseData.isCustomerReceivedPacket) {
+            return res.status(400).json({ message: "Customer did not received packets!" })
+        }
         await sequelize.transaction(async t => {
             await models.partRelease.update({ documents, modifiedBy }, { where: { id: partReleaseId }, transaction: t });
             await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_DOCUMENT, createdBy, modifiedBy }, { transaction: t });
