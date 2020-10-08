@@ -367,7 +367,7 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
         let amount = releaseData.amount;
         return res.status(200).json({ message: 'success', ornamentWeight, loanInfo, amount });
     } else {
-        return res.status(400).json({ message: "Can't proceed further as you have already applied for pat released or full release" });
+        return res.status(400).json({ message: "Can't proceed further as you have already applied for part released or full release" });
     }
 }
 
@@ -582,7 +582,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
         });
         return res.status(200).json({ message: "success", partRelease });
     } else {
-        return res.status(400).json({ message: "can't proceed further as you have already applied for pat released or full release" });
+        return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
     }
 }
 
