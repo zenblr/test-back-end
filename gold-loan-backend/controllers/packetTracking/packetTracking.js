@@ -736,7 +736,7 @@ exports.verifyCheckOut = async (req, res, next) => {
             order: [['id', 'desc']]
         })
 
-        var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
 
         await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
 
@@ -895,7 +895,7 @@ exports.submitLoanPacketLocation = async (req, res, next) => {
                 order: [['id', 'desc']]
             })
 
-            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
 
             await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
 
@@ -916,7 +916,7 @@ exports.submitLoanPacketLocation = async (req, res, next) => {
 
             let packetTrackingData = await models.customerPacketTracking.create({
                 partnerBranchId, customerReceiverId, userReceiverId, partnerReceiverId, receiverType, loanId, masterLoanId, packetLocationId, userSenderId, partnerSenderId, senderType, isDelivered: true, status: 'complete'
-            });
+            }, { transaction: t });
 
             let allPacketTrackingData = await models.customerPacketTracking.findAll({
                 where: { masterLoanId: masterLoanId, isDelivered: true },
@@ -924,7 +924,7 @@ exports.submitLoanPacketLocation = async (req, res, next) => {
                 order: [['id', 'desc']]
             })
 
-            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
 
             await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
         })
@@ -1064,7 +1064,7 @@ exports.addCustomerPacketTracking = async (req, res, next) => {
             order: [['id', 'desc']]
         })
 
-        var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
 
         await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
 
@@ -1378,7 +1378,7 @@ exports.submitLoanPacketLocationForCollect = async (req, res, next) => {
                 order: [['id', 'desc']]
             })
 
-            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
 
             await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
         })
@@ -1474,7 +1474,7 @@ exports.submitLoanPacketLocationForHomeIn = async (req, res, next) => {
                 order: [['id', 'desc']]
             })
 
-            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
 
             await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
 
