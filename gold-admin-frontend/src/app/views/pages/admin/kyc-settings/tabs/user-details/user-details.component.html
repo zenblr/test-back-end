@@ -17,7 +17,7 @@
 								<option value="Corporate">Corporate</option>
 							</select>
 							<mat-error *ngIf="controls.userType.invalid && controls.userType.touched">
-								Field Required
+								Required field
 							</mat-error>
 						</div>
 					</div>
@@ -210,7 +210,7 @@
 								ngClass="{'mandatory': controls.panType.value != ''}"
 								class="text-color font-weight-500">
 							</label>
-							<label *ngIf="controls.panType.value != ''"
+							<label *ngIf="controls.panType.value != 'pan'"
 								class="mandatory  text-color font-weight-500">{{ controls.panType.value | uppercase }}
 							</label>
 						</div>
@@ -226,6 +226,11 @@
 								</div>
 								<input type="file" class="d-none" accept="image/*,application/pdf" #pan
 									(input)="getFileInfo($event)">
+								<div class="w-100">
+									<mat-error *ngIf="controls.panImage.errors?.required && controls.panImage.touched">
+										Required field
+									</mat-error>
+								</div>
 							</div>
 						</div>
 						<!-- <div class="col-2 form-label" *ngIf="controls.form60.value">
@@ -269,7 +274,7 @@
 								</select>
 								<mat-error
 									*ngIf="controls.organizationTypeId.invalid && controls.organizationTypeId.touched">
-									Field Required
+									Required field
 								</mat-error>
 							</div>
 						</div>
@@ -286,7 +291,7 @@
 								<mat-datepicker #picker></mat-datepicker>
 								<mat-error
 									*ngIf="controls.dateOfIncorporation.invalid && controls.dateOfIncorporation.touched">
-									Field Required
+									Required field
 								</mat-error>
 							</div>
 						</div>
