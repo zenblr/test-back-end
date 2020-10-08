@@ -15,6 +15,8 @@ const { VIEW_ALL_PACKET_TRACKING } = require('../../utils/permissionCheck')
 
 //FUNCTION TO GET ALL PACKET DETAILS
 exports.getAllPacketTrackingDetail = async (req, res, next) => {
+    let { locationStatus } = req.query;
+
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
@@ -25,6 +27,10 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
     }
 
     let query = {};
+    if (locationStatus) {
+        locationStatus = req.query.locationStatus.split(",");
+        query.packetLocationStatus = locationStatus;
+    }
     let associateModel = [
         {
             model: models.customerLoanDisbursement,
@@ -222,7 +228,7 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
         packetDetails[i].dataValues.loanPacketDetails = loanPacketDetails
     }
 
-    return res.status(200).json({ message: 'packet details fetched successfully', data: packetDetails, count: count.length });
+    return res.status(200).json({ message: 'packet details fetched successfully', count: count.length, data: packetDetails });
 }
 
 //FUNCTION TO GET DETAILS OF PACKET OF SINGLE CUSTOMER FOR APP ALSO
@@ -724,7 +730,7 @@ exports.verifyCheckOut = async (req, res, next) => {
 
     await sequelize.transaction(async (t) => {
 
-        await models.customerLoanMaster.update({ loanStageId: loanStage.id }, { where: { id: masterLoanId }, transaction: t })
+        await models.customerLoanMaster.update({ loanStageId: loanStage.id, packetLocationStatus: 'in transit' }, { where: { id: masterLoanId }, transaction: t })
 
         await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocation.id, status: 'in transit' }, { transaction: t });
 
@@ -736,7 +742,7 @@ exports.verifyCheckOut = async (req, res, next) => {
             order: [['id', 'desc']]
         })
 
-        var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
 
         await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
 
@@ -869,7 +875,7 @@ exports.submitLoanPacketLocation = async (req, res, next) => {
             if (branchCheck) {
 
                 let loanStageForBranch = await models.loanStage.findOne({ where: { name: 'packet submitted' } })
-                await models.customerLoanMaster.update({ loanStageId: loanStageForBranch.id, isLoanCompleted: true }, { where: { id: masterLoanId }, transaction: t })
+                await models.customerLoanMaster.update({ loanStageId: loanStageForBranch.id, packetLocationStatus: 'complete', isLoanCompleted: true }, { where: { id: masterLoanId }, transaction: t })
 
                 await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'complete' }, { transaction: t })
 
@@ -879,7 +885,7 @@ exports.submitLoanPacketLocation = async (req, res, next) => {
 
             } else {
 
-                await models.customerLoanMaster.update({ loanStageId: loanStage.id }, { where: { id: masterLoanId }, transaction: t })
+                await models.customerLoanMaster.update({ loanStageId: loanStage.id, packetLocationStatus: 'incomplete' }, { where: { id: masterLoanId }, transaction: t })
 
                 await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'incomplete' }, { transaction: t })
 
@@ -895,7 +901,7 @@ exports.submitLoanPacketLocation = async (req, res, next) => {
                 order: [['id', 'desc']]
             })
 
-            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
 
             await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
 
@@ -909,14 +915,14 @@ exports.submitLoanPacketLocation = async (req, res, next) => {
         await sequelize.transaction(async (t) => {
 
 
-            await models.customerLoanMaster.update({ partnerBranchId: partnerBranchId, loanStageId: loanStage.id, isLoanCompleted: true }, { where: { id: masterLoanId }, transaction: t })
+            await models.customerLoanMaster.update({ partnerBranchId: partnerBranchId, loanStageId: loanStage.id, isLoanCompleted: true, packetLocationStatus: 'complete' }, { where: { id: masterLoanId }, transaction: t })
 
             await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'complete' }, { transaction: t })
 
 
             let packetTrackingData = await models.customerPacketTracking.create({
                 partnerBranchId, customerReceiverId, userReceiverId, partnerReceiverId, receiverType, loanId, masterLoanId, packetLocationId, userSenderId, partnerSenderId, senderType, isDelivered: true, status: 'complete'
-            });
+            }, { transaction: t });
 
             let allPacketTrackingData = await models.customerPacketTracking.findAll({
                 where: { masterLoanId: masterLoanId, isDelivered: true },
@@ -924,7 +930,7 @@ exports.submitLoanPacketLocation = async (req, res, next) => {
                 order: [['id', 'desc']]
             })
 
-            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
 
             await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
         })
@@ -1045,10 +1051,10 @@ exports.addCustomerPacketTracking = async (req, res, next) => {
 
         if (masterLoan.loanStageId == packetInBranch.id) {
             if (packetLocationId == partnerBranchInLocation.id) {
-                await models.customerLoanMaster.update({ loanStageId: packetSubmitted.id, isLoanCompleted: true }, { where: { id: masterLoanId }, transaction: t })
+                await models.customerLoanMaster.update({ loanStageId: packetSubmitted.id, isLoanCompleted: true, packetLocationStatus: 'complete' }, { where: { id: masterLoanId }, transaction: t })
             }
             if (packetLocationId == branchOutLocation.id) {
-                await models.customerLoanMaster.update({ loanStageId: packetBranchOut.id }, { where: { id: masterLoanId }, transaction: t })
+                await models.customerLoanMaster.update({ loanStageId: packetBranchOut.id, packetLocationStatus: 'in transit' }, { where: { id: masterLoanId }, transaction: t })
             }
         }
 
@@ -1064,7 +1070,7 @@ exports.addCustomerPacketTracking = async (req, res, next) => {
             order: [['id', 'desc']]
         })
 
-        var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
 
         await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
 
@@ -1236,10 +1242,10 @@ exports.deliveryApproval = async (req, res, next) => {
 
         if (masterLoan.loanStageId == packetBranchOut.id) {
             if (packetLocationId == partnerBranchInLocation.id) {
-                await models.customerLoanMaster.update({ partnerBranchId: partnerBranchId, loanStageId: packetSubmitted.id, isLoanCompleted: true }, { where: { id: masterLoanId }, transaction: t })
+                await models.customerLoanMaster.update({ partnerBranchId: partnerBranchId, loanStageId: packetSubmitted.id, isLoanCompleted: true, packetLocationStatus: 'complete' }, { where: { id: masterLoanId }, transaction: t })
             }
             if (packetLocationId == branchOutLocation.id) {
-                await models.customerLoanMaster.update({ loanStageId: packetBranchOut.id }, { where: { id: masterLoanId }, transaction: t })
+                await models.customerLoanMaster.update({ loanStageId: packetBranchOut.id, packetLocationStatus: 'in transit' }, { where: { id: masterLoanId }, transaction: t })
             }
         }
 
@@ -1353,7 +1359,7 @@ exports.submitLoanPacketLocationForCollect = async (req, res, next) => {
     if (location == 'partner branch out') {
         await sequelize.transaction(async (t) => {
 
-            // await models.customerLoanMaster.update({ loanStageId: loanStage.id }, { where: { id: masterLoanId }, transaction: t })
+            await models.customerLoanMaster.update({ packetLocationStatus: 'in transit' }, { where: { id: masterLoanId }, transaction: t })
 
             await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'in transit' }, { transaction: t })
 
@@ -1364,8 +1370,10 @@ exports.submitLoanPacketLocationForCollect = async (req, res, next) => {
                 loanId,
                 masterLoanId,
                 packetLocationId: packetLocationId,
-                partnerSenderId: partnerReceiverId,
-                senderType: 'PartnerUser',
+                userSenderId: req.userData.id,
+                senderType: 'InternalUser',
+                // partnerSenderId: partnerReceiverId,
+                // senderType: 'PartnerUser',
                 isDelivered: true,
                 status: 'in transit'
             }, { transaction: t });
@@ -1376,7 +1384,7 @@ exports.submitLoanPacketLocationForCollect = async (req, res, next) => {
                 order: [['id', 'desc']]
             })
 
-            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
 
             await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
         })
@@ -1458,7 +1466,7 @@ exports.submitLoanPacketLocationForHomeIn = async (req, res, next) => {
 
         await sequelize.transaction(async (t) => {
 
-            // await models.customerLoanMaster.update({ loanStageId: loanStage.id }, { where: { id: masterLoanId }, transaction: t })
+            await models.customerLoanMaster.update({ packetLocationStatus: 'complete' }, { where: { id: masterLoanId }, transaction: t })
 
             await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'complete' }, { transaction: t })
 
@@ -1472,7 +1480,7 @@ exports.submitLoanPacketLocationForHomeIn = async (req, res, next) => {
                 order: [['id', 'desc']]
             })
 
-            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
 
             await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
 
