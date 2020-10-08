@@ -44,7 +44,8 @@ export class UserDetailsComponent implements OnInit {
     private sharedServices: SharedService,
     private dialog: MatDialog,
     private toast: ToastrService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -190,6 +191,11 @@ export class UserDetailsComponent implements OnInit {
         } else {
           this.showVerifyPAN = true;
         }
+      }
+    }, (err) => {
+      const message = err.error.message
+      if (message === 'kindly complete scrap kyc' || message === 'kindly complete loan kyc') {
+        this.router.navigate(['/admin/lead-management/new-requests'])
       }
     });
   }

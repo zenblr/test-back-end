@@ -263,7 +263,7 @@ export class PacketTrackingComponent implements OnInit {
   checkForPartnerBranchIn(packet) {
     const lastIndex = packet.locationData[packet.locationData.length - 1]
     const id = lastIndex.packetLocation.id
-    const isNotAllowed = id == 4 || id == 3 || id == 7 || packet.isLoanCompleted ? true : false
+    const isNotAllowed = id == 6 || id == 1 || id == 4 || id == 3 || id == 7 || packet.isLoanCompleted ? true : false
     return isNotAllowed
   }
 

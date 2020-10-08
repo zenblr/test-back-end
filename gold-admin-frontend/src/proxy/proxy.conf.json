@@ -1,6 +1,6 @@
 {
     "/api/*": {
-        "target": "https://emiapi.nimapinfotech.com/",
+        "target": "https://6360b86bb631.ngrok.io/",
         "secure": false,
         "logLevel": "debug",
         "changeOrigin": true
