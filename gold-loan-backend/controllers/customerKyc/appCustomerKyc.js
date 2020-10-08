@@ -269,7 +269,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 {
                     model: models.partRelease,
                     as: 'partRelease',
-                    attributes: ['amountStatus', 'partReleaseStatus','newLoanAmount']
+                    attributes: ['amountStatus', 'partReleaseStatus', 'newLoanAmount']
                 },
                 {
                     model: models.customerLoan,
@@ -288,13 +288,13 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 },
                 {
                     model: models.customerLoanMaster,
-                    as:'parentLoan',
-                    attributes:['id'],
-                    include:[
+                    as: 'parentLoan',
+                    attributes: ['id'],
+                    include: [
                         {
                             model: models.partRelease,
                             as: 'partRelease',
-                            attributes: ['amountStatus', 'partReleaseStatus','newLoanAmount']
+                            attributes: ['amountStatus', 'partReleaseStatus', 'newLoanAmount']
                         }
                     ]
                 }
@@ -333,20 +333,29 @@ exports.getAssignedCustomer = async (req, res, next) => {
 }
 
 exports.checkDuplicatePan = async (req, res, next) => {
-    let { customerId, panCardNumber } = req.body
+    let { customerId, panCardNumber, identityProofNumber } = req.body
 
     let checkPan = await models.customer.findOne({
         where: { panCardNumber: panCardNumber }
     })
+
+    let checkAadhar = await models.customerKycPersonalDetail.findOne({
+        where: { identityProofNumber: identityProofNumber }
+    })
+
     if (customerId == null) {
         if (!check.isEmpty(checkPan)) {
             return res.status(400).json({ message: 'Duplicate PAN card' })
+        } else if (!check.isEmpty(checkAadhar)) {
+            return res.status(400).json({ message: 'Duplicate Aadhar card' })
         } else {
             return res.status(200).json({ message: 'success' })
         }
     } else {
         if (checkPan && checkPan.id != customerId) {
             return res.status(400).json({ message: 'Duplicate PAN card' })
+        } else if (checkAadhar.customerId != customerId) {
+            return res.status(400).json({ message: 'Duplicate Aadhar card' })
         } else {
             return res.status(200).json({ message: 'success' })
         }
@@ -361,7 +370,7 @@ exports.checkDuplicateAadhar = async (req, res, next) => {
         where: { identityProofNumber: identityProofNumber }
     })
     if (customerId == null) {
-        if (!check.isEmpty(checkPan)) {
+        if (!check.isEmpty(checkAadhar)) {
             return res.status(400).json({ message: 'Duplicate Aadhar card' })
         } else {
             return res.status(200).json({ message: 'success' })
