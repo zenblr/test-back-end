@@ -35,6 +35,12 @@ export class AppliedKycService {
     if (data && data.cceStatus) {
       reqParams.cceStatus = data.cceStatus;
     }
+    if (data && data.scrapKycStatus) {
+      reqParams.scrapKycStatus = data.scrapKycStatus;
+    }
+    if (data && data.scrapKycStatusFromCce) {
+      reqParams.scrapKycStatusFromCce = data.scrapKycStatusFromCce;
+    }
 
     return this.http.get<any>(`/api/kyc/applied-kyc`, { params: reqParams }).pipe(
       map(res => res),
