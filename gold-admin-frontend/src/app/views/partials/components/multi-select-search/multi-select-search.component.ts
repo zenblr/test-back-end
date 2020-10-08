@@ -30,6 +30,7 @@ export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestr
 	@Input() placeholder: String;
 	@Input() style: boolean = false;
 	@Input() selectAll: boolean;
+	@Input() searchable = true;
 	form: FormGroup;
 	subscriptions: Subscription[] = [];
 

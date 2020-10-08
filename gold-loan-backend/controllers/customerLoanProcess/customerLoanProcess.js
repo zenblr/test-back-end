@@ -1480,9 +1480,24 @@ exports.loanOpsTeamRating = async (req, res, next) => {
                             loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, transactionId: loanMaster.loanTransfer.transactionId, date: loanMaster.loanTransfer.updatedAt, paymentMode: 'Loan transfer', createdBy: loanMaster.loanTransfer.modifiedBy, modifiedBy: loanMaster.loanTransfer.modifiedBy
                         }, { transaction: t })
                     } else {
-                        await models.customerLoanDisbursement.create({
-                            loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy
-                        }, { transaction: t })
+                        //////
+                        ////Loan
+                        let parentDisbursementData = await models.customerLoanDisbursement.findAll({where:{masterLoanId:loanMaster.parentLoanId},order:[['id']]})
+                        if(loan.loanType == "secured"){
+                            await models.customerLoanDisbursement.create({
+                                loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy,transactionId: parentDisbursementData[0].transactionId
+                            }, { transaction: t })
+                        }else{
+                            if(parentDisbursementData.length > 1){
+                                await models.customerLoanDisbursement.create({
+                                    loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy,transactionId: parentDisbursementData[1].transactionId
+                                }, { transaction: t })
+                            }else{
+                                await models.customerLoanDisbursement.create({
+                                    loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy,transactionId: parentDisbursementData[0].transactionId
+                                }, { transaction: t })
+                            }
+                        }
                     }
 
                 }

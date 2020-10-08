@@ -481,7 +481,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       controls.controls.loanAmount.setValidators([]),
         controls.controls.loanAmount.updateValueAndValidity()
       if (this.meltingOrnament) {
-        controls.controls.purityReading.setValidators([Validators.required, Validators.pattern('^[0-9][0-9]?$|^100$')]),
+        controls.controls.purityReading.setValidators([Validators.required, Validators.pattern('^[1-9][0-9]?$|^100$')]),
           controls.controls.purityReading.updateValueAndValidity()
         // controls.controls.customerConfirmation.setValidators(Validators.required),
         //   controls.controls.customerConfirmation.updateValueAndValidity()
@@ -490,7 +490,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         controls.controls.quantity.setValidators([]),
           controls.controls.quantity.updateValueAndValidity()
       } else {
-        controls.controls.approxPurityReading.setValidators([Validators.required, Validators.pattern('^[0-9][0-9]?$|^100$')]),
+        controls.controls.approxPurityReading.setValidators([Validators.required, Validators.pattern('^[1-9][0-9]?$|^100$')]),
           controls.controls.approxPurityReading.updateValueAndValidity()
       }
     }
@@ -744,7 +744,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   calculateScrapAmount(index: number) {
     const controls = this.OrnamentsData.at(index) as FormGroup;
-    console.log(controls.controls.approxPurityReading.value, "qwertyuiop")
     if (controls.controls.netWeight.valid && controls.controls.approxPurityReading.valid
       && controls.controls.netWeight.value && controls.controls.approxPurityReading.value) {
       let approxPurityReading = controls.controls.approxPurityReading.value

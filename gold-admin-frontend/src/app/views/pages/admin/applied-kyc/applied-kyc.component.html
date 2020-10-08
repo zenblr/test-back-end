@@ -38,8 +38,8 @@
                 <ng-container matColumnDef="currentProduct">
                     <mat-header-cell *matHeaderCellDef>Current Product</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span *ngIf="role.customer?.appraiserRequest[0]?.moduleId == 1">Gold Loan</span>
-                        <span *ngIf="role.customer?.appraiserRequest[0]?.moduleId == 3">Scrap Gold</span>
+                        <span *ngIf="role.currentKycModuleId == 1">Gold Loan</span>
+                        <span *ngIf="role.currentKycModuleId == 3">Scrap Gold</span>
                     </mat-cell>
                 </ng-container>
 

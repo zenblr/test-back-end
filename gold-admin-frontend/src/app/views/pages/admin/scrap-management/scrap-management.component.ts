@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GlobalSettingService } from '../../../../core/global-setting/services/global-setting.service';
 import { map } from 'rxjs/operators';
+import { AuthService } from '../../../../core/auth';
 
 @Component({
   selector: 'kt-scrap-management',
@@ -9,7 +10,8 @@ import { map } from 'rxjs/operators';
 export class ScrapManagementComponent implements OnInit, OnDestroy {
 
   constructor(
-    private globalSettingService: GlobalSettingService
+    private globalSettingService: GlobalSettingService,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -19,8 +21,10 @@ export class ScrapManagementComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.globalSettingService.getGlobalSetting().pipe(map(res => {
-      this.globalSettingService.globalSetting.next(res);
-    })).subscribe();
+    if (this.authService.isLoggedIn()) {
+      this.globalSettingService.getGlobalSetting().pipe(map(res => {
+        this.globalSettingService.globalSetting.next(res);
+      })).subscribe();
+    }
   }
 }

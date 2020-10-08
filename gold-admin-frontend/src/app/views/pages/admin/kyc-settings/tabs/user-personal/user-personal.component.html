@@ -392,6 +392,12 @@
                                         </div>
                                         <input type="file" accept="image/*,application/pdf" class="d-none"
                                             #gstCertificate (input)="getFileInfo($event,'gstCertificate')">
+                                        <div class="w-100">
+                                            <mat-error
+                                                *ngIf="controls.gstCertificateFileName.errors?.required && controls.gstCertificateFileName.touched">
+                                                Required field
+                                            </mat-error>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

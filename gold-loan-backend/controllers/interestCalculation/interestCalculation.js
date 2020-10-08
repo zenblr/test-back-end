@@ -280,3 +280,50 @@ exports.app = async (req, res) => {
 //         let a = await models.customerLoanInterest.update(element, { where: { id: element.id }, transaction: t })
 //     }
 // })
+
+
+// add internal branch
+
+exports.interestCalculationCron = async (req, res) => {
+    date = moment();
+    let { cronId } = req.body;
+    try {
+        let cronData = await models.cronLogger.findOne({ where: { id: cronId, cronType: 'loan Interest' } });
+        if (cronData) {
+        let data = await dailyIntrestCalculation(date);
+        let endTime = moment();
+        var penalProcessingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(date, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        await models.cronLogger.update({ date: date, startTime: date, endTime: endTime, processingTime: penalProcessingTime, status: "success", notes: "re-executed", message: "success" }, { where: { id: cronId } });
+        return res.status(200).json({ message: 'success', data });
+        }else{
+            return res.status(400).json({ message: 'Invalid cron id' });
+        }
+    } catch (Err) {
+        let endTime = moment();
+        var penalProcessingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(date, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        await models.cronLogger.update({ date: date, startTime: date, endTime: endTime, processingTime: penalProcessingTime, status: "failed", notes: "re-executed", message: Err.message }, { where: { id: cronId } });
+        return res.status(400).json({ message: 'failed' });
+    }
+}
+
+exports.penalInterestCalculationCron = async (req, res) => {
+    date = moment();
+    let { cronId } = req.body;
+    try {
+        let cronData = await models.cronLogger.findOne({ where: { id: cronId, cronType: 'loan Penal Interest' } });
+        if (cronData) {
+            let data = await cronForDailyPenalInterest(date);
+            let endTime = moment();
+            var penalProcessingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(date, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+            await models.cronLogger.update({ date: date, startTime: date, endTime: endTime, processingTime: penalProcessingTime, status: "success", notes: "re-executed", message: "success" }, { where: { id: cronId } });
+            return res.status(200).json({ message: 'success', data });
+        }else{
+            return res.status(400).json({ message: 'Invalid cron id' });
+        }
+    } catch (Err) {
+        let endTime = moment();
+        var penalProcessingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(date, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        await models.cronLogger.update({ date: date, startTime: date, endTime: endTime, processingTime: penalProcessingTime, status: "failed", notes: "re-executed", message: Err.message }, { where: { id: cronId } });
+        return res.status(400).json({ message: 'failed' });
+    }
+}
