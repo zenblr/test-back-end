@@ -202,6 +202,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_new_loan_from_part_release',
             defaultValue: false
         },
+        packetLocaionStatus:{
+            type: DataTypes.STRING,
+            field: 'packet_locaion_status',
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
