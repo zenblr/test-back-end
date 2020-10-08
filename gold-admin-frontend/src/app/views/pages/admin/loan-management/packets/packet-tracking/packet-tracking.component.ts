@@ -30,7 +30,7 @@ export class PacketTrackingComponent implements OnInit {
     from: 1,
     to: 25,
     search: '',
-    status: '',
+    packetTrackingLocation: '',
   }
   // Subscriptions
   private subscriptions: Subscription[] = [];
@@ -147,7 +147,7 @@ export class PacketTrackingComponent implements OnInit {
   }
 
   applyFilter(data) {
-    this.queryParamsData.status = data.data.packetTracking;
+    this.queryParamsData.packetTrackingLocation = data.data.packetTrackingLocation;
     this.dataSource.loadpackets(this.queryParamsData);
     this.filteredDataList = data.list;
   }
