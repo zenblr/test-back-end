@@ -15,7 +15,7 @@ const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 const razorpay = require('../../utils/razorpay');
 let crypto = require('crypto');
 const { BASIC_DETAILS_SUBMIT } = require('../../utils/customerLoanHistory');
-const { sendMessageAssignedCustomerToAppraiser,sendMessageCustomerForAssignAppraiser} = require('../../utils/SMS')
+const { sendMessageAssignedCustomerToAppraiser, sendMessageCustomerForAssignAppraiser } = require('../../utils/SMS')
 
 exports.ornamentsDetails = async (req, res, next) => {
 
@@ -856,7 +856,7 @@ exports.partReleaseAssignAppraiser = async (req, res, next) => {
 
     let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } });
     let customerInfo = await models.customer.findOne({ where: { id: customerId } })
-     await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
+    await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
     await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
@@ -905,10 +905,10 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         amountStatus: "completed",
         newLoanId: null,
         isAppraiserAssigned: true,
-        '$appraiserData.is_active$':true
+        '$appraiserData.is_active$': true
     }
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-        searchQuery['$appraiserData.appraiser_id$']=userId;
+        searchQuery['$appraiserData.appraiser_id$'] = userId;
     }
     let includeArray = [
         {
@@ -1032,7 +1032,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
                     attributes: ['id', 'location']
                 }
             ],
-            order:[['id','desc']]
+            order: [['id', 'desc']]
         });
         locationData.push(data1)
         data.masterLoan.dataValues.locationData = locationData;
@@ -1040,7 +1040,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         let customerPacketTracking = [];
         let data2 = await models.customerPacketTracking.findOne({
             where: { masterLoanId: data.masterLoanId },
-            order:[['id','desc']]
+            order: [['id', 'desc']]
         })
         customerPacketTracking.push(data2)
         data.masterLoan.dataValues.customerPacketTracking = customerPacketTracking
@@ -1146,7 +1146,7 @@ exports.updateAppraiser = async (req, res, next) => {
     });
     let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } });
     let customerInfo = await models.customer.findOne({ where: { id: customerId } })
-     await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
+    await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
     await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
@@ -1340,10 +1340,10 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                 passbookProof: oldLoanData.loanBankDetail.passbookProof
             }
             await models.customerLoanBankDetail.create(bankData, { transaction: t });
-            return loan
+            return { loan, masterLoan }
         });
         ////////
-        res.status(200).json({ message: 'customer details fetch successfully', customerData, partReleaseId, newLoanAmount, masterLoanId: loanData.masterLoanId, loanId: loanData.id, loanCurrentStage: '2' });
+        res.status(200).json({ message: 'customer details fetch successfully', customerData, partReleaseId, newLoanAmount, masterLoanId: loanData.loan.masterLoanId, loanId: loanData.loan.id, loanCurrentStage: '2', appraiserRequestId: loanData.masterLoan.appraiserRequestId });
     }
 }
 
@@ -1620,7 +1620,7 @@ exports.getFullReleaseList = async (req, res, next) => {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber','internalBranchId']
+                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'internalBranchId']
             },
             {
                 model: models.customerLoan,
@@ -1824,7 +1824,7 @@ exports.fullReleaseAssignReleaser = async (req, res, next) => {
 
     let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: releaserId } });
     let customerInfo = await models.customer.findOne({ where: { id: customerId } })
-     await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
+    await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
     await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
     // let customerInfo = await models.customer.findOne({ where: { id: customerId } })
@@ -1844,10 +1844,10 @@ exports.updateReleaser = async (req, res, next) => {
 
     let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: releaserId } });
     let customerInfo = await models.customer.findOne({ where: { id: customerId } })
-     await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
+    await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
     await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
-    
+
     return res.status(200).json({ message: 'success' });
 }
 
@@ -1893,10 +1893,10 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
             fullReleaseStatus: { [Op.in]: ['pending'] },
             documents: null
         },
-        '$releaser.is_active$':true
+        '$releaser.is_active$': true
     }
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-        searchQuery['$releaser.releaser_id$']=userId;
+        searchQuery['$releaser.releaser_id$'] = userId;
     }
     let includeArray = [{
         model: models.customerLoanTransaction,
@@ -2011,7 +2011,7 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
                     attributes: ['id', 'location']
                 }
             ],
-            order:[['id','desc']]
+            order: [['id', 'desc']]
         });
         locationData.push(data1)
         data.masterLoan.dataValues.locationData = locationData;
@@ -2019,7 +2019,7 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
         let customerPacketTracking = [];
         let data2 = await models.customerPacketTracking.findOne({
             where: { masterLoanId: data.masterLoanId },
-            order:[['id','desc']]
+            order: [['id', 'desc']]
         })
         customerPacketTracking.push(data2)
         data.masterLoan.dataValues.customerPacketTracking = customerPacketTracking
