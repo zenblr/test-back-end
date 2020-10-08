@@ -163,7 +163,7 @@ export class TopbarComponent implements OnInit {
 		private scrapCustomerManagementService: ScrapCustomerManagementService,
 		private partnerBranchUserservice: PartnerBranchUserService,
 		private depositService: DepositService,
-		private cronService:CronListService
+		private cronService: CronListService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -1036,7 +1036,7 @@ export class TopbarComponent implements OnInit {
 			this.scrapPacketTrackingService.applyFilter.next(data)
 		}
 
-		if(this.path == 'cron'){
+		if (this.path == 'cron') {
 			this.cronService.applyFilter.next(data)
 		}
 	}

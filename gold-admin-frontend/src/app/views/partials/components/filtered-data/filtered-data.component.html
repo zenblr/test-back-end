@@ -156,6 +156,29 @@
                         </div>
                     </div>
 
+                    <div class="filtered-data" *ngIf="filteredList?.scrapCceStatus">
+                        <div class="filtered-title">By Scrap CCE Status</div>
+                        <div class="d-flex">
+                            <div class="filtered-value"
+                                *ngFor="let item of filteredList?.scrapCceStatus; let i = index;">
+                                <span>{{item?.name | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('scrapCceStatus',i)">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filtered-data" *ngIf="filteredList?.scrapKycStatus">
+                        <div class="filtered-title">By Scrap KYC Status</div>
+                        <div class="d-flex">
+                            <div class="filtered-value"
+                                *ngFor="let item of filteredList?.scrapKycStatus; let i = index;">
+                                <span>{{item?.name | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('scrapKycStatus',i)">
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- appliedLoan -->
                     <div class="filtered-data" *ngIf="filteredList?.appraiserStatus">
                         <div class="filtered-title">By Appraiser Status</div>
