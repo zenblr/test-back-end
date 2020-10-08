@@ -344,7 +344,7 @@ exports.checkDuplicatePan = async (req, res, next) => {
     })
 
     if (customerId == null) {
-        if (!check.isEmpty(checkPan)) {
+        if (!check.isEmpty(checkPan) && !check.isEmpty(panCardNumber)) {
             return res.status(400).json({ message: 'Duplicate PAN card' })
         } else if (!check.isEmpty(checkAadhar)) {
             return res.status(400).json({ message: 'Duplicate Aadhar card' })
@@ -352,9 +352,9 @@ exports.checkDuplicatePan = async (req, res, next) => {
             return res.status(200).json({ message: 'success' })
         }
     } else {
-        if (checkPan && checkPan.id != customerId) {
+        if (!check.isEmpty(checkPan) && checkPan.id != customerId && !check.isEmpty(panCardNumber)) {
             return res.status(400).json({ message: 'Duplicate PAN card' })
-        } else if (checkAadhar.customerId != customerId) {
+        } else if (!check.isEmpty(checkAadhar) && checkAadhar.customerId != customerId) {
             return res.status(400).json({ message: 'Duplicate Aadhar card' })
         } else {
             return res.status(200).json({ message: 'success' })
