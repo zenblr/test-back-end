@@ -189,7 +189,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			packetTracking: [''],
 			cronStatus: [''],
 			product: [''],
-			scrapCceStatus: [''],
+			scrapKycStatusFromCce: [''],
 			scrapKycStatus: ['']
 		});
 
@@ -282,9 +282,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.kycStatus = controls['kycStatus'].value.multiSelect.map(e => e.value).toString();
 				this.filterObject.list.kycStatus = controls['kycStatus'].value.multiSelect;
 			}
-			if (controls['scrapCceStatus'].value && (controls['scrapCceStatus'].value.multiSelect && controls['scrapCceStatus'].value.multiSelect.length)) {
-				this.filterObject.data.scrapCceStatus = controls['scrapCceStatus'].value.multiSelect.map(e => e.value).toString();
-				this.filterObject.list.scrapCceStatus = controls['scrapCceStatus'].value.multiSelect;
+			if (controls['scrapKycStatusFromCce'].value && (controls['scrapKycStatusFromCce'].value.multiSelect && controls['scrapKycStatusFromCce'].value.multiSelect.length)) {
+				this.filterObject.data.scrapKycStatusFromCce = controls['scrapKycStatusFromCce'].value.multiSelect.map(e => e.value).toString();
+				this.filterObject.list.scrapKycStatusFromCce = controls['scrapKycStatusFromCce'].value.multiSelect;
 			}
 			if (controls['scrapKycStatus'].value && (controls['scrapKycStatus'].value.multiSelect && controls['scrapKycStatus'].value.multiSelect.length)) {
 				this.filterObject.data.scrapKycStatus = controls['scrapKycStatus'].value.multiSelect.map(e => e.value).toString();
@@ -382,8 +382,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'kycStatus':
 				this.controls['kycStatus'].value.multiSelect.splice(index, 1);
 				break;
-			case 'scrapCceStatus':
-				this.controls['scrapCceStatus'].value.multiSelect.splice(index, 1);
+			case 'scrapKycStatusFromCce':
+				this.controls['scrapKycStatusFromCce'].value.multiSelect.splice(index, 1);
 				break;
 			case 'scrapKycStatus':
 				this.controls['scrapKycStatus'].value.multiSelect.splice(index, 1);
@@ -432,7 +432,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			leadStatus: this.filterForm.controls['leadStatus'].value,
 			scrapStatus: this.filterForm.controls['scrapStatus'].value,
 			scrapKycStatus: this.filterForm.controls['scrapKycStatus'].value,
-			scrapCceStatus: this.filterForm.controls['scrapCceStatus'].value,
+			scrapKycStatusFromCce: this.filterForm.controls['scrapKycStatusFromCce'].value,
 		});
 		setTimeout(() => {
 			this.applyFilter();

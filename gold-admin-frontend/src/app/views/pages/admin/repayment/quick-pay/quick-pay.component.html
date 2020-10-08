@@ -2,18 +2,16 @@
     <kt-portlet-body class="min-vh-60">
         <div id="container">
             <div class="table-div kt-padding-t-10 ">
-                <table class="table outer-border ">
+                <table class="table outer-border altered-row">
                     <thead>
                         <th class="transparent ">Loan ID</th>
-                        <th class="transparent ">Loan Amount</th>
+                        <th class="transparent table-amount">Loan Amount</th>
                         <th class="transparent">Loan Date</th>
                         <th class="transparent">Scheme Name</th>
                         <th class="transparent">Tenure</th>
                         <th class="transparent">Interest Rate</th>
                         <th class="transparent">Next Due Date</th>
                         <th class="transparent">Status</th>
-
-
                     </thead>
                     <tbody>
                         <tr>
@@ -23,8 +21,8 @@
                                     {{loanDetails?.customerLoan[1]?.loanUniqueId}}
                                 </span>
                             </td>
-                            <td class="">
-                                {{loanDetails?.customerLoan[0]?.loanAmount}}
+                            <td class="table-amount">
+                                <span>{{loanDetails?.customerLoan[0]?.loanAmount}}</span>
                                 <br>
                                 <span *ngIf="loanDetails?.customerLoan[1]">
                                     {{loanDetails?.customerLoan[1]?.loanAmount}}
@@ -46,7 +44,8 @@
                                 </span></td>
                             <td *ngIf="loanDetails?.nextDueDate else blankTableValue">
                                 {{loanDetails?.nextDueDate | date : 'mediumDate'}}</td>
-                            <td class="text-warning" *ngIf="loanDetails?.status == 'pending' || loanDetails?.status == 'partially paid'">
+                            <td class="text-warning"
+                                *ngIf="loanDetails?.status == 'pending' || loanDetails?.status == 'partially paid'">
                                 {{loanDetails?.status | titlecase}}
                             </td>
                             <td class="text-success" *ngIf="loanDetails?.status == 'paid'">
@@ -61,44 +60,48 @@
                 <td>-</td>
             </ng-template>
 
-           
+
             <div *ngIf="payableAmount">
                 <div class="table-div kt-padding-t-10">
                     <table class="table outer-border">
                         <thead>
-                            <th class="transparent">Principal Outstanding</th>
-                            <th class="transparent">Next Due Date Amount</th>
-                            <th class="transparent">Interest Amount</th>
-                            <th class="transparent">Penal Interest</th>
-                            <th class="transparent">Payable Amount</th>
+                            <th class="transparent table-amount">Principal Outstanding</th>
+                            <th class="transparent table-amount">Next Due Date Amount</th>
+                            <th class="transparent table-amount">Interest Amount</th>
+                            <th class="transparent table-amount">Penal Interest</th>
+                            <th class="transparent table-amount">Payable Amount</th>
                             <th class="transparent">Payment Amount</th>
 
                         </thead>
                         <tbody>
                             <tr>
-                                <td> {{payableAmount?.securedOutstandingAmount}}<br>
+                                <td class="table-amount">
+                                    <span>{{payableAmount?.securedOutstandingAmount}}</span><br>
                                     <span *ngIf="loanDetails?.customerLoan[1]">
                                         {{payableAmount?.unsecuredOutstandingAmount}}
                                     </span>
                                 </td>
-                                <td>{{payableAmount?.securedTotalInterest}}<br>
+                                <td class="table-amount">
+                                    <span>{{payableAmount?.securedTotalInterest}}</span><br>
                                     <span *ngIf="loanDetails?.customerLoan[1]">
                                         {{payableAmount?.unsecuredTotalInterest}}
                                     </span>
                                 </td>
-                                <td>{{payableAmount?.securedInterest}} <br>
+                                <td class="table-amount">
+                                    <span>{{payableAmount?.securedInterest}}</span> <br>
                                     <span *ngIf="loanDetails?.customerLoan[1]">
                                         {{payableAmount?.unsecuredInterest}}
                                     </span>
                                 </td>
 
-                                <td>{{payableAmount?.securedPenalInterest}}<br>
+                                <td class="table-amount">
+                                    <span>{{payableAmount?.securedPenalInterest}}</span><br>
                                     <span *ngIf="loanDetails?.customerLoan[1]">
                                         {{payableAmount?.unsecuredPenalInterest}}
                                     </span>
                                 </td>
 
-                                <td>{{payableAmount?.payableAmount}}</td>
+                                <td class="table-amount">{{payableAmount?.payableAmount}}</td>
                                 <td><input ktWeight type="text" class="form-control" [formControl]="payableAmt"
                                         [class.isError]="payableAmt.touched && payableAmt.invalid">
                                     <mat-error *ngIf="payableAmt.errors?.required && payableAmt.touched">
@@ -149,13 +152,13 @@
             </div>
             <h5 class="kt-padding-t-20 kt-padding-b-20" *ngIf="paymentDetails">Payment Confirmation</h5>
             <div class="table-div" *ngIf="paymentDetails">
-                <table class="table outer-border ">
+                <table class="table outer-border altered-row-4">
                     <thead>
                         <th class="transparent th-style th-padding-style">Loan ID</th>
                         <th class="transparent th-style">Loan Payment Date</th>
                         <!-- <th class="transparent th-style">Loan Amount</th> -->
-                        <th class="transparent th-style">Total Payment Amount</th>
-                        <th class="transparent th-style">Select Payment option</th>
+                        <th class="transparent th-style table-amount padding-8">Total Payment Amount</th>
+                        <th class="transparent th-style text-left">Select Payment option</th>
                     </thead>
                     <tbody>
                         <tr>
@@ -168,8 +171,9 @@
                                 {{paymentDetails?.customerLoan[0]?.outstandingAmount}} <br>
                                 {{paymentDetails?.customerLoan[1]?.outstandingAmount}}
                             </td> -->
-                            <td class="font-weight-500" style="font-size: 14px;">{{payableAmt.value}}</td>
-                            <td class="">
+                            <td class="font-weight-500 table-amount padding-8" style="font-size: 14px;">
+                                {{payableAmt.value}}</td>
+                            <td class=" text-left">
                                 <button *ngIf="!paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">Select
                                     Payment</button>
                                 <button *ngIf="paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">

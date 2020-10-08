@@ -410,7 +410,7 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.showfilter = true;
 			this.filterName = "kyc";
-			this.filterWidth = "600px";
+			this.filterWidth = "1000px";
 			this.listType = "approval";
 		}
 		if (this.path == "assigned-customers") {
