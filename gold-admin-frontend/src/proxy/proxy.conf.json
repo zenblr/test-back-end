@@ -1,6 +1,6 @@
 {
     "/api/*": {
-        "target": "https://golduat.nimapinfotech.com/",
+        "target": "https://emiapi.nimapinfotech.com/",
         "secure": false,
         "logLevel": "debug",
         "changeOrigin": true
