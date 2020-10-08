@@ -9,9 +9,9 @@ route.post('/', checkAuth, wrapper(interestCalculation));
 
 route.post('/loan', checkAuth, wrapper(interestCalculationOneLoan));
 ////cron api
-route.post('/interest-cron', checkAuth, wrapper(interestCalculationCron));
+route.post('/interest-cron',checkAuth, interestCalculationCron);
 ////cron api
-route.post('/penal-cron', checkAuth, wrapper(penalInterestCalculationCron));
+route.post('/penal-cron',checkAuth, penalInterestCalculationCron);
 
 route.post('/update-interest', checkAuth, wrapper(interestCalculationUpdate));
 
