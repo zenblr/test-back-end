@@ -15,7 +15,7 @@ const { VIEW_ALL_PACKET_TRACKING } = require('../../utils/permissionCheck')
 
 //FUNCTION TO GET ALL PACKET DETAILS
 exports.getAllPacketTrackingDetail = async (req, res, next) => {
-    let { locationStatus } = req.query;
+    let { packetLocationStatus } = req.query;
 
     let { search, offset, pageSize } =
         paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
@@ -27,9 +27,9 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
     }
 
     let query = {};
-    if (locationStatus) {
-        locationStatus = req.query.locationStatus.split(",");
-        query.packetLocationStatus = locationStatus;
+    if (packetLocationStatus) {
+        packetLocationStatus = req.query.packetLocationStatus.split(",");
+        query.packetLocationStatus = packetLocationStatus;
     }
     let associateModel = [
         {
