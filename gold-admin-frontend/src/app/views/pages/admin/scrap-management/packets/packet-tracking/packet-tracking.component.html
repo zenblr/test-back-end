@@ -67,13 +67,11 @@
                     <mat-cell *matCellDef="let packet">
                         <ng-container *ngFor="let item of packet?.locationData; last as l">
                             <ng-container *ngIf="l">
-                                <div style="width: 100%;"
-                                    *ngIf="item?.packetLocationId === 3 || item?.packetLocationId === 1">
+                                <div style="width: 100%;" *ngIf="item?.packetLocationId === 1">
                                     <kt-elapsed-time [startTime]="item?.createdAt"></kt-elapsed-time>
                                 </div>
-                                <div style="width: 100%;"
-                                    *ngIf="item?.packetLocationId === 2 && !packet?.isScrapCompleted">
-                                    <kt-elapsed-time [startTime]="packet?.scrapDisbursement[0]?.createdAt">
+                                <div style="width: 100%;" *ngIf="item?.packetLocationId === 2">
+                                    <kt-elapsed-time [startTime]="packet?.scrapDisbursement?.createdAt">
                                     </kt-elapsed-time>
                                 </div>
                             </ng-container>

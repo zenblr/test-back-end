@@ -41,7 +41,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'scrap-buying-calculator',
+        redirectTo: 'applied-scrap',
         pathMatch: 'full'
       },
       {
