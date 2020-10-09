@@ -54,7 +54,7 @@ export class SharedService {
 	];
 
 	product = [
-		{ name: 'gold', value: 'gold' },
+		{ name: 'loan', value: 'loan' },
 		{ name: 'emi', value: 'emi' }
 	]
 
