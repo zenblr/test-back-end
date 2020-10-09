@@ -112,7 +112,7 @@ export class PacketTrackingComponent implements OnInit {
     this.sharedService.hideLoader.next(true)
   }
 
- 
+
 
   checkPacketTracking(packetList) {
     packetList.forEach(element => {
@@ -123,7 +123,7 @@ export class PacketTrackingComponent implements OnInit {
         let allowedInterval = 5 * 60000 // no of minutes * (1min to milliseconds)
         if (diff > allowedInterval) {
           element.showPopUp = true;
-        }else{
+        } else {
           element.showPopUp = false;
         }
       }

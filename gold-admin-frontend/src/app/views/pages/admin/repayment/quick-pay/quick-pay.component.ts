@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { RazorpayPaymentService } from '../../../../../core/shared/services/razorpay-payment.service';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { QuickPayHistoryComponent } from '../quick-pay-history/quick-pay-history.component';
+import objectPath from 'object-path';
 
 @Component({
   selector: 'kt-quick-pay',
@@ -52,6 +53,9 @@ export class QuickPayComponent implements OnInit {
   getPayableAmount() {
     this.quickPayServie.getPayableAmount(this.masterLoanId).subscribe(res => {
       this.payableAmount = res.data;
+      let sum = 0 ;
+      sum = Number(this.payableAmount.securedPenalInterest) + Number(this.payableAmount.unsecuredPenalInterest) + Number(this.payableAmount.unsecuredTotalInterest) + Number(this.payableAmount.securedTotalInterest)
+      this.payableAmt.patchValue(sum)
       this.ref.detectChanges()
     })
   }

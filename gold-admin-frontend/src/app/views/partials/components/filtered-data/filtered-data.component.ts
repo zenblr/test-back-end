@@ -26,7 +26,7 @@ export class FilteredDataComponent implements OnInit, OnDestroy {
 	ngOnInit() {
 	}
 
-	clearFilter(name, index) {
+	clearFilter(name, index?) {
 		const data = {
 			name: name,
 			index: index
