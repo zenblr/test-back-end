@@ -1118,7 +1118,12 @@ exports.printCustomerAcknowledgement = async (req, res) => {
             {
                 model: models.customerKycOrganizationDetail,
                 as: 'organizationDetail',
-                attributes: ['gstinNumber', 'cinNumber']
+                attributes: ['gstinNumber', 'cinNumber', 'email']
+            },
+            {
+                model: models.customerKycPersonalDetail,
+                as: 'customerKycPersonal',
+                attributes: ['id',  'panCardNumber'],
             }
             ]
         },
@@ -1146,9 +1151,11 @@ exports.printCustomerAcknowledgement = async (req, res) => {
     if (customerScrap.customer.userType == "Corporate") {
         gstNo = customerScrap.customer.organizationDetail.gstinNumber;
         cinNo = customerScrap.customer.organizationDetail.cinNumber;
+        email = customerScrap.customer.organizationDetail.email;
     } else {
-        gstNo = "-";
-        cinNo = "-";
+        gstNo = " NA";
+        cinNo = " NA";
+        email = " NA";
     }
 
 
@@ -1161,13 +1168,12 @@ exports.printCustomerAcknowledgement = async (req, res) => {
     var options = {
         format: "A4",
         orientation: "portrait",
-        border: "1mm",
+        border: "2mm",
         "header": {
-            "height": "2mm",
-
+            "height": "15mm",
         },
         "footer": {
-            "height": "2mm",
+            "height": "15mm",
         },
         "height": "11.69in",
         "width": "10in"
@@ -1177,7 +1183,7 @@ exports.printCustomerAcknowledgement = async (req, res) => {
         customerName: `${customerScrap.customer.firstName} ${customerScrap.customer.lastName}`,
         customerAddress: custtomerAddress,
         customerMobileNo: customerScrap.customer.mobileNumber,
-        customerEmail: customerScrap.customer.email,
+        customerEmail: email,
         addressProofNo: addressProofNo,
         issuingAuthority: `${issuingAuthority.firstName} ${issuingAuthority.lastName}`,
         gstNo: gstNo,
@@ -1192,7 +1198,7 @@ exports.printCustomerAcknowledgement = async (req, res) => {
                 srNo: index + 1,
                 ornamentName: ornament.ornamentType.name,
                 quantity: ornament.quantity,
-                grossWeight: ornament.grossWeight
+                grossWeight: ornament.netWeight
             })
         }
     }
@@ -1251,6 +1257,11 @@ exports.printPurchaseVoucher = async (req, res) => {
                         as: 'city',
                         attributes: ['name']
                     }]
+                },
+                {
+                    model: models.customerKycPersonalDetail,
+                    as: 'customerKycPersonal',
+                    attributes: ['id',  'panCardNumber'],
                 }
                 ]
             },
@@ -1261,7 +1272,8 @@ exports.printPurchaseVoucher = async (req, res) => {
                     model: models.ornamentType,
                     as: 'ornamentType'
                 }
-            }]
+            }
+            ]
         });
         let customerAddress;
         let pincode;
@@ -1285,13 +1297,13 @@ exports.printPurchaseVoucher = async (req, res) => {
                     srNo: index + 1,
                     ornamentName: ornament.ornamentType.name,
                     quantity: ornament.quantity,
-                    grossWeight: ornament.grossWeight,
+                    grossWeight: ornament.netWeight,
                     amount: ornament.scrapAmount,
                     nullCell: ""
                 });
     
                 totalUnits.push(ornament.quantity);
-                totalGrams.push(ornament.grossWeight);
+                totalGrams.push(ornament.netWeight);
                 totalAmount.push(ornament.scrapAmount)
             }
         }
@@ -1307,19 +1319,19 @@ exports.printPurchaseVoucher = async (req, res) => {
             orientation: "portrait",
             border: "0.5mm",
             "header": {
-                "height": "1mm",
+                "height": "2mm",
     
             },
             "footer": {
-                "height": "1mm",
+                "height": "3mm",
             },
             "height": "13.69in",
             "width": "11in"
         }
-        if(customerScrap.customer.panCardNumber){
-            panNo = customerSatte.customer.panCardNumber
+        if(customerScrap.customer.customerKycPersonal.panCardNumber){
+            panNo = customerSatte.customer.customerKycPersonal.panCardNumber
         }else{
-            panNo = "NA";
+            panNo = " NA";
         }
         let purchaseVoucher = await [{
             customerName: `${customerScrap.customer.firstName} ${customerScrap.customer.lastName}`,
