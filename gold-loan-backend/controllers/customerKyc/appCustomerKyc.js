@@ -204,18 +204,35 @@ exports.getAssignedCustomer = async (req, res, next) => {
     let query = {}
 
     let goldModule = await models.module.findOne({ where: { moduleName: 'gold loan' } })
+    let start = new Date();
+    start.setHours(0, 0, 0, 0);
+    let end = new Date();
+    end.setHours(23, 59, 59, 999);
 
     let searchQuery = {
         [Op.and]: [query, {
-            [Op.or]: {
+            [Op.or]: [{
                 "$customer.first_name$": { [Op.iLike]: search + '%' },
                 "$customer.last_name$": { [Op.iLike]: search + '%' },
-                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-            },
+                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' }
+            }],
         }],
+        [Op.or]: [
+            {
+                "$masterLoan.loan_stage_id$": { [Op.notIn]: [13] }
+            },
+            {
+                "$masterLoan.packet_submitted_date$": {
+                    [Op.between]: [start, end]
+                }
+            }, {
+                status: "incomplete"
+            }
+        ],
         appraiserId: id,
-        moduleId: goldModule.id
+        moduleId: goldModule.id,
     };
+
     let includeArray = [
         {
             model: models.customer,
@@ -264,12 +281,11 @@ exports.getAssignedCustomer = async (req, res, next) => {
         }, {
             model: models.customerLoanMaster,
             as: "masterLoan",
-            //aajchya submitted che ani aajchya date che
             include: [
                 {
                     model: models.partRelease,
                     as: 'partRelease',
-                    attributes: ['id','amountStatus', 'partReleaseStatus','newLoanAmount']
+                    attributes: ['id', 'amountStatus', 'partReleaseStatus', 'newLoanAmount']
                 },
                 {
                     model: models.customerLoan,
@@ -294,7 +310,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
                         {
                             model: models.partRelease,
                             as: 'partRelease',
-                            attributes: ['id','amountStatus', 'partReleaseStatus','newLoanAmount']
+                            attributes: ['id', 'amountStatus', 'partReleaseStatus', 'newLoanAmount']
                         }
                     ]
                 }
@@ -304,7 +320,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
 
     let data = await models.appraiserRequest.findAll({
         where: searchQuery,
-        attributes: ['id', 'appraiserId', 'appoinmentDate', 'startTime', 'endTime'],
+        attributes: ['id', 'appraiserId', 'appoinmentDate', 'startTime', 'endTime', 'status'],
         subQuery: false,
         include: includeArray,
         order: [

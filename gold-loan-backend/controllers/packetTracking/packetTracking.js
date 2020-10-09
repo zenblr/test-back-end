@@ -875,7 +875,8 @@ exports.submitLoanPacketLocation = async (req, res, next) => {
             if (branchCheck) {
 
                 let loanStageForBranch = await models.loanStage.findOne({ where: { name: 'packet submitted' } })
-                await models.customerLoanMaster.update({ loanStageId: loanStageForBranch.id, packetLocationStatus: 'complete', isLoanCompleted: true }, { where: { id: masterLoanId }, transaction: t })
+
+                await models.customerLoanMaster.update({ loanStageId: loanStageForBranch.id, packetLocationStatus: 'complete', isLoanCompleted: true, packetSubmittedDate: Date.now() }, { where: { id: masterLoanId }, transaction: t })
 
                 await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'complete' }, { transaction: t })
 
@@ -915,7 +916,8 @@ exports.submitLoanPacketLocation = async (req, res, next) => {
         await sequelize.transaction(async (t) => {
 
 
-            await models.customerLoanMaster.update({ partnerBranchId: partnerBranchId, loanStageId: loanStage.id, isLoanCompleted: true, packetLocationStatus: 'complete' }, { where: { id: masterLoanId }, transaction: t })
+
+            await models.customerLoanMaster.update({ partnerBranchId: partnerBranchId, loanStageId: loanStage.id, isLoanCompleted: true, packetLocationStatus: 'complete', packetSubmittedDate: Date.now() }, { where: { id: masterLoanId }, transaction: t })
 
             await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'complete' }, { transaction: t })
 
@@ -1051,7 +1053,8 @@ exports.addCustomerPacketTracking = async (req, res, next) => {
 
         if (masterLoan.loanStageId == packetInBranch.id) {
             if (packetLocationId == partnerBranchInLocation.id) {
-                await models.customerLoanMaster.update({ loanStageId: packetSubmitted.id, isLoanCompleted: true, packetLocationStatus: 'complete' }, { where: { id: masterLoanId }, transaction: t })
+
+                await models.customerLoanMaster.update({ loanStageId: packetSubmitted.id, isLoanCompleted: true, packetLocationStatus: 'complete', packetSubmittedDate: Date.now() }, { where: { id: masterLoanId }, transaction: t })
             }
             if (packetLocationId == branchOutLocation.id) {
                 await models.customerLoanMaster.update({ loanStageId: packetBranchOut.id, packetLocationStatus: 'in transit' }, { where: { id: masterLoanId }, transaction: t })
@@ -1242,7 +1245,8 @@ exports.deliveryApproval = async (req, res, next) => {
 
         if (masterLoan.loanStageId == packetBranchOut.id) {
             if (packetLocationId == partnerBranchInLocation.id) {
-                await models.customerLoanMaster.update({ partnerBranchId: partnerBranchId, loanStageId: packetSubmitted.id, isLoanCompleted: true, packetLocationStatus: 'complete' }, { where: { id: masterLoanId }, transaction: t })
+
+                await models.customerLoanMaster.update({ partnerBranchId: partnerBranchId, loanStageId: packetSubmitted.id, isLoanCompleted: true, packetLocationStatus: 'complete', packetSubmittedDate: Date.now() }, { where: { id: masterLoanId }, transaction: t })
             }
             if (packetLocationId == branchOutLocation.id) {
                 await models.customerLoanMaster.update({ loanStageId: packetBranchOut.id, packetLocationStatus: 'in transit' }, { where: { id: masterLoanId }, transaction: t })
