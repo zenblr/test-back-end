@@ -350,7 +350,9 @@ exports.getAssignedCustomer = async (req, res, next) => {
 
 exports.checkDuplicatePan = async (req, res, next) => {
     let { customerId, panCardNumber, identityProofNumber } = req.body
-
+    if (panCardNumber == undefined) {
+        panCardNumber = null
+    }
     let checkPan = await models.customer.findOne({
         where: { panCardNumber: panCardNumber }
     })
