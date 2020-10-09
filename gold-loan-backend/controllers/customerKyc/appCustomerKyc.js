@@ -214,7 +214,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
             [Op.or]: [{
                 "$customer.first_name$": { [Op.iLike]: search + '%' },
                 "$customer.last_name$": { [Op.iLike]: search + '%' },
-                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' }
+                // "$customer.customer_unique_id$": { [Op.iLike]: search + '%' }
             }],
         }],
         [Op.or]: [
