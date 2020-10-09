@@ -46,7 +46,7 @@ export class PartReleaseComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.router.url)
+    // console.log(this.router.url)
     this.id = this.route.snapshot.params.id
     this.url = this.router.url
     this.patchValuePartRelease()

@@ -6,7 +6,7 @@
 		width:20%
 	}
 	.th-padding-style{
-		padding-left:3% ;
+		padding-left:5% ;
     }
     .th-p-style{
 		padding-left:7% ;
@@ -17,4 +17,18 @@
     .th-padding-left-style{
         padding-left:12% ;
     }
+
+    .table-amount {
+      text-align: right;
+      padding-right: 7%;
+    }
+    .table-last {
+      padding-right: 3%;
+    }
+    // .altered-row 
+    // // thead th:not(:first-child):not(:last-child), .altered-row tbody tr td:not(:first-child):not(:last-child) 
+    // // thead th:first-child, .altered-row tbody tr td 
+    // {
+    //   padding: 1rem 3.5rem;
+    // }
 }

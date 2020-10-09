@@ -17,6 +17,8 @@
     }
     .mat-column-amount{
         flex: 0 0 8% !important;
+        justify-content: flex-end;
+        padding-right: 20px;
     }
     .mat-column-interestRate{
         flex: 0 0 6% !important;
