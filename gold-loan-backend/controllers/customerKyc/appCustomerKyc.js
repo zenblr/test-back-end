@@ -204,18 +204,35 @@ exports.getAssignedCustomer = async (req, res, next) => {
     let query = {}
 
     let goldModule = await models.module.findOne({ where: { moduleName: 'gold loan' } })
+    let start = new Date();
+    start.setHours(0, 0, 0, 0);
+    let end = new Date();
+    end.setHours(23, 59, 59, 999);
 
     let searchQuery = {
         [Op.and]: [query, {
-            [Op.or]: {
+            [Op.or]: [{
                 "$customer.first_name$": { [Op.iLike]: search + '%' },
                 "$customer.last_name$": { [Op.iLike]: search + '%' },
-                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-            },
+                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' }
+            }],
         }],
+        [Op.or]: [
+            {
+                "$masterLoan.loan_stage_id$": { [Op.notIn]: [13] }
+            },
+            {
+                "$masterLoan.packet_submitted_date$": {
+                    [Op.between]: [start, end]
+                }
+            }, {
+                status: "incomplete"
+            }
+        ],
         appraiserId: id,
-        moduleId: goldModule.id
+        moduleId: goldModule.id,
     };
+
     let includeArray = [
         {
             model: models.customer,
@@ -268,7 +285,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 {
                     model: models.partRelease,
                     as: 'partRelease',
-                    attributes: ['id','amountStatus', 'partReleaseStatus','newLoanAmount']
+                    attributes: ['id', 'amountStatus', 'partReleaseStatus', 'newLoanAmount']
                 },
                 {
                     model: models.customerLoan,
@@ -287,13 +304,13 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 },
                 {
                     model: models.customerLoanMaster,
-                    as:'parentLoan',
-                    attributes:['id'],
-                    include:[
+                    as: 'parentLoan',
+                    attributes: ['id'],
+                    include: [
                         {
                             model: models.partRelease,
                             as: 'partRelease',
-                            attributes: ['id','amountStatus', 'partReleaseStatus','newLoanAmount']
+                            attributes: ['id', 'amountStatus', 'partReleaseStatus', 'newLoanAmount']
                         }
                     ]
                 }
@@ -303,7 +320,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
 
     let data = await models.appraiserRequest.findAll({
         where: searchQuery,
-        attributes: ['id', 'appraiserId', 'appoinmentDate', 'startTime', 'endTime'],
+        attributes: ['id', 'appraiserId', 'appoinmentDate', 'startTime', 'endTime', 'status'],
         subQuery: false,
         include: includeArray,
         order: [
@@ -332,20 +349,31 @@ exports.getAssignedCustomer = async (req, res, next) => {
 }
 
 exports.checkDuplicatePan = async (req, res, next) => {
-    let { customerId, panCardNumber } = req.body
-
+    let { customerId, panCardNumber, identityProofNumber } = req.body
+    if (panCardNumber == undefined) {
+        panCardNumber = null
+    }
     let checkPan = await models.customer.findOne({
         where: { panCardNumber: panCardNumber }
     })
+
+    let checkAadhar = await models.customerKycPersonalDetail.findOne({
+        where: { identityProofNumber: identityProofNumber }
+    })
+
     if (customerId == null) {
-        if (!check.isEmpty(checkPan)) {
+        if (!check.isEmpty(checkPan) && !check.isEmpty(panCardNumber)) {
             return res.status(400).json({ message: 'Duplicate PAN card' })
+        } else if (!check.isEmpty(checkAadhar)) {
+            return res.status(400).json({ message: 'Duplicate Aadhar card' })
         } else {
             return res.status(200).json({ message: 'success' })
         }
     } else {
-        if (checkPan && checkPan.id != customerId) {
+        if (!check.isEmpty(checkPan) && checkPan.id != customerId && !check.isEmpty(panCardNumber)) {
             return res.status(400).json({ message: 'Duplicate PAN card' })
+        } else if (!check.isEmpty(checkAadhar) && checkAadhar.customerId != customerId) {
+            return res.status(400).json({ message: 'Duplicate Aadhar card' })
         } else {
             return res.status(200).json({ message: 'success' })
         }
@@ -360,7 +388,7 @@ exports.checkDuplicateAadhar = async (req, res, next) => {
         where: { identityProofNumber: identityProofNumber }
     })
     if (customerId == null) {
-        if (!check.isEmpty(checkPan)) {
+        if (!check.isEmpty(checkAadhar)) {
             return res.status(400).json({ message: 'Duplicate Aadhar card' })
         } else {
             return res.status(200).json({ message: 'success' })

@@ -939,8 +939,8 @@ let penalInterestPayment = async (loanArray, totalPenalAmount, createdBy, receiv
     let pendingPenalAmount = totalPenalAmount
     let penalAccuralAmount = totalPenalAmount
 
-        //add penal next code
-    
+    //add penal next code
+
     for (let index = 0; index < loanArray.length; index++) {
         if (loanArray[index].emiDueDate > receivedDate && loanArray[index].emiStartDate < receivedDate) {
 
@@ -990,7 +990,7 @@ let penalInterestPayment = async (loanArray, totalPenalAmount, createdBy, receiv
         }
 
     }
-        //add penal next code
+    //add penal next code
 
 
     for (let index = 0; index < loanArray.length; index++) {
@@ -1112,6 +1112,12 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
                 as: 'customerLoan',
                 where: whereCondition,
                 attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                include: [
+                    {
+                        model: models.scheme,
+                        as: 'scheme'
+                    }
+                ]
             },
             {
                 model: models.loanStage,

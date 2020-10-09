@@ -37,9 +37,9 @@
                 <ng-container matColumnDef="loanAmount">
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let loan" class="d-block">
-                        <div class="currency">
+                        <div class="currency text-right">
                             {{loan.customerLoan[0]?.loanAmount | indianCurrencyFormat}}</div>
-                        <div class="currency">
+                        <div class="currency text-right">
                             {{loan.customerLoan[1]?.loanAmount | indianCurrencyFormat}}
                         </div>
                     </mat-cell>

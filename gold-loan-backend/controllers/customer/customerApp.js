@@ -166,7 +166,15 @@ exports.readMyLoan = async (req, res, next) => {
                     },
 
                 ]
-            }
+            },
+            {
+                model: models.partRelease,
+                as: 'partRelease',
+            },
+            {
+                model: models.fullRelease,
+                as: 'fullRelease',
+            },
         ]
     });
     return res.status(200).json({ data: loanDetails })

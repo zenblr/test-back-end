@@ -23,6 +23,9 @@
                                 {{ packet?.customerPacketTracking[0]?.receiverUser.lastName | titlecase }}
                             </span>
                         </span>
+                        <div *ngIf="packet?.showPopUp" class="alert-container kt-padding-l-10">
+                            <div class="red-alert"></div>
+                        </div>
                     </mat-cell>
                 </ng-container>
 
@@ -79,6 +82,7 @@
                         <span [ngClass]="colorCodeEntry(packet)">
                             <span *ngIf="packet.customerLoan">
                                 {{packet.customer.firstName + " " + packet.customer.lastName |titlecase}}
+
                             </span>
                         </span>
                     </mat-cell>
@@ -126,9 +130,7 @@
                                         [locationTracking]="packet?.lastSyncTime">
                                     </kt-elapsed-time>
                                 </div>
-                                <div *ngIf="isTrackingDisabled(i) && !checkForPartnerBranchIn(packet)">
-                                    <!-- asd -->
-                                </div>
+                                
                             </ng-container>
                         </ng-container>
                     </mat-cell>

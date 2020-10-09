@@ -17,7 +17,8 @@ import { SharedService } from '../../../../../../core/shared/services/shared.ser
 @Component({
   selector: 'kt-packet-tracking',
   templateUrl: './packet-tracking.component.html',
-  styleUrls: ['./packet-tracking.component.scss']
+  styleUrls: ['./packet-tracking.component.scss'],
+
 })
 export class PacketTrackingComponent implements OnInit {
   dataSource: PacketTrackingDatasource;
@@ -30,7 +31,7 @@ export class PacketTrackingComponent implements OnInit {
     from: 1,
     to: 25,
     search: '',
-    status: '',
+    packetTrackingLocation: '',
   }
   // Subscriptions
   private subscriptions: Subscription[] = [];
@@ -67,7 +68,6 @@ export class PacketTrackingComponent implements OnInit {
         }
       });
 
-    // this.sharedService.hideLoader.next(true)
   }
 
   ngOnInit() {
@@ -98,32 +98,45 @@ export class PacketTrackingComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(res => {
       this.leadsResult = res;
+      this.checkPacketTracking(this.leadsResult)
     });
     this.subscriptions.push(entitiesSubscription);
 
     this.dataSource.loadpackets(this.queryParamsData);
-    this.checkPacketTracking(this.leadsResult)
 
-    // this.interval = setInterval(() => {
-    //   this.dataSource.loadpackets(this.queryParamsData);
-    //   this.checkPacketTracking(this.leadsResult)
-    // }, 30000)
+    this.interval = setInterval(() => {
+      this.dataSource.loadpackets(this.queryParamsData);
+      this.checkPacketTracking(this.leadsResult)
+    }, 30000)
 
+    this.sharedService.hideLoader.next(true)
   }
 
+ 
+
   checkPacketTracking(packetList) {
-    if (!this.previousSyncArray) {
-      this.previousSyncArray = new Array(packetList.length).fill(null);
-      return this.previousSyncArray = packetList.map(e => e.lastSyncTime)
-      // return console.log(this.previousSyncArray)
-    }
+    packetList.forEach(element => {
+      let date = new Date()
+      if (element.lastSyncTime && element.locationData[element.locationData.length - 1].status == 'in transit') {
+        let lastSyncTime = new Date(element.lastSyncTime)
+        let diff = date.getTime() - lastSyncTime.getTime()
+        let allowedInterval = 5 * 60000 // no of minutes * (1min to milliseconds)
+        if (diff > allowedInterval) {
+          element.showPopUp = true;
+        }else{
+          element.showPopUp = false;
+        }
+      }
 
-    this.currentSyncArray = new Array(packetList.length).fill(null);
-    this.currentSyncArray = packetList.map(e => e.lastSyncTime)
+    });
 
-    if (this.previousSyncArray != this.currentSyncArray) {
-      this.previousSyncArray = this.currentSyncArray
-    }
+    console.log(this.leadsResult)
+    // this.currentSyncArray = new Array(packetList.length).fill(null);
+    // this.currentSyncArray = packetList.map(e => e.lastSyncTime)
+
+    // if (this.previousSyncArray != this.currentSyncArray) {
+    //   this.previousSyncArray = this.currentSyncArray
+    // }
   }
 
   isTrackingDisabled(index) {
@@ -143,11 +156,11 @@ export class PacketTrackingComponent implements OnInit {
     this.destroy$.next();
     this.destroy$.complete();
     clearInterval(this.interval)
-    // this.sharedService.hideLoader.next(false)
+    this.sharedService.hideLoader.next(false)
   }
 
   applyFilter(data) {
-    this.queryParamsData.status = data.data.packetTracking;
+    this.queryParamsData.packetTrackingLocation = data.data.packetTrackingLocation;
     this.dataSource.loadpackets(this.queryParamsData);
     this.filteredDataList = data.list;
   }
@@ -173,6 +186,8 @@ export class PacketTrackingComponent implements OnInit {
       this.packetTrackingService.openModal.next(false);
     });
   }
+
+
 
   updatePacket(packet) {
     // let lastIndex = packet.locationData[packet.locationData.length - 1]
@@ -263,7 +278,7 @@ export class PacketTrackingComponent implements OnInit {
   checkForPartnerBranchIn(packet) {
     const lastIndex = packet.locationData[packet.locationData.length - 1]
     const id = lastIndex.packetLocation.id
-    const isNotAllowed = id == 4 || id == 3 || id == 7 || packet.isLoanCompleted ? true : false
+    const isNotAllowed = id == 6 || id == 1 || id == 4 || id == 3 || id == 7 || packet.isLoanCompleted ? true : false
     return isNotAllowed
   }
 
