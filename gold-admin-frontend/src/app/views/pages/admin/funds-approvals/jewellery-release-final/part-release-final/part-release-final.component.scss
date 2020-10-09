@@ -1,13 +1,14 @@
 :host{
     ::ng-deep.mat-row,
     ::ng-deep.mat-header-row{
-        width: 250% !important;
+        width: 270% !important;
     }
 
     .mat-column-netWeightReleaseOrnament{
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        flex: 0 0 5%;
     }
 
     .mat-column-netWeightRemainingOrnament{
@@ -24,8 +25,40 @@
     .mat-column-updateStatus{
         flex: 0 0 5%;
     }
-
     .mat-column-status{
         flex: 0 0 3%;
     }
+
+    .mat-column-tenure {
+        flex: 0 0 3%;
+    }
+    .mat-column-loanAmount{
+        padding-right: 25px;
+        justify-content: flex-end;
+    }
+    .mat-column-principalAmount{
+        padding-right: 25px;
+        justify-content: flex-end;
+    }
+    .mat-column-totalPaidAmount{
+        padding-right: 25px;
+        justify-content: flex-end;
+        flex: 0 0 5%;
+    }
+    .mat-column-penalInterest{
+        padding-right: 25px;
+        justify-content: flex-end;
+    }
+    .mat-column-interestAmount{
+        padding-right: 25px;
+        justify-content: flex-end;
+    }
+    .mat-column-ornamentReleaseAmount{
+        padding-right: 25px;
+        justify-content: flex-end;
+    }
+    .mat-column-currentLocation{
+        flex: 0 0 5%;
+    }
+    
 }

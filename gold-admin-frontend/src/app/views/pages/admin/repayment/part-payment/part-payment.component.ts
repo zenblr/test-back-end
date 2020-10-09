@@ -76,6 +76,7 @@ export class PartPaymentComponent implements OnInit {
       // console.log(res)
       this.paymentDetails = res.data
       this.scrollToBottom()
+      this.ref.detectChanges()
     })).subscribe()
   }
 
