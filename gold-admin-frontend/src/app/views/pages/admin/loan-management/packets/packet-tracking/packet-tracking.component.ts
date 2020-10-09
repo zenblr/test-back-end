@@ -13,7 +13,6 @@ import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.compo
 import { Router } from '@angular/router';
 import { OrnamentsComponent } from '../../../../../partials/components/ornaments/ornaments.component';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
-import { LocationDatasource } from 'src/app/core/loan-management/view-location/location/datasources/location.datasource';
 
 @Component({
   selector: 'kt-packet-tracking',
