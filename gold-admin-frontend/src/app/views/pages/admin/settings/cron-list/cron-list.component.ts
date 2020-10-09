@@ -19,7 +19,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 })
 export class CronListComponent implements OnInit {
   dataSource;
-  displayedColumns = ['cronType', 'date','startTime','endTime','processingTime','status'];
+  displayedColumns = ['cronType', 'date','startTime','endTime','processingTime','status','message','notes'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();

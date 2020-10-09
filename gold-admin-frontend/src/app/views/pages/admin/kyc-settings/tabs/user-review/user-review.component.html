@@ -223,7 +223,7 @@
                     <div class="col-6">
                         <div class="row">
                             <div class="col-3  offset-1  form-label">
-                                <label class="mandatory  text-color font-weight-500">PAN / FORM 60 </label>
+                                <label class="mandatory text-color font-weight-500">PAN / FORM 60 </label>
                             </div>
                             <div class="col-8">
                                 <select class="form-control" formControlName="panType"
@@ -1237,7 +1237,7 @@
                                         Name</label>
                                 </div>
                                 <div class="col-7">
-                                    <input type="text" class="form-control" placeholder="" formControlName="spouseName"
+                                    <input type="text" class="form-control" placeholder="Name" formControlName="spouseName"
                                         value="{{ data.customerKycReview?.customerKycPersonal?.spouseName | titlecase }}"
                                         [class.isError]="customerKycPersonal.controls.spouseName.touched && customerKycPersonal.controls.spouseName.invalid" />
                                     <mat-error

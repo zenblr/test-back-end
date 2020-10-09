@@ -88,7 +88,9 @@
                             <div *ngIf="images.identityProof.length>0">
                                 <div class="row ">
                                     <div class="kt-margin-r-15" *ngFor="let img of images.identityProof, index as idx">
-                                        <div class="img-container">
+                                        <div class="img-container"
+                                            [class.ml-auto]="images.identityProof.length == 2 && idx == 0"
+                                            [class.mr-auto]="images.identityProof.length == 2 && idx == 1">
                                             <img class="border-rad-15 fetched-image" [src]="img" alt=""
                                                 (click)="preview(img, idx)" *ngIf="!isPdf(img)">
                                             <div class="iframeWrapper" (click)="previewPdf(img)">
@@ -398,7 +400,9 @@
                                                 <div class="row">
                                                     <div class="col-6" [class.offset-4]="images.residential.length == 1"
                                                         *ngFor="let img of images.residential, index as idx">
-                                                        <div class="img-container">
+                                                        <div class="img-container"
+                                                            [class.ml-auto]="images.residential.length == 2 && idx == 0"
+                                                            [class.mr-auto]="images.residential.length == 2 && idx == 1">
                                                             <img *ngIf="!isPdf(img)" class="fetched-image" [src]="img"
                                                                 alt="" (click)="preview(img, idx)">
                                                             <!-- <img src="../../../../../assets/media/icons/edit.svg" alt=""
@@ -422,7 +426,9 @@
                                                 <div class="row">
                                                     <div class="col-6" [class.offset-4]="images.permanent.length == 1"
                                                         *ngFor="let img of images.permanent, index as idx">
-                                                        <div class="img-container">
+                                                        <div class="img-container"
+                                                            [class.ml-auto]="images.permanent.length == 2 && idx == 0"
+                                                            [class.mr-auto]="images.permanent.length == 2 && idx == 1">
                                                             <img *ngIf="!isPdf(img)" class="fetched-image" [src]="img"
                                                                 alt="" (click)="preview(img, idx)">
                                                             <!-- <img src="../../../../../assets/media/icons/dit.svg" alt=""

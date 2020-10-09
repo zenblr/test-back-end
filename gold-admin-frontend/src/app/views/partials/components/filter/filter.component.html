@@ -101,17 +101,37 @@
           <form class="kt-form" [formGroup]="filterForm">
             <div class="row">
               <div class="col">
-                <label>By CCE Status</label>
+                <label>By Loan CCE Status</label>
                 <kt-multi-select-search formControlName="cceStatus" [items]="approvalStatus.apprsiserOrCCE"
-                  [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'CCE Status'">
+                  [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'CCE Status'"
+                  [searchable]="false">
                 </kt-multi-select-search>
               </div>
 
               <div class="col">
-                <label>By KYC Status</label>
-                <kt-multi-select-search formControlName="kycStatus" [items]="approvalStatus.apprsiserOrCCE" [multiple]="true"
-                  [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'KYC Status'"></kt-multi-select-search>
+                <label>By Loan KYC Status</label>
+                <kt-multi-select-search formControlName="kycStatus" [items]="approvalStatus.apprsiserOrCCE"
+                  [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'KYC Status'"
+                  [searchable]="false">
+                </kt-multi-select-search>
               </div>
+
+              <div class="col">
+                <label>By Scrap CCE Status</label>
+                <kt-multi-select-search formControlName="scrapKycStatusFromCce" [items]="approvalStatus.apprsiserOrCCE"
+                  [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'CCE Status'"
+                  [searchable]="false">
+                </kt-multi-select-search>
+              </div>
+
+              <div class="col">
+                <label>By Scrap KYC Status</label>
+                <kt-multi-select-search formControlName="scrapKycStatus" [items]="approvalStatus.apprsiserOrCCE"
+                  [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'KYC Status'"
+                  [searchable]="false">
+                </kt-multi-select-search>
+              </div>
+
               <div class="col-2 d-flex align-items-end">
                 <label></label>
                 <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
@@ -215,9 +235,9 @@
             <div class="row">
               <div class="col-9">
                 <label>By Tracking Status</label>
-                <select class="form-control" formControlName="packetTracking">
+                <select class="form-control" formControlName="packetTrackingLocation">
                   <option value="" selected>All</option>
-                  <option value="inTransit">In Transit</option>
+                  <option value="in transit">In Transit</option>
                   <option value="incomplete">Incomplete</option>
                   <option value="complete">Complete</option>
                 </select>
@@ -431,12 +451,12 @@
             <div class="row">
               <div class="col">
                 <label>Product</label>
-                <kt-multi-select-search formControlName="product" [items]="cronProductArray"
-                  [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'Product'">
+                <kt-multi-select-search formControlName="product" [items]="cronProductArray" [multiple]="true"
+                  [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'Product'">
                 </kt-multi-select-search>
               </div>
-<!-- emi,loan -->
-<!-- failed,success -->
+              <!-- emi,loan -->
+              <!-- failed,success -->
               <div class="col">
                 <label>Status</label>
                 <kt-multi-select-search formControlName="cronStatus" [items]="cronStatusArray" [multiple]="true"

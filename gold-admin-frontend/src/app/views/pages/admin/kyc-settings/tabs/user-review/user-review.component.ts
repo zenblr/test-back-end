@@ -242,7 +242,7 @@ export class UserReviewComponent implements OnInit {
     if (this.data.moduleId == 1) {
       let identityArray = this.data.customerKycReview.customerKycPersonal
       this.identityImageArray = identityArray.identityProofImage
-      this.identityIdArray = identityArray.identityProof
+      this.identityIdArray = identityArray.identityProof ? identityArray.identityProof : []
       this.reviewForm.controls.identityProof.patchValue(this.identityIdArray);
       this.customerKycPersonal.controls.identityProof.patchValue(this.identityIdArray);
     }
@@ -320,11 +320,9 @@ export class UserReviewComponent implements OnInit {
     })
 
     this.reviewForm.patchValue(this.data.customerKycReview)
-    // console.log(this.reviewForm.value)
     if (this.data.customerKycReview.customerKycPersonal) {
       this.reviewForm.patchValue(this.data.customerKycReview.customerKycPersonal)
       this.reviewForm.patchValue({ panCardNumber: this.data.customerKycReview.panCardNumber })
-      // console.log(this.reviewForm.value)
 
     }
 
@@ -420,9 +418,9 @@ export class UserReviewComponent implements OnInit {
         occupationId: [],
         dateOfBirth: [, [Validators.required]],
         age: [, [Validators.required]],
-        identityTypeId: [, [Validators.required]],
-        identityProof: [, [Validators.required]],
-        identityProofNumber: [, [Validators.required]],
+        identityTypeId: [],
+        identityProof: [],
+        identityProofNumber: [],
         panCardNumber: [this.data.customerKycReview.panCardNumber]
       })
 
@@ -576,6 +574,12 @@ export class UserReviewComponent implements OnInit {
   getIdentityType() {
     this.userAddressService.getIdentityType().subscribe(res => {
       this.identityProofs = res.data.filter(filter => filter.name == 'Aadhaar Card');
+      // if (this.reviewForm.controls.identityTypeId != this.identityProofs[0].id) {
+      this.reviewForm.controls.identityTypeId.patchValue(this.identityProofs[0].id)
+      if (this.customerKycPersonal) {
+        this.customerKycPersonal.controls.identityTypeId.patchValue(this.identityProofs[0].id)
+      }
+      // }
       this.ref.detectChanges()
     })
   }
@@ -731,7 +735,7 @@ export class UserReviewComponent implements OnInit {
             this.identityImageArray.push(res.uploadFile.URL)
             this.identityIdArray.push(res.uploadFile.path)
             this.identityFileNameArray.push(event.target.files[0].name)
-
+            this.reviewForm.patchValue({ identityProof: this.identityIdArray })
             this.customerKycPersonal.patchValue({ identityProof: this.identityIdArray })
             this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
           }

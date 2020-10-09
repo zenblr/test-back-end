@@ -1,5 +1,5 @@
 const express = require('express');
-const { interestCalculation, app,interestAmount,getInterestTableInExcel,interestCalculationOneLoan,getTransactionDetailTable,interestCalculationUpdate } = require('../controllers/interestCalculation/interestCalculation');
+const { penalInterestCalculationCron,interestCalculationCron,interestCalculation, app,interestAmount,getInterestTableInExcel,interestCalculationOneLoan,getTransactionDetailTable,interestCalculationUpdate } = require('../controllers/interestCalculation/interestCalculation');
 const route = express.Router();
 const { wrapper } = require('../utils/errorWrap');
 
@@ -8,6 +8,10 @@ const checkAuth = require('../middleware/checkAuth');
 route.post('/', checkAuth, wrapper(interestCalculation));
 
 route.post('/loan', checkAuth, wrapper(interestCalculationOneLoan));
+////cron api
+route.post('/interest-cron',checkAuth, interestCalculationCron);
+////cron api
+route.post('/penal-cron',checkAuth, penalInterestCalculationCron);
 
 route.post('/update-interest', checkAuth, wrapper(interestCalculationUpdate));
 

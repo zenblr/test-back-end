@@ -32,7 +32,7 @@ export class PacketTrackingComponent implements OnInit {
     from: 1,
     to: 25,
     search: '',
-    status: '',
+    packetTrackingLocation: '',
   }
   // Subscriptions
   private subscriptions: Subscription[] = [];
@@ -161,7 +161,7 @@ export class PacketTrackingComponent implements OnInit {
   }
 
   applyFilter(data) {
-    this.queryParamsData.status = data.data.packetTracking;
+    this.queryParamsData.packetTrackingLocation = data.data.packetTrackingLocation;
     this.dataSource.loadpackets(this.queryParamsData);
     this.filteredDataList = data.list;
   }
@@ -279,7 +279,7 @@ export class PacketTrackingComponent implements OnInit {
   checkForPartnerBranchIn(packet) {
     const lastIndex = packet.locationData[packet.locationData.length - 1]
     const id = lastIndex.packetLocation.id
-    const isNotAllowed = id == 4 || id == 3 || id == 7 || packet.isLoanCompleted ? true : false
+    const isNotAllowed = id == 6 || id == 1 || id == 4 || id == 3 || id == 7 || packet.isLoanCompleted ? true : false
     return isNotAllowed
   }
 
