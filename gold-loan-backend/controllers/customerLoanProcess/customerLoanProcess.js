@@ -2301,7 +2301,11 @@ exports.getDetailsForPrint = async (req, res, next) => {
                     model: models.partner,
                     as: 'partner',
                     attributes: ['name']
-                },
+                },{
+                    model:models.customerLoanSlabRate,
+                    as:'slab'
+                }
+
             ]
         },
         {
@@ -2365,6 +2369,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
         where: { id: customerLoanId },
         order: [
             [models.customerLoan, 'id', 'asc'],
+            // [models.customerLoan,models.customerLoanSlabRate, 'id', 'asc'],
         ],
         attributes: ['id', 'tenure', 'loanStartDate', 'loanEndDate', 'isUnsecuredSchemeApplied', 'processingCharge'],
         include: includeArray
@@ -2414,7 +2419,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
             loanAmount: customerLoanDetail.customerLoan[1].loanAmount,
             loanScheme: customerLoanDetail.customerLoan[1].scheme.schemeName,
             penalCharges: customerLoanDetail.customerLoan[1].scheme.penalInterest,
-            interestRate: customerLoanDetail.customerLoan[1].interestRate,
+            interestRate: customerLoanDetail.customerLoan[1].slab[customerLoanDetail.customerLoan[1].slab.length - 1].interestRate,
             processingFee: customerLoanDetail.processingCharge,
             branch: customerLoanDetail.internalBranch.name,
             aadhaarNumber: customerLoanDetail.customer.customerKycPersonal.identityProofNumber
@@ -2446,7 +2451,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
         nomineeDetails: `${customerLoanDetail.loanNomineeDetail[0].nomineeName}, ${customerLoanDetail.loanNomineeDetail[0].nomineeAge}, ${customerLoanDetail.loanNomineeDetail[0].relationship}`,
         startDate: customerLoanDetail.loanStartDate,
         customerAddress: `${customerLoanDetail.customerAddress[0].address},${customerLoanDetail.customerAddress[0].pinCode},${customerLoanDetail.customerAddress[0].state},${customerLoanDetail.customerAddress[0].city}`,
-        interestRate: customerLoanDetail.customerLoan[0].interestRate,
+        interestRate: customerLoanDetail.customerLoan[0].slab[customerLoanDetail.customerLoan[0].slab.length - 1].interestRate,
         customerId: customerLoanDetail.customer.customerUniqueId,
         loanNumber: customerLoanDetail.customerLoan[0].loanUniqueId,
         loanAmount: customerLoanDetail.customerLoan[0].loanAmount,
