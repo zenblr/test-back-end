@@ -187,6 +187,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			leadStatus: [''],
 			scrapStatus: [''],
 			packetTracking: [''],
+			packetTrackingLocation: [''],
 			cronStatus: [''],
 			product: [''],
 			scrapKycStatusFromCce: [''],
@@ -321,6 +322,10 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.packetTracking = controls['packetTracking'].value;
 				this.filterObject.list.packetTracking = controls['packetTracking'].value;
 			}
+			if (controls['packetTrackingLocation'].value) {
+				this.filterObject.data.packetTrackingLocation = controls['packetTrackingLocation'].value;
+				this.filterObject.list.packetTrackingLocation = controls['packetTrackingLocation'].value;
+			}
 			return this.filterObject;
 		}
 	}
@@ -415,6 +420,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'packetTracking':
 				this.controls['packetTracking'].patchValue('');
 				break;
+			case 'packetTrackingLocation':
+				this.controls['packetTrackingLocation'].patchValue('');
+				break;
 			default:
 				break;
 		}
@@ -433,6 +441,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			scrapStatus: this.filterForm.controls['scrapStatus'].value,
 			scrapKycStatus: this.filterForm.controls['scrapKycStatus'].value,
 			scrapKycStatusFromCce: this.filterForm.controls['scrapKycStatusFromCce'].value,
+			packetTrackingLocation: this.filterForm.controls['packetTrackingLocation'].value,
 		});
 		setTimeout(() => {
 			this.applyFilter();
