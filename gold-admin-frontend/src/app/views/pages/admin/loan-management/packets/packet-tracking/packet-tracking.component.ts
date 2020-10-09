@@ -13,7 +13,6 @@ import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.compo
 import { Router } from '@angular/router';
 import { OrnamentsComponent } from '../../../../../partials/components/ornaments/ornaments.component';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
-// import { LocationDatasource } from 'src/app/core/loan-management/view-location/location/datasources/location.datasource';
 
 @Component({
   selector: 'kt-packet-tracking',
@@ -113,7 +112,7 @@ export class PacketTrackingComponent implements OnInit {
     this.sharedService.hideLoader.next(true)
   }
 
- 
+
 
   checkPacketTracking(packetList) {
     packetList.forEach(element => {
@@ -124,7 +123,7 @@ export class PacketTrackingComponent implements OnInit {
         let allowedInterval = 5 * 60000 // no of minutes * (1min to milliseconds)
         if (diff > allowedInterval) {
           element.showPopUp = true;
-        }else{
+        } else {
           element.showPopUp = false;
         }
       }

@@ -462,6 +462,30 @@
                 <kt-multi-select-search formControlName="cronStatus" [items]="cronStatusArray" [multiple]="true"
                   [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'Status'"></kt-multi-select-search>
               </div>
+              <!-- <div class="col-2 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div> -->
+            </div>
+            <div class="row">
+              <div class="col">
+                <label>Type</label>
+                <kt-multi-select-search formControlName="cronType" [items]="cronTypeArray" [multiple]="true"
+                  [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'Type'">
+                </kt-multi-select-search>
+              </div>
+              <!-- emi,loan -->
+              <!-- failed,success -->
+              <div class="col">
+                <label>Date</label>
+                <input class="form-control" [matDatepicker]="picker" (click)="picker.open()" formControlName="date"
+                  readonly placeholder="4/5/2020" />
+                <mat-datepicker #picker></mat-datepicker>
+              </div>
+
+              <!--  -->
+            </div>
+            <div class="row kt-padding-t-5">
               <div class="col-2 d-flex align-items-end">
                 <label></label>
                 <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>

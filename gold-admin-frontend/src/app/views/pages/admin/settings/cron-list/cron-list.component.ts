@@ -33,6 +33,8 @@ export class CronListComponent implements OnInit {
     search: '',
     status: '',
     product: '',
+    cronType:'',
+    date:''
   }
   filteredDataList: any = {};
 
@@ -94,7 +96,8 @@ export class CronListComponent implements OnInit {
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
-
+    this.queryParamsData.from = from
+    this.queryParamsData.to = to
     this.dataSource.getCronList(this.queryParamsData);
   }
 
@@ -102,6 +105,8 @@ export class CronListComponent implements OnInit {
     console.log(data);
     this.queryParamsData.status = data.data.cronStatus;
     this.queryParamsData.product = data.data.product;
+    this.queryParamsData.cronType = data.data.cronType;
+    this.queryParamsData.date = data.data.date;
     this.dataSource.getCronList(this.queryParamsData);
     this.filteredDataList = data.list;
   }

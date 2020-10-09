@@ -59,8 +59,20 @@ export class SharedService {
 	]
 
 	cronStatus = [
-		{name:'failed',value:'failed'},
-		{name:'success',value:'success'}
+		{ name: 'failed', value: 'failed' },
+		{ name: 'success', value: 'success' }
+	]
+
+	cronType = [
+		{ name: 'loan Penal Interest', value: 'loan Penal Interest' },
+		{ name: 'loan Interest', value: 'loan Interest' },
+		{ name: 'cancel order data transfer', value: 'cancel order data transfer' },
+		{ name: 'deposit data transfer', value: 'deposit data transfer' },
+		{ name: 'user data transfer', value: 'user data transfer' },
+		{ name: 'order data transfer', value: 'order data transfer' },
+		{ name: 'order status to defaulter', value: 'order status to defaulter' },
+		{ name: 'emi reminder', value: 'emi reminder' }
+
 	]
 
 	constructor(
@@ -241,11 +253,15 @@ export class SharedService {
 		return ext
 	}
 
-	getCronProduct(){
+	getCronProduct() {
 		return this.product
 	}
 
-	getCronStatus(){
+	getCronStatus() {
 		return this.cronStatus
+	}
+
+	getCronType() {
+		return this.cronType
 	}
 }

@@ -15,14 +15,22 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        flex: 0 0 3%;
+    }
+    .mat-column-appointmentTime {
         flex: 0 0 4%;
     }
-
+    .mat-column-appointmentDate {
+        flex: 0 0 4%;
+    }
     .mat-column-partReleaseAmountStatus {
         flex: 0 0 3%;
     }
     .mat-column-updateStatus {
         flex: 0 0 5%;
+    }
+    .mat-column-view {
+        flex: 0 0 4%;
     }
 
     .mat-column-tenure{
@@ -62,5 +70,8 @@
     .mat-column-currentLTV{
         padding-right: 25px;
         justify-content: flex-end;
+    }
+    .mat-column-currentLocation{
+        flex: 0 0 5%;
     }
 }
