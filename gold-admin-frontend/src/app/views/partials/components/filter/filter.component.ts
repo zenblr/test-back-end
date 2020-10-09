@@ -65,6 +65,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	scrapStatusList = [];
 	cronProductArray: { name: string; value: string; }[];
 	cronStatusArray: { name: string; value: string; }[];
+	cronTypeArray: { name: string; value: string; }[];
 
 	constructor(
 		private fb: FormBuilder,
@@ -156,6 +157,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 						case 'cron':
 							this.cronProduct();
 							this.cronStatus();
+							this.cronType()
 							break
 					}
 				}
@@ -191,7 +193,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			cronStatus: [''],
 			product: [''],
 			scrapKycStatusFromCce: [''],
-			scrapKycStatus: ['']
+			scrapKycStatus: [''],
+			date: [''],
+			cronType: ['']
 		});
 
 		this.filterForm.valueChanges.subscribe((val) => {
@@ -309,6 +313,15 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.cronStatus = controls['cronStatus'].value.multiSelect.map(e => e.value);
 				this.filterObject.list.cronStatus = controls['cronStatus'].value.multiSelect;
 			}
+			if (controls['cronType'].value && (controls['cronType'].value.multiSelect && controls['cronType'].value.multiSelect.length)) {
+				this.filterObject.data.cronType = controls['cronType'].value.multiSelect.map(e => e.value);
+				this.filterObject.list.cronType = controls['cronType'].value.multiSelect;
+			}
+
+			if (controls['date'].value) {
+				this.filterObject.data.date = controls['date'].value;
+				this.filterObject.list.date = controls['date'].value;
+			}
 			if (controls['scheme'].value) {
 				console.log(controls['scheme'].value)
 				if (controls['scheme'].value == "All") {
@@ -414,8 +427,14 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'product':
 				this.controls['product'].value.multiSelect.splice(index, 1);
 				break;
-			case 'cronStatus ':
-				this.controls['status'].value.multiSelect.splice(index, 1);
+			case 'cronStatus':
+				this.controls['cronStatus'].value.multiSelect.splice(index, 1);
+				break;
+			case 'cronType':
+				this.controls['cronType'].value.multiSelect.splice(index, 1);
+				break;
+			case 'date':
+				this.controls['date'].patchValue('');
 				break;
 			case 'packetTracking':
 				this.controls['packetTracking'].patchValue('');
@@ -491,6 +510,12 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 
 	cronStatus() {
 		this.cronStatusArray = this.sharedService.getCronStatus()
+
+	}
+
+	cronType() {
+		this.cronTypeArray = this.sharedService.getCronType()
+		console.log(this.cronTypeArray)
 
 	}
 

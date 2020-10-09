@@ -122,9 +122,9 @@
                 style="font-size: small;font-weight: 400;padding-left: 15%;">
                 <table class="align-top " style="width:100%;margin:0;font-weight: 500;table-layout: fixed;">
                     <tr>
-                        <th>Customer Service</th>
-                        <th>Contact Details</th>
-                        <th>Email</th>
+                        <th>Email ID</th>
+                        <th>Contact Us</th>
+                        <th>Email Us</th>
                     </tr>
                     <tr>
                         <td></td>
@@ -140,20 +140,20 @@
 
                 <table class="align-top" style="width:100%;margin:0;font-weight: 500;table-layout: fixed;">
                     <tr>
-                        <th>Lender</th>
+                        <th>Lender Name</th>
                         <th>Customer Name</th>
-                        <th>DOB</th>
-                        <th>Branch</th>
+                        <th>Customer ID</th>
+                        <th>Date of Birth</th>
                         <th>Contact Number</th>
-
+                        
                     </tr>
                     <tr>
                         <td>{{this.partnerName}}</td>
                         <td>{{this.Name}}</td>
+                        <td>{{this.customerId}}</td>
                         <td>{{this.dob}}</td>
-                        <td>{{this.branch}}</td>
                         <td>{{this.contactNumber}}</td>
-
+                        
                     </tr>
                 </table>
             </div>
@@ -164,19 +164,20 @@
 
                 <table class="align-top " style="width:100%;margin:0;font-weight: 500;table-layout: fixed;">
                     <tr>
-                        <th>Customer ID</th>
+                        <th>Customer Address</th>
                         <th>Loan Number</th>
                         <th>Scheme Name</th>
-                        <th>Loan Amount</th>
-                        <th>Address</th>
-
+                        <th>Loan Amount (₹)</th>
+                        <!-- <th>Branch</th> -->
+                        <th></th>
                     </tr>
                     <tr>
-                        <td>{{this.customerId}}</td>
+                        <td style="padding-right:10px ; word-break: break-all;">{{this.customerAddress}}</td>
+                        <!-- <td>{{this.branch}}</td> -->
                         <td>{{this.loanNumber}}</td>
                         <td>{{this.loanScheme}}</td>
                         <td>{{this.loanAmount}}</td>
-                        <td style=" word-break: break-all;">{{this.customerAddress}}</td>
+                        <td></td>
                     </tr>
                 </table>
             </div>
@@ -186,19 +187,19 @@
 
                 <table class="align-top " style="width:100%;margin:0;font-weight: 500;table-layout: fixed;">
                     <tr>
-                        <th>Loan Date</th>
                         <th>Loan Tenure</th>
-                        <th>Penal Charges</th>
                         <th>Rate of Interest </th>
-                        <th>Processing Fees</th>
-
+                        <th>Penal Charges</th>
+                        <th>Processing Fees (₹)</th>
+                        <th>Loan Date</th>
                     </tr>
                     <tr>
-                        <td>{{this.startDate}}</td>
-                        <td>{{this.loanTenure}}</td>
-                        <td>{{this.penalCharges}}%</td>
+                        <td>{{this.loanTenure}} Months</td>
                         <td>{{this.interestRate}}%</td>
+                        <td>{{this.penalCharges}}%</td>
                         <td>{{this.processingFee}}</td>
+                        <td>{{this.startDate}}</td>
+
                     </tr>
                 </table>
             </div>
@@ -242,15 +243,16 @@
                         <p class="text-center"><b>You can pay for your loan using RTGS/NEFT/IMPS</b></p>
                     </tr>
                     <tr>
-                        <th class="align-top text-center" style="width: 5%;">Savings account number</th>
+                        <th class="align-top text-center" style="width: 5%;">Account number</th>
                         <th class="align-top text-center" style="width: 5%;">Beneficiary Name </th>
                         <th class="align-top text-center" style="width: 5%;">IFSC code </th>
 
                     </tr>
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>09765422510</td>
+                        <td>AUGMONT GOLDTECH PRIVATE
+                            LIMITED</td>
+                        <td>IFSC0000111</td>
                     </tr>
                 </table>
             </div>
@@ -278,22 +280,22 @@
 
         <div class="row pr-5 pt-3  py-3">
             <div class="col-10" style="font-size: small;font-weight: 400;">
-                <p class="mb-4 text-center"><b> Default Interest </b>
+                <p class="mb-4 text-center"><b> Penal Interest </b>
                 </p>
             </div>
         </div>
         <div class="row pr-5">
             <div class="col-10 pl-5 pr-5" style="font-size: small;font-weight: 400;">
                 <ul style="list-style-type:disc;">
-                    <li>The default interest shall be payable if this loan is not repaid either on demand or at the
+                    <li>The  penal interest shall be payable if this loan is not repaid either on demand or at the
                         end
                         of the tenor of the loan.
                     </li>
-                    <li>The default interest shall be applied from the date of default of the loan and till such
+                    <li>The default penal shall be applied from the date of default of the loan and till such
                         time
-                        the default continues to exist.
+                        the default penal continues to exist.
                     </li>
-                    <li>The default interest shall be paid for the period for which outstanding loan amount
+                    <li>The default penal shall be paid for the period for which outstanding loan amount
                         (including
                         principal, interest, other charges, if any) is payable and due.
                     </li>
