@@ -182,10 +182,27 @@ exports.loanTransferBmRating = async (req, res, next) => {
             as: "loanTransfer",
         }]
     });
+
+    let customerDetails = await models.customer.findOne({ where: { id: masterLoan.customerId } })
+
+    let sliceCustId = customerDetails.customerUniqueId.slice(0, 2)
+
     await sequelize.transaction(async t => {
         if (masterLoan.loanTransfer.loanTransferStatusForBM == "incomplete" || masterLoan.loanTransfer.loanTransferStatusForBM == "pending") {
             if (loanTransferStatusForBM == "approved") {
-                let loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+
+                let loanUniqueId = null;
+                let checkSecuredUnique = false
+                do {
+                    let getSecu = randomize('A0', 4);
+                    loanUniqueId = `LR${sliceCustId}${getSecu}`;
+                    let checkUnique = await models.customerLoan.findOne({ where: { loanUniqueId: loanUniqueId }, transaction: t })
+                    if (!checkUnique) {
+                        checkSecuredUnique = true
+                    }
+                }
+                while (!checkSecuredUnique);
+
                 await models.customerLoanTransfer.update({ loanTransferStatusForBM, modifiedBy, reasonByBM, loanTransferCurrentStage: '5', transferredLoanId: loanUniqueId }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { masterLoanId: masterLoanId }, transaction: t })
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.BM_RATING_APPROVED, createdBy, modifiedBy }, { transaction: t })
@@ -247,7 +264,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             {
                 model: models.customerLoanMaster,
                 as: 'masterLoan',
-                attributes: ['id', 'loanTransferId','appraiserRequestId'],
+                attributes: ['id', 'loanTransferId', 'appraiserRequestId'],
                 include: [{
                     model: models.customerLoanTransfer,
                     as: "loanTransfer",
