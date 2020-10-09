@@ -6,14 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href={{bootstrapCss}}>
     <style>
-         html{zoom:0.75;}
-        .tableHead {
-            width: 20%;
-            height: 40px;
+        html {
+            zoom: 0.75;
+        }
+
+        .tableBorder tr {
+            border: 1px solid black;
+        }
+
+        .tableBorder td {
+            border: 1px solid black;
+        }
+
+        .tableBorder th {
+            border: 1px solid black;
         }
 
         body {
             font-size: 13px !important;
+
         }
     </style>
 </head>
@@ -23,10 +34,166 @@
     <script src={{popperJs}}></script>
     <script src={{bootstrapJs}}></script>
     <div class="container py-5 pr-5 pl-5">
+        <div class="container">
+            <div class="row py-0 pr-3">
+                <div class="col-10 text-center m-auto" style="border: 1px solid black;">
 
-        <h3 class="text-center"><b>purchase voucher</b></h3>
+                    <p class="pt-2">
+                        <h5 >Augmont Goldtech Private Limited</h5>
+                    <div style="font-weight: 500;">
+                        <div >(Formerly Augmont Precious Metals Private Limited)</div>
+                        <div>(CIN :- U51909MH2020PTC337639) (GSTIN:- 27AATCA3030A1Z3)</div>
+                        <div>3rd Floor,Bullion House,115,Tambakata Lane, Zaveri Bazaar, MUMBAI- 400003</div>
+                    </div>
+                   
+                    <div class="row">
+                        <div class="col-6 text-left">
+                            <div class="row">
+                                <div style="font-weight: 500;" class="col-6 text-right">LANDLINE NO: </div>
+                                <div class="col-6 text-left">
+                                    <div>022-61420000</div>
+                                    <div>022-61420000</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 text-right">
+                            <div class="row">
+                                <div style="font-weight: 500;" class="col-6 text-right">Website :</div>
+                                <div class="col-6"></div>
+                            </div>
+                            <div class="row">
+                                <div style="font-weight: 500;" class="col-6 text-right">Email :</div>
+                                <div class="col-6 text-left">help@augmont.in</div>
+                            </div>
+                        </div>
+                    </div>
 
-    </div>
+                    </p>
+                    <br>
+                    <h5 class="text-center"><u>PURCHASE VOUCHER</u></h5>
+                </div>
+            </div>
+            <div class="row py-0 pr-3">
+                {{#each purchaseVoucher}}
+                <div class="col-10 m-auto pt-2 pb-5" style="border: 1px solid black;">
+                    <div class="row">
+                        <div class="col-6 text-left">
+                            <div style="font-weight: 500;">{{this.customerName}}</div>
+                            <div style="font-weight: 500;">Address: </div>
+                            <div style="word-wrap: break-word">
+                                {{this.customerAddress}}
+                            </div>
+                            <div>{{this.pinCode}}</div>
+                            <div>{{this.customerSatte}}</div>
+                            <div style="font-weight: 500;">PAN No: <span>{{this.panNo}}</span></div>
+                        </div>
+                        <div class="col-6">
+                            <div style="font-weight: 500;">Voucher Number: <span>{{this.voucherNumber}}</span></div>
+                            <div style="font-weight: 500;">Voucher Date: <span>{{this.date}}</span></div>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            <div class="row py-0 my-0 pr-3">
+                <div class="col-10 m-auto pt-0 px-0">
+                    <table class="align-top text-center tableBorder px-0 py-0 mx-0 my-0"
+                        style="width: 100%;margin:0; padding:0; font-weight: 400;table-layout: fixed;border: 1px solid black;">
+                        <tr>
+                            <th style="width: 10%">Sr.No</th>
+                            <th style="width: 40%; word-wrap: break-word">Description</th>
+                            <th style="width: 10%">Units</th>
+                            <th style="width: 10%">Grams</th>
+                            <th style="width: 10%">Rate Per Unit</th>
+                            <th style="width: 10%">Amount</th>
+                        </tr>
+                        {{#each ornamentData}}
+                        <tr>
+                            <td class="text-center ">{{this.srNo}}</td>
+                            <td class="text-left px-1" style="word-wrap: break-word">{{this.ornamentName}}</td>
+                            <td class="text-right px-1">{{this.quantity}}</td>
+                            <td class="text-right px-1">{{this.grossWeight}}</td>
+                            <td class="text-right px-1"></td>
+                            <td class="text-right px-1">{{this.amount}}</td>
+                        </tr>
+                        {{else}}
+                        <br>
+                        {{/each}}
+                        <tr>
+                            <td>&nbsp</td>
+                            <td>&nbsp</td>
+                            <td>&nbsp</td>
+                            <td>&nbsp</td>
+                            <td>&nbsp</td>
+                            <td>&nbsp</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp</td>
+                            <td>&nbsp</td>
+                            <td>&nbsp</td>
+                            <td>&nbsp</td>
+                            <td>&nbsp</td>
+                            <td>&nbsp</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp</td>
+                            <td>&nbsp</td>
+                            <td>&nbsp</td>
+                            <td>&nbsp</td>
+                            <td>&nbsp</td>
+                            <td>&nbsp</td>
+                        </tr>
+                        {{#each purchaseVoucher}}
+                        <tr>
+                            <td>&nbsp</td>
+                            <td class="text-left px-1">NET TOTAL</td>
+                            <td class="text-right px-1">{{this.totalUnits}}</td>
+                            <td class="text-right px-1">{{this.totalGrams}}</td>
+                            <td class="text-right px-1">&nbsp</td>
+                            <td class="text-right px-1">{{this.totalAmount}}</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp</td>
+                            <td class="text-left px-1">GROSS INVOICE AMOUNT</td>
+                            <td class="text-right px-1">&nbsp</td>
+                            <td class="text-right px-1">&nbsp</td>
+                            <td class="text-right px-1">&nbsp</td>
+                            <td class="text-right px-1">{{this.totalAmount}}</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp</td>
+                            <td colspan="5" class="text-left px-1">{{this.amountInWords}}</td>
+                        </tr>
+                        {{/each}}
+                        <tr>
+                            <td>&nbsp</td>
+                            <td class="text-left px-1">&nbsp</td>
+                            <td colspan="4" class="text-right px-1">E.& O.E.</td>
+
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="row py-0 my-0 pr-3">
+                <div class="col-10 mx-auto my-0 px-0 py-0" style="border: 1px solid black;">
+                    <div class="text-left" style="font-weight: 500;">Delivery :- Ex-office/Showroom/As per Customers request</div>
+                    <div class="pl-5">
+                        <div style="font-weight: 500;">Terms & Conditions:-</div>
+                        <ol type="1">
+                            <li>Goods once sold will not be returned.</li>
+                            <li>Any disputes shall be subject to mumbai jurisdiction.</li>
+                            <li>Our responsibility ceases once the goods are delivered to the customer.</li>
+                        </ol>
+                    </div>
+                    <div class="col-4 offset-8 text-center" style="font-weight: 500;">
+                        For Augmont Goldtech Private Limited
+                        <div class="pt-5 ">
+                            Authorised Signatory
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 </body>
 
 </html>

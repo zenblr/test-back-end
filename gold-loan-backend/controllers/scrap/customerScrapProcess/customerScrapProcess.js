@@ -8,6 +8,8 @@ const moment = require('moment');
 var pdf = require("pdf-creator-node"); // PDF CREATOR PACKAGE
 var fs = require('fs');
 const { VIEW_ALL_CUSTOMER } = require('../../../utils/permissionCheck')
+const _ = require("lodash"); // importing lodash module.
+const convert = require('convert-rupees-into-words');
 
 
 const { BASIC_DETAILS_SUBMIT, CUSTOMER_ACKNOWLEDGEMENT, ORNAMENTES_DETAILS, ORNAMENTES_MELTING_DETAILS, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, SCRAP_DOCUMENTS, SCRAP_DISBURSEMENT, PROCESS_COMPLETED } = require('../../../utils/customerScrapHistory')
@@ -1227,97 +1229,146 @@ exports.printCustomerAcknowledgement = async (req, res) => {
 }
 
 exports.printPurchaseVoucher = async (req, res) => {
-    let { scrapId } = req.query;
-    let customerScrap = await models.customerScrap.findOne({
-        where: { id: scrapId },
-        attributes: ['id', 'scrapUniqueId', 'finalScrapAmountAfterMelting'],
-        include: [{
-            model: models.customer,
-            as: "customer",
-            attributes: ['id', 'firstName', 'lastName', 'mobileNumber', 'email', 'panCardNumber'],
+    try{
+        let { scrapId } = req.query;
+        let customerScrap = await models.customerScrap.findOne({
+            where: { id: scrapId },
+            attributes: ['id', 'scrapUniqueId', 'finalScrapAmountAfterMelting'],
             include: [{
-                model: models.customerKycAddressDetail,
-                as: 'customerKycAddress',
+                model: models.customer,
+                as: "customer",
+                attributes: ['id', 'firstName', 'lastName', 'mobileNumber', 'email', 'panCardNumber'],
                 include: [{
-                    model: models.state,
-                    as: 'state',
-                    attributes: ['name']
-                },
-                {
-                    model: models.city,
-                    as: 'city',
-                    attributes: ['name']
-                }]
-            }
-            ]
-        },
-        {
-            model: models.customerScrapOrnamentsDetail,
-            as: 'scrapOrnamentsDetail',
-            include: {
-                model: models.ornamentType,
-                as: 'ornamentType'
-            }
-        }]
-    });
-
-    for (let address of customerScrap.customer.customerKycAddress) {
-        if (address.addressType == "permanent") {
-            custtomerAddress = `${address.address} ,${address.city.name}, ${address.state.name},  ${address.pinCode}`;
-            addressProofNo = address.addressProofNumber;
-        }
-    }
-
-    // return res.status(200).json({ message: "success", customerScrap, custtomerAddress });
-
-    var html = fs.readFileSync("./templates/scrap-purchase-voucher.html", 'utf8');
-
-    var options = {
-        format: "A4",
-        orientation: "portrait",
-        border: "1mm",
-        "header": {
-            "height": "2mm",
-
-        },
-        "footer": {
-            "height": "2mm",
-        },
-        "height": "13.69in",
-        "width": "8.27in"
-    }
-    let purchaseVoucher = await [{
-        customerName: customerScrap.scrapUniqueId,
-
-    }]
-    let emiData = [];
-
-    let fileName = await `purchaseVoucher${Date.now()}`;
-    document = await {
-        html: html,
-        data: {
-            bootstrapCss: `${process.env.URL}/bootstrap.css`,
-            jqueryJs: `${process.env.URL}/jquery-slim.min.js`,
-            popperJs: `${process.env.URL}/popper.min.js`,
-            bootstrapJs: `${process.env.URL}/bootstrap.js`,
-            purchaseVoucher: purchaseVoucher,
-        },
-        path: `./public/uploads/pdf/${fileName}.pdf`,
-        timeout: '60000'
-    };
-    let createPdf = await pdf.create(document, options);
-    if (createPdf) {
-        fs.readFile(`./public/uploads/pdf/${fileName}.pdf`, function (err, data) {
-            let stat = fs.statSync(`./public/uploads/pdf/${fileName}.pdf`);
-            res.setHeader('Content-Length', stat.size);
-            res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', `attachment; filename=${fileName}.pdf`);
-            res.send(data);
-            if (fs.existsSync(`./public/uploads/pdf/${fileName}.pdf`)) {
-                fs.unlinkSync(`./public/uploads/pdf/${fileName}.pdf`);
-            }
+                    model: models.customerKycAddressDetail,
+                    as: 'customerKycAddress',
+                    include: [{
+                        model: models.state,
+                        as: 'state',
+                        attributes: ['name']
+                    },
+                    {
+                        model: models.city,
+                        as: 'city',
+                        attributes: ['name']
+                    }]
+                }
+                ]
+            },
+            {
+                model: models.customerScrapOrnamentsDetail,
+                as: 'scrapOrnamentsDetail',
+                include: {
+                    model: models.ornamentType,
+                    as: 'ornamentType'
+                }
+            }]
         });
+        let customerAddress;
+        let pincode;
+        let customerSatte;
+        for (let address of customerScrap.customer.customerKycAddress) {
+            if (address.addressType == "permanent") {
+                customerAddress = `${address.address}, ${address.city.name}, ${address.state.name},  `;
+                pincode = address.pinCode;
+                customerSatte = address.state.name;            
+            }
+        }
+    
+        let ornamentData = [];
+        let totalUnits = [];
+        let totalGrams = [];
+        let totalRatePreUnit = [];
+        let totalAmount = [];
+        if (customerScrap.scrapOrnamentsDetail.length != 0) {
+            for (let [index, ornament] of customerScrap.scrapOrnamentsDetail.entries()) {
+                await ornamentData.push({
+                    srNo: index + 1,
+                    ornamentName: ornament.ornamentType.name,
+                    quantity: ornament.quantity,
+                    grossWeight: ornament.grossWeight,
+                    amount: ornament.scrapAmount,
+                    nullCell: ""
+                });
+    
+                totalUnits.push(ornament.quantity);
+                totalGrams.push(ornament.grossWeight);
+                totalAmount.push(ornament.scrapAmount)
+            }
+        }
+        let finalTotalUnits = _.sum(totalUnits);
+        let finalTotalGrams = _.sum(totalGrams);
+        let finalTotalAmount = _.sum(totalAmount);
+        let amountInWords = convert(finalTotalAmount);
+        
+        var html = fs.readFileSync("./templates/scrap-purchase-voucher.html", 'utf8');
+    
+        var options = {
+            format: "A4",
+            orientation: "portrait",
+            border: "0.5mm",
+            "header": {
+                "height": "1mm",
+    
+            },
+            "footer": {
+                "height": "1mm",
+            },
+            "height": "13.69in",
+            "width": "11in"
+        }
+        if(customerScrap.customer.panCardNumber){
+            panNo = customerSatte.customer.panCardNumber
+        }else{
+            panNo = "NA";
+        }
+        let purchaseVoucher = await [{
+            customerName: `${customerScrap.customer.firstName} ${customerScrap.customer.lastName}`,
+            date: moment(customerScrap.createdAt).format("DD-MM-YYYY"),
+            customerAddress: customerAddress,
+            pinCode: pincode,
+            customerSatte: customerSatte,
+            voucherNumber: customerScrap.scrapUniqueId,
+            panNo: panNo,
+            totalUnits: finalTotalUnits,
+            totalGrams: finalTotalGrams,
+            totalAmount: finalTotalAmount,
+            amountInWords: `${amountInWords.toUpperCase()} ONLY`
+        }]
+    
+        // return res.status(200).json({ message: "success", purchaseVoucher,ornamentData });
+
+        let fileName = await `purchaseVoucher${Date.now()}`;
+        document = await {
+            html: html,
+            data: {
+                bootstrapCss: `${process.env.URL}/bootstrap.css`,
+                jqueryJs: `${process.env.URL}/jquery-slim.min.js`,
+                popperJs: `${process.env.URL}/popper.min.js`,
+                bootstrapJs: `${process.env.URL}/bootstrap.js`,
+                purchaseVoucher: purchaseVoucher,
+                ornamentData: ornamentData
+
+            },
+            path: `./public/uploads/pdf/${fileName}.pdf`,
+            timeout: '60000'
+        };
+        let createPdf = await pdf.create(document, options);
+        if (createPdf) {
+            fs.readFile(`./public/uploads/pdf/${fileName}.pdf`, function (err, data) {
+                let stat = fs.statSync(`./public/uploads/pdf/${fileName}.pdf`);
+                res.setHeader('Content-Length', stat.size);
+                res.setHeader('Content-Type', 'application/pdf');
+                res.setHeader('Content-Disposition', `attachment; filename=${fileName}.pdf`);
+                res.send(data);
+                if (fs.existsSync(`./public/uploads/pdf/${fileName}.pdf`)) {
+                    fs.unlinkSync(`./public/uploads/pdf/${fileName}.pdf`);
+                }
+            });
+        }
+    }catch(err){
+        console.log(err);
     }
+    
 }
 
 exports.getScrapStatus = async (req, res) => {
