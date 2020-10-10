@@ -45,11 +45,11 @@
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
                 <label class="kt-padding-l-10 kt-padding-r-25">Customer Confirmation(Melting)</label>
-                <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
+                <kt-button *ngIf="isEdit" [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showScrapFlag">
                 <label class="kt-padding-l-10 kt-padding-r-25">Purchase Voucher</label>
-                <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
+                <kt-button *ngIf="isEdit" [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showScrapFlag">
                 <label class="kt-padding-l-10">Original Purchase Invoice</label>

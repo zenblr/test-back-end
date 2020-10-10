@@ -40,6 +40,7 @@ export class PacketTrackingComponent implements OnInit {
   previousSyncArray: any[];
   currentSyncArray: any[];
   interval: NodeJS.Timeout;
+  searchQuery: any;
 
   constructor(
     public dialog: MatDialog,
@@ -87,6 +88,7 @@ export class PacketTrackingComponent implements OnInit {
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.queryParamsData.search = res;
+        this.searchQuery = res;
         this.paginator.pageIndex = 0;
         this.loadPackets();
       });
@@ -155,12 +157,16 @@ export class PacketTrackingComponent implements OnInit {
     this.unsubscribeSearch$.complete();
     this.destroy$.next();
     this.destroy$.complete();
+    this.filter$.next();
+    this.filter$.complete();
+    this.packetTrackingService.applyFilter.next({});
     clearInterval(this.interval)
     this.sharedService.hideLoader.next(false)
   }
 
   applyFilter(data) {
     this.queryParamsData.packetTrackingLocation = data.data.packetTrackingLocation;
+    this.queryParamsData.search = this.searchQuery
     this.dataSource.loadpackets(this.queryParamsData);
     this.filteredDataList = data.list;
   }
@@ -190,8 +196,6 @@ export class PacketTrackingComponent implements OnInit {
 
 
   updatePacket(packet) {
-    // let lastIndex = packet.locationData[packet.locationData.length - 1]
-    // if (lastIndex.packetLocation.id == 4 || lastIndex.packetLocation.id == 3) return
 
     const isNotAllowed = this.checkForPartnerBranchIn(packet)
 

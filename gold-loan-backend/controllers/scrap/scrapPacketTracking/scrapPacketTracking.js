@@ -175,9 +175,9 @@ exports.addCustomerPacketTracking = async (req, res, next) => {
                 where: { scrapId: scrapId, isDelivered: true },
                 transaction: t,
                 order: [['id', 'desc']]
-            })
-
-            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[allPacketTrackingData.length - 1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+                })
+            
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
 
             await models.scrapCustomerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
 
