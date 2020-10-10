@@ -1129,6 +1129,14 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
                 ]
             },
             {
+                model: models.partRelease,
+                as: 'partRelease',
+            },
+            {
+                model: models.fullRelease,
+                as: 'fullRelease',
+            },
+            {
                 model: models.loanStage,
                 as: 'loanStage',
                 attributes: ['id', 'name']

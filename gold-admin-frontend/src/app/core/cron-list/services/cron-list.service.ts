@@ -29,8 +29,11 @@ export class CronListService {
     if (data && data.status) {
       reqParams.status = data.status;
     }
-    if (data && data.date) {
-      reqParams.date = data.date;
+    if (data && data.endDate) {
+      reqParams.endDate = data.endDate;
+    }
+    if (data && data.startDate) {
+      reqParams.startDate = data.startDate;
     }
     if (data && data.cronType) {
       reqParams.cronType = data.cronType;

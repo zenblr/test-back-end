@@ -660,7 +660,7 @@
                         </div>
                         <div class="img-container height220 bg-transparent"
                             *ngIf="ornament.controls.ornamentImageData.value">
-                            <img class="w-100" [src]="ornament.controls.ornamentImageData.value" alt="placeholder"
+                            <img class="w-100 h-100" [src]="ornament.controls.ornamentImageData.value" alt="placeholder"
                                 (click)="preview(ornament.controls.ornamentImageData.value,idx)">
                         </div>
                         <div class="form-label">
@@ -716,7 +716,8 @@
             <kt-button [value]="buttonValue" [type]="'button'" (click)="nextAction()"></kt-button>
         </div>
     </div>
-    <button *ngIf="showAddMoreBtn" (click)="addmore()" class="addmore" [disabled]="disable || isPartRelease" [hidden]="meltingOrnament">+
+    <button *ngIf="showAddMoreBtn" (click)="addmore()" class="addmore" [disabled]="disable || isPartRelease"
+        [hidden]="meltingOrnament">+
         Add
         More</button>
 

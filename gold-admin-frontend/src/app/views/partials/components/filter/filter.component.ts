@@ -60,6 +60,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	merchantList = [];
 	states = [];
 	cities = [];
+	currentDate = new Date();
 	approvalStatus: any = [];
 	permissions: any;
 	scrapStatusList = [];
@@ -194,7 +195,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			product: [''],
 			scrapKycStatusFromCce: [''],
 			scrapKycStatus: [''],
-			date: [''],
+			endDate: [''],
 			cronType: ['']
 		});
 
@@ -239,6 +240,14 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.startDate = date;
 				this.filterObject.list.startDate = this.datePipe.transform(date, 'mediumDate');
 			}
+
+			if (controls["endDate"].value) {
+				let endDate = controls["endDate"].value;
+				let date = new Date(endDate.getTime() - endDate.getTimezoneOffset() * 60000).toISOString();
+				this.filterObject.data.endDate = date;
+				this.filterObject.list.endDate = this.datePipe.transform(date, 'mediumDate');
+			}
+
 			if (controls['status'].value && (controls['status'].value.multiSelect && controls['status'].value.multiSelect.length)) {
 				this.filterObject.data.status = controls['status'].value.multiSelect.map(e => e.statusId).toString();
 				this.filterObject.list.status = controls['status'].value.multiSelect;
@@ -433,8 +442,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'cronType':
 				this.controls['cronType'].value.multiSelect.splice(index, 1);
 				break;
-			case 'date':
-				this.controls['date'].patchValue('');
+			case 'endDate':
+				this.controls['endDate'].patchValue('');
 				break;
 			case 'packetTracking':
 				this.controls['packetTracking'].patchValue('');
@@ -580,6 +589,19 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			this.clearData = true;
 			this.filterForm.reset();
 		}
+	}
+
+	validations() {
+		if (this.filterForm.controls.startDate.value) {
+			this.filterForm.controls.endDate.setValidators(Validators.required)
+		} else if (this.filterForm.controls.endDate.value) {
+			this.filterForm.controls.startDate.setValidators(Validators.required)
+		} else {
+			this.filterForm.controls.startDate.clearValidators()
+			this.filterForm.controls.endDate.clearValidators()
+		}
+		this.filterForm.controls.startDate.updateValueAndValidity()
+		this.filterForm.controls.endDate.updateValueAndValidity()
 	}
 
 	ngOnDestroy() {
