@@ -26,7 +26,11 @@
 
                 <ng-container matColumnDef="loanAmount">
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{ item.masterLoan.finalLoanAmount }}</mat-cell>
+                    <mat-cell *matCellDef="let item">
+                        <div *ngFor="let loan of item.masterLoan.customerLoan">
+                            {{loan.loanAmount }}
+                        </div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="loanStartDate">
@@ -71,10 +75,12 @@
                 </ng-container>
 
                 <ng-container matColumnDef="principalAmount">
-                    <mat-header-cell *matHeaderCellDef>
-                        <div class="text-right">Principal Outstanding</div>
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.masterLoan.outstandingAmount}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef>Principal Outstanding</mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        <div *ngFor="let loan of item.masterLoan.customerLoan">
+                            {{loan.outstandingAmount }}
+                        </div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="partReleaseAmountStatus">
