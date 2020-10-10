@@ -301,6 +301,9 @@ exports.getAllCustomersForLead = async (req, res, next) => {
         "$state.name$": {
           [Op.iLike]: search + "%",
         },
+        "$module.module_name$": {
+          [Op.iLike]: search + "%",
+        },
       },
     }],
     isActive: true,
