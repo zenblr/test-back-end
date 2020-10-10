@@ -41,7 +41,7 @@ export class PacketTrackingService {
       reqParams.search = data.search;
     }
     if (data && data.packetTrackingLocation) {
-      reqParams.packetTrackingLocation = data.packetTrackingLocation;
+      reqParams.packetLocationStatus = data.packetTrackingLocation;
     }
     return this.http.get(`/api/packet-tracking/tracking-details`, { params: reqParams }).pipe(
       map(res => res),
