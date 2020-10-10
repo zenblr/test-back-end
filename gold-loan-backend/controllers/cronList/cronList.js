@@ -23,10 +23,10 @@ exports.getAllCronList = async (req, res) => {
     if (req.query.cronType) {
         query.cronType = req.query.cronType;
     }
-    if (req.query.date) {
-        let start = new Date(req.query.date);
+    if (req.query.startDate && req.query.endDate) {
+        let start = new Date(req.query.startDate);
         start.setHours(0, 0, 0, 0);
-        let end = new Date(req.query.date);
+        let end = new Date(req.query.endDate);
         end.setHours(23, 59, 59, 999);
         query.date = await { [Op.between]: [start, end] }
     }

@@ -318,10 +318,10 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.list.cronType = controls['cronType'].value.multiSelect;
 			}
 
-			if (controls['date'].value) {
-				this.filterObject.data.date = controls['date'].value;
-				this.filterObject.list.date = controls['date'].value;
-			}
+			// if (controls['date'].value) {
+			// 	this.filterObject.data.date = controls['date'].value;
+			// 	this.filterObject.list.date = controls['date'].value;
+			// }
 			if (controls['scheme'].value) {
 				console.log(controls['scheme'].value)
 				if (controls['scheme'].value == "All") {
