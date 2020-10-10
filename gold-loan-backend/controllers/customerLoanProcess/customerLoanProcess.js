@@ -1136,7 +1136,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
     }
     return res.status(200).json({ message: 'success', ornamentType })
 
-}
+}   
 
 //  FUNCTION FOR ADD PACKAGE IMAGES
 exports.addPackageImagesForLoan = async (req, res, next) => {
