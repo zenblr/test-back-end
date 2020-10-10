@@ -37,10 +37,16 @@
         flex: 0 0 3%;
     }
     .mat-column-loanAmount{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
         padding-right: 25px;
         justify-content: flex-end;
     }
     .mat-column-principalAmount{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
         padding-right: 25px;
         justify-content: flex-end;
         flex: 0 0 6%;

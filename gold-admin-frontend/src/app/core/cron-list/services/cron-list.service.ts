@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { API_ENDPOINT } from '../../../app.constant';
+
 
 @Injectable({
   providedIn: 'root'
@@ -31,11 +33,45 @@ export class CronListService {
       reqParams.date = data.date;
     }
     if (data && data.cronType) {
-      reqParams.type = data.cronType;
+      reqParams.cronType = data.cronType;
     }
     if (data && data.product) {
       reqParams.product = data.product;
     }
     return this.http.get(`/api/cron-list`,{params:reqParams})
+  }
+
+  penalCron(cronId):Observable<any>{
+    return this.http.post(`/api/calculation/penal-cron`,{cronId})
+  }
+
+  interestCron(cronId):Observable<any>{
+    return this.http.post(`/api/calculation/interest-cron`,{cronId})
+  }
+
+  // emi
+
+  cancelOrderDataTransfer(cronId):Observable<any>{
+    return this.http.post(`${API_ENDPOINT}api/data-transfer/add-cancel-order-cron`,{cronId})
+  }
+
+  depositDataTransfer(cronId):Observable<any>{
+    return this.http.post(`${API_ENDPOINT}api/data-transfer/add-deposit-cron`,{cronId})
+  }
+
+  userDataTransfer(cronId):Observable<any>{
+    return this.http.post(`${API_ENDPOINT}api/data-transfer/add-customer-cron`,{cronId})
+  }
+
+  orderDataTransfer(cronId):Observable<any>{
+    return this.http.post(`${API_ENDPOINT}api/data-transfer/add-order-cron`,{cronId})
+  }
+
+  orderStatusToDefaulter(cronId):Observable<any>{
+    return this.http.post(`${API_ENDPOINT}api/data-transfer/defaulter-cron`,{cronId})
+  }
+
+  emiReminder(cronId):Observable<any>{
+    return this.http.post(`${API_ENDPOINT}api/data-transfer/emi-reminder`,{cronId})
   }
 }

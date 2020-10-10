@@ -1,7 +1,7 @@
 :host{
     ::ng-deep.mat-row,
     ::ng-deep.mat-header-row{
-        width: 270% !important;
+        width: 290% !important;
     }
 
     .mat-column-netWeightReleaseOrnament{
@@ -15,6 +15,7 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        flex: 0 0 5%;
     }
     .mat-column-loanId {
         display: flex;
@@ -33,10 +34,16 @@
         flex: 0 0 3%;
     }
     .mat-column-loanAmount{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
         padding-right: 25px;
         justify-content: flex-end;
     }
     .mat-column-principalAmount{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
         padding-right: 25px;
         justify-content: flex-end;
     }

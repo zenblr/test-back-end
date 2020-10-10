@@ -24,7 +24,8 @@
 
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.customer?.panCardNumber | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let role">
+                        {{role.customer?.panCardNumber ? role.customer?.panCardNumber : 'NA' | uppercase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="date">

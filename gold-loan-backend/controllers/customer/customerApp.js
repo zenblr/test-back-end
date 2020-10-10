@@ -4,6 +4,7 @@ const sequelize = models.sequelize;
 const Op = Sequelize.Op;
 const { getSingleLoanDetail } = require('../../utils/loanFunction')
 const check = require("../../lib/checkLib");
+const moment = require('moment')
 
 exports.readBanner = async (req, res, next) => {
     console.log("banner")
@@ -177,6 +178,31 @@ exports.readMyLoan = async (req, res, next) => {
             },
         ]
     });
+
+
+    for (let i = 0; i < loanDetails.length; i++) {
+        const element = loanDetails[i];
+        let nextDueDate = null
+
+        nextDueDate = await models.customerLoanInterest.findOne({
+
+            where: {
+                emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
+                masterLoanId: element.id
+            },
+            attributes: ['emiDueDate', 'emiStatus'],
+            order: [['id', 'asc']]
+        })
+
+        if (nextDueDate) {
+            element.dataValues.nextDueDate = nextDueDate.emiDueDate
+            element.dataValues.status = nextDueDate.emiStatus
+        } else {
+            element.dataValues.nextDueDate = nextDueDate
+            element.dataValues.status = nextDueDate
+        }
+    }
+
     return res.status(200).json({ data: loanDetails })
 }
 
