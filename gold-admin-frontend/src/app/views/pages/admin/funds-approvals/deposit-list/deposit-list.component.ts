@@ -21,7 +21,7 @@ import { PartPaymentService } from '../../../../../core/repayment/part-payment/s
 export class DepositListComponent implements OnInit {
 
   dataSource: DepositDatasource;
-  displayedColumns = ['transactionId', 'bankTransactionId', 'customerId', 'fullName', 'loanId', 'modeOfPayment','paymentFor', 'depositDate', 'depositBankName', 'depositBranchName', 'depositAmount', 'depositStatus', 'update'];
+  displayedColumns = ['transactionId', 'bankTransactionId', 'customerId', 'fullName', 'loanId', 'modeOfPayment', 'paymentFor', 'depositDate', 'depositBankName', 'depositBranchName', 'depositAmount', 'depositStatus', 'update'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -131,19 +131,20 @@ export class DepositListComponent implements OnInit {
           return
         }
         let data = {
-          transactionId:deposit.id, 
-          status:res.depositStatus,
-          paymentReceivedDate:res.paymentReceivedDate,
-          masterLoanId:deposit.masterLoanId,
-          depositAmount:deposit.transactionAmont
+          transactionId: deposit.id,
+          status: res.depositStatus,
+          paymentReceivedDate: res.paymentReceivedDate,
+          masterLoanId: deposit.masterLoanId,
+          depositAmount: deposit.transactionAmont
         }
+        
         if (deposit.paymentFor == "partPayment") {
           this.partPaymentService.finalPaymentConfirm(data).subscribe(result => {
             this.toaster(res.depositStatus)
             this.loadPage();
           })
         } else {
-          
+
           this.quickPayService.confirmPayment(data).subscribe(result => {
             this.toaster(res.depositStatus)
             this.loadPage();

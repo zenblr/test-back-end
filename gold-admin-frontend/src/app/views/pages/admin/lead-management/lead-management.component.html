@@ -14,7 +14,8 @@
                 </ng-container>
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN</mat-header-cell>
-                    <mat-cell *matCellDef="let lead">{{lead.panCardNumber | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let lead">{{lead.panCardNumber ? lead.panCardNumber : 'NA' | uppercase }}
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="internalBranch">

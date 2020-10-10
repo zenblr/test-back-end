@@ -310,7 +310,8 @@
             <div class="col" *ngIf="showLoanTransferFlag || showLoanFlag">
                 <div class="row">
                     <div class="col-10">
-                        <div class="img-container width" *ngIf="!controls?.pawnCopyImage?.value">
+                        <div class="img-container width"
+                            *ngIf="!controls?.pawnCopyImage?.value || !controls?.pawnCopyImage?.value.length">
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
@@ -321,8 +322,27 @@
                                 (click)="editImages('pawnCopy');">
                         </div> -->
 
+                        <div *ngFor="let item of controls?.pawnCopyImage?.value; index as i">
+                            <div class="" *ngIf="item">
+                                <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
+                                    <img (click)="preview(item)" class="fetched-image" [src]="item"
+                                        *ngIf="!isPdf(item)">
 
-                        <div class="" *ngIf="controls?.pawnCopyImage?.value">
+                                    <!-- <img class="edit-icon kt-pointer" src="../../../../../assets/media/icons/edit.svg"
+                                        (click)="editImages('pawnCopy')" *ngIf="isEdit && item"> -->
+                                    <img class="remove-icon kt-pointer"
+                                        src="../../../../../assets/media/icons/cancel.svg"
+                                        (click)="remove('pawnCopy', i)" *ngIf="isEdit && item">
+                                    <div class="iframeWrapper" (click)="preview(item)">
+                                        <iframe [src]="item | safe : 'resourceUrl'" height="250" width="290"
+                                            scrolling="no" *ngIf="isPdf(item)" class="position-relative"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- <div class="" *ngIf="controls?.pawnCopyImage?.value">
                             <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
                                 <img (click)="preview(controls?.pawnCopyImage?.value)" class="fetched-image"
                                     [src]="controls?.pawnCopyImage?.value" *ngIf="!pdf.pawnCopy">
@@ -334,11 +354,8 @@
                                         width="290" scrolling="no" *ngIf="pdf.pawnCopy"
                                         class="position-relative"></iframe>
                                 </div>
-                                <!-- <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.pawnCopy"
-                                    [pdfSrc]="controls?.pawnCopyImage.value"
-                                    (click)="preview(controls?.pawnCopyImage.value)"></kt-pdf-viewer> -->
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 

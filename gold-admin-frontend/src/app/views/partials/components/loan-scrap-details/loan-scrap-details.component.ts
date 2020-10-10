@@ -309,4 +309,10 @@ export class LoanScrapDetailsComponent implements OnInit {
     this.sharedService.exportExcel.next(false);
   }
 
+  isPdf(image: string): boolean {
+    const ext = this.sharedService.getExtension(image)
+    const isPdf = ext == 'pdf' ? true : false
+    return isPdf
+  }
+
 }
