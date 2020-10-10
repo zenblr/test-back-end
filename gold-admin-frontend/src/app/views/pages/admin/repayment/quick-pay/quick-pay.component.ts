@@ -24,6 +24,7 @@ export class QuickPayComponent implements OnInit {
   payableAmt = new FormControl('', Validators.required);
   paymentDetails: any;
   currentDate = new Date()
+  sum: number;
   constructor(
     public dialog: MatDialog,
     private quickPayServie: QuickPayService,
@@ -53,9 +54,9 @@ export class QuickPayComponent implements OnInit {
   getPayableAmount() {
     this.quickPayServie.getPayableAmount(this.masterLoanId).subscribe(res => {
       this.payableAmount = res.data;
-      let sum = 0 ;
-      sum = Number(this.payableAmount.securedPenalInterest) + Number(this.payableAmount.unsecuredPenalInterest) + Number(this.payableAmount.unsecuredTotalInterest) + Number(this.payableAmount.securedTotalInterest)
-      this.payableAmt.patchValue(sum)
+      this.sum = 0 ;
+      this.sum = Number(this.payableAmount.securedPenalInterest) + Number(this.payableAmount.unsecuredPenalInterest) + Number(this.payableAmount.unsecuredTotalInterest) + Number(this.payableAmount.securedTotalInterest)
+      this.payableAmt.patchValue(this.sum)
       this.ref.detectChanges()
     })
   }

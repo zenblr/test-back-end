@@ -520,7 +520,8 @@ export class MenuConfig {
 								},
 								{
 									title: "Cron Logs",
-									page: "/admin/cron-list"
+									page: "/admin/cron-list",
+									permission:!(this.userType === 4)
 								},
 							]
 						},

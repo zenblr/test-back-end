@@ -478,7 +478,7 @@
               <!-- failed,success -->
               <div class="col">
                 <label>Date</label>
-                <input class="form-control" [matDatepicker]="picker" (click)="picker.open()" formControlName="date"
+                <input class="form-control" [matDatepicker]="picker" (click)="picker.open()" formControlName="startDate"
                   readonly placeholder="4/5/2020" />
                 <mat-datepicker #picker></mat-datepicker>
               </div>
@@ -486,6 +486,12 @@
               <!--  -->
             </div>
             <div class="row kt-padding-t-5">
+              <div class="col-6">
+                <label>Date</label>
+                <input class="form-control" [matDatepicker]="picker1" (click)="picker1.open()" formControlName="date"
+                  readonly placeholder="4/5/2020" />
+                <mat-datepicker #picker1></mat-datepicker>
+              </div>
               <div class="col-2 d-flex align-items-end">
                 <label></label>
                 <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
