@@ -104,7 +104,11 @@
                     <mat-cell *matCellDef="let item">{{item.interestAmount}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="ornamentReleaseAmount">
-                    <mat-header-cell *matHeaderCellDef>Ornament Release Amount</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>
+                        <div class="text-right">
+                            Ornament Release Amount
+                        </div>
+                    </mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.releaseAmount}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="netWeightRemainingOrnament">
