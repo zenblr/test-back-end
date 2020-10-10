@@ -59,7 +59,8 @@ export class PaymentDialogComponent implements OnInit {
         this.paymentForm.controls.depositTransactionId.patchValue(this.data.value.transactionUniqueId);
         this.paymentForm.controls.transactionId.patchValue(this.data.value.bankTransactionUniqueId);
         this.paymentForm.controls.paidAmount.patchValue(this.data.value.transactionAmont);
-        this.paymentForm.controls.paymentReceivedDate.patchValue(this.getOffsetDateTime(this.data.value.depositDate))
+        this.paymentForm.controls.paymentReceivedDate.patchValue(this.data.value.depositDate)
+        // this.paymentForm.controls.paymentReceivedDate.patchValue(this.getOffsetDateTime(this.data.value.depositDate))
         this.paymentForm.controls.depositStatus.patchValue('');
         this.paymentForm.disable();
         this.paymentForm.controls.depositStatus.enable();
@@ -133,7 +134,8 @@ export class PaymentDialogComponent implements OnInit {
           this.paymentForm.controls[key].setValidators([])
           this.paymentForm.controls[key].updateValueAndValidity()
         }
-        this.controls.depositDate.patchValue(this.getOffsetDateTime(new Date()))
+        // this.controls.depositDate.patchValue(this.getOffsetDateTime(new Date()))
+        this.controls.depositDate.patchValue(new Date())
 
       default:
 
@@ -170,7 +172,7 @@ export class PaymentDialogComponent implements OnInit {
     if (this.paymentForm.invalid) {
       return this.paymentForm.markAllAsTouched()
     }
-    this.paymentForm.patchValue({ paymentReceivedDate : this.controls.paymentReceivedDate.value ? this.getOffsetDateTime(this.controls.paymentReceivedDate.value) : null })
+    // this.paymentForm.patchValue({ paymentReceivedDate : this.controls.paymentReceivedDate.value ? this.getOffsetDateTime(this.controls.paymentReceivedDate.value) : null })
     let paymentDate = this.dataPipe.transform(this.paymentForm.controls.paymentReceivedDate.value, 'yyyy-MM-dd')
     if (this.data.name == "deposit") {
       this.dialogRef.close({
