@@ -20,6 +20,16 @@ exports.getAllCronList = async (req, res) => {
     if (req.query.status) {
         query.status = req.query.status;
     }
+    if (req.query.cronType) {
+        query.cronType = req.query.cronType;
+    }
+    if (req.query.date) {
+        let start = new Date(req.query.date);
+        start.setHours(0, 0, 0, 0);
+        let end = new Date(req.query.date);
+        end.setHours(23, 59, 59, 999);
+        query.date = await { [Op.between]: [start, end] }
+    }
 
     let searchQuery = {
         [Op.and]: [query, {

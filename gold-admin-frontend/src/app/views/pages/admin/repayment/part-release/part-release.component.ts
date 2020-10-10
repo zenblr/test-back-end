@@ -46,7 +46,7 @@ export class PartReleaseComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.router.url)
+    // console.log(this.router.url)
     this.id = this.route.snapshot.params.id
     this.url = this.router.url
     this.patchValuePartRelease()
@@ -86,9 +86,9 @@ export class PartReleaseComponent implements OnInit {
   }
 
   release() {
-    this.showReleaseSummary = true;
     if (this.areAllOrnamnentsSelected()) {
       this.fullRelease()
+      this.showReleaseSummary = true;
     } else {
       this.ornamentSummary()
     }
@@ -113,8 +113,10 @@ export class PartReleaseComponent implements OnInit {
     }
     this.jewelleryReleaseService.partReleaseOrnaments(params).pipe(map(res => {
       if (res) {
+        this.showReleaseSummary = true;
         this.totalSelectedOrnamentDetails = res
         this.scrollToBottom()
+        this.ref.detectChanges()
       }
     })).subscribe()
 

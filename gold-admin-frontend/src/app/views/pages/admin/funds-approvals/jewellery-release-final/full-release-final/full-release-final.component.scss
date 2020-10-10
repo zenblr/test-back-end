@@ -1,27 +1,77 @@
 :host{
     ::ng-deep.mat-row,
     ::ng-deep.mat-header-row{
-        width: 250% !important;
+        width: 275% !important;
     }
 
     .mat-column-principalOutstandingAmountLTV{
         display: flex;
         flex-direction: column;
-        flex: 0 0 8%;
+        flex: 0 0 7%;
+        align-items: flex-end;
     }
 
     .mat-column-loanId {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        flex: 0 0 3%;
+    }
+    .mat-column-appointmentTime {
         flex: 0 0 4%;
     }
-
+    .mat-column-appointmentDate {
+        flex: 0 0 4%;
+    }
     .mat-column-partReleaseAmountStatus {
         flex: 0 0 3%;
     }
-
     .mat-column-updateStatus {
+        flex: 0 0 5%;
+    }
+    .mat-column-view {
+        flex: 0 0 4%;
+    }
+
+    .mat-column-tenure{
+        flex: 0 0 3%;
+    }
+    .mat-column-loanAmount{
+        padding-right: 25px;
+        justify-content: flex-end;
+    }
+    .mat-column-principalAmount{
+        padding-right: 25px;
+        justify-content: flex-end;
+        flex: 0 0 6%;
+    }
+    .mat-column-totalPayableAmount{
+        padding-right: 25px;
+        justify-content: flex-end;
+        flex: 0 0 6%;
+    }
+    .mat-column-penalInterest{
+        padding-right: 25px;
+        justify-content: flex-end;
+    }
+    .mat-column-interestAmount{
+        padding-right: 25px;
+        justify-content: flex-end;
+        flex: 0 0 5%;
+    }
+    .mat-column-ornamentReleaseAmount{
+        padding-right: 25px;
+        justify-content: flex-end;
+    }
+    .mat-column-previousLTV{
+        padding-right: 25px;
+        justify-content: flex-end;
+    }
+    .mat-column-currentLTV{
+        padding-right: 25px;
+        justify-content: flex-end;
+    }
+    .mat-column-currentLocation{
         flex: 0 0 5%;
     }
 }

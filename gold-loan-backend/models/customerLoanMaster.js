@@ -206,6 +206,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'packet_location_status',
         },
+        packetSubmittedDate:{
+            type: DataTypes.DATE,
+            field: 'packet_submitted_date'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',

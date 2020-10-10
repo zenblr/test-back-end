@@ -37,11 +37,11 @@ exports.getCustomerDetails = async (req, res, next) => {
             if (moduleId == 1) {
                 if (numberExistInCustomer.scrapKycStatus != "approved") {
                     return res.status(404).json({ message: "kindly complete scrap kyc" });
-                }else{
-                    await models.customerKyc.update({currentKycModuleId: moduleId}, { where: { id: numberExistInCustomer.customerKyc.id } })
+                } else {
+                    await models.customerKyc.update({ currentKycModuleId: moduleId }, { where: { id: numberExistInCustomer.customerKyc.id } })
                 }
             }
-            
+
         }
 
     }
@@ -696,6 +696,21 @@ exports.submitAllKycInfo = async (req, res, next) => {
     }
 
     await sequelize.transaction(async (t) => {
+
+        //for mobile
+        if (req.useragent.isMobile) {
+            let checkClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId }, transaction: t })
+
+            if (check.isEmpty(checkClassification)) {
+                await models.customerKycClassification.create({ customerId, customerKycId: customerKycId, kycStatusFromCce: "pending", cceId: modifiedBy }, { transaction: t })
+            }
+            await models.customerKyc.update(
+                { cceVerifiedBy: modifiedBy, isKycSubmitted: true },
+                { where: { customerId: customerId }, transaction: t })
+        }
+        //for mobile
+
+
         let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
 
         await models.customer.update({ firstName: customerKycBasicDetails.firstName, lastName: customerKycBasicDetails.lastName, panCardNumber: customerKycBasicDetails.panCardNumber, panType: customerKycBasicDetails.panType, panImage: customerKycBasicDetails.panImage, userType: customerKycBasicDetails.userType, organizationTypeId: customerKycBasicDetails.organizationTypeId, dateOfIncorporation: customerKycBasicDetails.dateOfIncorporation }, { where: { id: customerId }, transaction: t })
@@ -897,7 +912,7 @@ exports.appliedKyc = async (req, res, next) => {
                 as: 'appraiserRequest',
             }
         }
-       
+
     ]
 
     let user = await models.user.findOne({ where: { id: req.userData.id } });
