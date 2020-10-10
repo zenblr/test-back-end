@@ -18,10 +18,12 @@
                     <mat-cell *matCellDef="let loan"> {{loan?.customer?.firstName | titlecase}}
                         {{loan?.customer?.lastName | titlecase}}</mat-cell>
                 </ng-container>
-                
+
 
                 <ng-container matColumnDef="amount">
-                    <mat-header-cell *matHeaderCellDef>Outstanding Loan Amount</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>
+                        <div class="text-right">Outstanding Loan Amount</div>
+                    </mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan?.loanTransfer?.disbursedLoanAmount}}</mat-cell>
                 </ng-container>
 

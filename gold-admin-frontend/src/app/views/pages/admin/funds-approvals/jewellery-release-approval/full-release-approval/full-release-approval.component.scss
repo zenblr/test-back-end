@@ -27,10 +27,12 @@
     .mat-column-view {
         display: flex;
         justify-content: center;
+        flex: 0 0 5%;
     }
     .mat-column-loanAmount{
         padding-right: 25px;
         justify-content: flex-end;
+        flex: 0 0 4%;
     }
     .mat-column-principalAmount{
         padding-right: 25px;
@@ -61,5 +63,8 @@
     .mat-column-currentLTV{
         padding-right: 25px;
         justify-content: flex-end;
+    }
+    .mat-column-customerId{
+        flex: 0 0 5%;
     }
 }
