@@ -217,7 +217,11 @@
 
                     <div class="row justify-content-center kt-margin-t-15">
                         <div class="col-4 form-label">
-                            <label class="kt-padding-l-10 mandatory">Mobile Number</label>
+                            <label class="kt-padding-l-10 mandatory">Mobile Number
+
+                                <span
+                                    *ngIf="controls.receiverType.value"><br>{{ '(' + controls.receiverType.value + ')' }}</span>
+                            </label>
                         </div>
                         <div class="col-8">
                             <input class="form-control" formControlName="mobileNumber" (blur)="getDetailsByMobile()"
@@ -275,7 +279,7 @@
                     <div class="row justify-content-center kt-margin-t-15">
                         <div class="col offset-4">
                             <input type="text" class="form-control" numbersOnly placeholder="Enter OTP"
-                                formControlName="otp"
+                                formControlName="otp" maxlength="4"
                                 [class.isError]="locationForm.controls.otp.invalid &&  locationForm.controls.otp.touched"
                                 [readonly]="otpVerfied" [class.cursor-not-allowed]="otpVerfied">
                         </div>

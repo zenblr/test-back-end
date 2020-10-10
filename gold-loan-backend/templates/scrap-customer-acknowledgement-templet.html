@@ -33,58 +33,66 @@
         <div class="row">
             <div class="col-10 text-center m-auto">
                 <div class="text-left">
-                    <div><span>GST: </span><span>{{this.gstNo}}</span></div>
-                    <div class="pt-3"><span>HSN Code: </span><span></span></div>
+                    <div><span><b>GST: </b></span><span>{{this.gstNo}}</span></div>
+                    <div class="pt-3"><span><b>HSN Code: </b></span><span></span></div>
                 </div>
-                <p class="pt-3"><b class="text-center">AUGMONT PRIVATE LIMITED</b><br>
-                    <span>3rd Floor, 115/121, BULLION HOUSE, TAMBAKATA LANE,PYDHONIE, Mumbai City, Maharashtra,
-                        400003</span><br>
-                    <span>Contact Number: xxxxxxx Email: xxxxx</span>
+                <p class="pt-3"><h5><b class="text-center">AUGMONT PRIVATE LIMITED</b></h5><br>
+                    <span style="font-weight: 500;">3rd Floor, 115/121, BULLION HOUSE, TAMBAKATA LANE,PYDHONIE, Mumbai City, Maharashtra,
+                        400003</span><br><br>
+                    <span style="font-weight: 500;">Contact Number: 9898776677 &nbsp&nbsp&nbsp&nbsp Email: support@augmont.com</span>
                 </p>
                 <br>
-                <h6 class="text-center"><u><b>PURITY TESTING / MELTING CONSENT FORM</b></u></h6>
+                <h6 class="text-center"><b>PURITY TESTING / MELTING CONSENT FORM</b></h6>
             </div>
         </div>
         <div class="row text-left">
             <div class="col-12 container">
                 <div class="row pt-3">
                     <div class="col-10 m-auto">
-                        <span>Name : </span>
-                        <span><u>{{this.customerName}}</u></span>
+                        <span><b>Name : </b></span>
+                        <span>{{this.customerName}}</span>
                     </div>
                 </div>
                 <div class="row pt-3">
                     <div class="col-10 m-auto">
-                        <span>Address : </span>
-                        <span><u>{{this.customerAddress}}</u></span>
+                        <span><b>Address : </b></span>
+                        <span>{{this.customerAddress}}</span>
+                    </div>
+                </div>
+                <div class="row pt-3 ">
+                    <div class="col-10 m-auto">
+                        <div class="row">
+                            <div class="col-4">
+                                <span><b>Phone No : </b></span>
+                                <span>{{this.customerMobileNo}}</span>
+                            </div>
+                            <div class="col-6">
+                                <span><b>Email ID : </b></span>
+                                <span>{{this.customerEmail}}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row pt-3">
                     <div class="col-10 m-auto">
-                        <span>Phone No : </span>
-                        <span><u>{{this.customerMobileNo}}</u></span>
+                        <span><b>Passport number/PAN card/Driving license/Aadhar card :
+                        </b></span>
+                        <span>{{this.addressProofNo}}</span>
                     </div>
                 </div>
                 <div class="row pt-3">
                     <div class="col-10 m-auto">
-                        <span>Passport number/PAN card/Driving license/Aadhar card :
-                        </span>
-                        <span><u>{{this.addressProofNo}}</u></span>
-                    </div>
-                </div>
-                <div class="row pt-3">
-                    <div class="col-10 m-auto">
-                        <span>Issuing authority : </span>
-                        <span><u>{{this.issuingAuthority}}</u></span>
+                        <span><b>Issuing authority : </b></span>
+                        <span>{{this.issuingAuthority}}</span>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row pt-3">
             <div class="col-10 m-auto">
-                <p>I
-                    <span><u>{{this.customerName}}</u></span>
-                    herby request/consent Augmont private limited to do purity test/Melting of the ornaments described
+                <p>I Mr./Mrs.
+                    <span><b>{{this.customerName}}</b></span>
+                    hereby request/consent Augmont private limited to do purity test/Melting of the ornaments described
                     below:</p>
             </div>
         </div>
@@ -95,10 +103,10 @@
                 <table class="align-top text-center table-bordered"
                     style="width: 100%;margin:0;font-weight: 500;table-layout: fixed;border: 1px solid #b4b4b4;">
                     <tr >
-                        <th style="width: 10%">sr.No</th>
+                        <th style="width: 10%">Sr.No</th>
                         <th style="width: 50%; word-wrap: break-word">Description</th>
                         <th style="width: 20%">Quantity (no's)</th>
-                        <th style="width: 20%">Gross weight (gms)</th>
+                        <th style="width: 20%">Gross weight (in grams)</th>
                     </tr>
                     {{#each ornamentData}}
                     <tr>
@@ -118,7 +126,7 @@
                 <ol type="A">
                     <li>I truly declare and confirm that I am the absolute owner of the gold ornaments mentioned above
                         which is
-                        free from any third party claim and that The said item(s) are not derived from, or been created
+                        free from any and all claims including but not limited to third-party claims and that the said item(s) are not derived from, or been created
                         by, as a
                         result of activity which is either illegal or immoral in either the jurisdiction of India or any
                         other
@@ -141,7 +149,7 @@
                         the same
                         before melting the ornament and Augmont private limited shall not be held liable or responsible
                         for the
-                        same.
+                        same in any event whatsoever. I further agree to accept the stone in the state and manner they are returned to me by Augmont, upon my request.
                     </li>
                     <li>I am aware that Augmont private Is equipped with facilities to ascertain the purity of gold
                         ornaments
@@ -154,16 +162,15 @@
                     </li>
                     <li>I agree and undertake to receive back the ornament in the form it assumes post its
                         testing/melting, as I
-                        am aware that once the stone are removed from the gold ornament and/or if the same is melted, it
+                        am aware that once the stone/s is/are removed from the gold ornament and/or if the same is melted, it
                         cannot be
-                        restored to the its original shape/weight/ purity.
+                        restored to the its original shape/weight/value.
                     </li>
                     <li>Post such melting, if the price offered by Augmont private limited for purchasing the same is
                         not
-                        acceptable to me, I agree and undertake to receive back the ornament in the form its assume post
-                        melting,
+                        acceptable to me, I agree and undertake to receive back the ornament/gold in the form it's assumed to be post melting,
                         as I am aware that the gold ornament once melted cannot be restored to its original
-                        shape/weight/ purity.
+                        shape/weight/value.
                     </li>
                     <li>I reiterate that, the said ornaments are being melted as per my request and I hereby accept all
                         responsibility and consequences towards such Testing/Melting by Augmont private Limited and
@@ -171,31 +178,38 @@
                         Augmont Private limited shall not be held liable or responsible for any claim or damage of
                         whatsoever
                         nature (including any claim from any third party or otherwise) for the loss off
-                        shape/weight/purity/Value
+                        shape/weight/Value
                         of my said ornaments.
                     </li>
                 </ol>
             </div>
         </div>
         {{#each acknowledgementData}}
-        <div class="row pt-4">
+        <div class="row pt-2">
+            <div class="col-10 m-auto">
+              <div class="row">
+                <div class="col-4 "><b>Place: </b></div>
+              </div>
+            </div>
+          </div>
+        <div class="row pt-2">
           <div class="col-10 m-auto">
             <div class="row">
-              <div class="col-4 "><b>Date: </b><u>{{this.date}}</u></div>
+              <div class="col-4 "><b>Date: </b>{{this.date}}</div>
               <div class="col-4"></div>
-              <div class="col-4 text-right"><b>Signature</b>__________</div>
+              <div class="col-4 text-right"><b>Signature</b></div>
             </div>
           </div>
            
         </div>
-        <div class="row">
-            <div class="col-10 m-auto"><b>CIN</b><span>__________</span></div>
+        <div class="row pt-4">
+            <div class="col-10 m-auto"><b>CIN:</b><span>{{this.cinNo}}</span></div>
         </div>
         {{/each}}
 
-        <div class="row">
+        <div class="row pt-4">
           <div class="col-10 m-auto">
-            <p>Registered Address:  AUGMONT PRIVATE LIMITED 3rd Floor, 115/121, BULLION HOUSE, TAMBAKATA LANE,PYDHONIE, Mumbai City, Maharashtra, 400003 Contact Number xxxxxxx Email xxxxx
+            <p>Registered Address:  <b>AUGMONT PRIVATE LIMITED</b> 3rd Floor, 115/121, BULLION HOUSE, TAMBAKATA LANE,PYDHONIE, Mumbai City, Maharashtra, 400003 Contact Number 9898776677 Email  support@augmont.com
             </p>
           </div>
         </div>

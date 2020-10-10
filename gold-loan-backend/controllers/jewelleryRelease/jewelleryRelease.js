@@ -15,6 +15,7 @@ const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 const razorpay = require('../../utils/razorpay');
 let crypto = require('crypto');
 const { BASIC_DETAILS_SUBMIT } = require('../../utils/customerLoanHistory');
+const { sendMessageAssignedCustomerToAppraiser, sendMessageCustomerForAssignAppraiser } = require('../../utils/SMS')
 
 exports.ornamentsDetails = async (req, res, next) => {
 
@@ -366,7 +367,7 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
         let amount = releaseData.amount;
         return res.status(200).json({ message: 'success', ornamentWeight, loanInfo, amount });
     } else {
-        return res.status(400).json({ message: "Can't proceed further as you have already applied for pat released or full release" });
+        return res.status(400).json({ message: "Can't proceed further as you have already applied for part released or full release" });
     }
 }
 
@@ -581,7 +582,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
         });
         return res.status(200).json({ message: "success", partRelease });
     } else {
-        return res.status(400).json({ message: "can't proceed further as you have already applied for pat released or full release" });
+        return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
     }
 }
 
@@ -852,8 +853,13 @@ exports.partReleaseAssignAppraiser = async (req, res, next) => {
         await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_ASSIGNED_APPRAISER, createdBy, modifiedBy }, { transaction: t });
     });
     // send sms
-    // let customerInfo = await models.customer.findOne({ where: { id: customerId } })
-    // let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } });
+
+    let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } });
+    let customerInfo = await models.customer.findOne({ where: { id: customerId } })
+    await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
+
+    await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+
     // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=${customerInfo.firstName} is assign for you`);
     return res.status(200).json({ message: 'success' });
 }
@@ -898,11 +904,11 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         isActive: true,
         amountStatus: "completed",
         newLoanId: null,
-        isAppraiserAssigned: true
+        isAppraiserAssigned: true,
+        '$appraiserData.is_active$': true
     }
-    let appriserSearch = { isActive: true }
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-        appriserSearch.appraiserId = userId;
+        searchQuery['$appraiserData.appraiser_id$'] = userId;
     }
     let includeArray = [
         {
@@ -946,21 +952,23 @@ exports.partReleaseApprovedList = async (req, res, next) => {
                     model: models.packet,
                     as: 'packet'
                 },
-                {
-                    model: models.customerLoanPacketData,
-                    as: 'locationData',
-                    include: [
-                        {
-                            model: models.packetLocation,
-                            as: 'packetLocation',
-                            attributes: ['id', 'location']
-                        }
-                    ]
-                },
-                {
-                    model: models.customerPacketTracking,
-                    as: 'customerPacketTracking',
-                }
+                // {
+                //     model: models.customerLoanPacketData,
+                //     as: 'locationData',
+                //     separate: true,
+                //     include: [
+                //         {
+                //             model: models.packetLocation,
+                //             as: 'packetLocation',
+                //             attributes: ['id', 'location']
+                //         }
+                //     ]
+                // },
+                // {
+                //     model: models.customerPacketTracking,
+                //     as: 'customerPacketTracking',
+                //     separate: true,
+                // }
             ]
         },
         {
@@ -977,8 +985,6 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         {
             model: models.partReleaseAppraiser,
             as: 'appraiserData',
-            where: appriserSearch,
-            // required: false,
             subQuery: false,
             attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
             include: [
@@ -1000,19 +1006,46 @@ exports.partReleaseApprovedList = async (req, res, next) => {
             attributes: ['loanStatusForAppraiser'],
         }
     ]
-    let partRelease = await models.partRelease.findAll({
+    let partReleaseData = await models.partRelease.findAll({
         where: searchQuery,
         subQuery: false,
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         order: [
-            // ["updatedAt", "DESC"],
-            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'desc'],
-            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'asc'],
+            ["updatedAt", "DESC"],
+            // [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'desc'],
+            // [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'asc'],
         ],
         offset: offset,
         limit: pageSize,
         include: includeArray
-    })
+    });
+
+    let partRelease = [];
+    for (const data of partReleaseData) {
+        let locationData = [];
+        let data1 = await models.customerLoanPacketData.findOne({
+            where: { masterLoanId: data.masterLoanId },
+            include: [
+                {
+                    model: models.packetLocation,
+                    as: 'packetLocation',
+                    attributes: ['id', 'location']
+                }
+            ],
+            order: [['id', 'desc']]
+        });
+        locationData.push(data1)
+        data.masterLoan.dataValues.locationData = locationData;
+
+        let customerPacketTracking = [];
+        let data2 = await models.customerPacketTracking.findOne({
+            where: { masterLoanId: data.masterLoanId },
+            order: [['id', 'desc']]
+        })
+        customerPacketTracking.push(data2)
+        data.masterLoan.dataValues.customerPacketTracking = customerPacketTracking
+        partRelease.push(data);
+    }
 
     let count = await models.partRelease.findAll({
         where: searchQuery,
@@ -1055,7 +1088,7 @@ exports.updatePartReleaseStatus = async (req, res, next) => {
             } else if (partReleaseStatus == "released") {
                 await sequelize.transaction(async t => {
                     await models.partRelease.update({ partReleaseStatus, modifiedBy, releaseDate }, { where: { id: partReleaseId }, transaction: t });
-                    await models.customerLoanMaster.update({ isOrnamentsReleased: true, isFullOrnamentsReleased: true, modifiedBy }, { where: { id: partReleaseData.masterLoanId }, transaction: t });
+                    await models.customerLoanMaster.update({ isOrnamentsReleased: true, modifiedBy }, { where: { id: partReleaseData.masterLoanId }, transaction: t });
                     await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_STATUS_R, createdBy, modifiedBy }, { transaction: t });
                 });
                 return res.status(200).json({ message: "success" });
@@ -1089,10 +1122,10 @@ exports.uploadDocument = async (req, res, next) => {
         }]
     });
 
-    if (!partReleaseData.isCustomerReceivedPacket) {
-        return res.status(400).json({ message: "Customer did not received packets!" })
-    }
     if (partReleaseData) {
+        if (!partReleaseData.isCustomerReceivedPacket) {
+            return res.status(400).json({ message: "Customer did not received packets!" })
+        }
         await sequelize.transaction(async t => {
             await models.partRelease.update({ documents, modifiedBy }, { where: { id: partReleaseId }, transaction: t });
             await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_DOCUMENT, createdBy, modifiedBy }, { transaction: t });
@@ -1111,6 +1144,12 @@ exports.updateAppraiser = async (req, res, next) => {
         await models.partReleaseAppraiser.update({ customerId, appraiserId, modifiedBy, appoinmentDate, startTime, endTime }, { where: { partReleaseId }, transaction: t });
         await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_UPDATED_APPRAISER, createdBy, modifiedBy }, { transaction: t });
     });
+    let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } });
+    let customerInfo = await models.customer.findOne({ where: { id: customerId } })
+    await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
+
+    await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+
     return res.status(200).json({ message: 'success' });
 }
 
@@ -1165,19 +1204,20 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
         const lastName = customerLoanStage.customer.lastName
 
         let customerCurrentStage = customerLoanStage.customerLoanCurrentStage
+        let appraiserRequestId = customerLoanStage.appraiserRequestId
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanStage.id, loanType: 'secured' } })
         if (customerCurrentStage == '1') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount,appraiserRequestId,customerData })
         } else if (customerCurrentStage == '2') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount,appraiserRequestId,customerData })
         } else if (customerCurrentStage == '3') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount,appraiserRequestId,customerData })
         } else if (customerCurrentStage == '4') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt, partReleaseId, newLoanAmount })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt, partReleaseId, newLoanAmount,appraiserRequestId,customerData })
         } else if (customerCurrentStage == '5') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount, firstName, lastName, partReleaseId, newLoanAmount })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount, firstName, lastName, partReleaseId, newLoanAmount,appraiserRequestId,customerData })
         } else if (customerCurrentStage == '6') {
-            return res.status(200).json({ message: 'success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount })
+            return res.status(200).json({ message: 'success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount,appraiserRequestId,customerData })
         }
     }
     if (!customerData) {
@@ -1301,10 +1341,10 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                 passbookProof: oldLoanData.loanBankDetail.passbookProof
             }
             await models.customerLoanBankDetail.create(bankData, { transaction: t });
-            return loan
+            return { loan, masterLoan }
         });
         ////////
-        res.status(200).json({ message: 'customer details fetch successfully', customerData, partReleaseId, newLoanAmount, masterLoanId: loanData.masterLoanId, loanId: loanData.id, loanCurrentStage: '2' });
+        res.status(200).json({ message: 'customer details fetch successfully', customerData, partReleaseId, newLoanAmount, masterLoanId: loanData.loan.masterLoanId, loanId: loanData.loan.id, loanCurrentStage: '2', appraiserRequestId: loanData.masterLoan.appraiserRequestId });
     }
 }
 
@@ -1581,7 +1621,7 @@ exports.getFullReleaseList = async (req, res, next) => {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+                attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'internalBranchId']
             },
             {
                 model: models.customerLoan,
@@ -1620,7 +1660,14 @@ exports.getFullReleaseList = async (req, res, next) => {
             {
                 model: models.user,
                 as: 'appraiser',
-                attributes: ['firstName', 'lastName', 'mobileNumber']
+                attributes: ['firstName', 'lastName', 'mobileNumber', 'userTypeId'],
+                include: [
+                    {
+                        model: models.userType,
+                        as: 'Usertype',
+                        attributes: ['userType']
+                    }
+                ]
             }
         ]
     }
@@ -1775,6 +1822,12 @@ exports.fullReleaseAssignReleaser = async (req, res, next) => {
         await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_ASSIGNED_RELEASER, createdBy, modifiedBy }, { transaction: t });
     });
     // send sms
+
+    let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: releaserId } });
+    let customerInfo = await models.customer.findOne({ where: { id: customerId } })
+    await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
+
+    await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
     // let customerInfo = await models.customer.findOne({ where: { id: customerId } })
     // let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } });
     // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=${customerInfo.firstName} is assign for you`);
@@ -1789,6 +1842,13 @@ exports.updateReleaser = async (req, res, next) => {
         await models.fullReleaseReleaser.update({ customerId, releaserId, modifiedBy, appoinmentDate, startTime, endTime }, { where: { fullReleaseId }, transaction: t });
         await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_UPDATED_RELEASER, createdBy, modifiedBy }, { transaction: t });
     });
+
+    let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: releaserId } });
+    let customerInfo = await models.customer.findOne({ where: { id: customerId } })
+    await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
+
+    await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+
     return res.status(200).json({ message: 'success' });
 }
 
@@ -1799,10 +1859,6 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
         req.query.to
     );
     let userId = req.userData.id;
-    let releaserSearch = { isActive: true }
-    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-        releaserSearch.releaserId = userId;
-    }
     let query = {};
     const searchQuery = {
         [Op.and]: [query, {
@@ -1837,8 +1893,11 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
         [Op.or]: {
             fullReleaseStatus: { [Op.in]: ['pending'] },
             documents: null
-        }
-
+        },
+        '$releaser.is_active$': true
+    }
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
+        searchQuery['$releaser.releaser_id$'] = userId;
     }
     let includeArray = [{
         model: models.customerLoanTransaction,
@@ -1892,27 +1951,28 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
                 model: models.packet,
                 as: 'packet'
             },
-            {
-                model: models.customerLoanPacketData,
-                as: 'locationData',
-                include: [
-                    {
-                        model: models.packetLocation,
-                        as: 'packetLocation',
-                        attributes: ['id', 'location']
-                    }
-                ]
-            },
-            {
-                model: models.customerPacketTracking,
-                as: 'customerPacketTracking',
-            }
+            // {
+            //     model: models.customerLoanPacketData,
+            //     as: 'locationData',
+            //     separate: true,
+            //     include: [
+            //         {
+            //             model: models.packetLocation,
+            //             as: 'packetLocation',
+            //             attributes: ['id', 'location']
+            //         }
+            //     ]
+            // },
+            // {
+            //     model: models.customerPacketTracking,
+            //     as: 'customerPacketTracking',
+            //     separate: true
+            // },
         ]
     },
     {
         model: models.fullReleaseReleaser,
         as: 'releaser',
-        where: releaserSearch,
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         include: [
             {
@@ -1928,19 +1988,44 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
         ]
     }
     ]
-    let fullRelease = await models.fullRelease.findAll({
+    let fullReleaseData = await models.fullRelease.findAll({
         where: searchQuery,
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         order: [
-            // ["updatedAt", "DESC"],
-            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'desc'],
-            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'asc']
+            ["updatedAt", "DESC"]
         ],
         offset: offset,
         limit: pageSize,
         subQuery: false,
         include: includeArray
     })
+
+    let fullRelease = [];
+    for (const data of fullReleaseData) {
+        let locationData = [];
+        let data1 = await models.customerLoanPacketData.findOne({
+            where: { masterLoanId: data.masterLoanId },
+            include: [
+                {
+                    model: models.packetLocation,
+                    as: 'packetLocation',
+                    attributes: ['id', 'location']
+                }
+            ],
+            order: [['id', 'desc']]
+        });
+        locationData.push(data1)
+        data.masterLoan.dataValues.locationData = locationData;
+
+        let customerPacketTracking = [];
+        let data2 = await models.customerPacketTracking.findOne({
+            where: { masterLoanId: data.masterLoanId },
+            order: [['id', 'desc']]
+        })
+        customerPacketTracking.push(data2)
+        data.masterLoan.dataValues.customerPacketTracking = customerPacketTracking
+        fullRelease.push(data);
+    }
 
     let count = await models.fullRelease.findAll({
         where: searchQuery,

@@ -63,6 +63,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	approvalStatus: any = [];
 	permissions: any;
 	scrapStatusList = [];
+	cronProductArray: { name: string; value: string; }[];
+	cronStatusArray: { name: string; value: string; }[];
+	cronTypeArray: { name: string; value: string; }[];
 
 	constructor(
 		private fb: FormBuilder,
@@ -147,8 +150,15 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 							break;
 						case 'leadStatus':
 							this.getLeadStatus();
+							break;
 						case 'scrapStatus':
 							this.scrapStatus();
+							break
+						case 'cron':
+							this.cronProduct();
+							this.cronStatus();
+							this.cronType()
+							break
 					}
 				}
 			}
@@ -178,7 +188,14 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			scheme: [],
 			leadStatus: [''],
 			scrapStatus: [''],
-			packetTracking: ['']
+			packetTracking: [''],
+			packetTrackingLocation: [''],
+			cronStatus: [''],
+			product: [''],
+			scrapKycStatusFromCce: [''],
+			scrapKycStatus: [''],
+			date: [''],
+			cronType: ['']
 		});
 
 		this.filterForm.valueChanges.subscribe((val) => {
@@ -270,6 +287,14 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.kycStatus = controls['kycStatus'].value.multiSelect.map(e => e.value).toString();
 				this.filterObject.list.kycStatus = controls['kycStatus'].value.multiSelect;
 			}
+			if (controls['scrapKycStatusFromCce'].value && (controls['scrapKycStatusFromCce'].value.multiSelect && controls['scrapKycStatusFromCce'].value.multiSelect.length)) {
+				this.filterObject.data.scrapKycStatusFromCce = controls['scrapKycStatusFromCce'].value.multiSelect.map(e => e.value).toString();
+				this.filterObject.list.scrapKycStatusFromCce = controls['scrapKycStatusFromCce'].value.multiSelect;
+			}
+			if (controls['scrapKycStatus'].value && (controls['scrapKycStatus'].value.multiSelect && controls['scrapKycStatus'].value.multiSelect.length)) {
+				this.filterObject.data.scrapKycStatus = controls['scrapKycStatus'].value.multiSelect.map(e => e.value).toString();
+				this.filterObject.list.scrapKycStatus = controls['scrapKycStatus'].value.multiSelect;
+			}
 			if (controls['appraiserStatus'].value && (controls['appraiserStatus'].value.multiSelect && controls['appraiserStatus'].value.multiSelect.length)) {
 				this.filterObject.data.appraiserStatus = controls['appraiserStatus'].value.multiSelect.map(e => e.value).toString();
 				this.filterObject.list.appraiserStatus = controls['appraiserStatus'].value.multiSelect;
@@ -278,6 +303,25 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.loanStatus = controls['loanStatus'].value.multiSelect.map(e => e.id).toString();
 				this.filterObject.list.loanStatus = controls['loanStatus'].value.multiSelect;
 			}
+
+			if (controls['product'].value && (controls['product'].value.multiSelect && controls['product'].value.multiSelect.length)) {
+				this.filterObject.data.product = controls['product'].value.multiSelect.map(e => e.value);
+				this.filterObject.list.product = controls['product'].value.multiSelect;
+			}
+
+			if (controls['cronStatus'].value && (controls['cronStatus'].value.multiSelect && controls['cronStatus'].value.multiSelect.length)) {
+				this.filterObject.data.cronStatus = controls['cronStatus'].value.multiSelect.map(e => e.value);
+				this.filterObject.list.cronStatus = controls['cronStatus'].value.multiSelect;
+			}
+			if (controls['cronType'].value && (controls['cronType'].value.multiSelect && controls['cronType'].value.multiSelect.length)) {
+				this.filterObject.data.cronType = controls['cronType'].value.multiSelect.map(e => e.value);
+				this.filterObject.list.cronType = controls['cronType'].value.multiSelect;
+			}
+
+			// if (controls['date'].value) {
+			// 	this.filterObject.data.date = controls['date'].value;
+			// 	this.filterObject.list.date = controls['date'].value;
+			// }
 			if (controls['scheme'].value) {
 				console.log(controls['scheme'].value)
 				if (controls['scheme'].value == "All") {
@@ -290,6 +334,10 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			if (controls['packetTracking'].value) {
 				this.filterObject.data.packetTracking = controls['packetTracking'].value;
 				this.filterObject.list.packetTracking = controls['packetTracking'].value;
+			}
+			if (controls['packetTrackingLocation'].value) {
+				this.filterObject.data.packetTrackingLocation = controls['packetTrackingLocation'].value;
+				this.filterObject.list.packetTrackingLocation = controls['packetTrackingLocation'].value;
 			}
 			return this.filterObject;
 		}
@@ -352,6 +400,12 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'kycStatus':
 				this.controls['kycStatus'].value.multiSelect.splice(index, 1);
 				break;
+			case 'scrapKycStatusFromCce':
+				this.controls['scrapKycStatusFromCce'].value.multiSelect.splice(index, 1);
+				break;
+			case 'scrapKycStatus':
+				this.controls['scrapKycStatus'].value.multiSelect.splice(index, 1);
+				break;
 			case 'appraiserStatus':
 				this.controls['appraiserStatus'].value.multiSelect.splice(index, 1);
 				break;
@@ -370,8 +424,23 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'deposit':
 				this.controls['scheme'].patchValue('');
 				break;
+			case 'product':
+				this.controls['product'].value.multiSelect.splice(index, 1);
+				break;
+			case 'cronStatus':
+				this.controls['cronStatus'].value.multiSelect.splice(index, 1);
+				break;
+			case 'cronType':
+				this.controls['cronType'].value.multiSelect.splice(index, 1);
+				break;
+			case 'date':
+				this.controls['date'].patchValue('');
+				break;
 			case 'packetTracking':
 				this.controls['packetTracking'].patchValue('');
+				break;
+			case 'packetTrackingLocation':
+				this.controls['packetTrackingLocation'].patchValue('');
 				break;
 			default:
 				break;
@@ -389,7 +458,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			cceStatus: this.filterForm.controls['cceStatus'].value,
 			leadStatus: this.filterForm.controls['leadStatus'].value,
 			scrapStatus: this.filterForm.controls['scrapStatus'].value,
-
+			scrapKycStatus: this.filterForm.controls['scrapKycStatus'].value,
+			scrapKycStatusFromCce: this.filterForm.controls['scrapKycStatusFromCce'].value,
+			packetTrackingLocation: this.filterForm.controls['packetTrackingLocation'].value,
 		});
 		setTimeout(() => {
 			this.applyFilter();
@@ -435,6 +506,22 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		this.sharedService.getStatus().subscribe((res) => {
 			this.approvalStatus = res;
 		});
+	}
+
+	cronStatus() {
+		this.cronStatusArray = this.sharedService.getCronStatus()
+
+	}
+
+	cronType() {
+		this.cronTypeArray = this.sharedService.getCronType()
+		console.log(this.cronTypeArray)
+
+	}
+
+	cronProduct() {
+		this.cronProductArray = this.sharedService.getCronProduct()
+
 	}
 
 	scrapStatus() {

@@ -109,7 +109,7 @@ exports.customerSignUp = async (req, res, next) => {
       where: { mobileNumber: mobileNumber },
     });
     if (!check.isEmpty(registerCustomerExist)) {
-      return res.status(404).json({ message: "you already applied for the registration." });
+      return res.status(404).json({ message: "You have already applied for the registration." });
     }
 
     await models.customerOtp.destroy({ where: { mobileNumber } });
@@ -299,6 +299,9 @@ exports.getAllCustomersForLead = async (req, res, next) => {
           [Op.iLike]: search + "%",
         },
         "$state.name$": {
+          [Op.iLike]: search + "%",
+        },
+        "$module.module_name$": {
           [Op.iLike]: search + "%",
         },
       },

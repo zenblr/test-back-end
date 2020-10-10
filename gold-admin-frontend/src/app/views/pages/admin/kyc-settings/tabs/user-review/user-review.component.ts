@@ -242,7 +242,7 @@ export class UserReviewComponent implements OnInit {
     if (this.data.moduleId == 1) {
       let identityArray = this.data.customerKycReview.customerKycPersonal
       this.identityImageArray = identityArray.identityProofImage
-      this.identityIdArray = identityArray.identityProof
+      this.identityIdArray = identityArray.identityProof ? identityArray.identityProof : []
       this.reviewForm.controls.identityProof.patchValue(this.identityIdArray);
       this.customerKycPersonal.controls.identityProof.patchValue(this.identityIdArray);
     }
@@ -320,11 +320,9 @@ export class UserReviewComponent implements OnInit {
     })
 
     this.reviewForm.patchValue(this.data.customerKycReview)
-    // console.log(this.reviewForm.value)
     if (this.data.customerKycReview.customerKycPersonal) {
       this.reviewForm.patchValue(this.data.customerKycReview.customerKycPersonal)
       this.reviewForm.patchValue({ panCardNumber: this.data.customerKycReview.panCardNumber })
-      // console.log(this.reviewForm.value)
 
     }
 
@@ -420,9 +418,9 @@ export class UserReviewComponent implements OnInit {
         occupationId: [],
         dateOfBirth: [, [Validators.required]],
         age: [, [Validators.required]],
-        identityTypeId: [, [Validators.required]],
-        identityProof: [, [Validators.required]],
-        identityProofNumber: [, [Validators.required]],
+        identityTypeId: [],
+        identityProof: [],
+        identityProofNumber: [],
         panCardNumber: [this.data.customerKycReview.panCardNumber]
       })
 
@@ -576,6 +574,12 @@ export class UserReviewComponent implements OnInit {
   getIdentityType() {
     this.userAddressService.getIdentityType().subscribe(res => {
       this.identityProofs = res.data.filter(filter => filter.name == 'Aadhaar Card');
+      // if (this.reviewForm.controls.identityTypeId != this.identityProofs[0].id) {
+      this.reviewForm.controls.identityTypeId.patchValue(this.identityProofs[0].id)
+      if (this.customerKycPersonal) {
+        this.customerKycPersonal.controls.identityTypeId.patchValue(this.identityProofs[0].id)
+      }
+      // }
       this.ref.detectChanges()
     })
   }
@@ -731,7 +735,7 @@ export class UserReviewComponent implements OnInit {
             this.identityImageArray.push(res.uploadFile.URL)
             this.identityIdArray.push(res.uploadFile.path)
             this.identityFileNameArray.push(event.target.files[0].name)
-
+            this.reviewForm.patchValue({ identityProof: this.identityIdArray })
             this.customerKycPersonal.patchValue({ identityProof: this.identityIdArray })
             this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
           }
@@ -1069,7 +1073,7 @@ export class UserReviewComponent implements OnInit {
       this.customerKycAddressTwo.enable()
     }
 
-    this.customerKycAddressTwo.patchValue({ id: addressTwo.id })
+    this.customerKycAddressTwo.patchValue({ id: addressTwo ? addressTwo.id : null })
 
     if (this.data.moduleId == 1) {
       this.customerKycAddressTwo.controls.addressType.patchValue('residential')
@@ -1078,5 +1082,34 @@ export class UserReviewComponent implements OnInit {
       this.customerKycAddressTwo.controls.addressType.patchValue('communication')
     }
 
+  }
+
+  isAddressSameCheck() {
+    let addressOne: any = {}
+    {
+      addressOne.address = this.customerKycAddressOne.value.address,
+        addressOne.stateId = this.customerKycAddressOne.value.stateId,
+        addressOne.cityId = this.customerKycAddressOne.value.cityId,
+        addressOne.pinCode = this.customerKycAddressOne.value.pinCode,
+        addressOne.addressProof = this.customerKycAddressOne.value.addressProof,
+        addressOne.addressProofTypeId = this.customerKycAddressOne.value.addressProofTypeId,
+        addressOne.addressProofNumber = this.customerKycAddressOne.value.addressProofNumber
+    }
+
+    let addressTwo: any = {}
+    {
+      addressTwo.address = this.customerKycAddressTwo.value.address,
+        addressTwo.stateId = this.customerKycAddressTwo.value.stateId,
+        addressTwo.cityId = this.customerKycAddressTwo.value.cityId,
+        addressTwo.pinCode = this.customerKycAddressTwo.value.pinCode,
+        addressTwo.addressProof = this.customerKycAddressTwo.value.addressProof,
+        addressTwo.addressProofTypeId = this.customerKycAddressTwo.value.addressProofTypeId,
+        addressTwo.addressProofNumber = this.customerKycAddressTwo.value.addressProofNumber
+    }
+
+    // console.log({ addressOne, addressTwo })
+
+    return this.isAddressSame = JSON.stringify(addressOne) === JSON.stringify(addressTwo)
+    console.log(this.isAddressSame)
   }
 }

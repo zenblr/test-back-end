@@ -29,16 +29,19 @@ exports.getCustomerDetails = async (req, res, next) => {
         let currentModuleId = numberExistInCustomer.customerKyc.currentKycModuleId;
 
         if (currentModuleId != moduleId) {
-            if (moduleId == 1) {
-                if (numberExistInCustomer.scrapKycStatus != "approved") {
-                    return res.status(404).json({ message: "kindly complete scrap kyc" });
-                }
-            }
             if (moduleId == 3) {
                 if (numberExistInCustomer.kycStatus != "approved") {
                     return res.status(404).json({ message: "kindly complete loan kyc" });
                 }
             }
+            if (moduleId == 1) {
+                if (numberExistInCustomer.scrapKycStatus != "approved") {
+                    return res.status(404).json({ message: "kindly complete scrap kyc" });
+                } else {
+                    await models.customerKyc.update({ currentKycModuleId: moduleId }, { where: { id: numberExistInCustomer.customerKyc.id } })
+                }
+            }
+
         }
 
     }
@@ -693,6 +696,21 @@ exports.submitAllKycInfo = async (req, res, next) => {
     }
 
     await sequelize.transaction(async (t) => {
+
+        //for mobile
+        if (req.useragent.isMobile) {
+            let checkClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId }, transaction: t })
+
+            if (check.isEmpty(checkClassification)) {
+                await models.customerKycClassification.create({ customerId, customerKycId: customerKycId, kycStatusFromCce: "pending", cceId: modifiedBy }, { transaction: t })
+            }
+            await models.customerKyc.update(
+                { cceVerifiedBy: modifiedBy, isKycSubmitted: true },
+                { where: { customerId: customerId }, transaction: t })
+        }
+        //for mobile
+
+
         let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
 
         await models.customer.update({ firstName: customerKycBasicDetails.firstName, lastName: customerKycBasicDetails.lastName, panCardNumber: customerKycBasicDetails.panCardNumber, panType: customerKycBasicDetails.panType, panImage: customerKycBasicDetails.panImage, userType: customerKycBasicDetails.userType, organizationTypeId: customerKycBasicDetails.organizationTypeId, dateOfIncorporation: customerKycBasicDetails.dateOfIncorporation }, { where: { id: customerId }, transaction: t })
@@ -758,14 +776,22 @@ exports.appliedKyc = async (req, res, next) => {
         req.query.to
     );
     let query = {};
-    if (req.query.kycStatus) {
-        query.kycStatus = sequelize.where(
-            sequelize.cast(sequelize.col("customer.kyc_status"), "varchar"),
-            {
-                [Op.iLike]: req.query.kycStatus + "%",
-            }
-        );
-    }
+    // if (req.query.kycStatus) {
+    //     query.kycStatus = sequelize.where(
+    //         sequelize.cast(sequelize.col("customer.kyc_status"), "varchar"),
+    //         {
+    //             [Op.iLike]: req.query.kycStatus + "%",
+    //         }
+    //     );
+    // }
+    // if (req.query.scrapKycStatus) {
+    //     query.kycStatus = sequelize.where(
+    //         sequelize.cast(sequelize.col("customer.scrap_kyc_status"), "varchar"),
+    //         {
+    //             [Op.iLike]: req.query.scrapKycStatus + "%",
+    //         }
+    //     );
+    // }
     // if (req.query.cceStatus) {
     // query.cceRating = sequelize.where(
     //     sequelize.cast(sequelize.col("customerKycClassification.kyc_status_from_cce"), "varchar"),
@@ -775,7 +801,19 @@ exports.appliedKyc = async (req, res, next) => {
     // );
     // }
     if (req.query.cceStatus) {
-        query["$customerKycClassification.kyc_status_from_cce$"] = await req.query.cceStatus;
+        query["$customerKycClassification.kyc_status_from_cce$"] = await req.query.cceStatus.split(',');
+    }
+
+    if (req.query.scrapKycStatusFromCce) {
+        query["$customerKycClassification.scrap_kyc_status_from_cce$"] = await req.query.scrapKycStatusFromCce.split(',');
+    }
+
+    if (req.query.kycStatus) {
+        query["$customer.kyc_status$"] = await req.query.kycStatus.split(',');
+    }
+
+    if (req.query.scrapKycStatus) {
+        query["$customer.scrap_kyc_status$"] = await req.query.scrapKycStatus.split(',');
     }
 
     // if (req.query.kycStatusFromOperationalTeam) {
@@ -874,6 +912,7 @@ exports.appliedKyc = async (req, res, next) => {
                 as: 'appraiserRequest',
             }
         }
+
     ]
 
     let user = await models.user.findOne({ where: { id: req.userData.id } });
@@ -885,7 +924,7 @@ exports.appliedKyc = async (req, res, next) => {
     let getAppliedKyc = await models.customerKyc.findAll({
         where: searchQuery,
         subQuery: false,
-        attributes: ['id', 'customerId', 'createdAt', 'updatedAt'],
+        attributes: ['id', 'customerId', 'currentKycModuleId', 'createdAt', 'updatedAt'],
         order: [["updatedAt", "DESC"], [models.customer, models.appraiserRequest, 'id', 'DESC']],
         offset: offset,
         limit: pageSize,
@@ -954,11 +993,16 @@ exports.getReviewAndSubmit = async (req, res, next) => {
             model: models.organizationType,
             as: "organizationType",
             attributes: ['id', 'organizationType']
+        },
+        {
+            model: models.customerKyc,
+            as: 'customerKyc',
+            attributes: ['id', 'currentKycModuleId']
         }
         ]
     })
     let userType = null;
-    let moduleId = appraiserRequestData[0].moduleId;
+    let moduleId = customerKycReview.customerKyc.currentKycModuleId;
     if (moduleId == 3) {
 
         userType = customerKycReview.userType;

@@ -56,6 +56,7 @@ import { OtherChargesService } from '../../../../core/masters/other-charges/serv
 import { ScrapCustomerManagementService } from '../../../../core/scrap-management/customer-management';
 import { PartnerBranchUserService } from '../../../../core/user-management/partner-branch-user/services/partner-branch-user.service'
 import { DepositService } from "../../../../core/funds-approvals/deposit/services/deposit.service";
+import { CronListService } from '../../../../core/cron-list/services/cron-list.service';
 
 @Component({
 	selector: "kt-topbar",
@@ -161,7 +162,8 @@ export class TopbarComponent implements OnInit {
 		private otherChargesService: OtherChargesService,
 		private scrapCustomerManagementService: ScrapCustomerManagementService,
 		private partnerBranchUserservice: PartnerBranchUserService,
-		private depositService: DepositService
+		private depositService: DepositService,
+		private cronService: CronListService
 	) {
 
 		this.router.events.subscribe(val => {
@@ -408,7 +410,7 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.showfilter = true;
 			this.filterName = "kyc";
-			this.filterWidth = "600px";
+			this.filterWidth = "1000px";
 			this.listType = "approval";
 		}
 		if (this.path == "assigned-customers") {
@@ -805,6 +807,13 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "registered-customers") {
 			this.showInput = true;
 		}
+
+		if (this.path == "cron") {
+			this.showfilter = true;
+			this.filterName = 'cron';
+			this.listType = 'cron';
+			this.filterWidth = '600px';
+		}
 	}
 
 	action(event: Event) {
@@ -1025,6 +1034,10 @@ export class TopbarComponent implements OnInit {
 		}
 		if (location.href.includes('/scrap-management/packet-tracking')) {
 			this.scrapPacketTrackingService.applyFilter.next(data)
+		}
+
+		if (this.path == 'cron') {
+			this.cronService.applyFilter.next(data)
 		}
 	}
 

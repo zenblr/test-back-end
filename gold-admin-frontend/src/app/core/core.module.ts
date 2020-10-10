@@ -34,6 +34,7 @@ import { Time24to12Pipe } from './_base/layout/pipes/time24to12.pipe';
 import { MAT_DATE_LOCALE } from '@angular/material';
 import { ZeroToHundredWholeDirective } from './_base/layout/directives/zero-to-hundred-whole.directive';
 import { DebounceClickDirective } from './_base/layout/directives/debounce-click.directive';
+import { TrimControlDirective } from './_base/layout/directives/trim-control.directive';
 
 @NgModule({
 	imports: [CommonModule],
@@ -65,6 +66,7 @@ import { DebounceClickDirective } from './_base/layout/directives/debounce-click
 		Time24to12Pipe,
 		ZeroToHundredWholeDirective,
 		DebounceClickDirective,
+		TrimControlDirective,
 	],
 	exports: [
 		// directives
@@ -81,6 +83,7 @@ import { DebounceClickDirective } from './_base/layout/directives/debounce-click
 		WeightDirective,
 		ZeroToHundredWholeDirective,
 		DebounceClickDirective,
+		TrimControlDirective,
 		// pipes
 		TimeElapsedPipe,
 		JoinPipe,

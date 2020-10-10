@@ -44,7 +44,8 @@ export class UserDetailsComponent implements OnInit {
     private sharedServices: SharedService,
     private dialog: MatDialog,
     private toast: ToastrService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -191,6 +192,11 @@ export class UserDetailsComponent implements OnInit {
           this.showVerifyPAN = true;
         }
       }
+    }, (err) => {
+      const message = err.error.message
+      if (message === 'kindly complete scrap kyc' || message === 'kindly complete loan kyc') {
+        this.router.navigate(['/admin/lead-management/new-requests'])
+      }
     });
   }
 
@@ -239,8 +245,8 @@ export class UserDetailsComponent implements OnInit {
           throw err
         }),
         finalize(() => {
-          this.editPan.nativeElement.value = ''
-          this.pan.nativeElement.value = ''
+          if (this.editPan && this.editPan.nativeElement.value) this.editPan.nativeElement.value = ''
+          if (this.pan && this.pan.nativeElement.value) this.pan.nativeElement.value = ''
         })).subscribe()
     }
   }

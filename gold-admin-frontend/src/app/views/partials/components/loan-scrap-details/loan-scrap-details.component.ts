@@ -28,6 +28,7 @@ export class LoanScrapDetailsComponent implements OnInit {
   masterAndLoanIds: { loanId: any; masterLoanId: any; };
   scrapIds: { scrapId: any; };
   destroy$ = new Subject();
+  packetImages = { loan: [], scrap: [] };
 
   constructor(
     private loanservice: LoanApplicationFormService,
@@ -151,6 +152,19 @@ export class LoanScrapDetailsComponent implements OnInit {
           this.patchUrlIntoForm(keys[index], url, ornametsIndex)
         }
       }
+
+      let packets = this.details.scrapPacketDetails[0]
+      let documents = this.details.scrapDocument
+      let temp = [];
+      temp = [...documents.purchaseVoucherImage, ...documents.purchaseInvoiceImage, ...documents.saleInvoiceImage]
+      temp.push(packets.emptyPacketWithNoOrnamentImage,
+        packets.sealingPacketWithCustomerImage,
+        packets.sealingPacketWithWeightImage)
+      this.packetImages.scrap = this.packetImages.scrap.filter(e => {
+        let ext = this.sharedService.getExtension(e)
+        return e && ext != 'pdf'
+      })
+
     } else {
       for (let ornametsIndex = 0; ornametsIndex < this.details.loanOrnamentsDetail.length; ornametsIndex++) {
         let ornamets = this.details.loanOrnamentsDetail[ornametsIndex]
@@ -161,6 +175,19 @@ export class LoanScrapDetailsComponent implements OnInit {
           this.patchUrlIntoForm(keys[index], url, ornametsIndex)
         }
       }
+
+      let packets = this.details.loanPacketDetails[0]
+      let documents = this.details.customerLoanDocument
+      let temp = [];
+      temp = [...documents.loanAgreementCopyImage, ...documents.pawnCopyImage, ...documents.schemeConfirmationCopyImage]
+      temp.push(packets.emptyPacketWithNoOrnamentImage,
+        packets.sealingPacketWithCustomerImage,
+        packets.sealingPacketWithWeightImage)
+      this.packetImages.loan = [...temp]
+      this.packetImages.loan = this.packetImages.loan.filter(e => {
+        let ext = this.sharedService.getExtension(e)
+        return e && ext != 'pdf'
+      })
     }
   }
 
@@ -244,6 +271,20 @@ export class LoanScrapDetailsComponent implements OnInit {
         width: "auto"
       })
     }
+  }
+
+  viewPackets(value) {
+    const type = this.masterLoanId ? 'loan' : 'scrap'
+    const images = this.packetImages[type]
+    const index = images.indexOf(value)
+
+    this.dialog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: images,
+        index: index
+      },
+      width: "auto"
+    })
   }
 
   viewPartPaymnetsLogs() {

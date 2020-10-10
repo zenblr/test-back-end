@@ -118,6 +118,7 @@ export class UserAddressComponent implements OnInit {
   getIdentityType() {
     this.userAddressService.getIdentityType().subscribe(res => {
       this.identityProofs = res.data.filter(filter => filter.name == 'Aadhaar Card');
+      this.ref.detectChanges()
     }, err => {
       // console.log(err);
     })
@@ -126,6 +127,7 @@ export class UserAddressComponent implements OnInit {
   getAddressProofType() {
     this.userAddressService.getAddressProofType().subscribe(res => {
       this.addressProofs = res.data;
+      this.ref.detectChanges()
     })
   }
 

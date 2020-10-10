@@ -8,6 +8,8 @@ const moment = require('moment');
 var pdf = require("pdf-creator-node"); // PDF CREATOR PACKAGE
 var fs = require('fs');
 const { VIEW_ALL_CUSTOMER } = require('../../../utils/permissionCheck')
+const _ = require("lodash"); // importing lodash module.
+const convert = require('convert-rupees-into-words');
 
 
 const { BASIC_DETAILS_SUBMIT, CUSTOMER_ACKNOWLEDGEMENT, ORNAMENTES_DETAILS, ORNAMENTES_MELTING_DETAILS, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, SCRAP_DOCUMENTS, SCRAP_DISBURSEMENT, PROCESS_COMPLETED } = require('../../../utils/customerScrapHistory')
@@ -237,49 +239,50 @@ exports.scrapBankDetails = async (req, res, next) => {
 
 //function for submitting ornament details  DONE
 exports.scrapOrnmanetDetails = async (req, res, next) => {
-    let { scrapOrnaments, finalScrapAmount, scrapId } = req.body
-    let allOrnmanets = []
-    let createdBy = req.userData.id;
-    let modifiedBy = req.userData.id;
-    for (let i = 0; i < scrapOrnaments.length; i++) {
-        scrapOrnaments[i]['createdBy'] = createdBy
-        scrapOrnaments[i]['modifiedBy'] = modifiedBy
-        scrapOrnaments[i]['scrapId'] = scrapId
+        let { scrapOrnaments, finalScrapAmount, scrapId } = req.body
+        let allOrnmanets = []
+        let createdBy = req.userData.id;
+        let modifiedBy = req.userData.id;
+        for (let i = 0; i < scrapOrnaments.length; i++) {
+            scrapOrnaments[i]['createdBy'] = createdBy
+            scrapOrnaments[i]['modifiedBy'] = modifiedBy
+            scrapOrnaments[i]['scrapId'] = scrapId
+            delete scrapOrnaments[i]['id']
+            allOrnmanets.push(scrapOrnaments[i])
+        }
 
-        allOrnmanets.push(scrapOrnaments[i])
-    }
+        let checkOrnaments = await models.customerScrapOrnamentsDetail.findAll({ where: { scrapId: scrapId } });
+        if (checkOrnaments.length == 0) {
+            let scrapData = await sequelize.transaction(async t => {
+                await models.customerScrap.update({ customerScrapCurrentStage: '3', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
+                let createdOrnaments = await models.customerScrapOrnamentsDetail.bulkCreate(allOrnmanets, { returning: true }, { transaction: t });
 
-    let checkOrnaments = await models.customerScrapOrnamentsDetail.findAll({ where: { scrapId: scrapId } });
-    if (checkOrnaments.length == 0) {
-        let scrapData = await sequelize.transaction(async t => {
-            await models.customerScrap.update({ customerScrapCurrentStage: '3', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
-            let createdOrnaments = await models.customerScrapOrnamentsDetail.bulkCreate(allOrnmanets, { returning: true }, { transaction: t });
+                await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
 
-            await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
+                return createdOrnaments
+            })
+            return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData })
+        } else {
 
-            return createdOrnaments
-        })
-        return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData })
-    } else {
+            let scrapData = await sequelize.transaction(async t => {
+                await models.customerScrap.update({ customerScrapCurrentStage: '3', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
 
-        let scrapData = await sequelize.transaction(async t => {
-            await models.customerScrap.update({ customerScrapCurrentStage: '3', modifiedBy, finalScrapAmount }, { where: { id: scrapId }, transaction: t })
+                await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
 
-            await models.customerScrapHistory.create({ scrapId, action: ORNAMENTES_DETAILS, modifiedBy }, { transaction: t });
+                await models.customerScrapOrnamentsDetail.destroy({ where: { scrapId: scrapId }, transaction: t });
 
-            await models.customerScrapOrnamentsDetail.destroy({ where: { scrapId: scrapId }, transaction: t });
+                let createdOrnaments = []
+                for (let purityTestData of allOrnmanets) {
+                    delete purityTestData.id;
+                    var ornaments = await models.customerScrapOrnamentsDetail.create(purityTestData, { transaction: t });
+                    createdOrnaments.push(ornaments)
+                }
 
-            let createdOrnaments = []
-            for (let purityTestData of allOrnmanets) {
-                delete purityTestData.id;
-                var ornaments = await models.customerScrapOrnamentsDetail.create(purityTestData, { transaction: t });
-                createdOrnaments.push(ornaments)
-            }
+                return createdOrnaments;
+            })
+            return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData });
+        }
 
-            return createdOrnaments;
-        })
-        return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData });
-    }
 }
 
 //function for submitting melting ornament details  DONE
@@ -820,7 +823,7 @@ exports.appliedScrapDetails = async (req, res, next) => {
         where: { stageName: 'applying' }
     })
 
-    let disburseStage = await models.scrapStage.findOne({where: { stageName: 'packet submitted' }});
+    let disburseStage = await models.scrapStage.findOne({ where: { stageName: 'packet submitted' } });
 
     let { appraiserApproval, bmApproval, scrapStageId, operatinalTeamApproval } = req.query
     let { search, offset, pageSize } =
@@ -1093,11 +1096,11 @@ exports.printCustomerAcknowledgement = async (req, res) => {
 
     let customerScrap = await models.customerScrap.findOne({
         where: { id: scrapId },
-        attributes: { exclude: [ 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        attributes: { exclude: ['updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
         include: [{
             model: models.customer,
             as: "customer",
-            attributes: ['id', 'firstName', 'lastName', 'mobileNumber'],
+            attributes: ['id', 'firstName', 'lastName', 'mobileNumber', 'email'],
             include: [{
                 model: models.customerKycAddressDetail,
                 as: 'customerKycAddress',
@@ -1115,9 +1118,14 @@ exports.printCustomerAcknowledgement = async (req, res) => {
             {
                 model: models.customerKycOrganizationDetail,
                 as: 'organizationDetail',
-                attributes: ['gstinNumber', 'cinNumber']
+                attributes: ['gstinNumber', 'cinNumber', 'email']
+            },
+            {
+                model: models.customerKycPersonalDetail,
+                as: 'customerKycPersonal',
+                attributes: ['id',  'panCardNumber'],
             }
-        ]
+            ]
         },
         {
             model: models.customerScrapOrnamentsDetail,
@@ -1143,9 +1151,11 @@ exports.printCustomerAcknowledgement = async (req, res) => {
     if (customerScrap.customer.userType == "Corporate") {
         gstNo = customerScrap.customer.organizationDetail.gstinNumber;
         cinNo = customerScrap.customer.organizationDetail.cinNumber;
-    }else{
-        gstNo = "-";
-        cinNo = "-";
+        email = customerScrap.customer.organizationDetail.email;
+    } else {
+        gstNo = " NA";
+        cinNo = " NA";
+        email = " NA";
     }
 
 
@@ -1158,15 +1168,14 @@ exports.printCustomerAcknowledgement = async (req, res) => {
     var options = {
         format: "A4",
         orientation: "portrait",
-        border: "0.5mm",
+        border: "2mm",
         "header": {
-            "height": "2mm",
-
+            "height": "15mm",
         },
         "footer": {
-            "height": "2mm",
+            "height": "15mm",
         },
-        "height": "13.69in",
+        "height": "11.69in",
         "width": "10in"
     }
     let acknowledgementData = await [{
@@ -1174,28 +1183,26 @@ exports.printCustomerAcknowledgement = async (req, res) => {
         customerName: `${customerScrap.customer.firstName} ${customerScrap.customer.lastName}`,
         customerAddress: custtomerAddress,
         customerMobileNo: customerScrap.customer.mobileNumber,
+        customerEmail: email,
         addressProofNo: addressProofNo,
         issuingAuthority: `${issuingAuthority.firstName} ${issuingAuthority.lastName}`,
         gstNo: gstNo,
         cinNo: cinNo,
         date: moment(customerScrap.createdAt).format("DD-MM-YYYY")
     }]
-    // return res.status(200).json({ message: "success", customerScrap });
 
     let ornamentData = [];
     if (customerScrap.scrapOrnamentsDetail.length != 0) {
-        for (let [index, ornament ] of customerScrap.scrapOrnamentsDetail.entries()) {
+        for (let [index, ornament] of customerScrap.scrapOrnamentsDetail.entries()) {
             await ornamentData.push({
-                srNo:  index + 1,
+                srNo: index + 1,
                 ornamentName: ornament.ornamentType.name,
                 quantity: ornament.quantity,
-                grossWeight: ornament.grossWeight
+                grossWeight: ornament.netWeight
             })
         }
     }
-    console.log(ornamentData);
     // return res.status(200).json({ message: "success", ornamentData, acknowledgementData });
-
 
     let fileName = await `customerAcknowledgement${Date.now()}`;
     document = await {
@@ -1228,61 +1235,152 @@ exports.printCustomerAcknowledgement = async (req, res) => {
 }
 
 exports.printPurchaseVoucher = async (req, res) => {
-    let { scrapId } = req.query;
-    let customerScrap = await models.customerScrap.findOne({
-        where: { id: scrapId },
-        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-    });
-
-    var html = fs.readFileSync("./templates/scrap-purchase-voucher.html", 'utf8');
-
-    var options = {
-        format: "A4",
-        orientation: "portrait",
-        border: "1mm",
-        "header": {
-            "height": "2mm",
-
-        },
-        "footer": {
-            "height": "2mm",
-        },
-        "height": "13.69in",
-        "width": "8.27in"
-    }
-    let purchaseVoucher = await [{
-        scrapUniqueId: customerScrap.scrapUniqueId,
-
-    }]
-    let emiData = [];
-
-    let fileName = await `purchaseVoucher${Date.now()}`;
-    document = await {
-        html: html,
-        data: {
-            bootstrapCss: `${process.env.URL}/bootstrap.css`,
-            jqueryJs: `${process.env.URL}/jquery-slim.min.js`,
-            popperJs: `${process.env.URL}/popper.min.js`,
-            bootstrapJs: `${process.env.URL}/bootstrap.js`,
-            purchaseVoucher: purchaseVoucher,
-        },
-        path: `./public/uploads/pdf/${fileName}.pdf`,
-        timeout: '60000'
-    };
-    let createPdf = await pdf.create(document, options);
-    if (createPdf) {
-        fs.readFile(`./public/uploads/pdf/${fileName}.pdf`, function (err, data) {
-            let stat = fs.statSync(`./public/uploads/pdf/${fileName}.pdf`);
-            res.setHeader('Content-Length', stat.size);
-            res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', `attachment; filename=${fileName}.pdf`);
-            res.send(data);
-            if (fs.existsSync(`./public/uploads/pdf/${fileName}.pdf`)) {
-                fs.unlinkSync(`./public/uploads/pdf/${fileName}.pdf`);
+    try{
+        let { scrapId } = req.query;
+        let customerScrap = await models.customerScrap.findOne({
+            where: { id: scrapId },
+            attributes: ['id', 'scrapUniqueId', 'finalScrapAmountAfterMelting'],
+            include: [{
+                model: models.customer,
+                as: "customer",
+                attributes: ['id', 'firstName', 'lastName', 'mobileNumber', 'email', 'panCardNumber'],
+                include: [{
+                    model: models.customerKycAddressDetail,
+                    as: 'customerKycAddress',
+                    include: [{
+                        model: models.state,
+                        as: 'state',
+                        attributes: ['name']
+                    },
+                    {
+                        model: models.city,
+                        as: 'city',
+                        attributes: ['name']
+                    }]
+                },
+                {
+                    model: models.customerKycPersonalDetail,
+                    as: 'customerKycPersonal',
+                    attributes: ['id',  'panCardNumber'],
+                }
+                ]
+            },
+            {
+                model: models.customerScrapOrnamentsDetail,
+                as: 'scrapOrnamentsDetail',
+                include: {
+                    model: models.ornamentType,
+                    as: 'ornamentType'
+                }
             }
+            ]
         });
-    }
+        let customerAddress;
+        let pincode;
+        let customerSatte;
+        for (let address of customerScrap.customer.customerKycAddress) {
+            if (address.addressType == "permanent") {
+                customerAddress = `${address.address}, ${address.city.name}, ${address.state.name},  `;
+                pincode = address.pinCode;
+                customerSatte = address.state.name;            
+            }
+        }
+    
+        let ornamentData = [];
+        let totalUnits = [];
+        let totalGrams = [];
+        let totalRatePreUnit = [];
+        let totalAmount = [];
+        if (customerScrap.scrapOrnamentsDetail.length != 0) {
+            for (let [index, ornament] of customerScrap.scrapOrnamentsDetail.entries()) {
+                await ornamentData.push({
+                    srNo: index + 1,
+                    ornamentName: ornament.ornamentType.name,
+                    quantity: ornament.quantity,
+                    grossWeight: ornament.netWeight,
+                    amount: ornament.scrapAmount,
+                    nullCell: ""
+                });
+    
+                totalUnits.push(ornament.quantity);
+                totalGrams.push(ornament.netWeight);
+                totalAmount.push(ornament.scrapAmount)
+            }
+        }
+        let finalTotalUnits = _.sum(totalUnits);
+        let finalTotalGrams = _.sum(totalGrams);
+        let finalTotalAmount = _.sum(totalAmount);
+        let amountInWords = convert(finalTotalAmount);
+        
+        var html = fs.readFileSync("./templates/scrap-purchase-voucher.html", 'utf8');
+    
+        var options = {
+            format: "A4",
+            orientation: "portrait",
+            border: "0.5mm",
+            "header": {
+                "height": "2mm",
+    
+            },
+            "footer": {
+                "height": "3mm",
+            },
+            "height": "13.69in",
+            "width": "11in"
+        }
+        if(customerScrap.customer.customerKycPersonal.panCardNumber){
+            panNo = customerSatte.customer.customerKycPersonal.panCardNumber
+        }else{
+            panNo = " NA";
+        }
+        let purchaseVoucher = await [{
+            customerName: `${customerScrap.customer.firstName} ${customerScrap.customer.lastName}`,
+            date: moment(customerScrap.createdAt).format("DD-MM-YYYY"),
+            customerAddress: customerAddress,
+            pinCode: pincode,
+            customerSatte: customerSatte,
+            voucherNumber: customerScrap.scrapUniqueId,
+            panNo: panNo,
+            totalUnits: finalTotalUnits,
+            totalGrams: finalTotalGrams,
+            totalAmount: finalTotalAmount,
+            amountInWords: `${amountInWords.toUpperCase()} ONLY`
+        }]
+    
+        // return res.status(200).json({ message: "success", purchaseVoucher,ornamentData });
 
+        let fileName = await `purchaseVoucher${Date.now()}`;
+        document = await {
+            html: html,
+            data: {
+                bootstrapCss: `${process.env.URL}/bootstrap.css`,
+                jqueryJs: `${process.env.URL}/jquery-slim.min.js`,
+                popperJs: `${process.env.URL}/popper.min.js`,
+                bootstrapJs: `${process.env.URL}/bootstrap.js`,
+                purchaseVoucher: purchaseVoucher,
+                ornamentData: ornamentData
+
+            },
+            path: `./public/uploads/pdf/${fileName}.pdf`,
+            timeout: '60000'
+        };
+        let createPdf = await pdf.create(document, options);
+        if (createPdf) {
+            fs.readFile(`./public/uploads/pdf/${fileName}.pdf`, function (err, data) {
+                let stat = fs.statSync(`./public/uploads/pdf/${fileName}.pdf`);
+                res.setHeader('Content-Length', stat.size);
+                res.setHeader('Content-Type', 'application/pdf');
+                res.setHeader('Content-Disposition', `attachment; filename=${fileName}.pdf`);
+                res.send(data);
+                if (fs.existsSync(`./public/uploads/pdf/${fileName}.pdf`)) {
+                    fs.unlinkSync(`./public/uploads/pdf/${fileName}.pdf`);
+                }
+            });
+        }
+    }catch(err){
+        console.log(err);
+    }
+    
 }
 
 exports.getScrapStatus = async (req, res) => {

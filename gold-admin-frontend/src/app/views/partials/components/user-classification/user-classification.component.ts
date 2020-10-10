@@ -148,7 +148,7 @@ export class UserClassificationComponent implements OnInit {
       kycRatingFromBM: [false, [Validators.required]],
       kycStatusFromCce: ['', [Validators.required]],
       reasonFromCce: [],
-      reasonForOther: [],
+      reasonForOther: [''],
       kycStatusFromOperationalTeam: ['pending', [Validators.required]],
       reasonFromOperationalTeam: [''],
       moduleId: [this.customerDetails.moduleId],
@@ -164,10 +164,12 @@ export class UserClassificationComponent implements OnInit {
       this.custClassificationForm.controls.kycRatingFromCce.disable();
       this.custClassificationForm.controls.kycStatusFromCce.disable();
       this.custClassificationForm.controls.reasonFromCce.disable();
+      this.custClassificationForm.controls.reasonForOther.disable();
     } else if (this.permission.cceKycRating && this.permission.opsKycRating && this.customerDetails.ratingStage == 2) {
       this.custClassificationForm.controls.kycRatingFromCce.disable();
       this.custClassificationForm.controls.kycStatusFromCce.disable();
       this.custClassificationForm.controls.reasonFromCce.disable();
+      this.custClassificationForm.controls.reasonForOther.disable();
     } else if (this.permission.cceKycRating && this.permission.opsKycRating && this.customerDetails.ratingStage == 1) {
       this.custClassificationForm.controls.kycRatingFromBM.disable();
       this.custClassificationForm.controls.kycStatusFromOperationalTeam.disable();
@@ -184,25 +186,29 @@ export class UserClassificationComponent implements OnInit {
   }
 
   conditionalValidation() {
-    // this.custClassificationForm.get('kycRatingFromCce').valueChanges.subscribe(res => {
-    // if (this.custClassificationForm.controls.kycRatingFromCce.valid && this.custClassificationForm.controls.kycStatusFromCce.valid) {
     if ((this.custClassificationForm.controls.kycRatingFromCce.value == '5' || this.custClassificationForm.controls.kycRatingFromCce.value == '4') && this.custClassificationForm.controls.kycStatusFromCce.value == 'approved') {
-      this.custClassificationForm.get('reasonFromCce').clearValidators();
-      // if (!this.editRating) {
+      this.custClassificationForm.get('reasonForOther').setValidators([]);
+      this.custClassificationForm.get('reasonForOther').updateValueAndValidity();
+      this.custClassificationForm.get('reasonForOther').patchValue('');
+
+      this.custClassificationForm.get('reasonFromCce').setValidators([]);
+      this.custClassificationForm.get('reasonFromCce').updateValueAndValidity();
       this.custClassificationForm.get('reasonFromCce').patchValue('');
-      // }
       this.showTextBoxCce = false;
     } else {
-      this.custClassificationForm.get('reasonFromCce').setValidators(Validators.required);
+      this.custClassificationForm.get('reasonForOther').reset();
+      this.custClassificationForm.get('reasonForOther').patchValue('');
+      this.custClassificationForm.get('reasonForOther').setValidators(Validators.required);
+      this.custClassificationForm.get('reasonForOther').updateValueAndValidity();
       this.showTextBoxCce = true;
     }
-    this.custClassificationForm.get('reasonFromCce').updateValueAndValidity();
+    this.custClassificationForm.get('reasonForOther').updateValueAndValidity();
     // }
 
     // Validation for BM
     this.custClassificationForm.get('kycStatusFromOperationalTeam').valueChanges.subscribe(res => {
       if (res == 'approved') {
-        this.custClassificationForm.get('reasonFromOperationalTeam').clearValidators();
+        this.custClassificationForm.get('reasonFromOperationalTeam').setValidators([]);
         this.custClassificationForm.get('reasonFromOperationalTeam').patchValue('');
         this.showTextBoxBM = false;
       } else if (res && res != 'pending') {
@@ -234,12 +240,12 @@ export class UserClassificationComponent implements OnInit {
   submit() {
     if (this.custClassificationForm.invalid) {
       this.custClassificationForm.markAllAsTouched();
-      if (this.custClassificationForm.controls.reasonFromCce.invalid) {
-        this.custClassificationForm.controls.reasonFromCce.setErrors({ 'reasonRequired': true })
-      }
+      // if (this.custClassificationForm.controls.reasonFromCce.invalid) {
+      //   this.custClassificationForm.controls.reasonFromCce.setErrors({ 'reasonRequired': true })
+      // }
       return;
     }
-
+    // return
     // console.log(this.custClassificationForm.value)
 
     this.custClassificationForm.patchValue({
@@ -306,20 +312,26 @@ export class UserClassificationComponent implements OnInit {
       if (type == 'kycRating') {
         this.cceControls.kycRatingFromBM.patchValue(value)
       }
-      // else if (type == 'identity') {
-      //   this.cceControls.idProofRatingVerifiedByBm.patchValue(value)
-      // } else if (type == 'address') {
-      //   this.cceControls.addressProofRatingVerifiedBm.patchValue(value)
-      // }
     }
   }
 
   patchReason() {
+    // if (this.cceControls.reasonForOther.value != "Other") {
+    //   this.cceControls.reasonFromCce.patchValue(this.cceControls.reasonForOther.value)
+
+    // } else {
+    //   this.cceControls.reasonFromCce.reset()
+    // }
+
     if (this.cceControls.reasonForOther.value != "Other") {
       this.cceControls.reasonFromCce.patchValue(this.cceControls.reasonForOther.value)
-
+      this.cceControls.reasonFromCce.setValidators([])
+      this.cceControls.reasonFromCce.updateValueAndValidity()
     } else {
+      this.cceControls.reasonFromCce.setValidators([Validators.required])
+      this.cceControls.reasonFromCce.updateValueAndValidity()
       this.cceControls.reasonFromCce.reset()
+      // this.cceControls.reasonFromCce.patchValue(this.cceControls.reasonForOther.value)
     }
   }
 

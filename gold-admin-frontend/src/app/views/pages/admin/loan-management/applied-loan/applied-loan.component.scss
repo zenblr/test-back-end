@@ -19,6 +19,8 @@
     }
     .mat-column-loanAmount{
         flex: 0 0 9% !important;
+        justify-content: flex-end;
+        padding-right: 20px;
     }
     .mat-column-schemeName{
         flex: 0 0 10% !important;

@@ -180,7 +180,8 @@
                     *ngFor="let ornaments of details?.loanOrnamentsDetail;index as idx">
                     <div class="row">
                         <div class="col-3">
-                            <img [src]="ornaments?.ornamentImageData?.URL" class="ornaments" alt="">
+                            <img (click)="preview(ornaments.ornamentImageData?.URL,idx)"
+                                [src]="ornaments?.ornamentImageData?.URL" class="ornaments" alt="">
                         </div>
                         <div class="col-9">
                             <div class="row kt-margin-t-15">
@@ -366,18 +367,21 @@
                 </div>
                 <div class="row">
                     <div class="col-4">
-                        <img class="packets" [src]="packets?.emptyPacketWithNoOrnamentImage">
+                        <img class="packets" (click)="viewPackets(packets?.emptyPacketWithNoOrnamentImage)"
+                            [src]="packets?.emptyPacketWithNoOrnamentImage">
                         <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with
                             No
                             Ornaments</label>
                     </div>
                     <div class="col-4">
-                        <img class="packets" [src]="packets?.sealingPacketWithWeightImage">
+                        <img class="packets" (click)="viewPackets(packets?.sealingPacketWithWeightImage)"
+                            [src]="packets?.sealingPacketWithWeightImage">
                         <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with All
                             Ornaments</label>
                     </div>
                     <div class="col-4">
-                        <img class="packets" [src]="packets?.sealingPacketWithCustomerImage">
+                        <img class="packets" (click)="viewPackets(packets?.sealingPacketWithCustomerImage)"
+                            [src]="packets?.sealingPacketWithCustomerImage">
                         <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with
                             Sealing</label>
 
@@ -412,17 +416,20 @@
                 </div>
                 <div class="row">
                     <div class="col-4">
-                        <img class="packets" [src]="packets?.emptyPacketWithNoOrnamentImage">
+                        <img class="packets" (click)="viewPackets(packets?.emptyPacketWithNoOrnamentImage)"
+                            [src]="packets?.emptyPacketWithNoOrnamentImage">
                         <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with All
                             Refining Ornaments</label>
                     </div>
                     <div class="col-4">
-                        <img class="packets" [src]="packets?.sealingPacketWithWeightImage">
+                        <img class="packets" (click)="viewPackets(packets?.sealingPacketWithWeightImage)"
+                            [src]="packets?.sealingPacketWithWeightImage">
                         <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with All
                             Ornaments</label>
                     </div>
                     <div class="col-4">
-                        <img class="packets" [src]="packets?.sealingPacketWithCustomerImage">
+                        <img class="packets" (click)="viewPackets(packets?.sealingPacketWithCustomerImage)"
+                            [src]="packets?.sealingPacketWithCustomerImage">
                         <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with
                             Sealing</label>
                     </div>
@@ -439,30 +446,33 @@
             </div>
             <!-- loan documents -->
             <div class="row" *ngIf="masterLoanId">
-                <div class="col-4">
-                    <div class="pdf">
-                        <iframe [src]="details.customerLoanDocument.loanAgreementCopyImage | safe : 'resourceUrl'"
+                <div class="col">
+                    <div class="pdf" (click)="preview(details.customerLoanDocument.loanAgreementCopyImage[0])">
+                        <iframe [src]="details.customerLoanDocument.loanAgreementCopyImage[0] | safe : 'resourceUrl'"
                             scrolling="no" *ngIf="pdf?.loanAgreementCopyImage" height="255"></iframe>
                     </div>
                     <img *ngIf="!pdf?.loanAgreementCopyImage" class="packets"
-                        [src]="details.customerLoanDocument.loanAgreementCopyImage">
+                        (click)="viewPackets(details.customerLoanDocument.loanAgreementCopyImage[0])"
+                        [src]="details.customerLoanDocument.loanAgreementCopyImage[0]">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Loan Agreement Copy</label>
                 </div>
-                <div class="col-4">
-                    <div class="pdf">
-                        <iframe [src]="details.customerLoanDocument.pawnCopyImage | safe : 'resourceUrl'" scrolling="no"
-                            *ngIf="pdf?.pawnCopyImage" height="255"></iframe>
+                <div class="col" *ngFor="let pawncopy of details.customerLoanDocument.pawnCopyImage; index as i">
+                    <div class="pdf" (click)="preview(pawncopy)">
+                        <iframe [src]="pawncopy | safe : 'resourceUrl'" scrolling="no" *ngIf="pdf?.pawnCopyImage"
+                            height="255"></iframe>
                     </div>
-                    <img *ngIf="!pdf?.pawnCopyImage" class="packets" [src]="details.customerLoanDocument.pawnCopyImage">
-                    <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Pawn Copy</label>
+                    <img *ngIf="!pdf?.pawnCopyImage" class="packets" [src]="pawncopy" (click)="viewPackets(pawncopy)">
+                    <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Pawn Copy {{i+1}}</label>
                 </div>
-                <div class="col-4">
-                    <div class="pdf">
-                        <iframe [src]="details.customerLoanDocument.schemeConfirmationCopyImage | safe : 'resourceUrl'"
+                <div class="col">
+                    <div class="pdf" (click)="preview(details.customerLoanDocument.schemeConfirmationCopyImage[0])">
+                        <iframe
+                            [src]="details.customerLoanDocument.schemeConfirmationCopyImage[0] | safe : 'resourceUrl'"
                             scrolling="no" *ngIf="pdf?.schemeConfirmationCopyImage" height="255"></iframe>
                     </div>
                     <img *ngIf="!pdf?.schemeConfirmationCopyImage" class="packets"
-                        [src]="details.customerLoanDocument.schemeConfirmationCopyImage">
+                        (click)="viewPackets(details.customerLoanDocument.schemeConfirmationCopyImage[0])"
+                        [src]="details.customerLoanDocument.schemeConfirmationCopyImage[0]">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Scheme Confirmation Copy
                     </label>
                 </div>
@@ -475,11 +485,11 @@
                     </div>
                     <div *ngIf="details?.scrapDocument?.purchaseVoucherImage">
                         <div class="pdf" (click)="preview(details?.scrapDocument?.purchaseVoucherImage[0])">
-                            <iframe [src]="details?.scrapDocument?.purchaseVoucherImage | safe : 'resourceUrl'"
+                            <iframe [src]="details?.scrapDocument?.purchaseVoucherImage[0] | safe : 'resourceUrl'"
                                 scrolling="no" *ngIf="pdf?.purchaseVoucherImage" height="255"></iframe>
                         </div>
-                        <img *ngIf="!pdf?.purchaseVoucherImage" class="packets"
-                            [src]="details?.scrapDocument?.purchaseVoucherImage">
+                        <img *ngIf="!pdf?.purchaseVoucherImage" class="packets" (click)="viewPackets(details?.scrapDocument?.purchaseVoucherImage[0])"
+                            [src]="details?.scrapDocument?.purchaseVoucherImage[0]">
                     </div>
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Purchase Voucher</label>
                 </div>
@@ -489,11 +499,11 @@
                     </div>
                     <div *ngIf="details?.scrapDocument?.purchaseInvoiceImage">
                         <div class="pdf" (click)="preview(details?.scrapDocument?.purchaseInvoiceImage[0])">
-                            <iframe [src]="details?.scrapDocument?.purchaseInvoiceImage | safe : 'resourceUrl'"
+                            <iframe [src]="details?.scrapDocument?.purchaseInvoiceImage[0] | safe : 'resourceUrl'"
                                 scrolling="no" *ngIf="pdf?.purchaseInvoiceImage" height="255"></iframe>
                         </div>
-                        <img *ngIf="!pdf?.purchaseInvoiceImage" class="packets"
-                            [src]="details?.scrapDocument?.purchaseInvoiceImage">
+                        <img *ngIf="!pdf?.purchaseInvoiceImage" class="packets"  (click)="viewPackets(details?.scrapDocument?.purchaseInvoiceImage[0])"
+                            [src]="details?.scrapDocument?.purchaseInvoiceImage[0]">
                     </div>
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Original Purchase
                         Invoice</label>
@@ -504,11 +514,11 @@
                     </div>
                     <div *ngIf="details?.scrapDocument?.saleInvoiceImage">
                         <div class="pdf" (click)="preview(details?.scrapDocument?.saleInvoiceImage[0])">
-                            <iframe [src]="details?.scrapDocument?.saleInvoiceImage | safe : 'resourceUrl'"
+                            <iframe [src]="details?.scrapDocument?.saleInvoiceImage[0] | safe : 'resourceUrl'"
                                 scrolling="no" *ngIf="pdf?.saleInvoiceImage" height="255"></iframe>
                         </div>
-                        <img *ngIf="!pdf?.saleInvoiceImage" class="packets"
-                            [src]="details?.scrapDocument?.saleInvoiceImage">
+                        <img *ngIf="!pdf?.saleInvoiceImage" class="packets" (click)="viewPackets(details?.scrapDocument?.saleInvoiceImage[0])"
+                            [src]="details?.scrapDocument?.saleInvoiceImage[0]">
                     </div>
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Sale Invoice</label>
                 </div>
@@ -528,8 +538,7 @@
         <div class="col-12 card kt-padding-15" *ngIf="scrapId">
             <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Disbursement</label>
             <div class="row">
-                <kt-disburse [disable]="true" [scrapDetails]="details" [scrapIds]="scrapIds"
-                    [disbursed]="true">
+                <kt-disburse [disable]="true" [scrapDetails]="details" [scrapIds]="scrapIds" [disbursed]="true">
                 </kt-disburse>
             </div>
         </div>

@@ -90,7 +90,7 @@ export class MenuConfig {
 							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-05.svg",
 							page: "/admin/lead-management",
-							permission: !(this.permissionsArr.includes('leadManagmentView') || this.permissionsArr.includes('viewNewRequest')),
+							permission: !(this.permissionsArr.includes('leadManagmentView') || this.permissionsArr.includes('viewNewRequest') || this.permissionsArr.includes('customerRegistrationView')),
 							submenu: [
 								{
 									title: "All Leads",
@@ -109,7 +109,8 @@ export class MenuConfig {
 								// },
 								{
 									title: "Customer Registration List",
-									page: "/admin/lead-management/registered-customers"
+									page: "/admin/lead-management/registered-customers",
+									permission: !this.permissionsArr.includes('customerRegistrationView')
 								}
 							],
 						},
@@ -517,6 +518,11 @@ export class MenuConfig {
 									page: "/admin/global-settings",
 									permission: !this.permissionsArr.includes('viewGlobalSetting')
 								},
+								{
+									title: "Cron Logs",
+									page: "/admin/cron-list",
+									permission:!(this.userType === 4)
+								},
 							]
 						},
 						{
@@ -842,7 +848,7 @@ export class MenuConfig {
 						{
 							title: "Packet Tracking",
 							root: true,
-							src: "assets/media/aside-icons/icons-36.svg",
+							src: "assets/media/aside-icons/shopping-bags.svg",
 							page: "/admin/scrap-management/packet-tracking",
 							permission: !this.permissionsArr.includes('scrapPacketTrackingView'),
 						},

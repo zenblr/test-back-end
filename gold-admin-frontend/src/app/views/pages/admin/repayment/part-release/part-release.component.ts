@@ -46,7 +46,7 @@ export class PartReleaseComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.router.url)
+    // console.log(this.router.url)
     this.id = this.route.snapshot.params.id
     this.url = this.router.url
     this.patchValuePartRelease()
@@ -73,8 +73,6 @@ export class PartReleaseComponent implements OnInit {
   fullRelease() {
     this.selectedOrnaments = []
     this.router.navigate([`/admin/repayment/full-release/${this.id}`])
-    // Array.prototype.push.apply(this.selectedOrnaments, this.loanDetails.customerLoan.loanOrnamentsDetail)
-    // this.ornamentSummary()
   }
 
   selectOrnament(event, index, item) {
@@ -88,9 +86,9 @@ export class PartReleaseComponent implements OnInit {
   }
 
   release() {
-    this.showReleaseSummary = true;
     if (this.areAllOrnamnentsSelected()) {
       this.fullRelease()
+      this.showReleaseSummary = true;
     } else {
       this.ornamentSummary()
     }
@@ -115,8 +113,10 @@ export class PartReleaseComponent implements OnInit {
     }
     this.jewelleryReleaseService.partReleaseOrnaments(params).pipe(map(res => {
       if (res) {
+        this.showReleaseSummary = true;
         this.totalSelectedOrnamentDetails = res
         this.scrollToBottom()
+        this.ref.detectChanges()
       }
     })).subscribe()
 
@@ -145,16 +145,6 @@ export class PartReleaseComponent implements OnInit {
 
 
     const ornamnentIds = this.selectedOrnaments.map(e => e.id)
-    // let payObject = {
-    //   ornamentId: ornamnentIds,
-    //   masterLoanId: Number(this.id),
-    //   // releaseAmount: this.totalSelectedOrnamentDetails.ornamentWeight.releaseAmount,
-    //   interestAmount: this.totalSelectedOrnamentDetails.loanInfo.interestAmount,
-    //   penalInterest: this.totalSelectedOrnamentDetails.loanInfo.penalInterest,
-    //   payableAmount: this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount,
-    // }
-    // Object.assign(payObject, this.paymentValue, this.totalSelectedOrnamentDetails.ornamentWeight)
-    // console.log(payObject)
     if (this.paymentValue.paymentType == 'gateway') {
       this.sharedService.paymentGateWayForFullAndPart(Number(this.id), ornamnentIds).subscribe(
         res => {
@@ -300,7 +290,7 @@ export class PartReleaseComponent implements OnInit {
   }
 
   show() {
-    if (new Date() > new Date(this.loanDetails.customerLoan.loanEndDate)) {
+    if (new Date() > new Date(this.loanDetails && this.loanDetails.customerLoan.loanEndDate)) {
       return false
     } else {
       return true

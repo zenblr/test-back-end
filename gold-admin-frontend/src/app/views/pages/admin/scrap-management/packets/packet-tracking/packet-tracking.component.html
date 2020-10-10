@@ -65,17 +65,17 @@
                 <ng-container matColumnDef="elapseTime">
                     <mat-header-cell *matHeaderCellDef>Elapsed Time</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngFor="let item of packet?.locationData; last as l">
-                            <span *ngIf="l">
-                                <ng-container *ngIf="item?.packetLocationId === 3 || item?.packetLocationId === 1">
+                        <ng-container *ngFor="let item of packet?.locationData; last as l">
+                            <ng-container *ngIf="l">
+                                <div style="width: 100%;" *ngIf="item?.packetLocationId === 1">
                                     <kt-elapsed-time [startTime]="item?.createdAt"></kt-elapsed-time>
-                                </ng-container>
-                                <ng-container *ngIf="item?.packetLocationId === 2 && !packet?.isScrapCompleted">
-                                    <kt-elapsed-time [startTime]="packet?.scrapDisbursement[0]?.createdAt">
+                                </div>
+                                <div style="width: 100%;" *ngIf="item?.packetLocationId === 2">
+                                    <kt-elapsed-time [startTime]="packet?.scrapDisbursement?.createdAt">
                                     </kt-elapsed-time>
-                                </ng-container>
-                            </span>
-                        </span>
+                                </div>
+                            </ng-container>
+                        </ng-container>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="status">

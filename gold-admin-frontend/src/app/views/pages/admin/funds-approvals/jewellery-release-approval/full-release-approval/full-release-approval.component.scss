@@ -24,4 +24,42 @@
     .mat-column-ornaments {
         flex: 0 0 4%;
     }
+    .mat-column-view {
+        display: flex;
+        justify-content: center;
+    }
+    .mat-column-loanAmount{
+        padding-right: 25px;
+        justify-content: flex-end;
+    }
+    .mat-column-principalAmount{
+        padding-right: 25px;
+        justify-content: flex-end;
+        flex: 0 0 6%;
+    }
+    .mat-column-totalPayableAmount{
+        padding-right: 25px;
+        justify-content: flex-end;
+        flex: 0 0 6%;
+    }
+    .mat-column-penalInterest{
+        padding-right: 25px;
+        justify-content: flex-end;
+    }
+    .mat-column-interestAmount{
+        padding-right: 25px;
+        justify-content: flex-end;
+    }
+    .mat-column-ornamentReleaseAmount{
+        padding-right: 25px;
+        justify-content: flex-end;
+    }
+    .mat-column-previousLTV{
+        padding-right: 25px;
+        justify-content: flex-end;
+    }
+    .mat-column-currentLTV{
+        padding-right: 25px;
+        justify-content: flex-end;
+    }
 }
