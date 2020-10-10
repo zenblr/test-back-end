@@ -1111,7 +1111,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
                             }
                         }
                         while (!checkUnsecuredUnique);
-                        
+
                         await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: loanDetail.unsecuredLoanId }, transaction: t });
                     }
                 }
@@ -1251,7 +1251,7 @@ exports.addPackageImagesForLoan = async (req, res, next) => {
 
             console.log(packetUpdateArray)
             for (let i = 0; i < packetUpdateArray.length; i++) {
-                var b = await models.packet.update({ customerId: packetUpdateArray[i].customerId, loanId: packetUpdateArray[i].loanId, masterLoanId: packetUpdateArray[i].masterLoanId, modifiedBy: packetUpdateArray[i].modifiedBy, packetAssigned: packetUpdateArray[i].packetAssigned }, { where: { id: packetUpdateArray[i].id }, transaction: t })
+                var b = await models.packet.update({ customerId: packetUpdateArray[i].customerId, loanId: packetUpdateArray[i].loanId, masterLoanId: packetUpdateArray[i].masterLoanId, modifiedBy: packetUpdateArray[i].modifiedBy, packetAssigned: packetUpdateArray[i].packetAssigned, isActive: true }, { where: { id: packetUpdateArray[i].id }, transaction: t })
             }
 
             // await models.packet.bulkCreate(packetUpdateArray, {
@@ -2340,9 +2340,9 @@ exports.getDetailsForPrint = async (req, res, next) => {
                     model: models.partner,
                     as: 'partner',
                     attributes: ['name']
-                },{
-                    model:models.customerLoanSlabRate,
-                    as:'slab'
+                }, {
+                    model: models.customerLoanSlabRate,
+                    as: 'slab'
                 }
 
             ]
