@@ -4,8 +4,8 @@
             <div class="table-div kt-padding-t-10 ">
                 <table class="table outer-border altered-row">
                     <thead>
-                        <th class="transparent ">Loan ID</th>
-                        <th class="transparent table-amount">Loan Amount</th>
+                        <th class="transparent th-padding-left">Loan ID</th>
+                        <th class="transparent table-amount th-padding-right" style="width: 12%;">Loan Amount</th>
                         <th class="transparent">Loan Date</th>
                         <th class="transparent">Scheme Name</th>
                         <th class="transparent">Tenure</th>
@@ -15,13 +15,13 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="">{{loanDetails?.customerLoan[0]?.loanUniqueId}}
+                            <td class="th-padding-left">{{loanDetails?.customerLoan[0]?.loanUniqueId}}
                                 <br>
                                 <span *ngIf="loanDetails?.customerLoan[1]">
                                     {{loanDetails?.customerLoan[1]?.loanUniqueId}}
                                 </span>
                             </td>
-                            <td class="table-amount">
+                            <td class="table-amount th-padding-right">
                                 <span>{{loanDetails?.customerLoan[0]?.loanAmount}}</span>
                                 <br>
                                 <span *ngIf="loanDetails?.customerLoan[1]">
