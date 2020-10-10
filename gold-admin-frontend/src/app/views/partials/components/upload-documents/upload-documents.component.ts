@@ -126,12 +126,16 @@ export class UploadDocumentsComponent implements OnInit {
         this.buttonValue = 'Next'
       }
       if (changes.scrapStage.currentValue.id == 9 || changes.scrapStage.currentValue.id == 10) {
-        this.documentsForm.disable()
+        setTimeout(() => {
+          this.documentsForm.disable();
+        });
       }
     }
     if (changes.scrapAcknowledgmentStage && changes.scrapAcknowledgmentStage.currentValue) {
       if (changes.scrapAcknowledgmentStage.currentValue.id == 9 || changes.scrapAcknowledgmentStage.currentValue.id == 10) {
-        this.documentsForm.disable()
+        setTimeout(() => {
+          this.documentsForm.disable();
+        });
       }
     }
     if (changes.loanDocumnets && changes.loanDocumnets.currentValue) {
@@ -478,7 +482,6 @@ export class UploadDocumentsComponent implements OnInit {
       this.loanService.getPdf(this.masterAndLoanIds.masterLoanId).subscribe()
     }
   }
-
 
   calculateAfterDeduction() {
     const controls = this.documentsForm as FormGroup;

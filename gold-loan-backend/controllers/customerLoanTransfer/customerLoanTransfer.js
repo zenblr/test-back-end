@@ -7,6 +7,7 @@ const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
 const loanTransferHistory = require('../../utils/customerLoanTransferHistory')
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
+var randomize = require('randomatic');
 
 
 exports.customerDetails = async (req, res, next) => {
@@ -202,7 +203,6 @@ exports.loanTransferBmRating = async (req, res, next) => {
                     }
                 }
                 while (!checkSecuredUnique);
-
                 await models.customerLoanTransfer.update({ loanTransferStatusForBM, modifiedBy, reasonByBM, loanTransferCurrentStage: '5', transferredLoanId: loanUniqueId }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { masterLoanId: masterLoanId }, transaction: t })
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.BM_RATING_APPROVED, createdBy, modifiedBy }, { transaction: t })

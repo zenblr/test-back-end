@@ -58,7 +58,7 @@ exports.submitAppKyc = async (req, res, next) => {
 
         await models.customer.update({ firstName, lastName, panCardNumber: panCardNumber, panType, panImage }, { where: { id: customerId }, transaction: t })
 
-        let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerKycCurrentStage: '4', customerId: getCustomerInfo.id, createdBy, modifiedBy }, { transaction: t })
+        let customerKycAdd = await models.customerKyc.create({ currentKycModuleId: 1, isAppliedForKyc: true, customerKycCurrentStage: '4', customerId: getCustomerInfo.id, createdBy, modifiedBy }, { transaction: t })
 
         let abcd = await models.customerKycPersonalDetail.create({
             customerId: getCustomerInfo.id,
@@ -214,7 +214,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
             [Op.or]: [{
                 "$customer.first_name$": { [Op.iLike]: search + '%' },
                 "$customer.last_name$": { [Op.iLike]: search + '%' },
-                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' }
+                // "$customer.customer_unique_id$": { [Op.iLike]: search + '%' }
             }],
         }],
         [Op.or]: [

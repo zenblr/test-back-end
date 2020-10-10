@@ -79,13 +79,13 @@
         <img *ngIf="packetImg.controls.emptyPacketWithNoOrnamentImage.value && !(url == 'view-loan' || url == 'view-scrap')"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
             (click)="webcam('emptyPacketWithNoOrnament','emptyPacketWithNoOrnamentImage')">
-        <label class="text-center w-100 font-weight-500 pacekts-label text-gray mandatory ">
-            {{scrapIds ? 'Empty Packet(s) with all refining ornaments' : 'Empty Packet(s) with all ornaments'}}</label>
         <div>
             <mat-error
                 *ngIf="packetImg.controls.emptyPacketWithNoOrnament.touched && packetImg.controls.emptyPacketWithNoOrnament.invalid">
                 Field Required</mat-error>
         </div>
+        <label class="text-center w-100 font-weight-500 pacekts-label text-gray mandatory ">
+            {{scrapIds ? 'Empty Packet(s) with all refining ornaments' : 'Empty Packet(s) with all ornaments'}}</label>
         <input type="file" class="d-none" #emptyPacketWithNoOrnament
             (change)="uploadFile(idx,'emptyPacketWithNoOrnament',$event)">
     </div>
@@ -100,13 +100,13 @@
         <img *ngIf="packetImg.controls.sealingPacketWithWeightImage.value && !(url == 'view-loan' || url == 'view-scrap')"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
             (click)="webcam('sealingPacketWithWeight','sealingPacketWithWeightImage')">
-        <label class="text-center w-100 font-weight-500 pacekts-label text-gray mandatory "> Sealed Packet(s) with
-            weight</label>
         <div>
             <mat-error
                 *ngIf="packetImg.controls.sealingPacketWithWeight.touched && packetImg.controls.sealingPacketWithWeight.invalid">
                 Field Required</mat-error>
         </div>
+        <label class="text-center w-100 font-weight-500 pacekts-label text-gray mandatory "> Sealed Packet(s) with
+            weight</label>
         <input type="file" class="d-none" #sealingPacketWithWeight
             (change)="uploadFile(idx,'sealingPacketWithWeight',$event)">
     </div>
@@ -121,13 +121,13 @@
         <img *ngIf="packetImg.controls.sealingPacketWithCustomerImage.value && !(url == 'view-loan' || url == 'view-scrap')"
             src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
             (click)="webcam('sealingPacketWithCustomer','sealingPacketWithCustomerImage')">
-        <label class="text-center w-100 font-weight-500 pacekts-label text-gray mandatory "> Sealed packet(s) with
-            customer</label>
         <div>
             <mat-error
                 *ngIf="packetImg.controls.sealingPacketWithCustomer.touched && packetImg.controls.sealingPacketWithCustomer.invalid">
                 Field Required</mat-error>
         </div>
+        <label class="text-center w-100 font-weight-500 pacekts-label text-gray mandatory "> Sealed packet(s) with
+            customer</label>
         <input type="file" class="d-none" #sealingPacketWithCustomer
             (change)="uploadFile(idx,'sealingPacketWithCustomer',$event)">
 

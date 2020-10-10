@@ -301,6 +301,7 @@
                                         <div class="col-7">
                                             <input formControlName="addressProofNumber" type="text"
                                                 placeholder="Unique Identity Number" class="form-control"
+                                                maxlength="{{controls.moduleId.value == 3 ? 12 : null}}"
                                                 [class.isError]="addressForm.controls.addressProofNumber.touched && addressForm.controls.addressProofNumber.invalid">
                                             <mat-error
                                                 *ngIf="addressForm.controls.addressProofNumber.errors?.required && addressForm.controls.addressProofNumber.touched">
