@@ -37,10 +37,10 @@
                                 </span>
                             </td>
                             <td class="">{{loanDetails?.tenure}} Months</td>
-                            <td class="">{{loanDetails?.secureHighestSlabRate?.interestRate }}%
+                            <td class="">{{loanDetails?.secureHighestSlabRate?.currentInterestRate }}%
                                 <br>
                                 <span *ngIf="loanDetails?.customerLoan[1]">
-                                    {{loanDetails?.unsecureHighestSlabRate?.interestRate }}%
+                                    {{loanDetails?.unsecureHighestSlabRate?.currentInterestRate }}%
                                 </span></td>
                             <td *ngIf="loanDetails?.nextDueDate else blankTableValue">
                                 {{loanDetails?.nextDueDate | date : 'mediumDate'}}</td>
@@ -144,7 +144,7 @@
                     </kt-button>
                     <span class="kt-padding-5"></span>
                     <kt-button [value]="'Cancel'" [type]="'reset'"
-                        (click)="paymentDetails = '';payableAmt.enable(); payableAmt.reset();">
+                        (click)="paymentDetails = '';payableAmt.enable();payableAmt.patchValue(sum);">
                     </kt-button>
                     <!-- <kt-button [value]="'View Part Payment EMI'" [type]="'button'"></kt-button> -->
 
