@@ -1116,6 +1116,15 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
                     {
                         model: models.scheme,
                         as: 'scheme'
+                    },
+                    {
+                        model: models.customerLoan,
+                        as: 'unsecuredLoan',
+                        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                        include: [{
+                            model: models.scheme,
+                            as: 'scheme',
+                        }]
                     }
                 ]
             },

@@ -7,8 +7,8 @@ import { map } from 'lodash';
 import { DataTableService } from '../../../../../core/shared/services/data-table.service';
 import { Role } from '../../../../../core/auth';
 import { LayoutUtilsService, MessageType } from '../../../../../core/_base/crud';
-import { CronListService} from '../../../../../core/cron-list/services/cron-list.service'
-import { CronListDatasource} from '../../../../../core/cron-list/datasources/cron-list.datasource'
+import { CronListService } from '../../../../../core/cron-list/services/cron-list.service'
+import { CronListDatasource } from '../../../../../core/cron-list/datasources/cron-list.datasource'
 import { takeUntil, tap, skip, distinctUntilChanged } from 'rxjs/operators';
 // import { AddKaratDetailsComponent } from '../add-karat-details/add-karat-details.component';
 import { NgxPermissionsService } from 'ngx-permissions';
@@ -19,7 +19,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 })
 export class CronListComponent implements OnInit {
   dataSource;
-  displayedColumns = ['cronType', 'date','startTime','endTime','processingTime','status','message','notes'];
+  displayedColumns = ['cronType', 'date', 'startTime', 'endTime', 'processingTime', 'status', 'message', 'notes', 'actions'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -33,8 +33,8 @@ export class CronListComponent implements OnInit {
     search: '',
     status: '',
     product: '',
-    cronType:'',
-    date:''
+    cronType: '',
+    date: ''
   }
   filteredDataList: any = {};
 
@@ -47,12 +47,12 @@ export class CronListComponent implements OnInit {
 
   ) {
     this.cronListService.applyFilter$
-    .pipe(takeUntil(this.filter$))
-    .subscribe((res) => {
-      if (Object.entries(res).length) {
-        this.applyFilter(res);
-      }
-    });
+      .pipe(takeUntil(this.filter$))
+      .subscribe((res) => {
+        if (Object.entries(res).length) {
+          this.applyFilter(res);
+        }
+      });
   }
 
   ngOnInit() {
@@ -77,7 +77,7 @@ export class CronListComponent implements OnInit {
       this.result = res;
     });
     this.subscriptions.push(entitiesSubscription);
-    this.dataSource.getCronList(this.searchValue,1,25)
+    this.dataSource.getCronList(this.searchValue, 1, 25)
 
     // this.dataSource.getpacketsTrackingDetails(1, 25, this.searchValue);
   }
@@ -111,6 +111,64 @@ export class CronListComponent implements OnInit {
     this.filteredDataList = data.list;
   }
 
+
+  reExecute(data) {
+
+    switch (data.cronType) {
+
+      case 'loan Penal Interest':
+        this.cronListService.penalCron(data.id).subscribe(res=>{
+          this.dataSource.getCronList(this.queryParamsData);
+        })
+        break;
+
+      case 'loan Interest':
+        this.cronListService.interestCron(data.id).subscribe(res=>{
+          this.dataSource.getCronList(this.queryParamsData);
+        })
+        break;
+
+      case 'cancel order data transfer':
+        this.cronListService.cancelOrderDataTransfer(data.id).subscribe(res=>{
+          this.dataSource.getCronList(this.queryParamsData);
+        })
+        break;
+
+      case 'deposit data transfer':
+        this.cronListService.depositDataTransfer(data.id).subscribe(res=>{
+          this.dataSource.getCronList(this.queryParamsData);
+        })
+        break;
+
+      case 'user data transfer':
+        this.cronListService.userDataTransfer(data.id).subscribe(res=>{
+          this.dataSource.getCronList(this.queryParamsData);
+        })
+        break;
+
+      case 'order data transfer':
+        this.cronListService.orderDataTransfer(data.id).subscribe(res=>{
+          this.dataSource.getCronList(this.queryParamsData);
+        })
+        break;
+
+      case 'order status to defaulter':
+        this.cronListService.orderStatusToDefaulter(data.id).subscribe(res=>{
+          this.dataSource.getCronList(this.queryParamsData);
+        })
+        break;
+
+      case 'emi reminder':
+        this.cronListService.emiReminder(data.id).subscribe(res=>{
+          this.dataSource.getCronList(this.queryParamsData);
+        })
+        break;
+
+      default:
+        break;
+    }
+
+  }
   // addLocation() {
   //   const dialogRef = this.dialog.open(AddPacketLocationComponent, {
   //     data: { action: 'add' },

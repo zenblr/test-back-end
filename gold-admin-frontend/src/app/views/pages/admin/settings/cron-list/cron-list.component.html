@@ -45,6 +45,12 @@
                     <mat-header-cell *matHeaderCellDef>Notes</mat-header-cell>
                     <mat-cell *matCellDef="let data">{{data?.notes | titlecase}}</mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let data">
+                        <button class="apply-kyc" *ngIf="data?.status == 'failed'" (click)="reExecute(data)">Re-execute</button>
+                    </mat-cell>
+                </ng-container>
                 <!-- <ng-container matColumnDef="toPercentage">
                     <mat-header-cell *matHeaderCellDef> To Percentage %</mat-header-cell>
                     <mat-cell *matCellDef="let data">{{data.toPercentage}}</mat-cell>
