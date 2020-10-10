@@ -3,29 +3,30 @@
         <div class="main" id="container">
             <div class="row kt-padding-t-5 kt-margin-b-5">
                 <div class="col font-weight-500">Customer ID</div>
-                <div class="col font-weight-500">Loan ID</div>
-                <div class="col font-weight-500 text-right">Loan Amount</div>
+                <div class="col font-weight-500 th-padding-left">Loan ID</div>
+                <div class="col font-weight-500 text-right padding-right">Loan Amount</div>
                 <div class="col font-weight-500">Loan Start Date</div>
                 <div class="col font-weight-500">Loan End Date</div>
                 <div class="col font-weight-500">Tenure</div>
-                <div class="col font-weight-500">Last Payment Date</div>
-                <div class="col-2 font-weight-500 text-right" [class.padding-left]="fullReleaseScreen">Principal
+                <div class="col font-weight-500 th-padding-left">Last Payment Date</div>
+                <div class="col-2 font-weight-500 text-right th-padding-right">Principal
                     Outstanding
                 </div>
-                <div class="col font-weight-500 " *ngIf="!fullReleaseScreen">
-                    <kt-button [value]="'Full Release'" [type]="'button'" (click)="fullRelease()"></kt-button>
+                <div class="col font-weight-500 mx-auto d-flex justify-content-center" *ngIf="!fullReleaseScreen">
+                    <kt-button [value]="'Full Release'" [type]="'button'" (click)="fullRelease()"
+                        style="padding-right: 15% !important;"></kt-button>
                 </div>
             </div>
 
             <div class="row kt-padding-t0" *ngIf="loanDetails">
                 <div class="col">
                     {{loanDetails.customerLoan.loanPersonalDetail.customerUniqueId}}</div>
-                <div class="col">
+                <div class="col th-padding-left">
                     <div *ngFor="let loan of loanDetails.customerLoan.customerLoan">
                         {{loan.loanUniqueId}}
                     </div>
                 </div>
-                <div class="col">
+                <div class="col padding-right">
                     <div class="text-right" *ngFor="let loan of loanDetails.customerLoan.customerLoan">
                         {{loan.loanAmount}}
                     </div>
@@ -34,11 +35,11 @@
                 </div>
                 <div class="col"> {{loanDetails.customerLoan.loanEndDate | date: 'mediumDate'}}</div>
                 <div class="col">{{loanDetails.customerLoan.tenure}} Months</div>
-                <div class="col">
+                <div class="col th-padding-left">
                     <span
                         *ngIf="loanDetails.lastPayment else blank">{{loanDetails.lastPayment | date: 'mediumDate'}}</span>
                 </div>
-                <div class="col-2 text-right" [class.padding-left]="fullReleaseScreen">
+                <div class="col-2 text-right th-padding-right">
                     <div *ngFor="let loan of loanDetails.customerLoan.customerLoan">
                         {{loan.outstandingAmount}}
                     </div>

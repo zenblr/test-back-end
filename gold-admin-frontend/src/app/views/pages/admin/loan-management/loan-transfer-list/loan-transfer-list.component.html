@@ -18,10 +18,12 @@
                     <mat-cell *matCellDef="let loan"> {{loan?.customer?.firstName | titlecase}}
                         {{loan?.customer?.lastName | titlecase}}</mat-cell>
                 </ng-container>
-                
+
 
                 <ng-container matColumnDef="amount">
-                    <mat-header-cell *matHeaderCellDef>Outstanding Loan Amount</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>
+                        <div class="text-right">Outstanding Loan Amount</div>
+                    </mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan?.loanTransfer?.disbursedLoanAmount}}</mat-cell>
                 </ng-container>
 
@@ -33,9 +35,12 @@
                 <ng-container matColumnDef="applyLoan">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <button class="apply-kyc"
-                            *ngIf="!loan?.isLoanSubmitted && loan?.loanTransfer?.loanTransferCurrentStage == '6' && permission.loanApplicationAdd && !loan.loanStatusForAppraiser"
-                            (click)="applyLoan(loan)">Apply Loan</button></mat-cell>
+                        <div class="padding-left">
+                            <button class="apply-kyc "
+                                *ngIf="!loan?.isLoanSubmitted && loan?.loanTransfer?.loanTransferCurrentStage == '6' && permission.loanApplicationAdd && !loan.loanStatusForAppraiser"
+                                (click)="applyLoan(loan)">Apply Loan</button>
+                        </div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="appraiserStatus">

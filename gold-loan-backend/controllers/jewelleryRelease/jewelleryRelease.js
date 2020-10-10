@@ -651,7 +651,7 @@ exports.getPartReleaseList = async (req, res, next) => {
             {
                 model: models.customerLoan,
                 as: 'customerLoan',
-                attributes: ['masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId']
+                attributes: ['id', 'masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId', 'outstandingAmount']
             },
             {
                 model: models.customerLoanPersonalDetail,
@@ -696,7 +696,10 @@ exports.getPartReleaseList = async (req, res, next) => {
     let partRelease = await models.partRelease.findAll({
         where: searchQuery,
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
-        order: [["updatedAt", "DESC"]],
+        order: [
+            ["updatedAt", "DESC"],
+            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoan, as: 'customerLoan' }, 'id', 'asc']
+        ],
         offset: offset,
         limit: pageSize,
         subQuery: false,
@@ -941,7 +944,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
                 {
                     model: models.customerLoan,
                     as: 'customerLoan',
-                    attributes: ['masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId', 'outstandingAmount']
+                    attributes: ['id', 'masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId', 'outstandingAmount']
                 },
                 {
                     model: models.customerLoanPersonalDetail,
@@ -1012,6 +1015,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         order: [
             ["updatedAt", "DESC"],
+            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoan, as: 'customerLoan' }, 'id', 'asc']
             // [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'desc'],
             // [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'asc'],
         ],
@@ -1207,17 +1211,17 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
         let appraiserRequestId = customerLoanStage.appraiserRequestId
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanStage.id, loanType: 'secured' } })
         if (customerCurrentStage == '1') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount,appraiserRequestId,customerData })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
         } else if (customerCurrentStage == '2') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount,appraiserRequestId,customerData })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
         } else if (customerCurrentStage == '3') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount,appraiserRequestId,customerData })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
         } else if (customerCurrentStage == '4') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt, partReleaseId, newLoanAmount,appraiserRequestId,customerData })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
         } else if (customerCurrentStage == '5') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount, firstName, lastName, partReleaseId, newLoanAmount,appraiserRequestId,customerData })
+            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount, firstName, lastName, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
         } else if (customerCurrentStage == '6') {
-            return res.status(200).json({ message: 'success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount,appraiserRequestId,customerData })
+            return res.status(200).json({ message: 'success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
         }
     }
     if (!customerData) {
@@ -1626,7 +1630,7 @@ exports.getFullReleaseList = async (req, res, next) => {
             {
                 model: models.customerLoan,
                 as: 'customerLoan',
-                attributes: ['masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId']
+                attributes: ['id', 'masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId', 'outstandingAmount']
             },
             {
                 model: models.customerLoanPersonalDetail,
@@ -1675,7 +1679,10 @@ exports.getFullReleaseList = async (req, res, next) => {
     let fullRelease = await models.fullRelease.findAll({
         where: searchQuery,
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
-        order: [["updatedAt", "DESC"]],
+        order: [
+            ["updatedAt", "DESC"],
+            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoan, as: 'customerLoan' }, 'id', 'asc']
+        ],
         offset: offset,
         limit: pageSize,
         subQuery: false,
@@ -1927,7 +1934,7 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
             {
                 model: models.customerLoan,
                 as: 'customerLoan',
-                attributes: ['masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId', 'outstandingAmount']
+                attributes: ['id', 'masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId', 'outstandingAmount']
             },
             {
                 model: models.customerLoanPersonalDetail,
@@ -1992,7 +1999,8 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
         where: searchQuery,
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         order: [
-            ["updatedAt", "DESC"]
+            ["updatedAt", "DESC"],
+            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoan, as: 'customerLoan' }, 'id', 'asc']
         ],
         offset: offset,
         limit: pageSize,

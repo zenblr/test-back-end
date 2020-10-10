@@ -34,7 +34,8 @@ export class CronListComponent implements OnInit {
     status: '',
     product: '',
     cronType: '',
-    date: ''
+    startDate:'',
+    endDate: ''
   }
   filteredDataList: any = {};
 
@@ -106,7 +107,8 @@ export class CronListComponent implements OnInit {
     this.queryParamsData.status = data.data.cronStatus;
     this.queryParamsData.product = data.data.product;
     this.queryParamsData.cronType = data.data.cronType;
-    this.queryParamsData.date = data.data.date;
+    this.queryParamsData.endDate = data.data.endDate;
+    this.queryParamsData.startDate = data.data.startDate;
     this.dataSource.getCronList(this.queryParamsData);
     this.filteredDataList = data.list;
   }
