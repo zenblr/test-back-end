@@ -72,7 +72,8 @@ export class UpdateLocationComponent implements OnInit {
     })
 
     if (this.data.isPartnerOut) {
-      this.controls.partnerBranchId.patchValue(this.data.partnerBranchId)
+      if (this.data.partnerBranchId) this.controls.partnerBranchId.patchValue(this.data.partnerBranchId)
+      if (this.data.internalBranchId) this.controls.internalBranchId.patchValue(this.data.internalBranchId)
     }
 
     if (!this.data.deliver) {
@@ -238,6 +239,7 @@ export class UpdateLocationComponent implements OnInit {
     } else if (this.data.isPartnerOut) {
       this.enablePacketLocationId()
       this.enableUserType()
+      // return console.log(this.locationForm.value)
       this.updateLocationService.collectPacket(this.locationForm.value)
         .pipe(
           map(res => {

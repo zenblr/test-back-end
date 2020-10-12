@@ -1,7 +1,7 @@
 :host{
     ::ng-deep.mat-row,
     ::ng-deep.mat-header-row{
-        width: 275% !important;
+        width: 285% !important;
     }
 
     .mat-column-principalOutstandingAmountLTV{
@@ -49,12 +49,12 @@
         align-items: flex-end;
         padding-right: 25px;
         justify-content: flex-end;
-        flex: 0 0 6%;
+        flex: 0 0 5%;
     }
     .mat-column-totalPayableAmount{
         padding-right: 25px;
         justify-content: flex-end;
-        flex: 0 0 6%;
+        flex: 0 0 5%;
     }
     .mat-column-penalInterest{
         padding-right: 25px;
@@ -64,6 +64,7 @@
     .mat-column-interestAmount{
         padding-right: 25px;
         justify-content: flex-end;
+        flex: 0 0 5%;
     }
     .mat-column-ornamentReleaseAmount{
         padding-right: 25px;
@@ -86,5 +87,14 @@
     }
     .mat-column-totalGrossWeight {
         flex: 0 0 5%;
+    }
+    .mat-column-customerName {
+        flex: 0 0 5%;
+    }
+    .mat-column-parnterName {
+        flex: 0 0 4%;
+    }
+    .mat-column-partnerBranch {
+        flex: 0 0 4%;
     }
 }

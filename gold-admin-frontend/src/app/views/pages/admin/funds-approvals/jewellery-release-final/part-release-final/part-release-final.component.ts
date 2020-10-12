@@ -24,7 +24,7 @@ import { FullReleaseFinalService } from '../../../../../../core/funds-approvals/
 export class PartReleaseFinalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerName', 'customerId', 'loanId', 'appointmentDate', 'appointmentTime', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPaidAmount', 'status', 'ornaments','parnterName','partnerBranch', 'currentLocation', 'view', 'updateStatus',];
+  displayedColumns = ['customerName', 'customerId', 'loanId', 'appointmentDate', 'appointmentTime', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPaidAmount', 'status', 'ornaments', 'parnterName', 'partnerBranch', 'currentLocation', 'view', 'updateStatus',];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -150,15 +150,25 @@ export class PartReleaseFinalComponent implements OnInit {
     }
   }
 
-  collect(masterLoanId, packet, data) {
+  collect(masterLoanId, packet, data, packetLocationId) {
     let partnerBranchId = data.customerPacketTracking[data.customerPacketTracking.length - 1].partnerBranchId
-    let dialogRef = this.dialog.open(UpdateLocationComponent, {
-      data: {
+    let internalBranchId = data.customerPacketTracking[data.customerPacketTracking.length - 1].internalBranchId
+
+    const dataObject = packetLocationId == 4 ?
+      {
         isPartnerOut: true,
         masterLoanId: masterLoanId,
         packetData: packet,
         partnerBranchId: partnerBranchId
-      },
+      } :
+      {
+        isPartnerOut: true,
+        masterLoanId: masterLoanId,
+        packetData: packet,
+        internalBranchId: internalBranchId
+      }
+    let dialogRef = this.dialog.open(UpdateLocationComponent, {
+      data: dataObject,
       width: "450px",
     })
     dialogRef.afterClosed().subscribe(res => {
