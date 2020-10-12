@@ -1,7 +1,7 @@
 :host{
     ::ng-deep.mat-row,
     ::ng-deep.mat-header-row{
-        width: 275% !important;
+        width: 285% !important;
     }
 
     .mat-column-principalOutstandingAmountLTV{
@@ -87,5 +87,14 @@
     }
     .mat-column-totalGrossWeight {
         flex: 0 0 5%;
+    }
+    .mat-column-customerName {
+        flex: 0 0 5%;
+    }
+    .mat-column-parnterName {
+        flex: 0 0 4%;
+    }
+    .mat-column-partnerBranch {
+        flex: 0 0 4%;
     }
 }
