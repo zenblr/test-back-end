@@ -1280,7 +1280,7 @@ exports.printPurchaseVoucher = async (req, res) => {
         let customerSatte;
         for (let address of customerScrap.customer.customerKycAddress) {
             if (address.addressType == "permanent") {
-                customerAddress = `${address.address}, ${address.city.name}, ${address.state.name},  `;
+                customerAddress = `${address.address}, ${address.city.name}, ${address.state.name}, ${address.pinCode} `;
                 pincode = address.pinCode;
                 customerSatte = address.state.name;            
             }
