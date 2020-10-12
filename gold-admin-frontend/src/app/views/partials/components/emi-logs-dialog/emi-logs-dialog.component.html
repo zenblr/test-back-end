@@ -2,25 +2,25 @@
     <kt-modal-header [title]='"Interest EMI"' [noTitleCase]="true" (action)="action($event)"></kt-modal-header>
     <kt-portlet-body>
         <!-- <h5 class="kt-padding-t-25 kt-padding-l-20">Interest EMI</h5> -->
-        <div class="table-div kt-padding-20">
+        <div class="table-div kt-padding-t-10 kt-padding-b-20">
             <table class="table outer-border">
                 <thead>
                     <th class="transparent">EMI Due Date</th>
-                    <th class="transparent">Interest Amount</th>
-                    <th class="transparent">Interest Paid Amount</th>
-                    <th class="transparent">Penal Amount</th>
-                    <th class="transparent">Penal Paid Amount</th>
+                    <th class="transparent table-amount">Interest Amount</th>
+                    <th class="transparent table-amount">Interest Paid Amount</th>
+                    <th class="transparent table-amount">Penal Amount</th>
+                    <th class="transparent table-amount">Penal Paid Amount</th>
                     <th class="transparent">Payment Date</th>
-                    <th class="transparent">Pending Interest EMI</th>
+                    <th class="transparent table-amount">Pending Interest EMI</th>
                     <th class="transparent">Status</th>
                 </thead>
                 <tbody>
                     <tr *ngFor="let emi of emiDetails">
                         <td>{{emi?.emiDueDate | date :'mediumDate'}}</td>
-                        <td class="text-center">{{emi?.interestAmount}}</td>
-                        <td class="text-center">{{emi?.paidAmount}}</td>
-                        <td class="text-center">{{emi?.penalInterest}}</td>
-                        <td class="text-center">{{emi?.penalPaid}}</td>
+                        <td class="table-amount">{{emi?.interestAmount}}</td>
+                        <td class="table-amount">{{emi?.paidAmount}}</td>
+                        <td class="table-amount">{{emi?.penalInterest}}</td>
+                        <td class="table-amount">{{emi?.penalPaid}}</td>
                         <td class="text-center">
                             <span *ngIf="emi.emiReceivedDate;else noData">
                                 {{emi?.emiReceivedDate | date :'mediumDate'}}
@@ -29,7 +29,7 @@
                                 -
                             </ng-template>
                         </td>
-                        <td class="text-center">{{emi?.balanceAmount}}</td>
+                        <td class="table-amount">{{emi?.balanceAmount}}</td>
                         <td>{{emi?.emiStatus | titlecase}}</td>
                     </tr>
                     <tr *ngIf="emiDetails && !emiDetails.length">

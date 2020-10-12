@@ -180,9 +180,9 @@
                         <ng-container *ngIf="item.partReleaseStatus == 'pending'">
                             <ng-container>
                                 <button
-                                    *ngIf="item?.masterLoan?.locationData[0]?.packetLocation?.location == 'partner branch in'"
+                                    *ngIf="item?.masterLoan?.locationData[0]?.packetLocation?.location == 'partner branch in' || item?.masterLoan?.locationData[0]?.packetLocation?.id == 2"
                                     style="width: 130px;" class="apply-kyc"
-                                    (click)="collect(item?.masterLoanId,item.masterLoan.packet,item.masterLoan)">Collect</button>
+                                    (click)="collect(item?.masterLoanId,item.masterLoan.packet,item.masterLoan, item?.masterLoan?.locationData[0]?.packetLocationId)">Collect</button>
                             </ng-container>
                             <ng-container>
                                 <button

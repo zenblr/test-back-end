@@ -1,6 +1,9 @@
 :host {
+    ::ng-deep .kt-portlet {
+        margin-bottom: 10px !important;
+    }
     .kt-portlet__body {
-        padding: 10px 15px !important;
+        // padding: 10px 15px !important;
     }
     .filtered-data {
         padding-right: 1rem;
