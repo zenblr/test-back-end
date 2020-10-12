@@ -186,7 +186,7 @@
                             </ng-container>
                             <ng-container>
                                 <button
-                                    *ngIf="item?.masterLoan?.locationData[0]?.packetLocation?.location == 'partner branch out'"
+                                    *ngIf="item?.masterLoan?.locationData[0]?.packetLocation?.location == 'partner branch out' || item?.masterLoan?.locationData[0]?.packetLocation?.id == 3"
                                     style="width: 130px;" class="apply-kyc"
                                     (click)="homeIn(item?.masterLoanId,item.masterLoan.packet,item.id)">Customer Home
                                     In</button>
