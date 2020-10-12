@@ -374,6 +374,11 @@ mat-header-row {
 	max-height: 74vh;
 }
 
+.mat-table__wrapper.filter {
+	min-height: 60vh !important; //set table height
+	max-height: 64vh;
+}
+
 .mat-table__wrapper.custom{
 	min-height: 50vh !important; //set table height
 	max-height: 50vh !important;
@@ -783,4 +788,7 @@ mat-header-row {
 
 .mat-tooltip {
 	font-size: 12px !important;
+}
+.table-amount {
+	text-align: right;
 }

@@ -6,15 +6,15 @@
             <table class="table outer-border">
                 <thead>
                     <th class="transparent">Transaction ID</th>
-                    <th class="transparent">Paid Amount</th>
+                    <th class="transparent table-amount">Paid Amount</th>
                     <th class="transparent">Payment Date</th>
                     <th class="transparent">Status</th>
                 </thead>
                 <tbody>
                     <tr *ngFor="let quick of details">
-                        <td >{{quick?.transactionUniqueId | uppercase}}</td>
-                        <td >{{quick?.transactionAmont}}</td>
-                        <td >
+                        <td>{{quick?.transactionUniqueId | uppercase}}</td>
+                        <td class="table-amount">{{quick?.transactionAmont}}</td>
+                        <td>
                             <span *ngIf="quick.paymentReceivedDate;else noData">
                                 {{quick?.paymentReceivedDate | date:'mediumDate'}}
                             </span>
@@ -27,7 +27,7 @@
                                 {{quick?.depositStatus | titlecase}}
                             </span>
                             <span *ngIf="quick?.depositStatus == 'Pending'" class="text-warning">
-                               Waiting For Approval 
+                                Waiting For Approval
                             </span>
                             <span *ngIf="quick?.depositStatus == 'Rejected'" class="text-danger">
                                 {{quick?.depositStatus | titlecase}}

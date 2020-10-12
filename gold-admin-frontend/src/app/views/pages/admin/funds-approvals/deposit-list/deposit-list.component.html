@@ -59,12 +59,12 @@
 
                 <ng-container matColumnDef="depositBankName">
                     <mat-header-cell *matHeaderCellDef>Deposit Bank Name</mat-header-cell>
-                    <mat-cell *matCellDef="let deposit">{{deposit.bankName | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.bankName}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="depositBranchName">
                     <mat-header-cell *matHeaderCellDef>Deposit Branch Name</mat-header-cell>
-                    <mat-cell *matCellDef="let deposit">{{deposit.branchName| titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.branchName}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="depositAmount">
