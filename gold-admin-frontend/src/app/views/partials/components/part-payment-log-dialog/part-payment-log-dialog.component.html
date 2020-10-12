@@ -2,15 +2,15 @@
     <kt-modal-header [title]='"Part Payment Logs"' (action)="action($event)"></kt-modal-header>
     <kt-portlet-body>
         <!-- <h5 class="kt-padding-t-25 kt-padding-l-20">Interest EMI</h5> -->
-        <div class="table-div kt-padding-20">
+        <div class="table-div kt-padding-t-15">
             <table class="table outer-border">
                 <thead>
                     <th class="transparent">Transaction ID</th>
-                    <th class="transparent">Loan Id</th>
-                    <th class="transparent">Loan Amount</th>
+                    <th class="transparent">Loan ID</th>
+                    <th class="transparent table-amount">Loan Amount</th>
                     <th class="transparent">Payment Date</th>
-                    <th class="transparent">Paid Part Amount</th>
-                    <th class="transparent">Principal Outstanding</th>
+                    <th class="transparent table-amount">Paid Part Amount</th>
+                    <th class="transparent table-amount">Principal Outstanding</th>
                     <th class="transparent">Status</th>
                 </thead>
                 <tbody>
@@ -23,7 +23,7 @@
                                 {{loanDetail.transactionSplitUp[1].customerLoan?.loanUniqueId}}
                             </span>
                         </td>
-                        <td>
+                        <td class="table-amount">
                             <span class="currency">
                                 {{loanDetail.transactionSplitUp[0].customerLoan?.loanAmount | indianCurrencyFormat}}
                             </span>
@@ -35,7 +35,7 @@
 
                         <td>{{loanDetail.depositDate | date :'mediumDate'}}</td>
 
-                        <td>
+                        <td class="table-amount">
                             <span
                                 class="currency">{{loanDetail.transactionSplitUp[0].payableOutstanding | indianCurrencyFormat}}</span>
                             <br>
@@ -43,7 +43,7 @@
                                 {{loanDetail.transactionSplitUp[1].payableOutstanding | indianCurrencyFormat}}
                             </span>
                         </td>
-                        <td>
+                        <td class="table-amount">
                             <span
                                 class="currency">{{loanDetail.transactionSplitUp[0].loanOutstanding | indianCurrencyFormat}}</span>
                             <br>
@@ -56,7 +56,7 @@
                                 {{loanDetail?.depositStatus | titlecase}}
                             </span>
                             <span *ngIf="loanDetail?.depositStatus == 'Pending'" class="text-warning">
-                               Waiting For Approval 
+                                Waiting For Approval
                             </span>
                             <span *ngIf="loanDetail?.depositStatus == 'Rejected'" class="text-danger">
                                 {{loanDetail?.depositStatus | titlecase}}

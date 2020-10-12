@@ -4,7 +4,8 @@
 
     <kt-portlet-body>
 
-        <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'auto'}">
+        <div class="mat-table__wrapper" [class.filter]="(filteredDataList | json) !== '{}'"
+            [ngStyle]="{'overflow-x':'auto'}">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="fullName">
