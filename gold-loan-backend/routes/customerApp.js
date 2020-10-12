@@ -8,12 +8,12 @@ const customerCheckAuth = require('../middleware/customerCheckAuth');
 const jewelleryRelease = require('./jewelleryReleaseMobileApp');  //upload Packets List '
 const partPayment = require('./partPaymentCustomerApp');  //upload Packets List 
 const quickPay = require('./quickPayCustomerApp');  //upload Packets List 
-
+const contactUsEmail = require('./contactUs')
 
 const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetailsOfCustomer, readBankDetailsOfCustomer, readNomineeDetailsOfCustomer, readAddressDetailsOfCustomer,
     readPanCardImageOfCustomer, readAddressImageOfCustomer, readPartnerBranch, readAllScheme, readMyLoan
     , schemeBasedOnPriceRange, readLoanDetails,
-    readFeedBack, addFeedBack,updatePassword } = require('../controllers/customer/customerApp')
+    readFeedBack, addFeedBack, updatePassword } = require('../controllers/customer/customerApp')
 
 
 //customer App
@@ -61,6 +61,7 @@ router.use('/part-payment', partPayment)
 
 router.use('/quick-pay', quickPay)
 
+router.use('/contact-us', contactUsEmail)
 
 
 module.exports = router;

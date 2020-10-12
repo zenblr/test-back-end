@@ -35,20 +35,20 @@
                 <label class="kt-padding-l-10">Declaration Copy</label>
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
-                <label class="kt-padding-l-10">Processing Charges</label>
+                <label class="kt-padding-l-10 mandatory">Processing Charges</label>
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
-                <label class="kt-padding-l-10">Standard Deduction %</label>
+                <label class="kt-padding-l-10 mandatory">Standard Deduction(%)</label>
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
-                <label class="kt-padding-l-10">Customer confirmation Status</label>
+                <label class="kt-padding-l-10 mandatory">Customer confirmation Status</label>
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
-                <label class="kt-padding-l-10 kt-padding-r-25">Customer Confirmation(Melting)</label>
+                <label class="kt-padding-l-10 kt-padding-r-25 mandatory">Customer Confirmation(Melting)</label>
                 <kt-button *ngIf="isEdit" [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showScrapFlag">
-                <label class="kt-padding-l-10 kt-padding-r-25">Purchase Voucher</label>
+                <label class="kt-padding-l-10 kt-padding-r-25 mandatory">Purchase Voucher</label>
                 <kt-button *ngIf="isEdit" [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showScrapFlag">

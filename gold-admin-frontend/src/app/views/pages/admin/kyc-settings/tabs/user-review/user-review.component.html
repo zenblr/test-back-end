@@ -607,7 +607,10 @@
                                 <label [class.mandatory]="viewOnly" class="">Unique Identity No.</label>
                             </div>
                             <div class="col-7">
-                                <input formControlName="addressProofNumber" type="text"
+                                <input *ngIf="customerKycAddressOne.controls.addressProofTypeId.value == 2" formControlName="addressProofNumber" type="text"
+                                    placeholder="Unique Identity Number" class="form-control" maxlength="12" numbersOnly
+                                    [class.isError]="customerKycAddressOne.controls.addressProofNumber.touched && customerKycAddressOne.controls.addressProofNumber.invalid">
+                                <input *ngIf="customerKycAddressOne.controls.addressProofTypeId.value != 2" formControlName="addressProofNumber" type="text"
                                     placeholder="Unique Identity Number" class="form-control"
                                     [class.isError]="customerKycAddressOne.controls.addressProofNumber.touched && customerKycAddressOne.controls.addressProofNumber.invalid">
                                 <mat-error
@@ -828,7 +831,11 @@
                                     <label [class.mandatory]="viewOnly" class="">Unique Identity No.</label>
                                 </div>
                                 <div class="col-7">
-                                    <input formControlName="addressProofNumber" type="text"
+                                    <input *ngIf="customerKycAddressTwo.controls.addressProofTypeId.value == 2" formControlName="addressProofNumber" type="text"
+                                        placeholder="Unique Identity Number" class="form-control" maxlength="12"
+                                        numbersOnly
+                                        [class.isError]="customerKycAddressTwo.controls.addressProofNumber.touched && customerKycAddressTwo.controls.addressProofNumber.invalid">
+                                    <input *ngIf="customerKycAddressTwo.controls.addressProofTypeId.value != 2" formControlName="addressProofNumber" type="text"
                                         placeholder="Unique Identity Number" class="form-control"
                                         [class.isError]="customerKycAddressTwo.controls.addressProofNumber.touched && customerKycAddressTwo.controls.addressProofNumber.invalid">
                                     <mat-error

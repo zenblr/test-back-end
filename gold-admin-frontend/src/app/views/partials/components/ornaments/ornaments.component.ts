@@ -48,6 +48,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() customerConfirmationArr
   @Input() karatFlag
   @Input() isPartRelease
+  @Input() standardDeduct
+  @Output() standardDeductionChrgs: EventEmitter<any> = new EventEmitter();
   @Output() partPayment: EventEmitter<any> = new EventEmitter();
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
@@ -80,6 +82,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     customerConfirmationArr: { currentValue: [] },
   };
   firstView: boolean;
+  standardDeduction: any;
 
   constructor(
     public fb: FormBuilder,
@@ -181,7 +184,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if(changes.isPartRelease){
+    if (changes.isPartRelease) {
       console.log(changes.isPartRelease.currentValue)
 
     }
@@ -213,8 +216,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         for (let index = 0; index < array.length; index++) {
           const group = this.OrnamentsData.at(index) as FormGroup
           group.patchValue(array[index])
-          if(this.isPartRelease){
-            group.patchValue({currentLtvAmount:this.ltvGoldRate,currentGoldRate:this.goldRate})
+          if (this.isPartRelease) {
+            group.patchValue({ currentLtvAmount: this.ltvGoldRate, currentGoldRate: this.goldRate })
             this.calculateLtvAmount(index)
           }
           // this.calcGoldDeductionWeight(index)
@@ -261,6 +264,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.meltingOrnament = changes.meltingOrnament.currentValue;
       const matTabHeader = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
       matTabHeader.style.display = 'none';
+    }
+    if (changes.standardDeduct && changes.standardDeduct.currentValue) {
+      this.standardDeduction = changes.standardDeduct.currentValue
     }
     if (this.disable) {
       this.ornamentsForm.disable()
@@ -795,7 +801,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         return
       }
     }
-    if (this.meltingOrnament) { 
+    if (this.meltingOrnament) {
       const controls = this.OrnamentsData.at(0) as FormGroup;
       controls.controls.customerConfirmation.setValidators(Validators.required),
         controls.controls.customerConfirmation.updateValueAndValidity()
@@ -851,6 +857,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
             for (let index = 0; index < array.length; index++) {
               const controls = this.OrnamentsData.at(index) as FormGroup;
               controls.controls.id.patchValue(res.ornaments[index].id)
+            }
+            if (this.standardDeduction) {
+              this.standardDeductionChrgs.emit(this.standardDeduction)
             }
             let stage = res.scrapCurrentStage
             stage = Number(stage) - 1;
