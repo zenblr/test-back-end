@@ -24,7 +24,7 @@ import { UpdateLocationComponent } from '../../../../../partials/components/upda
 export class FullReleaseFinalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'appointmentDate', 'appointmentTime', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'principalOutstandingAmountLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'parnterName','partnerBranch','currentLocation', 'view', 'updateStatus'];
+  displayedColumns = ['customerName', 'customerId', 'loanId', 'appointmentDate', 'appointmentTime', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeight', 'previousLTV', 'currentLTV', 'principalOutstandingAmountLTV', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'parnterName', 'partnerBranch', 'currentLocation', 'view', 'updateStatus'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -107,16 +107,6 @@ export class FullReleaseFinalComponent implements OnInit {
   }
 
   view(value) {
-    // this.dialog.open(ImagePreviewDialogComponent, {
-    //   data: {
-    //     images: [value],
-    //     index: 0,
-    //     modal: false
-    //   },
-    //   width: "75%",
-    //   height: "75%"
-    // })
-
     var ext = value.split('.')
     if (ext[ext.length - 1] == 'pdf') {
 
@@ -136,23 +126,31 @@ export class FullReleaseFinalComponent implements OnInit {
           index: 0,
           modal: false
         },
-        // maxWidth: "75%",
         width: "auto",
-        // maxHeight: '85%',
-        // height: "75%",
       })
     }
   }
 
-  collect(masterLoanId, packet, data) {
+  collect(masterLoanId, packet, data, packetLocationId) {
     let partnerBranchId = data.customerPacketTracking[data.customerPacketTracking.length - 1].partnerBranchId
-    let dialogRef= this.dialog.open(UpdateLocationComponent, {
-      data: {
+    let internalBranchId = data.customerPacketTracking[data.customerPacketTracking.length - 1].internalBranchId
+
+    const dataObject = packetLocationId == 4 ?
+      {
         isPartnerOut: true,
         masterLoanId: masterLoanId,
         packetData: packet,
         partnerBranchId: partnerBranchId
-      },
+      } :
+      {
+        isPartnerOut: true,
+        masterLoanId: masterLoanId,
+        packetData: packet,
+        internalBranchId: internalBranchId
+      }
+
+    let dialogRef = this.dialog.open(UpdateLocationComponent, {
+      data: dataObject,
       width: "450px",
     })
     dialogRef.afterClosed().subscribe(res => {
@@ -162,7 +160,7 @@ export class FullReleaseFinalComponent implements OnInit {
     });
   }
 
-  homeIn(masterLoanId, packet,id) {
+  homeIn(masterLoanId, packet, id) {
 
     this.fullReleaseFinalService.getCutsomerDetails(masterLoanId).subscribe(res => {
       if (res.data) {
@@ -172,7 +170,7 @@ export class FullReleaseFinalComponent implements OnInit {
             response: res.data,
             masterLoanId: masterLoanId,
             packetData: packet,
-            releaseId:id
+            releaseId: id
           },
           width: "450px",
         })

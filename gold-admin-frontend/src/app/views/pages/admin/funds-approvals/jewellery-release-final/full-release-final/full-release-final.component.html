@@ -43,6 +43,12 @@
                     <mat-cell *matCellDef="let item">{{item.masterLoan.customer.customerUniqueId}}</mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="customerName">
+                    <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.masterLoan.customer.firstName| titlecase}}
+                        &nbsp;{{item.masterLoan.customer.lastName| titlecase}}</mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
                     <mat-cell *matCellDef="let item">
@@ -145,32 +151,32 @@
                     <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
                     <mat-cell *matCellDef="let item">
                         <!-- <ng-container *ngIf="item.fullReleaseStatus != 'released'">
-                            <button *ngxPermissionsOnly="['fullReleaseStatus']" style="width: 130px;" class="apply-kyc"
+                            <button *ngxPermissionsOnly="['fullReleaseStatus']" style="width: 135px;" class="apply-kyc"
                                 (click)="updateStatus(item)">Update
                             </button>
                         </ng-container> -->
 
                         <ng-container *ngxPermissionsOnly="['fullReleaseStatus']">
                             <ng-container *ngIf="item.fullReleaseStatus == 'released'">
-                                <button *ngIf="!item.documents" style="width: 130px;" class="apply-kyc"
+                                <button *ngIf="!item.documents" style="width: 135px;" class="apply-kyc"
                                     (click)="updateDocument(item)">Upload
                                     Documents
                                 </button>
                                 <!-- <button *ngIf="item.documents && !(item.newLoan && item.newLoan.loanStatusForAppraiser)"
-                                    style="width: 130px;" class="apply-kyc" (click)="newLoan(item)">New Loan
+                                    style="width: 135px;" class="apply-kyc" (click)="newLoan(item)">New Loan
                                 </button> -->
                             </ng-container>
                         </ng-container>
                         <ng-container>
                             <button
-                                *ngIf="item?.masterLoan?.locationData[0]?.packetLocation?.location == 'partner branch in'"
-                                style="width: 130px;" class="apply-kyc"
-                                (click)="collect(item?.masterLoanId,item.masterLoan.packet,item.masterLoan)">Collect</button>
+                                *ngIf="item?.masterLoan?.locationData[0]?.packetLocation?.location == 'partner branch in' || item?.masterLoan?.locationData[0]?.packetLocationId == 2"
+                                style="width: 135px;" class="apply-kyc" packetLocationId
+                                (click)="collect(item?.masterLoanId,item.masterLoan.packet,item.masterLoan, item?.masterLoan?.locationData[0]?.packetLocationId)">Collect</button>
                         </ng-container>
                         <ng-container>
                             <button
-                                *ngIf="item?.masterLoan?.locationData[0]?.packetLocation?.location == 'partner branch out'"
-                                style="width: 130px;" class="apply-kyc"
+                                *ngIf="item?.masterLoan?.locationData[0]?.packetLocation?.location == 'partner branch out' || item?.masterLoan?.locationData[0]?.packetLocation?.id == 3"
+                                style="width: 135px;" class="apply-kyc"
                                 (click)="homeIn(item?.masterLoanId,item.masterLoan.packet,item.id)">Customer Home
                                 In</button>
                         </ng-container>
