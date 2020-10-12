@@ -1310,6 +1310,10 @@ exports.submitLoanPacketLocationForCollect = async (req, res, next) => {
         senderType = req.userData.userBelongsTo
         userSenderId = null
     }
+    if (userReceiverId == null || userReceiverId == undefined) {
+        userReceiverId = req.userData.id
+    }
+
 
     let verifyUser
     var todayDateTime = new Date();
@@ -1369,7 +1373,7 @@ exports.submitLoanPacketLocationForCollect = async (req, res, next) => {
 
             let packetTrackingData = await models.customerPacketTracking.create({
                 internalBranchId: req.userData.internalBranchId,
-                userReceiverId: req.userData.id,
+                userReceiverId: userReceiverId,
                 receiverType: 'InternalUser',
                 loanId,
                 masterLoanId,
