@@ -1,6 +1,7 @@
 const sms = require('./sendSMS');
 const models = require('../models');
-const smsLink = `https://www.indiapost.gov.in/_layouts/15/DOP.Portal.Tracking/TrackConsignment.aspx`;
+// const smsLink = `https://www.indiapost.gov.in/_layouts/15/DOP.Portal.Tracking/TrackConsignment.aspx`;
+const smsLink = `Gold loan admin panel`
 
 
 exports.sendOtpForLogin = async (mobileNumber, firstName, otp, time) => {

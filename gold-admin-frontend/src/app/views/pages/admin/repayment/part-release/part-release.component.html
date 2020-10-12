@@ -177,9 +177,9 @@
                                         Weight</th>
                                     <th class="transparent w100">Deduction Weight</th>
                                     <ng-container *ngIf="!fullReleaseScreen">
-                                        <th class="transparent">Net Weight (Release Ornament)</th>
-                                        <th class="transparent w100">Net Weight (Remaining Ornament)</th>
-                                        <th class="transparent">Ornament Release Amount</th>
+                                        <th class="transparent">Net Weight <br> (Release Ornament)</th>
+                                        <th class="transparent w100">Net Weight <br> (Remaining Ornament)</th>
+                                        <th class="transparent table-amount padding-right">Ornament Release Amount</th>
                                     </ng-container>
                                     <ng-container *ngIf="fullReleaseScreen">
                                         <th class="transparent" style="width: 20%; padding-left: 5%;">Net Weight</th>
@@ -201,7 +201,8 @@
                                             </td>
                                             <td>{{ totalSelectedOrnamentDetails.ornamentWeight.remainingNetWeight }} gm
                                             </td>
-                                            <td>{{ totalSelectedOrnamentDetails.ornamentWeight.releaseAmount }}</td>
+                                            <td class="table-amount padding-right">
+                                                {{ totalSelectedOrnamentDetails.ornamentWeight.releaseAmount }}</td>
                                         </ng-container>
                                         <ng-container *ngIf="fullReleaseScreen">
                                             <td style="padding-left: 5%;">

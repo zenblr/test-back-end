@@ -437,7 +437,7 @@
                             </div>
                         </ng-container>
                         <ng-container *ngIf="identityImageArray?.length > 0">
-                            <div class="col-4" *ngFor="let pass of identityImageArray, index as idx">
+                            <div class="kt-margin-r-30" *ngFor="let pass of identityImageArray, index as idx">
                                 <div class="img-container">
                                     <img *ngIf="!isPdf(pass)" class="fetched-image" [src]="pass"
                                         style="border-radius: 15px;" alt="" (click)="previewImage(pass)" />
@@ -632,7 +632,7 @@
                         </div>
                     </ng-container>
                     <ng-container *ngIf="addressImageArray1?.length > 0">
-                        <div class="col-4" *ngFor="let pass of addressImageArray1, index as idx">
+                        <div class="kt-margin-r-30" *ngFor="let pass of addressImageArray1, index as idx">
                             <div class="img-container">
                                 <img *ngIf="!isPdf(pass)" class="fetched-image" [src]="pass"
                                     style="border-radius: 15px;" alt="" (click)="previewImage(pass)" />
@@ -857,7 +857,7 @@
                             </div>
                         </ng-container>
                         <ng-container *ngIf="addressImageArray2?.length > 0">
-                            <div class="col-4" *ngFor="let pass of addressImageArray2, index as idx">
+                            <div class="kt-margin-r-30" *ngFor="let pass of addressImageArray2, index as idx">
                                 <div class="img-container">
                                     <img *ngIf="!isPdf(pass)" class="fetched-image" [src]="pass"
                                         style="border-radius: 15px;" alt="" (click)="previewImage(pass)" />

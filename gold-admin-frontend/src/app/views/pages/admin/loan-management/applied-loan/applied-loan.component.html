@@ -6,7 +6,7 @@
         <!-- <button (click)="checkout()"></button>
         <button (click)="submitPacket()"></button> -->
 
-        <div class="mat-table__wrapper">
+        <div class="mat-table__wrapper" [class.filter]="(filteredDataList | json) !== '{}'">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="fullName">

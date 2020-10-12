@@ -1310,6 +1310,10 @@ exports.submitLoanPacketLocationForCollect = async (req, res, next) => {
         senderType = req.userData.userBelongsTo
         userSenderId = null
     }
+    if (userReceiverId == null || userReceiverId == undefined) {
+        userReceiverId = req.userData.id
+    }
+
 
     let verifyUser
     var todayDateTime = new Date();
@@ -1360,44 +1364,44 @@ exports.submitLoanPacketLocationForCollect = async (req, res, next) => {
 
     // let loanStage = await models.loanStage.findOne({ where: { name: 'packet release from' } });
 
-    if (location == 'partner branch out') {
-        await sequelize.transaction(async (t) => {
+    // if (location == 'partner branch out') {
+    await sequelize.transaction(async (t) => {
 
-            await models.customerLoanMaster.update({ packetLocationStatus: 'in transit' }, { where: { id: masterLoanId }, transaction: t })
+        await models.customerLoanMaster.update({ packetLocationStatus: 'in transit' }, { where: { id: masterLoanId }, transaction: t })
 
-            await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'in transit' }, { transaction: t })
+        await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'in transit' }, { transaction: t })
 
-            let packetTrackingData = await models.customerPacketTracking.create({
-                internalBranchId: req.userData.internalBranchId,
-                userReceiverId: req.userData.id,
-                receiverType: 'InternalUser',
-                loanId,
-                masterLoanId,
-                packetLocationId: packetLocationId,
-                userSenderId: req.userData.id,
-                senderType: 'InternalUser',
-                // partnerSenderId: partnerReceiverId,
-                // senderType: 'PartnerUser',
-                isDelivered: true,
-                status: 'in transit'
-            }, { transaction: t });
+        let packetTrackingData = await models.customerPacketTracking.create({
+            internalBranchId: req.userData.internalBranchId,
+            userReceiverId: userReceiverId,
+            receiverType: 'InternalUser',
+            loanId,
+            masterLoanId,
+            packetLocationId: packetLocationId,
+            userSenderId: req.userData.id,
+            senderType: 'InternalUser',
+            // partnerSenderId: partnerReceiverId,
+            // senderType: 'PartnerUser',
+            isDelivered: true,
+            status: 'in transit'
+        }, { transaction: t });
 
-            let allPacketTrackingData = await models.customerPacketTracking.findAll({
-                where: { masterLoanId: masterLoanId, isDelivered: true },
-                transaction: t,
-                order: [['id', 'desc']]
-            })
-
-            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
-
-            await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
+        let allPacketTrackingData = await models.customerPacketTracking.findAll({
+            where: { masterLoanId: masterLoanId, isDelivered: true },
+            transaction: t,
+            order: [['id', 'desc']]
         })
 
-        return res.status(200).json({ message: `packet location submitted` })
+        var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
 
-    } else {
-        return res.satus(200).json({ message: 'please select partner branch out location for this process' })
-    }
+        await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
+    })
+
+    return res.status(200).json({ message: `packet location submitted` })
+
+    // } else {
+    //     return res.status(200).json({ message: 'please select partner branch out location for this process' })
+    // }
 
 }
 
