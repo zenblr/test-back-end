@@ -41,6 +41,7 @@ export class UploadDocumentsComponent implements OnInit {
   @Input() loanStage
   @Input() scrapStage
   @Input() scrapAcknowledgmentStage
+  @Input() standardDeduct
   @ViewChild('loanAgreementCopy', { static: false }) loanAgreementCopy
   @ViewChild('pawnCopy', { static: false }) pawnCopy
   @ViewChild('schemeConfirmationCopy', { static: false }) schemeConfirmationCopy
@@ -235,6 +236,12 @@ export class UploadDocumentsComponent implements OnInit {
         }
       }
     }
+    // if (changes.standardDeduct && changes.standardDeduct.currentValue) {
+    //   this.documentsForm.patchValue({ standardDeduction: changes.standardDeduct.currentValue })
+    //   setTimeout(() => {
+    //     this.calculateAfterDeduction();
+    //   });
+    // }
   }
 
   pdfCheck() {

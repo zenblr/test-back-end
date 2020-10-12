@@ -5,13 +5,15 @@
                 <ng-container matColumnDef="userName">
                     <mat-header-cell *matHeaderCellDef>User Name</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        {{packet?.Createdby?.firstName + ' ' + 
-                        packet?.Createdby?.lastName | titlecase}}</mat-cell>
+                        <span [ngClass]="colorCodeEntry(packet)">
+                            {{packet?.Createdby?.firstName + ' ' + packet?.Createdby?.lastName | titlecase}}
+                        </span>
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="mobileNumber">
                     <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngIf="packet?.customer">
+                        <span *ngIf="packet?.customer" [ngClass]="colorCodeEntry(packet)">
                             {{packet?.customer?.mobileNumber}}
                         </span>
                     </mat-cell>
@@ -19,7 +21,7 @@
                 <ng-container matColumnDef="internalBranch">
                     <mat-header-cell *matHeaderCellDef>Branch</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngIf="packet.customer">
+                        <span *ngIf="packet?.customer" [ngClass]="colorCodeEntry(packet)">
                             {{packet.internalBranch.name | titlecase}}
                         </span>
                     </mat-cell>
@@ -27,7 +29,7 @@
                 <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngIf="packet?.customer">
+                        <span *ngIf="packet?.customer" [ngClass]="colorCodeEntry(packet)">
                             {{packet?.customer?.customerUniqueId}}
                         </span>
                     </mat-cell>
@@ -35,13 +37,13 @@
                 <ng-container matColumnDef="scrapId">
                     <mat-header-cell *matHeaderCellDef>Scrap ID</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        {{ packet?.scrapUniqueId | uppercase }}
+                        <span [ngClass]="colorCodeEntry(packet)">{{ packet?.scrapUniqueId | uppercase }}</span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="customerName">
                     <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngIf="packet.customer">
+                        <span *ngIf="packet?.customer" [ngClass]="colorCodeEntry(packet)">
                             {{packet?.customer?.firstName + ' ' + packet?.customer?.lastName | titlecase}}
                         </span>
                     </mat-cell>
@@ -49,13 +51,13 @@
                 <ng-container matColumnDef="scrapAmount">
                     <mat-header-cell *matHeaderCellDef>Scrap Amount</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        {{ packet?.eligibleScrapAmount }}
+                        <span [ngClass]="colorCodeEntry(packet)">{{ packet?.eligibleScrapAmount }}</span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="currentLocation">
                     <mat-header-cell *matHeaderCellDef>Current Location</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngFor="let item of packet.locationData; last as l">
+                        <span *ngFor="let item of packet.locationData; last as l" [ngClass]="colorCodeEntry(packet)">
                             <span *ngIf="l">
                                 {{item?.scrapPacketLocation?.location | titlecase}}
                             </span>
@@ -67,10 +69,12 @@
                     <mat-cell *matCellDef="let packet">
                         <ng-container *ngFor="let item of packet?.locationData; last as l">
                             <ng-container *ngIf="l">
-                                <div style="width: 100%;" *ngIf="item?.packetLocationId === 1">
+                                <div style="width: 100%;" [ngClass]="colorCodeEntry(packet)"
+                                    *ngIf="item?.packetLocationId === 2">
                                     <kt-elapsed-time [startTime]="item?.createdAt"></kt-elapsed-time>
                                 </div>
-                                <div style="width: 100%;" *ngIf="item?.packetLocationId === 2">
+                                <div style="width: 100%;" [ngClass]="colorCodeEntry(packet)"
+                                    *ngIf="item?.packetLocationId === 1">
                                     <kt-elapsed-time [startTime]="packet?.scrapDisbursement?.createdAt">
                                     </kt-elapsed-time>
                                 </div>
@@ -81,7 +85,7 @@
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngFor="let item of packet?.locationData; last as l">
+                        <span *ngFor="let item of packet?.locationData; last as l" [ngClass]="colorCodeEntry(packet)">
                             <span *ngIf="l"
                                 [ngClass]="item?.status == 'complete' ? item?.packetLocation?.id === 2 && packet?.isScrapCompleted ? 'text-primary' : 'text-success' : item?.status == 'incomplete' ? 'text-danger' : 'text-grey'">
                                 {{item?.status | titlecase}}

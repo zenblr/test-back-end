@@ -43,6 +43,7 @@ export class ScrapApplicationFormComponent implements OnInit {
   scrapStage: any;
   ornamentDetails: any;
   processingCharges: any;
+  standardDeduction: any;
 
   constructor(
     public ref: ChangeDetectorRef,
@@ -80,6 +81,7 @@ export class ScrapApplicationFormComponent implements OnInit {
       this.ornamentDetails = res.customerScrap.ornamentType;
       if (res.customerScrap.customerScrapAcknowledgement) {
         this.processingCharges = res.customerScrap.customerScrapAcknowledgement.processingCharges;
+        this.standardDeduction = res.customerScrap.customerScrapAcknowledgement.standardDeduction;
       }
       console.log(this.scrapStage)
       if (this.url == 'packet-image-upload') {
@@ -177,6 +179,11 @@ export class ScrapApplicationFormComponent implements OnInit {
 
   processingChrgs(event) {
     this.processingCharges = event;
+  }
+
+  standardDeductionChrgs(event) {
+    this.standardDeduction = event;
+    console.log(this.standardDeduction)
   }
 
   ornaments(event) {
