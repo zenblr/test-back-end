@@ -142,8 +142,6 @@ export class PartReleaseComponent implements OnInit {
 
   pay() {
 
-
-
     const ornamnentIds = this.selectedOrnaments.map(e => e.id)
     if (this.paymentValue.paymentType == 'gateway') {
       this.sharedService.paymentGateWayForFullAndPart(Number(this.id), ornamnentIds).subscribe(
@@ -152,9 +150,10 @@ export class PartReleaseComponent implements OnInit {
           this.razorpayPaymentService.razorpayOptions.amount = res.razorPayOrder.amount;
           this.razorpayPaymentService.razorpayOptions.order_id = res.razorPayOrder.id;
           this.razorpayPaymentService.razorpayOptions.paymentMode = res.paymentMode;
-          this.razorpayPaymentService.razorpayOptions.prefill.contact = '000000000';
+          this.razorpayPaymentService.razorpayOptions.prefill.contact = '9892545454';
           this.razorpayPaymentService.razorpayOptions.prefill.email = 'info@augmont.in';
           this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
+          this.razorpayPaymentService.razorpayOptions.prefill.method = this.paymentValue.paymentType;
           this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
         }
       )

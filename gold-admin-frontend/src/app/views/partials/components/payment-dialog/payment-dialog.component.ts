@@ -14,7 +14,11 @@ import { LayoutUtilsService } from "../../../../core/_base/crud";
   providers: [DatePipe]
 })
 export class PaymentDialogComponent implements OnInit {
-  paymentTypeList = [{ value: 'cash', name: 'cash' }, { value: 'IMPS', name: 'IMPS' }, { value: 'NEFT', name: 'NEFT' }, { value: 'RTGS', name: 'RTGS' }, { value: 'cheque', name: 'cheque' }, { value: 'UPI', name: 'UPI' }, { value: 'gateway', name: 'payment gateway' }]
+  paymentTypeList = [{ value: 'netbanking', name: 'Net Banking', image: 'assets/net-banking.png' },
+  { value: 'card', name: 'Debit Card', image: 'assets/debit-card.png' },
+  { value: 'upi', name: 'UPI', image: 'assets/upi.png' },
+  { value: 'wallet', name: 'Wallet', image: 'assets/wallet.png' }, { value: 'cash', name: 'cash' }, { value: 'IMPS', name: 'IMPS' }, { value: 'NEFT', name: 'NEFT' }, { value: 'RTGS', name: 'RTGS' }, { value: 'cheque', name: 'cheque' }]
+
   paymentForm: FormGroup;
   title: string = ''
   minDate: Date;
@@ -97,7 +101,6 @@ export class PaymentDialogComponent implements OnInit {
       case 'IMPS':
       case 'NEFT':
       case 'RTGS':
-      case 'UPI':
         this.paymentForm.clearValidators();
         this.paymentForm.updateValueAndValidity()
 
@@ -129,7 +132,10 @@ export class PaymentDialogComponent implements OnInit {
         }
         break;
 
-      case 'gateway':
+      case 'upi':
+      case 'netbanking':
+      case 'wallet':
+      case 'card':
         for (const key in this.paymentForm.controls) {
           this.paymentForm.controls[key].setValidators([])
           this.paymentForm.controls[key].updateValueAndValidity()
