@@ -35,13 +35,13 @@
     .mat-column-loanAmount{
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
+        align-items: flex-start;
         flex: 0 0 4%;
     }
     .mat-column-principalAmount{
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
+        align-items: flex-start;
         flex: 0 0 5%;
     }
     .mat-column-uploadDocument{
@@ -57,28 +57,28 @@
     }
     .mat-column-loanAmount{
         padding-right: 25px;
-        justify-content: flex-end;
+        justify-content: flex-start;
     }
     .mat-column-principalAmount{
         padding-right: 25px;
-        justify-content: flex-end;
+        justify-content: flex-start;
     }
     .mat-column-totalPayableAmount{
         padding-right: 25px;
-        justify-content: flex-end;
+        // justify-content: flex-end;
         flex: 0 0 6%;
     }
     .mat-column-penalInterest{
         padding-right: 25px;
-        justify-content: flex-end;
+        // justify-content: flex-end;
     }
     .mat-column-interestAmount{
         padding-right: 25px;
-        justify-content: flex-end;
+        // justify-content: flex-end;
     }
     .mat-column-ornamentReleaseAmount{
         padding-right: 25px;
-        justify-content: flex-end;
+        // justify-content: flex-end;
     }
     
 }

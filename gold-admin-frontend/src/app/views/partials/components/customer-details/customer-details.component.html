@@ -5,7 +5,9 @@
                 <div class="col">
                     <div class="row">
                         <div class="col-1">
-                            <img class="kt-margin-t-10 profile" [src]="cutomerDetails?.customerKycPersonal?.profileImg">
+                            <img class="kt-margin-t-10 profile"
+                                (click)="preview(cutomerDetails?.customerKycPersonal?.profileImg)"
+                                [src]="cutomerDetails?.customerKycPersonal?.profileImg">
                             <!-- <img [src]="customer.image" *ngIf="customer.image != '' || customer.image != null"> -->
                         </div>
                         <div class="col kt-padding-l-25">
@@ -130,7 +132,7 @@
                     <div class="card kt-padding-15" [class.kt-margin-r-15]="(i+1)%4!=0">
                         <div class="text-gray font-weight-500 kt-margin-b-5">Loan ID</div>
                         <div class="row kt-margin-b-5 text-color font-weight-500">
-                            <div class="col-5  ">
+                            <div class="col-4">
                                 <div>
                                     {{masterLoan.customerLoan[0].loanUniqueId}} <br>
                                 </div>
