@@ -110,7 +110,19 @@ export class NewRequestListComponent implements OnInit {
 
   assignAppraiser(item) {
     // item.customer = { firstName: item.firstName, lastName: item.lastName }
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', requestData: item, customer: item.customer, id: item.customerId, internalBranchId: item.customer.internalBranchId }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent,
+      {
+        data:
+        {
+          action: 'add',
+          requestData: item,
+          customer: item.customer,
+          id: item.customerId,
+          internalBranchId: item.customer.internalBranchId,
+          customerId: item.customerId
+        },
+        width: '500px'
+      });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
@@ -126,7 +138,18 @@ export class NewRequestListComponent implements OnInit {
     item.appraiser.appoinmentDate = item.appoinmentDate;
     item.appraiser.appraiserId = item.appraiserId;
 
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit', requestData: item, appraiser: item.appraiser, customer: item.customer, internalBranchId: item.customer.internalBranchId }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent,
+      {
+        data:
+        {
+          action: 'edit',
+          requestData: item,
+          appraiser: item.appraiser,
+          customer: item.customer,
+          internalBranchId: item.customer.internalBranchId,
+          customerId: item.customerId
+        }, width: '500px'
+      });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();

@@ -166,13 +166,13 @@ export class AssignAppraiserComponent implements OnInit {
   }
 
   getAllAppraiser() {
-    this.appraiserService.getAllAppraiser(this.internalBranchId).subscribe(res => {
+    this.appraiserService.getAllAppraiser(this.internalBranchId, this.data.customerId).subscribe(res => {
       this.appraisers = res.data;
     })
   }
 
   getAllReleaser() {
-    this.appraiserService.getAllReleaser(this.internalBranchId).subscribe(res => {
+    this.appraiserService.getAllReleaser(this.internalBranchId, this.data.customerId).subscribe(res => {
       this.releasers = res.data;
     })
   }
