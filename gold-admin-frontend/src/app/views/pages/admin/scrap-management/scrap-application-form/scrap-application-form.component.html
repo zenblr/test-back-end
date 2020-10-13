@@ -16,7 +16,8 @@
                             <kt-ornaments [action]="action" (next)="next($event)" [disable]="disabledForm"
                                 [details]="customerDetail" (totalAmt)="total($event)" [scrapIds]="scrapIds"
                                 [ornamentType]="ornamentType" [karatArr]="karatArr" [showButton]="showButton"
-                                [karatFlag]="true">
+                                [karatFlag]="true" [standardDeduct]="standardDeduction"
+                                (standardDeductionChrgs)="standardDeductionChrgs($event)">
                             </kt-ornaments>
                         </div>
                     </mat-tab>
@@ -24,7 +25,8 @@
                         <kt-upload-documents [scrapIds]="scrapIds" (next)="next($event)" [totalAmt]="totalAmount"
                             [acknowledgmentDocuments]="customerDetail" [showButton]="showButton"
                             [showScrapAcknowledgementFlag]="true" [standardDeductionArr]="standardDeductionArr"
-                            (processingChrgs)="processingChrgs($event)" [scrapAcknowledgmentStage]="scrapStage">
+                            (processingChrgs)="processingChrgs($event)" [scrapAcknowledgmentStage]="scrapStage"
+                            [standardDeduct]="standardDeduction">
                         </kt-upload-documents>
                     </mat-tab>
                     <mat-tab label="Melting Ornaments" [disabled]="disabled[3]"
