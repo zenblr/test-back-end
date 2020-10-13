@@ -15,7 +15,7 @@ route.get('/:customerUniqueId', checkAuth,checkRolePermission, wrapper(customerD
 
 route.get('/', checkAuth,checkRolePermission, wrapper(getLoanTransferList)); 
 
-route.post('/basic-details', checkAuth,checkRolePermission,loanTransferStep1,validationError, wrapper(loanTransferBasicDeatils)); 
+route.post('/basic-details', checkAuth,checkRolePermission,loanTransferStep1,validationError, wrapper(loanTransferBasicDeatils)); //5
 
 route.post('/documents',checkAuth,checkRolePermission,loanTransferStep2,validationError,wrapper(loanTransferDocuments));
 

@@ -2140,7 +2140,6 @@ let intrestCalculationForSelectedLoanWithOutT = async (date, masterLoanId, secur
 
 
 let customerNameNumberLoanId = async (masterLoanId) => {
-    let sendLoanUniqueId
 
     let messageLoan = await models.customerLoanMaster.findAll({
         where: { masterLoanId: masterLoanId },
@@ -2171,7 +2170,7 @@ let customerNameNumberLoanId = async (masterLoanId) => {
     return {
         mobileNumber: messageLoan.customer.mobileNumber,
         customerName: customerName,
-        sendLoanUniqueId
+        sendLoanUniqueId:sendLoanUniqueId
     }
 }
 
