@@ -7,7 +7,7 @@
         "migrate": "npx sequelize-cli db:migrate"
     },
     "dependencies": {
-        "aws-sdk": "^2.770.0",
+        "aws-sdk": "^2.771.0",
         "axios": "^0.19.2",
         "bcrypt": "^4.0.1",
         "body-parser": "^1.19.0",
@@ -49,6 +49,6 @@
         "swagger-jsdoc": "^4.2.3",
         "swagger-ui-express": "^4.1.4",
         "uniqid": "^5.2.0",
-        "uuid-apikey": "^1.4.6"
+        "uuid-apikey": "^1.5.1"
     }
 }
