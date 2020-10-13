@@ -141,7 +141,7 @@
                             <div class="col-8">
                                 <input class="form-control" formControlName="mobileNumber" (blur)="getDetailsByMobile()"
                                     [class.isError]="locationForm.controls.mobileNumber.invalid &&  locationForm.controls.mobileNumber.touched"
-                                    maxlength="10" />
+                                    maxlength="10" numbersOnly />
                                 <mat-error
                                     *ngIf="locationForm.controls.mobileNumber.touched && locationForm.controls.mobileNumber.errors?.required">
                                     Required field
