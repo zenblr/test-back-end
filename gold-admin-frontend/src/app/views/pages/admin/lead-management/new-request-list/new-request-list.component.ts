@@ -137,7 +137,8 @@ export class NewRequestListComponent implements OnInit {
   applyKyc(data) {
     let mobile = data.customer.mobileNumber ? data.customer.mobileNumber : ''
     let moduleId = data.moduleId
-    this.router.navigate(['/admin/kyc-setting'], { queryParams: { mob: mobile, moduleId } });
+    const disabled = data.moduleId === 1 && data.customer.scrapKycStatus === 'approved' ? true : false
+    this.router.navigate(['/admin/kyc-setting'], { queryParams: { mob: mobile, moduleId, disabled } });
   }
 
   applyLoan(loan) {
