@@ -4,12 +4,12 @@
             <div class="row kt-padding-t-5 kt-margin-b-5">
                 <div class="col font-weight-500">Customer ID</div>
                 <div class="col font-weight-500 th-padding-left">Loan ID</div>
-                <div class="col font-weight-500 text-right padding-right">Loan Amount</div>
+                <div class="col font-weight-500  padding-right">Loan Amount</div>
                 <div class="col font-weight-500">Loan Start Date</div>
                 <div class="col font-weight-500">Loan End Date</div>
                 <div class="col font-weight-500">Tenure</div>
                 <div class="col font-weight-500 th-padding-left">Last Payment Date</div>
-                <div class="col-2 font-weight-500 text-right th-padding-right">Principal
+                <div class="col-2 font-weight-500  th-padding-right">Principal
                     Outstanding
                 </div>
                 <div class="col font-weight-500 mx-auto d-flex justify-content-center" *ngIf="!fullReleaseScreen">
@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div class="col padding-right">
-                    <div class="text-right" *ngFor="let loan of loanDetails.customerLoan.customerLoan">
+                    <div class="" *ngFor="let loan of loanDetails.customerLoan.customerLoan">
                         {{loan.loanAmount}}
                     </div>
                 </div>
@@ -39,7 +39,7 @@
                     <span
                         *ngIf="loanDetails.lastPayment else blank">{{loanDetails.lastPayment | date: 'mediumDate'}}</span>
                 </div>
-                <div class="col-2 text-right th-padding-right">
+                <div class="col-2  th-padding-right">
                     <div *ngFor="let loan of loanDetails.customerLoan.customerLoan">
                         {{loan.outstandingAmount}}
                     </div>
@@ -238,11 +238,11 @@
                         <table class="table outer-border">
                             <thead>
                                 <th class="transparent" style="width: 100px;">Loan ID</th>
-                                <th class="transparent text-right" style="width: 120px;">Loan Amount</th>
-                                <th class="transparent text-right"> Ornament Release Amount</th>
-                                <th class="transparent text-right">Interest Amount</th>
-                                <th class="transparent text-right">Penal Interest </th>
-                                <th class="transparent text-right">Total Payable Amount </th>
+                                <th class="transparent " style="width: 120px;">Loan Amount</th>
+                                <th class="transparent "> Ornament Release Amount</th>
+                                <th class="transparent ">Interest Amount</th>
+                                <th class="transparent ">Penal Interest </th>
+                                <th class="transparent ">Total Payable Amount </th>
                                 <th class="transparent last">Select Payment Option</th>
                             </thead>
                             <tbody>
@@ -258,33 +258,32 @@
                                             *ngFor="let item of totalSelectedOrnamentDetails.loanInfo.loanData">
                                             <div>{{item.loanAmount}}</div>
                                         </ng-container> -->
-                                        <div class="text-right"
-                                            *ngFor="let loan of loanDetails.customerLoan.customerLoan">
+                                        <div class="" *ngFor="let loan of loanDetails.customerLoan.customerLoan">
                                             {{loan.loanAmount}}
                                         </div>
                                         <!-- {{ totalSelectedOrnamentDetails.loanInfo.finalLoanAmount }} -->
                                     </td>
-                                    <td class="text-right">
+                                    <td class="">
                                         {{ totalSelectedOrnamentDetails.ornamentWeight.releaseAmount }}</td>
                                     <td>
-                                        <div class="text-right">
+                                        <div class="">
                                             {{ totalSelectedOrnamentDetails?.loanInfo?.securedInterest }}
                                         </div>
-                                        <div class="text-right"
+                                        <div class=""
                                             *ngIf="totalSelectedOrnamentDetails?.loanInfo?.loanData?.length > 1">
                                             {{ totalSelectedOrnamentDetails?.loanInfo?.unsecuredInterest }}
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="text-right">
+                                        <div class="">
                                             {{ totalSelectedOrnamentDetails?.loanInfo?.securedPenalInterest }}
                                         </div>
-                                        <div class="text-right"
+                                        <div class=""
                                             *ngIf="totalSelectedOrnamentDetails?.loanInfo?.loanData?.length > 1">
                                             {{ totalSelectedOrnamentDetails?.loanInfo?.unsecuredPenalInterest }}
                                         </div>
                                     </td>
-                                    <td class="font-weight-500 text-right" style="font-size: 14px;">
+                                    <td class="font-weight-500 " style="font-size: 14px;">
                                         {{ totalSelectedOrnamentDetails.loanInfo.totalPayableAmount }}</td>
                                     <td>
                                         <button *ngIf="!paymentValue" (click)="choosePaymentMethod()"
