@@ -2139,6 +2139,41 @@ let intrestCalculationForSelectedLoanWithOutT = async (date, masterLoanId, secur
 }
 
 
+let customerNameNumberLoanId = async (masterLoanId) => {
+
+    let messageLoan = await models.customerLoanMaster.findAll({
+        where: { masterLoanId: masterLoanId },
+        order: [
+            [models.customerLoan, 'id', 'asc']
+        ],
+        include: [
+            {
+                model: models.customerLoan,
+                as: 'customerLoan',
+                attributes: ['loanUniqueId']
+            },
+            {
+                model: models.customer,
+                as: 'customer',
+                attributes: ['firstName', 'lastName', 'mobileNumber', 'id']
+            }
+        ]
+    })
+    let customerName = `${messageLoan.customer.firstName} ${messageLoan.customer.lastName}`
+    let sendLoanUniqueId;
+
+    if (masterLoan.isUnsecuredSchemeApplied) {
+        sendLoanUniqueId = `${masterLoan.customerLoan[0].loanUniqueId}, ${masterLoan.customerLoan[1].loanUniqueId}`
+    } else {
+        sendLoanUniqueId = `${masterLoan.customerLoan[0].loanUniqueId}`
+    }
+    return {
+        mobileNumber: messageLoan.customer.mobileNumber,
+        customerName: customerName,
+        sendLoanUniqueId:sendLoanUniqueId
+    }
+}
+
 module.exports = {
     getGlobalSetting: getGlobalSetting,
     getAllCustomerLoanId: getAllCustomerLoanId,
@@ -2182,5 +2217,6 @@ module.exports = {
     penalInterestCalculationForSelectedLoan: penalInterestCalculationForSelectedLoan,
     stepDown: stepDown,
     intrestCalculationForSelectedLoanWithOutT: intrestCalculationForSelectedLoanWithOutT,
-    penalInterestCalculationForSelectedLoanWithOutT: penalInterestCalculationForSelectedLoanWithOutT
+    penalInterestCalculationForSelectedLoanWithOutT: penalInterestCalculationForSelectedLoanWithOutT,
+    customerNameNumberLoanId: customerNameNumberLoanId
 }

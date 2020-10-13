@@ -59,7 +59,10 @@ export class LoanTransferComponent implements OnInit {
 
     })
 
-    this.rout.queryParams.subscribe(res => this.action = res.action)
+    this.rout.queryParams.subscribe(res => {
+      this.action = res.action
+      if (this.action === 'view') this.showButton = false
+    })
 
 
 
@@ -74,6 +77,7 @@ export class LoanTransferComponent implements OnInit {
           let stage = res.data.masterLoan.loanTransfer.loanTransferCurrentStage;
           // this.next(Number(stage) - 1);
           this.selected = 0;
+          if (this.action == 'view') this.loanTransferStage = stage - 1
           if (stage == '4') {
             if (!this.permission.loanTransferRating) {
               this.toast.error('Access Denied')

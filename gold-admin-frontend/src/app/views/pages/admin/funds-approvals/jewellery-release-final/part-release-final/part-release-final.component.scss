@@ -36,39 +36,40 @@
     .mat-column-loanAmount{
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
-        padding-right: 25px;
+        align-items: flex-start;
+        // padding-right: 25px;
         justify-content: flex-end;
     }
     .mat-column-principalAmount{
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
-        padding-right: 25px;
+        align-items: flex-start;
+        // padding-right: 25px;
         justify-content: flex-end;
+        flex: 0 0 4%;
     }
     .mat-column-totalPaidAmount{
-        padding-right: 25px;
-        justify-content: flex-end;
+        // padding-right: 25px;
+        justify-content: flex-start;
         flex: 0 0 5%;
     }
     .mat-column-penalInterest{
-        padding-right: 25px;
-        justify-content: flex-end;
+        // padding-right: 25px;
+        justify-content: flex-start;
         flex: 0 0 4%;
     }
     .mat-column-interestAmount{
         flex: 0 0 4%;
-        padding-right: 25px;
-        justify-content: flex-end;
+        // padding-right: 25px;
+        justify-content: flex-start;
     }
     .mat-column-ornamentReleaseAmount{
-        padding-right: 25px;
-        justify-content: flex-end;
+        // padding-right: 25px;
+        justify-content: flex-start;
         flex: 0 0 4.5%;
     }
     .mat-column-currentLocation{
-        flex: 0 0 5%;
+        flex: 0 0 4%;
     }
     .mat-column-view {
         display: flex;
