@@ -242,7 +242,7 @@ exports.loanTransferDisbursal = async (req, res, next) => {
                 await models.customerLoanTransfer.update({ transactionId, modifiedBy, loanTransferCurrentStage: '6', isLoanDisbursed: true }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.LOAN_DISBURSEMENT, createdBy, modifiedBy }, { transaction: t })
 
-                let sendLoanMessage = await customerNameNumberLoanId(messageLoanId)
+                let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
 
                 await sendDisbursalMessage(sendLoanMesage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
 

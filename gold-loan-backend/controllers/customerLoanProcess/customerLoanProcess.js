@@ -1796,7 +1796,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
                 await models.customerLoanHistory.create({ loanId: unsecuredLoanId, masterLoanId, action: LOAN_DISBURSEMENT, modifiedBy }, { transaction: t });
             }
 
-            let sendLoanMessage = await customerNameNumberLoanId(messageLoanId)
+            let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
 
             await sendDisbursalMessage(sendLoanMesage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
 
