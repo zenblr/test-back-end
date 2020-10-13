@@ -8,7 +8,8 @@ const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATIO
 const loanTransferHistory = require('../../utils/customerLoanTransferHistory')
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 var randomize = require('randomatic');
-
+const { sendDisbursalMessage } = require('../../utils/SMS')
+const { customerNameNumberLoanId } = require('../../utils/loanFunction')
 
 exports.customerDetails = async (req, res, next) => {
 
@@ -240,6 +241,11 @@ exports.loanTransferDisbursal = async (req, res, next) => {
             if (masterLoan.loanTransfer.loanTransferStatusForBM == "approved") {
                 await models.customerLoanTransfer.update({ transactionId, modifiedBy, loanTransferCurrentStage: '6', isLoanDisbursed: true }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.LOAN_DISBURSEMENT, createdBy, modifiedBy }, { transaction: t })
+
+                let sendLoanMessage = await customerNameNumberLoanId(messageLoanId)
+
+                await sendDisbursalMessage(sendLoanMesage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+
                 return res.status(200).json({ message: 'success', masterLoanId, loanId })
             } else {
                 if (masterLoan.loanTransfer.loanTransferStatusForBM == "incomplete") {
@@ -250,6 +256,7 @@ exports.loanTransferDisbursal = async (req, res, next) => {
             }
 
         }
+
     })
 }
 
