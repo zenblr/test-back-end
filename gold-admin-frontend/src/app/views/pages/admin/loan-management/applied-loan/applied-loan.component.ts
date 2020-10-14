@@ -30,8 +30,9 @@ export class AppliedLoanComponent implements OnInit {
     cceStatus: '',
     kycStatus: '',
     appraiserApproval: '',
-    loanStageId: ''
-
+    loanStageId: '',
+    bmApproval: '',
+    opsApproval: '',
   }
   destroy$ = new Subject();
 
@@ -131,7 +132,10 @@ export class AppliedLoanComponent implements OnInit {
 
   applyFilter(data) {
     this.queryParamsData.appraiserApproval = data.data.appraiserStatus;
-    this.queryParamsData.loanStageId = data.data.loanStatus;
+    this.queryParamsData.bmApproval = data.data.bmStatus;
+    this.queryParamsData.opsApproval = data.data.otStatus;
+
+    // this.queryParamsData.loanStageId = data.data.loanStatus;
 
     this.filteredDataList = data.list;
     this.dataSource.loadAppliedLoans(this.queryParamsData);
