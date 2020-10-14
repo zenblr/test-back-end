@@ -33,8 +33,8 @@ export class AppliedLoanService {
     if (data && data.bmApproval) {
       reqParams.bmApproval = data.bmApproval;
     }
-    if (data && data.opsApproval) {
-      reqParams.opsApproval = data.opsApproval;
+    if (data && data.operatinalTeamApproval) {
+      reqParams.operatinalTeamApproval = data.operatinalTeamApproval;
     }
     return this.http.get(`/api/loan-process/applied-loan-details`, { params: reqParams }).pipe(
       map(res => res),
