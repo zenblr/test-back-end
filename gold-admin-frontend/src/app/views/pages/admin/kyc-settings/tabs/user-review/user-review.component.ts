@@ -1044,6 +1044,7 @@ export class UserReviewComponent implements OnInit {
 
   sameAddressAsPermanent(event) {
     this.isAddressSame = event
+    const addressOne = this.data.customerKycReview.customerKycAddress[0]
     const addressTwo = this.data.customerKycReview.customerKycAddress[1]
 
     if (event) {
@@ -1063,8 +1064,8 @@ export class UserReviewComponent implements OnInit {
         stateId: '',
         cityId: '',
         addressProofTypeId: '',
-        customerId: addressTwo.customerId,
-        customerKycId: addressTwo.customerKycId
+        customerId: addressOne.customerId,
+        customerKycId: addressOne.customerKycId
       })
       this.customerKycAddressTwo.enable()
     }

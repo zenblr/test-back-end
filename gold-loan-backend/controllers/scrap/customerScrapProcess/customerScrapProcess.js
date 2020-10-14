@@ -1262,17 +1262,25 @@ exports.printPurchaseVoucher = async (req, res) => {
                     model: models.customerKycPersonalDetail,
                     as: 'customerKycPersonal',
                     attributes: ['id',  'panCardNumber'],
+                },
+                {
+                    model: models.customerKycOrganizationDetail,
+                    as: 'organizationDetail'
                 }
                 ]
             },
             {
-                model: models.customerScrapOrnamentsDetail,
-                as: 'scrapOrnamentsDetail',
-                include: {
-                    model: models.ornamentType,
-                    as: 'ornamentType'
-                }
+                model: models.scrapMeltingOrnament,
+                as: 'meltingOrnament'
             }
+            // {
+            //     model: models.customerScrapOrnamentsDetail,
+            //     as: 'scrapOrnamentsDetail',
+            //     include: {
+            //         model: models.ornamentType,
+            //         as: 'ornamentType'
+            //     }
+            // }
             ]
         });
         let customerAddress;
@@ -1285,32 +1293,34 @@ exports.printPurchaseVoucher = async (req, res) => {
                 customerSatte = address.state.name;            
             }
         }
+
+        // return res.status(200).json({ message: "success", customerScrap });
     
-        let ornamentData = [];
-        let totalUnits = [];
-        let totalGrams = [];
-        let totalRatePreUnit = [];
-        let totalAmount = [];
-        if (customerScrap.scrapOrnamentsDetail.length != 0) {
-            for (let [index, ornament] of customerScrap.scrapOrnamentsDetail.entries()) {
-                await ornamentData.push({
-                    srNo: index + 1,
-                    ornamentName: ornament.ornamentType.name,
-                    quantity: ornament.quantity,
-                    grossWeight: ornament.netWeight,
-                    amount: ornament.scrapAmount,
-                    nullCell: ""
-                });
+        // let ornamentData = [];
+        // let totalUnits = [];
+        // let totalGrams = [];
+        // let totalRatePreUnit = [];
+        // let totalAmount = [];
+        // if (customerScrap.scrapOrnamentsDetail.length != 0) {
+        //     for (let [index, ornament] of customerScrap.scrapOrnamentsDetail.entries()) {
+        //         await ornamentData.push({
+        //             srNo: index + 1,
+        //             ornamentName: ornament.ornamentType.name,
+        //             quantity: ornament.quantity,
+        //             grossWeight: ornament.netWeight,
+        //             amount: ornament.scrapAmount,
+        //             nullCell: ""
+        //         });
     
-                totalUnits.push(ornament.quantity);
-                totalGrams.push(ornament.netWeight);
-                totalAmount.push(ornament.scrapAmount)
-            }
-        }
-        let finalTotalUnits = _.sum(totalUnits);
-        let finalTotalGrams = _.sum(totalGrams);
-        let finalTotalAmount = _.sum(totalAmount);
-        let amountInWords = convert(finalTotalAmount);
+        //         totalUnits.push(ornament.quantity);
+        //         totalGrams.push(ornament.netWeight);
+        //         totalAmount.push(ornament.scrapAmount)
+        //     }
+        // }
+        // let finalTotalUnits = _.sum(totalUnits);
+        // let finalTotalGrams = _.sum(totalGrams);
+        // let finalTotalAmount = _.sum(totalAmount);
+        let amountInWords = convert(customerScrap.finalScrapAmountAfterMelting);
         
         var html = fs.readFileSync("./templates/scrap-purchase-voucher.html", 'utf8');
     
@@ -1333,6 +1343,19 @@ exports.printPurchaseVoucher = async (req, res) => {
         }else{
             panNo = " NA";
         }
+        console.log(customerScrap.customer.organizationDetail);
+        if(customerScrap.customer.organizationDetail && customerScrap.customer.organizationDetail.gstinNumber){
+            gstinNumber = customerSatte.customer.organizationDetail.gstinNumber
+        }else{
+            gstinNumber = " NA";
+        }
+
+        if(customerScrap.customer.organizationDetail && customerScrap.customer.organizationDetail.cinNumber){
+            cinNumber = customerSatte.customer.organizationDetail.cinNumber
+        }else{
+            cinNumber = " NA";
+        }
+
         let purchaseVoucher = await [{
             customerName: `${customerScrap.customer.firstName} ${customerScrap.customer.lastName}`,
             date: moment(customerScrap.createdAt).format("DD-MM-YYYY"),
@@ -1341,13 +1364,15 @@ exports.printPurchaseVoucher = async (req, res) => {
             customerSatte: customerSatte,
             voucherNumber: customerScrap.scrapUniqueId,
             panNo: panNo,
-            totalUnits: finalTotalUnits,
-            totalGrams: finalTotalGrams,
-            totalAmount: finalTotalAmount,
-            amountInWords: `${amountInWords.toUpperCase()} ONLY`
+            netWeight: customerScrap.meltingOrnament.netWeight,
+            amountInWords: `${amountInWords.toUpperCase()} ONLY`,
+            ratePerGram:  customerScrap.finalScrapAmountAfterMelting / customerScrap.meltingOrnament.netWeight,
+            totalAmount: customerScrap.finalScrapAmountAfterMelting,
+            gstinNumber: gstinNumber,
+            cinNumber: cinNumber
         }]
     
-        // return res.status(200).json({ message: "success", purchaseVoucher,ornamentData });
+        // return res.status(200).json({ message: "success", purchaseVoucher });
 
         let fileName = await `purchaseVoucher${Date.now()}`;
         document = await {
@@ -1358,7 +1383,7 @@ exports.printPurchaseVoucher = async (req, res) => {
                 popperJs: `${process.env.URL}/popper.min.js`,
                 bootstrapJs: `${process.env.URL}/bootstrap.js`,
                 purchaseVoucher: purchaseVoucher,
-                ornamentData: ornamentData
+                // ornamentData: ornamentData
 
             },
             path: `./public/uploads/pdf/${fileName}.pdf`,
