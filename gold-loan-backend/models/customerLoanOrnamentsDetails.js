@@ -67,6 +67,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'ornament_image'
         },
+        currentGoldRate:{
+            type: DataTypes.FLOAT,
+            field: 'current_gold_rate'
+        },
         ltvPercent: {
             type: DataTypes.STRING,
             field: 'ltv_percent'
