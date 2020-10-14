@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LoanApplicationFormService } from '../../../../core/loan-management';
 import { ScrapCustomerManagementService } from '../../../../core/scrap-management';
 import { ActivatedRoute } from '@angular/router';
@@ -15,7 +15,7 @@ import { PartPaymentLogDialogComponent } from '../part-payment-log-dialog/part-p
   templateUrl: './loan-scrap-details.component.html',
   styleUrls: ['./loan-scrap-details.component.scss']
 })
-export class LoanScrapDetailsComponent implements OnInit {
+export class LoanScrapDetailsComponent implements OnInit,OnDestroy {
   images: any = []
   loanId;
   scrapId;
@@ -57,7 +57,7 @@ export class LoanScrapDetailsComponent implements OnInit {
     }
   }
 
-  ngDestroy() {
+  ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
   }
