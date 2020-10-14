@@ -241,17 +241,17 @@ export class UserAddressComponent implements OnInit {
         if (res) {
           this.next.emit(true);
         }
-
-      }, finalize(() => {
-        if (this.controls.moduleId.value == 1) {
-          this.identityForm.controls.identityTypeId.disable()
-        }
-      })),
-      catchError(err => {
-        if (err.error.message)
-          this.toastr.error(err.error.message);
-        throw (err)
-      })
+      },
+        finalize(() => {
+          if (this.controls.moduleId.value == 1) {
+            this.identityForm.controls.identityTypeId.disable()
+          }
+        })),
+      // catchError(err => {
+      //   if (err.error.message)
+      //     this.toastr.error(err.error.message);
+      //   throw (err)
+      // })
     ).subscribe();
 
     // this.next.emit(true);

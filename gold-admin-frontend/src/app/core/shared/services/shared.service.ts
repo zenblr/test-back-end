@@ -39,13 +39,13 @@ export class SharedService {
 	];
 	appraiserOrCCEScrap = [
 		{ value: 'incomplete', name: 'incomplete' },
+		{ value: 'approved', name: 'approved' },
 		{ value: 'rejected', name: 'rejected' },
-		{ value: 'approved', name: 'approved' }
 	];
 	branchManagerScrap = [
 		{ value: 'incomplete', name: 'incomplete' },
+		{ value: 'approved', name: 'approved' },
 		{ value: 'rejected', name: 'rejected' },
-		{ value: 'approved', name: 'approved' }
 	];
 	branchManagerLoan = [
 		{ value: 'incomplete', name: 'incomplete' },
