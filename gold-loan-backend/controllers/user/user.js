@@ -352,16 +352,17 @@ exports.getAppraiser = async (req, res, next) => {
     // })
     // let branchId = logedInUser.internalBranches[0].id
     // let branchId = req.userData.internalBranchId
-    let { internalBranchId, customerId } = req.query
+    let { internalBranchId } = req.query
 
-    let custData = await models.customer.findOne({ where: { id: customerId } })
+    // let custData = await models.customer.findOne({ where: { id: customerId } })
 
     let getAppraiserList = await models.user.findAll({
         where: { isActive: true },
         attributes: ['id', 'firstName', 'lastName'],
         include: [{
             model: models.internalBranch,
-            where: { cityId: custData.cityId }
+            where: { id: internalBranchId }
+            // where: { cityId: custData.cityId }
         }, {
             model: models.userType,
             as: 'Usertype',
