@@ -1798,7 +1798,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
 
             let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
 
-            await sendDisbursalMessage(sendLoanMesage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+            await sendDisbursalMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
 
         })
         return res.status(200).json({ message: 'Your loan amount has been disbursed successfully' });

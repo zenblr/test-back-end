@@ -733,7 +733,7 @@ exports.confirmationForPayment = async (req, res, next) => {
 
             let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
 
-            await sendPaymentMessage(sendLoanMesage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, depositAmount)
+            await sendPaymentMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, depositAmount)
 
         })
 

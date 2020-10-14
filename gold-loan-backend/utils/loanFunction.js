@@ -2141,8 +2141,8 @@ let intrestCalculationForSelectedLoanWithOutT = async (date, masterLoanId, secur
 
 let customerNameNumberLoanId = async (masterLoanId) => {
 
-    let messageLoan = await models.customerLoanMaster.findAll({
-        where: { masterLoanId: masterLoanId },
+    let messageLoan = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
         order: [
             [models.customerLoan, 'id', 'asc']
         ],
@@ -2162,15 +2162,15 @@ let customerNameNumberLoanId = async (masterLoanId) => {
     let customerName = `${messageLoan.customer.firstName} ${messageLoan.customer.lastName}`
     let sendLoanUniqueId;
 
-    if (masterLoan.isUnsecuredSchemeApplied) {
-        sendLoanUniqueId = `${masterLoan.customerLoan[0].loanUniqueId}, ${masterLoan.customerLoan[1].loanUniqueId}`
+    if (messageLoan.isUnsecuredSchemeApplied) {
+        sendLoanUniqueId = `${messageLoan.customerLoan[0].loanUniqueId}, ${messageLoan.customerLoan[1].loanUniqueId}`
     } else {
-        sendLoanUniqueId = `${masterLoan.customerLoan[0].loanUniqueId}`
+        sendLoanUniqueId = `${messageLoan.customerLoan[0].loanUniqueId}`
     }
     return {
         mobileNumber: messageLoan.customer.mobileNumber,
         customerName: customerName,
-        sendLoanUniqueId:sendLoanUniqueId
+        sendLoanUniqueId: sendLoanUniqueId
     }
 }
 
