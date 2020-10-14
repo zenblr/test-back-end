@@ -729,7 +729,7 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
             transactionData.loanUniqueId = loanArray[index]['customerLoan'].loanUniqueId
             transaction.push(transactionData)
             // pendingSecuredAmount = (loanArray[index]['outstandingInterest'] - pendingSecuredAmount).toFixed(2)
-            loanArray[index]['outstandingInterest'] = loanArray[index]['outstandingInterest'] - loanArray[index]['paidAmount'];
+            loanArray[index]['outstandingInterest'] = loanArray[index]['outstandingInterest'] - Number(pendingSecuredAmount.toFixed(2))
             pendingSecuredAmount = 0.00;
             loanArray[index]['emiReceivedDate'] = paymentReceivedDate
 
@@ -978,7 +978,7 @@ let penalInterestPayment = async (loanArray, totalPenalAmount, createdBy, receiv
             loanArray[index]['penalPaid'] = Number(loanArray[index]['penalPaid']) + Number(pendingPenalAmount.toFixed(2))
             // loanArray[index]['penalPaid'] = pendingPenalAmount.toFixed(2)
             pendingPenalAmount = (Number(loanArray[index]['penalInterest']) - Number(pendingPenalAmount)).toFixed(2)
-            loanArray[index]['penalOutstanding'] = Number(loanArray[index]['penalOutstanding']) - Number(loanArray[index]['penalPaid']);
+            loanArray[index]['penalOutstanding'] = Number(loanArray[index]['penalOutstanding']) - Number(pendingPenalAmount);
             pendingPenalAmount = 0.00;
 
         } else if (pendingPenalAmount >= Number(loanArray[index]['penalInterest']) && Number(loanArray[index]['penalOutstanding']) > 0) {
