@@ -299,9 +299,13 @@
                                                 No.</label>
                                         </div>
                                         <div class="col-7">
-                                            <input formControlName="addressProofNumber" type="text"
+                                            <input *ngIf="addressControls.at(i).value.addressProofTypeId == 2"
+                                                formControlName="addressProofNumber" type="text" maxlength="12"
+                                                placeholder="Unique Identity Number" class="form-control" numbersOnly
+                                                [class.isError]="addressForm.controls.addressProofNumber.touched && addressForm.controls.addressProofNumber.invalid">
+                                            <input *ngIf="addressControls.at(i).value.addressProofTypeId != 2"
+                                                formControlName="addressProofNumber" type="text"
                                                 placeholder="Unique Identity Number" class="form-control"
-                                                maxlength="{{controls.moduleId.value == 3 ? 12 : null}}"
                                                 [class.isError]="addressForm.controls.addressProofNumber.touched && addressForm.controls.addressProofNumber.invalid">
                                             <mat-error
                                                 *ngIf="addressForm.controls.addressProofNumber.errors?.required && addressForm.controls.addressProofNumber.touched">

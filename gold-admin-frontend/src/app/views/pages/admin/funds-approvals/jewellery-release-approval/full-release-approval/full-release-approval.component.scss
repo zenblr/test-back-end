@@ -7,7 +7,7 @@
     .mat-column-principalOutstandingAmountLTV{
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
+        align-items: flex-start;
         flex: 0 0 8%;
     }
 
@@ -33,7 +33,7 @@
     .mat-column-loanAmount{
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
+        align-items: flex-start;
         padding-right: 25px;
         justify-content: flex-end;
         flex: 0 0 4%;
@@ -41,35 +41,35 @@
     .mat-column-principalAmount{
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
+        align-items: flex-start;
         padding-right: 25px;
         justify-content: flex-end;
         flex: 0 0 6%;
     }
     .mat-column-totalPayableAmount{
         padding-right: 25px;
-        justify-content: flex-end;
+        justify-content: flex-start;
         flex: 0 0 6%;
     }
     .mat-column-penalInterest{
         padding-right: 25px;
-        justify-content: flex-end;
+        justify-content: flex-start;
     }
     .mat-column-interestAmount{
         padding-right: 25px;
-        justify-content: flex-end;
+        justify-content: flex-start;
     }
     .mat-column-ornamentReleaseAmount{
         padding-right: 25px;
-        justify-content: flex-end;
+        justify-content: flex-start;
     }
     .mat-column-previousLTV{
         padding-right: 25px;
-        justify-content: flex-end;
+        justify-content: flex-start;
     }
     .mat-column-currentLTV{
         padding-right: 25px;
-        justify-content: flex-end;
+        justify-content: flex-start;
     }
     .mat-column-customerId{
         flex: 0 0 5%;

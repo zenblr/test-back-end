@@ -171,6 +171,7 @@ export class ScrapUpdateLocationComponent implements OnInit {
       }
       this.enablePacketLocationId();
       this.enableUserType();
+      this.enableInternalBranchId();
       this.scrapUpdateLocationService.submitScrapPacketLocation(this.locationForm.value)
         .pipe(
           map(() => {
@@ -247,6 +248,7 @@ export class ScrapUpdateLocationComponent implements OnInit {
         this.otpVerfied = false;
         this.otpSent = false;
       }
+      this.otpSent = false
       return;
     }
     const mobileNumber = this.locationForm.controls.mobileNumber.value;
@@ -285,6 +287,9 @@ export class ScrapUpdateLocationComponent implements OnInit {
   }
 
   sendOTP() {
+    if (this.locationForm.controls.mobileNumber.invalid) {
+      return this.controls.mobileNumber.markAsTouched();
+    }
     this.otpSent = true;
     this.generateOTP();
   }
@@ -432,6 +437,9 @@ export class ScrapUpdateLocationComponent implements OnInit {
         this.controls.partnerBranchId.updateValueAndValidity();
         this.clearInternalBranchData();
       }
+      if (this.internalBranches.length === 1) {
+        this.disableInternalBranchId();
+      }
       // console.log(res)
     })).subscribe();
   }
@@ -521,6 +529,14 @@ export class ScrapUpdateLocationComponent implements OnInit {
 
   enablePacketLocationId() {
     this.controls.packetLocationId.enable();
+  }
+
+  disableInternalBranchId() {
+    this.controls.internalBranchId.disable();
+  }
+
+  enableInternalBranchId() {
+    this.controls.internalBranchId.enable();
   }
 
   disableDeliveryPacketLocationId() {

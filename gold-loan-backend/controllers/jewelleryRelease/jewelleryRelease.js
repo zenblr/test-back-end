@@ -7,7 +7,7 @@ const check = require("../../lib/checkLib");
 const action = require('../../utils/partReleaseHistory');
 const actionFullRelease = require('../../utils/fullReleaseHistory');
 const loanFunction = require('../../utils/loanFunction');
-const { getCustomerInterestAmount, customerLoanDetailsByMasterLoanDetails, getGlobalSetting, getLoanDetails, allInterestPayment, getAmountLoanSplitUpData, getTransactionPrincipalAmount } = require('../../utils/loanFunction');
+const { getCustomerInterestAmount, customerLoanDetailsByMasterLoanDetails, getGlobalSetting, getLoanDetails, allInterestPayment, getAmountLoanSplitUpData, getTransactionPrincipalAmount, customerNameNumberLoanId } = require('../../utils/loanFunction');
 const moment = require('moment')
 const uniqid = require('uniqid');
 const _ = require('lodash');
@@ -15,7 +15,8 @@ const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 const razorpay = require('../../utils/razorpay');
 let crypto = require('crypto');
 const { BASIC_DETAILS_SUBMIT } = require('../../utils/customerLoanHistory');
-const { sendMessageAssignedCustomerToAppraiser, sendMessageCustomerForAssignAppraiser } = require('../../utils/SMS')
+const { sendPartReleaseRequestMessage, sendPartReleaseRequestApprovalMessage, sendMessageAssignedCustomerToAppraiser, sendJewelleryPartReleaseCompletedMessage, sendFullReleaseRequestMessage, sendFullReleaseRequestApprovalMessage, sendFullReleaseAssignAppraiserMessage, sendJewelleryFullReleaseCompletedMessage, sendPartReleaseAssignAppraiserMessage, sendMessageCustomerForAssignAppraiser } = require('../../utils/SMS')
+
 
 exports.ornamentsDetails = async (req, res, next) => {
 
@@ -570,6 +571,10 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                     await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_AMOUNT_STATUS_C, createdBy, modifiedBy }, { transaction: t });
                     //
                 }
+
+                let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
+
+                await sendPartReleaseRequestMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
             } else {
                 return res.status(400).json({ message: 'invalid paymentType' });
             }
@@ -813,6 +818,11 @@ exports.updateAmountStatus = async (req, res, next) => {
                     await models.partRelease.update({ amountStatus: 'completed', modifiedBy }, { where: { id: partReleaseId }, transaction: t });
                     await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_AMOUNT_STATUS_C, createdBy, modifiedBy }, { transaction: t });
                 });
+
+                let sendLoanMessage = await customerNameNumberLoanId(partReleaseData.masterLoanId)
+
+                await sendPartReleaseRequestApprovalMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+
                 return res.status(200).json({ message: "success" });
             } else if (amountStatus == 'rejected') {
                 await sequelize.transaction(async t => {
@@ -856,12 +866,18 @@ exports.partReleaseAssignAppraiser = async (req, res, next) => {
         await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_ASSIGNED_APPRAISER, createdBy, modifiedBy }, { transaction: t });
     });
     // send sms
+    let data = await models.partRelease.findOne({ where: { id: partReleaseId } })
 
     let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } });
     let customerInfo = await models.customer.findOne({ where: { id: customerId } })
+
+    let sendLoanMessage = await customerNameNumberLoanId(data.masterLoanId)
+
+    await sendPartReleaseAssignAppraiserMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, firstName)
+
     await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
-    await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+    // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
     // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=${customerInfo.firstName} is assign for you`);
     return res.status(200).json({ message: 'success' });
@@ -1095,6 +1111,11 @@ exports.updatePartReleaseStatus = async (req, res, next) => {
                     await models.customerLoanMaster.update({ isOrnamentsReleased: true, modifiedBy }, { where: { id: partReleaseData.masterLoanId }, transaction: t });
                     await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_STATUS_R, createdBy, modifiedBy }, { transaction: t });
                 });
+
+                let sendLoanMessage = await customerNameNumberLoanId(partReleaseData.masterLoanId)
+
+                await sendJewelleryPartReleaseCompletedMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+
                 return res.status(200).json({ message: "success" });
             }
         } else {
@@ -1150,9 +1171,13 @@ exports.updateAppraiser = async (req, res, next) => {
     });
     let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } });
     let customerInfo = await models.customer.findOne({ where: { id: customerId } })
+    let data = await models.partRelease.findOne({ where: { id: partReleaseId } })
+    let sendLoanMessage = await customerNameNumberLoanId(data.masterLoanId)
+
+    await sendPartReleaseAssignAppraiserMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, firstName)
     await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
-    await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+    // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
     return res.status(200).json({ message: 'success' });
 }
@@ -1552,6 +1577,10 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                     await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_AMOUNT_STATUS_C, createdBy, modifiedBy }, { transaction: t });
                     ////
                 }
+
+                let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
+
+                await sendFullReleaseRequestMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
             } else {
                 return res.status(400).json({ message: 'Invalid paymentType' });
             }
@@ -1792,6 +1821,11 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
                     await models.fullRelease.update({ amountStatus: 'completed', modifiedBy }, { where: { id: fullReleaseId }, transaction: t });
                     await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_AMOUNT_STATUS_C, createdBy, modifiedBy }, { transaction: t });
                 });
+
+                let sendLoanMessage = await customerNameNumberLoanId(fullReleaseData.masterLoanId)
+
+                await sendFullReleaseRequestApprovalMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+
                 return res.status(200).json({ message: "success", payment });
             } else if (amountStatus == 'rejected') {
                 await sequelize.transaction(async t => {
@@ -1832,9 +1866,13 @@ exports.fullReleaseAssignReleaser = async (req, res, next) => {
 
     let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: releaserId } });
     let customerInfo = await models.customer.findOne({ where: { id: customerId } })
+    let data = await models.fullRelease.findOne({ where: { id: fullReleaseId } })
+    let sendLoanMessage = await customerNameNumberLoanId(data.masterLoanId)
+
+    await sendFullReleaseAssignAppraiserMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, firstName)
     await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
-    await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+    // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
     // let customerInfo = await models.customer.findOne({ where: { id: customerId } })
     // let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } });
     // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=${customerInfo.firstName} is assign for you`);
@@ -1852,9 +1890,13 @@ exports.updateReleaser = async (req, res, next) => {
 
     let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: releaserId } });
     let customerInfo = await models.customer.findOne({ where: { id: customerId } })
+    let data = await models.fullRelease.findOne({ where: { id: fullReleaseId } })
+    let sendLoanMessage = await customerNameNumberLoanId(data.masterLoanId)
+
+    await sendFullReleaseAssignAppraiserMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, firstName)
     await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
-    await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+    // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
     return res.status(200).json({ message: 'success' });
 }
@@ -2079,6 +2121,10 @@ exports.updatePartReleaseReleaserStatus = async (req, res, next) => {
                     await models.customerLoanMaster.update({ isOrnamentsReleased: true, isFullOrnamentsReleased: true, modifiedBy }, { where: { id: fullReleaseData.masterLoanId }, transaction: t });
                     await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_STATUS_R, createdBy, modifiedBy }, { transaction: t });
                 });
+
+                let sendLoanMessage = await customerNameNumberLoanId(fullReleaseData.masterLoanId)
+
+                await sendJewelleryFullReleaseCompletedMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
                 return res.status(200).json({ message: "success" });
             }
         } else {

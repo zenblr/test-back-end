@@ -81,7 +81,7 @@ exports.sendOtp = async (req, res, next) => {
 
         if (type == "login") {
             await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
-        }else if(type == "forget"){
+        } else if (type == "forget") {
             await forgetPasswordOtp(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
         }
         // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
@@ -250,10 +250,10 @@ exports.addInternalUser = async (req, res, next) => {
 
 exports.updateInternalUser = async (req, res, next) => {
     const id = req.params.id;
-    let { firstName, lastName, mobileNumber, email, internalBranchId, userTypeId, roleId,userUniqueId } = req.body;
+    let { firstName, lastName, mobileNumber, email, internalBranchId, userTypeId, roleId, userUniqueId } = req.body;
     let modifiedBy = req.userData.id;
     await sequelize.transaction(async t => {
-        const user = await models.user.update({ firstName, lastName, mobileNumber, userTypeId, email, modifiedBy,userUniqueId }, { where: { id: id }, transaction: t })
+        const user = await models.user.update({ firstName, lastName, mobileNumber, userTypeId, email, modifiedBy, userUniqueId }, { where: { id: id }, transaction: t })
         await models.userRole.destroy({ where: { userId: id }, transaction: t });
         await models.userRole.create({ userId: id, roleId }, { transaction: t });
         if (internalBranchId != null && internalBranchId != undefined) {
@@ -354,12 +354,15 @@ exports.getAppraiser = async (req, res, next) => {
     // let branchId = req.userData.internalBranchId
     let { internalBranchId } = req.query
 
+    // let custData = await models.customer.findOne({ where: { id: customerId } })
+
     let getAppraiserList = await models.user.findAll({
         where: { isActive: true },
         attributes: ['id', 'firstName', 'lastName'],
         include: [{
             model: models.internalBranch,
             where: { id: internalBranchId }
+            // where: { cityId: custData.cityId }
         }, {
             model: models.userType,
             as: 'Usertype',

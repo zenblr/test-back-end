@@ -55,8 +55,8 @@ export class QuickPayComponent implements OnInit {
     this.quickPayServie.getPayableAmount(this.masterLoanId).subscribe(res => {
       this.payableAmount = res.data;
       this.sum = 0;
-      this.sum = Number(this.payableAmount.securedPenalInterest) + Number(this.payableAmount.unsecuredPenalInterest) + Number(this.payableAmount.unsecuredTotalInterest) + Number(this.payableAmount.securedTotalInterest)
-      this.payableAmt.patchValue(this.sum.toFixed(2))
+      this.sum = Number((Number(this.payableAmount.securedPenalInterest) + Number(this.payableAmount.unsecuredPenalInterest) + Number(this.payableAmount.unsecuredTotalInterest) + Number(this.payableAmount.securedTotalInterest)).toFixed(2))
+      this.payableAmt.patchValue(this.sum)
       this.ref.detectChanges()
     })
   }
@@ -128,16 +128,17 @@ export class QuickPayComponent implements OnInit {
       return this.toastr.error('Please select a payment method')
     }
 
-    if (this.paymentValue.paymentType == 'gateway') {
+    if (this.paymentValue.paymentType == 'upi' || this.paymentValue.paymentType == 'netbanking' || this.paymentValue.paymentType == 'wallet' || this.paymentValue.paymentType == 'card') {
       this.sharedService.paymentGateWay(this.payableAmt.value).subscribe(
         res => {
           this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
           this.razorpayPaymentService.razorpayOptions.amount = res.razorPayOrder.amount;
           this.razorpayPaymentService.razorpayOptions.order_id = res.razorPayOrder.id;
           this.razorpayPaymentService.razorpayOptions.paymentMode = res.paymentMode;
-          this.razorpayPaymentService.razorpayOptions.prefill.contact = '000000000';
+          this.razorpayPaymentService.razorpayOptions.prefill.contact = '9892545454';
           this.razorpayPaymentService.razorpayOptions.prefill.email = 'info@augmont.in';
           this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
+          this.razorpayPaymentService.razorpayOptions.prefill.method = this.paymentValue.paymentType;
           this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
         }
       )

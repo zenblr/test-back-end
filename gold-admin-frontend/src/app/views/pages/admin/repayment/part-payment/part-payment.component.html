@@ -6,9 +6,9 @@
                     <thead>
                         <th class="transparent th-style th-padding-style">Loan ID</th>
                         <th class="transparent th-style table-amount">Loan Amount</th>
-                        <th class="transparent th-style th-padding-style">Loan Date</th>
-                        <th class="transparent th-style th-padding-style">Last Part Payment Date</th>
-                        <th class="transparent th-style table-amount table-last">Principal Outstanding</th>
+                        <th class="transparent th-style ">Loan Date</th>
+                        <th class="transparent th-style ">Last Part Payment Date</th>
+                        <th class="transparent th-style table-amount">Principal Outstanding</th>
                     </thead>
                     <tbody>
                         <tr>
@@ -26,10 +26,9 @@
                                     {{loanDetails?.loan?.customerLoan[1]?.loanAmount}}
                                 </span>
                             </td>
-                            <td class="th-padding-style">{{loanDetails?.loan?.loanStartDate | date :'mediumDate'}}</td>
+                            <td class="">{{loanDetails?.loan?.loanStartDate | date :'mediumDate'}}</td>
 
-                            <td class="th-padding-style"
-                                *ngIf="loanDetails?.loan?.lastPaymentDate else blankTableValue">
+                            <td class="" *ngIf="loanDetails?.loan?.lastPaymentDate else blankTableValue">
                                 {{loanDetails?.loan?.lastPaymentDate | date :'mediumDate'}}
 
                             </td>
@@ -94,7 +93,7 @@
                             <th class="transparent th-width-style th-padding-style">Loan ID</th>
                             <th class="transparent th-width-style table-amount">Part Payment Amount
                             </th>
-                            <th class="transparent th-width-style th-p-style table-amount">Interest Amount</th>
+                            <th class="transparent th-width-style  table-amount">Interest Amount</th>
                             <th class="transparent th-width-style table-amount">Penal Interest
                             </th>
                         </thead>
@@ -112,7 +111,7 @@
                                     <br>
                                     <span>{{payableAmountSummary?.unsecuredRatio}}</span>
                                 </td>
-                                <td class="th-p-style table-amount">
+                                <td class=" table-amount">
                                     <span>{{payableAmountSummary?.securedInterest}}</span> <br>
                                     <span *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">
                                         {{payableAmountSummary?.unsecuredInterest}}
