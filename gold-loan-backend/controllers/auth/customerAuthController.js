@@ -60,7 +60,7 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyCustomer)) {
-        return res.status(401).json({ message: `Invalid Otp` })
+        return res.status(401).json({ message: `INVALID OTP` })
     }
 
 

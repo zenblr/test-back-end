@@ -161,7 +161,7 @@ exports.verifyLoginOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyUser)) {
-        return res.status(400).json({ message: `Invalid Otp` })
+        return res.status(400).json({ message: `INVALID OTP` })
     }
 
     let checkUser;
