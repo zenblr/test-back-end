@@ -424,7 +424,7 @@ exports.razorPayCreateOrderForOrnament = async (req, res, next) => {
 exports.ornamentsPartRelease = async (req, res, next) => {
     let { paymentType, paidAmount, bankName, chequeNumber, ornamentId, depositDate, transactionDetails, branchName, transactionId, masterLoanId } = req.body;
     let createdBy = req.userData.id;
-    let modifiedBy = req.userData.id;
+    let modifiedBy = null;
     let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
         where: { isReleased: true, masterLoanId: masterLoanId }
     });
@@ -437,13 +437,13 @@ exports.ornamentsPartRelease = async (req, res, next) => {
     if (checkOrnament.length == 0) {
         let addPartRelease;
         let partRelease = await sequelize.transaction(async t => {
-            if (['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'UPI', 'gateway'].includes(paymentType)) {
+            if (['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'upi', 'card','netbanking','wallet'].includes(paymentType)) {
                 let transactionUniqueId = uniqid.time().toUpperCase();
                 let loanTransaction;
                 let signatureVerification = false;
                 let isRazorPay = false;
                 let razorPayTransactionId;
-                if (paymentType == 'gateway') {
+                if (paymentType == 'upi' || paymentType == 'netbanking' || paymentType == 'wallet' || paymentType == 'card') {
                     let razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
                     transactionUniqueId = razerpayData.receipt;
                     const generated_signature = crypto
@@ -1447,14 +1447,13 @@ exports.ornamentsFullRelease = async (req, res, next) => {
     if (checkOrnament.length == 0) {
         let addFullRelease;
         let fullRelease = await sequelize.transaction(async t => {
-            if (['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'UPI', 'gateway'].includes(paymentType)) {
+            if (['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'upi', 'card','netbanking','wallet'].includes(paymentType)) {
                 let transactionUniqueId = uniqid.time().toUpperCase();
                 let loanTransaction;
                 let signatureVerification = false;
                 let isRazorPay = false;
                 let razorPayTransactionId;
-                if (paymentType == 'gateway') {
-                    let razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
+                if (paymentType == 'upi' || paymentType == 'netbanking' || paymentType == 'wallet' || paymentType == 'card') {                    let razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
                     transactionUniqueId = razerpayData.receipt;
                     const generated_signature = crypto
                         .createHmac(
@@ -1491,8 +1490,8 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                     ////
                     let amountStatus = "completed";
                     let fullReleaseId = addFullRelease.id;
-                    let modifiedBy = req.userData.id;
-                    let createdBy = req.userData.id;
+                    let modifiedBy = null;
+                    let createdBy = null;
                     let payment = await allInterestPayment(loanTransaction.id, newTransactionSplitUp);
                     let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(loanTransaction.id, securedTransactionSplit, unsecuredTransactionSplit);
                     //update in interest table
