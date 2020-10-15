@@ -181,7 +181,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if(changes.isPartRelease){
+    if (changes.isPartRelease) {
       console.log(changes.isPartRelease.currentValue)
 
     }
@@ -213,8 +213,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         for (let index = 0; index < array.length; index++) {
           const group = this.OrnamentsData.at(index) as FormGroup
           group.patchValue(array[index])
-          if(this.isPartRelease){
-            group.patchValue({currentLtvAmount:this.ltvGoldRate,currentGoldRate:this.goldRate})
+          if (this.isPartRelease) {
+            group.patchValue({ currentLtvAmount: this.ltvGoldRate, currentGoldRate: this.goldRate })
             this.calculateLtvAmount(index)
           }
           // this.calcGoldDeductionWeight(index)
@@ -795,7 +795,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         return
       }
     }
-    if (this.meltingOrnament) { 
+    if (this.meltingOrnament) {
       const controls = this.OrnamentsData.at(0) as FormGroup;
       controls.controls.customerConfirmation.setValidators(Validators.required),
         controls.controls.customerConfirmation.updateValueAndValidity()

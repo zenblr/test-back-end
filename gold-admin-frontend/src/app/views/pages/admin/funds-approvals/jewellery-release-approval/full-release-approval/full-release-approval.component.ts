@@ -92,7 +92,8 @@ export class FullReleaseApprovalComponent implements OnInit {
           customer: item.masterLoan.customer,
           id: item.masterLoan.customerId,
           fullReleaseId: item.id,
-          isReleaser: true
+          isReleaser: true,
+          customerId: item.masterLoan.customerId
         },
         width: '500px'
       });
@@ -111,7 +112,8 @@ export class FullReleaseApprovalComponent implements OnInit {
           appraiser: item.releaser,
           customer: item.masterLoan.customer,
           fullReleaseId: item.id,
-          isReleaser: true
+          isReleaser: true,
+          customerId: item.masterLoan.customerId
         },
         width: '500px'
       });

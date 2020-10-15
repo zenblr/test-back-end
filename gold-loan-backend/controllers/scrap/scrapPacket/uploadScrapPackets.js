@@ -9,9 +9,8 @@ const fs = require("fs");
 
 // upload packet csv
 exports.scrapUploadPacket = async (req, res, next) => {
-
         const csvFilePath = req.file.path;
-        const { internalUserBranch } = req.body;
+        const { internalUserBranchId } = req.body;
         const jsonArray = await csv().fromFile(csvFilePath);
         if (jsonArray.length == 0) { return res.status(400).json({ message: `Your file is empty.` }) }
     
@@ -36,7 +35,7 @@ exports.scrapUploadPacket = async (req, res, next) => {
         }
     
         var contain = await models.scrapPacket.findAll({
-            where: { packetUniqueId: { [Op.in]: packets }, }
+            where: { packetUniqueId: { [Op.in]: packets }, isActive: true }
         })
     
         if (contain.length > 0) {
@@ -45,7 +44,7 @@ exports.scrapUploadPacket = async (req, res, next) => {
         }
     
         var containBarcode = await models.scrapPacket.findAll({
-            where: { barcodeNumber: { [Op.in]: barcode } }
+            where: { barcodeNumber: { [Op.in]: barcode }, isActive: true }
     
         })
     
@@ -64,7 +63,7 @@ exports.scrapUploadPacket = async (req, res, next) => {
                 modifiedBy,
                 packetAssigned: false,
                 isActive: true,
-                internalUserBranchId: internalUserBranch,
+                internalUserBranchId: internalUserBranchId,
                 packetUniqueId: jsonArray[i].packetUniqueId,
                 barcodeNumber: jsonArray[i].barcodeNumber
     

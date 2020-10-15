@@ -245,4 +245,10 @@ export class PacketTrackingComponent implements OnInit {
     return isNotAllowed;
   }
 
+  colorCodeEntry(packet) {
+    const locationData = packet.locationData
+    const currentLocation = locationData[locationData.length - 1]
+    const colorClass = currentLocation.status == 'complete' || currentLocation.scrapPacketLocation.id === 3 ? 'text-success' : 'text-danger'
+    return colorClass
+  }
 }

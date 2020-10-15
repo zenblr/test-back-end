@@ -34,6 +34,7 @@ export class UserDetailsComponent implements OnInit {
   organizationTypes: any;
   maxDate = new Date()
   moduleId: any
+  disabled: boolean;
 
   constructor(
     public fb: FormBuilder,
@@ -54,6 +55,8 @@ export class UserDetailsComponent implements OnInit {
       // if (params) {
       const MOB = params.get("mob");
       this.moduleId = params.get("moduleId");
+      this.disabled = params.get("disabled") == 'true' ? true : false
+
       if (MOB) {
         this.controls.mobileNumber.patchValue(MOB);
         this.sendOTP();
@@ -61,9 +64,13 @@ export class UserDetailsComponent implements OnInit {
 
       if (this.moduleId) {
         this.controls.moduleId.patchValue(this.moduleId);
-        console.log(this.userBasicForm.value)
-        // this.ref.detectChanges()
+        // console.log(this.userBasicForm.value)
       }
+
+      if (this.disabled) {
+        this.disableControls()
+      }
+
     })
 
     this.controls.mobileNumber.valueChanges.subscribe(res => {
@@ -296,6 +303,7 @@ export class UserDetailsComponent implements OnInit {
   }
 
   submit() {
+    this.enableControls()
     if (this.userBasicForm.invalid) {
       this.userBasicForm.markAllAsTouched()
       return
@@ -331,6 +339,7 @@ export class UserDetailsComponent implements OnInit {
         this.userBasicForm.controls.otp.disable();
         this.userBasicForm.controls.referenceCode.disable();
         this.userBasicForm.enable()
+        if (this.disabled) this.disableControls()
       })
     ).subscribe();
   }
@@ -392,4 +401,17 @@ export class UserDetailsComponent implements OnInit {
     this.controls.dateOfIncorporation.updateValueAndValidity()
   }
 
+  disableControls() {
+    this.controls.firstName.disable()
+    this.controls.lastName.disable()
+    this.controls.mobileNumber.disable()
+    this.controls.panType.disable()
+  }
+
+  enableControls() {
+    this.controls.firstName.enable()
+    this.controls.lastName.enable()
+    this.controls.mobileNumber.enable()
+    this.controls.panType.enable()
+  }
 }

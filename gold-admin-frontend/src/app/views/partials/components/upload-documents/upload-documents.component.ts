@@ -233,6 +233,7 @@ export class UploadDocumentsComponent implements OnInit {
         } else {
           this.controls.processingCharges.patchValue(this.globalValue.processingChargesFixed);
         }
+        this.calculateAfterDeduction();
       }
     }
   }
