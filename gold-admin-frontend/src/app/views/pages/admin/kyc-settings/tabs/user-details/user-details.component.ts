@@ -406,6 +406,7 @@ export class UserDetailsComponent implements OnInit {
     this.controls.lastName.disable()
     this.controls.mobileNumber.disable()
     this.controls.panType.disable()
+    this.controls.panCardNumber.disable()    
   }
 
   enableControls() {
@@ -413,5 +414,6 @@ export class UserDetailsComponent implements OnInit {
     this.controls.lastName.enable()
     this.controls.mobileNumber.enable()
     this.controls.panType.enable()
+    this.controls.panCardNumber.enable()
   }
 }

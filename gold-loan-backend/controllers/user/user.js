@@ -109,7 +109,7 @@ exports.verifyOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyUser)) {
-        return res.status(400).json({ message: `Invalid OTP.` })
+        return res.status(400).json({ message: `INVALID OTP.` })
     }
     await sequelize.transaction(async t => {
         let verifyFlag = await models.userOtp.update({ isVerified: true }, { where: { id: verifyUser.id }, transaction: t });
@@ -126,7 +126,7 @@ exports.updatePassword = async (req, res, next) => {
     let verifyUser = await models.userOtp.findOne({ where: { referenceCode, isVerified: true } })
 
     if (check.isEmpty(verifyUser)) {
-        return res.status(400).json({ message: `Invalid OTP.` })
+        return res.status(400).json({ message: `INVALID OTP.` })
     }
     let user = await models.user.findOne({ where: { mobileNumber: verifyUser.mobileNumber } });
 

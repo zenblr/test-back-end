@@ -163,7 +163,7 @@ exports.payableAmountConfirm = async (req, res, next) => {
 exports.quickPayment = async (req, res, next) => {
 
     let createdBy = req.userData.id;
-    let modifiedBy = req.userData.id;
+    let modifiedBy = null;
 
     let { paymentDetails, payableAmount, masterLoanId, transactionDetails } = req.body;
     let { bankName, branchName, chequeNumber, depositDate, depositTransactionId, paymentType, transactionId } = paymentDetails
@@ -172,13 +172,13 @@ exports.quickPayment = async (req, res, next) => {
     let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
     let transactionUniqueId = uniqid.time().toUpperCase();
 
-    if (!['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'UPI', 'gateway'].includes(paymentType)) {
+    if (!['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'upi', 'card','netbanking','wallet'].includes(paymentType)) {
         return res.status(400).json({ message: "Invalid payment type" })
     }
     let signatureVerification = false;
     let razorPayTransactionId;
     let isRazorPay = false;
-    if (paymentType == 'gateway') {
+    if (paymentType == 'upi' || paymentType == 'netbanking' || paymentType == 'wallet' || paymentType == 'card') {
         let razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
         transactionUniqueId = razerpayData.receipt;
         const generated_signature = crypto

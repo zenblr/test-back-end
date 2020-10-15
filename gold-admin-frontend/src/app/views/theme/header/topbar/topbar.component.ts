@@ -391,7 +391,7 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "applied-loan") {
 			this.showfilter = true;
-			this.filterWidth = "600px"
+			this.filterWidth = "800px"
 			this.filterName = "loan"
 			this.showInput = true;
 			this.listType = "approval";

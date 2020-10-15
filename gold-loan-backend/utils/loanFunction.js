@@ -1527,6 +1527,10 @@ let stepDown = async (paymentDate, loan, noOfDays) => {
             },
             order: [['id', 'asc']]
         })
+
+        if (emiTable.length == 0) {
+            return { newEmiTable }
+        }
         lastDueDate = emiTable[0].emiDueDate;
         startDate = emiTable[0].emiStartDate;
         noDays = moment(paymentDate).diff(moment(startDate), 'days')
@@ -1567,95 +1571,6 @@ let stepDown = async (paymentDate, loan, noOfDays) => {
             newEmiTable = [...newEmiTable, ...tempTable]
         }
     }
-
-
-    // if (loan.customerLoan.length > 1) {
-    //     let interestData = await models.customerLoanSlabRate.findOne({
-    //         where: {
-    //             loanId: loan.customerLoan[1].id,
-    //             days: { [Op.gte]: slab }
-    //         },
-
-    //     })
-    // }
-
-
-    // if (paymentDate == lastDueDate || diff < 0) {
-    //     let interestData = await models.customerLoanSlabRate.findAll({
-    //         where: { loanId: loan.customerLoan[0].id },
-    //         order: [['days', 'asc']]
-    //     })
-    //     let index = interestData.findIndex(ele => {
-    //         return ele.interestRate == emiTable[0].interestRate
-    //     })
-    //     if (index - 1 >= 0) {
-
-
-    //         var stepDownInterest = interestData[index - 1].interestRate
-
-    //         var currentSlabRate = interestData[index - 1].days
-
-    //         if (Number(loan.paymentFrequency) <= Number(currentSlabRate)) {
-    //             var newEmiTable = await models.customerLoanInterest.findAll({
-    //                 where: {
-    //                     loanId: loan.customerLoan[0].id,
-    //                     emiStatus: { [Op.notIn]: ['paid'] }
-    //                 }
-    //             })
-
-    //             for (let index = 0; index < newEmiTable.length; index++) {
-    //                 const element = newEmiTable[index].dataValues;
-    //                 element.interestRate = stepDownInterest;
-    //             }
-
-    //             if (loan.customerLoan.length > 1) {
-
-    //                 let unsecuredEmiTable = await models.customerLoanInterest.findAll({
-    //                     where: {
-    //                         loanId: loan.customerLoan[1].id,
-    //                         emiDueDate: { [Op.lte]: paymentDate },
-    //                         emiStatus: { [Op.notIn]: ['paid'] }
-    //                     }
-    //                 })
-
-
-
-    //                 let unsecuredInterestData = await models.customerLoanSlabRate.findAll({
-    //                     where: { loanId: loan.customerLoan[1].id },
-    //                     order: [['days', 'asc']]
-    //                 })
-    //                 let unsecuredIndex = unsecuredInterestData.findIndex(ele => {
-    //                     return ele.interestRate == unsecuredEmiTable[0].interestRate
-    //                 })
-
-    //                 if (unsecuredIndex == 0) {
-    //                     unsecuredIndex = 1;
-    //                 }
-
-    //                 var unsecuredStepDownInterest = unsecuredInterestData[unsecuredIndex - 1].interestRate
-
-    //                 var unsecuredcurrentSlabRate = interestData[index - 1].days
-    //                 var unsecurednewEmiTable = await models.customerLoanInterest.findAll({
-    //                     where: {
-    //                         loanId: loan.customerLoan[1].id,
-    //                         emiStatus: { [Op.notIn]: ['paid'] }
-    //                     }
-    //                 })
-
-    //                 for (let index = 0; index < unsecurednewEmiTable.length; index++) {
-    //                     const element = unsecurednewEmiTable[index].dataValues;
-    //                     element.interestRate = unsecuredStepDownInterest;
-    //                 }
-    //                 newEmiTable = [...newEmiTable, ...unsecurednewEmiTable]
-    //             }
-    //         }
-
-    //     }
-    // } else {
-    //     newEmiTable = []
-    // }
-
-
 
 
 

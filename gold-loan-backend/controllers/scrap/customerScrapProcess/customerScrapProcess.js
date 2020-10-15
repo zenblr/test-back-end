@@ -1235,7 +1235,7 @@ exports.printCustomerAcknowledgement = async (req, res) => {
 }
 
 exports.printPurchaseVoucher = async (req, res) => {
-    try{
+    
         let { scrapId } = req.query;
         let customerScrap = await models.customerScrap.findOne({
             where: { id: scrapId },
@@ -1343,7 +1343,6 @@ exports.printPurchaseVoucher = async (req, res) => {
         }else{
             panNo = " NA";
         }
-        console.log(customerScrap.customer.organizationDetail);
         if(customerScrap.customer.organizationDetail && customerScrap.customer.organizationDetail.gstinNumber){
             gstinNumber = customerSatte.customer.organizationDetail.gstinNumber
         }else{
@@ -1402,10 +1401,7 @@ exports.printPurchaseVoucher = async (req, res) => {
                 }
             });
         }
-    }catch(err){
-        console.log(err);
-    }
-    
+
 }
 
 exports.getScrapStatus = async (req, res) => {

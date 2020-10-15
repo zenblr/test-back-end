@@ -20,6 +20,7 @@ exports.customerLogin = async (req, res, next) => {
             mobile: checkCustomer.dataValues.mobileNumber,
             firstName: checkCustomer.dataValues.firstName,
             lastName: checkCustomer.dataValues.lastName,
+            email:checkCustomer.dataValues.email,
             userBelongsTo: "CustomerUser"
         },
             JWT_SECRETKEY, {
@@ -60,7 +61,7 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyCustomer)) {
-        return res.status(401).json({ message: `Invalid Otp` })
+        return res.status(401).json({ message: `INVALID OTP` })
     }
 
 
@@ -77,6 +78,7 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
             mobile: checkUser.dataValues.mobileNumber,
             firstName: checkUser.dataValues.firstName,
             lastName: checkUser.dataValues.lastName,
+            email: checkUser.dataValues.email,
             userBelongsTo: "customer"
         },
             JWT_SECRETKEY, {
