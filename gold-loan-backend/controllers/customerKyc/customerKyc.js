@@ -717,6 +717,25 @@ exports.submitAllKycInfo = async (req, res, next) => {
 
         if (moduleId == 1) {
             await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });
+
+            await models.customerKycPersonalDetail.update(
+                {
+                    firstName: customerKycBasicDetails.firstName,
+                    lastName: customerKycBasicDetails.lastName,
+                    panCardNumber: customerKycBasicDetails.panCardNumber
+                }
+                , { where: { customerId: customerId }, transaction: t });
+
+            await models.customer.update(
+                {
+                    firstName: customerKycBasicDetails.firstName,
+                    lastName: customerKycBasicDetails.lastName,
+                    panCardNumber: customerKycBasicDetails.panCardNumber,
+                    panType:customerKycBasicDetails.panType,
+                    panImage:customerKycBasicDetails.panImage
+                }
+                , { where: { id: customerId }, transaction: t });
+
         }
         if (moduleId == 3) {
             if (userType == "Individual") {
