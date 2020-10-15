@@ -173,7 +173,8 @@
     <div class="row kt-margin-t-15">
         <!-- loan ornaments -->
         <div class="col-12 card kt-padding-15" *ngIf="masterLoanId">
-            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Ornaments - Total
+            <label class="font-weight-bold text-color kt-margin-b-10 kt-margin-t-15">R.P.G-{{details?.loanOrnamentsDetail[0]?.currentGoldRate}}</label>
+            <label class="font-weight-bold text-color kt-margin-b-25 ">Ornaments - Total
                 {{details?.loanOrnamentsDetail?.length}} Ornaments</label>
             <mat-tab-group style="min-height: 300px;">
                 <mat-tab label="Ornaments {{idx + 1}}"

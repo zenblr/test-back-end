@@ -574,7 +574,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
 
                 let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
 
-                await sendPartReleaseRequestMessage(sendLoanMesage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+                await sendPartReleaseRequestMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
             } else {
                 return res.status(400).json({ message: 'invalid paymentType' });
             }
@@ -821,7 +821,7 @@ exports.updateAmountStatus = async (req, res, next) => {
 
                 let sendLoanMessage = await customerNameNumberLoanId(partReleaseData.masterLoanId)
 
-                await sendPartReleaseRequestApprovalMessage(sendLoanMesage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+                await sendPartReleaseRequestApprovalMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
 
                 return res.status(200).json({ message: "success" });
             } else if (amountStatus == 'rejected') {
@@ -873,7 +873,7 @@ exports.partReleaseAssignAppraiser = async (req, res, next) => {
 
     let sendLoanMessage = await customerNameNumberLoanId(data.masterLoanId)
 
-    await sendPartReleaseAssignAppraiserMessage(sendLoanMesage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, firstName)
+    await sendPartReleaseAssignAppraiserMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, firstName)
 
     await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
@@ -1114,7 +1114,7 @@ exports.updatePartReleaseStatus = async (req, res, next) => {
 
                 let sendLoanMessage = await customerNameNumberLoanId(partReleaseData.masterLoanId)
 
-                await sendJewelleryPartReleaseCompletedMessage(sendLoanMesage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+                await sendJewelleryPartReleaseCompletedMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
 
                 return res.status(200).json({ message: "success" });
             }
@@ -1174,7 +1174,7 @@ exports.updateAppraiser = async (req, res, next) => {
     let data = await models.partRelease.findOne({ where: { id: partReleaseId } })
     let sendLoanMessage = await customerNameNumberLoanId(data.masterLoanId)
 
-    await sendPartReleaseAssignAppraiserMessage(sendLoanMesage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, firstName)
+    await sendPartReleaseAssignAppraiserMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, firstName)
     await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
     // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
@@ -1580,7 +1580,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
 
                 let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
 
-                await sendFullReleaseRequestMessage(sendLoanMesage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+                await sendFullReleaseRequestMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
             } else {
                 return res.status(400).json({ message: 'Invalid paymentType' });
             }
@@ -1824,7 +1824,7 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
 
                 let sendLoanMessage = await customerNameNumberLoanId(fullReleaseData.masterLoanId)
 
-                await sendFullReleaseRequestApprovalMessage(sendLoanMesage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+                await sendFullReleaseRequestApprovalMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
 
                 return res.status(200).json({ message: "success", payment });
             } else if (amountStatus == 'rejected') {
@@ -1869,7 +1869,7 @@ exports.fullReleaseAssignReleaser = async (req, res, next) => {
     let data = await models.fullRelease.findOne({ where: { id: fullReleaseId } })
     let sendLoanMessage = await customerNameNumberLoanId(data.masterLoanId)
 
-    await sendFullReleaseAssignAppraiserMessage(sendLoanMesage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, firstName)
+    await sendFullReleaseAssignAppraiserMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, firstName)
     await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
     // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
@@ -1893,7 +1893,7 @@ exports.updateReleaser = async (req, res, next) => {
     let data = await models.fullRelease.findOne({ where: { id: fullReleaseId } })
     let sendLoanMessage = await customerNameNumberLoanId(data.masterLoanId)
 
-    await sendFullReleaseAssignAppraiserMessage(sendLoanMesage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, firstName)
+    await sendFullReleaseAssignAppraiserMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, firstName)
     await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
     // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
@@ -2124,7 +2124,7 @@ exports.updatePartReleaseReleaserStatus = async (req, res, next) => {
 
                 let sendLoanMessage = await customerNameNumberLoanId(fullReleaseData.masterLoanId)
 
-                await sendJewelleryFullReleaseCompletedMessage(sendLoanMesage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+                await sendJewelleryFullReleaseCompletedMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
                 return res.status(200).json({ message: "success" });
             }
         } else {
