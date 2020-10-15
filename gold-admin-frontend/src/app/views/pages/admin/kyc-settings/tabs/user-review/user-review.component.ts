@@ -37,6 +37,7 @@ export class UserReviewComponent implements OnInit {
   @ViewChild("pass", { static: false }) pass;
   @ViewChild("constitutionsDeed", { static: false }) constitutionsDeed;
   @ViewChild("gstCertificate", { static: false }) gstCertificate;
+  @ViewChild("signature", { static: false }) signature;
 
   file: any;
   occupations = [];
@@ -792,6 +793,7 @@ export class UserReviewComponent implements OnInit {
           if (this.pass && this.pass.nativeElement.value) this.pass.nativeElement.value = '';
           if (this.constitutionsDeed && this.constitutionsDeed.nativeElement.value) this.constitutionsDeed.nativeElement.value = '';
           if (this.gstCertificate && this.gstCertificate.nativeElement.value) this.gstCertificate.nativeElement.value = '';
+          if (this.signature && this.signature.nativeElement.value) this.signature.nativeElement.value = '';
         })
       ).subscribe()
     }
