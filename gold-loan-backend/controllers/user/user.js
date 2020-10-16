@@ -75,9 +75,9 @@ exports.sendOtp = async (req, res, next) => {
 
         const referenceCode = await createReferenceCode(5);
         let createdTime = moment(new Date());
-        let expiryTime = moment.utc(createdTime).add(10, 'm');
+        let expiryTime = moment(createdTime).add(10, 'm');
 
-        var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
+        var expiryTimeToUser = moment(moment(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
 
         await sequelize.transaction(async t => {
             await models.userOtp.destroy({ where: { mobileNumber }, transaction: t })
