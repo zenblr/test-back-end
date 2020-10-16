@@ -26,10 +26,10 @@
         "operatorsAliases": false
     },
     "production": {
-        "username": "root",
-        "password": null,
-        "database": "database_production",
-        "host": "127.0.0.1",
+        "username": "loan_uat_admin",
+        "password": "hCVtBwCfBs658qp8JSOn",
+        "database": "emi-loan-uat",
+        "host": "emi-loan-uat.cdqj1gojl1vk.ap-south-1.rds.amazonaws.com",
         "dialect": "postgres",
         "operatorsAliases": false
     }
