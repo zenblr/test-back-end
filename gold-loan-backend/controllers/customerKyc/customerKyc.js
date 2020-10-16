@@ -652,12 +652,12 @@ exports.submitAllKycInfo = async (req, res, next) => {
     // if (check.isEmpty(findCustomerKyc)) {
     //     return res.status(404).json({ message: "This customer kyc detailes is not filled." });
     // }
-    // if (moduleId == 1) {
+    if (moduleId == 1) {
         let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { customerId: { [Op.not]: customerId }, identityProofNumber: customerKycPersonal.identityProofNumber } });
         if (!check.isEmpty(findIdentityNumber)) {
             return res.status(400).json({ message: "Identity Proof Number already exists! " })
         }
-    // }
+    }
 
     if (customerKycBasicDetails.panCardNumber) {
         let findPanCardNumber = await models.customer.findOne({
