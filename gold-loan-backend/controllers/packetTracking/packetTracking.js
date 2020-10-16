@@ -682,11 +682,11 @@ exports.checkOutPacket = async (req, res, next) => {
 
     const referenceCode = await createReferenceCode(5);
     let otp;
-    // if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
-    otp = 1234
-    // } else {
-    //     otp = Math.floor(1000 + Math.random() * 9000);
-    // }
+    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+        otp = 1234
+    } else {
+        otp = Math.floor(1000 + Math.random() * 9000);
+    }
     let createdTime = new Date();
     let expiryTime = moment(createdTime).add(10, "m");
 
