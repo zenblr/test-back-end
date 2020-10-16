@@ -1026,6 +1026,9 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "packet") {
 			this.packetService.applyFilter.next(data)
 		}
+		if (this.path == "packets") {
+			this.scrapPacketsService.applyFilter.next(data)
+		}
 		if (this.path == "deposit") {
 			this.depositService.applyFilter.next(data)
 		}
