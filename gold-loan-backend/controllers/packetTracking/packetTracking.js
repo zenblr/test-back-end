@@ -13,6 +13,8 @@ const request = require("request");
 const { VIEW_ALL_PACKET_TRACKING } = require('../../utils/permissionCheck')
 const { sendSms } = require('../../utils/sendSMS')
 
+const { sendJewelleryPartReleaseCompletedMessage, sendJewelleryFullReleaseCompletedMessage } = require('../../utils/SMS')
+const { customerNameNumberLoanId } = require('../../utils/loanFunction');
 
 //FUNCTION TO GET ALL PACKET DETAILS
 exports.getAllPacketTrackingDetail = async (req, res, next) => {
@@ -1505,9 +1507,17 @@ exports.submitLoanPacketLocationForHomeIn = async (req, res, next) => {
 
                 await models.customerLoanMaster.update({ isOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
 
+                let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
+
+                await sendJewelleryFullReleaseCompletedMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+
             } else {
                 await models.partRelease.update({ partReleaseStatus: 'released', modifiedBy, releaseDate, isCustomerReceivedPacket: true }, { where: { id: releaseId }, transaction: t })
                 await models.customerLoanMaster.update({ isOrnamentsReleased: true, isFullOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
+
+                let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
+
+                await sendJewelleryPartReleaseCompletedMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
             }
 
         })

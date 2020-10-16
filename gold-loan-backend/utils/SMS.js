@@ -40,7 +40,7 @@ exports.sendCustomerUniqueId = async (mobileNumber, firstName, customerUniqueId)
     // Dear <Customer Name>, Thank you for your business !  Welcome to Augmont --<Brand message>.  Your customer id is <Customer Id>.  Please visit <Web site> to view and / or update your information
     let smsLink = process.env.BASE_URL_CUSTOMER
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace('<Customer Name>', `${firstName}`).replace("<Customer Id>", customerUniqueId).replace("<Web site>", smsLink)
+        let message = await messageTemplate.content.replace('<Customer Name>', `${firstName}`).replace("<Customer Id>", customerUniqueId).replace("<Web site>", smsLink).replace("<Brand message>", "(Gold Loan)")
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -88,7 +88,7 @@ exports.sendDisbursalMessage = async (mobileNumber, customerName, loanUniqueId) 
     let messageTemplate = await models.smsAlert.getSmsTemplate('Disbursal (LOAN)');
     // Dear <Customer Name>, Your request for gold loan (<loan id>) has been approved and amount has been transfered to your bank account
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan Id>", loanUniqueId)
+        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan id>", loanUniqueId)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -97,7 +97,7 @@ exports.sendPaymentMessage = async (mobileNumber, customerName, loanUniqueId, am
     let messageTemplate = await models.smsAlert.getSmsTemplate('Payment (LOAN)');
     //Dear <Customer Name>, Your Pament of <Amount> for Gold loan (<loan id>) has been approved
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan Id>", loanUniqueId).replace("<Amount>", amount)
+        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan id>", loanUniqueId).replace("<Amount>", amount)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -106,7 +106,7 @@ exports.sendPartReleaseRequestMessage = async (mobileNumber, customerName, loanU
     let messageTemplate = await models.smsAlert.getSmsTemplate('Part Release Request (LOAN)');
     //Dear <Customer Name>, We have received your part of the jewellery release request against gold loan (<loan id>), We will check and update you in 24 hrs
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan Id>", loanUniqueId)
+        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan id>", loanUniqueId)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -115,7 +115,7 @@ exports.sendPartReleaseRequestApprovalMessage = async (mobileNumber, customerNam
     let messageTemplate = await models.smsAlert.getSmsTemplate('Part Release Request Approval(By Ops) (LOAN)');
     //Dear <Customer Name>, Your part of the jewellery release request against gold loan (<loan id>) has been approved
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan Id>", loanUniqueId)
+        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan id>", loanUniqueId)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -124,7 +124,7 @@ exports.sendPartReleaseAssignAppraiserMessage = async (mobileNumber, customerNam
     let messageTemplate = await models.smsAlert.getSmsTemplate('Part Release Assign Appraiser (LOAN)');
     //Dear <Customer Name>, Your part of the jewellery release request has been assign to <Appraiser Name> against gold loan (<loan id>), <Appraiser Name> will contact you in case of any query
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan Id>", loanUniqueId).replace("<Appraiser Name>", appraiserName)
+        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan id>", loanUniqueId).replace("<Appraiser Name>", appraiserName).replace("<Appraiser Name>", appraiserName)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -133,7 +133,7 @@ exports.sendJewelleryPartReleaseCompletedMessage = async (mobileNumber, customer
     let messageTemplate = await models.smsAlert.getSmsTemplate('Jewellery Part Release Completed (LOAN)');
     //Dear <Customer Name>, Your part of the jewellery release request has been completed against gold loan (<loan id>)
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan Id>", loanUniqueId)
+        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan id>", loanUniqueId)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -142,7 +142,7 @@ exports.sendFullReleaseRequestMessage = async (mobileNumber, customerName, loanU
     let messageTemplate = await models.smsAlert.getSmsTemplate('Full Release Request (LOAN)');
     //Dear <Customer Name>, We have received your Full  release request against gold loan (<loan id>), We will check and update you in 24 hrs
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan Id>", loanUniqueId)
+        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan id>", loanUniqueId)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -151,7 +151,7 @@ exports.sendFullReleaseRequestApprovalMessage = async (mobileNumber, customerNam
     let messageTemplate = await models.smsAlert.getSmsTemplate('Full Release Request Approval(By ops) (LOAN)');
     //Dear <Customer Name>, Your Jewellery release request against gold loan (<loan id>) has been approved
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan Id>", loanUniqueId)
+        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan id>", loanUniqueId)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -160,7 +160,7 @@ exports.sendFullReleaseAssignAppraiserMessage = async (mobileNumber, customerNam
     let messageTemplate = await models.smsAlert.getSmsTemplate('Full Release Assign Appraiser (LOAN)');
     //Dear <Customer Name>, Your Jewellery release request has been assign to <Appraiser Name>, <Appraiser Name> will contact you in case of any query
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan Id>", loanUniqueId).replace("<Appraiser Name>", appraiserName)
+        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan Id>", loanUniqueId).replace("<Appraiser Name>", appraiserName).replace("<Appraiser Name>", appraiserName)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -169,7 +169,7 @@ exports.sendJewelleryFullReleaseCompletedMessage = async (mobileNumber, customer
     let messageTemplate = await models.smsAlert.getSmsTemplate('Jewellery Full Release Completed (LOAN)');
     //Dear <Customer Name>, Your jewellery release request has been completed against gold loan (<loan id>)
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan Id>", loanUniqueId)
+        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<loan id>", loanUniqueId)
         await sms.sendSms(mobileNumber, message);
     }
 }

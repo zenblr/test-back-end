@@ -92,7 +92,7 @@ exports.sendOtp = async (req, res, next) => {
             await forgetPasswordOtp(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser, smsLink)
         } else {
             let smsLink = process.env.BASE_URL_ADMIN
-            await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTimeToUser, smsLink)
+            await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser, smsLink)
         }
 
         // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`

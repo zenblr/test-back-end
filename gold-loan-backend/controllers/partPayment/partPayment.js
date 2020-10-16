@@ -509,6 +509,10 @@ exports.partPayment = async (req, res, next) => {
                     await models.customerLoanInterest.update({ interestAmount: amount, outstandingInterest }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                 }
             }
+
+            let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
+
+            await sendPaymentMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, depositAmount)
         }
         ///////////
         return customerLoanTransaction
