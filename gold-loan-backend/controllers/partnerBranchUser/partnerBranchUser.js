@@ -9,7 +9,7 @@ const request = require("request");
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 const moment = require('moment')
 
-
+const { sendSms } = require('../../utils/sendSMS')
 
 //FUNCTION FOR SEND OTP PARTNER BRANCH USER
 exports.sendOtp = async (req, res, next) => {
@@ -33,13 +33,13 @@ exports.sendOtp = async (req, res, next) => {
         otp = Math.floor(1000 + Math.random() * 9000);
     }
     let createdTime = new Date();
-    let expiryTime = moment.utc(createdTime).add(10, "m");
+    let expiryTime = moment(createdTime).add(10, "m");
     await models.partnerBranchOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
-    // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
-    // await sms.sendSms(mobileNumber, message);
-    request(
-        `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`
-    );
+    let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
+    await sendSms(mobileNumber, message);
+    // request(
+    //     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`
+    // );
 
     return res
         .status(200)
@@ -83,6 +83,8 @@ exports.addPartnerBranchUser = async (req, res) => {
 
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
+    // let checkNumberExist = await models.partnerBranchUser.findOne({ where: { mobileNumber: mobileNumber } })
+
 
     await sequelize.transaction(async t => {
 
