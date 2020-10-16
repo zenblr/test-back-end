@@ -69,10 +69,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_active',
             defaultValue: true
         },
-        authenticationKey: {
-            type: DataTypes.STRING,
-            field: 'authentication_key',
-        },
         lastLogin: {
             type: DataTypes.DATE,
             field: 'last_login',
