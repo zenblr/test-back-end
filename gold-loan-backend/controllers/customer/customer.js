@@ -77,8 +77,12 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   await models.customerOtp.destroy({ where: { mobileNumber } });
 
   const referenceCode = await createReferenceCode(5);
-  // let otp = Math.floor(1000 + Math.random() * 9000);
-  let otp = 1234;
+  let otp;
+  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+    otp = 1234
+  } else {
+    otp = Math.floor(1000 + Math.random() * 9000);
+  }
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
 
@@ -115,8 +119,12 @@ exports.customerSignUp = async (req, res, next) => {
     await models.customerOtp.destroy({ where: { mobileNumber } });
 
     const referenceCode = await createReferenceCode(5);
-    // let otp = Math.floor(1000 + Math.random() * 9000);
-    let otp = 1234;
+    let otp;
+    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+      otp = 1234
+    } else {
+      otp = Math.floor(1000 + Math.random() * 9000);
+    }
     let createdTime = new Date();
     let expiryTime = moment.utc(createdTime).add(10, "m");
 
@@ -130,8 +138,12 @@ exports.customerSignUp = async (req, res, next) => {
   } else {
 
     const referenceCode = await createReferenceCode(5);
-    // let otp = Math.floor(1000 + Math.random() * 9000);
-    let otp = 1234;
+    let otp;
+    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+      otp = 1234
+    } else {
+      otp = Math.floor(1000 + Math.random() * 9000);
+    }
     let createdTime = new Date();
     let expiryTime = moment.utc(createdTime).add(10, "m");
     await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
@@ -158,8 +170,12 @@ exports.sendOtp = async (req, res, next) => {
   await models.customerOtp.destroy({ where: { mobileNumber } });
 
   const referenceCode = await createReferenceCode(5);
-  // let otp = Math.floor(1000 + Math.random() * 9000);
-  let otp = 1234;
+  let otp;
+  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+    otp = 1234
+  } else {
+    otp = Math.floor(1000 + Math.random() * 9000);
+  }
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
   await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
@@ -168,6 +184,8 @@ exports.sendOtp = async (req, res, next) => {
     await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTimeToUser)
   } else if (type == "forget") {
     await forgetPasswordOtp(customerExist.mobileNumber, customerExist.firstName, otp, expiryTimeToUser)
+  } else {
+    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTimeToUser)
   }
 
   // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
@@ -568,28 +586,28 @@ exports.getsingleCustomerManagement = async (req, res) => {
             model: models.partRelease,
             as: 'partRelease',
             attributes: ['amountStatus', 'partReleaseStatus']
-        },
-        {
+          },
+          {
             model: models.fullRelease,
             as: 'fullRelease',
             attributes: ['amountStatus', 'fullReleaseStatus']
-        },
-        {
-          model: models.customerLoanMaster,
-          as:'parentLoan',
-          attributes:['id'],
-          order: [
-            [models.customerLoan, 'id', 'asc'],
-            ['id', 'DESC']
-          ],
-          include: [
-            {
-              model: models.customerLoan,
-              as: 'customerLoan',
-              attributes:['id','loanUniqueId'],
-              where: { isActive: true }
-            }]
-        }
+          },
+          {
+            model: models.customerLoanMaster,
+            as: 'parentLoan',
+            attributes: ['id'],
+            order: [
+              [models.customerLoan, 'id', 'asc'],
+              ['id', 'DESC']
+            ],
+            include: [
+              {
+                model: models.customerLoan,
+                as: 'customerLoan',
+                attributes: ['id', 'loanUniqueId'],
+                where: { isActive: true }
+              }]
+          }
         ]
       }
     ]
