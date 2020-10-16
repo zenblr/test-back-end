@@ -96,7 +96,7 @@
                                     </div>
                                     <div class="col-6">
                                         <input type="text" class="form-control text-uppercase" placeholder="491995"
-                                            formControlName="chequeNumber"
+                                            formControlName="chequeNumber" maxlength="6"
                                             [class.isError]="controls.chequeNumber.touched && controls.chequeNumber.invalid">
                                         <mat-error
                                             *ngIf="controls.chequeNumber.errors?.required && controls.chequeNumber.touched">

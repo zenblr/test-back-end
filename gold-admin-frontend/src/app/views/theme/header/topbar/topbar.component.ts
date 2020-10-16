@@ -759,10 +759,10 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "applied-scrap") {
 			this.showfilter = true;
-			this.filterWidth = "600px"
+			this.filterWidth = "800px"
 			this.filterName = "appliedScrap"
 			this.showInput = true;
-			this.listType = "approval,scrapStatus";
+			this.listType = "approval";
 		}
 		if (this.path == 'new-requests') {
 			this.showInput = true;
