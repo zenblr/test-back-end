@@ -15,6 +15,8 @@ const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetai
     , schemeBasedOnPriceRange, readLoanDetails,
     readFeedBack, addFeedBack, updatePassword } = require('../controllers/customer/customerApp')
 
+const { getSoa } = require('../controllers/soaOfLoan/soaOfLoan');
+
 
 //customer App
 
@@ -52,6 +54,8 @@ router.get('/customer-feedback', customerCheckAuth, wrapper(readFeedBack)); // r
 
 router.post('/customer-feedback', customerCheckAuth, wrapper(addFeedBack)); // add customer feedback
 
+router.post('/loan-soa', customerCheckAuth, wrapper(getSoa));
+
 //customer App
 router.post('/update-password', wrapper(updatePassword));//To change password of customer
 
@@ -62,6 +66,7 @@ router.use('/part-payment', partPayment)
 router.use('/quick-pay', quickPay)
 
 router.use('/contact-us', contactUsEmail)
+
 
 
 module.exports = router;
