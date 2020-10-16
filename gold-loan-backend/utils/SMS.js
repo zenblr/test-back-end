@@ -1,10 +1,10 @@
 const sms = require('./sendSMS');
 const models = require('../models');
 // const smsLink = `https://www.indiapost.gov.in/_layouts/15/DOP.Portal.Tracking/TrackConsignment.aspx`;
-const smsLink = `Gold loan admin panel`
+// const smsLink = `Gold loan admin panel`
 
 
-exports.sendOtpForLogin = async (mobileNumber, firstName, otp, time) => {
+exports.sendOtpForLogin = async (mobileNumber, firstName, otp, time, smsLink) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Login with OTP');
     // Dear <User name>, Please use OTP <OTP number> valid upto <Time> to log in to your Augmont gold loan account.  Please visit <Web site> to log in
     if (messageTemplate) {
@@ -14,7 +14,7 @@ exports.sendOtpForLogin = async (mobileNumber, firstName, otp, time) => {
     }
 }
 
-exports.forgetPasswordOtp = async (mobileNumber, firstName, otp, time) => {
+exports.forgetPasswordOtp = async (mobileNumber, firstName, otp, time, smsLink) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Forgot password');
     // Dear <User name>, Your request has been received. OTP is <OTP number> valid upto <Time>.  Please visit <Web site> to reset your password
     if (messageTemplate) {
@@ -38,6 +38,7 @@ exports.sendOtpToLeadVerification = async (mobileNumber, firstName, otp, time) =
 exports.sendCustomerUniqueId = async (mobileNumber, firstName, customerUniqueId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Customer ID Generated (LOAN)');
     // Dear <Customer Name>, Thank you for your business !  Welcome to Augmont --<Brand message>.  Your customer id is <Customer Id>.  Please visit <Web site> to view and / or update your information
+    let smsLink = process.env.BASE_URL_CUSTOMER
     if (messageTemplate) {
         let message = await messageTemplate.content.replace('<Customer Name>', `${firstName}`).replace("<Customer Id>", customerUniqueId).replace("<Web site>", smsLink)
         await sms.sendSms(mobileNumber, message);
@@ -47,6 +48,7 @@ exports.sendCustomerUniqueId = async (mobileNumber, firstName, customerUniqueId)
 exports.sendMessageToOperationsTeam = async (mobileNumber, customerUniqueId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Operation Team (LOAN)');
     // Dear Operations Team, A new customer <Customer Id> has been created. Please visit <Web site> and assign an appraiser to the customer for the loan process
+    let smsLink = process.env.BASE_URL_ADMIN
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<Customer Id>", customerUniqueId).replace("<Web site>", smsLink)
         await sms.sendSms(mobileNumber, message);
@@ -56,6 +58,7 @@ exports.sendMessageToOperationsTeam = async (mobileNumber, customerUniqueId) => 
 exports.sendMessageAssignedCustomerToAppraiser = async (mobileNumber, appraisalName, customerUniqueId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Assign Customer (LOAN)');
     // Dear <Appraiser>, You have been assigned the customer <Customer Id> for appraisal.  Please visit <Web site> for the customer information
+    let smsLink = process.env.BASE_URL_ADMIN
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<Appraiser>", appraisalName).replace("<Customer Id>", customerUniqueId).replace("<Web site>", smsLink)
         await sms.sendSms(mobileNumber, message);
@@ -74,6 +77,7 @@ exports.sendMessageCustomerForAssignAppraiser = async (mobileNumber, appraisalNa
 exports.sendMessageLoanIdGeneration = async (mobileNumber, customerName, loanUniqueId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Loan ID Generated (LOAN)');
     // Dear <Customer Name>, Thank you for your business !  Your loan request is successfully processed and your loan id is <Loan Id>.  Please visit <Web site> to view your loan information
+    let smsLink = process.env.BASE_URL_CUSTOMER
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<Loan Id>", loanUniqueId).replace("<Web site>", smsLink)
         await sms.sendSms(mobileNumber, message);
