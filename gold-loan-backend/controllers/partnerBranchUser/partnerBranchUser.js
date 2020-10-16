@@ -83,8 +83,11 @@ exports.addPartnerBranchUser = async (req, res) => {
 
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
-    // let checkNumberExist = await models.partnerBranchUser.findOne({ where: { mobileNumber: mobileNumber } })
+    let checkNumberExist = await models.partnerBranchUser.findOne({ where: { mobileNumber: mobileNumber } })
 
+    if (!check.isEmpty(checkNumberExist)) {
+        return res.status(400).json({ message: "Mobile number is already Exist" })
+    }
 
     await sequelize.transaction(async t => {
 
@@ -109,6 +112,12 @@ exports.updatePartnerBranchUser = async (req, res) => {
 
     let modifiedBy = req.userData.id;
     let { partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode, isActive } = req.body;
+
+    let checkNumberExist = await models.partnerBranchUser.findOne({ where: { id: { [Op.not]: partnerBranchUserId }, mobileNumber: mobileNumber } })
+
+    if (!check.isEmpty(checkNumberExist)) {
+        return res.status(400).json({ message: "Mobile number is already Exist" })
+    }
 
     let updateUser = await models.partnerBranchUser.update({
         partnerId, branchId, firstName, lastName, mobileNumber, email, stateId, cityId, pinCode, isActive, modifiedBy

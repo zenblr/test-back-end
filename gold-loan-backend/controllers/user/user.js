@@ -85,11 +85,14 @@ exports.sendOtp = async (req, res, next) => {
         })
 
         if (type == "login") {
-            await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
+            let smsLink = process.env.BASE_URL_ADMIN
+            await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser, smsLink)
         } else if (type == "forget") {
-            await forgetPasswordOtp(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
+            let smsLink = process.env.BASE_URL_ADMIN
+            await forgetPasswordOtp(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser, smsLink)
         } else {
-            await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
+            let smsLink = process.env.BASE_URL_ADMIN
+            await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser, smsLink)
         }
 
         // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`

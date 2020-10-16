@@ -63,9 +63,10 @@
                     <mat-cell *matCellDef="let row">
                         <div *ngxPermissionsOnly="['updateNewRequest']">
                             <button style="width: 120px;" class="apply-kyc" (click)="editProduct(row)"
-                                *ngIf="!(row.isAssigned || row.customer?.customerKyc)">
+                                *ngIf="!(row.isAssigned || row.customer?.customerKyc) || ((!row.isAssigned && row.moduleId === 3 && row.customer?.scrapKycStatus == 'approved' && row.customer?.kycStatus == 'approved') || (!row.isAssigned && row.moduleId === 1 && row.customer?.kycStatus == 'approved' && row.customer?.scrapKycStatus == 'approved'))">
                                 Edit
                             </button>
+
                         </div>
                     </mat-cell>
                 </ng-container>

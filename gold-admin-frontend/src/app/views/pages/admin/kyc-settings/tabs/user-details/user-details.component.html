@@ -197,7 +197,8 @@
 							</div>
 
 							<div *ngIf="isPanVerified">
-								<button class="w-100 success-button" mat-raised-button matTooltip="Pan Verified">
+								<button class="w-100 success-button" mat-raised-button matTooltip="Pan Verified"
+									[disabled]="disabled">
 									Verified
 								</button>
 							</div>
@@ -238,7 +239,7 @@
 						</div> -->
 					</div>
 
-					<div class="row kt-margin-t-20 kt-margin-b-20" *ngIf="controls.panType.value">
+					<div class="row kt-margin-t-20" *ngIf="controls.panType.value">
 						<div class="col offset-4">
 							<div class="img-container" *ngIf="controls.panImg.value">
 								<img *ngIf="!controls.panImg.value" class=""
@@ -261,7 +262,7 @@
 					</div>
 
 					<div *ngIf="controls.userType.value === 'Corporate'">
-						<div class="row">
+						<div class="row kt-padding-t-15">
 							<div class="col-4 align-self-center form-label">
 								<label class="mandatory">Organization Type</label>
 							</div>
@@ -298,7 +299,7 @@
 					</div>
 
 
-					<div class="row kt-margin-t-10 kt-margin-b-20">
+					<div class="row kt-margin-t-20 kt-margin-b-20">
 						<div class="col-8 offset-4">
 							<kt-button [value]="'Next'" [type]="'button'" (action)="submit()">
 							</kt-button>

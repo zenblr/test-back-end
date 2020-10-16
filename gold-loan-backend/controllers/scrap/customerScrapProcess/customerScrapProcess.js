@@ -1141,7 +1141,7 @@ exports.printCustomerAcknowledgement = async (req, res) => {
     let addressProofNo;
     for (let address of customerScrap.customer.customerKycAddress) {
         if (address.addressType == "permanent") {
-            custtomerAddress = `${address.address} ,${address.city.name}, ${address.state.name},  ${address.pinCode}`;
+            custtomerAddress = `${address.address},  ${address.city.name},  ${address.state.name},  ${address.pinCode}`;
             addressProofNo = address.addressProofNumber;
         }
     }
@@ -1153,9 +1153,9 @@ exports.printCustomerAcknowledgement = async (req, res) => {
         cinNo = customerScrap.customer.organizationDetail.cinNumber;
         email = customerScrap.customer.organizationDetail.email;
     } else {
-        gstNo = " NA";
-        cinNo = " NA";
-        email = " NA";
+        gstNo = " -";
+        cinNo = " -";
+        email = ' -';
     }
 
 
@@ -1341,18 +1341,18 @@ exports.printPurchaseVoucher = async (req, res) => {
         if(customerScrap.customer.customerKycPersonal.panCardNumber){
             panNo = customerSatte.customer.customerKycPersonal.panCardNumber
         }else{
-            panNo = " NA";
+            panNo = " -";
         }
         if(customerScrap.customer.organizationDetail && customerScrap.customer.organizationDetail.gstinNumber){
             gstinNumber = customerSatte.customer.organizationDetail.gstinNumber
         }else{
-            gstinNumber = " NA";
+            gstinNumber = " -";
         }
 
         if(customerScrap.customer.organizationDetail && customerScrap.customer.organizationDetail.cinNumber){
             cinNumber = customerSatte.customer.organizationDetail.cinNumber
         }else{
-            cinNumber = " NA";
+            cinNumber = " -";
         }
 
         let purchaseVoucher = await [{

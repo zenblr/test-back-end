@@ -312,7 +312,7 @@ export class UserReviewComponent implements OnInit {
       profileImage: [, [Validators.required]],
       firstName: [, [Validators.required]],
       lastName: [, [Validators.required]],
-      mobileNumber: [, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      mobileNumber: [, [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
       panCardNumber: [this.data.customerKycReview.panCardNumber, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       panType: [, Validators.required],
       form60: [],
@@ -417,7 +417,7 @@ export class UserReviewComponent implements OnInit {
     } else {
       this.customerKycPersonal = this.fb.group({
         profileImage: [, [Validators.required]],
-        alternateMobileNumber: [, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+        alternateMobileNumber: [, [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
         gender: [, [Validators.required]],
         spouseName: [, [Validators.required]],
         martialStatus: ['', [Validators.required]],
@@ -1019,7 +1019,7 @@ export class UserReviewComponent implements OnInit {
             this.customerKycPersonal.controls[key].updateValueAndValidity();
           }
           else if (key == 'alternateMobileNumber') {
-            this.customerKycPersonal.controls[key].setValidators([Validators.pattern('^[0-9]{10}$')]);
+            this.customerKycPersonal.controls[key].setValidators([Validators.pattern('^[6-9][0-9]{9}$')]);
             this.customerKycPersonal.controls[key].updateValueAndValidity();
           }
           else {

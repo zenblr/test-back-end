@@ -146,9 +146,9 @@ exports.customerSignUp = async (req, res, next) => {
     }
     let createdTime = new Date();
     let expiryTime = moment(createdTime).add(10, "m");
-    await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
-
-    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime)
+    await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode });
+    let smsLink = process.env.BASE_URL_CUSTOMER
+    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
 
     return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, isCustomer: true });
 
@@ -181,11 +181,14 @@ exports.sendOtp = async (req, res, next) => {
   await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
 
   if (type == "login") {
-    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime)
+    let smsLink = process.env.BASE_URL_CUSTOMER
+    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
   } else if (type == "forget") {
-    await forgetPasswordOtp(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime)
+    let smsLink = process.env.BASE_URL_CUSTOMER
+    await forgetPasswordOtp(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
   } else {
-    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime)
+    let smsLink = process.env.BASE_URL_CUSTOMER
+    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
   }
 
   // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
