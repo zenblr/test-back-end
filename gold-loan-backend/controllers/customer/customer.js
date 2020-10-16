@@ -77,8 +77,8 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   await models.customerOtp.destroy({ where: { mobileNumber } });
 
   const referenceCode = await createReferenceCode(5);
-  // let otp = Math.floor(1000 + Math.random() * 9000);
-  let otp = 1234;
+  let otp = Math.floor(1000 + Math.random() * 9000);
+  // let otp = 1234;
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
 
@@ -115,8 +115,8 @@ exports.customerSignUp = async (req, res, next) => {
     await models.customerOtp.destroy({ where: { mobileNumber } });
 
     const referenceCode = await createReferenceCode(5);
-    // let otp = Math.floor(1000 + Math.random() * 9000);
-    let otp = 1234;
+    let otp = Math.floor(1000 + Math.random() * 9000);
+    // let otp = 1234;
     let createdTime = new Date();
     let expiryTime = moment.utc(createdTime).add(10, "m");
 
@@ -130,8 +130,8 @@ exports.customerSignUp = async (req, res, next) => {
   } else {
 
     const referenceCode = await createReferenceCode(5);
-    // let otp = Math.floor(1000 + Math.random() * 9000);
-    let otp = 1234;
+    let otp = Math.floor(1000 + Math.random() * 9000);
+    // let otp = 1234;
     let createdTime = new Date();
     let expiryTime = moment.utc(createdTime).add(10, "m");
     await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
@@ -158,8 +158,8 @@ exports.sendOtp = async (req, res, next) => {
   await models.customerOtp.destroy({ where: { mobileNumber } });
 
   const referenceCode = await createReferenceCode(5);
-  // let otp = Math.floor(1000 + Math.random() * 9000);
-  let otp = 1234;
+  let otp = Math.floor(1000 + Math.random() * 9000);
+  // let otp = 1234;
   let createdTime = new Date();
   let expiryTime = moment.utc(createdTime).add(10, "m");
   await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
