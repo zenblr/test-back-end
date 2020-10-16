@@ -3,7 +3,7 @@ var router = express.Router();
 
 const { wrapper } = require('../utils/errorWrap');
 
-const {getSoa } = require('../controllers/soaOfLoan/soaOfLoan');
+const { getSoa } = require('../controllers/soaOfLoan/soaOfLoan');
 const checkAuth = require('../middleware/checkAuth');
 
 
