@@ -63,7 +63,7 @@ export class PaymentDialogComponent implements OnInit {
         this.paymentForm.controls.depositTransactionId.patchValue(this.data.value.transactionUniqueId);
         this.paymentForm.controls.transactionId.patchValue(this.data.value.bankTransactionUniqueId);
         this.paymentForm.controls.paidAmount.patchValue(this.data.value.transactionAmont);
-        this.paymentForm.controls.paymentReceivedDate.patchValue(this.data.value.depositDate)
+        this.paymentForm.controls.paymentReceivedDate.patchValue(new Date(this.data.value.depositDate))
         // this.paymentForm.controls.paymentReceivedDate.patchValue(this.getOffsetDateTime(this.data.value.depositDate))
         this.paymentForm.controls.depositStatus.patchValue('');
         this.paymentForm.disable();

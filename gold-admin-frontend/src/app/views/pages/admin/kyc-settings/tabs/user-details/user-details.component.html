@@ -197,7 +197,8 @@
 							</div>
 
 							<div *ngIf="isPanVerified">
-								<button class="w-100 success-button" mat-raised-button matTooltip="Pan Verified">
+								<button class="w-100 success-button" mat-raised-button matTooltip="Pan Verified"
+									[disabled]="disabled">
 									Verified
 								</button>
 							</div>
