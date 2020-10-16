@@ -7,7 +7,7 @@ const redisConn = require('../../config/redis');
 const redis = require('redis');
 
 const client = redis.createClient(redisConn.PORT, redisConn.HOST);
-
+const { createReferenceCode } = require('../../utils/referenceCode');
 
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
 let check = require('../../lib/checkLib');
@@ -15,6 +15,9 @@ let check = require('../../lib/checkLib');
 exports.userLogin = async (req, res, next) => {
     const { mobileNumber, password } = req.body;
 
+    // console.log(req.useragent)
+    // let code = await createReferenceCode(16)
+    // console.log(code)
     let checkUser = await models.user.findOne({
         where: {
             [Op.or]: [
@@ -32,7 +35,9 @@ exports.userLogin = async (req, res, next) => {
             model: models.internalBranch
         }]
     })
-    // console.log(checkUser)
+
+
+
     if (!checkUser) {
         return res.status(401).json({ message: 'Wrong Credentials' })
     }
@@ -161,7 +166,7 @@ exports.verifyLoginOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyUser)) {
-        return res.status(400).json({ message: `Invalid Otp` })
+        return res.status(400).json({ message: `INVALID OTP` })
     }
 
     let checkUser;

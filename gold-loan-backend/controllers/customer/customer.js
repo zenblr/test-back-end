@@ -77,12 +77,16 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   await models.customerOtp.destroy({ where: { mobileNumber } });
 
   const referenceCode = await createReferenceCode(5);
-  // let otp = Math.floor(1000 + Math.random() * 9000);
-  let otp = 1234;
+  let otp;
+  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+    otp = 1234
+  } else {
+    otp = Math.floor(1000 + Math.random() * 9000);
+  }
   let createdTime = new Date();
-  let expiryTime = moment.utc(createdTime).add(10, "m");
+  let expiryTime = moment(createdTime).add(10, "m");
 
-  var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
+  var expiryTimeToUser = moment(moment(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
 
   await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
 
@@ -115,12 +119,16 @@ exports.customerSignUp = async (req, res, next) => {
     await models.customerOtp.destroy({ where: { mobileNumber } });
 
     const referenceCode = await createReferenceCode(5);
-    // let otp = Math.floor(1000 + Math.random() * 9000);
-    let otp = 1234;
+    let otp;
+    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+      otp = 1234
+    } else {
+      otp = Math.floor(1000 + Math.random() * 9000);
+    }
     let createdTime = new Date();
-    let expiryTime = moment.utc(createdTime).add(10, "m");
+    let expiryTime = moment(createdTime).add(10, "m");
 
-    var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
+    var expiryTimeToUser = moment(moment(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
 
     await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
 
@@ -130,13 +138,17 @@ exports.customerSignUp = async (req, res, next) => {
   } else {
 
     const referenceCode = await createReferenceCode(5);
-    // let otp = Math.floor(1000 + Math.random() * 9000);
-    let otp = 1234;
+    let otp;
+    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+      otp = 1234
+    } else {
+      otp = Math.floor(1000 + Math.random() * 9000);
+    }
     let createdTime = new Date();
-    let expiryTime = moment.utc(createdTime).add(10, "m");
+    let expiryTime = moment(createdTime).add(10, "m");
     await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
 
-    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTimeToUser)
+    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime)
 
     return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, isCustomer: true });
 
@@ -158,16 +170,22 @@ exports.sendOtp = async (req, res, next) => {
   await models.customerOtp.destroy({ where: { mobileNumber } });
 
   const referenceCode = await createReferenceCode(5);
-  // let otp = Math.floor(1000 + Math.random() * 9000);
-  let otp = 1234;
+  let otp;
+  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+    otp = 1234
+  } else {
+    otp = Math.floor(1000 + Math.random() * 9000);
+  }
   let createdTime = new Date();
-  let expiryTime = moment.utc(createdTime).add(10, "m");
+  let expiryTime = moment(createdTime).add(10, "m");
   await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
 
   if (type == "login") {
-    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTimeToUser)
+    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime)
   } else if (type == "forget") {
-    await forgetPasswordOtp(customerExist.mobileNumber, customerExist.firstName, otp, expiryTimeToUser)
+    await forgetPasswordOtp(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime)
+  } else {
+    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime)
   }
 
   // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
@@ -568,28 +586,28 @@ exports.getsingleCustomerManagement = async (req, res) => {
             model: models.partRelease,
             as: 'partRelease',
             attributes: ['amountStatus', 'partReleaseStatus']
-        },
-        {
+          },
+          {
             model: models.fullRelease,
             as: 'fullRelease',
             attributes: ['amountStatus', 'fullReleaseStatus']
-        },
-        {
-          model: models.customerLoanMaster,
-          as:'parentLoan',
-          attributes:['id'],
-          order: [
-            [models.customerLoan, 'id', 'asc'],
-            ['id', 'DESC']
-          ],
-          include: [
-            {
-              model: models.customerLoan,
-              as: 'customerLoan',
-              attributes:['id','loanUniqueId'],
-              where: { isActive: true }
-            }]
-        }
+          },
+          {
+            model: models.customerLoanMaster,
+            as: 'parentLoan',
+            attributes: ['id'],
+            order: [
+              [models.customerLoan, 'id', 'asc'],
+              ['id', 'DESC']
+            ],
+            include: [
+              {
+                model: models.customerLoan,
+                as: 'customerLoan',
+                attributes: ['id', 'loanUniqueId'],
+                where: { isActive: true }
+              }]
+          }
         ]
       }
     ]

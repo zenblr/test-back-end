@@ -282,7 +282,7 @@ exports.updatePassword = async (req, res, next) => {
     let verifyUser = await models.customerOtp.findOne({ where: { referenceCode, isVerified: true } })
 
     if (check.isEmpty(verifyUser)) {
-        return res.status(400).json({ message: `Invalid OTP.` })
+        return res.status(400).json({ message: `INVALID OTP.` })
     }
     let user = await models.customer.findOne({ where: { mobileNumber: verifyUser.mobileNumber } });
 

@@ -1,6 +1,6 @@
 const { wrapper } = require('../utils/errorWrap');
 const checkAuth = require('../middleware/customerCheckAuth');
-const { getInterestTable, getInterestInfo, payableAmount, transcationHistory, payableAmountConfirm, quickPayment } = require('../controllers/quickPay/quickPay');
+const { getInterestTable, getInterestInfo, payableAmount, transcationHistory, payableAmountConfirm, quickPayment,razorPayCreateOrder } = require('../controllers/quickPay/quickPay');
 
 const express = require('express');
 const route = express.Router();
@@ -16,6 +16,9 @@ route.get('/payable-amount', checkAuth, wrapper(payableAmount));
 route.get('/confirm-payment-info', checkAuth, wrapper(payableAmountConfirm))
 
 route.post('/payment', checkAuth, wrapper(quickPayment));
+
+route.post('/razor-pay', checkAuth, wrapper(razorPayCreateOrder));
+
 
 route.get('/transcation-history', checkAuth, wrapper(transcationHistory))
 

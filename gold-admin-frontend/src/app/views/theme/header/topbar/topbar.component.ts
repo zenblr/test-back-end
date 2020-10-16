@@ -391,7 +391,7 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "applied-loan") {
 			this.showfilter = true;
-			this.filterWidth = "600px"
+			this.filterWidth = "800px"
 			this.filterName = "loan"
 			this.showInput = true;
 			this.listType = "approval";
@@ -403,7 +403,7 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('loan-details/')) {
 			this.rightButton = true;
 			this.notTitleCase = true;
-			this.value2 = "Generate S.O.A.";
+			this.value2 = "Generate SOA";
 			this.type2 = "button";
 		}
 		if (this.path == "applied-kyc") {
