@@ -68,13 +68,21 @@ export class QuickPayComponent implements OnInit {
       case 'bankTransfer':
         this.quickPayForm.controls.chequeNumber.setValidators([]),
           this.quickPayForm.controls.chequeNumber.updateValueAndValidity()
+        this.quickPayForm.controls.bankName.setValidators([Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]),
+          this.quickPayForm.controls.bankName.updateValueAndValidity()
+        this.quickPayForm.controls.bankBranch.setValidators([Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]),
+          this.quickPayForm.controls.bankBranch.updateValueAndValidity()
         this.quickPayForm.controls.transactionId.setValidators(Validators.required),
           this.quickPayForm.controls.transactionId.updateValueAndValidity()
         break;
       case 'cheque':
         this.quickPayForm.controls.transactionId.setValidators([]),
           this.quickPayForm.controls.transactionId.updateValueAndValidity()
-        this.quickPayForm.controls.chequeNumber.setValidators(Validators.required),
+        this.quickPayForm.controls.bankName.setValidators([Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]),
+          this.quickPayForm.controls.bankName.updateValueAndValidity()
+        this.quickPayForm.controls.bankBranch.setValidators([Validators.required, Validators.pattern('^[a-zA-Z][a-zA-Z\-\\s]*$')]),
+          this.quickPayForm.controls.bankBranch.updateValueAndValidity()
+        this.quickPayForm.controls.chequeNumber.setValidators([Validators.required, Validators.pattern('[0-9]{6}')]),
           this.quickPayForm.controls.chequeNumber.updateValueAndValidity()
         break;
       default:
@@ -95,6 +103,10 @@ export class QuickPayComponent implements OnInit {
   }
 
   submit() {
+    if (!this.quickPayForm.controls.paymentMode.value) {
+      this.quickPayForm.controls.transactionId.setValidators(Validators.required),
+        this.quickPayForm.controls.transactionId.updateValueAndValidity()
+    }
     if (this.quickPayForm.invalid) {
       return this.quickPayForm.markAllAsTouched();
     }
