@@ -184,6 +184,8 @@ exports.sendOtp = async (req, res, next) => {
     await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTimeToUser)
   } else if (type == "forget") {
     await forgetPasswordOtp(customerExist.mobileNumber, customerExist.firstName, otp, expiryTimeToUser)
+  } else {
+    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTimeToUser)
   }
 
   // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
