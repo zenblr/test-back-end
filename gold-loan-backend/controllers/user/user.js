@@ -72,12 +72,12 @@ exports.sendOtp = async (req, res, next) => {
         } else {
             otp = Math.floor(1000 + Math.random() * 9000);
         }
-        
+
         const referenceCode = await createReferenceCode(5);
         let createdTime = moment(new Date());
-        let expiryTime = moment.utc(createdTime).add(10, 'm');
+        let expiryTime = moment(createdTime).add(10, 'm');
 
-        var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
+        var expiryTimeToUser = moment(moment(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
 
         await sequelize.transaction(async t => {
             await models.userOtp.destroy({ where: { mobileNumber }, transaction: t })
@@ -85,10 +85,16 @@ exports.sendOtp = async (req, res, next) => {
         })
 
         if (type == "login") {
-            await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
+            let smsLink = process.env.BASE_URL_ADMIN
+            await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser, smsLink)
         } else if (type == "forget") {
-            await forgetPasswordOtp(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
+            let smsLink = process.env.BASE_URL_ADMIN
+            await forgetPasswordOtp(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser, smsLink)
+        } else {
+            let smsLink = process.env.BASE_URL_ADMIN
+            await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser, smsLink)
         }
+
         // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
         // await sms.sendSms(mobileNumber, message);
         // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`);

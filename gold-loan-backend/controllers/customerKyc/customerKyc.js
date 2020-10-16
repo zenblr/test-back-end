@@ -731,8 +731,8 @@ exports.submitAllKycInfo = async (req, res, next) => {
                     firstName: customerKycBasicDetails.firstName,
                     lastName: customerKycBasicDetails.lastName,
                     panCardNumber: customerKycBasicDetails.panCardNumber,
-                    panType:customerKycBasicDetails.panType,
-                    panImage:customerKycBasicDetails.panImage
+                    panType: customerKycBasicDetails.panType,
+                    panImage: customerKycBasicDetails.panImage
                 }
                 , { where: { id: customerId }, transaction: t });
 
