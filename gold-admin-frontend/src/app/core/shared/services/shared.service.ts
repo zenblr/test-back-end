@@ -52,6 +52,12 @@ export class SharedService {
 		{ value: 'approved', name: 'approved' },
 		{ value: 'rejected', name: 'rejected' },
 	];
+	branchManagerLoanFilter = [
+		{ value: 'pending', name: 'pending' },
+		{ value: 'incomplete', name: 'incomplete' },
+		{ value: 'approved', name: 'approved' },
+		{ value: 'rejected', name: 'rejected' },
+	];
 
 	product = [
 		{ name: 'loan', value: 'loan' },
@@ -81,7 +87,7 @@ export class SharedService {
 		private toastr: ToastrService) { }
 
 	getStatus() {
-		return of({ apprsiserOrCCE: this.appraiserOrCCE, appraiserOrCCEScrap: this.appraiserOrCCEScrap, bm: this.branchManagerScrap, bml: this.branchManagerLoan })
+		return of({ apprsiserOrCCE: this.appraiserOrCCE, appraiserOrCCEScrap: this.appraiserOrCCEScrap, bm: this.branchManagerScrap, bml: this.branchManagerLoan, bmlfilter: this.branchManagerLoanFilter })
 	}
 
 	getScrapStatus(): Observable<any> {

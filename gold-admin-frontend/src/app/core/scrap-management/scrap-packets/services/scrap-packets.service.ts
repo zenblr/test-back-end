@@ -8,7 +8,7 @@ import { ToastrService } from 'ngx-toastr';
   providedIn: 'root'
 })
 export class ScrapPacketsService {
-  
+
   disableBtn = new BehaviorSubject<any>(false);
   disableBtn$ = this.disableBtn.asObservable();
 
@@ -17,6 +17,9 @@ export class ScrapPacketsService {
 
   buttonValue = new BehaviorSubject<any>(false);
   buttonValue$ = this.buttonValue.asObservable();
+
+  applyFilter = new BehaviorSubject<any>({});
+  applyFilter$ = this.applyFilter.asObservable();
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
@@ -33,8 +36,21 @@ export class ScrapPacketsService {
     );
   }
 
-  getpackets(search, from, to): Observable<any> {
-    return this.http.get(`/api/scrap/packet?search=${search}&from=${from}&to=${to}`).pipe(
+  getpackets(data): Observable<any> {
+    const reqParams: any = {};
+    if (data && data.from) {
+      reqParams.from = data.from;
+    }
+    if (data && data.to) {
+      reqParams.to = data.to;
+    }
+    if (data && data.search) {
+      reqParams.search = data.search;
+    }
+    if (data && data.packetAssigned) {
+      reqParams.packetAssigned = data.packetAssigned;
+    }
+    return this.http.get(`/api/scrap/packet`, { params: reqParams }).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
