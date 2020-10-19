@@ -47,6 +47,13 @@
  *     summary: To get interest table in excel
  *     security:
  *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "masterLoanId"
+ *       in: "query"
+ *       description: "masterLoanId your keyword"
+ *       type: "integer"
  *     responses:
  *       200:
  *          description: interest table
