@@ -231,7 +231,7 @@ export class PacketsListComponent implements OnInit {
 
     // isAppraiserSame
     const isAppraiserSame = selectedPackets.length && selectedPackets.every(e => e.appraiserId === selectedPackets[0].appraiserId)
-    console.log(isAppraiserSame)
+    // console.log(isAppraiserSame)
     const isAssignAppraiserValid = !(isSelectionEmpty) && isBranchSame && isUsed && isAppraiserSame ? true : false
 
     this.packetsService.disableBtn.next(!isAppraiserSame)
