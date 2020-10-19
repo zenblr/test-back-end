@@ -135,7 +135,8 @@ export class AppliedKycComponent implements OnInit {
       map(res => {
         // console.log(res);
         this.appliedKycService.editKyc.next({ editable: true });
-        this.router.navigate(['/admin/kyc-setting/edit-kyc']);
+        const disabled = (res.customerKycReview.customerKyc.currentKycModuleId == 1 && res.customerKycReview.scrapKycStatus === 'approved') ? true : false
+        this.router.navigate(['/admin/kyc-setting/edit-kyc'], { queryParams: { disabled } });
       })
     ).subscribe();
   }

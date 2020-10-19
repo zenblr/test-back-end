@@ -391,7 +391,7 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "applied-loan") {
 			this.showfilter = true;
-			this.filterWidth = "600px"
+			this.filterWidth = "800px"
 			this.filterName = "loan"
 			this.showInput = true;
 			this.listType = "approval";
@@ -403,7 +403,7 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('loan-details/')) {
 			this.rightButton = true;
 			this.notTitleCase = true;
-			this.value2 = "Generate S.O.A.";
+			this.value2 = "Generate SOA";
 			this.type2 = "button";
 		}
 		if (this.path == "applied-kyc") {
@@ -624,19 +624,19 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'part-release-approval') {
 			this.showInput = true;
-			this.showfilter = true;
+			// this.showfilter = true;
 		}
 		if (this.path == 'full-release-approval') {
 			this.showInput = true;
-			this.showfilter = true;
+			// this.showfilter = true;
 		}
 		if (this.path == 'part-release-final') {
 			this.showInput = true;
-			this.showfilter = true;
+			// this.showfilter = true;
 		}
 		if (this.path == 'full-release-final') {
 			this.showInput = true;
-			this.showfilter = true;
+			// this.showfilter = true;
 		}
 		if (location.href.includes("edit-refund-details")) {
 			this.showBackButton = true;
@@ -759,10 +759,10 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "applied-scrap") {
 			this.showfilter = true;
-			this.filterWidth = "600px"
+			this.filterWidth = "800px"
 			this.filterName = "appliedScrap"
 			this.showInput = true;
-			this.listType = "approval,scrapStatus";
+			this.listType = "approval";
 		}
 		if (this.path == 'new-requests') {
 			this.showInput = true;
@@ -1025,6 +1025,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "packet") {
 			this.packetService.applyFilter.next(data)
+		}
+		if (this.path == "packets") {
+			this.scrapPacketsService.applyFilter.next(data)
 		}
 		if (this.path == "deposit") {
 			this.depositService.applyFilter.next(data)

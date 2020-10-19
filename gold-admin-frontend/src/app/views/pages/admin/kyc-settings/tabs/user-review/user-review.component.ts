@@ -9,6 +9,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { WebcamDialogComponent } from '../../webcam-dialog/webcam-dialog.component';
 import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'kt-user-review',
@@ -36,6 +37,7 @@ export class UserReviewComponent implements OnInit {
   @ViewChild("pass", { static: false }) pass;
   @ViewChild("constitutionsDeed", { static: false }) constitutionsDeed;
   @ViewChild("gstCertificate", { static: false }) gstCertificate;
+  @ViewChild("signature", { static: false }) signature;
 
   file: any;
   occupations = [];
@@ -59,6 +61,7 @@ export class UserReviewComponent implements OnInit {
   images = { constitutionsDeed: [], gstCertificate: [] }
   @Output() setModule: EventEmitter<any> = new EventEmitter<any>();
   isAddressSame: boolean = false;
+  disabled: boolean;
 
 
   //   data = {
@@ -199,7 +202,8 @@ export class UserReviewComponent implements OnInit {
     public dialogRef: MatDialogRef<UserReviewComponent>,
     @Inject(MAT_DIALOG_DATA) public modalData: any,
     private dialog: MatDialog,
-    private ele: ElementRef
+    private ele: ElementRef,
+    private route: ActivatedRoute
   ) {
     let res = this.sharedService.getDataFromStorage();
     this.userType = res.userDetails.userTypeId;
@@ -211,6 +215,10 @@ export class UserReviewComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.route.queryParamMap.subscribe(params => {
+      this.disabled = params.get("disabled") == 'true' ? true : false
+    })
+
     if (this.userPersonalService.kycDetails) {
       this.data = this.userPersonalService.kycDetails;
     } else
@@ -304,7 +312,7 @@ export class UserReviewComponent implements OnInit {
       profileImage: [, [Validators.required]],
       firstName: [, [Validators.required]],
       lastName: [, [Validators.required]],
-      mobileNumber: [, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      mobileNumber: [, [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
       panCardNumber: [this.data.customerKycReview.panCardNumber, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       panType: [, Validators.required],
       form60: [],
@@ -409,7 +417,7 @@ export class UserReviewComponent implements OnInit {
     } else {
       this.customerKycPersonal = this.fb.group({
         profileImage: [, [Validators.required]],
-        alternateMobileNumber: [, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+        alternateMobileNumber: [, [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
         gender: [, [Validators.required]],
         spouseName: [, [Validators.required]],
         martialStatus: ['', [Validators.required]],
@@ -459,7 +467,9 @@ export class UserReviewComponent implements OnInit {
 
     this.setValidation()
 
-    this.bindScrapToLoan()
+    if (this.disabled) {
+      this.disableControls()
+    }
 
     this.ref.detectChanges()
   }
@@ -507,6 +517,8 @@ export class UserReviewComponent implements OnInit {
   }
 
   submit() {
+
+    if (this.disabled) this.enableControls()
 
     if (this.isAddressSame) this.customerKycAddressTwo.enable()
 
@@ -566,6 +578,7 @@ export class UserReviewComponent implements OnInit {
       }),
       finalize(() => {
         if (this.isAddressSame) this.customerKycAddressTwo.disable()
+        if (this.disabled) this.disableControls()
       })
     ).subscribe()
 
@@ -709,24 +722,12 @@ export class UserReviewComponent implements OnInit {
   }
 
   getFileInfo(event, type: any) {
-    // if (this.userType == 5) {
-    //   return;
-    // }
     this.file = event.target.files[0];
-    // var name = event.target.files[0].name
-
-    // var ext = name.split('.')
     if (this.sharedService.fileValidator(event)) {
       const params = {
         reason: 'customer',
         customerId: this.customerKycAddressOne.controls.customerId.value
       }
-
-      // const params = {
-      //   reason: 'lead',
-      //   customerId:  this.reviewForm.controls.id.value
-      // }
-
 
       this.sharedService.uploadFile(this.file, params).pipe(
         map(res => {
@@ -792,6 +793,7 @@ export class UserReviewComponent implements OnInit {
           if (this.pass && this.pass.nativeElement.value) this.pass.nativeElement.value = '';
           if (this.constitutionsDeed && this.constitutionsDeed.nativeElement.value) this.constitutionsDeed.nativeElement.value = '';
           if (this.gstCertificate && this.gstCertificate.nativeElement.value) this.gstCertificate.nativeElement.value = '';
+          if (this.signature && this.signature.nativeElement.value) this.signature.nativeElement.value = '';
         })
       ).subscribe()
     }
@@ -997,10 +999,6 @@ export class UserReviewComponent implements OnInit {
     return URLArray
   }
 
-  bindScrapToLoan() {
-
-  }
-
   setValidation() {
     if (this.data.moduleId == 3) {
       if (this.data.userType === 'Corporate') {
@@ -1021,7 +1019,7 @@ export class UserReviewComponent implements OnInit {
             this.customerKycPersonal.controls[key].updateValueAndValidity();
           }
           else if (key == 'alternateMobileNumber') {
-            this.customerKycPersonal.controls[key].setValidators([Validators.pattern('^[0-9]{10}$')]);
+            this.customerKycPersonal.controls[key].setValidators([Validators.pattern('^[6-9][0-9]{9}$')]);
             this.customerKycPersonal.controls[key].updateValueAndValidity();
           }
           else {
@@ -1048,6 +1046,7 @@ export class UserReviewComponent implements OnInit {
 
   sameAddressAsPermanent(event) {
     this.isAddressSame = event
+    const addressOne = this.data.customerKycReview.customerKycAddress[0]
     const addressTwo = this.data.customerKycReview.customerKycAddress[1]
 
     if (event) {
@@ -1067,8 +1066,8 @@ export class UserReviewComponent implements OnInit {
         stateId: '',
         cityId: '',
         addressProofTypeId: '',
-        customerId: addressTwo.customerId,
-        customerKycId: addressTwo.customerKycId
+        customerId: addressOne.customerId,
+        customerKycId: addressOne.customerKycId
       })
       this.customerKycAddressTwo.enable()
     }
@@ -1106,10 +1105,20 @@ export class UserReviewComponent implements OnInit {
         addressTwo.addressProofTypeId = this.customerKycAddressTwo.value.addressProofTypeId,
         addressTwo.addressProofNumber = this.customerKycAddressTwo.value.addressProofNumber
     }
-
-    // console.log({ addressOne, addressTwo })
-
     return this.isAddressSame = JSON.stringify(addressOne) === JSON.stringify(addressTwo)
-    console.log(this.isAddressSame)
+  }
+
+  disableControls() {
+    this.reviewForm.controls.firstName.disable()
+    this.reviewForm.controls.lastName.disable()
+    this.reviewForm.controls.mobileNumber.disable()
+    this.reviewForm.controls.panType.disable()
+  }
+
+  enableControls() {
+    this.reviewForm.controls.firstName.enable()
+    this.reviewForm.controls.lastName.enable()
+    this.reviewForm.controls.mobileNumber.enable()
+    this.reviewForm.controls.panType.enable()
   }
 }

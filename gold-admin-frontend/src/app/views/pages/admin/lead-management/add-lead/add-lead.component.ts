@@ -305,9 +305,11 @@ export class AddLeadComponent implements OnInit {
   }
 
   resendOTP() {
+    const firstName = this.controls.firstName.value;
+    const lastName = this.controls.lastName.value;
     const mobileNumber = this.controls.mobileNumber.value;
     // use send function OTP for resend OTP
-    this.leadService.sendOtp({ mobileNumber, type: 'lead' }).subscribe(res => {
+    this.leadService.sendOtp({ mobileNumber, firstName, lastName, type: 'lead' }).subscribe(res => {
       if (res) {
         this.otpSent = true;
         this.refCode = res.referenceCode;

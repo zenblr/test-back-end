@@ -717,6 +717,25 @@ exports.submitAllKycInfo = async (req, res, next) => {
 
         if (moduleId == 1) {
             await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });
+
+            await models.customerKycPersonalDetail.update(
+                {
+                    firstName: customerKycBasicDetails.firstName,
+                    lastName: customerKycBasicDetails.lastName,
+                    panCardNumber: customerKycBasicDetails.panCardNumber
+                }
+                , { where: { customerId: customerId }, transaction: t });
+
+            await models.customer.update(
+                {
+                    firstName: customerKycBasicDetails.firstName,
+                    lastName: customerKycBasicDetails.lastName,
+                    panCardNumber: customerKycBasicDetails.panCardNumber,
+                    panType: customerKycBasicDetails.panType,
+                    panImage: customerKycBasicDetails.panImage
+                }
+                , { where: { id: customerId }, transaction: t });
+
         }
         if (moduleId == 3) {
             if (userType == "Individual") {
@@ -957,7 +976,7 @@ exports.getReviewAndSubmit = async (req, res, next) => {
     })
     let customerKycReview = await models.customer.findOne({
         where: { id: customerId },
-        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'moduleId', 'userType', 'dateOfIncorporation'],
+        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'moduleId', 'userType', 'dateOfIncorporation', 'kycStatus', 'scrapKycStatus'],
         include: [{
             model: models.customerKycPersonalDetail,
             as: 'customerKycPersonal',

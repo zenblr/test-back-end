@@ -13,7 +13,9 @@ var fs = require('fs');
 let { sendMessageLoanIdGeneration } = require('../../utils/SMS');
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 const _ = require('lodash');
-const { getSingleLoanDetail, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan } = require('../../utils/loanFunction')
+const { getSingleLoanDetail, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan, customerNameNumberLoanId } = require('../../utils/loanFunction')
+
+const { sendDisbursalMessage } = require('../../utils/SMS')
 
 const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory');
 var randomize = require('randomatic');
@@ -337,7 +339,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
             // let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate( allOrnmanets, { transaction: t });
 
             let createdOrnaments
-                = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { updateOnDuplicate: ["loanAmount", "ornamentTypeId", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest", "karat", "ltvRange", "currentGoldRate","ornamentImage", "ltvPercent", "ltvAmount", "currentLtvAmount", "ornamentFullAmount"] }, { transaction: t })
+                = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { updateOnDuplicate: ["loanAmount", "ornamentTypeId", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest", "karat", "ltvRange", "currentGoldRate", "ornamentImage", "ltvPercent", "ltvAmount", "currentLtvAmount", "ornamentFullAmount"] }, { transaction: t })
 
             return createdOrnaments
         })
@@ -1080,7 +1082,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
                             let getUnsecu = randomize('A0', 4);
                             unsecuredLoanUniqueId = `LR${sliceCustId}${getUnsecu}`;
                             loanSendId = loanUniqueId
-                            loanSendId = `secured Loan ID ${loanUniqueId}, unsecured Loan ID ${unsecuredLoanUniqueId}`
+                            loanSendId = `${loanUniqueId}, ${unsecuredLoanUniqueId}`
                             let checkUniqueUnsecured = await models.customerLoan.findOne({ where: { loanUniqueId: unsecuredLoanUniqueId }, transaction: t })
                             if (!checkUniqueUnsecured) {
                                 checkUnsecuredUnique = true
@@ -1104,7 +1106,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
                             let getUnsecu = randomize('A0', 4);
                             unsecuredLoanUniqueId = `LR${sliceCustId}${getUnsecu}`;
                             loanSendId = loanUniqueId
-                            loanSendId = `secured Loan ID ${loanUniqueId}, unsecured Loan ID ${unsecuredLoanUniqueId}`
+                            loanSendId = `${loanUniqueId}, ${unsecuredLoanUniqueId}`
                             let checkUniqueUnsecured = await models.customerLoan.findOne({ where: { loanUniqueId: unsecuredLoanUniqueId }, transaction: t })
                             if (!checkUniqueUnsecured) {
                                 checkUnsecuredUnique = true
@@ -1136,7 +1138,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
     }
     return res.status(200).json({ message: 'success', ornamentType })
 
-}   
+}
 
 //  FUNCTION FOR ADD PACKAGE IMAGES
 exports.addPackageImagesForLoan = async (req, res, next) => {
@@ -1793,6 +1795,10 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
             if (Loan.isUnsecuredSchemeApplied == true) {
                 await models.customerLoanHistory.create({ loanId: unsecuredLoanId, masterLoanId, action: LOAN_DISBURSEMENT, modifiedBy }, { transaction: t });
             }
+
+            let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
+
+            await sendDisbursalMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
 
         })
         return res.status(200).json({ message: 'Your loan amount has been disbursed successfully' });

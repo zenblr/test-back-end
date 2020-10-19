@@ -18,15 +18,15 @@
         </div>
         <div class="row kt-padding-t-15 kt-padding-b-20 justify-content-around">
             <div class="col form-label" *ngIf="showLoanFlag">
-                <label class="kt-padding-l-10">Loan Agreement Copy</label>
+                <label class="kt-padding-l-10 mandatory">Loan Agreement Copy</label>
             </div>
             <div class="col form-label" *ngIf="showLoanTransferFlag || showLoanFlag">
-                <label class="kt-padding-l-10 kt-padding-r-25">Pawn Ticket/Copy of Pledge</label>
+                <label class="kt-padding-l-10 kt-padding-r-25 mandatory">Pawn Ticket/Copy of Pledge</label>
                 <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"
                     *ngIf="showLoanFlag && buttonValue =='save'"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showLoanFlag">
-                <label class="kt-padding-l-10">Scheme Confirmation Copy</label>
+                <label class="kt-padding-l-10 mandatory">Scheme Confirmation Copy</label>
             </div>
             <div class="col form-label" *ngIf="showLoanTransferFlag">
                 <label class="kt-padding-l-10">Signed Cheque Copy</label>
@@ -322,7 +322,7 @@
                                 (click)="editImages('pawnCopy');">
                         </div> -->
 
-                        <div *ngFor="let item of controls?.pawnCopyImage?.value; index as i">
+                        <div class="mb-3" *ngFor="let item of controls?.pawnCopyImage?.value; index as i">
                             <div class="" *ngIf="item">
                                 <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
                                     <img (click)="preview(item)" class="fetched-image" [src]="item"
@@ -330,8 +330,7 @@
 
                                     <!-- <img class="edit-icon kt-pointer" src="../../../../../assets/media/icons/edit.svg"
                                         (click)="editImages('pawnCopy')" *ngIf="isEdit && item"> -->
-                                    <img class="remove-icon kt-pointer"
-                                        src="../../../../../assets/media/icons/cancel.svg"
+                                    <img class="edit-icon kt-pointer" src="../../../../../assets/media/icons/cancel.svg"
                                         (click)="remove('pawnCopy', i)" *ngIf="isEdit && item">
                                     <div class="iframeWrapper" (click)="preview(item)">
                                         <iframe [src]="item | safe : 'resourceUrl'" height="250" width="290"

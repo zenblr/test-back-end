@@ -34,6 +34,7 @@ export class UserDetailsComponent implements OnInit {
   organizationTypes: any;
   maxDate = new Date()
   moduleId: any
+  disabled: boolean;
 
   constructor(
     public fb: FormBuilder,
@@ -54,6 +55,8 @@ export class UserDetailsComponent implements OnInit {
       // if (params) {
       const MOB = params.get("mob");
       this.moduleId = params.get("moduleId");
+      this.disabled = params.get("disabled") == 'true' ? true : false
+
       if (MOB) {
         this.controls.mobileNumber.patchValue(MOB);
         this.sendOTP();
@@ -61,9 +64,13 @@ export class UserDetailsComponent implements OnInit {
 
       if (this.moduleId) {
         this.controls.moduleId.patchValue(this.moduleId);
-        console.log(this.userBasicForm.value)
-        // this.ref.detectChanges()
+        // console.log(this.userBasicForm.value)
       }
+
+      if (this.disabled) {
+        this.disableControls()
+      }
+
     })
 
     this.controls.mobileNumber.valueChanges.subscribe(res => {
@@ -84,7 +91,7 @@ export class UserDetailsComponent implements OnInit {
     });
 
     this.controls.panCardNumber.valueChanges.subscribe(res => {
-      if (this.controls.panCardNumber.valid) {
+      if (this.controls.panCardNumber.valid || this.controls.panCardNumber.status == 'DISABLED') {
         this.panButton = false;
         // this.isPanVerified = true;
 
@@ -146,7 +153,7 @@ export class UserDetailsComponent implements OnInit {
     this.userBasicForm = this.fb.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
-      mobileNumber: [, [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
+      mobileNumber: [, [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
       otp: [, [, Validators.pattern('^[0-9]{4}$')]],
       referenceCode: [],
       panType: [, Validators.required],
@@ -304,6 +311,7 @@ export class UserDetailsComponent implements OnInit {
       return this.toastr.error('PAN is not Verfied')
 
     }
+    if (this.disabled) this.enableControls()
     this.userBasicForm.enable()
     if (this.controls.panCardNumber.value) {
       const PAN = this.controls.panCardNumber.value.toUpperCase();
@@ -331,6 +339,7 @@ export class UserDetailsComponent implements OnInit {
         this.userBasicForm.controls.otp.disable();
         this.userBasicForm.controls.referenceCode.disable();
         this.userBasicForm.enable()
+        if (this.disabled) this.disableControls()
       })
     ).subscribe();
   }
@@ -392,4 +401,19 @@ export class UserDetailsComponent implements OnInit {
     this.controls.dateOfIncorporation.updateValueAndValidity()
   }
 
+  disableControls() {
+    this.controls.firstName.disable()
+    this.controls.lastName.disable()
+    this.controls.mobileNumber.disable()
+    this.controls.panType.disable()
+    this.controls.panCardNumber.disable()
+  }
+
+  enableControls() {
+    this.controls.firstName.enable()
+    this.controls.lastName.enable()
+    this.controls.mobileNumber.enable()
+    this.controls.panType.enable()
+    this.controls.panCardNumber.enable()
+  }
 }

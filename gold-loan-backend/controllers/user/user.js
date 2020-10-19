@@ -66,13 +66,18 @@ exports.sendOtp = async (req, res, next) => {
     const { mobileNumber, type } = req.body;
     let userDetails = await models.user.findOne({ where: { mobileNumber } });
     if (userDetails) {
-        // let otp = Math.floor(1000 + Math.random() * 9000);
-        let otp = 1234;
+        let otp;
+        if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+            otp = 1234
+        } else {
+            otp = Math.floor(1000 + Math.random() * 9000);
+        }
+
         const referenceCode = await createReferenceCode(5);
         let createdTime = moment(new Date());
-        let expiryTime = moment.utc(createdTime).add(10, 'm');
+        let expiryTime = moment(createdTime).add(10, 'm');
 
-        var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
+        var expiryTimeToUser = moment(moment(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
 
         await sequelize.transaction(async t => {
             await models.userOtp.destroy({ where: { mobileNumber }, transaction: t })
@@ -80,10 +85,16 @@ exports.sendOtp = async (req, res, next) => {
         })
 
         if (type == "login") {
-            await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
-        }else if(type == "forget"){
-            await forgetPasswordOtp(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser)
+            let smsLink = process.env.BASE_URL_ADMIN
+            await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser, smsLink)
+        } else if (type == "forget") {
+            let smsLink = process.env.BASE_URL_ADMIN
+            await forgetPasswordOtp(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser, smsLink)
+        } else {
+            let smsLink = process.env.BASE_URL_ADMIN
+            await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser, smsLink)
         }
+
         // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
         // await sms.sendSms(mobileNumber, message);
         // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`);
@@ -109,7 +120,7 @@ exports.verifyOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyUser)) {
-        return res.status(400).json({ message: `Invalid OTP.` })
+        return res.status(400).json({ message: `INVALID OTP.` })
     }
     await sequelize.transaction(async t => {
         let verifyFlag = await models.userOtp.update({ isVerified: true }, { where: { id: verifyUser.id }, transaction: t });
@@ -126,7 +137,7 @@ exports.updatePassword = async (req, res, next) => {
     let verifyUser = await models.userOtp.findOne({ where: { referenceCode, isVerified: true } })
 
     if (check.isEmpty(verifyUser)) {
-        return res.status(400).json({ message: `Invalid OTP.` })
+        return res.status(400).json({ message: `INVALID OTP.` })
     }
     let user = await models.user.findOne({ where: { mobileNumber: verifyUser.mobileNumber } });
 
@@ -250,10 +261,10 @@ exports.addInternalUser = async (req, res, next) => {
 
 exports.updateInternalUser = async (req, res, next) => {
     const id = req.params.id;
-    let { firstName, lastName, mobileNumber, email, internalBranchId, userTypeId, roleId,userUniqueId } = req.body;
+    let { firstName, lastName, mobileNumber, email, internalBranchId, userTypeId, roleId, userUniqueId } = req.body;
     let modifiedBy = req.userData.id;
     await sequelize.transaction(async t => {
-        const user = await models.user.update({ firstName, lastName, mobileNumber, userTypeId, email, modifiedBy,userUniqueId }, { where: { id: id }, transaction: t })
+        const user = await models.user.update({ firstName, lastName, mobileNumber, userTypeId, email, modifiedBy, userUniqueId }, { where: { id: id }, transaction: t })
         await models.userRole.destroy({ where: { userId: id }, transaction: t });
         await models.userRole.create({ userId: id, roleId }, { transaction: t });
         if (internalBranchId != null && internalBranchId != undefined) {
@@ -354,12 +365,15 @@ exports.getAppraiser = async (req, res, next) => {
     // let branchId = req.userData.internalBranchId
     let { internalBranchId } = req.query
 
+    // let custData = await models.customer.findOne({ where: { id: customerId } })
+
     let getAppraiserList = await models.user.findAll({
         where: { isActive: true },
         attributes: ['id', 'firstName', 'lastName'],
         include: [{
             model: models.internalBranch,
             where: { id: internalBranchId }
+            // where: { cityId: custData.cityId }
         }, {
             model: models.userType,
             as: 'Usertype',

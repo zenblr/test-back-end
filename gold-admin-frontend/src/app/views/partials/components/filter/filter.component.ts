@@ -196,7 +196,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			scrapKycStatusFromCce: [''],
 			scrapKycStatus: [''],
 			endDate: [''],
-			cronType: ['']
+			cronType: [''],
+			bmStatus: [''],
+			otStatus: ['']
 		});
 
 		this.filterForm.valueChanges.subscribe((val) => {
@@ -327,6 +329,14 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.list.cronType = controls['cronType'].value.multiSelect;
 			}
 
+			if (controls['bmStatus'].value && (controls['bmStatus'].value.multiSelect && controls['bmStatus'].value.multiSelect.length)) {
+				this.filterObject.data.bmStatus = controls['bmStatus'].value.multiSelect.map(e => e.value).toString();
+				this.filterObject.list.bmStatus = controls['bmStatus'].value.multiSelect;
+			}
+			if (controls['otStatus'].value && (controls['otStatus'].value.multiSelect && controls['otStatus'].value.multiSelect.length)) {
+				this.filterObject.data.otStatus = controls['otStatus'].value.multiSelect.map(e => e.value).toString();
+				this.filterObject.list.otStatus = controls['otStatus'].value.multiSelect;
+			}
 			// if (controls['date'].value) {
 			// 	this.filterObject.data.date = controls['date'].value;
 			// 	this.filterObject.list.date = controls['date'].value;
@@ -451,6 +461,12 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'packetTrackingLocation':
 				this.controls['packetTrackingLocation'].patchValue('');
 				break;
+			case 'bmStatus':
+				this.controls['bmStatus'].value.multiSelect.splice(index, 1);
+				break;
+			case 'otStatus':
+				this.controls['otStatus'].value.multiSelect.splice(index, 1);
+				break;
 			default:
 				break;
 		}
@@ -470,6 +486,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			scrapKycStatus: this.filterForm.controls['scrapKycStatus'].value,
 			scrapKycStatusFromCce: this.filterForm.controls['scrapKycStatusFromCce'].value,
 			packetTrackingLocation: this.filterForm.controls['packetTrackingLocation'].value,
+			bmStatus: this.filterForm.controls['bmStatus'].value,
+			otStatus: this.filterForm.controls['otStatus'].value,
 		});
 		setTimeout(() => {
 			this.applyFilter();
