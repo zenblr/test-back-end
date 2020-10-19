@@ -9,7 +9,7 @@ const moment = require("moment");
 
 const check = require("../../lib/checkLib");
 var uniqid = require('uniqid');
-let { sendCustomerUniqueId, sendMessageToOperationsTeam, sendKYCApprovalMessage } = require('../../utils/SMS')
+let { sendCustomerUniqueId, sendMessageToOperationsTeam, sendKYCApprovalMessage, sendKYCApprovalStatusMessage } = require('../../utils/SMS')
 
 exports.cceKycRating = async (req, res, next) => {
 
@@ -252,7 +252,7 @@ exports.operationalTeamKycRating = async (req, res, next) => {
 
             let cusMobile = getMobileNumber.mobileNumber
 
-            await sendKYCApprovalMessage(cusMobile, getMobileNumber.firstName)
+            await sendKYCApprovalStatusMessage(cusMobile, getMobileNumber.firstName, "Gold Loan", kycStatusFromOperationalTeam)
 
             await sendCustomerUniqueId(cusMobile, getMobileNumber.firstName, customerUniqueId)
             //message for customer
