@@ -110,12 +110,14 @@ export class PacketsListComponent implements OnInit {
     this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
     this.dataSource.loadpackets(this.queryParamsData);
+    this.selection.clear();
   }
 
   applyFilter(data) {
     //console.log(data.data.scheme);
     this.queryParamsData.packetAssigned = data.data.scheme;
     this.dataSource.loadpackets(this.queryParamsData);
+    this.selection.clear();
   }
 
   assignPackets() {
