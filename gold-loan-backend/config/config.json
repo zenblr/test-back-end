@@ -26,10 +26,10 @@
         "operatorsAliases": false
     },
     "production": {
-        "username": "loan_uat_admin",
-        "password": "hCVtBwCfBs658qp8JSOn",
-        "database": "emi-loan-uat",
-        "host": "emi-loan-uat.cdqj1gojl1vk.ap-south-1.rds.amazonaws.com",
+        "username": "postgres",
+        "password": "d51FZuIHOX5pL8ja4Y4r",
+        "database": "gold_all_db",
+        "host": "gold-for-all-cluster.cluster-cdqj1gojl1vk.ap-south-1.rds.amazonaws.com",
         "dialect": "postgres",
         "operatorsAliases": false
     }
