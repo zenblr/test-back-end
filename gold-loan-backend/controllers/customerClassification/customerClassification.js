@@ -216,6 +216,9 @@ exports.operationalTeamKycRating = async (req, res, next) => {
 
 
                 });
+                let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
+                await sendKYCApprovalStatusMessage(getMobileNumber.mobileNumber, getMobileNumber.firstName, "Gold Loan", kycStatusFromOperationalTeam)
+
                 return res.status(200).json({ message: 'success' })
             }
 
@@ -331,6 +334,8 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                     });
                 }
 
+                let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
+                await sendKYCApprovalStatusMessage(getMobileNumber.mobileNumber, getMobileNumber.firstName, "Gold Scrap", scrapKycStatusFromOperationalTeam)
 
                 return res.status(200).json({ message: 'success' })
             }
@@ -352,6 +357,7 @@ exports.operationalTeamKycRating = async (req, res, next) => {
             let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
             let cusMobile = getMobileNumber.mobileNumber
 
+            await sendKYCApprovalStatusMessage(cusMobile, getMobileNumber.firstName, "Gold Scrap", scrapKycStatusFromOperationalTeam)
             // await sendCustomerUniqueId(cusMobile, getMobileNumber.firstName, customerUniqueId)
             //message for customer
             request(
