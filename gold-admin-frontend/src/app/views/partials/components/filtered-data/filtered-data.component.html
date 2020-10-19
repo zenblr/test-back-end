@@ -267,6 +267,20 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- packets -->
+                    <div class="filtered-data" *ngIf="filteredList?.packets != 'All'">
+                        <div class="filtered-title">Packets</div>
+                        <div class="d-flex">
+                            <div class="filtered-value">
+                                <span *ngIf="filteredList?.packets == 'true'">Used</span>
+                                <span *ngIf="filteredList?.packets == 'false'">Unused</span>
+
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('packets')">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </kt-portlet-body>

@@ -198,7 +198,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			endDate: [''],
 			cronType: [''],
 			bmStatus: [''],
-			otStatus: ['']
+			otStatus: [''],
 		});
 
 		this.filterForm.valueChanges.subscribe((val) => {
@@ -358,6 +358,14 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.packetTrackingLocation = controls['packetTrackingLocation'].value;
 				this.filterObject.list.packetTrackingLocation = controls['packetTrackingLocation'].value;
 			}
+			if (controls['packets'].value) {
+				if (controls['packets'].value == "All") {
+					this.filterObject.data.packets = ''
+				} else {
+					this.filterObject.data.packets = controls['packets'].value
+					this.filterObject.list.packets = controls['packets'].value;
+				}
+			}
 			return this.filterObject;
 		}
 	}
@@ -438,7 +446,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.controls['scrapStatus'].value.multiSelect.splice(index, 1);
 				break;
 			case 'packets':
-				this.controls['scheme'].patchValue('');
+				this.controls['packets'].patchValue('');
 				break;
 			case 'deposit':
 				this.controls['scheme'].patchValue('');
@@ -488,6 +496,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			packetTrackingLocation: this.filterForm.controls['packetTrackingLocation'].value,
 			bmStatus: this.filterForm.controls['bmStatus'].value,
 			otStatus: this.filterForm.controls['otStatus'].value,
+			packets: this.filterForm.controls['packets'].value,
 		});
 		setTimeout(() => {
 			this.applyFilter();
