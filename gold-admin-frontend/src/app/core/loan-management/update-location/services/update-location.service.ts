@@ -39,8 +39,13 @@ export class UpdateLocationService {
     )
   }
 
-  sendCustomerOtp(mobileNumber: string): Observable<any> {
-    return this.http.post<any>(`/api/customer/send-otp`, { mobileNumber }).pipe(map(res => res),
+  sendCustomerOtp(mobileNumber: string, type, id = null): Observable<any> {
+    const reqParams: any = {}
+    if (mobileNumber) reqParams.mobileNumber = mobileNumber
+    if (type) reqParams.type = type
+    if (id) reqParams.id = id
+
+    return this.http.post<any>(`/api/customer/send-otp`, reqParams).pipe(map(res => res),
       catchError(err => {
         if (err.error.message) this.toastr.error(err.error.message);
         throw (err);
@@ -48,8 +53,13 @@ export class UpdateLocationService {
     )
   }
 
-  sendPartnerOtp(mobileNumber: string): Observable<any> {
-    return this.http.post<any>(`/api/partner-branch-user/send-otp`, { mobileNumber }).pipe(map(res => res),
+  sendPartnerOtp(mobileNumber: string, type, id = null): Observable<any> {
+    const reqParams: any = {}
+    if (mobileNumber) reqParams.mobileNumber = mobileNumber
+    if (type) reqParams.type = type
+    if (id) reqParams.id = id
+
+    return this.http.post<any>(`/api/partner-branch-user/send-otp`, reqParams).pipe(map(res => res),
       catchError(err => {
         if (err.error.message) this.toastr.error(err.error.message);
         throw (err);
