@@ -38,7 +38,7 @@ export class SharedService {
 		{ value: 'rejected', name: 'rejected' }
 	];
 	appraiserOrCCEScrap = [
-		{ value: 'incomplete', name: 'incomplete' },
+		{ value: 'pending', name: 'pending' },
 		{ value: 'approved', name: 'approved' },
 		{ value: 'rejected', name: 'rejected' },
 	];

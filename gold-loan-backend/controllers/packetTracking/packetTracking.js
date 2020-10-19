@@ -11,7 +11,10 @@ const CONSTANT = require('../../utils/constant');
 const { createReferenceCode } = require("../../utils/referenceCode");
 const request = require("request");
 const { VIEW_ALL_PACKET_TRACKING } = require('../../utils/permissionCheck')
+const { sendSms } = require('../../utils/sendSMS')
 
+const { sendJewelleryPartReleaseCompletedMessage, sendJewelleryFullReleaseCompletedMessage } = require('../../utils/SMS')
+const { customerNameNumberLoanId } = require('../../utils/loanFunction');
 
 //FUNCTION TO GET ALL PACKET DETAILS
 exports.getAllPacketTrackingDetail = async (req, res, next) => {
@@ -687,13 +690,14 @@ exports.checkOutPacket = async (req, res, next) => {
         otp = Math.floor(1000 + Math.random() * 9000);
     }
     let createdTime = new Date();
-    let expiryTime = moment.utc(createdTime).add(10, "m");
+    let expiryTime = moment(createdTime).add(10, "m");
 
-    // var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
+    // var expiryTimeToUser = moment(moment(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
 
     await models.customerOtp.create({ mobileNumber: custDetail.mobileNumber, otp, createdTime, expiryTime, referenceCode, });
-
-    request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${custDetail.mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`);
+    let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
+    await sendSms(custDetail.mobileNumber, message);
+    // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${custDetail.mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`);
 
     return res.status(200).json({ message: `success`, referenceCode: referenceCode })
 }
@@ -1503,9 +1507,17 @@ exports.submitLoanPacketLocationForHomeIn = async (req, res, next) => {
 
                 await models.customerLoanMaster.update({ isOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
 
+                let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
+
+                await sendJewelleryFullReleaseCompletedMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+
             } else {
                 await models.partRelease.update({ partReleaseStatus: 'released', modifiedBy, releaseDate, isCustomerReceivedPacket: true }, { where: { id: releaseId }, transaction: t })
                 await models.customerLoanMaster.update({ isOrnamentsReleased: true, isFullOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
+
+                let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
+
+                await sendJewelleryPartReleaseCompletedMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
             }
 
         })

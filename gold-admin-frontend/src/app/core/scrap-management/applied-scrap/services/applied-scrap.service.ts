@@ -30,8 +30,11 @@ export class AppliedScrapService {
     if (event && event.appraiserApproval) {
       reqParams.appraiserApproval = event.appraiserApproval;
     }
-    if (event && event.scrapStage) {
-      reqParams.scrapStageId = event.scrapStage;
+    if (event && event.bmApproval) {
+      reqParams.bmApproval = event.bmApproval;
+    }
+    if (event && event.operatinalTeamApproval) {
+      reqParams.operatinalTeamApproval = event.operatinalTeamApproval;
     }
     return this.http.get(`/api/scrap/scrap-process/applied-scrap-details`, {
       params: reqParams,
