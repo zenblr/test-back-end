@@ -19,9 +19,9 @@ import { ImageFunctionalityDialogComponent } from '../image-functionality-dialog
   .picsum-img-wrapper { 
     border-radius:15px !important; 
     overflow-x: hidden; 
-    max-width: 75vw; 
+    max-width: 80vw; 
     width: auto;
-    max-height: 75vh;}
+    max-height: 80vh;}
   `]
 })
 export class ImagePreviewDialogComponent implements OnInit, AfterViewInit {

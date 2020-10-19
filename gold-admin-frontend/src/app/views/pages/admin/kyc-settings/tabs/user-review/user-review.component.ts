@@ -1113,6 +1113,7 @@ export class UserReviewComponent implements OnInit {
     this.reviewForm.controls.lastName.disable()
     this.reviewForm.controls.mobileNumber.disable()
     this.reviewForm.controls.panType.disable()
+    this.reviewForm.controls.panCardNumber.disable()
   }
 
   enableControls() {
@@ -1120,5 +1121,6 @@ export class UserReviewComponent implements OnInit {
     this.reviewForm.controls.lastName.enable()
     this.reviewForm.controls.mobileNumber.enable()
     this.reviewForm.controls.panType.enable()
+    this.reviewForm.controls.panCardNumber.enable()
   }
 }

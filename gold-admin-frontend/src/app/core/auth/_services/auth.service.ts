@@ -24,8 +24,13 @@ export class AuthService {
         );
     }
 
-    generateOtp(mobileNumber: string, type: string): Observable<any> {
-        return this.http.post<any>(`/api/user/send-otp`, { mobileNumber, type }).pipe(
+    generateOtp(mobileNumber: string, type: string, id = null): Observable<any> {
+        const reqParams: any = {}
+        if (mobileNumber) reqParams.mobileNumber = mobileNumber
+        if (type) reqParams.type = type
+        if (id) reqParams.id = id
+
+        return this.http.post<any>(`/api/user/send-otp`, reqParams).pipe(
             map(res => res),
         )
     }
