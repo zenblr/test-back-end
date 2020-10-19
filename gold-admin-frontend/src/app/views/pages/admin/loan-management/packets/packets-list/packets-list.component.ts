@@ -135,6 +135,7 @@ export class PacketsListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPackets();
+        this.selection.clear();
       }
       this.packetsService.openModal.next(false);
     });
@@ -149,6 +150,7 @@ export class PacketsListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPackets();
+        this.selection.clear();
       }
     });
   }
