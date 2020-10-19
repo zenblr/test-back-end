@@ -386,7 +386,6 @@ export class AddLeadComponent implements OnInit {
     ///this.leadForm.controls.cityId.enable();
   }
   onSubmit() {
-
     if (this.data.action == 'add') {
       if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists) {
         this.checkforVerfication()
