@@ -23,10 +23,11 @@ let { sendPaymentMessage } = require('../../utils/SMS')
 
 exports.razorPayCreateOrder = async (req, res, next) => {
     try {
-        let { amount } = req.body;
+        let { amount,masterLoanId } = req.body;
+        let loanData = await models.customerLoan.findOne({where:{masterLoanId:masterLoanId},order:[['id','asc']]});
         let transactionUniqueId = uniqid.time().toUpperCase();
         let payableAmount = await Math.round(amount * 100);
-        let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId}`, payment_capture: 0, notes: "gold loan" });
+        let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId} and ${loanData.loanUniqueId}`, payment_capture: 0, notes: "gold loan" });
         return res.status(200).json({ razorPayOrder, razerPayConfig: razorpay.razorPayConfig.key_id });
     } catch (err) {
         console.log(err)
