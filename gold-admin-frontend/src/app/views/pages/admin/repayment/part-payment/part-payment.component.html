@@ -82,7 +82,8 @@
                     <kt-button [value]="'View Part Payment Logs'" [type]="'button'" (click)="viewEmiLogs()"></kt-button>
                     <span class="kt-padding-5"></span>
 
-                    <kt-button [value]="'Cancel'" [type]="'reset'" (click)="partAmount.reset();payableAmountSummary=''">
+                    <kt-button [value]="'Cancel'" [type]="'reset'"
+                        (click)="partAmount.reset();payableAmountSummary='';paymentDetails=null">
                     </kt-button>
                 </div>
             </div>
