@@ -1,34 +1,34 @@
 :host{
-    .mat-column-status{
-        flex: 0 0 17% !important;
-    }
-    .mat-column-date{
-        flex: 0 0 9% !important;
-    }
-    .mat-column-customerID{
-        flex: 0 0 9% !important;
-    }
-    .mat-column-loanId{
-        flex: 0 0 7% !important;
-    }
-    .mat-column-mobile{
-        flex: 0 0 9% !important;
-    }
+    // .mat-column-status{
+    //     flex: 0 0 17% !important;
+    // }
+    // .mat-column-date{
+    //     flex: 0 0 9% !important;
+    // }
+    // .mat-column-customerID{
+    //     flex: 0 0 9% !important;
+    // }
+    // .mat-column-loanId{
+    //     flex: 0 0 7% !important;
+    // }
+    // .mat-column-mobile{
+    //     flex: 0 0 9% !important;
+    // }
     .mat-column-fullName{
         flex: 0 0 12% !important;
         padding-left: 10px !important;
     }
     .mat-column-amount{
         flex: 0 0 10% !important;
-        padding-right: 25px;
-        justify-content: flex-end;
+        // padding-right: 25px;
+        // justify-content: flex-end;
     }
     .mat-column-action{
-        flex: 0 0 11% !important;
+        flex: 0 0 13% !important;
     }
-    .mat-column-bmStatus{
-        flex: 0 0 7% !important;
-    }
+    // .mat-column-bmStatus{
+    //     flex: 0 0 7% !important;
+    // }
     .btn-width {
         width: 115px !important;
     }
