@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { SelectionModel } from '@angular/cdk/collections';
 import { PacketAssignAppraiserComponent } from '../packet-assign-appraiser/packet-assign-appraiser.component';
+import { SharedService } from '../../../../../../core/shared/services/shared.service';
 @Component({
   selector: 'kt-packets-list',
   templateUrl: './packets-list.component.html',
@@ -45,7 +46,8 @@ export class PacketsListComponent implements OnInit {
     private dataTableService: DataTableService,
     private layoutUtilsService: LayoutUtilsService,
     private toastr: ToastrService,
-    private ngxPermissionService: NgxPermissionsService
+    private ngxPermissionService: NgxPermissionsService,
+    private sharedService: SharedService
   ) {
     this.packetsService.openModal$.pipe(
       map(res => { if (res) this.addPackets() }),
@@ -111,6 +113,7 @@ export class PacketsListComponent implements OnInit {
     this.filter$.complete();
     this.packetsService.applyFilter.next({});
     this.packetsService.disableBtn.next(false)
+    this.sharedService.closeFilter.next(true);
   }
 
 
