@@ -669,7 +669,7 @@ exports.getPartReleaseList = async (req, res, next) => {
         model: models.customerLoanOrnamentsDetail,
         include: [
             {
-                model: models.packet
+                model: models.packet,
             }, {
                 model: models.ornamentType,
                 as: "ornamentType"
