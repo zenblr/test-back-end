@@ -741,7 +741,7 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
 
             break;
 
-        } else if (pendingSecuredAmount < Number(loanArray[index]['outstandingInterest'])) {
+        } else if (pendingSecuredAmount < Number(loanArray[index]['outstandingInterest']) && Number(loanArray[index]['outstandingInterest']) - pendingSecuredAmount >= 0.5 ) {
 
             loanArray[index]['emiStatus'] = "partially paid"
             loanArray[index]['paidAmount'] = Number(loanArray[index]['paidAmount']) + Number(pendingSecuredAmount.toFixed(2))
@@ -761,7 +761,7 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
             loanArray[index]['emiReceivedDate'] = paymentReceivedDate
 
 
-        } else if (pendingSecuredAmount >= Number(loanArray[index]['outstandingInterest'])) {
+        } else if (pendingSecuredAmount >= Number(loanArray[index]['outstandingInterest']) || Number(loanArray[index]['outstandingInterest']) - pendingSecuredAmount <= 0.5) {
 
             loanArray[index]['paidAmount'] = Number(loanArray[index]['paidAmount']) + Number(loanArray[index]['outstandingInterest'])
             loanArray[index]['emiStatus'] = "paid"
@@ -1241,14 +1241,14 @@ async function getAmountLoanSplitUpData(loan, amount, splitUpRatioAmount) {
     let totalOutstandingAmount = Number(securedOutstandingAmount) + Number(unsecuredOutstandingAmount)
 
     let securedLoanId = loan.customerLoan[0].id
-    let securedRatio = securedOutstandingAmount / totalOutstandingAmount * (splitUpRatioAmount)
+    let securedRatio = Number((securedOutstandingAmount / totalOutstandingAmount * (splitUpRatioAmount)).toFixed(2))
     let newSecuredOutstandingAmount = securedOutstandingAmount - securedRatio
     let newUnsecuredOutstandingAmount = 0
     let unsecuredRatio = 0
     let unsecuredLoanId = null
     if (loan.isUnsecuredSchemeApplied) {
         unsecuredLoanId = loan.customerLoan[1].id
-        unsecuredRatio = unsecuredOutstandingAmount / totalOutstandingAmount * splitUpRatioAmount
+        unsecuredRatio = Number((unsecuredOutstandingAmount / totalOutstandingAmount * splitUpRatioAmount).toFixed(2))
         newUnsecuredOutstandingAmount = Number(unsecuredOutstandingAmount) - unsecuredRatio
     }
     let newMasterOutstandingAmount = newSecuredOutstandingAmount + newUnsecuredOutstandingAmount

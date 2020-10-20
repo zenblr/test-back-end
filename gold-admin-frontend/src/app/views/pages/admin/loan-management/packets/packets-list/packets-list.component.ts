@@ -37,6 +37,7 @@ export class PacketsListComponent implements OnInit {
     search: '',
     packetAssigned: ''
   }
+  filteredDataList: any = {};
 
   constructor(
     public dialog: MatDialog,
@@ -120,11 +121,16 @@ export class PacketsListComponent implements OnInit {
     this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
     this.dataSource.loadpackets(this.queryParamsData);
+    this.selection.clear();
+
   }
   applyFilter(data) {
     //console.log(data.data.scheme);
-    this.queryParamsData.packetAssigned = data.data.scheme;
+    this.queryParamsData.packetAssigned = data.data.packets;
+    this.filteredDataList = data.list;
+    // console.log(this.filteredDataList)
     this.dataSource.loadpackets(this.queryParamsData);
+    this.selection.clear();
   }
 
   addPackets() {
@@ -225,7 +231,7 @@ export class PacketsListComponent implements OnInit {
 
     // isAppraiserSame
     const isAppraiserSame = selectedPackets.length && selectedPackets.every(e => e.appraiserId === selectedPackets[0].appraiserId)
-    console.log(isAppraiserSame)
+    // console.log(isAppraiserSame)
     const isAssignAppraiserValid = !(isSelectionEmpty) && isBranchSame && isUsed && isAppraiserSame ? true : false
 
     this.packetsService.disableBtn.next(!isAppraiserSame)

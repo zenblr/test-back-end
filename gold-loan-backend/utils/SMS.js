@@ -191,3 +191,30 @@ exports.sendKYCApprovalMessage = async (mobileNumber, customerName) => {
         await sms.sendSms(mobileNumber, message);
     }
 }
+
+exports.sendKYCApprovalStatusMessage = async (mobileNumber, customerName, ProductName, status) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('KYC Approval Message (LOAN)');
+    //Dear <Customer Name>, Your KYC Request for the <Product Name> has been <status>
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<Customer Name>", customerName).replace("<Product Name>", ProductName).replace("<status>", status)
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+
+exports.sendUpdateLocationCollectMessage = async (mobileNumber, otp, receiverName, DeliveryPersonName) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Update Location OTP (Loan)');
+    //Dear <Receiver Name>, Please collect the packet and share the OTP <OTP> with <Delivery Person Name>
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<OTP>", otp).replace("<Receiver Name>", receiverName).replace("<Delivery Person Name>", DeliveryPersonName)
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+
+exports.sendUpdateLocationHandoverMessage = async (mobileNumber, otp, receiverName, DeliveryPersonName) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Update Location OTP (Partner Branch User) (Loan)');
+    //Dear <Receiver Name>, Please handover the packet and share the OTP <OTP> with <Delivery Person Name>
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<OTP>", otp).replace("<Receiver Name>", receiverName).replace("<Delivery Person Name>", DeliveryPersonName)
+        await sms.sendSms(mobileNumber, message);
+    }
+}

@@ -91,6 +91,8 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       if (Number(changes.finalScrapAmt.currentValue) > 200000) {
         this.controls.paymentType.patchValue('bank')
         this.controls.paymentType.disable()
+      } else {
+        this.controls.paymentType.enable()
       }
       this.ref.detectChanges()
     }
@@ -108,7 +110,8 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       accountNumber: [, [Validators.required, Validators.pattern('^(?=.*\\d)(?=.*[1-9]).{3,21}$')]],
       ifscCode: ['', [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
       accountType: [],
-      accountHolderName: [, [Validators.required, Validators.pattern("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")]],
+      // accountHolderName: [, [Validators.required, Validators.pattern("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")]],
+      accountHolderName: [, [Validators.required]],
       bankBranchName: [, [Validators.required]],
       passbookProof: [[], [Validators.required]],
       passbookProofImage: [[]],
