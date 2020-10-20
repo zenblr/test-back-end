@@ -814,6 +814,9 @@ export class TopbarComponent implements OnInit {
 			this.listType = 'cron';
 			this.filterWidth = '600px';
 		}
+		if (this.path == "transfer-loan-list") {
+			this.showInput = true;
+		}
 	}
 
 	action(event: Event) {
