@@ -22,6 +22,7 @@ export class CustomerGridComponent implements OnInit, OnChanges {
   count: any;
   searchValue: any;
   unsubscribeSearch$ = new Subject();
+  index = 0;
   constructor(
     private customerService: CustomerManagementService,
     private ref: ChangeDetectorRef,
@@ -39,7 +40,8 @@ export class CustomerGridComponent implements OnInit, OnChanges {
         let data = {
           from: this.page.from,
           to: this.page.to + 20,
-          search: this.searchValue ? this.searchValue : ''
+          search: this.searchValue ? this.searchValue : '',
+          index:this.index += 1
         }
         this.pagination.emit(data)
       }

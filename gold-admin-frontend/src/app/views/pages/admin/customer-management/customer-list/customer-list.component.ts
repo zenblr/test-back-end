@@ -18,6 +18,7 @@ export class CustomerListComponent implements OnInit, OnChanges {
 
   toogler: string;
   @Input() data;
+  @Input() index;
   @Input() hasItems
   @Input() isPreloadTextViewed
   @Output() pagination = new EventEmitter
@@ -49,7 +50,11 @@ export class CustomerListComponent implements OnInit, OnChanges {
     if (changes.data)
       this.customerResult = changes.data.currentValue
     // this.dataSource.isPreloadTextViewedSubject.
+    if(changes.index && changes.index.currentValue){
+       this.paginator.pageIndex = this.index
+    }
   }
+
 
   ngOnInit() {
 
