@@ -624,7 +624,7 @@ exports.getPartReleaseList = async (req, res, next) => {
                 "$masterLoan.loanPersonalDetail.customer_unique_id$": { [Op.iLike]: search + "%" },
                 "$masterLoan.outstanding_amount$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.outstanding_amount"), "varchar"), { [Op.iLike]: search + "%" }),
                 "$masterLoan.tenure$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"), { [Op.iLike]: search + "%" }),
-                "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" },
+                // "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" },
                 final_loan_amount: sequelize.where(
                     sequelize.cast(sequelize.col("masterLoan.final_loan_amount"), "varchar"), { [Op.iLike]: search + "%" })
             },
@@ -655,6 +655,7 @@ exports.getPartReleaseList = async (req, res, next) => {
             },
             {
                 model: models.customerLoan,
+                separate: true,
                 as: 'customerLoan',
                 attributes: ['id', 'masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId', 'outstandingAmount']
             },
@@ -669,7 +670,7 @@ exports.getPartReleaseList = async (req, res, next) => {
         model: models.customerLoanOrnamentsDetail,
         include: [
             {
-                model: models.packet
+                model: models.packet,
             }, {
                 model: models.ornamentType,
                 as: "ornamentType"
@@ -703,7 +704,7 @@ exports.getPartReleaseList = async (req, res, next) => {
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         order: [
             ["updatedAt", "DESC"],
-            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoan, as: 'customerLoan' }, 'id', 'asc']
+            // [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoan, as: 'customerLoan' }, 'id', 'asc']
         ],
         offset: offset,
         limit: pageSize,
@@ -915,7 +916,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
                 "$masterLoan.loanPersonalDetail.customer_unique_id$": { [Op.iLike]: search + "%" },
                 "$masterLoan.outstanding_amount$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.outstanding_amount"), "varchar"), { [Op.iLike]: search + "%" }),
                 "$masterLoan.tenure$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"), { [Op.iLike]: search + "%" }),
-                "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" },
+                // "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" },
                 final_loan_amount: sequelize.where(
                     sequelize.cast(sequelize.col("masterLoan.final_loan_amount"), "varchar"), { [Op.iLike]: search + "%" })
             },
@@ -960,6 +961,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
                 {
                     model: models.customerLoan,
                     as: 'customerLoan',
+                    separate: true,
                     attributes: ['id', 'masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId', 'outstandingAmount']
                 },
                 {
@@ -1031,7 +1033,7 @@ exports.partReleaseApprovedList = async (req, res, next) => {
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         order: [
             ["updatedAt", "DESC"],
-            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoan, as: 'customerLoan' }, 'id', 'asc']
+            // [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoan, as: 'customerLoan' }, 'id', 'asc']
             // [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoanPacketData, as: 'locationData' }, 'id', 'desc'],
             // [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerPacketTracking, as: 'customerPacketTracking' }, 'id', 'asc'],
         ],
@@ -1626,7 +1628,7 @@ exports.getFullReleaseList = async (req, res, next) => {
                 "$masterLoan.loanPersonalDetail.customer_unique_id$": { [Op.iLike]: search + "%" },
                 "$masterLoan.outstanding_amount$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.outstanding_amount"), "varchar"), { [Op.iLike]: search + "%" }),
                 "$masterLoan.tenure$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"), { [Op.iLike]: search + "%" }),
-                "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" },
+                // "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" },
                 final_loan_amount: sequelize.where(
                     sequelize.cast(sequelize.col("masterLoan.final_loan_amount"), "varchar"), { [Op.iLike]: search + "%" })
             },
@@ -1658,6 +1660,7 @@ exports.getFullReleaseList = async (req, res, next) => {
             {
                 model: models.customerLoan,
                 as: 'customerLoan',
+                separate: true,
                 attributes: ['id', 'masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId', 'outstandingAmount']
             },
             {
@@ -1666,6 +1669,7 @@ exports.getFullReleaseList = async (req, res, next) => {
                 attributes: ['customerUniqueId']
             }, {
                 model: models.customerLoanOrnamentsDetail,
+                // separate: true,
                 as: 'loanOrnamentsDetail',
                 include: [
                     {
@@ -1709,7 +1713,7 @@ exports.getFullReleaseList = async (req, res, next) => {
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         order: [
             ["updatedAt", "DESC"],
-            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoan, as: 'customerLoan' }, 'id', 'asc']
+            // [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoan, as: 'customerLoan' }, 'id', 'asc']
         ],
         offset: offset,
         limit: pageSize,
@@ -1932,7 +1936,7 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
                 "$masterLoan.loanPersonalDetail.customer_unique_id$": { [Op.iLike]: search + "%" },
                 "$masterLoan.outstanding_amount$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.outstanding_amount"), "varchar"), { [Op.iLike]: search + "%" }),
                 "$masterLoan.tenure$": sequelize.where(sequelize.cast(sequelize.col("masterLoan.tenure"), "varchar"), { [Op.iLike]: search + "%" }),
-                "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" },
+                // "$masterLoan.customerLoan.loan_unique_id$": { [Op.iLike]: search + "%" },
                 final_loan_amount: sequelize.where(
                     sequelize.cast(sequelize.col("masterLoan.final_loan_amount"), "varchar"), { [Op.iLike]: search + "%" })
             },
@@ -1975,6 +1979,7 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
             {
                 model: models.customerLoan,
                 as: 'customerLoan',
+                separate: true,
                 attributes: ['id', 'masterLoanId', 'loanUniqueId', 'loanAmount', 'customerId', 'outstandingAmount']
             },
             {
@@ -2041,7 +2046,7 @@ exports.getFullReleaseApprovedList = async (req, res, next) => {
         attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
         order: [
             ["updatedAt", "DESC"],
-            [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoan, as: 'customerLoan' }, 'id', 'asc']
+            // [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoan, as: 'customerLoan' }, 'id', 'asc']
         ],
         offset: offset,
         limit: pageSize,
