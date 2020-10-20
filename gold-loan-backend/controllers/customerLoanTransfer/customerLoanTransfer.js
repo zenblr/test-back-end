@@ -313,19 +313,18 @@ exports.getLoanTransferList = async (req, res, next) => {
                 "$customer.mobile_number$": { [Op.iLike]: search + '%' },
                 "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
                 "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-                // "$customerLoanMaster.final_loan_amount$": { [Op.iLike]: search + '%' },
                 finalLoanAmount: sequelize.where(
                     sequelize.cast(sequelize.col("customerLoanMaster.final_loan_amount"), "varchar"),
                     {
                         [Op.iLike]: search + "%",
                     }
-                ),
-                "$customerLoan.loan_unique_id$": { [Op.iLike]: search + '%' }
+                )
             },
         }],
         isActive: true,
         isLoanTransfer: true
     };
+    // let customerLoanWhere = {loan_unique_id:{ [Op.iLike]: search + '%'}};
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
@@ -338,6 +337,7 @@ exports.getLoanTransferList = async (req, res, next) => {
         {
             model: models.customerLoan,
             as: 'customerLoan',
+            separate: true,
             attributes: ['id', 'loanUniqueId', 'customerId', 'masterLoanId']
         },
         {
@@ -359,7 +359,7 @@ exports.getLoanTransferList = async (req, res, next) => {
         include: associateModel,
         attributes: ['loanTransferId', 'isLoanSubmitted', 'loanStatusForAppraiser', 'appraiserRequestId'],
         order: [
-            [models.customerLoan, 'id', 'asc'],
+            // [models.customerLoan, 'id', 'asc'],
             ['id', 'DESC']
         ],
         offset: offset,

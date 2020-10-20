@@ -607,6 +607,7 @@ export class UserReviewComponent implements OnInit {
   getStates() {
     this.sharedService.getStates().subscribe(res => {
       this.states = res.data;
+      this.ref.detectChanges();
     });
     this.getCities('permanent');
     this.getCities('residential');

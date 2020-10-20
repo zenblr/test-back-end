@@ -208,6 +208,7 @@ export class AddLeadComponent implements OnInit {
         this.controls.cityId.reset();
         this.controls.cityId.patchValue('');
       }
+      this.ref.detectChanges()
     });
   }
 

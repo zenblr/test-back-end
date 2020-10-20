@@ -91,6 +91,7 @@ export class CustomerListComponent implements OnInit, OnChanges {
 
 
   loadLeadsPage() {
+    // console.log(this.paginator.pageIndex)
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
