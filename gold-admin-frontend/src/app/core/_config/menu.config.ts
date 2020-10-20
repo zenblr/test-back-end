@@ -598,7 +598,7 @@ export class MenuConfig {
 							title: "Concurrent User",
 							root: true,
 							page: "/admin/user-management/concurrent-login",
-							src: "assets/media/aside-icons/icons-19.svg",
+							src: "assets/media/aside-icons/icons-06.svg",
 							permission: !this.permissionsArr.includes('concurrentLoginView')
 							
 						},
