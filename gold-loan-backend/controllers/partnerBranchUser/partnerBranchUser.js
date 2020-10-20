@@ -8,12 +8,12 @@ const { createReferenceCode } = require("../../utils/referenceCode");
 const request = require("request");
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 const moment = require('moment')
-
+let { sendOtpForLogin, forgetPasswordOtp, sendUpdateLocationCollectMessage, sendUpdateLocationHandoverMessage } = require('../../utils/SMS');
 const { sendSms } = require('../../utils/sendSMS')
 
 //FUNCTION FOR SEND OTP PARTNER BRANCH USER
 exports.sendOtp = async (req, res, next) => {
-    const { mobileNumber } = req.body;
+    const { mobileNumber, id, type } = req.body;
 
     let partnerBranchUserExist = await models.partnerBranchUser.findOne({
         where: { mobileNumber, isActive: true },
@@ -34,12 +34,27 @@ exports.sendOtp = async (req, res, next) => {
     }
     let createdTime = new Date();
     let expiryTime = moment(createdTime).add(10, "m");
-    await models.partnerBranchOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
-    let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
-    await sendSms(mobileNumber, message);
-    // request(
-    //     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`
-    // );
+    var expiryTimeToUser = moment(moment(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
+
+    await sequelize.transaction(async t => {
+        await models.partnerBranchOtp.destroy({ where: { mobileNumber }, transaction: t })
+        await models.partnerBranchOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode }, { transaction: t })
+    })
+
+    if (type == "login") {
+        let smsLink = process.env.BASE_URL_ADMIN
+        await sendOtpForLogin(partnerBranchUserExist.mobileNumber, partnerBranchUserExist.firstName, otp, expiryTimeToUser, smsLink);
+    } else if (type == "forget") {
+        let smsLink = process.env.BASE_URL_ADMIN
+        await forgetPasswordOtp(partnerBranchUserExist.mobileNumber, partnerBranchUserExist.firstName, otp, expiryTimeToUser, smsLink);
+    } else if (type == "updateLocationCollect") {
+        let receiverUser = await models.user.findOne({ where: { id: id } })
+        await sendUpdateLocationCollectMessage(partnerBranchUserExist.mobileNumber, otp, partnerBranchUserExist.firstName, receiverUser.firstName);
+    } if (type == "updateLocationHandover") {
+        let receiverUser = await models.user.findOne({ where: { id: id } })
+        await sendUpdateLocationHandoverMessage(partnerBranchUserExist.mobileNumber, otp, partnerBranchUserExist.firstName, receiverUser.firstName);
+    }
+
 
     return res
         .status(200)

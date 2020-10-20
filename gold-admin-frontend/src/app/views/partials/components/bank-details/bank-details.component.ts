@@ -82,7 +82,10 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       if (Number(changes.finalLoanAmt.currentValue) > 200000) {
         this.controls.paymentType.patchValue('bank')
         this.controls.paymentType.disable()
+      } else {
+        this.controls.paymentType.enable()
       }
+      this.ref.detectChanges()
     }
 
     if (changes.finalScrapAmt && changes.finalScrapAmt.currentValue) {
@@ -91,6 +94,8 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       if (Number(changes.finalScrapAmt.currentValue) > 200000) {
         this.controls.paymentType.patchValue('bank')
         this.controls.paymentType.disable()
+      } else {
+        this.controls.paymentType.enable()
       }
       this.ref.detectChanges()
     }
