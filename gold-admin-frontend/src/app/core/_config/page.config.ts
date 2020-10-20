@@ -116,6 +116,9 @@ export class PageConfig {
 				'redirect-assign-appraiser': {
 					page: { title: "Assigned Appraiser", desc: "" },
 				},
+				'concurrent-login': {
+					page: { title: "Concurrent Login", desc: "" },
+				},
 				merchant: {
 					page: { title: "All Merchants", desc: "" },
 				},

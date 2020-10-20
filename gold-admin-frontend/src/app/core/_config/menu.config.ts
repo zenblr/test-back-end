@@ -594,6 +594,14 @@ export class MenuConfig {
 							src: "assets/media/aside-icons/icons-19.svg",
 							permission: !this.permissionsArr.includes('storeView')
 						},
+						{
+							title: "Concurrent User",
+							root: true,
+							page: "/admin/user-management/concurrent-login",
+							src: "assets/media/aside-icons/icons-19.svg",
+							permission: !this.permissionsArr.includes('concurrentLoginView')
+							
+						},
 						// {
 						// 	title: "Roles and permissions",
 						// 	root: true,

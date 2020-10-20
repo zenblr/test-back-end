@@ -53,6 +53,7 @@ import { StoreListComponent } from './store/store-list/store-list.component';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { AddPartnerBranchUserComponent } from './partner-branch-user/add-partner-branch-user/add-partner-branch-user.component';
 import { PartnerBranchUserListComponent } from './partner-branch-user/partner-branch-user-list/partner-branch-user-list.component';
+import { ConcurrentUserLoginComponent } from './concurrent-user-login/concurrent-user-login.component';
 
 
 const routes: Routes = [
@@ -121,6 +122,10 @@ const routes: Routes = [
 	{
 		path: 'partner-branch-user',
 		component: PartnerBranchUserListComponent
+	},
+	{
+		path:'concurrent-login',
+		component:ConcurrentUserLoginComponent
 	}
 
 ]
@@ -170,6 +175,7 @@ const routes: Routes = [
 	declarations: [
 		// RolesListComponent,
 		// RoleAddDialogComponent,
+		ConcurrentUserLoginComponent,
 		PartnerListComponent,
 		BranchListComponent,
 		BranchAddComponent,
