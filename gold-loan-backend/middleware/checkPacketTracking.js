@@ -12,7 +12,7 @@ module.exports = async (req, res, next) => {
                 attributes: ['authenticationKey', 'id']
             })
             if (authenticationKey != checkUser.authenticationKey) {
-                return req.status(401).json({ message: `You are unauthorized user please contact admin` })
+                return res.status(401).json({ message: `You are unauthorized user please contact admin` })
             } else {
                 next();
             }
