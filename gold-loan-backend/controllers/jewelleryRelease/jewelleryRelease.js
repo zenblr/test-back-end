@@ -414,10 +414,11 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
 exports.razorPayCreateOrderForOrnament = async (req, res, next) => {
     let { masterLoanId, ornamentId } = req.body;
     let releaseData = await getAllPartAndFullReleaseData(masterLoanId, ornamentId);
+    let loanData = await models.customerLoan.findOne({where:{masterLoanId:masterLoanId},order:[['id','asc']]});
     let amount = releaseData.loanInfo.totalPayableAmount;
     let transactionUniqueId = uniqid.time().toUpperCase();
     let payableAmount = await Math.round(amount * 100);
-    let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId}`, payment_capture: 0, notes: "gold loan" });
+    let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId} and ${loanData.loanUniqueId}`, payment_capture: 0, notes: "gold loan" });
     return res.status(200).json({ razorPayOrder, razerPayConfig: razorpay.razorPayConfig.key_id });
 }
 
@@ -669,7 +670,7 @@ exports.getPartReleaseList = async (req, res, next) => {
         model: models.customerLoanOrnamentsDetail,
         include: [
             {
-                model: models.packet
+                model: models.packet,
             }, {
                 model: models.ornamentType,
                 as: "ornamentType"

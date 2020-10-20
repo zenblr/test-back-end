@@ -11,6 +11,7 @@ import { DepositService } from '../../../../../core/funds-approvals/deposit/serv
 import { PaymentDialogComponent } from '../../../../partials/components/payment-dialog/payment-dialog.component';
 import { QuickPayService } from '../../../../../core/repayment/quick-pay/quick-pay.service';
 import { PartPaymentService } from '../../../../../core/repayment/part-payment/services/part-payment.service';
+import { SharedService } from '../../../../../core/shared/services/shared.service';
 
 
 @Component({
@@ -35,7 +36,7 @@ export class DepositListComponent implements OnInit {
     search: '',
     depositStatus: ''
   }
-
+  filteredDataList = {};
 
   constructor(
     private dataTableService: DataTableService,
@@ -44,7 +45,8 @@ export class DepositListComponent implements OnInit {
     private toastr: ToastrService,
     private layoutUtilsService: LayoutUtilsService,
     private quickPayService: QuickPayService,
-    private partPaymentService: PartPaymentService
+    private partPaymentService: PartPaymentService,
+    private sharedService: SharedService
   ) {
 
     this.depositService.applyFilter$
@@ -89,11 +91,12 @@ export class DepositListComponent implements OnInit {
     this.subscriptions.forEach(el => el.unsubscribe());
     this.unsubscribeSearch$.next();
     this.unsubscribeSearch$.complete();
-    this.destroy$.next();
-    this.destroy$.complete();
+    // this.destroy$.next();
+    // this.destroy$.complete();
     this.filter$.next();
     this.filter$.complete();
     this.depositService.applyFilter.next({});
+    this.sharedService.closeFilter.next(true);
   }
 
 
@@ -107,9 +110,10 @@ export class DepositListComponent implements OnInit {
   }
 
   applyFilter(data) {
-    // console.log(data);
-    this.queryParamsData.depositStatus = data.data.scheme;
+    this.queryParamsData.depositStatus = data.data.depositStatus;
     this.dataSource.getDepositList(this.queryParamsData);
+    this.filteredDataList = data.list;
+    // console.log(this.filteredDataList)
   }
 
   toaster(depositStatus) {
@@ -137,7 +141,7 @@ export class DepositListComponent implements OnInit {
           masterLoanId: deposit.masterLoanId,
           depositAmount: deposit.transactionAmont
         }
-        
+
         if (deposit.paymentFor == "partPayment") {
           this.partPaymentService.finalPaymentConfirm(data).subscribe(result => {
             this.toaster(res.depositStatus)

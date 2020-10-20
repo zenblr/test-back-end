@@ -8,7 +8,7 @@ const checkAuth = require('../middleware/checkAuth')
 const { userValidation, addInternalUserValidation, UpdateInternalUserValidation } = require('../validations/user');
 const validationError = require('../middleware/validationError')
 
-const { addUser, getReleaser, addInternalUser, updateInternalUser, deleteInternalUser, GetInternalUser, sendOtp, changePassword, updatePassword, getUser, verifyOtp, addAdmin, getInternalBranchUser, getAppraiser, getUserTypeInternal, getUserDetails } = require('../controllers/user/user')
+const { addUser, getReleaser, addInternalUser, updateInternalUser, deleteInternalUser, GetInternalUser, sendOtp, changePassword, updatePassword, getUser, verifyOtp, addAdmin, getInternalBranchUser, getAppraiser, getUserTypeInternal, getUserDetails, getConcurrentList, removeKeyFromAppraiser } = require('../controllers/user/user')
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
 //Register User
@@ -45,6 +45,10 @@ route.get('/internal-branch-user', checkAuth, wrapper(getInternalBranchUser))
 route.post('/addadmin', wrapper(addAdmin))
 
 route.get('/user-type-internal', checkAuth, wrapper(getUserTypeInternal))
+
+route.get('/concurrent-list', checkAuth, wrapper(getConcurrentList))
+
+route.put('/concurrent-list', checkAuth, wrapper(removeKeyFromAppraiser))
 
 
 

@@ -14,7 +14,7 @@ const moment = require('moment');
 const cache = require('../../utils/cache');
 let sms = require('../../utils/sendSMS');
 let baseUrl = require('../../config/baseUrl');
-const { sendOtpForLogin, forgetPasswordOtp } = require('../../utils/SMS')
+const { sendOtpForLogin, forgetPasswordOtp, sendUpdateLocationCollectMessage, sendUpdateLocationHandoverMessage } = require('../../utils/SMS')
 
 
 exports.addUser = async (req, res, next) => {
@@ -63,7 +63,7 @@ exports.addUser = async (req, res, next) => {
 }
 
 exports.sendOtp = async (req, res, next) => {
-    const { mobileNumber, type } = req.body;
+    const { mobileNumber, type, id } = req.body;
     let userDetails = await models.user.findOne({ where: { mobileNumber } });
     if (userDetails) {
         let otp;
@@ -86,13 +86,16 @@ exports.sendOtp = async (req, res, next) => {
 
         if (type == "login") {
             let smsLink = process.env.BASE_URL_ADMIN
-            await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser, smsLink)
+            await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser, smsLink);
         } else if (type == "forget") {
             let smsLink = process.env.BASE_URL_ADMIN
-            await forgetPasswordOtp(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser, smsLink)
-        } else {
-            let smsLink = process.env.BASE_URL_ADMIN
-            await sendOtpForLogin(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser, smsLink)
+            await forgetPasswordOtp(userDetails.mobileNumber, userDetails.firstName, otp, expiryTimeToUser, smsLink);
+        } else if (type == "updateLocationCollect") {
+            let receiverUser = await models.user.findOne({ where: { id: id } })
+            await sendUpdateLocationCollectMessage(userDetails.mobileNumber, otp, userDetails.firstName, receiverUser.firstName);
+        } if (type == "updateLocationHandover") {
+            let receiverUser = await models.user.findOne({ where: { id: id } })
+            await sendUpdateLocationHandoverMessage(userDetails.mobileNumber, otp, userDetails.firstName, receiverUser.firstName);
         }
 
         // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
@@ -439,4 +442,39 @@ exports.getUserDetails = async (req, res, next) => {
     });
 
     return res.status(200).json({ message: 'success', data: userDetails })
+}
+
+exports.getConcurrentList = async (req, res, next) => {
+    let user = await models.user.findAll({
+        attributes: ['id', 'authenticationKey', 'firstName', 'lastName'],
+        include: [
+            {
+                model: models.role,
+                where: {
+                    isActive: true
+                }
+            }, {
+                model: models.internalBranch,
+                where: {
+                    isActive: true
+                }
+            }, {
+                model: models.userType,
+                as: 'Usertype',
+                where: { isInternal: true, userType: 'Appraiser' },
+                attributes: []
+            }
+        ]
+    });
+
+    return res.json({ data: user, count: user.length })
+}
+
+exports.removeKeyFromAppraiser = async (req, res, next) => {
+
+    let { id } = req.query
+
+    let removeKey = await models.user.update({ authenticationKey: null }, { where: { id: id } })
+
+    return res.status(200).json({ message: "success" })
 }

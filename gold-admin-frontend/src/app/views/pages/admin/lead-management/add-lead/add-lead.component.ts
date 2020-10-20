@@ -208,6 +208,7 @@ export class AddLeadComponent implements OnInit {
         this.controls.cityId.reset();
         this.controls.cityId.patchValue('');
       }
+      this.ref.detectChanges()
     });
   }
 
@@ -386,7 +387,6 @@ export class AddLeadComponent implements OnInit {
     ///this.leadForm.controls.cityId.enable();
   }
   onSubmit() {
-
     if (this.data.action == 'add') {
       if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists) {
         this.checkforVerfication()

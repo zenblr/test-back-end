@@ -12,7 +12,7 @@ const CONSTANT = require("../../utils/constant");
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { sendOtpToLeadVerification, sendOtpForLogin, forgetPasswordOtp } = require('../../utils/SMS');
+let { sendOtpToLeadVerification, sendOtpForLogin, forgetPasswordOtp, sendUpdateLocationCollectMessage, sendUpdateLocationHandoverMessage } = require('../../utils/SMS');
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 
 exports.getOtp = async (req, res, next) => {
@@ -157,7 +157,7 @@ exports.customerSignUp = async (req, res, next) => {
 
 
 exports.sendOtp = async (req, res, next) => {
-  const { mobileNumber, type } = req.body;
+  const { mobileNumber, type, id } = req.body;
 
   let customerExist = await models.customer.findOne({
     where: { mobileNumber, isActive: true },
@@ -186,9 +186,12 @@ exports.sendOtp = async (req, res, next) => {
   } else if (type == "forget") {
     let smsLink = process.env.BASE_URL_CUSTOMER
     await forgetPasswordOtp(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
-  } else {
-    let smsLink = process.env.BASE_URL_CUSTOMER
-    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
+  } else if (type == "updateLocationCollect") {
+    let receiverUser = await models.user.findOne({ where: { id: id } })
+    await sendUpdateLocationCollectMessage(customerExist.mobileNumber, otp, customerExist.firstName, receiverUser.firstName);
+  } if (type == "updateLocationHandover") {
+    let receiverUser = await models.user.findOne({ where: { id: id } })
+    await sendUpdateLocationHandoverMessage(customerExist.mobileNumber, otp, customerExist.firstName, receiverUser.firstName);
   }
 
   // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`

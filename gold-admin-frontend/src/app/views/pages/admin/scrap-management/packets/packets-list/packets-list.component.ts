@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { SelectionModel } from '@angular/cdk/collections';
 import { AssignAppraiserPacketsComponent } from '../assign-appraiser-packets/assign-appraiser-packets.component';
+import { SharedService } from '../../../../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-packets-list',
@@ -33,6 +34,7 @@ export class PacketsListComponent implements OnInit {
     search: '',
     packetAssigned: ''
   }
+  filteredDataList: any = {};
 
   constructor(
     public dialog: MatDialog,
@@ -40,7 +42,8 @@ export class PacketsListComponent implements OnInit {
     private dataTableService: DataTableService,
     private layoutUtilsService: LayoutUtilsService,
     private toastr: ToastrService,
-    private ngxPermissionService: NgxPermissionsService
+    private ngxPermissionService: NgxPermissionsService,
+    private sharedService: SharedService
   ) {
     this.scrapPacketsService.openModal$.pipe(
       map(res => { if (res) this.assignPackets() }),
@@ -102,6 +105,7 @@ export class PacketsListComponent implements OnInit {
     this.filter$.complete();
     this.scrapPacketsService.applyFilter.next({});
     this.scrapPacketsService.disableBtn.next(false)
+    this.sharedService.closeFilter.next(true);
   }
 
   loadPackets() {
@@ -110,12 +114,15 @@ export class PacketsListComponent implements OnInit {
     this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
     this.dataSource.loadpackets(this.queryParamsData);
+    this.selection.clear();
   }
 
   applyFilter(data) {
     //console.log(data.data.scheme);
-    this.queryParamsData.packetAssigned = data.data.scheme;
+    this.queryParamsData.packetAssigned = data.data.packets;
+    this.filteredDataList = data.list;
     this.dataSource.loadpackets(this.queryParamsData);
+    this.selection.clear();
   }
 
   assignPackets() {
