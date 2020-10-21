@@ -169,7 +169,7 @@ exports.quickPayment = async (req, res, next) => {
 
     let { paymentDetails, payableAmount, masterLoanId, transactionDetails } = req.body;
     let { bankName, branchName, chequeNumber, depositDate, depositTransactionId, paymentType, transactionId } = paymentDetails
-
+    const razorpay = await getRazorPayDetails();
     let amount = await getCustomerInterestAmount(masterLoanId);
     let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
     let transactionUniqueId = uniqid.time().toUpperCase();
