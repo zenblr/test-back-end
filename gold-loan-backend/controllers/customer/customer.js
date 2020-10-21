@@ -86,10 +86,8 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   let createdTime = new Date();
   let expiryTime = moment(createdTime).add(10, "m");
 
-  var expiryTimeToUser = moment(moment(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
-
   await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
-
+  var expiryTimeToUser = moment(moment(expiryTime).utcOffset("+05:30").endOf('day'))
   await sendOtpToLeadVerification(mobileNumber, firstName, otp, expiryTimeToUser)
 
   // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
@@ -128,10 +126,8 @@ exports.customerSignUp = async (req, res, next) => {
     let createdTime = new Date();
     let expiryTime = moment(createdTime).add(10, "m");
 
-    var expiryTimeToUser = moment(moment(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
-
     await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
-
+    var expiryTimeToUser = moment(moment(expiryTime).utcOffset("+05:30").endOf('day'))
     await sendOtpToLeadVerification(mobileNumber, 'customer', otp, expiryTimeToUser)
 
     return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, isCustomer: false });
@@ -147,6 +143,7 @@ exports.customerSignUp = async (req, res, next) => {
     let createdTime = new Date();
     let expiryTime = moment(createdTime).add(10, "m");
     await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode });
+    expiryTime = moment(moment(expiryTime).utcOffset("+05:30").endOf('day'))
     let smsLink = process.env.BASE_URL_CUSTOMER
     await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
 
@@ -179,6 +176,7 @@ exports.sendOtp = async (req, res, next) => {
   let createdTime = new Date();
   let expiryTime = moment(createdTime).add(10, "m");
   await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
+  expiryTime = moment(moment(expiryTime).utcOffset("+05:30").endOf('day'));
 
   if (type == "login") {
     let smsLink = process.env.BASE_URL_CUSTOMER
