@@ -23,8 +23,8 @@ let { sendPaymentMessage } = require('../../utils/SMS')
 
 exports.razorPayCreateOrder = async (req, res, next) => {
     try {
-        let { amount,masterLoanId } = req.body;
-        let loanData = await models.customerLoan.findOne({where:{masterLoanId:masterLoanId},order:[['id','asc']]});
+        let { amount, masterLoanId } = req.body;
+        let loanData = await models.customerLoan.findOne({ where: { masterLoanId: masterLoanId }, order: [['id', 'asc']] });
         let transactionUniqueId = uniqid.time().toUpperCase();
         let payableAmount = await Math.round(amount * 100);
         let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId} and ${loanData.loanUniqueId}`, payment_capture: 0, notes: "gold loan" });
@@ -85,7 +85,8 @@ exports.getInterestInfo = async (req, res, next) => {
 
         where: {
             emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
-            masterLoanId: masterLoanId
+            masterLoanId: masterLoanId,
+            emiStatus: { [Op.not]: 'paid' }
         },
         attributes: ['emiDueDate', 'emiStatus'],
         order: [['id', 'asc']]
