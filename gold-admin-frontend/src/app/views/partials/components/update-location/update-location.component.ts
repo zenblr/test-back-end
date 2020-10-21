@@ -44,7 +44,6 @@ export class UpdateLocationComponent implements OnInit {
     private sharedService: SharedService
   ) {
     this.sharedService.getTokenDecode().subscribe(res => {
-      console.log(res)
       this.token = res
     })
   }
@@ -408,7 +407,9 @@ export class UpdateLocationComponent implements OnInit {
         break;
 
       case 'InternalUser':
-        this.authService.generateOtp(mobileNumber, 'updateLocationCollect', this.token.id).subscribe(res => {
+        const Type = this.data.isPartnerOut && this.data.internalBranchId ? 'updateLocationHandover' : 'updateLocationCollect';
+
+        this.authService.generateOtp(mobileNumber, Type, this.token.id).subscribe(res => {
           if (res) {
             this.refCode = res.referenceCode;
             this.locationForm.controls.referenceCode.patchValue(res.referenceCode);
