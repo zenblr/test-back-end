@@ -1,7 +1,7 @@
 :host{
     ::ng-deep.mat-row,
     ::ng-deep.mat-header-row{
-        width: 300% !important;
+        width: 315% !important;
     }
 
     .mat-column-netWeightReleaseOrnament{
@@ -21,10 +21,10 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        flex: 0 0 4%;
+        flex: 0 0 3%;
     }
     .mat-column-updateStatus{
-        flex: 0 0 5%;
+        flex: 0 0 4%;
     }
     .mat-column-status{
         flex: 0 0 3%;
@@ -39,6 +39,7 @@
         align-items: flex-start;
         // padding-right: 25px;
         justify-content: flex-end;
+        flex: 0 0 3%;
     }
     .mat-column-principalAmount{
         display: flex;
@@ -89,9 +90,13 @@
         flex: 0 0 4%;
     }
     .mat-column-customerName {
-        flex: 0 0 5%;
+        flex: 0 0 4%;
+        padding-left: 0;
     }
     .mat-column-loanStartDate {
+        flex: 0 0 4%;
+    }
+    .mat-column-loanEndDate {
         flex: 0 0 4%;
     }
     .mat-column-parnterName {
@@ -99,5 +104,11 @@
     }
     .mat-column-partnerBranch {
         flex: 0 0 4%;
+    }
+    .mat-column-ornaments {
+        flex: 0 0 4%;
+    }
+    .mat-column-customerId {
+        flex: 0 0 3%;
     }
 }

@@ -13,7 +13,7 @@ const request = require("request");
 const { VIEW_ALL_PACKET_TRACKING } = require('../../utils/permissionCheck')
 const { sendSms } = require('../../utils/sendSMS')
 
-const { sendJewelleryPartReleaseCompletedMessage, sendJewelleryFullReleaseCompletedMessage } = require('../../utils/SMS')
+const { sendJewelleryPartReleaseCompletedMessage, sendJewelleryFullReleaseCompletedMessage, sendUpdateLocationCollectMessage, sendUpdateLocationHandoverMessage } = require('../../utils/SMS')
 const { customerNameNumberLoanId } = require('../../utils/loanFunction');
 
 //FUNCTION TO GET ALL PACKET DETAILS
@@ -678,7 +678,8 @@ exports.getLocationDetails = async (req, res, next) => {
 exports.checkOutPacket = async (req, res, next) => {
     let { customerId } = req.query
 
-    let custDetail = await models.customer.findOne({ where: { id: customerId } })
+    let custDetail = await models.customer.findOne({ where: { id: customerId } });
+    let userDetail = await models.user.findOne({ where: { id: req.userData.id } })
 
     await models.customerOtp.destroy({ where: { mobileNumber: custDetail.mobileNumber } });
 
@@ -692,11 +693,12 @@ exports.checkOutPacket = async (req, res, next) => {
     let createdTime = new Date();
     let expiryTime = moment(createdTime).add(10, "m");
 
-    // var expiryTimeToUser = moment(moment(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
-
     await models.customerOtp.create({ mobileNumber: custDetail.mobileNumber, otp, createdTime, expiryTime, referenceCode, });
-    let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
-    await sendSms(custDetail.mobileNumber, message);
+
+    await sendUpdateLocationHandoverMessage(custDetail.mobileNumber, otp, custDetail.firstName, userDetail.firstName)
+
+    // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
+    // await sendSms(custDetail.mobileNumber, message);
     // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${custDetail.mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`);
 
     return res.status(200).json({ message: `success`, referenceCode: referenceCode })

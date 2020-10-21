@@ -23,10 +23,11 @@ let { sendPaymentMessage } = require('../../utils/SMS')
 
 exports.razorPayCreateOrder = async (req, res, next) => {
     try {
-        let { amount } = req.body;
+        let { amount,masterLoanId } = req.body;
+        let loanData = await models.customerLoan.findOne({where:{masterLoanId:masterLoanId},order:[['id','asc']]});
         let transactionUniqueId = uniqid.time().toUpperCase();
         let payableAmount = await Math.round(amount * 100);
-        let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId}`, payment_capture: 0, notes: "gold loan" });
+        let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId} and ${loanData.loanUniqueId}`, payment_capture: 0, notes: "gold loan" });
         return res.status(200).json({ razorPayOrder, razerPayConfig: razorpay.razorPayConfig.key_id });
     } catch (err) {
         console.log(err)
@@ -172,7 +173,7 @@ exports.quickPayment = async (req, res, next) => {
     let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
     let transactionUniqueId = uniqid.time().toUpperCase();
 
-    if (!['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'upi', 'card','netbanking','wallet'].includes(paymentType)) {
+    if (!['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'upi', 'card', 'netbanking', 'wallet'].includes(paymentType)) {
         return res.status(400).json({ message: "Invalid payment type" })
     }
     let signatureVerification = false;
@@ -412,6 +413,10 @@ exports.quickPayment = async (req, res, next) => {
 
         return customerLoanTransaction
     })
+
+    await intrestCalculationForSelectedLoan(moment(), masterLoanId)
+    await penalInterestCalculationForSelectedLoan(moment(), masterLoanId)
+
     return res.status(200).json({ data: 'success' })
 
 }
@@ -446,65 +451,65 @@ exports.confirmationForPayment = async (req, res, next) => {
                 var a = moment(receivedDate);
                 var b = moment(todaysDate);
                 let difference = a.diff(b, 'days')
-                var { newEmiTable, currentSlabRate, securedInterest, unsecuredInterest } = await stepDown(receivedDate, loan, difference)
-                if (newEmiTable.length > 0) {
-                    for (let stepDownIndex = 0; stepDownIndex < newEmiTable.length; stepDownIndex++) {
-                        const element = newEmiTable[stepDownIndex];
-                        await models.customerLoanInterest.update({ interestRate: element.interestRate }, { where: { id: element.id }, transaction: t })
+                if (difference != 0) {
+                    var { newEmiTable, currentSlabRate, securedInterest, unsecuredInterest } = await stepDown(receivedDate, loan, difference)
+                    if (newEmiTable.length > 0) {
+                        for (let stepDownIndex = 0; stepDownIndex < newEmiTable.length; stepDownIndex++) {
+                            const element = newEmiTable[stepDownIndex];
+                            await models.customerLoanInterest.update({ interestRate: element.interestRate }, { where: { id: element.id }, transaction: t })
+                        }
                     }
-                }
-                if (currentSlabRate) {
-                    await models.customerLoan.update({ currentSlab: currentSlabRate, currentInterestRate: securedInterest }, { where: { id: loan.customerLoan[0].id }, transaction: t })
+                    if (currentSlabRate) {
+                        await models.customerLoan.update({ currentSlab: currentSlabRate, currentInterestRate: securedInterest }, { where: { id: loan.customerLoan[0].id }, transaction: t })
 
-                    if (loan.customerLoan.length > 1) {
-                        await models.customerLoan.update({ currentSlab: currentSlabRate, currentInterestRate: unsecuredInterest }, { where: { id: loan.customerLoan[1].id }, transaction: t })
+                        if (loan.customerLoan.length > 1) {
+                            await models.customerLoan.update({ currentSlab: currentSlabRate, currentInterestRate: unsecuredInterest }, { where: { id: loan.customerLoan[1].id }, transaction: t })
+                        }
                     }
-                }
-            }
+                    let interestCal = await intrestCalculationForSelectedLoanWithOutT(receivedDate, loan.id, securedInterest, unsecuredInterest, currentSlabRate)
 
-
-            let interestCal = await intrestCalculationForSelectedLoanWithOutT(receivedDate, loan.id, securedInterest, unsecuredInterest, currentSlabRate)
-
-            for (let i = 0; i < interestCal.transactionData.length; i++) {
-                let element = interestCal.transactionData[i]
-                let transactionNew = await models.customerTransactionDetail.create(element, { transaction: t })
-                await models.customerTransactionDetail.update({ referenceId: `${element.loanUniqueId}-${transactionNew.id}` }, { where: { id: transactionNew.id }, transaction: t });
-            }
-
-            let interestAccrualId = []
-            for (let i = 0; i < interestCal.interestDataObject.length; i++) {
-                const element = interestCal.interestDataObject[i]
-                if (element.id) {
-                    if (element.interestAccrual) {
-                        interestAccrualId.push(element.id)
+                    for (let i = 0; i < interestCal.transactionData.length; i++) {
+                        let element = interestCal.transactionData[i]
+                        let transactionNew = await models.customerTransactionDetail.create(element, { transaction: t })
+                        await models.customerTransactionDetail.update({ referenceId: `${element.loanUniqueId}-${transactionNew.id}` }, { where: { id: transactionNew.id }, transaction: t });
                     }
-                    let z = await models.customerLoanInterest.update(element, { where: { id: element.id }, transaction: t })
-                    console.log(z)
-                } else {
-                    await models.customerLoanInterest.create(element, { transaction: t })
-                }
-            }
 
-            await models.customerLoanInterest.update({ interestAccrual: 0.00, totalInterestAccural: 0.00 }, { where: { masterLoanId: masterLoanId, id: { [Op.notIn]: interestAccrualId }, emiStatus: 'pending' }, transaction: t })
+                    let interestAccrualId = []
+                    for (let i = 0; i < interestCal.interestDataObject.length; i++) {
+                        const element = interestCal.interestDataObject[i]
+                        if (element.id) {
+                            if (element.interestAccrual) {
+                                interestAccrualId.push(element.id)
+                            }
+                            let z = await models.customerLoanInterest.update(element, { where: { id: element.id }, transaction: t })
+                            console.log(z)
+                        } else {
+                            await models.customerLoanInterest.create(element, { transaction: t })
+                        }
+                    }
+
+                    await models.customerLoanInterest.update({ interestAccrual: 0.00, totalInterestAccural: 0.00 }, { where: { masterLoanId: masterLoanId, id: { [Op.notIn]: interestAccrualId }, emiStatus: 'pending' }, transaction: t })
 
 
-            //removed
-            // for (let i = 0; i < interestCal.customerLoanData.length; i++) {
-            //     let element = interestCal.customerLoanData[i]
-            //     await models.customerLoan.update(element, { where: { id: element.id }, transaction: t })
-            // }
+                    //removed
+                    // for (let i = 0; i < interestCal.customerLoanData.length; i++) {
+                    //     let element = interestCal.customerLoanData[i]
+                    //     await models.customerLoan.update(element, { where: { id: element.id }, transaction: t })
+                    // }
 
-            let penalCal = await penalInterestCalculationForSelectedLoanWithOutT(receivedDate, loan.id)
-            if (penalCal.penalData.length == 0) {
+                    let penalCal = await penalInterestCalculationForSelectedLoanWithOutT(receivedDate, loan.id)
+                    if (penalCal.penalData.length == 0) {
 
-                let j = await models.customerLoanInterest.update({ penalInterest: 0, penalAccrual: 0, penalOutstanding: 0 }, { where: { masterLoanId: masterLoanId, emiStatus: { [Op.not]: ['paid'] } }, transaction: t })
+                        let j = await models.customerLoanInterest.update({ penalInterest: 0, penalAccrual: 0, penalOutstanding: 0 }, { where: { masterLoanId: masterLoanId, emiStatus: { [Op.not]: ['paid'] } }, transaction: t })
 
-            } else {
-                for (let i = 0; i < penalCal.penalData.length; i++) {
-                    console.log(penalCal)
-                    //penal calculation pending
-                    const element = penalCal.penalData[i]
-                    await models.customerLoanInterest.update({ penalInterest: element.penalInterest, penalAccrual: element.penalAccrual, penalOutstanding: element.penalOutstanding }, { where: { id: element.id }, transaction: t })
+                    } else {
+                        for (let i = 0; i < penalCal.penalData.length; i++) {
+                            console.log(penalCal)
+                            //penal calculation pending
+                            const element = penalCal.penalData[i]
+                            await models.customerLoanInterest.update({ penalInterest: element.penalInterest, penalAccrual: element.penalAccrual, penalOutstanding: element.penalOutstanding }, { where: { id: element.id }, transaction: t })
+                        }
+                    }
                 }
             }
 

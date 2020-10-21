@@ -607,6 +607,7 @@ export class UserReviewComponent implements OnInit {
   getStates() {
     this.sharedService.getStates().subscribe(res => {
       this.states = res.data;
+      this.ref.detectChanges();
     });
     this.getCities('permanent');
     this.getCities('residential');
@@ -1113,6 +1114,7 @@ export class UserReviewComponent implements OnInit {
     this.reviewForm.controls.lastName.disable()
     this.reviewForm.controls.mobileNumber.disable()
     this.reviewForm.controls.panType.disable()
+    this.reviewForm.controls.panCardNumber.disable()
   }
 
   enableControls() {
@@ -1120,5 +1122,6 @@ export class UserReviewComponent implements OnInit {
     this.reviewForm.controls.lastName.enable()
     this.reviewForm.controls.mobileNumber.enable()
     this.reviewForm.controls.panType.enable()
+    this.reviewForm.controls.panCardNumber.enable()
   }
 }

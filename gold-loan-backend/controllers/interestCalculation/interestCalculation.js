@@ -113,7 +113,8 @@ exports.interestAmount = async (req, res) => {
 }
 
 exports.getInterestTableInExcel = async (req, res) => {
-    let interestData = await models.customerLoanInterest.findAll({ order: [['id', 'ASC']] });
+    let { masterLoanId } = req.query;
+    let interestData = await models.customerLoanInterest.findAll({where:{masterLoanId}, order: [['id', 'ASC']] });
 
     let finalData = [];
 

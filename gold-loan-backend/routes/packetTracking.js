@@ -6,6 +6,7 @@ const { addCustomerPacketTrackingValidation } = require('../validations/packetTr
 const { getGlobalMapDetails, getGloablMapLocation, getPacketTrackingByLoanId } = require('../controllers/packetTracking/globalMap')
 const validationError = require('../middleware/validationError')
 const route = express.Router();
+const checkPacketTracking = require('../middleware/checkPacketTracking');
 
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
@@ -26,7 +27,7 @@ route.get('/map', checkAuth, wrapper(getMapDetails));// FETCH MAP LOCATION
 
 route.get('/location', checkAuth, wrapper(getLocationDetails));// FETCH MAP LOCATION
 
-route.post('/add-packet-tracking', checkAuth, wrapper(addPacketTracking)); // add packet tracking
+route.post('/add-packet-tracking', checkAuth, checkPacketTracking, wrapper(addPacketTracking)); // add packet tracking
 
 route.get('/check-out-packet', checkAuth, wrapper(checkOutPacket)) //checkRolePermission
 

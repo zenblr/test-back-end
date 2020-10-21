@@ -162,6 +162,7 @@ export class PacketTrackingComponent implements OnInit {
     this.packetTrackingService.applyFilter.next({});
     clearInterval(this.interval)
     this.sharedService.hideLoader.next(false)
+    this.sharedService.closeFilter.next(true);
   }
 
   applyFilter(data) {

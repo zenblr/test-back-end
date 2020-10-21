@@ -198,7 +198,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			endDate: [''],
 			cronType: [''],
 			bmStatus: [''],
-			otStatus: ['']
+			otStatus: [''],
+			depositStatus: ['']
 		});
 
 		this.filterForm.valueChanges.subscribe((val) => {
@@ -358,6 +359,14 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.packetTrackingLocation = controls['packetTrackingLocation'].value;
 				this.filterObject.list.packetTrackingLocation = controls['packetTrackingLocation'].value;
 			}
+			if (controls['packets'].value) {
+				this.filterObject.data.packets = controls['packets'].value
+				this.filterObject.list.packets = controls['packets'].value;
+			}
+			if (controls['depositStatus'].value) {
+				this.filterObject.data.depositStatus = controls['depositStatus'].value
+				this.filterObject.list.depositStatus = controls['depositStatus'].value;
+			}
 			return this.filterObject;
 		}
 	}
@@ -438,10 +447,10 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.controls['scrapStatus'].value.multiSelect.splice(index, 1);
 				break;
 			case 'packets':
-				this.controls['scheme'].patchValue('');
+				this.controls['packets'].patchValue('');
 				break;
-			case 'deposit':
-				this.controls['scheme'].patchValue('');
+			case 'depositStatus':
+				this.controls['depositStatus'].patchValue('');
 				break;
 			case 'product':
 				this.controls['product'].value.multiSelect.splice(index, 1);
@@ -488,6 +497,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			packetTrackingLocation: this.filterForm.controls['packetTrackingLocation'].value,
 			bmStatus: this.filterForm.controls['bmStatus'].value,
 			otStatus: this.filterForm.controls['otStatus'].value,
+			packets: this.filterForm.controls['packets'].value,
+			depositStatus: this.filterForm.controls['depositStatus'].value,
 		});
 		setTimeout(() => {
 			this.applyFilter();
@@ -606,7 +617,13 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		if (this.filterForm) {
 			this.clearData = true;
 			this.filterForm.reset();
+			this.filterReset()
 		}
+	}
+
+	filterReset() {
+		this.controls.depositStatus.patchValue('')
+		this.controls.packets.patchValue('')
 	}
 
 	validations() {

@@ -26,7 +26,8 @@
 
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.customer.panCardNumber | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">
+                        {{loan.customer.panCardNumber ? loan.customer.panCardNumber : 'NA' | uppercase }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="date">
