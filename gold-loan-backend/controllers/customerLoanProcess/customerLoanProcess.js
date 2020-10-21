@@ -2476,7 +2476,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
     var options = {
         format: "A4",
         orientation: "portrait",
-        border: "10mm",
+        border: "5mm",
         "header": {
             "height": "2mm",
         },

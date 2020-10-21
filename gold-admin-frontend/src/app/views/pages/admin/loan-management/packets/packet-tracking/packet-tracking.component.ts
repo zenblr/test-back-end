@@ -132,7 +132,7 @@ export class PacketTrackingComponent implements OnInit {
 
     });
 
-    console.log(this.leadsResult)
+    // console.log(this.leadsResult)
     // this.currentSyncArray = new Array(packetList.length).fill(null);
     // this.currentSyncArray = packetList.map(e => e.lastSyncTime)
 
