@@ -1,6 +1,6 @@
 export const environment = {
 	production: true,
 	isMockEnabled: true, // You have to switch this, when your real back-end is done
-	apiUrl: 'http://emi.augmont.com/',
+	apiUrl: 'https://emi.augmont.com/',
 	authTokenKey: 'authce9d77b308c149d5992a80073637e4d5'
 };
