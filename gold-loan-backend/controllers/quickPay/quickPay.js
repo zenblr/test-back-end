@@ -9,7 +9,7 @@ const request = require("request");
 const moment = require("moment");
 const CONSTANT = require("../../utils/constant");
 var uniqid = require('uniqid');
-const razorpay = require('../../utils/razorpay');
+const getRazorPayDetails = require('../../utils/razorpay');
 let crypto = require('crypto');
 
 
@@ -24,6 +24,7 @@ let { sendPaymentMessage } = require('../../utils/SMS')
 exports.razorPayCreateOrder = async (req, res, next) => {
     try {
         let { amount } = req.body;
+        const razorpay = await getRazorPayDetails();
         let transactionUniqueId = uniqid.time().toUpperCase();
         let payableAmount = await Math.round(amount * 100);
         let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId}`, payment_capture: 0, notes: "gold loan" });

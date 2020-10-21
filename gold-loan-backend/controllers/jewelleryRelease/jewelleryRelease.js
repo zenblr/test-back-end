@@ -12,7 +12,7 @@ const moment = require('moment')
 const uniqid = require('uniqid');
 const _ = require('lodash');
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
-const razorpay = require('../../utils/razorpay');
+const getRazorPayDetails = require('../../utils/razorpay');
 let crypto = require('crypto');
 const { BASIC_DETAILS_SUBMIT } = require('../../utils/customerLoanHistory');
 const { sendPartReleaseRequestMessage, sendPartReleaseRequestApprovalMessage, sendMessageAssignedCustomerToAppraiser, sendJewelleryPartReleaseCompletedMessage, sendFullReleaseRequestMessage, sendFullReleaseRequestApprovalMessage, sendFullReleaseAssignAppraiserMessage, sendJewelleryFullReleaseCompletedMessage, sendPartReleaseAssignAppraiserMessage, sendMessageCustomerForAssignAppraiser } = require('../../utils/SMS')
@@ -413,6 +413,7 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
 
 exports.razorPayCreateOrderForOrnament = async (req, res, next) => {
     let { masterLoanId, ornamentId } = req.body;
+    const razorpay = await getRazorPayDetails();
     let releaseData = await getAllPartAndFullReleaseData(masterLoanId, ornamentId);
     let amount = releaseData.loanInfo.totalPayableAmount;
     let transactionUniqueId = uniqid.time().toUpperCase();
