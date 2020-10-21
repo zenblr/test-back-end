@@ -435,6 +435,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
     let loanInfo = releaseData.loanInfo;
     let amount = await getCustomerInterestAmount(masterLoanId);
     let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
+    const razorpay = await getRazorPayDetails();
     let { isUnsecuredSchemeApplied, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest, securedLoanId, unsecuredLoanId } = await getAmountLoanSplitUpData(loan, amount, ornamentData.releaseAmount);
     if (checkOrnament.length == 0) {
         let addPartRelease;
@@ -1446,6 +1447,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
     let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
         where: { isReleased: true, masterLoanId: masterLoanId }
     });
+    const razorpay = await getRazorPayDetails();
     if (checkOrnament.length == 0) {
         let addFullRelease;
         let fullRelease = await sequelize.transaction(async t => {

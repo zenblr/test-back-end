@@ -5,7 +5,7 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const { createReferenceCode } = require("../../utils/referenceCode");
 var uniqid = require('uniqid');
-
+const getRazorPayDetails = require('../../utils/razorpay');
 const request = require("request");
 const moment = require("moment");
 const CONSTANT = require("../../utils/constant");
@@ -15,7 +15,6 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
 let { checkPaidInterest, getCustomerInterestAmount, newSlabRateInterestCalcultaion,
     getLastInterest, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getTransactionPrincipalAmount, calculationDataOneLoan, splitAmountIntoSecuredAndUnsecured, intrestCalculationForSelectedLoanWithOutT, penalInterestCalculationForSelectedLoan, stepDown, penalInterestCalculationForSelectedLoanWithOutT, customerNameNumberLoanId ,getFirstInterestToPay,getStepUpslab} = require('../../utils/loanFunction')
-const razorpay = require('../../utils/razorpay');
 let crypto = require('crypto');
 
 let { sendPaymentMessage } = require('../../utils/SMS')
@@ -125,6 +124,7 @@ exports.partPayment = async (req, res, next) => {
     let { bankName, branchName, chequeNumber, depositDate, depositTransactionId, paymentType, transactionId } = paymentDetails
     let createdBy = req.userData.id;
     let modifiedBy = null;
+    const razorpay = await getRazorPayDetails();
     let amount = await getCustomerInterestAmount(masterLoanId);
     let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
     let { payableAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest } = await payableAmountForLoan(amount, loan)
