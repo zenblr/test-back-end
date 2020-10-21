@@ -41,28 +41,31 @@ exports.userLogin = async (req, res, next) => {
     }
 
     let code;
-    if (req.useragent.isMobile) {
-        let authenticationKey = await req.headers.key;
-        if (authenticationKey == "null") {
-            authenticationKey = null
-        }
-        if (checkUser.authenticationKey != null) {
-            if (authenticationKey != checkUser.authenticationKey) {
-                return res.status(401).json({ message: `You are unauthorized user please contact admin` })
-            } else {
-                code = authenticationKey
-            }
-        } else {
-            code = await createReferenceCode(16)
-            await models.user.update({ authenticationKey: code }, { where: { id: checkUser.id } })
-        }
-    }
+
 
     let userRoleId = await checkUser.roles.map((data) => data.id);
     let roleName = await checkUser.roles.map((data) => data.roleName)
 
     let userDetails = await checkUser.comparePassword(password);
     if (userDetails === true) {
+
+        if (req.useragent.isMobile) {
+            let authenticationKey = await req.headers.key;
+            if (authenticationKey == "null") {
+                authenticationKey = null
+            }
+            if (checkUser.authenticationKey != null) {
+                if (authenticationKey != checkUser.authenticationKey) {
+                    return res.status(401).json({ message: `You are unauthorized user please contact admin` })
+                } else {
+                    code = authenticationKey
+                }
+            } else {
+                code = await createReferenceCode(16)
+                await models.user.update({ authenticationKey: code }, { where: { id: checkUser.id } })
+            }
+        }
+
         let Token;
         if (checkUser.internalBranches.length != 0) {
             Token = jwt.sign({
