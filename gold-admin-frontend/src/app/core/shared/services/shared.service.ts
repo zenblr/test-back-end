@@ -82,15 +82,13 @@ export class SharedService {
 	]
 
 	userManagementPermission = [
+		'partnerView',
+		'partnerBranchView',
+		'internalUserView',
+		'internalBranchView',
 		'merchantView',
 		'brokerView',
 		'storeView',
-		'partnerBannerView',
-		'partnerView',
-		'partnerBranchView',
-		'internalBranchView',
-		'internalUserView',
-		'assignAppraiserView',
 		'concurrentLoginView'
 	]
 
