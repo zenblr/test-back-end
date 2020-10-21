@@ -834,6 +834,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
               let stage = res.scrapCurrentStage
               stage = Number(stage) - 1;
               this.next.emit(stage)
+              if (this.meltingDetails.scrapStatusForAppraiser == 'pending') {
+                this.disableCustomerConfirmation();
+              }
             })
           ).subscribe();
         } else {
