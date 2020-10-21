@@ -81,7 +81,7 @@ exports.sendOtp = async (req, res, next) => {
             await models.userOtp.destroy({ where: { mobileNumber }, transaction: t })
             await models.userOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode }, { transaction: t })
         })
-        var expiryTimeToUser = moment(moment(expiryTime).utcOffset("+05:30").endOf('day'))
+        var expiryTimeToUser = moment(moment(expiryTime).utcOffset("+05:30"))
 
         if (type == "login") {
             let smsLink = process.env.BASE_URL_ADMIN
