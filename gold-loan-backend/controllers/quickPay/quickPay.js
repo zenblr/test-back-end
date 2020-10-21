@@ -24,6 +24,7 @@ let { sendPaymentMessage } = require('../../utils/SMS')
 exports.razorPayCreateOrder = async (req, res, next) => {
     try {
         let { amount,masterLoanId } = req.body;
+        const razorpay = await getRazorPayDetails();
         let loanData = await models.customerLoan.findOne({where:{masterLoanId:masterLoanId},order:[['id','asc']]});
         let transactionUniqueId = uniqid.time().toUpperCase();
         let payableAmount = await Math.round(amount * 100);
