@@ -443,3 +443,38 @@ exports.getUserDetails = async (req, res, next) => {
 
     return res.status(200).json({ message: 'success', data: userDetails })
 }
+
+exports.getConcurrentList = async (req, res, next) => {
+    let user = await models.user.findAll({
+        attributes: ['id', 'authenticationKey', 'firstName', 'lastName'],
+        include: [
+            {
+                model: models.role,
+                where: {
+                    isActive: true
+                }
+            }, {
+                model: models.internalBranch,
+                where: {
+                    isActive: true
+                }
+            }, {
+                model: models.userType,
+                as: 'Usertype',
+                where: { isInternal: true, userType: 'Appraiser' },
+                attributes: []
+            }
+        ]
+    });
+
+    return res.json({ data: user, count: user.length })
+}
+
+exports.removeKeyFromAppraiser = async (req, res, next) => {
+
+    let { id } = req.query
+
+    let removeKey = await models.user.update({ authenticationKey: null }, { where: { id: id } })
+
+    return res.status(200).json({ message: "success" })
+}

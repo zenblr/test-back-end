@@ -1235,7 +1235,7 @@ exports.printCustomerAcknowledgement = async (req, res) => {
 }
 
 exports.printPurchaseVoucher = async (req, res) => {
-    
+
         let { scrapId } = req.query;
         let customerScrap = await models.customerScrap.findOne({
             where: { id: scrapId },
@@ -1273,14 +1273,6 @@ exports.printPurchaseVoucher = async (req, res) => {
                 model: models.scrapMeltingOrnament,
                 as: 'meltingOrnament'
             }
-            // {
-            //     model: models.customerScrapOrnamentsDetail,
-            //     as: 'scrapOrnamentsDetail',
-            //     include: {
-            //         model: models.ornamentType,
-            //         as: 'ornamentType'
-            //     }
-            // }
             ]
         });
         let customerAddress;
@@ -1294,32 +1286,6 @@ exports.printPurchaseVoucher = async (req, res) => {
             }
         }
 
-        // return res.status(200).json({ message: "success", customerScrap });
-    
-        // let ornamentData = [];
-        // let totalUnits = [];
-        // let totalGrams = [];
-        // let totalRatePreUnit = [];
-        // let totalAmount = [];
-        // if (customerScrap.scrapOrnamentsDetail.length != 0) {
-        //     for (let [index, ornament] of customerScrap.scrapOrnamentsDetail.entries()) {
-        //         await ornamentData.push({
-        //             srNo: index + 1,
-        //             ornamentName: ornament.ornamentType.name,
-        //             quantity: ornament.quantity,
-        //             grossWeight: ornament.netWeight,
-        //             amount: ornament.scrapAmount,
-        //             nullCell: ""
-        //         });
-    
-        //         totalUnits.push(ornament.quantity);
-        //         totalGrams.push(ornament.netWeight);
-        //         totalAmount.push(ornament.scrapAmount)
-        //     }
-        // }
-        // let finalTotalUnits = _.sum(totalUnits);
-        // let finalTotalGrams = _.sum(totalGrams);
-        // let finalTotalAmount = _.sum(totalAmount);
         let amountInWords = convert(customerScrap.finalScrapAmountAfterMelting);
         
         var html = fs.readFileSync("./templates/scrap-purchase-voucher.html", 'utf8');
@@ -1338,8 +1304,9 @@ exports.printPurchaseVoucher = async (req, res) => {
             "height": "13.69in",
             "width": "11in"
         }
-        if(customerScrap.customer.customerKycPersonal.panCardNumber){
-            panNo = customerSatte.customer.customerKycPersonal.panCardNumber
+
+        if(customerScrap.customer.customerKycPersonal && customerScrap.customer.customerKycPersonal.panCardNumber){
+            panNo = customerScrap.customer.customerKycPersonal.panCardNumber
         }else{
             panNo = " -";
         }

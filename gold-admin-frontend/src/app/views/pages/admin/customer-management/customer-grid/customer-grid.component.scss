@@ -1,6 +1,8 @@
 :host {
 	.card-container {
 		margin: 0 -5px;
+		max-height: 90vh;
+		overflow: scroll;
 	}
 	.customer-id {
 		margin-bottom: 0.5rem;

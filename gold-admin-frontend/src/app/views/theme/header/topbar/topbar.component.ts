@@ -700,6 +700,9 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/scrap-buying-application-form?customerID=')) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes("/scrap-buying-application-form/")) {
+			this.showBackButton = true;
+		}
 		if (this.path == "orders") {
 			this.showInput = true;
 			this.filterName = "brokerOrder";
@@ -813,6 +816,9 @@ export class TopbarComponent implements OnInit {
 			this.filterName = 'cron';
 			this.listType = 'cron';
 			this.filterWidth = '600px';
+		}
+		if (this.path == "transfer-loan-list") {
+			this.showInput = true;
 		}
 	}
 

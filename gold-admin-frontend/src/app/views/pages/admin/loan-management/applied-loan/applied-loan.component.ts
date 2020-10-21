@@ -98,13 +98,7 @@ export class AppliedLoanComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // First load
-    // this.loadLeadsPage();
-
     this.dataSource.loadAppliedLoans(this.queryParamsData);
-
-    // this.disburse('data')
-
   }
 
   ngOnDestroy() {
