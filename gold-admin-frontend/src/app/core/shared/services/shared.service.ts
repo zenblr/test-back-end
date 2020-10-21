@@ -81,6 +81,19 @@ export class SharedService {
 
 	]
 
+	userManagementPermission = [
+		'merchantView',
+		'brokerView',
+		'storeView',
+		'partnerBannerView',
+		'partnerView',
+		'partnerBranchView',
+		'internalBranchView',
+		'internalUserView',
+		'assignAppraiserView',
+		'concurrentLoginView'
+	]
+
 	constructor(
 		private http: HttpClient,
 		private excelService: ExcelService,
@@ -207,8 +220,8 @@ export class SharedService {
 	}
 
 	//  for quick pay and part payment 
-	paymentGateWay(amount,masterLoanId): Observable<any> {
-		return this.http.post(`api/quick-pay/razor-pay`, { amount,masterLoanId }).pipe(
+	paymentGateWay(amount, masterLoanId): Observable<any> {
+		return this.http.post(`api/quick-pay/razor-pay`, { amount, masterLoanId }).pipe(
 			map(res => res)
 		)
 	}
@@ -269,5 +282,9 @@ export class SharedService {
 
 	getCronType() {
 		return this.cronType
+	}
+
+	getUserManagmentPermission(){
+		return this.userManagementPermission
 	}
 }
