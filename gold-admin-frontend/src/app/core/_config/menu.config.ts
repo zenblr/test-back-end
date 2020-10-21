@@ -82,6 +82,7 @@ export class MenuConfig {
 								this.permissionsArr.includes('internalBranchView') ||
 								this.permissionsArr.includes('internalUserView') ||
 								this.permissionsArr.includes('assignAppraiserView') ||
+								this.permissionsArr.includes('concurrentLoginView') ||
 								this.userType === 4),
 						},
 						{
