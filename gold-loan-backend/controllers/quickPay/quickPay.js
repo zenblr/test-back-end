@@ -86,7 +86,8 @@ exports.getInterestInfo = async (req, res, next) => {
 
         where: {
             emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
-            masterLoanId: masterLoanId
+            masterLoanId: masterLoanId,
+            emiStatus: { [Op.not]: 'paid' }
         },
         attributes: ['emiDueDate', 'emiStatus'],
         order: [['id', 'asc']]
