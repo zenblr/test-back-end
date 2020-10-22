@@ -1,7 +1,7 @@
 // Angular
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
+import { Router, RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 // NGRX
@@ -58,11 +58,11 @@ import { ConcurrentUserLoginComponent } from './concurrent-user-login/concurrent
 
 const routes: Routes = [
 
-	{
-		path: '',
-		redirectTo: 'partner',
-		pathMatch: 'full'
-	},
+	// {
+	// 	path: '',
+	// 	redirectTo: 'partner',
+	// 	pathMatch: 'full'
+	// },
 	{
 		path: 'partner',
 		component: PartnerListComponent
@@ -201,4 +201,9 @@ const routes: Routes = [
 		PartnerBranchUserListComponent
 	]
 })
-export class UserManagementModule { }
+export class UserManagementModule {
+
+	constructor(private router:Router){
+		console.log(router.url)
+	}
+ }

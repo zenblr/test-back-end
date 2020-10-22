@@ -18,6 +18,8 @@ import { AuthService } from '../../../core/auth';
 import { SharedService } from '../../../core/shared/services/shared.service';
 import { ShoppingCartService } from '../../../core/broker';
 import { CookieService } from 'ngx-cookie-service';
+import { NgxPermission } from 'ngx-permissions/lib/model/permission.model';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 @Component({
 	selector: 'kt-aside-left',
@@ -87,6 +89,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 		public shoppingCartService: ShoppingCartService,
 		private ref: ChangeDetectorRef,
 		private cookieService: CookieService,
+		private permission: NgxPermissionsService
 	) {
 		this.router.events.subscribe(event => {
 			if (event instanceof NavigationEnd) {
@@ -267,5 +270,81 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 		), catchError(err => {
 			throw err
 		})).subscribe()
+	}
+	switchCase(title) {
+		switch (title) {
+			case 'User Management':
+				this.userManagementRoute()
+				break;
+
+			case 'Log Out':
+				this.logout()
+				break;
+
+			default:
+
+				break;
+		}
+	}
+	userManagementRoute() {
+		let userManagementPermission = this.sharedService.getUserManagmentPermission()
+		let userPermission = []
+		this.permission.permissions$.subscribe(res => {
+			console.log(Object.keys(res).length)
+			Object.keys(res).forEach(ele => {
+				userPermission.push(ele)
+			})
+		})
+
+		this.compareBothPermission(userManagementPermission, userPermission)
+	}
+
+	compareBothPermission(managementPermission, userPermission) {
+		for (let i = 0; i < managementPermission.length; i++) {
+			const management = managementPermission[i];
+			for (let j = 0; j < userPermission.length; j++) {
+				const user = userPermission[j];
+				if (management == user) {
+					var title = user
+					i = managementPermission.length
+					break;
+				}
+			}
+		}
+		this.routeToPage(title)
+	}
+
+	routeToPage(permission) {
+
+		switch (permission) {
+			case 'partnerView':
+				this.router.navigate(['/admin/user-management/partner'])
+				break;
+			case 'partnerBranchView':
+				this.router.navigate(['/admin/user-management/parnter-branch-user'])
+				break;
+			case 'internalUserView':
+				this.router.navigate(['/admin/user-management/internal-user'])
+				break;
+			case 'internalBranchView':
+				this.router.navigate(['/admin/user-management/internal-user-branch'])
+				break;
+			case 'merchantView':
+				this.router.navigate(['/admin/user-management/merchant'])
+				break;
+			case 'brokerView':
+				this.router.navigate(['/admin/user-management/broker'])
+				break;
+			case 'storeView':
+				this.router.navigate(['/admin/user-management/store'])
+				break;
+			case 'concurrentLoginView':
+				this.router.navigate(['/admin/user-management/concurrent-login'])
+				break;
+
+
+			default:
+				break;
+		}
 	}
 }
