@@ -34,12 +34,12 @@ exports.sendOtp = async (req, res, next) => {
     }
     let createdTime = new Date();
     let expiryTime = moment(createdTime).add(10, "m");
-    var expiryTimeToUser = moment(moment(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
-
+    
     await sequelize.transaction(async t => {
         await models.partnerBranchOtp.destroy({ where: { mobileNumber }, transaction: t })
         await models.partnerBranchOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode }, { transaction: t })
     })
+    var expiryTimeToUser = moment(moment(expiryTime).utcOffset("+05:30"));
 
     if (type == "login") {
         let smsLink = process.env.BASE_URL_ADMIN

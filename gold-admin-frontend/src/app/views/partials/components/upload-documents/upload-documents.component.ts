@@ -554,6 +554,9 @@ export class UploadDocumentsComponent implements OnInit {
             this.toastr.success(res.message)
             this.router.navigate(['/admin/scrap-management/applied-scrap'])
           }
+          if (this.acknowledgmentDocuments.scrapStatusForAppraiser == 'pending') {
+            this.disableCustomerConfirmationStatus();
+          }
         })).subscribe();
     } else if (this.showScrapFlag) {
       this.scrapApplicationFormService.uploadDocuments(this.documentsForm.value, this.scrapIds).pipe(
