@@ -13,6 +13,7 @@ var pdf = require("pdf-creator-node"); // PDF CREATOR PACKAGE
 var fs = require('fs');
 let { sendMessageLoanIdGeneration } = require('../../utils/SMS')
 const _ = require('lodash');
+var randomize = require('randomatic');
 
 const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT, LOAN_APPLY_FROM_APPRAISER_APP, LOAN_EDIT_FROM_APPRAISER_APP } = require('../../utils/customerLoanHistory');
 
@@ -37,6 +38,8 @@ exports.loanRequest = async (req, res, next) => {
 
     let customerDetails = await models.customer.findOne({ where: { id: customerId } })
 
+    let sliceCustId = customerDetails.customerUniqueId.slice(0, 2)
+
     let getAppraiserRequest = await models.appraiserRequest.findOne({ where: { id: appraiserRequestId, appraiserId: appraiserId } });
 
     if (check.isEmpty(getAppraiserRequest)) {
@@ -54,7 +57,7 @@ exports.loanRequest = async (req, res, next) => {
         if (isEdit) {
             let masterLoan = await models.customerLoanMaster.update({ loanStageId: stageId.id, internalBranchId: req.userData.internalBranchId, fullAmount, totalEligibleAmt, createdBy, modifiedBy }, { where: { id: masterLoanId }, transaction: t })
 
-            let loan = await models.customerLoan.update({ masterLoanId: masterLoan.id, loanType: 'secured', createdBy, modifiedBy }, { where: { masterLoanId: masterLoanId }, transaction: t })
+            let loan = await models.customerLoan.update({ loanType: 'secured', createdBy, modifiedBy }, { where: { masterLoanId: masterLoanId }, transaction: t })
 
             await models.customerLoanPersonalDetail.update({ customerUniqueId, startDate, purpose, kycStatus, createdBy, modifiedBy }, { where: { masterLoanId: masterLoanId }, transaction: t });
 
@@ -350,7 +353,6 @@ exports.loanRequest = async (req, res, next) => {
                 }
                 await sendMessageLoanIdGeneration(customerDetails.mobileNumber, customerDetails.firstName, loanSendId)
             }else{
-                {
                     if (loanDetail.unsecuredLoanId != null) {
                         if (loanDetail.unsecuredLoan.loanUniqueId == null) {
                             // unsecured loan Id
@@ -371,7 +373,6 @@ exports.loanRequest = async (req, res, next) => {
                             await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: loanDetail.unsecuredLoanId }, transaction: t });
                         }
                     }
-                }
             }
 
         } else {
