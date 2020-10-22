@@ -290,7 +290,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 		let userManagementPermission = this.sharedService.getUserManagmentPermission()
 		let userPermission = []
 		this.permission.permissions$.subscribe(res => {
-			console.log(Object.keys(res).length)
+			// console.log(Object.keys(res).length)
 			Object.keys(res).forEach(ele => {
 				userPermission.push(ele)
 			})

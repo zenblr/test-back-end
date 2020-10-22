@@ -624,6 +624,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	filterReset() {
 		this.controls.depositStatus.patchValue('')
 		this.controls.packets.patchValue('')
+		this.controls.packetTrackingLocation.patchValue('')
 	}
 
 	validations() {

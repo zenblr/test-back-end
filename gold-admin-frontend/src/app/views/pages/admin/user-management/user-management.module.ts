@@ -124,8 +124,8 @@ const routes: Routes = [
 		component: PartnerBranchUserListComponent
 	},
 	{
-		path:'concurrent-login',
-		component:ConcurrentUserLoginComponent
+		path: 'concurrent-login',
+		component: ConcurrentUserLoginComponent
 	}
 
 ]
@@ -201,9 +201,4 @@ const routes: Routes = [
 		PartnerBranchUserListComponent
 	]
 })
-export class UserManagementModule {
-
-	constructor(private router:Router){
-		console.log(router.url)
-	}
- }
+export class UserManagementModule { }

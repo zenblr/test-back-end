@@ -10,12 +10,13 @@
                 </ng-container>
 
                 <ng-container matColumnDef="customerId">
-                    <mat-header-cell *matHeaderCellDef>Customer Id</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let customer">{{customer.customerUniqueId | uppercase}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN Number</mat-header-cell>
-                    <mat-cell *matCellDef="let customer">{{customer.panCardNumber | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let customer">
+                        {{customer.panCardNumber ? customer.panCardNumber : 'NA' | uppercase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="state">
@@ -29,12 +30,12 @@
                 </ng-container>
 
                 <ng-container matColumnDef="actions">
-                <mat-header-cell [ngClass]="'w-200'" *matHeaderCellDef>Action</mat-header-cell>
+                    <mat-header-cell [ngClass]="'w-200'" *matHeaderCellDef>Action</mat-header-cell>
                     <mat-cell *matCellDef="let customer" [ngClass]="'w-200'">
                         <!-- <span class="kt-pointer" (click)="newLoan(customer)"
                             *ngxPermissionsOnly="['loanApplicationAdd']">Add New Loan</span>
                         <span *ngxPermissionsOnly="['loanApplicationAdd']" class="px-1">|</span> -->
-                        <span class="kt-pointer" (click)="viewDetails(customer.id)">View Details</span>
+                        <span class="kt-pointer view-link" (click)="viewDetails(customer.id)">View Details</span>
                     </mat-cell>
                 </ng-container>
 
