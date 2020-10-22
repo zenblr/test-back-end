@@ -132,7 +132,7 @@ export class PacketTrackingComponent implements OnInit {
 
     });
 
-    console.log(this.leadsResult)
+    // console.log(this.leadsResult)
     // this.currentSyncArray = new Array(packetList.length).fill(null);
     // this.currentSyncArray = packetList.map(e => e.lastSyncTime)
 
@@ -162,6 +162,7 @@ export class PacketTrackingComponent implements OnInit {
     this.packetTrackingService.applyFilter.next({});
     clearInterval(this.interval)
     this.sharedService.hideLoader.next(false)
+    this.sharedService.closeFilter.next(true);
   }
 
   applyFilter(data) {

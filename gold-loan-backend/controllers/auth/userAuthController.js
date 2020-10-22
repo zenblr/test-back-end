@@ -15,9 +15,7 @@ let check = require('../../lib/checkLib');
 exports.userLogin = async (req, res, next) => {
     const { mobileNumber, password } = req.body;
 
-    // console.log(req.useragent)
-    // let code = await createReferenceCode(16)
-    // console.log(code)
+
     let checkUser = await models.user.findOne({
         where: {
             [Op.or]: [
@@ -42,12 +40,32 @@ exports.userLogin = async (req, res, next) => {
         return res.status(401).json({ message: 'Wrong Credentials' })
     }
 
+    let code;
+
 
     let userRoleId = await checkUser.roles.map((data) => data.id);
     let roleName = await checkUser.roles.map((data) => data.roleName)
 
     let userDetails = await checkUser.comparePassword(password);
     if (userDetails === true) {
+
+        if (req.useragent.isMobile) {
+            let authenticationKey = await req.headers.key;
+            if (authenticationKey == "null") {
+                authenticationKey = null
+            }
+            if (checkUser.authenticationKey != null) {
+                if (authenticationKey != checkUser.authenticationKey) {
+                    return res.status(401).json({ message: `You are unauthorized user please contact admin` })
+                } else {
+                    code = authenticationKey
+                }
+            } else {
+                code = await createReferenceCode(16)
+                await models.user.update({ authenticationKey: code }, { where: { id: checkUser.id } })
+            }
+        }
+
         let Token;
         if (checkUser.internalBranches.length != 0) {
             Token = jwt.sign({
@@ -134,8 +152,9 @@ exports.userLogin = async (req, res, next) => {
                     userTypeId: checkUser.userTypeId,
                     stateId: checkUser.internalBranches[0].stateId,
                     cityId: checkUser.internalBranches[0].cityId,
-                    internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId
-                }
+                    internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId,
+                },
+                key: code
             });
         }
 
@@ -182,6 +201,25 @@ exports.verifyLoginOtp = async (req, res, next) => {
             }],
             transaction: t
         });
+
+        let code;
+        if (req.useragent.isMobile) {
+            let authenticationKey = await req.headers.key;
+            if (authenticationKey == "null") {
+                authenticationKey = null
+            }
+            if (checkUser.authenticationKey != null) {
+                if (authenticationKey != checkUser.authenticationKey) {
+                    return res.status(401).json({ message: `You are unauthorized user please contact admin` })
+                } else {
+                    code = authenticationKey
+                }
+            } else {
+                code = await createReferenceCode(16)
+                await models.user.update({ authenticationKey: code }, { where: { id: checkUser.id }, transaction: t })
+            }
+        }
+
         let roleId = await checkUser.roles.map((data) => data.id);
         let roleName = await checkUser.roles.map((data) => data.roleName)
 
@@ -213,7 +251,7 @@ exports.verifyLoginOtp = async (req, res, next) => {
             expiryDate: expiryTime,
             createdDate: createdTime
         }, { transaction: t });
-        return Token
+        return { Token, code }
 
     })
     let getRole = await models.userRole.getAllRole(checkUser.dataValues.id);
@@ -240,12 +278,16 @@ exports.verifyLoginOtp = async (req, res, next) => {
     },
     )
     return res.status(200).json({
-        message: 'login successful', Token: token, modules, permissions, userDetails: {
+        message: 'login successful',
+        Token: token.Token,
+        modules, permissions,
+        userDetails: {
             userTypeId: checkUser.userTypeId,
             stateId: checkUser.internalBranches[0].stateId,
             cityId: checkUser.internalBranches[0].cityId,
             internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId
-        }
+        },
+        key: token.code
     });
 
 }

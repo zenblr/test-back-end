@@ -192,12 +192,12 @@
               </div> -->
               <div class="col">
                 <label>By BM Status</label>
-                <kt-multi-select-search formControlName="bmStatus" [items]="approvalStatus.bml" [multiple]="true"
+                <kt-multi-select-search formControlName="bmStatus" [items]="approvalStatus.bmlfilter" [multiple]="true"
                   [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'BM Status'"></kt-multi-select-search>
               </div>
               <div class="col">
                 <label>By OPS Team Status</label>
-                <kt-multi-select-search formControlName="otStatus" [items]="approvalStatus.bml" [multiple]="true"
+                <kt-multi-select-search formControlName="otStatus" [items]="approvalStatus.bmlfilter" [multiple]="true"
                   [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'OPS Status'"></kt-multi-select-search>
               </div>
               <div class="col-2 d-flex align-items-end">
@@ -235,11 +235,11 @@
             <div class="row">
               <div class="col-9">
                 <label>By Deposit Status</label>
-                <select class="form-control" formControlName="scheme">
-                  <option value="null" selected disabled>Select Status</option>
-                  <option value="Pending">PENDING</option>
-                  <option value="Completed">COMPLETED</option>
-                  <option value="Rejected">REJECTED</option>
+                <select class="form-control" formControlName="depositStatus">
+                  <option value="" selected>All</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Rejected">Rejected</option>
                 </select>
               </div>
               <div class="col-3 d-flex align-items-end">

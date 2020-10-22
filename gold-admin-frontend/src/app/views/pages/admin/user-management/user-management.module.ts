@@ -1,7 +1,7 @@
 // Angular
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
+import { Router, RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 // NGRX
@@ -53,15 +53,16 @@ import { StoreListComponent } from './store/store-list/store-list.component';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { AddPartnerBranchUserComponent } from './partner-branch-user/add-partner-branch-user/add-partner-branch-user.component';
 import { PartnerBranchUserListComponent } from './partner-branch-user/partner-branch-user-list/partner-branch-user-list.component';
+import { ConcurrentUserLoginComponent } from './concurrent-user-login/concurrent-user-login.component';
 
 
 const routes: Routes = [
 
-	{
-		path: '',
-		redirectTo: 'partner',
-		pathMatch: 'full'
-	},
+	// {
+	// 	path: '',
+	// 	redirectTo: 'partner',
+	// 	pathMatch: 'full'
+	// },
 	{
 		path: 'partner',
 		component: PartnerListComponent
@@ -121,6 +122,10 @@ const routes: Routes = [
 	{
 		path: 'partner-branch-user',
 		component: PartnerBranchUserListComponent
+	},
+	{
+		path:'concurrent-login',
+		component:ConcurrentUserLoginComponent
 	}
 
 ]
@@ -170,6 +175,7 @@ const routes: Routes = [
 	declarations: [
 		// RolesListComponent,
 		// RoleAddDialogComponent,
+		ConcurrentUserLoginComponent,
 		PartnerListComponent,
 		BranchListComponent,
 		BranchAddComponent,
@@ -195,4 +201,9 @@ const routes: Routes = [
 		PartnerBranchUserListComponent
 	]
 })
-export class UserManagementModule { }
+export class UserManagementModule {
+
+	constructor(private router:Router){
+		console.log(router.url)
+	}
+ }
