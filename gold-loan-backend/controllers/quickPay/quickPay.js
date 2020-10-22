@@ -11,7 +11,7 @@ const CONSTANT = require("../../utils/constant");
 var uniqid = require('uniqid');
 const getRazorPayDetails = require('../../utils/razorpay');
 let crypto = require('crypto');
-
+const qs = require('qs');
 
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
@@ -25,10 +25,9 @@ exports.razorPayCreateOrder = async (req, res, next) => {
     try {
         let { amount,masterLoanId } = req.body;
         const razorpay = await getRazorPayDetails();
-        let loanData = await models.customerLoan.findOne({where:{masterLoanId:masterLoanId},order:[['id','asc']]});
         let transactionUniqueId = uniqid.time().toUpperCase();
         let payableAmount = await Math.round(amount * 100);
-        let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId} and ${loanData.loanUniqueId}`, payment_capture: 0, notes: "gold loan" });
+        let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId}`, payment_capture: 0, notes: "gold loan" });
         return res.status(200).json({ razorPayOrder, razerPayConfig: razorpay.razorPayConfig.key_id });
     } catch (err) {
         console.log(err)
@@ -164,7 +163,7 @@ exports.payableAmountConfirm = async (req, res, next) => {
 }
 
 exports.quickPayment = async (req, res, next) => {
-
+try{
     let createdBy = req.userData.id;
     let modifiedBy = null;
 
@@ -192,6 +191,16 @@ exports.quickPayment = async (req, res, next) => {
             .update(transactionDetails.razorpay_order_id + "|" + transactionDetails.razorpay_payment_id)
             .digest("hex");
         if (generated_signature == transactionDetails.razorpay_signature) {
+            let loanData = await models.customerLoan.findOne({where:{masterLoanId:masterLoanId},order:[['id','asc']]});
+                     await models.axios({
+                        method: 'PATCH',
+                        url: `https://api.razorpay.com/v1/payments/${transactionDetails.razorpay_payment_id}`,
+                        auth: {
+                                username: razorpay.razorPayConfig.key_id,
+                                 password: razorpay.razorPayConfig.key_secret
+                            },
+                        data:qs.stringify({notes:{transactionId:transactionUniqueId,product : "LOAN",loanId : loanData.loanUniqueId}})
+                      })
             signatureVerification = true;
             isRazorPay = true;
             razorPayTransactionId = transactionDetails.razorpay_order_id;
@@ -421,6 +430,17 @@ exports.quickPayment = async (req, res, next) => {
 
     return res.status(200).json({ data: 'success' })
 
+}catch(err){
+    await models.errorLogger.create({
+        message: err.message,
+        url: req.url,
+        method: req.method,
+        host: req.hostname,
+        body: req.body,
+        userData: req.userData
+      });
+    res.status(500).send({ message: "something went wrong" });
+}
 }
 
 exports.confirmationForPayment = async (req, res, next) => {
