@@ -339,7 +339,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
             // let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate( allOrnmanets, { transaction: t });
 
             let createdOrnaments
-                = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { updateOnDuplicate: ["loanAmount", "ornamentTypeId", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest", "karat", "ltvRange", "currentGoldRate","ornamentImage", "ltvPercent", "ltvAmount", "currentLtvAmount", "ornamentFullAmount"] }, { transaction: t })
+                = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { updateOnDuplicate: ["loanAmount", "ornamentTypeId", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest", "karat", "ltvRange", "currentGoldRate", "ornamentImage", "ltvPercent", "ltvAmount", "currentLtvAmount", "ornamentFullAmount"] }, { transaction: t })
 
             return createdOrnaments
         })
@@ -1082,7 +1082,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
                             let getUnsecu = randomize('A0', 4);
                             unsecuredLoanUniqueId = `LR${sliceCustId}${getUnsecu}`;
                             loanSendId = loanUniqueId
-                            loanSendId = `secured Loan ID ${loanUniqueId}, unsecured Loan ID ${unsecuredLoanUniqueId}`
+                            loanSendId = `${loanUniqueId}, ${unsecuredLoanUniqueId}`
                             let checkUniqueUnsecured = await models.customerLoan.findOne({ where: { loanUniqueId: unsecuredLoanUniqueId }, transaction: t })
                             if (!checkUniqueUnsecured) {
                                 checkUnsecuredUnique = true
@@ -1106,7 +1106,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
                             let getUnsecu = randomize('A0', 4);
                             unsecuredLoanUniqueId = `LR${sliceCustId}${getUnsecu}`;
                             loanSendId = loanUniqueId
-                            loanSendId = `secured Loan ID ${loanUniqueId}, unsecured Loan ID ${unsecuredLoanUniqueId}`
+                            loanSendId = `${loanUniqueId}, ${unsecuredLoanUniqueId}`
                             let checkUniqueUnsecured = await models.customerLoan.findOne({ where: { loanUniqueId: unsecuredLoanUniqueId }, transaction: t })
                             if (!checkUniqueUnsecured) {
                                 checkUnsecuredUnique = true
@@ -2476,7 +2476,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
     var options = {
         format: "A4",
         orientation: "portrait",
-        border: "10mm",
+        border: "5mm",
         "header": {
             "height": "2mm",
         },

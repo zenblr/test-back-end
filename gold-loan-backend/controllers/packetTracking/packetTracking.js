@@ -11,7 +11,10 @@ const CONSTANT = require('../../utils/constant');
 const { createReferenceCode } = require("../../utils/referenceCode");
 const request = require("request");
 const { VIEW_ALL_PACKET_TRACKING } = require('../../utils/permissionCheck')
+const { sendSms } = require('../../utils/sendSMS')
 
+const { sendJewelleryPartReleaseCompletedMessage, sendJewelleryFullReleaseCompletedMessage, sendUpdateLocationCollectMessage, sendUpdateLocationHandoverMessage } = require('../../utils/SMS')
+const { customerNameNumberLoanId } = require('../../utils/loanFunction');
 
 //FUNCTION TO GET ALL PACKET DETAILS
 exports.getAllPacketTrackingDetail = async (req, res, next) => {
@@ -675,21 +678,28 @@ exports.getLocationDetails = async (req, res, next) => {
 exports.checkOutPacket = async (req, res, next) => {
     let { customerId } = req.query
 
-    let custDetail = await models.customer.findOne({ where: { id: customerId } })
+    let custDetail = await models.customer.findOne({ where: { id: customerId } });
+    let userDetail = await models.user.findOne({ where: { id: req.userData.id } })
 
     await models.customerOtp.destroy({ where: { mobileNumber: custDetail.mobileNumber } });
 
     const referenceCode = await createReferenceCode(5);
-    // let otp = Math.floor(1000 + Math.random() * 9000);
-    let otp = 1234;
+    let otp;
+    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+        otp = 1234
+    } else {
+        otp = Math.floor(1000 + Math.random() * 9000);
+    }
     let createdTime = new Date();
-    let expiryTime = moment.utc(createdTime).add(10, "m");
-
-    // var expiryTimeToUser = moment(moment.utc(expiryTime).toDate()).format('YYYY-MM-DD HH:mm');
+    let expiryTime = moment(createdTime).add(10, "m");
 
     await models.customerOtp.create({ mobileNumber: custDetail.mobileNumber, otp, createdTime, expiryTime, referenceCode, });
 
-    request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${custDetail.mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`);
+    await sendUpdateLocationHandoverMessage(custDetail.mobileNumber, otp, custDetail.firstName, userDetail.firstName)
+
+    // let message = await `Dear customer, Your OTP for completing the order request is ${otp}.`
+    // await sendSms(custDetail.mobileNumber, message);
+    // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${custDetail.mobileNumber}&source=nicalc&message=For refrence code ${referenceCode} your OTP is ${otp}. This otp is valid for only 10 minutes`);
 
     return res.status(200).json({ message: `success`, referenceCode: referenceCode })
 }
@@ -1364,37 +1374,68 @@ exports.submitLoanPacketLocationForCollect = async (req, res, next) => {
 
     // let loanStage = await models.loanStage.findOne({ where: { name: 'packet release from' } });
 
-    // if (location == 'partner branch out') {
     await sequelize.transaction(async (t) => {
+        if (location == 'partner branch out') {
 
-        await models.customerLoanMaster.update({ packetLocationStatus: 'in transit' }, { where: { id: masterLoanId }, transaction: t })
+            await models.customerLoanMaster.update({ packetLocationStatus: 'in transit' }, { where: { id: masterLoanId }, transaction: t })
 
-        await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'in transit' }, { transaction: t })
+            await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'in transit' }, { transaction: t })
 
-        let packetTrackingData = await models.customerPacketTracking.create({
-            internalBranchId: req.userData.internalBranchId,
-            userReceiverId: userReceiverId,
-            receiverType: 'InternalUser',
-            loanId,
-            masterLoanId,
-            packetLocationId: packetLocationId,
-            userSenderId: req.userData.id,
-            senderType: 'InternalUser',
-            // partnerSenderId: partnerReceiverId,
-            // senderType: 'PartnerUser',
-            isDelivered: true,
-            status: 'in transit'
-        }, { transaction: t });
+            let packetTrackingData = await models.customerPacketTracking.create({
+                internalBranchId: req.userData.internalBranchId,
+                userReceiverId: userReceiverId,
+                receiverType: 'InternalUser',
+                loanId,
+                masterLoanId,
+                packetLocationId: packetLocationId,
+                userSenderId: req.userData.id,
+                senderType: 'InternalUser',
+                // partnerSenderId: partnerReceiverId,
+                // senderType: 'PartnerUser',
+                isDelivered: true,
+                status: 'in transit'
+            }, { transaction: t });
 
-        let allPacketTrackingData = await models.customerPacketTracking.findAll({
-            where: { masterLoanId: masterLoanId, isDelivered: true },
-            transaction: t,
-            order: [['id', 'desc']]
-        })
+            let allPacketTrackingData = await models.customerPacketTracking.findAll({
+                where: { masterLoanId: masterLoanId, isDelivered: true },
+                transaction: t,
+                order: [['id', 'desc']]
+            })
 
-        var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
 
-        await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
+            await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
+        } else if (location == 'branch out') {
+
+            await models.customerLoanMaster.update({ packetLocationStatus: 'in transit' }, { where: { id: masterLoanId }, transaction: t })
+
+            await models.customerLoanPacketData.create({ masterLoanId: masterLoanId, packetLocationId: packetLocationId, status: 'in transit' }, { transaction: t })
+
+            let packetTrackingData = await models.customerPacketTracking.create({
+                internalBranchId: req.userData.internalBranchId,
+                userReceiverId: req.userData.id,
+                receiverType: 'InternalUser',
+                loanId,
+                masterLoanId,
+                packetLocationId: packetLocationId,
+                userSenderId: userReceiverId,
+                senderType: 'InternalUser',
+                // partnerSenderId: partnerReceiverId,
+                // senderType: 'PartnerUser',
+                isDelivered: true,
+                status: 'in transit'
+            }, { transaction: t });
+
+            let allPacketTrackingData = await models.customerPacketTracking.findAll({
+                where: { masterLoanId: masterLoanId, isDelivered: true },
+                transaction: t,
+                order: [['id', 'desc']]
+            })
+
+            var processingTime = moment.utc(moment(packetTrackingData.updatedAt, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(allPacketTrackingData[1].updatedAt, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+
+            await models.customerPacketTracking.update({ processingTime: processingTime }, { where: { id: packetTrackingData.id }, transaction: t });
+        }
     })
 
     return res.status(200).json({ message: `packet location submitted` })
@@ -1499,9 +1540,17 @@ exports.submitLoanPacketLocationForHomeIn = async (req, res, next) => {
 
                 await models.customerLoanMaster.update({ isOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
 
+                let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
+
+                await sendJewelleryFullReleaseCompletedMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+
             } else {
                 await models.partRelease.update({ partReleaseStatus: 'released', modifiedBy, releaseDate, isCustomerReceivedPacket: true }, { where: { id: releaseId }, transaction: t })
                 await models.customerLoanMaster.update({ isOrnamentsReleased: true, isFullOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
+
+                let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
+
+                await sendJewelleryPartReleaseCompletedMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
             }
 
         })

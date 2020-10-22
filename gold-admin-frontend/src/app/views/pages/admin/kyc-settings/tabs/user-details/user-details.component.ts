@@ -91,7 +91,7 @@ export class UserDetailsComponent implements OnInit {
     });
 
     this.controls.panCardNumber.valueChanges.subscribe(res => {
-      if (this.controls.panCardNumber.valid) {
+      if (this.controls.panCardNumber.valid || this.controls.panCardNumber.status == 'DISABLED') {
         this.panButton = false;
         // this.isPanVerified = true;
 
@@ -153,7 +153,7 @@ export class UserDetailsComponent implements OnInit {
     this.userBasicForm = this.fb.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
-      mobileNumber: [, [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
+      mobileNumber: [, [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
       otp: [, [, Validators.pattern('^[0-9]{4}$')]],
       referenceCode: [],
       panType: [, Validators.required],
@@ -303,7 +303,6 @@ export class UserDetailsComponent implements OnInit {
   }
 
   submit() {
-    this.enableControls()
     if (this.userBasicForm.invalid) {
       this.userBasicForm.markAllAsTouched()
       return
@@ -312,6 +311,7 @@ export class UserDetailsComponent implements OnInit {
       return this.toastr.error('PAN is not Verfied')
 
     }
+    if (this.disabled) this.enableControls()
     this.userBasicForm.enable()
     if (this.controls.panCardNumber.value) {
       const PAN = this.controls.panCardNumber.value.toUpperCase();
@@ -406,6 +406,7 @@ export class UserDetailsComponent implements OnInit {
     this.controls.lastName.disable()
     this.controls.mobileNumber.disable()
     this.controls.panType.disable()
+    this.controls.panCardNumber.disable()
   }
 
   enableControls() {
@@ -413,5 +414,6 @@ export class UserDetailsComponent implements OnInit {
     this.controls.lastName.enable()
     this.controls.mobileNumber.enable()
     this.controls.panType.enable()
+    this.controls.panCardNumber.enable()
   }
 }

@@ -9,7 +9,7 @@ import { DataTableService } from '../../../../core/shared/services/data-table.se
   selector: 'kt-customer-management',
   template: `<kt-customer-list *ngIf="toogler=='list'" [data]="customerResult"
   [isPreloadTextViewed]="isPreloadTextViewed" [hasItems]="dataSource.hasItems" 
-  (pagination)="loadCustomers($event)" [paginatorTotal]="this.dataSource.paginatorTotal$ | async ">
+  (pagination)="loadCustomers($event)" [paginatorTotal]="this.dataSource.paginatorTotal$ | async " [index]="index">
   </kt-customer-list>
 
   <kt-customer-grid *ngIf="toogler=='grid'" (pagination)="loadCustomers($event)"
@@ -27,6 +27,7 @@ export class CustomerManagementComponent implements OnInit, OnChanges {
   customerResult = [];
   unsubscribeSearch$ = new Subject();
   searchValue: any;
+  index:any;
   constructor(
     private customerManagementService: CustomerManagementService,
     private dataTableService: DataTableService
@@ -86,6 +87,7 @@ export class CustomerManagementComponent implements OnInit, OnChanges {
     this.page.from = event.from;
     this.page.to = event.to;
     this.page.search = event.search;
+    this.index = event.index
   }
 
   ngOnDestroy() {

@@ -1,3 +1,5 @@
+<kt-filtered-data [filteredList]="filteredDataList"></kt-filtered-data>
+
 <kt-portlet>
     <kt-portlet-body>
         <div class="mat-table__wrapper">
@@ -107,7 +109,7 @@
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
             <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
         </div>
-        <div class="mat-table__bottom d-none">
+        <div class="mat-table__bottom">
             <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
             <mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
                 [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>

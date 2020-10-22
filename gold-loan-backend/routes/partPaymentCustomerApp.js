@@ -16,4 +16,6 @@ route.post('/confirm-payment-info', checkAuth, wrapper(payableAmountConfirmPartP
 
 route.post('/payment', checkAuth, wrapper(partPayment))
 
+
+
 module.exports = route;   

@@ -37,6 +37,7 @@ export class UserReviewComponent implements OnInit {
   @ViewChild("pass", { static: false }) pass;
   @ViewChild("constitutionsDeed", { static: false }) constitutionsDeed;
   @ViewChild("gstCertificate", { static: false }) gstCertificate;
+  @ViewChild("signature", { static: false }) signature;
 
   file: any;
   occupations = [];
@@ -311,7 +312,7 @@ export class UserReviewComponent implements OnInit {
       profileImage: [, [Validators.required]],
       firstName: [, [Validators.required]],
       lastName: [, [Validators.required]],
-      mobileNumber: [, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      mobileNumber: [, [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
       panCardNumber: [this.data.customerKycReview.panCardNumber, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       panType: [, Validators.required],
       form60: [],
@@ -416,7 +417,7 @@ export class UserReviewComponent implements OnInit {
     } else {
       this.customerKycPersonal = this.fb.group({
         profileImage: [, [Validators.required]],
-        alternateMobileNumber: [, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+        alternateMobileNumber: [, [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
         gender: [, [Validators.required]],
         spouseName: [, [Validators.required]],
         martialStatus: ['', [Validators.required]],
@@ -606,6 +607,7 @@ export class UserReviewComponent implements OnInit {
   getStates() {
     this.sharedService.getStates().subscribe(res => {
       this.states = res.data;
+      this.ref.detectChanges();
     });
     this.getCities('permanent');
     this.getCities('residential');
@@ -792,6 +794,7 @@ export class UserReviewComponent implements OnInit {
           if (this.pass && this.pass.nativeElement.value) this.pass.nativeElement.value = '';
           if (this.constitutionsDeed && this.constitutionsDeed.nativeElement.value) this.constitutionsDeed.nativeElement.value = '';
           if (this.gstCertificate && this.gstCertificate.nativeElement.value) this.gstCertificate.nativeElement.value = '';
+          if (this.signature && this.signature.nativeElement.value) this.signature.nativeElement.value = '';
         })
       ).subscribe()
     }
@@ -1017,7 +1020,7 @@ export class UserReviewComponent implements OnInit {
             this.customerKycPersonal.controls[key].updateValueAndValidity();
           }
           else if (key == 'alternateMobileNumber') {
-            this.customerKycPersonal.controls[key].setValidators([Validators.pattern('^[0-9]{10}$')]);
+            this.customerKycPersonal.controls[key].setValidators([Validators.pattern('^[6-9][0-9]{9}$')]);
             this.customerKycPersonal.controls[key].updateValueAndValidity();
           }
           else {
@@ -1111,6 +1114,7 @@ export class UserReviewComponent implements OnInit {
     this.reviewForm.controls.lastName.disable()
     this.reviewForm.controls.mobileNumber.disable()
     this.reviewForm.controls.panType.disable()
+    this.reviewForm.controls.panCardNumber.disable()
   }
 
   enableControls() {
@@ -1118,5 +1122,6 @@ export class UserReviewComponent implements OnInit {
     this.reviewForm.controls.lastName.enable()
     this.reviewForm.controls.mobileNumber.enable()
     this.reviewForm.controls.panType.enable()
+    this.reviewForm.controls.panCardNumber.enable()
   }
 }

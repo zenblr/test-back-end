@@ -111,7 +111,7 @@ export class PartPaymentComponent implements OnInit {
     }
 
     if (this.paymentValue.paymentType == 'upi' || this.paymentValue.paymentType == 'netbanking' || this.paymentValue.paymentType == 'wallet' || this.paymentValue.paymentType == 'card') {
-      this.sharedService.paymentGateWay(this.partAmount.value).subscribe(
+      this.sharedService.paymentGateWay(this.partAmount.value,this.masterLoanId).subscribe(
         res => {
           this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
           this.razorpayPaymentService.razorpayOptions.amount = res.razorPayOrder.amount;

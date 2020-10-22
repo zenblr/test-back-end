@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { SelectionModel } from '@angular/cdk/collections';
 import { AssignAppraiserPacketsComponent } from '../assign-appraiser-packets/assign-appraiser-packets.component';
+import { SharedService } from '../../../../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-packets-list',
@@ -25,7 +26,15 @@ export class PacketsListComponent implements OnInit {
   selection = new SelectionModel<any>(true, []);
   private subscriptions: Subscription[] = [];
   private unsubscribeSearch$ = new Subject();
+  private filter$ = new Subject();
   searchValue = '';
+  queryParamsData = {
+    from: 1,
+    to: 25,
+    search: '',
+    packetAssigned: ''
+  }
+  filteredDataList: any = {};
 
   constructor(
     public dialog: MatDialog,
@@ -33,7 +42,8 @@ export class PacketsListComponent implements OnInit {
     private dataTableService: DataTableService,
     private layoutUtilsService: LayoutUtilsService,
     private toastr: ToastrService,
-    private ngxPermissionService: NgxPermissionsService
+    private ngxPermissionService: NgxPermissionsService,
+    private sharedService: SharedService
   ) {
     this.scrapPacketsService.openModal$.pipe(
       map(res => { if (res) this.assignPackets() }),
@@ -42,6 +52,14 @@ export class PacketsListComponent implements OnInit {
     this.scrapPacketsService.buttonValue$.pipe(
       map(res => { if (res) this.assignAppraiser() }),
       takeUntil(this.destroy$)).subscribe();
+
+    this.scrapPacketsService.applyFilter$
+      .pipe(takeUntil(this.filter$))
+      .subscribe((res) => {
+        if (Object.entries(res).length) {
+          this.applyFilter(res);
+        }
+      });
   }
 
   ngOnInit() {
@@ -61,6 +79,7 @@ export class PacketsListComponent implements OnInit {
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;
+        this.queryParamsData.search = res;
         this.paginator.pageIndex = 0;
         this.loadPackets();
       });
@@ -73,7 +92,7 @@ export class PacketsListComponent implements OnInit {
       this.packetsResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
-    this.dataSource.loadpackets(this.searchValue, 1, 25);
+    this.dataSource.loadpackets(this.queryParamsData);
   }
 
   ngOnDestroy() {
@@ -82,15 +101,28 @@ export class PacketsListComponent implements OnInit {
     this.unsubscribeSearch$.complete();
     this.destroy$.next();
     this.destroy$.complete();
+    this.filter$.next();
+    this.filter$.complete();
+    this.scrapPacketsService.applyFilter.next({});
     this.scrapPacketsService.disableBtn.next(false)
+    this.sharedService.closeFilter.next(true);
   }
 
   loadPackets() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
-    let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
-    let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
-    this.dataSource.loadpackets(this.searchValue, from, to);
+    this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
+    this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
+    this.dataSource.loadpackets(this.queryParamsData);
+    this.selection.clear();
+  }
+
+  applyFilter(data) {
+    //console.log(data.data.scheme);
+    this.queryParamsData.packetAssigned = data.data.packets;
+    this.filteredDataList = data.list;
+    this.dataSource.loadpackets(this.queryParamsData);
+    this.selection.clear();
   }
 
   assignPackets() {
@@ -185,7 +217,7 @@ export class PacketsListComponent implements OnInit {
     const isUsed = selectedPackets.every(e => e.packetAssigned === false)
     const isAppraiserSame = selectedPackets.length && selectedPackets.every(e => e.appraiserId === selectedPackets[0].appraiserId)
     console.log(isAppraiserSame)
-    const isAssignAppraiserValid = !(isSelectionEmpty) && isBranchSame && isUsed && isAppraiserSame? true : false
+    const isAssignAppraiserValid = !(isSelectionEmpty) && isBranchSame && isUsed && isAppraiserSame ? true : false
     this.scrapPacketsService.disableBtn.next(!isAppraiserSame)
     return { isAssignAppraiserValid, isBranchSame, isSelectionEmpty, isUsed }
   }

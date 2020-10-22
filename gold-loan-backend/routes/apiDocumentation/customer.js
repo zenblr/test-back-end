@@ -67,7 +67,7 @@
  *       200:
  *         description: Success.
  *       404:
- *         description: Invalid otp.
+ *         description: INVALID OTP.
  *
  * /customer:
  *   post:

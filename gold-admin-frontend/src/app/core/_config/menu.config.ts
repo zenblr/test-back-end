@@ -72,7 +72,6 @@ export class MenuConfig {
 							title: "User Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-04.svg",
-							page: "/admin/user-management",
 							permission: !(this.permissionsArr.includes('merchantView') ||
 								this.permissionsArr.includes('brokerView') ||
 								this.permissionsArr.includes('storeView') ||
@@ -82,6 +81,7 @@ export class MenuConfig {
 								this.permissionsArr.includes('internalBranchView') ||
 								this.permissionsArr.includes('internalUserView') ||
 								this.permissionsArr.includes('assignAppraiserView') ||
+								this.permissionsArr.includes('concurrentLoginView') ||
 								this.userType === 4),
 						},
 						{
@@ -593,6 +593,14 @@ export class MenuConfig {
 							page: "/admin/user-management/store",
 							src: "assets/media/aside-icons/icons-19.svg",
 							permission: !this.permissionsArr.includes('storeView')
+						},
+						{
+							title: "Concurrent User",
+							root: true,
+							page: "/admin/user-management/concurrent-login",
+							src: "assets/media/aside-icons/icons-06.svg",
+							permission: !this.permissionsArr.includes('concurrentLoginView')
+							
 						},
 						// {
 						// 	title: "Roles and permissions",

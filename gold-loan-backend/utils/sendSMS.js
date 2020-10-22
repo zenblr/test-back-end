@@ -1,12 +1,14 @@
 const request = require('request');
+const models = require('../models');
 
 let sendSms = async (mobileNumber, message) => {
+    const getSmsCredential = await models.loanSmsCredential.findOne({where:{isActive:true}});
     let headers = {
         'content-type': 'application/json',
     };
     let dataString = await `{
         "ver": "1.0",
-        "key": "b82KV6dOoMa4mkDGYsEpZw==",
+        "key": "${getSmsCredential.key}",
         "encrpt": "0",
         "messages"
             : [
@@ -23,7 +25,7 @@ let sendSms = async (mobileNumber, message) => {
             ]
     }`;
     const options = {
-        url: 'https://japi.instaalerts.zone/httpapi/JsonReceiver',
+        url: getSmsCredential.url,
         method: 'POST',
         headers: headers,
         body: dataString

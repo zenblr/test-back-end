@@ -21,7 +21,7 @@
                         <td class="table-amount">{{emi?.paidAmount}}</td>
                         <td class="table-amount">{{emi?.penalInterest}}</td>
                         <td class="table-amount">{{emi?.penalPaid}}</td>
-                        <td class="text-center">
+                        <td class="">
                             <span *ngIf="emi.emiReceivedDate;else noData">
                                 {{emi?.emiReceivedDate | date :'mediumDate'}}
                             </span>

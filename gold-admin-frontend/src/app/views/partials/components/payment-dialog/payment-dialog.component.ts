@@ -63,7 +63,7 @@ export class PaymentDialogComponent implements OnInit {
         this.paymentForm.controls.depositTransactionId.patchValue(this.data.value.transactionUniqueId);
         this.paymentForm.controls.transactionId.patchValue(this.data.value.bankTransactionUniqueId);
         this.paymentForm.controls.paidAmount.patchValue(this.data.value.transactionAmont);
-        this.paymentForm.controls.paymentReceivedDate.patchValue(this.data.value.depositDate)
+        this.paymentForm.controls.paymentReceivedDate.patchValue(new Date(this.data.value.depositDate))
         // this.paymentForm.controls.paymentReceivedDate.patchValue(this.getOffsetDateTime(this.data.value.depositDate))
         this.paymentForm.controls.depositStatus.patchValue('');
         this.paymentForm.disable();
@@ -178,8 +178,8 @@ export class PaymentDialogComponent implements OnInit {
     if (this.paymentForm.invalid) {
       return this.paymentForm.markAllAsTouched()
     }
-    // this.paymentForm.patchValue({ paymentReceivedDate : this.controls.paymentReceivedDate.value ? this.getOffsetDateTime(this.controls.paymentReceivedDate.value) : null })
-    let paymentDate = this.dataPipe.transform(this.paymentForm.controls.paymentReceivedDate.value, 'yyyy-MM-dd')
+    this.paymentForm.patchValue({ paymentReceivedDate: this.controls.paymentReceivedDate.value ? this.getOffsetDateTime(this.controls.paymentReceivedDate.value) : null })
+    // let paymentDate = this.dataPipe.transform(this.paymentForm.controls.paymentReceivedDate.value, 'yyyy-MM-dd')
     if (this.data.name == "deposit") {
 
 
@@ -191,7 +191,7 @@ export class PaymentDialogComponent implements OnInit {
         if (res) {
           this.dialogRef.close({
             depositStatus: this.paymentForm.controls.depositStatus.value,
-            paymentReceivedDate: paymentDate
+            paymentReceivedDate: this.paymentForm.controls.paymentReceivedDate.value
           })
         }
       })
@@ -207,6 +207,8 @@ export class PaymentDialogComponent implements OnInit {
           chequeNumber: null
         })
       }
+      this.paymentForm.patchValue({ depositDate: this.controls.depositDate.value ? this.getOffsetDateTime(this.controls.depositDate.value) : null })
+
       this.dialogRef.close(this.paymentForm.value)
     }
 

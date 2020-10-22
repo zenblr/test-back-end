@@ -396,6 +396,9 @@ export class ScrapUpdateLocationComponent implements OnInit {
   verifyBarcode(index) {
     const formGroup = this.barcodeNumber.at(index);
     const filteredFormGroup = this.filteredPacketArray[index];
+    if (formGroup.invalid) {
+      return formGroup.get('Barcode').markAsTouched();
+    }
     const isVerified = (JSON.stringify(formGroup.value)).toLowerCase() === (JSON.stringify(filteredFormGroup)).toLowerCase();
     console.log(isVerified);
     if (!isVerified) {

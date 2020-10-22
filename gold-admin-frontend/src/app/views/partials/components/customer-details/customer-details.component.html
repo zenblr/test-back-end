@@ -7,7 +7,7 @@
                         <div class="col-1">
                             <img class="kt-margin-t-10 profile"
                                 (click)="preview(cutomerDetails?.customerKycPersonal?.profileImg)"
-                                [src]="cutomerDetails?.customerKycPersonal?.profileImg">
+                                [src]="cutomerDetails?.customerKycPersonal?.profileImg  ? cutomerDetails?.customerKycPersonal?.profileImg : 'assets/media/icons/user.png'">
                             <!-- <img [src]="customer.image" *ngIf="customer.image != '' || customer.image != null"> -->
                         </div>
                         <div class="col kt-padding-l-25">
@@ -22,7 +22,8 @@
                         <div class="col">
                             <div class="kt-margin-t-30 text-gray font-weight-500 kt-margin-b-5">PAN</div>
                             <div class="text-color font-weight-500">
-                                {{cutomerDetails?.panCardNumber ? cutomerDetails?.panCardNumber : '-'}}</div>
+                                {{cutomerDetails?.panCardNumber ? (cutomerDetails?.panCardNumber | uppercase) : 'NA' }}
+                            </div>
                         </div>
                         <div class="col" *ngIf="cutomerDetails.panType == 'form60'">
                             <div class="kt-margin-t-30 text-gray font-weight-500 kt-margin-b-5">FORM 60</div>
@@ -68,12 +69,14 @@
                     <div class="text-gray font-weight-500 kt-margin-b-5">
                         Residential Address</div>
                     <div class="text-color font-weight-500 kt-margin-b-5"
-                        [ngStyle]="{'width':'65%','line-height':'1.5'}">
+                        [ngStyle]="{'width':'65%','line-height':'1.5'}"
+                        *ngIf="cutomerDetails?.customerKycAddress[1]; else noCustomerKycAddress">
                         {{cutomerDetails?.customerKycAddress[1]?.address | titlecase}}
                         {{cutomerDetails?.customerKycAddress[1]?.city?.name}}
                         {{cutomerDetails?.customerKycAddress[1]?.state?.name}}
                         {{cutomerDetails?.customerKycAddress[1]?.pinCode}}
                     </div>
+                    <ng-template #noCustomerKycAddress>-</ng-template>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Bank Details</div>
@@ -106,7 +109,7 @@
                         (click)="preview(cutomerDetails?.customerKycAddress[0]?.addressProofImage[0])">View Proof</div>
                 </div>
                 <div class="col">
-                    <div class="text-primary font-weight-500 kt-pointer"
+                    <div class="text-primary font-weight-500 kt-pointer" *ngIf="cutomerDetails?.customerKycAddress[1]"
                         (click)="preview(cutomerDetails?.customerKycAddress[1]?.addressProofImage[0])">View Proof</div>
                 </div>
                 <div class="col">
