@@ -1,5 +1,7 @@
 // LOAD REQUIRED PACKAGES
 const models = require('../../models');
+var xl = require('excel4node');
+
 const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
@@ -13,7 +15,7 @@ var fs = require('fs');
 let { sendMessageLoanIdGeneration } = require('../../utils/SMS');
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 const _ = require('lodash');
-const { getSingleLoanDetail, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan, customerNameNumberLoanId } = require('../../utils/loanFunction')
+const { getSingleLoanDetail, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan, customerNameNumberLoanId, customerLoanDetailsByMasterLoanDetails } = require('../../utils/loanFunction')
 
 const { sendDisbursalMessage } = require('../../utils/SMS')
 
@@ -2557,4 +2559,150 @@ exports.getLoanOrnaments = async (req, res, next) => {
     })
 
     return res.status(200).json({ data: getLoanOrnaments })
+}
+
+
+exports.getBankInfo = async (req, res, next) => {
+    let { masterLoanId, modeOfPayment,type } = req.query;
+
+    let loan = await models.customerLoanMaster.findOne({
+        where: { isActive: true, id: masterLoanId },
+        order: [
+            [models.customerLoan, 'id', 'asc']
+        ],
+        include: [{
+            model: models.customerLoan,
+            as: 'customerLoan',
+            where: { isActive: true },
+
+        },
+        {
+            model: models.customer,
+            as: 'customer'
+        }, {
+            model: models.customerLoanBankDetail,
+            as: 'loanBankDetail'
+
+        }, {
+            model: models.internalBranch,
+            as: 'internalBranch'
+        }]
+    });
+
+    if (modeOfPayment == 'bank') {
+
+    } else if (modeOfPayment == 'cash') {
+
+    } else {
+        return res.status(404).json({ message: 'Invalid payment mode' })
+    }
+    // Require library
+    let customerName = loan.customer.firstName + ' ' + loan.customer.lastName
+    let date = moment().format('DD-MM-YYYY')
+    // Create a new instance of a Workbook class
+    var wb = new xl.Workbook();
+
+    // Add Worksheets to the workbook
+    var ws = wb.addWorksheet('Sheet 1');
+
+    // Create a reusable style
+    var style = wb.createStyle({
+        font: {
+            color: '#000000',
+            size: 8,
+        },
+        numberFormat: '$#,##0.00; ($#,##0.00); -',
+    });
+    if (type == 'NEFT') {
+        ws.cell(1, 1).string('Mode of Payment').style(style);
+        ws.cell(1, 2).string('Withdrawal Amount').style(style);
+        ws.cell(1, 3).string('Payment Date').style(style);
+        ws.cell(1, 4).string('Customer Name').style(style);
+        ws.cell(1, 5).string('CustomerAccount Number').style(style);
+        ws.cell(1, 6).string('Blank').style(style);
+        ws.cell(1, 7).string('Blank').style(style);
+        ws.cell(1, 8).string('Company Account Number').style(style);
+        ws.cell(1, 9).string('Withdrawal ID').style(style);
+        ws.cell(1, 10).string('Bank IFSC Code').style(style);
+        ws.cell(1, 11).string('Filled in 11').style(style);
+
+        ws.cell(2, 1).string('N').style(style);
+        ws.cell(2, 2).string(loan.customerLoan[0].loanAmount).style(style);
+        ws.cell(2, 3).string(date).style(style);
+        ws.cell(2, 4).string(customerName).style(style);
+        ws.cell(2, 5).string(loan.loanBankDetail.accountNumber).style(style);
+
+        ws.cell(2, 8).string('920020032503725').style(style);
+        ws.cell(2, 9).string(loan.customerLoan[0].loanUniqueId).style(style);
+        ws.cell(2, 10).string('UTIB0001705').style(style);
+        ws.cell(2, 11).string('11').style(style);
+
+        if (loan.customerLoan.length > 1) {
+            ws.cell(3, 1).string('N').style(style);
+            ws.cell(3, 2).string(loan.customerLoan[1].loanAmount).style(style);
+            ws.cell(3, 3).string(date).style(style);
+            ws.cell(3, 4).string(customerName).style(style);
+            ws.cell(3, 5).string(loan.loanBankDetail.accountNumber).style(style);
+
+            ws.cell(3, 8).string('920020032503725').style(style);
+            ws.cell(3, 9).string(loan.customerLoan[1].loanUniqueId).style(style);
+            ws.cell(3, 10).string('UTIB0001705').style(style);
+            ws.cell(3, 11).string('11').style(style);
+        }
+    }
+    if (type == 'IMPS') {
+
+        ws.cell(1, 1).string('Mode of Payment').style(style);
+        ws.cell(1, 2).string('Withdrawal Amount').style(style);
+        ws.cell(1, 3).string('Customer Name').style(style);
+        ws.cell(1, 4).string('Blank').style(style);
+        ws.cell(1, 5).string('Blank').style(style);
+        ws.cell(1, 6).string('Blank').style(style);
+        ws.cell(1, 7).string('Blank').style(style);
+        ws.cell(1, 8).string('Blank').style(style);
+        ws.cell(1, 9).string('Blank').style(style);
+        ws.cell(1, 10).string('CustomerAccount Number').style(style);
+        ws.cell(1, 11).string('Blank').style(style);
+        ws.cell(1, 12).string('Blank').style(style);
+        ws.cell(1, 13).string('Company Account Number').style(style);
+        ws.cell(1, 14).string('Withdrawal ID').style(style);
+        ws.cell(1, 15).string('Bank IFSC Code').style(style);
+        ws.cell(1, 16).string('Filled in 11').style(style);
+        ws.cell(1, 17).string('Blank').style(style);
+        ws.cell(1, 18).string('Blank').style(style);
+        ws.cell(1, 19).string('Blank').style(style);
+        ws.cell(1, 20).string('Blank').style(style);
+        ws.cell(1, 21).string('Blank').style(style);
+        ws.cell(1, 22).string('Filled in 11').style(style);
+
+
+        ws.cell(2, 1).string('IMPS').style(style);
+        ws.cell(2, 2).string(loan.customerLoan[0].loanAmount).style(style);
+        ws.cell(2, 3).string(customerName).style(style);
+        ws.cell(2, 10).string(loan.loanBankDetail.accountNumber).style(style);
+
+        ws.cell(2, 13).string('920020032503725').style(style);
+        ws.cell(2, 14).string(loan.customerLoan[0].loanUniqueId).style(style);
+        ws.cell(2, 115).string('UTIB0001705').style(style);
+        ws.cell(2, 16).string('11').style(style);
+        ws.cell(2, 22).string('11').style(style);
+
+        if (loan.customerLoan.length > 1) {
+            ws.cell(3, 1).string('IMPS').style(style);
+            ws.cell(3, 2).string(loan.customerLoan[1].loanAmount).style(style);
+            ws.cell(3, 3).string(customerName).style(style);
+            ws.cell(3, 10).string(loan.loanBankDetail.accountNumber).style(style);
+
+            ws.cell(3, 13).string('920020032503725').style(style);
+            ws.cell(3, 14).string(loan.customerLoan[1].loanUniqueId).style(style);
+            ws.cell(3, 115).string('UTIB0001705').style(style);
+            ws.cell(3, 16).string('11').style(style);
+            ws.cell(3, 22).string('11').style(style);
+        }
+    }
+
+
+
+
+    return wb.write(`${Date.now()}.xlsx`, res)
 }
