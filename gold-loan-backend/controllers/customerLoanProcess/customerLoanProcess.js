@@ -2588,11 +2588,11 @@ exports.getBankInfo = async (req, res, next) => {
             as: 'internalBranch'
         }]
     });
-
+    let customerAccountNumber
     if (modeOfPayment == 'bank') {
-
+        customerAccountNumber = loan.loanBankDetail.accountNumber
     } else if (modeOfPayment == 'cash') {
-
+        customerAccountNumber = loan.internalBranch.accountNumber
     } else {
         return res.status(404).json({ message: 'Invalid payment mode' })
     }
@@ -2630,7 +2630,7 @@ exports.getBankInfo = async (req, res, next) => {
         ws.cell(2, 2).string(loan.customerLoan[0].loanAmount).style(style);
         ws.cell(2, 3).string(date).style(style);
         ws.cell(2, 4).string(customerName).style(style);
-        ws.cell(2, 5).string(loan.loanBankDetail.accountNumber).style(style);
+        ws.cell(2, 5).string(customerAccountNumber).style(style);
 
         ws.cell(2, 8).string('920020032503725').style(style);
         ws.cell(2, 9).string(loan.customerLoan[0].loanUniqueId).style(style);
@@ -2642,7 +2642,7 @@ exports.getBankInfo = async (req, res, next) => {
             ws.cell(3, 2).string(loan.customerLoan[1].loanAmount).style(style);
             ws.cell(3, 3).string(date).style(style);
             ws.cell(3, 4).string(customerName).style(style);
-            ws.cell(3, 5).string(loan.loanBankDetail.accountNumber).style(style);
+            ws.cell(3, 5).string(customerAccountNumber).style(style);
 
             ws.cell(3, 8).string('920020032503725').style(style);
             ws.cell(3, 9).string(loan.customerLoan[1].loanUniqueId).style(style);
@@ -2679,11 +2679,11 @@ exports.getBankInfo = async (req, res, next) => {
         ws.cell(2, 1).string('IMPS').style(style);
         ws.cell(2, 2).string(loan.customerLoan[0].loanAmount).style(style);
         ws.cell(2, 3).string(customerName).style(style);
-        ws.cell(2, 10).string(loan.loanBankDetail.accountNumber).style(style);
+        ws.cell(2, 10).string(customerAccountNumber).style(style);
 
         ws.cell(2, 13).string('920020032503725').style(style);
         ws.cell(2, 14).string(loan.customerLoan[0].loanUniqueId).style(style);
-        ws.cell(2, 115).string('UTIB0001705').style(style);
+        ws.cell(2, 15).string('UTIB0001705').style(style);
         ws.cell(2, 16).string('11').style(style);
         ws.cell(2, 22).string('11').style(style);
 
@@ -2691,11 +2691,11 @@ exports.getBankInfo = async (req, res, next) => {
             ws.cell(3, 1).string('IMPS').style(style);
             ws.cell(3, 2).string(loan.customerLoan[1].loanAmount).style(style);
             ws.cell(3, 3).string(customerName).style(style);
-            ws.cell(3, 10).string(loan.loanBankDetail.accountNumber).style(style);
+            ws.cell(3, 10).string(customerAccountNumber).style(style);
 
             ws.cell(3, 13).string('920020032503725').style(style);
             ws.cell(3, 14).string(loan.customerLoan[1].loanUniqueId).style(style);
-            ws.cell(3, 115).string('UTIB0001705').style(style);
+            ws.cell(3, 15).string('UTIB0001705').style(style);
             ws.cell(3, 16).string('11').style(style);
             ws.cell(3, 22).string('11').style(style);
         }

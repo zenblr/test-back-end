@@ -104,7 +104,7 @@ export class AppliedLoanService {
 
   downloadBankDetails(masterLoanId): Observable<any> {
     console.log(masterLoanId)
-    return this.http.get(`api/loan-process/download-bank-details?masterLoanId=${masterLoanId}&modeOfPayment=IMPS`, { responseType: 'arraybuffer' })
+    return this.http.get(`api/loan-process/download-bank-details?masterLoanId=${masterLoanId}&type=IMPS&modeOfPayment=cash`, { responseType: 'arraybuffer' })
       .pipe(
         map((res) => {
           return res;
