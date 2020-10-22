@@ -321,7 +321,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 				this.router.navigate(['/admin/user-management/partner'])
 				break;
 			case 'partnerBranchView':
-				this.router.navigate(['/admin/user-management/parnter-branch-user'])
+				this.router.navigate(['/admin/user-management/partner-branch-user'])
 				break;
 			case 'internalUserView':
 				this.router.navigate(['/admin/user-management/internal-user'])
