@@ -48,8 +48,8 @@
                     <mat-header-cell *matHeaderCellDef>Date & Time</mat-header-cell>
                     <mat-cell *matCellDef="let lead">
                         <div class="d-block">
-                            <div class="d-block">{{lead.updatedAt | date:'mediumDate'}}</div>
-                            <div class="d-block">{{lead.updatedAt | date:'shortTime'}}</div>
+                            <div class="d-block">{{lead.createdAt | date:'mediumDate'}}</div>
+                            <div class="d-block">{{lead.createdAt | date:'shortTime'}}</div>
                         </div>
                     </mat-cell>
                 </ng-container>
