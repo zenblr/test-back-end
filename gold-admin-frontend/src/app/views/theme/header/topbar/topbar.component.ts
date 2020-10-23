@@ -362,6 +362,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "partner-branch-user") {
 			this.dataSourceHeader();
 			this.value1 = "Add Partner User";
+			this.permissionType = "partnerBranchUserAdd";
 		}
 		if (this.path == "logistic-partner") {
 			this.showInput = true;
