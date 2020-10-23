@@ -13,6 +13,7 @@ var pdf = require("pdf-creator-node"); // PDF CREATOR PACKAGE
 var fs = require('fs');
 let { sendMessageLoanIdGeneration } = require('../../utils/SMS')
 const _ = require('lodash');
+var randomize = require('randomatic');
 
 const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT, LOAN_APPLY_FROM_APPRAISER_APP, LOAN_EDIT_FROM_APPRAISER_APP } = require('../../utils/customerLoanHistory');
 
@@ -37,6 +38,8 @@ exports.loanRequest = async (req, res, next) => {
 
     let customerDetails = await models.customer.findOne({ where: { id: customerId } })
 
+    let sliceCustId = customerDetails.customerUniqueId.slice(0, 2)
+
     let getAppraiserRequest = await models.appraiserRequest.findOne({ where: { id: appraiserRequestId, appraiserId: appraiserId } });
 
     if (check.isEmpty(getAppraiserRequest)) {
@@ -49,12 +52,18 @@ exports.loanRequest = async (req, res, next) => {
         return res.status(400).json({ message: 'This customer Kyc is not completed' })
     }
 
+    if (isEdit) {
+        let loanData = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
+        if (loanData.loanStatusForAppraiser == 'rejected') {
+            return res.status(400).json({ message: `You can not update rating from reject` })
+        }
+    }
 
     let loanData = await sequelize.transaction(async t => {
         if (isEdit) {
             let masterLoan = await models.customerLoanMaster.update({ loanStageId: stageId.id, internalBranchId: req.userData.internalBranchId, fullAmount, totalEligibleAmt, createdBy, modifiedBy }, { where: { id: masterLoanId }, transaction: t })
 
-            let loan = await models.customerLoan.update({ masterLoanId: masterLoan.id, loanType: 'secured', createdBy, modifiedBy }, { where: { masterLoanId: masterLoanId }, transaction: t })
+            let loan = await models.customerLoan.update({ loanType: 'secured', createdBy, modifiedBy }, { where: { masterLoanId: masterLoanId }, transaction: t })
 
             await models.customerLoanPersonalDetail.update({ customerUniqueId, startDate, purpose, kycStatus, createdBy, modifiedBy }, { where: { masterLoanId: masterLoanId }, transaction: t });
 
@@ -79,7 +88,7 @@ exports.loanRequest = async (req, res, next) => {
                 allOrnmanets.push(loanOrnaments[i])
             }
 
-            let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate(loanOrnaments, { updateOnDuplicate: ["ornamentTypeId", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest", "karat", "ltvRange", "currentGoldRate","ornamentImage", "ltvPercent", "ltvAmount", "currentLtvAmount", "ornamentFullAmount","loanAmount"] }, { transaction: t })
+            let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate(loanOrnaments, { updateOnDuplicate: ["ornamentTypeId", "quantity", "grossWeight", "netWeight", "deductionWeight", "weightMachineZeroWeight", "withOrnamentWeight", "stoneTouch", "acidTest", "purityTest", "karat", "ltvRange", "currentGoldRate", "ornamentImage", "ltvPercent", "ltvAmount", "currentLtvAmount", "ornamentFullAmount", "loanAmount"] }, { transaction: t })
 
             // for (let singleOrna of loanOrnaments) {
             //     delete singleOrna.id;
@@ -295,26 +304,81 @@ exports.loanRequest = async (req, res, next) => {
 
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: APPRAISER_RATING, modifiedBy }, { transaction: t });
 
-            let loanDetail = await models.customerLoan.findOne({ where: { id: loanId }, transaction: t })
+            let loanDetail = await models.customerLoan.findOne({
+                include: [{
+                    model: models.customerLoan,
+                    as: 'unsecuredLoan'
+                }],
+                where: { id: loanId }, transaction: t
+            })
 
             //loan Id generation
             if (loanDetail.loanUniqueId == null) {
                 var loanUniqueId = null;
+
                 //secured loan Id
-                loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
-                let loanSendId = loanUniqueId
+                let loanSendId;
+                let checkSecuredUnique = false
+                do {
+                    let getSecu = randomize('A0', 4);
+                    loanUniqueId = `LR${sliceCustId}${getSecu}`;
+                    loanSendId = loanUniqueId
+                    let checkUnique = await models.customerLoan.findOne({ where: { loanUniqueId: loanUniqueId }, transaction: t })
+                    if (!checkUnique) {
+                        checkSecuredUnique = true
+                    }
+                }
+                while (!checkSecuredUnique);
+                //secured loan Id
+                // loanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+                // let loanSendId = loanUniqueId
 
                 await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { id: loanId }, transaction: t })
                 if (loanDetail.unsecuredLoanId != null) {
-                    if (loanDetail.unsecuredLoanId.loanUniqueId == null) {
-                        var unsecuredLoanUniqueId = null;
+                    if (loanDetail.unsecuredLoan.loanUniqueId == null) {
+                        // var unsecuredLoanUniqueId = null;
                         // unsecured loan Id
-                        unsecuredLoanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
+                        let checkUnsecuredUnique = false
+                        var unsecuredLoanUniqueId = null;
+                        do {
+                            let getUnsecu = randomize('A0', 4);
+                            unsecuredLoanUniqueId = `LR${sliceCustId}${getUnsecu}`;
+                            loanSendId = loanUniqueId
+                            loanSendId = `${loanUniqueId}, ${unsecuredLoanUniqueId}`
+                            let checkUniqueUnsecured = await models.customerLoan.findOne({ where: { loanUniqueId: unsecuredLoanUniqueId }, transaction: t })
+                            if (!checkUniqueUnsecured) {
+                                checkUnsecuredUnique = true
+                            }
+                        }
+                        while (!checkUnsecuredUnique);
+
+                        // unsecuredLoanUniqueId = `LOAN${Math.floor(1000 + Math.random() * 9000)}`;
                         await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: loanDetail.unsecuredLoanId }, transaction: t });
-                        loanSendId = `secured Loan ID ${loanUniqueId}, unsecured Loan ID ${unsecuredLoanUniqueId}`
+                        // loanSendId = `secured Loan ID ${loanUniqueId}, unsecured Loan ID ${unsecuredLoanUniqueId}`
                     }
                 }
                 await sendMessageLoanIdGeneration(customerDetails.mobileNumber, customerDetails.firstName, loanSendId)
+            } else {
+                if (loanDetail.unsecuredLoanId != null) {
+                    if (loanDetail.unsecuredLoan.loanUniqueId == null) {
+                        // unsecured loan Id
+                        let checkUnsecuredUnique = false
+                        var unsecuredLoanUniqueId = null;
+                        do {
+                            let getUnsecu = randomize('A0', 4);
+                            unsecuredLoanUniqueId = `LR${sliceCustId}${getUnsecu}`;
+                            loanSendId = loanDetail.loanUniqueId
+                            loanSendId = `${loanDetail.loanUniqueId}, ${unsecuredLoanUniqueId}`
+                            let checkUniqueUnsecured = await models.customerLoan.findOne({ where: { loanUniqueId: unsecuredLoanUniqueId }, transaction: t })
+                            if (!checkUniqueUnsecured) {
+                                checkUnsecuredUnique = true
+                            }
+                        }
+                        while (!checkUnsecuredUnique);
+
+                        await models.customerLoan.update({ loanUniqueId: unsecuredLoanUniqueId }, { where: { id: loanDetail.unsecuredLoanId }, transaction: t });
+                    }
+                }
             }
 
         } else {

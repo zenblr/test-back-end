@@ -150,7 +150,7 @@
                 <ng-container matColumnDef="view">
                     <mat-header-cell *matHeaderCellDef> Acknowledgement Receipt </mat-header-cell>
                     <mat-cell *matCellDef="let item">
-                        <div *ngIf="item.documentsImages?.length" class="kt-pointer"
+                        <div *ngIf="item.documentsImages?.length" class="kt-pointer view-link"
                             (click)="view(item.documentsImages[0])">
                             View
                         </div>

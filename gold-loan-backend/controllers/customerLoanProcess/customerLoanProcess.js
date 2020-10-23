@@ -1050,7 +1050,13 @@ exports.loanAppraiserRating = async (req, res, next) => {
 
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: APPRAISER_RATING, modifiedBy }, { transaction: t });
 
-            let loanDetail = await models.customerLoan.findOne({ where: { id: loanId }, transaction: t })
+            let loanDetail = await models.customerLoan.findOne({ 
+                include : [{
+                    model: models.customerLoan,
+                    as: 'unsecuredLoan'
+                }],
+                where: { id: loanId }, transaction: t 
+            })
 
             //loan Id generation
             if (loanDetail.loanUniqueId == null) {
@@ -1073,7 +1079,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
                 await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { id: loanId }, transaction: t })
 
                 if (loanDetail.unsecuredLoanId != null) {
-                    if (loanDetail.unsecuredLoanId.loanUniqueId == null) {
+                    if (loanDetail.unsecuredLoan.loanUniqueId == null) {
                         // unsecured loan Id
 
                         let checkUnsecuredUnique = false
@@ -1098,15 +1104,15 @@ exports.loanAppraiserRating = async (req, res, next) => {
                 await sendMessageLoanIdGeneration(customerDetails.mobileNumber, customerDetails.firstName, loanSendId)
             } else {
                 if (loanDetail.unsecuredLoanId != null) {
-                    if (loanDetail.unsecuredLoanId.loanUniqueId == null) {
+                    if (loanDetail.unsecuredLoan.loanUniqueId == null) {
                         // unsecured loan Id
                         let checkUnsecuredUnique = false
                         var unsecuredLoanUniqueId = null;
                         do {
                             let getUnsecu = randomize('A0', 4);
                             unsecuredLoanUniqueId = `LR${sliceCustId}${getUnsecu}`;
-                            loanSendId = loanUniqueId
-                            loanSendId = `${loanUniqueId}, ${unsecuredLoanUniqueId}`
+                            loanSendId = loanDetail.loanUniqueId
+                            loanSendId = `${loanDetail.loanUniqueId}, ${unsecuredLoanUniqueId}`
                             let checkUniqueUnsecured = await models.customerLoan.findOne({ where: { loanUniqueId: unsecuredLoanUniqueId }, transaction: t })
                             if (!checkUniqueUnsecured) {
                                 checkUnsecuredUnique = true
