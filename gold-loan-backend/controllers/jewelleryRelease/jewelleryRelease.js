@@ -413,20 +413,33 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
 // }
 
 exports.razorPayCreateOrderForOrnament = async (req, res, next) => {
-    let { masterLoanId, ornamentId } = req.body;
+    try{
+        let { masterLoanId, ornamentId } = req.body;
     const razorpay = await getRazorPayDetails();
     let releaseData = await getAllPartAndFullReleaseData(masterLoanId, ornamentId);
     let amount = releaseData.loanInfo.totalPayableAmount;
     let transactionUniqueId = uniqid.time().toUpperCase();
     let payableAmount = await Math.round(amount * 100);
-    let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId}`, payment_capture: 0, notes: "gold loan" });
+    let loanData = await models.customerLoan.findOne({where:{masterLoanId:masterLoanId},order:[['id','asc']]});
+    let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId}`, payment_capture: 1, notes: {product:"gold loan",loanId:loanData.loanUniqueId} });
     return res.status(200).json({ razorPayOrder, razerPayConfig: razorpay.razorPayConfig.key_id });
+    }catch(err){
+        await models.errorLogger.create({
+            message: err.message,
+            url: req.url,
+            method: req.method,
+            host: req.hostname,
+            body: req.body,
+            userData: req.userData
+          });
+        res.status(500).send({ message: err.message });
+    }
 }
 
 exports.ornamentsPartRelease = async (req, res, next) => {
 try{    
     let { paymentType, paidAmount, bankName, chequeNumber, ornamentId, depositDate, transactionDetails, branchName, transactionId, masterLoanId } = req.body;
-    let createdBy = req.userData.id;
+    let createdBy = null;
     let modifiedBy = null;
     let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
         where: { isReleased: true, masterLoanId: masterLoanId }
@@ -1611,7 +1624,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                         }
                         await models.customerLoanMaster.update({ outstandingAmount: outstandingAmount }, { where: { id: masterLoanId }, transaction: t });
                         await models.fullRelease.update({ amountStatus: 'completed', modifiedBy }, { where: { id: fullReleaseId }, transaction: t });
-                        await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_AMOUNT_STATUS_C, createdBy, modifiedBy }, { transaction: t });
+                        await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_AMOUNT_STATUS_C }, { transaction: t });
                         ////
                     }
     
