@@ -27,10 +27,19 @@ exports.razorPayCreateOrder = async (req, res, next) => {
         const razorpay = await getRazorPayDetails();
         let transactionUniqueId = uniqid.time().toUpperCase();
         let payableAmount = await Math.round(amount * 100);
-        let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId}`, payment_capture: 0, notes: "gold loan" });
+        let loanData = await models.customerLoan.findOne({where:{masterLoanId:masterLoanId},order:[['id','asc']]});
+        let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId}`, payment_capture: 1, notes: {product:"gold loan",loanId:loanData.loanUniqueId} });
         return res.status(200).json({ razorPayOrder, razerPayConfig: razorpay.razorPayConfig.key_id });
     } catch (err) {
-        console.log(err)
+        await models.errorLogger.create({
+            message: err.message,
+            url: req.url,
+            method: req.method,
+            host: req.hostname,
+            body: req.body,
+            userData: req.userData
+          });
+        res.status(500).send({ message: err.message });
     }
 }
 
@@ -149,9 +158,9 @@ exports.payableAmountConfirm = async (req, res, next) => {
     let loan = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
 
     let interest = await nextDueDateInterest(loan.loan)
-    payableAmount = Number(interest.unsecuredTotalInterest) + Number(interest.securedTotalInterest)
+    payableAmount = (Number(interest.unsecuredTotalInterest) + Number(interest.securedTotalInterest).toFixed(2))
 
-    if (payableAmount < Number(amount)) {
+    if (Number(payableAmount) < Number(amount)) {
         return res.status(403).json({ message: "Please opt for Part Payment option to pay more amount" });
 
     }
