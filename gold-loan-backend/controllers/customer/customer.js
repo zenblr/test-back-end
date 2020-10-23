@@ -380,7 +380,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
 
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
-    attributes: { exclude: ['createdAt', 'createdBy', 'modifiedBy', 'isActive'] },
+    attributes: { exclude: ['createdBy', 'modifiedBy', 'isActive'] },
     order: [["updatedAt", "DESC"]],
     offset: offset,
     limit: pageSize,
