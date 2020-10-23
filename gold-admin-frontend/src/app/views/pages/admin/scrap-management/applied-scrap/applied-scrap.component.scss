@@ -25,6 +25,10 @@
     }
     .mat-column-actions{
         flex:0 0 13% !important;
+
+        button {
+            width: 170px;
+        }
     }
   
     .mat-column-customerID{
@@ -86,6 +90,6 @@
     .custom-icon {
 		position: relative;
 		// top: 6px;
-		color: gray;
+		// color: gray;
 	 }
 }

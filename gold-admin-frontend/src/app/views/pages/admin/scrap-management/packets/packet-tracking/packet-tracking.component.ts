@@ -34,7 +34,7 @@ export class PacketTrackingComponent implements OnInit {
   }
   private subscriptions: Subscription[] = [];
   private unsubscribeSearch$ = new Subject();
-  filteredDataList = {};
+  filteredDataList: any = {};
 
   constructor(
     public dialog: MatDialog,
@@ -115,6 +115,7 @@ export class PacketTrackingComponent implements OnInit {
   }
 
   applyFilter(data) {
+    console.log(data.list);
     this.queryParamsData.status = data.data.packetTracking;
     this.dataSource.loadpackets(this.queryParamsData);
     this.filteredDataList = data.list;
