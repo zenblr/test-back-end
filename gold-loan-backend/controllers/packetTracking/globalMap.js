@@ -1,4 +1,5 @@
 const models = require('../../models')
+const moment = require('moment')
 const { paginationWithFromTo } = require("../../utils/pagination");
 const Sequelize = models.Sequelize;
 const sequelize = models.sequelize;
@@ -11,7 +12,7 @@ exports.getGlobalMapDetails = async (req, res, next) => {
 
 
     let locationData = await models.packetTracking.findAll({
-        where: { trackingDate: date, isActive: true },
+        where: { trackingDate: moment(date).format('YYYY-MM-DD'), isActive: true },
         order: [
             [
                 models.packetTrackingMasterloan,
