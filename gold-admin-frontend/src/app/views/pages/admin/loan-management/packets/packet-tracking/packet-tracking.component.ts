@@ -41,6 +41,7 @@ export class PacketTrackingComponent implements OnInit {
   currentSyncArray: any[];
   interval: NodeJS.Timeout;
   searchQuery: any;
+  // filteredDataList: any = {};
 
   constructor(
     public dialog: MatDialog,
