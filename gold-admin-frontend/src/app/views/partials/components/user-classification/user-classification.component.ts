@@ -73,9 +73,15 @@ export class UserClassificationComponent implements OnInit {
     private sharedService: SharedService,
     private titlecase: TitleCasePipe,
     private ref: ChangeDetectorRef,
-    private permissionService: NgxPermissionsService
+    private permissionService: NgxPermissionsService,
+    private router: Router
   ) {
-    this.permissionService.permissions$.subscribe(res => this.permission = res)
+    this.permissionService.permissions$.subscribe(res => {
+      this.permission = res
+      if (!(this.permission.cceKycRating || this.permission.opsKycRating)) {
+        return this.router.navigate(['/admin/lead-management'])
+      }
+    })
 
     let res = this.sharedService.getDataFromStorage()
     this.userType = res.userDetails.userTypeId;
@@ -85,6 +91,8 @@ export class UserClassificationComponent implements OnInit {
   }
 
   ngOnInit() {
+
+
     if (this.userBankService.kycDetails) {
       if (this.userBankService.kycDetails.KycClassification !== null) {
         this.customerDetails = this.userBankService.kycDetails.KycClassification
