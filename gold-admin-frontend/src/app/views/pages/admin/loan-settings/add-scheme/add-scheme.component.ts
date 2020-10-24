@@ -41,7 +41,7 @@ export class AddSchemeComponent implements OnInit {
       map(res => {
         this.partnerData = res.data;
         this.ref.detectChanges();
-        console.log(this.partnerData)
+        // console.log(this.partnerData)
       }), catchError(err => {
         this._toastr.error('Some thing went wrong')
         this.ref.detectChanges();
@@ -70,6 +70,8 @@ export class AddSchemeComponent implements OnInit {
       penalInterest: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       isDefault: [false],
       isSplitAtBeginning: [false],
+      unsecuredSchemeId: [],
+      rpg: [],
       // numberOfDays1: [, [Validators.required]],
       // numberOfDays2: [, [Validators.required]],
       // numberOfDays3: [, [Validators.required]],
@@ -264,7 +266,16 @@ export class AddSchemeComponent implements OnInit {
       currentSlabControls.days.setErrors(null)
     }
 
-    console.log(currentSlab, previousSlab)
+    // console.log(currentSlab, previousSlab)
+  }
+
+  getUnsecuredSchemes() {
+    const { partnerId, schemeType, schemeInterest } = this.fillingForm.controls
+    if (partnerId.invalid || schemeType.value == 'unsecured' || schemeInterest.invalid) {
+      return
+    }
+
+    console.log(partnerId.value, schemeType.value, schemeInterest.value)
   }
 
 }

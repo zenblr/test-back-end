@@ -20,6 +20,7 @@
                             </div>
                             <div class="col-9">
                                 <select name="" id="" class="form-control" formControlName="partnerId"
+                                    (change)="getUnsecuredSchemes()"
                                     [class.isError]="fillingForm.get('partnerId').touched && fillingForm.get('partnerId').invalid">
                                     <option value="" [selected]="true" [disabled]="true">Select Partner</option>
                                     <option [value]="partner.id" *ngFor="let partner of partnerData">
@@ -46,6 +47,7 @@
                             </div>
                             <div class="col-9">
                                 <select name="" id="" class="form-control" formControlName="schemeType"
+                                    (change)="getUnsecuredSchemes()"
                                     [class.isError]="fillingForm.get('schemeType').touched && fillingForm.get('schemeType').invalid">
                                     <option value="" [selected]="true" [disabled]="true">Select Scheme Type</option>
                                     <option [value]="scheme.value" *ngFor="let scheme of schemeType">
@@ -76,13 +78,20 @@
                                         formControlName="isDefault">
                                     <span class="checkmark top-0"></span>
                                 </label>
-                                <!-- <label class="custom-checkbox">
-                                        <span class="label-checkbox">{{action.actionName |titlecase}}</span>
-                                        <input type="checkbox" [checked]="action.isSelected" (change)="actionChange($event.target.checked,moduleIndex,entityIndex,permissionIndex)">
-                                        <span class="checkmark"></span>
-                                    </label> -->
                             </div>
                         </div>
+
+                        <div class="row kt-margin-b-15">
+                            <div class="col-3 form-label">
+                                <label class="kt-padding-l-10 mandatory"> RPG </label>
+                            </div>
+                            <div class="col-9">
+                                <input type="test" class="form-control" formControlName="rpg"
+                                    [class.isError]="fillingForm.get('rpg').touched && fillingForm.get('rpg').invalid"
+                                    placeholder="0">
+                            </div>
+                        </div>
+
                         <div class="row kt-margin-b-10">
                             <div class="col-3 form-label">
                                 <label class="kt-padding-l-10 mandatory"> Processing Charges</label>
@@ -115,7 +124,7 @@
                             </div>
                         </div>
 
-                        <div class="row kt-margin-b-15">
+                        <!-- <div class="row kt-margin-b-15">
                             <div class="col-3 form-label">
                                 <label class="kt-padding-l-10 mandatory"> Maximum % Allowed </label>
                             </div>
@@ -128,7 +137,7 @@
                                     Invalid Input
                                 </mat-error>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="row kt-margin-b-15">
                             <div class="col-3 form-label">
@@ -250,7 +259,7 @@
 
                         <!-- Form Array -->
 
-                        <div class="row">
+                        <div class="row kt-margin-b-10">
                             <div style="align-items: flex-start !important"
                                 class="col-3 form-label p-0 kt-padding-t-15 d-flex justify-content-start">
                                 <label class="kt-padding-l-10 mandatory">
@@ -265,12 +274,13 @@
                                             <div>
                                                 <mat-form-field class="example-full-width">
                                                     <input class="input" type="number" matInput formControlName="days"
-                                                        (blur)="daysValidation(idx)" min="0">
+                                                        (blur)="daysValidation(idx);getUnsecuredSchemes()" min="0">
                                                     <span matSuffix>&nbsp; Days</span>
                                                 </mat-form-field>
                                             </div>
                                             <div>
                                                 <input type="number" class="form-control" min="0" step="any"
+                                                    (blur)="getUnsecuredSchemes()"
                                                     [class.isError]="slab.get('interestRate').touched && slab.get('interestRate').invalid"
                                                     formControlName="interestRate">
                                             </div>
@@ -279,38 +289,18 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="row kt-padding-t-15">
-                        <div class="offset-3 col-3">
-                            <p class="text-color form-label">30 Days</p>
+
+                        <div *ngIf="fillingForm.get('schemeType').value == 'secured'" class="row kt-margin-b-15">
+                            <div class="col-3 form-label">
+                                <label class="kt-padding-l-10 mandatory"> Unsecured Scheme </label>
+                            </div>
+                            <div class="col-9">
+                                <input type="test" class="form-control" formControlName="unsecuredSchemeId"
+                                    [class.isError]="fillingForm.get('unsecuredSchemeId').touched && fillingForm.get('unsecuredSchemeId').invalid"
+                                    placeholder="Select Unsecured Scheme">
+                            </div>
                         </div>
-                        <div class="col-3">
-                            <p class="text-color form-label">90 Days</p>
-                        </div>
-                        <div class="col-3">
-                            <p class="text-color form-label">180 Days</p>
-                        </div>
-                    </div> -->
-                        <!-- <div class="row">
-                        <div class="col-3">
-                            <p class="text-color form-label mandatory">
-                                Rate of Interest <br>
-                                (% / Annually)
-                            </p>
-                        </div>
-                        <div class="col-3">
-                            <input type="number" class="form-control" formControlName="interestRateThirtyDaysAnnually"
-                                [class.isError]="fillingForm.get('interestRateThirtyDaysAnnually').touched && fillingForm.get('interestRateThirtyDaysAnnually').invalid">
-                        </div>
-                        <div class="col-3">
-                            <input type="number" class="form-control" formControlName="interestRateNinetyDaysAnnually"
-                                [class.isError]="fillingForm.get('interestRateNinetyDaysAnnually').touched && fillingForm.get('interestRateNinetyDaysAnnually').invalid">
-                        </div>
-                        <div class="col-3">
-                            <input type="number" class="form-control"
-                                formControlName="interestRateOneHundredEightyDaysAnnually"
-                                [class.isError]="fillingForm.get('interestRateOneHundredEightyDaysAnnually').touched && fillingForm.get('interestRateOneHundredEightyDaysAnnually').invalid">
-                        </div>
-                    </div> -->
+
                     </div>
                 </form>
             </mat-tab>
