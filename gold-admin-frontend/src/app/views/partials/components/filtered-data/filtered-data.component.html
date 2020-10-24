@@ -308,6 +308,21 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="filtered-data" *ngIf="filteredList?.packetTrackingLocation">
+                        <div class="filtered-title">By Tracking status</div>
+                        <div class="d-flex">
+                            <div class="filtered-value">
+                                <!-- {{filteredList?.packetTracking || json}} -->
+                                <span *ngIf="filteredList?.packetTrackingLocation == 'incomplete'">Incomplete</span>
+                                <span *ngIf="filteredList?.packetTrackingLocation == 'complete'">Complete</span>
+                                <span *ngIf="filteredList?.packetTrackingLocation == 'in transit'">In Transit</span>
+
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('packetTrackingLocation')">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </kt-portlet-body>
