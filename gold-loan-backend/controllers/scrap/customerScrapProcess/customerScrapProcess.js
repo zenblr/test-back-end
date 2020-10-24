@@ -1309,7 +1309,6 @@ exports.printPurchaseVoucher = async (req, res) => {
     }else{
         panNo = " -";
     }
-    console.log(customerScrap.customer.organizationDetail.gstinNumber);
     if(customerScrap.customer.organizationDetail && customerScrap.customer.organizationDetail.gstinNumber){
         gstinNumber = customerScrap.customer.organizationDetail.gstinNumber
     }else{

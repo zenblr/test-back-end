@@ -688,7 +688,7 @@ exports.submitAllKycInfo = async (req, res, next) => {
 
     if(customerKycAddress.length  > 1){
         if(moduleId == 3 && customerKycAddress[1].addressProofNumber && customerKycAddress[0].addressProofTypeId == 2){
-            let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: customerKycAddress[1].addressProof.addressProofNumber,  customerId: { [Op.not]: customerId } } });
+            let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: customerKycAddress[1].addressProofNumber,  customerId: { [Op.not]: customerId } } });
             if (!check.isEmpty(findIdentityNumber)) {
                 return res.status(400).json({ message: "Address Proof Number already exists! " })
             }
