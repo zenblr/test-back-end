@@ -15,7 +15,7 @@ import { PartPaymentLogDialogComponent } from '../part-payment-log-dialog/part-p
   templateUrl: './loan-scrap-details.component.html',
   styleUrls: ['./loan-scrap-details.component.scss']
 })
-export class LoanScrapDetailsComponent implements OnInit,OnDestroy {
+export class LoanScrapDetailsComponent implements OnInit, OnDestroy {
   images: any = []
   loanId;
   scrapId;
@@ -156,10 +156,19 @@ export class LoanScrapDetailsComponent implements OnInit,OnDestroy {
       let packets = this.details.scrapPacketDetails[0]
       let documents = this.details.scrapDocument
       let temp = [];
-      temp = [...documents.purchaseVoucherImage, ...documents.purchaseInvoiceImage, ...documents.saleInvoiceImage]
+      if (documents.purchaseVoucherImage) {
+        temp.push(documents.purchaseVoucherImage[0])
+      }
+      if (documents.purchaseInvoiceImage) {
+        temp.push(documents.purchaseInvoiceImage[0])
+      }
+      if (documents.saleInvoiceImage) {
+        temp.push(documents.saleInvoiceImage[0])
+      }
       temp.push(packets.emptyPacketWithNoOrnamentImage,
         packets.sealingPacketWithCustomerImage,
         packets.sealingPacketWithWeightImage)
+      this.packetImages.scrap = [...temp]
       this.packetImages.scrap = this.packetImages.scrap.filter(e => {
         let ext = this.sharedService.getExtension(e)
         return e && ext != 'pdf'
