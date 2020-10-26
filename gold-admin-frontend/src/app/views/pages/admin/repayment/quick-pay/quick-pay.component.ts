@@ -135,6 +135,7 @@ export class QuickPayComponent implements OnInit {
           this.razorpayPaymentService.razorpayOptions.amount = res.razorPayOrder.amount;
           this.razorpayPaymentService.razorpayOptions.order_id = res.razorPayOrder.id;
           this.razorpayPaymentService.razorpayOptions.paymentMode = res.paymentMode;
+          this.razorpayPaymentService.razorpayOptions.description = "Loan payment";
           this.razorpayPaymentService.razorpayOptions.prefill.contact = '9892545454';
           this.razorpayPaymentService.razorpayOptions.prefill.email = 'info@augmont.in';
           this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);

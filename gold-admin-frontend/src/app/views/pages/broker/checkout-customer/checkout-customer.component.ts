@@ -424,6 +424,7 @@ export class CheckoutCustomerComponent implements OnInit {
         this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
         this.razorpayPaymentService.razorpayOptions.amount = res.totalInitialAmount;
         this.razorpayPaymentService.razorpayOptions.order_id = res.razorPayOrder.id;
+        this.razorpayPaymentService.razorpayOptions.description = "EMI order payment";
         this.razorpayPaymentService.razorpayOptions.paymentMode = res.paymentMode;
         this.razorpayPaymentService.razorpayOptions.prefill.contact = this.controls.mobileNumber.value;
         this.razorpayPaymentService.razorpayOptions.prefill.email = this.controls.email.value || 'info@augmont.in';
