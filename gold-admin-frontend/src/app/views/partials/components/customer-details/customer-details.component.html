@@ -65,7 +65,8 @@
                         {{cutomerDetails?.customerKycAddress[0]?.pinCode}}
                     </div>
                 </div>
-                <div class="col">
+                <div *ngIf="(cutomerDetails?.customerScrap && cutomerDetails?.userType == 'Corporate') || cutomerDetails?.masterLoan"
+                    class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">
                         Residential Address</div>
                     <div class="text-color font-weight-500 kt-margin-b-5"
@@ -108,7 +109,8 @@
                     <div class="text-primary font-weight-500 kt-pointer"
                         (click)="preview(cutomerDetails?.customerKycAddress[0]?.addressProofImage[0])">View Proof</div>
                 </div>
-                <div class="col">
+                <div *ngIf="(cutomerDetails?.customerScrap && cutomerDetails?.userType == 'Corporate') || cutomerDetails?.masterLoan"
+                    class="col">
                     <div class="text-primary font-weight-500 kt-pointer" *ngIf="cutomerDetails?.customerKycAddress[1]"
                         (click)="preview(cutomerDetails?.customerKycAddress[1]?.addressProofImage[0])">View Proof</div>
                 </div>
