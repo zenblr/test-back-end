@@ -63,11 +63,25 @@ export class LoanSettingsService {
   }
 
   toogleDefault(item): Observable<any> {
-    return this.http.put(`api/scheme/update-default/${item.id}`,{partnerId:item.partnerScheme.partnerId}).pipe(
+    return this.http.put(`api/scheme/update-default/${item.id}`, { partnerId: item.partnerScheme.partnerId }).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
           this._toastr.error(err.error.message)
+        throw (err)
+      }))
+  }
+
+  getUnsecuredSchemes(data): Observable<any> {
+    // const reqParams: any = {};
+    // if (data && data.isActive) {
+    //   reqParams.isActive = data.isActive;
+    // }
+
+    return this.http.get('api/getUnsecuredSchemes', data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this._toastr.error(err.error.message)
         throw (err)
       }))
   }

@@ -276,6 +276,9 @@ export class AddSchemeComponent implements OnInit {
     }
 
     console.log(partnerId.value, schemeType.value, schemeInterest.value)
+
+    
+    this.laonSettingService.getUnsecuredSchemes({...partnerId.value, ...schemeType.value, ...schemeInterest.value}).subscribe()
   }
 
 }
