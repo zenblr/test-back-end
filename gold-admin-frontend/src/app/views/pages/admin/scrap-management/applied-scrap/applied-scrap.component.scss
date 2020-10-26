@@ -1,6 +1,6 @@
 :host{
     ::ng-deep.mat-row, ::ng-deep.mat-header-row  {
-        width: 110% !important;
+        width: 120% !important;
     }
     .mat-column-pan{
         flex: 0 0 9% !important;
@@ -24,9 +24,11 @@
         flex: 0 0 10% !important;
     }
     .mat-column-actions{
-        flex:0 0 13% !important;
+        flex:0 0 15% !important;
+        button {
+            width: 175px;
+        }
     }
-  
     .mat-column-customerID{
         flex: 0 0 8% !important;
     }
@@ -51,7 +53,6 @@
 		border-radius: 5px;
 		padding: 5px;
     }
-    
     .primary-button {
 		background: transparent;
 		border: thin solid #6580f5;
@@ -86,6 +87,6 @@
     .custom-icon {
 		position: relative;
 		// top: 6px;
-		color: gray;
+		// color: gray;
 	 }
 }

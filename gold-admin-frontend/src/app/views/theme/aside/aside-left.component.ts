@@ -321,7 +321,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 				this.router.navigate(['/admin/user-management/partner'])
 				break;
 			case 'partnerBranchView':
-				this.router.navigate(['/admin/user-management/partner-branch-user'])
+				this.router.navigate(['/admin/user-management/branch'])
 				break;
 			case 'internalUserView':
 				this.router.navigate(['/admin/user-management/internal-user'])
@@ -341,9 +341,12 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 			case 'concurrentLoginView':
 				this.router.navigate(['/admin/user-management/concurrent-login'])
 				break;
-
+			case 'partnerBranchUserView':
+				this.router.navigate(['/admin/user-management/partner-branch-user'])
+				break;
 
 			default:
+				// this.router.navigate(['/admin/user-management/partner-branch-user'])
 				break;
 		}
 	}

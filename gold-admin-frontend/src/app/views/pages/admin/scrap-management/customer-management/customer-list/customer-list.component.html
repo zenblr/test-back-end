@@ -8,7 +8,7 @@
                         {{customer.firstName | titlecase}}&nbsp;{{customer.lastName | titlecase}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="customerId">
-                    <mat-header-cell *matHeaderCellDef>Customer Id</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let customer">{{customer.customerUniqueId | uppercase}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="pan">
@@ -31,7 +31,7 @@
                             <!-- <span class="kt-pointer" (click)="newScrap(customer)"
                                 *ngxPermissionsOnly="['scrapApplicationAdd']">Add New Scrap</span>
                             <span *ngxPermissionsOnly="['scrapApplicationAdd']" class="px-1">|</span> -->
-                            <span class="kt-pointer" (click)="viewDetails(customer.id)">View Details</span>
+                            <span class="kt-pointer view-link" (click)="viewDetails(customer.id)">View Details</span>
                             <!-- <span class="kt-pointer" (click)="editCustomer(customer)">Edit</span>&nbsp;|&nbsp;
                             <span class="text-danger kt-pointer" (click)="deleteCustomer(customer)">Delete</span> -->
                         </p>

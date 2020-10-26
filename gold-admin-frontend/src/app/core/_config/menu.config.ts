@@ -82,6 +82,7 @@ export class MenuConfig {
 								this.permissionsArr.includes('internalUserView') ||
 								this.permissionsArr.includes('assignAppraiserView') ||
 								this.permissionsArr.includes('concurrentLoginView') ||
+								this.permissionsArr.includes('partnerBranchUserView') ||
 								this.userType === 4),
 						},
 						{
@@ -250,7 +251,11 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-12.svg",
 							bullet: 'dot',
-							permission: false,
+							permission: !(this.permissionsArr.includes('partReleaseApprovalView') ||
+								this.permissionsArr.includes('fullReleaseApprovalView') ||
+								this.permissionsArr.includes('viewDeposit') ||
+								this.permissionsArr.includes('partReleaseApprovedView') ||
+								this.permissionsArr.includes('fullReleaseApprovedView')),
 							submenu: [
 								{
 									title: "Deposit",
@@ -521,7 +526,7 @@ export class MenuConfig {
 								{
 									title: "Cron Logs",
 									page: "/admin/cron-list",
-									permission:!(this.userType === 4)
+									permission: !(this.userType === 4)
 								},
 							]
 						},
@@ -551,6 +556,7 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-14.svg",
 							page: "/admin/user-management/partner-branch-user",
+							permission: !this.permissionsArr.includes('partnerBranchUserView'),
 						},
 						{
 							title: "Internal User",
@@ -600,7 +606,7 @@ export class MenuConfig {
 							page: "/admin/user-management/concurrent-login",
 							src: "assets/media/aside-icons/icons-06.svg",
 							permission: !this.permissionsArr.includes('concurrentLoginView')
-							
+
 						},
 						// {
 						// 	title: "Roles and permissions",
@@ -839,13 +845,13 @@ export class MenuConfig {
 							page: "/admin/scrap-management/scrap-buying-calculator",
 							permission: false,
 						},
-						{
-							title: "Scrap Buying Application",
-							root: true,
-							src: "assets/media/aside-icons/icons-35.svg",
-							page: "/admin/scrap-management/scrap-buying-application-form",
-							permission: !this.permissionsArr.includes('scrapApplicationAdd'),
-						},
+						// {
+						// 	title: "Scrap Buying Application",
+						// 	root: true,
+						// 	src: "assets/media/aside-icons/icons-35.svg",
+						// 	page: "/admin/scrap-management/scrap-buying-application-form",
+						// 	permission: !this.permissionsArr.includes('scrapApplicationAdd'),
+						// },
 						{
 							title: "Packet",
 							root: true,

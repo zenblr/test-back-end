@@ -604,7 +604,7 @@ exports.getMapDetails = async (req, res, next) => {
 
     let data = await models.packetTracking.findAll({
         where: {
-            trackingDate: date,
+            trackingDate: moment(date).format('YYYY-MM-DD'),
 
         },
         include: [{
