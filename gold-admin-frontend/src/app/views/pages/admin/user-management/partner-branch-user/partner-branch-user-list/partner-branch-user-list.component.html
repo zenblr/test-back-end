@@ -69,15 +69,18 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let user">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)= "viewUser(user,'view')" class="kt-pointer">View
+                            <div *ngxPermissionsOnly="['partnerBranchUserView']" (click)="viewUser(user,'view')"
+                                class="kt-pointer">View
                                 |
                                 &nbsp;
                             </div>
-                            <div (click)="editUser(user,'edit')" class="kt-pointer"> Edit
+                            <div *ngxPermissionsOnly="['partnerBranchUserEdit']" (click)="editUser(user,'edit')"
+                                class="kt-pointer"> Edit
                                 |
                                 &nbsp;
                             </div>
-                            <div (click)="deleteUser(user)" class="kt-pointer text-danger"> Delete
+                            <div *ngxPermissionsOnly="['partnerBranchUserDelete']" (click)="deleteUser(user)"
+                                class="kt-pointer text-danger"> Delete
 
                             </div>
                         </div>

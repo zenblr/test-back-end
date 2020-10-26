@@ -184,8 +184,8 @@
                                 </kt-button>
                             </div>
                             <div class="col-4 d-flex justify-content-center align-items-center ">
-                                <label class="kt-pointer kt-link kt-link--brand kt-font-bolder" (click)="generateOTP()">
-                                    Resend OTP</label>
+                                <label *ngIf="!otpVerfied" class="kt-pointer kt-link kt-link--brand kt-font-bolder"
+                                    (click)="generateOTP()">Resend OTP</label>
                             </div>
                         </div>
                         <div class="row justify-content-center kt-margin-t-15">
