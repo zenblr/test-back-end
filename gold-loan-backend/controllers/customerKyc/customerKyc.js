@@ -352,6 +352,24 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
         customerDetail = await models.customerKycPersonalDetail.findOne({ where: { customerKycId: customerKycId } })
         name = `${customerDetail.firstName} ${customerDetail.lastName}`;
     }
+    console.log(address[0].addressProofNumber);
+    if(moduleId == 3 && address[0].addressProofNumber && address[0].addressProofTypeId == 2 ){
+        let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: address[0].addressProofNumber } });
+
+        if (!check.isEmpty(findIdentityNumber)) {
+            return res.status(400).json({ message: "Address Proof Number already exists! " })
+        }
+    }
+
+    if(address.length  > 1){
+        if(moduleId == 3 && address[1].addressProofNumber && address[0].addressProofTypeId == 2 ){
+            let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: address[1].addressProofNumber } });
+            if (!check.isEmpty(findIdentityNumber)) {
+                return res.status(400).json({ message: "Address Proof Number already exists! " })
+            }
+        }
+    }
+    
 
     // if (identityProof.length == 0) {
     //     return res.status(404).json({ message: "Identity proof file must be required." });
@@ -659,6 +677,26 @@ exports.submitAllKycInfo = async (req, res, next) => {
         }
     }
 
+    if(moduleId == 3 && customerKycAddress[0].addressProofNumber && customerKycAddress[0].addressProofTypeId == 2){
+        let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: customerKycAddress[0].addressProofNumber, customerId: { [Op.not]: customerId } } });
+        console.log(customerKycAddress[0].addressProofNumber, findIdentityNumber)
+
+        if (!check.isEmpty(findIdentityNumber)) {
+            return res.status(400).json({ message: "Address Proof Number already exists! " })
+        }
+    }
+
+    if(customerKycAddress.length  > 1){
+        if(moduleId == 3 && customerKycAddress[1].addressProofNumber && customerKycAddress[0].addressProofTypeId == 2){
+            let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: customerKycAddress[1].addressProofNumber,  customerId: { [Op.not]: customerId } } });
+            if (!check.isEmpty(findIdentityNumber)) {
+                return res.status(400).json({ message: "Address Proof Number already exists! " })
+            }
+        }
+    }
+
+
+
     if (customerKycBasicDetails.panCardNumber) {
         let findPanCardNumber = await models.customer.findOne({
             where: {
@@ -686,7 +724,7 @@ exports.submitAllKycInfo = async (req, res, next) => {
         addressArray.push(customerKycAddress[i]);
 
     }
-
+    
     if (moduleId == 3 && userType == "Individual") {
         if (customerKycAddress[0].addressProofTypeId == 2) {
             customerKycPersonal['identityTypeId'] = 5;
@@ -717,6 +755,25 @@ exports.submitAllKycInfo = async (req, res, next) => {
 
         if (moduleId == 1) {
             await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });
+
+            await models.customerKycPersonalDetail.update(
+                {
+                    firstName: customerKycBasicDetails.firstName,
+                    lastName: customerKycBasicDetails.lastName,
+                    panCardNumber: customerKycBasicDetails.panCardNumber
+                }
+                , { where: { customerId: customerId }, transaction: t });
+
+            await models.customer.update(
+                {
+                    firstName: customerKycBasicDetails.firstName,
+                    lastName: customerKycBasicDetails.lastName,
+                    panCardNumber: customerKycBasicDetails.panCardNumber,
+                    panType: customerKycBasicDetails.panType,
+                    panImage: customerKycBasicDetails.panImage
+                }
+                , { where: { id: customerId }, transaction: t });
+
         }
         if (moduleId == 3) {
             if (userType == "Individual") {

@@ -53,7 +53,7 @@ export class AuthComponent implements OnInit {
 		this.headerLogo = this.layoutConfigService.getLogo();
 
 		this.splashScreenService.hide();
-		console.log(this.location.path().includes('login'))
+		// console.log(this.location.path().includes('login'))
 	}
 
 	/**

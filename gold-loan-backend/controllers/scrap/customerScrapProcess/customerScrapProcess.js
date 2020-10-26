@@ -1141,7 +1141,7 @@ exports.printCustomerAcknowledgement = async (req, res) => {
     let addressProofNo;
     for (let address of customerScrap.customer.customerKycAddress) {
         if (address.addressType == "permanent") {
-            custtomerAddress = `${address.address} ,${address.city.name}, ${address.state.name},  ${address.pinCode}`;
+            custtomerAddress = `${address.address},  ${address.city.name},  ${address.state.name},  ${address.pinCode}`;
             addressProofNo = address.addressProofNumber;
         }
     }
@@ -1153,9 +1153,9 @@ exports.printCustomerAcknowledgement = async (req, res) => {
         cinNo = customerScrap.customer.organizationDetail.cinNumber;
         email = customerScrap.customer.organizationDetail.email;
     } else {
-        gstNo = " NA";
-        cinNo = " NA";
-        email = " NA";
+        gstNo = " -";
+        cinNo = " -";
+        email = ' -';
     }
 
 
@@ -1235,177 +1235,139 @@ exports.printCustomerAcknowledgement = async (req, res) => {
 }
 
 exports.printPurchaseVoucher = async (req, res) => {
-    try{
-        let { scrapId } = req.query;
-        let customerScrap = await models.customerScrap.findOne({
-            where: { id: scrapId },
-            attributes: ['id', 'scrapUniqueId', 'finalScrapAmountAfterMelting'],
+    let { scrapId } = req.query;
+    let customerScrap = await models.customerScrap.findOne({
+        where: { id: scrapId },
+        attributes: ['id', 'scrapUniqueId', 'finalScrapAmountAfterMelting'],
+        include: [{
+            model: models.customer,
+            as: "customer",
+            attributes: ['id', 'firstName', 'lastName', 'mobileNumber', 'email', 'panCardNumber'],
             include: [{
-                model: models.customer,
-                as: "customer",
-                attributes: ['id', 'firstName', 'lastName', 'mobileNumber', 'email', 'panCardNumber'],
+                model: models.customerKycAddressDetail,
+                as: 'customerKycAddress',
                 include: [{
-                    model: models.customerKycAddressDetail,
-                    as: 'customerKycAddress',
-                    include: [{
-                        model: models.state,
-                        as: 'state',
-                        attributes: ['name']
-                    },
-                    {
-                        model: models.city,
-                        as: 'city',
-                        attributes: ['name']
-                    }]
+                    model: models.state,
+                    as: 'state',
+                    attributes: ['name']
                 },
                 {
-                    model: models.customerKycPersonalDetail,
-                    as: 'customerKycPersonal',
-                    attributes: ['id',  'panCardNumber'],
-                },
-                {
-                    model: models.customerKycOrganizationDetail,
-                    as: 'organizationDetail'
-                }
-                ]
+                    model: models.city,
+                    as: 'city',
+                    attributes: ['name']
+                }]
             },
             {
-                model: models.scrapMeltingOrnament,
-                as: 'meltingOrnament'
+                model: models.customerKycPersonalDetail,
+                as: 'customerKycPersonal',
+                attributes: ['id',  'panCardNumber'],
+            },
+            {
+                model: models.customerKycOrganizationDetail,
+                as: 'organizationDetail'
             }
-            // {
-            //     model: models.customerScrapOrnamentsDetail,
-            //     as: 'scrapOrnamentsDetail',
-            //     include: {
-            //         model: models.ornamentType,
-            //         as: 'ornamentType'
-            //     }
-            // }
             ]
-        });
-        let customerAddress;
-        let pincode;
-        let customerSatte;
-        for (let address of customerScrap.customer.customerKycAddress) {
-            if (address.addressType == "permanent") {
-                customerAddress = `${address.address}, ${address.city.name}, ${address.state.name}, ${address.pinCode} `;
-                pincode = address.pinCode;
-                customerSatte = address.state.name;            
-            }
+        },
+        {
+            model: models.scrapMeltingOrnament,
+            as: 'meltingOrnament'
         }
-
-        // return res.status(200).json({ message: "success", customerScrap });
-    
-        // let ornamentData = [];
-        // let totalUnits = [];
-        // let totalGrams = [];
-        // let totalRatePreUnit = [];
-        // let totalAmount = [];
-        // if (customerScrap.scrapOrnamentsDetail.length != 0) {
-        //     for (let [index, ornament] of customerScrap.scrapOrnamentsDetail.entries()) {
-        //         await ornamentData.push({
-        //             srNo: index + 1,
-        //             ornamentName: ornament.ornamentType.name,
-        //             quantity: ornament.quantity,
-        //             grossWeight: ornament.netWeight,
-        //             amount: ornament.scrapAmount,
-        //             nullCell: ""
-        //         });
-    
-        //         totalUnits.push(ornament.quantity);
-        //         totalGrams.push(ornament.netWeight);
-        //         totalAmount.push(ornament.scrapAmount)
-        //     }
-        // }
-        // let finalTotalUnits = _.sum(totalUnits);
-        // let finalTotalGrams = _.sum(totalGrams);
-        // let finalTotalAmount = _.sum(totalAmount);
-        let amountInWords = convert(customerScrap.finalScrapAmountAfterMelting);
-        
-        var html = fs.readFileSync("./templates/scrap-purchase-voucher.html", 'utf8');
-    
-        var options = {
-            format: "A4",
-            orientation: "portrait",
-            border: "0.5mm",
-            "header": {
-                "height": "2mm",
-    
-            },
-            "footer": {
-                "height": "3mm",
-            },
-            "height": "13.69in",
-            "width": "11in"
+        ]
+    });
+    let customerAddress;
+    let pincode;
+    let customerState;
+    for (let address of customerScrap.customer.customerKycAddress) {
+        if (address.addressType == "permanent") {
+            customerAddress = `${address.address}, ${address.city.name}, ${address.state.name}, ${address.pinCode} `;
+            pincode = address.pinCode;
+            customerState = address.state.name;            
         }
-        if(customerScrap.customer.customerKycPersonal.panCardNumber){
-            panNo = customerSatte.customer.customerKycPersonal.panCardNumber
-        }else{
-            panNo = " NA";
-        }
-        console.log(customerScrap.customer.organizationDetail);
-        if(customerScrap.customer.organizationDetail && customerScrap.customer.organizationDetail.gstinNumber){
-            gstinNumber = customerSatte.customer.organizationDetail.gstinNumber
-        }else{
-            gstinNumber = " NA";
-        }
-
-        if(customerScrap.customer.organizationDetail && customerScrap.customer.organizationDetail.cinNumber){
-            cinNumber = customerSatte.customer.organizationDetail.cinNumber
-        }else{
-            cinNumber = " NA";
-        }
-
-        let purchaseVoucher = await [{
-            customerName: `${customerScrap.customer.firstName} ${customerScrap.customer.lastName}`,
-            date: moment(customerScrap.createdAt).format("DD-MM-YYYY"),
-            customerAddress: customerAddress,
-            pinCode: pincode,
-            customerSatte: customerSatte,
-            voucherNumber: customerScrap.scrapUniqueId,
-            panNo: panNo,
-            netWeight: customerScrap.meltingOrnament.netWeight,
-            amountInWords: `${amountInWords.toUpperCase()} ONLY`,
-            ratePerGram:  customerScrap.finalScrapAmountAfterMelting / customerScrap.meltingOrnament.netWeight,
-            totalAmount: customerScrap.finalScrapAmountAfterMelting,
-            gstinNumber: gstinNumber,
-            cinNumber: cinNumber
-        }]
-    
-        // return res.status(200).json({ message: "success", purchaseVoucher });
-
-        let fileName = await `purchaseVoucher${Date.now()}`;
-        document = await {
-            html: html,
-            data: {
-                bootstrapCss: `${process.env.URL}/bootstrap.css`,
-                jqueryJs: `${process.env.URL}/jquery-slim.min.js`,
-                popperJs: `${process.env.URL}/popper.min.js`,
-                bootstrapJs: `${process.env.URL}/bootstrap.js`,
-                purchaseVoucher: purchaseVoucher,
-                // ornamentData: ornamentData
-
-            },
-            path: `./public/uploads/pdf/${fileName}.pdf`,
-            timeout: '60000'
-        };
-        let createPdf = await pdf.create(document, options);
-        if (createPdf) {
-            fs.readFile(`./public/uploads/pdf/${fileName}.pdf`, function (err, data) {
-                let stat = fs.statSync(`./public/uploads/pdf/${fileName}.pdf`);
-                res.setHeader('Content-Length', stat.size);
-                res.setHeader('Content-Type', 'application/pdf');
-                res.setHeader('Content-Disposition', `attachment; filename=${fileName}.pdf`);
-                res.send(data);
-                if (fs.existsSync(`./public/uploads/pdf/${fileName}.pdf`)) {
-                    fs.unlinkSync(`./public/uploads/pdf/${fileName}.pdf`);
-                }
-            });
-        }
-    }catch(err){
-        console.log(err);
     }
+
+    let amountInWords = convert(customerScrap.finalScrapAmountAfterMelting);
     
+    var html = fs.readFileSync("./templates/scrap-purchase-voucher.html", 'utf8');
+
+    var options = {
+        format: "A4",
+        orientation: "portrait",
+        border: "0.5mm",
+        "header": {
+            "height": "2mm",
+
+        },
+        "footer": {
+            "height": "3mm",
+        },
+        "height": "13.69in",
+        "width": "11in"
+    }
+
+    if(customerScrap.customer.customerKycPersonal && customerScrap.customer.customerKycPersonal.panCardNumber){
+        panNo = customerScrap.customer.customerKycPersonal.panCardNumber
+    }else{
+        panNo = " -";
+    }
+    if(customerScrap.customer.organizationDetail && customerScrap.customer.organizationDetail.gstinNumber){
+        gstinNumber = customerScrap.customer.organizationDetail.gstinNumber
+    }else{
+        gstinNumber = " -";
+    }
+
+    if(customerScrap.customer.organizationDetail && customerScrap.customer.organizationDetail.cinNumber){
+        cinNumber = customerScrap.customer.organizationDetail.cinNumber
+    }else{
+        cinNumber = " -";
+    }
+
+    let purchaseVoucher = await [{
+        customerName: `${customerScrap.customer.firstName} ${customerScrap.customer.lastName}`,
+        date: moment(customerScrap.createdAt).format("DD-MM-YYYY"),
+        customerAddress: customerAddress,
+        pinCode: pincode,
+        customerState: customerState,
+        voucherNumber: customerScrap.scrapUniqueId,
+        panNo: panNo,
+        netWeight: customerScrap.meltingOrnament.netWeight,
+        amountInWords: `${amountInWords.toUpperCase()} ONLY`,
+        ratePerGram:  customerScrap.finalScrapAmountAfterMelting / customerScrap.meltingOrnament.netWeight,
+        totalAmount: customerScrap.finalScrapAmountAfterMelting,
+        gstinNumber: gstinNumber,
+        cinNumber: cinNumber
+    }]
+
+    // return res.status(200).json({ message: "success", purchaseVoucher });
+
+    let fileName = await `purchaseVoucher${Date.now()}`;
+    document = await {
+        html: html,
+        data: {
+            bootstrapCss: `${process.env.URL}/bootstrap.css`,
+            jqueryJs: `${process.env.URL}/jquery-slim.min.js`,
+            popperJs: `${process.env.URL}/popper.min.js`,
+            bootstrapJs: `${process.env.URL}/bootstrap.js`,
+            purchaseVoucher: purchaseVoucher,
+            // ornamentData: ornamentData
+
+        },
+        path: `./public/uploads/pdf/${fileName}.pdf`,
+        timeout: '60000'
+    };
+    let createPdf = await pdf.create(document, options);
+    if (createPdf) {
+        fs.readFile(`./public/uploads/pdf/${fileName}.pdf`, function (err, data) {
+            let stat = fs.statSync(`./public/uploads/pdf/${fileName}.pdf`);
+            res.setHeader('Content-Length', stat.size);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=${fileName}.pdf`);
+            res.send(data);
+            if (fs.existsSync(`./public/uploads/pdf/${fileName}.pdf`)) {
+                fs.unlinkSync(`./public/uploads/pdf/${fileName}.pdf`);
+            }
+        });
+    }
+
 }
 
 exports.getScrapStatus = async (req, res) => {

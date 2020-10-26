@@ -26,7 +26,8 @@
 
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.customer.panCardNumber | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">
+                        {{loan.customer.panCardNumber ? loan.customer.panCardNumber : 'NA' | uppercase }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="date">
@@ -94,7 +95,7 @@
                             [ngClass]="loan.loanStatusForOperatinalTeam == 'pending' ? 'text-warning' :loan.loanStatusForOperatinalTeam == 'approved' ? 'text-success' : 'text-danger'">
                             {{loan.loanStatusForOperatinalTeam | titlecase}}
                         </span>
-                        <span *ngIf="loan.loanStatusForOperatinalTeam == 'pending' && loan.commentByOperatinalTeam"
+                        <span *ngIf="loan.loanStatusForOperatinalTeam == 'incomplete' && loan.commentByOperatinalTeam"
                             class="material-icons custom-icon" mat-raised-button
                             matTooltip={{loan.commentByOperatinalTeam}} matTooltipPosition="above"
                             matTooltipClass="custom-tooltip-white">
@@ -199,7 +200,7 @@
                 <ng-container matColumnDef="view">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <span (click)="viewLoan(loan)" class="kt-pointer"
+                        <span (click)="viewLoan(loan)" class="kt-pointer view-link"
                             *ngxPermissionsOnly="['loanDetailsView','appliedLoanView']">
                             View
                         </span>

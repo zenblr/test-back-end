@@ -40,7 +40,7 @@ exports.scrapUploadPacket = async (req, res, next) => {
     
         if (contain.length > 0) {
             let existpacketUniqueId = await contain.map(value => { return ` ${value.packetUniqueId}`});
-            return res.status(400).json({ message: `${existpacketUniqueId}  is already exist` })
+            return res.status(400).json({ message: `Following packets already exists  ${existpacketUniqueId}` })
         }
     
         var containBarcode = await models.scrapPacket.findAll({
@@ -50,7 +50,7 @@ exports.scrapUploadPacket = async (req, res, next) => {
     
         if (containBarcode.length > 0) {
             let existbarcodeNumber = await containBarcode.map(value => { return ` ${value.barcodeNumber}` })
-            return res.status(400).json({ message: `${existbarcodeNumber} is already exist` })
+            return res.status(400).json({ message: `Following packets already exists  ${existbarcodeNumber}` })
         }
     
         let createdBy = req.userData.id;

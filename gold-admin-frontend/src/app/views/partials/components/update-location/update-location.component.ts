@@ -8,6 +8,7 @@ import { UpdateLocationService } from '../../../../core/loan-management/update-l
 import { AuthService } from '../../../../core/auth';
 import { BehaviorSubject } from 'rxjs';
 import { LeadService } from '../../../../core/lead-management/services/lead.service';
+import { SharedService } from '../../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-update-location',
@@ -29,6 +30,7 @@ export class UpdateLocationComponent implements OnInit {
   deliveryPartnerBranches: any[];
   userTypeListFiltered = this.userTypeList
   internalBranches: any[];
+  token: any;
 
   constructor(
     public dialogRef: MatDialogRef<UpdateLocationComponent>,
@@ -38,8 +40,13 @@ export class UpdateLocationComponent implements OnInit {
     private packetLocationService: PacketLocationService,
     private updateLocationService: UpdateLocationService,
     private authService: AuthService,
-    private leadService: LeadService
-  ) { }
+    private leadService: LeadService,
+    private sharedService: SharedService
+  ) {
+    this.sharedService.getTokenDecode().subscribe(res => {
+      this.token = res
+    })
+  }
 
   ngOnInit() {
     // console.log(this.data)
@@ -388,7 +395,7 @@ export class UpdateLocationComponent implements OnInit {
     const mobileNumber = this.locationForm.controls.mobileNumber.value
     switch (this.locationForm.controls.receiverType.value) {
       case 'Customer':
-        this.updateLocationService.sendCustomerOtp(mobileNumber).subscribe(res => {
+        this.updateLocationService.sendCustomerOtp(mobileNumber, 'updateLocationCollect', this.token.id).subscribe(res => {
           if (res) {
             this.refCode = res.referenceCode;
             this.locationForm.controls.referenceCode.patchValue(res.referenceCode);
@@ -400,7 +407,9 @@ export class UpdateLocationComponent implements OnInit {
         break;
 
       case 'InternalUser':
-        this.authService.generateOtp(mobileNumber, 'lead').subscribe(res => {
+        const Type = this.data.isPartnerOut && this.data.internalBranchId ? 'updateLocationHandover' : 'updateLocationCollect';
+
+        this.authService.generateOtp(mobileNumber, Type, this.token.id).subscribe(res => {
           if (res) {
             this.refCode = res.referenceCode;
             this.locationForm.controls.referenceCode.patchValue(res.referenceCode);
@@ -415,7 +424,9 @@ export class UpdateLocationComponent implements OnInit {
         break;
 
       case 'PartnerUser':
-        this.updateLocationService.sendPartnerOtp(mobileNumber).subscribe(res => {
+        const type = this.data.isPartnerOut ? 'updateLocationHandover' : 'updateLocationCollect';
+
+        this.updateLocationService.sendPartnerOtp(mobileNumber, type, this.token.id).subscribe(res => {
           if (res) {
             this.refCode = res.referenceCode;
             this.locationForm.controls.referenceCode.patchValue(res.referenceCode);
@@ -486,6 +497,10 @@ export class UpdateLocationComponent implements OnInit {
   verifyBarcode(index) {
     const formGroup = this.barcodeNumber.at(index)
     const filteredFormGroup = this.filteredPacketArray[index]
+    if (formGroup.invalid) {
+      return formGroup.get('Barcode').markAsTouched()
+    }
+
     const isVerified = (JSON.stringify(formGroup.value)).toLowerCase() === (JSON.stringify(filteredFormGroup)).toLowerCase()
 
     // console.log(isVerified)

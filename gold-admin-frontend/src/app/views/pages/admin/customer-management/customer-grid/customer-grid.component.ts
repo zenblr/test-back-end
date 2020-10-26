@@ -17,11 +17,12 @@ export class CustomerGridComponent implements OnInit, OnChanges {
   @Input() data;
   @Output() pagination = new EventEmitter
 
-  customers: number[] = []
+  customers: any[] = []
   viewLoading: boolean = false
   count: any;
   searchValue: any;
   unsubscribeSearch$ = new Subject();
+  index = 0;
   constructor(
     private customerService: CustomerManagementService,
     private ref: ChangeDetectorRef,
@@ -33,13 +34,14 @@ export class CustomerGridComponent implements OnInit, OnChanges {
 
   @HostListener('window:scroll', [])
   onWindowScoll() {
-    // console.log(Math.floor(this.getScrollXY()[1] + window.innerHeight))
+    // console.log(this.getDocHeight(), Math.floor(this.getScrollXY()[1] + window.innerHeight))
     if (this.getDocHeight() === Math.floor(this.getScrollXY()[1] + window.innerHeight)) {
-      if (this.count < this.page.to) {
+      if (this.count > this.page.to) {
         let data = {
-          from: this.page.from + 20,
+          from: this.page.from,
           to: this.page.to + 20,
-          search: this.searchValue
+          search: this.searchValue ? this.searchValue : '',
+          index:this.index += 1
         }
         this.pagination.emit(data)
       }
@@ -87,7 +89,7 @@ export class CustomerGridComponent implements OnInit, OnChanges {
 
   getDocHeight() {
     const D = document;
-  
+
     return Math.max(
       D.body.scrollHeight, D.documentElement.scrollHeight,
       D.body.offsetHeight, D.documentElement.offsetHeight,

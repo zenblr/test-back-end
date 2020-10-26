@@ -251,6 +251,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           })
           this.ref.detectChanges()
         }
+        if (changes.meltingDetails.currentValue.scrapStatusForAppraiser == 'pending') {
+          this.disableCustomerConfirmation();
+        }
       }
     }
     if (changes.scrapIds) {
@@ -816,6 +819,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     if (this.scrapIds) {
       if (this.meltingOrnament) {
         if (this.buttonValue == 'Next') {
+          this.enableCustomerConfirmation()
           this.scrapApplicationFormService.submitMeltingOrnaments(this.OrnamentsData.value[0], this.totalAmount, this.scrapIds).pipe(
             map(res => {
               res.ornamentsArr = [];
@@ -830,6 +834,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
               let stage = res.scrapCurrentStage
               stage = Number(stage) - 1;
               this.next.emit(stage)
+              if (this.meltingDetails.scrapStatusForAppraiser == 'pending') {
+                this.disableCustomerConfirmation();
+              }
             })
           ).subscribe();
         } else {
@@ -921,5 +928,15 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     if (!event) {
       this.dialogRef.close()
     }
+  }
+
+  disableCustomerConfirmation() {
+    const controls = this.OrnamentsData.at(0) as FormGroup;
+    controls.controls.customerConfirmation.disable();
+  }
+
+  enableCustomerConfirmation() {
+    const controls = this.OrnamentsData.at(0) as FormGroup;
+    controls.controls.customerConfirmation.enable();
   }
 }

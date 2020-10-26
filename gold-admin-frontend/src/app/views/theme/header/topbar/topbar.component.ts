@@ -362,6 +362,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "partner-branch-user") {
 			this.dataSourceHeader();
 			this.value1 = "Add Partner User";
+			this.permissionType = "partnerBranchUserAdd";
 		}
 		if (this.path == "logistic-partner") {
 			this.showInput = true;
@@ -391,7 +392,7 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "applied-loan") {
 			this.showfilter = true;
-			this.filterWidth = "600px"
+			this.filterWidth = "800px"
 			this.filterName = "loan"
 			this.showInput = true;
 			this.listType = "approval";
@@ -403,7 +404,7 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('loan-details/')) {
 			this.rightButton = true;
 			this.notTitleCase = true;
-			this.value2 = "Generate S.O.A.";
+			this.value2 = "Generate SOA";
 			this.type2 = "button";
 		}
 		if (this.path == "applied-kyc") {
@@ -700,6 +701,9 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/scrap-buying-application-form?customerID=')) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes("/scrap-buying-application-form/")) {
+			this.showBackButton = true;
+		}
 		if (this.path == "orders") {
 			this.showInput = true;
 			this.filterName = "brokerOrder";
@@ -759,10 +763,10 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "applied-scrap") {
 			this.showfilter = true;
-			this.filterWidth = "600px"
+			this.filterWidth = "800px"
 			this.filterName = "appliedScrap"
 			this.showInput = true;
-			this.listType = "approval,scrapStatus";
+			this.listType = "approval";
 		}
 		if (this.path == 'new-requests') {
 			this.showInput = true;
@@ -813,6 +817,9 @@ export class TopbarComponent implements OnInit {
 			this.filterName = 'cron';
 			this.listType = 'cron';
 			this.filterWidth = '600px';
+		}
+		if (this.path == "transfer-loan-list") {
+			this.showInput = true;
 		}
 	}
 
@@ -1025,6 +1032,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "packet") {
 			this.packetService.applyFilter.next(data)
+		}
+		if (this.path == "packets") {
+			this.scrapPacketsService.applyFilter.next(data)
 		}
 		if (this.path == "deposit") {
 			this.depositService.applyFilter.next(data)

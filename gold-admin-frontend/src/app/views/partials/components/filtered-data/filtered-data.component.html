@@ -214,7 +214,7 @@
                     </div>
 
                     <!-- appliedScrap -->
-                    <div class="filtered-data" *ngIf="filteredList?.scrapStatus">
+                    <!-- <div class="filtered-data" *ngIf="filteredList?.scrapStatus">
                         <div class="filtered-title">By Scrap Status</div>
                         <div class="d-flex">
                             <div class="filtered-value" *ngFor="let item of filteredList?.scrapStatus; let i = index;">
@@ -223,7 +223,7 @@
                                     (click)="clearFilter('scrapStatus',i)">
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!--  cron -->
                     <div class="filtered-data" *ngIf="filteredList?.product">
@@ -264,6 +264,62 @@
                                 <span>{{filteredList?.endDate | date:'mediumDate'}}</span>
                                 <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
                                     (click)="clearFilter('date')">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- packets -->
+                    <div class="filtered-data" *ngIf="filteredList?.packets">
+                        <div class="filtered-title">Packets</div>
+                        <div class="d-flex">
+                            <div class="filtered-value">
+                                <span *ngIf="filteredList?.packets == 'true'">Used</span>
+                                <span *ngIf="filteredList?.packets == 'false'">Unused</span>
+
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('packets')">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- packetTracking -->
+                    <div class="filtered-data" *ngIf="filteredList?.packetTracking">
+                        <div class="filtered-title">By Tracking status</div>
+                        <div class="d-flex">
+                            <div class="filtered-value">
+                                <!-- {{filteredList?.packetTracking || json}} -->
+                                <span *ngIf="filteredList?.packetTracking == 'incomplete'">Incomplete</span>
+                                <span *ngIf="filteredList?.packetTracking == 'complete'">Complete</span>
+
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('packetTracking')">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- deposit -->
+                    <div class="filtered-data" *ngIf="filteredList?.depositStatus">
+                        <div class="filtered-title">Status</div>
+                        <div class="d-flex">
+                            <div class="filtered-value">
+                                <span>{{ filteredList?.depositStatus | titlecase }}</span>
+
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('depositStatus')">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filtered-data" *ngIf="filteredList?.packetTrackingLocation">
+                        <div class="filtered-title">By Tracking status</div>
+                        <div class="d-flex">
+                            <div class="filtered-value">
+                                <!-- {{filteredList?.packetTracking || json}} -->
+                                <span *ngIf="filteredList?.packetTrackingLocation == 'incomplete'">Incomplete</span>
+                                <span *ngIf="filteredList?.packetTrackingLocation == 'complete'">Complete</span>
+                                <span *ngIf="filteredList?.packetTrackingLocation == 'in transit'">In Transit</span>
+
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('packetTrackingLocation')">
                             </div>
                         </div>
                     </div>

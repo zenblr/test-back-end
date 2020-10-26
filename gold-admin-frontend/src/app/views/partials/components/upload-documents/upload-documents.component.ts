@@ -173,6 +173,9 @@ export class UploadDocumentsComponent implements OnInit {
           })
         }
         this.pdfCheck();
+        if (changes.acknowledgmentDocuments.currentValue.scrapStatusForAppraiser == 'pending') {
+          this.disableCustomerConfirmationStatus();
+        }
         if (changes.acknowledgmentDocuments.currentValue.scrapStatusForAppraiser == 'approved') {
           this.isEdit = false
           this.documentsForm.disable()
@@ -537,6 +540,7 @@ export class UploadDocumentsComponent implements OnInit {
           }
         })).subscribe()
     } else if (this.url == 'scrap-buying-application-form') {
+      this.enableCustomerConfirmationStatus();
       this.scrapApplicationFormService.acknowledgementSubmit(this.documentsForm.value, this.scrapIds).pipe(
         map(res => {
           if (this.buttonValue == 'Next') {
@@ -549,6 +553,9 @@ export class UploadDocumentsComponent implements OnInit {
           } else {
             this.toastr.success(res.message)
             this.router.navigate(['/admin/scrap-management/applied-scrap'])
+          }
+          if (this.acknowledgmentDocuments.scrapStatusForAppraiser == 'pending') {
+            this.disableCustomerConfirmationStatus();
           }
         })).subscribe();
     } else if (this.showScrapFlag) {
@@ -597,5 +604,13 @@ export class UploadDocumentsComponent implements OnInit {
     const ext = this.sharedService.getExtension(image)
     const isPdf = ext == 'pdf' ? true : false
     return isPdf
+  }
+
+  disableCustomerConfirmationStatus() {
+    this.controls.customerConfirmationStatus.disable();
+  }
+
+  enableCustomerConfirmationStatus() {
+    this.controls.customerConfirmationStatus.enable();
   }
 }

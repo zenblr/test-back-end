@@ -38,7 +38,7 @@ export class SharedService {
 		{ value: 'rejected', name: 'rejected' }
 	];
 	appraiserOrCCEScrap = [
-		{ value: 'incomplete', name: 'incomplete' },
+		{ value: 'pending', name: 'pending' },
 		{ value: 'approved', name: 'approved' },
 		{ value: 'rejected', name: 'rejected' },
 	];
@@ -48,6 +48,12 @@ export class SharedService {
 		{ value: 'rejected', name: 'rejected' },
 	];
 	branchManagerLoan = [
+		{ value: 'incomplete', name: 'incomplete' },
+		{ value: 'approved', name: 'approved' },
+		{ value: 'rejected', name: 'rejected' },
+	];
+	branchManagerLoanFilter = [
+		{ value: 'pending', name: 'pending' },
 		{ value: 'incomplete', name: 'incomplete' },
 		{ value: 'approved', name: 'approved' },
 		{ value: 'rejected', name: 'rejected' },
@@ -75,13 +81,24 @@ export class SharedService {
 
 	]
 
+	userManagementPermission = [
+		'partnerView',
+		'partnerBranchView',
+		'internalUserView',
+		'internalBranchView',
+		'merchantView',
+		'brokerView',
+		'storeView',
+		'concurrentLoginView'
+	]
+
 	constructor(
 		private http: HttpClient,
 		private excelService: ExcelService,
 		private toastr: ToastrService) { }
 
 	getStatus() {
-		return of({ apprsiserOrCCE: this.appraiserOrCCE, appraiserOrCCEScrap: this.appraiserOrCCEScrap, bm: this.branchManagerScrap, bml: this.branchManagerLoan })
+		return of({ apprsiserOrCCE: this.appraiserOrCCE, appraiserOrCCEScrap: this.appraiserOrCCEScrap, bm: this.branchManagerScrap, bml: this.branchManagerLoan, bmlfilter: this.branchManagerLoanFilter })
 	}
 
 	getScrapStatus(): Observable<any> {
@@ -201,8 +218,8 @@ export class SharedService {
 	}
 
 	//  for quick pay and part payment 
-	paymentGateWay(amount): Observable<any> {
-		return this.http.post(`api/quick-pay/razor-pay`, { amount }).pipe(
+	paymentGateWay(amount, masterLoanId): Observable<any> {
+		return this.http.post(`api/quick-pay/razor-pay`, { amount, masterLoanId }).pipe(
 			map(res => res)
 		)
 	}
@@ -263,5 +280,9 @@ export class SharedService {
 
 	getCronType() {
 		return this.cronType
+	}
+
+	getUserManagmentPermission(){
+		return this.userManagementPermission
 	}
 }

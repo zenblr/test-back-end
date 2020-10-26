@@ -170,10 +170,11 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.basicForm.controls.requestId.patchValue(changes.loanTransfer.currentValue.masterLoan.appraiserRequestId)
       this.controls.customerId.patchValue(changes.loanTransfer.currentValue.customer.id)
       this.basicForm.patchValue(changes.loanTransfer.currentValue.customer)
-      this.basicForm.patchValue(changes.loanTransfer.currentValue.loanPersonalDetail)
-      this.currentDate = new Date(changes.loanTransfer.currentValue.loanPersonalDetail.startDate)
-      this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
-
+      if (changes.loanTransfer.currentValue.loanPersonalDetail) {
+        this.basicForm.patchValue(changes.loanTransfer.currentValue.loanPersonalDetail)
+        this.currentDate = new Date(changes.loanTransfer.currentValue.loanPersonalDetail.startDate)
+        this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
+      }
       if (changes.loanTransfer.currentValue.masterLoan.loanTransfer.loanTransferStatusForBM == 'approved') {
         this.disable = true
       }

@@ -51,9 +51,10 @@
                             [ngClass]="item?.scrapStatusForAppraiser == 'pending' ? 'text-warning' : item?.scrapStatusForAppraiser == 'approved' ? 'text-success' : 'text-danger'">
                             {{item?.scrapStage?.id == 9 || item?.scrapStage?.id == 10 ? '-'  : item?.scrapStatusForAppraiser | titlecase}}
                         </span>
-                        <span *ngIf="item?.commentByAppraiser" class="material-icons custom-icon" mat-raised-button
-                            matTooltip={{item?.commentByAppraiser}} matTooltipPosition="above"
-                            matTooltipClass="custom-tooltip-white">
+                        <span
+                            *ngIf="item?.commentByAppraiser && !(item?.scrapStage?.id == 9 || item?.scrapStage?.id == 10)"
+                            class="material-icons custom-icon" mat-raised-button matTooltip={{item?.commentByAppraiser}}
+                            matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
                             info
                         </span>
                     </mat-cell>
@@ -65,9 +66,9 @@
                             [ngClass]="item?.scrapStatusForBM == 'pending' ? 'text-warning' : item?.scrapStatusForBM == 'approved' ? 'text-success' : 'text-danger'">
                             {{item?.scrapStage?.id == 9 || item?.scrapStage?.id == 10 ? '-'  : item?.scrapStatusForBM | titlecase}}
                         </span>
-                        <span *ngIf="item?.commentByBM" class="material-icons custom-icon" mat-raised-button
-                            matTooltip={{item?.commentByBM}} matTooltipPosition="above"
-                            matTooltipClass="custom-tooltip-white">
+                        <span *ngIf="item?.commentByBM && !(item?.scrapStage?.id == 9 || item?.scrapStage?.id == 10)"
+                            class="material-icons custom-icon" mat-raised-button matTooltip={{item?.commentByBM}}
+                            matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
                             info
                         </span>
                     </mat-cell>
@@ -79,7 +80,9 @@
                             [ngClass]="item?.scrapStatusForOperatinalTeam == 'pending' ? 'text-warning' : item?.scrapStatusForOperatinalTeam == 'approved' ? 'text-success' : 'text-danger'">
                             {{item?.scrapStage?.id == 9 || item?.scrapStage?.id == 10 ? '-'  : item?.scrapStatusForOperatinalTeam | titlecase}}
                         </span>
-                        <span *ngIf="item?.commentByOperatinalTeam" class="material-icons custom-icon" mat-raised-button
+                        <span
+                            *ngIf="item?.commentByOperatinalTeam && !(item?.scrapStage?.id == 9 || item?.scrapStage?.id == 10)"
+                            class="material-icons custom-icon" mat-raised-button
                             matTooltip={{item?.commentByOperatinalTeam}} matTooltipPosition="above"
                             matTooltipClass="custom-tooltip-white">
                             info
@@ -167,7 +170,7 @@
                 <ng-container matColumnDef="view">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let item">
-                        <span (click)="viewScrap(item)" class="kt-pointer">
+                        <span (click)="viewScrap(item)" class="kt-pointer view-link">
                             View
                         </span>
                     </mat-cell>

@@ -27,7 +27,9 @@ export class AppliedScrapComponent implements OnInit {
     to: 25,
     search: '',
     appraiserApproval: '',
-    scrapStage: '',
+    scrapStageId: '',
+    bmApproval: '',
+    operatinalTeamApproval: '',
   }
   destroy$ = new Subject();
   private subscriptions: Subscription[] = [];
@@ -113,7 +115,9 @@ export class AppliedScrapComponent implements OnInit {
   applyFilter(data) {
     console.log(data)
     this.queryParamsData.appraiserApproval = data.data.appraiserStatus;
-    this.queryParamsData.scrapStage = data.data.scrapStatus;
+    this.queryParamsData.bmApproval = data.data.bmStatus;
+    this.queryParamsData.operatinalTeamApproval = data.data.otStatus;
+    // this.queryParamsData.scrapStageId = data.data.scrapStatus;
     this.dataSource.loadAppliedScraps(this.queryParamsData);
     this.filteredDataList = data.list
   }

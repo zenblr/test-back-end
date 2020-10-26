@@ -206,7 +206,7 @@
 
                 <ng-container matColumnDef="view">
                     <mat-header-cell *matHeaderCellDef>KYC Details</mat-header-cell>
-                    <mat-cell *matCellDef="let role" (click)="viewKYC(role)" class="kt-pointer">
+                    <mat-cell *matCellDef="let role" (click)="viewKYC(role)" class="kt-pointer view-link">
                         <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['appliedKycView']">
                             View
                         </div>
