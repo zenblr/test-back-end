@@ -845,13 +845,13 @@ export class MenuConfig {
 							page: "/admin/scrap-management/scrap-buying-calculator",
 							permission: false,
 						},
-						{
-							title: "Scrap Buying Application",
-							root: true,
-							src: "assets/media/aside-icons/icons-35.svg",
-							page: "/admin/scrap-management/scrap-buying-application-form",
-							permission: !this.permissionsArr.includes('scrapApplicationAdd'),
-						},
+						// {
+						// 	title: "Scrap Buying Application",
+						// 	root: true,
+						// 	src: "assets/media/aside-icons/icons-35.svg",
+						// 	page: "/admin/scrap-management/scrap-buying-application-form",
+						// 	permission: !this.permissionsArr.includes('scrapApplicationAdd'),
+						// },
 						{
 							title: "Packet",
 							root: true,
