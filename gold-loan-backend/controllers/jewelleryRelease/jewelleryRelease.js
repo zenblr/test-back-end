@@ -424,7 +424,7 @@ exports.razorPayCreateOrderForOrnament = async (req, res, next) => {
 
 exports.ornamentsPartRelease = async (req, res, next) => {
     let { paymentType, paidAmount, bankName, chequeNumber, ornamentId, depositDate, transactionDetails, branchName, transactionId, masterLoanId } = req.body;
-    let createdBy = req.userData.id;
+    let createdBy = null;
     let modifiedBy = null;
     let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
         where: { isReleased: true, masterLoanId: masterLoanId }

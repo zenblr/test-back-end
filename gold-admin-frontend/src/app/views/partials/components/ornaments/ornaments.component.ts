@@ -319,7 +319,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           }
         } else {
           this.OrnamentsData.value.forEach(element => {
-            this.totalAmount += Number(element.loanAmount)
+            this.totalAmount += Number(element.ornamentValue)
             this.fullAmount += Number(element.ornamentFullAmount)
           });
           this.totalAmount = Math.round(this.totalAmount)
@@ -459,7 +459,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       customerConfirmation: [],
       finalScrapAmountAfterMelting: [],
       processingCharges: [],
-      packetId: []
+      packetId: [],
+      ornamentValue:[]
     }))
     this.createImageArray()
     this.selected = this.OrnamentsData.length;
@@ -773,12 +774,14 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     const controls = this.OrnamentsData.at(index) as FormGroup;
     if (controls.controls.ltvPercent.valid) {
       let ltvPercent = controls.controls.ltvPercent.value
-      let ltv = controls.controls.currentLtvAmount.value * (ltvPercent / 100)
-      controls.controls.ltvAmount.patchValue(ltv)
+      let ltv = (ltvPercent / 100)
+      // controls.controls.ltvAmount.patchValue(ltv)
       controls.controls.loanAmount.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
-      let fullAmount = controls.controls.currentGoldRate.value * (ltvPercent / 100)
-      controls.controls.ornamentFullAmount.patchValue((fullAmount * controls.controls.netWeight.value).toFixed(2))
-      console.log(controls.controls.ornamentFullAmount.value)
+      controls.controls.ornamentValue.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
+
+      // let fullAmount = controls.controls.currentGoldRate.value * (ltvPercent / 100)
+      // controls.controls.ornamentFullAmount.patchValue((fullAmount * controls.controls.netWeight.value).toFixed(2))
+      // console.log(controls.controls.ornamentFullAmount.value)
     }
     console.log(this.OrnamentsData.value)
   }

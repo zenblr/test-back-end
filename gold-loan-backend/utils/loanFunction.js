@@ -1132,15 +1132,33 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
         order: [
             [models.customerLoanDisbursement, 'loanId', 'asc'],
             [models.customerLoan, 'id', 'asc']
+            [models.customerLoanInterest,'id', 'asc']
         ],
-        include: [
-            {
-                model: models.customerLoan,
-                as: 'customerLoan',
-                where: whereCondition,
-                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                include: [
-                    {
+        include: [{
+            model: models.customerLoanInterest,
+            as: 'customerLoanInterest',
+            where: {
+                emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
+                emiStatus: { [Op.not]: 'paid' }
+            },
+            attributes: ['emiDueDate', 'emiStatus'],
+            
+        },
+        {
+            model: models.customerLoan,
+            as: 'customerLoan',
+            where: whereCondition,
+            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            include: [
+                {
+                    model: models.scheme,
+                    as: 'scheme'
+                },
+                {
+                    model: models.customerLoan,
+                    as: 'unsecuredLoan',
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                    include: [{
                         model: models.scheme,
                         as: 'scheme'
                     },
@@ -1207,7 +1225,7 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
                 as: 'customerLoanDisbursement'
             }
         ]
-    });
+    }]});
 
     let packet = await models.customerLoanPackageDetails.findAll({
         where: { masterLoanId: masterLoanId },
