@@ -63,133 +63,6 @@ export class UserReviewComponent implements OnInit {
   isAddressSame: boolean = false;
   disabled: boolean;
 
-
-  //   data = {
-  //     "customerId":206,
-  //     "customerKycId":237,
-  //     "customerKycCurrentStage":"4",
-  //     "customerKycReview":{
-  //        "id":206,
-  //        "firstName":"bhupen",
-  //        "lastName":"corporate",
-  //        "panCardNumber":"ASDAS1234F",
-  //        "mobileNumber":"9908324987",
-  //        "userType":"Corporate",
-  //        "organizationTypeId":3,
-  //        "dateOfIncorporation":"2020-08-31T18:30:00.000Z",
-  //        "moduleId":3,
-  //        "customerKycPersonal":null,
-  //        "organizationDetail":{
-  //           "id":7,
-  //           "customerId":206,
-  //           "customerKycId":237,
-  //           "email":"abc213@gmail.com",
-  //           "alternateEmail":"bbb@gmail.com",
-  //           "landLineNumber":null,
-  //           "gstinNumber":"gstin667323",
-  //           "cinNumber":null,
-  //           "constitutionsDeed":[
-  //              "uploads/customer/206/1600706045103.png",
-  //              "uploads/customer/206/1600706082987.png"
-  //           ],
-  //           "gstCertificate":[
-  //              "uploads/customer/206/1600705999142.pdf",
-  //              "uploads/customer/206/1600706018546.pdf"
-  //           ],
-  //           "gstCertificateImages":[
-  //              "https://8283d907b8a4.ngrok.io/uploads/customer/206/1600705999142.pdf",
-  //              "https://8283d907b8a4.ngrok.io/uploads/customer/206/1600706018546.pdf"
-  //           ],
-  //           "constitutionsDeedImages":[
-  //              "https://8283d907b8a4.ngrok.io/uploads/customer/206/1600706045103.png",
-  //              "https://8283d907b8a4.ngrok.io/uploads/customer/206/1600706082987.png"
-  //           ]
-  //        },
-  //        "customerKycAddress":[
-  //           {
-  //              "id":343,
-  //              "customerKycId":237,
-  //              "customerId":206,
-  //              "addressType":"permanent",
-  //              "address":"test per",
-  //              "stateId":6,
-  //              "cityId":594,
-  //              "pinCode":400501,
-  //              "addressProofTypeId":1,
-  //              "addressProofNumber":"13242424",
-  //              "addressProof":[
-  //                 "uploads/customer/206/1600705796198.pdf"
-  //              ],
-  //              "state":{
-  //                 "id":6,
-  //                 "name":"Chandigarh",
-  //                 "isActive":true
-  //              },
-  //              "city":{
-  //                 "id":594,
-  //                 "name":"Chandigarh",
-  //                 "stateId":6,
-  //                 "slug":null,
-  //                 "isActive":true
-  //              },
-  //              "addressProofType":{
-  //                 "id":1,
-  //                 "name":"Voter ID",
-  //                 "isActive":true,
-  //                 "createdAt":"2020-05-04T13:48:00.807Z",
-  //                 "updatedAt":"2020-05-04T13:48:00.807Z"
-  //              },
-  //              "addressProofImage":[
-  //                 "https://8283d907b8a4.ngrok.io/uploads/customer/206/1600705796198.pdf"
-  //              ]
-  //           },
-  //           {
-  //              "id":344,
-  //              "customerKycId":237,
-  //              "customerId":206,
-  //              "addressType":"communication",
-  //              "address":"test comunicion",
-  //              "stateId":19,
-  //              "cityId":1844,
-  //              "pinCode":800091,
-  //              "addressProofTypeId":6,
-  //              "addressProofNumber":"4000050001000",
-  //              "addressProof":[
-  //                 "uploads/customer/206/1600705834845.png",
-  //                 "uploads/customer/206/1600705840844.png"
-  //              ],
-  //              "state":{
-  //                 "id":19,
-  //                 "name":"Kerala",
-  //                 "isActive":true
-  //              },
-  //              "city":{
-  //                 "id":1844,
-  //                 "name":"Adoor",
-  //                 "stateId":19,
-  //                 "slug":null,
-  //                 "isActive":true
-  //              },
-  //              "addressProofType":{
-  //                 "id":6,
-  //                 "name":"Utility bills",
-  //                 "isActive":true,
-  //                 "createdAt":"2020-05-18T11:41:50.724Z",
-  //                 "updatedAt":"2020-05-18T11:41:50.724Z"
-  //              },
-  //              "addressProofImage":[
-  //                 "https://8283d907b8a4.ngrok.io/uploads/customer/206/1600705834845.png",
-  //                 "https://8283d907b8a4.ngrok.io/uploads/customer/206/1600705840844.png"
-  //              ]
-  //           }
-  //        ],
-  //        "organizationType":{
-  //           "id":3,
-  //           "organizationType":"Company"
-  //        }
-  //     }
-  //  }
-
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
     private sharedService: SharedService,
@@ -774,7 +647,7 @@ export class UserReviewComponent implements OnInit {
           } else if (type == "gstCertificate" && this.images.gstCertificate.length < 2) {
             this.images.gstCertificate.push({ path: res.uploadFile.path, URL: res.uploadFile.URL })
             this.customerOrganizationDetail.get('gstCertificateFileName').patchValue(res.uploadFile.originalname);
-            this.customerOrganizationDetail.get('gstCertificate').patchValue(this.getPathArray('constitutionsDeed'));
+            this.customerOrganizationDetail.get('gstCertificate').patchValue(this.getPathArray('gstCertificate'));
           }
           else {
             this.toastr.error("Cannot upload more than two images")

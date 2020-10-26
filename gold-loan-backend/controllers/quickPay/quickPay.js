@@ -158,9 +158,9 @@ exports.payableAmountConfirm = async (req, res, next) => {
     let loan = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
 
     let interest = await nextDueDateInterest(loan.loan)
-    payableAmount = Number(interest.unsecuredTotalInterest) + Number(interest.securedTotalInterest)
+    payableAmount = (Number(interest.unsecuredTotalInterest) + Number(interest.securedTotalInterest).toFixed(2))
 
-    if (payableAmount < Number(amount)) {
+    if (Number(payableAmount) < Number(amount)) {
         return res.status(403).json({ message: "Please opt for Part Payment option to pay more amount" });
 
     }
