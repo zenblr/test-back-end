@@ -198,6 +198,10 @@ export class UserDetailsComponent implements OnInit {
         } else {
           this.showVerifyPAN = true;
         }
+
+        if (res.customerInfo.userType) {
+          this.controls.userType.disable()
+        }
       }
     }, (err) => {
       const message = err.error.message
