@@ -54,7 +54,7 @@ const server = http.createServer(app);
 //   });
 // } else {
   // if we are not on master thread start master thread
-db.sequelize.sync().then(function () {
+db.sequelize.authenticate().then(function () {
     server.listen(port, function () {
         debug('Express server listening on port ' + server.address().port);
     });

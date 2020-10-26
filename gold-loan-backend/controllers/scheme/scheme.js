@@ -6,7 +6,7 @@ const check = require('../../lib/checkLib');
 
 // add scheme
 exports.addScheme = async (req, res, next) => {
-    let { schemeName, schemeAmountStart, schemeAmountEnd, partnerId, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, isDefault, isTopUp, isSplitAtBeginning, schemeInterest } = req.body;
+    let { schemeName, schemeAmountStart, schemeAmountEnd, partnerId, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, isDefault, isTopUp, isSplitAtBeginning, schemeInterest, internalBranchId } = req.body;
     schemeName = schemeName.toLowerCase();
     let schemeNameExist = await models.scheme.findOne({
         where: { schemeName },
@@ -34,6 +34,20 @@ exports.addScheme = async (req, res, next) => {
         });
 
         await models.schemeInterest.bulkCreate(schemeInterest, { returning: true, transaction: t });
+
+        let schemeInternalBranch = []
+
+        if (internalBranchId.length > 0) {
+            for (let i = 0; i < internalBranchId.length; i++) {
+                let singleSchemeInternal = {}
+                const element = internalBranchId[i];
+                singleSchemeInternal.schemeId = addSchemeData.id
+                singleSchemeInternal.internalBranchId = element
+                schemeInternalBranch.push(singleSchemeInternal)
+            }
+            await models.schemeInternalBranch.bulkCreate(schemeInternalBranch, { returning: true, transaction: t });
+
+        }
 
         let readSchemeByPartner = await models.partner.findOne({
             where: { isActive: true, id: partnerId[0] },
@@ -352,3 +366,7 @@ async function selectScheme(unsecured, scheme) {
     }
     return unsecuredArray
 }
+
+// exports.getUnsecuredScheme = async (req, res, next) => {
+//     let { schemeInterest }
+// }
