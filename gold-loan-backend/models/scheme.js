@@ -30,18 +30,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'rpg',
             allowNull: false
         },
-        maximumPercentageAllowed: {
-            type: DataTypes.FLOAT,
-            field: 'maximum_percentage_allowed'
-        },
         penalInterest: {
             type: DataTypes.FLOAT,
             field: 'penal_interest'
-        },
-        default: {
-            type: DataTypes.BOOLEAN,
-            field: 'default',
-            defaultValue: false
         },
         schemeType: {
             type: DataTypes.ENUM,
