@@ -60,6 +60,9 @@ exports.loanRequest = async (req, res, next) => {
     }
 
     let loanData = await sequelize.transaction(async t => {
+
+        await models.appraiserRequest.update({ isProcessComplete: true, status: 'complete' }, { where: { id: appraiserRequestId }, transaction: t })
+
         if (isEdit) {
             let masterLoan = await models.customerLoanMaster.update({ loanStageId: stageId.id, internalBranchId: req.userData.internalBranchId, fullAmount, totalEligibleAmt, createdBy, modifiedBy }, { where: { id: masterLoanId }, transaction: t })
 
@@ -299,7 +302,7 @@ exports.loanRequest = async (req, res, next) => {
 
             let stageId = await models.loanStage.findOne({ where: { name: 'assign packet' }, transaction: t })
             await models.customerLoanMaster.update({
-                applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser, modifiedBy, appraiserId, loanStageId: stageId.id
+                applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser : null, modifiedBy, appraiserId, loanStageId: stageId.id
             }, { where: { id: masterLoanId }, transaction: t })
 
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: APPRAISER_RATING, modifiedBy }, { transaction: t });
