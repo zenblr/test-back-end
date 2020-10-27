@@ -27,6 +27,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(10,2),
             field: 'outstanding_amount'
         },
+        rpg:{
+            type: DataTypes.FLOAT,
+            field: 'rpg',
+            allowNull: false
+        },
         schemeId: {
             type: DataTypes.INTEGER,
             field: 'scheme_id'

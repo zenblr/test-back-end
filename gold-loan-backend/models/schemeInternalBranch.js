@@ -7,13 +7,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         internalBranchId: {
             type: DataTypes.INTEGER,
-            field: 'days'
+            field: 'internal_branch_id'
         }
     },
         {
             freezeTableName: true,
             allowNull: false,
-            tableName: 'scheme_internal_branch',
+            tableName: 'loan_scheme_internal_branch',
         },
     )
     SchemeInternalBranch.associate = function (models) {
