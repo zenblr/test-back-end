@@ -185,18 +185,9 @@ export class LoanSchemeComponent implements OnInit {
           this.toastr.success('Scheme Deactivated');
           this.schemes[partnerIndex].schemes[schemeIndex].isActive = !event
         }
-        // this.getScheme()
       }),
         catchError(err => {
           if (err) {
-            // if (!event) {
-            //   this.schemes[partnerIndex].schemes[schemeIndex].isActive = false
-            // } else {
-            //   this.schemes[partnerIndex].schemes[schemeIndex].isActive = true
-            // }
-            // setTimeout(() => {
-            //   this.schemes[partnerIndex].schemes[schemeIndex].isActive = false
-            // }, 500)
           }
           throw (err)
         }),
@@ -207,4 +198,10 @@ export class LoanSchemeComponent implements OnInit {
       ).subscribe()
   }
 
+  scrollToUnsecuredScheme(id) {
+    setTimeout(() => {
+      let view = this.eleref.nativeElement.querySelector(`#${id}`) as HTMLElement
+      view.scrollIntoView({ behavior: "smooth", block: "start" })
+    }, 250)
+  }
 }
