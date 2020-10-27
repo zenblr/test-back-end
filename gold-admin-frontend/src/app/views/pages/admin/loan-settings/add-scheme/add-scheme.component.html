@@ -255,6 +255,7 @@
                             </div>
                             <div class="col-9">
                                 <select name="" id="" class="form-control" formControlName="unsecuredSchemeId"
+                                    (change)="changeUnsecuredScheme($event)"
                                     [class.isError]="fillingForm.get('unsecuredSchemeId').touched && fillingForm.get('unsecuredSchemeId').invalid">
                                     <option value="" [selected]="true" [disabled]="true">Select Unsecured Scheme
                                     </option>
@@ -262,7 +263,7 @@
                                         Schemes Found
                                     </option>
                                     <option [value]="scheme.id" *ngFor="let scheme of unsecuredSchemes">
-                                        {{scheme.name}}
+                                        {{scheme.schemeName | titlecase}}
                                     </option>
                                 </select>
                             </div>

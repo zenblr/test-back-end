@@ -78,7 +78,7 @@ export class LoanSettingsService {
     //   reqParams.isActive = data.isActive;
     // }
 
-    return this.http.get('api/getUnsecuredSchemes', data).pipe(
+    return this.http.post('api/scheme/unsecured-scheme', data).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message) this._toastr.error(err.error.message)

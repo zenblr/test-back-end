@@ -67,7 +67,7 @@ export class AddSchemeComponent implements OnInit {
       schemeType: ['', [Validators.required]],
       processingChargeFixed: [, [Validators.required, Validators.min(0)]],
       processingChargePercent: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
-      maximumPercentageAllowed: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
+      // maximumPercentageAllowed: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       penalInterest: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       // isDefault: [false],
       isSplitAtBeginning: [false],
@@ -116,7 +116,8 @@ export class AddSchemeComponent implements OnInit {
         return
       }
       if (this.fillingForm.controls.schemeType.value === 'secured') {
-        this.fillingForm.controls.internalBranchId.patchValue(this.fillingForm.controls.multiSelect.value.multiSelect)
+        const internalBranchIdArr = this.fillingForm.controls.multiSelect.value.multiSelect.map(e => e.id)
+        this.fillingForm.controls.internalBranchId.patchValue(internalBranchIdArr)
       } else {
         this.fillingForm.controls.internalBranchId.patchValue([])
       }
@@ -146,6 +147,7 @@ export class AddSchemeComponent implements OnInit {
         }),
         finalize(() => {
           this.fillingForm.patchValue({ schemeAmountStart: (fromValue / 100000), schemeAmountEnd: (toValue / 100000) });
+          partnerArray = [];
         })).subscribe()
     } else if (this.tabGroup.selectedIndex == 1) {
       if (this.csvForm.invalid) {
@@ -266,10 +268,25 @@ export class AddSchemeComponent implements OnInit {
     }
     console.log(partnerId.value, schemeType.value, schemeInterest.value)
 
-    const data = { ...partnerId.value, ...schemeType.value, ...schemeInterest.value }
+    // const data = { ...partnerId.value, ...schemeType.value, ...schemeInterest.value }
+    const data = {
+      partnerId: partnerId.value,
+      schemeType: schemeType.value,
+      schemeInterest: schemeInterest.value
+    }
+    console.log(data)
     this.laonSettingService.getUnsecuredSchemes(data).pipe(
-      map(res => this.unsecuredSchemes = res))
+      map(res => {
+        this.unsecuredSchemes = res.data
+        if (this.unsecuredSchemes.length === 1) {
+          this.fillingForm.patchValue({ unsecuredSchemeId: this.unsecuredSchemes[0].id })
+        }
+      }))
       .subscribe()
+  }
+
+  changeUnsecuredScheme(event) {
+    event.target.value = ''
   }
 
 }
