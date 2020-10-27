@@ -2,7 +2,7 @@
     "development": {
         "username": "postgres",
         "password": "nimap@123",
-        "database": "packet_tracking",
+        "database": "gold_new_changes",
         "host": "127.0.0.1",
         "port": "6432",
         "dialect": "postgres",
@@ -30,6 +30,15 @@
         "password": null,
         "database": "database_production",
         "host": "127.0.0.1",
+        "dialect": "postgres",
+        "operatorsAliases": false
+    },
+    "new":{
+        "username": "postgres",
+        "password": "nimap@123",
+        "database": "gold_new_changes",
+        "host": "173.249.49.7",
+        "port": "3432",
         "dialect": "postgres",
         "operatorsAliases": false
     }

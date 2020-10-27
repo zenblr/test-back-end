@@ -6,7 +6,7 @@ const check = require('../../lib/checkLib');
 
 // add scheme
 exports.addScheme = async (req, res, next) => {
-    let { schemeName, schemeAmountStart, schemeAmountEnd, partnerId, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, isDefault, isTopUp, isSplitAtBeginning, schemeInterest } = req.body;
+    let { schemeName, schemeAmountStart, schemeAmountEnd, partnerId, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, isDefault, isTopUp, isSplitAtBeginning, schemeInterest, internalBranchId } = req.body;
     schemeName = schemeName.toLowerCase();
     let schemeNameExist = await models.scheme.findOne({
         where: { schemeName },
@@ -34,6 +34,20 @@ exports.addScheme = async (req, res, next) => {
         });
 
         await models.schemeInterest.bulkCreate(schemeInterest, { returning: true, transaction: t });
+
+        let schemeInternalBranch = []
+
+        if (internalBranchId.length > 0) {
+            for (let i = 0; i < internalBranchId.length; i++) {
+                let singleSchemeInternal = {}
+                const element = internalBranchId[i];
+                singleSchemeInternal.schemeId = addSchemeData.id
+                singleSchemeInternal.internalBranchId = element
+                schemeInternalBranch.push(singleSchemeInternal)
+            }
+            await models.schemeInternalBranch.bulkCreate(schemeInternalBranch, { returning: true, transaction: t });
+
+        }
 
         let readSchemeByPartner = await models.partner.findOne({
             where: { isActive: true, id: partnerId[0] },
@@ -351,4 +365,62 @@ async function selectScheme(unsecured, scheme) {
         }
     }
     return unsecuredArray
+}
+
+exports.getUnsecuredScheme = async (req, res, next) => {
+
+    let { securedSchemeInterest, partnerId } = req.body
+
+    let unsecuredScheme = await models.partner.findOne({
+        where: { id: partnerId },
+        attributes: ['id'],
+        order: [
+            [models.scheme, 'id', 'asc'],
+            [models.scheme, models.schemeInterest, 'days', 'asc']
+        ],
+        include: [
+            {
+                model: models.scheme,
+                // attributes: ['id', 'default'],
+                where: {
+                    isActive: true,
+                    schemeType: 'unsecured',
+                },
+                include: [
+                    {
+                        model: models.schemeInterest,
+                        as: 'schemeInterest',
+                        attributes: ['days', 'interestRate']
+                    }
+                ]
+            }
+        ]
+    })
+    let unsecured = unsecuredScheme.schemes
+
+
+    let unsecuredArray = [];
+    for (let i = 0; i < unsecured.length; i++) {
+        let unsec = unsecured[i];
+        let schemeInterest = unsec.schemeInterest;
+        if (schemeInterest.length != securedSchemeInterest.length) {
+            continue;
+        }
+        let isMached = true;
+        for (let j = 0; j < schemeInterest.length; j++) {
+            let schemeIntUnSec = schemeInterest[j];
+            let schemeInt = securedSchemeInterest[j];
+
+            if (schemeIntUnSec.days != schemeInt.days) {
+                isMached = false;
+                break;
+            }
+        }
+        if (isMached) {
+            unsecuredArray.push(unsec);
+        }
+    }
+
+    return res.status(200).json({ message: "Success", data: unsecuredArray })
+
 }
