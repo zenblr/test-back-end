@@ -39,6 +39,7 @@ export class InterestCalculatorComponent implements OnInit {
   @Input() totalAmt = 0;
   @Input() disbursed: boolean = false
   // @Output() interestFormEmit: EventEmitter<any> = new EventEmitter<any>();
+  @Input() ornamentRate;
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   @Input() action;
   @Input() masterAndLoanIds
@@ -92,7 +93,7 @@ export class InterestCalculatorComponent implements OnInit {
       debounceTime(500),
       distinctUntilChanged()
     ).subscribe(res => {
-      if (!this.transferLoan && ! this.isNewLoanFromPartRelease) {
+      if (!this.transferLoan && !this.isNewLoanFromPartRelease) {
         this.partner();
       }
     })
@@ -107,7 +108,7 @@ export class InterestCalculatorComponent implements OnInit {
       this.isNewLoanFromPartRelease = true;
       this.partner()
     }
-    
+
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
       this.controls.finalLoanAmount.patchValue(changes.loanTransfer.currentValue)
       this.controls.finalLoanAmount.disable()
@@ -149,7 +150,7 @@ export class InterestCalculatorComponent implements OnInit {
             this.approved = true;
 
           // this.finalInterestForm.controls.loanStartDate.patchValue(new Date(finalLoan.loanStartDate))
-          
+
 
           if (finalLoan.scheme) {
             this.selectedScheme = finalLoan.scheme
@@ -215,14 +216,14 @@ export class InterestCalculatorComponent implements OnInit {
     }
   }
 
-  getUnsecuredScheme(){
+  getUnsecuredScheme() {
     this.loanFormService.getUnsecuredScheme(
       this.controls.partnerId.value,
       Number(this.controls.unsecuredLoanAmount.value),
       this.controls.schemeId.value
-      ).subscribe(res=>{
-        this.unSecuredScheme = res.data 
-      })
+    ).subscribe(res => {
+      this.unSecuredScheme = res.data
+    })
   }
 
   reset() {
@@ -419,7 +420,7 @@ export class InterestCalculatorComponent implements OnInit {
           this.controls.interestRate.patchValue(res.data.securedinterestRate.interestRate)
           this.controls.unsecuredInterestRate.patchValue(res.data.unsecuredinterestRate.interestRate)
           if (!event)
-          this.calcInterestAmount()
+            this.calcInterestAmount()
         }
         this.dateOfPayment = [];
         this.ref.detectChanges()

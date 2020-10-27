@@ -34,6 +34,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() loanTransfer: EventEmitter<any> = new EventEmitter();
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() totalAmt: EventEmitter<any> = new EventEmitter();
+  @Output() ornamentValue: EventEmitter<any> = new EventEmitter();
   @Output() finaltotalAmt: EventEmitter<any> = new EventEmitter();
   @Output() fullAmt: EventEmitter<any> = new EventEmitter();
   @Output() finalScrapAmount: EventEmitter<any> = new EventEmitter();
@@ -49,6 +50,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() karatFlag
   @Input() isPartRelease
   @Output() partPayment: EventEmitter<any> = new EventEmitter();
+  @Output() ornamentDetails: EventEmitter<any> = new EventEmitter();
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
   @ViewChild('stoneTouch', { static: false }) stoneTouch: ElementRef
@@ -320,12 +322,13 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         } else {
           this.OrnamentsData.value.forEach(element => {
             this.totalAmount += Number(element.ornamentValue)
-            this.fullAmount += Number(element.ornamentFullAmount)
+            // this.fullAmount += Number(element.ornamentFullAmount)
           });
           this.totalAmount = Math.round(this.totalAmount)
-          this.fullAmount = Math.round(this.fullAmount)
-          this.totalAmt.emit(this.totalAmount)
-          this.fullAmt.emit(this.fullAmount)
+          // this.fullAmount = Math.round(this.fullAmount)
+          this.totalAmt.emit(0)
+          this.ornamentValue.emit(this.totalAmount)
+          // this.fullAmt.emit(this.fullAmount)
         }
       }
     })
@@ -460,7 +463,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       finalScrapAmountAfterMelting: [],
       processingCharges: [],
       packetId: [],
-      ornamentValue:[]
+      ornamentValue: []
     }))
     this.createImageArray()
     this.selected = this.OrnamentsData.length;
@@ -776,7 +779,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       let ltvPercent = controls.controls.ltvPercent.value
       let ltv = (ltvPercent / 100)
       // controls.controls.ltvAmount.patchValue(ltv)
-      controls.controls.loanAmount.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
+      // controls.controls.loanAmount.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
       controls.controls.ornamentValue.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
 
       // let fullAmount = controls.controls.currentGoldRate.value * (ltvPercent / 100)
@@ -869,10 +872,14 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds, this.fullAmount).pipe(
         map(res => {
           let array = this.OrnamentsData.controls
+          let ornamentDetail
           for (let index = 0; index < array.length; index++) {
+            let data = { id: 0, loanAmount: 0 }
             const controls = this.OrnamentsData.at(index) as FormGroup;
             controls.controls.id.patchValue(res.ornaments[index].id)
+            data.id = res.ornaments[index].id
           }
+          this.ornamentDetails.emit(ornamentDetail)
           if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
             this.loanTransfer.emit(res.loanTransferData.loanTransfer.disbursedLoanAmount)
           }

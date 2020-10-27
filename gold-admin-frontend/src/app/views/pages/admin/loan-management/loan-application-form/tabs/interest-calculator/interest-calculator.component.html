@@ -4,6 +4,50 @@
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
+                        <label class="mandatory">Partner Name</label>
+                    </div>
+                    <div class="col-7">
+                        <select formControlName="partnerId" class="form-control" (change)="reset();returnScheme()"
+                            [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
+                            <option value="null" [selected]="true" [disabled]="true">Select Partner</option>
+                            <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found
+                            </option>
+                            <option [value]="partner.id" *ngFor="let partner of partnerList">
+                                {{partner.name | uppercase}}
+                            </option>
+                        </select>
+                        <mat-error *ngIf="controls.partnerId.touched && controls.partnerId.invalid">Field is
+                            required</mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="mandatory">Scheme Name</label>
+                    </div>
+                    <div class="col-7">
+                        <select formControlName="schemeId" class="form-control" (change)="scheme()"
+                            [class.isError]="controls.schemeId.touched && controls.schemeId.invalid">
+                            <option value="null" [selected]="true" [disabled]="true">Select Schemes</option>
+                            <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found
+                            </option>
+                            <option [value]="schemes.id" *ngFor="let schemes of schemesList">
+                                {{schemes.schemeName | uppercase}} ({{schemes.schemeAmountStart}} -
+                                {{schemes.schemeAmountEnd}})
+                            </option>
+                        </select>
+                        <mat-error *ngIf="controls.schemeId.touched && controls.schemeId.invalid">Field is required
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row kt-margin-b-20">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
                         <label class="mandatory">Loan Amount</label>
                     </div>
                     <div class="col-7">
@@ -72,50 +116,7 @@
 
         </div>
 
-        <div class="row kt-margin-b-20">
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-4 form-label">
-                        <label class="mandatory">Partner Name</label>
-                    </div>
-                    <div class="col-7">
-                        <select formControlName="partnerId" class="form-control" (change)="reset();returnScheme()"
-                            [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
-                            <option value="null" [selected]="true" [disabled]="true">Select Partner</option>
-                            <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found
-                            </option>
-                            <option [value]="partner.id" *ngFor="let partner of partnerList">
-                                {{partner.name | uppercase}}
-                            </option>
-                        </select>
-                        <mat-error *ngIf="controls.partnerId.touched && controls.partnerId.invalid">Field is
-                            required</mat-error>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-
-                <div class="row">
-                    <div class="col-4 form-label">
-                        <label class="mandatory">Scheme Name</label>
-                    </div>
-                    <div class="col-7">
-                        <select formControlName="schemeId" class="form-control" (change)="scheme()"
-                            [class.isError]="controls.schemeId.touched && controls.schemeId.invalid">
-                            <option value="null" [selected]="true" [disabled]="true">Select Schemes</option>
-                            <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found
-                            </option>
-                            <option [value]="schemes.id" *ngFor="let schemes of schemesList">
-                                {{schemes.schemeName | uppercase}} ({{schemes.schemeAmountStart}} -
-                                {{schemes.schemeAmountEnd}})
-                            </option>
-                        </select>
-                        <mat-error *ngIf="controls.schemeId.touched && controls.schemeId.invalid">Field is required
-                        </mat-error>
-                    </div>
-                </div>
-            </div>
-        </div>
+       
 
         <div class="row kt-margin-b-20">
             <div class="col-6">
