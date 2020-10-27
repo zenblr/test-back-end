@@ -586,12 +586,15 @@ exports.generateInterestTable = async (req, res, next) => {
     }
 
     if (!Number.isInteger(length)) {
+        let date = new Date()
+
         const noOfMonths = (((tenure * 30) - ((interestTable.length - 1) * paymentFrequency)) / 30)
         const lastElementOfTable = interestTable[interestTable.length - 1]
         const oneMonthSecured = securedInterestAmount / (paymentFrequency / 30)
         let secure = (oneMonthSecured * noOfMonths).toFixed(2)
         lastElementOfTable.securedInterestAmount = secure;
         lastElementOfTable.month = "Month " + tenure;
+        lastElementOfTable.emiDueDate = moment(new Date(date.setDate(date.getDate() + (30 * tenure))), "DD-MM-YYYY").format('YYYY-MM-DD')
 
         if (isUnsecuredSchemeApplied) {
             const oneMonthUnsecured = unsecuredInterestAmount / (paymentFrequency / 30)
@@ -647,11 +650,13 @@ exports.unsecuredTableGeneration = async (req, res, next) => {
     }
 
     if (!Number.isInteger(length)) {
+        let date = new Date()
         const lastElementOfTable = interestTable[interestTable.length - 1]
 
         let unsecure = (unsecuredInterestAmount / Math.ceil(length)).toFixed(2)
         lastElementOfTable.unsecuredInterestAmount = unsecure
         lastElementOfTable.month = "Month " + tenure;
+        lastElementOfTable.emiDueDate = moment(new Date(date.setDate(date.getDate() + (30 * tenure))), "DD-MM-YYYY").format('YYYY-MM-DD')
 
     }
 
@@ -1052,7 +1057,13 @@ exports.loanAppraiserRating = async (req, res, next) => {
 
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: APPRAISER_RATING, modifiedBy }, { transaction: t });
 
-            let loanDetail = await models.customerLoan.findOne({ where: { id: loanId }, transaction: t })
+            let loanDetail = await models.customerLoan.findOne({
+                include: [{
+                    model: models.customerLoan,
+                    as: 'unsecuredLoan'
+                }],
+                where: { id: loanId }, transaction: t
+            })
 
             //loan Id generation
             if (loanDetail.loanUniqueId == null) {
@@ -1075,7 +1086,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
                 await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { id: loanId }, transaction: t })
 
                 if (loanDetail.unsecuredLoanId != null) {
-                    if (loanDetail.unsecuredLoanId.loanUniqueId == null) {
+                    if (loanDetail.unsecuredLoan.loanUniqueId == null) {
                         // unsecured loan Id
 
                         let checkUnsecuredUnique = false
@@ -1100,15 +1111,15 @@ exports.loanAppraiserRating = async (req, res, next) => {
                 await sendMessageLoanIdGeneration(customerDetails.mobileNumber, customerDetails.firstName, loanSendId)
             } else {
                 if (loanDetail.unsecuredLoanId != null) {
-                    if (loanDetail.unsecuredLoanId.loanUniqueId == null) {
+                    if (loanDetail.unsecuredLoan.loanUniqueId == null) {
                         // unsecured loan Id
                         let checkUnsecuredUnique = false
                         var unsecuredLoanUniqueId = null;
                         do {
                             let getUnsecu = randomize('A0', 4);
                             unsecuredLoanUniqueId = `LR${sliceCustId}${getUnsecu}`;
-                            loanSendId = loanUniqueId
-                            loanSendId = `${loanUniqueId}, ${unsecuredLoanUniqueId}`
+                            loanSendId = loanDetail.loanUniqueId
+                            loanSendId = `${loanDetail.loanUniqueId}, ${unsecuredLoanUniqueId}`
                             let checkUniqueUnsecured = await models.customerLoan.findOne({ where: { loanUniqueId: unsecuredLoanUniqueId }, transaction: t })
                             if (!checkUniqueUnsecured) {
                                 checkUnsecuredUnique = true
@@ -1581,7 +1592,7 @@ async function disbursementOfLoanTransfer(masterLoanId) {
     }
     let Loan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
-        attributes: ['paymentFrequency', 'processingCharge', 'isUnsecuredSchemeApplied'],
+        attributes: ['paymentFrequency', 'processingCharge', 'isUnsecuredSchemeApplied','tenure'],
         include: [{
             model: models.customerLoanInterest,
             as: 'customerLoanInterest',
@@ -1698,7 +1709,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
 
     let Loan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
-        attributes: ['paymentFrequency', 'processingCharge', 'isUnsecuredSchemeApplied'],
+        attributes: ['paymentFrequency', 'processingCharge', 'isUnsecuredSchemeApplied','tenure'],
         include: [{
             model: models.customerLoanInterest,
             as: 'customerLoanInterest',
@@ -1844,6 +1855,13 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
             let startDate = new Date(interestTable[i - 1].emiEndDate)
             console.log(startDate, i)
             interestTable[i].emiStartDate = new Date(startDate.setDate(startDate.getDate() + 1))
+        }
+
+        if (i == interestTable.length - 1) {
+            let newDate = new Date()
+            newEmiDueDate = new Date(newDate.setDate(newDate.getDate() + (30 * (Loan.tenure))))
+            interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
+            interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
         }
         let x = interestTable.map(ele => ele.emiDueDate)
         console.log(x)
@@ -2048,9 +2066,9 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             if (index == 0) {
                 element.month = "Month 1"
             }
-            // else {
-            //     data.month = "Month " + ((paymentFrequency / 30) * (index))
-            // }
+            else if (index == customerLoan.dataValues.customerLoanInterest.length - 1) {
+                element[index].dataValues.month = "Month " + customerLoan.masterLoan.tenure
+            }
         }
     }
 

@@ -498,6 +498,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			bmStatus: this.filterForm.controls['bmStatus'].value,
 			otStatus: this.filterForm.controls['otStatus'].value,
 			packets: this.filterForm.controls['packets'].value,
+			packetTracking: this.filterForm.controls['packetTracking'].value,
 			depositStatus: this.filterForm.controls['depositStatus'].value,
 		});
 		setTimeout(() => {
@@ -624,6 +625,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	filterReset() {
 		this.controls.depositStatus.patchValue('')
 		this.controls.packets.patchValue('')
+		this.controls.packetTrackingLocation.patchValue('')
+		this.controls.packetTracking.patchValue('')
 	}
 
 	validations() {

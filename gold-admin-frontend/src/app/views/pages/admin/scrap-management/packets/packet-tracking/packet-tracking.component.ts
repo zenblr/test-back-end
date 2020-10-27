@@ -12,6 +12,7 @@ import { ScrapUpdateLocationComponent } from '../../../../../partials/components
 import { Router } from '@angular/router';
 import { OrnamentsComponent } from '../../../../../partials/components/ornaments/ornaments.component';
 import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.component';
+import { SharedService } from '../../../../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-packet-tracking',
@@ -34,7 +35,7 @@ export class PacketTrackingComponent implements OnInit {
   }
   private subscriptions: Subscription[] = [];
   private unsubscribeSearch$ = new Subject();
-  filteredDataList = {};
+  filteredDataList: any = {};
 
   constructor(
     public dialog: MatDialog,
@@ -44,7 +45,8 @@ export class PacketTrackingComponent implements OnInit {
     private toastr: ToastrService,
     private ngxPermissionService: NgxPermissionsService,
     private router: Router,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private sharedService: SharedService
   ) {
     this.scrapPacketTrackingService.openModal$.pipe(
       map(res => {
@@ -112,12 +114,14 @@ export class PacketTrackingComponent implements OnInit {
     this.unsubscribeSearch$.next();
     this.unsubscribeSearch$.complete();
     this.scrapPacketTrackingService.applyFilter.next({});
+    this.sharedService.closeFilter.next(true);
   }
 
   applyFilter(data) {
+    console.log(data.list);
     this.queryParamsData.status = data.data.packetTracking;
-    this.dataSource.loadpackets(this.queryParamsData);
     this.filteredDataList = data.list;
+    this.dataSource.loadpackets(this.queryParamsData);
   }
 
   loadPackets() {
