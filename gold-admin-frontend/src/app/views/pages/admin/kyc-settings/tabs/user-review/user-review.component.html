@@ -97,7 +97,7 @@
                             </div>
                             <div class="col-4">
                                 <input type="text" class="form-control" placeholder="First Name"
-                                    formControlName="firstName"
+                                    formControlName="firstName" ktAlphabets
                                     value="{{this.data.customerKycReview.firstName | titlecase}}"
                                     [class.isError]=" controls.firstName.touched && controls.firstName.invalid " />
                                 <mat-error *ngIf=" controls.firstName.errors?.required && controls.firstName.touched ">

@@ -196,6 +196,7 @@ export class AddLeadComponent implements OnInit {
   getStates() {
     this.sharedService.getStates().subscribe(res => {
       this.states = res.data;
+      this.ref.detectChanges()
     });
   }
 
@@ -203,12 +204,12 @@ export class AddLeadComponent implements OnInit {
     const stateId = this.controls.stateId.value;
     this.sharedService.getCities(stateId).subscribe(res => {
       this.cities = res.data;
+      this.ref.detectChanges()
       const cityExists = this.cities.find(e => e.id === this.controls.cityId.value)
       if (!cityExists) {
         this.controls.cityId.reset();
         this.controls.cityId.patchValue('');
       }
-      this.ref.detectChanges()
     });
   }
 
