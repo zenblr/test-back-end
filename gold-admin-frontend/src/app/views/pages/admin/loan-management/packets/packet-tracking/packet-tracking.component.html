@@ -1,7 +1,9 @@
+<kt-filtered-data [filteredList]="filteredDataList"></kt-filtered-data>
+
 <kt-portlet>
 
     <kt-portlet-body>
-        <div class="mat-table__wrapper">
+        <div class="mat-table__wrapper" [class.filter]="(filteredDataList | json) !== '{}'">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
                 <ng-container matColumnDef="userName">
                     <mat-header-cell *matHeaderCellDef>User Name</mat-header-cell>
@@ -130,7 +132,7 @@
                                         [locationTracking]="packet?.lastSyncTime">
                                     </kt-elapsed-time>
                                 </div>
-                                
+
                             </ng-container>
                         </ng-container>
                     </mat-cell>
