@@ -48,14 +48,14 @@
                                                 </mat-radio-button>
                                             </mat-radio-group> -->
                                         </div>
-                                        <div class="col-3" *ngIf="schemeDeatils.schemeType == 'unsecured'">
+                                        <!-- <div class="col-3" *ngIf="schemeDeatils.schemeType == 'unsecured'">
                                             <mat-slide-toggle [disabled]="schemeDeatils.default"
                                                 (change)="changeDefault($event.checked, idx, schemeDeatils,i)"
                                                 [checked]="schemeDeatils.default">
                                                 <strong>Default</strong>
                                             </mat-slide-toggle>
-                                        </div>
-                                        <div class="col-3" [class.offset-3]="schemeDeatils.schemeType == 'secured'">
+                                        </div> -->
+                                        <div class="col" [class.offset-3]="schemeDeatils.schemeType == 'secured'">
                                             <mat-slide-toggle [checked]="schemeDeatils.isActive"
                                                 (change)="changeStatus($event.checked, i, idx,schemeDeatils)">
                                                 <strong>Status</strong>
