@@ -153,8 +153,8 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
         if(loanData.customerLoan.length > 1){
             unSecuredLoanRpg = loanData.customerLoan[1].scheme.rpg;
         }
-        let globalSettings = await getGlobalSetting();
-        let goldRate = await getGoldRate();
+        // let globalSettings = await getGlobalSetting();
+        // let goldRate = await getGoldRate();
         ornamentsWeightInfo.currentLtv = Number(securedLoanRpg) + Number(unSecuredLoanRpg);
         ornamentsWeightInfo.previousLtv = requestedOrnaments.loanOrnamentsDetail[0].currentLtvAmount;
         ornamentsWeightInfo.previousOutstandingAmount = loanData.outstandingAmount;
