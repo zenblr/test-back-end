@@ -32,8 +32,6 @@
  *               type: number
  *             processingChargePercent:
  *               type: number
- *             maximumPercentageAllowed:
- *               type: number
  *             penalInterest:
  *               type: number
  *             schemeType:
@@ -51,7 +49,6 @@
  *           - interestRateOneHundredEightyDaysMonthly
  *           - processingChargeFixed
  *           - processingChargePercent
- *           - maximumPercentageAllowed
  *           - penalInterest
  *           - schemeType
  *           - partnerId

@@ -6,7 +6,7 @@ const check = require('../../lib/checkLib');
 
 // add scheme
 exports.addScheme = async (req, res, next) => {
-    let { schemeName, schemeAmountStart, schemeAmountEnd, partnerId, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, isDefault, isTopUp, isSplitAtBeginning, schemeInterest, internalBranchId, rpg, unsecuredSchemeId } = req.body;
+    let { schemeName, schemeAmountStart, schemeAmountEnd, partnerId, processingChargeFixed, processingChargePercent, penalInterest, schemeType, isDefault, isTopUp, isSplitAtBeginning, schemeInterest, internalBranchId, rpg, unsecuredSchemeId } = req.body;
     schemeName = schemeName.toLowerCase();
     let schemeNameExist = await models.scheme.findOne({
         where: { schemeName },
@@ -243,10 +243,10 @@ exports.readUnsecuredSchemeOnAmount = async (req, res, next) => {
 exports.deactiveScheme = async (req, res, next) => {
     const { id, isActive } = req.query;
 
-    let defaultSchemeCheck = await models.scheme.findOne({ where: { isActive: true, default: true, id: id } });
-    if (!check.isEmpty(defaultSchemeCheck)) {
-        return res.status(400).json({ message: "Please select one default scheme with respect to that partner." })
-    }
+    // let defaultSchemeCheck = await models.scheme.findOne({ where: { isActive: true, default: true, id: id } });
+    // if (!check.isEmpty(defaultSchemeCheck)) {
+    //     return res.status(400).json({ message: "Please select one default scheme with respect to that partner." })
+    // }
 
     const deactiveSchemeData = await models.scheme.update({ isActive: isActive }, { where: { id } })
 
@@ -258,40 +258,40 @@ exports.deactiveScheme = async (req, res, next) => {
 }
 
 exports.UpdateDefault = async (req, res, next) => {
-    let { id } = req.params;
-    let { partnerId } = req.body;
+    // let { id } = req.params;
+    // let { partnerId } = req.body;
 
-    let schemeDefault = await models.scheme.findOne({ where: { id: id } });
+    // let schemeDefault = await models.scheme.findOne({ where: { id: id } });
 
-    if (schemeDefault.isActive == false) {
-        return res.status(400).json({ message: "You can not set deactivate scheme as a default." })
-    }
+    // if (schemeDefault.isActive == false) {
+    //     return res.status(400).json({ message: "You can not set deactivate scheme as a default." })
+    // }
 
-    let readSchemeByPartner = await models.partner.findOne({
-        where: { isActive: true, id: partnerId },
-        include: [{
-            model: models.scheme,
-            where: { isActive: true }
-        }],
-    });
+    // let readSchemeByPartner = await models.partner.findOne({
+    //     where: { isActive: true, id: partnerId },
+    //     include: [{
+    //         model: models.scheme,
+    //         where: { isActive: true }
+    //     }],
+    // });
 
-    if (readSchemeByPartner) {
-        let schemeArray = [];
-        for (let scheme of readSchemeByPartner.schemes) {
-            schemeArray.push(scheme.id);
-        }
-        let updateDefault = await models.scheme.update(
-            { default: false }, { where: { id: { [Op.in]: schemeArray } }, });
+    // if (readSchemeByPartner) {
+    //     let schemeArray = [];
+    //     for (let scheme of readSchemeByPartner.schemes) {
+    //         schemeArray.push(scheme.id);
+    //     }
+    //     let updateDefault = await models.scheme.update(
+    //         { default: false }, { where: { id: { [Op.in]: schemeArray } }, });
 
-        console.log(updateDefault);
+    //     console.log(updateDefault);
 
-        if (updateDefault) {
-            await models.scheme.update(
-                { default: true }, { where: { id } });
-        }
-    }
+    //     if (updateDefault) {
+    //         await models.scheme.update(
+    //             { default: true }, { where: { id } });
+    //     }
+    // }
 
-    return res.status(200).json({ message: 'Success' });
+    // return res.status(200).json({ message: 'Success' });
 
 }
 
@@ -322,7 +322,7 @@ exports.checkSlab = async (req, res, next) => {
         include: [
             {
                 model: models.scheme,
-                attributes: ['id', 'default'],
+                attributes: ['id'],
                 where: { isActive: true, schemeType: 'unsecured' },
                 include: [
                     {

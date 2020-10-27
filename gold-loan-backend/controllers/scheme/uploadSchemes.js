@@ -99,7 +99,7 @@ exports.uploadScheme = async (req, res, next) => {
                 isSplitAtBeginning: jsonArray[i].isSplitAtBeginning,
                 schemeName: jsonArray[i].schemeName.toLowerCase(), schemeType: jsonArray[i].schemeType, default: jsonArray[i].default,
                 processingChargePercent: parseFloat(jsonArray[i].processingChargePer), processingChargeFixed: parseFloat(jsonArray[i].processingChargeAmt),
-                maximumPercentageAllowed: parseFloat(jsonArray[i].maximumPerAllow), penalInterest: parseFloat(jsonArray[i].penalInterest),
+                // maximumPercentageAllowed: parseFloat(jsonArray[i].maximumPerAllow), penalInterest: parseFloat(jsonArray[i].penalInterest),
 
                 schemeAmountStart: jsonArray[i].AmountStart, schemeAmountEnd: jsonArray[i].AmountEnd,
                 interestRateThirtyDaysMonthly: jsonArray[i].InterestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly: jsonArray[i].InterestRateNinetyDaysMonthly,
