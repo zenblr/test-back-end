@@ -148,9 +148,14 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
         newLoanAmount: 0,//new loan amount
     }
     if (requestedOrnaments || allOrnaments) {
+        let securedLoanRpg = loanData.customerLoan[0].scheme.rpg;
+        let unSecuredLoanRpg = 0;
+        if(loanData.customerLoan.length > 1){
+            unSecuredLoanRpg = loanData.customerLoan[1].scheme.rpg;
+        }
         let globalSettings = await getGlobalSetting();
         let goldRate = await getGoldRate();
-        ornamentsWeightInfo.currentLtv = goldRate * (globalSettings.ltvGoldValue / 100);
+        ornamentsWeightInfo.currentLtv = Number(securedLoanRpg) + Number(unSecuredLoanRpg);
         ornamentsWeightInfo.previousLtv = requestedOrnaments.loanOrnamentsDetail[0].currentLtvAmount;
         ornamentsWeightInfo.previousOutstandingAmount = loanData.outstandingAmount;
 
@@ -367,7 +372,7 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
         let ornamentWeight = releaseData.ornamentWeight;
         let loanInfo = releaseData.loanInfo;
         let amount = releaseData.amount;
-        return res.status(200).json({ message: 'success', ornamentWeight, loanInfo, amount });
+        return res.status(200).json({ message: 'success', ornamentWeight, loanInfo, amount,releaseData });
     } else {
         return res.status(400).json({ message: "Can't proceed further as you have already applied for part released or full release" });
     }
