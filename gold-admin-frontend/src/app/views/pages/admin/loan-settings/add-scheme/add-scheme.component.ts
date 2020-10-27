@@ -5,6 +5,7 @@ import { PartnerService } from '../../../../../core/user-management/partner/serv
 import { map, catchError, finalize } from 'rxjs/operators';
 import { LoanSettingsService } from '../../../../../core/loan-setting';
 import { ToastrService } from 'ngx-toastr';
+import { InternalUserBranchService } from '../../../../../core/user-management/internal-user-branch';
 
 @Component({
   selector: 'kt-add-scheme',
@@ -21,6 +22,8 @@ export class AddSchemeComponent implements OnInit {
   partnerData: [] = []
   file: any;
   schemeType = [{ value: 'secured', name: 'secured' }, { value: 'unsecured', name: 'unsecured' }]
+  internalBranches: any;
+  unsecuredSchemes: any[] = [];
 
   constructor(private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddSchemeComponent>,
@@ -28,11 +31,15 @@ export class AddSchemeComponent implements OnInit {
     private partnerService: PartnerService,
     private laonSettingService: LoanSettingsService,
     private _toastr: ToastrService,
-    private ref: ChangeDetectorRef) { }
+    private ref: ChangeDetectorRef,
+    private internalUserBranchService: InternalUserBranchService
+  ) { }
 
   ngOnInit() {
+    this.getInternalBranchList()
     this.initForm()
     this.partner()
+    this.fillingForm.valueChanges.subscribe(res => console.log(res.multiSelect))
   }
 
   partner() {
@@ -41,7 +48,7 @@ export class AddSchemeComponent implements OnInit {
       map(res => {
         this.partnerData = res.data;
         this.ref.detectChanges();
-        console.log(this.partnerData)
+        // console.log(this.partnerData)
       }), catchError(err => {
         this._toastr.error('Some thing went wrong')
         this.ref.detectChanges();
@@ -56,23 +63,18 @@ export class AddSchemeComponent implements OnInit {
       schemeName: ['', [Validators.required]],
       schemeAmountStart: ['', [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       schemeAmountEnd: ['', [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
-      // interestRateThirtyDaysMonthly: ['', Validators.required],
-      // interestRateNinetyDaysMonthly: ['', Validators.required],
-      // interestRateOneHundredEightyDaysMonthly: ['', Validators.required],
-      // interestRateThirtyDaysAnnually: [''],
-      // interestRateNinetyDaysAnnually: [''],
-      // interestRateOneHundredEightyDaysAnnually: [''],
       partnerId: ['', Validators.required],
       schemeType: ['', [Validators.required]],
       processingChargeFixed: [, [Validators.required, Validators.min(0)]],
       processingChargePercent: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
-      maximumPercentageAllowed: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
+      // maximumPercentageAllowed: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       penalInterest: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
-      isDefault: [false],
+      // isDefault: [false],
       isSplitAtBeginning: [false],
-      // numberOfDays1: [, [Validators.required]],
-      // numberOfDays2: [, [Validators.required]],
-      // numberOfDays3: [, [Validators.required]],
+      unsecuredSchemeId: [],
+      rpg: [],
+      internalBranchId: [],
+      multiSelect: [],
       isTopUp: [false],
       schemeInterest: this.fb.array([]),
     })
@@ -113,6 +115,12 @@ export class AddSchemeComponent implements OnInit {
         this.fillingForm.markAllAsTouched()
         return
       }
+      if (this.fillingForm.controls.schemeType.value === 'secured') {
+        const internalBranchIdArr = this.fillingForm.controls.multiSelect.value.multiSelect.map(e => e.id)
+        this.fillingForm.controls.internalBranchId.patchValue(internalBranchIdArr)
+      } else {
+        this.fillingForm.controls.internalBranchId.patchValue([])
+      }
 
       let fromValue = this.fillingForm.get('schemeAmountStart').value * 100000;
       fromValue = +(fromValue);
@@ -129,29 +137,6 @@ export class AddSchemeComponent implements OnInit {
       partnerArray.push(this.fillingForm.get('partnerId').value);
       this.fillingForm.patchValue({ partnerId: partnerArray });
 
-      // let obj1 = {
-      //   days: this.fillingForm.controls.numberOfDays1.value,
-      //   interestRate: this.fillingForm.controls.interestRateThirtyDaysMonthly.value
-      // }
-      // let obj2 = {
-      //   days: this.fillingForm.controls.numberOfDays2.value,
-      //   interestRate: this.fillingForm.controls.interestRateNinetyDaysMonthly.value
-      // }
-      // let obj3 = {
-      //   days: this.fillingForm.controls.numberOfDays3.value,
-      //   interestRate: this.fillingForm.controls.interestRateOneHundredEightyDaysMonthly.value
-      // }
-
-      // let schemeInterestArr = []
-      // schemeInterestArr.push(obj1, obj2, obj3)
-      // Array.prototype.push.apply(schemeInterestArr, this.schemeInterest.value)
-
-      // Object.assign(this.fillingForm.value, { schemeInterest: schemeInterestArr })
-
-
-      console.log(this.fillingForm.value)
-
-
       this.laonSettingService.saveScheme(this.fillingForm.value).pipe(
         map((res) => {
           this._toastr.success('Scheme Created Sucessfully');
@@ -162,6 +147,7 @@ export class AddSchemeComponent implements OnInit {
         }),
         finalize(() => {
           this.fillingForm.patchValue({ schemeAmountStart: (fromValue / 100000), schemeAmountEnd: (toValue / 100000) });
+          partnerArray = [];
         })).subscribe()
     } else if (this.tabGroup.selectedIndex == 1) {
       if (this.csvForm.invalid) {
@@ -264,7 +250,43 @@ export class AddSchemeComponent implements OnInit {
       currentSlabControls.days.setErrors(null)
     }
 
-    console.log(currentSlab, previousSlab)
+    // console.log(currentSlab, previousSlab)
+  }
+
+  getInternalBranchList() {
+    this.internalUserBranchService.getInternalBranch('', 1, -1).pipe(
+      map(res => {
+        this.internalBranches = res.data
+      }),
+    ).subscribe()
+  }
+
+  getUnsecuredSchemes() {
+    const { partnerId, schemeType, schemeInterest } = this.fillingForm.controls
+    if (partnerId.invalid || schemeType.value == 'unsecured' || schemeInterest.invalid) {
+      return
+    }
+    console.log(partnerId.value, schemeType.value, schemeInterest.value)
+
+    // const data = { ...partnerId.value, ...schemeType.value, ...schemeInterest.value }
+    const data = {
+      partnerId: partnerId.value,
+      schemeType: schemeType.value,
+      schemeInterest: schemeInterest.value
+    }
+    console.log(data)
+    this.laonSettingService.getUnsecuredSchemes(data).pipe(
+      map(res => {
+        this.unsecuredSchemes = res.data
+        if (this.unsecuredSchemes.length === 1) {
+          this.fillingForm.patchValue({ unsecuredSchemeId: this.unsecuredSchemes[0].id })
+        }
+      }))
+      .subscribe()
+  }
+
+  changeUnsecuredScheme(event) {
+    event.target.value = ''
   }
 
 }
