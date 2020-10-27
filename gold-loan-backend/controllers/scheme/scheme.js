@@ -6,7 +6,7 @@ const check = require('../../lib/checkLib');
 
 // add scheme
 exports.addScheme = async (req, res, next) => {
-    let { schemeName, schemeAmountStart, schemeAmountEnd, partnerId, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, isDefault, isTopUp, isSplitAtBeginning, schemeInterest, internalBranchId } = req.body;
+    let { schemeName, schemeAmountStart, schemeAmountEnd, partnerId, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, isDefault, isTopUp, isSplitAtBeginning, schemeInterest, internalBranchId, rpg, unsecuredSchemeId } = req.body;
     schemeName = schemeName.toLowerCase();
     let schemeNameExist = await models.scheme.findOne({
         where: { schemeName },
@@ -26,7 +26,7 @@ exports.addScheme = async (req, res, next) => {
     await sequelize.transaction(async t => {
 
         const addSchemeData = await models.scheme.create({
-            schemeName, schemeAmountStart, schemeAmountEnd, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, default: isDefault, isTopup: isTopUp, isSplitAtBeginning
+            unsecuredSchemeId, schemeName, schemeAmountStart, schemeAmountEnd, processingChargeFixed, processingChargePercent, penalInterest, schemeType, isTopup: isTopUp, isSplitAtBeginning, rpg
         }, { transaction: t });
 
         schemeInterest.forEach(element => {
@@ -45,27 +45,27 @@ exports.addScheme = async (req, res, next) => {
                 singleSchemeInternal.internalBranchId = element
                 schemeInternalBranch.push(singleSchemeInternal)
             }
-            await models.schemeInternalBranch.bulkCreate(schemeInternalBranch, { returning: true, transaction: t });
+            let a = await models.schemeInternalBranch.bulkCreate(schemeInternalBranch, { returning: true, transaction: t });
 
         }
 
-        let readSchemeByPartner = await models.partner.findOne({
-            where: { isActive: true, id: partnerId[0] },
-            include: [{
-                model: models.scheme,
-                where: { isActive: true }
-            }],
-        });
-        if (readSchemeByPartner) {
-            let schemeArray = [];
-            for (let scheme of readSchemeByPartner.schemes) {
-                schemeArray.push(scheme.id);
-            }
-            if (isDefault == true) {
-                await models.scheme.update({ default: false }, { where: { id: { [Op.in]: schemeArray } } });
-            }
+        // let readSchemeByPartner = await models.partner.findOne({
+        //     where: { isActive: true, id: partnerId[0] },
+        //     include: [{
+        //         model: models.scheme,
+        //         where: { isActive: true }
+        //     }],
+        // });
+        // if (readSchemeByPartner) {
+        //     let schemeArray = [];
+        //     for (let scheme of readSchemeByPartner.schemes) {
+        //         schemeArray.push(scheme.id);
+        //     }
+        //     if (isDefault == true) {
+        //         await models.scheme.update({ default: false }, { where: { id: { [Op.in]: schemeArray } } });
+        //     }
 
-        }
+        // }
 
         // for (let i = 0; i < partnerId.length; i++) {
         // console.log(partnerId[i]);
@@ -107,6 +107,11 @@ exports.readScheme = async (req, res, next) => {
                     {
                         model: models.schemeInterest,
                         as: 'schemeInterest'
+                    },
+                    {
+                        model: models.scheme,
+                        as: 'unsecuredScheme',
+                        attributes: ['id', 'schemeName']
                     }
                 ]
             },
@@ -369,7 +374,7 @@ async function selectScheme(unsecured, scheme) {
 
 exports.getUnsecuredScheme = async (req, res, next) => {
 
-    let { securedSchemeInterest, partnerId } = req.body
+    let { schemeInterest, partnerId } = req.body
 
     let unsecuredScheme = await models.partner.findOne({
         where: { id: partnerId },
@@ -402,14 +407,14 @@ exports.getUnsecuredScheme = async (req, res, next) => {
     let unsecuredArray = [];
     for (let i = 0; i < unsecured.length; i++) {
         let unsec = unsecured[i];
-        let schemeInterest = unsec.schemeInterest;
-        if (schemeInterest.length != securedSchemeInterest.length) {
+        let securedSchemeInterest = unsec.schemeInterest;
+        if (securedSchemeInterest.length != schemeInterest.length) {
             continue;
         }
         let isMached = true;
-        for (let j = 0; j < schemeInterest.length; j++) {
-            let schemeIntUnSec = schemeInterest[j];
-            let schemeInt = securedSchemeInterest[j];
+        for (let j = 0; j < securedSchemeInterest.length; j++) {
+            let schemeIntUnSec = securedSchemeInterest[j];
+            let schemeInt = schemeInterest[j];
 
             if (schemeIntUnSec.days != schemeInt.days) {
                 isMached = false;

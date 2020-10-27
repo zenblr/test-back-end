@@ -28,7 +28,7 @@ route.put('/update-default/:id', checkAuth, checkRolePermission, wrapper(UpdateD
 
 route.get('/unsecured-scheme/:id/:amount', checkAuth, checkRolePermission, wrapper(readUnsecuredSchemeOnAmount));
 
-route.get('/unsecured-scheme', checkAuth, wrapper(getUnsecuredScheme))
+route.post('/unsecured-scheme', checkAuth, wrapper(getUnsecuredScheme))
 
 module.exports = route;
 
