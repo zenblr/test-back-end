@@ -97,6 +97,8 @@
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)"
                                         [ngClass]="{'cursor-not-allowed':  !permission.addAppraiserRating}"
+                                        [disabled]="item?.scrapStatusForAppraiser == 'rejected'"
+                                        [class.cursor-not-allowed]="item?.scrapStatusForAppraiser == 'rejected'"
                                         class="primary-button">{{item?.scrapStage?.stageName | uppercase}}</button>
                                 </div>
                             </div>
@@ -104,6 +106,8 @@
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)"
                                         [ngClass]="{'cursor-not-allowed': !permission.addBmRating}"
+                                        [disabled]="item?.scrapStatusForBM == 'rejected'"
+                                        [class.cursor-not-allowed]="item?.scrapStatusForBM == 'rejected'"
                                         class="primary-button">{{item?.scrapStage?.stageName | uppercase}}</button>
                                 </div>
                             </div>
@@ -111,6 +115,8 @@
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)"
                                         [ngClass]="{'cursor-not-allowed': !permission.addOpsRating}"
+                                        [disabled]="item?.scrapStatusForOperatinalTeam == 'rejected'"
+                                        [class.cursor-not-allowed]="item?.scrapStatusForOperatinalTeam == 'rejected'"
                                         class="primary-button">{{item?.scrapStage?.stageName | uppercase}}</button>
                                 </div>
                             </div>
