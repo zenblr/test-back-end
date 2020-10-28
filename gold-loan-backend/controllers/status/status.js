@@ -54,7 +54,7 @@ exports.deactivateStatus = async (req, res, next) => {
     const { statusId, isActive } = req.query;
     const status = await models.status.update({ isActive: isActive }, { where: { id: statusId } })
     if (status[0] == 0) {
-        return res.status(404).json({ message: "status deleted failed" });
+        return res.status(404).json({ message: "Status deleted failed" });
     }
     return res.status(200).json({ message: `Updated` })
 

@@ -384,7 +384,7 @@ exports.getAppraiser = async (req, res, next) => {
         }]
     })
 
-    return res.status(200).json({ message: 'success', data: getAppraiserList })
+    return res.status(200).json({ message: 'Success', data: getAppraiserList })
 
 }
 
@@ -410,7 +410,7 @@ exports.getReleaser = async (req, res, next) => {
         }]
     })
 
-    return res.status(200).json({ message: 'success', data: getReleaserList })
+    return res.status(200).json({ message: 'Success', data: getReleaserList })
 
 }
 
@@ -440,7 +440,7 @@ exports.getUserDetails = async (req, res, next) => {
         }]
     });
 
-    return res.status(200).json({ message: 'success', data: userDetails })
+    return res.status(200).json({ message: 'Success', data: userDetails })
 }
 
 exports.getConcurrentList = async (req, res, next) => {
@@ -475,5 +475,5 @@ exports.removeKeyFromAppraiser = async (req, res, next) => {
 
     let removeKey = await models.user.update({ authenticationKey: null }, { where: { id: id } })
 
-    return res.status(200).json({ message: "success" })
+    return res.status(200).json({ message: "Success" })
 }

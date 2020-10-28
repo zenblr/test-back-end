@@ -81,15 +81,15 @@ exports.customerDetails = async (req, res, next) => {
         let customerCurrentStage = customerScrapStage.customerScrapCurrentStage
         // let scrapId = await models.customerScrap.findOne({ where: { masterLoanId: customerScrapStage.id } })
         if (customerCurrentStage == '2') {
-            return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
+            return res.status(200).json({ message: 'Success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
         } else if (customerCurrentStage == '3') {
-            return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
+            return res.status(200).json({ message: 'Success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
         } else if (customerCurrentStage == '4') {
-            return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage, finalScrapAmount: customerScrapStage.finalScrapAmount })
+            return res.status(200).json({ message: 'Success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage, finalScrapAmount: customerScrapStage.finalScrapAmount })
         } else if (customerCurrentStage == '5') {
-            return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
+            return res.status(200).json({ message: 'Success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
         } else if (customerCurrentStage == '6') {
-            return res.status(200).json({ message: 'success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
+            return res.status(200).json({ message: 'Success', scrapId: customerScrapStage.id, scrapCurrentStage: customerCurrentStage })
         }
     }
 
@@ -112,7 +112,7 @@ exports.scrapBasicDeatils = async (req, res, next) => {
         let customerScrap = await models.customerScrap.findOne({ where: { id: scrapId, appraiserRequestId: requestId } });
 
         if (!check.isEmpty(customerScrap)) {
-            return res.status(200).json({ message: 'success', scrapId: customerScrap.id, scrapCurrentStage: '2' });
+            return res.status(200).json({ message: 'Success', scrapId: customerScrap.id, scrapCurrentStage: '2' });
         }
     }
 
@@ -127,7 +127,7 @@ exports.scrapBasicDeatils = async (req, res, next) => {
         await models.customerScrapPersonalDetail.create({ scrapId: scrap.id, customerUniqueId, startDate, kycStatus, createdBy, modifiedBy, }, { transaction: t })
         return scrap
     })
-    return res.status(200).json({ message: 'success', scrapStage: stageId, scrapId: scrapData.id, scrapCurrentStage: '2' })
+    return res.status(200).json({ message: 'Success', scrapStage: stageId, scrapId: scrapData.id, scrapCurrentStage: '2' })
 
 }
 
@@ -149,7 +149,7 @@ exports.acknowledgementDetails = async (req, res, next) => {
                 await models.customerAcknowledgement.create({ scrapId, processingCharges, standardDeduction, customerConfirmation, customerConfirmationStatus, createdBy, modifiedBy }, { transaction: t })
                 return scrap
             })
-            return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '4', processingCharges })
+            return res.status(200).json({ message: 'Success', scrapId, scrapCurrentStage: '4', processingCharges })
         } else {
             // let scrapSubmitted = await models.customerScrap.findOne({ where: { id: scrapId } })
             let scrapData = await sequelize.transaction(async t => {
@@ -162,7 +162,7 @@ exports.acknowledgementDetails = async (req, res, next) => {
                 await models.customerAcknowledgement.update({ scrapId, processingCharges, standardDeduction, customerConfirmation, customerConfirmationStatus, modifiedBy }, { where: { scrapId: scrapId }, transaction: t })
                 return scrap
             })
-            return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '4', processingCharges })
+            return res.status(200).json({ message: 'Success', scrapId, scrapCurrentStage: '4', processingCharges })
 
         }
     } else {
@@ -179,7 +179,7 @@ exports.acknowledgementDetails = async (req, res, next) => {
                 await models.customerAcknowledgement.create({ scrapId, processingCharges, standardDeduction, customerConfirmationStatus, customerConfirmation, createdBy, modifiedBy }, { transaction: t });
                 return scrap
             })
-            return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '3' })
+            return res.status(200).json({ message: 'Success', scrapId, scrapCurrentStage: '3' })
         } else {
             // let scrapSubmitted = await models.customerScrap.findOne({ where: { id: scrapId } })
             let scrapData = await sequelize.transaction(async t => {
@@ -192,7 +192,7 @@ exports.acknowledgementDetails = async (req, res, next) => {
                 await models.customerAcknowledgement.update({ scrapId, processingCharges, standardDeduction, customerConfirmationStatus, customerConfirmation, modifiedBy }, { where: { scrapId: scrapId }, transaction: t });
                 return scrap
             })
-            return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '3' })
+            return res.status(200).json({ message: 'Success', scrapId, scrapCurrentStage: '3' })
 
         }
     }
@@ -218,7 +218,7 @@ exports.scrapBankDetails = async (req, res, next) => {
 
             return scrap
         })
-        return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '6' });
+        return res.status(200).json({ message: 'Success', scrapId, scrapCurrentStage: '6' });
     } else {
 
         // let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
@@ -232,7 +232,7 @@ exports.scrapBankDetails = async (req, res, next) => {
 
             return scrap
         })
-        return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '6' });
+        return res.status(200).json({ message: 'Success', scrapId, scrapCurrentStage: '6' });
     }
 
 }
@@ -261,7 +261,7 @@ exports.scrapOrnmanetDetails = async (req, res, next) => {
 
                 return createdOrnaments
             })
-            return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData })
+            return res.status(200).json({ message: 'Success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData })
         } else {
 
             let scrapData = await sequelize.transaction(async t => {
@@ -280,7 +280,7 @@ exports.scrapOrnmanetDetails = async (req, res, next) => {
 
                 return createdOrnaments;
             })
-            return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData });
+            return res.status(200).json({ message: 'Success', scrapId, scrapCurrentStage: '3', finalScrapAmount, ornaments: scrapData });
         }
 
 }
@@ -315,7 +315,7 @@ exports.scrapOrnmanetMeltingDetails = async (req, res, next) => {
 
             return createdMeltingOrnaments
         })
-        return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '5', finalScrapAmountAfterMelting, eligibleScrapAmount, ornaments: scrapData, firstName, lastName });
+        return res.status(200).json({ message: 'Success', scrapId, scrapCurrentStage: '5', finalScrapAmountAfterMelting, eligibleScrapAmount, ornaments: scrapData, firstName, lastName });
     } else {
 
         let scrapData = await sequelize.transaction(async t => {
@@ -330,7 +330,7 @@ exports.scrapOrnmanetMeltingDetails = async (req, res, next) => {
 
             return createdMeltingOrnaments;
         })
-        return res.status(200).json({ message: 'success', scrapId, scrapCurrentStage: '5', finalScrapAmountAfterMelting, eligibleScrapAmount, ornaments: scrapData, firstName, lastName });
+        return res.status(200).json({ message: 'Success', scrapId, scrapCurrentStage: '5', finalScrapAmountAfterMelting, eligibleScrapAmount, ornaments: scrapData, firstName, lastName });
     }
 }
 
@@ -399,7 +399,7 @@ exports.scrapAppraiserRating = async (req, res, next) => {
         }
         ornament.dataValues.ornamentType = ornamentType;
     }
-    return res.status(200).json({ message: 'success', ornamentType })
+    return res.status(200).json({ message: 'Success', ornamentType })
 
 }
 
@@ -430,7 +430,7 @@ exports.scrapBmRating = async (req, res, next) => {
                 await models.customerScrapHistory.create({ scrapId, action: BM_RATING, modifiedBy }, { transaction: t });
             })
 
-            return res.status(200).json({ message: 'success' })
+            return res.status(200).json({ message: 'Success' })
         } else {
             let rejectedStageId = await models.scrapStage.findOne({ where: { stageName: 'bm rating' } })
 
@@ -441,7 +441,7 @@ exports.scrapBmRating = async (req, res, next) => {
 
                 await models.customerScrapHistory.create({ scrapId, action: BM_RATING, modifiedBy }, { transaction: t });
             })
-            return res.status(200).json({ message: 'success' })
+            return res.status(200).json({ message: 'Success' })
         }
     } else {
         let approvedStageId = await models.scrapStage.findOne({ where: { stageName: 'upload documents' } })
@@ -458,7 +458,7 @@ exports.scrapBmRating = async (req, res, next) => {
             await models.customerScrapHistory.create({ scrapId, action: BM_RATING, modifiedBy }, { transaction: t });
 
         })
-        return res.status(200).json({ message: 'success' })
+        return res.status(200).json({ message: 'Success' })
     }
 
 }
@@ -493,7 +493,7 @@ exports.scrapOpsTeamRating = async (req, res, next) => {
             })
 
 
-            return res.status(200).json({ message: 'success' })
+            return res.status(200).json({ message: 'Success' })
         } else {
             let rejectedStageId = await models.scrapStage.findOne({ where: { stageName: 'OPS team rating' } })
 
@@ -505,7 +505,7 @@ exports.scrapOpsTeamRating = async (req, res, next) => {
                 await models.customerScrapHistory.create({ scrapId, action: OPERATIONAL_TEAM_RATING, modifiedBy }, { transaction: t });
             })
 
-            return res.status(200).json({ message: 'success' })
+            return res.status(200).json({ message: 'Success' })
         }
     } else {
         let approvedStageId = await models.scrapStage.findOne({ where: { stageName: 'disbursement pending' } });
@@ -521,7 +521,7 @@ exports.scrapOpsTeamRating = async (req, res, next) => {
 
         })
 
-        return res.status(200).json({ message: 'success' })
+        return res.status(200).json({ message: 'Success' })
     }
 }
 
@@ -763,7 +763,7 @@ exports.disbursementOfScrapBankDetails = async (req, res, next) => {
         finalScrapAmount: Math.round(amount.finalScrapAmountAfterMelting),
         scrapId
     }
-    return res.status(200).json({ message: 'success', data: data })
+    return res.status(200).json({ message: 'Success', data: data })
 
 }
 
