@@ -39,7 +39,7 @@ exports.getInterestInfo = async (req, res, next) => {
 
     interestInfo.loan.dataValues.lastPaymentDate = lastPaymentDate
 
-    return res.status(200).json({ message: "success", data: interestInfo })
+    return res.status(200).json({ message: "Success", data: interestInfo })
 
 }
 
@@ -66,7 +66,7 @@ exports.viewLog = async (req, res, next) => {
             }
         ]
     })
-    return res.status(200).json({ message: "success", data: logs })
+    return res.status(200).json({ message: "Success", data: logs })
 
 
 }
@@ -605,7 +605,7 @@ exports.partPayment = async (req, res, next) => {
             return customerLoanTransaction
         })
 
-        return res.status(200).json({ message: 'success' })
+        return res.status(200).json({ message: 'Success' })
     } catch (err) {
         await models.errorLogger.create({
             message: err.message,
@@ -1238,6 +1238,6 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
         // await penalInterestCalculationForSelectedLoan(moment(), masterLoanId)
 
     }
-    return res.status(200).json({ message: "success", data: payment });
+    return res.status(200).json({ message: "Success", data: payment });
 
 }
