@@ -120,6 +120,8 @@
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
                                     <button (click)="editLoan(loan)"
                                         [ngClass]="{'cursor-not-allowed':  !permission.addAppraiserRating}"
+                                        [disabled]="loan.loanStatusForAppraiser == 'rejected'"
+                                        [class.cursor-not-allowed]="loan.loanStatusForAppraiser == 'rejected'"
                                         class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                                 </div>
                             </div>
@@ -128,6 +130,8 @@
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
                                     <button (click)="editLoan(loan)"
                                         [ngClass]="{'cursor-not-allowed': !permission.addBmRating}"
+                                        [disabled]="loan.loanStatusForBM == 'rejected'"
+                                        [class.cursor-not-allowed]="loan.loanStatusForBM == 'rejected'"
                                         class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                                 </div>
                             </div>
@@ -136,6 +140,8 @@
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
                                     <button (click)="editLoan(loan)"
                                         [ngClass]="{'cursor-not-allowed': !permission.addOpsRating}"
+                                        [disabled]="loan.loanStatusForOperatinalTeam == 'rejected'"
+                                        [class.cursor-not-allowed]="loan.loanStatusForOperatinalTeam == 'rejected'"
                                         class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                                 </div>
                             </div>
