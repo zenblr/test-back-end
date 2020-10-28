@@ -34,7 +34,7 @@ exports.addAssignAppraiser = async (req, res, next) => {
 
     request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=${customerInfo.firstName} is assign for you`);
 
-    return res.status(200).json({ message: 'success' })
+    return res.status(200).json({ message: 'Success' })
 }
 
 exports.editAssignAppraiser = async (req, res, next) => {
@@ -60,7 +60,7 @@ exports.editAssignAppraiser = async (req, res, next) => {
         request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message= ${customerInfo.firstName} is assign for you`);
     }
 
-    return res.status(200).json({ message: 'success' })
+    return res.status(200).json({ message: 'Success' })
 
 }
 
@@ -81,7 +81,7 @@ exports.getSingleAssign = async (req, res) => {
         }]
     })
 
-    return res.status(200).json({ message: 'success', data: singleAssign })
+    return res.status(200).json({ message: 'Success', data: singleAssign })
 
 }
 
@@ -132,7 +132,7 @@ exports.getListAssignAppraiser = async (req, res) => {
         include: includeArray,
     });
 
-    return res.status(200).json({ message: 'success', data: getList, count })
+    return res.status(200).json({ message: 'Success', data: getList, count })
 
 }
 
@@ -180,6 +180,6 @@ exports.getAssignAppraiserCustomer = async (req, res, next) => {
     if (data.length === 0) {
         return res.status(200).json([]);
     } else {
-        return res.status(200).json({ message: 'success', data, count: count.length })
+        return res.status(200).json({ message: 'Success', data, count: count.length })
     }
 }

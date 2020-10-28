@@ -99,7 +99,7 @@ exports.submitAppKyc = async (req, res, next) => {
         return customerKycAdd
     })
 
-    return res.status(200).json({ message: 'success', customerId, customerKycId: kycInfo.id })
+    return res.status(200).json({ message: 'Success', customerId, customerKycId: kycInfo.id })
 
 
 
@@ -188,7 +188,7 @@ exports.editAppKyc = async (req, res, next) => {
 
         }
     })
-    return res.status(200).json({ message: 'success' })
+    return res.status(200).json({ message: 'Success' })
     // let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
 
     // let KycClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId } })
@@ -205,10 +205,11 @@ exports.getAssignedCustomer = async (req, res, next) => {
 
     let goldModule = await models.module.findOne({ where: { moduleName: 'gold loan' } })
     let start = new Date();
-    start.setHours(0, 0, 0, 0);
+    start.setHours(5, 30, 0, 0);
     let end = new Date();
     end.setHours(23, 59, 59, 999);
-
+    end = new Date(moment(end).utcOffset("+05:30"))
+    console.log(start, end)
     let searchQuery = {
         [Op.and]: [query, {
             [Op.or]: [{
@@ -225,7 +226,8 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 "$masterLoan.packet_submitted_date$": {
                     [Op.between]: [start, end]
                 }
-            }, {
+            },
+            {
                 status: "incomplete"
             }
         ],
@@ -328,8 +330,8 @@ exports.getAssignedCustomer = async (req, res, next) => {
             [models.customer, { model: models.customerKycAddressDetail, as: 'customerKycAddress' }, 'id', 'asc'],
             [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoan, as: 'customerLoan' }, 'id', 'asc']
         ],
-        offset: offset,
-        limit: pageSize
+        // offset: offset,
+        // limit: pageSize
     })
 
     let count = await models.appraiserRequest.findAll({
@@ -342,7 +344,7 @@ exports.getAssignedCustomer = async (req, res, next) => {
     if (data.length === 0) {
         return res.status(200).json([]);
     } else {
-        return res.status(200).json({ message: 'success', count: count.length, data })
+        return res.status(200).json({ message: 'Success', count: count.length, data })
     }
 
 
@@ -367,7 +369,7 @@ exports.checkDuplicatePan = async (req, res, next) => {
         } else if (!check.isEmpty(checkAadhar)) {
             return res.status(400).json({ message: 'Duplicate Aadhar card' })
         } else {
-            return res.status(200).json({ message: 'success' })
+            return res.status(200).json({ message: 'Success' })
         }
     } else {
         if (!check.isEmpty(checkPan) && checkPan.id != customerId && !check.isEmpty(panCardNumber)) {
@@ -375,7 +377,7 @@ exports.checkDuplicatePan = async (req, res, next) => {
         } else if (!check.isEmpty(checkAadhar) && checkAadhar.customerId != customerId) {
             return res.status(400).json({ message: 'Duplicate Aadhar card' })
         } else {
-            return res.status(200).json({ message: 'success' })
+            return res.status(200).json({ message: 'Success' })
         }
     }
 }
@@ -391,13 +393,13 @@ exports.checkDuplicateAadhar = async (req, res, next) => {
         if (!check.isEmpty(checkAadhar)) {
             return res.status(400).json({ message: 'Duplicate Aadhar card' })
         } else {
-            return res.status(200).json({ message: 'success' })
+            return res.status(200).json({ message: 'Success' })
         }
     } else {
         if (checkAadhar.customerId != customerId) {
             return res.status(400).json({ message: 'Duplicate Aadhar card' })
         } else {
-            return res.status(200).json({ message: 'success' })
+            return res.status(200).json({ message: 'Success' })
         }
     }
 }
@@ -411,5 +413,5 @@ exports.checkLoanAppraiser = async (req, res, next) => {
     if (check.isEmpty(getAppraiserRequest)) {
         return res.status(400).json({ message: `This customer is not assign to you` })
     }
-    return res.status(200).json({ message: 'success' })
+    return res.status(200).json({ message: 'Success' })
 }

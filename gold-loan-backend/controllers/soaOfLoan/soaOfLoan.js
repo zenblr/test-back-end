@@ -162,6 +162,6 @@ ws.cell(11, 6, 11, 7, true).string(`${masterLoan.outstandingAmount}`).style(styl
         ws.cell(i + 18, 13).number(Math.abs(Number(closingBalance))).style(numberStyle).style(style);
     }
     return wb.write(`${Date.now()}.xlsx`, res);
-    // return res.status(200).json({ message: "success",masterLoan });
+    // return res.status(200).json({ message: "Success",masterLoan });
 }
 

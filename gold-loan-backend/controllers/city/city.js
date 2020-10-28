@@ -21,7 +21,7 @@ exports.postCity = async (req, res, next) => {
         //     let data = await models.city.create({ name: jsonArray[i].name, stateId: jsonArray[i].state_id }, { transaction: t })
         // }
     })
-    return res.status(200).json({ message: "success" })
+    return res.status(200).json({ message: "Success" })
 
 
 }
@@ -32,7 +32,7 @@ exports.getCity = async (req, res, next) => {
         where: { isActive: true, stateId: stateId },
         attributes: ['id', 'name', 'stateId'],
     });
-    res.status(200).json({ message: 'sucess', data: city })
+    res.status(200).json({ message: 'Success', data: city })
 
 
 }

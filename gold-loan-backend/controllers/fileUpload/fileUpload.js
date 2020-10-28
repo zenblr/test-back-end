@@ -47,7 +47,7 @@ exports.uploadFile =
             }else if (fileFor == "fullRelease") {
                 destination = `public/uploads/fullRelease/${fullReleaseId}/`;
             } else {
-                return res.status(422).json({ message: 'reason not found' });
+                return res.status(422).json({ message: 'Reason not found' });
             }
             if (process.env.FILE_TO_AWS == 'true') {
                 AWS.config.update({
