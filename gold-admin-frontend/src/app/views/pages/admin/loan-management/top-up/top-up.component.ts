@@ -1,9 +1,10 @@
 import { Component, OnInit, ElementRef, ChangeDetectorRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { OrnamentsComponent } from '../../../../partials/components/ornaments/ornaments.component';
 import { PaymentDialogComponent } from '../../../../partials/components/payment-dialog/payment-dialog.component';
+import { TopUpService } from '../../../../../core/loan-management/top-up/top-up.service';
 
 @Component({
   selector: 'kt-top-up',
@@ -16,16 +17,29 @@ export class TopUpComponent implements OnInit {
   showPaymentConfirmation: boolean;
   topUp = new FormControl(null, Validators.required);
   paymentValue: any;
+  masterLoanId: any;
+  loanDetails: any;
 
   constructor(
     private router: Router,
     private fb: FormBuilder,
     private dialog: MatDialog,
     private ele: ElementRef,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private route: ActivatedRoute,
+    private topUpService: TopUpService
   ) { }
 
   ngOnInit() {
+    this.masterLoanId = this.route.snapshot.params.id
+    this.getTopupDetails(this.masterLoanId)
+  }
+
+  getTopupDetails(id) {
+    this.topUpService.getTopupDetails(id).subscribe(res => {
+      this.loanDetails = res.data
+      this.ref.detectChanges();
+    })
   }
 
   eligibleTopUp() {

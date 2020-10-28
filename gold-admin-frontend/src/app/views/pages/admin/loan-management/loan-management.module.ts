@@ -75,7 +75,7 @@ const rout: Routes = [
     component: LoanApplicationFormComponent
   },
   {
-    path: 'topup',
+    path: 'topup/:id',
     component: TopUpComponent
   },
   {
