@@ -205,10 +205,11 @@ exports.getAssignedCustomer = async (req, res, next) => {
 
     let goldModule = await models.module.findOne({ where: { moduleName: 'gold loan' } })
     let start = new Date();
-    start.setHours(0, 0, 0, 0);
+    start.setHours(5, 30, 0, 0);
     let end = new Date();
     end.setHours(23, 59, 59, 999);
-
+    end = new Date(moment(end).utcOffset("+05:30"))
+    console.log(start, end)
     let searchQuery = {
         [Op.and]: [query, {
             [Op.or]: [{
@@ -225,7 +226,8 @@ exports.getAssignedCustomer = async (req, res, next) => {
                 "$masterLoan.packet_submitted_date$": {
                     [Op.between]: [start, end]
                 }
-            }, {
+            },
+            {
                 status: "incomplete"
             }
         ],
@@ -328,8 +330,8 @@ exports.getAssignedCustomer = async (req, res, next) => {
             [models.customer, { model: models.customerKycAddressDetail, as: 'customerKycAddress' }, 'id', 'asc'],
             [{ model: models.customerLoanMaster, as: 'masterLoan' }, { model: models.customerLoan, as: 'customerLoan' }, 'id', 'asc']
         ],
-        offset: offset,
-        limit: pageSize
+        // offset: offset,
+        // limit: pageSize
     })
 
     let count = await models.appraiserRequest.findAll({
