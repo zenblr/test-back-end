@@ -52,7 +52,7 @@
                     </div>
                     <div class="col-7">
                         <input type="text" ktWeight #amt class="form-control" formControlName="finalLoanAmount"
-                            placeholder="0,00,000" (blur)="amountValidation();" (keyup)="partnerReset()"
+                            placeholder="0,00,000" (blur)="amountValidation();"
                             [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
                         <div>
                             <mat-error
@@ -350,14 +350,14 @@
                             </label>
                         </div>
                     </div> -->
-                    <div class="row " *ngIf="controls.isUnsecuredSchemeApplied.value && !disable">
+                    <!-- <div class="row " *ngIf="controls.isUnsecuredSchemeApplied.value && !disable">
                         <div class="col-12">
                             <div class="kt-margin-t-20 text-center">
                                 <kt-button [value]="'Change Unsecured Scheme'" [type]="'button'"
                                     (click)="changeUnSecuredScheme()"></kt-button>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
