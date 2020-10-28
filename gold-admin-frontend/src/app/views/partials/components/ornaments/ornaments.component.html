@@ -698,7 +698,7 @@
                     Processing Charges - <span class="currency">
                         {{processingCharges | indianCurrencyFormat}}</span>
                 </b>
-                <b [ngClass]="{'float-right': buttonValue == 'Pay Processing Charges'}">
+                <b [ngClass]="{'float-right': buttonValue == 'Pay Processing Charges'}" *ngIf="scrapIds">
                     {{scrapIds ? 'Total Scrap Amount' : 'Total Eligible Amount'}} - <span class="currency">
                         {{totalAmount | indianCurrencyFormat}}</span>
                 </b>

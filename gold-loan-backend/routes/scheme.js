@@ -20,7 +20,7 @@ route.delete('/', checkAuth, checkRolePermission, wrapper(deactiveScheme)); // d
 
 route.get('/partner-scheme/:id', checkAuth, checkRolePermission, wrapper(readSchemeByPartnerId)) //read partner scheme
 
-route.get('/partner-scheme-amount/:amount', checkAuth, checkRolePermission, wrapper(readSchemeOnAmount)) //read scheme on amount
+route.get('/partner-scheme-amount/:masterLoanId', checkAuth, wrapper(readSchemeOnAmount)) //read scheme on amount
 
 route.get('/:id', checkAuth, checkRolePermission, wrapper(readSchemeById)); // read scheme by id route
 
@@ -28,7 +28,7 @@ route.put('/update-default/:id', checkAuth, checkRolePermission, wrapper(UpdateD
 
 route.get('/unsecured-scheme/:id/:amount', checkAuth, checkRolePermission, wrapper(readUnsecuredSchemeOnAmount));
 
-route.get('/unsecured-scheme', checkAuth, wrapper(getUnsecuredScheme))
+route.post('/unsecured-scheme', checkAuth, wrapper(getUnsecuredScheme))
 
 module.exports = route;
 

@@ -271,6 +271,10 @@ export class DisburseComponent implements OnInit {
     }
   }
 
+  download(){
+    this.loanService.downloadBankDetails(this.masterAndLoanIds.masterLoanId).subscribe( )
+  }
+
   submit() {
     if (this.disburseForm.invalid) {
       this.disburseForm.markAllAsTouched()
