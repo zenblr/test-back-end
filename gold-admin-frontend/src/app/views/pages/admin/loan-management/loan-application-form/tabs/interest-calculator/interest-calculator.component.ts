@@ -119,7 +119,6 @@ export class InterestCalculatorComponent implements OnInit {
 
     if (changes.ornamentDetails && changes.ornamentDetails.currentValue) {
       this.partner()
-
     }
 
     if (changes.totalAmt) {
@@ -218,7 +217,11 @@ export class InterestCalculatorComponent implements OnInit {
     this.partnerService.getPartnerBySchemeAmount(this.masterAndLoanIds.masterLoanId).subscribe(res => {
       this.partnerList = res.data;
       this.returnScheme()
+      if(this.controls.partner.valid){
+        this.calcualteLoanAmount()
+      }
       this.ref.detectChanges()
+
     })
     // }
   }
@@ -307,6 +310,11 @@ export class InterestCalculatorComponent implements OnInit {
 
     this.selectedScheme = temp[0]
     this.selectedUnsecuredscheme = this.selectedScheme.unsecuredScheme
+    
+    this.ref.detectChanges()
+  }
+
+  calcualteLoanAmount(){
     this.totalAmt = 0;
     this.ornamentDetails.forEach(element => {
       let rpg = 0
@@ -317,7 +325,7 @@ export class InterestCalculatorComponent implements OnInit {
       element.rpg = Number(this.selectedScheme.rpg) + Number(rpg)
       this.totalAmt += element.loanAmount
     });
-    this.ref.detectChanges()
+    console.log(this.totalAmt)
   }
 
   scheme() {
