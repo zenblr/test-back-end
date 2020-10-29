@@ -361,7 +361,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
     let secureSchemeMaximumAmtAllowed = (securedScheme.maximumPercentageAllowed / 100)
 
-    let securedLoanAmount = fullAmount * secureSchemeMaximumAmtAllowed
+    let securedLoanAmount = Number(fullAmount) * secureSchemeMaximumAmtAllowed
 
 
     if (loanAmount > securedLoanAmount || securedScheme.isSplitAtBeginning) {
@@ -396,11 +396,11 @@ exports.checkForLoanType = async (req, res, next) => {
             unsecuredAmount = unsecuredSchemeAmount
         } else {
 
-            unsecuredAmount = fullAmount * unsecureSchemeMaximumAmtAllowed
+            unsecuredAmount = Number(fullAmount) * unsecureSchemeMaximumAmtAllowed
         }
 
         let totalEligibleAmt = Math.round(fullAmount * (ltvPercent[0].ltvGoldValue / 100))
-
+        
 
         if (unsecuredSchemeApplied) {
 
