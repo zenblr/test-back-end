@@ -34,6 +34,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() loanTransfer: EventEmitter<any> = new EventEmitter();
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() totalAmt: EventEmitter<any> = new EventEmitter();
+  @Output() ornamentValue: EventEmitter<any> = new EventEmitter();
   @Output() finaltotalAmt: EventEmitter<any> = new EventEmitter();
   @Output() fullAmt: EventEmitter<any> = new EventEmitter();
   @Output() finalScrapAmount: EventEmitter<any> = new EventEmitter();
@@ -49,6 +50,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() karatFlag
   @Input() isPartRelease
   @Output() partPayment: EventEmitter<any> = new EventEmitter();
+  @Output() ornamentDetails: EventEmitter<any> = new EventEmitter();
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
   @ViewChild('stoneTouch', { static: false }) stoneTouch: ElementRef
@@ -210,13 +212,23 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
             this.addmore()
           }
         }
+        let ornamentDetail = []
         for (let index = 0; index < array.length; index++) {
+
           const group = this.OrnamentsData.at(index) as FormGroup
           group.patchValue(array[index])
           if (this.isPartRelease) {
             group.patchValue({ currentLtvAmount: this.ltvGoldRate, currentGoldRate: this.goldRate })
             this.calculateLtvAmount(index)
+           
+          
           }
+          let data = { id: 0, loanAmount: 0,ornamentsCal:0 }
+          const controls = this.OrnamentsData.at(index) as FormGroup;
+          controls.controls.id.patchValue(array[index].id)
+          data.id = array[index].id
+          data.ornamentsCal = controls.controls.evaluation.value
+          ornamentDetail.push(data)
           // this.calcGoldDeductionWeight(index)
           Object.keys(group.value).forEach(key => {
 
@@ -232,7 +244,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           })
           this.ref.detectChanges()
         }
+        this.ornamentDetails.emit(ornamentDetail)
       }
+
     }
     if (changes.meltingDetails) {
       if (changes.action.currentValue == 'edit') {
@@ -317,16 +331,18 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
             this.totalAmount = Math.round(this.totalAmount)
             this.totalAmt.emit(this.totalAmount)
           }
-        } else {
-          this.OrnamentsData.value.forEach(element => {
-            this.totalAmount += Number(element.loanAmount)
-            this.fullAmount += Number(element.ornamentFullAmount)
-          });
-          this.totalAmount = Math.round(this.totalAmount)
-          this.fullAmount = Math.round(this.fullAmount)
-          this.totalAmt.emit(this.totalAmount)
-          this.fullAmt.emit(this.fullAmount)
         }
+        //  else {
+        //   this.OrnamentsData.value.forEach(element => {
+        //     // this.totalAmount += Number(element.evaluation)
+        //     // this.fullAmount += Number(element.ornamentFullAmount)
+        //   });
+        //   // this.totalAmount = Math.round(this.totalAmount)
+        //   // this.fullAmount = Math.round(this.fullAmount)
+        //   // this.totalAmt.emit(0)
+        //   // this.ornamentValue.emit(this.totalAmount)
+        //   // this.fullAmt.emit(this.fullAmount)
+        // }
       }
     })
 
@@ -438,7 +454,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       purityTest: [[]],
       ltvPercent: [, [Validators.required]],
       ltvAmount: [],
-      loanAmount: ['', [Validators.required]],
+      loanAmount: [],
       id: [],
       currentLtvAmount: [this.ltvGoldRate],
       ornamentImageData: [, Validators.required],
@@ -459,7 +475,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       customerConfirmation: [],
       finalScrapAmountAfterMelting: [],
       processingCharges: [],
-      packetId: []
+      packetId: [],
+      evaluation: []
     }))
     this.createImageArray()
     this.selected = this.OrnamentsData.length;
@@ -773,12 +790,14 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     const controls = this.OrnamentsData.at(index) as FormGroup;
     if (controls.controls.ltvPercent.valid) {
       let ltvPercent = controls.controls.ltvPercent.value
-      let ltv = controls.controls.currentLtvAmount.value * (ltvPercent / 100)
-      controls.controls.ltvAmount.patchValue(ltv)
-      controls.controls.loanAmount.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
-      let fullAmount = controls.controls.currentGoldRate.value * (ltvPercent / 100)
-      controls.controls.ornamentFullAmount.patchValue((fullAmount * controls.controls.netWeight.value).toFixed(2))
-      console.log(controls.controls.ornamentFullAmount.value)
+      let ltv = (ltvPercent / 100)
+      // controls.controls.ltvAmount.patchValue(ltv)
+      // controls.controls.loanAmount.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
+      controls.controls.evaluation.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
+      
+      // let fullAmount = controls.controls.currentGoldRate.value * (ltvPercent / 100)
+      // controls.controls.ornamentFullAmount.patchValue((fullAmount * controls.controls.netWeight.value).toFixed(2))
+      // console.log(controls.controls.ornamentFullAmount.value)
     }
     console.log(this.OrnamentsData.value)
   }
@@ -869,10 +888,16 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds, this.fullAmount).pipe(
         map(res => {
           let array = this.OrnamentsData.controls
+          let ornamentDetail = []
           for (let index = 0; index < array.length; index++) {
+            let data = { id: 0, loanAmount: 0,ornamentsCal:0 }
             const controls = this.OrnamentsData.at(index) as FormGroup;
             controls.controls.id.patchValue(res.ornaments[index].id)
+            data.id = res.ornaments[index].id
+            data.ornamentsCal = controls.controls.evaluation.value
+            ornamentDetail.push(data)
           }
+          this.ornamentDetails.emit(ornamentDetail)
           if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
             this.loanTransfer.emit(res.loanTransferData.loanTransfer.disbursedLoanAmount)
           }
