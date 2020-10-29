@@ -169,7 +169,7 @@ exports.logout = async (req, res, next) => {
     let logout = await models.logger.destroy({ where: { token: token } });
     client.del(token, JSON.stringify(token));
 
-    return res.status(202).json({ message: `logout successfull` })
+    return res.status(202).json({ message: `Logout successfull` })
 }
 
 exports.verifyLoginOtp = async (req, res, next) => {

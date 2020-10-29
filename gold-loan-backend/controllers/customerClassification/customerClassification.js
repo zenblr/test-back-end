@@ -64,7 +64,7 @@ exports.cceKycRating = async (req, res, next) => {
 
                     await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
                 });
-                return res.status(200).json({ message: 'success' })
+                return res.status(200).json({ message: 'Success' })
             } else {
                 if ((kycRatingFromCce == 1 || kycRatingFromCce == 2 || kycRatingFromCce == 3) && kycStatusFromCce == "approved") {
                     return res.status(400).json({ message: `Please check rating.` })
@@ -77,11 +77,11 @@ exports.cceKycRating = async (req, res, next) => {
 
                     await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
                 });
-                return res.status(200).json({ message: 'success' })
+                return res.status(200).json({ message: 'Success' })
             }
         }
 
-        return res.status(200).json({ message: 'success' })
+        return res.status(200).json({ message: 'Success' })
     } else {
 
         let scrapCceId = req.userData.id
@@ -124,6 +124,7 @@ exports.cceKycRating = async (req, res, next) => {
             }
             if (scrapKycStatusFromCce !== "approved") {
                 if (scrapReasonFromCce.length == 0) {
+
                     return res.status(400).json({ message: `If you are not approved the customer kyc you have to give a reason.` })
                 }
                 await sequelize.transaction(async (t) => {
@@ -134,7 +135,7 @@ exports.cceKycRating = async (req, res, next) => {
 
                     await models.customerKycClassification.update({ customerId, customerKycId, scrapKycRatingFromCce, scrapKycStatusFromCce, scrapReasonFromCce, scrapCceId }, { where: { customerId }, transaction: t })
                 });
-                return res.status(200).json({ message: 'success' })
+                return res.status(200).json({ message: 'Success' })
             } else {
                 if ((scrapKycRatingFromCce == 1 || scrapKycRatingFromCce == 2 || scrapKycRatingFromCce == 3) && scrapKycStatusFromCce == "approved") {
                     return res.status(400).json({ message: `Please check rating.` })

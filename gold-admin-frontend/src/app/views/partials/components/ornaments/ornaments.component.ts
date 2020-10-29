@@ -392,7 +392,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   calcGoldDeductionWeight(index) {
     const group = this.OrnamentsData.at(index) as FormGroup;
     if (group.controls.grossWeight.valid && group.controls.deductionWeight.valid
-      && group.controls.grossWeight.value && group.controls.deductionWeight.value) {
+      && group.controls.grossWeight.value) {
       const deductionWeight = Number(group.controls.grossWeight.value) - Number(group.controls.deductionWeight.value);
       group.controls.netWeight.patchValue(deductionWeight.toFixed(2));
       // this.finalNetWeight(index)

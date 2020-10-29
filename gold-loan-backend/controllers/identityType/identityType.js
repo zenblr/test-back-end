@@ -25,7 +25,7 @@ exports.readIdentityType = async (req, res) => {
     if (!readIdentityType[0]) {
         return res.status(404).json({ message: 'data not found' });
     }
-    res.status(200).json({ message: "success", data: readIdentityType });
+    res.status(200).json({ message: "Success", data: readIdentityType });
 }
 
 // update Identity type

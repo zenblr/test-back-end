@@ -382,7 +382,7 @@ exports.getSingleScrapInCustomerManagment = async (req, res, next) => {
             ]
     
         });
-        return res.status(200).json({ message: 'success', data: customerScrap })
+        return res.status(200).json({ message: 'Success', data: customerScrap })
 
      
 }
