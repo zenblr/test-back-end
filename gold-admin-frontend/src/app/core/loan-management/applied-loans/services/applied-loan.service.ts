@@ -102,9 +102,9 @@ export class AppliedLoanService {
       }))
   }
 
-  downloadBankDetails(masterLoanId): Observable<any> {
+  downloadBankDetails(masterLoanId, type): Observable<any> {
     console.log(masterLoanId)
-    return this.http.get(`api/loan-process/download-bank-details?masterLoanId=${masterLoanId}&type=IMPS`, { responseType: 'arraybuffer' })
+    return this.http.get(`api/loan-process/download-bank-details?masterLoanId=${masterLoanId}&type=${type}`, { responseType: 'arraybuffer' })
       .pipe(
         map((res) => {
           return res;
