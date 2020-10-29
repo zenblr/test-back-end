@@ -58,7 +58,7 @@ exports.deactivateStage = async (req, res, next) => {
     const { stageId, isActive } = req.query;
     const stage = await models.stage.update({ isActive: isActive }, { where: { id: stageId } })
     if (stage[0] == 0) {
-        return res.status(404).json({ message: "stage deleted failed" });
+        return res.status(404).json({ message: "Stage deleted failed" });
     }
     return res.status(200).json({ message: `Updated` })
 

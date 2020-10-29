@@ -221,7 +221,7 @@ exports.readLoanDetails = async (req, res, next) => {
 
     let customerLoan = await getSingleLoanDetail(customerLoanId, masterLoanId)
 
-    return res.status(200).json({ message: 'success', data: customerLoan })
+    return res.status(200).json({ message: 'Success', data: customerLoan })
 }
 
 exports.schemeBasedOnPriceRange = async (req, res, next) => {
@@ -254,7 +254,7 @@ exports.readFeedBack = async (req, res) => {
     let readCustomerFeedBack = await models.feedBack.findAll({ attributes: ['customerName', 'feedBack', 'rating', 'profileImage'], where: { isActive: true } });
 
     if (!readCustomerFeedBack[0]) {
-        return res.status(404).json({ message: 'data not found' });
+        return res.status(404).json({ message: 'Data not found' });
     }
     return res.status(200).json({ data: readCustomerFeedBack });
 }
@@ -269,9 +269,9 @@ exports.addFeedBack = async (req, res) => {
         let profileImage = customerPersonalDetails.dataValues.profileImage;
         let addFeedBackData = await models.feedBack.create({ customerName, contactNumber, feedBack, rating, customerId, profileImage }, { transaction: t });
         if (!addFeedBackData) {
-            return res.status(422).json({ message: 'feedback is not created' });
+            return res.status(422).json({ message: 'Feedback is not created' });
         }
-        return res.status(201).json({ message: 'created' });
+        return res.status(201).json({ message: 'Created' });
     })
 }
 

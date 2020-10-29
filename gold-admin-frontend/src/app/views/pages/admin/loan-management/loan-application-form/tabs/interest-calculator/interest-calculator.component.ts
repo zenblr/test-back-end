@@ -124,8 +124,9 @@ export class InterestCalculatorComponent implements OnInit {
 
     if (changes.totalAmt) {
       if (changes.totalAmt.currentValue != changes.totalAmt.previousValue && changes.totalAmt.currentValue != 0) {
-        this.partner()
-        this.controls.finalLoanAmount.reset()
+        if(!this.transferLoan && !this.isNewLoanFromPartRelease){
+          this.controls.finalLoanAmount.reset()
+        }
       }
     }
 
@@ -143,6 +144,7 @@ export class InterestCalculatorComponent implements OnInit {
           }
           if (finalLoan.masterLoan.isLoanTransfer) {
             this.controls.finalLoanAmount.disable()
+            this.controls.finalLoanAmount.patchValue(finalLoan.masterLoan.loanTransfer.disbursedLoanAmount)
             this.transferLoan = true;
             this.partner()
 
@@ -304,13 +306,12 @@ export class InterestCalculatorComponent implements OnInit {
     let temp = this.schemesList.filter(scheme => {
       return scheme.id == this.controls.schemeId.value
     })
-
     this.selectedScheme = temp[0]
     this.selectedUnsecuredscheme = this.selectedScheme.unsecuredScheme
     this.totalAmt = 0;
     this.ornamentDetails.forEach(element => {
       let rpg = 0
-      if(this.unSecuredScheme){
+      if(this.selectedUnsecuredscheme){
         rpg = this.selectedUnsecuredscheme.rpg
       }
       element.loanAmount = (Number(this.selectedScheme.rpg) + Number(rpg))* element.ornamentsCal

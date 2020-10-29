@@ -22,7 +22,7 @@ exports.postState = async (req, res, next) => {
         // }
     })
     return res.status(200).json({
-        message: "success"
+        message: "Success"
     })
 
 
@@ -36,7 +36,7 @@ exports.getState = async (req, res, next) => {
         where: { isActive: true },
         attributes: ['id', 'name'],
     });
-    res.status(200).json({ message: "success", data: state })
+    res.status(200).json({ message: "Success", data: state })
 
 
 }

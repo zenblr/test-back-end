@@ -758,7 +758,7 @@ exports.verifyCheckOut = async (req, res, next) => {
 
     })
 
-    return res.status(200).json({ message: 'success' })
+    return res.status(200).json({ message: 'Success' })
 
 }
 
@@ -1303,7 +1303,7 @@ exports.getNextPacketLoaction = async (req, res, next) => {
         locationData = await models.packetLocation.findAll({ where: { location: 'partner branch out' } });
     }
 
-    return res.status(200).json({ message: 'success', data: locationData })
+    return res.status(200).json({ message: 'Success', data: locationData })
 
 }
 

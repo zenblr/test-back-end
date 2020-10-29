@@ -54,13 +54,13 @@ exports.customerDetails = async (req, res, next) => {
         let customerCurrentStage = customerLoanStage.loanTransfer.loanTransferCurrentStage;
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanStage.id, loanType: 'secured' } })
         if (customerCurrentStage == '2') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage })
         } else if (customerCurrentStage == '3') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage })
         } else if (customerCurrentStage == '4') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, loanUniqueId: customerLoanStage.loanTransfer.transferredLoanId, disbursedLoanAmount: customerLoanStage.loanTransfer.disbursedLoanAmount })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, loanUniqueId: customerLoanStage.loanTransfer.transferredLoanId, disbursedLoanAmount: customerLoanStage.loanTransfer.disbursedLoanAmount })
         } else if (customerCurrentStage == '5') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, loanUniqueId: customerLoanStage.loanTransfer.transferredLoanId, disbursedLoanAmount: customerLoanStage.loanTransfer.disbursedLoanAmount })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, loanUniqueId: customerLoanStage.loanTransfer.transferredLoanId, disbursedLoanAmount: customerLoanStage.loanTransfer.disbursedLoanAmount })
         }
     }
 
@@ -81,7 +81,7 @@ exports.loanTransferBasicDeatils = async (req, res, next) => {
         let customerLoanMaster = await models.customerLoanMaster.findOne({ where: { id: masterLoanId, appraiserRequestId: requestId } })
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanMaster.id, loanType: 'secured' } })
         if (!check.isEmpty(customerLoanMaster)) {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanMaster.id, loanCurrentStage: '2' })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanMaster.id, loanCurrentStage: '2' })
         }
     }
     let loanData = await sequelize.transaction(async t => {
@@ -104,7 +104,7 @@ exports.loanTransferBasicDeatils = async (req, res, next) => {
         await sendTransferLoanRequestMessage(data.mobileNumber, data.firstName)
         return loan
     })
-    return res.status(200).json({ message: 'success', loanId: loanData.id, masterLoanId: loanData.masterLoanId, loanCurrentStage: '2' })
+    return res.status(200).json({ message: 'Success', loanId: loanData.id, masterLoanId: loanData.masterLoanId, loanCurrentStage: '2' })
 
 }
 
@@ -131,7 +131,7 @@ exports.loanTransferDocuments = async (req, res, next) => {
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.LOAN_DOCUMENTS_UPDATED, createdBy, modifiedBy }, { transaction: t })
             }
         })
-        return res.status(200).json({ message: 'success', masterLoanId, loanId, loanCurrentStage: '3' })
+        return res.status(200).json({ message: 'Success', masterLoanId, loanId, loanCurrentStage: '3' })
     } else {
         return res.status(400).json({ message: 'You cannot change documents now' })
     }
@@ -159,15 +159,15 @@ exports.loanTransferAppraiserRating = async (req, res, next) => {
             if (loanTransferStatusForAppraiser == "approved") {
                 await models.customerLoanTransfer.update({ loanTransferStatusForAppraiser, modifiedBy, reasonByAppraiser, loanTransferCurrentStage: '4' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.APPRAISER_RATING_APPROVED, createdBy, modifiedBy }, { transaction: t })
-                return res.status(200).json({ message: 'success', masterLoanId, loanId, loanCurrentStage: '4' })
+                return res.status(200).json({ message: 'Success', masterLoanId, loanId, loanCurrentStage: '4' })
             } else if (loanTransferStatusForAppraiser == "pending") {
                 await models.customerLoanTransfer.update({ loanTransferStatusForAppraiser, reasonByAppraiser, modifiedBy, loanTransferCurrentStage: '3' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.APPRAISER_RATING_PENDING, createdBy, modifiedBy }, { transaction: t })
-                return res.status(200).json({ message: 'success', masterLoanId, loanId, loanCurrentStage: '3' })
+                return res.status(200).json({ message: 'Success', masterLoanId, loanId, loanCurrentStage: '3' })
             } else if (loanTransferStatusForAppraiser == "rejected") {
                 await models.customerLoanTransfer.update({ loanTransferStatusForAppraiser, reasonByAppraiser, modifiedBy, loanTransferCurrentStage: '3' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.APPRAISER_RATING_REJECTED, createdBy, modifiedBy }, { transaction: t })
-                return res.status(200).json({ message: 'success', masterLoanId, loanId, loanCurrentStage: '3' })
+                return res.status(200).json({ message: 'Success', masterLoanId, loanId, loanCurrentStage: '3' })
             }
         } else {
             return res.status(400).json({ message: 'You cannot change status for this customer' })
@@ -211,15 +211,15 @@ exports.loanTransferBmRating = async (req, res, next) => {
                 await models.customerLoanTransfer.update({ loanTransferStatusForBM, modifiedBy, reasonByBM, loanTransferCurrentStage: '5', transferredLoanId: loanUniqueId }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { masterLoanId: masterLoanId }, transaction: t })
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.BM_RATING_APPROVED, createdBy, modifiedBy }, { transaction: t })
-                return res.status(200).json({ message: 'success', masterLoanId, loanId, loanUniqueId, disbursedLoanAmount: masterLoan.loanTransfer.disbursedLoanAmount, loanCurrentStage: '5' })
+                return res.status(200).json({ message: 'Success', masterLoanId, loanId, loanUniqueId, disbursedLoanAmount: masterLoan.loanTransfer.disbursedLoanAmount, loanCurrentStage: '5' })
             } else if (loanTransferStatusForBM == "rejected") {
                 await models.customerLoanTransfer.update({ loanTransferStatusForBM, modifiedBy, reasonByBM, loanTransferCurrentStage: '4' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.BM_RATING_REJECTED, createdBy, modifiedBy }, { transaction: t })
-                return res.status(200).json({ message: 'success', masterLoanId, loanId, loanCurrentStage: '4' })
+                return res.status(200).json({ message: 'Success', masterLoanId, loanId, loanCurrentStage: '4' })
             } else {
                 await models.customerLoanTransfer.update({ loanTransferStatusForAppraiser: "pending", loanTransferStatusForBM, modifiedBy, reasonByBM, loanTransferCurrentStage: '3' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.BM_RATING_PENDING, createdBy, modifiedBy }, { transaction: t })
-                return res.status(200).json({ message: 'success', masterLoanId, loanId, loanCurrentStage: '3' })
+                return res.status(200).json({ message: 'Success', masterLoanId, loanId, loanCurrentStage: '3' })
             }
         } else {
             return res.status(400).json({ message: 'You cannot change status for this customer' })
@@ -250,7 +250,7 @@ exports.loanTransferDisbursal = async (req, res, next) => {
 
                 await sendDisbursalMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
 
-                return res.status(200).json({ message: 'success', masterLoanId, loanId })
+                return res.status(200).json({ message: 'Success', masterLoanId, loanId })
             } else {
                 if (masterLoan.loanTransfer.loanTransferStatusForBM == "incomplete") {
                     return res.status(400).json({ message: 'BM approval  is pending' })
@@ -296,7 +296,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
     if (!customerLoan) {
         return res.status(404).json({ message: 'Data not found' })
     } else {
-        return res.status(200).json({ message: 'success', data: customerLoan })
+        return res.status(200).json({ message: 'Success', data: customerLoan })
     }
 }
 
@@ -420,17 +420,17 @@ exports.customerDetailsLoanTransfer = async (req, res, next) => {
         let customerCurrentStage = customerLoanStage.customerLoanCurrentStage
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanStage.id, loanType: 'secured' } })
         if (customerCurrentStage == '1') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, customerData, loanTransfer, loanTransfetData })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, customerData, loanTransfer, loanTransfetData })
         } else if (customerCurrentStage == '2') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, loanTransfer, loanTransfetData })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, loanTransfer, loanTransfetData })
         } else if (customerCurrentStage == '3') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, loanTransfer, loanTransfetData })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, loanTransfer, loanTransfetData })
         } else if (customerCurrentStage == '4') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt, loanTransfer, loanTransfetData })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt, loanTransfer, loanTransfetData })
         } else if (customerCurrentStage == '5') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount, loanTransfer, loanTransfetData, firstName, lastName })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount, loanTransfer, loanTransfetData, firstName, lastName })
         } else if (customerCurrentStage == '6') {
-            return res.status(200).json({ message: 'success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage, loanTransfer, loanTransfetData })
+            return res.status(200).json({ message: 'Success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage, loanTransfer, loanTransfetData })
         }
     } else {
         res.status(400).json({ message: 'Loan transfer process is pending' });
