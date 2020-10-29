@@ -306,13 +306,12 @@ export class InterestCalculatorComponent implements OnInit {
     let temp = this.schemesList.filter(scheme => {
       return scheme.id == this.controls.schemeId.value
     })
-
     this.selectedScheme = temp[0]
     this.selectedUnsecuredscheme = this.selectedScheme.unsecuredScheme
     this.totalAmt = 0;
     this.ornamentDetails.forEach(element => {
       let rpg = 0
-      if(this.unSecuredScheme){
+      if(this.selectedUnsecuredscheme){
         rpg = this.selectedUnsecuredscheme.rpg
       }
       element.loanAmount = (Number(this.selectedScheme.rpg) + Number(rpg))* element.ornamentsCal
