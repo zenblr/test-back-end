@@ -21,7 +21,7 @@ export class UserPersonalComponent implements OnInit {
   personalForm: FormGroup;
   occupations = [];
   customerDetails = this.userDetailsService.userData;
-  // customerDetails = { customerId: 1, customerKycId: 2, moduleId: 1, userType: null }
+  // customerDetails = { customerId: 1, customerKycId: 2, moduleId: 3, userType: 'Corporate' }
   file: any;
   profile = '';
   signatureJSON = { url: null, isImage: false };
@@ -173,12 +173,12 @@ export class UserPersonalComponent implements OnInit {
           if (this.signature && this.signature.nativeElement.value) this.signature.nativeElement.value = '';
           if (this.constitutionsDeed && this.constitutionsDeed.nativeElement.value) this.constitutionsDeed.nativeElement.value = '';
           if (this.gstCertificate && this.gstCertificate.nativeElement.value) this.gstCertificate.nativeElement.value = '';
+          event.target.value = ''
         })
       ).subscribe()
+    } else {
+      event.target.value = ''
     }
-    // else {
-    //   this.toastr.error('Upload Valid File Format');
-    // }
   }
 
   public calculateAge(dateOfBirth: any) {
