@@ -8,7 +8,7 @@ exports.addSmsAlert = async (req, res, next) => {
     let createdBy = req.userData.id;
     let updatedBy = req.userData.id;
     let addSmsAlert = await models.smsAlert.create({ alertFor, content, createdBy, updatedBy });
-    if (!addSmsAlert) { return res.status(422).json({ message: 'sms alert not created' }); }
+    if (!addSmsAlert) { return res.status(422).json({ message: 'Sms alert not created' }); }
     return res.status(201).json({ message: 'sms alert created' });
 }
 
@@ -50,7 +50,7 @@ exports.readSmsAlertById = async (req, res) => {
         attributes: ['id', 'alertFor', 'content']
     });
     if (!readSmsAlertById) {
-        return res.status(404).json({ message: 'data not found' });
+        return res.status(404).json({ message: 'Data not found' });
     }
     return res.status(200).json(readSmsAlertById);
 }
@@ -62,9 +62,9 @@ exports.updateSmsAlert = async (req, res, next) => {
     const { content } = req.body;
     let updateSmsAlertData = await models.smsAlert.update({ content, updatedBy }, { where: { id: smsAlertId, isActive: true } });
     if (!updateSmsAlertData[0]) {
-        return res.status(404).json({ message: 'sms alert updated failed' });
+        return res.status(404).json({ message: 'Sms alert updated failed' });
     }
-    return res.status(200).json({ message: 'updated' });
+    return res.status(200).json({ message: 'Updated' });
 }
 
 

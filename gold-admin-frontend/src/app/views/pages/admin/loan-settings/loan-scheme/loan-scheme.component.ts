@@ -126,33 +126,18 @@ export class LoanSchemeComponent implements OnInit {
     this.sharedService.closeFilter.next(true);
   }
 
-  changeDefault(event, index, item, partnerIdx) {
-    // let partnerArr: [] = this.schemes[partnerIdx].schemes;
-    // let count = 0;
-    // partnerArr.forEach(element => {
-    //   if (element['default']) {
-    //     count++;
-    //   }
-    // });
-    // if (count > 1) {
-    //   this.toastr.error('Please set another scheme as default from the selected partner')
-    //   return
-    // }
-
-    // let defaultStatus = event;
-    this.schemes[partnerIdx].schemes[index].default = true
-    // console.log(item)
-    this.loanSettingService.toogleDefault(item).subscribe(res => {
-      if (res) {
-        this.toastr.success("Updated Successfully")
-        this.getScheme()
-      }
-    }, err => {
-      this.schemes[partnerIdx].schemes[index].default = false
-      this.getScheme()
-    })
-    // console.log(event, index)
-  }
+  // changeDefault(event, index, item, partnerIdx) {
+  //   this.schemes[partnerIdx].schemes[index].default = true
+  //   this.loanSettingService.toogleDefault(item).subscribe(res => {
+  //     if (res) {
+  //       this.toastr.success("Updated Successfully")
+  //       this.getScheme()
+  //     }
+  //   }, err => {
+  //     this.schemes[partnerIdx].schemes[index].default = false
+  //     this.getScheme()
+  //   })
+  // }
 
   changeStatus(event, partnerIndex, schemeIndex, item) {
     // console.log(event, partnerIndex, schemeIndex, item);
@@ -185,18 +170,9 @@ export class LoanSchemeComponent implements OnInit {
           this.toastr.success('Scheme Deactivated');
           this.schemes[partnerIndex].schemes[schemeIndex].isActive = !event
         }
-        // this.getScheme()
       }),
         catchError(err => {
           if (err) {
-            // if (!event) {
-            //   this.schemes[partnerIndex].schemes[schemeIndex].isActive = false
-            // } else {
-            //   this.schemes[partnerIndex].schemes[schemeIndex].isActive = true
-            // }
-            // setTimeout(() => {
-            //   this.schemes[partnerIndex].schemes[schemeIndex].isActive = false
-            // }, 500)
           }
           throw (err)
         }),
@@ -207,4 +183,10 @@ export class LoanSchemeComponent implements OnInit {
       ).subscribe()
   }
 
+  scrollToUnsecuredScheme(id) {
+    setTimeout(() => {
+      let view = this.eleref.nativeElement.querySelector(`#${id}`) as HTMLElement
+      view.scrollIntoView({ behavior: "smooth", block: "start" })
+    }, 250)
+  }
 }

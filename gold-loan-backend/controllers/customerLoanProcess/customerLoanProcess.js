@@ -163,15 +163,15 @@ exports.customerDetails = async (req, res, next) => {
 
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanStage.id, loanType: 'secured' } })
         if (customerCurrentStage == '2') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, newLoanAmount })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, newLoanAmount })
         } else if (customerCurrentStage == '3') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, newLoanAmount })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, newLoanAmount })
         } else if (customerCurrentStage == '4') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt, newLoanAmount })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt, newLoanAmount })
         } else if (customerCurrentStage == '5') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount, firstName, lastName, newLoanAmount })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount, firstName, lastName, newLoanAmount })
         } else if (customerCurrentStage == '6') {
-            return res.status(200).json({ message: 'success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage, newLoanAmount })
+            return res.status(200).json({ message: 'Success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage, newLoanAmount })
         }
     }
 
@@ -206,7 +206,7 @@ exports.loanBasicDeatils = async (req, res, next) => {
         }
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanMaster.id, loanType: 'secured' } })
         if (!check.isEmpty(customerLoanMaster)) {
-            return res.status(200).json({ message: 'success', loanstage: stageId, loanId: loanId.id, masterLoanId: customerLoanMaster.id, loanCurrentStage: '2' })
+            return res.status(200).json({ message: 'Success', loanstage: stageId, loanId: loanId.id, masterLoanId: customerLoanMaster.id, loanCurrentStage: '2' })
         }
     }
 
@@ -233,7 +233,7 @@ exports.loanBasicDeatils = async (req, res, next) => {
         return loan
     })
 
-    return res.status(200).json({ message: 'success', loanstage: stageId, loanId: loanData.id, masterLoanId: loanData.masterLoanId, loanCurrentStage: '2' })
+    return res.status(200).json({ message: 'Success', loanstage: stageId, loanId: loanData.id, masterLoanId: loanData.masterLoanId, loanCurrentStage: '2' })
 
 }
 
@@ -255,7 +255,7 @@ exports.loanNomineeDetails = async (req, res, next) => {
             await models.customerLoanNomineeDetail.create({ loanId, masterLoanId, nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship, createdBy, modifiedBy }, { transaction: t })
             return loan
         })
-        return res.status(200).json({ message: 'success', masterLoanId, loanId, loanCurrentStage: '3' })
+        return res.status(200).json({ message: 'Success', masterLoanId, loanId, loanCurrentStage: '3' })
     } else {
         let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
         let loanData = await sequelize.transaction(async t => {
@@ -268,7 +268,7 @@ exports.loanNomineeDetails = async (req, res, next) => {
             await models.customerLoanNomineeDetail.update({ nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship, modifiedBy }, { where: { loanId: loanId }, transaction: t })
             return loan
         })
-        return res.status(200).json({ message: 'success', masterLoanId, loanId, loanCurrentStage: '3' })
+        return res.status(200).json({ message: 'Success', masterLoanId, loanId, loanCurrentStage: '3' })
 
     }
 
@@ -322,7 +322,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
 
             return createdOrnaments
         })
-        return res.status(200).json({ message: 'success', loanId, masterLoanId, loanCurrentStage: '4', totalEligibleAmt, ornaments: loanData, loanTransferData, newLoanAmount })
+        return res.status(200).json({ message: 'Success', loanId, masterLoanId, loanCurrentStage: '4', totalEligibleAmt, ornaments: loanData, loanTransferData, newLoanAmount })
     } else {
 
         let newOrnaments = allOrnmanets.map((single) => { return single.id })
@@ -345,9 +345,8 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
 
             return createdOrnaments
         })
-        return res.status(200).json({ message: 'success', allOrnmanets, loanId, masterLoanId, loanCurrentStage: '4', totalEligibleAmt, ornaments: loanData, loanTransferData, newLoanAmount })
+        return res.status(200).json({ message: 'Success', allOrnmanets, loanId, masterLoanId, loanCurrentStage: '4', totalEligibleAmt, ornaments: loanData, loanTransferData, newLoanAmount })
     }
-
 }
 
 // amount validation and check its a secured scheme aur unsecured scheme
@@ -380,7 +379,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
     }
 
-    return res.status(200).json({ data: { securedLoanAmount, processingCharge, isUnsecuredSchemeApplied, unsecuredAmount } })
+    return res.status(200).json({ data: { securedLoanAmount, processingCharge, isUnsecuredSchemeApplied, unsecuredAmount,securedScheme } })
     // }
 
 
@@ -863,7 +862,7 @@ exports.loanFinalLoan = async (req, res, next) => {
             }
 
         })
-        return res.status(200).json({ message: 'success', loanId: loanId, loanCurrentStage: '5', finalLoanAmount, firstName, lastName })
+        return res.status(200).json({ message: 'Success', loanId: loanId, loanCurrentStage: '5', finalLoanAmount, firstName, lastName })
     } else {
 
 
@@ -978,7 +977,7 @@ exports.loanFinalLoan = async (req, res, next) => {
             }
 
         })
-        return res.status(200).json({ message: 'success', loanId, masterLoanId, loanCurrentStage: '5', finalLoanAmount, firstName, lastName })
+        return res.status(200).json({ message: 'Success', loanId, masterLoanId, loanCurrentStage: '5', finalLoanAmount, firstName, lastName })
     }
 }
 
@@ -1028,7 +1027,7 @@ exports.loanBankDetails = async (req, res, next) => {
 
             return loan
         })
-        return res.status(200).json({ message: 'success', loanId, masterLoanId, loanCurrentStage: '6' })
+        return res.status(200).json({ message: 'Success', loanId, masterLoanId, loanCurrentStage: '6' })
     } else {
 
         let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
@@ -1043,7 +1042,7 @@ exports.loanBankDetails = async (req, res, next) => {
 
             return loan
         })
-        return res.status(200).json({ message: 'success', loanId, masterLoanId, loanCurrentStage: '6' })
+        return res.status(200).json({ message: 'Success', loanId, masterLoanId, loanCurrentStage: '6' })
     }
 
 }
@@ -1183,7 +1182,7 @@ exports.loanAppraiserRating = async (req, res, next) => {
             ornamentType.push({ ornamentType: ornamentsDetail.ornamentType.name, id: ornamentsDetail.id })
         }
     }
-    return res.status(200).json({ message: 'success', ornamentType })
+    return res.status(200).json({ message: 'Success', ornamentType })
 
 }
 
@@ -1343,7 +1342,7 @@ exports.loanBmRating = async (req, res, next) => {
                 await models.customerLoanHistory.create({ loanId, masterLoanId, action: BM_RATING, modifiedBy }, { transaction: t });
             })
 
-            return res.status(200).json({ message: 'success' })
+            return res.status(200).json({ message: 'Success' })
         } else {
             let rejectedStageId = await models.loanStage.findOne({ where: { name: 'bm rating' } })
 
@@ -1354,7 +1353,7 @@ exports.loanBmRating = async (req, res, next) => {
 
                 await models.customerLoanHistory.create({ loanId, masterLoanId, action: BM_RATING, modifiedBy }, { transaction: t });
             })
-            return res.status(200).json({ message: 'success' })
+            return res.status(200).json({ message: 'Success' })
         }
     } else {
         let approvedStageId = await models.loanStage.findOne({ where: { name: 'upload documents' } })
@@ -1371,7 +1370,7 @@ exports.loanBmRating = async (req, res, next) => {
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: BM_RATING, modifiedBy }, { transaction: t });
 
         })
-        return res.status(200).json({ message: 'success' })
+        return res.status(200).json({ message: 'Success' })
     }
 }
 
@@ -1405,7 +1404,7 @@ exports.loanDocuments = async (req, res, next) => {
             // return loan
         })
 
-        return res.status(200).json({ message: 'success', masterLoanId, loanId })
+        return res.status(200).json({ message: 'Success', masterLoanId, loanId })
     } else {
         let loanData = await sequelize.transaction(async t => {
 
@@ -1420,7 +1419,7 @@ exports.loanDocuments = async (req, res, next) => {
 
             // return loan
         })
-        return res.status(200).json({ message: 'success', masterLoanId, loanId })
+        return res.status(200).json({ message: 'Success', masterLoanId, loanId })
 
     }
 
@@ -1457,7 +1456,7 @@ exports.loanOpsTeamRating = async (req, res, next) => {
             })
 
 
-            return res.status(200).json({ message: 'success' })
+            return res.status(200).json({ message: 'Success' })
         } else {
             let rejectedStageId = await models.loanStage.findOne({ where: { name: 'OPS team rating' } })
 
@@ -1471,7 +1470,7 @@ exports.loanOpsTeamRating = async (req, res, next) => {
             })
 
 
-            return res.status(200).json({ message: 'success' })
+            return res.status(200).json({ message: 'Success' })
         }
     } else {
         let approvedStageId = await models.loanStage.findOne({ where: { name: 'disbursement pending' } })
@@ -1603,7 +1602,7 @@ exports.loanOpsTeamRating = async (req, res, next) => {
 
         })
 
-        return res.status(200).json({ message: 'success' })
+        return res.status(200).json({ message: 'Success' })
     }
 }
 
@@ -1720,7 +1719,7 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
         fullUnsecuredAmount,
         processingCharge: Number(checkLoan.processingCharge)
     }
-    return res.status(200).json({ message: 'success', data: data })
+    return res.status(200).json({ message: 'Success', data: data })
 
 }
 
@@ -2114,7 +2113,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
         customerLoan.dataValues.ornamentType = ornamentType;
     }
 
-    return res.status(200).json({ message: 'success', data: customerLoan, newLoanAmount })
+    return res.status(200).json({ message: 'Success', data: customerLoan, newLoanAmount })
 }
 
 //get function for single loan in CUSTOMER-MANAGMENT
@@ -2123,7 +2122,7 @@ exports.getSingleLoanInCustomerManagment = async (req, res, next) => {
 
     let customerLoan = await getSingleLoanDetail(customerLoanId, masterLoanId)
 
-    return res.status(200).json({ message: 'success', data: customerLoan })
+    return res.status(200).json({ message: 'Success', data: customerLoan })
 }
 
 //  FUNCTION FOR GET APPLIED LOAN DETAILS

@@ -18,8 +18,8 @@ export class TopUpApprovalComponent implements OnInit {
 
   dataSource;
   displayedColumns = ['customerId', 'loanId', 'requestDate', 'fullName', 'mobileNumber', 'loanAmount',
-    'loanDate', 'depositAmount', 'outstandingLoan', 'schemeName', 'grossWeight', 'netWeight', 'previousLtv',
-    'currentLtv', 'ornamentsDetails', 'eligibleTopUp', 'requestedTopUp', 'interestAmount', 'penalInterest', 'newLoan',
+    'loanDate', 'outstandingLoan', 'schemeName', 'grossWeight', 'netWeight', 'previousLtv',
+    'currentLtv', 'ornamentsDetails', 'eligibleTopUp', 'requestedTopUp', 'interestAmount', 'penalInterest', 'newLoanAmount',
     'netAmount', 'status', 'action'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -81,11 +81,11 @@ export class TopUpApprovalComponent implements OnInit {
   }
 
   ornamentsDetails() {
-    this.dialog.open(OrnamentsComponent, { 
+    this.dialog.open(OrnamentsComponent, {
       data: {
-        modal:true
-      } , 
-      width: '90%' 
+        modal: true
+      },
+      width: '90%'
     })
   }
 

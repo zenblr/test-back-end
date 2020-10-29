@@ -13,7 +13,7 @@ exports.addEmailAlert=async (req,res,next)=>{
 exports.readEmailAlert=async(req,res,next)=>{
     const readEmailAlert=await models.emailAlert.findAll({where:{isActive:true}});
     if(!readEmailAlert[0]){
-        return res.status(404).json({message:'data not found'})
+        return res.status(404).json({message:'Data not found'})
     } 
     return res.status(200).json(readEmailAlert);
 }
@@ -23,7 +23,7 @@ exports.readEmailAlertById=async(req,res)=>{
     const emailAlertId=req.params.id;
     const readEmailAlertById=await models.emailAlert.findOne({where:{id:emailAlertId,isActive:true}});
     if(!readEmailAlertById){
-        return res.status(404).json({message:'data not found'});
+        return res.status(404).json({message:'Data not found'});
     }
     return res.status(200).json(readEmailAlertById);
 }
@@ -37,7 +37,7 @@ exports.updateEmailAlert=async(req,res,next)=>{
     if(!updateEmailAlertData[0]){
         return res.status(404).json({message:'email alert updated failed'});
     }
-    return res.status(200).json({message:'updated'});
+    return res.status(200).json({message:'Updated'});
 }
 
 // deactive email alert

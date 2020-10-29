@@ -9,9 +9,9 @@ const Op = Sequelize.Op;
 
 exports.addLogisticPartner = async (req, res) => {
     const { name } = req.body;
-    let modifiedBy=req.userData.id;
-    let createdBy=req.userData.id;
-    let addLogisticPartner = await models.logisticPartner.create({ name,modifiedBy,createdBy });
+    let modifiedBy = req.userData.id;
+    let createdBy = req.userData.id;
+    let addLogisticPartner = await models.logisticPartner.create({ name, modifiedBy, createdBy });
     if (!addLogisticPartner) { return res.status(404).json({ message: 'logistic partner is not created' }) }
     return res.status(201).json({ message: 'logistic partner created' });
 
@@ -43,7 +43,7 @@ exports.readLogisticPartner = async (req, res) => {
             {
                 model: models.user,
                 as: "Modifiedby",
-            },  
+            },
         ]
     });
     let count = await models.logisticPartner.count({
@@ -72,8 +72,8 @@ exports.readLogisticPartnerById = async (req, res) => {
 exports.updateLogisticPartner = async (req, res) => {
     let logisticPartnerId = req.params.id;
     const { name } = req.body;
-    let modifiedBy=req.userData.id;
-    let updateLogisticPartner = await models.logisticPartner.update({ name,modifiedBy }, { where: { id: logisticPartnerId, isActive: true } });
+    let modifiedBy = req.userData.id;
+    let updateLogisticPartner = await models.logisticPartner.update({ name, modifiedBy }, { where: { id: logisticPartnerId, isActive: true } });
     if (!updateLogisticPartner[0]) { return res.status(404).json({ message: 'logistic Partner update failed' }) }
     return res.status(200).json({ message: 'updated' })
 }
@@ -82,17 +82,17 @@ exports.updateLogisticPartner = async (req, res) => {
 
 exports.deactiveLogisticPartner = async (req, res) => {
     const { id } = req.query;
-    let deactiveLogisticPartner = await models.logisticPartner.update({ isActive: false }, { where: { id,isActive:true } });
+    let deactiveLogisticPartner = await models.logisticPartner.update({ isActive: false }, { where: { id, isActive: true } });
     if (!deactiveLogisticPartner[0]) { return res.status(404).json({ message: 'logistic partner delete failed ' }) }
     return res.status(200).json({ message: 'Updated' })
 }
 
 // get all logistic partner without pagination
 
-exports.getAllLogisticPartner= async (req,res)=>{
-    let getAllLogisticPartner= await models.logisticPartner.findAll({Where:{isActive:true}});
-    if(!getAllLogisticPartner[0]){
-        return res.status(404).json({message:'data not found'})
+exports.getAllLogisticPartner = async (req, res) => {
+    let getAllLogisticPartner = await models.logisticPartner.findAll({ Where: { isActive: true } });
+    if (!getAllLogisticPartner[0]) {
+        return res.status(404).json({ message: 'Data not found' })
     }
     return res.status(200).json(getAllLogisticPartner);
 }

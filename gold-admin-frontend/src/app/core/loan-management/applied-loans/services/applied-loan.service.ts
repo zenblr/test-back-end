@@ -16,7 +16,7 @@ export class AppliedLoanService {
 
   constructor(
     private http: HttpClient, private toastr: ToastrService,
-    private excelService:ExcelService
+    private excelService: ExcelService
 
   ) { }
 
@@ -102,9 +102,9 @@ export class AppliedLoanService {
       }))
   }
 
-  downloadBankDetails(masterLoanId): Observable<any> {
+  downloadBankDetails(masterLoanId, type): Observable<any> {
     console.log(masterLoanId)
-    return this.http.get(`api/loan-process/download-bank-details?masterLoanId=${masterLoanId}&type=IMPS&modeOfPayment=cash`, { responseType: 'arraybuffer' })
+    return this.http.get(`api/loan-process/download-bank-details?masterLoanId=${masterLoanId}&type=${type}`, { responseType: 'arraybuffer' })
       .pipe(
         map((res) => {
           return res;
