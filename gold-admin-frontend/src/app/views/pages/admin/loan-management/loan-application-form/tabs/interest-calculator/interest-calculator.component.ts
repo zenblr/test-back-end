@@ -107,6 +107,7 @@ export class InterestCalculatorComponent implements OnInit {
       this.controls.finalLoanAmount.patchValue(changes.partPaymentdata.currentValue)
       this.controls.finalLoanAmount.disable()
       this.isNewLoanFromPartRelease = true;
+      console.log(this.isNewLoanFromPartRelease)
       this.partner()
     }
 
@@ -219,7 +220,7 @@ export class InterestCalculatorComponent implements OnInit {
     this.partnerService.getPartnerBySchemeAmount(this.masterAndLoanIds.masterLoanId).subscribe(res => {
       this.partnerList = res.data;
       this.returnScheme()
-      if(this.controls.partner.valid){
+      if(this.controls.partnerId.valid){
         this.calcualteLoanAmount()
       }
       this.ref.detectChanges()
@@ -311,7 +312,7 @@ export class InterestCalculatorComponent implements OnInit {
     })
     this.selectedScheme = temp[0]
     this.selectedUnsecuredscheme = this.selectedScheme.unsecuredScheme
-    
+    this.calcualteLoanAmount()
     this.ref.detectChanges()
   }
 
@@ -529,7 +530,7 @@ export class InterestCalculatorComponent implements OnInit {
         throw err;
 
       }), finalize(() => {
-        if (this.transferLoan)
+        if (this.transferLoan || this.isNewLoanFromPartRelease)
           this.controls.finalLoanAmount.disable()
       })).subscribe()
   }
