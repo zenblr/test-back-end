@@ -347,7 +347,6 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
         })
         return res.status(200).json({ message: 'Success', allOrnmanets, loanId, masterLoanId, loanCurrentStage: '4', totalEligibleAmt, ornaments: loanData, loanTransferData, newLoanAmount })
     }
-
 }
 
 // amount validation and check its a secured scheme aur unsecured scheme
