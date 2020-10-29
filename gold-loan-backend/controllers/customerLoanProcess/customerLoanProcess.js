@@ -379,7 +379,7 @@ exports.checkForLoanType = async (req, res, next) => {
 
     }
 
-    return res.status(200).json({ data: { securedLoanAmount, processingCharge, isUnsecuredSchemeApplied, unsecuredAmount } })
+    return res.status(200).json({ data: { securedLoanAmount, processingCharge, isUnsecuredSchemeApplied, unsecuredAmount,securedScheme } })
     // }
 
 
