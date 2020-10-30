@@ -521,7 +521,7 @@ export class InterestCalculatorComponent implements OnInit {
         throw err;
 
       }), finalize(() => {
-        if (this.transferLoan)
+        if (this.transferLoan || this.isNewLoanFromPartRelease)
           this.controls.finalLoanAmount.disable()
       })).subscribe()
   }
