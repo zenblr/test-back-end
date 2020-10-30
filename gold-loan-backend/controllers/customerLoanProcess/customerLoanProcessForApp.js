@@ -62,7 +62,7 @@ exports.loanRequest = async (req, res, next) => {
     // let checkApprasierRequest = await modols.customerLoanMaster.findOne({ where: { appraiserRequestId: appraiserRequestId } })
     // if (!isEdit) {
     //     if (!check.isEmpty(checkApprasierRequest)) {
-    //         return res.status(400).json({ message: 'Your loan request is already applied' });
+    //         return res.status(400).json({ message: 'Your loan request is already queue' });
     //     }
     // }
 
