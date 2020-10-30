@@ -37,7 +37,7 @@ export class PdfViewerComponent implements OnInit, OnChanges {
       // this.ref.markForCheck()
       // this.appRef.attachView(this.src)
 
-      console.log(change.pdfSrc.currentValue)
+      // console.log(change.pdfSrc.currentValue)
     }
   }
 
@@ -50,7 +50,7 @@ export class PdfViewerComponent implements OnInit, OnChanges {
   }
 
   pageRendered(e: CustomEvent) {
-    console.log('(page-rendered)', e);
+    // console.log('(page-rendered)', e);
   }
 
   onProgress(progressData: PDFProgressData) {
