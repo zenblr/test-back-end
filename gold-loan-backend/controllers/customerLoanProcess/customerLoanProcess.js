@@ -2639,14 +2639,14 @@ exports.getBankInfo = async (req, res, next) => {
             as: 'internalBranch'
         }]
     });
-    let customerAccountNumber
-    if (modeOfPayment == 'bank') {
-        customerAccountNumber = loan.loanBankDetail.accountNumber
-    } else if (modeOfPayment == 'cash') {
-        customerAccountNumber = loan.internalBranch.accountNumber
-    } else {
-        return res.status(404).json({ message: 'Invalid payment mode' })
-    }
+    let customerAccountNumber = loan.loanBankDetail.accountNumber
+    // if (modeOfPayment == 'bank') {
+    //     customerAccountNumber = loan.loanBankDetail.accountNumber
+    // } else if (modeOfPayment == 'cash') {
+    //     customerAccountNumber = loan.internalBranch.accountNumber
+    // } else {
+    //     return res.status(404).json({ message: 'Invalid payment mode' })
+    // }
     // Require library
     let customerName = loan.customer.firstName + ' ' + loan.customer.lastName
     let date = moment().format('DD-MM-YYYY')
