@@ -59,6 +59,13 @@ exports.loanRequest = async (req, res, next) => {
         }
     }
 
+    // let checkApprasierRequest = await modols.customerLoanMaster.findOne({ where: { appraiserRequestId: appraiserRequestId } })
+    // if (!isEdit) {
+    //     if (!check.isEmpty(checkApprasierRequest)) {
+    //         return res.status(400).json({ message: 'Your loan request is already applied' });
+    //     }
+    // }
+
     let loanData = await sequelize.transaction(async t => {
 
         await models.appraiserRequest.update({ isProcessComplete: true, status: 'complete' }, { where: { id: appraiserRequestId }, transaction: t })
@@ -302,7 +309,7 @@ exports.loanRequest = async (req, res, next) => {
 
             let stageId = await models.loanStage.findOne({ where: { name: 'assign packet' }, transaction: t })
             await models.customerLoanMaster.update({
-                applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser : null, modifiedBy, appraiserId, loanStageId: stageId.id
+                applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser: null, modifiedBy, appraiserId, loanStageId: stageId.id
             }, { where: { id: masterLoanId }, transaction: t })
 
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: APPRAISER_RATING, modifiedBy }, { transaction: t });
