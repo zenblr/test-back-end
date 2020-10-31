@@ -1668,6 +1668,9 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
                 as: 'scheme',
                 attributes: ['id', 'schemeName']
             }]
+        },{
+            model : models.customerLoanDisbursement,
+            as:'customerLoanDisbursement'
         }]
     })
     let securedLoanAmount;
@@ -1676,6 +1679,7 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
     let unsecuredLoanId;
     let securedSchemeName;
     let unsecuredSchemeName;
+    let bankTransferType = checkLoan.customerLoanDisbursement[0].bankTransferType;
 
     let fullSecuredAmount = Number(checkLoan.securedLoanAmount)
     let fullUnsecuredAmount = 0
@@ -1717,7 +1721,8 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
         masterLoanId,
         fullSecuredAmount,
         fullUnsecuredAmount,
-        processingCharge: Number(checkLoan.processingCharge)
+        processingCharge: Number(checkLoan.processingCharge),
+        bankTransferType
     }
     return res.status(200).json({ message: 'Success', data: data })
 
@@ -1726,7 +1731,7 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
 //  FUNCTION FOR DISBURSEMENT OF LOAN AMOUNT
 exports.disbursementOfLoanAmount = async (req, res, next) => {
 
-    let { masterLoanId, isUnsecuredSchemeApplied, securedLoanUniqueId, unsecuredLoanUniqueId, securedLoanId, unsecuredLoanId, fullSecuredAmount, fullUnsecuredAmount, securedLoanAmount, unsecuredLoanAmount, securedTransactionId, unsecuredTransactionId, date, paymentMode, ifscCode, bankName, bankBranch, accountHolderName, accountNumber, disbursementStatus } = req.body;
+    let { masterLoanId, isUnsecuredSchemeApplied, securedLoanUniqueId, unsecuredLoanUniqueId, securedLoanId, unsecuredLoanId, fullSecuredAmount, fullUnsecuredAmount, securedLoanAmount, unsecuredLoanAmount, securedTransactionId, unsecuredTransactionId, date, paymentMode, ifscCode, bankName, bankBranch, accountHolderName, accountNumber, disbursementStatus,bankTransferType } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     console.log(fullSecuredAmount, fullUnsecuredAmount, isUnsecuredSchemeApplied, securedLoanUniqueId, unsecuredLoanUniqueId)
@@ -1816,17 +1821,17 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
 
                 await models.customerLoanDisbursement.create({
                     masterLoanId, loanId: securedLoanId, disbursementAmount: securedLoanAmount, transactionId: securedTransactionId, date, paymentMode, ifscCode, bankName, bankBranch,
-                    accountHolderName, accountNumber, disbursementStatus, createdBy, modifiedBy
+                    accountHolderName, accountNumber, disbursementStatus, createdBy, modifiedBy,bankTransferType
                 }, { transaction: t })
 
                 await models.customerLoanDisbursement.create({
                     masterLoanId, loanId: unsecuredLoanId, disbursementAmount: unsecuredLoanAmount, transactionId: unsecuredTransactionId, date, paymentMode, ifscCode, bankName, bankBranch,
-                    accountHolderName, accountNumber, disbursementStatus, createdBy, modifiedBy
+                    accountHolderName, accountNumber, disbursementStatus, createdBy, modifiedBy,bankTransferType
                 }, { transaction: t })
             } else {
                 await models.customerLoanDisbursement.create({
                     masterLoanId, loanId: securedLoanId, disbursementAmount: securedLoanAmount, transactionId: securedTransactionId, date, paymentMode, ifscCode, bankName, bankBranch,
-                    accountHolderName, accountNumber, disbursementStatus, createdBy, modifiedBy
+                    accountHolderName, accountNumber, disbursementStatus, createdBy, modifiedBy,bankTransferType
                 }, { transaction: t })
             }
 

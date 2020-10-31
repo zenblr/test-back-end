@@ -35,6 +35,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field:'bank_name'
         },
+        bankTransferType: {
+            type: DataTypes.STRING,
+            field:'bank_transfer_type'
+        },
         bankBranch: {
             type: DataTypes.STRING,
             field:'bank_branch'
