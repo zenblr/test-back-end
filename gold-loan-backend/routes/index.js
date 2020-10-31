@@ -226,4 +226,7 @@ router.use('/scrap/scrap-packet-location', scrapPacketLocation)
 const cronList = require('./cronList');
 router.use('/cron-list', cronList)
 
+const migration = require('./migration');
+router.use('/migration', migration)
+
 module.exports = router;
