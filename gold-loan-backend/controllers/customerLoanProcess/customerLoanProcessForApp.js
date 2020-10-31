@@ -59,6 +59,13 @@ exports.loanRequest = async (req, res, next) => {
         }
     }
 
+    let checkApprasierRequest = await models.customerLoanMaster.findOne({ where: { appraiserRequestId: appraiserRequestId } })
+    if (!isEdit) {
+        if (!check.isEmpty(checkApprasierRequest)) {
+            return res.status(400).json({ message: 'Your loan request is already in queue' });
+        }
+    }
+
     let loanData = await sequelize.transaction(async t => {
 
         await models.appraiserRequest.update({ isProcessComplete: true, status: 'complete' }, { where: { id: appraiserRequestId }, transaction: t })
