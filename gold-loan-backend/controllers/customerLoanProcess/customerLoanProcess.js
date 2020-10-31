@@ -1590,7 +1590,7 @@ async function disbursementOfLoanTransfer(masterLoanId) {
     }
     let Loan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
-        attributes: ['paymentFrequency', 'processingCharge', 'isUnsecuredSchemeApplied','tenure'],
+        attributes: ['paymentFrequency', 'processingCharge', 'isUnsecuredSchemeApplied', 'tenure'],
         include: [{
             model: models.customerLoanInterest,
             as: 'customerLoanInterest',
@@ -1707,7 +1707,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
 
     let Loan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
-        attributes: ['paymentFrequency', 'processingCharge', 'isUnsecuredSchemeApplied','tenure'],
+        attributes: ['paymentFrequency', 'processingCharge', 'isUnsecuredSchemeApplied', 'tenure'],
         include: [{
             model: models.customerLoanInterest,
             as: 'customerLoanInterest',
@@ -2575,4 +2575,12 @@ exports.getLoanOrnaments = async (req, res, next) => {
     })
 
     return res.status(200).json({ data: getLoanOrnaments })
+}
+
+exports.termsConditions = async (req, res, next) => {
+    let { masterLoanId, termsConditions } = req.body;
+
+    await models.customerLoanMaster.update({ termsAndCondition: termsConditions }, { where: { id: masterLoanId } })
+
+    return res.status(200).json({ message: 'Success' })
 }

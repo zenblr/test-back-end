@@ -4,12 +4,12 @@ const route = express.Router();
 const { wrapper } = require('../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
 const { loanDateChange, addPackageImagesForLoan, disbursementOfLoanAmount, interestRate, generateInterestTable, unsecuredTableGeneration,
   disbursementOfLoanBankDetails, getLoanDetails, getSingleLoanDetails, appliedLoanDetails, customerDetails, loanBmRating, loanOpsTeamRating, checkForLoanType,
-  loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getSingleLoanInCustomerManagment, getDetailsForPrint, getLoanOrnaments, getUnsecuredScheme } =
+  loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getSingleLoanInCustomerManagment, getDetailsForPrint, getLoanOrnaments, getUnsecuredScheme, termsConditions } =
   require('../controllers/customerLoanProcess/customerLoanProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
 
-const { loanRequest ,getLoanDetailsForPrint} = require('../controllers/customerLoanProcess/customerLoanProcessForApp')
+const { loanRequest, getLoanDetailsForPrint } = require('../controllers/customerLoanProcess/customerLoanProcessForApp')
 
 const checkAuth = require('../middleware/checkAuth'); // IMPORTING CHECK AUTH MIDDLEWARE
 
@@ -62,6 +62,8 @@ route.get('/get-print-details', checkAuth, wrapper(getDetailsForPrint)); //Print
 route.get('/get-loan-ornamets', checkAuth, wrapper(getLoanOrnaments)) //GET LOAN ORNAMENTS
 
 route.get('/unsecured-scheme', checkAuth, wrapper(getUnsecuredScheme)) //GET unsecured Scheme
+
+route.post('/terms-conditions', checkAuth, wrapper(termsConditions))
 
 // appraiseApp 
 route.post('/loan-request', checkAuth, wrapper(loanRequest)); //apply loan for backoffice app
