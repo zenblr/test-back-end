@@ -309,7 +309,7 @@ exports.loanRequest = async (req, res, next) => {
 
             let stageId = await models.loanStage.findOne({ where: { name: 'assign packet' }, transaction: t })
             await models.customerLoanMaster.update({
-                applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser : null, modifiedBy, appraiserId, loanStageId: stageId.id
+                applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser: null, modifiedBy, appraiserId, loanStageId: stageId.id
             }, { where: { id: masterLoanId }, transaction: t })
 
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: APPRAISER_RATING, modifiedBy }, { transaction: t });
