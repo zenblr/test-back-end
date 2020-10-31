@@ -250,8 +250,14 @@ export class SharedService {
 		);
 	}
 
-	fileValidator(event) {
-		const validFormats = ['jpg', 'jpeg', 'png', 'pdf']
+	fileValidator(event, type = null) {
+		let validFormats = ['jpg', 'jpeg', 'png', 'pdf']
+		if (type && type == 'pdf') {
+			validFormats = validFormats.filter(format => format === 'pdf')
+		}
+		if (type && type == 'image') {
+			validFormats = validFormats.filter(format => format !== 'pdf')
+		}
 		const name = event.target.files[0].name
 		const split = name.split('.')
 		const ext = (split[split.length - 1]).toLowerCase()
@@ -282,7 +288,9 @@ export class SharedService {
 		return this.cronType
 	}
 
-	getUserManagmentPermission(){
+	getUserManagmentPermission() {
 		return this.userManagementPermission
 	}
+
+
 }
