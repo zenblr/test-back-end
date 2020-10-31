@@ -1,13 +1,8 @@
 const models = require('../../models');
-const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
-const jwt = require('jsonwebtoken');
-const uuidAPIKey = require('uuid-apikey');
-const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
 
 exports.schemeMigration = async (req, res, next) => {
-    let schemeBranch = [];
     let stage = await models.loanStage.findOne({
         where: { name: 'applying' }
     })
@@ -17,38 +12,34 @@ exports.schemeMigration = async (req, res, next) => {
     let disbursed = await models.loanStage.findOne({
         where: { name: 'disbursed' }
     })
-    let masterLoan = await models.customerLoanMaster.findAll({
-        where:{
+    await models.customerLoanMaster.update({ loanStatusForOperatinalTeam: 'rejected', commentByOperatinalTeam: 'migration', loanStatusForBM: 'rejected', commentByBM: 'migration', loanStatusForAppraiser: 'rejected', commentByAppraiser: 'migration', loanStageId: 7 }, {
+        where: {
             loanStageId: { [Op.notIn]: [stage.id, transfer.id, disbursed.id] },
             isLoanCompleted: false,
             isActive: true
         },
-        attributes:['id','internalBranchId']
     });
-    for(const data of masterLoan){
-        let securedPair = {};
-        let unSecuredPair = {};
-        let securedLoan = await models.customerLoan.findOne({
-            where: { masterLoanId: data.id ,loanType : 'secured'},
-            attributes : ['id','schemeId']
-        })
-        let unSecuredLoan = await models.customerLoan.findOne({
-            where: { masterLoanId: data.id ,loanType : 'unsecured'},
-            attributes : ['id','schemeId']
-        })
-        if(securedLoan){
-            securedPair.schemeId = securedLoan.schemeId;
-            securedPair.internalBranchId = data.internalBranchId
-            securedPair.loanId = data.id
-            schemeBranch.push(securedPair);
-        }
-        if(unSecuredLoan){
-            unSecuredPair.schemeId = unSecuredLoan.schemeId;
-            unSecuredPair.internalBranchId = data.internalBranchId
-            unSecuredPair.loanId = data.id
-            schemeBranch.push(unSecuredPair);
-        }
-    }
+    let allMatserLoan = await models.customerLoanMaster.findAll({
+        where: {
+            loanStageId: { [Op.notIn]: [stage.id, transfer.id, disbursed.id] },
+            isLoanCompleted: false,
+            isActive: true
+        },
+        attributes: ['id']
+    });
+    let masterLoanId = await allMatserLoan.map((data) => data.id);
+    // isProcessComplete
+    await models.appraiserRequest.update(
+        {isProcessComplete : true},
+        {where:{isProcessComplete: false}},
+        {
+            include: [{
+                model: models.customerLoanMaster,
+                as: 'masterLoan',
+                where :{id: { [Op.in]: masterLoanId }}
+            }]
+        },
+    )
 
-    return res.status(200).json({message:"Success",data:schemeBranch})
+    return res.status(200).json({ message: "Success"})
 }
