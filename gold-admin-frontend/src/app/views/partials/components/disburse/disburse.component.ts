@@ -63,7 +63,7 @@ export class DisburseComponent implements OnInit {
           securedTransactionId: changes.loanDetials.currentValue.customerLoanDisbursement[0].transactionId,
         })
         if (changes.loanDetials.currentValue.customerLoanDisbursement.length > 1) {
-          console.log(changes.loanDetials.currentValue.customerLoanDisbursement)
+          // console.log(changes.loanDetials.currentValue.customerLoanDisbursement)
           this.disburseForm.patchValue({
             unsecuredTransactionId: changes.loanDetials.currentValue.customerLoanDisbursement[1].transactionId
           })
@@ -269,6 +269,11 @@ export class DisburseComponent implements OnInit {
     } else if (!event) {
       this.location.back();
     }
+  }
+
+  download() {
+    // if (!this.controls.type.value) return this.controls.type.markAsTouched()
+    // this.loanService.downloadBankDetails(this.masterAndLoanIds.masterLoanId, this.controls.type.value).subscribe()
   }
 
   submit() {

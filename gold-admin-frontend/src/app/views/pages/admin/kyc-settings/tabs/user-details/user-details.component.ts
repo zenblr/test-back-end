@@ -258,7 +258,11 @@ export class UserDetailsComponent implements OnInit {
         finalize(() => {
           if (this.editPan && this.editPan.nativeElement.value) this.editPan.nativeElement.value = ''
           if (this.pan && this.pan.nativeElement.value) this.pan.nativeElement.value = ''
+          event.target.value = ''
+
         })).subscribe()
+    } else {
+      event.target.value = ''
     }
   }
 

@@ -668,12 +668,13 @@ export class UserReviewComponent implements OnInit {
           if (this.constitutionsDeed && this.constitutionsDeed.nativeElement.value) this.constitutionsDeed.nativeElement.value = '';
           if (this.gstCertificate && this.gstCertificate.nativeElement.value) this.gstCertificate.nativeElement.value = '';
           if (this.signature && this.signature.nativeElement.value) this.signature.nativeElement.value = '';
+          event.target.value = ''
         })
       ).subscribe()
     }
-    // else {
-    //   this.toastr.error('Upload Valid File Format');
-    // }
+    else {
+      event.target.value = ''
+    }
 
   }
 
@@ -979,7 +980,14 @@ export class UserReviewComponent implements OnInit {
         addressTwo.addressProofTypeId = this.customerKycAddressTwo.value.addressProofTypeId,
         addressTwo.addressProofNumber = this.customerKycAddressTwo.value.addressProofNumber
     }
-    return this.isAddressSame = JSON.stringify(addressOne) === JSON.stringify(addressTwo)
+    this.isAddressSame = JSON.stringify(addressOne) === JSON.stringify(addressTwo)
+    if (this.isAddressSame) {
+      this.customerKycAddressTwo.disable()
+    } else {
+      this.customerKycAddressTwo.enable()
+    }
+
+    return this.isAddressSame
   }
 
   disableControls() {

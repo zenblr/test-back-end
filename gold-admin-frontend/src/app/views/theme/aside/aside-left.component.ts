@@ -274,7 +274,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 	switchCase(title) {
 		switch (title) {
 			case 'User Management':
-				this.userManagementRoute()
+				// this.userManagementRoute()
 				break;
 
 			case 'Log Out':
@@ -312,6 +312,7 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 			}
 		}
 		this.routeToPage(title)
+		console.log(title)
 	}
 
 	routeToPage(permission) {
