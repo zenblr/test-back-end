@@ -4,12 +4,12 @@ const models = require('../../models'); // importing models.
 
 // Add & Update ProcessNote
 exports.addUpdateProcessNote = async (req, res, next) => {
-    const { pdf } = req.body;
+    let pdf = req.body.processNote
     let userId = req.userData.id
-    let ProcessNote = await models.ProcessNote.readProcessNote()
+    let ProcessNote = await models.processNote.readProcessNote()
     if (ProcessNote.length == 0) {
 
-        let CreatedProcessNote = await models.ProcessNote.addProcessNote(pdf, userId);
+        let CreatedProcessNote = await models.processNote.addProcessNote(pdf, userId);
 
         if (!CreatedProcessNote) {
             res.status(422).json({ message: 'Process note not added' });
@@ -18,7 +18,7 @@ exports.addUpdateProcessNote = async (req, res, next) => {
         }
     } else {
         let id = ProcessNote[0].id;
-        let UpdateData = await models.ProcessNote.updateProcessNote(id, pdf, userId)
+        let UpdateData = await models.processNote.updateProcessNote(id, pdf, userId)
 
         if (UpdateData[0] === 0) {
             return res.status(404).json({ message: 'Data not updated' });
@@ -31,7 +31,7 @@ exports.addUpdateProcessNote = async (req, res, next) => {
 // Read ProcessNote.
 
 exports.readProcessNote = async (req, res, next) => {
-    let ProcessNote = await models.ProcessNote.findAll({})
+    let ProcessNote = await models.processNote.findAll({})
 
     if (!ProcessNote) {
         res.status(404).json({ message: 'Data not found' });
@@ -46,10 +46,10 @@ exports.readProcessNote = async (req, res, next) => {
 // exports.deleteProcessNote = async (req, res, next) => {
 //     let ProcessNoteId = req.params.id;
 
-//     let ProcessNoteData = await models.ProcessNote.findOne({ where: { id: ProcessNoteId } });
+//     let ProcessNoteData = await models.processNote.findOne({ where: { id: ProcessNoteId } });
 //     if (!ProcessNoteData[0]) {
 //         return res.status(404).json({ message: ' data not found' })
 //     }
-//     let deletedata = await models.ProcessNote.destroy({ where: { id: ProcessNoteId } });
+//     let deletedata = await models.processNote.destroy({ where: { id: ProcessNoteId } });
 //     res.status(200).json({ message: 'Success' });
 // }
