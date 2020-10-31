@@ -16,10 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'loan_process_note',
     });
 
-    Banner.associate = function (models) {
+    ProcessNote.associate = function (models) {
     }
 
-    Banner.prototype.toJSON = function () {
+    ProcessNote.prototype.toJSON = function () {
         var values = Object.assign({}, this.get({ plain: true }));
         let ProcessNotePdf = []
         if (values.pdf) {

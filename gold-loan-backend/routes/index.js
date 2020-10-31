@@ -194,7 +194,7 @@ const product = require('./product');
 router.use('/product', product)
 
 const processNote = require('./processNote')
-router.user('/process-note', processNote)
+router.use('/process-note', processNote)
 
 const scrapPacket = require('./scrap/scrapPacket'); // Scrap packet
 router.use('/scrap/packet', scrapPacket);
