@@ -98,35 +98,35 @@ app.use(function (err, req, res, next) {
     res.status(500).send({ message: "something went wrong" });
 });
 
-// cron.schedule(' * * * * *', async function () {
-//     await interest.test('1');
-// })
+cron.schedule(' * * * * *', async function () {
+    await interest.test('1');
+})
 
-// cron.schedule('0 1 * * *', async function () {
-//     let date = moment()
-//     var interestStartTime = moment();
+cron.schedule('0 1 * * *', async function () {
+    let date = moment()
+    var interestStartTime = moment();
 
-//     try {
-//         await dailyIntrestCalculation(date);
-//         var interestEndTime = moment();
-//         var interestProcessingTime = moment.utc(moment(interestEndTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(interestStartTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
-//         await cronLogger("loan Interest", date, interestStartTime, interestEndTime, interestProcessingTime, "success", "success", null)
+    try {
+        await dailyIntrestCalculation(date);
+        var interestEndTime = moment();
+        var interestProcessingTime = moment.utc(moment(interestEndTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(interestStartTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        await cronLogger("loan Interest", date, interestStartTime, interestEndTime, interestProcessingTime, "success", "success", null)
 
-//         //penal interest cron
-//         var penalStartTime = moment();
-//         await penal(date, penalStartTime)
+        //penal interest cron
+        var penalStartTime = moment();
+        await penal(date, penalStartTime)
 
-//     } catch (interestErr) {
-//         var interestEndTime = moment();
-//         var interestProcessingTime = moment.utc(moment(interestEndTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(interestStartTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
-//         await cronLogger("loan Interest", date, interestStartTime, interestEndTime, interestProcessingTime, "failed", interestErr.message, null)
+    } catch (interestErr) {
+        var interestEndTime = moment();
+        var interestProcessingTime = moment.utc(moment(interestEndTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(interestStartTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        await cronLogger("loan Interest", date, interestStartTime, interestEndTime, interestProcessingTime, "failed", interestErr.message, null)
 
-//         //penal interest cron
-//         var penalStartTime = moment();
-//         await penal(date, penalStartTime)
+        //penal interest cron
+        var penalStartTime = moment();
+        await penal(date, penalStartTime)
 
-//     }
-// })
+    }
+})
 
 async function penal(date, penalStartTime) {
     try {
