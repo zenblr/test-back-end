@@ -39,7 +39,6 @@ export class AddSchemeComponent implements OnInit {
     this.getInternalBranchList()
     this.initForm()
     this.partner()
-    this.fillingForm.valueChanges.subscribe(res => console.log(res.multiSelect))
   }
 
   partner() {
@@ -48,7 +47,6 @@ export class AddSchemeComponent implements OnInit {
       map(res => {
         this.partnerData = res.data;
         this.ref.detectChanges();
-        // console.log(this.partnerData)
       }), catchError(err => {
         this._toastr.error('Some thing went wrong')
         this.ref.detectChanges();
@@ -75,6 +73,7 @@ export class AddSchemeComponent implements OnInit {
       rpg: [],
       internalBranchId: [],
       multiSelect: [],
+      isUnsecuredSchemeMapped: [false],
       isTopUp: [false],
       schemeInterest: this.fb.array([]),
     })
@@ -109,7 +108,6 @@ export class AddSchemeComponent implements OnInit {
 
   submit() {
     if (this.tabGroup.selectedIndex == 0) {
-      // console.log(this.fillingForm.value);
 
       if (this.fillingForm.invalid) {
         this.fillingForm.markAllAsTouched()
@@ -128,10 +126,8 @@ export class AddSchemeComponent implements OnInit {
       let toValue = this.fillingForm.get('schemeAmountEnd').value * 100000;
       toValue = +(toValue);
       Math.ceil(toValue);
-      // console.log(fromValue, toValue)
       this.fillingForm.patchValue({ schemeAmountStart: fromValue, schemeAmountEnd: toValue });
 
-      // console.log(this.fillingForm.value);
 
       let partnerArray = [];
       partnerArray.push(this.fillingForm.get('partnerId').value);
@@ -250,7 +246,6 @@ export class AddSchemeComponent implements OnInit {
       currentSlabControls.days.setErrors(null)
     }
 
-    // console.log(currentSlab, previousSlab)
   }
 
   getInternalBranchList() {
@@ -262,31 +257,30 @@ export class AddSchemeComponent implements OnInit {
   }
 
   getUnsecuredSchemes() {
+    if (!this.fillingForm.controls.isUnsecuredSchemeMapped.value) return
+
     const { partnerId, schemeType, schemeInterest } = this.fillingForm.controls
     if (partnerId.invalid || schemeType.value == 'unsecured' || schemeInterest.invalid) {
       return
     }
-    console.log(partnerId.value, schemeType.value, schemeInterest.value)
 
-    // const data = { ...partnerId.value, ...schemeType.value, ...schemeInterest.value }
     const data = {
       partnerId: partnerId.value,
       schemeType: schemeType.value,
       schemeInterest: schemeInterest.value
     }
-    console.log(data)
     this.laonSettingService.getUnsecuredSchemes(data).pipe(
       map(res => {
         this.unsecuredSchemes = res.data
-        if (this.unsecuredSchemes.length === 1) {
-          this.fillingForm.patchValue({ unsecuredSchemeId: this.unsecuredSchemes[0].id })
-        }
+        this.ref.detectChanges()
       }))
       .subscribe()
   }
 
-  changeUnsecuredScheme(event) {
-    event.target.value = ''
+  displayUnsecuredScheme() {
+    if (!this.fillingForm.controls.isUnsecuredSchemeMapped.value) {
+      this.fillingForm.controls.unsecuredSchemeId.patchValue(null)
+    }
   }
 
 }

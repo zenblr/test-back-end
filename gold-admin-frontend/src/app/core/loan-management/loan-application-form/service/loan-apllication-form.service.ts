@@ -66,12 +66,14 @@ export class LoanApplicationFormService {
     )
   }
 
-  submitFinalIntrest(loanFinalCalculator, masterAndLoanIds, interestTable): Observable<any> {
+  submitFinalIntrest(loanFinalCalculator, masterAndLoanIds, interestTable,ornaments,totalEligibleAmt): Observable<any> {
     let data = {
       loanFinalCalculator: loanFinalCalculator,
       interestTable: interestTable,
       loanId: masterAndLoanIds.loanId,
-      masterLoanId: masterAndLoanIds.masterLoanId
+      masterLoanId: masterAndLoanIds.masterLoanId,
+      ornaments:ornaments,
+      totalEligibleAmt:totalEligibleAmt
     }
     return this.http.post(`/api/loan-process/final-loan-details`, data).pipe(
       map(res => res)

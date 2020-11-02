@@ -36,7 +36,7 @@ export class UserAddressComponent implements OnInit {
   identityFileNameArray = [];
   addressFileNameArray1 = [];
   addressFileNameArray2 = [];
-  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456, moduleId: 3, userType: 'Corporate' }
+  // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456, moduleId: 1, userType: null }
 
   constructor(
     private fb: FormBuilder,
@@ -181,8 +181,11 @@ export class UserAddressComponent implements OnInit {
           if (this.identity && this.identity.nativeElement.value) this.identity.nativeElement.value = '';
           if (this.permanent && this.permanent.nativeElement.value) this.permanent.nativeElement.value = '';
           if (this.residential && this.residential.nativeElement.value) this.residential.nativeElement.value = '';
+          event.target.value = ''
         })
       ).subscribe()
+    } else {
+      event.target.value = ''
     }
     // else {
     //   this.toastr.error('Upload Valid File Format');
