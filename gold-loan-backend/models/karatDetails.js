@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
     const KaratDetails = sequelize.define('karatDetails', {
         // attributes
         karat: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'karat',
             allowNull: false,
         },
