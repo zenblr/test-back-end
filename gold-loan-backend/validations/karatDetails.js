@@ -46,7 +46,7 @@ exports.karatDedtailsUpdateValidation = [
                 }
             }).then(karatDetails => {
                 if (karatDetails) {
-                    return Promise.reject("karat is  already exit !");
+                    return Promise.reject("karat is  already exist !");
                 }
             })
         }),
