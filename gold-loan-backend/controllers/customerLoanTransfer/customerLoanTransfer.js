@@ -285,7 +285,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber','kycStatus'],
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber', 'kycStatus'],
             },
             {
                 model: models.customerLoanPersonalDetail,
