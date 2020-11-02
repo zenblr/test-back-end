@@ -83,7 +83,6 @@ export class ListKaratDetailsComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(res => {
       this.logisticPartner = res;
-      console.log(this.logisticPartner);
     });
     this.subscriptions.push(entitiesSubscription);
     this.dataSource.loadKaratDetails();
