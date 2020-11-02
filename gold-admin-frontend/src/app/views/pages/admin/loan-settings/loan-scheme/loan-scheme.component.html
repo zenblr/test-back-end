@@ -56,8 +56,8 @@
                                             </mat-slide-toggle>
                                         </div> -->
                                         <div class="col" [class.offset-3]="schemeDeatils.schemeType == 'secured'">
-                                            <mat-slide-toggle [checked]="schemeDeatils.isActive"
-                                                (change)="changeStatus($event.checked, i, idx,schemeDeatils)">
+                                            <mat-slide-toggle [checked]="schemeDeatils.isActive" [disabled]="!schemeDeatils.isActive"
+                                                (change)="confirmation($event.checked, i, idx,schemeDeatils)">
                                                 <strong>Status</strong>
                                             </mat-slide-toggle>
                                         </div>
