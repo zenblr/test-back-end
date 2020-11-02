@@ -30,6 +30,7 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewIn
   destroy$ = new Subject();
   packetImages = { loan: [], scrap: [], termsAndConditions: [] };
   @ViewChildren('termsConditions') termsConditions: QueryList<ElementRef>;
+  edit: boolean;
 
   constructor(
     private loanservice: LoanApplicationFormService,
@@ -56,6 +57,13 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewIn
     } else {
       this.getLoanDetails();
       this.initiateTermsAndConditions()
+      this.route.queryParams.subscribe(res => {
+        if (res['loan-details']) {
+          this.edit = true
+          // console.log(this.edit)
+        }
+      }
+      );
     }
   }
 
@@ -389,7 +397,7 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   getTermsConditions() {
-    if (this.details.termsAndCondition.length) {
+    if (this.details.termsAndCondition && this.details.termsAndCondition.length) {
       this.packetImages.termsAndConditions = []
       this.details.termsAndConditionUrl.forEach((element, index) => {
         this.packetImages.termsAndConditions.push({ path: this.details.termsAndCondition[index], URL: element, name: null })

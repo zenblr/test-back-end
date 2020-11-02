@@ -539,8 +539,9 @@
                 <div class="col-4 kt-padding-l-20 kt-padding-r-20 kt-margin-b-30"
                     *ngFor="let image of getURLArray('termsAndConditions'); index as i">
                     <div *ngIf="image" class="img-container">
-                        <img *ngIf="image" src="../../../../../assets/media/icons/cancel.svg" alt=""
-                            class="kt-pointer remove-icon" (click)="removeTnC(i);">
+                        <img *ngIf="image && edit" src="../../../../../assets/media/icons/cancel.svg" alt=""
+                            class="remove-icon" [ngClass]="edit ? 'kt-pointer' : 'cursor-not-allowed'"
+                            (click)="removeTnC(i);">
                         <div class="pdf" (click)="preview(image)">
                             <iframe [src]="image | safe : 'resourceUrl'" scrolling="no" *ngIf="isPdf(image)"
                                 height="255"></iframe>
@@ -549,7 +550,8 @@
 
                     </div>
                     <div *ngIf="!image">
-                        <div class="img-container kt-pointer" (click)="termsConditions.click(); ">
+                        <div class="img-container" [ngClass]="edit ? 'kt-pointer' : 'cursor-not-allowed'"
+                            (click)="edit && termsConditions.click();">
                             <img class="placeholder-image" src="../../../../../../assets/media/icons/add.svg"
                                 alt="placeholder">
                         </div>
