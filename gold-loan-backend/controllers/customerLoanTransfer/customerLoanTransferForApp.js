@@ -34,52 +34,48 @@ exports.applyLoanTransferFromApp = async (req, res, next) => {
             }
         ]
     });
-
+    
+    if (!check.isEmpty(masterLoan)) {
+        if (masterLoan.loanTransfer.loanTransferStatusForBM == "approved" || masterLoan.loanTransfer.loanTransferStatusForBM == "rejected" || masterLoan.loanTransfer.loanTransferStatusForAppraiser == "approved" || masterLoan.loanTransfer.loanTransferStatusForAppraiser == "rejected") {
+            return res.status(400).json({ message: 'You cannot change documents now' })
+        }
+    }
+    
     let loanId
     let loanTransferId
-    if (check.isEmpty(masterLoan)) {
-        let createLoanTransfer = await models.customerLoanTransfer.create({ createdBy, modifiedBy }, { transaction: t });
+    await sequelize.transaction(async t => {
 
-        let newMasterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, createdBy, modifiedBy, internalBranchId: req.userData.internalBranchId, loanTransferId: createLoanTransfer.id, appraiserRequestId: requestId, isLoanTransfer: true }, { transaction: t })
+        if (check.isEmpty(masterLoan)) {
+            let createLoanTransfer = await models.customerLoanTransfer.create({ createdBy, modifiedBy }, { transaction: t });
 
-        let loan = await models.customerLoan.create({ customerId, masterLoanId: newMasterLoan.id, loanType: 'secured', createdBy, modifiedBy }, { transaction: t })
+            let newMasterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, createdBy, modifiedBy, internalBranchId: req.userData.internalBranchId, loanTransferId: createLoanTransfer.id, appraiserRequestId: requestId, isLoanTransfer: true }, { transaction: t })
 
-        await models.customerLoanPersonalDetail.create({ loanId: loan.id, masterLoanId: newMasterLoan.id, customerUniqueId, startDate, kycStatus, createdBy, modifiedBy }, { transaction: t })
+            let loan = await models.customerLoan.create({ customerId, masterLoanId: newMasterLoan.id, loanType: 'secured', createdBy, modifiedBy }, { transaction: t })
 
-        masterLoanId = newMasterLoan.id
-        loanId = loan.id
-        loanTransferId = createLoanTransfer.id
-    } else {
-        masterLoanId = masterLoan.id
-        loanId = masterLoan.customerLoan[0].id
-        loanTransferId = masterLoan.loanTransfer.id
-    }
+            await models.customerLoanPersonalDetail.create({ loanId: loan.id, masterLoanId: newMasterLoan.id, customerUniqueId, startDate, kycStatus, createdBy, modifiedBy }, { transaction: t })
 
-    await models.appraiserRequest.update({ status: 'complete', isProcessComplete: true }, { where: { id: requestId }, transaction: t })
-
-
-
-    let data = await models.customer.findOne({ where: { id: customerId }, transaction: t })
-
-    await sendTransferLoanRequestMessage(data.mobileNumber, data.firstName)
-
-    if (masterLoan.loanTransfer.loanTransferStatusForBM == "pending" || masterLoan.loanTransfer.loanTransferStatusForBM == "incomplete" || masterLoan.loanTransfer.loanTransferStatusForAppraiser == "pending" || masterLoan.loanTransfer.loanTransferStatusForAppraiser == "incomplete") {
-
-        //documents update
-        if (!masterLoan.loanTransfer.pawnTicket || !masterLoan.loanTransfer.signedCheque || !masterLoan.loanTransfer.declaration || !masterLoan.loanTransfer.outstandingLoanAmount) {
-            await models.customerLoanTransfer.update({ pawnTicket, signedCheque, declaration, outstandingLoanAmount, modifiedBy, loanTransferCurrentStage: '3', disbursedLoanAmount }, { where: { id: loanTransferId }, transaction: t })
-
+            masterLoanId = newMasterLoan.id
+            loanId = loan.id
+            loanTransferId = createLoanTransfer.id
         } else {
-            await models.customerLoanTransfer.update({ pawnTicket, signedCheque, declaration, outstandingLoanAmount, disbursedLoanAmount }, { where: { id: loanTransferId }, transaction: t })
-            await models.customerLoanTransferHistory.create({ loanTransferId: loanTransferId, action: loanTransferHistory.LOAN_DOCUMENTS_UPDATED, createdBy, modifiedBy }, { transaction: t })
+            masterLoanId = masterLoan.id
+            loanId = masterLoan.customerLoan[0].id
+            loanTransferId = masterLoan.loanTransfer.id
         }
 
+        await models.appraiserRequest.update({ status: 'complete', isProcessComplete: true }, { where: { id: requestId }, transaction: t })
+
+        let data = await models.customer.findOne({ where: { id: customerId }, transaction: t })
+
+        await sendTransferLoanRequestMessage(data.mobileNumber, data.firstName)
+
+        //documents update
+
+        await models.customerLoanTransfer.update({ pawnTicket, signedCheque, declaration, outstandingLoanAmount, disbursedLoanAmount }, { where: { id: loanTransferId }, transaction: t })
 
         //appraiser rating
         if (loanTransferStatusForAppraiser == "approved") {
             await models.customerLoanTransfer.update({ loanTransferStatusForAppraiser, modifiedBy, reasonByAppraiser, loanTransferCurrentStage: '4' }, { where: { id: loanTransferId }, transaction: t });
-
-
         } else if (loanTransferStatusForAppraiser == "pending") {
             await models.customerLoanTransfer.update({ loanTransferStatusForAppraiser, reasonByAppraiser, modifiedBy, loanTransferCurrentStage: '3' }, { where: { id: loanTransferId }, transaction: t });
 
@@ -88,9 +84,8 @@ exports.applyLoanTransferFromApp = async (req, res, next) => {
 
         }
 
-    } else {
-        return res.status(400).json({ message: 'You cannot change documents now' })
-    }
+
+    })
 
     return res.status(200).json({ message: 'Success', masterLoanId, loanId })
 }
