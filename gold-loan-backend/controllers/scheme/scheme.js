@@ -201,9 +201,9 @@ exports.readSchemeOnAmount = async (req, res, next) => {
                 }, {
                     model: models.internalBranch,
                     where: { id: loan.internalBranchId }
-                },{
-                    model :models.scheme,
-                    as : 'unsecuredScheme'
+                }, {
+                    model: models.scheme,
+                    as: 'unsecuredScheme'
                 }
             ]
         }]
@@ -255,12 +255,25 @@ exports.readUnsecuredSchemeOnAmount = async (req, res, next) => {
 exports.deactiveScheme = async (req, res, next) => {
     const { id, isActive } = req.query;
 
-    let defaultSchemeCheck = await models.scheme.findOne({ where: { isActive: false, id: id } });
-    if (check.isEmpty(defaultSchemeCheck)) {
-        return res.status(400).json({ message: "Please select one default scheme with respect to that partner." })
-    }
+    let schemeCheck = await models.scheme.findOne({ where: { isActive: true, id: id } });
+    let deactiveSchemeData
+    if (schemeCheck.schemeType == "secured") {
+        deactiveSchemeData = await models.scheme.update({ isActive: isActive }, { where: { id } })
+    } else if (schemeCheck.schemeType == "unsecured") {
+        let scheme = await models.scheme.findAll({
+            where: { isActive: true, unsecuredSchemeId: id },
+        })
 
-    const deactiveSchemeData = await models.scheme.update({ isActive: isActive }, { where: { id } })
+        let securedSchemeId = await scheme.map(ele => ele.id)
+        securedSchemeId.push(id)
+        deactiveSchemeData = await models.scheme.update({ isActive: isActive }, { where: { id: { [Op.in]: securedSchemeId } } })
+
+        // return res.status(200).json({ data: scheme })
+    }
+    // if (!check.isEmpty(defaultSchemeCheck)) {
+    //     return res.status(400).json({ message: "Please select one default scheme with respect to that partner." })
+    // }
+
 
     if (!deactiveSchemeData[0]) {
         return res.status(404).json({ message: 'data not found' });

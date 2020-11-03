@@ -6,8 +6,9 @@ import { map, takeUntil, catchError, finalize } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';
-import { SharedService } from '../../../../..//core/shared/services/shared.service';
+import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { ToastrService } from 'ngx-toastr';
+import { LayoutUtilsService } from '../../../../../core/_base/crud';
 
 @Component({
   selector: 'kt-loan-scheme',
@@ -36,7 +37,8 @@ export class LoanSchemeComponent implements OnInit {
     private parnterServices: PartnerService,
     private eleref: ElementRef,
     private sharedService: SharedService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private layoutUtilsService:LayoutUtilsService
   ) {
     this.loanSettingService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
@@ -189,4 +191,19 @@ export class LoanSchemeComponent implements OnInit {
       view.scrollIntoView({ behavior: "smooth", block: "start" })
     }, 250)
   }
+
+  confirmation(event, partnerIndex, schemeIndex, item) {
+    const _title = 'Deactivate Scheme';
+    const _description = 'Are you sure you want to deactivate  this Scheme?';
+    const _waitDesciption = ' Scheme is deactivating.';
+    const _deleteMessage = ` Logistic Partner has been deleted`;
+
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.changeStatus(event, partnerIndex, schemeIndex, item)
+      }
+    });
+  }
+
 }
