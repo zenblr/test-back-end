@@ -127,7 +127,8 @@ export class DisburseComponent implements OnInit {
       securedLoanUniqueId: [],
       unsecuredLoanUniqueId: [],
       finalAmount: [],
-      fullAmount: []
+      fullAmount: [],
+      bankTransferType: []
     })
     this.disableSchemeRelatedField()
   }
@@ -272,8 +273,8 @@ export class DisburseComponent implements OnInit {
   }
 
   download() {
-    // if (!this.controls.type.value) return this.controls.type.markAsTouched()
-    // this.loanService.downloadBankDetails(this.masterAndLoanIds.masterLoanId, this.controls.type.value).subscribe()
+    if (!this.controls.bankTransferType.value) return this.controls.bankTransferType.markAsTouched()
+    this.loanService.downloadBankDetails(this.masterAndLoanIds.masterLoanId, this.controls.bankTransferType.value).subscribe()
   }
 
   submit() {
@@ -332,6 +333,14 @@ export class DisburseComponent implements OnInit {
     // }
     // this.disburseForm.updateValueAndValidity();
 
+    if (selectedType === 'bank') {
+      this.controls.bankTransferType.setValidators([Validators.required])
+      this.controls.bankTransferType.updateValueAndValidity()
+    } else {
+      this.controls.bankTransferType.reset()
+      this.controls.bankTransferType.setValidators([])
+      this.controls.bankTransferType.updateValueAndValidity()
+    }
   }
 
   patchValue(value) {

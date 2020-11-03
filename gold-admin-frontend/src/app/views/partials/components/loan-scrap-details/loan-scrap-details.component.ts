@@ -10,6 +10,7 @@ import { takeUntil, distinctUntilChanged, skip, map, finalize } from 'rxjs/opera
 import { Subject } from 'rxjs';
 import { EmiLogsDialogComponent } from '../emi-logs-dialog/emi-logs-dialog.component';
 import { PartPaymentLogDialogComponent } from '../part-payment-log-dialog/part-payment-log-dialog.component';
+import { NgxPermissionsService } from 'ngx-permissions';
 @Component({
   selector: 'kt-loan-scrap-details',
   templateUrl: './loan-scrap-details.component.html',
@@ -30,13 +31,16 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewIn
   destroy$ = new Subject();
   packetImages = { loan: [], scrap: [], termsAndConditions: [] };
   @ViewChildren('termsConditions') termsConditions: QueryList<ElementRef>;
+  edit: boolean;
+  permission: any;
 
   constructor(
     private loanservice: LoanApplicationFormService,
     private scrapCustomerManagementService: ScrapCustomerManagementService,
     private route: ActivatedRoute,
     public dialog: MatDialog,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private ngxPermission: NgxPermissionsService,
   ) {
     this.sharedService.exportExcel$
       .pipe(
@@ -48,6 +52,10 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewIn
           this.soaDownload();
         }
       });
+
+    this.ngxPermission.permissions$.subscribe(res => {
+      this.permission = res
+    })
   }
 
   ngOnInit() {
@@ -56,6 +64,13 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewIn
     } else {
       this.getLoanDetails();
       this.initiateTermsAndConditions()
+      this.route.queryParams.subscribe(res => {
+        if (res['loan-details']) {
+          this.edit = true
+          // console.log(this.edit)
+        }
+      }
+      );
     }
   }
 
@@ -334,7 +349,6 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewIn
     const NUMBER_OF_DOCUMENTS = 5
     let array = Array(NUMBER_OF_DOCUMENTS).fill({ path: null, URL: null, name: null })
     this.packetImages.termsAndConditions = array
-    // console.log(this.packetImages.termsAndConditions)
   }
 
   getPathArray(type: string) {
@@ -348,12 +362,6 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   uploadTnC(event, index) {
-    // console.log(this.termsConditions.toArray(), 'INDEX', index)
-    let arr = []
-    this.termsConditions.forEach(element => {
-      arr.push(element.nativeElement.value)
-    })
-    // console.log(arr, index)
     var file = event.target.files[0];
 
     if (this.sharedService.fileValidator(event, 'pdf')) {
@@ -364,14 +372,16 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewIn
       this.sharedService.uploadFile(file, params).pipe(
         map(res => {
           this.packetImages.termsAndConditions.splice(index, 1, { path: res.uploadFile.path, URL: res.uploadFile.URL, name: res.uploadFile.originalname })
-          // console.log(this.packetImages.termsAndConditions)
         }),
         finalize(() => {
           this.termsConditions.forEach(e => {
             if (e && e.nativeElement.value) e.nativeElement.value = ''
           })
+          event.target.value = ''
         })
       ).subscribe()
+    } else {
+      event.target.value = ''
     }
 
   }
@@ -383,18 +393,16 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewIn
   SaveTnC() {
     const termsConditions = this.getPathArray('termsAndConditions')
     const masterLoanId = this.masterAndLoanIds.masterLoanId
-    // console.log(termsConditions)
 
     this.loanservice.uploadTermsAndConditions({ termsConditions, masterLoanId }).pipe().subscribe()
   }
 
   getTermsConditions() {
-    if (this.details.termsAndCondition.length) {
+    if (this.details.termsAndCondition && this.details.termsAndCondition.length) {
       this.packetImages.termsAndConditions = []
       this.details.termsAndConditionUrl.forEach((element, index) => {
         this.packetImages.termsAndConditions.push({ path: this.details.termsAndCondition[index], URL: element, name: null })
       });
-      // console.log(this.packetImages.termsAndConditions)
     }
   }
 

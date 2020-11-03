@@ -210,7 +210,7 @@ export class UserManagementModule {
 	) {
 		this.router.events.subscribe(event => {
 			if (event instanceof NavigationEnd) {
-				console.log(event)
+				// console.log(event)
 				if (event.url == '/admin/user-management') {
 					this.userManagementRoute()
 				}
@@ -244,7 +244,7 @@ export class UserManagementModule {
 			}
 		}
 		this.routeToPage(title)
-		console.log(title)
+		// console.log(title)
 	}
 
 	routeToPage(permission) {

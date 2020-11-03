@@ -246,7 +246,7 @@
                                 </div>
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Karat</div>
-                                    <div class="text-color font-weight-500">{{ornaments.karat + ' K'}}</div>
+                                    <div class="text-color font-weight-500">{{ornaments.karat}}</div>
                                 </div>
                                 <div class="col-3">
                                     <div class="text-gray font-weight-500 kt-margin-b-5">Loan Amount </div>
@@ -539,8 +539,10 @@
                 <div class="col-4 kt-padding-l-20 kt-padding-r-20 kt-margin-b-30"
                     *ngFor="let image of getURLArray('termsAndConditions'); index as i">
                     <div *ngIf="image" class="img-container">
-                        <img *ngIf="image" src="../../../../../assets/media/icons/cancel.svg" alt=""
-                            class="kt-pointer remove-icon" (click)="removeTnC(i);">
+                        <img *ngIf="image && edit && permission.addTermsAndCondition"
+                            src="../../../../../assets/media/icons/cancel.svg" alt="" class="remove-icon"
+                            [ngClass]="edit && permission.addTermsAndCondition ? 'kt-pointer' : 'cursor-not-allowed'"
+                            (click)="removeTnC(i);">
                         <div class="pdf" (click)="preview(image)">
                             <iframe [src]="image | safe : 'resourceUrl'" scrolling="no" *ngIf="isPdf(image)"
                                 height="255"></iframe>
@@ -549,7 +551,9 @@
 
                     </div>
                     <div *ngIf="!image">
-                        <div class="img-container kt-pointer" (click)="termsConditions.click(); ">
+                        <div class="img-container"
+                            [ngClass]="edit && permission.addTermsAndCondition ? 'kt-pointer' : 'cursor-not-allowed'"
+                            (click)="edit && permission.addTermsAndCondition && termsConditions.click();">
                             <img class="placeholder-image" src="../../../../../../assets/media/icons/add.svg"
                                 alt="placeholder">
                         </div>
@@ -563,8 +567,10 @@
                 </div>
 
             </div>
-            <div *ngxPermissionsOnly="['addTermsAndCondition']" class="row justify-content-center kt-padding-t-15">
-                <kt-button [value]="'Save'" [type]="'button'" (action)="SaveTnC()"></kt-button>
+            <div *ngIf="edit">
+                <div *ngxPermissionsOnly="['addTermsAndCondition']" class="row justify-content-center kt-padding-t-15">
+                    <kt-button [value]="'Save'" [type]="'button'" (action)="SaveTnC()"></kt-button>
+                </div>
             </div>
         </div>
 
