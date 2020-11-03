@@ -70,7 +70,7 @@ export class AddSchemeComponent implements OnInit {
       // isDefault: [false],
       isSplitAtBeginning: [false],
       unsecuredSchemeId: [],
-      rpg: [],
+      rpg: [, [Validators.required]],
       internalBranchId: [],
       multiSelect: [],
       isUnsecuredSchemeMapped: [false],
@@ -132,6 +132,8 @@ export class AddSchemeComponent implements OnInit {
       let partnerArray = [];
       partnerArray.push(this.fillingForm.get('partnerId').value);
       this.fillingForm.patchValue({ partnerId: partnerArray });
+
+      // return
 
       this.laonSettingService.saveScheme(this.fillingForm.value).pipe(
         map((res) => {
@@ -257,12 +259,16 @@ export class AddSchemeComponent implements OnInit {
   }
 
   getUnsecuredSchemes() {
-    if (!this.fillingForm.controls.isUnsecuredSchemeMapped.value) return
+    this.setUnsecuredSchemeValidation()
+    this.setInternalBranchValidation()
 
-    const { partnerId, schemeType, schemeInterest } = this.fillingForm.controls
-    if (partnerId.invalid || schemeType.value == 'unsecured' || schemeInterest.invalid) {
-      return
-    }
+    const { partnerId, schemeType, schemeInterest, isUnsecuredSchemeMapped } = this.fillingForm.controls
+
+    if (!isUnsecuredSchemeMapped.value) return
+
+    if (schemeType.value == 'unsecured') return isUnsecuredSchemeMapped.patchValue(false)
+
+    if (partnerId.invalid || schemeInterest.invalid) return
 
     const data = {
       partnerId: partnerId.value,
@@ -280,6 +286,31 @@ export class AddSchemeComponent implements OnInit {
   displayUnsecuredScheme() {
     if (!this.fillingForm.controls.isUnsecuredSchemeMapped.value) {
       this.fillingForm.controls.unsecuredSchemeId.patchValue(null)
+      this.setUnsecuredSchemeValidation()
+    }
+  }
+
+  setUnsecuredSchemeValidation() {
+    const { unsecuredSchemeId, schemeType, isUnsecuredSchemeMapped } = this.fillingForm.controls
+
+    if (schemeType.value === 'secured' && isUnsecuredSchemeMapped.value == true) {
+      unsecuredSchemeId.setValidators([Validators.required])
+      unsecuredSchemeId.updateValueAndValidity()
+    } else {
+      unsecuredSchemeId.setValidators([])
+      unsecuredSchemeId.updateValueAndValidity()
+    }
+  }
+
+  setInternalBranchValidation() {
+    const { multiSelect, schemeType } = this.fillingForm.controls
+
+    if (schemeType.value === 'secured') {
+      multiSelect.setValidators([Validators.required])
+      multiSelect.updateValueAndValidity()
+    } else {
+      multiSelect.setValidators([])
+      multiSelect.updateValueAndValidity()
     }
   }
 
