@@ -1,4 +1,10 @@
 :host {
+    // ::ng-deep .mat-tab-body-wrapper{
+    //     max-height: 550px !important;  
+    //   }
+      ::ng-deep #fillingForm .mat-tab-body-wrapper{
+        height: 525px !important;  
+      }
     p {
         margin: 0 !important;
     }
@@ -48,5 +54,7 @@
         color           : rgb(193, 193, 193) !important;
 
     }
+
+    
 
 }

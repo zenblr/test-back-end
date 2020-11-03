@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';
@@ -13,12 +13,13 @@ import { InternalUserBranchService } from '../../../../../core/user-management/i
   styleUrls: ['./add-scheme.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddSchemeComponent implements OnInit {
+export class AddSchemeComponent implements OnInit, AfterViewInit {
 
   @ViewChild('tabGroup', { static: false }) tabGroup;
 
   csvForm: FormGroup;
   fillingForm: FormGroup;
+  rpgForm: FormGroup;
   partnerData: [] = []
   file: any;
   schemeType = [{ value: 'secured', name: 'secured' }, { value: 'unsecured', name: 'unsecured' }]
@@ -39,6 +40,14 @@ export class AddSchemeComponent implements OnInit {
     this.getInternalBranchList()
     this.initForm()
     this.partner()
+  }
+
+  ngAfterViewInit() {
+    this.fillingForm.controls.multiSelect.valueChanges.subscribe(res => {
+      if (res && res.multiSelect.length == 0) {
+        this.fillingForm.controls.multiSelect.patchValue(null)
+      }
+    })
   }
 
   partner() {
@@ -79,8 +88,13 @@ export class AddSchemeComponent implements OnInit {
     })
 
     this.csvForm = this.fb.group({
-      partnerId: ['', Validators.required],
+      // partnerId: ['', Validators.required],
       csv: ['', Validators.required]
+    })
+
+
+    this.rpgForm = this.fb.group({
+      rpg: ['', Validators.required]
     })
 
     this.initSlabArray()
@@ -104,6 +118,10 @@ export class AddSchemeComponent implements OnInit {
     } else if (!event) {
       this.dialogRef.close()
     }
+  }
+
+  downloadRpgUpdateSheet(){
+    this.laonSettingService.downloadRpgUpdateSheet().subscribe()
   }
 
   submit() {
@@ -153,9 +171,19 @@ export class AddSchemeComponent implements OnInit {
         return
       }
       var fb = new FormData()
-      fb.append('schemecsv', this.file)
-      fb.append('partnerId', this.csvForm.controls.partnerId.value)
-      this.laonSettingService.uplaodCSV(fb).pipe(
+      fb.append('avatar', this.file)
+      // fb.append('partnerId', this.csvForm.controls.partnerId.value)
+      //   this.laonSettingService.uplaodCSV(fb).pipe(
+      //     map((res) => {
+      //       this._toastr.success('Scheme Created Sucessfully');
+      //       this.dialogRef.close(res);
+      //     }), catchError(err => {
+
+      //       this.ref.detectChanges();
+      //       throw (err)
+      //     })).subscribe()
+      // }
+      this.laonSettingService.uplaodRpg(fb).pipe(
         map((res) => {
           this._toastr.success('Scheme Created Sucessfully');
           this.dialogRef.close(res);
@@ -165,6 +193,7 @@ export class AddSchemeComponent implements OnInit {
           throw (err)
         })).subscribe()
     }
+
   }
 
   getFileInfo(event) {
@@ -176,6 +205,18 @@ export class AddSchemeComponent implements OnInit {
       return
     }
     this.csvForm.get('csv').patchValue(event.target.files[0].name);
+
+  }
+
+  getRpgInfo(event) {
+    this.file = event.target.files[0];
+    var ext = event.target.files[0].name.split('.');
+    if (ext[ext.length - 1] != 'csv') {
+      this._toastr.error('Please upload csv file');
+      this.csvForm.controls.csv.markAsTouched()
+      return
+    }
+    this.csvForm.get('rpg').patchValue(event.target.files[0].name);
 
   }
 
