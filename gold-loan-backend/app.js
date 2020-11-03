@@ -98,9 +98,9 @@ app.use(function (err, req, res, next) {
     res.status(500).send({ message: "something went wrong" });
 });
 
-cron.schedule(' * * * * *', async function () {
-    await interest.test('1');
-})
+// cron.schedule(' * * * * *', async function () {
+//     await interest.test('1');
+// })
 
 cron.schedule('0 1 * * *', async function () {
     let date = moment()
