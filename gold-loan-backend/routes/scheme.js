@@ -5,7 +5,7 @@ const validationError = require('../middleware/validationError');
 const { schemeValidation } = require('../validations/scheme');
 const checkAuth = require('../middleware/checkAuth');
 const checkRolePermission = require('../middleware/checkRolesPermissions');
-
+const {bulkUploadExcelFile} = require("../controllers/scheme/uploadSchemes");
 
 const express = require('express');
 
@@ -30,7 +30,9 @@ route.put('/update-default/:id', checkAuth, checkRolePermission, wrapper(UpdateD
 
 route.get('/unsecured-scheme/:id/:amount', checkAuth, checkRolePermission, wrapper(readUnsecuredSchemeOnAmount));
 
-route.post('/unsecured-scheme', checkAuth, wrapper(getUnsecuredScheme))
+route.post('/unsecured-scheme', checkAuth, wrapper(getUnsecuredScheme));
+
+route.post('/excel-upload', checkAuth, wrapper(bulkUploadExcelFile)); // api for File Upload.
 
 module.exports = route;
 
