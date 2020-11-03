@@ -173,7 +173,12 @@
     <div class="row kt-margin-t-15">
         <!-- loan ornaments -->
         <div class="col-12 card kt-padding-15" *ngIf="masterLoanId">
-            <label class="font-weight-bold text-color kt-margin-b-10 kt-margin-t-15">R.P.G-{{details?.loanOrnamentsDetail[0]?.currentGoldRate}}</label>
+            <label class="font-weight-bold text-color kt-margin-b-10 kt-margin-t-15">
+                R.P.G - {{details?.customerLoan[0]?.scheme.schemeName}} : {{details?.customerLoan[0]?.rpg}} <br>
+                <span class="kt-padding-l-45">
+                    {{details?.customerLoan[1]?.scheme.schemeName}} : {{details?.customerLoan[1]?.rpg}}
+                </span>
+            </label>
             <label class="font-weight-bold text-color kt-margin-b-25 ">Ornaments - Total
                 {{details?.loanOrnamentsDetail?.length}} Ornaments</label>
             <mat-tab-group style="min-height: 300px;">

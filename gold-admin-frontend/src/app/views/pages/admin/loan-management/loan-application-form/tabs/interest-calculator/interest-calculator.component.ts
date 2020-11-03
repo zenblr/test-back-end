@@ -23,6 +23,7 @@ export class InterestCalculatorComponent implements OnInit {
   @Input() disable
   currentDate = new Date();
   colJoin: any;
+  checkForLoanTypeError:any = '';
   securedInterestAmount: any = 0;
   unSecuredInterestAmount: any = 0;
   totalinterestAmount: any = 0;
@@ -425,8 +426,10 @@ export class InterestCalculatorComponent implements OnInit {
 
 
     }, err => {
-      if (err.error.message == "No Unsecured Scheme Availabe") {
-        this.controls.finalLoanAmount.setErrors({ noDefaultScheme: true })
+      if (err.error.message) {
+        this.checkForLoanTypeError = err.error.message
+        this.controls.finalLoanAmount.setErrors({ defalutNotRange: true })
+        this.ref.detectChanges()
       }
     })
   }

@@ -1,4 +1,4 @@
-const { addScheme, readScheme, readSchemeById, readSchemeByPartnerId, deactiveScheme, readSchemeOnAmount, UpdateDefault, readUnsecuredSchemeOnAmount, checkSlab, getUnsecuredScheme } = require("../controllers/scheme/scheme");
+const { addScheme, readScheme,exportSchemes, readSchemeById, readSchemeByPartnerId, deactiveScheme, readSchemeOnAmount, UpdateDefault, readUnsecuredSchemeOnAmount, checkSlab, getUnsecuredScheme } = require("../controllers/scheme/scheme");
 
 const { wrapper } = require('../utils/errorWrap');
 const validationError = require('../middleware/validationError');
@@ -17,6 +17,8 @@ route.post('/', schemeValidation, validationError, checkAuth, checkRolePermissio
 route.get('/', checkAuth, checkRolePermission, wrapper(readScheme)); // read Scheme route
 
 route.delete('/', checkAuth, checkRolePermission, wrapper(deactiveScheme)); // deactive scheme
+
+route.get('/export-scheme', checkAuth, wrapper(exportSchemes));
 
 route.get('/partner-scheme/:id', checkAuth, checkRolePermission, wrapper(readSchemeByPartnerId)) //read partner scheme
 

@@ -3,6 +3,7 @@ const Sequelize = models.Sequelize;
 const sequelize = models.sequelize;
 const Op = Sequelize.Op;
 const check = require('../../lib/checkLib');
+const xl = require('excel4node');
 
 // add scheme
 exports.addScheme = async (req, res, next) => {
@@ -200,9 +201,9 @@ exports.readSchemeOnAmount = async (req, res, next) => {
                 }, {
                     model: models.internalBranch,
                     where: { id: loan.internalBranchId }
-                },{
-                    model :models.scheme,
-                    as : 'unsecuredScheme'
+                }, {
+                    model: models.scheme,
+                    as: 'unsecuredScheme'
                 }
             ]
         }]
@@ -254,18 +255,31 @@ exports.readUnsecuredSchemeOnAmount = async (req, res, next) => {
 exports.deactiveScheme = async (req, res, next) => {
     const { id, isActive } = req.query;
 
-    // let defaultSchemeCheck = await models.scheme.findOne({ where: { isActive: true, default: true, id: id } });
+    let schemeCheck = await models.scheme.findOne({ where: { isActive: true, id: id } });
+    let deactiveSchemeData
+    if (schemeCheck.schemeType == "secured") {
+        deactiveSchemeData = await models.scheme.update({ isActive: isActive }, { where: { id } })
+    } else if (schemeCheck.schemeType == "unsecured") {
+        let scheme = await models.scheme.findAll({
+            where: { isActive: true, unsecuredSchemeId: id },
+        })
+
+        let securedSchemeId = await scheme.map(ele => ele.id)
+        securedSchemeId.push(id)
+        deactiveSchemeData = await models.scheme.update({ isActive: isActive }, { where: { id: { [Op.in]: securedSchemeId } } })
+
+        // return res.status(200).json({ data: scheme })
+    }
     // if (!check.isEmpty(defaultSchemeCheck)) {
     //     return res.status(400).json({ message: "Please select one default scheme with respect to that partner." })
     // }
 
-    const deactiveSchemeData = await models.scheme.update({ isActive: isActive }, { where: { id } })
 
     if (!deactiveSchemeData[0]) {
         return res.status(404).json({ message: 'data not found' });
     }
 
-    return res.status(200).json({ message: 'Success' });
+    return res.status(200).json({ message: 'Success',defaultSchemeCheck });
 }
 
 exports.UpdateDefault = async (req, res, next) => {
@@ -440,3 +454,153 @@ exports.getUnsecuredScheme = async (req, res, next) => {
     return res.status(200).json({ message: "Success", data: unsecuredArray })
 
 }
+
+
+exports.exportSchemes = async (req, res, next) => {
+
+    let partnerData = await models.partner.findAll({
+        where: { isActive: true },
+        attributes:['id','name']
+    })
+    let schemeData = [];
+    for(const partner of partnerData ){
+
+        let readSchemeByPartner = await models.partner.findOne({
+            where: { isActive: true, id: partner.id },
+            attributes:['id','name'],
+            include: [{
+                model: models.scheme,
+                where: { isActive: true },
+                attributes:['id','schemeName','schemeType','rpg']
+            }],
+        })
+        if(readSchemeByPartner.schemes.length > 0){
+            let data = readSchemeByPartner;
+            schemeData.push(data)
+        }
+           
+    }
+    let wb = new xl.Workbook({dateFormat: 'dd/mm/yyyy',numberFormat: '##.00,##0.00; (#,##0.00); #.00'});
+    for(const data of schemeData){
+        let ws = wb.addWorksheet(data.name);
+        ws.column(1).setWidth(10);
+        ws.column(2).setWidth(17);
+        ws.column(3).setWidth(17);
+        ws.column(4).setWidth(17);
+        ws.column(5).setWidth(12);
+        ws.cell(1,1).string("id");
+        ws.cell(1,2).string("partner name");
+        ws.cell(1,3).string("schemeName");
+        ws.cell(1,4).string("schemeType");
+        ws.cell(1,5).string("rpg");
+        for (let i = 0; data.schemes.length > i; i++) {
+            ws.cell(i+2,1).number(data.schemes[i].id);
+            ws.cell(i+2,2).string(data.name);
+            ws.cell(i+2,3).string(data.schemes[i].schemeName);
+            ws.cell(i+2,4).string(data.schemes[i].schemeType);
+            ws.cell(i+2,5).number(data.schemes[i].rpg);
+        }
+    }
+        return wb.write(`${Date.now()}.xlsx`, res);
+        // return res.status(200).json({schemeData})
+}
+
+
+
+exports.bulkUploadExcelFile = async (req, res, next) => {
+    let destination = 'public/uploads/bulkUpload/'
+    if(process.env.FILE_TO_AWS == 'true'){
+        let fileName = Date.now();
+        AWS.config.update({
+            secretAccessKey: `${process.env.Secretkey}`,
+            accessKeyId: `${process.env.Accessid}`,
+            region: process.env.Region,
+        });
+        const s3 = new AWS.S3({ accessKeyId: `${process.env.Accessid}`, secretAccessKey: `${process.env.Secretkey}` });
+        const upload = multer({
+            storage: multerS3({
+                s3,
+                acl: 'public-read',
+                bucket: process.env.Bucket,
+                contentType: multerS3.AUTO_CONTENT_TYPE,
+                key(req, file, cb) {
+                    const extArray = file.originalname.split('.');
+                    const extension = extArray[extArray.length - 1];
+                    cb(null, `${destination}${fileName}.${extension}`);
+                },
+            }),
+        });
+        const uploadFilesToS3 = upload.array('avatar');
+        const storage = multer.diskStorage({
+            filename: (req, file, cb) => {
+                const extArray = file.originalname.split(".");
+                const extension = extArray[extArray.length - 1];
+                cb(null, `${fileName}.${extension}`);
+            },
+            destination: destination
+        });
+        const uploads = multer({
+            storage
+        }).single("avatar");
+        uploads(req, res, async err => {
+            if (err) {
+                res.status(500);
+            }
+            req.file.userId = req.userData.id;
+            req.file.type = "appRequests";
+            req.file.url = req.file.destination + req.file.filename;
+        });
+        await uploadFilesToS3(req, res, async (err) => {
+            if (err) {
+                return res.status(500).json(err);
+            }
+            const data = Object.assign(req.files[0], { URL: req.files[0].location });
+            data.url = data.key;
+            let uploadFile = await models.fileUpload.create({filename:data.key,mimetype:data.mimetype,encoding:data.encoding,originalname:data.originalname,url:data.url,userId:req.userData.id,path: data.url });
+            
+            if (!uploadFile) {
+                res.status(400).json({
+                    message: "Error while uploading file!"
+                });
+            } else {
+                res.status(200).json({
+                    uploadFile
+                });
+            }
+        });
+    }else{
+        const storage = multer.diskStorage({
+            filename: (req, file, cb) => {
+                const extArray = file.originalname.split(".");
+                const extension = extArray[extArray.length - 1];
+                cb(null, `${Date.now()}.${extension}`);
+            },
+            destination: destination
+        });
+        
+        const uploads = multer({
+            storage
+        }).single("avatar");
+        uploads(req, res, async err => {
+            if (err) {
+                res.status(500);
+            }
+            let pathToadd = destination.replace('public/', '');
+            req.file.userId = req.userData.id;
+            req.file.path = pathToadd + req.file.filename;
+            req.file.url = req.file.destination + req.file.filename;
+
+            console.log(req.file);
+            let uploadFile = await models.fileUpload.create(req.file);
+            if (!uploadFile) {
+                res.status(400).json({
+                    message: "Error while uploading file!"
+                });
+            } else {
+                res.status(200).json({
+                    uploadFile
+                });
+            }
+        });
+    }
+};

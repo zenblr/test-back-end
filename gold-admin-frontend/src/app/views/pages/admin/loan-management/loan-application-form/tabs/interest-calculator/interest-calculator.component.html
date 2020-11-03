@@ -72,14 +72,14 @@
                             <mat-error *ngIf="controls.finalLoanAmount.errors?.maximumAmtAllowed">
                                 <small>Entered amount exceeds loan criteria</small>
                             </mat-error>
-                            <mat-error *ngIf="controls.finalLoanAmount.errors?.eligible">
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.eligible && controls.finalLoanAmount.touched">
                                 <small>Entered Amount is greater than Eligible Amount</small>
                             </mat-error>
-                            <mat-error *ngIf="controls.finalLoanAmount.errors?.mimimumAmt">
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.mimimumAmt && controls.finalLoanAmount.touched">
                                 <small>Entered Amount should be greater than minimum loan amount</small>
                             </mat-error>
-                            <mat-error *ngIf="controls.finalLoanAmount.errors?.defalutNotRange">
-                                <small>Unsecured amount is not within the range of default unsecured scheme</small>
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.defalutNotRange && controls.finalLoanAmount.touched">
+                                <small>{{checkForLoanTypeError}}</small>
                             </mat-error>
                             <mat-error *ngIf="controls.finalLoanAmount.errors?.noDefaultScheme">
                                 <small>No default unsecured scheme is mapped to this secured scheme</small>
