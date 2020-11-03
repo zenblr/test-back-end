@@ -68,6 +68,18 @@ exports.loanRequest = async (req, res, next) => {
 
     let loanData = await sequelize.transaction(async t => {
 
+        //loan transfer
+        if (masterLoanId) {
+            let customerLoanMaster = await models.customerLoanMaster.findOne({ where: { id: masterLoanId }, transaction: t });
+            if (customerLoanMaster.loanTransferId != null) {
+                let transferLoan = await models.customerLoanTransfer.findOne({ where: { id: customerLoanMaster.loanTransferId } });
+                if (transferLoan.isLoanApplied == false) {
+                    await models.customerLoanTransfer.update({ isLoanApplied: true, modifiedBy }, { where: { id: customerLoanMaster.loanTransferId }, transaction: t });
+                }
+            }
+        }
+        //loan transfer
+
         await models.appraiserRequest.update({ isProcessComplete: true, status: 'complete' }, { where: { id: appraiserRequestId }, transaction: t })
 
         if (isEdit) {
