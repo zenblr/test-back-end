@@ -3,10 +3,14 @@ const Sequelize = models.Sequelize;
 const sequelize = models.sequelize;
 const Op = Sequelize.Op;
 const check = require('../../lib/checkLib');
+const xl = require('excel4node');
+const xlsx2json = require("xlsx2json");
+const fs = require("fs")
+const _ = require('lodash');
 
 // add scheme
 exports.addScheme = async (req, res, next) => {
-    let { schemeName, schemeAmountStart, schemeAmountEnd, partnerId, processingChargeFixed, processingChargePercent, maximumPercentageAllowed, penalInterest, schemeType, isDefault, isTopUp, isSplitAtBeginning, schemeInterest, internalBranchId, rpg, unsecuredSchemeId } = req.body;
+    let { schemeName, schemeAmountStart, schemeAmountEnd, partnerId, processingChargeFixed, processingChargePercent, penalInterest, schemeType, isDefault, isTopUp, isSplitAtBeginning, schemeInterest, internalBranchId, rpg, unsecuredSchemeId } = req.body;
     schemeName = schemeName.toLowerCase();
     let schemeNameExist = await models.scheme.findOne({
         where: { schemeName },
@@ -278,44 +282,44 @@ exports.deactiveScheme = async (req, res, next) => {
         return res.status(404).json({ message: 'data not found' });
     }
 
-    return res.status(200).json({ message: 'Success' });
+    return res.status(200).json({ message: 'Success', defaultSchemeCheck });
 }
 
 exports.UpdateDefault = async (req, res, next) => {
-    let { id } = req.params;
-    let { partnerId } = req.body;
+    // let { id } = req.params;
+    // let { partnerId } = req.body;
 
-    let schemeDefault = await models.scheme.findOne({ where: { id: id } });
+    // let schemeDefault = await models.scheme.findOne({ where: { id: id } });
 
-    if (schemeDefault.isActive == false) {
-        return res.status(400).json({ message: "You can not set deactivate scheme as a default." })
-    }
+    // if (schemeDefault.isActive == false) {
+    //     return res.status(400).json({ message: "You can not set deactivate scheme as a default." })
+    // }
 
-    let readSchemeByPartner = await models.partner.findOne({
-        where: { isActive: true, id: partnerId },
-        include: [{
-            model: models.scheme,
-            where: { isActive: true }
-        }],
-    });
+    // let readSchemeByPartner = await models.partner.findOne({
+    //     where: { isActive: true, id: partnerId },
+    //     include: [{
+    //         model: models.scheme,
+    //         where: { isActive: true }
+    //     }],
+    // });
 
-    if (readSchemeByPartner) {
-        let schemeArray = [];
-        for (let scheme of readSchemeByPartner.schemes) {
-            schemeArray.push(scheme.id);
-        }
-        let updateDefault = await models.scheme.update(
-            { default: false }, { where: { id: { [Op.in]: schemeArray } }, });
+    // if (readSchemeByPartner) {
+    //     let schemeArray = [];
+    //     for (let scheme of readSchemeByPartner.schemes) {
+    //         schemeArray.push(scheme.id);
+    //     }
+    //     let updateDefault = await models.scheme.update(
+    //         { default: false }, { where: { id: { [Op.in]: schemeArray } }, });
 
-        console.log(updateDefault);
+    //     console.log(updateDefault);
 
-        if (updateDefault) {
-            await models.scheme.update(
-                { default: true }, { where: { id } });
-        }
-    }
+    //     if (updateDefault) {
+    //         await models.scheme.update(
+    //             { default: true }, { where: { id } });
+    //     }
+    // }
 
-    return res.status(200).json({ message: 'Success' });
+    // return res.status(200).json({ message: 'Success' });
 
 }
 
@@ -346,7 +350,7 @@ exports.checkSlab = async (req, res, next) => {
         include: [
             {
                 model: models.scheme,
-                attributes: ['id', 'default'],
+                attributes: ['id'],
                 where: { isActive: true, schemeType: 'unsecured' },
                 include: [
                     {
@@ -453,3 +457,96 @@ exports.getUnsecuredScheme = async (req, res, next) => {
     return res.status(200).json({ message: "Success", data: unsecuredArray })
 
 }
+
+
+exports.exportSchemes = async (req, res, next) => {
+
+    let partnerData = await models.partner.findAll({
+        where: { isActive: true },
+        attributes: ['id', 'name']
+    })
+    let schemeData = [];
+    for (const partner of partnerData) {
+
+        let readSchemeByPartner = await models.partner.findOne({
+            where: { isActive: true, id: partner.id },
+            attributes: ['id', 'name'],
+            include: [{
+                model: models.scheme,
+                where: { isActive: true },
+                attributes: ['id', 'schemeName', 'schemeType', 'rpg']
+            }],
+        })
+        if (readSchemeByPartner.schemes.length > 0) {
+            let data = readSchemeByPartner;
+            schemeData.push(data)
+        }
+
+    }
+    let wb = new xl.Workbook({ dateFormat: 'dd/mm/yyyy', numberFormat: '##.00,##0.00; (#,##0.00); #.00' });
+    for (const data of schemeData) {
+        let ws = wb.addWorksheet(data.name);
+        ws.column(1).setWidth(10);
+        ws.column(2).setWidth(17);
+        ws.column(3).setWidth(17);
+        ws.column(4).setWidth(17);
+        ws.column(5).setWidth(12);
+        ws.cell(1, 1).string("id");
+        ws.cell(1, 2).string("partner name");
+        ws.cell(1, 3).string("schemeName");
+        ws.cell(1, 4).string("schemeType");
+        ws.cell(1, 5).string("rpg");
+        for (let i = 0; data.schemes.length > i; i++) {
+            ws.cell(i + 2, 1).number(data.schemes[i].id);
+            ws.cell(i + 2, 2).string(data.name);
+            ws.cell(i + 2, 3).string(data.schemes[i].schemeName);
+            ws.cell(i + 2, 4).string(data.schemes[i].schemeType);
+            ws.cell(i + 2, 5).number(data.schemes[i].rpg);
+        }
+    }
+    return wb.write(`${Date.now()}.xlsx`, res);
+    // return res.status(200).json({schemeData})
+}
+
+
+exports.editSchemeThorughExcel = async (req, res, next) => {
+        let allExcelData = [];
+        let excelData = await xlsx2json(`./${req.body.url}`);
+        if (fs.existsSync(`./${req.body.url}`)) {
+            fs.unlinkSync(`./${req.body.url}`);
+        }
+        for (const data of excelData) {
+            const dataArray = data;
+            if (dataArray.length != 0) {
+                const finalArray = await dataArray.reduce(
+                    (object, item, index) => {
+                        if (index === 0) {
+                            object.mapper = item;
+                            return object;
+                        }
+                        const data = {};
+                        Object.keys(item).forEach((key) => {
+                            data[object.mapper[key].replace(/\s/g, "")] = item[key];
+                        });
+                        object.data.push(data);
+                        return object;
+                    },
+                    { mapper: {}, data: [] }
+                );
+                allExcelData.push(finalArray.data)
+            } 
+        }
+        await sequelize.transaction(async t => {
+        for(const data of allExcelData){
+            if(data.length != 0){
+                for(const scheme of data){
+                    await models.scheme.update({ rpg: scheme.rpg }, { where: { id:scheme.id },transaction: t })
+                }
+            }
+        }
+    });
+        return res.status(200).json({ allExcelData });
+};
+
+
+

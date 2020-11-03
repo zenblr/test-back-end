@@ -622,7 +622,7 @@ exports.getsingleCustomerManagement = async (req, res) => {
 
 //To register customer by their own
 exports.signUpCustomer = async (req, res) => {
-  let { firstName, lastName, mobileNumber, email, referenceCode, otp } = req.body;
+  let { firstName, lastName, mobileNumber, email, referenceCode, otp, city } = req.body;
 
   var todayDateTime = new Date();
   // console.log('abc')
@@ -664,7 +664,7 @@ exports.signUpCustomer = async (req, res) => {
     isFromApp = true
   }
 
-  let createdCustomer = await models.customerRegister.create({ firstName, lastName, email, mobileNumber, isFromApp, isActive: true });
+  let createdCustomer = await models.customerRegister.create({ firstName, lastName, email, mobileNumber, isFromApp, isActive: true, city });
   return res.status(200).json({ messgae: `Registered Sucessfully!` });
 
 }

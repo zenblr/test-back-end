@@ -72,6 +72,7 @@ export class MenuConfig {
 							title: "User Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-04.svg",
+							page:'/admin/user-management',
 							permission: !(this.permissionsArr.includes('merchantView') ||
 								this.permissionsArr.includes('brokerView') ||
 								this.permissionsArr.includes('storeView') ||

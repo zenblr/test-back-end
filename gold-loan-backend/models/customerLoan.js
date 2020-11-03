@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         rpg:{
             type: DataTypes.FLOAT,
-            field: 'rpg',
+            field: 'rpg'
         },
         schemeId: {
             type: DataTypes.INTEGER,

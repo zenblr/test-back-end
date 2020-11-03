@@ -2,11 +2,10 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addColumn('customer_loan_ornaments_detail', 'evaluation', {
-      type: Sequelize.DataTypes.FLOAT,
-    }).then(() => {
-      return queryInterface.removeColumn('customer_loan_ornaments_detail', 'current_gold_rate');
-    })
+    return queryInterface.addColumn('karat_details', 'hm', {
+      type: Sequelize.DataTypes.BOOLEAN,
+      defaultValue: false
+    });
   },
 
   down: (queryInterface, Sequelize) => {

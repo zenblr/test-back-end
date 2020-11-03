@@ -182,7 +182,7 @@ const quickPay = require('./quickPay');
 router.use('/quick-pay', quickPay);
 
 const deposit = require('./deposit');// DEPOSIT
-router.use('/deposit',deposit);
+router.use('/deposit', deposit);
 
 const partPayment = require('./partPayment');
 router.use('/part-payment', partPayment);
@@ -192,6 +192,9 @@ router.use('/loan-soa', soaOfLoan);
 
 const product = require('./product');
 router.use('/product', product)
+
+const processNote = require('./processNote')
+router.use('/process-note', processNote)
 
 const scrapPacket = require('./scrap/scrapPacket'); // Scrap packet
 router.use('/scrap/packet', scrapPacket);
@@ -225,5 +228,8 @@ router.use('/scrap/scrap-packet-location', scrapPacketLocation)
 
 const cronList = require('./cronList');
 router.use('/cron-list', cronList)
+
+const migration = require('./migration');
+router.use('/migration', migration)
 
 module.exports = router;
