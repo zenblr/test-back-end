@@ -226,4 +226,31 @@ router.use('/scrap/scrap-packet-location', scrapPacketLocation)
 const cronList = require('./cronList');
 router.use('/cron-list', cronList)
 
+const goldSilverRates = require('./digitalGold/goldSilverRates');
+router.use('/digital-gold/rates', goldSilverRates);
+
+const digiGoldCustomer = require('./digitalGold/customer');
+router.use('/digital-gold/customer', digiGoldCustomer);
+
+const paymentRoute = require('./digitalGold/razorPay')
+router.use('/digital-gold/payment', paymentRoute);
+
+const buyProductRoute = require('./digitalGold/buyProduct')
+router.use('/digital-gold/buy', buyProductRoute);
+
+const customerBankRoute = require('./digitalGold/customerBank')
+router.use('/digital-gold/customer-bank', customerBankRoute);
+
+const bankRoute = require('./digitalGold/bank')
+router.use('/digital-gold/bank', bankRoute);
+
+const sellProductRoute = require('./digitalGold/sell')
+router.use('/digital-gold/sell', sellProductRoute); //import sell gold/silver route
+
+const productRoute = require('./digitalGold/product')
+router.use('/digital-gold/product', productRoute); 
+
+const cartRoute = require('./digitalGold/cart')
+router.use('/digital-gold/cart', cartRoute); 
+
 module.exports = router;
