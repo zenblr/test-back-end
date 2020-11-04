@@ -218,3 +218,19 @@ exports.sendUpdateLocationHandoverMessage = async (mobileNumber, otp, receiverNa
         await sms.sendSms(mobileNumber, message);
     }
 }
+
+exports.sendMessageForBuy = async (customerName,mobileNumber,quantity, metalType, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('buy');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<quantity>", quantity).replace("<metalType>", metalType).replace("<amount>", amount).replace("<name>",customerName)
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+
+exports.sendMessageForSell = async (mobileNumber,quantity, metalType, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('sell');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<quantity>", quantity).replace("<metalType>", metalType).replace("<amount>", amount)
+        await sms.sendSms(mobileNumber, message);
+    }
+}
