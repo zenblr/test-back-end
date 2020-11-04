@@ -4,7 +4,7 @@ const route = express.Router();
 const { wrapper } = require('../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
 const { loanDateChange, addPackageImagesForLoan, disbursementOfLoanAmount, interestRate, generateInterestTable, unsecuredTableGeneration,
   disbursementOfLoanBankDetails, getLoanDetails, getSingleLoanDetails, appliedLoanDetails, customerDetails, loanBmRating, loanOpsTeamRating, checkForLoanType,
-  loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getSingleLoanInCustomerManagment, getDetailsForPrint, getLoanOrnaments, getUnsecuredScheme,getBankInfo } =
+  loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getSingleLoanInCustomerManagment, getDetailsForPrint, getLoanOrnaments, getUnsecuredScheme,getBankInfo,termsConditions } =
   require('../controllers/customerLoanProcess/customerLoanProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
@@ -64,6 +64,8 @@ route.get('/get-loan-ornamets', checkAuth, wrapper(getLoanOrnaments)) //GET LOAN
 route.get('/unsecured-scheme', checkAuth, wrapper(getUnsecuredScheme)) //GET unsecured Scheme
 
 route.get('/download-bank-details', checkAuth, wrapper(getBankInfo)) // DOWNLOAD BANK DETAILS IN DISBURSMENT PAGE
+
+route.post('/terms-conditions', checkAuth, wrapper(termsConditions))
 
 // appraiseApp 
 route.post('/loan-request', checkAuth, wrapper(loanRequest)); //apply loan for backoffice app

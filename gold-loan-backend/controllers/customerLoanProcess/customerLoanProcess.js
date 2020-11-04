@@ -2773,8 +2773,13 @@ exports.getBankInfo = async (req, res, next) => {
         }
     }
 
-
-
-
     return wb.write(`${Date.now()}.xlsx`, res)
+}
+
+exports.termsConditions = async (req, res, next) => {
+    let { masterLoanId, termsConditions } = req.body;
+
+    await models.customerLoanMaster.update({ termsAndCondition: termsConditions }, { where: { id: masterLoanId } })
+
+    return res.status(200).json({ message: 'Success' })
 }

@@ -202,13 +202,18 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_new_loan_from_part_release',
             defaultValue: false
         },
-        packetLocationStatus:{
+        packetLocationStatus: {
             type: DataTypes.STRING,
             field: 'packet_location_status',
         },
-        packetSubmittedDate:{
+        packetSubmittedDate: {
             type: DataTypes.DATE,
             field: 'packet_submitted_date'
+        },
+        termsAndCondition: {
+            type: DataTypes.ARRAY(DataTypes.TEXT),
+            field: 'terms_and_condition',
+            defaultValue: []
         },
         isActive: {
             type: DataTypes.BOOLEAN,
@@ -260,7 +265,7 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerLoanMaster.hasMany(models.packetTracking, { foreignKey: 'masterLoanId', as: 'packetTracking' });
         CustomerLoanMaster.hasMany(models.customerTransactionSplitUp, { foreignKey: 'masterLoanId', as: 'transactionSplitUp' });
-        CustomerLoanMaster.hasMany(models.packetTrackingMasterloan,{foreignKey:'masterLoanId',as:'packetTrackingMasterloan'})
+        CustomerLoanMaster.hasMany(models.packetTrackingMasterloan, { foreignKey: 'masterLoanId', as: 'packetTrackingMasterloan' })
 
         CustomerLoanMaster.belongsTo(models.appraiserRequest, { foreignKey: 'appraiserRequestId', as: 'appraiserRequest' });
 
@@ -568,6 +573,21 @@ module.exports = (sequelize, DataTypes) => {
                 }
                 values.loanTransfer.declarationImage = declarationImage;
             }
+        }
+
+        if (values.termsAndCondition) {
+            let termsAndConditionUrl = []
+            for (imgUrl of values.termsAndCondition) {
+
+                let URL;
+                if (imgUrl == 'NULL' || imgUrl == null) {
+                    URL = imgUrl;
+                } else {
+                    URL = process.env.BASE_URL + imgUrl;
+                }
+                termsAndConditionUrl.push(URL)
+            }
+            values.termsAndConditionUrl = termsAndConditionUrl
         }
         return values
     }

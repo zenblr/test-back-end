@@ -294,6 +294,10 @@ exports.getAssignedCustomer = async (req, res, next) => {
                     as: 'customerLoan',
                 },
                 {
+                    model: models.customerLoanTransfer,
+                    as: 'loanTransfer',
+                },
+                {
                     model: models.customerLoanDocument,
                     as: 'customerLoanDocument',
                     attributes: { exclude: ['createdAt', 'modifiedBy', 'createdAt', 'updatedAt', 'isActive'] },
