@@ -56,7 +56,7 @@ export class LoanSettingsService {
   // }
 
   //new 
-  uplaodRpg(data): Observable<any> {
+  uploadRpg(data): Observable<any> {
     return this.http.post('api/scheme/excel-upload', data).pipe(
       map(res => res),
       catchError(err => {
@@ -66,8 +66,19 @@ export class LoanSettingsService {
       }))
   }
 
+  updateRPG(url): Observable<any> {
+    return this.http.put('api/scheme/update-rpg', { url }).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this._toastr.error(err.error.message)
+        throw (err)
+      }))
+  }
+
+
   downloadRpgUpdateSheet(): Observable<any> {
-    return this.http.post(`api/scheme/export-scheme`, { responseType: 'arraybuffer' })
+    return this.http.get(`api/scheme/export-scheme`, { responseType: 'arraybuffer' })
       .pipe(
         map((res) => {
           return res;
@@ -85,37 +96,37 @@ export class LoanSettingsService {
   }
 
 
-changeSchemeStatus(id, status): Observable < any > {
-  return this.http.delete(`api/scheme?id=${id}&isActive=${status.isActive}`).pipe(
-    map(res => res),
-    catchError(err => {
-      if (err.error.message)
-        this._toastr.error(err.error.message)
-      throw (err)
-    }))
-}
+  changeSchemeStatus(id, status): Observable<any> {
+    return this.http.delete(`api/scheme?id=${id}&isActive=${status.isActive}`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this._toastr.error(err.error.message)
+        throw (err)
+      }))
+  }
 
-toogleDefault(item): Observable < any > {
-  return this.http.put(`api/scheme/update-default/${item.id}`, { partnerId: item.partnerScheme.partnerId }).pipe(
-    map(res => res),
-    catchError(err => {
-      if (err.error.message)
-        this._toastr.error(err.error.message)
-      throw (err)
-    }))
-}
+  toogleDefault(item): Observable<any> {
+    return this.http.put(`api/scheme/update-default/${item.id}`, { partnerId: item.partnerScheme.partnerId }).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this._toastr.error(err.error.message)
+        throw (err)
+      }))
+  }
 
-getUnsecuredSchemes(data): Observable < any > {
-  // const reqParams: any = {};
-  // if (data && data.isActive) {
-  //   reqParams.isActive = data.isActive;
-  // }
+  getUnsecuredSchemes(data): Observable<any> {
+    // const reqParams: any = {};
+    // if (data && data.isActive) {
+    //   reqParams.isActive = data.isActive;
+    // }
 
-  return this.http.post('api/scheme/unsecured-scheme', data).pipe(
-    map(res => res),
-    catchError(err => {
-      if (err.error.message) this._toastr.error(err.error.message)
-      throw (err)
-    }))
-}
+    return this.http.post('api/scheme/unsecured-scheme', data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this._toastr.error(err.error.message)
+        throw (err)
+      }))
+  }
 }

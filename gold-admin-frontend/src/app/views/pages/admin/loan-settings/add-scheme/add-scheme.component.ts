@@ -166,10 +166,14 @@ export class AddSchemeComponent implements OnInit, AfterViewInit {
           partnerArray = [];
         })).subscribe()
     } else if (this.tabGroup.selectedIndex == 1) {
-      if (this.csvForm.invalid) {
-        this.csvForm.markAllAsTouched()
-        return
-      }
+      // if (this.csvForm.invalid) {
+      //   this.csvForm.markAllAsTouched()
+      //   return
+      // }
+      if (this.rpgForm.invalid) {
+          this.rpgForm.markAllAsTouched()
+          return
+        }
       var fb = new FormData()
       fb.append('avatar', this.file)
       // fb.append('partnerId', this.csvForm.controls.partnerId.value)
@@ -183,10 +187,10 @@ export class AddSchemeComponent implements OnInit, AfterViewInit {
       //       throw (err)
       //     })).subscribe()
       // }
-      this.laonSettingService.uplaodRpg(fb).pipe(
+      this.laonSettingService.uploadRpg(fb).pipe(
         map((res) => {
-          this._toastr.success('Scheme Created Sucessfully');
-          this.dialogRef.close(res);
+          this.updateUrl(res.uploadFile.url)
+         
         }), catchError(err => {
 
           this.ref.detectChanges();
@@ -194,6 +198,13 @@ export class AddSchemeComponent implements OnInit, AfterViewInit {
         })).subscribe()
     }
 
+  }
+
+  updateUrl(url){
+    this.laonSettingService.updateRPG(url).subscribe(res=>{
+      this._toastr.success('Scheme Created Sucessfully');
+      this.dialogRef.close(res);
+    })
   }
 
   getFileInfo(event) {
@@ -211,12 +222,12 @@ export class AddSchemeComponent implements OnInit, AfterViewInit {
   getRpgInfo(event) {
     this.file = event.target.files[0];
     var ext = event.target.files[0].name.split('.');
-    if (ext[ext.length - 1] != 'csv') {
+    if (ext[ext.length - 1] != 'xlsx') {
       this._toastr.error('Please upload csv file');
-      this.csvForm.controls.csv.markAsTouched()
+      this.rpgForm.controls.rpg.markAsTouched()
       return
     }
-    this.csvForm.get('rpg').patchValue(event.target.files[0].name);
+    this.rpgForm.get('rpg').patchValue(event.target.files[0].name);
 
   }
 
