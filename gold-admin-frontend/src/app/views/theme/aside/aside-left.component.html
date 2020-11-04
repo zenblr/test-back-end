@@ -9,8 +9,8 @@
 	<div class="kt-aside-menu-wrapper kt-grid__item kt-grid__item--fluid" id="kt_aside_menu_wrapper"
 		[ngStyle]="{'background':'#454D67'}">
 		<div #asideMenu ktMenu [options]="menuOptions" [perfectScrollbar]="{wheelPropagation: false}"
-			[ngStyle]="{'max-height': '80vh','background':'#454D67','padding':'0 0 60px'}"
-			id="kt_aside_menu" class="kt-aside-menu" [ngClass]="htmlClassService.getClasses('aside_menu', true)"
+			[ngStyle]="{'max-height': '80vh','background':'#454D67','padding':'0 0 60px'}" id="kt_aside_menu"
+			class="kt-aside-menu" [ngClass]="htmlClassService.getClasses('aside_menu', true)"
 			(mouseenter)="mouseEnter($event)" (mouseleave)="mouseLeave($event)">
 			<ul class="kt-menu__nav" [ngClass]="htmlClassService.getClasses('aside_menu_nav', true)">
 				<ng-container [ngTemplateOutlet]="menuListTemplate"></ng-container>

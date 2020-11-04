@@ -92,6 +92,9 @@ export class PageConfig {
 				"gold-rate": {
 					page: { title: "Gold Rate", desc: "" },
 				},
+				"process-note": {
+					page: { title: "Process Note (SOP)", desc: "" },
+				},
 			},
 			"user-management": {
 				partner: {

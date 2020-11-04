@@ -5,7 +5,6 @@ import { map, catchError, tap } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { ExcelService } from '../../../_base/crud';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -17,7 +16,6 @@ export class AppliedLoanService {
   constructor(
     private http: HttpClient, private toastr: ToastrService,
     private excelService: ExcelService
-
   ) { }
 
   getAplliedLoans(data): Observable<any> {
@@ -103,7 +101,7 @@ export class AppliedLoanService {
   }
 
   downloadBankDetails(masterLoanId, type): Observable<any> {
-    console.log(masterLoanId)
+    // console.log(masterLoanId)
     return this.http.get(`api/loan-process/download-bank-details?masterLoanId=${masterLoanId}&type=${type}`, { responseType: 'arraybuffer' })
       .pipe(
         map((res) => {
