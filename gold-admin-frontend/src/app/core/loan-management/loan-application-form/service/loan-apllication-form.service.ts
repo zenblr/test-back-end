@@ -181,4 +181,17 @@ export class LoanApplicationFormService {
     )
   }
 
+  uploadTermsAndConditions(data): Observable<any> {
+    return this.http.post(`/api/loan-process/terms-conditions`, data).pipe(
+      tap(res => {
+        this.toastr.success(res['message'])
+        return res
+      }),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message)
+        throw err
+      })
+    )
+  }
+
 }

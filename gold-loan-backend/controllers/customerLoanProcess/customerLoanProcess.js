@@ -1691,7 +1691,11 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
     let unsecuredLoanId;
     let securedSchemeName;
     let unsecuredSchemeName;
-    let bankTransferType = checkLoan.customerLoanDisbursement[0].bankTransferType;
+    let bankTransferType = null;
+    if(checkLoan.customerLoanDisbursement.length != 0){
+        bankTransferType = checkLoan.customerLoanDisbursement[0].bankTransferType;
+    }
+    
 
     let fullSecuredAmount = Number(checkLoan.securedLoanAmount)
     let fullUnsecuredAmount = 0

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';
@@ -13,12 +13,13 @@ import { InternalUserBranchService } from '../../../../../core/user-management/i
   styleUrls: ['./add-scheme.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddSchemeComponent implements OnInit {
+export class AddSchemeComponent implements OnInit, AfterViewInit {
 
   @ViewChild('tabGroup', { static: false }) tabGroup;
 
   csvForm: FormGroup;
   fillingForm: FormGroup;
+  rpgForm: FormGroup;
   partnerData: [] = []
   file: any;
   schemeType = [{ value: 'secured', name: 'secured' }, { value: 'unsecured', name: 'unsecured' }]
@@ -39,6 +40,14 @@ export class AddSchemeComponent implements OnInit {
     this.getInternalBranchList()
     this.initForm()
     this.partner()
+  }
+
+  ngAfterViewInit() {
+    this.fillingForm.controls.multiSelect.valueChanges.subscribe(res => {
+      if (res && res.multiSelect.length == 0) {
+        this.fillingForm.controls.multiSelect.patchValue(null)
+      }
+    })
   }
 
   partner() {
@@ -70,7 +79,7 @@ export class AddSchemeComponent implements OnInit {
       // isDefault: [false],
       isSplitAtBeginning: [false],
       unsecuredSchemeId: [],
-      rpg: [],
+      rpg: [, [Validators.required]],
       internalBranchId: [],
       multiSelect: [],
       isUnsecuredSchemeMapped: [false],
@@ -79,8 +88,13 @@ export class AddSchemeComponent implements OnInit {
     })
 
     this.csvForm = this.fb.group({
-      partnerId: ['', Validators.required],
+      // partnerId: ['', Validators.required],
       csv: ['', Validators.required]
+    })
+
+
+    this.rpgForm = this.fb.group({
+      rpg: ['', Validators.required]
     })
 
     this.initSlabArray()
@@ -104,6 +118,10 @@ export class AddSchemeComponent implements OnInit {
     } else if (!event) {
       this.dialogRef.close()
     }
+  }
+
+  downloadRpgUpdateSheet(){
+    this.laonSettingService.downloadRpgUpdateSheet().subscribe()
   }
 
   submit() {
@@ -133,6 +151,8 @@ export class AddSchemeComponent implements OnInit {
       partnerArray.push(this.fillingForm.get('partnerId').value);
       this.fillingForm.patchValue({ partnerId: partnerArray });
 
+      // return
+
       this.laonSettingService.saveScheme(this.fillingForm.value).pipe(
         map((res) => {
           this._toastr.success('Scheme Created Sucessfully');
@@ -146,23 +166,45 @@ export class AddSchemeComponent implements OnInit {
           partnerArray = [];
         })).subscribe()
     } else if (this.tabGroup.selectedIndex == 1) {
-      if (this.csvForm.invalid) {
-        this.csvForm.markAllAsTouched()
-        return
-      }
+      // if (this.csvForm.invalid) {
+      //   this.csvForm.markAllAsTouched()
+      //   return
+      // }
+      if (this.rpgForm.invalid) {
+          this.rpgForm.markAllAsTouched()
+          return
+        }
       var fb = new FormData()
-      fb.append('schemecsv', this.file)
-      fb.append('partnerId', this.csvForm.controls.partnerId.value)
-      this.laonSettingService.uplaodCSV(fb).pipe(
+      fb.append('avatar', this.file)
+      // fb.append('partnerId', this.csvForm.controls.partnerId.value)
+      //   this.laonSettingService.uplaodCSV(fb).pipe(
+      //     map((res) => {
+      //       this._toastr.success('Scheme Created Sucessfully');
+      //       this.dialogRef.close(res);
+      //     }), catchError(err => {
+
+      //       this.ref.detectChanges();
+      //       throw (err)
+      //     })).subscribe()
+      // }
+      this.laonSettingService.uploadRpg(fb).pipe(
         map((res) => {
-          this._toastr.success('Scheme Created Sucessfully');
-          this.dialogRef.close(res);
+          this.updateUrl(res.uploadFile.url)
+         
         }), catchError(err => {
 
           this.ref.detectChanges();
           throw (err)
         })).subscribe()
     }
+
+  }
+
+  updateUrl(url){
+    this.laonSettingService.updateRPG(url).subscribe(res=>{
+      this._toastr.success('Scheme Created Sucessfully');
+      this.dialogRef.close(res);
+    })
   }
 
   getFileInfo(event) {
@@ -174,6 +216,18 @@ export class AddSchemeComponent implements OnInit {
       return
     }
     this.csvForm.get('csv').patchValue(event.target.files[0].name);
+
+  }
+
+  getRpgInfo(event) {
+    this.file = event.target.files[0];
+    var ext = event.target.files[0].name.split('.');
+    if (ext[ext.length - 1] != 'xlsx') {
+      this._toastr.error('Please upload csv file');
+      this.rpgForm.controls.rpg.markAsTouched()
+      return
+    }
+    this.rpgForm.get('rpg').patchValue(event.target.files[0].name);
 
   }
 
@@ -257,12 +311,16 @@ export class AddSchemeComponent implements OnInit {
   }
 
   getUnsecuredSchemes() {
-    if (!this.fillingForm.controls.isUnsecuredSchemeMapped.value) return
+    this.setUnsecuredSchemeValidation()
+    this.setInternalBranchValidation()
 
-    const { partnerId, schemeType, schemeInterest } = this.fillingForm.controls
-    if (partnerId.invalid || schemeType.value == 'unsecured' || schemeInterest.invalid) {
-      return
-    }
+    const { partnerId, schemeType, schemeInterest, isUnsecuredSchemeMapped } = this.fillingForm.controls
+
+    if (!isUnsecuredSchemeMapped.value) return
+
+    if (schemeType.value == 'unsecured') return isUnsecuredSchemeMapped.patchValue(false)
+
+    if (partnerId.invalid || schemeInterest.invalid) return
 
     const data = {
       partnerId: partnerId.value,
@@ -280,6 +338,31 @@ export class AddSchemeComponent implements OnInit {
   displayUnsecuredScheme() {
     if (!this.fillingForm.controls.isUnsecuredSchemeMapped.value) {
       this.fillingForm.controls.unsecuredSchemeId.patchValue(null)
+      this.setUnsecuredSchemeValidation()
+    }
+  }
+
+  setUnsecuredSchemeValidation() {
+    const { unsecuredSchemeId, schemeType, isUnsecuredSchemeMapped } = this.fillingForm.controls
+
+    if (schemeType.value === 'secured' && isUnsecuredSchemeMapped.value == true) {
+      unsecuredSchemeId.setValidators([Validators.required])
+      unsecuredSchemeId.updateValueAndValidity()
+    } else {
+      unsecuredSchemeId.setValidators([])
+      unsecuredSchemeId.updateValueAndValidity()
+    }
+  }
+
+  setInternalBranchValidation() {
+    const { multiSelect, schemeType } = this.fillingForm.controls
+
+    if (schemeType.value === 'secured') {
+      multiSelect.setValidators([Validators.required])
+      multiSelect.updateValueAndValidity()
+    } else {
+      multiSelect.setValidators([])
+      multiSelect.updateValueAndValidity()
     }
   }
 

@@ -411,6 +411,11 @@ export class MenuConfig {
 													page: "/admin/upload-data/upload-lender-banner",
 													permission: !this.permissionsArr.includes('partnerBannerView'),
 												},
+												{
+													title: "Process Note (SOP)",
+													page: "/admin/upload-data/process-note",
+													permission: false,
+												},
 
 											],
 										},
