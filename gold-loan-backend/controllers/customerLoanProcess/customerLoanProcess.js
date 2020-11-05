@@ -1899,7 +1899,8 @@ exports.getSingleLoanDetails = async (req, res, next) => {
         order: [
             [models.scheme, 'id', 'asc'],
             [models.scheme, models.schemeInterest, 'days', 'asc'],
-            [models.customerLoanInterest, 'id', 'asc']
+            [models.customerLoanInterest, 'id', 'asc'],
+            [{model:models.customerLoan ,as:'unsecuredLoan'},models.customerLoanInterest, 'id','asc' ]
         ],
         // attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
         include: [
