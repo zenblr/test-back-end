@@ -180,6 +180,8 @@ export class InterestCalculatorComponent implements OnInit {
               paymentType: this.paymentType,
               securedInterestAmount: interset.interestAmount,
               unsecuredInterestAmount: 0,
+              secureHighestInterestAmount:interset.highestInterestAmount,
+              securedRebateAmount:interset.rebateAmount,
               totalAmount: Number(interset.interestAmount)
             }
             temp.push(data)
@@ -195,6 +197,8 @@ export class InterestCalculatorComponent implements OnInit {
               temp[index].unsecuredInterestAmount = finalLoan.unsecuredLoan.customerLoanInterest[index].interestAmount
               temp[index].totalAmount = Number(temp[index].securedInterestAmount) +
                 Number(temp[index].unsecuredInterestAmount)
+                temp[index].unsecureHighestInterestAmount = finalLoan.unsecuredLoan.customerLoanInterest[index].highestInterestAmount
+                temp[index].unsecuredRebateAmount = finalLoan.unsecuredLoan.customerLoanInterest[index].rebateAmount
             }
             // this.getIntrest()
 
