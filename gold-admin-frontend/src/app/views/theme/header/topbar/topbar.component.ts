@@ -821,6 +821,9 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "transfer-loan-list") {
 			this.showInput = true;
 		}
+		if (location.href.includes('/admin/loan-management/loan-application-form/')) {
+			this.showBackButton = true;
+		}
 	}
 
 	action(event: Event) {

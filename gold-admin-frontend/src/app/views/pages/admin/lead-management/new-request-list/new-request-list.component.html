@@ -81,7 +81,7 @@
                         </div>
                         <div *ngxPermissionsOnly="['assignAppraiserEdit']" [ngStyle]="{'display': 'inherit'}">
                             <button style="width: 120px;" class="apply-kyc" (click)="updateAppraiser(row)"
-                                *ngIf="row.isAssigned">Update
+                                *ngIf="row.isAssigned && !row?.masterLoan?.isLoanCompleted">Update
                                 Appraiser</button>
                         </div>
                     </mat-cell>

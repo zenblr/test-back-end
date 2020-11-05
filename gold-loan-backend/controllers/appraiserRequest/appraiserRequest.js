@@ -122,7 +122,7 @@ exports.getAllNewRequest = async (req, res, next) => {
         {
             model: models.customerLoanMaster,
             as: 'masterLoan',
-            attributes: ['id', 'isLoanTransfer'],
+            attributes: ['id', 'isLoanTransfer', 'isLoanCompleted'],
         },
         {
             model: models.module,

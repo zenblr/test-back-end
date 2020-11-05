@@ -40,7 +40,7 @@ exports.customerLogin = async (req, res, next) => {
             createdDate: createdTime
         });
 
-        return res.status(200).json({ message: 'login successful', token:Token });
+        return res.status(200).json({ message: 'Login successful', token:Token });
     } else {
         return res.status(401).json({ message: 'Wrong Credentials' });
     }
@@ -101,6 +101,6 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
         return Token
 
     })
-    return res.status(200).json({ message: 'login successful', token });
+    return res.status(200).json({ message: 'Login successful', token });
 
 }

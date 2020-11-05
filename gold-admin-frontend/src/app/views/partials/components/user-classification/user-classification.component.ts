@@ -279,6 +279,7 @@ export class UserClassificationComponent implements OnInit {
             // this.next.emit(true);
             if (this.permission.opsKycRating && (otData.scrapKycStatusFromOperationalTeam == 'approved' || otData.kycStatusFromOperationalTeam == 'approved')) {
               this.route.navigate(['/admin/lead-management/new-requests']);
+              // this.userDetailsService.userData = {}
             } else {
               this.route.navigate(['/admin/applied-kyc']);
             }

@@ -84,7 +84,7 @@ export class KycSettingsComponent implements OnInit {
 
   setModule(event) {
     this.module = event
-    console.log(this.module)
+    // console.log(this.module)
   }
 
 

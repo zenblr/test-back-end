@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild, Inject, ElementRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild, Inject, ElementRef, OnDestroy } from '@angular/core';
 import { UserAddressService, UserBankService, UserPersonalService, UserDetailsService } from '../../../../../../core/kyc-settings';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SharedService } from '../../../../../../core/shared/services/shared.service';
@@ -10,6 +10,7 @@ import { WebcamDialogComponent } from '../../webcam-dialog/webcam-dialog.compone
 import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
 import { ActivatedRoute } from '@angular/router';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 @Component({
   selector: 'kt-user-review',
@@ -17,7 +18,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./user-review.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserReviewComponent implements OnInit {
+export class UserReviewComponent implements OnInit, OnDestroy {
 
   @Output() next: EventEmitter<any> = new EventEmitter<any>();
   identityProofs = [];
@@ -62,6 +63,7 @@ export class UserReviewComponent implements OnInit {
   @Output() setModule: EventEmitter<any> = new EventEmitter<any>();
   isAddressSame: boolean = false;
   disabled: boolean;
+  permission: any;
 
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
@@ -76,7 +78,8 @@ export class UserReviewComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public modalData: any,
     private dialog: MatDialog,
     private ele: ElementRef,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private ngxPermission: NgxPermissionsService,
   ) {
     let res = this.sharedService.getDataFromStorage();
     this.userType = res.userDetails.userTypeId;
@@ -85,6 +88,11 @@ export class UserReviewComponent implements OnInit {
 
       this.viewOnly = false;
     }
+
+    this.ngxPermission.permissions$.subscribe(res => {
+      this.permission = res
+    })
+
   }
 
   ngOnInit() {
@@ -169,7 +177,7 @@ export class UserReviewComponent implements OnInit {
       }
     });
 
-    if (!this.viewOnly || this.userType == 5) {
+    if (!this.viewOnly || !this.permission.customerKycAdd) {
       this.reviewForm.disable();
       if (this.customerKycPersonal) this.customerKycPersonal.disable();
       this.customerKycAddressOne.disable();
@@ -443,6 +451,7 @@ export class UserReviewComponent implements OnInit {
     this.userBankService.kycSubmit(data).pipe(
       map(res => {
         this.next.emit(true);
+        this.userPersonalService.kycDetails = null
       }),
       catchError(err => {
         if (err.error.message)
@@ -668,12 +677,13 @@ export class UserReviewComponent implements OnInit {
           if (this.constitutionsDeed && this.constitutionsDeed.nativeElement.value) this.constitutionsDeed.nativeElement.value = '';
           if (this.gstCertificate && this.gstCertificate.nativeElement.value) this.gstCertificate.nativeElement.value = '';
           if (this.signature && this.signature.nativeElement.value) this.signature.nativeElement.value = '';
+          event.target.value = ''
         })
       ).subscribe()
     }
-    // else {
-    //   this.toastr.error('Upload Valid File Format');
-    // }
+    else {
+      event.target.value = ''
+    }
 
   }
 
@@ -979,7 +989,14 @@ export class UserReviewComponent implements OnInit {
         addressTwo.addressProofTypeId = this.customerKycAddressTwo.value.addressProofTypeId,
         addressTwo.addressProofNumber = this.customerKycAddressTwo.value.addressProofNumber
     }
-    return this.isAddressSame = JSON.stringify(addressOne) === JSON.stringify(addressTwo)
+    this.isAddressSame = JSON.stringify(addressOne) === JSON.stringify(addressTwo)
+    if (this.isAddressSame) {
+      this.customerKycAddressTwo.disable()
+    } else {
+      this.customerKycAddressTwo.enable()
+    }
+
+    return this.isAddressSame
   }
 
   disableControls() {

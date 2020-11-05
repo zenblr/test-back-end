@@ -56,7 +56,7 @@ exports.ornamentsDetails = async (req, res, next) => {
             }]
     });
     let lastPayment = await getLoanLastPayment(masterLoanId);
-    return res.status(200).json({ message: 'success', customerLoan, lastPayment })
+    return res.status(200).json({ message: 'Success', customerLoan, lastPayment })
 }
 
 async function getLoanLastPayment(masterLoanId) {
@@ -367,7 +367,7 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
         let ornamentWeight = releaseData.ornamentWeight;
         let loanInfo = releaseData.loanInfo;
         let amount = releaseData.amount;
-        return res.status(200).json({ message: 'success', ornamentWeight, loanInfo, amount });
+        return res.status(200).json({ message: 'Success', ornamentWeight, loanInfo, amount });
     } else {
         return res.status(400).json({ message: "Can't proceed further as you have already applied for part released or full release" });
     }
@@ -406,7 +406,7 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
 //             await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_APPLIED, createdBy, modifiedBy }, { transaction: t });
 //             return addPartRelease
 //         });
-//         return res.status(200).json({ message: "success", partRelease });
+//         return res.status(200).json({ message: "Success", partRelease });
 //     } else {
 //         return res.status(400).json({ message: "can't proceed further as you have already applied for pat released or full release" });
 //     }
@@ -528,7 +528,7 @@ try{
                         for (const amount of payment.transactionDetails) {
                             if (amount.isPenalInterest) {
                                 //debit
-                                let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true } });
+                                let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true,credit: 0.00 } });
                                 if (checkDebitEntry.length == 0) {
                                     let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true, debit: amount.penalInterest, description: `Penal interest`, paymentDate: moment(depositDate).format("YYYY-MM-DD") }, { transaction: t });
                                     await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
@@ -548,7 +548,7 @@ try{
                             } else {
                                 if (amount.isExtraDaysInterest) {
                                     //debit
-                                    let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: false } });
+                                    let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: false,credit: 0.00 } });
                                     if (checkDebitEntry.length == 0) {
                                         let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: amount.interestAmount, description: `Extra days interest`, paymentDate: moment(depositDate).format("YYYY-MM-DD") }, { transaction: t });
                                         await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
@@ -612,7 +612,7 @@ try{
             await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_APPLIED }, { transaction: t });
             return addPartRelease
         });
-        return res.status(200).json({ message: "success", partRelease });
+        return res.status(200).json({ message: "Success", partRelease });
     } else {
         return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
     }
@@ -787,7 +787,7 @@ exports.updateAmountStatus = async (req, res, next) => {
                         for (const amount of payment.transactionDetails) {
                             if (amount.isPenalInterest) {
                                 //debit
-                                let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true } });
+                                let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true,credit: 0.00 } });
                                 if (checkDebitEntry.length == 0) {
                                     let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true, debit: amount.penalInterest, description: `Penal interest`, paymentDate: moment() }, { transaction: t });
                                     await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
@@ -807,7 +807,7 @@ exports.updateAmountStatus = async (req, res, next) => {
                             } else {
                                 if (amount.isExtraDaysInterest) {
                                     //debit
-                                    let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: false } });
+                                    let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: false,credit: 0.00 } });
                                     if (checkDebitEntry.length == 0) {
                                         let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: amount.interestAmount, description: `Extra days interest`, paymentDate: moment() }, { transaction: t });
                                         await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
@@ -861,20 +861,20 @@ exports.updateAmountStatus = async (req, res, next) => {
 
                 await sendPartReleaseRequestApprovalMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
 
-                return res.status(200).json({ message: "success" });
+                return res.status(200).json({ message: "Success" });
             } else if (amountStatus == 'rejected') {
                 await sequelize.transaction(async t => {
                     await models.customerLoanTransaction.update({ depositStatus: "Rejected" }, { where: { id: partReleaseData.customerLoanTransactionId }, transaction: t });
                     await models.partRelease.update({ amountStatus: 'rejected', modifiedBy }, { where: { id: partReleaseId }, transaction: t });
                     await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_AMOUNT_STATUS_R, createdBy, modifiedBy }, { transaction: t });
                 });
-                return res.status(200).json({ message: "success" });
+                return res.status(200).json({ message: "Success" });
             } else if (amountStatus == 'pending') {
                 await sequelize.transaction(async t => {
                     await models.partRelease.update({ amountStatus: 'pending', modifiedBy }, { where: { id: partReleaseId }, transaction: t });
                     await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_AMOUNT_STATUS_P, createdBy, modifiedBy }, { transaction: t });
                 });
-                return res.status(200).json({ message: "success" });
+                return res.status(200).json({ message: "Success" });
             }
         } else { return res.status(400).json({ message: "you can't change status as it's already updated" }); }
     } else {
@@ -918,7 +918,7 @@ exports.partReleaseAssignAppraiser = async (req, res, next) => {
     // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
     // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=${customerInfo.firstName} is assign for you`);
-    return res.status(200).json({ message: 'success' });
+    return res.status(200).json({ message: 'Success' });
 }
 
 exports.partReleaseApprovedList = async (req, res, next) => {
@@ -1142,7 +1142,7 @@ exports.updatePartReleaseStatus = async (req, res, next) => {
                     await models.partRelease.update({ partReleaseStatus, appraiserReason, modifiedBy }, { where: { id: partReleaseId }, transaction: t });
                     await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_STATUS_P, createdBy, modifiedBy }, { transaction: t });
                 });
-                return res.status(200).json({ message: "success" });
+                return res.status(200).json({ message: "Success" });
             } else if (partReleaseStatus == "released") {
                 await sequelize.transaction(async t => {
                     await models.partRelease.update({ partReleaseStatus, modifiedBy, releaseDate }, { where: { id: partReleaseId }, transaction: t });
@@ -1154,7 +1154,7 @@ exports.updatePartReleaseStatus = async (req, res, next) => {
 
                 await sendJewelleryPartReleaseCompletedMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
 
-                return res.status(200).json({ message: "success" });
+                return res.status(200).json({ message: "Success" });
             }
         } else {
             return res.status(400).json({ message: "Now you can't change status as it's Already released!" });
@@ -1193,7 +1193,7 @@ exports.uploadDocument = async (req, res, next) => {
             await models.partRelease.update({ documents, modifiedBy }, { where: { id: partReleaseId }, transaction: t });
             await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_DOCUMENT, createdBy, modifiedBy }, { transaction: t });
         });
-        return res.status(200).json({ message: 'success' });
+        return res.status(200).json({ message: 'Success' });
     } else {
         return res.status(400).json({ message: "This part release process is not assigned to you!" })
     }
@@ -1217,7 +1217,7 @@ exports.updateAppraiser = async (req, res, next) => {
 
     // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
-    return res.status(200).json({ message: 'success' });
+    return res.status(200).json({ message: 'Success' });
 }
 
 exports.partReleaseApplyLoan = async (req, res, next) => {
@@ -1274,17 +1274,17 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
         let appraiserRequestId = customerLoanStage.appraiserRequestId
         let loanId = await models.customerLoan.findOne({ where: { masterLoanId: customerLoanStage.id, loanType: 'secured' } })
         if (customerCurrentStage == '1') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
         } else if (customerCurrentStage == '2') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
         } else if (customerCurrentStage == '3') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
         } else if (customerCurrentStage == '4') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, totalEligibleAmt: customerLoanStage.totalEligibleAmt, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
         } else if (customerCurrentStage == '5') {
-            return res.status(200).json({ message: 'success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount, firstName, lastName, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
+            return res.status(200).json({ message: 'Success', loanId: loanId.id, masterLoanId: customerLoanStage.id, loanCurrentStage: customerCurrentStage, finalLoanAmount: customerLoanStage.finalLoanAmount, firstName, lastName, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
         } else if (customerCurrentStage == '6') {
-            return res.status(200).json({ message: 'success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
+            return res.status(200).json({ message: 'Success', masterLoanId: customerLoanStage.id, loanId: loanId.id, loanCurrentStage: customerCurrentStage, partReleaseId, newLoanAmount, appraiserRequestId, customerData })
         }
     }
     if (!customerData) {
@@ -1462,7 +1462,7 @@ exports.getPartReleaseNewLonaAmount = async (req, res, next) => {
 //             await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_APPLIED, createdBy, modifiedBy }, { transaction: t });
 //             return addFullRelease
 //         })
-//         return res.status(200).json({ message: "success", fullRelease });
+//         return res.status(200).json({ message: "Success", fullRelease });
 //     } else {
 //         return res.status(400).json({ message: "can't proceed further as you have already applied for pat released or full release" });
 //     }
@@ -1561,7 +1561,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                             for (const amount of payment.transactionDetails) {
                                 if (amount.isPenalInterest) {
                                     //debit
-                                    let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true } });
+                                    let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true,credit: 0.00 } });
                                     if (checkDebitEntry.length == 0) {
                                         let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true, debit: amount.penalInterest, description: `Penal interest`, paymentDate: moment(depositDate).format("YYYY-MM-DD") }, { transaction: t });
                                         await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
@@ -1581,7 +1581,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                                 } else {
                                     if (amount.isExtraDaysInterest) {
                                         //debit
-                                        let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: false } });
+                                        let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: false,credit: 0.00 } });
                                         if (checkDebitEntry.length == 0) {
                                             let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: amount.interestAmount, description: `Extra days interest`, paymentDate: moment(depositDate).format("YYYY-MM-DD") }, { transaction: t });
                                             await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
@@ -1640,7 +1640,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                 await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_APPLIED }, { transaction: t });
                 return addFullRelease
             })
-            return res.status(200).json({ message: "success", fullRelease });
+            return res.status(200).json({ message: "Success", fullRelease });
         } else {
             return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
         }
@@ -1816,7 +1816,7 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
                         for (const amount of payment.transactionDetails) {
                             if (amount.isPenalInterest) {
                                 //debit
-                                let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true } });
+                                let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true,credit: 0.00 } });
                                 if (checkDebitEntry.length == 0) {
                                     let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true, debit: amount.penalInterest, description: `Penal interest`, paymentDate: moment() }, { transaction: t });
                                     await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
@@ -1836,7 +1836,7 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
                             } else {
                                 if (amount.isExtraDaysInterest) {
                                     //debit
-                                    let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: false } });
+                                    let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: false,credit: 0.00 } });
                                     if (checkDebitEntry.length == 0) {
                                         let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: amount.interestAmount, description: `Extra days interest`, paymentDate: moment() }, { transaction: t });
                                         await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
@@ -1887,20 +1887,20 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
 
                 await sendFullReleaseRequestApprovalMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
 
-                return res.status(200).json({ message: "success", payment });
+                return res.status(200).json({ message: "Success", payment });
             } else if (amountStatus == 'rejected') {
                 await sequelize.transaction(async t => {
                     await models.customerLoanTransaction.update({ depositStatus: "Rejected" }, { where: { id: fullReleaseData.customerLoanTransactionId }, transaction: t });
                     await models.fullRelease.update({ amountStatus: 'rejected', modifiedBy }, { where: { id: fullReleaseId }, transaction: t });
                     await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_AMOUNT_STATUS_R, createdBy, modifiedBy }, { transaction: t });
                 });
-                return res.status(200).json({ message: "success" });
+                return res.status(200).json({ message: "Success" });
             } else if (amountStatus == 'pending') {
                 await sequelize.transaction(async t => {
                     await models.fullRelease.update({ amountStatus: 'pending', modifiedBy }, { where: { id: fullReleaseId }, transaction: t });
                     await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_AMOUNT_STATUS_P, createdBy, modifiedBy }, { transaction: t });
                 });
-                return res.status(200).json({ message: "success" });
+                return res.status(200).json({ message: "Success" });
             }
         } else { return res.status(400).json({ message: "you can't change status as it's already updated" }); }
     } else {
@@ -1937,7 +1937,7 @@ exports.fullReleaseAssignReleaser = async (req, res, next) => {
     // let customerInfo = await models.customer.findOne({ where: { id: customerId } })
     // let { mobileNumber, firstName, userUniqueId } = await models.user.findOne({ where: { id: appraiserId } });
     // request(`${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${mobileNumber}&source=nicalc&message=${customerInfo.firstName} is assign for you`);
-    return res.status(200).json({ message: 'success' });
+    return res.status(200).json({ message: 'Success' });
 }
 
 exports.updateReleaser = async (req, res, next) => {
@@ -1959,7 +1959,7 @@ exports.updateReleaser = async (req, res, next) => {
 
     // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
-    return res.status(200).json({ message: 'success' });
+    return res.status(200).json({ message: 'Success' });
 }
 
 exports.getFullReleaseApprovedList = async (req, res, next) => {
@@ -2175,7 +2175,7 @@ exports.updatePartReleaseReleaserStatus = async (req, res, next) => {
                     await models.fullRelease.update({ fullReleaseStatus, releaserReason, modifiedBy }, { where: { id: fullReleaseId }, transaction: t });
                     await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_STATUS_P, createdBy, modifiedBy }, { transaction: t });
                 });
-                return res.status(200).json({ message: "success" });
+                return res.status(200).json({ message: "Success" });
             } else if (fullReleaseStatus == "released") {
                 await sequelize.transaction(async t => {
                     await models.fullRelease.update({ fullReleaseStatus, modifiedBy, releaseDate }, { where: { id: fullReleaseId }, transaction: t });
@@ -2186,7 +2186,7 @@ exports.updatePartReleaseReleaserStatus = async (req, res, next) => {
                 let sendLoanMessage = await customerNameNumberLoanId(fullReleaseData.masterLoanId)
 
                 await sendJewelleryFullReleaseCompletedMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
-                return res.status(200).json({ message: "success" });
+                return res.status(200).json({ message: "Success" });
             }
         } else {
             return res.status(400).json({ message: "Now you can't change status as it's Already released!" });
@@ -2225,7 +2225,7 @@ exports.uploadDocumentFullRelease = async (req, res, next) => {
             await models.fullRelease.update({ documents, modifiedBy }, { where: { id: fullReleaseId }, transaction: t });
             await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_DOCUMENT, createdBy, modifiedBy }, { transaction: t });
         });
-        return res.status(200).json({ message: 'success' });
+        return res.status(200).json({ message: 'Success' });
     } else {
         return res.status(400).json({ message: "This full release process is not assigned to you!" })
     }
