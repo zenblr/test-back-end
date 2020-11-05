@@ -369,6 +369,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         group.controls.deductionWeight.setErrors({ weight: true })
       } else {
         group.controls.deductionWeight.setErrors(null)
+        group.controls.deductionWeight.setValidators([Validators.required, Validators.pattern('^\\s*(?=.*[0-9])\\d*(?:\\.\\d{1,2})?\\s*$')])
+        group.controls.deductionWeight.updateValueAndValidity()
       }
     }
   }
