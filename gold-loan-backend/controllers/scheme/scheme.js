@@ -540,7 +540,11 @@ exports.editSchemeThorughExcel = async (req, res, next) => {
         for(const data of allExcelData){
             if(data.length != 0){
                 for(const scheme of data){
-                    await models.scheme.update({ rpg: scheme.rpg }, { where: { id:scheme.id },transaction: t })
+                    let rpg = Number(scheme.rpg);
+                    let id = Number(scheme.id);
+                    if(rpg > 0 && id > 0){
+                        await models.scheme.update({ rpg: scheme.rpg }, { where: { id:scheme.id },transaction: t })
+                    }
                 }
             }
         }
