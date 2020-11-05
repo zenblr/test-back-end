@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'interest_amount',
             defaultValue: 0
         },
-        highestInterestAmount: {
+        highestInterestAmount: { 
             type: DataTypes.DECIMAL(10,2),
             field: 'highest_interest_amount',
             defaultValue: 0

@@ -190,7 +190,7 @@ export class InterestCalculatorComponent implements OnInit {
               unsecuredSchemeId: finalLoan.unsecuredLoan.scheme.id,
               unsecuredInterestRate: finalLoan.unsecuredLoan.interestRate
             })
-            this.getUnsecuredScheme()
+            // this.getUnsecuredScheme()
             for (let index = 0; index < temp.length; index++) {
               temp[index].unsecuredInterestAmount = finalLoan.unsecuredLoan.customerLoanInterest[index].interestAmount
               temp[index].totalAmount = Number(temp[index].securedInterestAmount) +
@@ -285,7 +285,10 @@ export class InterestCalculatorComponent implements OnInit {
       unsecuredSchemeId: [],
       securedLoanAmount: [],
       unsecuredLoanAmount: [],
-      isUnsecuredSchemeApplied: [false]
+      isUnsecuredSchemeApplied: [false],
+      unsecuredRebateInterest:[],
+      securedRebateInterest:[],
+
     })
 
 
@@ -478,6 +481,8 @@ export class InterestCalculatorComponent implements OnInit {
     this.loanFormService.calculateFinalInterestTable(this.finalInterestForm.value).subscribe(res => {
       this.dateOfPayment = res.data.interestTable;
       this.controls.totalFinalInterestAmt.patchValue(res.data.totalInterestAmount)
+      this.controls.securedRebateInterest.patchValue(res.data.securedRebateInterest)
+      this.controls.unsecuredRebateInterest.patchValue(res.data.unsecuredRebateInterest)
       this.ref.markForCheck()
       setTimeout(() => {
         const dom = this.eleRef.nativeElement.querySelector('#calculation') as HTMLElement
