@@ -97,7 +97,7 @@
                             </div>
                             <div class="col-4">
                                 <input type="text" class="form-control" placeholder="First Name"
-                                    formControlName="firstName" ktAlphabets
+                                    formControlName="firstName" ktAlphabets ktTrimControl
                                     value="{{this.data.customerKycReview.firstName | titlecase}}"
                                     [class.isError]=" controls.firstName.touched && controls.firstName.invalid " />
                                 <mat-error *ngIf=" controls.firstName.errors?.required && controls.firstName.touched ">
@@ -106,7 +106,7 @@
                             </div>
                             <div class=" col-4">
                                 <input type="text" aria-label="Last name" placeholder="Last Name" ktAlphabets
-                                    class="form-control" formControlName="lastName"
+                                    ktTrimControl class="form-control" formControlName="lastName"
                                     value="{{this.data.customerKycReview.lastName | titlecase}}" [class.isError]="
                                         controls.lastName.touched &&
                                         controls.lastName.invalid
