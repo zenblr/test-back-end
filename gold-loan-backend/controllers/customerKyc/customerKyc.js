@@ -353,7 +353,7 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
         name = `${customerDetail.firstName} ${customerDetail.lastName}`;
     }
     console.log(address[0].addressProofNumber);
-    if(moduleId == 3 && address[0].addressProofNumber && address[0].addressProofTypeId == 2 ){
+    if (moduleId == 3 && address[0].addressProofNumber && address[0].addressProofTypeId == 2) {
         let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: address[0].addressProofNumber } });
 
         if (!check.isEmpty(findIdentityNumber)) {
@@ -361,15 +361,15 @@ exports.submitCustomerKycAddress = async (req, res, next) => {
         }
     }
 
-    if(address.length  > 1){
-        if(moduleId == 3 && address[1].addressProofNumber && address[0].addressProofTypeId == 2 ){
+    if (address.length > 1) {
+        if (moduleId == 3 && address[1].addressProofNumber && address[0].addressProofTypeId == 2) {
             let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: address[1].addressProofNumber } });
             if (!check.isEmpty(findIdentityNumber)) {
                 return res.status(400).json({ message: "Address Proof Number already exists! " })
             }
         }
     }
-    
+
 
     // if (identityProof.length == 0) {
     //     return res.status(404).json({ message: "Identity proof file must be required." });
@@ -665,11 +665,23 @@ exports.submitAllKycInfo = async (req, res, next) => {
 
     let { customerId, customerKycId, customerKycPersonal, customerKycAddress, customerKycBank, customerKycBasicDetails, customerOrganizationDetail, moduleId, userType } = req.body;
     let modifiedBy = req.userData.id;
+    //change
+    if (moduleId == 1) {
+        let findCustomerKyc = await models.customer.findOne({
+            where: { id: customerKycId },
+            include: [{
+                model: models.customerKyc,
+                as: 'customerKyc',
+                attributes: ['currentKycModuleId']
+            }]
+        })
 
-    // let findCustomerKyc = await models.customerKyc.findOne({ where: { id: customerKycId } })
-    // if (check.isEmpty(findCustomerKyc)) {
-    //     return res.status(404).json({ message: "This customer kyc detailes is not filled." });
-    // }
+        if (findCustomerKyc.customerKyc.currentKycModuleId == 3 && findCustomerKyc.scrapKycStatus != 'approved') {
+            return res.status(400).json({ message: "Your scrap kyc process pending." });
+        }
+    }
+    //change
+
     if (moduleId == 1) {
         let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { customerId: { [Op.not]: customerId }, identityProofNumber: customerKycPersonal.identityProofNumber } });
         if (!check.isEmpty(findIdentityNumber)) {
@@ -677,7 +689,7 @@ exports.submitAllKycInfo = async (req, res, next) => {
         }
     }
 
-    if(moduleId == 3 && customerKycAddress[0].addressProofNumber && customerKycAddress[0].addressProofTypeId == 2){
+    if (moduleId == 3 && customerKycAddress[0].addressProofNumber && customerKycAddress[0].addressProofTypeId == 2) {
         let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: customerKycAddress[0].addressProofNumber, customerId: { [Op.not]: customerId } } });
         console.log(customerKycAddress[0].addressProofNumber, findIdentityNumber)
 
@@ -686,9 +698,9 @@ exports.submitAllKycInfo = async (req, res, next) => {
         }
     }
 
-    if(customerKycAddress.length  > 1){
-        if(moduleId == 3 && customerKycAddress[1].addressProofNumber && customerKycAddress[0].addressProofTypeId == 2){
-            let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: customerKycAddress[1].addressProofNumber,  customerId: { [Op.not]: customerId } } });
+    if (customerKycAddress.length > 1) {
+        if (moduleId == 3 && customerKycAddress[1].addressProofNumber && customerKycAddress[0].addressProofTypeId == 2) {
+            let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: customerKycAddress[1].addressProofNumber, customerId: { [Op.not]: customerId } } });
             if (!check.isEmpty(findIdentityNumber)) {
                 return res.status(400).json({ message: "Address Proof Number already exists! " })
             }
@@ -724,7 +736,7 @@ exports.submitAllKycInfo = async (req, res, next) => {
         addressArray.push(customerKycAddress[i]);
 
     }
-    
+
     if (moduleId == 3 && userType == "Individual") {
         if (customerKycAddress[0].addressProofTypeId == 2) {
             customerKycPersonal['identityTypeId'] = 5;
@@ -738,6 +750,10 @@ exports.submitAllKycInfo = async (req, res, next) => {
         //for mobile
         if (req.useragent.isMobile) {
             let checkClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId }, transaction: t })
+
+            //change
+            await models.customerKyc.update({ currentKycModuleId: moduleId }, { where: { id: customerKycId }, transaction: t })
+            //change
 
             if (check.isEmpty(checkClassification)) {
                 await models.customerKycClassification.create({ customerId, customerKycId: customerKycId, kycStatusFromCce: "pending", cceId: modifiedBy }, { transaction: t })
