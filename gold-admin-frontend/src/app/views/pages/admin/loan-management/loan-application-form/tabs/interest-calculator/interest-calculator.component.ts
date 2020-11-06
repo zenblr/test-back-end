@@ -330,7 +330,10 @@ export class InterestCalculatorComponent implements OnInit {
       let rpg = 0
       if(this.selectedUnsecuredscheme){
         rpg = this.selectedUnsecuredscheme.rpg
+        this.controls.isUnsecuredSchemeApplied.patchValue(true)
+      }else{
         this.controls.isUnsecuredSchemeApplied.patchValue(false)
+
       }
       element.loanAmount = (Number(this.selectedScheme.rpg) + Number(rpg))* element.ornamentsCal
       element.rpg = Number(this.selectedScheme.rpg) + Number(rpg)

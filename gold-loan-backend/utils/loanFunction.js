@@ -381,6 +381,7 @@ let mergeInterestTable = async (masterLoanId) => {
             data.paidAmount = (Number(securedTable[i].paidAmount) + Number(unsecuredTable[i].paidAmount)).toFixed(2)
             data.penalInterest = (Number(securedTable[i].penalInterest) + Number(unsecuredTable[i].penalInterest)).toFixed(2)
             data.penalPaid = (Number(securedTable[i].penalPaid) + Number(unsecuredTable[i].penalPaid)).toFixed(2)
+            data.rebateAmount = (Number(securedTable[i].rebateAmount) + Number(unsecuredTable[i].rebateAmount)).toFixed(2)
             if (securedTable[i].emiStatus == 'partially paid' || unsecuredTable[i].emiStatus == 'partially paid') {
                 data.emiStatus = 'partially paid'
             } else if (securedTable[i].emiStatus == 'pending' || unsecuredTable[i].emiStatus == 'pending') {
@@ -393,6 +394,7 @@ let mergeInterestTable = async (masterLoanId) => {
             data.paidAmount = (Number(securedTable[i].paidAmount)).toFixed(2)
             data.penalInterest = securedTable[i].penalInterest
             data.penalPaid = securedTable[i].penalPaid
+            data.rebateAmount = (securedTable[i].rebateAmount)
         }
         mergeTble.push(data)
     };
@@ -575,7 +577,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                     for (const interestData of interestLessThanDate) {
                         let isDueDate = moment(date).isSame(interestData.emiDueDate);
                         if (isDueDate) {
-                            let checkDebitEntry = await models.customerTransactionDetail.findOne({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id,credit: 0.00, isPenalInterest: false } });
+                            let checkDebitEntry = await models.customerTransactionDetail.findOne({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: 0.00, isPenalInterest: false } });
                             if (!checkDebitEntry) {
                                 let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interestData.interestAmount, description: `interest due ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment() }, { transaction: t });
                                 await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
@@ -1128,7 +1130,7 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
 
     let customerLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
-        attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure','termsAndCondition'],
+        attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure', 'termsAndCondition'],
         order: [
             [models.customerLoanDisbursement, 'loanId', 'asc'],
             [models.customerLoan, 'id', 'asc'],
@@ -1296,7 +1298,8 @@ let nextDueDateInterest = async (loan) => {
     let paymentFrequency = loan.paymentFrequency
     let securedInterest = loan.customerLoan[0].currentInterestRate
     let securedOutstandingAmount = loan.customerLoan[0].outstandingAmount
-
+    let securedRebate = 0;
+    let unsecuredRebate = 0;
 
     // let securedPerDayInterestAmount = await newSlabRateInterestCalcultaion(securedOutstandingAmount, securedInterest, selectedSlab, tenure);
 
@@ -1340,6 +1343,7 @@ let nextDueDateInterest = async (loan) => {
 
             }
             securedTotalInterest = securedTotalInterest.toFixed(2)
+            securedRebate = secured[index].rebateAmount
         }
     }
     if (loan.customerLoan.length > 1) {
@@ -1387,6 +1391,7 @@ let nextDueDateInterest = async (loan) => {
 
                 }
                 unsecuredTotalInterest = unsecuredTotalInterest.toFixed(2)
+                unsecuredRebate = unsecured[index].rebateAmount
             }
 
 
@@ -1396,7 +1401,7 @@ let nextDueDateInterest = async (loan) => {
 
 
 
-    return { securedTotalInterest, unsecuredTotalInterest }
+    return { securedTotalInterest, unsecuredTotalInterest,securedRebate,unsecuredRebate }
 }
 
 let splitAmountIntoSecuredAndUnsecured = async (customerLoan, paidAmount) => {

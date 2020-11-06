@@ -66,6 +66,7 @@
                     <table class="table outer-border">
                         <thead>
                             <th class="transparent table-amount">Principal Outstanding</th>
+                            <th class="transparent table-amount">Augmont Rebate</th>
                             <th class="transparent table-amount">Next Due Date Amount</th>
                             <th class="transparent table-amount">Interest Amount</th>
                             <th class="transparent table-amount">Penal Interest</th>
@@ -79,6 +80,12 @@
                                     <span>{{payableAmount?.securedOutstandingAmount}}</span><br>
                                     <span *ngIf="loanDetails?.customerLoan[1]">
                                         {{payableAmount?.unsecuredOutstandingAmount}}
+                                    </span>
+                                </td>
+                                <td class="table-amount">
+                                    <span>{{payableAmount?.securedRebate}}</span><br>
+                                    <span *ngIf="loanDetails?.customerLoan[1]">
+                                        {{payableAmount?.unsecuredRebate}}
                                     </span>
                                 </td>
                                 <td class="table-amount">
