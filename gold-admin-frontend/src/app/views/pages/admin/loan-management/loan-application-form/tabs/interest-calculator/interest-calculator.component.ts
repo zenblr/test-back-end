@@ -180,8 +180,8 @@ export class InterestCalculatorComponent implements OnInit {
               paymentType: this.paymentType,
               securedInterestAmount: interset.interestAmount,
               unsecuredInterestAmount: 0,
-              secureHighestInterestAmount:interset.highestInterestAmount,
-              securedRebateAmount:interset.rebateAmount,
+              secureHighestInterestAmount:Number(interset.highestInterestAmount),
+              securedRebateAmount:Number(interset.rebateAmount),
               totalAmount: Number(interset.interestAmount)
             }
             temp.push(data)
@@ -197,8 +197,8 @@ export class InterestCalculatorComponent implements OnInit {
               temp[index].unsecuredInterestAmount = finalLoan.unsecuredLoan.customerLoanInterest[index].interestAmount
               temp[index].totalAmount = Number(temp[index].securedInterestAmount) +
                 Number(temp[index].unsecuredInterestAmount)
-                temp[index].unsecureHighestInterestAmount = finalLoan.unsecuredLoan.customerLoanInterest[index].highestInterestAmount
-                temp[index].unsecuredRebateAmount = finalLoan.unsecuredLoan.customerLoanInterest[index].rebateAmount
+                temp[index].unsecureHighestInterestAmount = Number(finalLoan.unsecuredLoan.customerLoanInterest[index].highestInterestAmount)
+                temp[index].unsecuredRebateAmount = Number(finalLoan.unsecuredLoan.customerLoanInterest[index].rebateAmount)
             }
             // this.getIntrest()
 
@@ -330,6 +330,7 @@ export class InterestCalculatorComponent implements OnInit {
       let rpg = 0
       if(this.selectedUnsecuredscheme){
         rpg = this.selectedUnsecuredscheme.rpg
+        this.controls.isUnsecuredSchemeApplied.patchValue(false)
       }
       element.loanAmount = (Number(this.selectedScheme.rpg) + Number(rpg))* element.ornamentsCal
       element.rpg = Number(this.selectedScheme.rpg) + Number(rpg)
