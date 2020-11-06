@@ -449,11 +449,13 @@ export class UploadDocumentsComponent implements OnInit {
           }
         }), finalize(() => {
           this[value].nativeElement.value = ''
+          event.target.value = ''
           this.ref.detectChanges()
         })).subscribe()
     }
     else {
       this.toastr.error('Upload Valid File Format');
+      event.target.value = ''
     }
   }
 

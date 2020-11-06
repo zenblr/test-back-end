@@ -2,8 +2,10 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addColumn('customer', 'pan_image', {
-      type: Sequelize.DataTypes.STRING,
+    
+    return queryInterface.addColumn('customer_loan_master', 'terms_and_condition', {
+      type: Sequelize.DataTypes.ARRAY(Sequelize.DataTypes.TEXT),
+      defaultValue: []
     });
   },
 

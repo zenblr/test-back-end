@@ -2,8 +2,9 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addColumn('customer', 'source', {
-      type: Sequelize.DataTypes.STRING
+    return queryInterface.addColumn('karat_details', 'hm', {
+      type: Sequelize.DataTypes.BOOLEAN,
+      defaultValue: false
     });
   },
 

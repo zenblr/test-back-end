@@ -285,7 +285,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber','kycStatus'],
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber', 'kycStatus'],
             },
             {
                 model: models.customerLoanPersonalDetail,
@@ -326,12 +326,8 @@ exports.getLoanTransferList = async (req, res, next) => {
     };
     // let customerLoanWhere = {loan_unique_id:{ [Op.iLike]: search + '%'}};
     let internalBranchId = req.userData.internalBranchId
-    let internalBranchWhere;
     if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
-        // internalBranchWhere = { isActive: true, internalBranchId: internalBranchId }
-        internalBranchWhere = { isActive: true }
-    } else {
-        internalBranchWhere = { isActive: true }
+        searchQuery.internalBranchId = internalBranchId
     }
     let associateModel = [
         {
@@ -343,7 +339,6 @@ exports.getLoanTransferList = async (req, res, next) => {
         {
             model: models.customer,
             as: 'customer',
-            where: internalBranchWhere,
             attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] }
         },
         {

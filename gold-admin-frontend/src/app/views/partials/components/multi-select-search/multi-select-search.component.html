@@ -1,5 +1,5 @@
 <div [formGroup]="form">
-    <ng-select [items]="items" [multiple]="multiple" [bindLabel]="bindLabel" [closeOnSelect]="false"
+    <ng-select [items]="items" [multiple]="multiple" [bindLabel]="bindLabel" [closeOnSelect]="false" [class.isError]="isError"
         [bindValue]="bindValue" formControlName="multiSelect" [placeholder]="placeholder" [searchable]="searchable">
         <ng-template ng-header-tmp *ngIf="selectAll">
             <label class="custom-checkbox">

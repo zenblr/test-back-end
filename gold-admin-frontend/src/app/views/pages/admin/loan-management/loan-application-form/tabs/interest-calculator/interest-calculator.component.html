@@ -4,78 +4,6 @@
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label">
-                        <label class="mandatory">Loan Amount</label>
-                    </div>
-                    <div class="col-7">
-                        <input type="text" ktWeight #amt class="form-control" formControlName="finalLoanAmount"
-                            placeholder="0,00,000" (blur)="amountValidation();" (keyup)="partnerReset()"
-                            [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
-                        <div>
-                            <mat-error
-                                *ngIf="controls.finalLoanAmount.errors?.required && controls.finalLoanAmount.touched">
-                                Required field
-                            </mat-error>
-                            <mat-error
-                                *ngIf="controls.finalLoanAmount.errors?.pattern && controls.finalLoanAmount.touched">
-                                Invalid
-                            </mat-error>
-                            <mat-error *ngIf="controls.finalLoanAmount.errors?.schemeAmt">
-                                <small>Enter Loan Amount as Per Scheme</small>
-                            </mat-error>
-                            <mat-error *ngIf="controls.finalLoanAmount.errors?.rbi">
-                                <small>Entered Amount Violates RBI Guidelines</small>
-                            </mat-error>
-                            <mat-error *ngIf="controls.finalLoanAmount.errors?.maximumAmtAllowed">
-                                <small>Entered amount exceeds loan criteria</small>
-                            </mat-error>
-                            <mat-error *ngIf="controls.finalLoanAmount.errors?.eligible">
-                                <small>Entered Amount is greater than Eligible Amount</small>
-                            </mat-error>
-                            <mat-error *ngIf="controls.finalLoanAmount.errors?.mimimumAmt">
-                                <small>Entered Amount should be greater than minimum loan amount</small>
-                            </mat-error>
-                            <mat-error *ngIf="controls.finalLoanAmount.errors?.defalutNotRange">
-                                <small>Unsecured amount is not within the range of default unsecured scheme</small>
-                            </mat-error>
-                            <mat-error *ngIf="controls.finalLoanAmount.errors?.noDefaultScheme">
-                                <small>No default unsecured scheme is mapped to this secured scheme</small>
-                            </mat-error>
-                        </div>
-
-
-                    </div>
-                </div>
-
-            </div>
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-4 form-label">
-                        <label class="mandatory">Tenure</label>
-                    </div>
-                    <div class="col-7">
-                        <select formControlName="tenure" class="form-control"
-                            (change)="setEndDate();checkForPaymentFrequency()"
-                            [class.isError]="controls.tenure.touched && controls.tenure.invalid">
-                            <option value="null" [selected]="true" [disabled]="true">Select Tenure</option>
-                            <option [value]="ten" *ngFor="let ten of tenure;index as i">
-                                <span *ngIf="i==0">{{ten}} Month</span>
-                                <span *ngIf="i > 0">{{ten}} Months</span>
-                            </option>
-                        </select>
-                        <mat-error *ngIf="controls.tenure.errors?.required && controls.tenure.touched">
-                            Required field
-                        </mat-error>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="row kt-margin-b-20">
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-4 form-label">
                         <label class="mandatory">Partner Name</label>
                     </div>
                     <div class="col-7">
@@ -116,6 +44,79 @@
                 </div>
             </div>
         </div>
+        <div class="row kt-margin-b-20">
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="mandatory">Loan Amount</label>
+                    </div>
+                    <div class="col-7">
+                        <input type="text" ktWeight #amt class="form-control" formControlName="finalLoanAmount"
+                            placeholder="0,00,000" (blur)="amountValidation();"
+                            [class.isError]="controls.finalLoanAmount.touched && controls.finalLoanAmount.invalid" />
+                        <div>
+                            <mat-error
+                                *ngIf="controls.finalLoanAmount.errors?.required && controls.finalLoanAmount.touched">
+                                Required field
+                            </mat-error>
+                            <mat-error
+                                *ngIf="controls.finalLoanAmount.errors?.pattern && controls.finalLoanAmount.touched">
+                                Invalid
+                            </mat-error>
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.schemeAmt">
+                                <small>Enter Loan Amount as Per Scheme</small>
+                            </mat-error>
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.rbi">
+                                <small>Entered Amount Violates RBI Guidelines</small>
+                            </mat-error>
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.maximumAmtAllowed">
+                                <small>Entered amount exceeds loan criteria</small>
+                            </mat-error>
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.eligible && controls.finalLoanAmount.touched">
+                                <small>Entered Amount is greater than Eligible Amount</small>
+                            </mat-error>
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.mimimumAmt && controls.finalLoanAmount.touched">
+                                <small>Entered Amount should be greater than minimum loan amount</small>
+                            </mat-error>
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.defalutNotRange && controls.finalLoanAmount.touched">
+                                <small>{{checkForLoanTypeError}}</small>
+                            </mat-error>
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.noDefaultScheme">
+                                <small>No default unsecured scheme is mapped to this secured scheme</small>
+                            </mat-error>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-4 form-label">
+                        <label class="mandatory">Tenure</label>
+                    </div>
+                    <div class="col-7">
+                        <select formControlName="tenure" class="form-control"
+                            (change)="setEndDate();checkForPaymentFrequency()"
+                            [class.isError]="controls.tenure.touched && controls.tenure.invalid">
+                            <option value="null" [selected]="true" [disabled]="true">Select Tenure</option>
+                            <option [value]="ten" *ngFor="let ten of tenure;index as i">
+                                <span *ngIf="i==0">{{ten}} Month</span>
+                                <span *ngIf="i > 0">{{ten}} Months</span>
+                            </option>
+                        </select>
+                        <mat-error *ngIf="controls.tenure.errors?.required && controls.tenure.touched">
+                            Required field
+                        </mat-error>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+       
 
         <div class="row kt-margin-b-20">
             <div class="col-6">
@@ -349,14 +350,14 @@
                             </label>
                         </div>
                     </div> -->
-                    <div class="row " *ngIf="controls.isUnsecuredSchemeApplied.value && !disable">
+                    <!-- <div class="row " *ngIf="controls.isUnsecuredSchemeApplied.value && !disable">
                         <div class="col-12">
                             <div class="kt-margin-t-20 text-center">
                                 <kt-button [value]="'Change Unsecured Scheme'" [type]="'button'"
                                     (click)="changeUnSecuredScheme()"></kt-button>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

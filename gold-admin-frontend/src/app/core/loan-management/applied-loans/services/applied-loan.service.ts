@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { ExcelService } from '../../../_base/crud';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class AppliedLoanService {
   applyFilter$ = this.applyFilter.asObservable();
 
   constructor(
-    private http: HttpClient, private toastr: ToastrService
+    private http: HttpClient, private toastr: ToastrService,
+    private excelService: ExcelService
   ) { }
 
   getAplliedLoans(data): Observable<any> {
@@ -96,5 +98,26 @@ export class AppliedLoanService {
         if (err.error.message) this.toastr.error(err.error.message)
         throw (err);
       }))
+  }
+
+  downloadBankDetails(masterLoanId, type): Observable<any> {
+    // console.log(masterLoanId)
+    return this.http.get(`api/loan-process/download-bank-details?masterLoanId=${masterLoanId}&type=${type}`, { responseType: 'arraybuffer' })
+      .pipe(
+        map((res) => {
+          return res;
+        }),
+        tap(
+          data => {
+            // const fileName = report.originalname.split('.');
+            // const file = fileName['0'];
+            this.excelService.saveAsExcelFile(data, "BulkReport_" + Date.now())
+          },
+          error => console.log(error),
+        ),
+        catchError(err => {
+          return null;
+        })
+      );
   }
 }

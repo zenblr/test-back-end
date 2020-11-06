@@ -66,12 +66,14 @@ export class LoanApplicationFormService {
     )
   }
 
-  submitFinalIntrest(loanFinalCalculator, masterAndLoanIds, interestTable): Observable<any> {
+  submitFinalIntrest(loanFinalCalculator, masterAndLoanIds, interestTable,ornaments,totalEligibleAmt): Observable<any> {
     let data = {
       loanFinalCalculator: loanFinalCalculator,
       interestTable: interestTable,
       loanId: masterAndLoanIds.loanId,
-      masterLoanId: masterAndLoanIds.masterLoanId
+      masterLoanId: masterAndLoanIds.masterLoanId,
+      ornaments:ornaments,
+      totalEligibleAmt:totalEligibleAmt
     }
     return this.http.post(`/api/loan-process/final-loan-details`, data).pipe(
       map(res => res)
@@ -176,6 +178,19 @@ export class LoanApplicationFormService {
   getUnsecuredScheme(partnerId, amount, securedSchemeId): Observable<any> {
     return this.http.get(`/api/loan-process/unsecured-scheme?partnerId=${partnerId}&amount=${amount}&securedSchemeId=${securedSchemeId}`).pipe(
       map(res => res)
+    )
+  }
+
+  uploadTermsAndConditions(data): Observable<any> {
+    return this.http.post(`/api/loan-process/terms-conditions`, data).pipe(
+      tap(res => {
+        this.toastr.success(res['message'])
+        return res
+      }),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message)
+        throw err
+      })
     )
   }
 

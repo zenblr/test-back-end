@@ -59,7 +59,26 @@ exports.loanRequest = async (req, res, next) => {
         }
     }
 
+    let checkApprasierRequest = await models.customerLoanMaster.findOne({ where: { appraiserRequestId: appraiserRequestId } })
+    if (!isEdit) {
+        if (!check.isEmpty(checkApprasierRequest)) {
+            return res.status(400).json({ message: 'Your loan request is already in queue' });
+        }
+    }
+
     let loanData = await sequelize.transaction(async t => {
+
+        //loan transfer
+        if (masterLoanId) {
+            let customerLoanMaster = await models.customerLoanMaster.findOne({ where: { id: masterLoanId }, transaction: t });
+            if (customerLoanMaster.loanTransferId != null) {
+                let transferLoan = await models.customerLoanTransfer.findOne({ where: { id: customerLoanMaster.loanTransferId } });
+                if (transferLoan.isLoanApplied == false) {
+                    await models.customerLoanTransfer.update({ isLoanApplied: true, modifiedBy }, { where: { id: customerLoanMaster.loanTransferId }, transaction: t });
+                }
+            }
+        }
+        //loan transfer
 
         await models.appraiserRequest.update({ isProcessComplete: true, status: 'complete' }, { where: { id: appraiserRequestId }, transaction: t })
 
@@ -302,7 +321,7 @@ exports.loanRequest = async (req, res, next) => {
 
             let stageId = await models.loanStage.findOne({ where: { name: 'assign packet' }, transaction: t })
             await models.customerLoanMaster.update({
-                applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser : null, modifiedBy, appraiserId, loanStageId: stageId.id
+                applicationFormForAppraiser, goldValuationForAppraiser, loanStatusForAppraiser, commentByAppraiser: null, modifiedBy, appraiserId, loanStageId: stageId.id
             }, { where: { id: masterLoanId }, transaction: t })
 
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: APPRAISER_RATING, modifiedBy }, { transaction: t });

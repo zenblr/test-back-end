@@ -628,7 +628,6 @@ exports.getsingleCustomerManagement = async (req, res) => {
 
 //To register customer by their own
 exports.signUpCustomer = async (req, res) => {
-  try{
     let { firstName, lastName, mobileNumber, email, referenceCode, otp, stateId } = req.body;
 
     var todayDateTime = new Date();
@@ -744,10 +743,7 @@ exports.signUpCustomer = async (req, res) => {
   
     return res.status(200).json({ messgae: `Registered Sucessfully!` });
   
-  }catch(err){
-    console.log(err);
-  }
- 
+  
 }
 
 //To get all registered customer

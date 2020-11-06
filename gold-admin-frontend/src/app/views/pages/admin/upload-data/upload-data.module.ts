@@ -15,7 +15,8 @@ import { UploadLenderBannerComponent } from './upload-lender-banner/upload-lende
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 // ngx-permission
 import { NgxPermissionsModule } from 'ngx-permissions';
-import { GoldRateComponent } from './gold-rate/gold-rate.component'
+import { GoldRateComponent } from './gold-rate/gold-rate.component';
+import { ProcessNoteComponent } from './process-note/process-note.component'
 
 const routes: Routes = [
   {
@@ -35,6 +36,10 @@ const routes: Routes = [
   {
     path: 'gold-rate',
     component: GoldRateComponent
+  },
+  {
+    path: 'process-note',
+    component: ProcessNoteComponent
   }
 ]
 
@@ -43,7 +48,8 @@ const routes: Routes = [
     UploadBannerComponent,
     UploadOfferComponent,
     UploadLenderBannerComponent,
-    GoldRateComponent
+    GoldRateComponent,
+    ProcessNoteComponent
   ],
   imports: [
     CommonModule,
@@ -54,7 +60,7 @@ const routes: Routes = [
     NgxPermissionsModule.forChild(),
     ReactiveFormsModule,
     FormsModule,
-    
+
   ]
 })
 export class UploadDataModule { }
