@@ -17,6 +17,7 @@ const { cronForDailyPenalInterest, dailyIntrestCalculation } = require("./utils/
 //customer api logger middleware
 const customerApiLogger = require("./middleware/customerApiLogger");
 const json2xls = require('json2xls');
+const getGoldSilverRate = require("./utils/digitalGoldSilverRates");
 
 //model
 const models = require('./models');
@@ -141,6 +142,24 @@ async function penal(date, penalStartTime) {
         await cronLogger("loan Penal Interest", date, penalStartTime, penalEndTime, penalProcessingTime, "failed", penalErr.message, null)
     }
 }
+
+cron.schedule('0,30 * * * * *', async () => {
+    let date = moment()
+    let startTime = moment();
+
+    try {
+        await getGoldSilverRate();
+        let endTime = moment();
+        let processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS");
+        // await cronLogger("gold silver rate", date, startTime, endTime, processingTime, "success", "success", null);
+
+    } catch (err) {
+        console.log(err)
+        let endTime = moment();
+        var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        // await cronLogger("gold silver rate", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
+    }
+});
 
 async function cronLogger(cronType, date, startTime, endTime, processingTime, status, message, notes) {
     await models.cronLogger.create({ cronType, date, startTime, endTime, processingTime, status, message, notes })

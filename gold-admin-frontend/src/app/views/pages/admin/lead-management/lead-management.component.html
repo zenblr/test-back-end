@@ -10,18 +10,18 @@
 
                 <ng-container matColumnDef="fullName">
                     <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
-                    <mat-cell *matCellDef="let lead">{{lead.firstName | titlecase}}&nbsp;{{lead.lastName | titlecase}}
+                    <mat-cell *matCellDef="let lead">{{lead?.firstName | titlecase}}&nbsp;{{lead.lastName | titlecase}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN</mat-header-cell>
-                    <mat-cell *matCellDef="let lead">{{lead.panCardNumber ? lead.panCardNumber : 'NA' | uppercase }}
+                    <mat-cell *matCellDef="let lead">{{lead?.panCardNumber ? lead?.panCardNumber : 'NA' | uppercase }}
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="internalBranch">
                     <mat-header-cell *matHeaderCellDef>Branch</mat-header-cell>
-                    <mat-cell *matCellDef="let lead">{{lead.internalBranch.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let lead">{{lead?.internalBranch?.name | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="module">
@@ -31,25 +31,25 @@
 
                 <ng-container matColumnDef="state">
                     <mat-header-cell *matHeaderCellDef>State</mat-header-cell>
-                    <mat-cell *matCellDef="let lead">{{lead.state.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let lead">{{lead?.state?.name | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="city">
                     <mat-header-cell *matHeaderCellDef>City</mat-header-cell>
-                    <mat-cell *matCellDef="let lead">{{lead.city.name | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let lead">{{lead?.city?.name | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="pincode">
                     <mat-header-cell *matHeaderCellDef>Pin Code</mat-header-cell>
-                    <mat-cell *matCellDef="let lead">{{lead.pinCode }}</mat-cell>
+                    <mat-cell *matCellDef="let lead">{{lead?.pinCode }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="date">
                     <mat-header-cell *matHeaderCellDef>Date & Time</mat-header-cell>
                     <mat-cell *matCellDef="let lead">
                         <div class="d-block">
-                            <div class="d-block">{{lead.createdAt | date:'mediumDate'}}</div>
-                            <div class="d-block">{{lead.createdAt | date:'shortTime'}}</div>
+                            <div class="d-block">{{lead?.createdAt | date:'mediumDate'}}</div>
+                            <div class="d-block">{{lead?.createdAt | date:'shortTime'}}</div>
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -62,13 +62,13 @@
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
                     <mat-cell *matCellDef="let lead">
-                        <span class="text-success" *ngIf="lead.status.id == '1'">
-                            {{lead.status.statusName | titlecase}} </span>
-                        <span class="text-danger" *ngIf="lead.status.id == '2'">
-                            {{lead.status.statusName | titlecase}}
+                        <span class="text-success" *ngIf="lead.status && lead?.status?.id == '1'">
+                            {{lead?.status?.statusName | titlecase}} </span>
+                        <span class="text-danger" *ngIf="lead.status && lead?.status?.id == '2'">
+                            {{lead?.status?.statusName | titlecase}}
                         </span>
-                        <span class="text-warning" *ngIf="lead.status.id == '5'">
-                            {{lead.status.statusName | titlecase}}
+                        <span class="text-warning" *ngIf="lead.status && lead?.status?.id == '5'">
+                            {{lead?.status?.statusName | titlecase}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -78,23 +78,23 @@
                     <mat-cell *matCellDef="let lead">
                         <ng-container *ngIf="lead.moduleId == 1">
                             <span class="text-success" *ngIf="lead.kycStatus == 'approved'">
-                                {{lead.kycStatus | titlecase}} </span>
+                                {{lead?.kycStatus | titlecase}} </span>
                             <span class="text-warning" *ngIf="lead.kycStatus == 'pending'">
-                                {{lead.kycStatus | titlecase}}
+                                {{lead?.kycStatus | titlecase}}
                             </span>
                             <span class="text-danger" *ngIf="lead.kycStatus == 'rejected'">
-                                {{lead.kycStatus | titlecase}}
+                                {{lead?.kycStatus | titlecase}}
                             </span>
                         </ng-container>
 
                         <ng-container *ngIf="lead.moduleId == 3">
                             <span class="text-success" *ngIf="lead.scrapKycStatus == 'approved'">
-                                {{lead.scrapKycStatus | titlecase}} </span>
+                                {{lead?.scrapKycStatus | titlecase}} </span>
                             <span class="text-warning" *ngIf="lead.scrapKycStatus == 'pending'">
-                                {{lead.scrapKycStatus | titlecase}}
+                                {{lead?.scrapKycStatus | titlecase}}
                             </span>
                             <span class="text-danger" *ngIf="lead.scrapKycStatus == 'rejected'">
-                                {{lead.scrapKycStatus | titlecase}}
+                                {{lead?.scrapKycStatus | titlecase}}
                             </span>
                         </ng-container>
 
@@ -139,11 +139,11 @@
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let lead">
-                        <div *ngIf="lead.status.id != 1 && lead.status.id != 2" [ngStyle]="{'display': 'inherit'}">
+                        <div *ngIf="lead.status && lead.status.id != 1 && lead.status.id != 2" [ngStyle]="{'display': 'inherit'}">
                             <div class="kt-pointer" (click)="editLead(lead)" class="kt-pointer"
                                 *ngxPermissionsOnly="['leadManagmentEdit']">Edit</div>
                         </div>
-                        <div *ngIf="lead.status.id == 1 || lead.status.id == 2" [ngStyle]="{'display': 'inherit'}">
+                        <div *ngIf="lead.status && (lead.status.id == 1 || lead.status.id == 2)" [ngStyle]="{'display': 'inherit'}">
                             <div>-</div>
                         </div>
                     </mat-cell>
