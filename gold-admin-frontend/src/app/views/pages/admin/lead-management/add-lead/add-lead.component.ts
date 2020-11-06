@@ -7,7 +7,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 // components
 import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, finalize } from 'rxjs/operators';
 import { LeadService } from '../../../../../core/lead-management/services/lead.service';
 import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { LeadSourceService } from '../../../../../core/masters/lead-source/services/lead-source.service';
@@ -179,10 +179,7 @@ export class AddLeadComponent implements OnInit {
     } else if (this.data.action == 'assignBranch') {
       this.getLeadById(this.data['id']);
       this.modalTitle = 'Assign Branch';
-      this.leadForm.disable()
-      this.leadForm.controls.internalBranchId.enable()
-      this.leadForm.controls.statusId.enable()
-      this.leadForm.controls.comment.enable()
+      this.disableAssignBranch()
     }
     else {
       this.modalTitle = 'Add New Lead'
@@ -453,8 +450,8 @@ export class AddLeadComponent implements OnInit {
           }
         }
       );
-    } else if (this.data.action == 'edit') {
-
+    } else if (this.data.action == 'edit' || this.data.action == 'assignBranch') {
+      if (this.data.action == 'assignBranch') this.leadForm.enable()
       if (this.leadForm.invalid) {
         // this.checkforVerfication()
         this.leadForm.markAllAsTouched();
@@ -487,18 +484,20 @@ export class AddLeadComponent implements OnInit {
       this.enable();
       const leadData = this.leadForm.value;
 
-      this.leadService.editLead(this.data.id, leadData).subscribe(res => {
-
-        if (res) {
-          const msg = 'Lead Edited Successfully';
-          this.toastr.successToastr(msg);
-          this.dialogRef.close(true);
-        }
-      }, () => {
-        if (this.details.userDetails.userTypeId != 4) {
-          this.disable();
-        }
-      });
+      this.leadService.editLead(this.data.id, leadData).pipe(
+        map(res => {
+          if (res) {
+            const msg = 'Lead Edited Successfully';
+            this.toastr.successToastr(msg);
+            this.dialogRef.close(true);
+          }
+        }),
+        finalize(() => {
+          if (this.details.userDetails.userTypeId != 4) {
+            this.disable();
+          }
+          if (this.data.action == 'assignBranch') this.disableAssignBranch()
+        })).subscribe();
     }
 
   }
@@ -548,6 +547,18 @@ export class AddLeadComponent implements OnInit {
         this.getCities()
       })
     ).subscribe()
+  }
+
+  disableAssignBranch() {
+    this.leadForm.disable()
+    this.leadForm.controls.internalBranchId.enable()
+    this.leadForm.controls.statusId.enable()
+    this.leadForm.controls.comment.enable()
+    this.leadForm.controls.panCardNumber.enable()
+    this.leadForm.controls.panType.enable()
+    this.leadForm.controls.form60.enable()
+    this.leadForm.controls.panImage.enable()
+    this.leadForm.controls.panImg.enable()
   }
 
 }
