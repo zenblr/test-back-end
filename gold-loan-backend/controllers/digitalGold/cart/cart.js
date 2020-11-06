@@ -7,47 +7,49 @@ const sequelize = models.sequelize;
 const {Op} = models.Sequelize;
 
 exports.createCart = async (req, res) => {
-    const customerId = req.userData.id;
-    const {productSku, productWeight, productName, amount, productImage, quantity, metalType} = req.body;
+        const customerId = req.userData.id;
+        const {productSku, productWeight, productName, amount, productImage, quantity, metalType} = req.body;
+    
+        const checkProductExist = await models.digiGoldCart.findOne({where:{productSku, customerId}});
+        if (!checkLib.isEmpty(checkProductExist)) {
+            await sequelize.transaction(async (t) => {
+                await models.digiGoldCart.update(
+                  {quantity:(checkProductExist.quantity + quantity)},
+                  { where:{productSku:productSku, customerId},transaction: t }
+                );
+            });
+            return  res.status(200).json({ message: "Product quantity updated" });
+        }else{
+            await sequelize.transaction(async (t) => {
+                await models.digiGoldCart.create(
+                  { customerId, productSku,  productWeight, productName, amount, productImage, quantity, metalType},
+                  { transaction: t }
+                );
+            });
+            return res.status(201).json({message:"Product added to cart"});
+        }
 
-    const checkProductExist = await models.digiGoldCart.findOne({where:{productSku, customerId}});
-    if (!checkLib.isEmpty(checkProductExist)) {
-        await sequelize.transaction(async (t) => {
-            await models.digiGoldCart.update(
-              {quantity:(checkProductExist.quantity + quantity)},
-              { where:{productSku:productSku, customerId},transaction: t }
-            );
-        });
-        return  res.status(200).json({ message: "Product quantity updated" });
-    }else{
-        await sequelize.transaction(async (t) => {
-            await models.digiGoldCart.create(
-              { customerId, productSku,  productWeight, productName, amount, productImage, quantity, metalType},
-              { transaction: t }
-            );
-        });
-        return res.status(201).json({message:"Product added to cart"});
-    }
 };
 
 exports.readCart = async (req, res) => {
-    const customerId = req.userData.id;
-    const getCartDetails = await models.digiGoldCart.getCartDetails(customerId);
-    if (getCartDetails.length === 0){
-        return res.status(200).json({cartData:[]});
-    }else{
-        let totalAmountPayable = 0;
-        let totalQuantity = 0;
-        let totalWeight = 0;
-        for(let ele of getCartDetails){
-            totalQuantity = totalQuantity + ele.quantity;
-            totalWeight = totalWeight + (parseFloat(ele.productWeight) * parseFloat(ele.quantity));
-            totalAmountPayable = totalAmountPayable + (parseFloat(ele.amount) * parseFloat(ele.quantity));
-            ele.dataValues.totalProductAmount = parseFloat(ele.amount) * parseFloat(ele.quantity);
+        const customerId = req.userData.id;
+        const getCartDetails = await models.digiGoldCart.getCartDetails(customerId);
+        if (getCartDetails.length === 0){
+            return res.status(200).json({cartData:[]});
+        }else{
+            let totalAmountPayable = 0;
+            let totalQuantity = 0;
+            let totalWeight = 0;
+            for(let ele of getCartDetails){
+                totalQuantity = totalQuantity + ele.quantity;
+                totalWeight = totalWeight + (parseFloat(ele.productWeight) * parseFloat(ele.quantity));
+                totalAmountPayable = totalAmountPayable + (parseFloat(ele.amount) * parseFloat(ele.quantity));
+                ele.dataValues.totalProductAmount = parseFloat(ele.amount) * parseFloat(ele.quantity);
+            }
+            const obj = {cartData:getCartDetails,totalAmountPayable,totalQuantity, totalWeight};
+            return res.status(200).json(obj);
         }
-        const obj = {cartData:getCartDetails,totalAmountPayable,totalQuantity, totalWeight};
-        return res.status(200).json(obj);
-    }
+
 };
 
 exports.getCartCount = async (req, res) => {

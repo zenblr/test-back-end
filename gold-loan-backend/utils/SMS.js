@@ -234,3 +234,19 @@ exports.sendMessageForSell = async (mobileNumber,quantity, metalType, amount) =>
         await sms.sendSms(mobileNumber, message);
     }
 }
+
+exports.sendMessageForOrderPlaced = async (mobileNumber, orderId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Order Placed');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<orderId>", orderId)
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+
+exports.sendMessageForKycUpdate = async (mobileNumber) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Bank and Kyc update');
+    if (messageTemplate) {
+        let message = await messageTemplate.content;
+        await sms.sendSms(mobileNumber, message);
+    }
+}

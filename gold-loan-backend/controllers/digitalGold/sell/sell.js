@@ -50,7 +50,7 @@ exports.sellProduct = async(req, res)=>{
     }
     return res.status(200).json(result.data);
   }catch(err) {
-    let errorData = errorLogger(err, req.url, req.method, req.hostname, req.body);
+    let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
     if (err.response) {
       return res.status(422).json(err.response.data);
@@ -83,7 +83,7 @@ exports.getSellDetailsWithTransId = async(req, res)=>{
     });
     return res.status(200).json(result.data);
   }catch(err){
-    let errorData = errorLogger(err, req.url, req.method, req.hostname, req.body);
+    let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
     if (err.response) {
       return res.status(422).json(err.response.data);
@@ -116,7 +116,7 @@ exports.getAllSellDetails = async(req, res)=>{
     });
     return res.status(200).json(result.data);
   }catch(err){
-    let errorData = errorLogger(err, req.url, req.method, req.hostname, req.body);
+    let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
     if (err.response) {
       return res.status(422).json(err.response.data);

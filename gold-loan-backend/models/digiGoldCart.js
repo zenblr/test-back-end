@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
         DigiGoldCart.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
     }
 
-    DigiGoldCart.getCartDetails = (customerId) => digitalGoldCart.findAll({where:{customerId}})
+    DigiGoldCart.getCartDetails = (customerId) => DigiGoldCart.findAll({where:{customerId}})
         
     return DigiGoldCart;
 }

@@ -6,10 +6,12 @@ const errorLogger = require('../../../utils/errorLogger');
 exports.getBankList = async(req, res)=>{
     try{
         const merchantData = await getMerchantData();
-        const {search, pageSize, pageNumber} = pagination.paginationWithPageNumberPageSize(req.query.search, req.query.page, req.query.count);
+        let {search, pageSize, pageNumber} = pagination.paginationWithPageNumberPageSize(req.query.search, req.query.page, req.query.count);
+
+        console.log(search, pageSize, pageNumber);
         const result = await models.axios({
             method: 'GET',
-            url: `${process.env.DIGITALGOLDAPI}/merchant/v1/master/banks?name=${search}&page=${pageNumber}&count=${pageSize}`,
+            url: `${process.env.DIGITALGOLDAPI}/merchant/v1/master/banks?page=${pageNumber}&count=${pageSize}`,
             headers: {
                 'Content-Type': 'application/json', 
                 'Accept': 'application/json', 
@@ -18,7 +20,7 @@ exports.getBankList = async(req, res)=>{
         });
         return res.status(200).json(result.data);
     }catch(err){
-    let errorData = errorLogger(err, req.url, req.method, req.hostname, req.body);
+    let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
         if (err.response) {
             return res.status(422).json(err.response.data);

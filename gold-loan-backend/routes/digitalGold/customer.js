@@ -15,6 +15,6 @@ route.get('/', customerCheckAuth, wrapper(getCustomerDetails));
 
 route.get('/passbook-details', customerCheckAuth, wrapper(getCustomerPassbookDetails));
 
-// route.put('/', customerCheckAuth, wrapper(updateCustomerDetails));
+route.put('/', customerCheckAuth, wrapper(updateCustomerDetails));
 
 module.exports = route; // EXPORTING ALL ROUTES

@@ -253,4 +253,16 @@ router.use('/digital-gold/product', productRoute);
 const cartRoute = require('./digitalGold/cart')
 router.use('/digital-gold/cart', cartRoute); 
 
+const withDrawRoute = require('./digitalGold/withdraw')
+router.use('/digital-gold/withdraw', withDrawRoute); 
+
+const redeemOrderRoute = require('./digitalGold/redeemOrder')
+router.use('/digital-gold/redeem-order', redeemOrderRoute); 
+
+const customerAddressRoute = require('./digitalGold/customerAddress')
+router.use('/customer-address', customerAddressRoute);
+
+const customerKycRoute = require('./digitalGold/customerKyc')
+router.use('/customer-kyc', customerKycRoute);
+
 module.exports = router;
