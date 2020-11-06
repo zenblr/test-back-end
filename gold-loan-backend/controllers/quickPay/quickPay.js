@@ -131,7 +131,8 @@ exports.payableAmount = async (req, res, next) => {
     let data = await payableAmountForLoan(amount, loan.loan)
     data.unsecuredTotalInterest = interest.unsecuredTotalInterest
     data.securedTotalInterest = interest.securedTotalInterest
-
+    data.securedRebate = interest.securedRebate
+    data.unsecuredRebate = interest.unsecuredRebate
     return res.status(200).json({ data });
 }
 
