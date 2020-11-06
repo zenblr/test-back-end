@@ -176,7 +176,15 @@ export class AddLeadComponent implements OnInit {
       this.getLeadById(this.data['id']);
       this.modalTitle = 'View Lead'
       this.leadForm.disable()
-    } else {
+    } else if (this.data.action == 'assignBranch') {
+      this.getLeadById(this.data['id']);
+      this.modalTitle = 'Assign Branch';
+      this.leadForm.disable()
+      this.leadForm.controls.internalBranchId.enable()
+      this.leadForm.controls.statusId.enable()
+      this.leadForm.controls.comment.enable()
+    }
+    else {
       this.modalTitle = 'Add New Lead'
     }
   }

@@ -181,6 +181,7 @@
                             <mat-menu #menu="matMenu" xPosition="before">
                                 <button *ngxPermissionsOnly="['addNewRequest']" mat-menu-item
                                     (click)="newRequest(loan)">New Request</button>
+                                <button mat-menu-item (click)="assignBranch(loan)">Assign Branch</button>
                             </mat-menu>
                         </div>
                     </mat-cell>
