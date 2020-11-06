@@ -260,9 +260,9 @@ const redeemOrderRoute = require('./digitalGold/redeemOrder')
 router.use('/digital-gold/redeem-order', redeemOrderRoute); 
 
 const customerAddressRoute = require('./digitalGold/customerAddress')
-router.use('/customer-address', customerAddressRoute);
+router.use('/digital-gold/customer-address', customerAddressRoute);
 
 const customerKycRoute = require('./digitalGold/customerKyc')
-router.use('/customer-kyc', customerKycRoute);
+router.use('/digital-gold/customer-kyc', customerKycRoute);
 
 module.exports = router;
