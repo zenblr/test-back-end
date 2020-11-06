@@ -351,11 +351,11 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     model: models.city,
     as: "city",
   },
-  {
-    model: models.stage,
-    as: "stage",
-    where: { id: stage.id },
-  },
+  // {
+  //   model: models.stage,
+  //   as: "stage",
+  //   where: { id: stage.id },
+  // },
   {
     model: models.status,
     as: "status",
