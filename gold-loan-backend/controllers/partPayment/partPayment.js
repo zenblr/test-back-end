@@ -14,16 +14,22 @@ const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
 let { checkPaidInterest, getCustomerInterestAmount, newSlabRateInterestCalcultaion,
-    getLastInterest, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getTransactionPrincipalAmount, calculationDataOneLoan, splitAmountIntoSecuredAndUnsecured, intrestCalculationForSelectedLoanWithOutT, penalInterestCalculationForSelectedLoan, stepDown, penalInterestCalculationForSelectedLoanWithOutT, customerNameNumberLoanId, getFirstInterestToPay, getStepUpslab } = require('../../utils/loanFunction')
+    getLastInterest, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getTransactionPrincipalAmount, calculationDataOneLoan, splitAmountIntoSecuredAndUnsecured, intrestCalculationForSelectedLoanWithOutT, penalInterestCalculationForSelectedLoan, stepDown, penalInterestCalculationForSelectedLoanWithOutT, customerNameNumberLoanId, getFirstInterestToPay, getStepUpslab,nextDueDateInterest } = require('../../utils/loanFunction')
 let crypto = require('crypto');
 const qs = require('qs');
 
-let { sendPaymentMessage } = require('../../utils/SMS')
+let { sendPaymentMessage } = require('../../utils/SMS');
 
 exports.getInterestInfo = async (req, res, next) => {
     let { loanId, masterLoanId } = req.query;
 
     let interestInfo = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
+
+    let amount = await getCustomerInterestAmount(masterLoanId);
+
+    let interest = await nextDueDateInterest(interestInfo.loan);
+
+    let data = await payableAmountForLoan(amount, interestInfo.loan)
 
     let lastPayment = await models.customerLoanTransaction.findAll({
         where: { masterLoanId: masterLoanId, depositStatus: "Completed", paymentFor: 'partPayment' },
@@ -38,8 +44,14 @@ exports.getInterestInfo = async (req, res, next) => {
     }
 
     interestInfo.loan.dataValues.lastPaymentDate = lastPaymentDate
+    amount.unsecuredTotalInterest = interest.unsecuredTotalInterest
+    amount.securedTotalInterest = interest.securedTotalInterest
+    amount.securedRebate = interest.securedRebate
+    amount.unsecuredRebate = interest.unsecuredRebate
+    amount.minimumAmount = data.payableAmount
+    
 
-    return res.status(200).json({ message: "Success", data: interestInfo })
+    return res.status(200).json({ message: "Success", data: {loan:interestInfo.loan,amount} })
 
 }
 
