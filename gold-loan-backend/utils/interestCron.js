@@ -39,7 +39,7 @@ exports.dailyIntrestCalculation = async (date) => {
                 for (const interestData of interestLessThanDate) {
                     let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: 0.00, isPenalInterest: false } });
                     if (checkDebitEntry.length == 0) {
-                        let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interest.amount, description: `interest due ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment() }, { transaction: t });
+                        let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interest.amount, description: `Net interest due (after rebate) ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment() }, { transaction: t });
                         await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                     } else {
                         let debitedAmount = await checkDebitEntry.map((data) => Number(data.debit));
@@ -150,7 +150,7 @@ exports.dailyIntrestCalculation = async (date) => {
                         if (isDueDate) {
                             let checkDebitEntry = await models.customerTransactionDetail.findOne({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id,credit: 0.00, isPenalInterest: false } });
                             if (!checkDebitEntry) {
-                                let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interestData.interestAmount, description: `interest due ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment() }, { transaction: t });
+                                let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interestData.interestAmount, description: `Net interest due (after rebate) ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment() }, { transaction: t });
                                 await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                             }
                         }

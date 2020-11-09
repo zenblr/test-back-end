@@ -82,6 +82,7 @@ exports.getSoa = async (req, res) => {
     ws.column(11).setWidth(12);
     ws.column(12).setWidth(12);
     ws.column(13).setWidth(12);
+    ws.column(14).setWidth(12);
     //Title
     ws.cell(1, 2, 1, 12, true).string("Statement of Account").style(style2);
     //Customer details:
@@ -112,9 +113,10 @@ ws.cell(11, 6, 11, 7, true).string(`${masterLoan.outstandingAmount}`).style(styl
     ws.cell(16, 8).string("Bank Name").style(style);
     ws.cell(16, 9).string("Branch Name").style(style);
     ws.cell(16, 10).string("Deposit Status").style(style);
-    ws.cell(16, 11).string("Debit in Rs").style(style);
-    ws.cell(16, 12).string("Credit in Rs").style(style);
-    ws.cell(16, 13).string("Closing Balance due in Rs").style(style);
+    ws.cell(16, 11).string("Augmont rebate").style(style);
+    ws.cell(16, 12).string("Debit in Rs").style(style);
+    ws.cell(16, 13).string("Credit in Rs").style(style);
+    ws.cell(16, 14).string("Closing Balance due in Rs").style(style);
     ws.cell(17, 1).date(masterLoan.loanStartDate).style(style);
     ws.cell(17, 2).string("Opening Balance").style(style);
     ws.cell(17, 3).string("-").style(style);
@@ -128,6 +130,7 @@ ws.cell(11, 6, 11, 7, true).string(`${masterLoan.outstandingAmount}`).style(styl
     ws.cell(17, 11).number(0.00).style(numberStyle).style(style);
     ws.cell(17, 12).number(0.00).style(numberStyle).style(style);
     ws.cell(17, 13).number(0.00).style(numberStyle).style(style);
+    ws.cell(17, 14).number(0.00).style(numberStyle).style(style);
     let closingBalance = 0;
     for (let i = 0; account.length > i; i++) {
         if(account[i].paymentDate){
@@ -156,10 +159,11 @@ ws.cell(11, 6, 11, 7, true).string(`${masterLoan.outstandingAmount}`).style(styl
             ws.cell(i + 18, 9).string("-").style(style);
             ws.cell(i + 18, 10).string("-").style(style);
         }
-        ws.cell(i + 18, 11).number(Number(account[i].debit)).style(numberStyle).style(style);
-        ws.cell(i + 18, 12).number(Number(account[i].credit)).style(numberStyle).style(style);
+        ws.cell(i + 18, 11).number(Number(account[i].rebateAmount)).style(numberStyle).style(style);
+        ws.cell(i + 18, 12).number(Number(account[i].debit)).style(numberStyle).style(style);
+        ws.cell(i + 18, 13).number(Number(account[i].credit)).style(numberStyle).style(style);
         closingBalance = Number(closingBalance) + Number(account[i].debit) - Number(account[i].credit);
-        ws.cell(i + 18, 13).number(Math.abs(Number(closingBalance))).style(numberStyle).style(style);
+        ws.cell(i + 18, 14).number(Math.abs(Number(closingBalance))).style(numberStyle).style(style);
     }
     return wb.write(`${Date.now()}.xlsx`, res);
     // return res.status(200).json({ message: "Success",masterLoan });
