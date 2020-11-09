@@ -549,11 +549,11 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                 //update all interest amount
                 for (const interestData of allInterest) {
                     let outstandingInterest = interest.amount - interestData.paidAmount;
+                    let rebateAmount = interestData.highestInterestAmount - interest.amount;
                     if (outstandingInterest >= 0) {
                         let rebateAmount = interestData.highestInterestAmount - interest.amount;
                         await models.customerLoanInterest.update({ interestAmount: interest.amount, outstandingInterest, interestRate: stepUpSlab.interestRate,rebateAmount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                     } else {
-                        let rebateAmount = interestData.highestInterestAmount - interest.amount;
                         await models.customerLoanInterest.update({ interestAmount: interest.amount, outstandingInterest: 0.00, interestRate: stepUpSlab.interestRate,rebateAmount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                     }
 
