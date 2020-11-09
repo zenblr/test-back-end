@@ -47,6 +47,8 @@ exports.addCustomer = async (req, res, next) => {
     return res.status(404).json({ message: "This Mobile number already Exists" });
   }
 
+  let modulePoint = await models.module.findOne({ where: { id: moduleId } })
+
   let getStageId = await models.stage.findOne({ where: { stageName: "lead" } });
   let stageId = getStageId.id;
   let email = "nimap@infotech.com";
@@ -54,7 +56,7 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint.modulePoint },
       { transaction: t }
     );
 
@@ -281,7 +283,7 @@ exports.deactivateCustomer = async (req, res, next) => {
 
 
 exports.getAllCustomersForLead = async (req, res, next) => {
-  let { stageName, cityId, stateId, statusId } = req.query;
+  let { stageName, cityId, stateId, statusId, modulePoint } = req.query;
   const { search, offset, pageSize } = paginationWithFromTo(
     req.query.search,
     req.query.from,
@@ -336,6 +338,10 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     }],
     isActive: true,
   };
+
+  if (!check.isEmpty(modulePoint) && modulePoint !== undefined) {
+    let allPoint = await models.module.findAll()
+  }
 
 
 
