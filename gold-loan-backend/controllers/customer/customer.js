@@ -47,6 +47,8 @@ exports.addCustomer = async (req, res, next) => {
     return res.status(404).json({ message: "This Mobile number already Exists" });
   }
 
+  let modulePoint = await models.module.findOne({ where: { id: moduleId } })
+
   let getStageId = await models.stage.findOne({ where: { stageName: "lead" } });
   let stageId = getStageId.id;
   let email = "nimap@infotech.com";
@@ -54,7 +56,7 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint.modulePoint },
       { transaction: t }
     );
 
@@ -100,14 +102,14 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
 };
 
 exports.customerSignUp = async (req, res, next) => {
-  try{
+  try {
     const { mobileNumber, firstName } = req.body;
     let customerExist = await models.customer.findOne({
       where: { mobileNumber, isActive: true },
     });
-  
+
     if (check.isEmpty(customerExist)) {
-    
+
       //To check in Registered customer from customer website
       // let registerCustomerExist = await models.customerRegister.findOne({
       //   where: { mobileNumber: mobileNumber },
@@ -115,9 +117,9 @@ exports.customerSignUp = async (req, res, next) => {
       // if (!check.isEmpty(registerCustomerExist)) {
       //   return res.status(404).json({ message: "You have already applied for the registration." });
       // }
-  
+
       await models.customerOtp.destroy({ where: { mobileNumber } });
-  
+
       const referenceCode = await createReferenceCode(5);
       let otp;
       if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
@@ -127,14 +129,14 @@ exports.customerSignUp = async (req, res, next) => {
       }
       let createdTime = new Date();
       let expiryTime = moment(createdTime).add(10, "m");
-  
+
       await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
       var expiryTimeToUser = moment(moment(expiryTime).utcOffset("+05:30"))
       await sendOtpToLeadVerification(mobileNumber, 'customer', otp, expiryTimeToUser)
-  
+
       return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, isCustomer: false });
     } else {
-  
+
       const referenceCode = await createReferenceCode(5);
       let otp;
       if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
@@ -148,14 +150,14 @@ exports.customerSignUp = async (req, res, next) => {
       expiryTime = moment(moment(expiryTime).utcOffset("+05:30"))
       let smsLink = process.env.BASE_URL_CUSTOMER
       await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
-  
+
       return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, isCustomer: true });
-  
+
     }
-  }catch(err){
+  } catch (err) {
     console.log(err)
   }
-  
+
 }
 
 
@@ -244,7 +246,7 @@ exports.editCustomer = async (req, res, next) => {
   let modifiedBy = req.userData.id;
   const { customerId } = req.params;
 
-  let { cityId, stateId, pinCode, internalBranchId, statusId, comment, source, panType, panImage, leadSourceId, moduleId } = req.body;
+  let { cityId, stateId, pinCode, internalBranchId, statusId, comment, source, panType, panCardNumber, panImage, leadSourceId, moduleId } = req.body;
   let { id } = await models.status.findOne({ where: { statusName: "confirm" } })
 
   let customerExist = await models.customer.findOne({ where: { id: customerId } });
@@ -256,7 +258,7 @@ exports.editCustomer = async (req, res, next) => {
   }
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.update(
-      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy, source, panType, panImage, leadSourceId },
+      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy, source, panType, panCardNumber, panImage, leadSourceId },
       { where: { id: customerId }, transaction: t }
     );
   });
@@ -281,14 +283,14 @@ exports.deactivateCustomer = async (req, res, next) => {
 
 
 exports.getAllCustomersForLead = async (req, res, next) => {
-  let { stageName, cityId, stateId, statusId } = req.query;
+  let { stageName, cityId, stateId, statusId, modulePoint } = req.query;
   const { search, offset, pageSize } = paginationWithFromTo(
     req.query.search,
     req.query.from,
     req.query.to
   );
 
-  let stage = await models.stage.findOne({ where: { stageName } });
+  // let stage = await models.stage.findOne({ where: { stageName } });
 
   let query = {};
   if (cityId) {
@@ -337,7 +339,32 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     isActive: true,
   };
 
-
+  if (!check.isEmpty(modulePoint)) {
+    let moduleArray = modulePoint.split(',')
+    if (moduleArray.length == 1) {
+      query.all_module_point = Sequelize.or(
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[0]}`), '!=', 0)
+      )
+    } else if (moduleArray.length == 2) {
+      query.all_module_point = Sequelize.or(
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[0]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[1]}`), '!=', 0)
+      )
+    } else if (moduleArray.length == 3) {
+      query.all_module_point = Sequelize.or(
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[0]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[1]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[2]}`), '!=', 0)
+      )
+    } else if (moduleArray.length == 4) {
+      query.all_module_point = Sequelize.or(
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[0]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[1]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[2]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[3]}`), '!=', 0)
+      )
+    }
+  }
 
   let includeArray = [{
     model: models.customerKyc,
@@ -351,11 +378,11 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     model: models.city,
     as: "city",
   },
-  {
-    model: models.stage,
-    as: "stage",
-    where: { id: stage.id },
-  },
+  // {
+  //   model: models.stage,
+  //   as: "stage",
+  //   where: { id: stage.id },
+  // },
   {
     model: models.status,
     as: "status",
@@ -387,7 +414,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
     attributes: { exclude: ['createdBy', 'modifiedBy', 'isActive'] },
-    order: [["updatedAt", "DESC"]],
+    order: [["updatedAt", "desc"]],
     offset: offset,
     limit: pageSize,
     include: includeArray,
@@ -399,7 +426,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
   if (allCustomers.length == 0) {
     return res.status(200).json({ data: [] });
   }
-  return res.status(200).json({ data: allCustomers, count: count.length });
+  return res.status(200).json({ count: count.length, data: allCustomers });
 };
 
 
@@ -628,122 +655,125 @@ exports.getsingleCustomerManagement = async (req, res) => {
 
 //To register customer by their own
 exports.signUpCustomer = async (req, res) => {
-    let { firstName, lastName, mobileNumber, email, referenceCode, otp, stateId } = req.body;
+  let { firstName, lastName, mobileNumber, email, referenceCode, otp, stateId } = req.body;
 
-    var todayDateTime = new Date();
-    // console.log('abc')
-    let verifyUser = await models.customerOtp.findOne({
-      where: {
-        referenceCode,
-        otp,
-        expiryTime: {
-          [Op.gte]: todayDateTime,
-        },
+  var todayDateTime = new Date();
+  // console.log('abc')
+  let verifyUser = await models.customerOtp.findOne({
+    where: {
+      referenceCode,
+      otp,
+      expiryTime: {
+        [Op.gte]: todayDateTime,
       },
-    });
-    if (check.isEmpty(verifyUser)) {
-      return res.status(404).json({ message: `INVALID OTP.` });
-    }
-  
-    let verifyFlag = await models.customerOtp.update(
-      { isVerified: true },
-      { where: { id: verifyUser.id } }
+    },
+  });
+  if (check.isEmpty(verifyUser)) {
+    return res.status(404).json({ message: `INVALID OTP.` });
+  }
+
+  let verifyFlag = await models.customerOtp.update(
+    { isVerified: true },
+    { where: { id: verifyUser.id } }
+  );
+
+  //To check in customer table 
+  let customerExist = await models.customer.findOne({
+    where: { mobileNumber: mobileNumber },
+  });
+  if (!check.isEmpty(customerExist)) {
+    return res.status(404).json({ message: "This Mobile number already Exists" });
+  }
+
+  //To check in Registered customer from customer website
+  // let registerCustomerExist = await models.customerRegister.findOne({
+  //   where: { mobileNumber: mobileNumber },
+  // });
+  // if (!check.isEmpty(registerCustomerExist)) {
+  //   return res.status(404).json({ message: "This Mobile number already Exists" });
+  // }
+
+  const customerUniqueId = uniqid.time().toUpperCase();
+  const merchantData = await getMerchantData();
+
+  let isFromApp = false
+  if (req.useragent.isMobile) {
+    isFromApp = true
+  }
+
+  // let createdCustomer = await models.customerRegister.create({ firstName, lastName, email, mobileNumber, isFromApp, isActive: true });
+  let createdBy = 1;
+  let modifiedBy = 1;
+
+  let data = await sequelize.transaction(async (t) => {
+
+    let modulePoint = await models.module.findOne({ where: { id: 4 }, transaction: t })
+
+    let customer = await models.customer.create(
+      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint },
+      { transaction: t }
     );
-  
-    //To check in customer table 
-    let customerExist = await models.customer.findOne({
-      where: { mobileNumber: mobileNumber },
-    });
-    if (!check.isEmpty(customerExist)) {
-      return res.status(404).json({ message: "This Mobile number already Exists" });
-    }
-  
-    //To check in Registered customer from customer website
-    // let registerCustomerExist = await models.customerRegister.findOne({
-    //   where: { mobileNumber: mobileNumber },
-    // });
-    // if (!check.isEmpty(registerCustomerExist)) {
-    //   return res.status(404).json({ message: "This Mobile number already Exists" });
-    // }
-  
-    const customerUniqueId = uniqid.time().toUpperCase();
-    const merchantData = await getMerchantData();
-  
-    let isFromApp = false
-    if (req.useragent.isMobile) {
-      isFromApp = true
-    }
-  
-    // let createdCustomer = await models.customerRegister.create({ firstName, lastName, email, mobileNumber, isFromApp, isActive: true });
-    let createdBy = 1;
-    let modifiedBy = 1;
-  
-    let token = await sequelize.transaction(async (t) => {
-      await models.customer.create(
-        { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, createdBy, modifiedBy },
-        { transaction: t }
-      );
-  
-      const data = qs.stringify({
-        'mobileNumber': mobileNumber,
-        'emailId': email,
-        'uniqueId': customerUniqueId,
-        'userName': firstName+" "+lastName,
-        // 'userAddress': address,
-        // 'userCity': cityId,
-        'userState': "Do7Wjq3d",
-        // 'userPincode': pinCode,
-        // 'dateOfBirth':dateOfBirth,
-        // 'gender':gender,
-        // 'utmSource': utmSource,
-        // 'utmMedium': utmMedium,
-        // 'utmCampaign': utmCampaign
-      })
-      const result = await models.axios({
-          method: 'POST',
-          url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
-          headers: { 
-            'Content-Type': 'application/x-www-form-urlencoded', 
-            'Authorization': `Bearer ${merchantData.accessToken}`, 
-          },
-          data : data
-      });
-      
-      // let customer = await models.customer.findOne({ where: { mobileNumber: verifyCustomer.mobileNumber, merchantId: merchantData.id }, transaction: t });
-      // let checkUser = await models.customer.findOne({
-      //     where: { id: customer.id, isActive: true },
-      //     transaction: t
-      // });
-      // Token = jwt.sign({
-      //     id: checkUser.dataValues.id,
-      //     mobile: checkUser.dataValues.mobileNumber,
-      //     firstName: checkUser.dataValues.firstName,
-      //     lastName: checkUser.dataValues.lastName,
-      //     userBelongsTo: "customer"
-      // },
-      //     JWT_SECRETKEY, {
-      //     expiresIn: JWT_EXPIRATIONTIME
-      // });
-  
-      // const decoded = jwt.verify(Token, JWT_SECRETKEY);
-      // const createdTime = new Date(decoded.iat * 1000).toGMTString();
-      // const expiryTime = new Date(decoded.exp * 1000).toGMTString();
-  
-      // await models.customer.update({ lastLogin: createdTime }, {
-      //     where: { id: decoded.id }, transaction: t
-      // });
-      // let x = await models.customerLogger.create({
-      //     customerId: decoded.id,
-      //     token: Token,
-      //     expiryDate: expiryTime,
-      //     createdDate: createdTime
-      // }, { transaction: t });
-      return result
+
+    const data = qs.stringify({
+      'mobileNumber': mobileNumber,
+      // 'emailId': email,
+      'uniqueId': customerUniqueId,
+      'userName': firstName + " " + lastName,
+      // 'userAddress': address,
+      // 'userCity': cityId,
+      'userState': "joXp8X42",
+      // 'userPincode': pinCode,
+      // 'dateOfBirth':dateOfBirth,
+      // 'gender':gender,
+      // 'utmSource': utmSource,
+      // 'utmMedium': utmMedium,
+      // 'utmCampaign': utmCampaign
     })
-  
-    return res.status(200).json({ messgae: `Registered Sucessfully!` });
-  
-  
+    const result = await models.axios({
+      method: 'POST',
+      url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Bearer ${merchantData.accessToken}`,
+      },
+      data: data
+    });
+
+    // let customer = await models.customer.findOne({ where: { mobileNumber: verifyCustomer.mobileNumber, merchantId: merchantData.id }, transaction: t });
+    // let checkUser = await models.customer.findOne({
+    //     where: { id: customer.id, isActive: true },
+    //     transaction: t
+    // });
+    Token = jwt.sign({
+      id: checkUser.dataValues.id,
+      mobile: checkUser.dataValues.mobileNumber,
+      firstName: checkUser.dataValues.firstName,
+      lastName: checkUser.dataValues.lastName,
+      userBelongsTo: "customer"
+    },
+      JWT_SECRETKEY, {
+      expiresIn: JWT_EXPIRATIONTIME
+    });
+
+    const decoded = jwt.verify(Token, JWT_SECRETKEY);
+    const createdTime = new Date(decoded.iat * 1000).toGMTString();
+    const expiryTime = new Date(decoded.exp * 1000).toGMTString();
+
+    await models.customer.update({ lastLogin: createdTime }, {
+      where: { id: decoded.id }, transaction: t
+    });
+    let x = await models.customerLogger.create({
+      customerId: decoded.id,
+      token: Token,
+      expiryDate: expiryTime,
+      createdDate: createdTime
+    }, { transaction: t });
+    return { result, Token }
+  })
+
+  return res.status(200).json({ messgae: `Registered Sucessfully!`, token: data.token });
+
+
 }
 
 //To get all registered customer

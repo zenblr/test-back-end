@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'internal_branch_id',
         },
+        allModulePoint: {
+            type: DataTypes.INTEGER,
+            field: 'all_module_point'
+        },
         merchantId: {
             type: DataTypes.INTEGER,
             field: 'merchant_id',
