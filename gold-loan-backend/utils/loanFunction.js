@@ -1318,7 +1318,6 @@ let nextDueDateInterest = async (loan) => {
     let securedRebate = 0;
     let unsecuredRebate = 0;
 
-    // let securedPerDayInterestAmount = await newSlabRateInterestCalcultaion(securedOutstandingAmount, securedInterest, selectedSlab, tenure);
 
     let securedPerDayInterestAmount = ((securedInterest / 100) * securedOutstandingAmount * (paymentFrequency / 30)) / paymentFrequency
 
@@ -1335,6 +1334,10 @@ let nextDueDateInterest = async (loan) => {
             let b = new Date()
             return a.getTime() > b.getTime()
         })
+        let securedMonthRebateInterest = 0
+        for (let securedIndex = 0; securedIndex <= index; securedIndex++) {
+            securedMonthRebateInterest += Number(secured[securedIndex].rebateAmount);
+        }
 
         if (index < 0) {
             securedTotalInterest = 0
@@ -1352,6 +1355,7 @@ let nextDueDateInterest = async (loan) => {
             let noOfDays = dueDate.diff(startDate, 'days')
             let months = Math.ceil(noOfDays / 30)
             let securedMonthInterest = (securedPerDayInterestAmount * (months * 30))
+            // let securedMonthRebateInterest = (securedPerDayRebateInterestAmount * (months * 30))
             if (securedMonthInterest > Number(paidAmount)) {
                 securedTotalInterest = securedMonthInterest - paidAmount;
             }
@@ -1360,7 +1364,7 @@ let nextDueDateInterest = async (loan) => {
 
             }
             securedTotalInterest = securedTotalInterest.toFixed(2)
-            securedRebate = secured[index].rebateAmount
+            securedRebate = securedMonthRebateInterest.toFixed(2)
         }
     }
     if (loan.customerLoan.length > 1) {
@@ -1372,6 +1376,7 @@ let nextDueDateInterest = async (loan) => {
             where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[1].id, },
             order: [['emiEndDate', 'asc']]
         });
+
         if (unsecured.length > 0) {
             let startDate = moment(unsecured[0].emiStartDate)
             let index = unsecured.findIndex(ele => {
@@ -1379,6 +1384,10 @@ let nextDueDateInterest = async (loan) => {
                 let b = new Date()
                 return a.getTime() > b.getTime()
             })
+            var unsecureRebateInterest= 0 ;
+            for (let unsecuredIndex = 0; unsecuredIndex <= index; unsecuredIndex++) {
+                unsecureRebateInterest += Number(unsecured[unsecuredIndex].rebateAmount);
+            }
 
 
             if (index < 0) {
@@ -1400,6 +1409,7 @@ let nextDueDateInterest = async (loan) => {
                 let noOfDays = dueDate.diff(startDate, 'days')
                 let months = Math.ceil(noOfDays / 30)
                 let monthsViseInterest = (unsecuredPerDayInterestAmount * (months * 30))
+                // let unsecureRebateInterest = (unsecuredPerDayRebateInterestAmount * (months * 30))
 
                 if (monthsViseInterest > Number(unsecuredPaidAmount)) {
                     unsecuredTotalInterest = monthsViseInterest - unsecuredPaidAmount
@@ -1408,7 +1418,7 @@ let nextDueDateInterest = async (loan) => {
 
                 }
                 unsecuredTotalInterest = unsecuredTotalInterest.toFixed(2)
-                unsecuredRebate = unsecured[index].rebateAmount
+                unsecuredRebate = unsecureRebateInterest.toFixed(2)
             }
 
 
@@ -1418,7 +1428,7 @@ let nextDueDateInterest = async (loan) => {
 
 
 
-    return { securedTotalInterest, unsecuredTotalInterest,securedRebate,unsecuredRebate }
+    return { securedTotalInterest, unsecuredTotalInterest, securedRebate, unsecuredRebate }
 }
 
 let splitAmountIntoSecuredAndUnsecured = async (customerLoan, paidAmount) => {
