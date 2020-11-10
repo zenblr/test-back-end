@@ -16,6 +16,7 @@ exports.applyLoanTransferFromApp = async (req, res, next) => {
 
 
     let { customerId, customerUniqueId, kycStatus, startDate, masterLoanId, requestId, pawnTicket, signedCheque, declaration, outstandingLoanAmount, loanTransferStatusForAppraiser, reasonByAppraiser } = req.body
+    let disbursedLoanAmount = outstandingLoanAmount;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let stageId = await models.loanStage.findOne({ where: { name: 'loan transfer' } })

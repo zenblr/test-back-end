@@ -665,7 +665,6 @@ exports.submitAllKycInfo = async (req, res, next) => {
 
     let { customerId, customerKycId, customerKycPersonal, customerKycAddress, customerKycBank, customerKycBasicDetails, customerOrganizationDetail, moduleId, userType } = req.body;
     let modifiedBy = req.userData.id;
-
     //change
     if (moduleId == 1) {
         let findCustomerKyc = await models.customer.findOne({
