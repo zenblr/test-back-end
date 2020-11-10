@@ -20,7 +20,6 @@ exports.applyLoanTransferFromApp = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let stageId = await models.loanStage.findOne({ where: { name: 'loan transfer' } })
-    let disbursedLoanAmount = outstandingLoanAmount;
 
 
     let masterLoan = await models.customerLoanMaster.findOne({
