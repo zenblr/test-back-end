@@ -139,11 +139,13 @@
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let lead">
-                        <div *ngIf="lead.status && lead.status.id != 1 && lead.status.id != 2" [ngStyle]="{'display': 'inherit'}">
+                        <div *ngIf="lead.status && lead.status.id != 1 && lead.status.id != 2"
+                            [ngStyle]="{'display': 'inherit'}">
                             <div class="kt-pointer" (click)="editLead(lead)" class="kt-pointer"
                                 *ngxPermissionsOnly="['leadManagmentEdit']">Edit</div>
                         </div>
-                        <div *ngIf="lead.status && (lead.status.id == 1 || lead.status.id == 2)" [ngStyle]="{'display': 'inherit'}">
+                        <div *ngIf="lead.status && (lead.status.id == 1 || lead.status.id == 2)"
+                            [ngStyle]="{'display': 'inherit'}">
                             <div>-</div>
                         </div>
                     </mat-cell>
@@ -179,8 +181,13 @@
                                 <mat-icon>more_vert</mat-icon>
                             </button>
                             <mat-menu #menu="matMenu" xPosition="before">
-                                <button *ngxPermissionsOnly="['addNewRequest']" mat-menu-item
-                                    (click)="newRequest(loan)">New Request</button>
+                                <ng-container *ngIf="loan.internalBranchId">
+                                    <button *ngxPermissionsOnly="['addNewRequest']" mat-menu-item
+                                        (click)="newRequest(loan)">New Request</button>
+                                </ng-container>
+                                <ng-container *ngIf="!loan.internalBranchId">
+                                    <button mat-menu-item (click)="assignBranch(loan)">Assign Branch</button>
+                                </ng-container>
                             </mat-menu>
                         </div>
                     </mat-cell>
