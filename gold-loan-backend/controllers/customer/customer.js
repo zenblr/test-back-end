@@ -16,6 +16,8 @@ let { sendOtpToLeadVerification, sendOtpForLogin, forgetPasswordOtp, sendUpdateL
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck');
 const qs = require('qs');
 const getMerchantData = require('../auth/getMerchantData')
+const jwt = require('jsonwebtoken');
+const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
 
 exports.getOtp = async (req, res, next) => {
   let getOtp = await models.customerOtp.findAll({
@@ -739,16 +741,11 @@ exports.signUpCustomer = async (req, res) => {
       data: data
     });
 
-    // let customer = await models.customer.findOne({ where: { mobileNumber: verifyCustomer.mobileNumber, merchantId: merchantData.id }, transaction: t });
-    // let checkUser = await models.customer.findOne({
-    //     where: { id: customer.id, isActive: true },
-    //     transaction: t
-    // });
     Token = jwt.sign({
-      id: checkUser.dataValues.id,
-      mobile: checkUser.dataValues.mobileNumber,
-      firstName: checkUser.dataValues.firstName,
-      lastName: checkUser.dataValues.lastName,
+      id: customer.dataValues.id,
+      mobile: customer.dataValues.mobileNumber,
+      firstName: customer.dataValues.firstName,
+      lastName: customer.dataValues.lastName,
       userBelongsTo: "customer"
     },
       JWT_SECRETKEY, {
