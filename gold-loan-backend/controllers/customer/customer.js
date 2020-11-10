@@ -19,7 +19,6 @@ const getMerchantData = require('../auth/getMerchantData')
 const jwt = require('jsonwebtoken');
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
 
-
 exports.getOtp = async (req, res, next) => {
   let getOtp = await models.customerOtp.findAll({
     order: [
@@ -445,6 +444,10 @@ exports.getSingleCustomer = async (req, res, next) => {
         as: "state",
       },
       {
+        model: models.module,
+        as: "module",
+      },
+      {
         model: models.city,
         as: "city",
       },
@@ -748,7 +751,6 @@ Token = jwt.sign({
       mobile: customer.dataValues.mobileNumber,
       firstName: customer.dataValues.firstName,
       lastName: customer.dataValues.lastName,
-
       userBelongsTo: "customer"
     },
       JWT_SECRETKEY, {
