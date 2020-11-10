@@ -686,12 +686,12 @@ exports.signUpCustomer = async (req, res) => {
   
       const data = qs.stringify({
         'mobileNumber': mobileNumber,
-        // 'emailId': email,
+        'emailId': email,
         'uniqueId': customerUniqueId,
         'userName': firstName+" "+lastName,
         // 'userAddress': address,
         // 'userCity': cityId,
-        'userState': "joXp8X42",
+        'userState': "Do7Wjq3d",
         // 'userPincode': pinCode,
         // 'dateOfBirth':dateOfBirth,
         // 'gender':gender,

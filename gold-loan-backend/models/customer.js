@@ -145,6 +145,18 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'date_of_incorporation',
         },
+        customerAddress:{
+            type: DataTypes.TEXT,
+            field: 'customer_address',
+        },
+        gender:{
+            type: DataTypes.STRING,
+            field: 'customer_address',
+        },
+        dateOfBirth:{
+            type: DataTypes.DATE,
+            field: 'date_of_birth',
+        }
     }, {
         freezeTableName: true,
         tableName: 'customer',
