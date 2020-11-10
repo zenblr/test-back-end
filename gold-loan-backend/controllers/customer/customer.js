@@ -444,6 +444,10 @@ exports.getSingleCustomer = async (req, res, next) => {
         as: "state",
       },
       {
+        model: models.module,
+        as: "module",
+      },
+      {
         model: models.city,
         as: "city",
       },
