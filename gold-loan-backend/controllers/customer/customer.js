@@ -770,7 +770,6 @@ Token = jwt.sign({
     }, { transaction: t });
     return { result, Token }
   })
-  console.log(data);
 
   return res.status(200).json({ messgae: `Registered Sucessfully!`, token: data.Token });
 
