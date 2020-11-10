@@ -2,6 +2,7 @@ const models = require('../../models');
 const check = require('../../lib/checkLib');
 const extend = require('extend')
 const Sequelize = models.Sequelize;
+const sequelize = models.sequelize;
 const Op = Sequelize.Op;
 const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
 const _ = require('lodash');
@@ -64,7 +65,7 @@ exports.addAppraiserRequest = async (req, res, next) => {
         let checkPoint = checkStatusCustomer.allModulePoint & modulePoint.modulePoint
         if (checkPoint == 0) {
             let updatePoint = checkStatusCustomer.allModulePoint | modulePoint.modulePoint
-            await models.customer.update({ allModulePoint: updatePoint, where: { id: customerId }, transaction: t });
+            await models.customer.update({ allModulePoint: updatePoint }, { where: { id: customerId }, transaction: t });
         }
         let appraiserRequest = await models.appraiserRequest.create({ customerId, moduleId, createdBy, modifiedBy }, { transaction: t })
     })
@@ -81,12 +82,22 @@ exports.updateAppraiserRequest = async (req, res, next) => {
         return res.status(400).json({ message: 'This product Request already Exists' });
     }
 
+    let status = await models.status.findOne({ where: { statusName: "confirm" } })
+    let statusId = status.id
+    let checkStatusCustomer = await models.customer.findOne({
+        where: { id: customerId },
+        include: {
+            model: models.customerKyc,
+            as: 'customerKyc'
+        }
+    });
+
     await sequelize.transaction(async (t) => {
         let modulePoint = await models.module.findOne({ where: { id: moduleId }, transaction: t })
         let checkPoint = checkStatusCustomer.allModulePoint & modulePoint.modulePoint
         if (checkPoint == 0) {
             let updatePoint = checkStatusCustomer.allModulePoint | modulePoint.modulePoint
-            await models.customer.update({ allModulePoint: updatePoint, where: { id: customerId }, transaction: t });
+            await models.customer.update({ allModulePoint: updatePoint }, { where: { id: customerId }, transaction: t });
         }
 
         let appraiserRequest = await models.appraiserRequest.update({ moduleId, modifiedBy }, { where: { id }, transaction: t })
