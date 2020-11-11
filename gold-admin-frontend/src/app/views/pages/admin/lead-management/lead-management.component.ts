@@ -209,4 +209,17 @@ export class LeadManagementComponent implements OnInit {
     });
   }
 
+  assignBranch(loan) {
+    const dialogRef = this.dialog.open(AddLeadComponent,
+      {
+        data: { id: loan.id, action: 'assignBranch' },
+        width: '500px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadLeadsPage();
+      }
+    });
+  }
+
 }
