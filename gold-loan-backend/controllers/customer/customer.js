@@ -84,7 +84,7 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
 
   const referenceCode = await createReferenceCode(5);
   let otp;
-  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new") {
     otp = 1234
   } else {
     otp = Math.floor(1000 + Math.random() * 9000);
@@ -104,60 +104,57 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
 };
 
 exports.customerSignUp = async (req, res, next) => {
-  try {
-    const { mobileNumber, firstName } = req.body;
-    let customerExist = await models.customer.findOne({
-      where: { mobileNumber, isActive: true },
-    });
 
-    if (check.isEmpty(customerExist)) {
+  const { mobileNumber, firstName } = req.body;
+  let customerExist = await models.customer.findOne({
+    where: { mobileNumber, isActive: true },
+  });
 
-      //To check in Registered customer from customer website
-      // let registerCustomerExist = await models.customerRegister.findOne({
-      //   where: { mobileNumber: mobileNumber },
-      // });
-      // if (!check.isEmpty(registerCustomerExist)) {
-      //   return res.status(404).json({ message: "You have already applied for the registration." });
-      // }
+  if (check.isEmpty(customerExist)) {
 
-      await models.customerOtp.destroy({ where: { mobileNumber } });
+    //To check in Registered customer from customer website
+    // let registerCustomerExist = await models.customerRegister.findOne({
+    //   where: { mobileNumber: mobileNumber },
+    // });
+    // if (!check.isEmpty(registerCustomerExist)) {
+    //   return res.status(404).json({ message: "You have already applied for the registration." });
+    // }
 
-      const referenceCode = await createReferenceCode(5);
-      let otp;
-      if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
-        otp = 1234
-      } else {
-        otp = Math.floor(1000 + Math.random() * 9000);
-      }
-      let createdTime = new Date();
-      let expiryTime = moment(createdTime).add(10, "m");
+    await models.customerOtp.destroy({ where: { mobileNumber } });
 
-      await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
-      var expiryTimeToUser = moment(moment(expiryTime).utcOffset("+05:30"))
-      await sendOtpToLeadVerification(mobileNumber, 'customer', otp, expiryTimeToUser)
-
-      return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, isCustomer: false });
+    const referenceCode = await createReferenceCode(5);
+    let otp;
+    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new") {
+      otp = 1234
     } else {
-
-      const referenceCode = await createReferenceCode(5);
-      let otp;
-      if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
-        otp = 1234
-      } else {
-        otp = Math.floor(1000 + Math.random() * 9000);
-      }
-      let createdTime = new Date();
-      let expiryTime = moment(createdTime).add(10, "m");
-      await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode });
-      expiryTime = moment(moment(expiryTime).utcOffset("+05:30"))
-      let smsLink = process.env.BASE_URL_CUSTOMER
-      await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
-
-      return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, isCustomer: true });
-
+      otp = Math.floor(1000 + Math.random() * 9000);
     }
-  } catch (err) {
-    console.log(err)
+    let createdTime = new Date();
+    let expiryTime = moment(createdTime).add(10, "m");
+
+    await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
+    var expiryTimeToUser = moment(moment(expiryTime).utcOffset("+05:30"))
+    await sendOtpToLeadVerification(mobileNumber, 'customer', otp, expiryTimeToUser)
+
+    return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, isCustomer: false });
+  } else {
+
+    const referenceCode = await createReferenceCode(5);
+    let otp;
+    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+      otp = 1234
+    } else {
+      otp = Math.floor(1000 + Math.random() * 9000);
+    }
+    let createdTime = new Date();
+    let expiryTime = moment(createdTime).add(10, "m");
+    await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode });
+    expiryTime = moment(moment(expiryTime).utcOffset("+05:30"))
+    let smsLink = process.env.BASE_URL_CUSTOMER
+    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
+
+    return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, isCustomer: true });
+
   }
 
 }
@@ -178,7 +175,7 @@ exports.sendOtp = async (req, res, next) => {
 
   const referenceCode = await createReferenceCode(5);
   let otp;
-  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+  if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new") {
     otp = 1234
   } else {
     otp = Math.floor(1000 + Math.random() * 9000);
@@ -745,8 +742,8 @@ exports.signUpCustomer = async (req, res) => {
       data: data
     });
 
-    
-Token = jwt.sign({
+
+    Token = jwt.sign({
       id: customer.dataValues.id,
       mobile: customer.dataValues.mobileNumber,
       firstName: customer.dataValues.firstName,
