@@ -1127,9 +1127,13 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
     }
 
     let customerLoanInterest = await models.customerLoanInterest.findAll({
+        order: [
+            ['id', 'asc']
+        ],
         where: {
             emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
-            emiStatus: { [Op.not]: 'paid' }
+            emiStatus: { [Op.not]: 'paid' },
+            masterLoanId: masterLoanId
         },
     })
 
@@ -1139,7 +1143,7 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
         order: [
             [models.customerLoanDisbursement, 'loanId', 'asc'],
             [models.customerLoan, 'id', 'asc'],
-            [models.customerLoanInterest, 'id', 'asc']
+            // [models.customerLoanInterest, 'id', 'asc']
         ],
         include: [
             // {
