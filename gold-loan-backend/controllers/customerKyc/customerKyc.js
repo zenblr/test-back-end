@@ -668,7 +668,7 @@ exports.submitAllKycInfo = async (req, res, next) => {
     //change
     if (moduleId == 1) {
         let findCustomerKyc = await models.customer.findOne({
-            where: { id: customerKycId },
+            where: { id: customerId },
             include: [{
                 model: models.customerKyc,
                 as: 'customerKyc',
