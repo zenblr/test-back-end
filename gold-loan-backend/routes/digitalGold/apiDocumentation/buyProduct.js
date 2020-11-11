@@ -74,10 +74,6 @@
 *       - Buy Gold/Silver
 *     name: To generate inovice
 *     summary: To generate invoice
-*     security:
-*       - bearerAuth: []
-*     consumes:
-*       - application/json
 *     parameters:
 *       - name: :"transactionId"
 *         in: "path"
@@ -85,6 +81,10 @@
 *         type: "string"
 *         required:
 *           - :transactionId
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
 *     responses:
 *       200:
 *         description: Data found

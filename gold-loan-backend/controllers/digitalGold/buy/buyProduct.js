@@ -180,10 +180,10 @@ exports.getAllBuyDetails = async(req, res)=>{
         data: {
           invoiceData:result.data.result.data,
           date: result.data.result.data.invoiceDate.split(' ')[0],
-          bootstrapCss: `${process.env.URL}/templates/bootstrap.css`,
-          jqueryJs: `${process.env.URL}/templates/jquery-slim.min.js`,
-          popperJs: `${process.env.URL}/templates/popper.min.js`,
-          bootstrapJs: `${process.env.URL}/templates/bootstrap.js`,
+          bootstrapCss: `${process.env.URL}/bootstrap.css`,
+          jqueryJs: `${process.env.URL}/jquery-slim.min.js`,
+          popperJs: `${process.env.URL}/popper.min.js`,
+          bootstrapJs: `${process.env.URL}/bootstrap.js`,
           words
         },
         path: `./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`
