@@ -33,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         status: {
             type: DataTypes.STRING,
             field: 'status',
+            defaultValue: "pending"
         }
 
     },

@@ -10,7 +10,8 @@ const swaggerUi = require("swagger-ui-express");
 const cron = require('node-cron');
 //importing swagger file
 const swagger = require('./swagger');
-const scrapSwagger = require('./scrapSwagger')
+const scrapSwagger = require('./scrapSwagger');
+const digiGoldSwagger = require('./digiGoldSwagger')
 // api logger middleware.
 const apiLogger = require("./middleware/apiLogger");
 const { cronForDailyPenalInterest, dailyIntrestCalculation } = require("./utils/interestCron");
@@ -18,6 +19,9 @@ const { cronForDailyPenalInterest, dailyIntrestCalculation } = require("./utils/
 const customerApiLogger = require("./middleware/customerApiLogger");
 const json2xls = require('json2xls');
 const getGoldSilverRate = require("./utils/digitalGoldSilverRates");
+const merchantLogin = require('./utils/merchantLogin');
+const customerKycStatusMessage = require("./utils/customerKycStatusMessage");
+const withDrawStatusMessage = require("./utils/withDrawStatusMessage");
 
 //model
 const models = require('./models');
@@ -35,6 +39,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swagger.swaggerSpec));
 
 app.use('/scrap/api-docs', swaggerUi.serve, swaggerUi.setup(scrapSwagger.swaggerSpec));
 
+app.use('/digi-gold/api-docs', swaggerUi.serve, swaggerUi.setup(digiGoldSwagger.swaggerSpec));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -158,6 +163,65 @@ cron.schedule('0,30 * * * * *', async () => {
         let endTime = moment();
         var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
         // await cronLogger("gold silver rate", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
+    }
+});
+
+// cron to update merchant token
+
+// cron.schedule('0 3 * * *', async () => {
+//     let date = moment();
+//     let startTime = moment();
+
+//     try {
+//         await merchantLogin();
+//         let endTime = moment();
+//         let processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS");
+//         await cronLogger("merchant token", date, startTime, endTime, processingTime, "success", "success", null);
+
+//     } catch (err) {
+//         let endTime = moment();
+//         var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+//         await cronLogger("merchant token ", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
+//     }
+// });
+
+//cron for customer kyc status
+
+cron.schedule('0 0 */1 * * *', async () => {
+    let date = moment()
+    let startTime = moment();
+
+    try {
+        await customerKycStatusMessage();
+        let endTime = moment();
+        let processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS");
+        await cronLogger("customer kyc message", date, startTime, endTime, processingTime, "success", "success", null);
+
+    } catch (err) {
+        console.log(err)
+        let endTime = moment();
+        var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        await cronLogger("customer kyc message", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
+    }
+});
+
+//cron for withdraw status messsage
+
+cron.schedule('0 */30 * * * *', async () => {
+    let date = moment()
+    let startTime = moment();
+
+    try {
+        await withDrawStatusMessage();
+        let endTime = moment();
+        let processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS");
+        await cronLogger("withdraw message", date, startTime, endTime, processingTime, "success", "success", null);
+
+    } catch (err) {
+        console.log(err)
+        let endTime = moment();
+        var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        await cronLogger("withdraw message", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
     }
 });
 

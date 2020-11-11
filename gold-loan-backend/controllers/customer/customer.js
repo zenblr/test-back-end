@@ -16,6 +16,8 @@ let { sendOtpToLeadVerification, sendOtpForLogin, forgetPasswordOtp, sendUpdateL
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck');
 const qs = require('qs');
 const getMerchantData = require('../auth/getMerchantData')
+const jwt = require('jsonwebtoken');
+const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
 
 exports.getOtp = async (req, res, next) => {
   let getOtp = await models.customerOtp.findAll({
@@ -290,7 +292,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     req.query.to
   );
 
-  let stage = await models.stage.findOne({ where: { stageName } });
+  // let stage = await models.stage.findOne({ where: { stageName } });
 
   let query = {};
   if (cityId) {
@@ -339,11 +341,32 @@ exports.getAllCustomersForLead = async (req, res, next) => {
     isActive: true,
   };
 
-  if (!check.isEmpty(modulePoint) && modulePoint !== undefined) {
-    let allPoint = await models.module.findAll()
+  if (!check.isEmpty(modulePoint)) {
+    let moduleArray = modulePoint.split(',')
+    if (moduleArray.length == 1) {
+      query.all_module_point = Sequelize.or(
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[0]}`), '!=', 0)
+      )
+    } else if (moduleArray.length == 2) {
+      query.all_module_point = Sequelize.or(
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[0]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[1]}`), '!=', 0)
+      )
+    } else if (moduleArray.length == 3) {
+      query.all_module_point = Sequelize.or(
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[0]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[1]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[2]}`), '!=', 0)
+      )
+    } else if (moduleArray.length == 4) {
+      query.all_module_point = Sequelize.or(
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[0]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[1]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[2]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[3]}`), '!=', 0)
+      )
+    }
   }
-
-
 
   let includeArray = [{
     model: models.customerKyc,
@@ -393,7 +416,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
     attributes: { exclude: ['createdBy', 'modifiedBy', 'isActive'] },
-    order: [["updatedAt", "DESC"]],
+    order: [["updatedAt", "desc"]],
     offset: offset,
     limit: pageSize,
     include: includeArray,
@@ -405,7 +428,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
   if (allCustomers.length == 0) {
     return res.status(200).json({ data: [] });
   }
-  return res.status(200).json({ data: allCustomers, count: count.length });
+  return res.status(200).json({ count: count.length, data: allCustomers });
 };
 
 
@@ -419,6 +442,10 @@ exports.getSingleCustomer = async (req, res, next) => {
       {
         model: models.state,
         as: "state",
+      },
+      {
+        model: models.module,
+        as: "module",
       },
       {
         model: models.city,
@@ -718,16 +745,12 @@ exports.signUpCustomer = async (req, res) => {
       data: data
     });
 
-    // let customer = await models.customer.findOne({ where: { mobileNumber: verifyCustomer.mobileNumber, merchantId: merchantData.id }, transaction: t });
-    // let checkUser = await models.customer.findOne({
-    //     where: { id: customer.id, isActive: true },
-    //     transaction: t
-    // });
-    Token = jwt.sign({
-      id: checkUser.dataValues.id,
-      mobile: checkUser.dataValues.mobileNumber,
-      firstName: checkUser.dataValues.firstName,
-      lastName: checkUser.dataValues.lastName,
+    
+Token = jwt.sign({
+      id: customer.dataValues.id,
+      mobile: customer.dataValues.mobileNumber,
+      firstName: customer.dataValues.firstName,
+      lastName: customer.dataValues.lastName,
       userBelongsTo: "customer"
     },
       JWT_SECRETKEY, {
@@ -750,10 +773,11 @@ exports.signUpCustomer = async (req, res) => {
     return { result, Token }
   })
 
-  return res.status(200).json({ messgae: `Registered Sucessfully!`, token: data.token });
+  return res.status(200).json({ messgae: `Registered Sucessfully!`, token: data.Token });
 
 
 }
+
 
 //To get all registered customer
 exports.getAllRegisteredCustomer = async (req, res) => {

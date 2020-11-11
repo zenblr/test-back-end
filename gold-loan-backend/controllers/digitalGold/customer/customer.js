@@ -97,8 +97,9 @@ exports.getCustomerPassbookDetails = async(req, res)=>{
         'emailId': email,
         'userName': firstName+" "+lastName,
         'userAddress': address,
-        'userCity': cityId,
-        'userState': stateId,
+        'userCity': "o59ReN7A",
+        // 'userState': stateId,
+        'userState': "Do7Wjq3d",
         'userPincode': pinCode,
         'dateOfBirth':dateOfBirth,
         'gender':gender,
@@ -109,11 +110,23 @@ exports.getCustomerPassbookDetails = async(req, res)=>{
       await sequelize.transaction(async (t) => {
         await models.customer.update(
           { firstName, lastName, mobileNumber, email, pinCode,
-             stateId: 1, cityId: 1,
-            //  address, dateOfBirth, gender,
-              isActive: true},
+             stateId, cityId, customerAddress: address, dateOfBirth, gender, isActive: true},
           { where:{id},transaction: t }
         );
+
+        if(nomineeName && nomineeDateOfBirth && nomineeRelation){
+
+          let customerNomineeData = await models.digiGoldCustomerNomineeDetails.findOne({where : { customerId: id, isActive:true }});
+
+          if (check.isEmpty(customerNomineeData)) {
+            await models.digiGoldCustomerNomineeDetails.create({customerId: id, nomineeName: nomineeName, nomineeDob: nomineeDateOfBirth, nomineeRelation: nomineeRelation},  { transaction: t })
+          }else{
+            await models.customer.update(
+              { nomineeName: nomineeName, nomineeDob: nomineeDateOfBirth, nomineeRelation: nomineeRelation},
+              { where:{id}, transaction: t }
+            );
+          }
+        } 
       });
       const result = await models.axios({
           method: 'PUT',

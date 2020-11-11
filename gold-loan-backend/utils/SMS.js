@@ -250,3 +250,42 @@ exports.sendMessageForKycUpdate = async (mobileNumber) => {
         await sms.sendSms(mobileNumber, message);
     }
 }
+
+exports.sendMessageForKycApproved = async (mobileNumber,accountId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Kyc Approved');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<accountId>", accountId);
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+exports.sendMessageForKycReject = async (mobileNumber, accountId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Kyc Rejected');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<accountId>", accountId);
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+
+exports.sendMessageForWithdrawAccept = async (mobileNumber, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Withdraw Accepted');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<amount>", amount);
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+
+exports.sendMessageForWithdrawReject = async (mobileNumber) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Withdraw Rejected');
+    if (messageTemplate) {
+        let message = await messageTemplate.content;
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+
+exports.sendMessageForWithdrawCompleted = async (mobileNumber, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Withdraw Completed');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<amount>", amount)
+        await sms.sendSms(mobileNumber, message);
+    }
+}
