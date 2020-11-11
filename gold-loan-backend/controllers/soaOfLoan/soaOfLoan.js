@@ -66,7 +66,7 @@ exports.getSoa = async (req, res) => {
     });
     // Create a reusable style
     var numberStyle = wb.createStyle({
-        numberFormat: '#.00; (#.00); 0.00',
+        numberFormat: '#.00; -#.00; 0.00',
     });
     //Column
     ws.column(1).setWidth(10);
