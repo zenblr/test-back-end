@@ -306,6 +306,14 @@ let getAllNotPaidInterest = async (loanId) => {
     return allNotPaidInterest;
 }
 
+let getAllInterest = async (loanId) => {
+    let allNotPaidInterest = await models.customerLoanInterest.findAll({
+        where: { loanId: loanId, isExtraDaysInterest: false },
+        attributes: ['id', 'interestAmount', 'paidAmount', 'emiDueDate']
+    });
+    return allNotPaidInterest;
+}
+
 let getAllInterestLessThanDate = async (loanId, date) => {
     let allInterestLessThanDate = await models.customerLoanInterest.findAll({
         where: { loanId: loanId, emiDueDate: { [Op.lte]: date, }, emiStatus: { [Op.notIn]: ['paid'] }, isExtraDaysInterest: false },
@@ -446,6 +454,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
     let noOfDays = 0;
     await sequelize.transaction(async t => {
         for (const loan of loanInfo) {
+            let allInterestTable = await getAllInterest(loan.id);
             let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
             let firstInterestToPay = await getFirstInterestToPay(loan.id, loan.masterLoanId);
             let loanStartDate;
@@ -481,7 +490,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                             await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                         } else if (newDebitAmount < 0) {
                             let credit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: Math.abs(newDebitAmount), description: `stepDownInterest ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment() }, { transaction: t });
-                            await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${credit.id}` }, { where: { id: debit.id }, transaction: t });
+                            await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${credit.id}` }, { where: { id: credit.id }, transaction: t });
                         }
                     }
                     let outstandingInterest = interest.amount - interestData.paidAmount;
@@ -550,8 +559,8 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                 }
                 //update last interest if changed
                 if (!Number.isInteger(interest.length)) {
-                    const noOfMonths = (((loan.masterLoan.tenure * 30) - ((interest.length - 1) * loan.selectedSlab)) / 30)
-                    let oneMonthAmount = interest.amount / (stepUpSlab.days / 30);
+                    const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterestTable.length - 1) * loan.selectedSlab)) / 30)
+                    let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
                     let amount = (oneMonthAmount * noOfMonths).toFixed(2);
                     let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
                     let outstandingInterest = amount - lastInterest.paidAmount;
@@ -575,7 +584,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                     for (const interestData of interestLessThanDate) {
                         let isDueDate = moment(date).isSame(interestData.emiDueDate);
                         if (isDueDate) {
-                            let checkDebitEntry = await models.customerTransactionDetail.findOne({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id,credit: 0.00, isPenalInterest: false } });
+                            let checkDebitEntry = await models.customerTransactionDetail.findOne({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: 0.00, isPenalInterest: false } });
                             if (!checkDebitEntry) {
                                 let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interestData.interestAmount, description: `interest due ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment() }, { transaction: t });
                                 await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
@@ -649,6 +658,7 @@ let updateInterestAftertOutstandingAmount = async (date, masterLoanId) => {
     let noOfDays = 0;
     await sequelize.transaction(async t => {
         for (const loan of loanInfo) {
+            let allInterestTable = await getAllInterest(loan.id);
             let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
             let loanStartDate;
             if (!lastPaidEmi) {
@@ -687,7 +697,7 @@ let updateInterestAftertOutstandingAmount = async (date, masterLoanId) => {
             }
             //update last interest if changed
             if (!Number.isInteger(interest.length)) {
-                const noOfMonths = (((loan.masterLoan.tenure * 30) - ((interest.length - 1) * loan.selectedSlab)) / 30)
+                const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterestTable.length - 1) * loan.selectedSlab)) / 30)
                 let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
                 let amount = (oneMonthAmount * noOfMonths).toFixed(2);
                 let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
@@ -1126,96 +1136,108 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
         whereCondition = { id: loanId }
     }
 
+    let customerLoanInterest = await models.customerLoanInterest.findAll({
+        order: [
+            ['id', 'asc']
+        ],
+        where: {
+            emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
+            emiStatus: { [Op.not]: 'paid' },
+            masterLoanId: masterLoanId
+        },
+    })
+
     let customerLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
         attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure'],
         order: [
             [models.customerLoanDisbursement, 'loanId', 'asc'],
             [models.customerLoan, 'id', 'asc'],
-            [models.customerLoanInterest, 'id', 'asc']
+            // [models.customerLoanInterest, 'id', 'asc']
         ],
-        include: [{
-            model: models.customerLoanInterest,
-            as: 'customerLoanInterest',
-            where: {
-                emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
-                emiStatus: { [Op.not]: 'paid' }
-            },
-            // attributes: ['emiDueDate', 'emiStatus'],
+        include: [
+            // {
+            //     model: models.customerLoanInterest,
+            //     as: 'customerLoanInterest',
+            //     where: {
+            //         emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
+            //         emiStatus: { [Op.not]: 'paid' }
+            //     },
+            //     // attributes: ['emiDueDate', 'emiStatus'],
 
-        },
-        {
-            model: models.customerLoan,
-            as: 'customerLoan',
-            where: whereCondition,
-            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-            include: [
-                {
-                    model: models.scheme,
-                    as: 'scheme'
-                },
-                {
-                    model: models.customerLoan,
-                    as: 'unsecuredLoan',
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                    include: [{
+            // },
+            {
+                model: models.customerLoan,
+                as: 'customerLoan',
+                where: whereCondition,
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                include: [
+                    {
                         model: models.scheme,
-                        as: 'scheme',
-                    }]
-                }
-            ]
-        },
-        {
-            model: models.partRelease,
-            as: 'partRelease',
-        },
-        {
-            model: models.fullRelease,
-            as: 'fullRelease',
-        },
-        {
-            model: models.loanStage,
-            as: 'loanStage',
-            attributes: ['id', 'name']
-        },
-        {
-            model: models.customerLoanTransfer,
-            as: "loanTransfer",
-            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-        },
-        {
-            model: models.customerLoanPersonalDetail,
-            as: 'loanPersonalDetail',
-        }, {
-            model: models.customerLoanBankDetail,
-            as: 'loanBankDetail',
-        }, {
-            model: models.customerLoanNomineeDetail,
-            as: 'loanNomineeDetail',
-        },
-        {
-            model: models.customerLoanOrnamentsDetail,
-            as: 'loanOrnamentsDetail',
-            include: [
-                {
-                    model: models.ornamentType,
-                    as: "ornamentType"
-                }
-            ]
-        },
-        {
-            model: models.customerLoanDocument,
-            as: 'customerLoanDocument'
-        },
-        {
-            model: models.customer,
-            as: 'customer',
-            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
-        },
-        {
-            model: models.customerLoanDisbursement,
-            as: 'customerLoanDisbursement'
-        }
+                        as: 'scheme'
+                    },
+                    {
+                        model: models.customerLoan,
+                        as: 'unsecuredLoan',
+                        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                        include: [{
+                            model: models.scheme,
+                            as: 'scheme',
+                        }]
+                    }
+                ]
+            },
+            {
+                model: models.partRelease,
+                as: 'partRelease',
+            },
+            {
+                model: models.fullRelease,
+                as: 'fullRelease',
+            },
+            {
+                model: models.loanStage,
+                as: 'loanStage',
+                attributes: ['id', 'name']
+            },
+            {
+                model: models.customerLoanTransfer,
+                as: "loanTransfer",
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            },
+            {
+                model: models.customerLoanPersonalDetail,
+                as: 'loanPersonalDetail',
+            }, {
+                model: models.customerLoanBankDetail,
+                as: 'loanBankDetail',
+            }, {
+                model: models.customerLoanNomineeDetail,
+                as: 'loanNomineeDetail',
+            },
+            {
+                model: models.customerLoanOrnamentsDetail,
+                as: 'loanOrnamentsDetail',
+                include: [
+                    {
+                        model: models.ornamentType,
+                        as: "ornamentType"
+                    }
+                ]
+            },
+            {
+                model: models.customerLoanDocument,
+                as: 'customerLoanDocument'
+            },
+            {
+                model: models.customer,
+                as: 'customer',
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+            },
+            {
+                model: models.customerLoanDisbursement,
+                as: 'customerLoanDisbursement'
+            }
         ]
     })
 
@@ -1232,6 +1254,7 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
             }]
         }]
     })
+    customerLoan.dataValues.customerLoanInterest = customerLoanInterest
     customerLoan.dataValues.loanPacketDetails = packet
 
     return customerLoan
@@ -1863,6 +1886,7 @@ let intrestCalculationForSelectedLoanWithOutT = async (date, masterLoanId, secur
     await sequelize.transaction(async t => {
         for (let index = 0; index < loanInfo.length; index++) {
             let loan = loanInfo[index];
+            let allInterestTable = await getAllInterest(loan.id);
             let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
             let firstInterestToPay = await getFirstInterestToPay(loan.id, loan.masterLoanId);
             let loanStartDate;
@@ -2061,8 +2085,8 @@ let intrestCalculationForSelectedLoanWithOutT = async (date, masterLoanId, secur
             interestObject = {}
             //update last interest if changed
             if (!Number.isInteger(interest.length)) {
-                const noOfMonths = (((loan.masterLoan.tenure * 30) - ((interest.length - 1) * loan.selectedSlab)) / 30)
-                let oneMonthAmount = interest.amount / (stepUpSlab.days / 30);
+                const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterestTable.length - 1) * loan.selectedSlab)) / 30)
+                let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
                 let amount = (oneMonthAmount * noOfMonths).toFixed(2);
                 let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
                 let outstandingInterest = amount - lastInterest.paidAmount;
@@ -2175,5 +2199,6 @@ module.exports = {
     stepDown: stepDown,
     intrestCalculationForSelectedLoanWithOutT: intrestCalculationForSelectedLoanWithOutT,
     penalInterestCalculationForSelectedLoanWithOutT: penalInterestCalculationForSelectedLoanWithOutT,
-    customerNameNumberLoanId: customerNameNumberLoanId
+    customerNameNumberLoanId: customerNameNumberLoanId,
+    getAllInterest:getAllInterest
 }
