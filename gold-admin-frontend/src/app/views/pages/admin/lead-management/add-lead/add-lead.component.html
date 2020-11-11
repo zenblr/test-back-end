@@ -247,30 +247,6 @@
                             </div>
                         </div>
 
-
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4 form-label">
-                                <mat-label class="mandatory">Internal Branch</mat-label>
-                            </div>
-
-                            <div class="col-8">
-                                <select class="form-control" formControlName="internalBranchId"
-                                    (change)="patchStateCity($event.target.value)"
-                                    [class.isError]="controls.internalBranchId.touched && controls.internalBranchId.invalid">
-                                    <option [value]=null [disabled]="true" [selected]="true"> Select Internal Branch
-                                    </option>
-                                    <option *ngFor="let branch of branches" [value]="branch.id">
-                                        {{branch.name | titlecase}}
-                                    </option>
-                                </select>
-                                <mat-error
-                                    *ngIf="controls.internalBranchId.touched && controls.internalBranchId.errors?.required">
-                                    Required field
-                                </mat-error>
-                            </div>
-                        </div>
-
-
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
                                 <mat-label class="mandatory">State</mat-label>
@@ -298,7 +274,7 @@
                             </div>
 
                             <div class="col-8">
-                                <select class="form-control" formControlName="cityId" margin
+                                <select class="form-control" formControlName="cityId" (change)="getBranchFromCity()"
                                     [class.isError]="controls.cityId.touched && controls.cityId.invalid">
                                     <option selected value="" disabled> Select City</option>
                                     <option *ngFor="let city of cities" [value]="city.id">
@@ -307,6 +283,28 @@
                                 </select>
                                 <mat-error *ngIf="controls.cityId.touched && controls.cityId.errors?.required">
                                     Required field</mat-error>
+                            </div>
+                        </div>
+
+                        <div class="row kt-padding-t-15">
+                            <div class="col-4 form-label">
+                                <mat-label class="mandatory">Internal Branch</mat-label>
+                            </div>
+
+                            <div class="col-8">
+                                <select class="form-control" formControlName="internalBranchId"
+                                    (change)="patchStateCity($event.target.value)"
+                                    [class.isError]="controls.internalBranchId.touched && controls.internalBranchId.invalid">
+                                    <option [value]=null [disabled]="true" [selected]="true"> Select Internal Branch
+                                    </option>
+                                    <option *ngFor="let branch of branches" [value]="branch.id">
+                                        {{branch.name | titlecase}}
+                                    </option>
+                                </select>
+                                <mat-error
+                                    *ngIf="controls.internalBranchId.touched && controls.internalBranchId.errors?.required">
+                                    Required field
+                                </mat-error>
                             </div>
                         </div>
 

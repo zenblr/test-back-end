@@ -179,6 +179,12 @@ export class AddLeadComponent implements OnInit {
     } else if (this.data.action == 'assignBranch') {
       this.getLeadById(this.data['id']);
       this.modalTitle = 'Assign Branch';
+      Object.keys(this.controls).forEach(res => {
+        this.controls[res].setValidators([])
+        this.controls[res].updateValueAndValidity()
+      })
+      this.controls.internalBranchId.setValidators([Validators.required])
+      this.controls.internalBranchId.updateValueAndValidity()
       this.disableAssignBranch()
     }
     else {
@@ -187,9 +193,19 @@ export class AddLeadComponent implements OnInit {
   }
 
   getInternalBranhces() {
-    this.leadService.getInternalBranhces().subscribe(res => {
+    const cityId = this.data.action == 'assignBranch' ? this.controls.cityId.value : null
+    this.leadService.getInternalBranhces({ cityId }).subscribe(res => {
       this.branches = res.data;
+      // const branchExists = this.branches.find(e => e.id === this.controls.internalBranchId.value)
+      // if (!branchExists) {
+      //   this.controls.internalBranchId.reset();
+      //   this.controls.internalBranchId.patchValue('');
+      // }
     });
+  }
+
+  getBranchFromCity() {
+    if (this.data.action == 'edit') this.getInternalBranhces()
   }
 
   getLeadSourceWithoutPagination() {
@@ -240,6 +256,9 @@ export class AddLeadComponent implements OnInit {
 
       this.getCities();
       this.commentBox()
+      if (this.data.action == 'assignBranch') {
+        this.controls.statusId.patchValue(1)
+      }
     },
       error => {
         this.toastr.errorToastr(error.error.message);
@@ -537,28 +556,29 @@ export class AddLeadComponent implements OnInit {
   }
 
   patchStateCity(internalBranchId) {
-    this.leadService.patchStateCityAdmin(internalBranchId).pipe(
-      map(res => {
-        // console.log(res)
-        this.leadForm.patchValue({
-          stateId: res.stateId,
-          cityId: res.cityId
+    if (this.data.action != 'assignBranch') {
+      this.leadService.patchStateCityAdmin(internalBranchId).pipe(
+        map(res => {
+          this.leadForm.patchValue({
+            stateId: res.stateId,
+            cityId: res.cityId
+          })
+          this.getCities()
         })
-        this.getCities()
-      })
-    ).subscribe()
+      ).subscribe()
+    }
   }
 
   disableAssignBranch() {
     this.leadForm.disable()
     this.leadForm.controls.internalBranchId.enable()
-    this.leadForm.controls.statusId.enable()
-    this.leadForm.controls.comment.enable()
-    this.leadForm.controls.panCardNumber.enable()
-    this.leadForm.controls.panType.enable()
-    this.leadForm.controls.form60.enable()
-    this.leadForm.controls.panImage.enable()
-    this.leadForm.controls.panImg.enable()
+    // this.leadForm.controls.statusId.enable()
+    // this.leadForm.controls.comment.enable()
+    // this.leadForm.controls.panCardNumber.enable()
+    // this.leadForm.controls.panType.enable()
+    // this.leadForm.controls.form60.enable()
+    // this.leadForm.controls.panImage.enable()
+    // this.leadForm.controls.panImg.enable()
   }
 
 }

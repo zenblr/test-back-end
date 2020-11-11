@@ -104,8 +104,12 @@ export class LeadService {
     return this.http.post<any>(`/api/customer/verify-pan`, data);
   }
 
-  getInternalBranhces(): Observable<any> {
-    return this.http.get<any>(`api/internal-branch?from=1&to=-1`);
+  getInternalBranhces(data?): Observable<any> {
+    const reqParams: any = {};
+    if (data && data.cityId) {
+      reqParams.cityId = data.cityId;
+    }
+    return this.http.get<any>(`api/internal-branch?from=1&to=-1`, { params: reqParams });
   }
 
   patchStateCityAdmin(id): Observable<any> {
