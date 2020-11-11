@@ -306,6 +306,14 @@ let getAllNotPaidInterest = async (loanId) => {
     return allNotPaidInterest;
 }
 
+let getAllInterest = async (loanId) => {
+    let allNotPaidInterest = await models.customerLoanInterest.findAll({
+        where: { loanId: loanId, isExtraDaysInterest: false },
+        attributes: ['id', 'interestAmount', 'paidAmount', 'emiDueDate']
+    });
+    return allNotPaidInterest;
+}
+
 let getAllInterestLessThanDate = async (loanId, date) => {
     let allInterestLessThanDate = await models.customerLoanInterest.findAll({
         where: { loanId: loanId, emiDueDate: { [Op.lte]: date, }, emiStatus: { [Op.notIn]: ['paid'] }, isExtraDaysInterest: false },
@@ -446,6 +454,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
     let noOfDays = 0;
     await sequelize.transaction(async t => {
         for (const loan of loanInfo) {
+            let allInterestTable = await getAllInterest(loan.id);
             let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
             let firstInterestToPay = await getFirstInterestToPay(loan.id, loan.masterLoanId);
             let loanStartDate;
@@ -550,8 +559,8 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                 }
                 //update last interest if changed
                 if (!Number.isInteger(interest.length)) {
-                    const noOfMonths = (((loan.masterLoan.tenure * 30) - ((interest.length - 1) * loan.selectedSlab)) / 30)
-                    let oneMonthAmount = interest.amount / (stepUpSlab.days / 30);
+                    const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterestTable.length - 1) * loan.selectedSlab)) / 30)
+                    let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
                     let amount = (oneMonthAmount * noOfMonths).toFixed(2);
                     let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
                     let outstandingInterest = amount - lastInterest.paidAmount;
@@ -649,6 +658,7 @@ let updateInterestAftertOutstandingAmount = async (date, masterLoanId) => {
     let noOfDays = 0;
     await sequelize.transaction(async t => {
         for (const loan of loanInfo) {
+            let allInterestTable = await getAllInterest(loan.id);
             let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
             let loanStartDate;
             if (!lastPaidEmi) {
@@ -687,7 +697,7 @@ let updateInterestAftertOutstandingAmount = async (date, masterLoanId) => {
             }
             //update last interest if changed
             if (!Number.isInteger(interest.length)) {
-                const noOfMonths = (((loan.masterLoan.tenure * 30) - ((interest.length - 1) * loan.selectedSlab)) / 30)
+                const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterestTable.length - 1) * loan.selectedSlab)) / 30)
                 let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
                 let amount = (oneMonthAmount * noOfMonths).toFixed(2);
                 let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
@@ -1125,7 +1135,6 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
     if (!check.isEmpty(loanId)) {
         whereCondition = { id: loanId }
     }
-
     let customerLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
         attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure'],
@@ -1863,6 +1872,7 @@ let intrestCalculationForSelectedLoanWithOutT = async (date, masterLoanId, secur
     await sequelize.transaction(async t => {
         for (let index = 0; index < loanInfo.length; index++) {
             let loan = loanInfo[index];
+            let allInterestTable = await getAllInterest(loan.id);
             let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
             let firstInterestToPay = await getFirstInterestToPay(loan.id, loan.masterLoanId);
             let loanStartDate;
@@ -2061,8 +2071,8 @@ let intrestCalculationForSelectedLoanWithOutT = async (date, masterLoanId, secur
             interestObject = {}
             //update last interest if changed
             if (!Number.isInteger(interest.length)) {
-                const noOfMonths = (((loan.masterLoan.tenure * 30) - ((interest.length - 1) * loan.selectedSlab)) / 30)
-                let oneMonthAmount = interest.amount / (stepUpSlab.days / 30);
+                const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterestTable.length - 1) * loan.selectedSlab)) / 30)
+                let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
                 let amount = (oneMonthAmount * noOfMonths).toFixed(2);
                 let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
                 let outstandingInterest = amount - lastInterest.paidAmount;
@@ -2175,5 +2185,6 @@ module.exports = {
     stepDown: stepDown,
     intrestCalculationForSelectedLoanWithOutT: intrestCalculationForSelectedLoanWithOutT,
     penalInterestCalculationForSelectedLoanWithOutT: penalInterestCalculationForSelectedLoanWithOutT,
-    customerNameNumberLoanId: customerNameNumberLoanId
+    customerNameNumberLoanId: customerNameNumberLoanId,
+    getAllInterest:getAllInterest
 }
