@@ -707,13 +707,13 @@ exports.signUpCustomer = async (req, res) => {
   // let createdCustomer = await models.customerRegister.create({ firstName, lastName, email, mobileNumber, isFromApp, isActive: true });
   let createdBy = 1;
   let modifiedBy = 1;
-
+  let status = await models.status.findOne({ where: { statusName: "confirm" } })
   let data = await sequelize.transaction(async (t) => {
 
     let modulePoint = await models.module.findOne({ where: { id: 4 }, transaction: t })
 
     let customer = await models.customer.create(
-      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint },
+      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint,statusId:status.id },
       { transaction: t }
     );
 

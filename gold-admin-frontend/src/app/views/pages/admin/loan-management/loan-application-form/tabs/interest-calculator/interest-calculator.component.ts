@@ -180,6 +180,8 @@ export class InterestCalculatorComponent implements OnInit {
               paymentType: this.paymentType,
               securedInterestAmount: interset.interestAmount,
               unsecuredInterestAmount: 0,
+              secureHighestInterestAmount:Number(interset.highestInterestAmount),
+              securedRebateAmount:Number(interset.rebateAmount),
               totalAmount: Number(interset.interestAmount)
             }
             temp.push(data)
@@ -190,11 +192,13 @@ export class InterestCalculatorComponent implements OnInit {
               unsecuredSchemeId: finalLoan.unsecuredLoan.scheme.id,
               unsecuredInterestRate: finalLoan.unsecuredLoan.interestRate
             })
-            this.getUnsecuredScheme()
+            // this.getUnsecuredScheme()
             for (let index = 0; index < temp.length; index++) {
               temp[index].unsecuredInterestAmount = finalLoan.unsecuredLoan.customerLoanInterest[index].interestAmount
               temp[index].totalAmount = Number(temp[index].securedInterestAmount) +
                 Number(temp[index].unsecuredInterestAmount)
+                temp[index].unsecureHighestInterestAmount = Number(finalLoan.unsecuredLoan.customerLoanInterest[index].highestInterestAmount)
+                temp[index].unsecuredRebateAmount = Number(finalLoan.unsecuredLoan.customerLoanInterest[index].rebateAmount)
             }
             // this.getIntrest()
 
@@ -285,7 +289,10 @@ export class InterestCalculatorComponent implements OnInit {
       unsecuredSchemeId: [],
       securedLoanAmount: [],
       unsecuredLoanAmount: [],
-      isUnsecuredSchemeApplied: [false]
+      isUnsecuredSchemeApplied: [false],
+      unsecuredRebateInterest:[],
+      securedRebateInterest:[],
+
     })
 
 
@@ -323,6 +330,10 @@ export class InterestCalculatorComponent implements OnInit {
       let rpg = 0
       if(this.selectedUnsecuredscheme){
         rpg = this.selectedUnsecuredscheme.rpg
+        this.controls.isUnsecuredSchemeApplied.patchValue(true)
+      }else{
+        this.controls.isUnsecuredSchemeApplied.patchValue(false)
+
       }
       element.loanAmount = (Number(this.selectedScheme.rpg) + Number(rpg))* element.ornamentsCal
       element.rpg = Number(this.selectedScheme.rpg) + Number(rpg)
@@ -478,6 +489,8 @@ export class InterestCalculatorComponent implements OnInit {
     this.loanFormService.calculateFinalInterestTable(this.finalInterestForm.value).subscribe(res => {
       this.dateOfPayment = res.data.interestTable;
       this.controls.totalFinalInterestAmt.patchValue(res.data.totalInterestAmount)
+      this.controls.securedRebateInterest.patchValue(res.data.securedRebateInterest)
+      this.controls.unsecuredRebateInterest.patchValue(res.data.unsecuredRebateInterest)
       this.ref.markForCheck()
       setTimeout(() => {
         const dom = this.eleRef.nativeElement.querySelector('#calculation') as HTMLElement
