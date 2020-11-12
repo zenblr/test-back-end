@@ -14,7 +14,7 @@ const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
 let { checkPaidInterest, getCustomerInterestAmount, newSlabRateInterestCalcultaion,
-    getLastInterest, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getTransactionPrincipalAmount, calculationDataOneLoan, splitAmountIntoSecuredAndUnsecured, intrestCalculationForSelectedLoanWithOutT, penalInterestCalculationForSelectedLoan, stepDown, penalInterestCalculationForSelectedLoanWithOutT, customerNameNumberLoanId, getFirstInterestToPay, getStepUpslab } = require('../../utils/loanFunction')
+    getLastInterest, getAmountLoanSplitUpData, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, getAllNotPaidInterest, getAllInterestLessThanDate, getPendingNoOfDaysInterest, getTransactionPrincipalAmount, calculationDataOneLoan, splitAmountIntoSecuredAndUnsecured, intrestCalculationForSelectedLoanWithOutT, penalInterestCalculationForSelectedLoan, stepDown, penalInterestCalculationForSelectedLoanWithOutT, customerNameNumberLoanId, getFirstInterestToPay, getStepUpslab,getAllInterest } = require('../../utils/loanFunction')
 let crypto = require('crypto');
 const qs = require('qs');
 
@@ -510,6 +510,7 @@ exports.partPayment = async (req, res, next) => {
                 let currentDate = moment();
                 let noOfDays = 0;
                 for (const loan of loanInfo1) {
+                    let allInterestTable = await getAllInterest(loan.id);
                     let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
                     let loanStartDate;
                     if (!lastPaidEmi) {
@@ -540,7 +541,7 @@ exports.partPayment = async (req, res, next) => {
                                 await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                             } else if (newDebitAmount < 0) {
                                 let credit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: Math.abs(newDebitAmount), description: `stepDownInterest ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment() }, { transaction: t });
-                                await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${credit.id}` }, { where: { id: debit.id }, transaction: t });
+                                await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${credit.id}` }, { where: { id: credit.id }, transaction: t });
                             }
                         }
                         let outstandingInterest = interest.amount - interestData.paidAmount;
@@ -581,8 +582,8 @@ exports.partPayment = async (req, res, next) => {
                     }
                     //update last interest if changed
                     if (!Number.isInteger(interest.length)) {
-                        const noOfMonths = (((loan.masterLoan.tenure * 30) - ((interest.length - 1) * loan.selectedSlab)) / 30)
-                        let oneMonthAmount = interest.amount / (stepUpSlab.days / 30);
+                        const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterestTable.length - 1) * loan.selectedSlab)) / 30)
+                        let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
                         let amount = (oneMonthAmount * noOfMonths).toFixed(2);
                         let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
                         let outstandingInterest = amount - lastInterest.paidAmount;
@@ -1141,6 +1142,7 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
             let currentDate = moment();
             let noOfDays = 0;
             for (const loan of loanInfo1) {
+                let allInterestTable = await getAllInterest(loan.id);
                 let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
                 let loanStartDate;
                 if (!lastPaidEmi) {
@@ -1171,7 +1173,7 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
                             await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                         } else if (newDebitAmount < 0) {
                             let credit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: Math.abs(newDebitAmount), description: `stepDownInterest ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment() }, { transaction: t });
-                            await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${credit.id}` }, { where: { id: debit.id }, transaction: t });
+                            await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${credit.id}` }, { where: { id: credit.id }, transaction: t });
                         }
                     }
                     let outstandingInterest = interest.amount - interestData.paidAmount;
@@ -1212,8 +1214,8 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
                 }
                 //update last interest if changed
                 if (!Number.isInteger(interest.length)) {
-                    const noOfMonths = (((loan.masterLoan.tenure * 30) - ((interest.length - 1) * loan.selectedSlab)) / 30)
-                    let oneMonthAmount = interest.amount / (stepUpSlab.days / 30);
+                    const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterestTable.length - 1) * loan.selectedSlab)) / 30)
+                    let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
                     let amount = (oneMonthAmount * noOfMonths).toFixed(2);
                     let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
                     let outstandingInterest = amount - lastInterest.paidAmount;
