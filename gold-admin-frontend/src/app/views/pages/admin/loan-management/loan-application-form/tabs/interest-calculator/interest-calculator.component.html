@@ -1,7 +1,7 @@
 <div class="minHeight">
     <form class="kt-padding-l-45" [formGroup]="finalInterestForm">
         <div class="row kt-margin-b-20">
-            <div class="col-6">
+            <div class="col-6 kt-margin-b-20">
                 <div class="row">
                     <div class="col-4 form-label">
                         <label class="mandatory">Loan Amount</label>
@@ -47,7 +47,31 @@
                 </div>
 
             </div>
-            <div class="col-6">
+            <div class="col-6 kt-margin-b-20" *ngIf="transferLoan">
+                <div class="row">
+                    <div class="col-4 form-label ">
+                        <label >Other Amount</label>
+                    </div>
+                    <div class="col-7">
+                        <input type="number" class="form-control" formControlName="otherAmount"
+                            placeholder="00" (blur)="checkOtherAmount()"
+                            [class.isError]="controls.otherAmount.touched && controls.otherAmount.invalid" />
+                        <mat-error
+                            *ngIf="controls.otherAmount.errors?.pattern && controls.otherAmount.touched">
+                            Invalid Input
+                        </mat-error>
+                        <mat-error
+                            *ngIf="controls.otherAmount.errors?.greater && controls.otherAmount.touched">
+                            Required fieldsdda
+                        </mat-error>
+                        <mat-error
+                            *ngIf="controls.otherAmount.errors?.required && controls.otherAmount.touched">
+                            Required field
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 kt-margin-b-20">
                 <div class="row">
                     <div class="col-4 form-label">
                         <label class="mandatory">Tenure</label>
@@ -70,10 +94,10 @@
 
             </div>
 
-        </div>
+        <!-- </div>
 
-        <div class="row kt-margin-b-20">
-            <div class="col-6">
+        <div class="row kt-margin-b-20"> -->
+            <div class="col-6 kt-margin-b-20">
                 <div class="row">
                     <div class="col-4 form-label">
                         <label class="mandatory">Partner Name</label>
@@ -93,7 +117,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-6 kt-margin-b-20">
 
                 <div class="row">
                     <div class="col-4 form-label">
@@ -115,10 +139,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        <!-- </div>
 
-        <div class="row kt-margin-b-20">
-            <div class="col-6">
+        <div class="row kt-margin-b-20"> -->
+            <div class="col-6 kt-margin-b-20">
                 <div class="row">
                     <div class="col-4 form-label">
                         <label class="mandatory">Start Date</label>
@@ -131,7 +155,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-6 kt-margin-b-20">
 
                 <div class="row">
                     <div class="col-4 form-label">
@@ -145,11 +169,11 @@
                 </div>
             </div>
 
-        </div>
+        <!-- </div>
 
-        <div class="row kt-margin-b-20">
+        <div class="row kt-margin-b-20"> -->
 
-            <div class="col-6">
+            <div class="col-6 kt-margin-b-20">
                 <div class="row">
                     <div class="col-4 form-label">
                         <label class="mandatory">Payment Frequency</label>
@@ -167,7 +191,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-6 kt-margin-b-20">
                 <div class="row">
                     <div class="col-4 form-label">
                         <label class="mandatory">Interest Rate% (p.m.)</label>
@@ -185,9 +209,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        <!-- </div>
 
-        <div class="row kt-margin-b-20">
+        <div class="row kt-margin-b-20"> -->
             <div class="col-6">
                 <div class="row">
                     <div class="col-4 form-label ">
@@ -208,6 +232,7 @@
                     </div>
                 </div>
             </div>
+            
         </div>
 
     </form>
