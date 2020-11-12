@@ -16,7 +16,7 @@ exports.submitAppKyc = async (req, res, next) => {
     let createdBy = req.userData.id;
 
 
-    let data = await customerKycAdd(req.body, createdBy, modifiedBy)
+    let data = await customerKycAdd(req, createdBy, modifiedBy)
 
     return res.status(200).json({ message: data })
 

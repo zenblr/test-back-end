@@ -8,6 +8,7 @@ const CONSTANT = require("../../utils/constant");
 const moment = require("moment");
 const { paginationWithFromTo } = require("../../utils/pagination");
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
+const { customerKycEdit } = require('../../service/customerKyc')
 
 const check = require("../../lib/checkLib");
 
@@ -663,178 +664,172 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
 
 exports.submitAllKycInfo = async (req, res, next) => {
 
-    let { customerId, customerKycId, customerKycPersonal, customerKycAddress, customerKycBank, customerKycBasicDetails, customerOrganizationDetail, moduleId, userType } = req.body;
     let modifiedBy = req.userData.id;
-    //change
-    if (moduleId == 1) {
-        let findCustomerKyc = await models.customer.findOne({
-            where: { id: customerId },
-            include: [{
-                model: models.customerKyc,
-                as: 'customerKyc',
-                attributes: ['currentKycModuleId']
-            }]
-        })
 
-        if (findCustomerKyc.customerKyc.currentKycModuleId == 3 && findCustomerKyc.scrapKycStatus != 'approved') {
-            return res.status(400).json({ message: "Your scrap kyc process pending." });
-        }
-    }
-    //change
+    let data = await customerKycEdit(req, modifiedBy)
 
-    if (moduleId == 1) {
-        let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { customerId: { [Op.not]: customerId }, identityProofNumber: customerKycPersonal.identityProofNumber } });
-        if (!check.isEmpty(findIdentityNumber)) {
-            return res.status(400).json({ message: "Identity Proof Number already exists! " })
-        }
-    }
+    return res.status(200).json({ message: data })
 
-    if (moduleId == 3 && customerKycAddress[0].addressProofNumber && customerKycAddress[0].addressProofTypeId == 2) {
-        let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: customerKycAddress[0].addressProofNumber, customerId: { [Op.not]: customerId } } });
-        console.log(customerKycAddress[0].addressProofNumber, findIdentityNumber)
+    // //change
+    // if (moduleId == 1) {
+    //     let findCustomerKyc = await models.customer.findOne({
+    //         where: { id: customerId },
+    //         include: [{
+    //             model: models.customerKyc,
+    //             as: 'customerKyc',
+    //             attributes: ['currentKycModuleId']
+    //         }]
+    //     })
 
-        if (!check.isEmpty(findIdentityNumber)) {
-            return res.status(400).json({ message: "Address Proof Number already exists! " })
-        }
-    }
+    //     if (findCustomerKyc.customerKyc.currentKycModuleId == 3 && findCustomerKyc.scrapKycStatus != 'approved') {
+    //         return res.status(400).json({ message: "Your scrap kyc process pending." });
+    //     }
+    // }
+    // //change
 
-    if (customerKycAddress.length > 1) {
-        if (moduleId == 3 && customerKycAddress[1].addressProofNumber && customerKycAddress[0].addressProofTypeId == 2) {
-            let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: customerKycAddress[1].addressProofNumber, customerId: { [Op.not]: customerId } } });
-            if (!check.isEmpty(findIdentityNumber)) {
-                return res.status(400).json({ message: "Address Proof Number already exists! " })
-            }
-        }
-    }
+    // if (moduleId == 1) {
+    //     let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { customerId: { [Op.not]: customerId }, identityProofNumber: customerKycPersonal.identityProofNumber } });
+    //     if (!check.isEmpty(findIdentityNumber)) {
+    //         return res.status(400).json({ message: "Identity Proof Number already exists! " })
+    //     }
+    // }
 
+    // if (moduleId == 3 && customerKycAddress[0].addressProofNumber && customerKycAddress[0].addressProofTypeId == 2) {
+    //     let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: customerKycAddress[0].addressProofNumber, customerId: { [Op.not]: customerId } } });
+    //     console.log(customerKycAddress[0].addressProofNumber, findIdentityNumber)
 
+    //     if (!check.isEmpty(findIdentityNumber)) {
+    //         return res.status(400).json({ message: "Address Proof Number already exists! " })
+    //     }
+    // }
 
-    if (customerKycBasicDetails.panCardNumber) {
-        let findPanCardNumber = await models.customer.findOne({
-            where: {
-                id: { [Op.not]: customerId },
-                panCardNumber: { [Op.iLike]: customerKycBasicDetails.panCardNumber },
-                isActive: true
-            }
-        });
-        if (!check.isEmpty(findPanCardNumber)) {
-            return res.status(400).json({ message: "Pan Card Number already exists! " })
-        }
-    }
-    if (customerKycPersonal) {
-        customerKycPersonal['modifiedBy'] = modifiedBy
-    }
-    if (customerOrganizationDetail) {
-        customerOrganizationDetail['modifiedBy'] = modifiedBy
-    }
+    // if (customerKycAddress.length > 1) {
+    //     if (moduleId == 3 && customerKycAddress[1].addressProofNumber && customerKycAddress[0].addressProofTypeId == 2) {
+    //         let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: customerKycAddress[1].addressProofNumber, customerId: { [Op.not]: customerId } } });
+    //         if (!check.isEmpty(findIdentityNumber)) {
+    //             return res.status(400).json({ message: "Address Proof Number already exists! " })
+    //         }
+    //     }
+    // }
 
 
-    let addressArray = []
-    for (let i = 0; i < customerKycAddress.length; i++) {
 
-        customerKycAddress[i]['modifiedBy'] = modifiedBy
-        addressArray.push(customerKycAddress[i]);
-
-    }
-
-    if (moduleId == 3 && userType == "Individual") {
-        if (customerKycAddress[0].addressProofTypeId == 2) {
-            customerKycPersonal['identityTypeId'] = 5;
-            customerKycPersonal['identityProof'] = customerKycAddress[0].addressProof;
-            customerKycPersonal['identityProofNumber'] = customerKycAddress[0].addressProofNumber;
-        }
-    }
-
-    await sequelize.transaction(async (t) => {
-
-        //for mobile
-        if (req.useragent.isMobile) {
-            let checkClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId }, transaction: t })
-
-            //change
-            await models.customerKyc.update({ currentKycModuleId: moduleId }, { where: { id: customerKycId }, transaction: t })
-            //change
-
-            if (check.isEmpty(checkClassification)) {
-                await models.customerKycClassification.create({ customerId, customerKycId: customerKycId, kycStatusFromCce: "pending", cceId: modifiedBy }, { transaction: t })
-            }
-            await models.customerKyc.update(
-                { cceVerifiedBy: modifiedBy, isKycSubmitted: true },
-                { where: { customerId: customerId }, transaction: t })
-        }
-        //for mobile
+    // if (customerKycBasicDetails.panCardNumber) {
+    //     let findPanCardNumber = await models.customer.findOne({
+    //         where: {
+    //             id: { [Op.not]: customerId },
+    //             panCardNumber: { [Op.iLike]: customerKycBasicDetails.panCardNumber },
+    //             isActive: true
+    //         }
+    //     });
+    //     if (!check.isEmpty(findPanCardNumber)) {
+    //         return res.status(400).json({ message: "Pan Card Number already exists! " })
+    //     }
+    // }
+    // if (customerKycPersonal) {
+    //     customerKycPersonal['modifiedBy'] = modifiedBy
+    // }
+    // if (customerOrganizationDetail) {
+    //     customerOrganizationDetail['modifiedBy'] = modifiedBy
+    // }
 
 
-        let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
+    // let addressArray = []
+    // for (let i = 0; i < customerKycAddress.length; i++) {
 
-        await models.customer.update({ firstName: customerKycBasicDetails.firstName, lastName: customerKycBasicDetails.lastName, panCardNumber: customerKycBasicDetails.panCardNumber, panType: customerKycBasicDetails.panType, panImage: customerKycBasicDetails.panImage, userType: customerKycBasicDetails.userType, organizationTypeId: customerKycBasicDetails.organizationTypeId, dateOfIncorporation: customerKycBasicDetails.dateOfIncorporation }, { where: { id: customerId }, transaction: t })
+    //     customerKycAddress[i]['modifiedBy'] = modifiedBy
+    //     addressArray.push(customerKycAddress[i]);
 
-        if (moduleId == 1) {
-            await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });
+    // }
 
-            await models.customerKycPersonalDetail.update(
-                {
-                    firstName: customerKycBasicDetails.firstName,
-                    lastName: customerKycBasicDetails.lastName,
-                    panCardNumber: customerKycBasicDetails.panCardNumber
-                }
-                , { where: { customerId: customerId }, transaction: t });
+    // if (moduleId == 3 && userType == "Individual") {
+    //     if (customerKycAddress[0].addressProofTypeId == 2) {
+    //         customerKycPersonal['identityTypeId'] = 5;
+    //         customerKycPersonal['identityProof'] = customerKycAddress[0].addressProof;
+    //         customerKycPersonal['identityProofNumber'] = customerKycAddress[0].addressProofNumber;
+    //     }
+    // }
 
-            await models.customer.update(
-                {
-                    firstName: customerKycBasicDetails.firstName,
-                    lastName: customerKycBasicDetails.lastName,
-                    panCardNumber: customerKycBasicDetails.panCardNumber,
-                    panType: customerKycBasicDetails.panType,
-                    panImage: customerKycBasicDetails.panImage
-                }
-                , { where: { id: customerId }, transaction: t });
+    // await sequelize.transaction(async (t) => {
 
-        }
-        if (moduleId == 3) {
-            if (userType == "Individual") {
-                await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });
-            } else {
-                await models.customerKycOrganizationDetail.update(customerOrganizationDetail, { where: { customerId: customerId }, transaction: t })
-            }
-        }
+    //     //for mobile
+    //     if (req.useragent.isMobile) {
+    //         let checkClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId }, transaction: t })
 
-        await models.customerKycAddressDetail.bulkCreate(addressArray, { updateOnDuplicate: ["addressType", "address", "stateId", "cityId", "pinCode", "addressProofTypeId", "addressProof", "addressProofNumber", "modifiedBy"] }, { transaction: t })
+    //         //change
+    //         await models.customerKyc.update({ currentKycModuleId: moduleId }, { where: { id: customerKycId }, transaction: t })
+    //         //change
 
-        await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
+    //         if (check.isEmpty(checkClassification)) {
+    //             await models.customerKycClassification.create({ customerId, customerKycId: customerKycId, kycStatusFromCce: "pending", cceId: modifiedBy }, { transaction: t })
+    //         }
+    //         await models.customerKyc.update(
+    //             { cceVerifiedBy: modifiedBy, isKycSubmitted: true },
+    //             { where: { customerId: customerId }, transaction: t })
+    //     }
+    //     //for mobile
 
-    })
-    let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
 
-    let KycClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId } });
-    let kycRating = await models.customerKyc.findOne({ where: { customerId: customerId } })
+    //     let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
 
-    let ratingStage = 1;
-    if (moduleId == 1 && KycClassification && (KycClassification.kycStatusFromCce == "pending" || !KycClassification.kycStatusFromCce)) {
-        ratingStage = 1
-    } else if (moduleId == 1 && KycClassification && KycClassification.kycStatusFromCce == "approved") {
-        ratingStage = 2
-    } else if (moduleId == 3 && KycClassification && (KycClassification.scrapKycStatusFromCce == "pending" || !KycClassification.scrapKycStatusFromCce)) {
-        ratingStage = 1
-    } else if (moduleId == 3 && KycClassification && KycClassification.scrapKycStatusFromCce == "approved") {
-        ratingStage = 2
-    }
+    //     await models.customer.update({ firstName: customerKycBasicDetails.firstName, lastName: customerKycBasicDetails.lastName, panCardNumber: customerKycBasicDetails.panCardNumber, panType: customerKycBasicDetails.panType, panImage: customerKycBasicDetails.panImage, userType: customerKycBasicDetails.userType, organizationTypeId: customerKycBasicDetails.organizationTypeId, dateOfIncorporation: customerKycBasicDetails.dateOfIncorporation }, { where: { id: customerId }, transaction: t })
 
-    if (!KycClassification) {
-        ratingStage = 1
-    }
+    //     if (moduleId == 1) {
+    //         await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });
 
-    // if (KycClassification && (KycClassification.kycStatusFromCce == "pending" || KycClassification.scrapKycStatusFromCce == "pending") ) {
+    //         await models.customerKycPersonalDetail.update(
+    //             {
+    //                 firstName: customerKycBasicDetails.firstName,
+    //                 lastName: customerKycBasicDetails.lastName,
+    //                 panCardNumber: customerKycBasicDetails.panCardNumber
+    //             }
+    //             , { where: { customerId: customerId }, transaction: t });
+
+    //         await models.customer.update(
+    //             {
+    //                 firstName: customerKycBasicDetails.firstName,
+    //                 lastName: customerKycBasicDetails.lastName,
+    //                 panCardNumber: customerKycBasicDetails.panCardNumber,
+    //                 panType: customerKycBasicDetails.panType,
+    //                 panImage: customerKycBasicDetails.panImage
+    //             }
+    //             , { where: { id: customerId }, transaction: t });
+
+    //     }
+    //     if (moduleId == 3) {
+    //         if (userType == "Individual") {
+    //             await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });
+    //         } else {
+    //             await models.customerKycOrganizationDetail.update(customerOrganizationDetail, { where: { customerId: customerId }, transaction: t })
+    //         }
+    //     }
+
+    //     await models.customerKycAddressDetail.bulkCreate(addressArray, { updateOnDuplicate: ["addressType", "address", "stateId", "cityId", "pinCode", "addressProofTypeId", "addressProof", "addressProofNumber", "modifiedBy"] }, { transaction: t })
+
+    //     await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
+
+    // })
+    // let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
+
+    // let KycClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId } });
+    // let kycRating = await models.customerKyc.findOne({ where: { customerId: customerId } })
+
+    // let ratingStage = 1;
+    // if (moduleId == 1 && KycClassification && (KycClassification.kycStatusFromCce == "pending" || !KycClassification.kycStatusFromCce)) {
     //     ratingStage = 1
-    // } else if(KycClassification && (KycClassification.kycStatusFromCce == "approved" || KycClassification.scrapKycStatusFromCce == "approved")) {
+    // } else if (moduleId == 1 && KycClassification && KycClassification.kycStatusFromCce == "approved") {
+    //     ratingStage = 2
+    // } else if (moduleId == 3 && KycClassification && (KycClassification.scrapKycStatusFromCce == "pending" || !KycClassification.scrapKycStatusFromCce)) {
+    //     ratingStage = 1
+    // } else if (moduleId == 3 && KycClassification && KycClassification.scrapKycStatusFromCce == "approved") {
     //     ratingStage = 2
     // }
-    // if(!KycClassification){
+
+    // if (!KycClassification) {
     //     ratingStage = 1
     // }
 
-    // console.log(KycClassification);
-    return res.status(200).json({ message: `successful`, customerId, customerKycId, customerKycCurrentStage, KycClassification, ratingStage, moduleId, userType })
+    // return res.status(200).json({ message: `successful`, customerId, customerKycId, customerKycCurrentStage, KycClassification, ratingStage, moduleId, userType })
 
 }
 
