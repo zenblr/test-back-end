@@ -176,12 +176,12 @@ exports.readSchemeByPartnerId = async (req, res, next) => {
 //scheme Read based on amount
 
 exports.readSchemeOnAmount = async (req, res, next) => {
-    let { masterLoanId } = req.params;
+    let { internalBranchId } = req.params;
 
-    let loan = await models.customerLoanMaster.findOne({
-        where: { id: masterLoanId },
-        attributes: ['internalBranchId']
-    })
+    // let loan = await models.customerLoanMaster.findOne({
+    //     where: { id: masterLoanId },
+    //     attributes: ['internalBranchId']
+    // })
 
     let partnerSecuredScheme = await models.partner.findAll({
         order: [
@@ -203,7 +203,7 @@ exports.readSchemeOnAmount = async (req, res, next) => {
                     as: 'schemeInterest'
                 }, {
                     model: models.internalBranch,
-                    where: { id: loan.internalBranchId }
+                    where: { id: internalBranchId }
                 }, {
                     model: models.scheme,
                     as: 'unsecuredScheme'
