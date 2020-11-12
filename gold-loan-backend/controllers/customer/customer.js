@@ -100,7 +100,7 @@ exports.registerCustomerSendOtp = async (req, res, next) => {
   // await sms.sendSms(mobileNumber, message);
 
 
-  return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, });
+  return res.status(200).json({ message: `OTP has been sent to registered mobile number.`, referenceCode, });
 };
 
 exports.customerSignUp = async (req, res, next) => {
@@ -136,7 +136,7 @@ exports.customerSignUp = async (req, res, next) => {
     var expiryTimeToUser = moment(moment(expiryTime).utcOffset("+05:30"))
     await sendOtpToLeadVerification(mobileNumber, 'customer', otp, expiryTimeToUser)
 
-    return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, isCustomer: false });
+    return res.status(200).json({ message: `OTP has been sent to registered mobile number.`, referenceCode, isCustomer: false });
   } else {
 
     const referenceCode = await createReferenceCode(5);
@@ -153,7 +153,7 @@ exports.customerSignUp = async (req, res, next) => {
     let smsLink = process.env.BASE_URL_CUSTOMER
     await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
 
-    return res.status(200).json({ message: `Otp send to your entered mobile number.`, referenceCode, isCustomer: true });
+    return res.status(200).json({ message: `OTP has been sent to registered mobile number.`, referenceCode, isCustomer: true });
 
   }
 
@@ -208,7 +208,7 @@ exports.sendOtp = async (req, res, next) => {
   return res
     .status(200)
     .json({
-      message: `Otp send to your entered mobile number.`,
+      message: `OTP has been sent to registered mobile number.`,
       referenceCode,
     });
 };
