@@ -380,10 +380,7 @@ export class MenuConfig {
 									]
 								},
 							]
-						},
-						
-					
-							
+						},	
 						{
 							title: "Broker",
 							root: true,

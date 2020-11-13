@@ -5,8 +5,7 @@ import { DataTableService } from '../../../../../../core/shared/services/data-ta
 import { ToastrService } from 'ngx-toastr';
 import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { map, takeUntil, tap, skip, distinctUntilChanged } from 'rxjs/operators';
-import { SipInvestmentTenureService } from '../.';
-import { SipInvestmentTenureDatasource } from '../../../../../../../';
+import { SipInvestmentTenureDatasource, SipInvestmentTenureService } from '../../../../../../core/sip-management/sip-investment-tenure';
 import { SipInvestmentTenureAddComponent } from '../sip-investment-tenure-add/sip-investment-tenure-add.component';
 
 @Component({

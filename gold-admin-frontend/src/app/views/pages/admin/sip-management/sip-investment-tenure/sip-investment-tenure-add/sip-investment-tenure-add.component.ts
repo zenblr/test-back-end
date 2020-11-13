@@ -2,8 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
-import { SipInvestmentTenureService } from '../../../../..';
-
+import { SipInvestmentTenureDatasource, SipInvestmentTenureService } from '../../../../../../core/sip-management/sip-investment-tenure';
 
 @Component({
   selector: 'kt-sip-investment-tenure-add',
