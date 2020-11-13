@@ -56,6 +56,16 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'modified_by'
         },
+        createdByCustomer: {
+            type: DataTypes.INTEGER,
+            field: 'created_by_customer',
+            allowNull: false,
+        },
+        modifiedByCustomer: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by_customer',
+            allowNull: false,
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',

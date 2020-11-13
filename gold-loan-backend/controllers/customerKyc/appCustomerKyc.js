@@ -14,9 +14,12 @@ const check = require("../../lib/checkLib");
 exports.submitAppKyc = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let createdBy = req.userData.id;
+    let modifiedByCustomer = null
+    let createdByCustomer = null
 
 
-    let data = await customerKycAdd(req, createdBy, modifiedBy)
+
+    let data = await customerKycAdd(req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer)
 
     return res.status(200).json({ message: data })
 

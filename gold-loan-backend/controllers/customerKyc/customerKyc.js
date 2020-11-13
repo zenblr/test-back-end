@@ -664,9 +664,13 @@ exports.submitCustomerKycBankDetail = async (req, res, next) => {
 
 exports.submitAllKycInfo = async (req, res, next) => {
 
+    let createdBy = req.userData.id
     let modifiedBy = req.userData.id;
+    let modifiedByCustomer = null
+    let createdByCustomer = null
 
-    let data = await customerKycEdit(req, modifiedBy)
+
+    let data = await customerKycEdit(req, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer)
 
     return res.status(200).json({ message: data })
 

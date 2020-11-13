@@ -10,7 +10,7 @@ const { paginationWithFromTo } = require("../utils/pagination");
 const extend = require('extend')
 const check = require("../lib/checkLib");
 
-let customerKycAdd = async (req, createdBy, modifiedBy) => {
+let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer) => {
 
     let { firstName, lastName, customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address, panCardNumber, panType, panImage, moduleId } = req.body
     var date = dateOfBirth
@@ -59,9 +59,9 @@ let customerKycAdd = async (req, createdBy, modifiedBy) => {
 
         let kycInfo = await sequelize.transaction(async t => {
 
-            await models.customer.update({ firstName, lastName, panCardNumber: panCardNumber, panType, panImage }, { where: { id: customerId }, transaction: t })
+            await models.customer.update({ firstName, lastName, panCardNumber: panCardNumber, panType, panImage, modifiedBy, modifiedByCustomer }, { where: { id: customerId }, transaction: t })
 
-            let customerKycAdd = await models.customerKyc.create({ currentKycModuleId: moduleId, isAppliedForKyc: true, customerKycCurrentStage: '4', customerId: getCustomerInfo.id, createdBy, modifiedBy, isKycSubmitted: true }, { transaction: t })
+            let customerKycAdd = await models.customerKyc.create({ currentKycModuleId: moduleId, isAppliedForKyc: true, customerKycCurrentStage: '4', customerId: getCustomerInfo.id, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer, isKycSubmitted: true }, { transaction: t })
 
             let abcd = await models.customerKycPersonalDetail.create({
                 customerId: getCustomerInfo.id,
@@ -82,7 +82,9 @@ let customerKycAdd = async (req, createdBy, modifiedBy) => {
                 identityTypeId: identityTypeId,
                 identityProofNumber: identityProofNumber,
                 createdBy,
-                modifiedBy
+                modifiedBy,
+                createdByCustomer,
+                modifiedByCustomer
             }, { transaction: t });
 
             let addressArray = []
@@ -92,12 +94,16 @@ let customerKycAdd = async (req, createdBy, modifiedBy) => {
                 address[i]['customerKycId'] = customerKycAdd.id
                 address[i]['createdBy'] = createdBy
                 address[i]['modifiedBy'] = modifiedBy
+                address[i]['createdByCustomer'] = createdByCustomer
+                address[i]['modifiedByCustomer'] = modifiedByCustomer
+
+
                 addressArray.push(address[i])
             }
 
             let data = await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
 
-            await models.customerKycClassification.create({ customerId, customerKycId: customerKycAdd.id, kycStatusFromCce: "pending", cceId: createdBy }, { transaction: t })
+            await models.customerKycClassification.create({ customerId, customerKycId: customerKycAdd.id, kycStatusFromCce: "pending", cceId: createdBy, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer }, { transaction: t })
 
             return customerKycAdd
         })
@@ -148,6 +154,8 @@ let customerKycAdd = async (req, createdBy, modifiedBy) => {
             address[i]['customerKycId'] = customerKycId
             address[i]['createdBy'] = createdBy
             address[i]['modifiedBy'] = modifiedBy
+            address[i]['createdByCustomer'] = createdByCustomer
+            address[i]['modifiedByCustomer'] = modifiedByCustomer
             addressArray.push(address[i])
         }
 
@@ -187,10 +195,10 @@ let customerKycAdd = async (req, createdBy, modifiedBy) => {
         }
 
         let customerKycId = await sequelize.transaction(async t => {
-            let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, customerKycCurrentStage: "2", currentKycModuleId: moduleId }, { transaction: t })
+            let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer, customerKycCurrentStage: "2", currentKycModuleId: moduleId }, { transaction: t })
 
 
-            await models.customer.update({ firstName: firstName, lastName: lastName, panCardNumber: panCardNumber, panType: panType, panImage: panImage, organizationTypeId, dateOfIncorporation, userType: userType, moduleId: moduleId }, { where: { id: getCustomerInfo.id }, transaction: t })
+            await models.customer.update({ firstName: firstName, lastName: lastName, panCardNumber: panCardNumber, panType: panType, panImage: panImage, organizationTypeId, dateOfIncorporation, userType: userType, moduleId: moduleId, modifiedBy, modifiedByCustomer }, { where: { id: getCustomerInfo.id }, transaction: t })
 
             await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
 
@@ -209,6 +217,8 @@ let customerKycAdd = async (req, createdBy, modifiedBy) => {
                     gstCertificate: gstCertificate,
                     createdBy,
                     modifiedBy,
+                    createdByCustomer,
+                    modifiedByCustomer
                 }, { transaction: t });
             } else {
                 createCustomerKyc = await models.customerKycPersonalDetail.create({
@@ -219,6 +229,8 @@ let customerKycAdd = async (req, createdBy, modifiedBy) => {
                     panCardNumber: panCardNumber,
                     createdBy,
                     modifiedBy,
+                    createdByCustomer,
+                    modifiedByCustomer,
                     profileImage: profileImage,
                     dateOfBirth: dateOfBirth,
                     alternateMobileNumber: alternateMobileNumber,
@@ -238,7 +250,7 @@ let customerKycAdd = async (req, createdBy, modifiedBy) => {
 
 }
 
-let customerKycEdit = async (req, modifiedBy) => {
+let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer) => {
 
 
     let { customerId, customerKycId, customerKycPersonal, customerKycAddress, customerKycBasicDetails, customerOrganizationDetail, moduleId, userType } = req.body;
@@ -299,15 +311,18 @@ let customerKycEdit = async (req, modifiedBy) => {
     }
     if (customerKycPersonal) {
         customerKycPersonal['modifiedBy'] = modifiedBy
+        customerKycPersonal['modifiedByCustomer'] = modifiedByCustomer
     }
     if (customerOrganizationDetail) {
         customerOrganizationDetail['modifiedBy'] = modifiedBy
+        customerOrganizationDetail['modifiedByCustomer'] = modifiedByCustomer
     }
 
     let addressArray = []
     for (let i = 0; i < customerKycAddress.length; i++) {
 
         customerKycAddress[i]['modifiedBy'] = modifiedBy
+        customerKycAddress[i]['modifiedByCustomer'] = modifiedByCustomer
         addressArray.push(customerKycAddress[i]);
 
     }
@@ -327,14 +342,14 @@ let customerKycEdit = async (req, modifiedBy) => {
             let checkClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId }, transaction: t })
 
             //change
-            await models.customerKyc.update({ currentKycModuleId: moduleId }, { where: { id: customerKycId }, transaction: t })
+            await models.customerKyc.update({ currentKycModuleId: moduleId, modifiedBy, modifiedByCustomer }, { where: { id: customerKycId }, transaction: t })
             //change
 
             if (check.isEmpty(checkClassification)) {
-                await models.customerKycClassification.create({ customerId, customerKycId: customerKycId, kycStatusFromCce: "pending", cceId: modifiedBy }, { transaction: t })
+                await models.customerKycClassification.create({ customerId, customerKycId: customerKycId, kycStatusFromCce: "pending", cceId: modifiedBy, createdBy, modifiedBy, modifiedByCustomer, createdByCustomer }, { transaction: t })
             }
             await models.customerKyc.update(
-                { cceVerifiedBy: modifiedBy, isKycSubmitted: true },
+                { cceVerifiedBy: modifiedBy, isKycSubmitted: true, modifiedBy, modifiedByCustomer },
                 { where: { customerId: customerId }, transaction: t })
         }
         //for mobile
@@ -342,7 +357,7 @@ let customerKycEdit = async (req, modifiedBy) => {
 
         let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
 
-        await models.customer.update({ firstName: customerKycBasicDetails.firstName, lastName: customerKycBasicDetails.lastName, panCardNumber: customerKycBasicDetails.panCardNumber, panType: customerKycBasicDetails.panType, panImage: customerKycBasicDetails.panImage, userType: customerKycBasicDetails.userType, organizationTypeId: customerKycBasicDetails.organizationTypeId, dateOfIncorporation: customerKycBasicDetails.dateOfIncorporation }, { where: { id: customerId }, transaction: t })
+        await models.customer.update({ firstName: customerKycBasicDetails.firstName, lastName: customerKycBasicDetails.lastName, panCardNumber: customerKycBasicDetails.panCardNumber, panType: customerKycBasicDetails.panType, panImage: customerKycBasicDetails.panImage, userType: customerKycBasicDetails.userType, organizationTypeId: customerKycBasicDetails.organizationTypeId, dateOfIncorporation: customerKycBasicDetails.dateOfIncorporation, modifiedBy, modifiedByCustomer }, { where: { id: customerId }, transaction: t })
 
         if (moduleId == 1) {
             await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });
@@ -376,7 +391,7 @@ let customerKycEdit = async (req, modifiedBy) => {
 
         await models.customerKycAddressDetail.bulkCreate(addressArray, { updateOnDuplicate: ["addressType", "address", "stateId", "cityId", "pinCode", "addressProofTypeId", "addressProof", "addressProofNumber", "modifiedBy"] }, { transaction: t })
 
-        await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
+        await models.customerKyc.update({ modifiedBy, modifiedByCustomer, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
 
     })
     let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
