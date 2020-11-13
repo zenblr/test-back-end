@@ -38,8 +38,15 @@ exports.addInternalBranch = async (req, res) => {
 exports.readInternalBranch = async (req, res) => {
 
     if (req.query.from == 1 && req.query.to == -1) {
+        let whereCondition
+        if (check.isEmpty(req.query.cityId)) {
+            whereCondition = { isActive: true }
+        } else {
+            whereCondition = { isActive: true, cityId: req.query.cityId }
+        }
+
         let readInternalBranch = await models.internalBranch.findAll({
-            where: { isActive: true }
+            where: whereCondition
         });
         return res.status(200).json({ data: readInternalBranch });
     } else {

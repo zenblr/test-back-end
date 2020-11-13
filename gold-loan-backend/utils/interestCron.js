@@ -11,7 +11,7 @@ let { getFirstInterestToPay,getAllInterest, getExtraInterest, getAllInterestGrea
 exports.dailyIntrestCalculation = async (date) => {
     //for rebate
     //If rebate is not added
-    let rebateData = await calculationDataOneLoan(masterLoanId);
+    let rebateData = await calculationData();
     let loanInfoRebate = rebateData.loanInfo;
     await sequelize.transaction(async t => {
         for (const loan of loanInfoRebate) {
@@ -25,7 +25,8 @@ exports.dailyIntrestCalculation = async (date) => {
                         as: 'schemeInterest'
                     }]
                 })
-                let rebateInterestRate = scheme.schemeInterest[0].interestRate;
+                if(scheme){
+                    let rebateInterestRate = scheme.schemeInterest[0].interestRate;
                 await models.customerLoan.update({rebateInterestRate},{ where: { id: loan.id }, transaction: t });
                 let allInterest = await getAllInterest(loan.id);
                 let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, rebateInterestRate, loan.selectedSlab, loan.masterLoan.tenure);
@@ -43,6 +44,7 @@ exports.dailyIntrestCalculation = async (date) => {
                     let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
                     let rebateAmount = highestInterestAmount - lastInterest.interestAmount;
                     await models.customerLoanInterest.update({ rebateAmount,highestInterestAmount,rebateInterestRate }, { where: { id: lastInterest.id}, transaction: t });
+                }
                 }
             }
         }

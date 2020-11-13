@@ -37,6 +37,8 @@ module.exports = (sequelize, DataTypes) => {
     Merchant.associate = function (models) {
         Merchant.belongsTo(models.user, { foreignKey: 'userId', as: 'user' });
         Merchant.hasMany(models.broker, { as: 'broker' });
+        Merchant.hasOne(models.digiGoldMerchantDetails, { foreignKey: 'merchant_id', as: 'digiGoldMerchantDetails' });
+
     }
         return Merchant;
     }

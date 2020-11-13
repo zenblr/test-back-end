@@ -218,3 +218,74 @@ exports.sendUpdateLocationHandoverMessage = async (mobileNumber, otp, receiverNa
         await sms.sendSms(mobileNumber, message);
     }
 }
+
+exports.sendMessageForBuy = async (customerName,mobileNumber,quantity, metalType, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('buy');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<quantity>", quantity).replace("<metalType>", metalType).replace("<amount>", amount).replace("<name>",customerName)
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+
+exports.sendMessageForSell = async (mobileNumber,quantity, metalType, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('sell');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<quantity>", quantity).replace("<metalType>", metalType).replace("<amount>", amount)
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+
+exports.sendMessageForOrderPlaced = async (mobileNumber, orderId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Order Placed');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<orderId>", orderId)
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+
+exports.sendMessageForKycUpdate = async (mobileNumber) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Bank and Kyc update');
+    if (messageTemplate) {
+        let message = await messageTemplate.content;
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+
+exports.sendMessageForKycApproved = async (mobileNumber,accountId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Kyc Approved');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<accountId>", accountId);
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+exports.sendMessageForKycReject = async (mobileNumber, accountId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Kyc Rejected');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<accountId>", accountId);
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+
+exports.sendMessageForWithdrawAccept = async (mobileNumber, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Withdraw Accepted');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<amount>", amount);
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+
+exports.sendMessageForWithdrawReject = async (mobileNumber) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Withdraw Rejected');
+    if (messageTemplate) {
+        let message = await messageTemplate.content;
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+
+exports.sendMessageForWithdrawCompleted = async (mobileNumber, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Withdraw Completed');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<amount>", amount)
+        await sms.sendSms(mobileNumber, message);
+    }
+}

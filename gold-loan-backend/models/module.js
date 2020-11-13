@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'description'
         },
+        modulePoint: {
+            type: DataTypes.INTEGER,
+            field: 'module_point'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
