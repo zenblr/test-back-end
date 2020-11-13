@@ -770,7 +770,7 @@ exports.signUpCustomer = async (req, res) => {
     return { result, Token }
   })
 
-  return res.status(200).json({ messgae: `Registered Sucessfully!`, token: data.Token });
+  return res.status(200).json({ messgae: `Successfully Logged In`, token: data.Token });
 
 
 }
