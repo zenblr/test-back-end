@@ -97,6 +97,7 @@ export class InterestCalculatorComponent implements OnInit {
       }
     })
 
+   
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -112,6 +113,11 @@ export class InterestCalculatorComponent implements OnInit {
       this.controls.finalLoanAmount.patchValue(changes.loanTransfer.currentValue)
       this.controls.finalLoanAmount.disable()
       this.transferLoan = true;
+      if(changes.totalAmt.currentValue <= Number(this.controls.finalLoanAmount.value)){
+        this.controls.otherAmount.disable()
+      }else{
+        this.controls.otherAmount.enable()
+      }
       this.partner()
     }
 
@@ -120,6 +126,13 @@ export class InterestCalculatorComponent implements OnInit {
         if(!this.transferLoan && !this.isNewLoanFromPartRelease){
           this.controls.finalLoanAmount.reset()
         }
+
+        if(changes.totalAmt.currentValue <= Number(this.controls.finalLoanAmount.value)){
+          this.controls.otherAmount.disable()
+        }else{
+          this.controls.otherAmount.enable()
+        }
+        
       }
     }
 
@@ -138,6 +151,11 @@ export class InterestCalculatorComponent implements OnInit {
             this.controls.finalLoanAmount.disable()
             this.controls.finalLoanAmount.patchValue(finalLoan.masterLoan.loanTransfer.disbursedLoanAmount)
             this.transferLoan = true;
+            if(changes.totalAmt.currentValue <= Number(this.controls.finalLoanAmount.value)){
+              this.controls.otherAmount.disable()
+            }else{
+              this.controls.otherAmount.enable()
+            }
             this.partner()
 
           }
@@ -210,7 +228,11 @@ export class InterestCalculatorComponent implements OnInit {
 
   partner() {
     if (this.controls.finalLoanAmount.valid || this.controls.finalLoanAmount.status == 'DISABLED') {
-      this.partnerService.getPartnerBySchemeAmount(Math.floor(this.controls.finalLoanAmount.value)).subscribe(res => {
+      let amt = Number(this.controls.finalLoanAmount.value)
+      if(this.transferLoan && this.controls.otherAmount.value){
+        amt += Number(this.controls.otherAmount.value)
+      }
+      this.partnerService.getPartnerBySchemeAmount(Math.floor(amt)).subscribe(res => {
         this.partnerList = res.data;
         this.returnScheme()
         this.ref.detectChanges()
@@ -272,7 +294,8 @@ export class InterestCalculatorComponent implements OnInit {
       unsecuredSchemeId: [],
       securedLoanAmount: [],
       unsecuredLoanAmount: [],
-      isUnsecuredSchemeApplied: [false]
+      isUnsecuredSchemeApplied: [false],
+      otherAmount:[]
     })
 
 
@@ -309,7 +332,10 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   amountValidation() {
-    let amt = this.controls.finalLoanAmount.value;
+    let amt = Number(this.controls.finalLoanAmount.value);
+    if(this.controls.otherAmount.value){
+      amt += Number(this.controls.otherAmount.value)
+    }
     this.controls.isUnsecuredSchemeApplied.patchValue(false)
     this.dateOfPayment = []
     const scheme = this.selectedScheme
@@ -353,6 +379,18 @@ export class InterestCalculatorComponent implements OnInit {
 
     }
 
+  }
+
+  checkOtherAmount(){
+    if(this.controls.otherAmount.valid){
+      let sum = Number(this.controls.finalLoanAmount.value) + Number(this.controls.otherAmount.value)
+
+      if(sum > this.totalAmt){
+        this.controls.otherAmount.setErrors({"greater":true})
+      }else{
+        this.partner()
+      }
+    }
   }
 
   eligibleCheck(amt, data) {
