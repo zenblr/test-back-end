@@ -428,6 +428,17 @@ export class PageConfig {
 					page: { title: "Standard deduction", desc: "" },
 				},
 			},
+			"sip-management": {
+				"masters": {
+				    "sip-cycle-date": {
+				        page: { title: "SIP Cycle Date", desc: "" },
+					},
+					"sip-investment-tenure": {
+				        page: { title: "SIP Investment Tenure", desc: "" },
+					},
+				},
+			},
+
 			"global-map": {
 				page: { title: "Global Map", desc: "" },
 			},

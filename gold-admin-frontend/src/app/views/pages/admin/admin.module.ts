@@ -47,6 +47,10 @@ import { AdminComponent } from './admin.component';
 						loadChildren: () => import('./scrap-management/scrap-management.module').then(m => m.ScrapManagementModule)
 					},
 					{
+						path: 'sip-management',
+						loadChildren: () => import('./sip-management/sip-management.module').then(m => m.SipManagementModule)
+					},
+					{
 						path: 'upload-data',
 						loadChildren: () => import('./upload-data/upload-data.module').then(m => m.UploadDataModule),
 					},

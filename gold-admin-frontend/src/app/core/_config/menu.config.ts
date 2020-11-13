@@ -357,6 +357,34 @@ export class MenuConfig {
 							// permission: !this.modulesArr.includes(3),
 						},
 						{
+							title: "SIP Management",
+							root: true,
+							src: "assets/media/aside-icons/icons-39.svg",
+							// permission: !this.modulesArr.includes(3),
+							submenu: [
+								{
+									title: "Masters",
+								    root: true,
+									bullet: 'dot',
+									submenu: [
+										{
+											title: "SIP Cycle Date",
+											page: "/admin/sip-management/masters/sip-cycle-date",
+											permission: false,
+										},
+										{
+											title: "SIP Investment Tenure",
+											page: "/admin/sip-management/masters/sip-investment-tenure",
+											permission: false,
+										},
+									]
+								},
+							]
+						},
+						
+					
+							
+						{
 							title: "Broker",
 							root: true,
 							src: "assets/media/aside-icons/icons-29.svg",
