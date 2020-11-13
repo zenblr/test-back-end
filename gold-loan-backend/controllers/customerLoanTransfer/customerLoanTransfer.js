@@ -189,29 +189,12 @@ exports.loanTransferBmRating = async (req, res, next) => {
         }]
     });
 
-    let customerDetails = await models.customer.findOne({ where: { id: masterLoan.customerId } })
-
-    let sliceCustId = customerDetails.customerUniqueId.slice(0, 2)
-
     await sequelize.transaction(async t => {
         if (masterLoan.loanTransfer.loanTransferStatusForBM == "incomplete" || masterLoan.loanTransfer.loanTransferStatusForBM == "pending") {
             if (loanTransferStatusForBM == "approved") {
-
-                let loanUniqueId = null;
-                let checkSecuredUnique = false
-                do {
-                    let getSecu = randomize('A0', 4);
-                    loanUniqueId = `LR${sliceCustId}${getSecu}`;
-                    let checkUnique = await models.customerLoan.findOne({ where: { loanUniqueId: loanUniqueId }, transaction: t })
-                    if (!checkUnique) {
-                        checkSecuredUnique = true
-                    }
-                }
-                while (!checkSecuredUnique);
-                await models.customerLoanTransfer.update({ loanTransferStatusForBM, modifiedBy, reasonByBM, loanTransferCurrentStage: '5', transferredLoanId: loanUniqueId }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
-                await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { masterLoanId: masterLoanId }, transaction: t })
+                await models.customerLoanTransfer.update({ loanTransferStatusForBM, modifiedBy, reasonByBM, loanTransferCurrentStage: '5' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.BM_RATING_APPROVED, createdBy, modifiedBy }, { transaction: t })
-                return res.status(200).json({ message: 'Success', masterLoanId, loanId, loanUniqueId, disbursedLoanAmount: masterLoan.loanTransfer.disbursedLoanAmount, loanCurrentStage: '5' })
+                return res.status(200).json({ message: 'Success', masterLoanId, loanId,disbursedLoanAmount: masterLoan.loanTransfer.disbursedLoanAmount, loanCurrentStage: '5' })
             } else if (loanTransferStatusForBM == "rejected") {
                 await models.customerLoanTransfer.update({ loanTransferStatusForBM, modifiedBy, reasonByBM, loanTransferCurrentStage: '4' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.BM_RATING_REJECTED, createdBy, modifiedBy }, { transaction: t })
@@ -243,7 +226,21 @@ exports.loanTransferDisbursal = async (req, res, next) => {
             return res.status(400).json({ message: 'Amount is already disbursed' })
         } else {
             if (masterLoan.loanTransfer.loanTransferStatusForBM == "approved") {
-                await models.customerLoanTransfer.update({ transactionId, modifiedBy, loanTransferCurrentStage: '6', isLoanDisbursed: true }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
+                let customerDetails = await models.customer.findOne({ where: { id: masterLoan.customerId } });
+                let sliceCustId = customerDetails.customerUniqueId.slice(0, 2)
+                let loanUniqueId = null;
+                let checkSecuredUnique = false
+                do {
+                    let getSecu = randomize('A0', 4);
+                    loanUniqueId = `LR${sliceCustId}${getSecu}`;
+                    let checkUnique = await models.customerLoan.findOne({ where: { loanUniqueId: loanUniqueId }, transaction: t })
+                    if (!checkUnique) {
+                        checkSecuredUnique = true
+                    }
+                }
+                while (!checkSecuredUnique);
+                await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { masterLoanId: masterLoanId }, transaction: t })
+                await models.customerLoanTransfer.update({ transactionId, modifiedBy, loanTransferCurrentStage: '6', isLoanDisbursed: true, transferredLoanId: loanUniqueId }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.LOAN_DISBURSEMENT, createdBy, modifiedBy }, { transaction: t })
 
                 let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)

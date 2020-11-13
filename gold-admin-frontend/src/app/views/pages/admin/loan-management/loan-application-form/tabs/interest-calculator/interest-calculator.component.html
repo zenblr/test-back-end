@@ -53,19 +53,19 @@
                         <label >Other Amount</label>
                     </div>
                     <div class="col-7">
-                        <input type="number" class="form-control" formControlName="otherAmount"
+                        <input type="number" class="form-control" formControlName="loanTransferExtraAmount"
                             placeholder="00" (blur)="checkOtherAmount()"
-                            [class.isError]="controls.otherAmount.touched && controls.otherAmount.invalid" />
+                            [class.isError]="controls.loanTransferExtraAmount.touched && controls.loanTransferExtraAmount.invalid" />
                         <mat-error
-                            *ngIf="controls.otherAmount.errors?.pattern && controls.otherAmount.touched">
+                            *ngIf="controls.loanTransferExtraAmount.errors?.pattern && controls.loanTransferExtraAmount.touched">
                             Invalid Input
                         </mat-error>
                         <mat-error
-                            *ngIf="controls.otherAmount.errors?.greater && controls.otherAmount.touched">
-                            Required fieldsdda
+                            *ngIf="controls.loanTransferExtraAmount.errors?.greater && controls.loanTransferExtraAmount.touched">
+                            Other amount should be less than {{totalAmt*1-controls.finalLoanAmount.value*1}}
                         </mat-error>
                         <mat-error
-                            *ngIf="controls.otherAmount.errors?.required && controls.otherAmount.touched">
+                            *ngIf="controls.loanTransferExtraAmount.errors?.required && controls.loanTransferExtraAmount.touched">
                             Required field
                         </mat-error>
                     </div>

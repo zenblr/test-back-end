@@ -127,7 +127,9 @@ export class DisburseComponent implements OnInit {
       securedLoanUniqueId: [],
       unsecuredLoanUniqueId: [],
       finalAmount: [],
-      fullAmount: []
+      fullAmount: [],
+      loanTransferExtraAmount:[],
+      otherAmountTransactionId:[]
     })
     this.disableSchemeRelatedField()
   }
@@ -184,6 +186,14 @@ export class DisburseComponent implements OnInit {
           return
         }
         this.disburseForm.controls.paymentMode.patchValue(res.data.paymentType)
+        if(this.details.isLoanTransfer){
+          this.controls.unsecuredTransactionId.patchValue(res.data.extraAmountTransactionId)
+          this.controls.securedTransactionId.patchValue(res.data.extraAmountTransactionId)
+          this.controls.loanTransferExtraAmount.patchValue(res.data.loanTransferExtraAmount)
+          this.disburseForm.controls.unsecuredTransactionId.disable()
+          this.disburseForm.controls.securedTransactionId.disable()
+          this.disburseForm.controls.loanTransferExtraAmount.disable()
+        }
       }
     })
   }
