@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'merchant_id',
         },
-        moduleId:{
+        moduleId: {
             type: DataTypes.INTEGER,
             field: 'module_id',
         },
@@ -109,6 +109,16 @@ module.exports = (sequelize, DataTypes) => {
             field: 'modified_by',
             allowNull: false,
         },
+        createdByCustomer: {
+            type: DataTypes.INTEGER,
+            field: 'created_by_customer',
+            allowNull: false,
+        },
+        modifiedByCustomer: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by_customer',
+            allowNull: false,
+        },
         lastLogin: {
             type: DataTypes.DATE,
             field: 'last_login',
@@ -145,22 +155,32 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'organization_type_id',
         },
-        dateOfIncorporation:{
+        dateOfIncorporation: {
             type: DataTypes.DATE,
             field: 'date_of_incorporation',
         },
-        customerAddress:{
+        customerAddress: {
             type: DataTypes.TEXT,
             field: 'customer_address',
         },
-        gender:{
+        gender: {
             type: DataTypes.STRING,
             field: 'customer_address',
         },
-        dateOfBirth:{
+        dateOfBirth: {
             type: DataTypes.DATE,
             field: 'date_of_birth',
+        },
+        allowCustomerEdit: {
+            type: DataTypes.BOOLEAN,
+            field: 'allow_customer_edit',
+            defaultValue: true
+        },
+        sourceFrom: {
+            type: DataTypes.INTEGER,
+            field: 'INTEGER',
         }
+
     }, {
         freezeTableName: true,
         tableName: 'customer',

@@ -18,6 +18,7 @@ const qs = require('qs');
 const getMerchantData = require('../auth/getMerchantData')
 const jwt = require('jsonwebtoken');
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
+const { ADMIN_PANEL, CUSTOMER_WEBSITE } = require('../../utils/sourceFrom')
 
 exports.getOtp = async (req, res, next) => {
   let getOtp = await models.customerOtp.findAll({
@@ -58,7 +59,7 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint.modulePoint },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint.modulePoint, sourceFrom: ADMIN_PANEL },
       { transaction: t }
     );
 
@@ -659,7 +660,7 @@ exports.getsingleCustomerManagement = async (req, res) => {
 //To register customer by their own
 exports.signUpCustomer = async (req, res) => {
   let { firstName, lastName, mobileNumber, email, referenceCode, otp, stateId } = req.body;
-
+  let sourceFrom = CUSTOMER_WEBSITE
   var todayDateTime = new Date();
   // console.log('abc')
   let verifyUser = await models.customerOtp.findOne({
@@ -713,7 +714,7 @@ exports.signUpCustomer = async (req, res) => {
     let modulePoint = await models.module.findOne({ where: { id: 4 }, transaction: t })
 
     let customer = await models.customer.create(
-      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id },
+      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom },
       { transaction: t }
     );
 
