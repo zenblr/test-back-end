@@ -429,14 +429,15 @@ export class PageConfig {
 				},
 			},
 			"sip-management": {
-				"masters": {
+			
 				    "sip-cycle-date": {
 				        page: { title: "SIP Cycle Date", desc: "" },
 					},
 					"sip-investment-tenure": {
 				        page: { title: "SIP Investment Tenure", desc: "" },
 					},
-				},
+
+	
 			},
 
 			"global-map": {

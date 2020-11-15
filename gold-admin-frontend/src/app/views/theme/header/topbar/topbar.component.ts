@@ -57,6 +57,8 @@ import { ScrapCustomerManagementService } from '../../../../core/scrap-managemen
 import { PartnerBranchUserService } from '../../../../core/user-management/partner-branch-user/services/partner-branch-user.service'
 import { DepositService } from "../../../../core/funds-approvals/deposit/services/deposit.service";
 import { CronListService } from '../../../../core/cron-list/services/cron-list.service';
+// import { SipInvestmentTenureService } from '';
+// import { SipDateCycleService } from '';
 
 @Component({
 	selector: "kt-topbar",
@@ -468,6 +470,18 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.dataSourceHeader();
 			this.permissionType = "addLeadSource";
+		}
+		if (this.path == "sip-investment-tenure") {
+			this.value1 = "Add Sip";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "addLeadSource";
+		}
+		if (this.path == "sip-cycle-date") {
+			this.value1 = "Add Sip";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "addLeadSource";
 		}
 		if (this.path == "roles") {
 			this.showInput = true;
@@ -926,6 +940,12 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'other-charges') {
 			this.otherChargesService.openModal.next(true);
 		}
+		// if (this.path == 'sip-investment-tenure') {
+		// 	this.SipInvestmentTenureService.openModal.next(true)
+		// }
+		// if (this.path == 'sip-date-cycle') {
+		// 	this.SipDateCycleService.openModal.next(true)
+		// }
 		if (this.path == 'lead-source') {
 			this.leadSourceService.openModal.next(true)
 		}

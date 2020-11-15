@@ -11,7 +11,7 @@ import { SipInvestmentTenureDatasource, SipInvestmentTenureService } from '../..
 })
 export class SipInvestmentTenureAddComponent implements OnInit {
 
-  leadSourceForm: FormGroup;
+  SipInvestmentTenureForm: FormGroup;
   title: string;
   constructor(
     public dialogRef: MatDialogRef<SipInvestmentTenureAddComponent>,
@@ -31,16 +31,17 @@ export class SipInvestmentTenureAddComponent implements OnInit {
     if (this.data.action == 'add') {
       this.title = 'Add Lead Source'
     } else if (this.data.action == 'edit') {
-      this.title = 'Edit Lead Source'
-      this.leadSourceForm.patchValue(this.data.leadSourceData);
+      this.title = 'Edit SIP'
+      this.SipInvestmentTenureForm.patchValue(this.data.leadSourceData);
     }
   }
 
   initForm() {
-    this.leadSourceForm = this.fb.group({
+    this.SipInvestmentTenureForm = this.fb.group({
       id: [],
-      leadName: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
-      // source: ['', [Validators.required]],
+      sipInvestmentTenure: ['', [Validators.required]],
+      sipInvestmentTenureStatus: ['', [Validators.required]],
+     
     })
   }
 
@@ -53,11 +54,11 @@ export class SipInvestmentTenureAddComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.leadSourceForm.invalid) {
-      this.leadSourceForm.markAllAsTouched()
+    if (this.SipInvestmentTenureForm.invalid) {
+      this.SipInvestmentTenureForm.markAllAsTouched()
       return
     }
-    const data = this.leadSourceForm.value;
+    const data = this.SipInvestmentTenureForm.value;
     const id = this.controls.id.value;
 
     if (this.data.action == 'edit') {
@@ -81,7 +82,7 @@ export class SipInvestmentTenureAddComponent implements OnInit {
   }
 
   get controls() {
-    return this.leadSourceForm.controls;
+    return this.SipInvestmentTenureForm.controls;
   }
 
 

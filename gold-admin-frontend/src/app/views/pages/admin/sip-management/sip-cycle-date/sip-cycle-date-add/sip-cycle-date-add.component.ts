@@ -11,7 +11,7 @@ import { SipCycleDateDatasource, SipCycleDateService } from '../../../../../../c
 })
 export class SipCycleDateAddComponent implements OnInit {
 
-  leadSourceForm: FormGroup;
+  SipCycleDateForm: FormGroup;
   title: string;
   constructor(
     public dialogRef: MatDialogRef<SipCycleDateAddComponent>,
@@ -31,15 +31,16 @@ export class SipCycleDateAddComponent implements OnInit {
     if (this.data.action == 'add') {
       this.title = 'Add Lead Source'
     } else if (this.data.action == 'edit') {
-      this.title = 'Edit Lead Source'
-      this.leadSourceForm.patchValue(this.data.leadSourceData);
+      this.title = 'Edit SIP'
+      this.SipCycleDateForm.patchValue(this.data.leadSourceData);
     }
   }
 
   initForm() {
-    this.leadSourceForm = this.fb.group({
+    this.SipCycleDateForm = this.fb.group({
       id: [],
-      leadName: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
+      sipCycleDate: ['', [Validators.required]],
+      sipCycleDateStatus: ['', [Validators.required]],
       // source: ['', [Validators.required]],
     })
   }
@@ -53,11 +54,11 @@ export class SipCycleDateAddComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.leadSourceForm.invalid) {
-      this.leadSourceForm.markAllAsTouched()
+    if (this.SipCycleDateForm.invalid) {
+      this.SipCycleDateForm.markAllAsTouched()
       return
     }
-    const data = this.leadSourceForm.value;
+    const data = this.SipCycleDateForm.value;
     const id = this.controls.id.value;
 
     if (this.data.action == 'edit') {
@@ -81,7 +82,7 @@ export class SipCycleDateAddComponent implements OnInit {
   }
 
   get controls() {
-    return this.leadSourceForm.controls;
+    return this.SipCycleDateForm.controls;
   }
 
 

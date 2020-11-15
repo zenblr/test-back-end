@@ -19,36 +19,19 @@ import { SipManagementComponent } from './sip-management.component';
 
 
 const routes: Routes = [
-  {
-    path: '',
-    component: SipManagementComponent,
-    children: [
-    //   {
-    //     path: '',
-    //     redirectTo: 'applied-scrap',
-    //     pathMatch: 'full'
-    //   },
-    //   {
-    //     path: 'sip-cycle-date',
-    //     component: SipCycleDateAddComponent
-    //   },
-    //   {
-    //     path: 'scrap-buying-application-form',
-    //     component: ScrapApplicationFormComponent
-    //   },
-    //   {
-    //     path: 'scrap-buying-application-form/:id',
-    //     component: ScrapApplicationFormComponent
-    //   },
-    //   {
-    //     path: 'packet-image-upload/:id',
-    //     component: ScrapApplicationFormComponent
-    //   },
-     
-      
-    ],
-  },
-
+      {
+        path: '',
+        redirectTo: 'sip-cycle-date',
+        pathMatch: 'full'
+      },
+      {
+        path: 'sip-cycle-date',
+        component: SipCycleDateListComponent
+      },
+      {
+        path: 'sip-investment-tenure',
+        component: SipInvestmentTenureListComponent
+      },
 ]
 
 @NgModule({
@@ -70,6 +53,24 @@ const routes: Routes = [
     PartialsModule,
     CoreModule
   ],
+  providers: [
+    InterceptService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: InterceptService,
+      multi: true
+    },
+    { provide: MAT_DIALOG_DATA, useValue: {} },
+    { provide: MatDialogRef, useValue: {} },
+    HttpUtilsService,
+    TypesUtilsService,
+    LayoutUtilsService
+  ],
+  entryComponents: [
+    SipInvestmentTenureAddComponent,
+    SipCycleDateAddComponent,
+  ]
 
 })
 export class SipManagementModule { }
+

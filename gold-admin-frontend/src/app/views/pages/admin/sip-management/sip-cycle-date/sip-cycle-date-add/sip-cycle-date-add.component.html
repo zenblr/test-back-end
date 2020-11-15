@@ -1,37 +1,37 @@
 <kt-portlet>
     <kt-modal-header [title]='title' (action)="action($event)"></kt-modal-header>
     <kt-portlet-body>
-        <form [formGroup]="leadSourceForm">
+        <form [formGroup]="SipCycleDateForm">
             <div class="row ">
                 <div class="col-12">
                     <div class="row justify-content-center kt-margin-t-10">
                         <div class="col-4 form-label">
-                            <label class="kt-padding-l-10 mandatory">Lead</label>
+                            <label class="kt-padding-l-10 mandatory">SIP Cycle Date</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" class="form-control " formControlName="leadName"
-                                [class.isError]="controls.leadName.invalid &&  controls.leadName.touched">
-                            <mat-error *ngIf="controls.leadName.touched && controls.leadName.errors?.required">
+                            <input type="text" class="form-control " formControlName="sipCycleDate"
+                                [class.isError]="controls.sipCycleDate.invalid &&  controls.sipCycleDate.touched">
+                            <mat-error *ngIf="controls.sipCycleDate.touched && controls.sipCycleDate.errors?.required">
                                 Required field
                             </mat-error>
-                            <mat-error *ngIf="controls.leadName.touched && controls.leadName.errors?.pattern">
+                            <!-- <mat-error *ngIf="controls.leadName.touched && controls.leadName.errors?.pattern">
                                 Invalid Input
-                            </mat-error>
+                            </mat-error> -->
                         </div>
                     </div>
 
-                    <!-- <div class="row justify-content-center kt-margin-t-10">
+                    <div class="row justify-content-center kt-margin-t-10">
                         <div class="col-4 form-label">
-                            <label class="kt-padding-l-10 mandatory">Source</label>
+                            <label class="kt-padding-l-10 mandatory">SIP Cycle Date Status</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" class="form-control text-capitalize" formControlName="source"
-                                [class.isError]="controls.source.invalid &&  controls.source.touched">
-                            <mat-error *ngIf="controls.source.touched && controls.source.errors?.required">
+                            <input type="text" class="form-control text-capitalize" formControlName="sipCycleDateStatus"
+                                [class.isError]="controls.sipCycleDateStatus.invalid &&  controls.sipCycleDateStatus.touched">
+                            <mat-error *ngIf="controls.sipCycleDateStatus.touched && controls.sipCycleDateStatus.errors?.required">
                                 Required field
                             </mat-error>
                         </div>
-                    </div> -->
+                    </div>
                 </div>
             </div>
         </form>

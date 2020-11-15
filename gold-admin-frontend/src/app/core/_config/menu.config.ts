@@ -369,12 +369,12 @@ export class MenuConfig {
 									submenu: [
 										{
 											title: "SIP Cycle Date",
-											page: "/admin/sip-management/masters/sip-cycle-date",
+											page: "/admin/sip-management/sip-cycle-date",
 											permission: false,
 										},
 										{
 											title: "SIP Investment Tenure",
-											page: "/admin/sip-management/masters/sip-investment-tenure",
+											page: "/admin/sip-management/sip-investment-tenure",
 											permission: false,
 										},
 									]
