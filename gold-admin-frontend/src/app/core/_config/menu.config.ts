@@ -379,6 +379,18 @@ export class MenuConfig {
 										},
 									]
 								},
+								{
+									title: "Create Sip",
+									page: "/admin/sip-management/create-sip",
+								    root: true,
+									bullet: 'dot',
+								},
+								{
+									title: "Sip Trades",
+									page: "/admin/sip-management/sip-trades",
+								    root: true,
+									bullet: 'dot',
+								},
 							]
 						},	
 						{

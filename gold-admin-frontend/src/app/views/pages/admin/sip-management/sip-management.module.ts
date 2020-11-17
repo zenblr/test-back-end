@@ -15,6 +15,8 @@ import { SipInvestmentTenureAddComponent } from './sip-investment-tenure/sip-inv
 import { SipCycleDateListComponent } from './sip-cycle-date/sip-cycle-date-list/sip-cycle-date-list.component';
 import { SipCycleDateAddComponent } from './sip-cycle-date/sip-cycle-date-add/sip-cycle-date-add.component';
 import { SipManagementComponent } from './sip-management.component';
+import { CreateSipComponent } from './create-sip/create-sip.component';
+import { SipTradesComponent } from './sip-trades/sip-trades.component';
 
 
 
@@ -29,6 +31,14 @@ const routes: Routes = [
         component: SipCycleDateListComponent
       },
       {
+        path: 'sip-trades',
+        component: SipTradesComponent
+      },
+      {
+        path: 'create-sip',
+        component: CreateSipComponent
+      },
+      {
         path: 'sip-investment-tenure',
         component: SipInvestmentTenureListComponent
       },
@@ -41,6 +51,8 @@ const routes: Routes = [
 	SipCycleDateListComponent,
 	SipInvestmentTenureAddComponent,
 	SipInvestmentTenureListComponent,
+	CreateSipComponent,
+	SipTradesComponent,
  
   ],
   imports: [

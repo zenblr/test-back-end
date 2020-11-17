@@ -436,6 +436,14 @@ export class PageConfig {
 					"sip-investment-tenure": {
 				        page: { title: "SIP Investment Tenure", desc: "" },
 					},
+					
+				    "create-sip": {
+				        page: { title: "Create SIP", desc: "" },
+					},
+					
+				    "sip-trades": {
+				        page: { title: "SIP Trades", desc: "" },
+					},
 
 	
 			},

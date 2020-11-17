@@ -57,8 +57,9 @@ import { ScrapCustomerManagementService } from '../../../../core/scrap-managemen
 import { PartnerBranchUserService } from '../../../../core/user-management/partner-branch-user/services/partner-branch-user.service'
 import { DepositService } from "../../../../core/funds-approvals/deposit/services/deposit.service";
 import { CronListService } from '../../../../core/cron-list/services/cron-list.service';
-// import { SipInvestmentTenureService } from '';
-// import { SipDateCycleService } from '';
+import { SipInvestmentTenureService } from '../../../../core/sip-management';
+import { SipCycleDateService } from '../../../../core/sip-management/sip-cycle-date';
+import { SipTradesService, CreateSipService } from '../../../../core/sip-management';
 
 @Component({
 	selector: "kt-topbar",
@@ -165,7 +166,12 @@ export class TopbarComponent implements OnInit {
 		private scrapCustomerManagementService: ScrapCustomerManagementService,
 		private partnerBranchUserservice: PartnerBranchUserService,
 		private depositService: DepositService,
-		private cronService: CronListService
+		private sipInvestmentTenureService: SipInvestmentTenureService,
+		private cronService: CronListService,
+		private sipCycleDateService: SipCycleDateService,
+		private sipTradesService: SipTradesService,
+		private createSipService: CreateSipService
+
 	) {
 
 		this.router.events.subscribe(val => {
@@ -479,6 +485,18 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "sip-cycle-date") {
 			this.value1 = "Add Sip";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "addLeadSource";
+		}
+		if (this.path == "create-sip") {
+			this.value1 = "Add Sip";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "addLeadSource";
+		}
+		if (this.path == "sip-trades") {
+			this.value1 = "Add Trades";
 			this.showInput = true;
 			this.dataSourceHeader();
 			// this.permissionType = "addLeadSource";
@@ -940,12 +958,18 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'other-charges') {
 			this.otherChargesService.openModal.next(true);
 		}
-		// if (this.path == 'sip-investment-tenure') {
-		// 	this.SipInvestmentTenureService.openModal.next(true)
-		// }
-		// if (this.path == 'sip-date-cycle') {
-		// 	this.SipDateCycleService.openModal.next(true)
-		// }
+		if (this.path == 'sip-investment-tenure') {
+			this.sipInvestmentTenureService.openModal.next(true)
+		}
+		if (this.path == 'sip-date-cycle') {
+			this.sipCycleDateService.openModal.next(true)
+		}
+		if (this.path == 'sip-trades') {
+			this.sipTradesService.openModal.next(true)
+		}
+		if (this.path == 'create-sip') {
+			this.createSipService.openModal.next(true)
+		}
 		if (this.path == 'lead-source') {
 			this.leadSourceService.openModal.next(true)
 		}

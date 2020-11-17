@@ -1,0 +1,57 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="mat-table__wrapper">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="schemeApplicationId">
+                    <mat-header-cell *matHeaderCellDef>Scheme application ID</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.leadName}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="customerId">
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.sourceName}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="metalType">
+                    <mat-header-cell *matHeaderCellDef>Metal Type</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.sourceName}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="schemeTradeAmount">
+                    <mat-header-cell *matHeaderCellDef>Scheme Trade Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.sourceName}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="schemeTradeDate">
+                    <mat-header-cell *matHeaderCellDef>Scheme Trade Date</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.sourceName}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="schemeTradeNoOfUnits">
+                    <mat-header-cell *matHeaderCellDef>Scheme Trade No Of Units </mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.sourceName}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="schemeTradeStatus">
+                    <mat-header-cell *matHeaderCellDef>Scheme Trade Status </mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.sourceName}}</mat-cell>
+
+                </ng-container>
+
+
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+            </mat-table>
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+        </div>
+        <div class="mat-table__bottom">
+            <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
+                [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>
