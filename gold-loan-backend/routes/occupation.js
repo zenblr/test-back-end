@@ -10,7 +10,7 @@ const checkRolePermission = require('../middleware/checkRolesPermissions');
 
 
 route.post('/', checkAuth, checkRolePermission, validationError, addOccupationValidation, wrapper(addOccupation)); // add occupation
-route.get('/', checkAuth, wrapper(readOccupation)); // read occupation
+route.get('/', wrapper(readOccupation)); // read occupation
 route.delete('/', checkAuth, checkRolePermission, wrapper(deactiveOccupation)); // deactive occupation
 route.put('/:id', checkAuth, checkRolePermission, updateOccupationValidation, validationError, wrapper(updateOccupation)); // update identity type
 
