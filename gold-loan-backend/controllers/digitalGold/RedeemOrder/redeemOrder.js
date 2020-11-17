@@ -208,16 +208,28 @@ exports.generateOrderInvoice = async(req, res)=>{
     };
     const created = await pdf.create(document, options)
     if(created){
-      fs.readFile(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`, (err, data)=> {
-        let stat = fs.statSync(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`);
-        res.setHeader('Content-Length', stat.size);
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=${fileName}.pdf`);
-        res.send(data);
+    //   fs.readFile(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`, (err, data)=> {
+    //     let stat = fs.statSync(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`);
+    //     res.setHeader('Content-Length', stat.size);
+    //     res.setHeader('Content-Type', 'application/pdf');
+    //     res.setHeader('Content-Disposition', `attachment; filename=${fileName}.pdf`);
+    //     res.send(data);
+    //     if (fs.existsSync(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`)) {
+    //         fs.unlinkSync(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`);
+    //     }
+    // });
+
+    res.status(200).json({ invoice: process.env.URL + `/uploads/digitalGoldKyc/pdf/${fileName}.pdf` });
+
+    setTimeout(async function () {
+      fs.readFile(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`, (err, data) => {
+
         if (fs.existsSync(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`)) {
-            fs.unlinkSync(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`);
+          fs.unlinkSync(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`);
         }
-    });
+      });
+    }, 500000);
+
     }
 
   }catch(err){
