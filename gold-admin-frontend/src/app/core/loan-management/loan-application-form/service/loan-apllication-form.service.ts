@@ -78,6 +78,12 @@ export class LoanApplicationFormService {
     )
   }
 
+  getBankDetails(masterLoanId): Observable<any> {
+    return this.http.get(`/api/loan-process/bank-details?masterLoanId=${masterLoanId}`).pipe(
+      map(res => res)
+    )
+  }
+
   submitBank(details, masterAndLoanIds): Observable<any> {
     let data = { ...details, ...masterAndLoanIds }
     return this.http.post(`/api/loan-process/bank-details`, data).pipe(
