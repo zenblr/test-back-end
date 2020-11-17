@@ -58,7 +58,7 @@ router.post('/customer-feedback', customerCheckAuth, wrapper(addFeedBack)); // a
 
 router.post('/loan-soa', customerCheckAuth, wrapper(getSoa));
 
-router.post('/file-upload', customerCheckAuth, wrapper(uploadFile)) //file upload by form data 
+router.post('/upload-file', customerCheckAuth, wrapper(uploadFile)) //file upload by form data 
 
 router.post('/base', customerCheckAuth, wrapper(base64Convertor)) //file upload by base 64
 
