@@ -10,6 +10,7 @@ import { GlobalSettingService } from '../../../../../../../core/global-setting/s
 import { Subject, Subscription, Observable } from 'rxjs';
 import { threadId } from 'worker_threads';
 import { async } from 'rxjs/internal/scheduler/async';
+import { SharedService } from '../../../../../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-interest-calculator',
@@ -68,7 +69,7 @@ export class InterestCalculatorComponent implements OnInit {
   subscription: Subscription[] = []
   isNewLoanFromPartRelease: boolean = false;
   tempPaymentFrequency: any[];
-
+  internalBranchId:any;
   constructor(
     public fb: FormBuilder,
     public partnerService: PartnerService,
@@ -77,9 +78,14 @@ export class InterestCalculatorComponent implements OnInit {
     public ref: ChangeDetectorRef,
     public loanFormService: LoanApplicationFormService,
     private dialog: MatDialog,
-    private globalSettingService: GlobalSettingService
+    private globalSettingService: GlobalSettingService,
+    private sharedService:SharedService
   ) {
     this.initForm();
+    this.sharedService.getTokenDecode().subscribe(res=>{
+      this.internalBranchId = res.internalBranchId
+    })
+
   }
 
   ngOnInit() {
@@ -108,7 +114,6 @@ export class InterestCalculatorComponent implements OnInit {
       this.controls.finalLoanAmount.patchValue(changes.partPaymentdata.currentValue)
       this.controls.finalLoanAmount.disable()
       this.isNewLoanFromPartRelease = true;
-      console.log(this.isNewLoanFromPartRelease)
       this.partner()
     }
 
@@ -222,7 +227,7 @@ export class InterestCalculatorComponent implements OnInit {
 
   partner() {
     // if (this.controls.finalLoanAmount.valid || this.controls.finalLoanAmount.status == 'DISABLED') {
-    this.partnerService.getPartnerBySchemeAmount(this.masterAndLoanIds.masterLoanId).subscribe(res => {
+    this.partnerService.getPartnerBySchemeAmount(this.internalBranchId).subscribe(res => {
       this.partnerList = res.data;
       this.returnScheme()
       if(this.controls.partnerId.valid){
@@ -234,15 +239,15 @@ export class InterestCalculatorComponent implements OnInit {
     // }
   }
 
-  getUnsecuredScheme() {
-    this.loanFormService.getUnsecuredScheme(
-      this.controls.partnerId.value,
-      Number(this.controls.unsecuredLoanAmount.value),
-      this.controls.schemeId.value
-    ).subscribe(res => {
-      this.unSecuredScheme = res.data
-    })
-  }
+  // getUnsecuredScheme() {
+  //   this.loanFormService.getUnsecuredScheme(
+  //     this.controls.partnerId.value,
+  //     Number(this.controls.unsecuredLoanAmount.value),
+  //     this.controls.schemeId.value
+  //   ).subscribe(res => {
+  //     this.unSecuredScheme = res.data
+  //   })
+  // }
 
   reset() {
     this.dateOfPayment = []
@@ -292,7 +297,7 @@ export class InterestCalculatorComponent implements OnInit {
       isUnsecuredSchemeApplied: [false],
       unsecuredRebateInterest:[],
       securedRebateInterest:[],
-
+      otherAmount:[null,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')],
     })
 
 

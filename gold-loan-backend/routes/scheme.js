@@ -22,7 +22,7 @@ route.get('/export-scheme', checkAuth, wrapper(exportSchemes));
 
 route.get('/partner-scheme/:id', checkAuth, checkRolePermission, wrapper(readSchemeByPartnerId)) //read partner scheme
 
-route.get('/partner-scheme-amount/:masterLoanId', checkAuth, wrapper(readSchemeOnAmount)) //read scheme on amount
+route.get('/partner-scheme-amount/:internalBranchId', checkAuth, wrapper(readSchemeOnAmount)) //read scheme on amount
 
 route.get('/:id', checkAuth, checkRolePermission, wrapper(readSchemeById)); // read scheme by id route
 

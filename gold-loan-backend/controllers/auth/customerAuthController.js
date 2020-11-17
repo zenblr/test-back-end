@@ -101,6 +101,6 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
         return Token
 
     })
-    return res.status(200).json({ message: 'Login successful', token });
+    return res.status(200).json({ message: 'Successfully Logged In', token });
 
 }
