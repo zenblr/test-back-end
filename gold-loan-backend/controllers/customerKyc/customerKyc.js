@@ -672,7 +672,12 @@ exports.submitAllKycInfo = async (req, res, next) => {
 
     let data = await customerKycEdit(req, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer)
 
-    return res.status(200).json({ message: data })
+    if (data.success) {
+        return res.status(data.status).json({ customerId: data.customerId, customerKycId: data.customerKycId, customerKycCurrentStage: data.customerKycCurrentStage, KycClassification: data.KycClassification, ratingStage: data.ratingStage, moduleId: data.moduleId, userType: data.userType })
+    } else {
+        return res.status(data.status).json({ message: data.message })
+    }
+    // return res.status(200).json({ message: data })
 
     // //change
     // if (moduleId == 1) {

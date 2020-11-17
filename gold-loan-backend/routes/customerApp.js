@@ -8,6 +8,7 @@ const customerCheckAuth = require('../middleware/customerCheckAuth');
 const jewelleryRelease = require('./jewelleryReleaseMobileApp');  //upload Packets List '
 const partPayment = require('./partPaymentCustomerApp');  //upload Packets List 
 const quickPay = require('./quickPayCustomerApp');  //upload Packets List 
+const customerWebsiteKyc = require('./customerWebsiteKyc') //customer website kyc
 const contactUsEmail = require('./contactUs')
 
 const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetailsOfCustomer, readBankDetailsOfCustomer, readNomineeDetailsOfCustomer, readAddressDetailsOfCustomer,
@@ -66,6 +67,8 @@ router.use('/part-payment', partPayment)
 router.use('/quick-pay', quickPay)
 
 router.use('/contact-us', contactUsEmail)
+
+router.use('/kyc', customerWebsiteKyc)
 
 
 

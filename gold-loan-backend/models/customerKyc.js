@@ -54,7 +54,6 @@ module.exports = (sequelize, DataTypes) => {
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by',
-            allowNull: false,
         },
         modifiedBy: {
             type: DataTypes.INTEGER,
@@ -63,12 +62,10 @@ module.exports = (sequelize, DataTypes) => {
         createdByCustomer: {
             type: DataTypes.INTEGER,
             field: 'created_by_customer',
-            allowNull: false,
         },
         modifiedByCustomer: {
             type: DataTypes.INTEGER,
             field: 'modified_by_customer',
-            allowNull: false,
         },
         isActive: {
             type: DataTypes.BOOLEAN,

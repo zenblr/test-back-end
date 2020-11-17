@@ -102,22 +102,18 @@ module.exports = (sequelize, DataTypes) => {
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by',
-            allowNull: false,
         },
         modifiedBy: {
             type: DataTypes.INTEGER,
             field: 'modified_by',
-            allowNull: false,
         },
         createdByCustomer: {
             type: DataTypes.INTEGER,
             field: 'created_by_customer',
-            allowNull: false,
         },
         modifiedByCustomer: {
             type: DataTypes.INTEGER,
             field: 'modified_by_customer',
-            allowNull: false,
         },
         lastLogin: {
             type: DataTypes.DATE,
@@ -178,7 +174,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         sourceFrom: {
             type: DataTypes.INTEGER,
-            field: 'INTEGER',
+            field: 'source_from',
         }
 
     }, {

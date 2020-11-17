@@ -20,8 +20,13 @@ exports.submitAppKyc = async (req, res, next) => {
 
 
     let data = await customerKycAdd(req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer)
-
-    return res.status(200).json({ message: data })
+    
+    if (data.success) {
+        return res.status(data.status).json({ customerId: data.customerId, customerKycId: data.customerKycId, })
+    } else {
+        return res.status(data.status).json({ message: data.message })
+    }
+    // return res.status(200).json({ message: data })
 
     // let { firstName, lastName, customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address, panCardNumber, panType, panImage } = req.body
     // // var date = dateOfBirth.split("-").reverse().join("-");
