@@ -67,6 +67,13 @@ module.exports = (sequelize, DataTypes) => {
     CustomerKycOrganizationDetail.associate = function (models) {
         CustomerKycOrganizationDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         CustomerKycOrganizationDetail.belongsTo(models.customerKyc, { foreignKey: 'customerKycId', as: 'customerKyc' });
+
+
+        CustomerKycOrganizationDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+        CustomerKycOrganizationDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+        CustomerKycOrganizationDetail.belongsTo(models.customer, { foreignKey: 'createdByCustomer', as: 'CreatedbyCustomer' });
+        CustomerKycOrganizationDetail.belongsTo(models.customer, { foreignKey: 'createdByCustomer', as: 'ModifiedbyCustomer' });
        
     }
 

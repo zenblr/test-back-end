@@ -125,6 +125,9 @@ module.exports = (sequelize, DataTypes) => {
         CustomerKycPersonalDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerKycPersonalDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
+        CustomerKycPersonalDetail.belongsTo(models.customer, { foreignKey: 'createdByCustomer', as: 'CreatedbyCustomer' });
+        CustomerKycPersonalDetail.belongsTo(models.customer, { foreignKey: 'createdByCustomer', as: 'ModifiedbyCustomer' });
+
     
         
     }

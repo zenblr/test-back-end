@@ -204,6 +204,8 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         Customer.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+        Customer.belongsTo(models.customer, { foreignKey: 'createdByCustomer', as: 'CreatedbyCustomer' });
+        Customer.belongsTo(models.customer, { foreignKey: 'createdByCustomer', as: 'ModifiedbyCustomer' });
 
         Customer.belongsTo(models.lead, { foreignKey: 'leadSourceId', as: 'lead' });
 
