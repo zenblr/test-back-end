@@ -18,6 +18,7 @@ const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetai
 
 const { getSoa } = require('../controllers/soaOfLoan/soaOfLoan');
 
+const { uploadFile, base64Convertor } = require('../controllers/fileUpload/fileUpload'); // importing fileUpload controller.
 
 //customer App
 
@@ -56,6 +57,10 @@ router.get('/customer-feedback', customerCheckAuth, wrapper(readFeedBack)); // r
 router.post('/customer-feedback', customerCheckAuth, wrapper(addFeedBack)); // add customer feedback
 
 router.post('/loan-soa', customerCheckAuth, wrapper(getSoa));
+
+router.post('/file-upload', customerCheckAuth, wrapper(uploadFile)) //file upload by form data 
+
+router.post('/base', customerCheckAuth, wrapper(base64Convertor)) //file upload by base 64
 
 //customer App
 router.post('/update-password', wrapper(updatePassword));//To change password of customer
