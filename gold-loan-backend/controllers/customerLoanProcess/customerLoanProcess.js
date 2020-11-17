@@ -2619,3 +2619,24 @@ exports.getLoanOrnaments = async (req, res, next) => {
 
     return res.status(200).json({ data: getLoanOrnaments })
 }
+
+
+exports.getCustomerBankDetails = async (req, res, next) => {
+    let  customerId  = req.query.customerId;
+
+    let loanDetails = await models.customerLoanMaster.findOne({
+        attributes: ['id'],
+        where: {isLoanCompleted: true,
+                customerId,
+               "$loanBankDetail.payment_type$": { [Op.not]: 'cash' }},
+        include: [{
+            model: models.customerLoanBankDetail,
+            as: 'loanBankDetail',
+        }],
+    });
+    if(loanDetails){
+        return res.status(200).json({ data: loanDetails })
+    }else{
+        return res.status(404).json({ message: "Data not found" })
+    }
+}
