@@ -29,7 +29,7 @@ export class InterestCalculatorComponent implements OnInit {
   dateOfPayment: any[] = []
   partnerList: any[] = [];
   schemesList: any = [];
-  tenure = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  tenure = [1, 2, 3, 4, 5, 6];
   repayType = [{ name: "monthly", value: 30 },
   { name: "quarterly", value: 90 },
   { name: "half Yearly", value: 180 }]
