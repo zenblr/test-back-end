@@ -22,8 +22,8 @@ exports.createCustomerAddress = async(req, res)=>{
       'mobileNumber':mobileNumber,
       'email':email,
       'address':address,
-      'state':stateId,
-      'city':cityId,
+      'state':"ep9kJ7Px",
+      'city':"1GXDPyX2",
       'pincode':pincode
     })
     const result = await models.axios({

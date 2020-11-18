@@ -10,6 +10,7 @@
                         <th class="transparent">Scheme Name</th>
                         <th class="transparent">Tenure</th>
                         <th class="transparent">Interest Rate</th>
+                        <th class="transparent"> Interest Rate after Rebate</th>
                         <th class="transparent">Next Due Date</th>
                         <th class="transparent">Status</th>
                     </thead>
@@ -37,11 +38,16 @@
                                 </span>
                             </td>
                             <td class="">{{loanDetails?.tenure}} Months</td>
-                            <td class="">{{loanDetails?.customerLoan[0]?.currentInterestRate }}%
+                            <td class="">{{loanDetails?.customerLoan[0]?.rebateInterestRate }}%
                                 <br>
                                 <span *ngIf="loanDetails?.customerLoan[1]">
-                                    {{loanDetails?.customerLoan[1]?.currentInterestRate }}%
+                                    {{loanDetails?.customerLoan[1]?.rebateInterestRate }}%
                                 </span></td>
+                                <td class="">{{loanDetails?.customerLoan[0]?.currentInterestRate }}%
+                                    <br>
+                                    <span *ngIf="loanDetails?.customerLoan[1]">
+                                        {{loanDetails?.customerLoan[1]?.currentInterestRate }}%
+                                    </span></td>
                             <td *ngIf="loanDetails?.nextDueDate else blankTableValue">
                                 {{loanDetails?.nextDueDate | date : 'mediumDate'}}</td>
                             <td class="text-warning"
@@ -66,6 +72,7 @@
                     <table class="table outer-border">
                         <thead>
                             <th class="transparent table-amount">Principal Outstanding</th>
+                            <th class="transparent table-amount">Augmont Rebate</th>
                             <th class="transparent table-amount">Next Due Date Amount</th>
                             <th class="transparent table-amount">Interest Amount</th>
                             <th class="transparent table-amount">Penal Interest</th>
@@ -79,6 +86,12 @@
                                     <span>{{payableAmount?.securedOutstandingAmount}}</span><br>
                                     <span *ngIf="loanDetails?.customerLoan[1]">
                                         {{payableAmount?.unsecuredOutstandingAmount}}
+                                    </span>
+                                </td>
+                                <td class="table-amount">
+                                    <span>{{payableAmount?.securedRebate}}</span><br>
+                                    <span *ngIf="loanDetails?.customerLoan[1]">
+                                        {{payableAmount?.unsecuredRebate}}
                                     </span>
                                 </td>
                                 <td class="table-amount">

@@ -11,7 +11,7 @@ const getRazorPayDetails = require('../../../utils/razorpay');
 const pagination = require('../../../utils/pagination');
 const numToWords = require('../../../utils/numToWords');
 let sms = require('../../../utils/SMS');
-// const html = fs.readFileSync(path.join(__dirname,'..','..','..','templates','redeemOrderInvoice.html'), 'utf8')
+const html = fs.readFileSync(path.join(__dirname,'..','..','..','templates','redeemOrderInvoice.html'), 'utf8')
 const errorLogger = require('../../../utils/errorLogger');
 
 
@@ -198,26 +198,38 @@ exports.generateOrderInvoice = async(req, res)=>{
       data: {
         invoiceData:result.data.result.data,
         date: result.data.result.data.invoiceDate.split(' ')[0],
-        bootstrapCss: `${process.env.URL}/templates/bootstrap.css`,
-        jqueryJs: `${process.env.URL}/templates/jquery-slim.min.js`,
-        popperJs: `${process.env.URL}/templates/popper.min.js`,
-        bootstrapJs: `${process.env.URL}/templates/bootstrap.js`,
+        bootstrapCss: `${process.env.URL}/bootstrap.css`,
+        jqueryJs: `${process.env.URL}/jquery-slim.min.js`,
+        popperJs: `${process.env.URL}/popper.min.js`,
+        bootstrapJs: `${process.env.URL}/bootstrap.js`,
         words
       },
       path: `./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`
     };
     const created = await pdf.create(document, options)
     if(created){
-      fs.readFile(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`, (err, data)=> {
-        let stat = fs.statSync(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`);
-        res.setHeader('Content-Length', stat.size);
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=${fileName}.pdf`);
-        res.send(data);
+    //   fs.readFile(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`, (err, data)=> {
+    //     let stat = fs.statSync(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`);
+    //     res.setHeader('Content-Length', stat.size);
+    //     res.setHeader('Content-Type', 'application/pdf');
+    //     res.setHeader('Content-Disposition', `attachment; filename=${fileName}.pdf`);
+    //     res.send(data);
+    //     if (fs.existsSync(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`)) {
+    //         fs.unlinkSync(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`);
+    //     }
+    // });
+
+    res.status(200).json({ invoice: process.env.URL + `/uploads/digitalGoldKyc/pdf/${fileName}.pdf` });
+
+    setTimeout(async function () {
+      fs.readFile(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`, (err, data) => {
+
         if (fs.existsSync(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`)) {
-            fs.unlinkSync(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`);
+          fs.unlinkSync(`./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`);
         }
-    });
+      });
+    }, 500000);
+
     }
 
   }catch(err){

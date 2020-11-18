@@ -228,14 +228,19 @@ exports.loanTransferBmRating = async (req, res, next) => {
 }
 
 exports.loanTransferDisbursal = async (req, res, next) => {
-    let { transactionId, loanId, masterLoanId } = req.body
+    let { transactionId, loanId, masterLoanId, bankTransferType } = req.body
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let masterLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
         include: [{
+
             model: models.customerLoanTransfer,
             as: "loanTransfer",
+        },
+        {
+            model: models.customerLoan,
+            as: "customerLoan"
         }]
     });
     await sequelize.transaction(async t => {
@@ -243,7 +248,8 @@ exports.loanTransferDisbursal = async (req, res, next) => {
             return res.status(400).json({ message: 'Amount is already disbursed' })
         } else {
             if (masterLoan.loanTransfer.loanTransferStatusForBM == "approved") {
-                await models.customerLoanTransfer.update({ transactionId, modifiedBy, loanTransferCurrentStage: '6', isLoanDisbursed: true }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
+                await models.customerLoanTransfer.update({ transactionId, modifiedBy, loanTransferCurrentStage: '6', isLoanDisbursed: true, bankTransferType }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
+                let x = await models.customerLoanDisbursement.create({ bankTransferType,loanId:masterLoan.customerLoan[0].id,masterLoanId }, { transaction: t });
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.LOAN_DISBURSEMENT, createdBy, modifiedBy }, { transaction: t })
 
                 let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
@@ -279,7 +285,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 include: [{
                     model: models.customerLoanTransfer,
                     as: "loanTransfer",
-                    attributes: ['id', 'transferredLoanId', 'reasonByAppraiser', 'loanTransferStatusForAppraiser', 'disbursedLoanAmount', 'transactionId', 'loanTransferStatusForBM', 'reasonByBM', 'pawnTicket', 'signedCheque', 'declaration', 'outstandingLoanAmount', 'loanTransferCurrentStage', 'isLoanApplied']
+                    attributes: ['id', 'transferredLoanId', 'reasonByAppraiser', 'loanTransferStatusForAppraiser', 'disbursedLoanAmount', 'transactionId', 'loanTransferStatusForBM', 'reasonByBM', 'pawnTicket', 'signedCheque', 'declaration', 'outstandingLoanAmount', 'loanTransferCurrentStage', 'isLoanApplied', 'bankTransferType']
                 }]
             },
             {

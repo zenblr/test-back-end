@@ -9,16 +9,15 @@ const redisClient = redis.createClient(redisConn.PORT, redisConn.HOST);
 const sequelize = models.sequelize;
 
 module.exports = async ()=>{
-        const getMerchantDetails = await models.merchant.findOne({
-            where:{isActive:true, id: 1},
-            include: {
-                model: models.digiGoldMerchantDetails,
-                as: 'digiGoldMerchantDetails',
-            }
+        const getMerchantDetails = await models.digiGoldMerchantDetails.findOne({
+            where:{isActive:true, merchantId: 1},
+            // include: {
+            //     model: models.digiGoldMerchantDetails,
+            //     as: 'digiGoldMerchantDetails',
+            // }
         });
-    
-        data.append('email',getMerchantDetails.digiGoldMerchantDetails.email);
-        data.append('password',getMerchantDetails.digiGoldMerchantDetails.password);
+        data.append('email',getMerchantDetails.email);
+        data.append('password',getMerchantDetails.password);
     
         const res= await models.axios(
             {
@@ -39,7 +38,7 @@ module.exports = async ()=>{
             lastTokenUpdated:moment(),
             expiresAt:resData.result.data.expiresAt
         },{
-            where:{email:getMerchantDetails.digiGoldMerchantDetails.email, isActive:true}
+            where:{email:getMerchantDetails.email, isActive:true}
             }
         );
         const merchantData = {

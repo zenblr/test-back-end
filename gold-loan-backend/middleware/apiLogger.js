@@ -95,6 +95,7 @@ module.exports = async (req, res, next) => {
             "/api/digital-gold/payment",
             "/api/digital-gold/withdraw/"+getParams1,
             "/api/digital-gold/contact-us",
+            "/api/digital-gold/customer/create-existent-customer"
         ];
     
         if (!skipUrls.includes(req._parsedUrl.pathname)) {
