@@ -22,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'address',
             allowNull: false
         },
+        landmark: {
+            type: DataTypes.STRING,
+            field: 'landmark'
+        },
         stateId: {
             type: DataTypes.INTEGER,
             field: 'state_id',
