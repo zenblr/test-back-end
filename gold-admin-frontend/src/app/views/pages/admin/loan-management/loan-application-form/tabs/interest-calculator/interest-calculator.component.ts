@@ -126,6 +126,7 @@ export class InterestCalculatorComponent implements OnInit {
 
     if (changes.ornamentDetails && changes.ornamentDetails.currentValue) {
       this.partner()
+      this.controls.finalLoanAmount.reset()
     }
 
     if (changes.totalAmt) {
