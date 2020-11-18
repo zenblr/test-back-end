@@ -1672,9 +1672,13 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
         securedSchemeName = checkLoan.customerLoan[0].scheme.schemeName
         securedLoanAmount = Number(checkLoan.securedLoanAmount) - Number(checkLoan.processingCharge);
     }
-    let extraAmountTransactionId = null;
+    let securedTransactionId = null;
+    let unsecuredTransactionId = null;
     if (checkLoan.isLoanTransfer) {
-        extraAmountTransactionId = checkLoan.loanTransfer.transactionId
+        securedTransactionId = checkLoan.loanTransfer.transactionId
+        if (checkLoan.isUnsecuredSchemeApplied == true) {
+            unsecuredTransactionId = checkLoan.loanTransfer.transactionId
+        }
     }
     let data = {
         userBankDetail: userBankDetails,
@@ -1697,7 +1701,10 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
         loanTransferExtraAmount: checkLoan.loanTransferExtraAmount,
         isLoanTransferExtraAmountAdded: checkLoan.isLoanTransferExtraAmountAdded,
         isLoanTransfer: checkLoan.isLoanTransfer,
-        extraAmountTransactionId
+    }
+    if (checkLoan.isLoanTransfer) {
+        data.securedTransactionId = securedTransactionId;
+        data.unsecuredTransactionId = unsecuredTransactionId;
     }
     return res.status(200).json({ message: 'Success', data: data })
 

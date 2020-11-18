@@ -187,8 +187,8 @@ export class DisburseComponent implements OnInit {
         }
         this.disburseForm.controls.paymentMode.patchValue(res.data.paymentType)
         if(this.details.isLoanTransfer){
-          this.controls.unsecuredTransactionId.patchValue(res.data.extraAmountTransactionId)
-          this.controls.securedTransactionId.patchValue(res.data.extraAmountTransactionId)
+          this.controls.unsecuredTransactionId.patchValue(res.data.unsecuredTransactionId)
+          this.controls.securedTransactionId.patchValue(res.data.securedTransactionId)
           this.controls.loanTransferExtraAmount.patchValue(res.data.loanTransferExtraAmount)
           this.disburseForm.controls.unsecuredTransactionId.disable()
           this.disburseForm.controls.securedTransactionId.disable()
