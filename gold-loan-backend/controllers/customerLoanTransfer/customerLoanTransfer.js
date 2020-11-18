@@ -9,7 +9,8 @@ const loanTransferHistory = require('../../utils/customerLoanTransferHistory')
 const check = require("../../lib/checkLib"); // IMPORTING CHECKLIB 
 var randomize = require('randomatic');
 const { sendDisbursalMessage, sendTransferLoanRequestMessage } = require('../../utils/SMS')
-const { customerNameNumberLoanId } = require('../../utils/loanFunction')
+const { customerNameNumberLoanId } = require('../../utils/loanFunction');
+const moment = require('moment');
 
 exports.customerDetails = async (req, res, next) => {
 
@@ -113,7 +114,6 @@ exports.loanTransferDocuments = async (req, res, next) => {
     let { pawnTicket, signedCheque, declaration, outstandingLoanAmount, loanId, masterLoanId } = req.body
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
-    let disbursedLoanAmount = outstandingLoanAmount;
     let masterLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
         include: [{
@@ -124,10 +124,10 @@ exports.loanTransferDocuments = async (req, res, next) => {
     if (masterLoan.loanTransfer.loanTransferStatusForBM == "pending" || masterLoan.loanTransfer.loanTransferStatusForBM == "incomplete" || masterLoan.loanTransfer.loanTransferStatusForAppraiser == "pending" || masterLoan.loanTransfer.loanTransferStatusForAppraiser == "incomplete") {
         await sequelize.transaction(async t => {
             if (!masterLoan.loanTransfer.pawnTicket || !masterLoan.loanTransfer.signedCheque || !masterLoan.loanTransfer.declaration || !masterLoan.loanTransfer.outstandingLoanAmount) {
-                await models.customerLoanTransfer.update({ pawnTicket, signedCheque, declaration, outstandingLoanAmount, modifiedBy, loanTransferCurrentStage: '3', disbursedLoanAmount }, { where: { id: masterLoan.loanTransfer.id }, transaction: t })
+                await models.customerLoanTransfer.update({ pawnTicket, signedCheque, declaration, outstandingLoanAmount, modifiedBy, loanTransferCurrentStage: '3' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t })
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.LOAN_DOCUMENTS, createdBy, modifiedBy }, { transaction: t })
             } else {
-                await models.customerLoanTransfer.update({ pawnTicket, signedCheque, declaration, outstandingLoanAmount, disbursedLoanAmount }, { where: { id: masterLoan.loanTransfer.id }, transaction: t })
+                await models.customerLoanTransfer.update({ pawnTicket, signedCheque, declaration, outstandingLoanAmount }, { where: { id: masterLoan.loanTransfer.id }, transaction: t })
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.LOAN_DOCUMENTS_UPDATED, createdBy, modifiedBy }, { transaction: t })
             }
         })
@@ -194,7 +194,7 @@ exports.loanTransferBmRating = async (req, res, next) => {
             if (loanTransferStatusForBM == "approved") {
                 await models.customerLoanTransfer.update({ loanTransferStatusForBM, modifiedBy, reasonByBM, loanTransferCurrentStage: '5' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.BM_RATING_APPROVED, createdBy, modifiedBy }, { transaction: t })
-                return res.status(200).json({ message: 'Success', masterLoanId, loanId,disbursedLoanAmount: masterLoan.loanTransfer.disbursedLoanAmount, loanCurrentStage: '5' })
+                return res.status(200).json({ message: 'Success', masterLoanId, loanId, disbursedLoanAmount: masterLoan.loanTransfer.outstandingLoanAmount, loanCurrentStage: '5' })
             } else if (loanTransferStatusForBM == "rejected") {
                 await models.customerLoanTransfer.update({ loanTransferStatusForBM, modifiedBy, reasonByBM, loanTransferCurrentStage: '4' }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.BM_RATING_REJECTED, createdBy, modifiedBy }, { transaction: t })
@@ -211,7 +211,7 @@ exports.loanTransferBmRating = async (req, res, next) => {
 }
 
 exports.loanTransferDisbursal = async (req, res, next) => {
-    let { transactionId, loanId, masterLoanId } = req.body
+    let { transactionId, loanId, masterLoanId, processingCharge, disbursedLoanAmount } = req.body
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let masterLoan = await models.customerLoanMaster.findOne({
@@ -240,8 +240,20 @@ exports.loanTransferDisbursal = async (req, res, next) => {
                 }
                 while (!checkSecuredUnique);
                 await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { masterLoanId: masterLoanId }, transaction: t })
-                await models.customerLoanTransfer.update({ transactionId, modifiedBy, loanTransferCurrentStage: '6', isLoanDisbursed: true, transferredLoanId: loanUniqueId }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
+                await models.customerLoanTransfer.update({ transactionId, modifiedBy, processingCharge, disbursedLoanAmount, loanTransferCurrentStage: '6', isLoanDisbursed: true, transferredLoanId: loanUniqueId }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.LOAN_DISBURSEMENT, createdBy, modifiedBy }, { transaction: t })
+
+                //LOAN_DISBURSEMENT and processing chanrges
+                let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: loanId, debit: processingCharge, description: `Processing charges debit`, paymentDate: moment() }, { transaction: t })
+                await models.customerTransactionDetail.update({ referenceId: `${loanUniqueId}-${processingDebit.id}` }, { where: { id: processingDebit.id }, transaction: t });
+                //////processingCharge
+                await models.customerLoanMaster.update({ processingCharge }, { where: { id: masterLoanId }, transaction: t });
+
+                let transferLoanDisburse = await models.customerTransactionDetail.create({ masterLoanId, loanId: loanId, debit: disbursedLoanAmount, description: `Loan transfer disbursed amount`, paymentDate: moment() }, { transaction: t })
+                await models.customerTransactionDetail.update({ referenceId: `${loanUniqueId}-${transferLoanDisburse.id}` }, { where: { id: transferLoanDisburse.id }, transaction: t })
+                await models.customerLoanDisbursement.create({
+                    masterLoanId, loanId: loanId, disbursementAmount: disbursedLoanAmount, transactionId: transactionId, date: moment(), paymentMode: 'Loan transfer', createdBy: createdBy, modifiedBy: modifiedBy
+                }, { transaction: t });
 
                 let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
 
@@ -276,13 +288,13 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 include: [{
                     model: models.customerLoanTransfer,
                     as: "loanTransfer",
-                    attributes: ['id', 'transferredLoanId', 'reasonByAppraiser', 'loanTransferStatusForAppraiser', 'disbursedLoanAmount', 'transactionId', 'loanTransferStatusForBM', 'reasonByBM', 'pawnTicket', 'signedCheque', 'declaration', 'outstandingLoanAmount', 'loanTransferCurrentStage', 'isLoanApplied']
+                    attributes: ['id', 'transferredLoanId', 'reasonByAppraiser', 'loanTransferStatusForAppraiser', 'disbursedLoanAmount', 'transactionId', 'loanTransferStatusForBM', 'reasonByBM', 'pawnTicket', 'signedCheque', 'declaration', 'outstandingLoanAmount', 'loanTransferCurrentStage', 'isLoanApplied','processingCharge']
                 }]
             },
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber','kycStatus'],
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber', 'kycStatus'],
             },
             {
                 model: models.customerLoanPersonalDetail,

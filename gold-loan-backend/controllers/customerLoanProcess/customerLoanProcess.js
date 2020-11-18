@@ -294,7 +294,7 @@ exports.loanOrnmanetDetails = async (req, res, next) => {
         include: [{
             model: models.customerLoanTransfer,
             as: "loanTransfer",
-            attributes: ['disbursedLoanAmount', 'outstandingLoanAmount']
+            attributes: ['disbursedLoanAmount', 'outstandingLoanAmount','processingCharge']
         }]
     });
     let checkIsPartRelease = await models.customerLoanMaster.findOne({
@@ -1759,15 +1759,16 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
 
         await sequelize.transaction(async (t) => {
             if(Loan.isLoanTransfer){
-                let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: processingCharge, description: `Processing charges debit`, paymentDate: moment() }, { transaction: t })
-                await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${processingDebit.id}` }, { where: { id: processingDebit.id }, transaction: t })
+                //this code added in loan transfer
+                // let processingDebit = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: processingCharge, description: `Processing charges debit`, paymentDate: moment() }, { transaction: t })
+                // await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${processingDebit.id}` }, { where: { id: processingDebit.id }, transaction: t })
 
-                let amountPaid = Loan.loanTransfer.disbursedLoanAmount - processingCharge;
-                let unsecuredDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: amountPaid, description: `Loan transfer disbursed amount`, paymentDate: moment() }, { transaction: t })
-                await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${unsecuredDisbursed.id}` }, { where: { id: unsecuredDisbursed.id }, transaction: t })
-                await models.customerLoanDisbursement.create({
-                    masterLoanId, loanId: securedLoanId, disbursementAmount: Loan.loanTransfer.disbursedLoanAmount, transactionId: Loan.loanTransfer.transactionId, date: Loan.loanTransfer.updatedAt, paymentMode: 'Loan transfer', createdBy: Loan.loanTransfer.modifiedBy, modifiedBy: Loan.loanTransfer.modifiedBy
-                }, { transaction: t })
+                // let amountPaid = Loan.loanTransfer.disbursedLoanAmount - processingCharge;
+                // let unsecuredDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: amountPaid, description: `Loan transfer disbursed amount`, paymentDate: moment() }, { transaction: t })
+                // await models.customerTransactionDetail.update({ referenceId: `${unsecuredLoanUniqueId}-${unsecuredDisbursed.id}` }, { where: { id: unsecuredDisbursed.id }, transaction: t })
+                // await models.customerLoanDisbursement.create({
+                //     masterLoanId, loanId: securedLoanId, disbursementAmount: Loan.loanTransfer.disbursedLoanAmount, transactionId: Loan.loanTransfer.transactionId, date: Loan.loanTransfer.updatedAt, paymentMode: 'Loan transfer', createdBy: Loan.loanTransfer.modifiedBy, modifiedBy: Loan.loanTransfer.modifiedBy
+                // }, { transaction: t })
                 if(Loan.isLoanTransferExtraAmountAdded){
                     let securedDisbursed = await models.customerTransactionDetail.create({ masterLoanId, loanId: securedLoanId, debit: Loan.loanTransferExtraAmount, description: `Loan transfer extra amount`, paymentDate: moment() }, { transaction: t })
                     await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${securedDisbursed.id}` }, { where: { id: securedDisbursed.id }, transaction: t })
