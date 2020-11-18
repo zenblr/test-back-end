@@ -15,7 +15,7 @@ var fs = require('fs');
 let { sendMessageLoanIdGeneration } = require('../../utils/SMS');
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 const _ = require('lodash');
-const { getSingleLoanDetail, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan, customerNameNumberLoanId, customerLoanDetailsByMasterLoanDetails } = require('../../utils/loanFunction')
+const { getSingleLoanDetail, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan, customerNameNumberLoanId, customerLoanDetailsByMasterLoanDetails, getSecuredScheme } = require('../../utils/loanFunction')
 
 const { sendDisbursalMessage } = require('../../utils/SMS')
 
@@ -661,24 +661,24 @@ exports.getUnsecuredScheme = async (req, res, next) => {
     return res.status(200).json({ data: unsecuredSchemeApplied })
 }
 
-async function getSecuredScheme(securedSchemeId) {
-    let securedScheme = await models.scheme.findOne({
-        where: { id: securedSchemeId },
-        // attributes: ['id'],
-        order: [
-            [models.schemeInterest, 'days', 'asc']
-        ],
-        include: [{
-            model: models.schemeInterest,
-            as: 'schemeInterest',
-            attributes: ['days', 'interestRate']
-        }, {
-            model: models.scheme,
-            as: 'unsecuredScheme'
-        }]
-    })
-    return securedScheme
-}
+// async function getSecuredScheme(securedSchemeId) {
+//     let securedScheme = await models.scheme.findOne({
+//         where: { id: securedSchemeId },
+//         // attributes: ['id'],
+//         order: [
+//             [models.schemeInterest, 'days', 'asc']
+//         ],
+//         include: [{
+//             model: models.schemeInterest,
+//             as: 'schemeInterest',
+//             attributes: ['days', 'interestRate']
+//         }, {
+//             model: models.scheme,
+//             as: 'unsecuredScheme'
+//         }]
+//     })
+//     return securedScheme
+// }
 
 
 async function getUnsecuredScheme(partnerId, amount) {
@@ -2720,43 +2720,43 @@ exports.getBankInfo = async (req, res, next) => {
         }
     }
 
-    if (type == 'RTGS'){
-            ws.cell(1, 1).string('Mode of Payment').style(style);
-            ws.cell(1, 2).string('Amount').style(style);
-            ws.cell(1, 3).string('Date').style(style);
-            ws.cell(1, 4).string('Customer Name').style(style);
-            ws.cell(1, 5).string('Customer Bank Account Number').style(style);
-            ws.cell(1, 6).string('Blank').style(style);
-            ws.cell(1, 7).string('Blank').style(style);
-            ws.cell(1, 8).string('Debited Account Number').style(style);
-            ws.cell(1, 9).string('Loan Number Should be unique').style(style);
-            ws.cell(1, 10).string('IFSC Code').style(style);
-            ws.cell(1, 11).string('Filled in 11').style(style);
-    
-            ws.cell(2, 1).string('R').style(style);
-            ws.cell(2, 2).string(loan.customerLoan[0].loanAmount).style(style);
-            ws.cell(2, 3).string(date).style(style);
-            ws.cell(2, 4).string(customerName).style(style);
-            ws.cell(2, 5).string(customerAccountNumber).style(style);
-    
-            ws.cell(2, 8).string('920020032503725').style(style);
-            ws.cell(2, 9).string(loan.customerLoan[0].loanUniqueId).style(style);
-            ws.cell(2, 10).string('UTIB0001705').style(style);
-            ws.cell(2, 11).string('11').style(style);
-    
-            if (loan.customerLoan.length > 1) {
-                ws.cell(3, 1).string('R').style(style);
-                ws.cell(3, 2).string(loan.customerLoan[1].loanAmount).style(style);
-                ws.cell(3, 3).string(date).style(style);
-                ws.cell(3, 4).string(customerName).style(style);
-                ws.cell(3, 5).string(customerAccountNumber).style(style);
-    
-                ws.cell(3, 8).string('920020032503725').style(style);
-                ws.cell(3, 9).string(loan.customerLoan[1].loanUniqueId).style(style);
-                ws.cell(3, 10).string('UTIB0001705').style(style);
-                ws.cell(3, 11).string('11').style(style);
-            }
+    if (type == 'RTGS') {
+        ws.cell(1, 1).string('Mode of Payment').style(style);
+        ws.cell(1, 2).string('Amount').style(style);
+        ws.cell(1, 3).string('Date').style(style);
+        ws.cell(1, 4).string('Customer Name').style(style);
+        ws.cell(1, 5).string('Customer Bank Account Number').style(style);
+        ws.cell(1, 6).string('Blank').style(style);
+        ws.cell(1, 7).string('Blank').style(style);
+        ws.cell(1, 8).string('Debited Account Number').style(style);
+        ws.cell(1, 9).string('Loan Number Should be unique').style(style);
+        ws.cell(1, 10).string('IFSC Code').style(style);
+        ws.cell(1, 11).string('Filled in 11').style(style);
+
+        ws.cell(2, 1).string('R').style(style);
+        ws.cell(2, 2).string(loan.customerLoan[0].loanAmount).style(style);
+        ws.cell(2, 3).string(date).style(style);
+        ws.cell(2, 4).string(customerName).style(style);
+        ws.cell(2, 5).string(customerAccountNumber).style(style);
+
+        ws.cell(2, 8).string('920020032503725').style(style);
+        ws.cell(2, 9).string(loan.customerLoan[0].loanUniqueId).style(style);
+        ws.cell(2, 10).string('UTIB0001705').style(style);
+        ws.cell(2, 11).string('11').style(style);
+
+        if (loan.customerLoan.length > 1) {
+            ws.cell(3, 1).string('R').style(style);
+            ws.cell(3, 2).string(loan.customerLoan[1].loanAmount).style(style);
+            ws.cell(3, 3).string(date).style(style);
+            ws.cell(3, 4).string(customerName).style(style);
+            ws.cell(3, 5).string(customerAccountNumber).style(style);
+
+            ws.cell(3, 8).string('920020032503725').style(style);
+            ws.cell(3, 9).string(loan.customerLoan[1].loanUniqueId).style(style);
+            ws.cell(3, 10).string('UTIB0001705').style(style);
+            ws.cell(3, 11).string('11').style(style);
         }
+    }
 
     return wb.write(`${Date.now()}.xlsx`, res)
 }
