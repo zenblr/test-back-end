@@ -909,8 +909,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
             const controls = this.OrnamentsData.at(index) as FormGroup;
             controls.controls.id.patchValue(res.ornaments[index].id)
           }
-          if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
-            this.loanTransfer.emit(res.loanTransferData.loanTransfer.disbursedLoanAmount)
+          if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.outstandingLoanAmount) {
+            this.loanTransfer.emit(res.loanTransferData.loanTransfer.outstandingLoanAmount)
           }
           if (res.newLoanAmount) {
             this.partPayment.emit(res.newLoanAmount)

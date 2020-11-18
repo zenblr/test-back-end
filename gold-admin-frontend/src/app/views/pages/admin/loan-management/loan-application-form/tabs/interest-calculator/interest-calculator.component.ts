@@ -149,7 +149,7 @@ export class InterestCalculatorComponent implements OnInit {
           }
           if (finalLoan.masterLoan.isLoanTransfer) {
             this.controls.finalLoanAmount.disable()
-            this.controls.finalLoanAmount.patchValue(finalLoan.masterLoan.loanTransfer.disbursedLoanAmount)
+            this.controls.finalLoanAmount.patchValue(finalLoan.masterLoan.loanTransfer.outstandingLoanAmount)
             this.transferLoan = true;
             if(changes.totalAmt.currentValue <= Number(this.controls.finalLoanAmount.value)){
               this.controls.loanTransferExtraAmount.disable()
