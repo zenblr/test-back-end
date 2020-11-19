@@ -32,6 +32,7 @@ export class LoanTransferComponent implements OnInit {
   disabledForm: boolean;
   permission: any;
   action: any;
+  amount: any = 0;
 
   constructor(
     private custClassificationService: CustomerClassificationService,
@@ -135,8 +136,10 @@ export class LoanTransferComponent implements OnInit {
             this.approvalForm.disable()
           }
 
+          this.amount = res.data.masterLoan.loanTransfer.disbursedLoanAmount
           this.disbursalForm.patchValue(res.data.masterLoan.loanTransfer)
-          this.disbursalForm.patchValue(res.data)
+          this.disbursalForm.patchValue({loanUniqueId:res.data.loanUniqueId})
+          this.ref.detectChanges()
         }
         this.masterAndLoanIds = { loanId: res.data.masterLoan.id, masterLoanId: res.data.masterLoanId }
       }
@@ -160,13 +163,14 @@ export class LoanTransferComponent implements OnInit {
     })
 
     this.disbursalForm.controls.processingCharge.valueChanges.subscribe(res => {
-      if (this.disbursalForm.controls.processingCharge.value) {
+      if (Number(this.disbursalForm.controls.processingCharge.value)) {
 
-        if (this.disbursalForm.controls.processingCharge.value > this.disbursalForm.controls.disbursedLoanAmount.value) {
+        if (Number(this.amount) < Number(this.disbursalForm.controls.processingCharge.value)) {
           this.disbursalForm.controls.processingCharge.setErrors({ lessThan: true })
+          return
         }
 
-        let amt = this.disbursalForm.controls.disbursedLoanAmount.value - this.disbursalForm.controls.processingCharge.value
+        let amt = this.amount - this.disbursalForm.controls.processingCharge.value
         this.disbursalForm.controls.disbursedLoanAmount.patchValue(amt)
       }
     })
@@ -249,6 +253,7 @@ export class LoanTransferComponent implements OnInit {
         if (res) {
           if (this.approvalForm.controls.loanTransferStatusForBM.value == 'approved') {
             this.approvalForm.disable()
+            this.amount = res.disbursedLoanAmount
             this.disbursalForm.patchValue(res)
             if (res.loanCurrentStage && this.permission.loanTransferDisbursal) {
               let stage = Number(res.loanCurrentStage) - 1
