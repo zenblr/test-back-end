@@ -910,7 +910,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
             controls.controls.id.patchValue(res.ornaments[index].id)
           }
           if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.outstandingLoanAmount) {
-            this.loanTransfer.emit(res.loanTransferData.loanTransfer.outstandingLoanAmount)
+            this.loanTransfer.emit(res.loanTransferData.loanTransfer)
           }
           if (res.newLoanAmount) {
             this.partPayment.emit(res.newLoanAmount)

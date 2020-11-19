@@ -336,7 +336,7 @@
                         </div>
                         <div class="col-4">
                             <label class="font-weight-bold currency">
-                                {{controls.finalLoanAmount.value | indianCurrencyFormat}}</label>
+                                {{controls.finalLoanAmount.value*1 + controls.loanTransferExtraAmount.value*1 | indianCurrencyFormat}}</label>
                         </div>
                     </div>
                     <div class="row">

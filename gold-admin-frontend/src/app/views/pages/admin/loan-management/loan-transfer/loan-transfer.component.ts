@@ -158,6 +158,18 @@ export class LoanTransferComponent implements OnInit {
         this.approvalForm.controls.reasonByBM.updateValueAndValidity()
       }
     })
+
+    this.disbursalForm.controls.processingCharge.valueChanges.subscribe(res => {
+      if (this.disbursalForm.controls.processingCharge.value) {
+
+        if (this.disbursalForm.controls.processingCharge.value > this.disbursalForm.controls.disbursedLoanAmount.value) {
+          this.disbursalForm.controls.processingCharge.setErrors({ lessThan: true })
+        }
+
+        let amt = this.disbursalForm.controls.disbursedLoanAmount.value - this.disbursalForm.controls.processingCharge.value
+        this.disbursalForm.controls.disbursedLoanAmount.patchValue(amt)
+      }
+    })
   }
 
   stage(event) {
@@ -179,6 +191,7 @@ export class LoanTransferComponent implements OnInit {
       reason: ['', Validators.required]
     })
     this.disbursalForm = this.fb.group({
+      processingCharge: ['', Validators.required],
       disbursedLoanAmount: [],
       loanUniqueId: [],
       transactionId: ['', Validators.required]

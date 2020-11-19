@@ -173,7 +173,8 @@
     <div class="row kt-margin-t-15">
         <!-- loan ornaments -->
         <div class="col-12 card kt-padding-15" *ngIf="masterLoanId">
-            <label class="font-weight-bold text-color kt-margin-b-10 kt-margin-t-15">R.P.G-{{details?.loanOrnamentsDetail[0]?.currentGoldRate}}</label>
+            <label
+                class="font-weight-bold text-color kt-margin-b-10 kt-margin-t-15">R.P.G-{{details?.loanOrnamentsDetail[0]?.currentGoldRate}}</label>
             <label class="font-weight-bold text-color kt-margin-b-25 ">Ornaments - Total
                 {{details?.loanOrnamentsDetail?.length}} Ornaments</label>
             <mat-tab-group style="min-height: 300px;">
@@ -525,6 +526,48 @@
                             [src]="details?.scrapDocument?.saleInvoiceImage[0]">
                     </div>
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Sale Invoice</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row kt-margin-t-15" *ngIf="details.loanTransfer">
+        <div class="col-12 card kt-padding-15">
+            <label class="font-weight-bold text-color kt-margin-b-25 kt-margin-t-25">Loan Transfer Documents</label>
+            <div class="row justify-content-center kt-padding-t-15">
+
+            </div>
+            <!-- loan documents -->
+            <div class="row" *ngIf="masterLoanId">
+                <div class="col">
+                    <div class="pdf" (click)="preview(details.loanTransfer.declarationImage[0])">
+                        <iframe [src]="details.loanTransfer.declarationImage[0] | safe : 'resourceUrl'"
+                            scrolling="no" *ngIf="pdf?.declarationImage" height="255"></iframe>
+                    </div>
+                    <img *ngIf="!pdf?.declarationImage" class="packets"
+                        (click)="viewPackets(details.loanTransfer.declarationImage[0])"
+                        [src]="details.loanTransfer.declarationImage[0]">
+                    <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Declaration</label>
+                </div>
+                <div class="col" *ngFor="let pawncopy of details.loanTransfer.pawnTicketImage; index as i">
+                    <div class="pdf" (click)="preview(pawncopy)">
+                        <iframe [src]="pawncopy | safe : 'resourceUrl'" scrolling="no" *ngIf="isPdf(pawncopy)"
+                            height="255"></iframe>
+                    </div>
+                    <img *ngIf="!isPdf(pawncopy)" class="packets" [src]="pawncopy" (click)="viewPackets(pawncopy)">
+                    <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Pawn Copy {{i+1}}</label>
+                </div>
+                <div class="col">
+                    <div class="pdf" (click)="preview(details.loanTransfer.signedCheque[0])">
+                        <iframe
+                            [src]="details.loanTransfer.signedCheque[0] | safe : 'resourceUrl'"
+                            scrolling="no" *ngIf="pdf?.signedChequeImage" height="255"></iframe>
+                    </div>
+                    <img *ngIf="!pdf?.signedChequeImage" class="packets"
+                        (click)="viewPackets(details.loanTransfer.signedCheque[0])"
+                        [src]="details.loanTransfer.signedCheque[0]">
+                    <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Signed Cheque
+                    </label>
                 </div>
             </div>
         </div>

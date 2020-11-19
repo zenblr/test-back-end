@@ -322,6 +322,27 @@
                             <div class="col-6">
                                 <div class="row">
                                     <div class="col-4 form-label">
+                                        <label for="">Processing Charge</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" placeholder="1000000" ktWeight
+                                            formControlName="processingCharge" [class.isError]="disbursalForm.controls.processingCharge.invalid && disbursalForm.controls.processingCharge.touched">
+                                            <mat-error
+                                                *ngIf="disbursalForm.controls.processingCharge.invalid && disbursalForm.controls.processingCharge.touched">
+                                                Field Required
+                                            </mat-error>
+                                            <mat-error
+                                                *ngIf="disbursalForm.controls.processingCharge.invalid && disbursalForm.controls.processingCharge.errors?.lessThan">
+                                               <small>processingCharge should be less then disbursed amount</small>
+                                            </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center kt-padding-t-25">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
                                         <label for="">Disbursed Loan Amount</label>
                                     </div>
                                     <div class="col-6">
