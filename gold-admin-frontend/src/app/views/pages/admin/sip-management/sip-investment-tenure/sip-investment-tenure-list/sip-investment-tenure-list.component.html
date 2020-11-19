@@ -5,12 +5,12 @@
 
                 <ng-container matColumnDef="sipInvestmentTenure">
                     <mat-header-cell *matHeaderCellDef>Sip Investment Tenure</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.leadName}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.investmentTenure}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="sipInvestmentTenureStatus">
                     <mat-header-cell *matHeaderCellDef>Sip Investment Tenure Status</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.sourceName}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.investmentTenureStatus}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="action">
@@ -18,10 +18,10 @@
                     <mat-cell *matCellDef="let item">
                         <div [ngStyle]="{'display': 'inherit'}"
                             *ngxPermissionsOnly="['editLeadSource', 'deleteLeadSource']">
-                            <span class="kt-pointer" (click)="editLeadSource(item)"
+                            <span class="kt-pointer" (click)="editInvestmentTenure(item)"
                                 *ngxPermissionsOnly="['editLeadSource']">Edit</span>
                             <div class="px-2">|</div>
-                            <span class="kt-pointer text-danger" (click)="deleteLeadSource(item)"
+                            <span class="kt-pointer text-danger" (click)="deleteInvestmentTenure(item)"
                                 *ngxPermissionsOnly="['deleteLeadSource']">Delete</span>
                         </div>
                     </mat-cell>

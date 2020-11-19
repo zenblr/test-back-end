@@ -34,7 +34,7 @@ export class SipInvestmentTenureListComponent implements OnInit {
     this.sipInvestmentTenureService.openModal$.pipe(
       map(res => {
         if (res) {
-          this.addLeadSource();
+          this.addInvestmentTenure();
         }
       }),
       takeUntil(this.destroy$)).subscribe();
@@ -63,7 +63,7 @@ export class SipInvestmentTenureListComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    this.dataSource.getLeadSources(1, 25, this.searchValue);
+    this.dataSource.getInvestmentTenure(1, 25, this.searchValue);
   }
 
   ngOnDestroy() {
@@ -81,13 +81,13 @@ export class SipInvestmentTenureListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.getLeadSources(from, to, this.searchValue);
+    this.dataSource.getInvestmentTenure(from, to, this.searchValue);
   }
 
-  addLeadSource() {
+  addInvestmentTenure() {
     const dialogRef = this.dialog.open(SipInvestmentTenureAddComponent, {
       data: { action: 'add' },
-      width: '400px',
+      width: '500px',
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -97,11 +97,11 @@ export class SipInvestmentTenureListComponent implements OnInit {
     });
   }
 
-  editLeadSource(item) {
+  editInvestmentTenure(item) {
     const dialogRef = this.dialog.open(SipInvestmentTenureAddComponent,
       {
-        data: { leadSourceData: item, action: 'edit' },
-        width: '400px'
+        data: { sipInvestmentTenure: item, action: 'edit' },
+        width: '500px'
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -110,16 +110,16 @@ export class SipInvestmentTenureListComponent implements OnInit {
     });
   }
 
-  deleteLeadSource(_item) {
+  deleteInvestmentTenure(_item) {
     const role = _item;
-    const _title = 'Delete Lead Source';
-    const _description = 'Are you sure you want to permanently delete this Lead Source?';
-    const _waitDesciption = 'Lead Source is deleting...';
-    const _deleteMessage = `Lead Source has been deleted`;
+    const _title = 'Delete SIP Investment Tenure ';
+    const _description = 'Are you sure you want to permanently delete this SIP Investment Tenure?';
+    const _waitDesciption = 'SIP Investment Tenure is deleting...';
+    const _deleteMessage = `SIP Investment Tenure has been deleted`;
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.sipInvestmentTenureService.deleteLeadSource(role.id).subscribe(successDelete => {
+        this.sipInvestmentTenureService.deleteInvestmentTenure(role.id).subscribe(successDelete => {
           this.toastr.success(_deleteMessage);
           this.loadPage();
         },

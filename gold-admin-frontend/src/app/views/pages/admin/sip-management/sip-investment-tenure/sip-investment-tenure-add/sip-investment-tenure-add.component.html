@@ -4,31 +4,45 @@
         <form [formGroup]="SipInvestmentTenureForm">
             <div class="row ">
                 <div class="col-12">
+                    
                     <div class="row justify-content-center kt-margin-t-10">
                         <div class="col-4 form-label">
-                            <label class="kt-padding-l-10 mandatory">Sip Investment Tenure</label>
+                            <label class="kt-padding-l-10 mandatory">SIP Investment Tenure</label>
                         </div>
-                        <div class="col-8">
-                            <input type="text" class="form-control text-capitalize" formControlName="sipInvestmentTenure"
-                                [class.isError]="controls.sipInvestmentTenure.invalid &&  controls.sipInvestmentTenure.touched">
-                            <mat-error *ngIf="controls.sipInvestmentTenure.touched && controls.sipInvestmentTenure.errors?.required">
-                                Required field
-                            </mat-error>
+                        <div class="col-12 col-lg-8">
+                            <select formControlName="investmentTenure" class="form-control"
+                                [class.isError]="SipInvestmentTenureForm.controls.investmentTenure.touched && SipInvestmentTenureForm.controls.investmentTenure.invalid">
+                                <option value="">Select Month/Year</option>
+                                <option *ngFor="let tenure of investmentTenureList" [value]="tenure.value">
+                            {{tenure?.name}}
+                        </option>
+                            </select>
+                            <!-- <div
+                        *ngIf="newSipForm.controls.bankId.touched && newSipForm.controls.bankId.invalid">
+                        <mat-error *ngIf="newSipForm.controls.bankId.errors?.required">
+                            Required field
+                        </mat-error>
+                    </div> -->
                         </div>
                     </div>
                     <div class="row justify-content-center kt-margin-t-10">
                         <div class="col-4 form-label">
-                            <label class="kt-padding-l-10 mandatory">Sip Investment Tenure</label>
+                            <label class="kt-padding-l-10 mandatory">SIP Investment Tenure</label>
                         </div>
-                        <div class="col-8">
-                            <input type="text" class="form-control " formControlName="sipInvestmentTenureStatus"
-                                [class.isError]="controls.sipInvestmentTenureStatus.invalid &&  controls.sipInvestmentTenureStatus.touched">
-                            <mat-error *ngIf="controls.sipInvestmentTenureStatus.touched && controls.sipInvestmentTenureStatus.errors?.required">
-                                Required field
-                            </mat-error>
-                            <!-- <mat-error *ngIf="controls.leadName.touched && controls.leadName.errors?.pattern">
-                                Invalid Input
-                            </mat-error> -->
+                        <div class="col-12 col-lg-8">
+                            <select formControlName="investmentTenureStatus" class="form-control"
+                                [class.isError]="SipInvestmentTenureForm.controls.investmentTenureStatus.touched && SipInvestmentTenureForm.controls.investmentTenureStatus.invalid">
+                                <option value="">Select Status</option>
+                                <option *ngFor="let status of statusList" [value]="status.value">
+                            {{status?.name}}
+                        </option>
+                            </select>
+                            <!-- <div
+                        *ngIf="newSipForm.controls.bankId.touched && newSipForm.controls.bankId.invalid">
+                        <mat-error *ngIf="newSipForm.controls.bankId.errors?.required">
+                            Required field
+                        </mat-error>
+                    </div> -->
                         </div>
                     </div>
 

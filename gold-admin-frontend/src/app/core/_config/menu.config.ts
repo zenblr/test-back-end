@@ -363,6 +363,18 @@ export class MenuConfig {
 							// permission: !this.modulesArr.includes(3),
 							submenu: [
 								{
+									title: "SIP Application",
+									page: "/admin/sip-management/sip-application",
+								    root: true,
+									bullet: 'dot',
+								},
+								{
+									title: "Sip Trades",
+									page: "/admin/sip-management/sip-trades",
+								    root: true,
+									bullet: 'dot',
+								},
+								{
 									title: "Masters",
 								    root: true,
 									bullet: 'dot',
@@ -378,18 +390,6 @@ export class MenuConfig {
 											permission: false,
 										},
 									]
-								},
-								{
-									title: "Create Sip",
-									page: "/admin/sip-management/create-sip",
-								    root: true,
-									bullet: 'dot',
-								},
-								{
-									title: "Sip Trades",
-									page: "/admin/sip-management/sip-trades",
-								    root: true,
-									bullet: 'dot',
 								},
 							]
 						},	

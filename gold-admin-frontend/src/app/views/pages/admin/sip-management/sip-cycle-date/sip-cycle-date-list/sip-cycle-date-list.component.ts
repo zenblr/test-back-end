@@ -34,7 +34,7 @@ export class SipCycleDateListComponent implements OnInit {
     this.sipCycleDateService.openModal$.pipe(
       map(res => {
         if (res) {
-          this.addLeadSource();
+          this.addCycleDate();
         }
       }),
       takeUntil(this.destroy$)).subscribe();
@@ -63,7 +63,7 @@ export class SipCycleDateListComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    this.dataSource.getLeadSources(1, 25, this.searchValue);
+    this.dataSource.getCycleDate(1, 25, this.searchValue);
   }
 
   ngOnDestroy() {
@@ -81,13 +81,13 @@ export class SipCycleDateListComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.getLeadSources(from, to, this.searchValue);
+    this.dataSource.getCycleDate(from, to, this.searchValue);
   }
 
-  addLeadSource() {
+  addCycleDate() {
     const dialogRef = this.dialog.open(SipCycleDateAddComponent, {
       data: { action: 'add' },
-      width: '400px',
+      width: '500px',
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -97,11 +97,11 @@ export class SipCycleDateListComponent implements OnInit {
     });
   }
 
-  editLeadSource(item) {
+  editCycleDate(item) {
     const dialogRef = this.dialog.open(SipCycleDateAddComponent,
       {
-        data: { leadSourceData: item, action: 'edit' },
-        width: '400px'
+        data: { sipCycleData: item, action: 'edit' },
+        width: '500px'
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -110,16 +110,16 @@ export class SipCycleDateListComponent implements OnInit {
     });
   }
 
-  deleteLeadSource(_item) {
+  deleteCycleDate(_item) {
     const role = _item;
-    const _title = 'Delete Lead Source';
-    const _description = 'Are you sure you want to permanently delete this Lead Source?';
-    const _waitDesciption = 'Lead Source is deleting...';
-    const _deleteMessage = `Lead Source has been deleted`;
+    const _title = 'Delete SIP Cycle Date';
+    const _description = 'Are you sure you want to permanently delete this SIP Cycle Date?';
+    const _waitDesciption = 'SIP Cycle Date is deleting...';
+    const _deleteMessage = `SIP Cycle Date has been deleted`;
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.sipCycleDateService.deleteLeadSource(role.id).subscribe(successDelete => {
+        this.sipCycleDateService.deleteCycleDate(role.id).subscribe(successDelete => {
           this.toastr.success(_deleteMessage);
           this.loadPage();
         },

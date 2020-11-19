@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { map, catchError } from 'rxjs/operators';
+import { API_ENDPOINT } from '../../../../app.constant';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,8 @@ export class SipInvestmentTenureService {
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
-  getLeadSources(from, to, search): Observable<any> {
-    return this.http.get(`/api/lead?from=${from}&to=${to}&search=${search}`).pipe(
+  getInvestmentTenure(from, to, search): Observable<any> {
+    return this.http.get(API_ENDPOINT + `api/gold-sip/sip-investment-tenure?from=${from}&to=${to}&search=${search}`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
@@ -25,8 +26,19 @@ export class SipInvestmentTenureService {
     );
   }
 
-  getLeadSourceWithoutPagination(): Observable<any> {
-    return this.http.get(`/api/lead?from=${1}&to=${-1}`).pipe(
+  // getLeadSourceWithoutPagination(): Observable<any> {
+  //   return this.http.get(`/api/gold-sip/sip-cycle-date/get-all-sip-cycle-date?from=${1}&to=${-1}`).pipe(
+  //     map(res => res),
+  //     catchError(err => {
+  //       if (err.error.message)
+  //         this.toastr.error(err.error.message);
+  //       throw (err);
+  //     })
+  //   );
+  // }
+
+  addInvestmentTenure(data): Observable<any> {
+    return this.http.post<any>(API_ENDPOINT + `api/gold-sip/sip-investment-tenure`, data).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
@@ -36,8 +48,8 @@ export class SipInvestmentTenureService {
     );
   }
 
-  addLeadSource(leadName): Observable<any> {
-    return this.http.post<any>(`/api/lead`, { leadName }).pipe(
+  updateInvestmentTenure(id, data): Observable<any> {
+    return this.http.put<any>(API_ENDPOINT + `api/gold-sip/sip-investment-tenure/`+ id,  data ).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
@@ -47,19 +59,8 @@ export class SipInvestmentTenureService {
     );
   }
 
-  updateLeadSource(id, leadName): Observable<any> {
-    return this.http.put<any>(`/api/lead/${id}`, { leadName }).pipe(
-      map(res => res),
-      catchError(err => {
-        if (err.error.message)
-          this.toastr.error(err.error.message);
-        throw (err);
-      })
-    );
-  }
-
-  deleteLeadSource(id): Observable<any> {
-    return this.http.delete<any>(`/api/lead?id=${id}&isActive=false`).pipe(
+  deleteInvestmentTenure(id): Observable<any> {
+    return this.http.delete<any>(API_ENDPOINT + `api/gold-sip/sip-investment-tenure?id=${id}&isActive=false`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)

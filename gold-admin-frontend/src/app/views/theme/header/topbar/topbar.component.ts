@@ -478,23 +478,18 @@ export class TopbarComponent implements OnInit {
 			this.permissionType = "addLeadSource";
 		}
 		if (this.path == "sip-investment-tenure") {
-			this.value1 = "Add Sip";
+			this.value1 = "Add Investment Tenure";
 			this.showInput = true;
 			this.dataSourceHeader();
 			// this.permissionType = "addLeadSource";
 		}
 		if (this.path == "sip-cycle-date") {
-			this.value1 = "Add Sip";
+			this.value1 = "Add Cycle Date";
 			this.showInput = true;
 			this.dataSourceHeader();
 			// this.permissionType = "addLeadSource";
 		}
-		if (this.path == "create-sip") {
-			this.value1 = "Add Sip";
-			this.showInput = true;
-			this.dataSourceHeader();
-			// this.permissionType = "addLeadSource";
-		}
+	
 		if (this.path == "sip-trades") {
 			this.value1 = "Add Trades";
 			this.showInput = true;
@@ -961,15 +956,13 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'sip-investment-tenure') {
 			this.sipInvestmentTenureService.openModal.next(true)
 		}
-		if (this.path == 'sip-date-cycle') {
+		if (this.path == 'sip-cycle-date') {
 			this.sipCycleDateService.openModal.next(true)
 		}
 		if (this.path == 'sip-trades') {
 			this.sipTradesService.openModal.next(true)
 		}
-		if (this.path == 'create-sip') {
-			this.createSipService.openModal.next(true)
-		}
+	
 		if (this.path == 'lead-source') {
 			this.leadSourceService.openModal.next(true)
 		}

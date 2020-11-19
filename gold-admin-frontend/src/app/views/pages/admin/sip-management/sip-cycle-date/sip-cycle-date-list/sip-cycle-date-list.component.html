@@ -4,13 +4,13 @@
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="sipCycleDate">
-                    <mat-header-cell *matHeaderCellDef>Sip Cycle Date</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.leadName}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef>SIP Cycle Date</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.cycleDate}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="sipCycleDateStatus">
-                    <mat-header-cell *matHeaderCellDef>Sip Cycle DateStatus</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.sourceName}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef>SIP Cycle DateStatus</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.cycleDateStatus}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="action">
@@ -18,10 +18,10 @@
                     <mat-cell *matCellDef="let item">
                         <div [ngStyle]="{'display': 'inherit'}"
                             *ngxPermissionsOnly="['editLeadSource', 'deleteLeadSource']">
-                            <span class="kt-pointer" (click)="editLeadSource(item)"
+                            <span class="kt-pointer" (click)="editCycleDate(item)"
                                 *ngxPermissionsOnly="['editLeadSource']">Edit</span>
                             <div class="px-2">|</div>
-                            <span class="kt-pointer text-danger" (click)="deleteLeadSource(item)"
+                            <span class="kt-pointer text-danger" (click)="deleteCycleDate(item)"
                                 *ngxPermissionsOnly="['deleteLeadSource']">Delete</span>
                         </div>
                     </mat-cell>

@@ -13,6 +13,25 @@ export class SipInvestmentTenureAddComponent implements OnInit {
 
   SipInvestmentTenureForm: FormGroup;
   title: string;
+  statusList = [
+		{ value: 'active', name: 'ACTIVE' },
+		{ value: 'inactive', name: 'IN-ACTIVE' },
+  ];
+  investmentTenureList = [
+    { value: '6 month', name: '6 month' },
+    { value: '1 year', name: '1 year' },
+    { value: '2 year', name: '2 year' },
+    { value: '3 year', name: '3 year' },
+    { value: '4 year', name: '4 year' },
+    { value: '5 year', name: '5 year' },
+    { value: '6 year', name: '6 year' },
+    { value: '7 year', name: '7 year' },
+    { value: '8 year', name: '8 year' },
+    { value: '9 year', name: '9 year' },
+    { value: '10 year', name: '10 year' },
+    { value: '11 year', name: '11 year' },
+    { value: '12 year', name: '12 year' },
+  ];
   constructor(
     public dialogRef: MatDialogRef<SipInvestmentTenureAddComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -29,18 +48,18 @@ export class SipInvestmentTenureAddComponent implements OnInit {
   setForm() {
     console.log(this.data)
     if (this.data.action == 'add') {
-      this.title = 'Add Lead Source'
+      this.title = 'Add Investment Tenure'
     } else if (this.data.action == 'edit') {
-      this.title = 'Edit SIP'
-      this.SipInvestmentTenureForm.patchValue(this.data.leadSourceData);
+      this.title = 'Edit Investment Tenure'
+      this.SipInvestmentTenureForm.patchValue(this.data.sipInvestmentTenure)
     }
   }
 
   initForm() {
     this.SipInvestmentTenureForm = this.fb.group({
       id: [],
-      sipInvestmentTenure: ['', [Validators.required]],
-      sipInvestmentTenureStatus: ['', [Validators.required]],
+      investmentTenure: ['', [Validators.required]],
+      investmentTenureStatus: ['', [Validators.required]],
      
     })
   }
@@ -58,11 +77,10 @@ export class SipInvestmentTenureAddComponent implements OnInit {
       this.SipInvestmentTenureForm.markAllAsTouched()
       return
     }
-    const data = this.SipInvestmentTenureForm.value;
     const id = this.controls.id.value;
 
     if (this.data.action == 'edit') {
-      this.sipInvestmentTenureService.updateLeadSource(id, data.leadName).subscribe(res => {
+      this.sipInvestmentTenureService.updateInvestmentTenure(id, this.SipInvestmentTenureForm.value).subscribe(res => {
         if (res) {
           const msg = 'Lead Updated Sucessfully';
           this.toastr.success(msg);
@@ -71,7 +89,7 @@ export class SipInvestmentTenureAddComponent implements OnInit {
       });
 
     } else {
-      this.sipInvestmentTenureService.addLeadSource(data.leadName).subscribe(res => {
+      this.sipInvestmentTenureService.addInvestmentTenure( this.SipInvestmentTenureForm.value).subscribe(res => {
         if (res) {
           const msg = 'Lead Added Successfully';
           this.toastr.success(msg);

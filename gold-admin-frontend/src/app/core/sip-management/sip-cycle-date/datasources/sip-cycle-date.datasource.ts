@@ -15,12 +15,12 @@ export class SipCycleDateDatasource extends BaseDataSource {
         super();
     }
 
-    getLeadSources(from, to, search) {
+    getCycleDate(from, to, search) {
         this.loadingSubject.next(true);
 
         // this.entitySubject.next(this.leads); // delete this
 
-        this.sipCycleDateService.getLeadSources(from, to, search)
+        this.sipCycleDateService.getCycleDate(from, to, search)
             .pipe(
                 map(
                     report => {

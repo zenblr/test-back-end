@@ -440,6 +440,9 @@ export class PageConfig {
 				    "create-sip": {
 				        page: { title: "Create SIP", desc: "" },
 					},
+					"sip-application": {
+				        page: { title: "SIP Application", desc: "" },
+					},
 					
 				    "sip-trades": {
 				        page: { title: "SIP Trades", desc: "" },
