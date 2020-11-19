@@ -1,0 +1,84 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="mat-table__wrapper">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="sipapplicationdate">
+                    <mat-header-cell *matHeaderCellDef>SIP application date</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.cycleDate}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="customerId">
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.cycleDateStatus}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="sipApplicationnumber">
+                    <mat-header-cell *matHeaderCellDef>SIP Application number</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.cycleDate}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="metalType">
+                    <mat-header-cell *matHeaderCellDef>Metal Type</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.cycleDateStatus}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="sipInvestmentAmount">
+                    <mat-header-cell *matHeaderCellDef>SIP Investment Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.cycleDate}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="sipInvestmentTenure">
+                    <mat-header-cell *matHeaderCellDef>SIP Investment Tenure</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.cycleDateStatus}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="sipStartDate">
+                    <mat-header-cell *matHeaderCellDef>SIP Start Date</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.cycleDate}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="sipEndDate">
+                    <mat-header-cell *matHeaderCellDef>SIP END Date</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.cycleDateStatus}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.cycleDate}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="depositType">
+                    <mat-header-cell *matHeaderCellDef>Deposit Type</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.cycleDateStatus}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="source">
+                    <mat-header-cell *matHeaderCellDef>Source</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.cycleDate}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="editSip">
+                    <mat-header-cell *matHeaderCellDef>EDIT SIP</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.cycleDateStatus}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="renewSip">
+                    <mat-header-cell *matHeaderCellDef>Renew SIP</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.cycleDate}}</mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+            </mat-table>
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+        </div>
+        <div class="mat-table__bottom">
+            <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
+                [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

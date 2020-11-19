@@ -87,7 +87,7 @@ export class SipCycleDateListComponent implements OnInit {
   addCycleDate() {
     const dialogRef = this.dialog.open(SipCycleDateAddComponent, {
       data: { action: 'add' },
-      width: '500px',
+      width: '550px',
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -101,7 +101,7 @@ export class SipCycleDateListComponent implements OnInit {
     const dialogRef = this.dialog.open(SipCycleDateAddComponent,
       {
         data: { sipCycleData: item, action: 'edit' },
-        width: '500px'
+        width: '550px'
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {

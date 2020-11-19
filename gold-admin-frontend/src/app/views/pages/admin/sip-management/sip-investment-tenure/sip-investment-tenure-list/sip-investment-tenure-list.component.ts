@@ -87,7 +87,7 @@ export class SipInvestmentTenureListComponent implements OnInit {
   addInvestmentTenure() {
     const dialogRef = this.dialog.open(SipInvestmentTenureAddComponent, {
       data: { action: 'add' },
-      width: '500px',
+      width: '550px',
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -101,7 +101,7 @@ export class SipInvestmentTenureListComponent implements OnInit {
     const dialogRef = this.dialog.open(SipInvestmentTenureAddComponent,
       {
         data: { sipInvestmentTenure: item, action: 'edit' },
-        width: '500px'
+        width: '550px'
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {

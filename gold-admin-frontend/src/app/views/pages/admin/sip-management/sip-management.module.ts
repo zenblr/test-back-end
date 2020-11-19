@@ -17,6 +17,7 @@ import { SipCycleDateAddComponent } from './sip-cycle-date/sip-cycle-date-add/si
 import { SipManagementComponent } from './sip-management.component';
 import { CreateSipComponent } from './create-sip/create-sip.component';
 import { SipTradesComponent } from './sip-trades/sip-trades.component';
+import { SipApplicationComponent } from './sip-application/sip-application.component';
 
 
 
@@ -33,6 +34,10 @@ const routes: Routes = [
       {
         path: 'sip-trades',
         component: SipTradesComponent
+      },
+      {
+        path: 'sip-application',
+        component: SipApplicationComponent
       },
       {
         path: 'create-sip',
@@ -53,6 +58,7 @@ const routes: Routes = [
 	SipInvestmentTenureListComponent,
 	CreateSipComponent,
 	SipTradesComponent,
+	SipApplicationComponent,
  
   ],
   imports: [

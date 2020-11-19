@@ -3,6 +3,7 @@ import { ToastrComponent } from '../../../../partials/components/toastr/toastr.c
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CreateSipService } from '../../../../../core/sip-management';
 import { from } from 'rxjs';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'kt-create-sip',
@@ -20,6 +21,7 @@ export class CreateSipComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private ref: ChangeDetectorRef,
+    private router: Router,
   
   ) { }
 
@@ -61,6 +63,9 @@ export class CreateSipComponent implements OnInit {
     //     this.toastr.errorToastr(err.error.message);
     //     throw err;
     //   })).subscribe();
+  }
+  createSip() {
+      this.router.navigate(['admin/sip-management/sip-application']);
   }
 
 }

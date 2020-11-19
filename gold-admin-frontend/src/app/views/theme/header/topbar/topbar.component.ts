@@ -59,7 +59,7 @@ import { DepositService } from "../../../../core/funds-approvals/deposit/service
 import { CronListService } from '../../../../core/cron-list/services/cron-list.service';
 import { SipInvestmentTenureService } from '../../../../core/sip-management';
 import { SipCycleDateService } from '../../../../core/sip-management/sip-cycle-date';
-import { SipTradesService, CreateSipService } from '../../../../core/sip-management';
+import { SipTradesService, CreateSipService, SipApplicationService } from '../../../../core/sip-management';
 
 @Component({
 	selector: "kt-topbar",
@@ -170,7 +170,8 @@ export class TopbarComponent implements OnInit {
 		private cronService: CronListService,
 		private sipCycleDateService: SipCycleDateService,
 		private sipTradesService: SipTradesService,
-		private createSipService: CreateSipService
+		private createSipService: CreateSipService,
+		private sipApplicationService: SipApplicationService
 
 	) {
 
@@ -483,6 +484,12 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader();
 			// this.permissionType = "addLeadSource";
 		}
+		if (this.path == "sip-application") {
+			this.value1 = "Create SIP";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "addLeadSource";
+		}
 		if (this.path == "sip-cycle-date") {
 			this.value1 = "Add Cycle Date";
 			this.showInput = true;
@@ -673,6 +680,9 @@ export class TopbarComponent implements OnInit {
 			this.showBackButton = true;
 		}
 		if (location.href.includes("view-scrap/")) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes("admin/sip-management/create-sip")) {
 			this.showBackButton = true;
 		}
 		if (location.href.includes("packet-image-upload")) {
@@ -958,6 +968,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'sip-cycle-date') {
 			this.sipCycleDateService.openModal.next(true)
+		}
+		if (this.path == 'sip-application') {
+			this.router.navigate(['admin/sip-management/create-sip']);
 		}
 		if (this.path == 'sip-trades') {
 			this.sipTradesService.openModal.next(true)
