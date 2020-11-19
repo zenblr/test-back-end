@@ -10,9 +10,10 @@
                                 <label class="mandatory text-color">Gold Gross Weight</label>
                             </div>
                             <div class="col-6">
-                                <input type="number" class="form-control" formControlName="grossWeight" min="0"
+                                <input type="text" class="form-control" formControlName="grossWeight" min="0"
                                     placeholder="10.50 grams" (blur)="weightCheck();calcGoldDeductionWeight();"
-                                    [class.isError]="controls.grossWeight.touched && controls.grossWeight.invalid">
+                                    [class.isError]="controls.grossWeight.touched && controls.grossWeight.invalid"
+                                    ktWeight>
                                 <mat-error
                                     *ngIf="controls.grossWeight.errors?.required && controls.grossWeight.touched">
                                     Required field
@@ -27,9 +28,10 @@
                                 <label class="mandatory text-color">Gold Deduction Weight</label>
                             </div>
                             <div class="col-6">
-                                <input type="number" class="form-control" formControlName="deductionWeight" min="0"
+                                <input type="text" class="form-control" formControlName="deductionWeight" min="0"
                                     placeholder="2.00 grams" (blur)="weightCheck();calcGoldDeductionWeight();"
-                                    [class.isError]="controls.deductionWeight.touched && controls.deductionWeight.invalid">
+                                    [class.isError]="controls.deductionWeight.touched && controls.deductionWeight.invalid"
+                                    ktWeight>
                                 <mat-error
                                     *ngIf="controls.deductionWeight.errors?.required && controls.deductionWeight.touched">
                                     Required field
@@ -49,7 +51,7 @@
                                 <label class="mandatory text-color">Gold Net Weight</label>
                             </div>
                             <div class="col-6">
-                                <input type="number" class="form-control" formControlName="netWeight"
+                                <input type="text" class="form-control" formControlName="netWeight"
                                     placeholder="8.50 grams"
                                     [class.isError]="controls.netWeight.touched && controls.netWeight.invalid" readonly>
                                 <mat-error *ngIf="controls.netWeight.errors?.required && controls.netWeight.touched">
@@ -63,8 +65,8 @@
                                 <label class="mandatory text-color">Purity %</label>
                             </div>
                             <div class="col-6">
-                                <input type="number" class="form-control" formControlName="purity" min="0"
-                                    placeholder="90 %"
+                                <input type="text" class="form-control" formControlName="purity" min="0"
+                                    placeholder="90 %" ktZeroToHundredWhole
                                     [class.isError]="controls.purity.touched && controls.purity.invalid">
                                 <mat-error *ngIf="controls.purity.errors?.required && controls.purity.touched">
                                     Required field

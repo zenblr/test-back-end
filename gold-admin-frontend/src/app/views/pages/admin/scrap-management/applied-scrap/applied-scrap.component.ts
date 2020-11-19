@@ -49,7 +49,6 @@ export class AppliedScrapComponent implements OnInit {
   ) {
     this.ngxPermission.permissions$.subscribe(res => {
       this.permission = res
-      console.log(res)
     })
 
     this.appliedScrapService.applyFilter$
