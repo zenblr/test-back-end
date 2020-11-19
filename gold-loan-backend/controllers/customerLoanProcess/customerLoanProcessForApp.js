@@ -91,8 +91,17 @@ exports.loanRequest = async (req, res, next) => {
 
             await models.customerLoanPersonalDetail.update({ customerUniqueId, startDate, purpose, kycStatus, createdBy, modifiedBy }, { where: { masterLoanId: masterLoanId }, transaction: t });
 
-            // nominee
-            await models.customerLoanNomineeDetail.update({ nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship, createdBy, modifiedBy }, { where: { masterLoanId: masterLoanId }, transaction: t })
+            // nominee details
+            let checkNominee = await models.customerLoanNomineeDetail.findOne({ where: { masterLoanId: masterLoanId }, transaction: t })
+
+            if (check.isEmpty(checkNominee)) {
+                await models.customerLoanNomineeDetail.create({ loanId, masterLoanId, nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship, createdBy, modifiedBy }, { transaction: t })
+            } else {
+                await models.customerLoanNomineeDetail.update({ nomineeName, nomineeAge, relationship, nomineeType, guardianName, guardianAge, guardianRelationship, createdBy, modifiedBy }, { where: { masterLoanId: masterLoanId }, transaction: t })
+
+            }
+            // nominee details
+
 
             // await models.customerLoanOrnamentsDetail.destroy({ where: { masterLoanId: masterLoanId }, transaction: t });
             // let createdOrnaments = await models.customerLoanOrnamentsDetail.bulkCreate(allOrnmanets, { transaction: t });
@@ -333,6 +342,16 @@ exports.loanRequest = async (req, res, next) => {
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: LOAN_APPLY_FROM_APPRAISER_APP, modifiedBy }, { transaction: t });
         } else {
             await models.customerLoanMaster.update({ customerLoanCurrentStage: '6', modifiedBy }, { where: { id: masterLoanId }, transaction: t })
+
+            let checkBankDetail = await models.customerLoanBankDetail.findOne({ where: { masterLoanId: masterLoanId }, transaction: t });
+
+            //change bank details
+            if (check.isEmpty(checkBankDetail)) {
+                await models.customerLoanBankDetail.create({ loanId, masterLoanId, paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { transaction: t });
+            } else {
+                await models.customerLoanBankDetail.update({ paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
+            }
+            //change bank details
 
             await models.customerLoanBankDetail.update({ paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
 
