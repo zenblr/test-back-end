@@ -1717,7 +1717,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     console.log(fullSecuredAmount, fullUnsecuredAmount, isUnsecuredSchemeApplied, securedLoanUniqueId, unsecuredLoanUniqueId)
-    let checkIsDisbursed = await models.customerLoanDisbursement.findAll({ where: { masterLoanId: masterLoanId } });
+    let checkIsDisbursed = await models.customerLoanDisbursement.findAll({ where: { masterLoanId: masterLoanId , paymentMode:{[Op.not]: 'Loan transfer'}  } });
 
     if (!check.isEmpty(checkIsDisbursed)) {
         return res.status(400).json({ message: `This loan already disbursed` })
