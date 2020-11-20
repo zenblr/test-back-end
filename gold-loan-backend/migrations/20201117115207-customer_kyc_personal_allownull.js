@@ -5,6 +5,11 @@ module.exports = {
     return queryInterface.changeColumn('customer_kyc_personal_detail', 'created_by', {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: true
+    }).then(() => {
+      return queryInterface.changeColumn('customer_kyc_personal_detail', 'modified_by', {
+        type: Sequelize.DataTypes.INTEGER,
+        allowNull: true
+      })
     })
   },
 
