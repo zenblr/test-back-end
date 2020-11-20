@@ -7,6 +7,7 @@ import { LayoutUtilsService } from '../../../../../core/_base/crud';
 import { map, takeUntil, tap, skip, distinctUntilChanged } from 'rxjs/operators';
 import { SipApplicationDatasource, SipApplicationService } from '../../../../../core/sip-management/sip-application'
 import { NavigationEnd, Router } from '@angular/router';
+import { CreateSipComponent } from '../create-sip/create-sip.component';
 @Component({
   selector: 'kt-sip-application',
   templateUrl: './sip-application.component.html',
@@ -15,7 +16,7 @@ import { NavigationEnd, Router } from '@angular/router';
 export class SipApplicationComponent implements OnInit {
 
   dataSource: SipApplicationDatasource;
-  displayedColumns = ['sipapplicationdate', 'customerId', 'sipApplicationnumber', 'metalType', 'sipInvestmentAmount', 'sipInvestmentTenure', 'sipStartDate', 'sipEndDate', 'status', 'depositType', 'source', 'editSip', 'renewSip'];
+  displayedColumns = ['sipapplicationdate', 'customerId', 'sipApplicationnumber', 'metalType', 'sipInvestmentAmount', 'sipInvestmentTenure', 'sipStartDate', 'sipEndDate', 'status', 'depositType', 'source', 'action'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -31,7 +32,13 @@ export class SipApplicationComponent implements OnInit {
     private toastr: ToastrService,
     private layoutUtilsService: LayoutUtilsService,
   ) {
-    
+    this.sipApplicationService.openModal$.pipe(
+      map(res => {
+        if (res) {
+          this.addCycleDate();
+        }
+      }),
+      takeUntil(this.destroy$)).subscribe();
   }
 
   ngOnInit() {
@@ -78,7 +85,53 @@ export class SipApplicationComponent implements OnInit {
     this.dataSource.getCycleDate(from, to, this.searchValue);
   }
 
+  addCycleDate() {
+    const dialogRef = this.dialog.open(CreateSipComponent, {
+      data: { action: 'add' },
+      width: 'auto',
+      height: '550px'
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPage();
+      }
+      this.sipApplicationService.openModal.next(false);
+    });
+  }
 
+  editCycleDate(item) {
+    const dialogRef = this.dialog.open(CreateSipComponent,
+      {
+        data: { sipCreateData: item, action: 'edit' },
+        width: 'auto',
+        height: '550px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPage();
+      }
+    });
+  }
+
+  deleteCycleDate(_item) {
+    const role = _item;
+    const _title = 'Delete SIP Cycle Date';
+    const _description = 'Are you sure you want to permanently delete this SIP Cycle Date?';
+    const _waitDesciption = 'SIP Cycle Date is deleting...';
+    const _deleteMessage = `SIP Cycle Date has been deleted`;
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.sipApplicationService.deleteCycleDate(role.id).subscribe(successDelete => {
+          this.toastr.success(_deleteMessage);
+          this.loadPage();
+        },
+          errorDelete => {
+            this.toastr.error(errorDelete.error.message);
+          });
+      }
+    });
+  }
 
 
 

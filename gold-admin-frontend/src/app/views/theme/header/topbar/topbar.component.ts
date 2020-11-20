@@ -970,7 +970,7 @@ export class TopbarComponent implements OnInit {
 			this.sipCycleDateService.openModal.next(true)
 		}
 		if (this.path == 'sip-application') {
-			this.router.navigate(['admin/sip-management/create-sip']);
+			this.sipApplicationService.openModal.next(true)
 		}
 		if (this.path == 'sip-trades') {
 			this.sipTradesService.openModal.next(true)

@@ -1,7 +1,11 @@
-<div class="row mx-0 mb-5 sip-background-white">
-    <div class="col-11 m-auto">
-        <div class="sip-background-white dg-rounded dg-border p-5">
-            <form [formGroup]="newSipForm" (ngSubmit)="submit()">
+<kt-portlet>
+    <kt-modal-header [title]='title' (action)="action($event)"></kt-modal-header>
+    
+<kt-portlet-body>
+<div class="row mx-0 mt-2 sip-background-white">
+    <div class="col-12 m-auto">
+        <div class="sip-background-white dg-rounded dg-border">
+            <form [formGroup]="createSipForm" (ngSubmit)="submit()">
                 <div class="row mx-0 text-left py-md-3">
                     <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
                         <div class="row">
@@ -10,7 +14,7 @@
                             </div>
                             <div class="col-12 col-lg-8">
                                 <input type="text" placeholder="enter customer Id" class="form-control"
-                                    formControlName="CustomerID" readonly>
+                                    formControlName="customerId" readonly>
                             </div>
                         </div>
                     </div>
@@ -34,8 +38,8 @@
                             </div>
                             <div class="col-12 col-lg-8">
                                 <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                                    formControlName="paymentRecievedDate" [min]="minDate" [max]="maxDate"
-                                    [class.isError]="controls.paymentRecievedDate.touched && controls.paymentRecievedDate.invalid"
+                                    formControlName="applicationDate" [min]="minDate" [max]="maxDate"
+                                    [class.isError]="controls.applicationDate.touched && controls.applicationDate.invalid"
                                     readonly placeholder="4/5/2020" />
                                 <mat-datepicker #picker></mat-datepicker>
                             </div>
@@ -48,7 +52,7 @@
                             </div>
                             <div class="col-12 col-lg-8">
                                 <select formControlName="metalType" class="form-control"
-                                    [class.isError]="newSipForm.controls.investmentTenure.touched && newSipForm.controls.investmentTenure.invalid">
+                                    [class.isError]="controls.metalType.touched && controls.metalType.invalid">
                                     <option value="">Select Metal Type</option>
                                     <!-- <option *ngFor="let bank of bankList" [value]="bank.id">
                                 {{bank?.name}}
@@ -72,7 +76,7 @@
                             </div>
                             <div class="col-12 col-lg-8">
                                 <select formControlName="sipInvestmentTenure" class="form-control"
-                                    [class.isError]="newSipForm.controls.plan.touched && newSipForm.controls.plan.invalid">
+                                    [class.isError]="controls.sipInvestmentTenure.touched && controls.sipInvestmentTenure.invalid">
                                     <option value="">Select SIP Investment Tenure</option>
                                     <!-- <option *ngFor="let bank of bankList" [value]="bank.id">
                                 {{bank?.name}}
@@ -95,7 +99,7 @@
                             </div>
                             <div class="col-12 col-lg-8">
                                 <select formControlName="sipCycleDate" class="form-control"
-                                    [class.isError]="newSipForm.controls.buyDate.touched && newSipForm.controls.buyDate.invalid">
+                                    [class.isError]="controls.sipCycleDate.touched && controls.sipCycleDate.invalid">
                                     <option value="">Select SIP Cycle Date</option>
                                     <!-- <option *ngFor="let bank of bankList" [value]="bank.id">
                                 {{bank?.name}}
@@ -151,13 +155,22 @@
                     </div>
                 </div>
 
-                <div class="row mx-0 py-3">
+                <!-- <div class="row mx-0 py-3">
                     <div class="col-12 text-center">
                         <button class="dg-primary-btn" (click) ="createSip()" type="submit">Submit</button>
-                        <!-- <app-button [type]="'submit'" [value]="'Submit'"></app-button> -->
+                        <app-button [type]="'submit'" [value]="'Submit'"></app-button>
                     </div>
-                </div>
+                </div> -->
             </form>
         </div>
     </div>
 </div>
+</kt-portlet-body>
+<kt-portlet-footer>
+    <div class="p-3">
+        <kt-modal-footer (action)="action($event)" [value]="data.action == 'add' ? 'Add' : 'Update'">
+        </kt-modal-footer>
+    </div>
+
+</kt-portlet-footer>
+</kt-portlet>

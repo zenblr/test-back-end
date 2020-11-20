@@ -9,6 +9,10 @@ import { API_ENDPOINT } from '../../../../app.constant';
   providedIn: 'root'
 })
 export class SipApplicationService {
+  
+  
+  openModal = new BehaviorSubject<any>(false);
+  openModal$ = this.openModal.asObservable();
 
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }

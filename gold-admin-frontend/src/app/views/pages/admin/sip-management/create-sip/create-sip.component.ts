@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy, ViewChild, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, NgZone, ChangeDetectorRef, Inject } from '@angular/core';
 import { ToastrComponent } from '../../../../partials/components/toastr/toastr.component';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CreateSipService } from '../../../../../core/sip-management';
 import { from } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'kt-create-sip',
@@ -14,11 +15,14 @@ export class CreateSipComponent implements OnInit {
 
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   createSipForm: FormGroup;
+  title: string;
   
   minDate = new Date();
 	maxDate = new Date();
 
   constructor(
+    public dialogRef: MatDialogRef<CreateSipComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     private ref: ChangeDetectorRef,
     private router: Router,
@@ -27,6 +31,17 @@ export class CreateSipComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
+    this.setForm();
+  }
+  setForm() {
+    console.log(this.data)
+    if (this.data.action == 'add') {
+      this.title = 'Add SIP'
+    }
+    else if (this.data.action == 'edit') {
+      this.title = 'Edit SIP';
+      this.createSipForm.patchValue(this.data.sipCreateData)
+    }
   }
 
   initForm() {
@@ -49,20 +64,41 @@ export class CreateSipComponent implements OnInit {
       return this.createSipForm.controls;
     }
   }
+  action(event) {
+    if (event) {
+      this.submit();
+    } else if (!event) {
+      this.dialogRef.close();
+    }
+  }
+
 
   submit() {
     if (this.createSipForm.invalid) {
       this.createSipForm.markAllAsTouched();
       return;
     }
-    // this.contactService.PostMessage(this.contactForm.value).pipe(
-    //   map(res => {
-    //     this.toastr.successToastr(res.message);
-    //     this.router.navigate(['/']);
-    //   }), catchError(err => {
-    //     this.toastr.errorToastr(err.error.message);
-    //     throw err;
-    //   })).subscribe();
+    const id = this.controls.id.value;
+
+    if (this.data.action == 'add') {
+      // this.sipCycleDateService.updateCycleDate(id, this.SipCycleDateForm.value).subscribe(res => {
+      //   if (res) {
+      //     const msg = 'Sip Cycle Date Updated Sucessfully';
+      //     this.toastr.success(msg);
+      //     this.dialogRef.close(true);
+      //   }
+      // });
+    }
+    else {
+      // this.sipCycleDateService.addCycleDate(this.SipCycleDateForm.value).subscribe(res => {
+      //   if (res) {
+      //     const msg = 'Sip Cycle Date Added Successfully';
+      //     this.toastr.success(msg);
+      //     this.dialogRef.close(true);
+      //   }
+      // });
+    }
+    
   }
   createSip() {
       this.router.navigate(['admin/sip-management/sip-application']);
