@@ -668,9 +668,9 @@ exports.submitAllKycInfo = async (req, res, next) => {
     let modifiedBy = req.userData.id;
     let modifiedByCustomer = null
     let createdByCustomer = null
+    let isFromCustomerWebsite = false
 
-
-    let data = await customerKycEdit(req, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer)
+    let data = await customerKycEdit(req, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer, isFromCustomerWebsite)
 
     if (data.success) {
         return res.status(data.status).json({ customerId: data.customerId, customerKycId: data.customerKycId, customerKycCurrentStage: data.customerKycCurrentStage, KycClassification: data.KycClassification, ratingStage: data.ratingStage, moduleId: data.moduleId, userType: data.userType })

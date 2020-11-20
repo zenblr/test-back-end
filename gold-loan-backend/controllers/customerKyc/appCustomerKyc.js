@@ -16,11 +16,12 @@ exports.submitAppKyc = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedByCustomer = null
     let createdByCustomer = null
+    let isFromCustomerWebsite = false
 
 
 
-    let data = await customerKycAdd(req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer)
-    
+    let data = await customerKycAdd(req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer, isFromCustomerWebsite)
+
     if (data.success) {
         return res.status(data.status).json({ customerId: data.customerId, customerKycId: data.customerKycId, })
     } else {

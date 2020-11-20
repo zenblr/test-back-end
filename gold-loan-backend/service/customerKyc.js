@@ -10,7 +10,7 @@ const { paginationWithFromTo } = require("../utils/pagination");
 const extend = require('extend')
 const check = require("../lib/checkLib");
 
-let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer) => {
+let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer, isFromCustomerWebsite) => {
 
     let { firstName, lastName, customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address, panCardNumber, panType, panImage, moduleId } = req.body
     var date = dateOfBirth
@@ -29,7 +29,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
     let getCustomerInfo = await models.customer.findOne({
         where: { id: customerId, statusId },
         attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage'
-            , 'panCardNumber'],
+            , 'panCardNumber', 'internalBranchId'],
     })
     if (check.isEmpty(getCustomerInfo)) {
         return { status: 404, success: false, message: `Your status is not confirm` }
@@ -104,6 +104,16 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
             let data = await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
 
             await models.customerKycClassification.create({ customerId, customerKycId: customerKycAdd.id, kycStatusFromCce: "pending", cceId: createdBy, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer }, { transaction: t })
+
+            //for approved the status by default
+            if (isFromCustomerWebsite && !check.isEmpty(getCustomerInfo.internalBranchId)) {
+                await models.customerKyc.update(
+                    { isVerifiedByCce: true, cceVerifiedBy: cceId, isKycSubmitted: true, isScrapKycSubmitted: true },
+                    { where: { customerId: customerId }, transaction: t })
+
+                await models.customerKycClassification.update({ kycRatingFromCce: 4, kycStatusFromCce: "approved", createdBy, modifiedBy, createdByCustomer, modifiedByCustomer, }, { where: { customerId }, transaction: t })
+            }
+            //for approved the status by default
 
             return customerKycAdd
         })
@@ -250,10 +260,16 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
 
 }
 
-let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer) => {
+let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer, isFromCustomerWebsite) => {
 
 
     let { customerId, customerKycId, customerKycPersonal, customerKycAddress, customerKycBasicDetails, customerOrganizationDetail, moduleId, userType } = req.body;
+
+    let getCustomerInfo = await models.customer.findOne({
+        where: { id: customerId, statusId },
+        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage'
+            , 'panCardNumber', 'internalBranchId'],
+    })
 
     //change
     if (moduleId == 1) {
@@ -392,6 +408,16 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
         await models.customerKycAddressDetail.bulkCreate(addressArray, { updateOnDuplicate: ["addressType", "address", "landmark", "stateId", "cityId", "pinCode", "addressProofTypeId", "addressProof", "addressProofNumber", "modifiedBy"] }, { transaction: t })
 
         await models.customerKyc.update({ modifiedBy, modifiedByCustomer, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
+
+        //for approved the status by default
+        if (isFromCustomerWebsite && !check.isEmpty(getCustomerInfo.internalBranchId)) {
+            await models.customerKyc.update(
+                { isVerifiedByCce: true, cceVerifiedBy: cceId, isKycSubmitted: true, isScrapKycSubmitted: true },
+                { where: { customerId: customerId }, transaction: t })
+
+            await models.customerKycClassification.update({ kycRatingFromCce: 4, kycStatusFromCce: "approved", createdBy, modifiedBy, createdByCustomer, modifiedByCustomer, }, { where: { customerId }, transaction: t })
+        }
+        //for approved the status by default
 
     })
     let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });

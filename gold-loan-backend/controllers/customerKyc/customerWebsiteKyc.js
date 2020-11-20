@@ -16,8 +16,9 @@ exports.submitApplyKyc = async (req, res, next) => {
     let createdByCustomer = req.userData.id;
     let modifiedBy = null
     let createdBy = null
+    let isFromCustomerWebsite = true
 
-    let data = await customerKycAdd(req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer)
+    let data = await customerKycAdd(req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer, isFromCustomerWebsite)
 
     if (data.success) {
         return res.status(data.status).json({ customerId: data.customerId, customerKycId: data.customerKycId, })
@@ -33,10 +34,11 @@ exports.submitEditKycInfo = async (req, res, next) => {
     let createdByCustomer = req.userData.id;
     let modifiedBy = null
     let createdBy = null
+    let isFromCustomerWebsite = true
 
 
 
-    let data = await customerKycEdit(req, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer)
+    let data = await customerKycEdit(req, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer, isFromCustomerWebsite)
 
     if (data.success) {
         return res.status(data.status).json({ customerId: data.customerId, customerKycId: data.customerKycId, customerKycCurrentStage: data.customerKycCurrentStage, KycClassification: data.KycClassification, ratingStage: data.ratingStage, moduleId: data.moduleId, userType: data.userType })
