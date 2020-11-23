@@ -22,7 +22,8 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy {
   details: any
   pdf = {
     loanAgreementCopyImage: false, pawnCopyImage: false, schemeConfirmationCopyImage: false,
-    purchaseVoucherImage: false, purchaseInvoiceImage: false, saleInvoiceImage: false
+    purchaseVoucherImage: false, purchaseInvoiceImage: false, saleInvoiceImage: false,declarationImage:false,
+    loanTransferPawnImage:false,signedChequeImage:false
   }
   masterLoanId: any;
   masterAndLoanIds: { loanId: any; masterLoanId: any; };
@@ -86,7 +87,7 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy {
   }
 
   pdfCheck() {
-    let laonAgree, pawn, scheme, voucher, invoice, sale;
+    let laonAgree, pawn, scheme, voucher, invoice, sale,declaration,loanTransferPawn,signedCheque;
     if (this.details.customerLoanDocument) {
       if (this.details.customerLoanDocument.loanAgreementCopy) {
         laonAgree = this.details.customerLoanDocument.loanAgreementCopyImage[0].split('.')
@@ -109,6 +110,19 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy {
         sale = this.details.scrapDocument.saleInvoiceImage[0].split('.')
       }
     }
+
+    if(this.details.loanTransfer){
+      if (this.details.loanTransfer.declarationImage) {
+        declaration = this.details.loanTransfer.declarationImage[0].split('.')
+      }
+      if (this.details.loanTransfer.pawnTicket) {
+        loanTransferPawn = this.details.loanTransfer.pawnTicketImage[0].split('.')
+      }
+      if (this.details.loanTransfer.signedCheque) {
+        signedCheque = this.details.loanTransfer.signedChequeImage[0].split('.')
+      }
+    }
+
     if (laonAgree && laonAgree[laonAgree.length - 1] == 'pdf') {
       this.pdf.loanAgreementCopyImage = true
     } else {
@@ -138,6 +152,21 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy {
       this.pdf.saleInvoiceImage = true
     } else {
       this.pdf.saleInvoiceImage = false
+    }
+    if (declaration && declaration[declaration.length - 1] == 'pdf') {
+      this.pdf.declarationImage = true
+    } else {
+      this.pdf.declarationImage = false
+    }
+    if (loanTransferPawn && loanTransferPawn[loanTransferPawn.length - 1] == 'pdf') {
+      this.pdf.loanTransferPawnImage = true
+    } else {
+      this.pdf.loanTransferPawnImage = false
+    }
+    if (signedCheque && signedCheque[signedCheque.length - 1] == 'pdf') {
+      this.pdf.signedChequeImage = true
+    } else {
+      this.pdf.signedChequeImage = false
     }
   }
 

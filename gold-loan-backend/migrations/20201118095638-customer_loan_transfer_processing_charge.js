@@ -2,9 +2,10 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addColumn('customer', 'source', {
-      type: Sequelize.DataTypes.STRING
-    });
+    return queryInterface.addColumn('customer_loan_transfer', 'processing_charge', {
+      type: Sequelize.DataTypes.DECIMAL(10,2),
+      defaultValue: 0
+    })
   },
 
   down: (queryInterface, Sequelize) => {

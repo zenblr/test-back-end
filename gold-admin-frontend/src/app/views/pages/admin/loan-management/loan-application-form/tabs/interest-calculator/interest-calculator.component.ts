@@ -92,10 +92,11 @@ export class InterestCalculatorComponent implements OnInit {
       debounceTime(500),
       distinctUntilChanged()
     ).subscribe(res => {
-      if (!this.transferLoan && ! this.isNewLoanFromPartRelease) {
+      if (!this.transferLoan && !this.isNewLoanFromPartRelease) {
         this.partner();
       }
     })
+
 
   }
 
@@ -107,19 +108,32 @@ export class InterestCalculatorComponent implements OnInit {
       this.isNewLoanFromPartRelease = true;
       this.partner()
     }
-    
+
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
-      this.controls.finalLoanAmount.patchValue(changes.loanTransfer.currentValue)
+      this.controls.finalLoanAmount.patchValue(changes.loanTransfer.currentValue.outstandingLoanAmount)
+      this.controls.processingCharge.patchValue(changes.loanTransfer.currentValue.processingCharge)
       this.controls.finalLoanAmount.disable()
       this.transferLoan = true;
+      if (changes.totalAmt.currentValue <= Number(this.controls.finalLoanAmount.value)) {
+        this.controls.loanTransferExtraAmount.disable()
+      } else {
+        this.controls.loanTransferExtraAmount.enable()
+      }
       this.partner()
     }
 
     if (changes.totalAmt) {
       if (changes.totalAmt.currentValue != changes.totalAmt.previousValue && changes.totalAmt.currentValue != 0) {
-        if(!this.transferLoan && !this.isNewLoanFromPartRelease){
+        if (!this.transferLoan && !this.isNewLoanFromPartRelease) {
           this.controls.finalLoanAmount.reset()
         }
+
+        if (changes.totalAmt.currentValue <= Number(this.controls.finalLoanAmount.value)) {
+          this.controls.loanTransferExtraAmount.disable()
+        } else {
+          this.controls.loanTransferExtraAmount.enable()
+        }
+
       }
     }
 
@@ -136,8 +150,14 @@ export class InterestCalculatorComponent implements OnInit {
           }
           if (finalLoan.masterLoan.isLoanTransfer) {
             this.controls.finalLoanAmount.disable()
-            this.controls.finalLoanAmount.patchValue(finalLoan.masterLoan.loanTransfer.disbursedLoanAmount)
+            this.controls.finalLoanAmount.patchValue(finalLoan.masterLoan.loanTransfer.outstandingLoanAmount)
+            this.controls.processingCharge.patchValue(finalLoan.masterLoan.loanTransfer.processingCharge)
             this.transferLoan = true;
+            if (changes.totalAmt.currentValue <= Number(this.controls.finalLoanAmount.value)) {
+              this.controls.loanTransferExtraAmount.disable()
+            } else {
+              this.controls.loanTransferExtraAmount.enable()
+            }
             this.partner()
 
           }
@@ -152,7 +172,7 @@ export class InterestCalculatorComponent implements OnInit {
             this.approved = true;
 
           // this.finalInterestForm.controls.loanStartDate.patchValue(new Date(finalLoan.loanStartDate))
-          
+
 
           if (finalLoan.scheme) {
             this.selectedScheme = finalLoan.scheme
@@ -210,7 +230,11 @@ export class InterestCalculatorComponent implements OnInit {
 
   partner() {
     if (this.controls.finalLoanAmount.valid || this.controls.finalLoanAmount.status == 'DISABLED') {
-      this.partnerService.getPartnerBySchemeAmount(Math.floor(this.controls.finalLoanAmount.value)).subscribe(res => {
+      let amt = Number(this.controls.finalLoanAmount.value)
+      if (this.transferLoan && this.controls.loanTransferExtraAmount.value) {
+        amt += Number(this.controls.loanTransferExtraAmount.value)
+      }
+      this.partnerService.getPartnerBySchemeAmount(Math.floor(amt)).subscribe(res => {
         this.partnerList = res.data;
         this.returnScheme()
         this.ref.detectChanges()
@@ -218,14 +242,14 @@ export class InterestCalculatorComponent implements OnInit {
     }
   }
 
-  getUnsecuredScheme(){
+  getUnsecuredScheme() {
     this.loanFormService.getUnsecuredScheme(
       this.controls.partnerId.value,
       Number(this.controls.unsecuredLoanAmount.value),
       this.controls.schemeId.value
-      ).subscribe(res=>{
-        this.unSecuredScheme = res.data 
-      })
+    ).subscribe(res => {
+      this.unSecuredScheme = res.data
+    })
   }
 
   reset() {
@@ -235,7 +259,8 @@ export class InterestCalculatorComponent implements OnInit {
     this.controls.interestRate.reset()
     this.controls.totalFinalInterestAmt.reset()
     this.controls.paymentFrequency.reset()
-    this.controls.processingCharge.reset()
+    if (!this.transferLoan)
+      this.controls.processingCharge.reset()
     this.selectedScheme = ''
   }
 
@@ -272,7 +297,8 @@ export class InterestCalculatorComponent implements OnInit {
       unsecuredSchemeId: [],
       securedLoanAmount: [],
       unsecuredLoanAmount: [],
-      isUnsecuredSchemeApplied: [false]
+      isUnsecuredSchemeApplied: [false],
+      loanTransferExtraAmount: []
     })
 
 
@@ -309,7 +335,10 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   amountValidation() {
-    let amt = this.controls.finalLoanAmount.value;
+    let amt = Number(this.controls.finalLoanAmount.value);
+    if (this.controls.loanTransferExtraAmount.value) {
+      amt += Number(this.controls.loanTransferExtraAmount.value)
+    }
     this.controls.isUnsecuredSchemeApplied.patchValue(false)
     this.dateOfPayment = []
     const scheme = this.selectedScheme
@@ -355,6 +384,20 @@ export class InterestCalculatorComponent implements OnInit {
 
   }
 
+  checkOtherAmount() {
+    let sum = 0
+    if (this.controls.loanTransferExtraAmount.value) {
+      sum = Number(this.controls.finalLoanAmount.value) + Number(this.controls.loanTransferExtraAmount.value)
+    }
+
+    if (sum > this.totalAmt) {
+      this.controls.loanTransferExtraAmount.setErrors({ "greater": true })
+    } else {
+      this.partner()
+      this.reset()
+    }
+  }
+
   eligibleCheck(amt, data) {
     if (amt > this.totalAmt) {
       if (this.transferLoan || this.isNewLoanFromPartRelease) {
@@ -381,7 +424,9 @@ export class InterestCalculatorComponent implements OnInit {
         } else {
           this.controls.securedLoanAmount.patchValue(Number(amt))
         }
-        this.controls.processingCharge.patchValue(res.data.processingCharge)
+        if (!this.transferLoan) {
+          this.controls.processingCharge.patchValue(res.data.processingCharge)
+        }
         this.paymentFrequency = res.data.securedScheme.schemeInterest;
         this.checkForPaymentFrequency()
         this.controls.paymentFrequency.reset()
@@ -422,7 +467,7 @@ export class InterestCalculatorComponent implements OnInit {
           this.controls.interestRate.patchValue(res.data.securedinterestRate.interestRate)
           this.controls.unsecuredInterestRate.patchValue(res.data.unsecuredinterestRate.interestRate)
           if (!event)
-          this.calcInterestAmount()
+            this.calcInterestAmount()
         }
         this.dateOfPayment = [];
         this.ref.detectChanges()
