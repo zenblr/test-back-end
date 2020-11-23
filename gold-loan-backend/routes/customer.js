@@ -5,8 +5,7 @@ const { wrapper } = require('../utils/errorWrap')
 const validationError = require('../middleware/validationError');
 const { customerValidation, customerUpdateValidation, registerCustomerValidation } = require('../validations/customer');
 
-const { getOtp, signUpCustomer, addCustomer, editCustomer, deactivateCustomer, getAllCustomersForLead, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, getCustomerUniqueId,
-    getAllCustomerForCustomerManagement, getsingleCustomerManagement, getAllRegisteredCustomer, customerSignUp } = require('../controllers/customer/customer')
+const { getOtp, signUpCustomer, addCustomer, editCustomer, deactivateCustomer, getAllCustomersForLead, getSingleCustomer, registerCustomerSendOtp, verifyOtp, sendOtp, getCustomerUniqueId, addBranch, getAllCustomerForCustomerManagement, getsingleCustomerManagement, getAllRegisteredCustomer, customerSignUp } = require('../controllers/customer/customer')
 const checkAuth = require('../middleware/checkAuth');
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
@@ -34,6 +33,8 @@ router.post('/send-otp', sendOtp);
 router.post('/verify-otp', verifyOtp);
 
 router.put('/:customerId', customerUpdateValidation, validationError, checkAuth, checkRolePermission, wrapper(editCustomer))
+
+router.post('/add-branch', checkAuth, wrapper(addBranch))
 
 router.delete('/', checkAuth, checkRolePermission, wrapper(deactivateCustomer));
 

@@ -265,6 +265,33 @@ exports.editCustomer = async (req, res, next) => {
   return res.status(200).json({ messgae: `User Updated` });
 };
 
+exports.addBranch = async (req, res, next) => {
+
+  let { internalBranchId, customerId } = req.body
+  let modifiedBy = req.userData.id
+  let findClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId } })
+
+
+  await sequelize.transaction(async (t) => {
+
+    const customer = await models.customer.update(
+      { internalBranchId },
+      { where: { id: customerId }, transaction: t }
+    );
+
+    if (!check.isEmpty(findClassification)) {
+      await models.customerKyc.update(
+        { isVerifiedByCce: true, cceVerifiedBy: cceId, isKycSubmitted: true, isScrapKycSubmitted: true },
+        { where: { customerId: customerId }, transaction: t })
+
+      await models.customerKycClassification.update({ kycRatingFromCce: 4, kycStatusFromCce: "approved", modifiedBy }, { where: { customerId }, transaction: t })
+    }
+
+  })
+
+  return res.status(200).json({ message: 'Success' })
+
+}
 
 exports.deactivateCustomer = async (req, res, next) => {
   const { customerId, isActive } = req.query;

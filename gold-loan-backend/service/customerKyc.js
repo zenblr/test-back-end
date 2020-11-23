@@ -61,7 +61,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
 
             await models.customer.update({ firstName, lastName, panCardNumber: panCardNumber, panType, panImage, modifiedBy, modifiedByCustomer }, { where: { id: customerId }, transaction: t })
 
-            let customerKycAdd = await models.customerKyc.create({ currentKycModuleId: moduleId, isAppliedForKyc: true, customerKycCurrentStage: '4', customerId: getCustomerInfo.id, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer, isKycSubmitted: true }, { transaction: t })
+            let customerKycAdd = await models.customerKyc.create({ currentKycModuleId: moduleId, isAppliedForKyc: true, customerKycCurrentStage: '4', customerId: getCustomerInfo.id, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer }, { transaction: t })
 
             let abcd = await models.customerKycPersonalDetail.create({
                 customerId: getCustomerInfo.id,
