@@ -314,14 +314,6 @@ let getAllInterest = async (loanId) => {
     return allNotPaidInterest;
 }
 
-let getAllInterest = async (loanId) => {
-    let allNotPaidInterest = await models.customerLoanInterest.findAll({
-        where: { loanId: loanId, isExtraDaysInterest: false },
-        attributes: ['id', 'interestAmount', 'paidAmount', 'emiDueDate']
-    });
-    return allNotPaidInterest;
-}
-
 let getAllInterestLessThanDate = async (loanId, date) => {
     let allInterestLessThanDate = await models.customerLoanInterest.findAll({
         where: { loanId: loanId, emiDueDate: { [Op.lte]: date, }, emiStatus: { [Op.notIn]: ['paid'] }, isExtraDaysInterest: false },

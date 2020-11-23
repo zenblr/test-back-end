@@ -715,7 +715,7 @@ async function getUnsecuredScheme(partnerId, amount) {
 //FUNCTION for final loan calculator
 exports.loanFinalLoan = async (req, res, next) => {
     let { loanFinalCalculator, loanId, masterLoanId, interestTable,ornaments, totalEligibleAmt } = req.body
-    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate, unsecuredInterestRate, unsecuredSchemeId, securedLoanAmount, unsecuredLoanAmount, totalFinalInterestAmt, isUnsecuredSchemeApplied, loanTransferExtraAmount,isUnsecuredSchemeApplied, securedRebateInterest, unsecuredRebateInterest } = loanFinalCalculator
+    let { partnerId, schemeId, finalLoanAmount, loanStartDate, tenure, loanEndDate, paymentFrequency, processingCharge, interestRate, unsecuredInterestRate, unsecuredSchemeId, securedLoanAmount, unsecuredLoanAmount, totalFinalInterestAmt, isUnsecuredSchemeApplied, loanTransferExtraAmount, securedRebateInterest, unsecuredRebateInterest } = loanFinalCalculator
     let isLoanTransferExtraAmountAdded = false;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;

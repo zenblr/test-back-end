@@ -60,7 +60,6 @@ exports.dailyIntrestCalculation = async (date) => {
             let allInterestTable = await getAllInterest(loan.id);
             let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
             let firstInterestToPay = await getFirstInterestToPay(loan.id, loan.masterLoanId);
-            let allInterestTable = await getAllInterest(loan.id);
             let loanStartDate;
             if (!lastPaidEmi) {
                 loanStartDate = moment(loan.masterLoan.loanStartDate);
