@@ -450,8 +450,78 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
 
 }
 
+let getKycInfo = async (customerId) => {
+
+    let appraiserRequestData = await models.appraiserRequest.findAll({
+        where: {
+            customerId: customerId
+        },
+        order: [["updatedAt", "DESC"]]
+    })
+    let customerKycReview = await models.customer.findOne({
+        where: { id: customerId },
+        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'moduleId', 'userType', 'dateOfIncorporation', 'kycStatus', 'scrapKycStatus'],
+        include: [{
+            model: models.customerKycPersonalDetail,
+            as: 'customerKycPersonal',
+            attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
+            include: [{
+                model: models.occupation,
+                as: 'occupation'
+            }, {
+                model: models.identityType,
+                as: 'identityType'
+            }]
+        }, {
+            model: models.customerKycAddressDetail,
+            as: 'customerKycAddress',
+            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
+            include: [{
+                model: models.state,
+                as: 'state'
+            }, {
+                model: models.city,
+                as: 'city'
+            }, {
+                model: models.addressProofType,
+                as: 'addressProofType'
+            }],
+            order: [["id", "ASC"]]
+        }, {
+            model: models.customerKycOrganizationDetail,
+            as: "organizationDetail",
+            attributes: ['customerId', 'customerKycId', 'email', 'alternateEmail', 'landLineNumber', 'gstinNumber', 'cinNumber', 'constitutionsDeed', 'gstCertificate']
+        },
+        {
+            model: models.organizationType,
+            as: "organizationType",
+            attributes: ['id', 'organizationType']
+        },
+        {
+            model: models.customerKyc,
+            as: 'customerKyc',
+            attributes: ['id', 'currentKycModuleId']
+        }
+        ]
+    })
+    let userType = null;
+    let moduleId = customerKycReview.customerKyc.currentKycModuleId;
+    if (moduleId == 3) {
+
+        userType = customerKycReview.userType;
+    }
+    let customerKycId = null
+
+    if (!check.isEmpty(customerKycReview.customerKyc)) {
+        customerKycId = customerKycReview.customerKyc.id
+    }
+    return { status: 200, success: true, customerKycReview, moduleId, userType, customerId, customerKycId }
+
+}
+
 
 module.exports = {
     customerKycAdd: customerKycAdd,
-    customerKycEdit: customerKycEdit
+    customerKycEdit: customerKycEdit,
+    getKycInfo: getKycInfo
 }

@@ -8,7 +8,7 @@ const CONSTANT = require("../../utils/constant");
 const moment = require("moment");
 const { paginationWithFromTo } = require("../../utils/pagination");
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
-const { customerKycEdit } = require('../../service/customerKyc')
+const { customerKycEdit, getKycInfo } = require('../../service/customerKyc')
 
 const check = require("../../lib/checkLib");
 
@@ -1026,67 +1026,76 @@ exports.appliedKyc = async (req, res, next) => {
 exports.getReviewAndSubmit = async (req, res, next) => {
 
     let { customerId, customerKycId } = req.query;
-    let appraiserRequestData = await models.appraiserRequest.findAll({
-        where: {
-            customerId: customerId
-        },
-        order: [["updatedAt", "DESC"]]
-    })
-    let customerKycReview = await models.customer.findOne({
-        where: { id: customerId },
-        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'moduleId', 'userType', 'dateOfIncorporation', 'kycStatus', 'scrapKycStatus'],
-        include: [{
-            model: models.customerKycPersonalDetail,
-            as: 'customerKycPersonal',
-            attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
-            include: [{
-                model: models.occupation,
-                as: 'occupation'
-            }, {
-                model: models.identityType,
-                as: 'identityType'
-            }]
-        }, {
-            model: models.customerKycAddressDetail,
-            as: 'customerKycAddress',
-            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
-            include: [{
-                model: models.state,
-                as: 'state'
-            }, {
-                model: models.city,
-                as: 'city'
-            }, {
-                model: models.addressProofType,
-                as: 'addressProofType'
-            }],
-            order: [["id", "ASC"]]
-        }, {
-            model: models.customerKycOrganizationDetail,
-            as: "organizationDetail",
-            attributes: ['customerId', 'customerKycId', 'email', 'alternateEmail', 'landLineNumber', 'gstinNumber', 'cinNumber', 'constitutionsDeed', 'gstCertificate']
-        },
-        {
-            model: models.organizationType,
-            as: "organizationType",
-            attributes: ['id', 'organizationType']
-        },
-        {
-            model: models.customerKyc,
-            as: 'customerKyc',
-            attributes: ['id', 'currentKycModuleId']
-        }
-        ]
-    })
-    let userType = null;
-    let moduleId = customerKycReview.customerKyc.currentKycModuleId;
-    if (moduleId == 3) {
 
-        userType = customerKycReview.userType;
+    let data = await getKycInfo(customerId);
+
+    if (data.success) {
+        return res.status(data.status).json({ customerKycReview: data.customerKycReview, moduleId: data.moduleId, userType: data.userType, customerId: data.customerId, customerKycId: data.customerKycId })
+    } else {
+        return res.status(400).json({ message: `error` })
     }
 
+    // let appraiserRequestData = await models.appraiserRequest.findAll({
+    //     where: {
+    //         customerId: customerId
+    //     },
+    //     order: [["updatedAt", "DESC"]]
+    // })
+    // let customerKycReview = await models.customer.findOne({
+    //     where: { id: customerId },
+    //     attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'moduleId', 'userType', 'dateOfIncorporation', 'kycStatus', 'scrapKycStatus'],
+    //     include: [{
+    //         model: models.customerKycPersonalDetail,
+    //         as: 'customerKycPersonal',
+    //         attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
+    //         include: [{
+    //             model: models.occupation,
+    //             as: 'occupation'
+    //         }, {
+    //             model: models.identityType,
+    //             as: 'identityType'
+    //         }]
+    //     }, {
+    //         model: models.customerKycAddressDetail,
+    //         as: 'customerKycAddress',
+    //         attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
+    //         include: [{
+    //             model: models.state,
+    //             as: 'state'
+    //         }, {
+    //             model: models.city,
+    //             as: 'city'
+    //         }, {
+    //             model: models.addressProofType,
+    //             as: 'addressProofType'
+    //         }],
+    //         order: [["id", "ASC"]]
+    //     }, {
+    //         model: models.customerKycOrganizationDetail,
+    //         as: "organizationDetail",
+    //         attributes: ['customerId', 'customerKycId', 'email', 'alternateEmail', 'landLineNumber', 'gstinNumber', 'cinNumber', 'constitutionsDeed', 'gstCertificate']
+    //     },
+    //     {
+    //         model: models.organizationType,
+    //         as: "organizationType",
+    //         attributes: ['id', 'organizationType']
+    //     },
+    //     {
+    //         model: models.customerKyc,
+    //         as: 'customerKyc',
+    //         attributes: ['id', 'currentKycModuleId']
+    //     }
+    //     ]
+    // })
+    // let userType = null;
+    // let moduleId = customerKycReview.customerKyc.currentKycModuleId;
+    // if (moduleId == 3) {
 
-    return res.status(200).json({ customerKycReview, moduleId, userType, customerId, customerKycId: customerKycReview.customerKyc.id })
+    //     userType = customerKycReview.userType;
+    // }
+
+
+    // return res.status(200).json({ customerKycReview, moduleId, userType, customerId, customerKycId: customerKycReview.customerKyc.id })
 }
 
 exports.allowToEdit = async (req, res, next) => {
