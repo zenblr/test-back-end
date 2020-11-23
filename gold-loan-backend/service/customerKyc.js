@@ -104,6 +104,11 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
             let data = await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
 
             await models.customerKycClassification.create({ customerId, customerKycId: customerKycAdd.id, kycStatusFromCce: "pending", cceId: createdBy, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer }, { transaction: t })
+            //for create appraiser Request
+            if (isFromCustomerWebsite) {
+                let appraiserRequest = await models.appraiserRequest.create({ customerId, moduleId, createdBy, modifiedBy }, { transaction: t })
+            }
+            //for create appraiser Request
 
             //for approved the status by default
             if (isFromCustomerWebsite && !check.isEmpty(getCustomerInfo.internalBranchId)) {

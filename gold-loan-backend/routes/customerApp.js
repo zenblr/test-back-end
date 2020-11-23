@@ -11,10 +11,7 @@ const quickPay = require('./quickPayCustomerApp');  //upload Packets List
 const customerWebsiteKyc = require('./customerWebsiteKyc') //customer website kyc
 const contactUsEmail = require('./contactUs')
 
-const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetailsOfCustomer, readBankDetailsOfCustomer, readNomineeDetailsOfCustomer, readAddressDetailsOfCustomer,
-    readPanCardImageOfCustomer, readAddressImageOfCustomer, readPartnerBranch, readAllScheme, readMyLoan
-    , schemeBasedOnPriceRange, readLoanDetails,
-    readFeedBack, addFeedBack, updatePassword } = require('../controllers/customer/customerApp')
+const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetailsOfCustomer, readBankDetailsOfCustomer, readNomineeDetailsOfCustomer, readAddressDetailsOfCustomer, readPanCardImageOfCustomer, readAddressImageOfCustomer, readPartnerBranch, readAllScheme, readMyLoan, schemeBasedOnPriceRange, readLoanDetails, readFeedBack, addFeedBack, updatePassword, personalInfo } = require('../controllers/customer/customerApp')
 
 const { getSoa } = require('../controllers/soaOfLoan/soaOfLoan');
 
@@ -61,6 +58,8 @@ router.post('/loan-soa', customerCheckAuth, wrapper(getSoa));
 router.post('/upload-file', customerCheckAuth, wrapper(uploadFile)) //file upload by form data 
 
 router.post('/base', customerCheckAuth, wrapper(base64Convertor)) //file upload by base 64
+
+router.get('/personal-info', customerCheckAuth, wrapper(personalInfo)) //personal info
 
 //customer App
 router.post('/update-password', wrapper(updatePassword));//To change password of customer

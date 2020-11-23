@@ -1086,7 +1086,15 @@ exports.getReviewAndSubmit = async (req, res, next) => {
     }
 
 
-    return res.status(200).json({ customerKycReview, moduleId, userType, customerId, customerKycId })
+    return res.status(200).json({ customerKycReview, moduleId, userType, customerId, customerKycId: customerKycReview.customerKyc.id })
+}
+
+exports.allowToEdit = async (req, res, next) => {
+    let { customerId, allowCustomerEdit } = req.body
+
+    await models.customer.update({ allowCustomerEdit }, { where: { id: customerId } })
+
+    return res.status(200).json({ message: `Success` })
 }
 
 
