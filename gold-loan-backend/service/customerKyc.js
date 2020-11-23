@@ -360,7 +360,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
 
         let checkClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId }, transaction: t })
         //for mobile
-        if (req.useragent.isMobile) {
+        if (req.useragent.isMobile && !isFromCustomerWebsite) {
 
             //change
             await models.customerKyc.update({ currentKycModuleId: moduleId, modifiedBy, modifiedByCustomer }, { where: { id: customerKycId }, transaction: t })
