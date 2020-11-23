@@ -281,7 +281,7 @@ exports.addBranch = async (req, res, next) => {
 
     if (!check.isEmpty(findClassification)) {
       await models.customerKyc.update(
-        { isVerifiedByCce: true, cceVerifiedBy: cceId, isKycSubmitted: true, isScrapKycSubmitted: true },
+        { isVerifiedByCce: true, modifiedByCustomer: customerId, isKycSubmitted: true, isScrapKycSubmitted: true },
         { where: { customerId: customerId }, transaction: t })
 
       await models.customerKycClassification.update({ kycRatingFromCce: 4, kycStatusFromCce: "approved", modifiedBy }, { where: { customerId }, transaction: t })

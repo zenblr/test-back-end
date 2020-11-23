@@ -113,7 +113,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
             //for approved the status by default
             if (isFromCustomerWebsite && !check.isEmpty(getCustomerInfo.internalBranchId)) {
                 await models.customerKyc.update(
-                    { isVerifiedByCce: true, cceVerifiedBy: cceId, isKycSubmitted: true, isScrapKycSubmitted: true },
+                    { isVerifiedByCce: true, modifiedByCustomer, isKycSubmitted: true, isScrapKycSubmitted: true },
                     { where: { customerId: customerId }, transaction: t })
 
                 await models.customerKycClassification.update({ kycRatingFromCce: 4, kycStatusFromCce: "approved", createdBy, modifiedBy, createdByCustomer, modifiedByCustomer, }, { where: { customerId }, transaction: t })
@@ -385,7 +385,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
 
             if (!check.isEmpty(getCustomerInfo.internalBranchId)) {
                 await models.customerKyc.update(
-                    { isVerifiedByCce: true, cceVerifiedBy: cceId, isKycSubmitted: true, isScrapKycSubmitted: true },
+                    { isVerifiedByCce: true, modifiedByCustomer, isKycSubmitted: true, isScrapKycSubmitted: true },
                     { where: { customerId: customerId }, transaction: t })
 
                 await models.customerKycClassification.update({ kycRatingFromCce: 4, kycStatusFromCce: "approved", createdBy, modifiedBy, createdByCustomer, modifiedByCustomer, }, { where: { customerId }, transaction: t })
