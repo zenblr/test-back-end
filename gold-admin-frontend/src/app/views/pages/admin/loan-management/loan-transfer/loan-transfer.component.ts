@@ -142,7 +142,7 @@ export class LoanTransferComponent implements OnInit {
           this.ref.detectChanges()
         }
         this.masterAndLoanIds = { loanId: res.data.masterLoan.id, masterLoanId: res.data.masterLoanId }
-      }
+      } 
     })
   }
 
@@ -172,6 +172,8 @@ export class LoanTransferComponent implements OnInit {
 
         let amt = this.amount - this.disbursalForm.controls.processingCharge.value
         this.disbursalForm.controls.disbursedLoanAmount.patchValue(amt)
+      } else {
+        this.disbursalForm.controls.disbursedLoanAmount.patchValue(this.amount)
       }
     })
   }
