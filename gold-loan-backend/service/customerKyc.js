@@ -523,7 +523,10 @@ let getKycInfo = async (customerId) => {
         ]
     })
     let userType = null;
-    let moduleId = customerKycReview.customerKyc.currentKycModuleId;
+    let moduleId = null;
+    if (!check.isEmpty(customerKycReview.customerKyc)) {
+        moduleId = customerKycReview.customerKyc.currentKycModuleId;
+    }
     if (moduleId == 3) {
 
         userType = customerKycReview.userType;

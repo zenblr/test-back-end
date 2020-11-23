@@ -8,7 +8,7 @@ const CONSTANT = require("../../utils/constant");
 const moment = require("moment");
 const { paginationWithFromTo } = require("../../utils/pagination");
 const extend = require('extend')
-const { customerKycAdd, customerKycEdit } = require('../../service/customerKyc')
+const { customerKycAdd, customerKycEdit, getKycInfo } = require('../../service/customerKyc')
 const check = require("../../lib/checkLib");
 
 exports.submitApplyKyc = async (req, res, next) => {
