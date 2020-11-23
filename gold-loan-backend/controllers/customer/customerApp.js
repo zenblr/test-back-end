@@ -300,7 +300,8 @@ exports.personalInfo = async (req, res, next) => {
 
     let { id } = req.userData
 
-    let customerInfo = await models.cutomer.findOne({
+    let customerInfo = await models.customer.findOne({
+        where: { id: id },
         include: [
             {
                 model: models.state,
@@ -315,7 +316,7 @@ exports.personalInfo = async (req, res, next) => {
                 as: "city",
             },
         ]
-    }, { where: { id: id } })
+    })
 
     return res.status(200).json({ message: 'Success', data: customerInfo })
 }

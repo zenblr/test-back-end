@@ -358,9 +358,9 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
 
     await sequelize.transaction(async (t) => {
 
+        let checkClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId }, transaction: t })
         //for mobile
         if (req.useragent.isMobile) {
-            let checkClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId }, transaction: t })
 
             //change
             await models.customerKyc.update({ currentKycModuleId: moduleId, modifiedBy, modifiedByCustomer }, { where: { id: customerKycId }, transaction: t })
@@ -374,6 +374,24 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
                 { where: { customerId: customerId }, transaction: t })
         }
         //for mobile
+
+        //for customer kyc website
+        if (isFromCustomerWebsite) {
+            await models.customerKyc.update({ currentKycModuleId: moduleId, modifiedBy, modifiedByCustomer }, { where: { id: customerKycId }, transaction: t })
+
+            if (check.isEmpty(checkClassification)) {
+                await models.customerKycClassification.create({ customerId, customerKycId: customerKycId, kycStatusFromCce: "pending", cceId: modifiedBy, createdBy, modifiedBy, modifiedByCustomer, createdByCustomer }, { transaction: t })
+            }
+
+            if (!check.isEmpty(getCustomerInfo.internalBranchId)) {
+                await models.customerKyc.update(
+                    { isVerifiedByCce: true, cceVerifiedBy: cceId, isKycSubmitted: true, isScrapKycSubmitted: true },
+                    { where: { customerId: customerId }, transaction: t })
+
+                await models.customerKycClassification.update({ kycRatingFromCce: 4, kycStatusFromCce: "approved", createdBy, modifiedBy, createdByCustomer, modifiedByCustomer, }, { where: { customerId }, transaction: t })
+            }
+        }
+        //for customer kyc website
 
 
         let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });

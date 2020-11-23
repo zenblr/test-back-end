@@ -47,3 +47,17 @@ exports.submitEditKycInfo = async (req, res, next) => {
     }
     return res.status(200).json({ message: data })
 }
+
+exports.getKycInfo = async (req, res, next) => {
+
+    let { id } = req.userData;
+
+    let data = await getKycInfo(id);
+
+    if (data.success) {
+        return res.status(data.status).json({ customerKycReview: data.customerKycReview, moduleId: data.moduleId, userType: data.userType, customerId: data.customerId, customerKycId: data.customerKycId })
+    } else {
+        return res.status(400).json({ message: `error` })
+    }
+
+}
