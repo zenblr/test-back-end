@@ -314,6 +314,14 @@ let getAllInterest = async (loanId) => {
     return allNotPaidInterest;
 }
 
+let getAllInterest = async (loanId) => {
+    let allNotPaidInterest = await models.customerLoanInterest.findAll({
+        where: { loanId: loanId, isExtraDaysInterest: false },
+        attributes: ['id', 'interestAmount', 'paidAmount', 'emiDueDate']
+    });
+    return allNotPaidInterest;
+}
+
 let getAllInterestLessThanDate = async (loanId, date) => {
     let allInterestLessThanDate = await models.customerLoanInterest.findAll({
         where: { loanId: loanId, emiDueDate: { [Op.lte]: date, }, emiStatus: { [Op.notIn]: ['paid'] }, isExtraDaysInterest: false },
@@ -1201,96 +1209,108 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
         whereCondition = { id: loanId }
     }
 
+    let customerLoanInterest = await models.customerLoanInterest.findAll({
+        order: [
+            ['id', 'asc']
+        ],
+        where: {
+            emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
+            emiStatus: { [Op.not]: 'paid' },
+            masterLoanId: masterLoanId
+        },
+    })
+
     let customerLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
         attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure', 'termsAndCondition'],
         order: [
             [models.customerLoanDisbursement, 'loanId', 'asc'],
             [models.customerLoan, 'id', 'asc'],
-            [models.customerLoanInterest, 'id', 'asc']
+            // [models.customerLoanInterest, 'id', 'asc']
         ],
-        include: [{
-            model: models.customerLoanInterest,
-            as: 'customerLoanInterest',
-            where: {
-                emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
-                emiStatus: { [Op.not]: 'paid' }
-            },
-            // attributes: ['emiDueDate', 'emiStatus'],
+        include: [
+            // {
+            //     model: models.customerLoanInterest,
+            //     as: 'customerLoanInterest',
+            //     where: {
+            //         emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
+            //         emiStatus: { [Op.not]: 'paid' }
+            //     },
+            //     // attributes: ['emiDueDate', 'emiStatus'],
 
-        },
-        {
-            model: models.customerLoan,
-            as: 'customerLoan',
-            where: whereCondition,
-            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-            include: [
-                {
-                    model: models.scheme,
-                    as: 'scheme'
-                },
-                {
-                    model: models.customerLoan,
-                    as: 'unsecuredLoan',
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                    include: [{
+            // },
+            {
+                model: models.customerLoan,
+                as: 'customerLoan',
+                where: whereCondition,
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                include: [
+                    {
                         model: models.scheme,
-                        as: 'scheme',
-                    }]
-                }
-            ]
-        },
-        {
-            model: models.partRelease,
-            as: 'partRelease',
-        },
-        {
-            model: models.fullRelease,
-            as: 'fullRelease',
-        },
-        {
-            model: models.loanStage,
-            as: 'loanStage',
-            attributes: ['id', 'name']
-        },
-        {
-            model: models.customerLoanTransfer,
-            as: "loanTransfer",
-            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-        },
-        {
-            model: models.customerLoanPersonalDetail,
-            as: 'loanPersonalDetail',
-        }, {
-            model: models.customerLoanBankDetail,
-            as: 'loanBankDetail',
-        }, {
-            model: models.customerLoanNomineeDetail,
-            as: 'loanNomineeDetail',
-        },
-        {
-            model: models.customerLoanOrnamentsDetail,
-            as: 'loanOrnamentsDetail',
-            include: [
-                {
-                    model: models.ornamentType,
-                    as: "ornamentType"
-                }
-            ]
-        },
-        {
-            model: models.customerLoanDocument,
-            as: 'customerLoanDocument'
-        },
-        {
-            model: models.customer,
-            as: 'customer',
-            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
-        },
-        {
-            model: models.customerLoanDisbursement,
-            as: 'customerLoanDisbursement'
-        }
+                        as: 'scheme'
+                    },
+                    {
+                        model: models.customerLoan,
+                        as: 'unsecuredLoan',
+                        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                        include: [{
+                            model: models.scheme,
+                            as: 'scheme',
+                        }]
+                    }
+                ]
+            },
+            {
+                model: models.partRelease,
+                as: 'partRelease',
+            },
+            {
+                model: models.fullRelease,
+                as: 'fullRelease',
+            },
+            {
+                model: models.loanStage,
+                as: 'loanStage',
+                attributes: ['id', 'name']
+            },
+            {
+                model: models.customerLoanTransfer,
+                as: "loanTransfer",
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            },
+            {
+                model: models.customerLoanPersonalDetail,
+                as: 'loanPersonalDetail',
+            }, {
+                model: models.customerLoanBankDetail,
+                as: 'loanBankDetail',
+            }, {
+                model: models.customerLoanNomineeDetail,
+                as: 'loanNomineeDetail',
+            },
+            {
+                model: models.customerLoanOrnamentsDetail,
+                as: 'loanOrnamentsDetail',
+                include: [
+                    {
+                        model: models.ornamentType,
+                        as: "ornamentType"
+                    }
+                ]
+            },
+            {
+                model: models.customerLoanDocument,
+                as: 'customerLoanDocument'
+            },
+            {
+                model: models.customer,
+                as: 'customer',
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+            },
+            {
+                model: models.customerLoanDisbursement,
+                as: 'customerLoanDisbursement'
+            }
         ]
     })
 
@@ -1307,6 +1327,7 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
             }]
         }]
     })
+    customerLoan.dataValues.customerLoanInterest = customerLoanInterest
     customerLoan.dataValues.loanPacketDetails = packet
 
     return customerLoan

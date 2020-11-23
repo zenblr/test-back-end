@@ -524,6 +524,7 @@ exports.partPayment = async (req, res, next) => {
                 let currentDate = moment();
                 let noOfDays = 0;
                 for (const loan of loanInfo1) {
+                    let allInterestTable = await getAllInterest(loan.id);
                     let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
                     let allInterestTable = await getAllInterest(loan.id);
                     let loanStartDate;
@@ -1163,6 +1164,7 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
             let currentDate = moment();
             let noOfDays = 0;
             for (const loan of loanInfo1) {
+                let allInterestTable = await getAllInterest(loan.id);
                 let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
                 let allInterestTable = await getAllInterest(loan.id);
                 let loanStartDate;

@@ -32,7 +32,7 @@ export class ScrapCalculatorComponent implements OnInit {
   initForm() {
     this.roughScrapForm = this.fb.group({
       grossWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
-      deductionWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
+      deductionWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[0-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       netWeight: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')]],
       purity: [, [Validators.required, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$'), Validators.max(100)]],
       ltvGoldValue: []
@@ -46,17 +46,20 @@ export class ScrapCalculatorComponent implements OnInit {
   }
 
   weightCheck() {
-    if (this.controls.grossWeight.valid && this.controls.deductionWeight.valid) {
-      if (this.controls.grossWeight.value < this.controls.deductionWeight.value) {
+    if (this.controls.grossWeight.valid) {
+      if (Number(this.controls.grossWeight.value) < Number(this.controls.deductionWeight.value)) {
         this.controls.deductionWeight.setErrors({ weight: true })
+      } else {
+        this.controls.deductionWeight.setErrors(null)
+        this.controls.deductionWeight.setValidators([Validators.required, Validators.pattern('^\\s*(?=.*[0-9])\\d*(?:\\.\\d{1,2})?\\s*$')])
+        this.controls.deductionWeight.updateValueAndValidity()
       }
     }
   }
 
   calcGoldDeductionWeight() {
-    if (this.controls.grossWeight.value && this.controls.deductionWeight.value &&
-      this.controls.grossWeight.valid && this.controls.deductionWeight.valid) {
-      const netWeight = this.controls.grossWeight.value - this.controls.deductionWeight.value;
+    if (this.controls.grossWeight.value && this.controls.grossWeight.valid && this.controls.deductionWeight.valid) {
+      const netWeight = Number(this.controls.grossWeight.value) - Number(this.controls.deductionWeight.value);
       this.controls.netWeight.patchValue(netWeight.toFixed(2));
     }
   }
