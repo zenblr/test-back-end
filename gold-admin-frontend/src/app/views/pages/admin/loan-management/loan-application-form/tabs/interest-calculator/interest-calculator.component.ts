@@ -454,8 +454,7 @@ export class InterestCalculatorComponent implements OnInit {
     if (sum > this.totalAmt) {
       this.controls.loanTransferExtraAmount.setErrors({ "greater": true })
     } else {
-      // this.partner()
-      // this.reset()
+      this.amountValidation()
     }
   }
 
