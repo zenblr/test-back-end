@@ -15,8 +15,8 @@ export class SipCycleDateService {
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
-  getCycleDate(from, to, search): Observable<any> {
-    return this.http.get(API_ENDPOINT + `api/gold-sip/sip-cycle-date?from=${from}&to=${to}&search=${search}`).pipe(
+  getCycleDate(from, to, search, cycleDateStatus): Observable<any> {
+    return this.http.get(API_ENDPOINT + `api/gold-sip/sip-cycle-date?from=${from}&to=${to}&search=${search}&cycleDateStatus=${cycleDateStatus}`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
@@ -69,4 +69,10 @@ export class SipCycleDateService {
       })
     );
   }
+
+  // getStatus(): Observable<any> {
+  //   return this.http.get(`/api/role/all-role`).pipe(map(
+  //     res => res
+  //   ))
+  // }   
 }

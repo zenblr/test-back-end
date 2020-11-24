@@ -12,8 +12,8 @@
                             <select formControlName="cycleDate" class="form-control"
                                 [class.isError]="SipCycleDateForm.controls.cycleDate.touched && SipCycleDateForm.controls.cycleDate.invalid">
                                 <option value="">Select Date</option>
-                                <option *ngFor="let date of cycleDate" [value]="date.value">
-                            {{date?.name}}
+                                <option *ngFor="let date of cycleDate" [value]="date?.cycleDate">
+                            {{date?.cycleDate}}
                         </option>
                             </select>
                             <!-- <div

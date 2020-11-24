@@ -15,8 +15,8 @@ export class SipInvestmentTenureService {
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
-  getInvestmentTenure(from, to, search): Observable<any> {
-    return this.http.get(API_ENDPOINT + `api/gold-sip/sip-investment-tenure?from=${from}&to=${to}&search=${search}`).pipe(
+  getInvestmentTenure(from, to, search, investmentTenureStatus): Observable<any> {
+    return this.http.get(API_ENDPOINT + `api/gold-sip/sip-investment-tenure?from=${from}&to=${to}&search=${search}&investmentTenureStatus=${investmentTenureStatus}`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)

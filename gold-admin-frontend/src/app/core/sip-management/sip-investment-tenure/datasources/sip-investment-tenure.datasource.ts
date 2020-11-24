@@ -15,12 +15,12 @@ export class SipInvestmentTenureDatasource extends BaseDataSource {
         super();
     }
 
-    getInvestmentTenure(from, to, search) {
+    getInvestmentTenure(from, to, search, investmentTenureStatus) {
         this.loadingSubject.next(true);
 
         // this.entitySubject.next(this.leads); // delete this
 
-        this.sipInvestmentTenureService.getInvestmentTenure(from, to, search)
+        this.sipInvestmentTenureService.getInvestmentTenure(from, to, search, investmentTenureStatus)
             .pipe(
                 map(
                     report => {

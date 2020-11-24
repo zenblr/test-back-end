@@ -13,8 +13,8 @@
                             <select formControlName="investmentTenure" class="form-control"
                                 [class.isError]="SipInvestmentTenureForm.controls.investmentTenure.touched && SipInvestmentTenureForm.controls.investmentTenure.invalid">
                                 <option value="">Select Month/Year</option>
-                                <option *ngFor="let tenure of investmentTenureList" [value]="tenure.value">
-                            {{tenure?.name}}
+                                <option *ngFor="let tenure of investmentTenureList" [value]="tenure.investmentTenure">
+                            {{tenure?.investmentTenureValue}}
                         </option>
                             </select>
                             <!-- <div
