@@ -1706,6 +1706,7 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
     if (checkLoan.isLoanTransfer) {
         data.securedTransactionId = securedTransactionId;
         data.unsecuredTransactionId = unsecuredTransactionId;
+        // data.otherAmountTransactionId = otherAmountTransactionId;
     }
     return res.status(200).json({ message: 'Success', data: data })
 

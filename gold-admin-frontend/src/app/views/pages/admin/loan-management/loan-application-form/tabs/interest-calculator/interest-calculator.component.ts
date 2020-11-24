@@ -167,7 +167,7 @@ export class InterestCalculatorComponent implements OnInit {
             this.controls.finalLoanAmount.patchValue(finalLoan.masterLoan.loanTransfer.outstandingLoanAmount)
             this.controls.processingCharge.patchValue(finalLoan.masterLoan.loanTransfer.processingCharge)
             this.transferLoan = true;
-            if (changes.totalAmt.currentValue <= Number(this.controls.finalLoanAmount.value)) {
+            if (this.totalAmt <= Number(this.controls.finalLoanAmount.value)) {
               this.controls.loanTransferExtraAmount.disable()
             } else {
               this.controls.loanTransferExtraAmount.enable()
@@ -382,8 +382,8 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   scheme() {
-    this.filterScheme()
     this.reset()
+    this.filterScheme()
     this.amountValidation()
     // this.getIntrest()
   }
@@ -454,8 +454,8 @@ export class InterestCalculatorComponent implements OnInit {
     if (sum > this.totalAmt) {
       this.controls.loanTransferExtraAmount.setErrors({ "greater": true })
     } else {
-      this.partner()
-      this.reset()
+      // this.partner()
+      // this.reset()
     }
   }
 
@@ -491,6 +491,12 @@ export class InterestCalculatorComponent implements OnInit {
         this.checkForPaymentFrequency()
         this.controls.paymentFrequency.reset()
         console.log(this.controls.paymentFrequency.value);
+        //loan transfer
+        if (this.totalAmt <= Number(this.controls.finalLoanAmount.value)) {
+          this.controls.loanTransferExtraAmount.disable()
+        } else {
+          this.controls.loanTransferExtraAmount.enable()
+        }
       }
 
 

@@ -214,7 +214,7 @@ exports.loanTransferBmRating = async (req, res, next) => {
 }
 
 exports.loanTransferDisbursal = async (req, res, next) => {
-    let { transactionId, masterLoanId, processingCharge, disbursedLoanAmount } = req.body
+    let { transactionId, masterLoanId, processingCharge, disbursedLoanAmount,bankTransferType } = req.body
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let masterLoan = await models.customerLoanMaster.findOne({
@@ -249,7 +249,7 @@ exports.loanTransferDisbursal = async (req, res, next) => {
                 }
                 while (!checkSecuredUnique);
                 await models.customerLoan.update({ loanUniqueId: loanUniqueId }, { where: { masterLoanId: masterLoanId }, transaction: t })
-                await models.customerLoanTransfer.update({ transactionId, modifiedBy, processingCharge, disbursedLoanAmount, loanTransferCurrentStage: '6', isLoanDisbursed: true, transferredLoanId: loanUniqueId }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
+                await models.customerLoanTransfer.update({ transactionId, modifiedBy, processingCharge, disbursedLoanAmount, loanTransferCurrentStage: '6', isLoanDisbursed: true, transferredLoanId: loanUniqueId, bankTransferType }, { where: { id: masterLoan.loanTransfer.id }, transaction: t });
                 await models.customerLoanTransferHistory.create({ loanTransferId: masterLoan.loanTransfer.id, action: loanTransferHistory.LOAN_DISBURSEMENT, createdBy, modifiedBy }, { transaction: t })
 
                 //LOAN_DISBURSEMENT and processing chanrges
@@ -261,7 +261,7 @@ exports.loanTransferDisbursal = async (req, res, next) => {
                 let transferLoanDisburse = await models.customerTransactionDetail.create({ masterLoanId, loanId: loanId, debit: disbursedLoanAmount, description: `Loan transfer disbursed amount`, paymentDate: moment() }, { transaction: t })
                 await models.customerTransactionDetail.update({ referenceId: `${loanUniqueId}-${transferLoanDisburse.id}` }, { where: { id: transferLoanDisburse.id }, transaction: t })
                 await models.customerLoanDisbursement.create({
-                    masterLoanId, loanId: loanId, disbursementAmount: disbursedLoanAmount, transactionId: transactionId, date: moment(), paymentMode: 'Loan transfer', createdBy: createdBy, modifiedBy: modifiedBy
+                    masterLoanId, loanId: loanId, disbursementAmount: disbursedLoanAmount, transactionId: transactionId, date: moment(), paymentMode: 'Loan transfer', createdBy: createdBy, modifiedBy: modifiedBy, bankTransferType
                 }, { transaction: t });
 
                 let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)

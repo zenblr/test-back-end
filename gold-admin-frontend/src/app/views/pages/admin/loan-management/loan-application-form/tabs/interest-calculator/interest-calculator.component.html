@@ -78,7 +78,7 @@
                             <mat-error *ngIf="controls.finalLoanAmount.errors?.mimimumAmt && controls.finalLoanAmount.touched">
                                 <small>Entered Amount should be greater than minimum loan amount</small>
                             </mat-error>
-                            <mat-error *ngIf="controls.finalLoanAmount.errors?.defalutNotRange && controls.finalLoanAmount.touched">
+                            <mat-error *ngIf="controls.finalLoanAmount.errors?.defalutNotRange">
                                 <small>{{checkForLoanTypeError}}</small>
                             </mat-error>
                             <mat-error *ngIf="controls.finalLoanAmount.errors?.noDefaultScheme">
