@@ -1680,6 +1680,7 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
             unsecuredTransactionId = checkLoan.loanTransfer.transactionId
         }
     }
+
     let data = {
         userBankDetail: userBankDetails,
         branchBankDetail: brokerBankDetails,
@@ -1706,7 +1707,6 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
     if (checkLoan.isLoanTransfer) {
         data.securedTransactionId = securedTransactionId;
         data.unsecuredTransactionId = unsecuredTransactionId;
-        // data.otherAmountTransactionId = otherAmountTransactionId;
     }
     return res.status(200).json({ message: 'Success', data: data })
 
@@ -1777,7 +1777,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
 
                     await models.customerLoanDisbursement.create({
                         masterLoanId, loanId: securedLoanId, disbursementAmount:  Loan.loanTransferExtraAmount, transactionId: otherAmountTransactionId, date, paymentMode, ifscCode, bankName, bankBranch,
-                        accountHolderName, accountNumber, disbursementStatus, createdBy, modifiedBy
+                        accountHolderName, accountNumber, disbursementStatus, createdBy, modifiedBy, bankTransferType
                     }, { transaction: t })
                 }
             }else{
