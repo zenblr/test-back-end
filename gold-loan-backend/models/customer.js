@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'merchant_id',
         },
-        moduleId:{
+        moduleId: {
             type: DataTypes.INTEGER,
             field: 'module_id',
         },
@@ -102,12 +102,18 @@ module.exports = (sequelize, DataTypes) => {
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by',
-            allowNull: false,
         },
         modifiedBy: {
             type: DataTypes.INTEGER,
             field: 'modified_by',
-            allowNull: false,
+        },
+        createdByCustomer: {
+            type: DataTypes.INTEGER,
+            field: 'created_by_customer',
+        },
+        modifiedByCustomer: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by_customer',
         },
         lastLogin: {
             type: DataTypes.DATE,
@@ -145,10 +151,36 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'organization_type_id',
         },
-        dateOfIncorporation:{
+        dateOfIncorporation: {
             type: DataTypes.DATE,
             field: 'date_of_incorporation',
         },
+        customerAddress: {
+            type: DataTypes.TEXT,
+            field: 'customer_address',
+        },
+        gender: {
+            type: DataTypes.STRING,
+            field: 'customer_address',
+        },
+        dateOfBirth: {
+            type: DataTypes.DATE,
+            field: 'date_of_birth',
+        },
+        allowCustomerEdit: {
+            type: DataTypes.BOOLEAN,
+            field: 'allow_customer_edit',
+            defaultValue: true
+        },
+        kycCompletePoint: {
+            type: DataTypes.INTEGER,
+            field: 'kyc_complete_point',
+        },
+        sourceFrom: {
+            type: DataTypes.INTEGER,
+            field: 'source_from',
+        }
+
     }, {
         freezeTableName: true,
         tableName: 'customer',
@@ -176,6 +208,8 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         Customer.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+        Customer.belongsTo(models.customer, { foreignKey: 'createdByCustomer', as: 'CreatedbyCustomer' });
+        Customer.belongsTo(models.customer, { foreignKey: 'createdByCustomer', as: 'ModifiedbyCustomer' });
 
         Customer.belongsTo(models.lead, { foreignKey: 'leadSourceId', as: 'lead' });
 

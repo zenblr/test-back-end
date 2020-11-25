@@ -329,7 +329,7 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewIn
   viewEmiLogs() {
     const dialogRef = this.dialog.open(EmiLogsDialogComponent, {
       data: { id: this.details.id },
-      width: '1250px'
+      width: '850px'
     })
   }
 

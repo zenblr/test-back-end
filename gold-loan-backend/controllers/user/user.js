@@ -8,7 +8,7 @@ const check = require('../../lib/checkLib');
 const request = require('request');
 const { createReferenceCode } = require('../../utils/referenceCode');
 //for email
-const { sendMail } = require('../../service/emailService')
+const { sendMail } = require('../../utils/emailService')
 const CONSTANT = require('../../utils/constant');
 const moment = require('moment');
 const cache = require('../../utils/cache');
@@ -67,7 +67,7 @@ exports.sendOtp = async (req, res, next) => {
     let userDetails = await models.user.findOne({ where: { mobileNumber } });
     if (userDetails) {
         let otp;
-        if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+        if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new") {
             otp = 1234
         } else {
             otp = Math.floor(1000 + Math.random() * 9000);

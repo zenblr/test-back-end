@@ -295,3 +295,28 @@ exports.updatePassword = async (req, res, next) => {
     }
     return res.status(200).json({ message: 'Password Updated.' });
 }
+
+exports.personalInfo = async (req, res, next) => {
+
+    let { id } = req.userData
+
+    let customerInfo = await models.customer.findOne({
+        where: { id: id },
+        include: [
+            {
+                model: models.state,
+                as: "state",
+            },
+            {
+                model: models.module,
+                as: "module",
+            },
+            {
+                model: models.city,
+                as: "city",
+            },
+        ]
+    })
+
+    return res.status(200).json({ message: 'Success', data: customerInfo })
+}
