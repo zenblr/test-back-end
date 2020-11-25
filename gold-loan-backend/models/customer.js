@@ -172,6 +172,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'allow_customer_edit',
             defaultValue: true
         },
+        kycCompletePoint: {
+            type: DataTypes.INTEGER,
+            field: 'kyc_complete_point',
+        },
         sourceFrom: {
             type: DataTypes.INTEGER,
             field: 'source_from',
