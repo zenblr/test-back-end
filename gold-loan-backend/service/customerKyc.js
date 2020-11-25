@@ -9,6 +9,7 @@ const moment = require("moment");
 const { paginationWithFromTo } = require("../utils/pagination");
 const extend = require('extend')
 const check = require("../lib/checkLib");
+var uniqid = require('uniqid');
 
 let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer, isFromCustomerWebsite) => {
 
@@ -271,7 +272,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
     let { customerId, customerKycId, customerKycPersonal, customerKycAddress, customerKycBasicDetails, customerOrganizationDetail, moduleId, userType } = req.body;
 
     let getCustomerInfo = await models.customer.findOne({
-        where: { id: customerId, statusId },
+        where: { id: customerId, statusId: 1 },
         attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage'
             , 'panCardNumber', 'internalBranchId'],
     })
@@ -493,7 +494,7 @@ let getKycInfo = async (customerId) => {
         }, {
             model: models.customerKycAddressDetail,
             as: 'customerKycAddress',
-            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
+            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof', 'landmark'],
             include: [{
                 model: models.state,
                 as: 'state'
@@ -540,9 +541,38 @@ let getKycInfo = async (customerId) => {
 
 }
 
+let updateCompleteKycModule = async (oldCompleteKycPoint, moduleId) => {
+    let whereCondition
+    if (moduleId == 3) {
+        whereCondition = { id: { [Op.not]: 1 } }
+    }
+
+    let kycCompletePoint = oldCompleteKycPoint
+    let allModulePoint = await models.module.findAll({
+        where: whereCondition
+    })
+    for (let i = 0; i < allModulePoint.length; i++) {
+        const element = allModulePoint[i].modulePoint;
+        kycCompletePoint = kycCompletePoint | element
+    }
+    return kycCompletePoint
+}
+
+let updateCustomerUniqueId = async (checkCustomerUniqueId) => {
+    let customerUniqueId = checkCustomerUniqueId
+    if (check.isEmpty(checkUniqueId.customerUniqueId)) {
+        customerUniqueId = uniqid.time().toUpperCase();
+    } else {
+        customerUniqueId = customerUniqueId
+    }
+
+    return customerUniqueId
+}
 
 module.exports = {
     customerKycAdd: customerKycAdd,
     customerKycEdit: customerKycEdit,
-    getKycInfo: getKycInfo
+    getKycInfo: getKycInfo,
+    updateCompleteKycModule: updateCompleteKycModule,
+    updateCustomerUniqueId: updateCustomerUniqueId
 }

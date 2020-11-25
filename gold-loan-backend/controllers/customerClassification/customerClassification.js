@@ -10,6 +10,7 @@ const moment = require("moment");
 const check = require("../../lib/checkLib");
 var uniqid = require('uniqid');
 let { sendCustomerUniqueId, sendMessageToOperationsTeam, sendKYCApprovalMessage, sendKYCApprovalStatusMessage } = require('../../utils/SMS')
+let { updateCompleteKycModule, updateCustomerUniqueId } = require('../../service/customerKyc')
 
 exports.cceKycRating = async (req, res, next) => {
 
@@ -226,17 +227,15 @@ exports.operationalTeamKycRating = async (req, res, next) => {
 
         } else {
             reasonFromOperationalTeam = ""
-            
+
             //change check unique id
             let checkUniqueId = await models.customer.findOne({ where: { id: customerId } })
-            let customerUniqueId = null
-            if (check.isEmpty(checkUniqueId.customerUniqueId)) {
-                customerUniqueId = uniqid.time().toUpperCase();
-            } else {
-                customerUniqueId = checkUniqueId.customerUniqueId
-            }
-            //change check unique id            
+            let customerUniqueId = await updateCustomerUniqueId(checkUniqueId.customerUniqueId)
+            //change check unique id
 
+            //add complete kyc point
+            let kycCompletePoint = await updateCompleteKycModule(checkUniqueId.kycCompletePoint, moduleId)
+            //add complete kyc point
             let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
 
             await sequelize.transaction(async (t) => {
@@ -246,7 +245,7 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                 if (getMobileNumber.scrapKycStatus == "pending") {
                     let customerKycClassificationData = await models.customerKycClassification.findOne({ where: { customerId: customerId } })
 
-                    await models.customer.update({ customerUniqueId, kycStatus: "approved", scrapKycStatus: "approved", userType: "Individual" }, { where: { id: customerId }, transaction: t })
+                    await models.customer.update({ kycCompletePoint, customerUniqueId, kycStatus: "approved", scrapKycStatus: "approved", userType: "Individual" }, { where: { id: customerId }, transaction: t })
 
                     await models.customerKyc.update(
                         { isVerifiedByOperationalTeam: true, operationalTeamVerifiedBy: operationalTeamId },
@@ -255,7 +254,7 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                     await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId, scrapKycRatingFromCce: customerKycClassificationData.kycRatingFromCce, scrapKycStatusFromCce: customerKycClassificationData.kycStatusFromCce, scrapCceId: customerKycClassificationData.cceId, scrapKycStatusFromOperationalTeam: kycStatusFromOperationalTeam, scrapReasonFromOperationalTeam: reasonFromOperationalTeam, scrapOperationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
                 } else if (getMobileNumber.scrapKycStatus == "approved") {
 
-                    await models.customer.update({ customerUniqueId, kycStatus: "approved" }, { where: { id: customerId }, transaction: t })
+                    await models.customer.update({ kycCompletePoint, customerUniqueId, kycStatus: "approved" }, { where: { id: customerId }, transaction: t })
                     await models.customerKyc.update(
                         { isVerifiedByOperationalTeam: true, operationalTeamVerifiedBy: operationalTeamId },
                         { where: { customerId: customerId }, transaction: t })
@@ -357,17 +356,15 @@ exports.operationalTeamKycRating = async (req, res, next) => {
 
             //change check unique id
             let checkUniqueId = await models.customer.findOne({ where: { id: customerId } })
-            let customerUniqueId = null
-            if (check.isEmpty(checkUniqueId.customerUniqueId)) {
-                customerUniqueId = uniqid.time().toUpperCase();
-            } else {
-                customerUniqueId = checkUniqueId.customerUniqueId
-            }
+            let customerUniqueId = await updateCustomerUniqueId(checkUniqueId.customerUniqueId)
             //change check unique id
 
+            //add complete kyc point
+            let kycCompletePoint = await updateCompleteKycModule(checkUniqueId.kycCompletePoint, moduleId)
+            //add complete kyc point
 
             await sequelize.transaction(async (t) => {
-                await models.customer.update({ customerUniqueId, scrapKycStatus: "approved" }, { where: { id: customerId }, transaction: t })
+                await models.customer.update({ kycCompletePoint, customerUniqueId, scrapKycStatus: "approved" }, { where: { id: customerId }, transaction: t })
 
                 // await models.customerKyc.update(
                 //     { isVerifiedByOperationalTeam: true, operationalTeamVerifiedBy: scrapOperationalTeamId },
