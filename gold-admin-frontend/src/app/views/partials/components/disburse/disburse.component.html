@@ -186,7 +186,7 @@
                         <label class="kt-padding-l-10 mandatory">Other Amount</label>
                     </div>
                     <div class="col-8">
-                        <input type="text" class="form-control" formControlName="loanTransferExtraAmount"
+                        <input type="text" class="form-control" formControlName="loanTransferExtraAmount" readonly
                             [class.isError]="controls.loanTransferExtraAmount.invalid &&  controls.loanTransferExtraAmount.touched">
                         <mat-error
                             *ngIf="controls.loanTransferExtraAmount.touched && controls.loanTransferExtraAmount.errors?.required">
