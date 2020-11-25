@@ -64,7 +64,7 @@ export class SipApplicationComponent implements OnInit {
     });
     this.subscriptions.push(entitiesSubscription);
 
-    this.dataSource.getCycleDate(1, 25, this.searchValue);
+    this.dataSource.getSipApplication(1, 25, this.searchValue);
   }
 
   ngOnDestroy() {
@@ -82,7 +82,7 @@ export class SipApplicationComponent implements OnInit {
     let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.getCycleDate(from, to, this.searchValue);
+    this.dataSource.getSipApplication(from, to, this.searchValue);
   }
 
   addCycleDate() {

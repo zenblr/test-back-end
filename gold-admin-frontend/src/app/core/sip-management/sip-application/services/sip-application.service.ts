@@ -17,7 +17,7 @@ export class SipApplicationService {
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
-  getCycleDate(from, to, search): Observable<any> {
+  getSipApplication(from, to, search): Observable<any> {
     return this.http.get(API_ENDPOINT + `api/gold-sip/sip-cycle-date?from=${from}&to=${to}&search=${search}`).pipe(
       map(res => res),
       catchError(err => {
@@ -26,6 +26,52 @@ export class SipApplicationService {
         throw (err);
       })
     );
+  }
+  
+  addMobile(mobileNumber): Observable<any> {
+    return this.http.get<any>(API_ENDPOINT + `api/gold-sip/customer?mobileNumber=${mobileNumber}`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
+  addSipApplication(data): Observable<any> {
+    return this.http.post<any>(API_ENDPOINT + `api/gold-sip/sip-application/create-sip-admin`,data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
+  getAllCycleDate(){   
+    return this.http.get(API_ENDPOINT + `api/gold-sip/sip-cycle-date/get-all-sip-cycle-date`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+
+  }
+
+  getAllInvestmentTenure(){   
+    return this.http.get(API_ENDPOINT + `api/gold-sip/sip-investment-tenure/get-all-investment-tenure`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+
   }
 
   // getLeadSourceWithoutPagination(): Observable<any> {

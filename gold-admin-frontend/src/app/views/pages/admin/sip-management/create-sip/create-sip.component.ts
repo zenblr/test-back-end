@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy, ViewChild, NgZone, ChangeDetectorRef, Inject } from '@angular/core';
 import { ToastrComponent } from '../../../../partials/components/toastr/toastr.component';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { CreateSipService } from '../../../../../core/sip-management';
+import { SipApplicationService } from '../../../../../core/sip-management/sip-application';
 import { from } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-
+import { map, tap, catchError } from "rxjs/operators";
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'kt-create-sip',
   templateUrl: './create-sip.component.html',
@@ -13,12 +14,17 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 })
 export class CreateSipComponent implements OnInit {
 
-  @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
+ 
   createSipForm: FormGroup;
   title: string;
-  
-  minDate = new Date();
-	maxDate = new Date();
+  cycleDate: any;
+  investmentTenure: any;
+  customerName: any;
+  id: any;
+  metalType = [
+		{ value: 'gold', name: 'Gold' },
+		{ value: 'silver', name: 'Silver' },
+  ];
 
   constructor(
     public dialogRef: MatDialogRef<CreateSipComponent>,
@@ -26,12 +32,16 @@ export class CreateSipComponent implements OnInit {
     private fb: FormBuilder,
     private ref: ChangeDetectorRef,
     private router: Router,
+    private sipApplicationService: SipApplicationService,
+    private toastr: ToastrService
   
   ) { }
 
   ngOnInit() {
     this.initForm();
     this.setForm();
+    this.getAllCycleDate();
+    this.getAllInvestmentTenure();
   }
   setForm() {
     console.log(this.data)
@@ -46,15 +56,20 @@ export class CreateSipComponent implements OnInit {
 
   initForm() {
     this.createSipForm = this.fb.group({
+      id: [],
       customerName: ['', [Validators.required]],
-      customerId: ['', [Validators.required]],
-      applicationDate: ['', [Validators.required]],
+      customerUniqueId: ['', [Validators.required]],
+      applicationDate: [new Date(), [Validators.required]],
+      mobileNumber: [, [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
       metalType: ['', [Validators.required]],
       sipInvestmentTenure: ['', [Validators.required]],
       sipCycleDate: ['', [Validators.required]],
       investmentAmount: ['', [Validators.required]],
       uploadEcsForm: ['', [Validators.required]],
-      downloadEcsForm: ['', [Validators.required]],
+      source: ['web'],
+      customerId: []
+
+     
     });
     this.createSipForm.valueChanges.subscribe(val => console.log(val));
   }
@@ -72,22 +87,50 @@ export class CreateSipComponent implements OnInit {
     }
   }
 
+  getAllCycleDate() { 
+    this.sipApplicationService.getAllCycleDate().pipe(
+      map(res =>{
+        this.cycleDate = res;
+      })
+      ).subscribe()   
+  }
+
+  getAllInvestmentTenure() {
+    
+    this.sipApplicationService.getAllInvestmentTenure().pipe(
+      map(res =>{
+        this.investmentTenure = res;
+      })
+      ).subscribe()   
+  }
+  inputNumber() {
+    if (this.controls.mobileNumber.valid) {
+     this.sipApplicationService.addMobile(this.controls.mobileNumber.value).pipe(
+      map(res =>{
+        // this.custometerId = res.id
+        this.customerName = res.firstName+ ' ' + res.lastName;
+        this.controls.customerName.patchValue(this.customerName);
+        this.controls.customerUniqueId.patchValue(res.customerUniqueId)
+        this.controls.customerId.patchValue(res.id)
+      })
+      ).subscribe()   
+    }
+  }
 
   submit() {
     if (this.createSipForm.invalid) {
       this.createSipForm.markAllAsTouched();
       return;
     }
-    const id = this.controls.id.value;
 
     if (this.data.action == 'add') {
-      // this.sipCycleDateService.updateCycleDate(id, this.SipCycleDateForm.value).subscribe(res => {
-      //   if (res) {
-      //     const msg = 'Sip Cycle Date Updated Sucessfully';
-      //     this.toastr.success(msg);
-      //     this.dialogRef.close(true);
-      //   }
-      // });
+      this.sipApplicationService.addSipApplication(this.createSipForm.value).subscribe(res => {
+        if (res) {
+          const msg = 'SIP Application Created Sucessfully';
+          this.toastr.success(msg);
+          this.dialogRef.close(true);
+        }
+      });
     }
     else {
       // this.sipCycleDateService.addCycleDate(this.SipCycleDateForm.value).subscribe(res => {
@@ -100,8 +143,4 @@ export class CreateSipComponent implements OnInit {
     }
     
   }
-  createSip() {
-      this.router.navigate(['admin/sip-management/sip-application']);
-  }
-
 }

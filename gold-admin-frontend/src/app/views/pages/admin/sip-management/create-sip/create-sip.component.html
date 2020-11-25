@@ -10,11 +10,43 @@
                     <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
                         <div class="row">
                             <div class="col-12 col-lg-4 align-self-center">
+                                <label class="font-border">Mobile Number</label>
+                            </div>
+                            <div class="col-12 col-lg-8">
+                                <input class="form-control" type="text" formControlName="mobileNumber" numbersOnly
+								autocomplete="off" placeholder="Enter mobile number" margin [class.isError]="
+											controls.mobileNumber.touched &&
+											controls.mobileNumber.invalid
+										" maxlength="10" (input)="inputNumber()" />
+							<mat-error *ngIf="
+											controls.mobileNumber.errors?.required &&
+											controls.mobileNumber.touched
+										">
+								Required field
+							</mat-error>
+							<mat-error *ngIf="
+											controls.mobileNumber.errors?.pattern &&
+											controls.mobileNumber.touched
+										">
+								Invalid Input
+							</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mx-0 text-left py-md-3">
+                    <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
+                        <div class="row">
+                            <div class="col-12 col-lg-4 align-self-center">
                                 <label class="font-border">Customer ID</label>
                             </div>
                             <div class="col-12 col-lg-8">
-                                <input type="text" placeholder="enter customer Id" class="form-control"
-                                    formControlName="customerId" readonly>
+                                <input class="form-control" formControlName="customerUniqueId" readonly placeholder="Enter customer Id"
+                                            [class.isError]="controls.customerId.touched && controls.customerId.invalid">
+                                     <mat-error
+                                            *ngIf="controls.customerId.touched && controls.customerId.errors?.required">
+                                            Required field
+                                    </mat-error>
                             </div>
                         </div>
                     </div>
@@ -54,9 +86,9 @@
                                 <select formControlName="metalType" class="form-control"
                                     [class.isError]="controls.metalType.touched && controls.metalType.invalid">
                                     <option value="">Select Metal Type</option>
-                                    <!-- <option *ngFor="let bank of bankList" [value]="bank.id">
-                                {{bank?.name}}
-                            </option> -->
+                                    <option *ngFor="let metal of metalType" [value]="metal.value">
+                                {{metal?.name}}
+                            </option>
                                 </select>
                                 <!-- <div
                             *ngIf="newSipForm.controls.bankId.touched && newSipForm.controls.bankId.invalid">
@@ -78,9 +110,9 @@
                                 <select formControlName="sipInvestmentTenure" class="form-control"
                                     [class.isError]="controls.sipInvestmentTenure.touched && controls.sipInvestmentTenure.invalid">
                                     <option value="">Select SIP Investment Tenure</option>
-                                    <!-- <option *ngFor="let bank of bankList" [value]="bank.id">
-                                {{bank?.name}}
-                            </option> -->
+                                    <option *ngFor="let tenure of investmentTenure" [value]="tenure.investmentTenure">
+                                {{tenure?.investmentTenureValue}}
+                            </option>
                                 </select>
                                 <!-- <div
                             *ngIf="newSipForm.controls.bankId.touched && newSipForm.controls.bankId.invalid">
@@ -101,9 +133,9 @@
                                 <select formControlName="sipCycleDate" class="form-control"
                                     [class.isError]="controls.sipCycleDate.touched && controls.sipCycleDate.invalid">
                                     <option value="">Select SIP Cycle Date</option>
-                                    <!-- <option *ngFor="let bank of bankList" [value]="bank.id">
-                                {{bank?.name}}
-                            </option> -->
+                                    <option *ngFor="let date of cycleDate" [value]="date.cycleDate">
+                                {{date?.cycleDate}}
+                            </option>
                                 </select>
                                 <!-- <div
                             *ngIf="newSipForm.controls.bankId.touched && newSipForm.controls.bankId.invalid">
@@ -124,36 +156,25 @@
                             </div>
                             <div class="col-12 col-lg-8">
                                 <input type="text" placeholder="enter invest amount" class="form-control"
-                                    formControlName="investmentAmount" readonly>
+                                    formControlName="investmentAmount">
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
-                        <div class="row">
-                            <div class="col-12 col-lg-4 align-self-center">
-                                <label class="font-border">Download ECS Form</label>
-                            </div>
-                            <div class="col-12 col-lg-8">
-                                <input type="text" placeholder="download ECS Form" class="form-control"
-                                    formControlName="downloadEcsForm" readonly>
+                        <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
+                            <div class="row">
+                                <div class="col-12 col-lg-4 align-self-center">
+                                    <label class="font-border">Upload ECS form</label>
+                                </div>
+                                <div class="col-12 col-lg-8">
+                                    <input type="text" placeholder="upload ECS Form" class="form-control"
+                                        formControlName="uploadEcsForm">
+                                </div>
                             </div>
                         </div>
-                    </div>
+                   
                 </div>
 
-                <div class="row mx-0 text-left py-md-3">
-                    <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
-                        <div class="row">
-                            <div class="col-12 col-lg-4 align-self-center">
-                                <label class="font-border">Upload ECS form</label>
-                            </div>
-                            <div class="col-12 col-lg-8">
-                                <input type="text" placeholder="upload ECS Form" class="form-control"
-                                    formControlName="uploadEcsForm" readonly>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+               
 
                 <!-- <div class="row mx-0 py-3">
                     <div class="col-12 text-center">
