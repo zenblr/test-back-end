@@ -310,7 +310,7 @@ exports.deactivateCustomer = async (req, res, next) => {
 
 
 exports.getAllCustomersForLead = async (req, res, next) => {
-  let { stageName, cityId, stateId, statusId, modulePoint } = req.query;
+  let { stageName, cityId, stateId, statusId, modulePoint , completeKycModule} = req.query;
   const { search, offset, pageSize } = paginationWithFromTo(
     req.query.search,
     req.query.from,
@@ -389,6 +389,33 @@ exports.getAllCustomersForLead = async (req, res, next) => {
         Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[1]}`), '!=', 0),
         Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[2]}`), '!=', 0),
         Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[3]}`), '!=', 0)
+      )
+    }
+  }
+
+  if (!check.isEmpty(completeKycModule)) {
+    let completeKycModuleArray = completeKycModule.split(',')
+    if (completeKycModuleArray.length == 1) {
+      query.kyc_complete_point = Sequelize.or(
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[0]}`), '!=', 0)
+      )
+    } else if (completeKycModuleArray.length == 2) {
+      query.kyc_complete_point = Sequelize.or(
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[0]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[1]}`), '!=', 0)
+      )
+    } else if (completeKycModuleArray.length == 3) {
+      query.kyc_complete_point = Sequelize.or(
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[0]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[1]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[2]}`), '!=', 0)
+      )
+    } else if (completeKycModuleArray.length == 4) {
+      query.kyc_complete_point = Sequelize.or(
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[0]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[1]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[2]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[3]}`), '!=', 0)
       )
     }
   }
