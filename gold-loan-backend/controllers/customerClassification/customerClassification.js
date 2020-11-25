@@ -226,7 +226,17 @@ exports.operationalTeamKycRating = async (req, res, next) => {
 
         } else {
             reasonFromOperationalTeam = ""
-            let customerUniqueId = uniqid.time().toUpperCase();
+            
+            //change check unique id
+            let checkUniqueId = await models.customer.findOne({ where: { id: customerId } })
+            let customerUniqueId = null
+            if (check.isEmpty(checkUniqueId.customerUniqueId)) {
+                customerUniqueId = uniqid.time().toUpperCase();
+            } else {
+                customerUniqueId = checkUniqueId.customerUniqueId
+            }
+            //change check unique id            
+
             let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
 
             await sequelize.transaction(async (t) => {
@@ -344,7 +354,18 @@ exports.operationalTeamKycRating = async (req, res, next) => {
 
         } else {
             scrapRscrapReasonFromOperationalTeam = ""
-            let customerUniqueId = uniqid.time().toUpperCase();
+
+            //change check unique id
+            let checkUniqueId = await models.customer.findOne({ where: { id: customerId } })
+            let customerUniqueId = null
+            if (check.isEmpty(checkUniqueId.customerUniqueId)) {
+                customerUniqueId = uniqid.time().toUpperCase();
+            } else {
+                customerUniqueId = checkUniqueId.customerUniqueId
+            }
+            //change check unique id
+
+
             await sequelize.transaction(async (t) => {
                 await models.customer.update({ customerUniqueId, scrapKycStatus: "approved" }, { where: { id: customerId }, transaction: t })
 
