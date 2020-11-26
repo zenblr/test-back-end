@@ -22,8 +22,8 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy {
   details: any
   pdf = {
     loanAgreementCopyImage: false, pawnCopyImage: false, schemeConfirmationCopyImage: false,
-    purchaseVoucherImage: false, purchaseInvoiceImage: false, saleInvoiceImage: false,declarationImage:false,
-    loanTransferPawnImage:false,signedChequeImage:false
+    purchaseVoucherImage: false, purchaseInvoiceImage: false, saleInvoiceImage: false, declarationImage: false,
+    loanTransferPawnImage: false, signedChequeImage: false
   }
   masterLoanId: any;
   masterAndLoanIds: { loanId: any; masterLoanId: any; };
@@ -87,7 +87,7 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy {
   }
 
   pdfCheck() {
-    let laonAgree, pawn, scheme, voucher, invoice, sale,declaration,loanTransferPawn,signedCheque;
+    let laonAgree, pawn, scheme, voucher, invoice, sale, declaration, loanTransferPawn, signedCheque;
     if (this.details.customerLoanDocument) {
       if (this.details.customerLoanDocument.loanAgreementCopy) {
         laonAgree = this.details.customerLoanDocument.loanAgreementCopyImage[0].split('.')
@@ -111,7 +111,7 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy {
       }
     }
 
-    if(this.details.loanTransfer){
+    if (this.details.loanTransfer) {
       if (this.details.loanTransfer.declarationImage) {
         declaration = this.details.loanTransfer.declarationImage[0].split('.')
       }
@@ -218,6 +218,11 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy {
       let documents = this.details.customerLoanDocument
       let temp = [];
       temp = [...documents.loanAgreementCopyImage, ...documents.pawnCopyImage, ...documents.schemeConfirmationCopyImage]
+      if (this.details.loanTransfer) {
+        let loanTransfer = this.details.loanTransfer
+        temp = [...loanTransfer.declarationImage, ...loanTransfer.pawnTicketImage, ...loanTransfer.signedChequeImage]
+
+      }
       temp.push(packets.emptyPacketWithNoOrnamentImage,
         packets.sealingPacketWithCustomerImage,
         packets.sealingPacketWithWeightImage)
