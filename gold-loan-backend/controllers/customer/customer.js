@@ -17,7 +17,7 @@ const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck');
 const qs = require('qs');
 const getMerchantData = require('../auth/getMerchantData')
 const jwt = require('jsonwebtoken');
-const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
+const { JWT_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/constant');
 
 exports.getOtp = async (req, res, next) => {
   let getOtp = await models.customerOtp.findAll({
@@ -751,7 +751,7 @@ exports.signUpCustomer = async (req, res) => {
       userBelongsTo: "customer"
     },
       JWT_SECRETKEY, {
-      expiresIn: JWT_EXPIRATIONTIME
+      expiresIn: JWT_EXPIRATIONTIME_CUSTOMER
     });
 
     const decoded = jwt.verify(Token, JWT_SECRETKEY);
