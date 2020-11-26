@@ -65,4 +65,15 @@ export class AppliedKycService {
   // getAllLeads(from, to, search, stageName): Observable<any> {
   //   return this.http.get<any>(`/api/customer?search=${search}&from=${from}&to=${to}&stageName=${stageName}`); // stageName=lead in queryParams
   // }
+
+  changeKYCEditable(data) {
+    return this.http.post<any>(`/api/kyc/allow-to-kyc`, data)
+      .pipe(
+        map(res => res),
+        catchError(err => {
+          if (err.error.message) this.toastr.error(err.error.message);
+          throw (err);
+        })
+      );
+  }
 }

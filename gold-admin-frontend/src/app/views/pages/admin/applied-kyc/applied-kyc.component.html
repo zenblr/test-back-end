@@ -246,6 +246,16 @@
                     </mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="allowToEdit">
+                    <mat-header-cell *matHeaderCellDef>Editable</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <mat-slide-toggle [checked]="role.customer.allowCustomerEdit"
+                            (change)="allowToEdit({ allowCustomerEdit: $event.checked, customerId: role?.customer?.id})">
+                        </mat-slide-toggle>
+                    </mat-cell>
+                </ng-container>
+
+
                 <!-- <ng-container matColumnDef="menu">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let role">
