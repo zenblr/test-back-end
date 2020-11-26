@@ -130,7 +130,7 @@ export class DisburseComponent implements OnInit {
       fullAmount: [],
       bankTransferType: [],
       loanTransferExtraAmount:[],
-      otherAmountTransactionId:['',Validators.required]
+      otherAmountTransactionId:[]
     })
     this.disableSchemeRelatedField()
   }
@@ -194,6 +194,10 @@ export class DisburseComponent implements OnInit {
           this.disburseForm.controls.unsecuredTransactionId.disable()
           this.disburseForm.controls.securedTransactionId.disable()
           this.disburseForm.controls.loanTransferExtraAmount.disable()
+          if(res.data.loanTransferExtraAmount){
+            this.controls.otherAmountTransactionId.setValidators(Validators.required)
+          this.controls.otherAmountTransactionId.updateValueAndValidity()
+          }
         }else{
           this.controls.otherAmountTransactionId.clearValidators()
           this.controls.otherAmountTransactionId.updateValueAndValidity()
