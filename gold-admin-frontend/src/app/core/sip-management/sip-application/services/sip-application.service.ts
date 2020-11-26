@@ -18,7 +18,7 @@ export class SipApplicationService {
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
   getSipApplication(from, to, search): Observable<any> {
-    return this.http.get(API_ENDPOINT + `api/gold-sip/sip-cycle-date?from=${from}&to=${to}&search=${search}`).pipe(
+    return this.http.get(API_ENDPOINT + `api/gold-sip/sip-application/get-sip-application?from=${from}&to=${to}&search=${search}`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
@@ -27,6 +27,8 @@ export class SipApplicationService {
       })
     );
   }
+
+
   
   addMobile(mobileNumber): Observable<any> {
     return this.http.get<any>(API_ENDPOINT + `api/gold-sip/customer?mobileNumber=${mobileNumber}`).pipe(
@@ -96,8 +98,19 @@ export class SipApplicationService {
     );
   }
 
-  updateCycleDate(id, data): Observable<any> {
-    return this.http.put<any>(API_ENDPOINT + `api/gold-sip/sip-cycle-date/`+ id,  data ).pipe(
+  updateIndividual(id, data): Observable<any> {
+    return this.http.put<any>(API_ENDPOINT + `api/gold-sip/sip-application/`+ id, data ).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
+  getIndividual(id): Observable<any> {
+    return this.http.get<any>(API_ENDPOINT + `api/gold-sip/sip-application/`+ id ).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)

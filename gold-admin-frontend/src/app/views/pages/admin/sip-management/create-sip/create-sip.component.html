@@ -160,7 +160,7 @@
                             </div>
                         </div>
                     </div>
-                        <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
+                     <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
                             <div class="row">
                                 <div class="col-12 col-lg-4 align-self-center">
                                     <label class="font-border">Upload ECS form</label>
@@ -170,8 +170,32 @@
                                         formControlName="uploadEcsForm">
                                 </div>
                             </div>
+                    </div>
+                </div>
+                <div class="row mx-0 text-left py-md-3" *ngIf="sipStatusDisable">
+                    <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
+                        <div class="row">
+                            <div class="col-12 col-lg-4 align-self-center">
+                                <label class="font-border">Sip Status</label>
+                            </div>
+                            <div class="col-12 col-lg-8">
+                                <select formControlName="sipStatus" class="form-control"
+                                    [class.isError]="controls.sipStatus.touched && controls.sipStatus.invalid">
+                                    <option value="">Select SIP Status</option>
+                                    <option *ngFor="let status of sipStatus" [value]="status.statusName">
+                                {{status?.statusName | titlecase}}
+                            </option>
+                                </select>
+                                <!-- <div
+                            *ngIf="newSipForm.controls.bankId.touched && newSipForm.controls.bankId.invalid">
+                            <mat-error *ngIf="newSipForm.controls.bankId.errors?.required">
+                                Required field
+                            </mat-error>
+                        </div> -->
+                            </div>
                         </div>
-                   
+                    </div>
+                     
                 </div>
 
                

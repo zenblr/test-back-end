@@ -17,9 +17,11 @@ export class CreateSipComponent implements OnInit {
  
   createSipForm: FormGroup;
   title: string;
+  sipStatus: any;
   cycleDate: any;
   investmentTenure: any;
   customerName: any;
+  sipStatusDisable = false;
   id: any;
   metalType = [
 		{ value: 'gold', name: 'Gold' },
@@ -49,8 +51,12 @@ export class CreateSipComponent implements OnInit {
       this.title = 'Add SIP'
     }
     else if (this.data.action == 'edit') {
+      this.sipStatusDisable = true;
       this.title = 'Edit SIP';
-      this.createSipForm.patchValue(this.data.sipCreateData)
+      this.getIndividual(this.data.sipCreateData.id);
+      this.createSipForm.patchValue(this.data.sipCreateData);
+      this.createSipForm.disable();
+      this.controls.sipStatus.enable();
     }
   }
 
@@ -67,7 +73,8 @@ export class CreateSipComponent implements OnInit {
       investmentAmount: ['', [Validators.required]],
       uploadEcsForm: ['', [Validators.required]],
       source: ['web'],
-      customerId: []
+      customerId: [],
+      sipStatus: []
 
      
     });
@@ -86,6 +93,17 @@ export class CreateSipComponent implements OnInit {
       this.dialogRef.close();
     }
   }
+  getIndividual(id) {
+    this.sipApplicationService.getIndividual(id).pipe(
+      map(res =>{
+        this.sipStatus = res.SipData.sipNextStatus;
+        this.createSipForm.patchValue(res.SipData.customer);
+        this.controls.sipStatus.patchValue(res.SipData.sipStatus);
+        this.controls.customerName.patchValue(res.SipData.customer.firstName +' '+ res.SipData.customer.lastName);
+      })
+      ).subscribe()   
+      }
+
 
   getAllCycleDate() { 
     this.sipApplicationService.getAllCycleDate().pipe(
@@ -103,6 +121,7 @@ export class CreateSipComponent implements OnInit {
       })
       ).subscribe()   
   }
+  
   inputNumber() {
     if (this.controls.mobileNumber.valid) {
      this.sipApplicationService.addMobile(this.controls.mobileNumber.value).pipe(
@@ -133,13 +152,14 @@ export class CreateSipComponent implements OnInit {
       });
     }
     else {
-      // this.sipCycleDateService.addCycleDate(this.SipCycleDateForm.value).subscribe(res => {
-      //   if (res) {
-      //     const msg = 'Sip Cycle Date Added Successfully';
-      //     this.toastr.success(msg);
-      //     this.dialogRef.close(true);
-      //   }
-      // });
+      this.sipStatusDisable = false;
+      this.sipApplicationService.updateIndividual(this.data.sipCreateData.id, this.createSipForm.value).subscribe(res => {
+        if (res) {
+          const msg = 'Sip Cycle Date Added Successfully';
+          this.toastr.success(msg);
+          this.dialogRef.close(true);
+        }
+      });
     }
     
   }
