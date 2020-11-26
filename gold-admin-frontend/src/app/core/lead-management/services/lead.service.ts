@@ -41,6 +41,9 @@ export class LeadService {
     if (data && data.statusId) {
       reqParams.statusId = data.statusId;
     }
+    if (data && data.modulePoint) {
+      reqParams.modulePoint = data.modulePoint
+    }
     return this.http.get<any>(`/api/customer`, { params: reqParams })
   }
 

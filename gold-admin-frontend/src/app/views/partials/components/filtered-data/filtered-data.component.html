@@ -213,6 +213,17 @@
                         </div>
                     </div>
 
+                    <div class="filtered-data" *ngIf="filteredList?.modulePoint">
+                        <div class="filtered-title">By Module</div>
+                        <div class="d-flex">
+                            <div class="filtered-value" *ngFor="let item of filteredList?.modulePoint; let i = index;">
+                                <span>{{item?.moduleName | titlecase}}</span>
+                                <img class="kt-pointer cancel-filtered-value" src="assets/media/icons/cancel.svg"
+                                    (click)="clearFilter('modulePoint',i)">
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- appliedScrap -->
                     <!-- <div class="filtered-data" *ngIf="filteredList?.scrapStatus">
                         <div class="filtered-title">By Scrap Status</div>

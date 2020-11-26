@@ -88,6 +88,14 @@
                   [bindLabel]="'statusName'" [placeholder]="'Select Status'" [isClear]="clearData">
                 </kt-multi-select-search>
               </div>
+
+              <div class="col">
+                <label>By Module</label>
+                <kt-multi-select-search formControlName="modulePoint" [items]="modules" [multiple]="true"
+                  [bindLabel]="'moduleName'" [placeholder]="'Select Module'" [isClear]="clearData">
+                </kt-multi-select-search>
+              </div>
+
               <div class="col-2 d-flex align-items-end">
                 <label></label>
                 <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>

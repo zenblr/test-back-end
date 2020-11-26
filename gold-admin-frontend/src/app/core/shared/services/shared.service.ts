@@ -292,5 +292,8 @@ export class SharedService {
 		return this.userManagementPermission
 	}
 
+	getModulePoints(): Observable<any> {
+		return this.http.get(`/api/modules`);
+	}
 
 }

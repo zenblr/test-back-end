@@ -67,6 +67,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	cronProductArray: { name: string; value: string; }[];
 	cronStatusArray: { name: string; value: string; }[];
 	cronTypeArray: { name: string; value: string; }[];
+	modules = [];
 
 	constructor(
 		private fb: FormBuilder,
@@ -151,6 +152,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 							break;
 						case 'leadStatus':
 							this.getLeadStatus();
+							this.getModulePoints()
 							break;
 						case 'scrapStatus':
 							this.scrapStatus();
@@ -199,7 +201,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			cronType: [''],
 			bmStatus: [''],
 			otStatus: [''],
-			depositStatus: ['']
+			depositStatus: [''],
+			modulePoint: ['']
 		});
 
 		this.filterForm.valueChanges.subscribe((val) => {
@@ -337,6 +340,10 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			if (controls['otStatus'].value && (controls['otStatus'].value.multiSelect && controls['otStatus'].value.multiSelect.length)) {
 				this.filterObject.data.otStatus = controls['otStatus'].value.multiSelect.map(e => e.value).toString();
 				this.filterObject.list.otStatus = controls['otStatus'].value.multiSelect;
+			}
+			if (controls['modulePoint'].value && (controls['modulePoint'].value.multiSelect && controls['modulePoint'].value.multiSelect.length)) {
+				this.filterObject.data.modulePoint = controls['modulePoint'].value.multiSelect.map(e => e.modulePoint).toString();
+				this.filterObject.list.modulePoint = controls['modulePoint'].value.multiSelect;
 			}
 			// if (controls['date'].value) {
 			// 	this.filterObject.data.date = controls['date'].value;
@@ -476,6 +483,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'otStatus':
 				this.controls['otStatus'].value.multiSelect.splice(index, 1);
 				break;
+			case 'modulePoint':
+				this.controls['modulePoint'].value.multiSelect.splice(index, 1);
+				break;
 			default:
 				break;
 		}
@@ -500,6 +510,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			packets: this.filterForm.controls['packets'].value,
 			packetTracking: this.filterForm.controls['packetTracking'].value,
 			depositStatus: this.filterForm.controls['depositStatus'].value,
+			modulePoint: this.filterForm.controls['modulePoint'].value,
 		});
 		setTimeout(() => {
 			this.applyFilter();
@@ -611,6 +622,12 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	getMerchant() {
 		this.sharedService.getMerchant().subscribe((res) => {
 			this.merchantList = res;
+		});
+	}
+
+	getModulePoints() {
+		this.sharedService.getModulePoints().subscribe((res) => {
+			this.modules = res;
 		});
 	}
 
