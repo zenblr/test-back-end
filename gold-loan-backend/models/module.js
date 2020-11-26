@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'module',
     });
 
-    Module.getAllModule = () => Module.findAll({ where: { isActive: true }, order: [['id', 'ASC']], attributes: ['id', 'moduleName'], });
+    Module.getAllModule = () => Module.findAll({ where: { isActive: true }, order: [['id', 'ASC']], attributes: ['id', 'moduleName', 'modulePoint'], });
 
     Module.associate = function (models) {
         Module.hasMany(models.entity, { foreignKey: 'moduleId', as: 'entity' });

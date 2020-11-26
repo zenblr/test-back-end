@@ -947,6 +947,36 @@ exports.appliedKyc = async (req, res, next) => {
         // isKycSubmitted: true,
         // isScrapKycSubmitted: true
     }
+
+    let { completeKycModule } = req.query
+
+    if (!check.isEmpty(completeKycModule)) {
+        let completeKycModuleArray = completeKycModule.split(',')
+        if (completeKycModuleArray.length == 1) {
+            query.kyc_complete_point = Sequelize.or(
+                Sequelize.literal(`customer.kyc_complete_point & ${completeKycModuleArray[0]} != 0`)
+            )
+        } else if (completeKycModuleArray.length == 2) {
+            query.kyc_complete_point = Sequelize.or(
+                Sequelize.literal(`customer.kyc_complete_point & ${completeKycModuleArray[0]} != 0`),
+                Sequelize.literal(`customer.kyc_complete_point & ${completeKycModuleArray[1]} != 0`)
+            )
+        } else if (completeKycModuleArray.length == 3) {
+            query.kyc_complete_point = Sequelize.or(
+                Sequelize.literal(`customer.kyc_complete_point & ${completeKycModuleArray[0]} != 0`),
+                Sequelize.literal(`customer.kyc_complete_point & ${completeKycModuleArray[1]} != 0`),
+                Sequelize.literal(`customer.kyc_complete_point & ${completeKycModuleArray[2]} != 0`)
+            )
+        } else if (completeKycModuleArray.length == 4) {
+            query.kyc_complete_point = Sequelize.or(
+                Sequelize.literal(`customer.kyc_complete_point & ${completeKycModuleArray[0]} != 0`),
+                Sequelize.literal(`customer.kyc_complete_point & ${completeKycModuleArray[1]} != 0`),
+                Sequelize.literal(`customer.kyc_complete_point & ${completeKycModuleArray[2]} != 0`),
+                Sequelize.literal(`customer.kyc_complete_point & ${completeKycModuleArray[3]} != 0`)
+            )
+        }
+    }
+
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
 
@@ -982,7 +1012,7 @@ exports.appliedKyc = async (req, res, next) => {
         {
             model: models.customer,
             as: 'customer',
-            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'kycStatus', 'customerUniqueId', 'moduleId', 'userType', 'scrapKycStatus'],
+            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'kycStatus', 'kycCompletePoint', 'customerUniqueId', 'moduleId', 'userType', 'scrapKycStatus'],
             where: internalBranchWhere,
             include: {
                 model: models.appraiserRequest,
