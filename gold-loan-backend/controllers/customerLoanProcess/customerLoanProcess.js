@@ -1638,6 +1638,11 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
             as: 'loanTransfer',
         }]
     });
+    let otherAmountTransactionId = null;
+    let getOtherAmountTransactionId = await models.customerLoanDisbursement.findOne({where:{masterLoanId,isLoanTransferExtraAmountAdded:true}});
+    if(getOtherAmountTransactionId){
+        otherAmountTransactionId = getOtherAmountTransactionId.transactionId;
+    }
     let securedLoanAmount;
     let unsecuredLoanAmount = 0;
     let securedLoanId;
@@ -1707,6 +1712,7 @@ exports.disbursementOfLoanBankDetails = async (req, res, next) => {
     if (checkLoan.isLoanTransfer) {
         data.securedTransactionId = securedTransactionId;
         data.unsecuredTransactionId = unsecuredTransactionId;
+        data.otherAmountTransactionId = otherAmountTransactionId;
     }
     return res.status(200).json({ message: 'Success', data: data })
 
@@ -1777,7 +1783,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
 
                     await models.customerLoanDisbursement.create({
                         masterLoanId, loanId: securedLoanId, disbursementAmount:  Loan.loanTransferExtraAmount, transactionId: otherAmountTransactionId, date, paymentMode, ifscCode, bankName, bankBranch,
-                        accountHolderName, accountNumber, disbursementStatus, createdBy, modifiedBy, bankTransferType
+                        accountHolderName, accountNumber, disbursementStatus, createdBy, modifiedBy, bankTransferType, isLoanTransferExtraAmountAdded:true
                     }, { transaction: t })
                 }
             }else{

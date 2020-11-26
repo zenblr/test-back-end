@@ -580,14 +580,14 @@
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Pawn Copy {{i+1}}</label>
                 </div>
                 <div class="col">
-                    <div class="pdf" (click)="preview(details.loanTransfer.signedCheque[0])">
+                    <div class="pdf" (click)="preview(details.loanTransfer.signedChequeImage[0])">
                         <iframe
-                            [src]="details.loanTransfer.signedCheque[0] | safe : 'resourceUrl'"
+                            [src]="details.loanTransfer.signedChequeImage[0] | safe : 'resourceUrl'"
                             scrolling="no" *ngIf="pdf?.signedChequeImage" height="255"></iframe>
                     </div>
                     <img *ngIf="!pdf?.signedChequeImage" class="packets"
-                        (click)="viewPackets(details.loanTransfer.signedCheque[0])"
-                        [src]="details.loanTransfer.signedCheque[0]">
+                        (click)="viewPackets(details.loanTransfer.signedChequeImage[0])"
+                        [src]="details.loanTransfer.signedChequeImage[0]">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Signed Cheque
                     </label>
                 </div>
