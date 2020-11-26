@@ -1012,7 +1012,7 @@ exports.appliedKyc = async (req, res, next) => {
         {
             model: models.customer,
             as: 'customer',
-            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'kycStatus', 'kycCompletePoint', 'customerUniqueId', 'moduleId', 'userType', 'scrapKycStatus'],
+            attributes: ['id', 'firstName', 'lastName', 'allowCustomerEdit', 'panCardNumber', 'kycStatus', 'kycCompletePoint', 'customerUniqueId', 'moduleId', 'userType', 'scrapKycStatus'],
             where: internalBranchWhere,
             include: {
                 model: models.appraiserRequest,

@@ -18,6 +18,15 @@ exports.submitApplyKyc = async (req, res, next) => {
     let createdBy = null
     let isFromCustomerWebsite = true
 
+    let getCustomerInfo = await models.customer.findOne({
+        where: { id: req.customerId },
+        attributes: ['id', 'allowCustomerEdit'],
+    })
+
+    if (!getCustomerInfo.allowCustomerEdit) {
+        return res.status(400).json({ message: `You can not edit kyc. Contact to branch for other info.` })
+    }
+
     let data = await customerKycAdd(req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer, isFromCustomerWebsite)
 
     if (data.success) {
@@ -36,7 +45,14 @@ exports.submitEditKycInfo = async (req, res, next) => {
     let createdBy = null
     let isFromCustomerWebsite = true
 
+    let getCustomerInfo = await models.customer.findOne({
+        where: { id: req.customerId },
+        attributes: ['id', 'allowCustomerEdit'],
+    })
 
+    if (!getCustomerInfo.allowCustomerEdit) {
+        return res.status(400).json({ message: `You can not edit kyc. Contact to branch for other info.` })
+    }
 
     let data = await customerKycEdit(req, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer, isFromCustomerWebsite)
 
