@@ -373,20 +373,20 @@
                 </div>
                 <div class="row">
                     <div class="col-4">
-                        <img class="packets" (click)="viewPackets(packets?.emptyPacketWithNoOrnamentImage)"
+                        <img class="packets" (click)="viewPackets(packets?.emptyPacketWithNoOrnamentImage,'packet')"
                             [src]="packets?.emptyPacketWithNoOrnamentImage">
                         <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Empty Packets with
                             No
                             Ornaments</label>
                     </div>
                     <div class="col-4">
-                        <img class="packets" (click)="viewPackets(packets?.sealingPacketWithWeightImage)"
+                        <img class="packets" (click)="viewPackets(packets?.sealingPacketWithWeightImage,'packet')"
                             [src]="packets?.sealingPacketWithWeightImage">
                         <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with All
                             Ornaments</label>
                     </div>
                     <div class="col-4">
-                        <img class="packets" (click)="viewPackets(packets?.sealingPacketWithCustomerImage)"
+                        <img class="packets" (click)="viewPackets(packets?.sealingPacketWithCustomerImage,'packet')"
                             [src]="packets?.sealingPacketWithCustomerImage">
                         <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Packets with
                             Sealing</label>
@@ -458,7 +458,7 @@
                             scrolling="no" *ngIf="pdf?.loanAgreementCopyImage" height="255"></iframe>
                     </div>
                     <img *ngIf="!pdf?.loanAgreementCopyImage" class="packets"
-                        (click)="viewPackets(details.customerLoanDocument.loanAgreementCopyImage[0])"
+                        (click)="viewPackets(details.customerLoanDocument.loanAgreementCopyImage[0],'documents')"
                         [src]="details.customerLoanDocument.loanAgreementCopyImage[0]">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Loan Agreement Copy</label>
                 </div>
@@ -467,7 +467,7 @@
                         <iframe [src]="pawncopy | safe : 'resourceUrl'" scrolling="no" *ngIf="isPdf(pawncopy)"
                             height="255"></iframe>
                     </div>
-                    <img *ngIf="!isPdf(pawncopy)" class="packets" [src]="pawncopy" (click)="viewPackets(pawncopy)">
+                    <img *ngIf="!isPdf(pawncopy)" class="packets" [src]="pawncopy" (click)="viewPackets(pawncopy,'documents')">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Pawn Copy {{i+1}}</label>
                 </div>
                 <div class="col">
@@ -477,7 +477,7 @@
                             scrolling="no" *ngIf="pdf?.schemeConfirmationCopyImage" height="255"></iframe>
                     </div>
                     <img *ngIf="!pdf?.schemeConfirmationCopyImage" class="packets"
-                        (click)="viewPackets(details.customerLoanDocument.schemeConfirmationCopyImage[0])"
+                        (click)="viewPackets(details.customerLoanDocument.schemeConfirmationCopyImage[0],'documents')"
                         [src]="details.customerLoanDocument.schemeConfirmationCopyImage[0]">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Scheme Confirmation Copy
                     </label>
@@ -549,7 +549,7 @@
                             scrolling="no" *ngIf="pdf?.declarationImage" height="255"></iframe>
                     </div>
                     <img *ngIf="!pdf?.declarationImage" class="packets"
-                        (click)="viewPackets(details.loanTransfer.declarationImage[0])"
+                        (click)="viewPackets(details.loanTransfer.declarationImage[0],'transfer')"
                         [src]="details.loanTransfer.declarationImage[0]">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Declaration</label>
                 </div>
@@ -558,7 +558,7 @@
                         <iframe [src]="pawncopy | safe : 'resourceUrl'" scrolling="no" *ngIf="isPdf(pawncopy)"
                             height="255"></iframe>
                     </div>
-                    <img *ngIf="!isPdf(pawncopy)" class="packets" [src]="pawncopy" (click)="viewPackets(pawncopy)">
+                    <img *ngIf="!isPdf(pawncopy)" class="packets" [src]="pawncopy" (click)="viewPackets(pawncopy,'transfer')">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Pawn Copy {{i+1}}</label>
                 </div>
                 <div class="col">
@@ -568,7 +568,7 @@
                             scrolling="no" *ngIf="pdf?.signedChequeImage" height="255"></iframe>
                     </div>
                     <img *ngIf="!pdf?.signedChequeImage" class="packets"
-                        (click)="viewPackets(details.loanTransfer.signedChequeImage[0])"
+                        (click)="viewPackets(details.loanTransfer.signedChequeImage[0],'transfer')"
                         [src]="details.loanTransfer.signedChequeImage[0]">
                     <label class="text-center w-100 font-weight-500 pacekts-label text-gray">Signed Cheque
                     </label>
