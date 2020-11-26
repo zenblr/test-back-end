@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatDialog } from '@angular/material';
 import { Subject, Subscription, merge, from } from 'rxjs';
-import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
+import { DataTableService } from '../../../../../../../core/shared/services/data-table.service';
 import { ToastrService } from 'ngx-toastr';
-import { LayoutUtilsService } from '../../../../../../core/_base/crud';
+import { LayoutUtilsService } from '../../../../../../../core/_base/crud';
 import { map, takeUntil, tap, skip, distinctUntilChanged } from 'rxjs/operators';
 import { SipCycleDateAddComponent } from '../sip-cycle-date-add/sip-cycle-date-add.component';
-import { SipCycleDateDatasource, SipCycleDateService } from '../../../../../../core/sip-management/sip-cycle-date'
+import { SipCycleDateDatasource, SipCycleDateService } from '../../../../../../../core/sip-management/sip-cycle-date'
 
 @Component({
   selector: 'kt-sip-cycle-date-list',

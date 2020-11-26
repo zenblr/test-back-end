@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { AngularMaterialModule } from '../../angular-material/angular-material.module'
+import { AngularMaterialModule } from '../../../angular-material/angular-material.module'
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
-import { PartialsModule } from '../../../partials/partials.module';
-import { CoreModule } from '../../../../core/core.module';
+import { PartialsModule } from '../../../../partials/partials.module';
+import { CoreModule } from '../../../../../core/core.module';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { DeleteEntityDialogComponent } from '../../../partials/content/crud';
-import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../../core/_base/crud';
+import { DeleteEntityDialogComponent } from '../../../../partials/content/crud';
+import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../../../core/_base/crud';
 import { SipInvestmentTenureListComponent } from './sip-investment-tenure/sip-investment-tenure-list/sip-investment-tenure-list.component';
 import { SipInvestmentTenureAddComponent } from './sip-investment-tenure/sip-investment-tenure-add/sip-investment-tenure-add.component';
 import { SipCycleDateListComponent } from './sip-cycle-date/sip-cycle-date-list/sip-cycle-date-list.component';

@@ -72,7 +72,7 @@ export class MenuConfig {
 							title: "User Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-04.svg",
-							page:'/admin/user-management',
+							page: '/admin/user-management',
 							permission: !(this.permissionsArr.includes('merchantView') ||
 								this.permissionsArr.includes('brokerView') ||
 								this.permissionsArr.includes('storeView') ||
@@ -356,43 +356,53 @@ export class MenuConfig {
 							page: "/admin/scrap-management",
 							// permission: !this.modulesArr.includes(3),
 						},
+
 						{
-							title: "SIP Management",
+
+							title: "Digi Gold",
 							root: true,
 							src: "assets/media/aside-icons/icons-39.svg",
+							bullet: 'dot',
 							// permission: !this.modulesArr.includes(3),
 							submenu: [
 								{
-									title: "SIP Application",
-									page: "/admin/sip-management/sip-application",
-								    root: true,
+									title: "SIP Management",
+									root: true,
 									bullet: 'dot',
-								},
-								{
-									title: "Sip Trades",
-									page: "/admin/sip-management/sip-trades",
-								    root: true,
-									bullet: 'dot',
-								},
-								{
-									title: "Masters",
-								    root: true,
-									bullet: 'dot',
+									// permission: !this.modulesArr.includes(3),
 									submenu: [
 										{
-											title: "SIP Cycle Date",
-											page: "/admin/sip-management/sip-cycle-date",
-											permission: false,
+											title: "SIP Application",
+											page: "/admin/digi-gold/sip-management/sip-application",
+											root: true,
 										},
 										{
-											title: "SIP Investment Tenure",
-											page: "/admin/sip-management/sip-investment-tenure",
-											permission: false,
+											title: "Sip Trades",
+											page: "/admin/digi-gold/sip-management/sip-trades",
+											root: true,
+										},
+										{
+											title: "Masters",
+											root: true,
+											bullet: 'dot',
+											submenu: [
+												{
+													title: "SIP Cycle Date",
+													page: "/admin/digi-gold/sip-management/sip-cycle-date",
+													permission: false,
+												},
+												{
+													title: "SIP Investment Tenure",
+													page: "/admin/digi-gold/sip-management/sip-investment-tenure",
+													permission: false,
+												},
+											]
 										},
 									]
 								},
 							]
-						},	
+						},
+
 						{
 							title: "Broker",
 							root: true,

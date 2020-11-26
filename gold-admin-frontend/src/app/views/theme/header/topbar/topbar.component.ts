@@ -682,7 +682,7 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes("view-scrap/")) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes("admin/sip-management/create-sip")) {
+		if (location.href.includes("admin/digi-gold/sip-management/create-sip")) {
 			this.showBackButton = true;
 		}
 		if (location.href.includes("packet-image-upload")) {

@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatDialog } from '@angular/material';
 import { Subject, Subscription, merge } from 'rxjs';
-import { DataTableService } from '../../../../../../core/shared/services/data-table.service';
+import { DataTableService } from '../../../../../../../core/shared/services/data-table.service';
 import { ToastrService } from 'ngx-toastr';
-import { LayoutUtilsService } from '../../../../../../core/_base/crud';
+import { LayoutUtilsService } from '../../../../../../../core/_base/crud';
 import { map, takeUntil, tap, skip, distinctUntilChanged } from 'rxjs/operators';
-import { SipInvestmentTenureDatasource, SipInvestmentTenureService } from '../../../../../../core/sip-management/sip-investment-tenure';
+import { SipInvestmentTenureDatasource, SipInvestmentTenureService } from '../../../../../../../core/sip-management/sip-investment-tenure';
 import { SipInvestmentTenureAddComponent } from '../sip-investment-tenure-add/sip-investment-tenure-add.component';
 
 @Component({

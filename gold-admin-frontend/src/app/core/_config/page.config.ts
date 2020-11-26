@@ -429,6 +429,7 @@ export class PageConfig {
 				},
 			},
 			"sip-management": {
+				"digi-gold":{
 			
 				    "sip-cycle-date": {
 				        page: { title: "SIP Cycle Date", desc: "" },
@@ -448,7 +449,7 @@ export class PageConfig {
 				        page: { title: "SIP Trades", desc: "" },
 					},
 
-	
+				}
 			},
 
 			"global-map": {

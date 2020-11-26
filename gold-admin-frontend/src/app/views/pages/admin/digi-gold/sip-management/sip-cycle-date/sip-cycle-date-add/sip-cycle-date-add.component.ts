@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
-import { SipCycleDateDatasource, SipCycleDateService } from '../../../../../../core/sip-management/sip-cycle-date';
+import { SipCycleDateDatasource, SipCycleDateService } from '../../../../../../../core/sip-management/sip-cycle-date';
 import { map, tap, catchError } from "rxjs/operators";
 @Component({
   selector: 'kt-sip-cycle-date-add',

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, NgZone, ChangeDetectorRef, Inject } from '@angular/core';
-import { ToastrComponent } from '../../../../partials/components/toastr/toastr.component';
+import { ToastrComponent } from '../../../../../partials/components/toastr/toastr.component';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { SipApplicationService } from '../../../../../core/sip-management/sip-application';
+import { SipApplicationService } from '../../../../../../core/sip-management/sip-application';
 import { from } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
