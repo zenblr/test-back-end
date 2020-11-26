@@ -241,7 +241,7 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewIn
       temp = [...documents.loanAgreementCopyImage, ...documents.pawnCopyImage, ...documents.schemeConfirmationCopyImage]
       if (this.details.loanTransfer) {
         let loanTransfer = this.details.loanTransfer
-        temp = [...loanTransfer.declarationImage, ...loanTransfer.pawnTicketImage, ...loanTransfer.signedChequeImage]
+        temp = [...temp,...loanTransfer.declarationImage, ...loanTransfer.pawnTicketImage, ...loanTransfer.signedChequeImage]
 
       }
       temp.push(packets.emptyPacketWithNoOrnamentImage,
