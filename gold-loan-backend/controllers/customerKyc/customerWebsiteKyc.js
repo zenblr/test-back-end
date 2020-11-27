@@ -19,7 +19,7 @@ exports.submitApplyKyc = async (req, res, next) => {
     let isFromCustomerWebsite = true
 
     let getCustomerInfo = await models.customer.findOne({
-        where: { id: req.customerId },
+        where: { id: req.body.customerId },
         attributes: ['id', 'allowCustomerEdit'],
     })
 
@@ -46,7 +46,7 @@ exports.submitEditKycInfo = async (req, res, next) => {
     let isFromCustomerWebsite = true
 
     let getCustomerInfo = await models.customer.findOne({
-        where: { id: req.customerId },
+        where: { id: req.body.customerId },
         attributes: ['id', 'allowCustomerEdit'],
     })
 

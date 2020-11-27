@@ -112,7 +112,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
             //for create appraiser Request
 
             //for approved the status by default
-            if (isFromCustomerWebsite && !check.isEmpty(getCustomerInfo.internalBranchId)) {
+            if (isFromCustomerWebsite && getCustomerInfo.internalBranchId != null) {
                 await models.customerKyc.update(
                     { isVerifiedByCce: true, modifiedByCustomer, isKycSubmitted: true, isScrapKycSubmitted: true },
                     { where: { customerId: customerId }, transaction: t })
@@ -384,7 +384,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
                 await models.customerKycClassification.create({ customerId, customerKycId: customerKycId, kycStatusFromCce: "pending", cceId: modifiedBy, createdBy, modifiedBy, modifiedByCustomer, createdByCustomer }, { transaction: t })
             }
 
-            if (!check.isEmpty(getCustomerInfo.internalBranchId)) {
+            if (getCustomerInfo.internalBranchId != null) {
                 await models.customerKyc.update(
                     { isVerifiedByCce: true, modifiedByCustomer, isKycSubmitted: true, isScrapKycSubmitted: true },
                     { where: { customerId: customerId }, transaction: t })
@@ -434,9 +434,9 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
         await models.customerKyc.update({ modifiedBy, modifiedByCustomer, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
 
         //for approved the status by default
-        if (isFromCustomerWebsite && !check.isEmpty(getCustomerInfo.internalBranchId)) {
+        if (isFromCustomerWebsite && getCustomerInfo.internalBranchId != null) {
             await models.customerKyc.update(
-                { isVerifiedByCce: true, cceVerifiedBy: cceId, isKycSubmitted: true, isScrapKycSubmitted: true },
+                { isVerifiedByCce: true, modifiedByCustomer, isKycSubmitted: true, isScrapKycSubmitted: true },
                 { where: { customerId: customerId }, transaction: t })
 
             await models.customerKycClassification.update({ kycRatingFromCce: 4, kycStatusFromCce: "approved", createdBy, modifiedBy, createdByCustomer, modifiedByCustomer, }, { where: { customerId }, transaction: t })
