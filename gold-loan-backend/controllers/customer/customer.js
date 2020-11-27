@@ -57,9 +57,11 @@ exports.addCustomer = async (req, res, next) => {
   let email = "nimap@infotech.com";
   let password = `${firstName}@1234`;
 
+  let { sourcePoint } = await models.source.findOne({ where: { sourceName: 'ADMIN_PANEL' } })
+
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint.modulePoint, sourceFrom: ADMIN_PANEL },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint.modulePoint, sourceFrom: sourcePoint },
       { transaction: t }
     );
 
@@ -310,7 +312,7 @@ exports.deactivateCustomer = async (req, res, next) => {
 
 
 exports.getAllCustomersForLead = async (req, res, next) => {
-  let { stageName, cityId, stateId, statusId, modulePoint , completeKycModule} = req.query;
+  let { stageName, cityId, stateId, statusId, modulePoint, completeKycModule } = req.query;
   const { search, offset, pageSize } = paginationWithFromTo(
     req.query.search,
     req.query.from,
@@ -714,7 +716,7 @@ exports.getsingleCustomerManagement = async (req, res) => {
 //To register customer by their own
 exports.signUpCustomer = async (req, res) => {
   let { firstName, lastName, mobileNumber, email, referenceCode, otp, stateId, cityId } = req.body;
-  let sourceFrom = CUSTOMER_WEBSITE
+  let { sourcePoint } = await models.source.findOne({ where: { sourceName: 'CUSTOMER_WEBSITE' } })
   var todayDateTime = new Date();
   // console.log('abc')
   let verifyUser = await models.customerOtp.findOne({
@@ -768,7 +770,7 @@ exports.signUpCustomer = async (req, res) => {
     let modulePoint = await models.module.findOne({ where: { id: 4 }, transaction: t })
 
     let customer = await models.customer.create(
-      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom },
+      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint },
       { transaction: t }
     );
 
