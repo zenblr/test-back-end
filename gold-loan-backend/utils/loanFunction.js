@@ -1314,6 +1314,61 @@ async function getAmountLoanSplitUpData(loan, amount, splitUpRatioAmount) {
 
 }
 
+async function interestSplit(loan,amount,splitUpRatioAmount){
+    let { securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest } = await payableAmountForLoan(amount, loan)
+
+    let securedOutstandingAmount = loan.customerLoan[0].outstandingAmount
+    let securedInterestRate = loan.customerLoan[0].interestRate
+    let unsecuredOutstandingAmount = 0
+    let unsecuredInterestRate = 0
+    if (loan.isUnsecuredSchemeApplied) {
+        unsecuredOutstandingAmount = loan.customerLoan[1].outstandingAmount
+     unsecuredInterestRate = loan.customerLoan[1].interestRate
+
+    }
+    let totalOutstandingAmount = Number(securedOutstandingAmount) + Number(unsecuredOutstandingAmount)
+
+    let securedLoanId = loan.customerLoan[0].id
+    let securedRatio = Number(((securedOutstandingAmount * securedInterestRate/ ((securedOutstandingAmount * securedInterestRate) + (unsecuredOutstandingAmount * unsecuredInterestRate)))*splitUpRatioAmount).toFixed(2))
+    let newSecuredOutstandingAmount = securedOutstandingAmount - securedRatio
+    let newUnsecuredOutstandingAmount = 0
+    let unsecuredRatio = 0
+    let unsecuredLoanId = null
+    if (loan.isUnsecuredSchemeApplied) {
+        unsecuredLoanId = loan.customerLoan[1].id
+        unsecuredRatio = Number(((unsecuredOutstandingAmount * unsecuredInterestRate/ ((securedOutstandingAmount * securedInterestRate) + (unsecuredOutstandingAmount * unsecuredInterestRate)))*splitUpRatioAmount).toFixed(2))
+        newUnsecuredOutstandingAmount = Number(unsecuredOutstandingAmount) - unsecuredRatio
+    }
+    let newMasterOutstandingAmount = newSecuredOutstandingAmount + newUnsecuredOutstandingAmount
+
+    let isUnsecuredSchemeApplied = false
+    if (loan.isUnsecuredSchemeApplied) {
+        isUnsecuredSchemeApplied = true
+    }
+
+
+
+    let data = {
+        securedOutstandingAmount,
+        unsecuredOutstandingAmount,
+        totalOutstandingAmount,
+        securedRatio,
+        unsecuredRatio,
+        newSecuredOutstandingAmount,
+        newUnsecuredOutstandingAmount,
+        newMasterOutstandingAmount,
+        isUnsecuredSchemeApplied,
+        securedPenalInterest,
+        unsecuredPenalInterest,
+        securedInterest,
+        unsecuredInterest,
+        securedLoanId,
+        unsecuredLoanId
+    }
+    return data
+
+}
+
 let nextDueDateInterest = async (loan) => {
 
     let paymentFrequency = loan.paymentFrequency
@@ -2200,5 +2255,6 @@ module.exports = {
     intrestCalculationForSelectedLoanWithOutT: intrestCalculationForSelectedLoanWithOutT,
     penalInterestCalculationForSelectedLoanWithOutT: penalInterestCalculationForSelectedLoanWithOutT,
     customerNameNumberLoanId: customerNameNumberLoanId,
-    getAllInterest:getAllInterest
+    getAllInterest:getAllInterest,
+    interestSplit:interestSplit
 }
