@@ -69,7 +69,9 @@ export class AppliedKycService {
   changeKYCEditable(data) {
     return this.http.post<any>(`/api/kyc/allow-to-edit`, data)
       .pipe(
-        map(res => res),
+        tap((res) => {
+          if (res.message) this.toastr.error(res.message)
+        }),
         catchError(err => {
           if (err.error.message) this.toastr.error(err.error.message);
           throw (err);
