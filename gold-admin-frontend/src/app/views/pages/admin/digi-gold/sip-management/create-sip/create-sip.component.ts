@@ -7,6 +7,11 @@ import { NavigationEnd, Router } from '@angular/router';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { map, tap, catchError } from "rxjs/operators";
 import { ToastrService } from 'ngx-toastr';
+import { SharedService } from '../../../../../../core/shared/services/shared.service';
+import { MatDialog } from '@angular/material';
+import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { PdfViewerComponent } from '../../../../../../views/partials/components/pdf-viewer/pdf-viewer.component';
+import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'kt-create-sip',
   templateUrl: './create-sip.component.html',
@@ -14,8 +19,8 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class CreateSipComponent implements OnInit {
 
- 
   createSipForm: FormGroup;
+  imgEnable = false;
   title: string;
   sipStatus: any;
   cycleDate: any;
@@ -35,7 +40,9 @@ export class CreateSipComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private router: Router,
     private sipApplicationService: SipApplicationService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private sharedService: SharedService,
+    private dialog: MatDialog,
   
   ) { }
 
@@ -48,7 +55,9 @@ export class CreateSipComponent implements OnInit {
   setForm() {
     console.log(this.data)
     if (this.data.action == 'add') {
-      this.title = 'Add SIP'
+      this.title = 'Add SIP';
+
+
     }
     else if (this.data.action == 'edit') {
       this.sipStatusDisable = true;
@@ -71,7 +80,9 @@ export class CreateSipComponent implements OnInit {
       sipInvestmentTenure: ['', [Validators.required]],
       sipCycleDate: ['', [Validators.required]],
       investmentAmount: ['', [Validators.required]],
-      uploadEcsForm: ['', [Validators.required]],
+      ecsFormImage: ['', [Validators.required]],
+      uploadEcsFormImageName: [],
+      uploadEcsFormImage: [],
       source: ['web'],
       customerId: [],
       sipStatus: []
@@ -92,6 +103,71 @@ export class CreateSipComponent implements OnInit {
     } else if (!event) {
       this.dialogRef.close();
     }
+  }
+
+  // jhol //
+
+  fileUpload(event) {
+    if (this.sharedService.fileValidator(event)) {
+      console.log(this.controls.customerId.value);
+      const params = {
+        reason: 'ecsForm',
+        customerId: this.controls.customerId.value
+      }
+      this.sharedService.uploadFile(event.target.files[0], params).pipe(
+        map(res => {
+          if (res) {
+            this.controls.uploadEcsFormImageName.patchValue(event.target.files[0].name)
+            this.controls.ecsFormImage.patchValue([res.uploadFile.path])
+            this.controls.uploadEcsFormImage.patchValue(res.uploadFile.URL)
+          }
+        }),
+        catchError(err => {
+          if (err.error.message) this.toastr.error(err.error.message)
+          throw err
+        }),
+   
+        ).subscribe()
+    } else {
+      event.target.value = ''
+    }
+  }
+
+  upload() {
+     this.imgEnable = true;
+  }
+
+  remove() {
+    this.controls.ecsFormImage.patchValue(null)
+    this.controls.uploadEcsFormImage.patchValue(null)
+  }
+
+  preview(value) {
+    var ext = value.split('.')
+    if (ext[ext.length - 1] == 'pdf') {
+
+      this.dialog.open(PdfViewerComponent, {
+        data: {
+          pdfSrc: value,
+          page: 1,
+          showAll: true
+        },
+        width: "80%"
+      })
+    } else {
+      this.dialog.open(ImagePreviewDialogComponent, {
+        data: {
+          images: [value],
+          index: 0
+        },
+        width: "auto"
+      })
+    }
+
+  }
+
+  editImages(value) {
+    this[value].nativeElement.click()
   }
   getIndividual(id) {
     this.sipApplicationService.getIndividual(id).pipe(
@@ -126,11 +202,10 @@ export class CreateSipComponent implements OnInit {
     if (this.controls.mobileNumber.valid) {
      this.sipApplicationService.addMobile(this.controls.mobileNumber.value).pipe(
       map(res =>{
-        // this.custometerId = res.id
         this.customerName = res.firstName+ ' ' + res.lastName;
         this.controls.customerName.patchValue(this.customerName);
         this.controls.customerUniqueId.patchValue(res.customerUniqueId)
-        this.controls.customerId.patchValue(res.id)
+        this.controls.customerId.patchValue(res.id)   
       })
       ).subscribe()   
     }
@@ -160,7 +235,6 @@ export class CreateSipComponent implements OnInit {
           this.dialogRef.close(true);
         }
       });
-    }
-    
+    }  
   }
 }

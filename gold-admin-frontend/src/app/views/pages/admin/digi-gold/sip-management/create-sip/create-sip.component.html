@@ -1,221 +1,280 @@
 <kt-portlet>
     <kt-modal-header [title]='title' (action)="action($event)"></kt-modal-header>
-    
-<kt-portlet-body>
-<div class="row mx-0 mt-2 sip-background-white">
-    <div class="col-12 m-auto">
-        <div class="sip-background-white dg-rounded dg-border">
-            <form [formGroup]="createSipForm" (ngSubmit)="submit()">
-                <div class="row mx-0 text-left py-md-3">
-                    <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
-                        <div class="row">
-                            <div class="col-12 col-lg-4 align-self-center">
-                                <label class="font-border">Mobile Number</label>
-                            </div>
-                            <div class="col-12 col-lg-8">
-                                <input class="form-control" type="text" formControlName="mobileNumber" numbersOnly
-								autocomplete="off" placeholder="Enter mobile number" margin [class.isError]="
+
+    <kt-portlet-body>
+        <div class="row mx-0 mt-2 sip-background-white">
+            <div class="col-12 m-auto">
+                <div class="sip-background-white dg-rounded dg-border">
+                    <form [formGroup]="createSipForm" (ngSubmit)="submit()">
+                        <div class="row mx-0 text-left py-md-3">
+                            <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
+                                <div class="row">
+                                    <div class="col-12 col-lg-4 align-self-center">
+                                        <label class="font-border">Mobile Number</label>
+                                    </div>
+                                    <div class="col-12 col-lg-8">
+                                        <input class="form-control" type="text" formControlName="mobileNumber"
+                                            numbersOnly autocomplete="off" placeholder="Enter mobile number" margin
+                                            [class.isError]="
 											controls.mobileNumber.touched &&
 											controls.mobileNumber.invalid
 										" maxlength="10" (input)="inputNumber()" />
-							<mat-error *ngIf="
+                                        <mat-error *ngIf="
 											controls.mobileNumber.errors?.required &&
 											controls.mobileNumber.touched
 										">
-								Required field
-							</mat-error>
-							<mat-error *ngIf="
+                                            Required field
+                                        </mat-error>
+                                        <mat-error *ngIf="
 											controls.mobileNumber.errors?.pattern &&
 											controls.mobileNumber.touched
 										">
-								Invalid Input
-							</mat-error>
+                                            Invalid Input
+                                        </mat-error>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row mx-0 text-left py-md-3">
-                    <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
-                        <div class="row">
-                            <div class="col-12 col-lg-4 align-self-center">
-                                <label class="font-border">Customer ID</label>
-                            </div>
-                            <div class="col-12 col-lg-8">
-                                <input class="form-control" formControlName="customerUniqueId" readonly placeholder="Enter customer Id"
+                        <div class="row mx-0 text-left py-md-3">
+                            <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
+                                <div class="row">
+                                    <div class="col-12 col-lg-4 align-self-center">
+                                        <label class="font-border">Customer ID</label>
+                                    </div>
+                                    <div class="col-12 col-lg-8">
+                                        <input class="form-control" formControlName="customerUniqueId" readonly
+                                            placeholder="Enter customer Id"
                                             [class.isError]="controls.customerId.touched && controls.customerId.invalid">
-                                     <mat-error
+                                        <mat-error
                                             *ngIf="controls.customerId.touched && controls.customerId.errors?.required">
                                             Required field
-                                    </mat-error>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
-                        <div class="row">
-                            <div class="col-12 col-lg-4 align-self-center">
-                                <label class="font-border">Customer Name</label>
-                            </div>
-                            <div class="col-12 col-lg-8">
-                                <input type="text" placeholder="customer name" class="form-control"
-                                    formControlName="customerName" readonly>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mx-0 text-left py-md-3">
-                    <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
-                        <div class="row">
-                            <div class="col-12 col-lg-4">
-                                <label class="font-border">Application Date</label>
-                            </div>
-                            <div class="col-12 col-lg-8">
-                                <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                                    formControlName="applicationDate" [min]="minDate" [max]="maxDate"
-                                    [class.isError]="controls.applicationDate.touched && controls.applicationDate.invalid"
-                                    readonly placeholder="4/5/2020" />
-                                <mat-datepicker #picker></mat-datepicker>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
-                        <div class="row">
-                            <div class="col-12 col-lg-4">
-                                <label class="font-border">Metal Type</label>
-                            </div>
-                            <div class="col-12 col-lg-8">
-                                <select formControlName="metalType" class="form-control"
-                                    [class.isError]="controls.metalType.touched && controls.metalType.invalid">
-                                    <option value="">Select Metal Type</option>
-                                    <option *ngFor="let metal of metalType" [value]="metal.value">
-                                {{metal?.name}}
-                            </option>
-                                </select>
-                                <!-- <div
-                            *ngIf="newSipForm.controls.bankId.touched && newSipForm.controls.bankId.invalid">
-                            <mat-error *ngIf="newSipForm.controls.bankId.errors?.required">
-                                Required field
-                            </mat-error>
-                        </div> -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mx-0 text-left py-md-3">
-                    <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
-                        <div class="row">
-                            <div class="col-12 col-lg-4">
-                                <label class="font-border">SIP Investment Tenure</label>
-                            </div>
-                            <div class="col-12 col-lg-8">
-                                <select formControlName="sipInvestmentTenure" class="form-control"
-                                    [class.isError]="controls.sipInvestmentTenure.touched && controls.sipInvestmentTenure.invalid">
-                                    <option value="">Select SIP Investment Tenure</option>
-                                    <option *ngFor="let tenure of investmentTenure" [value]="tenure.investmentTenure">
-                                {{tenure?.investmentTenureValue}}
-                            </option>
-                                </select>
-                                <!-- <div
-                            *ngIf="newSipForm.controls.bankId.touched && newSipForm.controls.bankId.invalid">
-                            <mat-error *ngIf="newSipForm.controls.bankId.errors?.required">
-                                Required field
-                            </mat-error>
-                        </div> -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
-                        <div class="row">
-                            <div class="col-12 col-lg-4">
-                                <label class="font-border">SIP Cycle Date</label>
-                            </div>
-                            <div class="col-12 col-lg-8">
-                                <select formControlName="sipCycleDate" class="form-control"
-                                    [class.isError]="controls.sipCycleDate.touched && controls.sipCycleDate.invalid">
-                                    <option value="">Select SIP Cycle Date</option>
-                                    <option *ngFor="let date of cycleDate" [value]="date.cycleDate">
-                                {{date?.cycleDate}}
-                            </option>
-                                </select>
-                                <!-- <div
-                            *ngIf="newSipForm.controls.bankId.touched && newSipForm.controls.bankId.invalid">
-                            <mat-error *ngIf="newSipForm.controls.bankId.errors?.required">
-                                Required field
-                            </mat-error>
-                        </div> -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mx-0 text-left py-md-3">
-                    <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
-                        <div class="row">
-                            <div class="col-12 col-lg-4 align-self-center">
-                                <label class="font-border">Investment Amount</label>
-                            </div>
-                            <div class="col-12 col-lg-8">
-                                <input type="text" placeholder="enter invest amount" class="form-control"
-                                    formControlName="investmentAmount">
-                            </div>
-                        </div>
-                    </div>
-                     <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
-                            <div class="row">
-                                <div class="col-12 col-lg-4 align-self-center">
-                                    <label class="font-border">Upload ECS form</label>
-                                </div>
-                                <div class="col-12 col-lg-8">
-                                    <input type="text" placeholder="upload ECS Form" class="form-control"
-                                        formControlName="uploadEcsForm">
+                                        </mat-error>
+                                    </div>
                                 </div>
                             </div>
-                    </div>
-                </div>
-                <div class="row mx-0 text-left py-md-3" *ngIf="sipStatusDisable">
-                    <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
-                        <div class="row">
-                            <div class="col-12 col-lg-4 align-self-center">
-                                <label class="font-border">Sip Status</label>
+                            <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
+                                <div class="row">
+                                    <div class="col-12 col-lg-4 align-self-center">
+                                        <label class="font-border">Customer Name</label>
+                                    </div>
+                                    <div class="col-12 col-lg-8">
+                                        <input type="text" placeholder="customer name" class="form-control"
+                                            formControlName="customerName" readonly>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-12 col-lg-8">
-                                <select formControlName="sipStatus" class="form-control"
-                                    [class.isError]="controls.sipStatus.touched && controls.sipStatus.invalid">
-                                    <option value="">Select SIP Status</option>
-                                    <option *ngFor="let status of sipStatus" [value]="status.statusName">
-                                {{status?.statusName | titlecase}}
-                            </option>
-                                </select>
-                                <!-- <div
+                        </div>
+                        <div class="row mx-0 text-left py-md-3">
+                            <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
+                                <div class="row">
+                                    <div class="col-12 col-lg-4">
+                                        <label class="font-border">Application Date</label>
+                                    </div>
+                                    <div class="col-12 col-lg-8">
+                                        <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
+                                            formControlName="applicationDate" [min]="minDate" [max]="maxDate"
+                                            [class.isError]="controls.applicationDate.touched && controls.applicationDate.invalid"
+                                            readonly placeholder="4/5/2020" />
+                                        <mat-datepicker #picker></mat-datepicker>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
+                                <div class="row">
+                                    <div class="col-12 col-lg-4">
+                                        <label class="font-border">Metal Type</label>
+                                    </div>
+                                    <div class="col-12 col-lg-8">
+                                        <select formControlName="metalType" class="form-control"
+                                            [class.isError]="controls.metalType.touched && controls.metalType.invalid">
+                                            <option value="">Select Metal Type</option>
+                                            <option *ngFor="let metal of metalType" [value]="metal.value">
+                                                {{metal?.name}}
+                                            </option>
+                                        </select>
+                                        <!-- <div
                             *ngIf="newSipForm.controls.bankId.touched && newSipForm.controls.bankId.invalid">
                             <mat-error *ngIf="newSipForm.controls.bankId.errors?.required">
                                 Required field
                             </mat-error>
                         </div> -->
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                     
+                        <div class="row mx-0 text-left py-md-3">
+                            <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
+                                <div class="row">
+                                    <div class="col-12 col-lg-4">
+                                        <label class="font-border">SIP Investment Tenure</label>
+                                    </div>
+                                    <div class="col-12 col-lg-8">
+                                        <select formControlName="sipInvestmentTenure" class="form-control"
+                                            [class.isError]="controls.sipInvestmentTenure.touched && controls.sipInvestmentTenure.invalid">
+                                            <option value="">Select SIP Investment Tenure</option>
+                                            <option *ngFor="let tenure of investmentTenure"
+                                                [value]="tenure.investmentTenure">
+                                                {{tenure?.investmentTenureValue}}
+                                            </option>
+                                        </select>
+                                        <!-- <div
+                            *ngIf="newSipForm.controls.bankId.touched && newSipForm.controls.bankId.invalid">
+                            <mat-error *ngIf="newSipForm.controls.bankId.errors?.required">
+                                Required field
+                            </mat-error>
+                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
+                                <div class="row">
+                                    <div class="col-12 col-lg-4">
+                                        <label class="font-border">SIP Cycle Date</label>
+                                    </div>
+                                    <div class="col-12 col-lg-8">
+                                        <select formControlName="sipCycleDate" class="form-control"
+                                            [class.isError]="controls.sipCycleDate.touched && controls.sipCycleDate.invalid">
+                                            <option value="">Select SIP Cycle Date</option>
+                                            <option *ngFor="let date of cycleDate" [value]="date.cycleDate">
+                                                {{date?.cycleDate}}
+                                            </option>
+                                        </select>
+                                        <!-- <div
+                            *ngIf="newSipForm.controls.bankId.touched && newSipForm.controls.bankId.invalid">
+                            <mat-error *ngIf="newSipForm.controls.bankId.errors?.required">
+                                Required field
+                            </mat-error>
+                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mx-0 text-left py-md-3">
+                            <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
+                                <div class="row">
+                                    <div class="col-12 col-lg-4 align-self-center">
+                                        <label class="font-border">Investment Amount</label>
+                                    </div>
+                                    <div class="col-12 col-lg-8">
+                                        <input type="text" placeholder="enter invest amount" class="form-control"
+                                            formControlName="investmentAmount">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
+                                <div class="row">
+                                    <div class="col-12 col-lg-4 align-self-center">
+                                        <label class="font-border">Upload ECS form</label>
+                                    </div>
+                                    <div class="col-12 col-lg-8">
+                                        <div class="input-group w-80"
+                                            [class.isError]="controls.ecsFormImage.touched && controls.ecsFormImage.invalid">
+                                            <input type="text" class="form-control" placeholder="Select File"
+                                                aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                                readonly formControlName="uploadEcsFormImageName" />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text bg kt-pointer font-weight"
+                                                    id="basic-addon2"
+                                                    (click)="ecsFormImage.click(); upload();">Attach</span>
+                                            </div>
+                                            <input type="file" class="d-none" #ecsFormImage
+                                                (change)="fileUpload($event)">
+                                        </div>
+                                        <mat-error
+                                            *ngIf="controls.ecsFormImage.touched && controls.ecsFormImage.invalid">
+                                            Field
+                                            Required
+                                        </mat-error>
+                                    </div>
+                                    <div class="col">
+                                        <div class="row mt-3" *ngIf="imgEnable">
+                                            <div class="col-10 pull-right">
+                                                <div class="row pull-right">
+                                                <!-- <div class="img-container width">
+                                                    <img src="../../../../../../../assets/media/icons/image-placeholder.png"
+                                                        class="placeholder-image">
+                                                </div> -->
+
+                                                <!-- <div class="edit-width">
+                                                <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
+                                                    *ngIf="isEdit && controls?.pawnCopyImage?.value"
+                                                    (click)="editImages('pawnCopy');">
+                                            </div> -->
+
+                                                <div>
+                                                    <div
+                                                        class="d-inline-block img-container width kt-margin-r-15 position-relative">
+                                                        <img (click)="preview(controls?.uploadEcsFormImage?.value)"
+                                                            class="fetched-image"
+                                                            [src]="controls?.uploadEcsFormImage?.value">
+
+                                                        <img class="edit-icon"
+                                                            src="../../../../../assets/media/icons/edit.svg"
+                                                            (click)="editImages('loanAgreementCopy')">
+                                                        <!-- <div class="iframeWrapper"
+                                                            (click)="preview(controls?.uploadEcsFormImage?.value)">
+                                                            <iframe
+                                                                [src]="controls?.uploadEcsFormImage.value | safe : 'resourceUrl'"
+                                                                height="250" width="290" scrolling="no"></iframe>
+                                                        </div> -->
+                                                    </div>
+                                                </div>
+                                                <!-- <img src="../../../../../assets/media/icons/edit.svg"
+                                                *ngIf="isEdit && controls?.uploadEcsFormImage?.value" alt=""
+                                                class="kt-pointer edit-icon" (click)="editImages('loanAgreementCopy');"> -->
+                                            </div>
+                                            </div>
+                                            <div class="col-2 form-label">
+                                                <label class="text-danger kt-padding-l-15 kt-pointer"
+                                                    (click)="remove()">Remove</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>    
+                            <div class="row mx-0 text-left py-md-3" *ngIf="sipStatusDisable">
+                                <div class="col-12 col-md-6 p-0 pr-md-3 pr-lg-5 pb-3">
+                                    <div class="row">
+                                        <div class="col-12 col-lg-4 align-self-center">
+                                            <label class="font-border">Sip Status</label>
+                                        </div>
+                                        <div class="col-12 col-lg-8">
+                                            <select formControlName="sipStatus" class="form-control"
+                                                [class.isError]="controls.sipStatus.touched && controls.sipStatus.invalid">
+                                                <option value="">Select SIP Status</option>
+                                                <option *ngFor="let status of sipStatus" [value]="status.statusName">
+                                                    {{status?.statusName | titlecase}}
+                                                </option>
+                                            </select>
+                                            <!-- <div
+                            *ngIf="newSipForm.controls.bankId.touched && newSipForm.controls.bankId.invalid">
+                            <mat-error *ngIf="newSipForm.controls.bankId.errors?.required">
+                                Required field
+                            </mat-error>
+                        </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+
+                    </form>
                 </div>
-
-               
-
-                <!-- <div class="row mx-0 py-3">
-                    <div class="col-12 text-center">
-                        <button class="dg-primary-btn" (click) ="createSip()" type="submit">Submit</button>
-                        <app-button [type]="'submit'" [value]="'Submit'"></app-button>
-                    </div>
-                </div> -->
-            </form>
+            </div>
         </div>
-    </div>
-</div>
-</kt-portlet-body>
-<kt-portlet-footer>
-    <div class="p-3">
-        <kt-modal-footer (action)="action($event)" [value]="data.action == 'add' ? 'Add' : 'Update'">
-        </kt-modal-footer>
-    </div>
+    </kt-portlet-body>
+    <kt-portlet-footer>
+        <div class="p-3">
+            <kt-modal-footer (action)="action($event)" [value]="data.action == 'add' ? 'Add' : 'Update'">
+            </kt-modal-footer>
+        </div>
 
-</kt-portlet-footer>
+    </kt-portlet-footer>
 </kt-portlet>
