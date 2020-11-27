@@ -470,7 +470,7 @@ export class AddLeadComponent implements OnInit {
         }
       );
     } else if (this.data.action == 'edit' || this.data.action == 'assignBranch') {
-      if (this.data.action == 'assignBranch') this.leadForm.enable()
+      // if (this.data.action == 'assignBranch') this.leadForm.enable()
       if (this.leadForm.invalid) {
         // this.checkforVerfication()
         this.leadForm.markAllAsTouched();
@@ -503,20 +503,30 @@ export class AddLeadComponent implements OnInit {
       this.enable();
       const leadData = this.leadForm.value;
 
-      this.leadService.editLead(this.data.id, leadData).pipe(
-        map(res => {
-          if (res) {
-            const msg = 'Lead Edited Successfully';
-            this.toastr.successToastr(msg);
-            this.dialogRef.close(true);
-          }
-        }),
-        finalize(() => {
-          if (this.details.userDetails.userTypeId != 4) {
-            this.disable();
-          }
-          if (this.data.action == 'assignBranch') this.disableAssignBranch()
-        })).subscribe();
+      if (this.data.action == 'edit') {
+        this.leadService.editLead(this.data.id, leadData)
+          .pipe(
+            map(() => {
+              const msg = 'Lead Edited Successfully';
+              this.toastr.successToastr(msg);
+              this.dialogRef.close(true);
+            }),
+            finalize(() => {
+              if (this.details.userDetails.userTypeId != 4) this.disable();
+            })).subscribe();
+      }
+
+      if (this.data.action == 'assignBranch') {
+        console.log({ customerId: this.data.id, ...leadData })
+        this.leadService.assignBranch({ customerId: this.data.id, ...leadData })
+          .pipe(
+            map(() => {
+              this.dialogRef.close(true);
+            }),
+            finalize(() => {
+              this.disableAssignBranch()
+            })).subscribe();
+      }
     }
 
   }

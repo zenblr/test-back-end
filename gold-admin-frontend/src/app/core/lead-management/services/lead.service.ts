@@ -126,4 +126,15 @@ export class LeadService {
     );
   }
 
+  assignBranch(data): Observable<any> {
+    // const custData = { ...customerId, internalBranchId: data.internalBranchId }
+    return this.http.post<any>(`/api/customer/add-branch`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message)
+        throw (err)
+      })
+    );
+  }
+
 }
