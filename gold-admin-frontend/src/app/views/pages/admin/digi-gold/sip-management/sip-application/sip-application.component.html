@@ -4,8 +4,8 @@
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="sipapplicationdate">
-                    <mat-header-cell *matHeaderCellDef>SIP application date</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.applicationDate}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef>SIP Application Date</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.applicationDate | date: 'mediumDate'}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="customerId">
@@ -14,7 +14,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="sipApplicationnumber">
-                    <mat-header-cell *matHeaderCellDef>SIP Application number</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>SIP Application Number</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.sipApplicationUniqueId}}</mat-cell>
                 </ng-container>
 
@@ -35,12 +35,12 @@
 
                 <ng-container matColumnDef="sipStartDate">
                     <mat-header-cell *matHeaderCellDef>SIP Start Date</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.sipStartDate}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.sipStartDate | date: 'mediumDate'}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="sipEndDate">
-                    <mat-header-cell *matHeaderCellDef>SIP END Date</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.sipEndDate}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef>SIP End Date</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.sipEndDate | date: 'mediumDate'}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="status">
