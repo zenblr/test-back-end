@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
     const DigiGoldOrderDetail = sequelize.define('digiGoldOrderDetail', {
         // attributes
         temporderid: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             field: 'temp_order_id',
             allowNull: false
         },
@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'order_id',
         },
         totalAmount: {
-            type: DataTypes.STRING,
+            type: DataTypes.FLOAT,
             field: 'total_amount',
             defaultValue: true,
         },
@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: true,
         },
         walletBalance: {
-            type: DataTypes.STRING,
+            type: DataTypes.FLOAT,
             field: 'wallet_balance',
             defaultValue: true,
         },
@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'metal_type',
         },
         quantity: {
-            type: DataTypes.STRING,
+            type: DataTypes.FLOAT,
             field: 'quantity',
         },
         lockPrice: {
@@ -71,12 +71,12 @@ module.exports = (sequelize, DataTypes) => {
             field: 'user_address_id',
         },
         goldBalance: {
-            type: DataTypes.STRING,
+            type: DataTypes.FLOAT,
             field: 'gold_balance',
             defaultValue: true,
         },
         silverBalance: {
-            type: DataTypes.STRING,
+            type: DataTypes.FLOAT,
             field: 'silver_balance',
             defaultValue: true,
         },

@@ -16,7 +16,7 @@ module.exports = async () => {
     try {
         let digiGoldOrderDetail;
 
-        let configSettingName = "digi gold sellable hour"
+        let configSettingName = "digiGoldSellableHour"
         let duration = await models.digiGoldConfigDetails.getConfigDetail(configSettingName);
 
         console.log("duration", duration);  //1 hr

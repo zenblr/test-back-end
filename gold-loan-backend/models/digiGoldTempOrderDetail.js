@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         totalAmount: {
-            type: DataTypes.STRING,
+            type: DataTypes.FLOAT,
             field: 'total_amount',
             defaultValue: true,
         },
@@ -23,17 +23,15 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: true,
         },
         walletBalance: {
-            type: DataTypes.STRING,
+            type: DataTypes.FLOAT,
             field: 'wallet_balance',
-            defaultValue: true,
         },
         metalType: {
             type: DataTypes.STRING,
             field: 'metal_type',
-            defaultValue: true,
         },
         quantity: {
-            type: DataTypes.STRING,
+            type: DataTypes.FLOAT,
             field: 'quantity',
         },
         lockPrice: {
@@ -60,29 +58,27 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'user_address_id',
         },
-        goldBalance: {
-            type: DataTypes.STRING,
-            field: 'gold_balance',
-            defaultValue: true,
-        },
-        silverBalance: {
-            type: DataTypes.STRING,
-            field: 'silver_balance',
-            defaultValue: true,
-        },
+        // goldBalance: {
+        //     type: DataTypes.FLOAT,
+        //     field: 'gold_balance',
+        //     defaultValue: true,
+        // },
+        // silverBalance: {
+        //     type: DataTypes.FLOAT,
+        //     field: 'silver_balance',
+        //     defaultValue: true,
+        // },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by',
-            allowNull: false
         },
         modifiedBy: {
             type: DataTypes.INTEGER,
             field: 'modified_by',
-            allowNull: false
         },
         isOrderPlaced: {
             type: DataTypes.BOOLEAN,
-            field: 'is_active',
+            field: 'is_order_placed',
             defaultValue: false,
         },
         isActive: {

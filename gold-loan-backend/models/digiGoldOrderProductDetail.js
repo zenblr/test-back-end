@@ -37,7 +37,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'order_id',
             allowNull: false
         },
-
         totalAmount: {
             type: DataTypes.STRING,
             field: 'total_amount',
