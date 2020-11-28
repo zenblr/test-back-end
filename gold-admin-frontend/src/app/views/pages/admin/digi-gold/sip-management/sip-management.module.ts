@@ -8,7 +8,6 @@ import { CoreModule } from '../../../../../core/core.module';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { DeleteEntityDialogComponent } from '../../../../partials/content/crud';
 import { InterceptService, HttpUtilsService, TypesUtilsService, LayoutUtilsService } from '../../../../../core/_base/crud';
 import { SipInvestmentTenureListComponent } from './sip-investment-tenure/sip-investment-tenure-list/sip-investment-tenure-list.component';
 import { SipInvestmentTenureAddComponent } from './sip-investment-tenure/sip-investment-tenure-add/sip-investment-tenure-add.component';
@@ -19,48 +18,44 @@ import { CreateSipComponent } from './create-sip/create-sip.component';
 import { SipTradesComponent } from './sip-trades/sip-trades.component';
 import { SipApplicationComponent } from './sip-application/sip-application.component';
 
-
-
-
 const routes: Routes = [
-      {
-        path: '',
-        redirectTo: 'sip-cycle-date',
-        pathMatch: 'full'
-      },
-      {
-        path: 'sip-cycle-date',
-        component: SipCycleDateListComponent
-      },
-      {
-        path: 'sip-trades',
-        component: SipTradesComponent
-      },
-      {
-        path: 'sip-application',
-        component: SipApplicationComponent
-      },
-      {
-        path: 'create-sip',
-        component: CreateSipComponent
-      },
-      {
-        path: 'sip-investment-tenure',
-        component: SipInvestmentTenureListComponent
-      },
+  {
+    path: '',
+    redirectTo: 'sip-application',
+    pathMatch: 'full'
+  },
+  {
+    path: 'sip-application',
+    component: SipApplicationComponent
+  },
+  {
+    path: 'sip-trades',
+    component: SipTradesComponent
+  },
+  {
+    path: 'sip-cycle-date',
+    component: SipCycleDateListComponent
+  },
+  {
+    path: 'create-sip',
+    component: CreateSipComponent
+  },
+  {
+    path: 'sip-investment-tenure',
+    component: SipInvestmentTenureListComponent
+  },
 ]
 
 @NgModule({
   declarations: [
-	SipManagementComponent,
-	SipCycleDateAddComponent,
-	SipCycleDateListComponent,
-	SipInvestmentTenureAddComponent,
-	SipInvestmentTenureListComponent,
-	CreateSipComponent,
-	SipTradesComponent,
-  SipApplicationComponent,
- 
+    SipManagementComponent,
+    SipTradesComponent,
+    SipApplicationComponent,
+    SipCycleDateAddComponent,
+    SipCycleDateListComponent,
+    SipInvestmentTenureAddComponent,
+    SipInvestmentTenureListComponent,
+    CreateSipComponent,
   ],
   imports: [
     CommonModule,
@@ -89,7 +84,5 @@ const routes: Routes = [
     SipInvestmentTenureAddComponent,
     SipCycleDateAddComponent,
   ]
-
 })
 export class SipManagementModule { }
-

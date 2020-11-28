@@ -38,9 +38,9 @@ export class GlobalSettingService {
       })
     )
   }
-  
+
   getDigiGoldSetting(): Observable<any> {
-    return this.http.get(API_ENDPOINT + `/api/digital-gold/config-detail`).pipe(
+    return this.http.get(`/api/digital-gold/config-detail`).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
@@ -49,8 +49,6 @@ export class GlobalSettingService {
       })
     )
   }
-
-   
 
   setDigiGoldSetting(params): Observable<any> {
     return this.http.post(`/api/digital-gold/config-detail`, params).pipe(
@@ -62,7 +60,6 @@ export class GlobalSettingService {
       })
     )
   }
-  
 
   setScrapGlobalSetting(params): Observable<any> {
     return this.http.post(`/api/scrap/global-setting`, params).pipe(
