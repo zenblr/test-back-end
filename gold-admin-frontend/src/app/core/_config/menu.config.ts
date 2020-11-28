@@ -366,6 +366,20 @@ export class MenuConfig {
 							// permission: !this.modulesArr.includes(3),
 							submenu: [
 								{
+									title: "Settings",
+									root: true,
+									bullet: 'dot',
+									// src: "assets/media/aside-icons/icons-03.svg",
+									submenu: [
+										{
+											title: "Global Setting",
+											page: "/admin/digi-gold/sip-management/global-settings",
+											root: true,
+											bullet: 'dot',
+										}
+									]
+								},
+								{
 									title: "SIP Management",
 									root: true,
 									bullet: 'dot',

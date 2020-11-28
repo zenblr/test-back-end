@@ -428,8 +428,16 @@ export class PageConfig {
 					page: { title: "Standard deduction", desc: "" },
 				},
 			},
-			"sip-management": {
-				"digi-gold":{
+			"digi-gold": {
+				
+				// "global-settings": {
+				//         page: { title: "Global Setting", desc: "" },
+				// 	},
+				
+				"sip-management":{
+					"global-settings": {
+				        page: { title: "Global Setting", desc: "" },
+					},
 			
 				    "sip-cycle-date": {
 				        page: { title: "SIP Cycle Date", desc: "" },

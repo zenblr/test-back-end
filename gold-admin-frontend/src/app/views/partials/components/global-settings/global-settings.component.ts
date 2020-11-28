@@ -13,8 +13,11 @@ import { Router } from '@angular/router';
 export class GlobalSettingsComponent implements OnInit {
   globalSettingForm: FormGroup;
   url: any;
-  showScrapFlag: boolean;
+  scrapSettingFlag: boolean;
+  digiGoldSettingFlag: boolean;
+  loanSettingFlag: boolean;
   globalValue: any;
+  
 
   constructor(
     private fb: FormBuilder,
@@ -24,17 +27,23 @@ export class GlobalSettingsComponent implements OnInit {
   ) {
     this.url = (this.router.url.split("/")[2]);
     if (this.url == 'scrap-management') {
-      this.showScrapFlag = true;
-    } else {
-      this.showScrapFlag = false;
+      this.scrapSettingFlag = true;
+    } else if(this.url == 'digi-gold') {
+      this.digiGoldSettingFlag = true;
+    }
+    else {
+      this.loanSettingFlag = true;
     }
   }
 
   ngOnInit() {
     this.initForm();
-    if (this.showScrapFlag) {
+    if (this.scrapSettingFlag) {
       this.getScrapGlobalSetting();
-    } else {
+    } else if (this.digiGoldSettingFlag){
+      this.getDigiGoldSetting();
+    }
+    else {
       this.getGlobalSetting();
     }
   }
@@ -52,6 +61,7 @@ export class GlobalSettingsComponent implements OnInit {
       processingChargesFixed: [],
       processingChargesInPercent: [],
       partPaymentPercent: [],
+      digigoldsellable: []
     });
     this.validation();
   }
@@ -66,7 +76,11 @@ export class GlobalSettingsComponent implements OnInit {
         this.globalSettingForm.controls.standardDeductionMin.updateValueAndValidity()
         this.globalSettingForm.controls.standardDeductionMax.setValidators([Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]),
         this.globalSettingForm.controls.standardDeductionMax.updateValueAndValidity()
-    } else {
+    } else if (this.url == 'digi-gold'){
+      this.globalSettingForm.controls.digigoldsellable.setValidators([Validators.required])
+      this.globalSettingForm.controls.digigoldsellable.updateValueAndValidity()
+    }
+    else {
       this.globalSettingForm.controls.minimumLoanAmountAllowed.setValidators(Validators.required),
         this.globalSettingForm.controls.minimumLoanAmountAllowed.updateValueAndValidity()
       this.globalSettingForm.controls.minimumTopUpAmount.setValidators(Validators.required),
@@ -85,6 +99,19 @@ export class GlobalSettingsComponent implements OnInit {
       })
     } else {
       this.globalSettingService.getGlobalSetting().pipe(map(res => {
+        this.globalSettingService.globalSetting.next(res);
+        this.globalSettingForm.patchValue(res);
+      })).subscribe();
+    }
+  }
+
+  getDigiGoldSetting() {
+    if (this.globalSettingService.globalSetting.getValue() != null) {
+      this.globalSettingService.globalSetting$.subscribe(res => {
+        this.globalSettingForm.patchValue(res);
+      })
+    } else {
+      this.globalSettingService.getDigiGoldSetting().pipe(map(res => {
         this.globalSettingService.globalSetting.next(res);
         this.globalSettingForm.patchValue(res);
       })).subscribe();
@@ -111,7 +138,7 @@ export class GlobalSettingsComponent implements OnInit {
       return;
     }
     const formData = this.globalSettingForm.value;
-    if (this.showScrapFlag) {
+    if (this.scrapSettingFlag) {
       this.globalSettingService.setScrapGlobalSetting(formData).pipe(map(res => {
         if (res) {
           console.log(res);
@@ -119,7 +146,16 @@ export class GlobalSettingsComponent implements OnInit {
           this.toastr.success('Successful!');
         }
       })).subscribe();
-    } else {
+    } else if (this.digiGoldSettingFlag) {
+      this.globalSettingService.setDigiGoldSetting(formData).pipe(map(res => {
+        if (res) {
+          console.log(res);
+          this.globalSettingService.globalSetting.next(formData);
+          this.toastr.success('Successful!');
+        }
+      })).subscribe();
+    }
+    else {
       this.globalSettingService.setGlobalSetting(formData).pipe(map(res => {
         if (res) {
           console.log(res);
