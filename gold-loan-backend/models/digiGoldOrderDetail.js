@@ -1,9 +1,19 @@
 module.exports = (sequelize, DataTypes) => {
     const DigiGoldOrderDetail = sequelize.define('digiGoldOrderDetail', {
         // attributes
+        temporderid: {
+            type: DataTypes.STRING,
+            field: 'temp_order_id',
+            allowNull: false
+        },
         customerId: {
             type: DataTypes.INTEGER,
             field: 'customer_id',
+        },
+        orderTypeId: {
+            type: DataTypes.INTEGER,
+            field: 'order_type_id',
+            allowNull: false
         },
         orderId: {
             type: DataTypes.STRING,
@@ -51,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'digital_gold_order_detail',
     });
 
-    DigiGoldOrderDetail.associate = function(models) {
+    DigiGoldOrderDetail.associate = function (models) {
         DigiGoldOrderDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
     }
 
