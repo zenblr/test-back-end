@@ -92,6 +92,7 @@ export class InterestCalculatorComponent implements OnInit {
     this.globalSettingService.globalSetting$.pipe(takeUntil(this.unsubscribe$)).subscribe(res => {
       this.globalValue = res;
     })
+      this.partner()
 
 
 
@@ -115,7 +116,7 @@ export class InterestCalculatorComponent implements OnInit {
       this.controls.finalLoanAmount.patchValue(changes.partPaymentdata.currentValue)
       this.controls.finalLoanAmount.disable()
       this.isNewLoanFromPartRelease = true;
-      this.partner()
+      // this.partner()
     }
 
     if (changes.loanTransfer && changes.loanTransfer.currentValue) {
@@ -123,16 +124,18 @@ export class InterestCalculatorComponent implements OnInit {
       this.controls.processingCharge.patchValue(changes.loanTransfer.currentValue.processingCharge)
       this.controls.finalLoanAmount.disable()
       this.transferLoan = true;
-      if (changes.totalAmt.currentValue <= Number(this.controls.finalLoanAmount.value)) {
+      if (this.totalAmt <= Number(this.controls.finalLoanAmount.value)) {
         this.controls.loanTransferExtraAmount.disable()
       } else {
         this.controls.loanTransferExtraAmount.enable()
       }
-      this.partner()
+      // this.partner()
     }
 
     if (changes.ornamentDetails && changes.ornamentDetails.currentValue) {
-      this.partner()
+      this.controls.partnerId.reset()
+      this.partnerReset()
+      this.reset()
     }
 
     if (changes.totalAmt) {
@@ -172,14 +175,14 @@ export class InterestCalculatorComponent implements OnInit {
             } else {
               this.controls.loanTransferExtraAmount.enable()
             }
-            this.partner()
+            // this.partner()
 
           }
           if (finalLoan.masterLoan.isNewLoanFromPartRelease) {
             this.controls.finalLoanAmount.patchValue(finalLoan.newLoanAmount)
             this.controls.finalLoanAmount.disable()
             this.isNewLoanFromPartRelease = true;
-            this.partner()
+            // this.partner()
           }
 
           if (changes.disbursed && changes.disbursed.currentValue)
