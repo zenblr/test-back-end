@@ -22,17 +22,14 @@ module.exports = (sequelize, DataTypes) => {
         totalAmount: {
             type: DataTypes.FLOAT,
             field: 'total_amount',
-            defaultValue: true,
         },
         coupanCode: {
             type: DataTypes.STRING,
             field: 'coupan_code',
-            defaultValue: true,
         },
         walletBalance: {
             type: DataTypes.FLOAT,
             field: 'wallet_balance',
-            defaultValue: true,
         },
         metalType: {
             type: DataTypes.STRING,
@@ -73,12 +70,10 @@ module.exports = (sequelize, DataTypes) => {
         goldBalance: {
             type: DataTypes.FLOAT,
             field: 'gold_balance',
-            defaultValue: true,
         },
         silverBalance: {
             type: DataTypes.FLOAT,
             field: 'silver_balance',
-            defaultValue: true,
         },
         merchantTransactionId: {
             type: DataTypes.STRING,

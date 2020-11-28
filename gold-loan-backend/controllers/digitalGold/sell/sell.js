@@ -27,7 +27,7 @@ exports.sellProduct = async (req, res) => {
       let nonSellableAmount;
       if (quantity >= getCustomerBalance.sellableGoldBalance) {
 
-        let configSettingName = "digi gold sellable hour"
+        let configSettingName = "digiGoldSellableHour"
         let getConfigSetting = await models.digiGoldConfigDetails.getConfigDetail(configSettingName);
 
         nonSellableAmount = getCustomerBalance.currentGoldBalance - getCustomerBalance.sellableGoldBalance;
@@ -37,7 +37,7 @@ exports.sellProduct = async (req, res) => {
     if (metalType == "silver") {
       if (quantity >= getCustomerBalance.sellableSilverBalance) {
 
-        let configSettingName = "digi gold sellable hour"
+        let configSettingName = "digiGoldSellableHour"
         let getConfigSetting = await models.digiGoldConfigDetails.getConfigDetail(configSettingName);
 
         nonSellableAmount = getCustomerBalance.currentSilverBalance - getCustomerBalance.sellableSilverBalance;
