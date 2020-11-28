@@ -22,6 +22,7 @@ const getGoldSilverRate = require("./utils/digitalGoldSilverRates");
 const merchantLogin = require('./utils/merchantLogin');
 const customerKycStatusMessage = require("./utils/customerKycStatusMessage");
 const withDrawStatusMessage = require("./utils/withDrawStatusMessage");
+const {getErrorForMail} = require('./controllers/errorLogs/errorLogs');
 
 //model
 const models = require('./models');
@@ -104,9 +105,9 @@ app.use(function (err, req, res, next) {
     res.status(500).send({ message: "something went wrong" });
 });
 
-// cron.schedule(' * * * * *', async function () {
-//     await interest.test('1');
-// })
+cron.schedule(' 0 */30 * * * *', async function () {
+    await getErrorForMail();
+})
 
 cron.schedule('0 1 * * *', async function () {
     let date = moment()
