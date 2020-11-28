@@ -78,6 +78,9 @@ exports.AddOrder = async (req, res) => {
           data: qs.stringify({ notes: { orderId: result.data.result.data.orderId, uniqueId: customerDetails.customerUniqueId } })
         })
         await models.digiGoldCart.destroy({ where: { customerId: id } });
+
+        await models.digiGoldCustomerBalance.update({currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance}, {where: {customerId: id}});
+
         await sms.sendMessageForOrderPlaced(customerDetails.mobileNumber, result.data.result.data.orderId);
       }
       return res.status(200).json(result.data);

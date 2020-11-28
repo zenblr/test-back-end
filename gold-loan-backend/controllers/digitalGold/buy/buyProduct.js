@@ -15,7 +15,8 @@ var fs = require('fs');
 const numToWords = require('../../../utils/numToWords');
 const html = fs.readFileSync(path.join(__dirname, '..', '..', '..', 'templates', 'invoiceTemplate.html'), 'utf8')
 const errorLogger = require('../../../utils/errorLogger');
-
+const sequelize = models.sequelize;
+const Sequelize = models.Sequelize;
 
 exports.buyProduct = async (req, res) => {
   try {
@@ -94,10 +95,25 @@ exports.buyProduct = async (req, res) => {
     })
     const customerName = customerDetails.firstName + " " + customerDetails.lastName;
     if (result.data.statusCode === 200) {
+
+      await sequelize.transaction(async (t) => {
+
+        await models.digiGoldOrderDetail.create({customerId: id, orderId: transactionDetails.razorpay_order_id, metalType, quantity, lockPrice, blockId, amount, quantityBased, modeOfPayment});
+
+        let CustomerBalanceData = await models.digiGoldCustomerBalance.findOne({where: { customerId: id, isActive: true }})
+        if(CustomerBalanceData){
+          await models.digiGoldCustomerBalance.update({currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance}, {where: {customerId: id}});
+        }else{
+          await models.digiGoldCustomerBalance.create({customerId: id, currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance});
+        }
+      })
+
       await sms.sendMessageForBuy(customerName, customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
     }
     return res.status(200).json(result.data);
   } catch (err) {
+    console.log(err);
+
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
     if (err.response) {
