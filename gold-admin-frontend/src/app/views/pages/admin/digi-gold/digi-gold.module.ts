@@ -1,37 +1,44 @@
-// Angular
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
-// Core Module
 import { CoreModule } from '../../../../core/core.module';
 import { PartialsModule } from '../../../partials/partials.module';
 import { DigiGoldComponent } from './digi-gold.component';
+import { GlobalSettingsComponent } from './global-settings/global-settings.component';
 
+const routes: Routes = [
+	{
+		path: '',
+		component: DigiGoldComponent,
+		children: [
+			{
+				path: '',
+				redirectTo: 'sip-management',
+				pathMatch: 'full'
+			},
+			{
+				path: 'sip-management',
+				loadChildren: () => import('./sip-management/sip-management.module').then(m => m.SipManagementModule)
+			},
+			{
+				path: 'global-settings',
+				component: GlobalSettingsComponent
+			},
+		],
+	},
+]
 
 @NgModule({
 	imports: [
 		CommonModule,
 		PartialsModule,
 		CoreModule,
-		RouterModule.forChild([
-			{
-				path: '',
-				component: DigiGoldComponent,
-				children: [
-					{
-						path: 'sip-management',
-						loadChildren: () => import('./sip-management/sip-management.module').then(m => m.SipManagementModule)
-					},
-					{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-					{ path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
-				]
-			},
-		]),
+		RouterModule.forChild(routes),
 	],
 	providers: [],
 	declarations: [
 		DigiGoldComponent,
+		GlobalSettingsComponent
 	]
 })
-export class DigiGoldModule {
-}
+export class DigiGoldModule { }
