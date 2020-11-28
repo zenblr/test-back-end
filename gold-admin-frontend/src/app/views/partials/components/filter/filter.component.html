@@ -109,6 +109,13 @@
           <form class="kt-form" [formGroup]="filterForm">
             <div class="row">
               <div class="col">
+                <label>By Module</label>
+                <kt-multi-select-search formControlName="modulePoint" [items]="modules" [multiple]="true"
+                  [bindLabel]="'moduleName'" [placeholder]="'Select Module'" [isClear]="clearData">
+                </kt-multi-select-search>
+              </div>
+
+              <div class="col">
                 <label>By Loan CCE Status</label>
                 <kt-multi-select-search formControlName="cceStatus" [items]="approvalStatus.apprsiserOrCCE"
                   [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'CCE Status'"

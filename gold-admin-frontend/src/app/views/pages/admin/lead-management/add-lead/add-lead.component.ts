@@ -521,6 +521,8 @@ export class AddLeadComponent implements OnInit {
         this.leadService.assignBranch({ customerId: this.data.id, ...leadData })
           .pipe(
             map(() => {
+              const msg = 'Branch Assigned Successfully';
+              this.toastr.successToastr(msg);
               this.dialogRef.close(true);
             }),
             finalize(() => {

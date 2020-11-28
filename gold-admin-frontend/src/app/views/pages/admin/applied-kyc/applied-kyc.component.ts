@@ -37,7 +37,8 @@ export class AppliedKycComponent implements OnInit {
     cceStatus: '',
     kycStatus: '',
     scrapKycStatusFromCce: '',
-    scrapKycStatus: ''
+    scrapKycStatus: '',
+    modulePoint: ''
   }
   permission: any;
 
@@ -112,6 +113,7 @@ export class AppliedKycComponent implements OnInit {
     this.queryParamsData.kycStatus = data.data.kycStatus;
     this.queryParamsData.scrapKycStatusFromCce = data.data.scrapKycStatusFromCce;
     this.queryParamsData.scrapKycStatus = data.data.scrapKycStatus;
+    this.queryParamsData.modulePoint = data.data.modulePoint;
     this.dataSource.loadKyc(this.queryParamsData);
     this.filteredDataList = data.list;
   }

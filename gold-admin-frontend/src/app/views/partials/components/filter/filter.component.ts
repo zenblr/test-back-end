@@ -162,6 +162,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 							this.cronStatus();
 							this.cronType()
 							break
+						case 'modulePoint':
+							this.getModulePoints()
 					}
 				}
 			}
