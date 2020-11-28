@@ -271,4 +271,7 @@ router.use('/digital-gold/customer-kyc', customerKycRoute);
 const migration = require('./migration');
 router.use('/migration', migration)
 
+const errorLogger = require('./errorLogs');
+router.use('/error-logs', errorLogger)
+
 module.exports = router;
