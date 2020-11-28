@@ -19,6 +19,21 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'order_id',
         },
+        totalAmount: {
+            type: DataTypes.STRING,
+            field: 'total_amount',
+            defaultValue: true,
+        },
+        coupanCode: {
+            type: DataTypes.STRING,
+            field: 'coupan_code',
+            defaultValue: true,
+        },
+        walletBalance: {
+            type: DataTypes.STRING,
+            field: 'wallet_balance',
+            defaultValue: true,
+        },
         metalType: {
             type: DataTypes.STRING,
             field: 'metal_type',
@@ -35,6 +50,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'block_id',
         },
+        rate: {
+            type: DataTypes.FLOAT,
+            field: 'rate',
+        },
         amount: {
             type: DataTypes.FLOAT,
             field: 'amount',
@@ -47,10 +66,45 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'mode_of_payment',
         },
-        // userAddressId: {
-        //     type: DataTypes.STRING,
-        //     field: 'user_address_id',
-        // },
+        userAddressId: {
+            type: DataTypes.STRING,
+            field: 'user_address_id',
+        },
+        goldBalance: {
+            type: DataTypes.STRING,
+            field: 'gold_balance',
+            defaultValue: true,
+        },
+        silverBalance: {
+            type: DataTypes.STRING,
+            field: 'silver_balance',
+            defaultValue: true,
+        },
+        merchantTransactionId: {
+            type: DataTypes.STRING,
+            field: 'merchant_transaction_id'
+        },
+        transactionId: {
+            type: DataTypes.STRING,
+            field: 'transaction_id'
+        },
+        razorpayOrderId:{
+            type: DataTypes.STRING,
+            field: 'razorpay_order_id'
+        },
+        razorpayPaymentId:{
+            type: DataTypes.STRING,
+            field: 'razorpay_payment_id'
+        },
+        razorpaySignature:{
+            type: DataTypes.STRING,
+            field: 'razorpay_signature'
+        },
+        orderSatatus: {
+            type: DataTypes.STRING,
+            field: 'order_satatus',
+            defaultValue: "pending",
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',

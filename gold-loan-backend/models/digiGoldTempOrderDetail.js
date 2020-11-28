@@ -2,7 +2,6 @@ module.exports = (sequelize, DataTypes) => {
 
     const DigiGoldTempOrderDetail = sequelize.define('digiGoldTempOrderDetail', {
         // attributes
-
         customerId: {
             type: DataTypes.INTEGER,
             field: 'customer_id',
@@ -33,6 +32,34 @@ module.exports = (sequelize, DataTypes) => {
             field: 'metal_type',
             defaultValue: true,
         },
+        quantity: {
+            type: DataTypes.STRING,
+            field: 'quantity',
+        },
+        lockPrice: {
+            type: DataTypes.FLOAT,
+            field: 'lock_price',
+        },
+        blockId: {
+            type: DataTypes.STRING,
+            field: 'block_id',
+        },
+        amount: {
+            type: DataTypes.FLOAT,
+            field: 'amount',
+        },
+        quantityBased: {
+            type: DataTypes.BOOLEAN,
+            field: 'quantity_based',
+        },
+        modeOfPayment: {
+            type: DataTypes.STRING,
+            field: 'mode_of_payment',
+        },
+        userAddressId: {
+            type: DataTypes.STRING,
+            field: 'user_address_id',
+        },
         goldBalance: {
             type: DataTypes.STRING,
             field: 'gold_balance',
@@ -52,6 +79,16 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'modified_by',
             allowNull: false
+        },
+        isOrderPlaced: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_active',
+            defaultValue: false,
+        },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_active',
+            defaultValue: true,
         },
 
     }, {
