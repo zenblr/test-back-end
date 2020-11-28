@@ -84,8 +84,11 @@
                                 *ngIf="row.isAssigned && !row?.masterLoan?.isLoanCompleted">Update
                                 Appraiser</button>
                         </div>
-                        <button style="width: 120px;" class="apply-kyc" (click)="assignBranch(row)"
-                            *ngIf="!row.isAssigned && !row?.customer?.internalBranchId">Assign Branch</button>
+                        <div *ngxPermissionsOnly="['addBranchCustomer']" [ngStyle]="{'display': 'inherit'}">
+                            <button style="width: 120px;" class="apply-kyc" (click)="assignBranch(row)"
+                                *ngIf="!row.isAssigned && !row?.customer?.internalBranchId">Assign Branch
+                            </button>
+                        </div>
                     </mat-cell>
                 </ng-container>
 

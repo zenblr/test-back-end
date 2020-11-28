@@ -176,7 +176,7 @@
                 <ng-container matColumnDef="menu">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <div *ngxPermissionsOnly="['addNewRequest']">
+                        <div *ngxPermissionsOnly="['addNewRequest', 'addBranchCustomer']">
                             <button mat-button [matMenuTriggerFor]="menu">
                                 <mat-icon>more_vert</mat-icon>
                             </button>
@@ -186,7 +186,8 @@
                                         (click)="newRequest(loan)">New Request</button>
                                 </ng-container>
                                 <ng-container *ngIf="!loan.internalBranchId">
-                                    <button mat-menu-item (click)="assignBranch(loan)">Assign Branch</button>
+                                    <button *ngxPermissionsOnly="['addBranchCustomer']" mat-menu-item
+                                        (click)="assignBranch(loan)">Assign Branch</button>
                                 </ng-container>
                             </mat-menu>
                         </div>
