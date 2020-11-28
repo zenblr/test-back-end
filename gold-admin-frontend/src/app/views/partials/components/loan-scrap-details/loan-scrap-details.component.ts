@@ -30,7 +30,7 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewIn
   masterAndLoanIds: { loanId: any; masterLoanId: any; };
   scrapIds: { scrapId: any; };
   destroy$ = new Subject();
-  packetImages = { loan: [], scrap: [], termsAndConditions: [] };
+  packetImages = { loan: { documents: [] = [], packet: [] = [], transfer: [] = [] }, scrap: [], transfer: [], termsAndConditions: [] };
   @ViewChildren('termsConditions') termsConditions: QueryList<ElementRef>;
   edit: boolean;
   permission: any;
@@ -238,19 +238,26 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewIn
       let packets = this.details.loanPacketDetails[0]
       let documents = this.details.customerLoanDocument
       let temp = [];
+      let transfer = []
       temp = [...documents.loanAgreementCopyImage, ...documents.pawnCopyImage, ...documents.schemeConfirmationCopyImage]
       if (this.details.loanTransfer) {
         let loanTransfer = this.details.loanTransfer
-        temp = [...temp,...loanTransfer.declarationImage, ...loanTransfer.pawnTicketImage, ...loanTransfer.signedChequeImage]
+        transfer = [...loanTransfer.declarationImage, ...loanTransfer.pawnTicketImage, ...loanTransfer.signedChequeImage]
 
       }
-      temp.push(packets.emptyPacketWithNoOrnamentImage,
+      let packet = []
+      packet.push(packets.emptyPacketWithNoOrnamentImage,
         packets.sealingPacketWithCustomerImage,
         packets.sealingPacketWithWeightImage)
-      this.packetImages.loan = [...temp]
-      this.packetImages.loan = this.packetImages.loan.filter(e => {
-        let ext = this.sharedService.getExtension(e)
-        return e && ext != 'pdf'
+      this.packetImages.loan.documents = [...temp]
+      this.packetImages.loan.transfer = [...transfer]
+      this.packetImages.loan.packet = [...packet]
+      // this.packetImages.loan = 
+      Object.keys(this.packetImages.loan).forEach(ele => {
+        this.packetImages.loan[ele] = this.packetImages.loan[ele].filter(e => {
+          let ext = this.sharedService.getExtension(e)
+          return e && ext != 'pdf'
+        })
       })
     }
   }
@@ -337,9 +344,15 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewIn
     }
   }
 
-  viewPackets(value) {
+  viewPackets(value,loanType?) {
     const type = this.masterLoanId ? 'loan' : 'scrap'
-    const images = this.packetImages[type]
+    let images = []
+    if(type == 'loan'){
+       images = this.packetImages[type][loanType]
+    }else{
+       images = this.packetImages[type]
+
+    }
     const index = images.indexOf(value)
 
     this.dialog.open(ImagePreviewDialogComponent, {
