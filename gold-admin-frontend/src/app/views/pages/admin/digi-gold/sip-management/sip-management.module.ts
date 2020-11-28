@@ -18,7 +18,7 @@ import { SipManagementComponent } from './sip-management.component';
 import { CreateSipComponent } from './create-sip/create-sip.component';
 import { SipTradesComponent } from './sip-trades/sip-trades.component';
 import { SipApplicationComponent } from './sip-application/sip-application.component';
-import { GlobalSettingsComponent } from '../global-settings/global-settings.component';
+
 
 
 
@@ -41,10 +41,6 @@ const routes: Routes = [
         component: SipApplicationComponent
       },
       {
-        path: 'global-settings',
-        component: GlobalSettingsComponent
-      },
-      {
         path: 'create-sip',
         component: CreateSipComponent
       },
@@ -64,7 +60,6 @@ const routes: Routes = [
 	CreateSipComponent,
 	SipTradesComponent,
   SipApplicationComponent,
-  GlobalSettingsComponent
  
   ],
   imports: [

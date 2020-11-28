@@ -220,7 +220,7 @@ export class CreateSipComponent implements OnInit {
     if (this.data.action == 'add') {
       this.sipApplicationService.addSipApplication(this.createSipForm.value).subscribe(res => {
         if (res) {
-          const msg = 'SIP Application Created Sucessfully';
+          const msg = res.message;
           this.toastr.success(msg);
           this.dialogRef.close(true);
         }
@@ -230,7 +230,7 @@ export class CreateSipComponent implements OnInit {
       this.sipStatusDisable = false;
       this.sipApplicationService.updateIndividual(this.data.sipCreateData.id, this.createSipForm.value).subscribe(res => {
         if (res) {
-          const msg = 'Sip Cycle Date Added Successfully';
+          const msg = res.message;
           this.toastr.success(msg);
           this.dialogRef.close(true);
         }

@@ -373,7 +373,7 @@ export class MenuConfig {
 									submenu: [
 										{
 											title: "Global Setting",
-											page: "/admin/digi-gold/sip-management/global-settings",
+											page: "/admin/digi-gold/global-settings",
 											root: true,
 											bullet: 'dot',
 										}
