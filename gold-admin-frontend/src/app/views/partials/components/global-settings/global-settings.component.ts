@@ -13,9 +13,9 @@ import { Router } from '@angular/router';
 export class GlobalSettingsComponent implements OnInit {
   globalSettingForm: FormGroup;
   url: any;
-  scrapSettingFlag: boolean;
-  digiGoldSettingFlag: boolean;
-  loanSettingFlag: boolean;
+  scrapSetting: boolean;
+  digiGoldSetting: boolean;
+  loanSetting: boolean;
   globalValue: any;
   
 
@@ -27,20 +27,20 @@ export class GlobalSettingsComponent implements OnInit {
   ) {
     this.url = (this.router.url.split("/")[2]);
     if (this.url == 'scrap-management') {
-      this.scrapSettingFlag = true;
+      this.scrapSetting = true;
     } else if(this.url == 'digi-gold') {
-      this.digiGoldSettingFlag = true;
+      this.digiGoldSetting = true;
     }
     else {
-      this.loanSettingFlag = true;
+      this.loanSetting = true;
     }
   }
 
   ngOnInit() {
     this.initForm();
-    if (this.scrapSettingFlag) {
+    if (this.scrapSetting) {
       this.getScrapGlobalSetting();
-    } else if (this.digiGoldSettingFlag){
+    } else if (this.digiGoldSetting){
       this.getDigiGoldSetting();
     }
     else {
@@ -138,7 +138,7 @@ export class GlobalSettingsComponent implements OnInit {
       return;
     }
     const formData = this.globalSettingForm.value;
-    if (this.scrapSettingFlag) {
+    if (this.scrapSetting) {
       this.globalSettingService.setScrapGlobalSetting(formData).pipe(map(res => {
         if (res) {
           console.log(res);
@@ -146,7 +146,7 @@ export class GlobalSettingsComponent implements OnInit {
           this.toastr.success('Successful!');
         }
       })).subscribe();
-    } else if (this.digiGoldSettingFlag) {
+    } else if (this.digiGoldSetting) {
       this.globalSettingService.setDigiGoldSetting(formData).pipe(map(res => {
         if (res) {
           console.log(res);

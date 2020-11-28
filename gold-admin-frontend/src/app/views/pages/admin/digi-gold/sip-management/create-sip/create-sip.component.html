@@ -71,11 +71,10 @@
                                         <label class="font-border">Application Date</label>
                                     </div>
                                     <div class="col-12 col-lg-8">
-                                        <input class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                                            formControlName="applicationDate" [min]="minDate" [max]="maxDate"
-                                            [class.isError]="controls.applicationDate.touched && controls.applicationDate.invalid"
-                                            readonly placeholder="4/5/2020" />
-                                        <mat-datepicker #picker></mat-datepicker>
+                                        <div class="col-12 col-lg-8">
+                                            <input type="text" class="form-control"
+                                                formControlName="applicationDate">
+                                        </div>
                                     </div>
                                 </div>
                             </div>

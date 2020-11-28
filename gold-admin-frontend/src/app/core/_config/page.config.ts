@@ -430,14 +430,11 @@ export class PageConfig {
 			},
 			"digi-gold": {
 				
-				// "global-settings": {
-				//         page: { title: "Global Setting", desc: "" },
-				// 	},
-				
-				"sip-management":{
-					"global-settings": {
+				"global-settings": {
 				        page: { title: "Global Setting", desc: "" },
 					},
+				
+				"sip-management":{
 			
 				    "sip-cycle-date": {
 				        page: { title: "SIP Cycle Date", desc: "" },
