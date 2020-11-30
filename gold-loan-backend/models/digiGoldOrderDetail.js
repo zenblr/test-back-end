@@ -111,7 +111,12 @@ module.exports = (sequelize, DataTypes) => {
     DigiGoldOrderDetail.associate = function (models) {
         DigiGoldOrderDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         DigiGoldOrderDetail.belongsTo(models.digiGoldTempOrderDetail, { foreignKey: 'tempOrderId', as: 'tempOrder' });
-        DigiGoldOrderDetail.belongsTo(models.digiGoldOrderType, {foreignKey: 'orderTypeId', as: 'digiGoldOrderType'})
+        DigiGoldOrderDetail.belongsTo(models.digiGoldOrderType, {foreignKey: 'orderTypeId', as: 'digiGoldOrderType'});
+        DigiGoldOrderDetail.hasOne(models.digiGoldOrderAddressDetail, {foreignKey: 'orderDetailId', as: 'orderDetail' });
+        DigiGoldOrderDetail.hasOne(models.digiGoldOrderTaxDetail, {foreignKey: 'orderDetailId', as: 'orderTaxDetail' });
+        DigiGoldOrderDetail.hasMany(models.digiGoldOrderProductDetail, {foreignKey: 'orderDetailId', as: 'orderProductDetail' });
+        // DigiGoldOrderDetail.hasOne(models.digiGoldCustomerBankDetail, {foreignKey: 'orderDetailId', as: 'orderDetail' });
+
     }
 
 

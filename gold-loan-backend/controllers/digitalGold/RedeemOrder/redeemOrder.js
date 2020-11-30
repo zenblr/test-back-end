@@ -18,7 +18,7 @@ const errorLogger = require('../../../utils/errorLogger');
 exports.AddOrder = async (req, res) => {
   try {
     const id = req.userData.id;
-    const { userAddressId, modeOfPayment, transactionDetails } = req.body;
+    const { userAddressId, modeOfPayment, transactionDetails, blockId, shippingCharges, totalQuantity, totalWeight, orderAddress } = req.body;
     const razorPay = await getRazorPayDetails();
     let customerDetails = await models.customer.findOne({
       where: { id, isActive: true },
@@ -77,15 +77,33 @@ exports.AddOrder = async (req, res) => {
           },
           data: qs.stringify({ notes: { orderId: result.data.result.data.orderId, uniqueId: customerDetails.customerUniqueId } })
         })
-        await models.digiGoldCart.destroy({ where: { customerId: id } });
 
-        await models.digiGoldCustomerBalance.update({currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance}, {where: {customerId: id}});
+        await sequelize.transaction(async (t) => {
 
-        await sms.sendMessageForOrderPlaced(customerDetails.mobileNumber, result.data.result.data.orderId);
+          await models.digiGoldCart.destroy({ where: { customerId: id } });
+
+          await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: id }, transaction: t });
+
+          let tempOrderDetail = await models.digiGoldTempOrderDetail.findOne({ where: { blockId } });
+
+          let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetail.id, customerId: id, orderTypeId: 3, orderId: blockId, totalAmount: tempOrderDetail.totalAmount, coupanCode, quantity: tempOrderDetail.quantity, blockId: blockId, amount: tempOrderDetail.amount, modeOfPayment, userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.result.data.result.data, razorpayOrderId: transactionDetails.razorpay_order_id, razorpayPaymentId: transactionDetails.razorpay_payment_id, razorpaySignature: transactionDetails.razorpay_signature, orderSatatus: "pending" }, { transaction: t });
+
+          await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { id: tempOrderDetail.id }, transaction: t })
+
+          await models.digiGoldOrderDeliveryDetail.create({ orderDetailId: orderDetail.id, shippingCharges, totalQuantity, totalWeight }, { transaction: t });
+
+          for (let address of orderAddress) {
+            await models.digiGoldOrderAddressDetail.create({ orderDetailId: orderDetail.id, addressType: address.addressType, address: address.address, stateId: address.stateId, cityId: address.cityId, pinCode: address.pinCode }, { transaction: t });
+          }
+
+          await sms.sendMessageForOrderPlaced(customerDetails.mobileNumber, result.data.result.data.orderId);
+
+        })
       }
       return res.status(200).json(result.data);
     }
   } catch (err) {
+    console.log(err);
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
     if (err.response) {

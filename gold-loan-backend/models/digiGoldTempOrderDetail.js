@@ -98,7 +98,7 @@ module.exports = (sequelize, DataTypes) => {
 
     }
 
-    DigiGoldTempOrderDetail.getCartDetails = (blockId) => DigiGoldCart.findAll({where:{blockId}})
+    DigiGoldTempOrderDetail.getTempOrderDetail = (blockId) => DigiGoldTempOrderDetail.findOne({where:{blockId}})
 
 
     return DigiGoldTempOrderDetail;

@@ -17,6 +17,8 @@ const html = fs.readFileSync(path.join(__dirname, '..', '..', '..', 'templates',
 const errorLogger = require('../../../utils/errorLogger');
 const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
+const Op = Sequelize.Op;
+
 
 exports.buyProduct = async (req, res) => {
   try {
@@ -30,7 +32,7 @@ exports.buyProduct = async (req, res) => {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     }
 
-    let getTempOrderData = await models.digiGoldTempOrderDetail.getCartDetails(blockId);
+    let getTempOrderData = await models.digiGoldTempOrderDetail.getTempOrderDetail(blockId);
     
     //const transactionId = transactionDetails.razorpay_payment_id;
     const generated_signature = crypto
@@ -101,7 +103,9 @@ exports.buyProduct = async (req, res) => {
 
       await sequelize.transaction(async (t) => {
 
-        await models.digiGoldOrderDetail.create({tempOrderId: getTempOrderData.id, customerId: id,orderTypeId: 1,  orderId: transactionDetails.razorpay_order_id, coupanCode, metalType, quantity, lockPrice, blockId, amount,rate: result.data.result.data.rate, quantityBased, modeOfPayment, goldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, razorpayOrderId: transactionDetails.razorpay_order_id, razorpayPaymentId: transactionDetails.razorpay_payment_id, razorpaySignature: transactionDetails.razorpay_signature, orderSatatus: "pending"  });
+        let orderUniqueId = `digiGoldBuy${Math.floor(1000 + Math.random() * 9000)}`;
+        console.log( getTempOrderData);
+        let orderDetail = await models.digiGoldOrderDetail.create({tempOrderId: getTempOrderData.id, customerId: id,orderTypeId: 1,  orderId: orderUniqueId, metalType, quantity, lockPrice, blockId, amount,rate: result.data.result.data.rate, quantityBased, modeOfPayment, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, razorpayOrderId: transactionDetails.razorpay_order_id, razorpayPaymentId: transactionDetails.razorpay_payment_id, razorpaySignature: transactionDetails.razorpay_signature, orderSatatus: "pending", totalAmount: amount  });
 
         await models.digiGoldTempOrderDetail.update({isOrderPlaced: true}, {where: { blockId }});
 
@@ -111,6 +115,8 @@ exports.buyProduct = async (req, res) => {
         }else{
           await models.digiGoldCustomerBalance.create({customerId: id, currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance});
         }
+        console.log(result.data);
+        await models.digiGoldOrderTaxDetail.create({orderDetailId: orderDetail.id, totalTaxAmount: result.data.result.data.totalTaxAmount, cgst : result.data.result.data.taxes.taxSplit[0].cgst, sgst: result.data.result.data.taxes.taxSplit[0].scgst, isActive:true });
       })
       
       await sms.sendMessageForBuy(customerName, customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);

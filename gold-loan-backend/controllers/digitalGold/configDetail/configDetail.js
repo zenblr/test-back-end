@@ -12,65 +12,71 @@ const errorLogger = require('../../../utils/errorLogger');
 exports.createConfigDetail = async (req, res) => {
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
-let { configSettingName, configSettingValue} = req.body;
+  let { configSettingName, configSettingValue } = req.body;
 
-let ConfigIdofparam = await models.digiGoldConfigDetails.findOne({ where: { configSettingName: configSettingName, configSettingValue:configSettingValue} });
+  let ConfigIdofparam = await models.digiGoldConfigDetails.findOne({ where: { configSettingName: configSettingName, configSettingValue: configSettingValue } });
 
-if(check.isEmpty(ConfigIdofparam)){
-  await sequelize.transaction(async (t) => {
-    await models.digiGoldConfigDetails.create({ configSettingName:configSettingName, configSettingValue:configSettingValue ,createdBy,modifiedBy}, { transaction: t })
+  if (check.isEmpty(ConfigIdofparam)) {
+    await sequelize.transaction(async (t) => {
+      await models.digiGoldConfigDetails.create({ configSettingName: configSettingName, configSettingValue: configSettingValue, createdBy, modifiedBy }, { transaction: t })
     })
     return res.status(200).json({ messgae: `Record Added` });
-}else{
-  let name=ConfigIdofparam.configSettingName;
-  let value=ConfigIdofparam.configSettingValue;
-  let IdofConfig=ConfigIdofparam.id
+  } else {
+    let name = ConfigIdofparam.configSettingName;
+    let value = ConfigIdofparam.configSettingValue;
+    let IdofConfig = ConfigIdofparam.id
 
-  await sequelize.transaction(async (t) => {
-    await models.digiGoldConfigDetailsHistory.create({ configSettingId:ConfigIdofparam.id,configSettingName:ConfigIdofparam.configSettingName, configSettingValue:ConfigIdofparam.configSettingValue ,createdBy,modifiedBy}, { transaction: t })
+    await sequelize.transaction(async (t) => {
+      await models.digiGoldConfigDetailsHistory.create({ configSettingId: ConfigIdofparam.id, configSettingName: ConfigIdofparam.configSettingName, configSettingValue: ConfigIdofparam.configSettingValue, createdBy, modifiedBy }, { transaction: t })
     })
-  await sequelize.transaction(async (t) => {
-    const Config = await models.digiGoldConfigDetails.update(
-     
-      { name, value,IdofConfig,createdBy,modifiedBy},
-      { where: { id: ConfigIdofparam.id }, transaction: t }
-    );
-  });
-  return res.status(200).json({ messgae: `Record Updated` });
-}
+    await sequelize.transaction(async (t) => {
+      const Config = await models.digiGoldConfigDetails.update(
+
+        { name, value, IdofConfig, createdBy, modifiedBy },
+        { where: { id: ConfigIdofparam.id }, transaction: t }
+      );
+    });
+    return res.status(200).json({ messgae: `Record Updated` });
+  }
 
 
 }
 
 // exports.getConfigDetail = async (req, res) => {
-  
+
 // }
 exports.editConfigDetail = async (req, res) => {
-   
-    let createdBy = req.userData.id;
-    let modifiedBy = req.userData.id;
-    const { configId } = req.params;
- 
-  
-  
-    let { configSettingName, configSettingValue } = req.body;
-   
-    let ConfigIdofparam = await models.digiGoldConfigDetails.findOne({ where: { id: configId } });
-   
-    if (check.isEmpty(ConfigIdofparam)) {
-      return res.status(404).json({ message: "Record does not exist" });
-    }
-   
-    await sequelize.transaction(async (t) => {
-      await models.digiGoldConfigDetailsHistory.create({ configSettingId:ConfigIdofparam.id,configSettingName:ConfigIdofparam.configSettingName, configSettingValue:ConfigIdofparam.configSettingValue ,createdBy}, { transaction: t })
+  let createdBy = req.userData.id;
+  let modifiedBy = req.userData.id;
+  const data = req.body
+
+  let addressArray = [];
+  for (let ele of data) {
+
+    let ConfigIdOfParam = await models.digiGoldConfigDetails.findOne({ where: { configSettingName: ele.configSettingName } });
+
+    if (!ConfigIdOfParam) {
+      addressArray.push(ele.configSettingName)
+    } else {
+      await sequelize.transaction(async (t) => {
+        await models.digiGoldConfigDetailsHistory.create({ configSettingId: ConfigIdOfParam.id, configSettingName: ConfigIdOfParam.configSettingName, configSettingValue: ConfigIdOfParam.configSettingValue, createdBy }, { transaction: t })
       })
-    await sequelize.transaction(async (t) => {
-      const Config = await models.digiGoldConfigDetails.update(
-        { configSettingName, configSettingValue, modifiedBy},
-        { where: { id: configId }, transaction: t }
-      );
-    });
-    return res.status(200).json({ messgae: `Record Updated` });
+      const val = ele.configSettingValue
+      await sequelize.transaction(async (t) => {
+        const Config = await models.digiGoldConfigDetails.update(
+          { configSettingValue: val, modifiedBy },
+          { where: { configSettingName: ele.configSettingName }, transaction: t }
+        );
+      });
+    }
+  }
+
+  if (addressArray.length > 0) {
+    return res.status(200).json({ messgae: `Invalid Setting Name, `, addressArray });
+  }
+  return res.status(200).json({ messgae: `Record Updated` })
+
+
 }
 
 exports.deleteConfigDetail = async (req, res) => {
@@ -78,13 +84,13 @@ exports.deleteConfigDetail = async (req, res) => {
   const { configId } = req.params;
 
   let ConfigIdofparam = await models.digiGoldConfigDetails.findOne({ where: { id: configId } });
-   
+
   if (check.isEmpty(ConfigIdofparam)) {
     return res.status(404).json({ message: "Record does not exist" });
   }
   await sequelize.transaction(async (t) => {
     const Config = await models.digiGoldConfigDetails.destroy(
-     
+
       { where: { id: configId }, transaction: t }
     );
   });
@@ -94,10 +100,10 @@ exports.deleteConfigDetail = async (req, res) => {
 
 exports.getConfigDetail = async (req, res) => {
   // await sequelize.transaction(async (t) => {
-    const Config = await models.digiGoldConfigDetails.findAll(
-     
-      { where: { isActive: true }}
-    );
- 
+  const Config = await models.digiGoldConfigDetails.findAll(
+
+    { where: { isActive: true } }
+  );
+
   return res.status(200).json(Config);
 }

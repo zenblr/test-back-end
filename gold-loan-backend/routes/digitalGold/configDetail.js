@@ -12,7 +12,7 @@ route.post('/', customerCheckAuth,validationError,wrapper(createConfigDetail));
 
 route.get('/', customerCheckAuth, wrapper(getConfigDetail));
 
-route.put('/:configId', customerCheckAuth, wrapper(editConfigDetail))
+route.put('/', customerCheckAuth, wrapper(editConfigDetail))
 
 route.delete('/:configId', customerCheckAuth, wrapper(deleteConfigDetail))
 

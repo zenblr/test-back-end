@@ -18,16 +18,10 @@ exports.getCustomerPassbookDetails = async (req, res) => {
       where: { id, isActive: true },
     });
 
-    let availableMetal = await models.digiGoldCustomerBalance.findOne({
-      where: { id, isActive: true },
+    let availableBalance = await models.digiGoldCustomerBalance.findOne({
+      where: { customerId: id, isActive: true },
     });
-
-    let customerBalanceData;
-    customerBalanceData.currentGoldBalance = availableMetal.currentGoldBalance;
-    customerBalanceData.currentSilverBalance = availableMetal.currentSilverBalance;
-    customerBalanceData.sellableGoldBalance = availableMetal.sellableGoldBalance;
-    customerBalanceData.sellableSilverBalance = availableMetal.sellableSilverBalance;
-
+    
     if (check.isEmpty(customerDetails)) {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     };
@@ -44,8 +38,9 @@ exports.getCustomerPassbookDetails = async (req, res) => {
         'Authorization': `Bearer ${merchantData.accessToken}`,
       },
     });
-    return res.status(200).json(result.data, customerBalanceData);
+    return res.status(200).json(result.data);
   } catch (err) {
+    console.log(err);
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
     if (err.response) {

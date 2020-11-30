@@ -1,8 +1,8 @@
 module.exports = (sequelize, DataTypes) => {
-    const DigiGoldCustomerBankDetail = sequelize.define('digiGoldCustomerBankDetail', {
-        customerId: {
+    const DigiGoldOrderBankDetail = sequelize.define('digiGoldOrderBankDetail', {
+        orderDetailId: {
             type: DataTypes.INTEGER,
-            field: 'customer_id'
+            field: 'order_detail_id'
         },
         accountNumber: {
             type: DataTypes.STRING,
@@ -33,13 +33,13 @@ module.exports = (sequelize, DataTypes) => {
     },
         {
             freezeTableName: true,
-            tableName: 'digi_gold_customer_bank_detail',
+            tableName: 'digi_gold_order_bank_detail',
         }
     )
 
-    DigiGoldCustomerBankDetail.associate = (models) => {
-        DigiGoldCustomerBankDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customerDetail' });
+    DigiGoldOrderBankDetail.associate = (models) => {
+        DigiGoldOrderBankDetail.belongsTo(models.digiGoldOrderDetail, { foreignKey: 'orderDetailId', as: 'orderDetail' });
     }
     
-    return DigiGoldCustomerBankDetail;
+    return DigiGoldOrderBankDetail;
 }
