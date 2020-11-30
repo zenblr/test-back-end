@@ -50,6 +50,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(10,2),
             field: 'outstanding_loan_amount'
         },
+        processingCharge: {
+            type: DataTypes.DECIMAL(10,2),
+            defaultValue: 0,
+            field: 'processing_charge'
+        },
         loanTransferCurrentStage: {
             type: DataTypes.ENUM,
             field: 'loan_transfer_current_stage',

@@ -2,11 +2,10 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addColumn('customer_loan_transfer', 'loan_transfer_status_for_appraiser', {
-      type: Sequelize.DataTypes.ENUM,
-      values: ['approved', 'pending', 'incomplete'],
-      defaultValue: 'pending'
-    });
+    return queryInterface.addColumn('customer_loan_transfer', 'processing_charge', {
+      type: Sequelize.DataTypes.DECIMAL(10,2),
+      defaultValue: 0
+    })
   },
 
   down: (queryInterface, Sequelize) => {

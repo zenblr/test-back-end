@@ -165,6 +165,38 @@
             </div>
         </div> -->
         <div class="row">
+            <div class="col-6" *ngIf="details?.isLoanTransferExtraAmountAdded">
+                <div class="row justify-content-center kt-margin-t-10">
+                    <div class="col-4 form-label">
+                        <label class="kt-padding-l-10 mandatory">Transaction ID</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" formControlName="otherAmountTransactionId"
+                            [class.isError]="controls.otherAmountTransactionId.invalid &&  controls.otherAmountTransactionId.touched">
+                        <mat-error
+                            *ngIf="controls.otherAmountTransactionId.touched && controls.otherAmountTransactionId.errors?.required">
+                            Required field
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6" *ngIf="details?.isLoanTransferExtraAmountAdded">
+                <div class="row justify-content-center kt-margin-t-10">
+                    <div class="col-4 form-label">
+                        <label class="kt-padding-l-10 mandatory">Other Amount</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" formControlName="loanTransferExtraAmount" readonly
+                            [class.isError]="controls.loanTransferExtraAmount.invalid &&  controls.loanTransferExtraAmount.touched">
+                        <mat-error
+                            *ngIf="controls.loanTransferExtraAmount.touched && controls.loanTransferExtraAmount.errors?.required">
+                            Required field
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-6">
                 <div class="row justify-content-center kt-margin-t-10">
                     <div class="col-4 form-label">

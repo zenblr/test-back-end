@@ -22,13 +22,14 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy {
   details: any
   pdf = {
     loanAgreementCopyImage: false, pawnCopyImage: false, schemeConfirmationCopyImage: false,
-    purchaseVoucherImage: false, purchaseInvoiceImage: false, saleInvoiceImage: false
+    purchaseVoucherImage: false, purchaseInvoiceImage: false, saleInvoiceImage: false, declarationImage: false,
+    loanTransferPawnImage: false, signedChequeImage: false
   }
   masterLoanId: any;
   masterAndLoanIds: { loanId: any; masterLoanId: any; };
   scrapIds: { scrapId: any; };
   destroy$ = new Subject();
-  packetImages = { loan: [], scrap: [] };
+  packetImages = { loan: { documents: [] = [], packet: [] = [], transfer: [] = [] }, scrap: [], transfer: [] };
 
   constructor(
     private loanservice: LoanApplicationFormService,
@@ -86,7 +87,7 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy {
   }
 
   pdfCheck() {
-    let laonAgree, pawn, scheme, voucher, invoice, sale;
+    let laonAgree, pawn, scheme, voucher, invoice, sale, declaration, loanTransferPawn, signedCheque;
     if (this.details.customerLoanDocument) {
       if (this.details.customerLoanDocument.loanAgreementCopy) {
         laonAgree = this.details.customerLoanDocument.loanAgreementCopyImage[0].split('.')
@@ -109,6 +110,19 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy {
         sale = this.details.scrapDocument.saleInvoiceImage[0].split('.')
       }
     }
+
+    if (this.details.loanTransfer) {
+      if (this.details.loanTransfer.declarationImage) {
+        declaration = this.details.loanTransfer.declarationImage[0].split('.')
+      }
+      if (this.details.loanTransfer.pawnTicket) {
+        loanTransferPawn = this.details.loanTransfer.pawnTicketImage[0].split('.')
+      }
+      if (this.details.loanTransfer.signedCheque) {
+        signedCheque = this.details.loanTransfer.signedChequeImage[0].split('.')
+      }
+    }
+
     if (laonAgree && laonAgree[laonAgree.length - 1] == 'pdf') {
       this.pdf.loanAgreementCopyImage = true
     } else {
@@ -138,6 +152,21 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy {
       this.pdf.saleInvoiceImage = true
     } else {
       this.pdf.saleInvoiceImage = false
+    }
+    if (declaration && declaration[declaration.length - 1] == 'pdf') {
+      this.pdf.declarationImage = true
+    } else {
+      this.pdf.declarationImage = false
+    }
+    if (loanTransferPawn && loanTransferPawn[loanTransferPawn.length - 1] == 'pdf') {
+      this.pdf.loanTransferPawnImage = true
+    } else {
+      this.pdf.loanTransferPawnImage = false
+    }
+    if (signedCheque && signedCheque[signedCheque.length - 1] == 'pdf') {
+      this.pdf.signedChequeImage = true
+    } else {
+      this.pdf.signedChequeImage = false
     }
   }
 
@@ -188,14 +217,26 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy {
       let packets = this.details.loanPacketDetails[0]
       let documents = this.details.customerLoanDocument
       let temp = [];
+      let transfer = []
       temp = [...documents.loanAgreementCopyImage, ...documents.pawnCopyImage, ...documents.schemeConfirmationCopyImage]
-      temp.push(packets.emptyPacketWithNoOrnamentImage,
+      if (this.details.loanTransfer) {
+        let loanTransfer = this.details.loanTransfer
+        transfer = [...loanTransfer.declarationImage, ...loanTransfer.pawnTicketImage, ...loanTransfer.signedChequeImage]
+
+      }
+      let packet = []
+      packet.push(packets.emptyPacketWithNoOrnamentImage,
         packets.sealingPacketWithCustomerImage,
         packets.sealingPacketWithWeightImage)
-      this.packetImages.loan = [...temp]
-      this.packetImages.loan = this.packetImages.loan.filter(e => {
-        let ext = this.sharedService.getExtension(e)
-        return e && ext != 'pdf'
+      this.packetImages.loan.documents = [...temp]
+      this.packetImages.loan.transfer = [...transfer]
+      this.packetImages.loan.packet = [...packet]
+      // this.packetImages.loan = 
+      Object.keys(this.packetImages.loan).forEach(ele => {
+        this.packetImages.loan[ele] = this.packetImages.loan[ele].filter(e => {
+          let ext = this.sharedService.getExtension(e)
+          return e && ext != 'pdf'
+        })
       })
     }
   }
@@ -282,9 +323,15 @@ export class LoanScrapDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  viewPackets(value) {
+  viewPackets(value,loanType?) {
     const type = this.masterLoanId ? 'loan' : 'scrap'
-    const images = this.packetImages[type]
+    let images = []
+    if(type == 'loan'){
+       images = this.packetImages[type][loanType]
+    }else{
+       images = this.packetImages[type]
+
+    }
     const index = images.indexOf(value)
 
     this.dialog.open(ImagePreviewDialogComponent, {
