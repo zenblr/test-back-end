@@ -31,6 +31,7 @@ export class LeadManagementComponent implements OnInit {
     stateId: '',
     cityId: '',
     statusId: '',
+    modulePoint: ''
   }
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   destroy$ = new Subject();
@@ -123,6 +124,7 @@ export class LeadManagementComponent implements OnInit {
     this.queryParamsData.cityId = data.data.cities;
     this.queryParamsData.stateId = data.data.states;
     this.queryParamsData.statusId = data.data.leadStatus;
+    this.queryParamsData.modulePoint = data.data.modulePoint
     this.dataSource.loadLeads(this.queryParamsData);
     this.filteredDataList = data.list;
   }

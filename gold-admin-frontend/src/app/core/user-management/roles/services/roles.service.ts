@@ -38,8 +38,12 @@ export class RolesService {
       map(res => res
       ))
   }
-  getAllModuleAppraiser(): Observable<any> {
-    return this.http.get(`/api/modules/appraiser-request-module`).pipe(
+  getAllModuleAppraiser(data?): Observable<any> {
+    const reqParams: any = {}
+    if (data && data.isFor) {
+      reqParams.isFor = data.isFor
+    }
+    return this.http.get(`/api/modules/appraiser-request-module`, { params: reqParams }).pipe(
       map(res => res
       ))
   }
