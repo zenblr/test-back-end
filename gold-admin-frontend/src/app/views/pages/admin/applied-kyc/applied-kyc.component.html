@@ -249,7 +249,7 @@
                 <ng-container matColumnDef="allowToEdit">
                     <mat-header-cell *matHeaderCellDef>Editable</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <mat-slide-toggle [ngxPermissionsOnly]="'allowToEditKyc'"
+                        <mat-slide-toggle *ngxPermissionsOnly="['allowToEditKyc']"
                             [checked]="role.customer.allowCustomerEdit"
                             (change)="allowToEdit({ allowCustomerEdit: $event.checked, customerId: role?.customer?.id})">
                         </mat-slide-toggle>

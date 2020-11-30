@@ -235,7 +235,10 @@ export class AddLeadComponent implements OnInit {
   }
 
   getModules() {
-    this.roleService.getAllModuleAppraiser().pipe(map(res => {
+    const data = {
+      isFor: 'lead'
+    }
+    this.roleService.getAllModuleAppraiser(data).pipe(map(res => {
       this.modules = res;
     })).subscribe()
   }
