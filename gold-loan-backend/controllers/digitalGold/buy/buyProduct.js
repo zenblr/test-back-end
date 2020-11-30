@@ -29,6 +29,9 @@ exports.buyProduct = async (req, res) => {
     if (check.isEmpty(customerDetails)) {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     }
+
+    let getTempOrderData = await models.digiGoldTempOrderDetail.getCartDetails(blockId);
+    
     //const transactionId = transactionDetails.razorpay_payment_id;
     const generated_signature = crypto
       .createHmac(
@@ -98,7 +101,9 @@ exports.buyProduct = async (req, res) => {
 
       await sequelize.transaction(async (t) => {
 
-        await models.digiGoldOrderDetail.create({customerId: id, orderId: transactionDetails.razorpay_order_id, metalType, quantity, lockPrice, blockId, amount, quantityBased, modeOfPayment});
+        await models.digiGoldOrderDetail.create({tempOrderId: getTempOrderData.id, customerId: id,orderTypeId: 1,  orderId: transactionDetails.razorpay_order_id, coupanCode, metalType, quantity, lockPrice, blockId, amount,rate: result.data.result.data.rate, quantityBased, modeOfPayment, goldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, razorpayOrderId: transactionDetails.razorpay_order_id, razorpayPaymentId: transactionDetails.razorpay_payment_id, razorpaySignature: transactionDetails.razorpay_signature, orderSatatus: "pending"  });
+
+        await models.digiGoldTempOrderDetail.update({isOrderPlaced: true}, {where: { blockId }});
 
         let CustomerBalanceData = await models.digiGoldCustomerBalance.findOne({where: { customerId: id, isActive: true }})
         if(CustomerBalanceData){
@@ -107,7 +112,7 @@ exports.buyProduct = async (req, res) => {
           await models.digiGoldCustomerBalance.create({customerId: id, currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance});
         }
       })
-
+      
       await sms.sendMessageForBuy(customerName, customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
     }
     return res.status(200).json(result.data);

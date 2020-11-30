@@ -2,77 +2,57 @@ module.exports = (sequelize, DataTypes) => {
 
     const DigiGoldTempOrderProductDetail = sequelize.define('digiGoldTempOrderProductDetail', {
         // attributes
+        tempOrderDetailId: {
+            type: DataTypes.INTEGER,
+            field: 'order_detail_id',
+        },
         productSku: {
             type: DataTypes.STRING,
-            field: 'product_sku',
-            allowNull: false
+            field: 'product_sku'
         },
         productWeight: {
             type: DataTypes.STRING,
-            field: 'product_weight',
-            allowNull: false
+            field: 'product_weight'
         },
         productName: {
             type: DataTypes.STRING,
             field: 'product_Name',
-            allowNull: false
         },
         amount: {
-            type: DataTypes.STRING,
-            field: 'amount',
-            allowNull: false
+            type: DataTypes.FLOAT,
+            field: 'amount'
         },
         productImage: {
             type: DataTypes.STRING,
-            field: 'product_Image',
-            allowNull: false
+            field: 'product_Image'
         },
-        amount: {
-            type: DataTypes.STRING,
-            field: 'amount',
-            allowNull: false
-        },
-        orderId: {
-            type: DataTypes.STRING,
-            field: 'order_id',
-            allowNull: false
-        },
-
         totalAmount: {
             type: DataTypes.STRING,
-            field: 'total_amount',
-            defaultValue: true,
+            field: 'total_amount'
         },
         metalType: {
             type: DataTypes.STRING,
-            field: 'metal_type',
-            defaultValue: true,
+            field: 'metal_type'
         },
         quantity: {
             type: DataTypes.INTEGER,
             field: 'quantity'
         },
-        createdBy: {
-            type: DataTypes.INTEGER,
-            field: 'created_by',
-            allowNull: false
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_active',
+            defaultValue: true,
         },
-        modifiedBy: {
-            type: DataTypes.INTEGER,
-            field: 'modified_by',
-            allowNull: false
-        },
-
     }, {
         freezeTableName: true,
         allowNull: false,
         tableName: 'digi_gold_temp_order_product_detail',
     });
 
-    // DigiGoldConfigDetails.associate = function(models) {
-    // GlobalSetting.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
-
-    // }
+    
+    DigiGoldTempOrderProductDetail.associate = function(models) {
+        DigiGoldTempOrderProductDetail.belongsTo(models.digiGoldTempOrderDetail, { foreignKey: 'tempOrderDetailId', as: 'tempOrderDetail' });
+    }
 
 
     return DigiGoldTempOrderProductDetail;

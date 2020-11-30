@@ -72,6 +72,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'modified_by',
         },
+        razorpayOrderId:{
+            type: DataTypes.STRING,
+            field: 'razorpay_order_id'
+        },
         isOrderPlaced: {
             type: DataTypes.BOOLEAN,
             field: 'is_order_placed',
@@ -89,10 +93,12 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'digi_gold_temp_order_detail',
     });
 
-    // DigiGoldConfigDetails.associate = function(models) {
-    // GlobalSetting.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+    DigiGoldTempOrderDetail.associate = function(models) {
+        DigiGoldTempOrderDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
 
-    // }
+    }
+
+    DigiGoldTempOrderDetail.getCartDetails = (blockId) => DigiGoldCart.findAll({where:{blockId}})
 
 
     return DigiGoldTempOrderDetail;

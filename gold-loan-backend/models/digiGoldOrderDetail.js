@@ -1,10 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
     const DigiGoldOrderDetail = sequelize.define('digiGoldOrderDetail', {
         // attributes
-        temporderid: {
+        tempOrderId: {
             type: DataTypes.INTEGER,
             field: 'temp_order_id',
-            allowNull: false
         },
         customerId: {
             type: DataTypes.INTEGER,
@@ -13,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
         orderTypeId: {
             type: DataTypes.INTEGER,
             field: 'order_type_id',
-            allowNull: false
         },
         orderId: {
             type: DataTypes.STRING,
@@ -22,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         totalAmount: {
             type: DataTypes.FLOAT,
             field: 'total_amount',
-        },
+        }, ///
         coupanCode: {
             type: DataTypes.STRING,
             field: 'coupan_code',
@@ -112,6 +110,8 @@ module.exports = (sequelize, DataTypes) => {
 
     DigiGoldOrderDetail.associate = function (models) {
         DigiGoldOrderDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
+        DigiGoldOrderDetail.belongsTo(models.digiGoldTempOrderDetail, { foreignKey: 'tempOrderId', as: 'tempOrder' });
+        DigiGoldOrderDetail.belongsTo(models.digiGoldOrderType, {foreignKey: 'orderTypeId', as: 'digiGoldOrderType'})
     }
 
 

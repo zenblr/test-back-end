@@ -62,7 +62,7 @@ exports.editConfigDetail = async (req, res) => {
     }
    
     await sequelize.transaction(async (t) => {
-      await models.digiGoldConfigDetailsHistory.create({ configSettingId:ConfigIdofparam.id,configSettingName:ConfigIdofparam.configSettingName, configSettingValue:ConfigIdofparam.configSettingValue ,createdBy,modifiedBy}, { transaction: t })
+      await models.digiGoldConfigDetailsHistory.create({ configSettingId:ConfigIdofparam.id,configSettingName:ConfigIdofparam.configSettingName, configSettingValue:ConfigIdofparam.configSettingValue ,createdBy}, { transaction: t })
       })
     await sequelize.transaction(async (t) => {
       const Config = await models.digiGoldConfigDetails.update(

@@ -2,50 +2,41 @@ module.exports = (sequelize, DataTypes) => {
 
     const DigiGoldOrderProductDetail = sequelize.define('digiGoldOrderProductDetail', {
         // attributes
+        orderDetailId: {
+            type: DataTypes.INTEGER,
+            field: 'order_detail_id',
+        },
         productSku: {
             type: DataTypes.STRING,
             field: 'product_sku',
-            allowNull: false
         },
         productWeight: {
             type: DataTypes.STRING,
             field: 'product_weight',
-            allowNull: false
         },
         productName: {
             type: DataTypes.STRING,
             field: 'product_Name',
-            allowNull: false
         },
         amount: {
-            type: DataTypes.STRING,
+            type: DataTypes.FLOAT,
             field: 'amount',
-            allowNull: false
         },
         productImage: {
             type: DataTypes.STRING,
             field: 'product_Image',
-            allowNull: false
         },
         amount: {
             type: DataTypes.STRING,
             field: 'amount',
-            allowNull: false
-        },
-        orderId: {
-            type: DataTypes.STRING,
-            field: 'order_id',
-            allowNull: false
         },
         totalAmount: {
             type: DataTypes.STRING,
             field: 'total_amount',
-            defaultValue: true,
         },
         metalType: {
             type: DataTypes.STRING,
             field: 'metal_type',
-            defaultValue: true,
         },
         quantity: {
             type: DataTypes.INTEGER,
@@ -61,7 +52,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'modified_by',
             allowNull: false
         },
-
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_active',
+            defaultValue: true,
+        }
     }, {
         freezeTableName: true,
         allowNull: false,

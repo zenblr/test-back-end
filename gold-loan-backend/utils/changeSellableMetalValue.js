@@ -29,7 +29,8 @@ module.exports = async () => {
         console.log("newDate", newDate);     //9.24
         allCustomer = await models.digiGoldOrderDetail.findAll({
             where: {
-                createdAt: { [Op.gt]: newDate }
+                createdAt: { [Op.gt]: newDate },
+                orderTypeId: 1
             }
         });
         console.log("allCustomer", allCustomer);
@@ -47,7 +48,9 @@ module.exports = async () => {
                 {
                     createdAt:
                         { [Op.gt]: newDate },
-                    customerId: customer
+                    customerId: customer,
+                    orderTypeId: 1
+
                 }
             });
             console.log("digiGoldOrderDetail ", digiGoldOrderDetail);   // 262
@@ -92,7 +95,8 @@ module.exports = async () => {
         console.log(newDateBeforfifteenMin);
         allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
             where: {
-                createdAt: { [Op.between]: [newDateBeforfifteenMin, newDate] }
+                createdAt: { [Op.between]: [newDateBeforfifteenMin, newDate] },
+                orderTypeId: 1
             }
         });
         console.log("allCustomerBeforScheduleTime", allCustomerBeforScheduleTime)

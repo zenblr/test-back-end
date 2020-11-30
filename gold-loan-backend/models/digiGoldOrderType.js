@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
 
-    const DigiGoldOrderTypeMaster = sequelize.define('digiGoldOrderTypeMaster', {
+    const DigiGoldOrderTypeMaster = sequelize.define('digiGoldOrderType', {
         // attributes
         orderType: {
             type: DataTypes.STRING,
@@ -15,13 +15,8 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         freezeTableName: true,
         allowNull: false,
-        tableName: 'digi_gold_order_type_master',
+        tableName: 'digi_gold_order_type',
     });
-
-    // DigiGoldConfigDetails.associate = function(models) {
-    // GlobalSetting.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
-    // }
-
 
     return DigiGoldOrderTypeMaster;
 }
