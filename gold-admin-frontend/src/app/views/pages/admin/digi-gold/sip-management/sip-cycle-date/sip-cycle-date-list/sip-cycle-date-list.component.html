@@ -10,7 +10,7 @@
 
                 <ng-container matColumnDef="sipCycleDateStatus">
                     <mat-header-cell *matHeaderCellDef>SIP Cycle DateStatus</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.cycleDateStatus}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.cycleDateStatus | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="action">

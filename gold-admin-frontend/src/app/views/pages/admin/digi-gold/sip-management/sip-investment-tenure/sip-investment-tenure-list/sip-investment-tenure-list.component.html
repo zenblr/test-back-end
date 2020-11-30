@@ -10,7 +10,7 @@
 
                 <ng-container matColumnDef="sipInvestmentTenureStatus">
                     <mat-header-cell *matHeaderCellDef>Sip Investment Tenure Status</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.investmentTenureStatus}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.investmentTenureStatus | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="action">
