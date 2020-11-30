@@ -65,7 +65,43 @@ exports.addCustomer = async (req, res, next) => {
       { transaction: t }
     );
 
-    await models.appraiserRequest.create({ customerId: customer.id, moduleId, createdBy, modifiedBy }, { transaction: t })
+    if (moduleId == 1 || moduleId == 3) {
+      await models.appraiserRequest.create({ customerId: customer.id, moduleId, createdBy, modifiedBy }, { transaction: t })
+    }
+
+    if (moduleId == 4) {
+      const customerUniqueId = uniqid.time().toUpperCase();
+      const merchantData = await getMerchantData();
+
+      await models.customer.update({ customerUniqueId }, { where: { id: customer.id }, transaction: t })
+
+      const data = qs.stringify({
+        'mobileNumber': mobileNumber,
+        // 'emailId': email,
+        'uniqueId': customerUniqueId,
+        'userName': firstName + " " + lastName,
+        // 'userAddress': address,
+        // 'userCity': cityId,
+        'userState': "joXp8X42",
+        // 'userPincode': pinCode,
+        // 'dateOfBirth':dateOfBirth,
+        // 'gender':gender,
+        // 'utmSource': utmSource,
+        // 'utmMedium': utmMedium,
+        // 'utmCampaign': utmCampaign
+      })
+
+      const result = await models.axios({
+        method: 'POST',
+        url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${merchantData.accessToken}`,
+        },
+        data: data
+      });
+
+    }
 
   });
   return res.status(200).json({ messgae: `Customer created` });
