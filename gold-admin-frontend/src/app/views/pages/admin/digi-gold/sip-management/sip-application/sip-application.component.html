@@ -20,7 +20,7 @@
 
                 <ng-container matColumnDef="metalType">
                     <mat-header-cell *matHeaderCellDef>Metal Type</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.metalType}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.metalType | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="sipInvestmentAmount">
@@ -45,17 +45,17 @@
 
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.sipStatus}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.sipStatus | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="depositType">
                     <mat-header-cell *matHeaderCellDef>Deposit Type</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.depositType}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.depositType | titlecase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="source">
                     <mat-header-cell *matHeaderCellDef>Source</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.source}}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{item.source | titlecase}}</mat-cell>
                 </ng-container>
 
                
@@ -66,9 +66,9 @@
                             *ngxPermissionsOnly="['editLeadSource', 'deleteLeadSource']">
                             <span class="kt-pointer" (click)="editCycleDate(item)"
                                 *ngxPermissionsOnly="['editLeadSource']">Edit</span>
-                            <div class="px-2">|</div>
-                            <span class="kt-pointer text-danger" (click)="deleteCycleDate(item)"
-                                *ngxPermissionsOnly="['deleteLeadSource']">Renew</span>
+                            <!-- <div class="px-2">|</div> -->
+                            <!-- <span class="kt-pointer text-danger" (click)="deleteCycleDate(item)"
+                                *ngxPermissionsOnly="['deleteLeadSource']">Renew</span> -->
                         </div>
                     </mat-cell>
                 </ng-container>
