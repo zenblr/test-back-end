@@ -4,7 +4,7 @@
         "password": "nimap@123",
         "database": "new_changes",
         "host": "127.0.0.1",
-        "port": "7432",
+        "port": "6432",
         "dialect": "postgres",
         "operatorsAliases": false
     },
