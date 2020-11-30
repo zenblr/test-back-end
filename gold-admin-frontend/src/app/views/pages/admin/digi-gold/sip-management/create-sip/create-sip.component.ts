@@ -105,8 +105,6 @@ export class CreateSipComponent implements OnInit {
     }
   }
 
-  // jhol //
-
   fileUpload(event) {
     if (this.sharedService.fileValidator(event)) {
       console.log(this.controls.customerId.value);
@@ -138,8 +136,10 @@ export class CreateSipComponent implements OnInit {
   }
 
   remove() {
+    this.controls.uploadEcsFormImageName.patchValue(null)
     this.controls.ecsFormImage.patchValue(null)
     this.controls.uploadEcsFormImage.patchValue(null)
+    this.imgEnable = false;
   }
 
   preview(value) {

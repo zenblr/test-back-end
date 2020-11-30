@@ -180,6 +180,9 @@
                                             </div>
                                             <input type="file" class="d-none" #ecsFormImage
                                                 (change)="fileUpload($event)">
+                                                <div class="mt-2 pl-2">
+                                                <img src="../../../../../assets/media/icons/_download.svg" alt="download" height="20">
+                                                </div>
                                         </div>
                                         <mat-error
                                             *ngIf="controls.ecsFormImage.touched && controls.ecsFormImage.invalid">
@@ -209,9 +212,13 @@
                                                             class="fetched-image"
                                                             [src]="controls?.uploadEcsFormImage?.value">
 
-                                                        <img class="edit-icon"
+                                                            <img src="../../../../../assets/media/icons/cancel.svg"
+                                                            alt="" class="kt-pointer remove-icon"
+                                                            (click)="remove();">    
+
+                                                        <!-- <img class="edit-icon"
                                                             src="../../../../../assets/media/icons/edit.svg"
-                                                            (click)="editImages('loanAgreementCopy')">
+                                                            (click)="editImages('loanAgreementCopy')"> -->
                                                         <!-- <div class="iframeWrapper"
                                                             (click)="preview(controls?.uploadEcsFormImage?.value)">
                                                             <iframe
@@ -225,10 +232,7 @@
                                                 class="kt-pointer edit-icon" (click)="editImages('loanAgreementCopy');"> -->
                                             </div>
                                             </div>
-                                            <div class="col-2 form-label">
-                                                <label class="text-danger kt-padding-l-15 kt-pointer"
-                                                    (click)="remove()">Remove</label>
-                                            </div>
+                                            
                                         </div>
 
                                     </div>
