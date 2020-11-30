@@ -24,7 +24,7 @@ export class GlobalSettingsComponent implements OnInit {
     private toastr: ToastrService,
     private router: Router
   ) {
-    this.url = (this.router.url.split("/")[2]);
+    this.url = (this.router.url.split('/')[2]);
     if (this.url == 'scrap-management') {
       this.scrapSetting = true;
     } else if (this.url == 'digi-gold') {
@@ -94,6 +94,10 @@ export class GlobalSettingsComponent implements OnInit {
     }
   }
 
+  get controls() {
+    return this.globalSettingForm.controls;
+  }
+
   getGlobalSetting() {
     if (this.globalSettingService.globalSetting.getValue() != null) {
       this.globalSettingService.globalSetting$.subscribe(res => {
@@ -157,7 +161,13 @@ export class GlobalSettingsComponent implements OnInit {
         }
       })).subscribe();
     } else if (this.digiGoldSetting) {
-      this.globalSettingService.setDigiGoldSetting(formData).pipe(map(res => {
+      const digiGoldData = [
+        {
+          configSettingName: 'digiGoldSellableHour',
+          configSettingValue: this.controls.digiGoldSellableHour.value
+        },
+      ]
+      this.globalSettingService.setDigiGoldSetting(digiGoldData).pipe(map(res => {
         if (res) {
           console.log(res);
           this.globalSettingService.globalSetting.next(formData);
@@ -173,9 +183,5 @@ export class GlobalSettingsComponent implements OnInit {
         }
       })).subscribe();
     }
-  }
-
-  get controls() {
-    return this.globalSettingForm.controls;
   }
 }

@@ -51,7 +51,7 @@ export class GlobalSettingService {
   }
 
   setDigiGoldSetting(params): Observable<any> {
-    return this.http.post(`/api/digital-gold/config-detail`, params).pipe(
+    return this.http.put(`/api/digital-gold/config-detail`, params).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
