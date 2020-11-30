@@ -249,6 +249,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           this.ref.detectChanges()
         }
         this.ornamentDetails.emit(ornamentDetail)
+        this.calculateTotal()
       }
 
     }
@@ -348,7 +349,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         //   // this.fullAmt.emit(this.fullAmount)
         // }
       }
-    this.calculateTotal()
+      this.calculateTotal()
 
     })
 
@@ -396,7 +397,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
     this.calculateTotal()
-    
+
   }
 
   calcGoldDeductionWeight(index) {
@@ -425,22 +426,22 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   }
 
-  calculateTotal(){
+  calculateTotal() {
     this.totalGrossWeight = 0
     this.totalDeductionWeight = 0
     this.totalNetWeight = 0
     this.totalPurtiy = 0;
-    this.OrnamentsData.value.forEach(gross=>{
-      if(gross.grossWeight){
+    this.OrnamentsData.value.forEach(gross => {
+      if (gross.grossWeight) {
         this.totalGrossWeight += Number(gross.grossWeight)
       }
-      if(gross.netWeight){
+      if (gross.netWeight) {
         this.totalNetWeight += Number(gross.netWeight)
       }
-      if(gross.deductionWeight){
+      if (gross.deductionWeight) {
         this.totalDeductionWeight += Number(gross.deductionWeight)
       }
-      if(gross.ltvPercent && gross.netWeight){
+      if (gross.ltvPercent && gross.netWeight) {
         this.totalPurtiy += (gross.ltvPercent * gross.netWeight)
       }
     })
