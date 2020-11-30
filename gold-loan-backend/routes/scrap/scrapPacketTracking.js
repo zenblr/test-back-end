@@ -21,7 +21,7 @@ route.post('/submit-packet-location', checkAuth, submitScrapPacketLocationValida
 
 route.post('/', checkAuth, addPacketLocationValidation, validationError, wrapper(addCustomerPacketTracking)); //branch out
 
-route.get('/tracking-details', checkAuth, wrapper(getAllPacketTrackingDetail)); //FETCH PACKET DETAILS FOR TRACKING  checkRolePermission
+route.get('/tracking-details', checkAuth, checkRolePermission, wrapper(getAllPacketTrackingDetail)); //FETCH PACKET DETAILS FOR TRACKING  checkRolePermission                                                                                                         
 
 route.get('/view-log', checkAuth, wrapper(viewCustomerPacketTrackingLogs));// FETCH LOGS OF PACKET LOCATION
 

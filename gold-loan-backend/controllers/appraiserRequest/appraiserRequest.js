@@ -54,6 +54,13 @@ exports.addAppraiserRequest = async (req, res, next) => {
         }
     }
 
+    let customerLoan = await models.customerLoanMaster.findAll({where : {
+        customerId,isLoanTransfer:true,loanStageId:{ [Op.in]: [1,2,3,4,6,7,9] } 
+    }})
+    if(customerLoan.length != 0){
+        return res.status(400).json({ message: `This customer's loan transfer is in process` })
+    }
+
     let requestExist = await models.appraiserRequest.findOne({ where: { moduleId: moduleId, customerId: customerId, status: 'incomplete' } })
 
     if (!check.isEmpty(requestExist)) {

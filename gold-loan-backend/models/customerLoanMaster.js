@@ -174,6 +174,15 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_loan_transfer',
             defaultValue: false
         },
+        isLoanTransferExtraAmountAdded: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_loan_transfer_extra_amount_added',
+            defaultValue: false
+        },
+        loanTransferExtraAmount: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'loan_transfer_extra_amount'
+        },
         isUnsecuredSchemeApplied: {
             type: DataTypes.BOOLEAN,
             field: 'is_unsecured_scheme_applied',

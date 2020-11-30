@@ -20,7 +20,7 @@ export class AppliedLoanComponent implements OnInit {
   filteredDataList: any = {};
   userType: any
   dataSource: AppliedLoanDatasource;
-  displayedColumns = ['fullName', 'customerID', 'pan', 'date', 'loanAmount', 'schemeName', 'appraisalApproval', 'bMApproval', 'oTApproval', 'actions', 'view'];
+  displayedColumns = ['fullName', 'customerID', 'pan', 'date','loanType' ,'loanAmount', 'schemeName', 'appraisalApproval', 'bMApproval', 'oTApproval', 'actions', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   queryParamsData = {

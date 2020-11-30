@@ -27,8 +27,9 @@
             <mat-tab formArrayName="ornamentData" *ngFor="let ornament of OrnamentsData.controls;index as idx">
                 <ng-template mat-tab-label>
                     Ornaments {{idx+1}}
-                    <img *ngIf="OrnamentsData.length > 1 && (!disable && !isPartRelease)" class="removeImageSize kt-padding-l-5 kt-pointer"
-                        [src]="'assets/media/icons/cancel.png'" (click)="deleteOrnaments(idx)" />
+                    <img *ngIf="OrnamentsData.length > 1 && (!disable && !isPartRelease)"
+                        class="removeImageSize kt-padding-l-5 kt-pointer" [src]="'assets/media/icons/cancel.png'"
+                        (click)="deleteOrnaments(idx)" />
                 </ng-template>
                 <ng-template mat-tab-body>
 
@@ -634,6 +635,17 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-6">
+                                    <div class="row kt-margin-t-15 ">
+                                        <div class="col-4 form-label">
+                                            <label class="text-color my-auto">Remark</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" class="form-control" placeholder="Remark"
+                                                formControlName="remark">
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div *ngIf="data && data.modal && !data.packetView" class="col-6">
                                     <div class="row kt-margin-t-15 ">
@@ -684,6 +696,28 @@
         </mat-tab-group>
     </div>
 
+    <div class="row kt-margin-t-20 justify-content-center">
+        <div class="offset-1 col form-label">
+            <label for="">
+                Total Gross Weight - {{totalGrossWeight }} gm
+            </label>
+        </div>
+        <div class="col form-label">
+            <label for="">
+                Total Deduction Weight - {{totalDeductionWeight}} gm
+            </label>
+        </div>
+        <div class="col form-label">
+            <label for="">
+                Total Net Weight - {{totalNetWeight}} gm
+            </label>
+        </div>
+        <div class="col form-label">
+            <label for="">
+                Total Purity - {{totalPurtiy }} 
+            </label>
+        </div>
+    </div>
 
     <div class="row kt-margin-t-10" *ngIf="!(data?.modal || data.scrapModal)">
         <div class="col-12">

@@ -206,8 +206,21 @@ export class UserAddressComponent implements OnInit {
     this.sharedService.getCities(stateId).subscribe(res => {
       if (index == 0) {
         this.cities0 = res.data;
+        const cityId = this.addressControls.at(0).get('cityId')
+        // console.log(cityId, this.cities0)
+        const cityExists = this.cities0.find(e => e.id === cityId.value)
+        if (!cityExists) {
+          cityId.reset();
+          cityId.patchValue('');
+        }
       } else {
         this.cities1 = res.data;
+        const cityId = this.addressControls.at(1).get('cityId')
+        const cityExists = this.cities1.find(e => e.id === cityId.value)
+        if (!cityExists) {
+          cityId.reset();
+          cityId.patchValue('');
+        }
       }
     });
   }

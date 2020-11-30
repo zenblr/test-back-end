@@ -55,6 +55,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field:'disbursement_status'
         },
+        isLoanTransferExtraAmountAdded:{
+            type: DataTypes.BOOLEAN,
+            field: 'is_loan_transfer_extra_amount_added',
+            defaultValue: false
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
