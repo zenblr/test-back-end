@@ -14,7 +14,6 @@ import { SipInvestmentTenureAddComponent } from '../sip-investment-tenure-add/si
   styleUrls: ['./sip-investment-tenure-list.component.scss']
 })
 export class SipInvestmentTenureListComponent implements OnInit {
-
   dataSource: SipInvestmentTenureDatasource;
   displayedColumns = ['sipInvestmentTenure', 'sipInvestmentTenureStatus', 'action'];
   result = []
@@ -23,6 +22,12 @@ export class SipInvestmentTenureListComponent implements OnInit {
   destroy$ = new Subject();
   searchValue = '';
   private subscriptions: Subscription[] = [];
+  queryParamsData = {
+    from: 1,
+    to: 25,
+    search: '',
+    investmentTenureStatus: ''
+  }
 
   constructor(
     private dataTableService: DataTableService,
@@ -46,7 +51,6 @@ export class SipInvestmentTenureListComponent implements OnInit {
     ).subscribe();
     this.subscriptions.push(paginatorSubscriptions);
 
-
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;
@@ -62,8 +66,7 @@ export class SipInvestmentTenureListComponent implements OnInit {
       this.result = res;
     });
     this.subscriptions.push(entitiesSubscription);
-
-    this.dataSource.getInvestmentTenure(1, 25, this.searchValue, '');
+    this.dataSource.loadInvestmentTenure(this.queryParamsData);
   }
 
   ngOnDestroy() {
@@ -74,14 +77,13 @@ export class SipInvestmentTenureListComponent implements OnInit {
     this.destroy$.complete();
   }
 
-
   loadPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
-    let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
-    let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
-
-    this.dataSource.getInvestmentTenure(from, to, this.searchValue, '');
+    this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
+    this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
+    this.queryParamsData.search = this.searchValue
+    this.dataSource.loadInvestmentTenure(this.queryParamsData);
   }
 
   addInvestmentTenure() {

@@ -9,14 +9,28 @@ import { API_ENDPOINT } from '../../../../app.constant';
   providedIn: 'root'
 })
 export class SipInvestmentTenureService {
-
   openModal = new BehaviorSubject<any>(false);
   openModal$ = this.openModal.asObservable();
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
-  getInvestmentTenure(from, to, search, investmentTenureStatus): Observable<any> {
-    return this.http.get(API_ENDPOINT + `api/gold-sip/sip-investment-tenure?from=${from}&to=${to}&search=${search}&investmentTenureStatus=${investmentTenureStatus}`).pipe(
+  getInvestmentTenure(event): Observable<any> {
+    const reqParams: any = {};
+    if (event && event.from) {
+      reqParams.from = event.from;
+    }
+    if (event && event.to) {
+      reqParams.to = event.to;
+    }
+    if (event && event.search) {
+      reqParams.search = event.search;
+    }
+    if (event && event.investmentTenureStatus) {
+      reqParams.investmentTenureStatus = event.investmentTenureStatus;
+    }
+    return this.http.get(API_ENDPOINT + `api/gold-sip/sip-investment-tenure`, {
+      params: reqParams,
+    }).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
@@ -25,17 +39,6 @@ export class SipInvestmentTenureService {
       })
     );
   }
-
-  // getLeadSourceWithoutPagination(): Observable<any> {
-  //   return this.http.get(`/api/gold-sip/sip-cycle-date/get-all-sip-cycle-date?from=${1}&to=${-1}`).pipe(
-  //     map(res => res),
-  //     catchError(err => {
-  //       if (err.error.message)
-  //         this.toastr.error(err.error.message);
-  //       throw (err);
-  //     })
-  //   );
-  // }
 
   addInvestmentTenure(data): Observable<any> {
     return this.http.post<any>(API_ENDPOINT + `api/gold-sip/sip-investment-tenure`, data).pipe(
@@ -49,7 +52,7 @@ export class SipInvestmentTenureService {
   }
 
   updateInvestmentTenure(id, data): Observable<any> {
-    return this.http.put<any>(API_ENDPOINT + `api/gold-sip/sip-investment-tenure/`+ id,  data ).pipe(
+    return this.http.put<any>(API_ENDPOINT + `api/gold-sip/sip-investment-tenure/` + id, data).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
