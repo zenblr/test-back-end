@@ -748,8 +748,8 @@ let submitKycInfo = async (req) => {
 
             return {
                 status: 200, success: true,
-                customerId: KycStage.customerId,
                 data: {
+                    customerId: KycStage.customerId,
                     customerKycId: KycStage.id,
                     customerKycCurrentStage: KycStage.customerKycCurrentStage,
                     stateId: stateId,
@@ -774,8 +774,6 @@ let submitKycInfo = async (req) => {
                 //     customerKycCurrentStage: KycStage.customerKycCurrentStage,
                 //     moduleId: moduleId,
                 //     userType: userType,
-                //     stage: 3
-
                 // })
                 return {
                     status: 200,
