@@ -182,7 +182,7 @@ const quickPay = require('./quickPay');
 router.use('/quick-pay', quickPay);
 
 const deposit = require('./deposit');// DEPOSIT
-router.use('/deposit',deposit);
+router.use('/deposit', deposit);
 
 const partPayment = require('./partPayment');
 router.use('/part-payment', partPayment);
@@ -192,6 +192,9 @@ router.use('/loan-soa', soaOfLoan);
 
 const product = require('./product');
 router.use('/product', product)
+
+const processNote = require('./processNote')
+router.use('/process-note', processNote)
 
 const scrapPacket = require('./scrap/scrapPacket'); // Scrap packet
 router.use('/scrap/packet', scrapPacket);
@@ -225,5 +228,50 @@ router.use('/scrap/scrap-packet-location', scrapPacketLocation)
 
 const cronList = require('./cronList');
 router.use('/cron-list', cronList)
+
+const goldSilverRates = require('./digitalGold/goldSilverRates');
+router.use('/digital-gold/rates', goldSilverRates);
+
+const digiGoldCustomer = require('./digitalGold/customer');
+router.use('/digital-gold/customer', digiGoldCustomer);
+
+const paymentRoute = require('./digitalGold/razorPay')
+router.use('/digital-gold/payment', paymentRoute);
+
+const buyProductRoute = require('./digitalGold/buyProduct')
+router.use('/digital-gold/buy', buyProductRoute);
+
+const customerBankRoute = require('./digitalGold/customerBank')
+router.use('/digital-gold/customer-bank', customerBankRoute);
+
+const bankRoute = require('./digitalGold/bank')
+router.use('/digital-gold/bank', bankRoute);
+
+const sellProductRoute = require('./digitalGold/sell')
+router.use('/digital-gold/sell', sellProductRoute); //import sell gold/silver route
+
+const productRoute = require('./digitalGold/product')
+router.use('/digital-gold/product', productRoute); 
+
+const cartRoute = require('./digitalGold/cart')
+router.use('/digital-gold/cart', cartRoute); 
+
+const withDrawRoute = require('./digitalGold/withdraw')
+router.use('/digital-gold/withdraw', withDrawRoute); 
+
+const redeemOrderRoute = require('./digitalGold/redeemOrder')
+router.use('/digital-gold/redeem-order', redeemOrderRoute); 
+
+const customerAddressRoute = require('./digitalGold/customerAddress')
+router.use('/digital-gold/customer-address', customerAddressRoute);
+
+const customerKycRoute = require('./digitalGold/customerKyc')
+router.use('/digital-gold/customer-kyc', customerKycRoute);
+
+const migration = require('./migration');
+router.use('/migration', migration)
+
+const errorLogger = require('./errorLogs');
+router.use('/error-logs', errorLogger)
 
 module.exports = router;

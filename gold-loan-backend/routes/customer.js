@@ -33,7 +33,7 @@ router.post('/send-otp', sendOtp);
 
 router.post('/verify-otp', verifyOtp);
 
-router.put('/:customerId', validationError, checkAuth, checkRolePermission, wrapper(editCustomer))
+router.put('/:customerId', customerUpdateValidation, validationError, checkAuth, checkRolePermission, wrapper(editCustomer))
 
 router.delete('/', checkAuth, checkRolePermission, wrapper(deactivateCustomer));
 

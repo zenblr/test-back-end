@@ -63,7 +63,7 @@ export class DisburseComponent implements OnInit {
           securedTransactionId: changes.loanDetials.currentValue.customerLoanDisbursement[0].transactionId,
         })
         if (changes.loanDetials.currentValue.customerLoanDisbursement.length > 1) {
-          console.log(changes.loanDetials.currentValue.customerLoanDisbursement)
+          // console.log(changes.loanDetials.currentValue.customerLoanDisbursement)
           this.disburseForm.patchValue({
             unsecuredTransactionId: changes.loanDetials.currentValue.customerLoanDisbursement[1].transactionId
           })
@@ -128,6 +128,7 @@ export class DisburseComponent implements OnInit {
       unsecuredLoanUniqueId: [],
       finalAmount: [],
       fullAmount: [],
+      bankTransferType: [],
       loanTransferExtraAmount:[],
       otherAmountTransactionId:[]
     })
@@ -288,6 +289,11 @@ export class DisburseComponent implements OnInit {
     }
   }
 
+  download() {
+    if (!this.controls.bankTransferType.value) return this.controls.bankTransferType.markAsTouched()
+    this.loanService.downloadBankDetails(this.masterAndLoanIds.masterLoanId, this.controls.bankTransferType.value).subscribe()
+  }
+
   submit() {
     if (this.disburseForm.invalid) {
       this.disburseForm.markAllAsTouched()
@@ -344,6 +350,14 @@ export class DisburseComponent implements OnInit {
     // }
     // this.disburseForm.updateValueAndValidity();
 
+    if (selectedType === 'bank') {
+      this.controls.bankTransferType.setValidators([Validators.required])
+      this.controls.bankTransferType.updateValueAndValidity()
+    } else {
+      this.controls.bankTransferType.reset()
+      this.controls.bankTransferType.setValidators([])
+      this.controls.bankTransferType.updateValueAndValidity()
+    }
   }
 
   patchValue(value) {

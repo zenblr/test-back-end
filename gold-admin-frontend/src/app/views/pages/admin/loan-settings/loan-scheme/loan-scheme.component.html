@@ -12,7 +12,7 @@
                 <label class="text-color font-weight-bold h-v-text-center m-0" *ngIf="scheme.schemes.length==0">No
                     Schemes
                     Available</label>
-                <div class="row kt-padding-10 kt-padding-b-25"
+                <div class="row kt-padding-10 kt-padding-b-25" [id]="'s' + schemeDeatils?.id"
                     *ngFor="let schemeDeatils of scheme.schemes, index as idx">
 
                     <div class="col-2 from-style">
@@ -29,7 +29,11 @@
                         <div class="col-12">
                             <div class="row">
                                 <div class="col">
-                                    <h5>{{ schemeDeatils.schemeName | uppercase}}</h5>
+                                    <h5>{{ schemeDeatils.schemeName | uppercase}} <span class="kt-pointer"
+                                            (click)="scrollToUnsecuredScheme('s'+schemeDeatils.unsecuredSchemeId)"
+                                            *ngIf="schemeDeatils.unsecuredSchemeId">
+                                            {{ ' : ' + schemeDeatils.unsecuredScheme.schemeName | uppercase }}</span>
+                                    </h5>
                                 </div>
                                 <div class="col">
                                     <div class="row pb-2">
@@ -44,16 +48,16 @@
                                                 </mat-radio-button>
                                             </mat-radio-group> -->
                                         </div>
-                                        <div class="col-3" *ngIf="schemeDeatils.schemeType == 'unsecured'">
+                                        <!-- <div class="col-3" *ngIf="schemeDeatils.schemeType == 'unsecured'">
                                             <mat-slide-toggle [disabled]="schemeDeatils.default"
                                                 (change)="changeDefault($event.checked, idx, schemeDeatils,i)"
                                                 [checked]="schemeDeatils.default">
                                                 <strong>Default</strong>
                                             </mat-slide-toggle>
-                                        </div>
-                                        <div class="col-3" [class.offset-3]="schemeDeatils.schemeType == 'secured'">
-                                            <mat-slide-toggle [checked]="schemeDeatils.isActive"
-                                                (change)="changeStatus($event.checked, i, idx,schemeDeatils)">
+                                        </div> -->
+                                        <div class="col offset-3">
+                                            <mat-slide-toggle [checked]="schemeDeatils.isActive"[disabled]="!schemeDeatils.isActive"
+                                            (change)="confirmation($event.checked, i, idx,schemeDeatils)">
                                                 <strong>Status</strong>
                                             </mat-slide-toggle>
                                         </div>
@@ -105,8 +109,8 @@
                                     <p>{{schemeDeatils.schemeType | titlecase}}</p>
                                 </div>
                                 <div class="col justify-content-center">
-                                    <p>Maximum % Allowed </p>
-                                    <p>{{schemeDeatils.maximumPercentageAllowed}} %</p>
+                                    <p>RPG </p>
+                                    <p>{{schemeDeatils?.rpg}}</p>
                                 </div>
                                 <div class="col justify-content-center">
                                     <p>Penal Interest</p>

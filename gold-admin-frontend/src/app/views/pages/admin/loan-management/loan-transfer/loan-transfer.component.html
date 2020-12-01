@@ -370,6 +370,30 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="row justify-content-center kt-padding-t-25">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-4 form-label">
+                                        <label for="">Transaction ID</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <select class="form-control" formControlName="bankTransferType"
+                                            [class.isError]="disbursalForm.controls.bankTransferType.invalid &&  disbursalForm.controls.bankTransferType.touched">
+                                            <option [value]=null selected disabled>Select Payment Type</option>
+                                            <option value="IMPS">IMPS</option>
+                                            <option value="NEFT">NEFT</option>
+                                            <option value="RTGS">RTGS</option>
+                                        </select>
+                                        <mat-error
+                                            *ngIf="disbursalForm.controls.bankTransferType.touched && disbursalForm.controls.bankTransferType.errors?.required">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div *ngIf="action != 'view'" class="row kt-padding-t-25">
                             <div class="offset-10 col-2">
                                 <kt-button [type]="'button'" [value]="'Save'" (click)="disbursal()"></kt-button>

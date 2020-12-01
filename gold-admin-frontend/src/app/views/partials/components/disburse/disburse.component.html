@@ -22,8 +22,37 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-6" *ngIf="!scrapIds && controls.paymentMode.value === 'bank'">
+                <div class="row justify-content-center kt-margin-t-10">
+                    <div class="col-4 form-label">
+                        <label class="kt-padding-l-10 mandatory">Payment Type</label>
+                    </div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-10">
+                                <select class="form-control" formControlName="bankTransferType"
+                                    [class.isError]="controls.bankTransferType.invalid &&  controls.bankTransferType.touched">
+                                    <option [value]=null selected disabled>Select Payment Type</option>
+                                    <option value="IMPS">IMPS</option>
+                                    <option value="NEFT">NEFT</option>
+                                    <option value="RTGS">RTGS</option>
+                                </select>
+                                <mat-error *ngIf="controls.bankTransferType.touched && controls.bankTransferType.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+                            <div class="col kt-pointer d-flex justify-content-center align-items-center pl-0"
+                                [class.cursor-not-allowed]="!controls.bankTransferType.value" (click)="download()">
+                                <img src="../../../../../assets/media/icons/_download.svg" alt="Download"
+                                    width="20px" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- <div class="col-6"></div> -->
+
         <div class="row">
             <div class="col-6" *ngIf="scrapIds">
                 <div class="row justify-content-center kt-margin-t-10">

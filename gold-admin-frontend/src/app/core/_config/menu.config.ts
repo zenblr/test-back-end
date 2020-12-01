@@ -411,6 +411,11 @@ export class MenuConfig {
 													page: "/admin/upload-data/upload-lender-banner",
 													permission: !this.permissionsArr.includes('partnerBannerView'),
 												},
+												{
+													title: "Process Note (SOP)",
+													page: "/admin/upload-data/process-note",
+													permission: false,
+												},
 
 											],
 										},
@@ -510,6 +515,11 @@ export class MenuConfig {
 													page: "/admin/masters/other-charges"
 												},
 											],
+										},
+										{
+											title: "Error Logs",
+											page: "/admin/error",
+											permission: !(this.userType === 4)
 										},
 										{
 											title: "Roles and Permissions",
