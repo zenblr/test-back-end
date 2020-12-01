@@ -10,6 +10,7 @@ const { paginationWithFromTo } = require("../../../utils/pagination");
 const CONSTANT = require('../../../utils/constant');
 const { createReferenceCode } = require("../../../utils/referenceCode");
 const request = require("request");
+const { VIEW_ALL_PACKET_TRACKING, VIEW_ALL_SCRAP_PACKET_TRACKING } = require('../../../utils/permissionCheck')
 
 //FUNCTION TO CHECK BARCODE 
 exports.checkBarcode = async (req, res) => {
@@ -192,6 +193,13 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
         let { search, offset, pageSize } =
             paginationFUNC.paginationWithFromTo(req.query.search, req.query.from, req.query.to);
 
+            let customerSearch = { isActive: true }
+
+            console.log(req.permissionArray, VIEW_ALL_SCRAP_PACKET_TRACKING);
+            if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_SCRAP_PACKET_TRACKING)) {
+                customerSearch = { isActive: true, internalBranchId: req.userData.internalBranchId }
+            }
+    
         let query = {};
         let associateModel = [
 
@@ -217,7 +225,9 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber'],
+                distinct: true,
+                where: customerSearch,
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'internalBranchId'],
             },
             {
                 model: models.customerScrapPacketData,
@@ -260,8 +270,10 @@ exports.getAllPacketTrackingDetail = async (req, res, next) => {
                 },
             }],
             isActive: true,
-            scrapStageId: stageId
+            scrapStageId: stageId,
+
         };
+
         let packetDetails = await models.customerScrap.findAll({
             where: searchQuery,
             include: associateModel,

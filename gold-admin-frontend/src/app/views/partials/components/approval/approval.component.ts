@@ -473,13 +473,13 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
         this.loanFormService.opsRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
           map(res => {
             if (this.approvalForm.controls.loanStatusForOperatinalTeam.value == 'approved') {
-              if (!this.isLoanTransfer) {
+              // if (!this.isLoanTransfer) {
                 this.disableForm(4)
                 this.stage = 4
                 this.disbursal.emit(4)
-              } else {
-                this.router.navigate(['/admin/loan-management/applied-loan'])
-              }
+              // } else {
+              //   this.router.navigate(['/admin/loan-management/applied-loan'])
+              // }
             } else {
               this.router.navigate(['/admin/loan-management/applied-loan'])
             }

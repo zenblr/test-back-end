@@ -517,6 +517,11 @@ export class MenuConfig {
 											],
 										},
 										{
+											title: "Error Logs",
+											page: "/admin/error",
+											permission: !(this.userType === 4)
+										},
+										{
 											title: "Roles and Permissions",
 											page: "/admin/roles",
 											bullet: 'dot',

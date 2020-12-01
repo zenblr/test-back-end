@@ -60,7 +60,7 @@
 
                             <div class="col-4">
                                 <input type="text" aria-label="First name" placeholder="First Name" ktAlphabets
-                                    class="form-control" formControlName="firstName"
+                                    ktTrimControl class="form-control" formControlName="firstName"
                                     [class.isError]="controls.firstName.touched && controls.firstName.invalid">
                                 <mat-error *ngIf="controls.firstName.errors?.required && controls.firstName.touched">
                                     Required field
@@ -69,7 +69,7 @@
                             <div class="col-4">
 
                                 <input type="text" aria-label="Last name" placeholder="Last Name" ktAlphabets
-                                    class="form-control" formControlName="lastName"
+                                    ktTrimControl class="form-control" formControlName="lastName"
                                     [class.isError]="controls.lastName.touched && controls.lastName.invalid">
 
                                 <mat-error *ngIf=" controls.lastName.errors?.required && controls.lastName.touched">

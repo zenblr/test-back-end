@@ -112,7 +112,7 @@
 
 						<div class="col-4">
 							<input type="text" aria-label="First name" placeholder="First Name" ktAlphabets
-								class="form-control" formControlName="firstName" [class.isError]="
+								ktTrimControl class="form-control" formControlName="firstName" [class.isError]="
 									controls.firstName.touched &&
 									controls.firstName.invalid
 								" />
@@ -125,7 +125,7 @@
 							</mat-error>
 						</div>
 						<div class="col-4">
-							<input type="text" aria-label="Last name" placeholder="Last Name" ktAlphabets
+							<input type="text" aria-label="Last name" placeholder="Last Name" ktAlphabets ktTrimControl
 								class="form-control" formControlName="lastName" [class.isError]="
 									controls.lastName.touched &&
 									controls.lastName.invalid
@@ -239,7 +239,7 @@
 						</div> -->
 					</div>
 
-					<div class="row kt-margin-t-10" *ngIf="controls.panType.value">
+					<div class="row kt-margin-t-15" *ngIf="controls.panImg.value">
 						<div class="col offset-4">
 							<div class="img-container" *ngIf="controls.panImg.value">
 								<img *ngIf="!controls.panImg.value" class=""

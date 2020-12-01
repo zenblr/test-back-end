@@ -16,7 +16,7 @@ const qs = require('qs');
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, nextDueDateInterest, getAmountLoanSplitUpData, stepDown, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoanWithOutT, intrestCalculationForSelectedLoanWithOutT, getCustomerLoanId, customerNameNumberLoanId } = require('../../utils/loanFunction')
+let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, nextDueDateInterest, getAmountLoanSplitUpData, stepDown, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoanWithOutT, intrestCalculationForSelectedLoanWithOutT, getCustomerLoanId, customerNameNumberLoanId,interestSplit } = require('../../utils/loanFunction')
 
 let { sendPaymentMessage } = require('../../utils/SMS')
 
@@ -290,7 +290,7 @@ try{
             }
 
 
-            let data = await getAmountLoanSplitUpData(newLoan, amount, splitUpAmount);
+            let data = await interestSplit(newLoan, amount, splitUpAmount);
             let { isUnsecuredSchemeApplied, securedRatio, unsecuredRatio, securedLoanId, unsecuredLoanId } = data
 
             let securedPenalInterest = 0;
@@ -628,12 +628,12 @@ exports.confirmationForPayment = async (req, res, next) => {
             let splitUpAmount = depositAmount - penalInterest
             let penalInterestRatio;
             if (splitUpAmount <= 0) {
-                penalInterestRatio = await getAmountLoanSplitUpData(newLoan, amount, depositAmount)
+                penalInterestRatio = await  getAmountLoanSplitUpData(newLoan, amount, depositAmount)
                 splitUpAmount = 0
             }
 
 
-            let data = await getAmountLoanSplitUpData(newLoan, amount, splitUpAmount);
+            let data = await interestSplit(newLoan, amount, splitUpAmount);
             let { isUnsecuredSchemeApplied, securedRatio, unsecuredRatio, securedLoanId, unsecuredLoanId } = data
 
             let securedPenalInterest = 0;
