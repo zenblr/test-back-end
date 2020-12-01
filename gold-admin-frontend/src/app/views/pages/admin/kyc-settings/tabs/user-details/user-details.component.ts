@@ -331,7 +331,7 @@ export class UserDetailsComponent implements OnInit {
 
         if (res) {
           // this.next.emit(true);
-          this.next.emit(res.customerKycCurrentStage);
+          this.next.emit(res.data.customerKycCurrentStage);
         }
       }),
       catchError(err => {
