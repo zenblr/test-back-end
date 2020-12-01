@@ -26,10 +26,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'product_Image',
         },
-        amount: {
-            type: DataTypes.STRING,
-            field: 'amount',
-        },
         totalAmount: {
             type: DataTypes.STRING,
             field: 'total_amount',
@@ -45,12 +41,10 @@ module.exports = (sequelize, DataTypes) => {
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by',
-            allowNull: false
         },
         modifiedBy: {
             type: DataTypes.INTEGER,
             field: 'modified_by',
-            allowNull: false
         },
         isActive: {
             type: DataTypes.BOOLEAN,

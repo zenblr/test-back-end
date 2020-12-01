@@ -14,16 +14,17 @@ const Op = Sequelize.Op;
 
 exports.sellProduct = async (req, res) => {
   try {
-    const { metalType, quantity, lockPrice, blockId, userBankId, accountName, bankId, accountNumber, ifscCode, totalAmount, quantityBased, modeOfPayment } = req.body;
+    const { metalType, quantity, lockPrice, blockId, userBankId, accountName, bankId, accountNumber, ifscCode, totalAmount, quantityBased, modeOfPayment ,branchName,amount} = req.body;
     const id = req.userData.id;
     const type = 'sell';
     // let orderType= await models.digiGoldOrderTypeMaster.findOne({
     //   where: { id },
     // });
 
-    let orderType = await models.digiGoldOrderTypeMaster.findOne({
+    let orderType = await models.digiGoldOrderType.findOne({
       where: { orderType: type, isActive: true },
     });
+
     // console.log("orderType",orderTypeId.orderType)
     let orderTypeId = orderType.id;
     // return;
@@ -37,8 +38,8 @@ exports.sellProduct = async (req, res) => {
     await sequelize.transaction(async (t) => {
       await models.digiGoldTempOrderDetail.create(
         {
-          customerId: id, orderTypeId: orderTypeId, totalAmount: totalAmount, metalType: metalType, quantity: quantity,
-          lockPrice: lockPrice, blockId: blockId, amount: totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy
+          customerId: id, orderTypeId: orderTypeId, totalAmount: amount, metalType: metalType, quantity: quantity,
+          lockPrice: lockPrice, blockId: blockId, amount: amount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy
         },
         { transaction: t }
       );
@@ -113,14 +114,14 @@ exports.sellProduct = async (req, res) => {
 
         let orderUniqueId = `digiGoldSell${Math.floor(1000 + Math.random() * 9000)}`;
         let orderDetail = await models.digiGoldOrderDetail.create({
-            temporderid: tempId.id, customerId: id, orderTypeId: orderTypeId, orderId: orderUniqueId, totalAmount: totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
-            lockPrice: lockPrice, blockId: blockId, amount: totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy
+          tempOrderId: tempId.id, customerId: id, orderTypeId: orderTypeId, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
+            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy
           }, { transaction: t });
 
         await models.digiGoldTempOrderDetail.update(
           { isOrderPlaced: true, modifiedBy },{ where: { customerId: id }, transaction: t });
 
-        await models.digiGoldCustomerBankDetail.create({orderDetailId: orderDetail.id, accountNumber: accountNumber, bankId: bankId, ifscCode: ifscCode, userBankId: bankId, isActive: true},{ transaction: t });
+        await models.digiGoldOrderBankDetail.create({orderDetailId: orderDetail.id, accountNumber: accountNumber, bankId: bankId, ifscCode: ifscCode, userBankId: userBankId,bankName :branchName,isActive: true},{ transaction: t });
       })
     }
     return res.status(200).json(result.data);

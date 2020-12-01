@@ -13,12 +13,14 @@ const numToWords = require('../../../utils/numToWords');
 let sms = require('../../../utils/SMS');
 const html = fs.readFileSync(path.join(__dirname, '..', '..', '..', 'templates', 'redeemOrderInvoice.html'), 'utf8')
 const errorLogger = require('../../../utils/errorLogger');
-
+const sequelize = models.sequelize;
+const Sequelize = models.Sequelize;
+const Op = Sequelize.Op;
 
 exports.AddOrder = async (req, res) => {
   try {
     const id = req.userData.id;
-    const { userAddressId, modeOfPayment, transactionDetails, blockId, shippingCharges, totalQuantity, totalWeight, orderAddress } = req.body;
+    const { userAddressId, modeOfPayment, transactionDetails, blockId, shippingCharges, totalQuantity, totalWeight, orderAddress, cartData } = req.body;
     const razorPay = await getRazorPayDetails();
     let customerDetails = await models.customer.findOne({
       where: { id, isActive: true },
@@ -86,14 +88,20 @@ exports.AddOrder = async (req, res) => {
 
           let tempOrderDetail = await models.digiGoldTempOrderDetail.findOne({ where: { blockId } });
 
-          let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetail.id, customerId: id, orderTypeId: 3, orderId: blockId, totalAmount: tempOrderDetail.totalAmount, coupanCode, quantity: tempOrderDetail.quantity, blockId: blockId, amount: tempOrderDetail.amount, modeOfPayment, userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.result.data.result.data, razorpayOrderId: transactionDetails.razorpay_order_id, razorpayPaymentId: transactionDetails.razorpay_payment_id, razorpaySignature: transactionDetails.razorpay_signature, orderSatatus: "pending" }, { transaction: t });
+          let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetail.id, customerId: id, orderTypeId: 3, orderId: blockId, totalAmount: tempOrderDetail.totalAmount, quantity: tempOrderDetail.quantity, blockId: blockId, amount: tempOrderDetail.amount, modeOfPayment, userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, razorpayOrderId: transactionDetails.razorpay_order_id, razorpayPaymentId: transactionDetails.razorpay_payment_id, razorpaySignature: transactionDetails.razorpay_signature, orderSatatus: "pending" }, { transaction: t });
 
           await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { id: tempOrderDetail.id }, transaction: t })
 
           await models.digiGoldOrderDeliveryDetail.create({ orderDetailId: orderDetail.id, shippingCharges, totalQuantity, totalWeight }, { transaction: t });
 
+          if(cartData.length){
+            for(let cart of cartData){
+              await models.digiGoldOrderProductDetail.create({orderDetailId: orderDetail.id, productSku: cart.productSku, productWeight: cart.productWeight, productName: cart.productName, amount: cart.amount, productImage: cart.productImage, totalAmount: cart.totalProductAmount, metalType: cart.metalType, quantity: cart.quantity, createdBy: 1, modifiedBy: 1}, { transaction: t });
+              }
+          }
+
           for (let address of orderAddress) {
-            await models.digiGoldOrderAddressDetail.create({ orderDetailId: orderDetail.id, addressType: address.addressType, address: address.address, stateId: address.stateId, cityId: address.cityId, pinCode: address.pinCode }, { transaction: t });
+            await models.digiGoldOrderAddressDetail.create({ orderDetailId: orderDetail.id,customerName:address.name,   addressType: address.addressType, address: address.address, stateId: address.stateId, cityId: address.cityId, pinCode: address.pinCode }, { transaction: t });
           }
 
           await sms.sendMessageForOrderPlaced(customerDetails.mobileNumber, result.data.result.data.orderId);

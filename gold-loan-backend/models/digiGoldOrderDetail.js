@@ -116,7 +116,7 @@ module.exports = (sequelize, DataTypes) => {
         DigiGoldOrderDetail.hasOne(models.digiGoldOrderTaxDetail, {foreignKey: 'orderDetailId', as: 'orderTaxDetail' });
         DigiGoldOrderDetail.hasMany(models.digiGoldOrderProductDetail, {foreignKey: 'orderDetailId', as: 'orderProductDetail' });
         // DigiGoldOrderDetail.hasOne(models.digiGoldCustomerBankDetail, {foreignKey: 'orderDetailId', as: 'orderDetail' });
-
+        
     }
 
 
