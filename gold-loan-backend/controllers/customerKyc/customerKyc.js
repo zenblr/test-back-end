@@ -8,651 +8,688 @@ const CONSTANT = require("../../utils/constant");
 const moment = require("moment");
 const { paginationWithFromTo } = require("../../utils/pagination");
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
-const { customerKycEdit, getKycInfo } = require('../../service/customerKyc')
+const { customerKycEdit, getKycInfo, kycBasicDetails, submitKycInfo, kycPersonalDetail, kycAddressDeatil } = require('../../service/customerKyc')
 
 const check = require("../../lib/checkLib");
 
 
 exports.getCustomerDetails = async (req, res, next) => {
-    let { mobileNumber, moduleId } = req.body
-    let numberExistInCustomer = await models.customer.findOne({
-        where: { mobileNumber },
-        include: {
-            model: models.customerKyc,
-            as: 'customerKyc'
-        }
-    });
-    if (check.isEmpty(numberExistInCustomer)) {
-        return res.status(404).json({ message: "Your Mobile number does not exist, please add lead first" });
+
+    let data = await kycBasicDetails(req)
+
+    if (data.success) {
+        return res.status(data.status).json({ customerInfo: data.customerInfo, message: data.message })
+    } else {
+        return res.status(data.status).json({ message: data.message })
     }
 
-    if (!check.isEmpty(numberExistInCustomer.customerKyc)) {
-        let currentModuleId = numberExistInCustomer.customerKyc.currentKycModuleId;
 
-        if (currentModuleId != moduleId) {
-            if (moduleId == 3) {
-                if (numberExistInCustomer.kycStatus != "approved") {
-                    return res.status(404).json({ message: "kindly complete loan kyc" });
-                }
-            }
-            if (moduleId == 1) {
-                if (numberExistInCustomer.scrapKycStatus != "approved") {
-                    return res.status(404).json({ message: "kindly complete scrap kyc" });
-                } else {
-                    await models.customerKyc.update({ currentKycModuleId: moduleId }, { where: { id: numberExistInCustomer.customerKyc.id } })
-                }
-            }
+    // let { mobileNumber, moduleId } = req.body
+    // let numberExistInCustomer = await models.customer.findOne({
+    //     where: { mobileNumber },
+    //     include: {
+    //         model: models.customerKyc,
+    //         as: 'customerKyc'
+    //     }
+    // });
+    // if (check.isEmpty(numberExistInCustomer)) {
+    //     return res.status(404).json({ message: "Your Mobile number does not exist, please add lead first" });
+    // }
 
-        }
+    // if (!check.isEmpty(numberExistInCustomer.customerKyc)) {
+    //     let currentModuleId = numberExistInCustomer.customerKyc.currentKycModuleId;
 
-    }
+    //     if (currentModuleId != moduleId) {
+    //         if (moduleId == 3) {
+    //             if (numberExistInCustomer.kycStatus != "approved") {
+    //                 return res.status(404).json({ message: "kindly complete loan kyc" });
+    //             }
+    //         }
+    //         if (moduleId == 1) {
+    //             if (numberExistInCustomer.scrapKycStatus != "approved") {
+    //                 return res.status(404).json({ message: "kindly complete scrap kyc" });
+    //             } else {
+    //                 await models.customerKyc.update({ currentKycModuleId: moduleId }, { where: { id: numberExistInCustomer.customerKyc.id } })
+    //             }
+    //         }
 
-    let status = await models.status.findOne({ where: { statusName: "confirm" } })
-    if (check.isEmpty(status)) {
-        return res.status(404).json({ message: "Status confirm is not there in status table" });
-    }
-    let statusId = status.id
+    //     }
 
-    let checkStatusCustomer = await models.customer.findOne({
-        where: { statusId, id: numberExistInCustomer.id },
-        attributes: ['firstName', 'lastName', 'panCardNumber', 'panType', 'panCardNumber', 'panImage', 'userType', 'moduleId', 'organizationTypeId', 'dateOfIncorporation', 'scrapKycStatus'],
-        include: [{
-            model: models.organizationType,
-            as: "organizationType",
-            attributes: ['id', 'organizationType']
-        },
-        {
-            model: models.customerKycAddressDetail,
-            as: 'customerKycAddress',
-            attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
-            include: [{
-                model: models.state,
-                as: 'state'
-            }, {
-                model: models.city,
-                as: 'city'
-            }, {
-                model: models.addressProofType,
-                as: 'addressProofType'
-            }],
-            order: [["id", "ASC"]]
-        },
-        {
-            model: models.customerKycOrganizationDetail,
-            as: "organizationDetail",
-            attributes: ['customerId', 'customerKycId', 'email', 'alternateEmail', 'landLineNumber', 'gstinNumber', 'cinNumber', 'constitutionsDeed', 'gstCertificate']
-        },
-        {
-            model: models.customerKycPersonalDetail,
-            as: 'customerKycPersonal',
-            attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
-            include: [{
-                model: models.occupation,
-                as: 'occupation'
-            }, {
-                model: models.identityType,
-                as: 'identityType'
-            }]
-        }
-        ]
-    })
+    // }
 
-    //check kyc status  scrap == approve 
-    // check user type == corporate == you cant apply loan == due to corporeate kyc
+    // let status = await models.status.findOne({ where: { statusName: "confirm" } })
+    // if (check.isEmpty(status)) {
+    //     return res.status(404).json({ message: "Status confirm is not there in status table" });
+    // }
+    // let statusId = status.id
 
-    if (checkStatusCustomer.scrapKycStatus == "approved") {
-        if (checkStatusCustomer.userType == "Corporate") {
-            return res.status(400).json({ message: "Please create new customer since you have completed Corporate kyc" });
-        }
-    }
+    // let checkStatusCustomer = await models.customer.findOne({
+    //     where: { statusId, id: numberExistInCustomer.id },
+    //     attributes: ['firstName', 'lastName', 'panCardNumber', 'panType', 'panCardNumber', 'panImage', 'userType', 'moduleId', 'organizationTypeId', 'dateOfIncorporation', 'scrapKycStatus'],
+    //     include: [{
+    //         model: models.organizationType,
+    //         as: "organizationType",
+    //         attributes: ['id', 'organizationType']
+    //     },
+    //     {
+    //         model: models.customerKycAddressDetail,
+    //         as: 'customerKycAddress',
+    //         attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
+    //         include: [{
+    //             model: models.state,
+    //             as: 'state'
+    //         }, {
+    //             model: models.city,
+    //             as: 'city'
+    //         }, {
+    //             model: models.addressProofType,
+    //             as: 'addressProofType'
+    //         }],
+    //         order: [["id", "ASC"]]
+    //     },
+    //     {
+    //         model: models.customerKycOrganizationDetail,
+    //         as: "organizationDetail",
+    //         attributes: ['customerId', 'customerKycId', 'email', 'alternateEmail', 'landLineNumber', 'gstinNumber', 'cinNumber', 'constitutionsDeed', 'gstCertificate']
+    //     },
+    //     {
+    //         model: models.customerKycPersonalDetail,
+    //         as: 'customerKycPersonal',
+    //         attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
+    //         include: [{
+    //             model: models.occupation,
+    //             as: 'occupation'
+    //         }, {
+    //             model: models.identityType,
+    //             as: 'identityType'
+    //         }]
+    //     }
+    //     ]
+    // })
 
-    if (check.isEmpty(checkStatusCustomer)) {
-        return res.status(400).json({ message: "Please proceed after confirm your lead stage status" });
-    }
-    return res.status(200).json({ message: "Success", customerInfo: checkStatusCustomer });
+    // //check kyc status  scrap == approve 
+    // // check user type == corporate == you cant apply loan == due to corporeate kyc
+
+    // if (checkStatusCustomer.scrapKycStatus == "approved") {
+    //     if (checkStatusCustomer.userType == "Corporate") {
+    //         return res.status(400).json({ message: "Please create new customer since you have completed Corporate kyc" });
+    //     }
+    // }
+
+    // if (check.isEmpty(checkStatusCustomer)) {
+    //     return res.status(400).json({ message: "Please proceed after confirm your lead stage status" });
+    // }
+    // return res.status(200).json({ message: "Success", customerInfo: checkStatusCustomer });
 }
 
 
 exports.submitCustomerKycinfo = async (req, res, next) => {
 
-    let { firstName, lastName, mobileNumber, panCardNumber, panType, panImage, moduleId, organizationTypeId, dateOfIncorporation, userType } = req.body;
+    let data = await submitKycInfo(req)
 
-    console.log(userType);
-
-    let status = await models.status.findOne({ where: { statusName: "confirm" } })
-    if (check.isEmpty(status)) {
-        return res.status(404).json({ message: "Status confirm is not there in status table" });
-    }
-    let statusId = status.id
-    let getCustomerInfo = await models.customer.findOne({
-        where: { mobileNumber: mobileNumber, statusId },
-        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage'],
-    })
-    if (panCardNumber) {
-        let findPanCardNumber = await models.customer.findOne({
-            where: {
-                id: { [Op.not]: getCustomerInfo.id },
-                panCardNumber: { [Op.iLike]: panCardNumber },
-                isActive: true
-            }
-        });
-        if (!check.isEmpty(findPanCardNumber)) {
-            return res.status(400).json({ message: "Pan Card Number already exists! " })
-        }
+    if (data.success) {
+        return res.status(data.status).json({ data: data.data })
+    } else {
+        return res.status(data.status).json({ message: data.message })
     }
 
 
-    if (check.isEmpty(getCustomerInfo)) {
-        return res.status(404).json({ message: "Your status is not confirm" });
-    }
-    let findCustomerKyc = await models.customerKyc.findOne({ where: { customerId: getCustomerInfo.id, isKycSubmitted: true } });
+    //     let { firstName, lastName, mobileNumber, panCardNumber, panType, panImage, moduleId, organizationTypeId, dateOfIncorporation, userType } = req.body;
 
-    if (findCustomerKyc && findCustomerKyc.isKycSubmitted == true && moduleId == 1) {
-        return res.status(404).json({ message: "This customer Kyc is already submitted." });
-    }
+    //     console.log(userType);
 
-    let findCustomerScrapKyc = await models.customerKyc.findOne({ where: { customerId: getCustomerInfo.id, isScrapKycSubmitted: true } });
-    if (findCustomerScrapKyc && findCustomerScrapKyc.isScrapKycSubmitted == true && moduleId == 3) {
-        return res.status(404).json({ message: "This customer Kyc is already submitted." });
-    }
-
-    let KycStage = await models.customerKyc.findOne({ where: { customerId: getCustomerInfo.id } })
-
-    if (!check.isEmpty(KycStage)) {
-        let name
-        if (KycStage.customerKycCurrentStage == "2") {
-
-            let { id, stateId, cityId, pinCode } = await models.customer.findOne({ where: { id: KycStage.customerId, isActive: true } });
-
-            return res.status(200).json({
-                customerId: KycStage.customerId,
-                customerKycId: KycStage.id,
-                customerKycCurrentStage: KycStage.customerKycCurrentStage,
-                stateId: stateId,
-                cityId: cityId,
-                pinCode: pinCode,
-                moduleId: moduleId,
-                userType: userType
-            })
-
-        } else if (KycStage.customerKycCurrentStage == "3") {
-
-            if (moduleId == 1) {
-                let { firstName, lastName } = await models.customerKycPersonalDetail.findOne({ where: { customerId: KycStage.customerId } })
-                name = `${firstName} ${lastName}`;
-
-                return res.status(200).json({
-                    customerId: KycStage.customerId,
-                    customerKycId: KycStage.id,
-                    name,
-                    customerKycCurrentStage: KycStage.customerKycCurrentStage,
-                    moduleId: moduleId,
-                    userType: userType
-
-                })
-            } else if (moduleId == 3) {
-                if (userType == "Individual") {
-                    let { firstName, lastName } = await models.customerKycPersonalDetail.findOne({ where: { customerId: KycStage.customerId } })
-                    name = `${firstName} ${lastName}`;
-
-                    return res.status(200).json({
-                        customerId: KycStage.customerId,
-                        customerKycId: KycStage.id,
-                        name,
-                        customerKycCurrentStage: KycStage.customerKycCurrentStage,
-                        moduleId: moduleId,
-                        userType: userType
-
-                    })
-                } else {
-                    return res.status(200).json({
-                        customerId: KycStage.customerId,
-                        customerKycId: KycStage.id,
-                        customerKycCurrentStage: KycStage.customerKycCurrentStage,
-                        moduleId: moduleId,
-                        userType: userType
-                    })
-                }
-            }
-
-        } else if (KycStage.customerKycCurrentStage == "4") {
-            let customerKycReview = await models.customer.findOne({
-                where: { id: KycStage.customerId },
-                attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'userType', 'organizationTypeId', 'dateOfIncorporation'],
-                include: [{
-                    model: models.customerKycPersonalDetail,
-                    as: 'customerKycPersonal',
-                    required: false,
-                    attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
-                    include: [{
-                        model: models.occupation,
-                        as: 'occupation'
-                    }, {
-                        model: models.identityType,
-                        as: 'identityType'
-                    }]
-                }, {
-                    model: models.customerKycAddressDetail,
-                    as: 'customerKycAddress',
-                    attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
-                    include: [{
-                        model: models.state,
-                        as: 'state'
-                    }, {
-                        model: models.city,
-                        as: 'city'
-                    }, {
-                        model: models.addressProofType,
-                        as: 'addressProofType'
-                    }],
-                    order: [["id", "ASC"]]
-                },
-                {
-                    model: models.customerKycOrganizationDetail,
-                    as: 'organizationDetail',
-                    required: false,
-                    attributes: ['customerId', 'customerKycId', 'email', 'alternateEmail', 'landLineNumber', 'gstinNumber', 'cinNumber', 'constitutionsDeed', 'gstCertificate']
-                },
-                {
-                    model: models.organizationType,
-                    as: "organizationType",
-                    attributes: ['id', 'organizationType']
-                },
-                ]
-            })
-            return res.status(200).json({
-                customerId: KycStage.customerId,
-                customerKycId: KycStage.id,
-                customerKycCurrentStage: KycStage.customerKycCurrentStage,
-                customerKycReview,
-                moduleId: moduleId,
-                userType: userType
-
-            })
-
-        }
-    }
+    //     let status = await models.status.findOne({ where: { statusName: "confirm" } })
+    //     if (check.isEmpty(status)) {
+    //         return res.status(404).json({ message: "Status confirm is not there in status table" });
+    //     }
+    //     let statusId = status.id
+    //     let getCustomerInfo = await models.customer.findOne({
+    //         where: { mobileNumber: mobileNumber, statusId },
+    //         attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage'],
+    //     })
+    //     if (panCardNumber) {
+    //         let findPanCardNumber = await models.customer.findOne({
+    //             where: {
+    //                 id: { [Op.not]: getCustomerInfo.id },
+    //                 panCardNumber: { [Op.iLike]: panCardNumber },
+    //                 isActive: true
+    //             }
+    //         });
+    //         if (!check.isEmpty(findPanCardNumber)) {
+    //             return res.status(400).json({ message: "Pan Card Number already exists! " })
+    //         }
+    //     }
 
 
-    let createdBy = req.userData.id;
-    let modifiedBy = req.userData.id;
-    let kyc = await sequelize.transaction(async (t) => {
+    //     if (check.isEmpty(getCustomerInfo)) {
+    //         return res.status(404).json({ message: "Your status is not confirm" });
+    //     }
+    //     let findCustomerKyc = await models.customerKyc.findOne({ where: { customerId: getCustomerInfo.id, isKycSubmitted: true } });
 
-        let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, customerKycCurrentStage: "2", currentKycModuleId: moduleId }, { transaction: t })
+    //     if (findCustomerKyc && findCustomerKyc.isKycSubmitted == true && moduleId == 1) {
+    //         return res.status(404).json({ message: "This customer Kyc is already submitted." });
+    //     }
+
+    //     let findCustomerScrapKyc = await models.customerKyc.findOne({ where: { customerId: getCustomerInfo.id, isScrapKycSubmitted: true } });
+    //     if (findCustomerScrapKyc && findCustomerScrapKyc.isScrapKycSubmitted == true && moduleId == 3) {
+    //         return res.status(404).json({ message: "This customer Kyc is already submitted." });
+    //     }
+
+    //     let KycStage = await models.customerKyc.findOne({ where: { customerId: getCustomerInfo.id } })
+
+    //     if (!check.isEmpty(KycStage)) {
+    //         let name
+    //         if (KycStage.customerKycCurrentStage == "2") {
+
+    //             let { id, stateId, cityId, pinCode } = await models.customer.findOne({ where: { id: KycStage.customerId, isActive: true } });
+
+    //             return res.status(200).json({
+    //                 customerId: KycStage.customerId,
+    //                 customerKycId: KycStage.id,
+    //                 customerKycCurrentStage: KycStage.customerKycCurrentStage,
+    //                 stateId: stateId,
+    //                 cityId: cityId,
+    //                 pinCode: pinCode,
+    //                 moduleId: moduleId,
+    //                 userType: userType
+    //             })
+
+    //         } else if (KycStage.customerKycCurrentStage == "3") {
+
+    //             if (moduleId == 1) {
+    //                 let { firstName, lastName } = await models.customerKycPersonalDetail.findOne({ where: { customerId: KycStage.customerId } })
+    //                 name = `${firstName} ${lastName}`;
+
+    //                 return res.status(200).json({
+    //                     customerId: KycStage.customerId,
+    //                     customerKycId: KycStage.id,
+    //                     name,
+    //                     customerKycCurrentStage: KycStage.customerKycCurrentStage,
+    //                     moduleId: moduleId,
+    //                     userType: userType
+
+    //                 })
+    //             } else if (moduleId == 3) {
+    //                 if (userType == "Individual") {
+    //                     let { firstName, lastName } = await models.customerKycPersonalDetail.findOne({ where: { customerId: KycStage.customerId } })
+    //                     name = `${firstName} ${lastName}`;
+
+    //                     return res.status(200).json({
+    //                         customerId: KycStage.customerId,
+    //                         customerKycId: KycStage.id,
+    //                         name,
+    //                         customerKycCurrentStage: KycStage.customerKycCurrentStage,
+    //                         moduleId: moduleId,
+    //                         userType: userType
+
+    //                     })
+    //                 } else {
+    //                     return res.status(200).json({
+    //                         customerId: KycStage.customerId,
+    //                         customerKycId: KycStage.id,
+    //                         customerKycCurrentStage: KycStage.customerKycCurrentStage,
+    //                         moduleId: moduleId,
+    //                         userType: userType
+    //                     })
+    //                 }
+    //             }
+
+    //         } else if (KycStage.customerKycCurrentStage == "4") {
+    //             let customerKycReview = await models.customer.findOne({
+    //                 where: { id: KycStage.customerId },
+    //                 attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'userType', 'organizationTypeId', 'dateOfIncorporation'],
+    //                 include: [{
+    //                     model: models.customerKycPersonalDetail,
+    //                     as: 'customerKycPersonal',
+    //                     required: false,
+    //                     attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
+    //                     include: [{
+    //                         model: models.occupation,
+    //                         as: 'occupation'
+    //                     }, {
+    //                         model: models.identityType,
+    //                         as: 'identityType'
+    //                     }]
+    //                 }, {
+    //                     model: models.customerKycAddressDetail,
+    //                     as: 'customerKycAddress',
+    //                     attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
+    //                     include: [{
+    //                         model: models.state,
+    //                         as: 'state'
+    //                     }, {
+    //                         model: models.city,
+    //                         as: 'city'
+    //                     }, {
+    //                         model: models.addressProofType,
+    //                         as: 'addressProofType'
+    //                     }],
+    //                     order: [["id", "ASC"]]
+    //                 },
+    //                 {
+    //                     model: models.customerKycOrganizationDetail,
+    //                     as: 'organizationDetail',
+    //                     required: false,
+    //                     attributes: ['customerId', 'customerKycId', 'email', 'alternateEmail', 'landLineNumber', 'gstinNumber', 'cinNumber', 'constitutionsDeed', 'gstCertificate']
+    //                 },
+    //                 {
+    //                     model: models.organizationType,
+    //                     as: "organizationType",
+    //                     attributes: ['id', 'organizationType']
+    //                 },
+    //                 ]
+    //             })
+    //             return res.status(200).json({
+    //                 customerId: KycStage.customerId,
+    //                 customerKycId: KycStage.id,
+    //                 customerKycCurrentStage: KycStage.customerKycCurrentStage,
+    //                 customerKycReview,
+    //                 moduleId: moduleId,
+    //                 userType: userType
+
+    //             })
+
+    //         }
+    //     }
 
 
-        await models.customer.update({ firstName: firstName, lastName: lastName, panCardNumber: panCardNumber, panType: panType, panImage: panImage, organizationTypeId, dateOfIncorporation, userType: userType, moduleId: moduleId }, { where: { id: getCustomerInfo.id }, transaction: t })
-        let createCustomerKyc
-        let createOrganizationDetail
-        if (moduleId == 3) {
-            if (userType == "Corporate") {
-                createOrganizationDetail = await models.customerKycOrganizationDetail.create({
-                    customerId: getCustomerInfo.id,
-                    customerKycId: customerKycAdd.id,
-                    createdBy,
-                    modifiedBy,
-                }, { transaction: t });
-            } else {
-                createCustomerKyc = await models.customerKycPersonalDetail.create({
-                    customerId: getCustomerInfo.id,
-                    customerKycId: customerKycAdd.id,
-                    firstName: firstName,
-                    lastName: lastName,
-                    panCardNumber: panCardNumber,
-                    createdBy,
-                    modifiedBy,
-                }, { transaction: t });
-            }
+    //     let createdBy = req.userData.id;
+    //     let modifiedBy = req.userData.id;
+    //     let kyc = await sequelize.transaction(async (t) => {
 
-        }
-        if (moduleId == 1) {
-            createCustomerKyc = await models.customerKycPersonalDetail.create({
-                customerId: getCustomerInfo.id,
-                customerKycId: customerKycAdd.id,
-                firstName: firstName,
-                lastName: lastName,
-                panCardNumber: panCardNumber,
-                createdBy,
-                modifiedBy,
-            }, { transaction: t });
-        }
+    //         let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, customerKycCurrentStage: "2", currentKycModuleId: moduleId }, { transaction: t })
 
-        return customerKycAdd
-    })
 
-    return res.status(200).json({
-        customerId: getCustomerInfo.id,
-        customerKycId: kyc.id,
-        customerKycCurrentStage: kyc.customerKycCurrentStage,
-        stateId: getCustomerInfo.stateId,
-        cityId: getCustomerInfo.cityId,
-        pinCode: getCustomerInfo.pinCode,
-        moduleId: moduleId,
-        userType: userType
+    //         await models.customer.update({ firstName: firstName, lastName: lastName, panCardNumber: panCardNumber, panType: panType, panImage: panImage, organizationTypeId, dateOfIncorporation, userType: userType, moduleId: moduleId }, { where: { id: getCustomerInfo.id }, transaction: t })
+    //         let createCustomerKyc
+    //         let createOrganizationDetail
+    //         if (moduleId == 3) {
+    //             if (userType == "Corporate") {
+    //                 createOrganizationDetail = await models.customerKycOrganizationDetail.create({
+    //                     customerId: getCustomerInfo.id,
+    //                     customerKycId: customerKycAdd.id,
+    //                     createdBy,
+    //                     modifiedBy,
+    //                 }, { transaction: t });
+    //             } else {
+    //                 createCustomerKyc = await models.customerKycPersonalDetail.create({
+    //                     customerId: getCustomerInfo.id,
+    //                     customerKycId: customerKycAdd.id,
+    //                     firstName: firstName,
+    //                     lastName: lastName,
+    //                     panCardNumber: panCardNumber,
+    //                     createdBy,
+    //                     modifiedBy,
+    //                 }, { transaction: t });
+    //             }
 
-    })
+    //         }
+    //         if (moduleId == 1) {
+    //             createCustomerKyc = await models.customerKycPersonalDetail.create({
+    //                 customerId: getCustomerInfo.id,
+    //                 customerKycId: customerKycAdd.id,
+    //                 firstName: firstName,
+    //                 lastName: lastName,
+    //                 panCardNumber: panCardNumber,
+    //                 createdBy,
+    //                 modifiedBy,
+    //             }, { transaction: t });
+    //         }
+
+    //         return customerKycAdd
+    //     })
+
+    //     return res.status(200).json({
+    //         customerId: getCustomerInfo.id,
+    //         customerKycId: kyc.id,
+    //         customerKycCurrentStage: kyc.customerKycCurrentStage,
+    //         stateId: getCustomerInfo.stateId,
+    //         cityId: getCustomerInfo.cityId,
+    //         pinCode: getCustomerInfo.pinCode,
+    //         moduleId: moduleId,
+    //         userType: userType
+
+    //     })
 }
 
 
 exports.submitCustomerKycAddress = async (req, res, next) => {
 
-    let { customerId, customerKycId, identityProof, identityTypeId, identityProofNumber, address, moduleId, userType } = req.body
-    let createdBy = req.userData.id;
-    let modifiedBy = req.userData.id;
+    let data = await kycAddressDeatil(req)
 
-    let name;
-    let customerDetail
-    if (moduleId == 1) {
-        if (identityProof.length == 0) {
-            return res.status(404).json({ message: "Identity proof file must be required." });
-        }
-        let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: identityProofNumber } });
-        if (!check.isEmpty(findIdentityNumber)) {
-            return res.status(400).json({ message: "Identity Proof Number already exists! " })
-        }
-        customerDetail = await models.customerKycPersonalDetail.findOne({ where: { customerKycId: customerKycId } })
-        name = `${customerDetail.firstName} ${customerDetail.lastName}`;
+    if (data.success) {
+        let { customerId, customerKycId, name, customerKycCurrentStage, moduleId, userType } = data
+        return res.status(data.status).json({ customerId, customerKycId, name, customerKycCurrentStage, moduleId, userType })
+    } else {
+        return res.status(data.status).json({ message: data.message })
     }
-    console.log(address[0].addressProofNumber);
-    if (moduleId == 3 && address[0].addressProofNumber && address[0].addressProofTypeId == 2) {
-        let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: address[0].addressProofNumber } });
+    // let { customerId, customerKycId, identityProof, identityTypeId, identityProofNumber, address, moduleId, userType } = req.body
+    // let createdBy = req.userData.id;
+    // let modifiedBy = req.userData.id;
 
-        if (!check.isEmpty(findIdentityNumber)) {
-            return res.status(400).json({ message: "Address Proof Number already exists! " })
-        }
-    }
-
-    if (address.length > 1) {
-        if (moduleId == 3 && address[1].addressProofNumber && address[0].addressProofTypeId == 2) {
-            let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: address[1].addressProofNumber } });
-            if (!check.isEmpty(findIdentityNumber)) {
-                return res.status(400).json({ message: "Address Proof Number already exists! " })
-            }
-        }
-    }
-
-
-    // if (identityProof.length == 0) {
-    //     return res.status(404).json({ message: "Identity proof file must be required." });
+    // let name;
+    // let customerDetail
+    // if (moduleId == 1) {
+    //     if (identityProof.length == 0) {
+    //         return res.status(404).json({ message: "Identity proof file must be required." });
+    //     }
+    //     let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: identityProofNumber } });
+    //     if (!check.isEmpty(findIdentityNumber)) {
+    //         return res.status(400).json({ message: "Identity Proof Number already exists! " })
+    //     }
+    //     customerDetail = await models.customerKycPersonalDetail.findOne({ where: { customerKycId: customerKycId } })
+    //     name = `${customerDetail.firstName} ${customerDetail.lastName}`;
     // }
-    if (moduleId == 1) {
-        if (address[0].addressProof.length == 0 || address[1].addressProof.length == 0) {
-            return res.status(404).json({ message: "Address proof file must be required." });
-        }
-    } else if (moduleId == 3) {
-        if (userType == "Individual") {
-            if (address[0].addressProof.length == 0) {
-                return res.status(404).json({ message: "Address proof file must be required." });
-            }
-        }
-        if (userType == "Corporate") {
-            if (address[0].addressProof.length == 0 || address[1].addressProof.length == 0) {
-                return res.status(404).json({ message: "Address proof file must be required." });
-            }
-        }
+    // console.log(address[0].addressProofNumber);
+    // if (moduleId == 3 && address[0].addressProofNumber && address[0].addressProofTypeId == 2) {
+    //     let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: address[0].addressProofNumber } });
 
-    }
+    //     if (!check.isEmpty(findIdentityNumber)) {
+    //         return res.status(400).json({ message: "Address Proof Number already exists! " })
+    //     }
+    // }
 
-    let findCustomerKyc = await models.customerKycAddressDetail.findOne({ where: { customerKycId: customerKycId } })
-
-    if (!check.isEmpty(findCustomerKyc)) {
-        return res.status(404).json({ message: "This customer address details is already filled." });
-    }
-
-    // let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: identityProofNumber } });
-    // if (!check.isEmpty(findIdentityNumber)) {
-    //     return res.status(400).json({ message: "Identity Proof Number already exists! " })
+    // if (address.length > 1) {
+    //     if (moduleId == 3 && address[1].addressProofNumber && address[0].addressProofTypeId == 2) {
+    //         let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: address[1].addressProofNumber } });
+    //         if (!check.isEmpty(findIdentityNumber)) {
+    //             return res.status(400).json({ message: "Address Proof Number already exists! " })
+    //         }
+    //     }
     // }
 
 
-    let addressArray = []
-    for (let i = 0; i < address.length; i++) {
+    // // if (identityProof.length == 0) {
+    // //     return res.status(404).json({ message: "Identity proof file must be required." });
+    // // }
+    // if (moduleId == 1) {
+    //     if (address[0].addressProof.length == 0 || address[1].addressProof.length == 0) {
+    //         return res.status(404).json({ message: "Address proof file must be required." });
+    //     }
+    // } else if (moduleId == 3) {
+    //     if (userType == "Individual") {
+    //         if (address[0].addressProof.length == 0) {
+    //             return res.status(404).json({ message: "Address proof file must be required." });
+    //         }
+    //     }
+    //     if (userType == "Corporate") {
+    //         if (address[0].addressProof.length == 0 || address[1].addressProof.length == 0) {
+    //             return res.status(404).json({ message: "Address proof file must be required." });
+    //         }
+    //     }
 
-        address[i]['customerId'] = customerId
-        address[i]['customerKycId'] = customerKycId
-        address[i]['createdBy'] = createdBy
-        address[i]['modifiedBy'] = modifiedBy
-        addressArray.push(address[i])
-    }
+    // }
 
-    // let customerDetail = await models.customerKycPersonalDetail.findOne({ where: { customerKycId: customerKycId } })
-    // let name = `${customerDetail.firstName} ${customerDetail.lastName}`;
+    // let findCustomerKyc = await models.customerKycAddressDetail.findOne({ where: { customerKycId: customerKycId } })
 
-    await sequelize.transaction(async t => {
-        if (moduleId == 1) {
-            await models.customerKycPersonalDetail.update({
-                identityProof: identityProof,
-                identityTypeId: identityTypeId,
-                identityProofNumber: identityProofNumber,
-                modifiedBy: modifiedBy
-            }, { where: { customerId: customerId }, transaction: t });
+    // if (!check.isEmpty(findCustomerKyc)) {
+    //     return res.status(404).json({ message: "This customer address details is already filled." });
+    // }
 
-            await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "3" }, { where: { customerId }, transaction: t });
-            await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
+    // // let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { identityProofNumber: identityProofNumber } });
+    // // if (!check.isEmpty(findIdentityNumber)) {
+    // //     return res.status(400).json({ message: "Identity Proof Number already exists! " })
+    // // }
 
-        } else {
 
-            // if(identityTypeId == 2){
-            //     await models.customerKycPersonalDetail.update({
-            //         identityProof: identityProof,
-            //         identityTypeId: identityTypeId,
-            //         identityProofNumber: identityProofNumber,
-            //         modifiedBy: modifiedBy
-            //     }, { where: { customerId: customerId }, transaction: t });
-            // }
+    // let addressArray = []
+    // for (let i = 0; i < address.length; i++) {
 
-            await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "3" }, { where: { customerId }, transaction: t });
-            await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
-        }
-        // await models.customerKycPersonalDetail.update({
-        //     identityProof: identityProof,
-        //     identityTypeId: identityTypeId,
-        //     identityProofNumber: identityProofNumber,
-        //     modifiedBy: modifiedBy
-        // }, { where: { customerId: customerId }, transaction: t });
+    //     address[i]['customerId'] = customerId
+    //     address[i]['customerKycId'] = customerKycId
+    //     address[i]['createdBy'] = createdBy
+    //     address[i]['modifiedBy'] = modifiedBy
+    //     addressArray.push(address[i])
+    // }
 
-        // await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "3" }, { where: { customerId }, transaction: t });
-        // await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
+    // // let customerDetail = await models.customerKycPersonalDetail.findOne({ where: { customerKycId: customerKycId } })
+    // // let name = `${customerDetail.firstName} ${customerDetail.lastName}`;
 
-    })
+    // await sequelize.transaction(async t => {
+    //     if (moduleId == 1) {
+    //         await models.customerKycPersonalDetail.update({
+    //             identityProof: identityProof,
+    //             identityTypeId: identityTypeId,
+    //             identityProofNumber: identityProofNumber,
+    //             modifiedBy: modifiedBy
+    //         }, { where: { customerId: customerId }, transaction: t });
 
-    let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
+    //         await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "3" }, { where: { customerId }, transaction: t });
+    //         await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
 
-    return res.status(200).json({ customerId, customerKycId, name, customerKycCurrentStage, moduleId, userType })
+    //     } else {
+
+    //         // if(identityTypeId == 2){
+    //         //     await models.customerKycPersonalDetail.update({
+    //         //         identityProof: identityProof,
+    //         //         identityTypeId: identityTypeId,
+    //         //         identityProofNumber: identityProofNumber,
+    //         //         modifiedBy: modifiedBy
+    //         //     }, { where: { customerId: customerId }, transaction: t });
+    //         // }
+
+    //         await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "3" }, { where: { customerId }, transaction: t });
+    //         await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
+    //     }
+    //     // await models.customerKycPersonalDetail.update({
+    //     //     identityProof: identityProof,
+    //     //     identityTypeId: identityTypeId,
+    //     //     identityProofNumber: identityProofNumber,
+    //     //     modifiedBy: modifiedBy
+    //     // }, { where: { customerId: customerId }, transaction: t });
+
+    //     // await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "3" }, { where: { customerId }, transaction: t });
+    //     // await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
+
+    // })
+
+    // let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
+
+    // return res.status(200).json({ customerId, customerKycId, name, customerKycCurrentStage, moduleId, userType })
 }
 
 
 exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
 
-    let { customerId, customerKycId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, email, alternateEmail, landLineNumber, gstinNumber, cinNumber, constitutionsDeed, gstCertificate, moduleId, userType } = req.body
 
-    let createdBy = req.userData.id;
-    let modifiedBy = req.userData.id;
+    let data = await kycPersonalDetail(req)
 
-    let customer = await models.customer.findOne({ where: { id: customerId } })
-
-    if (moduleId == 1) {
-
-        if (customer.mobileNumber == alternateMobileNumber) {
-            return res.status(400).json({ message: "Your alternate Mobile number is same as your previous Mobile number " });
-        }
-        let findAlternateNumberExist = await models.customerKycPersonalDetail.findOne({ where: { alternateMobileNumber } })
-
-        if (!check.isEmpty(findAlternateNumberExist)) {
-            return res.status(400).json({ message: "Your alternate Mobile number is already exist." });
-        }
-    } else if (moduleId == 3) {
-
-        if (userType == "Corporate") {
-            let customerEmail = await models.customer.findOne({ where: { email } });
-
-            let customerOrganizationEmail = await models.customerKycOrganizationDetail.findOne({ where: { email } });
-
-            if (!check.isEmpty(customerEmail) || !check.isEmpty(customerOrganizationEmail)) {
-                return res.status(400).json({ message: "your email id is already exists." });
-            }
-
-            if (alternateEmail) {
-
-                if (email == alternateEmail) {
-                    return res.status(400).json({ message: "your email id and alternate email id is same." });
-                }
-
-                let customerAlternateEmail = await models.customer.findOne({ where: { email: alternateEmail } });
-
-                let customerOrganizationAlternateEmail = await models.customerKycOrganizationDetail.findOne({ where: { alternateEmail } });
-
-                let customerOrganizationEmailVerify = await models.customerKycOrganizationDetail.findOne({ where: { email: alternateEmail } });
-
-                if (!check.isEmpty(customerAlternateEmail) || !check.isEmpty(customerOrganizationAlternateEmail) || !check.isEmpty(customerOrganizationEmailVerify)) {
-                    return res.status(400).json({ message: "your alternate email id is already exists." });
-                }
-            }
-
-            if (landLineNumber) {
-                let customerLandline = await models.customerKycOrganizationDetail.findOne({ where: { landLineNumber } });
-
-                if (!check.isEmpty(customerLandline)) {
-                    return res.status(400).json({ message: "your land line number is already exists." });
-                }
-            }
-        }
+    if (data.success) {
+        let { customerId, customerKycId, customerKycCurrentStage, customerKycReview, moduleId, userType  } = data
+        return res.status(data.status).json({ customerId, customerKycId, customerKycCurrentStage, customerKycReview, moduleId, userType  })
+    } else {
+        return res.status(data.status).json({ message: data.message })
     }
 
+    // let { customerId, customerKycId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, email, alternateEmail, landLineNumber, gstinNumber, cinNumber, constitutionsDeed, gstCertificate, moduleId, userType } = req.body
 
-    await sequelize.transaction(async t => {
-        let details;
-        if (moduleId == 1) {
-            details = await models.customerKycPersonalDetail.update({
-                profileImage: profileImage,
-                dateOfBirth: dateOfBirth,
-                alternateMobileNumber: alternateMobileNumber,
-                gender: gender,
-                age: age,
-                martialStatus: martialStatus,
-                occupationId: occupationId,
-                spouseName: spouseName,
-                signatureProof: signatureProof,
-                modifiedBy: modifiedBy
-            }, { where: { customerId: customerId }, transaction: t });
-        } else if (moduleId == 3) {
-            if (userType == "Individual") {
-                details = await models.customerKycPersonalDetail.update({
-                    profileImage: profileImage,
-                    dateOfBirth: dateOfBirth,
-                    alternateMobileNumber: alternateMobileNumber,
-                    gender: gender,
-                    age: age,
-                    martialStatus: martialStatus,
-                    occupationId: occupationId,
-                    spouseName: spouseName,
-                    signatureProof: signatureProof,
-                    modifiedBy: modifiedBy
-                }, { where: { customerId: customerId }, transaction: t });
-            }
-            if (userType == "Corporate") {
-                details = await models.customerKycOrganizationDetail.update({
-                    email: email,
-                    alternateEmail: alternateEmail,
-                    landLineNumber: landLineNumber,
-                    gstinNumber: gstinNumber,
-                    cinNumber: cinNumber,
-                    constitutionsDeed: constitutionsDeed,
-                    gstCertificate: gstCertificate,
-                    modifiedBy: modifiedBy
-                }, { where: { customerId: customerId }, transaction: t });
-            }
+    // let createdBy = req.userData.id;
+    // let modifiedBy = req.userData.id;
 
-        }
+    // let customer = await models.customer.findOne({ where: { id: customerId } })
 
-        await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
+    // if (moduleId == 1) {
 
-    })
+    //     if (customer.mobileNumber == alternateMobileNumber) {
+    //         return res.status(400).json({ message: "Your alternate Mobile number is same as your previous Mobile number " });
+    //     }
+    //     let findAlternateNumberExist = await models.customerKycPersonalDetail.findOne({ where: { alternateMobileNumber } })
 
-    let customerKycReview;
-    if (moduleId == 1) {
-        customerKycReview = await models.customer.findOne({
-            where: { id: customerId },
-            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage'],
-            include: [{
-                model: models.customerKycPersonalDetail,
-                as: 'customerKycPersonal',
-                attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
-                include: [{
-                    model: models.occupation,
-                    as: 'occupation'
-                }, {
-                    model: models.identityType,
-                    as: 'identityType'
-                }]
-            }, {
-                model: models.customerKycAddressDetail,
-                as: 'customerKycAddress',
-                attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
-                include: [{
-                    model: models.state,
-                    as: 'state'
-                }, {
-                    model: models.city,
-                    as: 'city'
-                }, {
-                    model: models.addressProofType,
-                    as: 'addressProofType'
-                }],
-                order: [["id", "ASC"]]
-            }]
-        })
-    } else if (moduleId == 3) {
-        customerKycReview = await models.customer.findOne({
-            where: { id: customerId },
-            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'userType', 'organizationTypeId', 'dateOfIncorporation', 'moduleId', 'panType', 'panImage'],
-            include: [
-                {
-                    model: models.customerKycPersonalDetail,
-                    as: 'customerKycPersonal',
-                    required: false,
-                    attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
-                    include: [{
-                        model: models.occupation,
-                        as: 'occupation'
-                    }, {
-                        model: models.identityType,
-                        as: 'identityType'
-                    }]
-                },
-                {
-                    model: models.customerKycOrganizationDetail,
-                    as: 'organizationDetail',
-                    required: false,
-                    attributes: ['id', 'customerId', 'customerKycId', 'email', 'alternateEmail', 'landLineNumber', 'gstinNumber', 'cinNumber', 'constitutionsDeed', 'gstCertificate'],
-                },
-                {
-                    model: models.customerKycAddressDetail,
-                    as: 'customerKycAddress',
-                    attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
-                    include: [{
-                        model: models.state,
-                        as: 'state'
-                    }, {
-                        model: models.city,
-                        as: 'city'
-                    }, {
-                        model: models.addressProofType,
-                        as: 'addressProofType'
-                    }],
-                    order: [["id", "ASC"]]
-                },
-                {
-                    model: models.organizationType,
-                    as: "organizationType",
-                    attributes: ['id', 'organizationType']
-                }]
-        })
-    }
+    //     if (!check.isEmpty(findAlternateNumberExist)) {
+    //         return res.status(400).json({ message: "Your alternate Mobile number is already exist." });
+    //     }
+    // } else if (moduleId == 3) {
 
-    let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
+    //     if (userType == "Corporate") {
+    //         let customerEmail = await models.customer.findOne({ where: { email } });
 
-    return res.status(200).json({ customerId, customerKycId, customerKycCurrentStage, customerKycReview, moduleId, userType })
+    //         let customerOrganizationEmail = await models.customerKycOrganizationDetail.findOne({ where: { email } });
+
+    //         if (!check.isEmpty(customerEmail) || !check.isEmpty(customerOrganizationEmail)) {
+    //             return res.status(400).json({ message: "your email id is already exists." });
+    //         }
+
+    //         if (alternateEmail) {
+
+    //             if (email == alternateEmail) {
+    //                 return res.status(400).json({ message: "your email id and alternate email id is same." });
+    //             }
+
+    //             let customerAlternateEmail = await models.customer.findOne({ where: { email: alternateEmail } });
+
+    //             let customerOrganizationAlternateEmail = await models.customerKycOrganizationDetail.findOne({ where: { alternateEmail } });
+
+    //             let customerOrganizationEmailVerify = await models.customerKycOrganizationDetail.findOne({ where: { email: alternateEmail } });
+
+    //             if (!check.isEmpty(customerAlternateEmail) || !check.isEmpty(customerOrganizationAlternateEmail) || !check.isEmpty(customerOrganizationEmailVerify)) {
+    //                 return res.status(400).json({ message: "your alternate email id is already exists." });
+    //             }
+    //         }
+
+    //         if (landLineNumber) {
+    //             let customerLandline = await models.customerKycOrganizationDetail.findOne({ where: { landLineNumber } });
+
+    //             if (!check.isEmpty(customerLandline)) {
+    //                 return res.status(400).json({ message: "your land line number is already exists." });
+    //             }
+    //         }
+    //     }
+    // }
+
+
+    // await sequelize.transaction(async t => {
+    //     let details;
+    //     if (moduleId == 1) {
+    //         details = await models.customerKycPersonalDetail.update({
+    //             profileImage: profileImage,
+    //             dateOfBirth: dateOfBirth,
+    //             alternateMobileNumber: alternateMobileNumber,
+    //             gender: gender,
+    //             age: age,
+    //             martialStatus: martialStatus,
+    //             occupationId: occupationId,
+    //             spouseName: spouseName,
+    //             signatureProof: signatureProof,
+    //             modifiedBy: modifiedBy
+    //         }, { where: { customerId: customerId }, transaction: t });
+    //     } else if (moduleId == 3) {
+    //         if (userType == "Individual") {
+    //             details = await models.customerKycPersonalDetail.update({
+    //                 profileImage: profileImage,
+    //                 dateOfBirth: dateOfBirth,
+    //                 alternateMobileNumber: alternateMobileNumber,
+    //                 gender: gender,
+    //                 age: age,
+    //                 martialStatus: martialStatus,
+    //                 occupationId: occupationId,
+    //                 spouseName: spouseName,
+    //                 signatureProof: signatureProof,
+    //                 modifiedBy: modifiedBy
+    //             }, { where: { customerId: customerId }, transaction: t });
+    //         }
+    //         if (userType == "Corporate") {
+    //             details = await models.customerKycOrganizationDetail.update({
+    //                 email: email,
+    //                 alternateEmail: alternateEmail,
+    //                 landLineNumber: landLineNumber,
+    //                 gstinNumber: gstinNumber,
+    //                 cinNumber: cinNumber,
+    //                 constitutionsDeed: constitutionsDeed,
+    //                 gstCertificate: gstCertificate,
+    //                 modifiedBy: modifiedBy
+    //             }, { where: { customerId: customerId }, transaction: t });
+    //         }
+
+    //     }
+
+    //     await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
+
+    // })
+
+    // let customerKycReview;
+    // if (moduleId == 1) {
+    //     customerKycReview = await models.customer.findOne({
+    //         where: { id: customerId },
+    //         attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage'],
+    //         include: [{
+    //             model: models.customerKycPersonalDetail,
+    //             as: 'customerKycPersonal',
+    //             attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
+    //             include: [{
+    //                 model: models.occupation,
+    //                 as: 'occupation'
+    //             }, {
+    //                 model: models.identityType,
+    //                 as: 'identityType'
+    //             }]
+    //         }, {
+    //             model: models.customerKycAddressDetail,
+    //             as: 'customerKycAddress',
+    //             attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
+    //             include: [{
+    //                 model: models.state,
+    //                 as: 'state'
+    //             }, {
+    //                 model: models.city,
+    //                 as: 'city'
+    //             }, {
+    //                 model: models.addressProofType,
+    //                 as: 'addressProofType'
+    //             }],
+    //             order: [["id", "ASC"]]
+    //         }]
+    //     })
+    // } else if (moduleId == 3) {
+    //     customerKycReview = await models.customer.findOne({
+    //         where: { id: customerId },
+    //         attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'userType', 'organizationTypeId', 'dateOfIncorporation', 'moduleId', 'panType', 'panImage'],
+    //         include: [
+    //             {
+    //                 model: models.customerKycPersonalDetail,
+    //                 as: 'customerKycPersonal',
+    //                 required: false,
+    //                 attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
+    //                 include: [{
+    //                     model: models.occupation,
+    //                     as: 'occupation'
+    //                 }, {
+    //                     model: models.identityType,
+    //                     as: 'identityType'
+    //                 }]
+    //             },
+    //             {
+    //                 model: models.customerKycOrganizationDetail,
+    //                 as: 'organizationDetail',
+    //                 required: false,
+    //                 attributes: ['id', 'customerId', 'customerKycId', 'email', 'alternateEmail', 'landLineNumber', 'gstinNumber', 'cinNumber', 'constitutionsDeed', 'gstCertificate'],
+    //             },
+    //             {
+    //                 model: models.customerKycAddressDetail,
+    //                 as: 'customerKycAddress',
+    //                 attributes: ['id', 'customerKycId', 'customerId', 'addressType', 'address', 'stateId', 'cityId', 'pinCode', 'addressProofTypeId', 'addressProofNumber', 'addressProof'],
+    //                 include: [{
+    //                     model: models.state,
+    //                     as: 'state'
+    //                 }, {
+    //                     model: models.city,
+    //                     as: 'city'
+    //                 }, {
+    //                     model: models.addressProofType,
+    //                     as: 'addressProofType'
+    //                 }],
+    //                 order: [["id", "ASC"]]
+    //             },
+    //             {
+    //                 model: models.organizationType,
+    //                 as: "organizationType",
+    //                 attributes: ['id', 'organizationType']
+    //             }]
+    //     })
+    // }
+
+    // let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });
+
+    // return res.status(200).json({ customerId, customerKycId, customerKycCurrentStage, customerKycReview, moduleId, userType })
 
 }
 
