@@ -1324,23 +1324,28 @@ let nextDueDateInterest = async (loan) => {
     // let securedPerDayInterestAmount = await newSlabRateInterestCalcultaion(securedOutstandingAmount, securedInterest, selectedSlab, tenure);
 
     let securedPerDayInterestAmount = ((securedInterest / 100) * securedOutstandingAmount * (paymentFrequency / 30)) / paymentFrequency
-
     let secured = await models.customerLoanInterest.findAll({
-        where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[0].id, isExtraDaysInterest: false },
+        where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[0].id, },
         order: [['emiEndDate', 'asc']]
     });
+
     var securedTotalInterest = 0
     var unsecuredTotalInterest = 0
+
     if (secured.length > 0) {
         let startDate = moment(secured[0].emiStartDate)
         let index = secured.findIndex(ele => {
-            let a = new Date(ele.emiEndDate);
-            let b = new Date()
-            return a.getTime() > b.getTime()
+            let loanEndDate = moment(ele.emiEndDate);
+            let currentDate = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+            let noOfDays = loanEndDate.diff(currentDate, 'days');
+            return noOfDays >= 0
         })
 
         if (index < 0) {
             securedTotalInterest = 0
+            secured.forEach(interest => {
+                securedTotalInterest += Number(interest.outstandingInterest)
+            })
         } else {
             let partialPaidSecuredIndex = secured.findIndex(ele => {
                 return ele.emiStatus == 'partially paid'
@@ -1377,15 +1382,18 @@ let nextDueDateInterest = async (loan) => {
         if (unsecured.length > 0) {
             let startDate = moment(unsecured[0].emiStartDate)
             let index = unsecured.findIndex(ele => {
-                let a = new Date(ele.emiEndDate);
-                let b = new Date()
-                return a.getTime() > b.getTime()
+                let loanEndDate = moment(ele.emiEndDate);
+                let currentDate = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+                let noOfDays = loanEndDate.diff(currentDate, 'days');
+                return noOfDays >= 0
             })
 
 
             if (index < 0) {
                 unsecuredTotalInterest = 0
-
+                unsecured.forEach(interest => {
+                    unsecuredTotalInterest += Number(interest.outstandingInterest)
+                })
             } else {
                 let partialPaidSecuredIndex = unsecured.findIndex(ele => {
                     return ele.emiStatus == 'partially paid'
