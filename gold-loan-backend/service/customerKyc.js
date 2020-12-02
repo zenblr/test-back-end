@@ -10,6 +10,8 @@ const { paginationWithFromTo } = require("../utils/pagination");
 const extend = require('extend')
 const check = require("../lib/checkLib");
 var uniqid = require('uniqid');
+const errorLogger = require('../utils/errorLogger');
+
 
 let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer, isFromCustomerWebsite) => {
 
@@ -1333,6 +1335,75 @@ let kycPersonalDetail = async (req) => {
 
 }
 
+let digiOrEmiKyc = async (req) => {
+    try {
+        const id = req.userData.id;
+        const { panNumber, panAttachment, aadharNumber, aadharAttachment } = req.body;
+        const merchantData = await getMerchantData();
+        let customerDetails = await models.customer.findOne({
+            where: { id, isActive: true },
+        });
+        let customerUniqueId = customerDetails.customerUniqueId;
+
+        if (customerUniqueId == null) {
+            customerUniqueId = uniqid.time().toUpperCase();
+        }
+
+        if (check.isEmpty(customerDetails)) {
+            // return res.status(404).json({ message: "Customer Does Not Exists" });
+            return { status: 404, success: false, message: `Customer Does Not Exists` }
+        }
+        let base64Image
+        if (/;base64/i.test(panAttachment)) {
+            base64Image = panAttachment.split(';base64,').pop();
+        } else {
+            const getAwsResp = await models.axios({
+                method: 'GET',
+                url: panAttachment,
+                responseType: 'arraybuffer'
+            });
+            base64Image = Buffer.from(getAwsResp.data, 'binary').toString('base64');
+        }
+        const dir = 'public/uploads/digitalGoldKyc';
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+        }
+        const panPath = `public/uploads/digitalGoldKyc/pan-${customerUniqueId}.jpeg`;
+        fs.writeFileSync(panPath, base64Image, { encoding: 'base64' });
+        const data = new FormData();
+        data.append('panNumber', panNumber);
+        data.append('panAttachment', fs.createReadStream(panPath));
+
+        const result = await models.axios({
+            method: 'POST',
+            url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/${customerUniqueId}/kyc`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${merchantData.accessToken}`,
+                ...data.getHeaders(),
+            },
+            data: data
+        })
+        if (result.data.statusCode === 200) {
+            fs.unlinkSync(panPath)
+            await sms.sendMessageForKycUpdate(customerDetails.mobileNumber);
+        }
+        // return res.status(200).json(result.data);
+        return { status: 200, success: true, data: { data: result.data }, customerUniqueId }
+    } catch (err) {
+        let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
+
+        if (err.response) {
+            // return res.status(422).json(err.response.data);
+            return { status: 422, success: false, message: err.response.data }
+        } else {
+            // console.log('Error', err.message);
+            return { status: 404, success: false, message: err.message }
+
+        }
+    };
+}
+
 module.exports = {
     customerKycAdd: customerKycAdd,
     customerKycEdit: customerKycEdit,
@@ -1342,5 +1413,6 @@ module.exports = {
     kycBasicDetails: kycBasicDetails,
     submitKycInfo: submitKycInfo,
     kycAddressDeatil: kycAddressDeatil,
-    kycPersonalDetail: kycPersonalDetail
+    kycPersonalDetail: kycPersonalDetail,
+    digiOrEmiKyc: digiOrEmiKyc
 }
