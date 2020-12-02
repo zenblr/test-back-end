@@ -95,8 +95,8 @@
                             {{details?.customerLoan[0]?.interestRate}}%
                             P.M
                         </div>
-                        <div *ngIf="details?.customerLoan[1]?.interestRate">
-                            {{details?.customerLoan[1]?.interestRate}}%
+                        <div *ngIf="details?.customerLoan[1]?.currentInterestRate">
+                            {{details?.customerLoan[1]?.currentInterestRate}}%
                             P.M
                         </div>
 
@@ -188,9 +188,9 @@
         <!-- loan ornaments -->
         <div class="col-12 card kt-padding-15" *ngIf="masterLoanId">
             <label class="font-weight-bold text-color kt-margin-b-10 kt-margin-t-15">
-                R.P.G - {{details?.customerLoan[0]?.scheme.schemeName}} : {{details?.customerLoan[0]?.rpg}} <br>
+                R.P.G - {{details?.customerLoan[0]?.scheme.schemeName | titlecase}} : {{details?.customerLoan[0]?.rpg}} <br>
                 <span class="kt-padding-l-45">
-                    {{details?.customerLoan[1]?.scheme.schemeName}} : {{details?.customerLoan[1]?.rpg}}
+                    {{details?.customerLoan[1]?.scheme.schemeName | titlecase}} : {{details?.customerLoan[1]?.rpg}}
                 </span>
             </label>
             <label class="font-weight-bold text-color kt-margin-b-25 ">Ornaments - Total

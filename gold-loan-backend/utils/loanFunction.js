@@ -314,6 +314,13 @@ let getAllInterest = async (loanId) => {
     return allNotPaidInterest;
 }
 
+let getAllPaidInterestForCalculation = async (loanId) => {
+    let allPaidInterest = await models.customerLoanInterest.findAll({
+        where: { loanId: loanId, emiStatus: 'paid' }
+    });
+    return allPaidInterest;
+}
+
 let getAllInterestLessThanDate = async (loanId, date) => {
     let allInterestLessThanDate = await models.customerLoanInterest.findAll({
         where: { loanId: loanId, emiDueDate: { [Op.lte]: date, }, emiStatus: { [Op.notIn]: ['paid'] }, isExtraDaysInterest: false },
@@ -2368,5 +2375,6 @@ module.exports = {
     customerNameNumberLoanId: customerNameNumberLoanId,
     getAllInterest: getAllInterest,
     getSecuredScheme: getSecuredScheme,
-    interestSplit:interestSplit
+    interestSplit:interestSplit,
+    getAllPaidInterestForCalculation:getAllPaidInterestForCalculation
 }
