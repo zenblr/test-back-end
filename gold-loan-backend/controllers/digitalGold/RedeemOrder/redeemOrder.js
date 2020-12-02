@@ -19,8 +19,14 @@ const Op = Sequelize.Op;
 
 exports.AddOrder = async (req, res) => {
   try {
-    const id = req.userData.id;
-    const { userAddressId, modeOfPayment, transactionDetails, blockId, shippingCharges, totalQuantity, totalWeight, orderAddress, cartData } = req.body;
+    // const { userAddressId, modeOfPayment, transactionDetails, blockId, shippingCharges, totalQuantity, totalWeight, orderAddress, cartData } = req.body;
+
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
+    let tempOrderDetail = await models.digiGoldTempOrderDetail.findOne({ where: { razorpayOrderId: razorpay_order_id } });
+
+    const id = tempOrderDetail.customerId;
+
     const razorPay = await getRazorPayDetails();
     let customerDetails = await models.customer.findOne({
       where: { id, isActive: true },
@@ -34,27 +40,28 @@ exports.AddOrder = async (req, res) => {
     } else {
       const customerUniqueId = customerDetails.customerUniqueId;
       const merchantData = await getMerchantData();
+
       //const transactionId = transactionDetails.razorpay_payment_id;
       const generated_signature = crypto
         .createHmac(
           "SHA256",
           razorPay.razorPayConfig.key_secret
         )
-        .update(transactionDetails.razorpay_order_id + "|" + transactionDetails.razorpay_payment_id)
+        .update(razorpay_order_id + "|" + razorpay_payment_id)
         .digest("hex");
-      if (generated_signature == transactionDetails.razorpay_signature) {
+      if (generated_signature == razorpay_signature) {
         signatureVerification = true
       }
       if (signatureVerification == false) {
         return res.status(422).json({ message: "Payment verification failed" });
       }
       const data = {
-        'merchantTransactionId': transactionDetails.razorpay_payment_id,
+        'merchantTransactionId': razorpay_payment_id,
         'uniqueId': customerUniqueId,
-        'user[shipping][addressId]': userAddressId,
+        'user[shipping][addressId]': tempOrderDetail.userAddressId,
         'merchantId': merchantData.merchantId,
         'mobileNumber': customerDetails.mobileNumber,
-        'modeOfPayment': modeOfPayment
+        'modeOfPayment': tempOrderDetail.modeOfPayment
       };
       for (let [index, ele] of getCartDetails.entries()) {
         data[`product[${index}][sku]`] = ele.productSku;
@@ -72,7 +79,7 @@ exports.AddOrder = async (req, res) => {
       if (result.data.statusCode === 200) {
         await models.axios({
           method: 'PATCH',
-          url: `https://api.razorpay.com/v1/payments/${transactionDetails.razorpay_payment_id}`,
+          url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
           auth: {
             username: razorPay.razorPayConfig.key_id,
             password: razorPay.razorPayConfig.key_secret
@@ -86,29 +93,30 @@ exports.AddOrder = async (req, res) => {
 
           await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: id }, transaction: t });
 
-          let tempOrderDetail = await models.digiGoldTempOrderDetail.findOne({ where: { blockId } });
-
-          let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetail.id, customerId: id, orderTypeId: 3, orderId: blockId, totalAmount: tempOrderDetail.totalAmount, quantity: tempOrderDetail.quantity, blockId: blockId, amount: tempOrderDetail.amount, modeOfPayment, userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, razorpayOrderId: transactionDetails.razorpay_order_id, razorpayPaymentId: transactionDetails.razorpay_payment_id, razorpaySignature: transactionDetails.razorpay_signature, orderSatatus: "pending" }, { transaction: t });
+          let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetail.id, customerId: id, orderTypeId: 3, orderId: tempOrderDetail.blockId, totalAmount: tempOrderDetail.totalAmount, quantity: tempOrderDetail.quantity, blockId: tempOrderDetail.blockId, amount: tempOrderDetail.amount, modeOfPayment: tempOrderDetail.modeOfPayment, userAddressId: tempOrderDetail.userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.orderId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, orderSatatus: "pending", deliveryShippingCharges: tempOrderDetail.deliveryShippingCharges, deliveryTotalQuantity: tempOrderDetail.deliveryTotalQuantity, deliveryTotalWeight: tempOrderDetail.deliveryTotalWeight}, { transaction: t });
 
           await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { id: tempOrderDetail.id }, transaction: t })
 
-          await models.digiGoldOrderDeliveryDetail.create({ orderDetailId: orderDetail.id, shippingCharges, totalQuantity, totalWeight }, { transaction: t });
+        let cartData = await models.digiGoldTempOrderProductDetail.findAll({where: {tempOrderDetailId: tempOrderDetail.id }})
 
           if(cartData.length){
             for(let cart of cartData){
               await models.digiGoldOrderProductDetail.create({orderDetailId: orderDetail.id, productSku: cart.productSku, productWeight: cart.productWeight, productName: cart.productName, amount: cart.amount, productImage: cart.productImage, totalAmount: cart.totalProductAmount, metalType: cart.metalType, quantity: cart.quantity, createdBy: 1, modifiedBy: 1}, { transaction: t });
               }
           }
+          let tempOrderAddressDetail = await models.digiGoldTempOrderAddress.findAll({ where: { tempOrderDetailId: tempOrderDetail.id}});
 
-          for (let address of orderAddress) {
-            await models.digiGoldOrderAddressDetail.create({ orderDetailId: orderDetail.id,customerName:address.name,   addressType: address.addressType, address: address.address, stateId: address.stateId, cityId: address.cityId, pinCode: address.pinCode }, { transaction: t });
+          for (let address of tempOrderAddressDetail) {
+            await models.digiGoldOrderAddressDetail.create({ orderDetailId: orderDetail.id,customerName:address.customerName,   addressType: address.addressType, address: address.address, stateId: address.stateId, cityId: address.cityId, pinCode: address.pinCode }, { transaction: t });
           }
 
           await sms.sendMessageForOrderPlaced(customerDetails.mobileNumber, result.data.result.data.orderId);
 
         })
       }
-      return res.status(200).json(result.data);
+      // return res.status(200).json(result.data);
+      res.redirect(`http://localhost:4500/digi-gold/order-success/delivery/${result.data.result.data.merchantTransactionId}`);
+
     }
   } catch (err) {
     console.log(err);

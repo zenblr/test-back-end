@@ -22,8 +22,13 @@ const Op = Sequelize.Op;
 
 exports.buyProduct = async (req, res) => {
   try {
-    const { metalType, quantity, lockPrice, blockId, transactionDetails, amount, quantityBased, modeOfPayment } = req.body;
-    const id = req.userData.id;
+    // const { metalType, quantity, lockPrice, blockId, transactionDetails, amount, quantityBased, modeOfPayment } = req.body;
+
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
+    let tempOrderData = await models.digiGoldTempOrderDetail.getTempOrderDetail(razorpay_order_id);
+
+    const id = tempOrderData.customerId;
     const razorPay = await getRazorpayCredentails();
     let customerDetails = await models.customer.findOne({
       where: { id, isActive: true },
@@ -32,7 +37,6 @@ exports.buyProduct = async (req, res) => {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     }
 
-    let getTempOrderData = await models.digiGoldTempOrderDetail.getTempOrderDetail(blockId);
     
     //const transactionId = transactionDetails.razorpay_payment_id;
     const generated_signature = crypto
@@ -40,9 +44,9 @@ exports.buyProduct = async (req, res) => {
         "SHA256",
         razorPay.razorPayConfig.key_secret
       )
-      .update(transactionDetails.razorpay_order_id + "|" + transactionDetails.razorpay_payment_id)
+      .update(razorpay_order_id + "|" + razorpay_payment_id)
       .digest("hex");
-    if (generated_signature == transactionDetails.razorpay_signature) {
+    if (generated_signature == razorpay_signature) {
       signatureVerification = true
     }
     if (signatureVerification == false) {
@@ -62,23 +66,23 @@ exports.buyProduct = async (req, res) => {
     //razorPayOrder.items[0].wallet
     const getUserDetails = getUser.data.result.data;
     const data = {
-      'lockPrice': lockPrice,
+      'lockPrice': tempOrderData.lockPrice,
       'emailId': getUserDetails.userEmail,
-      'metalType': metalType,
-      'merchantTransactionId': transactionDetails.razorpay_payment_id,
+      'metalType': tempOrderData.metalType,
+      'merchantTransactionId': razorpay_payment_id,
       'userName': getUserDetails.userName,
       'userCity': getUserDetails.userCityId,
       'userState': getUserDetails.userStateId,
       'userPincode': getUserDetails.userPincode,
       'uniqueId': customerUniqueId,
-      'blockId': blockId,
-      'modeOfPayment': modeOfPayment,
+      'blockId': tempOrderData.blockId,
+      'modeOfPayment': tempOrderData.modeOfPayment,
       'mobileNumber': customerDetails.mobileNumber
     };
-    if (quantityBased == true) {
-      data.quantity = quantity;
+    if (tempOrderData.quantityBased == true) {
+      data.quantity = tempOrderData.quantity;
     } else {
-      data.amount = amount;
+      data.amount = tempOrderData.amount;
     }
     const result = await models.axios({
       method: 'POST',
@@ -91,7 +95,7 @@ exports.buyProduct = async (req, res) => {
     })
     await models.axios({
       method: 'PATCH',
-      url: `https://api.razorpay.com/v1/payments/${transactionDetails.razorpay_payment_id}`,
+      url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
       auth: {
         username: razorPay.razorPayConfig.key_id,
         password: razorPay.razorPayConfig.key_secret
@@ -103,11 +107,11 @@ exports.buyProduct = async (req, res) => {
 
       await sequelize.transaction(async (t) => {
 
-        let orderUniqueId = `digiGoldBuy${Math.floor(1000 + Math.random() * 9000)}`;
-        console.log( getTempOrderData);
-        let orderDetail = await models.digiGoldOrderDetail.create({tempOrderId: getTempOrderData.id, customerId: id,orderTypeId: 1,  orderId: orderUniqueId, metalType, quantity, lockPrice, blockId, amount,rate: result.data.result.data.rate, quantityBased, modeOfPayment, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, razorpayOrderId: transactionDetails.razorpay_order_id, razorpayPaymentId: transactionDetails.razorpay_payment_id, razorpaySignature: transactionDetails.razorpay_signature, orderSatatus: "pending", totalAmount: amount  });
+        let orderUniqueId = `dg_buy${Math.floor(1000 + Math.random() * 9000)}`;
 
-        await models.digiGoldTempOrderDetail.update({isOrderPlaced: true}, {where: { blockId }});
+        let orderDetail = await models.digiGoldOrderDetail.create({tempOrderId: tempOrderData.id, customerId: id,orderTypeId: 1,  orderId: orderUniqueId, metalType: tempOrderData.metalType, quantity: tempOrderData.quantity, lockPrice: tempOrderData.lockPrice, blockId: tempOrderData.blockId, amount: tempOrderData.amount,rate: result.data.result.data.rate, quantityBased: tempOrderData.quantityBased, modeOfPayment: tempOrderData.modeOfPayment, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, orderSatatus: "pending", totalAmount: tempOrderData.amount  });
+
+        await models.digiGoldTempOrderDetail.update({isOrderPlaced: true}, {where: { razorpayOrderId: razorpay_order_id }});
 
         let CustomerBalanceData = await models.digiGoldCustomerBalance.findOne({where: { customerId: id, isActive: true }})
         if(CustomerBalanceData){
@@ -121,7 +125,11 @@ exports.buyProduct = async (req, res) => {
       
       await sms.sendMessageForBuy(customerName, customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
     }
-    return res.status(200).json(result.data);
+    // return res.status(200).json(result.data);
+
+    res.cookie(`metalObject`, `${JSON.stringify(result.data.result.data.metalType)}`);
+    res.redirect(`http://localhost:4500/digi-gold/order-success/buy/${result.data.result.data.merchantTransactionId}`);
+    // ${process.env.DIGITALGOLDAPI}
   } catch (err) {
     console.log(err);
 
@@ -132,6 +140,17 @@ exports.buyProduct = async (req, res) => {
     } else {
       console.log('Error', err.message);
     }
+    // if (err.response) {
+    //   if(err.response.data.errors.userKyc && err.response.data.errors.userKyc.length ){
+
+    //     res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
+    //     res.redirect(`https://${process.env.DIGITALGOLDAPI}/profile`);
+    //   }else{
+    //     return res.status(422).json(err.response.data);
+    //   }
+    // } else {
+    //   console.log('Error', err.message);
+    // }
   };
 }
 

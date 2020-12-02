@@ -11,7 +11,7 @@ const Op = Sequelize.Op;
 exports.makePayment = async(req, res)=>{
   try{
     const id = req.userData.id;
-    const {amount, paymentMode, metalType, quantity, lockPrice, blockId, quantityBased, modeOfPayment, orderType, cartData}= req.body;
+    const {amount, paymentMode, metalType, quantity, lockPrice, blockId, quantityBased, modeOfPayment, orderType, cartData, shippingCharges, totalQuantity, totalWeight, orderAddress, userAddressId, }= req.body;
     console.log(req.body);
     const razorPay = await getRazorPayDetails();
     let customerDetails = await models.customer.findOne({
@@ -43,9 +43,16 @@ exports.makePayment = async(req, res)=>{
       }
       if(orderTypeDetail.id == 3){
 
-        let orderUniqueId = `digiGoldDelivery${Math.floor(1000 + Math.random() * 9000)}`;
+        let orderUniqueId = `dg_delivery${Math.floor(1000 + Math.random() * 9000)}`;
 
-        tempOrderDetail = await models.digiGoldTempOrderDetail.create({customerId: id, orderTypeId: orderTypeDetail.id, totalAmount: amount,blockId: orderUniqueId, amount, modeOfPayment: modeOfPayment, createdBy:1, modifiedBy: 1, razorpayOrderId: razorPayOrder.id}, { transaction: t });
+        tempOrderDetail = await models.digiGoldTempOrderDetail.create({customerId: id, orderTypeId: orderTypeDetail.id, totalAmount: amount,blockId: orderUniqueId, amount, modeOfPayment: modeOfPayment, createdBy:1, modifiedBy: 1, razorpayOrderId: razorPayOrder.id, deliveryShippingCharges: shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, userAddressId}, { transaction: t });
+
+        if(orderAddress.length){
+          for(let ele of orderAddress){
+            await models.digiGoldTempOrderAddress.create({tempOrderDetailId: tempOrderDetail.id, customerName: ele.customerName, addressType: ele.addressType, address: ele.address, stateId: ele.stateId, cityId: ele.cityId, pinCode: ele.pinCode }, { transaction: t })
+          }
+        }
+
         if(cartData.length){
           for(let cart of cartData){
             await models.digiGoldTempOrderProductDetail.create({tempOrderDetailId: tempOrderDetail.id, productSku: cart.productSku, productWeight: cart.productWeight, productName: cart.productName, amount: cart.amount, productImage: cart.productImage, totalAmount: cart.totalProductAmount, metalType: cart.metalType, quantity: cart.quantity}, { transaction: t });

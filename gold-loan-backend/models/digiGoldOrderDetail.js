@@ -98,6 +98,18 @@ module.exports = (sequelize, DataTypes) => {
             field: 'order_satatus',
             defaultValue: "pending",
         },
+        deliveryShippingCharges: {
+            type: DataTypes.FLOAT,
+            field: 'delivery_shipping_charges'
+        },
+        deliveryTotalQuantity: {
+            type: DataTypes.INTEGER,
+            field: 'delivery_total_quantity'
+        },
+        deliveryTotalWeight: {
+            type: DataTypes.FLOAT,
+            field: 'delivery_total_weight'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -105,7 +117,7 @@ module.exports = (sequelize, DataTypes) => {
         },
     }, {
         freezeTableName: true,
-        tableName: 'digital_gold_order_detail',
+        tableName: 'digi_gold_order_detail',
     });
 
     DigiGoldOrderDetail.associate = function (models) {

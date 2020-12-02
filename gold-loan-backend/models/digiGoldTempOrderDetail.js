@@ -76,6 +76,18 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'razorpay_order_id'
         },
+        deliveryShippingCharges: {
+            type: DataTypes.FLOAT,
+            field: 'delivery_shipping_charges'
+        },
+        deliveryTotalQuantity: {
+            type: DataTypes.INTEGER,
+            field: 'delivery_total_quantity'
+        },
+        deliveryTotalWeight: {
+            type: DataTypes.FLOAT,
+            field: 'delivery_total_weight'
+        },
         isOrderPlaced: {
             type: DataTypes.BOOLEAN,
             field: 'is_order_placed',
@@ -98,7 +110,7 @@ module.exports = (sequelize, DataTypes) => {
 
     }
 
-    DigiGoldTempOrderDetail.getTempOrderDetail = (blockId) => DigiGoldTempOrderDetail.findOne({where:{blockId}})
+    DigiGoldTempOrderDetail.getTempOrderDetail = (razorpayOrderId) => DigiGoldTempOrderDetail.findOne({where:{razorpayOrderId}})
 
 
     return DigiGoldTempOrderDetail;

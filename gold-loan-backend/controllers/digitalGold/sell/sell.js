@@ -112,7 +112,7 @@ exports.sellProduct = async (req, res) => {
 
       await sequelize.transaction(async (t) => {
 
-        let orderUniqueId = `digiGoldSell${Math.floor(1000 + Math.random() * 9000)}`;
+        let orderUniqueId = `dg_sell${Math.floor(1000 + Math.random() * 9000)}`;
         let orderDetail = await models.digiGoldOrderDetail.create({
           tempOrderId: tempId.id, customerId: id, orderTypeId: orderTypeId, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
             lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy
