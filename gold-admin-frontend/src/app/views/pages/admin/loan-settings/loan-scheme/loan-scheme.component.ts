@@ -9,6 +9,7 @@ import { PartnerService } from '../../../../../core/user-management/partner/serv
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { ToastrService } from 'ngx-toastr';
 import { LayoutUtilsService } from '../../../../../core/_base/crud';
+import { RpgEditComponent } from '../rpg-edit/rpg-edit.component';
 
 @Component({
   selector: 'kt-loan-scheme',
@@ -38,7 +39,7 @@ export class LoanSchemeComponent implements OnInit {
     private eleref: ElementRef,
     private sharedService: SharedService,
     private toastr: ToastrService,
-    private layoutUtilsService:LayoutUtilsService
+    private layoutUtilsService: LayoutUtilsService
   ) {
     this.loanSettingService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
@@ -111,6 +112,18 @@ export class LoanSchemeComponent implements OnInit {
   addScheme() {
     const dialogRef = this.dialog.open(AddSchemeComponent, {
       width: '650px'
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.getScheme()
+      }
+      this.loanSettingService.openModal.next(false);
+    });
+  }
+  openRpgModal(scheme) {
+    const dialogRef = this.dialog.open(RpgEditComponent, {
+      data:  scheme,
+      width: '450px'
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {

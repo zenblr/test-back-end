@@ -125,7 +125,7 @@ exports.payableAmountConfirmPartPayment = async (req, res, next) => {
         return res.status(400).json({ message: `Your payable amount is greater than paid amount. You have to pay ${payableAmount}` })
     }
 
-    let { securedRatio, unsecuredRatio } = await getAmountLoanSplitUpData(loan, amount, paidAmount)
+    let { securedRatio, unsecuredRatio } = await     (loan, amount, paidAmount)
     loan.dataValues.customerLoan[0].dataValues.partPayment = (securedRatio - securedInterest - securedPenalInterest).toFixed(2)
 
     if (loan.isUnsecuredSchemeApplied) {
@@ -524,8 +524,8 @@ exports.partPayment = async (req, res, next) => {
                 let currentDate = moment();
                 let noOfDays = 0;
                 for (const loan of loanInfo1) {
-                    let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
                     let allInterestTable = await getAllInterest(loan.id);
+                    let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
                     let loanStartDate;
                     if (!lastPaidEmi) {
                         loanStartDate = moment(loan.masterLoan.loanStartDate);
@@ -1163,8 +1163,8 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
             let currentDate = moment();
             let noOfDays = 0;
             for (const loan of loanInfo1) {
-                let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
                 let allInterestTable = await getAllInterest(loan.id);
+                let lastPaidEmi = await checkPaidInterest(loan.id, loan.masterLoanId);
                 let loanStartDate;
                 if (!lastPaidEmi) {
                     loanStartDate = moment(loan.masterLoan.loanStartDate);

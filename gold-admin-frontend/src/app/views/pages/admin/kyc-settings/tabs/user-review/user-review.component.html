@@ -50,13 +50,13 @@
                                     {{reviewForm.controls.profileImage.invalid}}
                                     {{reviewForm.controls.profileImage.value}} -->
                                 </div>
-                                <div class="col-7 d-flex" *ngIf="viewOnly && (userType == 4 || userType == 6)">
+                                <div class="col-7 d-flex" *ngIf="viewOnly && (permission.customerKycAdd)">
                                     <div class="align-self-center">
                                         <input type="file" accept="image/*" #profile class="d-none"
                                             (input)="getFileInfo($event, 'profile')" />
                                         <label [class.mandatory]="viewOnly && data?.moduleId == 1"
-                                            [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
-                                            (click)="userType != 5 && webcam()" class=" text-primary"
+                                            [ngClass]="!permission.customerKycAdd ? 'cursor-not-allowed' : 'kt-pointer'"
+                                            (click)="permission.customerKycAdd && webcam()" class=" text-primary"
                                             style="font-weight: 600;">Change Profile
                                             Picture</label>
                                     </div>
@@ -97,7 +97,7 @@
                             </div>
                             <div class="col-4">
                                 <input type="text" class="form-control" placeholder="First Name"
-                                    formControlName="firstName" ktAlphabets
+                                    formControlName="firstName" ktAlphabets ktTrimControl
                                     value="{{this.data.customerKycReview.firstName | titlecase}}"
                                     [class.isError]=" controls.firstName.touched && controls.firstName.invalid " />
                                 <mat-error *ngIf=" controls.firstName.errors?.required && controls.firstName.touched ">
@@ -106,7 +106,7 @@
                             </div>
                             <div class=" col-4">
                                 <input type="text" aria-label="Last name" placeholder="Last Name" ktAlphabets
-                                    class="form-control" formControlName="lastName"
+                                    ktTrimControl class="form-control" formControlName="lastName"
                                     value="{{this.data.customerKycReview.lastName | titlecase}}" [class.isError]="
                                         controls.lastName.touched &&
                                         controls.lastName.invalid
@@ -401,9 +401,10 @@
                                             formControlName="identityProofFileName" />
 
                                         <div class="input-group-append">
-                                            <span [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
+                                            <span
+                                                [ngClass]="!permission.customerKycAdd ? 'cursor-not-allowed' : 'kt-pointer'"
                                                 class="input-group-text bgx font-weight" id="basic-addon2"
-                                                (click)="userType != 5 && identity.click()"
+                                                (click)="permission.customerKycAdd && identity.click()"
                                                 style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                         </div>
                                         <input type="file" accept="image/*,application/pdf" class="d-none" #identity
@@ -590,8 +591,8 @@
                                         aria-describedby="basic-addon2" readonly />
                                     <div class="input-group-append">
                                         <span class="input-group-text bg font-weight" id="basic-addon2"
-                                            (click)="userType !== 5 && permanent.click()"
-                                            [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
+                                            (click)="permission.customerKycAdd && permanent.click()"
+                                            [ngClass]="!permission.customerKycAdd ? 'cursor-not-allowed' : 'kt-pointer'"
                                             style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                     </div>
                                     <input type="file" accept="image/*,application/pdf" class="d-none" #permanent
@@ -816,8 +817,8 @@
                                             aria-describedby="basic-addon2" readonly />
                                         <div class="input-group-append">
                                             <span class="input-group-text bg font-weight" id="basic-addon2"
-                                                (click)="userType !==5 && residential.click()"
-                                                [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
+                                                (click)="permission.customerKycAdd && residential.click()"
+                                                [ngClass]="!permission.customerKycAdd ? 'cursor-not-allowed' : 'kt-pointer'"
                                                 style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                         </div>
                                         <input type="file" accept="image/*,application/pdf" class="d-none" #residential
@@ -1274,8 +1275,8 @@
                                             aria-describedby="basic-addon2" readonly />
                                         <div class="input-group-append">
                                             <span class="input-group-text bg font-weight" id="basic-addon2"
-                                                (click)="userType !== 5 && signature.click()"
-                                                [ngClass]="userType == 5 ? 'cursor-not-allowed' : 'kt-pointer'"
+                                                (click)="permission.customerKycAdd && signature.click()"
+                                                [ngClass]="!permission.customerKycAdd ? 'cursor-not-allowed' : 'kt-pointer'"
                                                 style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
                                         </div>
                                         <input type="file" accept="image/*,application/pdf" class="d-none" #signature

@@ -36,7 +36,8 @@ export class PacketTrackingComponent implements OnInit {
   private subscriptions: Subscription[] = [];
   private unsubscribeSearch$ = new Subject();
   filteredDataList: any = {};
-
+  userDetails: any;
+  
   constructor(
     public dialog: MatDialog,
     private scrapPacketTrackingService: ScrapPacketTrackingService,
@@ -46,7 +47,7 @@ export class PacketTrackingComponent implements OnInit {
     private ngxPermissionService: NgxPermissionsService,
     private router: Router,
     private ref: ChangeDetectorRef,
-    private sharedService: SharedService
+    private sharedService: SharedService,
   ) {
     this.scrapPacketTrackingService.openModal$.pipe(
       map(res => {
@@ -63,6 +64,8 @@ export class PacketTrackingComponent implements OnInit {
           this.applyFilter(res);
         }
       });
+
+      this.sharedService.getUserDetailsFromStorage().subscribe(res => this.userDetails = res.userDetails)
   }
 
   ngOnInit() {
@@ -245,7 +248,7 @@ export class PacketTrackingComponent implements OnInit {
   checkForPartnerBranchIn(packet) {
     const lastIndex = packet.locationData[packet.locationData.length - 1];
     const id = lastIndex.scrapPacketLocation.id;
-    const isNotAllowed = id == 3 || id == 1 ? true : false;
+    const isNotAllowed = id == 3 || id == 1 || this.userDetails.internalBranchId != packet.internalBranchId ? true : false;
     return isNotAllowed;
   }
 

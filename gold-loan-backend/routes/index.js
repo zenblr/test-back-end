@@ -273,5 +273,7 @@ router.use('/migration', migration)
 
 const configDetail = require('./digitalGold/configDetail')
 router.use('/digital-gold/config-detail', configDetail);
+const errorLogger = require('./errorLogs');
+router.use('/error-logs', errorLogger)
 
 module.exports = router;
