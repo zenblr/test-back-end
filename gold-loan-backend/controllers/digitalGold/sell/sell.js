@@ -217,7 +217,7 @@ async function getCustomerBalanceDetail(customerId) {
   } else {
 
     let customerDetails = await models.customer.findOne({
-      where: { id, isActive: true },
+      where: { id: customerId, isActive: true },
     });
 
     const customerUniqueId = customerDetails.customerUniqueId;

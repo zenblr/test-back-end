@@ -21,7 +21,7 @@ exports.AddOrder = async (req, res) => {
   try {
     // const { userAddressId, modeOfPayment, transactionDetails, blockId, shippingCharges, totalQuantity, totalWeight, orderAddress, cartData } = req.body;
 
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, requestFrom } = req.body;
 
     let tempOrderDetail = await models.digiGoldTempOrderDetail.findOne({ where: { razorpayOrderId: razorpay_order_id } });
 
@@ -114,9 +114,11 @@ exports.AddOrder = async (req, res) => {
 
         })
       }
-      // return res.status(200).json(result.data);
-      res.redirect(`http://localhost:4500/digi-gold/order-success/delivery/${result.data.result.data.merchantTransactionId}`);
-
+      if(requestFrom == "mobileApp"){
+      return res.status(200).json(result.data);
+      }else{
+        res.redirect(`http://${process.env.DIGITALGOLDAPI}/digi-gold/order-success/delivery/${result.data.result.data.merchantTransactionId}`);
+      }
     }
   } catch (err) {
     console.log(err);
