@@ -156,11 +156,47 @@ let getAllCustomerLoanId = async () => {
             }],
     });
     let customerLoanId = [];
-    console.log(customerLoanId)
     for (const masterLoanData of masterLona) {
         await masterLoanData.customerLoan.map((data) => { customerLoanId.push(data.id) });
     }
     return customerLoanId
+}
+
+let getAllOrnamentReleasedCustomerLoanId = async () => {
+    let masterLona = await models.customerLoanMaster.findAll({
+        order: [
+            [models.customerLoan, 'id', 'asc']
+        ],
+        where: {
+            isActive: true,
+            isLoanCompleted: true,
+            isOrnamentsReleased : true
+        },
+        attributes: ['id'],
+        include: [{
+                model: models.customerLoan,
+                as: 'customerLoan',
+                attributes: ['id']
+            }],
+    });
+    let customerLoanId = [];
+    for (const masterLoanData of masterLona) {
+        await masterLoanData.customerLoan.map((data) => { customerLoanId.push(data.id) });
+    }
+    return customerLoanId
+}
+
+let calculationDataForReleasedLoan = async () => {
+    let customerLoanId = await getAllOrnamentReleasedCustomerLoanId();
+    let loanInfo = [];
+    for (const id of customerLoanId) {
+        let info = await getAllDetailsOfCustomerLoan(id);
+        loanInfo.push(info);
+    }
+    let noOfDaysInYear = 360
+    let global = await models.globalSetting.findAll()
+    let { gracePeriodDays } = global[0]
+    return { noOfDaysInYear, gracePeriodDays, loanInfo };
 }
 
 let getAllDetailsOfCustomerLoan = async (customerLoanId) => {
@@ -319,6 +355,13 @@ let getAllPaidInterestForCalculation = async (loanId) => {
         where: { loanId: loanId, emiStatus: 'paid' }
     });
     return allPaidInterest;
+}
+
+let getAllPaidPartialyPaidInterest = async (loanId) => {
+    let allpaidPartialyPaidInterest = await models.customerLoanInterest.findAll({
+        where: { loanId: loanId,  emiStatus: { [Op.in]: ['paid','partially paid'] } }
+    });
+    return allpaidPartialyPaidInterest;
 }
 
 let getAllInterestLessThanDate = async (loanId, date) => {
@@ -2216,5 +2259,7 @@ module.exports = {
     penalInterestCalculationForSelectedLoanWithOutT: penalInterestCalculationForSelectedLoanWithOutT,
     customerNameNumberLoanId: customerNameNumberLoanId,
     getAllInterest:getAllInterest,
-    getAllPaidInterestForCalculation:getAllPaidInterestForCalculation
+    getAllPaidInterestForCalculation:getAllPaidInterestForCalculation,
+    calculationDataForReleasedLoan:calculationDataForReleasedLoan,
+    getAllPaidPartialyPaidInterest:getAllPaidPartialyPaidInterest
 }
