@@ -117,7 +117,7 @@ exports.AddOrder = async (req, res) => {
       if(requestFrom == "mobileApp"){
       return res.status(200).json(result.data);
       }else{
-        res.redirect(`http://${process.env.DIGITALGOLDAPI}/digi-gold/order-success/delivery/${result.data.result.data.merchantTransactionId}`);
+        res.redirect(`http://${process.env.BASE_URL_CUSTOMER}/digi-gold/order-success/delivery/${result.data.result.data.merchantTransactionId}`);
       }
     }
   } catch (err) {
