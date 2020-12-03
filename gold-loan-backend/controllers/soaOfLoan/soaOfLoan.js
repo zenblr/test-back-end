@@ -162,7 +162,7 @@ ws.cell(11, 6, 11, 7, true).string(`${masterLoan.outstandingAmount}`).style(styl
         ws.cell(i + 18, 11).number(Number(account[i].rebateAmount)).style(numberStyle).style(style);
         ws.cell(i + 18, 12).number(Number(account[i].debit)).style(numberStyle).style(style);
         ws.cell(i + 18, 13).number(Number(account[i].credit)).style(numberStyle).style(style);
-        closingBalance = Number(closingBalance) + Number(account[i].debit) - Number(account[i].credit);
+        closingBalance = Number(closingBalance.toFixed(2)) + Number(account[i].debit) - Number(account[i].credit);
         ws.cell(i + 18, 14).number(Math.abs(Number(closingBalance))).style(numberStyle).style(style);
     }
     return wb.write(`${Date.now()}.xlsx`, res);
