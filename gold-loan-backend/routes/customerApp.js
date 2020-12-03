@@ -17,6 +17,8 @@ const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetai
 
 const { getSoa } = require('../controllers/soaOfLoan/soaOfLoan');
 
+const { razorPayCreateOrder } = require('../controllers/razorpay/razorpay')
+
 
 //customer App
 
@@ -67,6 +69,7 @@ router.use('/quick-pay', quickPay)
 
 router.use('/contact-us', contactUsEmail)
 
+router.post('/razor-pay', customerCheckAuth, wrapper(razorPayCreateOrder));
 
 
 module.exports = router;
