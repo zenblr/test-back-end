@@ -27,9 +27,23 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'interest_rate',
         },
+        rebateInterestRate: {
+            type: DataTypes.FLOAT,
+            field: 'rebate_interest_rate'
+        },
         interestAmount: {
             type: DataTypes.DECIMAL(10,2),
             field: 'interest_amount',
+            defaultValue: 0
+        },
+        highestInterestAmount: {
+            type: DataTypes.DECIMAL(10,2),
+            field: 'highest_interest_amount',
+            defaultValue: 0
+        },
+        rebateAmount: {
+            type: DataTypes.DECIMAL(10,2),
+            field: 'rebate_amount',
             defaultValue: 0
         },
         paidAmount: {

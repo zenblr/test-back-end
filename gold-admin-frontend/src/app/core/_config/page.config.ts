@@ -20,6 +20,9 @@ export class PageConfig {
 					page: { title: "Show Feedback", desc: "" },
 				},
 			},
+			error:{
+				page: { title: "Error Logs", desc: "" },
+			},
 			masters: {
 				reasons: {
 					page: { title: "Reasons", desc: "" },
@@ -91,6 +94,9 @@ export class PageConfig {
 				},
 				"gold-rate": {
 					page: { title: "Gold Rate", desc: "" },
+				},
+				"process-note": {
+					page: { title: "Process Note (SOP)", desc: "" },
 				},
 			},
 			"user-management": {

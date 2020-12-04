@@ -125,6 +125,9 @@ exports.getInterestTableInExcel = async (req, res) => {
         interest["masterLoanId"] = data.masterLoanId;
         interest["emiDueDate"] = data.emiDueDate;
         interest["interestRate"] = data.interestRate;
+        interest["rebateInterestRate"] = data.rebateInterestRate;
+        interest["rebateAmount"] = data.rebateAmount;
+        interest["highestInterestAmount"] = data.highestInterestAmount;
         interest["interestAmount"] = data.interestAmount;
         interest["paidAmount"] = data.paidAmount;
         interest["interestAccrual"] = data.interestAccrual;

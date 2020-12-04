@@ -19,6 +19,7 @@ import { CoreModule } from '../../../../core/core.module';
 import { AddKaratDetailsComponent } from './karat-details/add-karat-details/add-karat-details.component';
 import { ListKaratDetailsComponent } from './karat-details/list-karat-details/list-karat-details.component'
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { RpgEditComponent } from './rpg-edit/rpg-edit.component';
 const routes: Routes = [
   { path: 'loan-status', component: LoanStatusComponent },
   { path: 'scheme', component: LoanSchemeComponent },
@@ -30,7 +31,8 @@ const routes: Routes = [
     LoanStatusComponent,
     AddSchemeComponent,
     AddKaratDetailsComponent,
-    ListKaratDetailsComponent
+    ListKaratDetailsComponent,
+    RpgEditComponent
   ],
   imports: [
     CommonModule,
@@ -61,7 +63,8 @@ const routes: Routes = [
     ActionNotificationComponent,
     AddSchemeComponent,
     AddKaratDetailsComponent,
-    DeleteEntityDialogComponent
+    DeleteEntityDialogComponent,
+    RpgEditComponent
   ],
 })
 export class LoanSettingsModule { }
