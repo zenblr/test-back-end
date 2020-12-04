@@ -161,11 +161,15 @@ module.exports = (sequelize, DataTypes) => {
         },
         gender: {
             type: DataTypes.STRING,
-            field: 'customer_address',
+            field: 'gender',
         },
         dateOfBirth: {
             type: DataTypes.DATE,
             field: 'date_of_birth',
+        },
+        age: {
+            type: DataTypes.STRING,
+            field: 'age'
         },
         allowCustomerEdit: {
             type: DataTypes.BOOLEAN,
