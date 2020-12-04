@@ -11,6 +11,8 @@ import { PartReleaseApprovalService } from '../../../../../../core/funds-approva
 import { OrnamentsComponent } from '../../../../../partials/components/ornaments/ornaments.component';
 import { UpdateStatusComponent } from '../../update-status/update-status.component';
 import { Router } from '@angular/router';
+import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
 
 @Component({
   selector: 'kt-part-release-approval',
@@ -20,7 +22,7 @@ import { Router } from '@angular/router';
 export class PartReleaseApprovalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'loanAmount', 'transactionId', 'bankTransactionId', 'appraiserName', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'updateStatus'];
+  displayedColumns = ['customerName', 'customerId', 'loanId', 'loanAmount', 'transactionId', 'bankTransactionId', 'appraiserName', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPayableAmount', 'partReleaseAmountStatus', 'ornaments', 'view', 'updateStatus'];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -100,7 +102,17 @@ export class PartReleaseApprovalComponent implements OnInit {
   }
 
   assign(item) {
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'add', customer: item.masterLoan.customer, id: item.masterLoan.customerId, partReleaseId: item.id }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent,
+      {
+        data:
+        {
+          action: 'add',
+          customer: item.masterLoan.customer,
+          id: item.masterLoan.customerId,
+          partReleaseId: item.id,
+          customerId: item.masterLoan.customerId
+        }, width: '500px'
+      });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
@@ -109,7 +121,18 @@ export class PartReleaseApprovalComponent implements OnInit {
   }
 
   updateAppraiser(item) {
-    const dialogRef = this.dialog.open(AssignAppraiserComponent, { data: { action: 'edit', appraiser: item.appraiserData, customer: item.masterLoan.customer, partReleaseId: item.id }, width: '500px' });
+    const dialogRef = this.dialog.open(AssignAppraiserComponent,
+      {
+        data:
+        {
+          action: 'edit',
+          appraiser: item.appraiserData,
+          customer: item.masterLoan.customer,
+          partReleaseId: item.id,
+          customerId: item.masterLoan.customerId
+        },
+        width: '500px'
+      });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.loadPage();
@@ -134,4 +157,37 @@ export class PartReleaseApprovalComponent implements OnInit {
     });
   }
 
+  // updateDocument(item) {
+  //   const params = {
+  //     customerUniqueId: item.masterLoan.customer.customerUniqueId,
+  //     partReleaseId: item.id
+  //   }
+  //   this.router.navigate([`admin/funds-approvals/upload-document/partRelease/${item.id}`],
+  //     { queryParams: { customerUniqueId: params.customerUniqueId, partReleaseId: params.partReleaseId } })
+  // }
+
+  view(value) {
+    var ext = value.split('.')
+    if (ext[ext.length - 1] == 'pdf') {
+
+      this.dialog.open(PdfViewerComponent, {
+        data: {
+          pdfSrc: value,
+          page: 1,
+          showAll: true
+        },
+        width: "80%"
+      })
+
+    } else {
+      this.dialog.open(ImagePreviewDialogComponent, {
+        data: {
+          images: [value],
+          index: 0,
+          modal: false
+        },
+        width: "auto",
+      })
+    }
+  }
 }

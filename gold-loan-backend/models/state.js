@@ -6,6 +6,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'name',
             allowNull: false,
         },
+        stateCode: {
+            type: DataTypes.STRING,
+            field: 'state_code',
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',

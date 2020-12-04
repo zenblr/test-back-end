@@ -31,7 +31,7 @@ export class PartnerAddComponent implements OnInit {
   states: any;
   cities: any;
   title: string;
-  isMandatory =false
+  isMandatory = false
 
   constructor(
     public dialogRef: MatDialogRef<PartnerAddComponent>,
@@ -44,7 +44,7 @@ export class PartnerAddComponent implements OnInit {
   ngOnInit() {
     this.formInitialize();
     // this.getStates();
-   
+
     if (this.data.action !== 'add') {
       this.getPartnerById(this.data['partnerId']);
       this.title = 'Edit Partner'
@@ -61,6 +61,7 @@ export class PartnerAddComponent implements OnInit {
       name: ['', [Validators.required]],
       // partnerId: ['', [Validators.required]],
       commission: ['', [Validators.required, Validators.min(0), Validators.max(100)]],
+      submitPacketInInternalBranch: [false]
       // state: ['', [Validators.required]],
       // city: ['', [Validators.required]],
       // address: ['', [Validators.required]],
@@ -77,9 +78,9 @@ export class PartnerAddComponent implements OnInit {
   }
 
   getCities(event) {
-    
+
     const stateId = this.controls.state.value;
-   
+
     this.sharedService.getCities(stateId).subscribe(res => {
       this.cities = res.data;
     },
@@ -90,7 +91,7 @@ export class PartnerAddComponent implements OnInit {
 
   getPartnerById(id) {
     this.partnerService.getPartnerById(id).subscribe(res => {
-    
+
       this.partnerForm.patchValue(res);
     },
       error => {
@@ -113,7 +114,7 @@ export class PartnerAddComponent implements OnInit {
   }
 
   onSubmit() {
-   
+
     if (this.partnerForm.invalid) {
       this.partnerForm.markAllAsTouched()
       return
@@ -124,7 +125,7 @@ export class PartnerAddComponent implements OnInit {
     if (this.data.action == 'edit') {
       const id = this.controls.id.value;
       this.partnerService.updatePartner(id, partnerData).subscribe(res => {
-       
+
         if (res) {
           const msg = 'Partner Updated Successfully';
           this.toastr.successToastr(msg);
@@ -138,7 +139,7 @@ export class PartnerAddComponent implements OnInit {
         });
     } else {
       this.partnerService.addPartner(partnerData).subscribe(res => {
-      
+
         if (res) {
           const msg = 'Partner Added Successfully';
           this.toastr.successToastr(msg);

@@ -1,13 +1,13 @@
 let Razorpay = require('razorpay');
+const models = require('../models');
 
-const razorPayConfig = {
-    key_id: 'rzp_test_FvEtFgQ5WnMZ7J',
-    key_secret: '3Hhh6UQD9jZKLC1YxjKeO2IS'
-}
 
-let instance = new Razorpay(razorPayConfig);
-
-module.exports = {
-    instance: instance,
-    razorPayConfig: razorPayConfig
+module.exports = async()=>{
+    const getCredential = await models.loanRazorpayCredential.findOne({where:{isActive:true}});
+    const razorPayConfig = {
+        key_id: getCredential.keyId,
+        key_secret: getCredential.keySecret
+    }
+    let instance = new Razorpay(razorPayConfig);
+    return {instance, razorPayConfig}
 }

@@ -5,6 +5,9 @@ const _ = require('lodash')
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const check = require('../../lib/checkLib');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+let AWS = require('aws-sdk');
 
 // upload scheme csv
 exports.uploadScheme = async (req, res, next) => {
@@ -99,7 +102,7 @@ exports.uploadScheme = async (req, res, next) => {
                 isSplitAtBeginning: jsonArray[i].isSplitAtBeginning,
                 schemeName: jsonArray[i].schemeName.toLowerCase(), schemeType: jsonArray[i].schemeType, default: jsonArray[i].default,
                 processingChargePercent: parseFloat(jsonArray[i].processingChargePer), processingChargeFixed: parseFloat(jsonArray[i].processingChargeAmt),
-                maximumPercentageAllowed: parseFloat(jsonArray[i].maximumPerAllow), penalInterest: parseFloat(jsonArray[i].penalInterest),
+                // maximumPercentageAllowed: parseFloat(jsonArray[i].maximumPerAllow), penalInterest: parseFloat(jsonArray[i].penalInterest),
 
                 schemeAmountStart: jsonArray[i].AmountStart, schemeAmountEnd: jsonArray[i].AmountEnd,
                 interestRateThirtyDaysMonthly: jsonArray[i].InterestRateThirtyDaysMonthly, interestRateNinetyDaysMonthly: jsonArray[i].InterestRateNinetyDaysMonthly,
@@ -132,3 +135,41 @@ exports.uploadScheme = async (req, res, next) => {
     return res.status(200).json({ message: " Schemes Created" })
 
 }
+
+
+exports.bulkUploadExcelFile = async (req, res, next) => {
+    let destination = 'public/uploads/bulkUpload/'
+        const storage = multer.diskStorage({
+            filename: (req, file, cb) => {
+                const extArray = file.originalname.split(".");
+                const extension = extArray[extArray.length - 1];
+                cb(null, `${Date.now()}.${extension}`);
+            },
+            destination: destination
+        });
+        
+        const uploads = multer({
+            storage
+        }).single("avatar");
+        uploads(req, res, async err => {
+            if (err) {
+                res.status(500);
+            }
+            let pathToadd = destination.replace('public/', '');
+            req.file.userId = req.userData.id;
+            req.file.path = pathToadd + req.file.filename;
+            req.file.url = req.file.destination + req.file.filename;
+
+            console.log(req.file);
+            let uploadFile = await models.fileUpload.create(req.file);
+            if (!uploadFile) {
+                res.status(400).json({
+                    message: "Error while uploading file!"
+                });
+            } else {
+                res.status(200).json({
+                    uploadFile
+                });
+            }
+        });
+};

@@ -52,14 +52,6 @@ exports.submitCustomerKycAddressValidation = [
         .exists()
         .withMessage('customer kyc id is required'),
 
-    body("identityProof")
-        .exists()
-        .withMessage('identity proof is required'),
-
-    body("identityTypeId")
-        .exists()
-        .withMessage("identity type is required"),
-
     body("address")
         .exists()
         .withMessage("address is required")
@@ -85,16 +77,16 @@ exports.submitCustomerKycpersonalDetailValidation = [
         .exists()
         .withMessage('date of birth is required'),
 
-    body("alternateMobileNumber")
-        .exists()
-        .withMessage("mobile Number is required")
-        .custom(async value => {
+    // body("alternateMobileNumber")
+    //     .exists()
+    //     .withMessage("mobile Number is required")
+    //     .custom(async value => {
 
-            if (!/^[0-9]{10}$/i.test(value)) {
-                return Promise.reject("Invalid alernate  mobile number");
-            }
+    //         if (!/^[0-9]{10}$/i.test(value)) {
+    //             return Promise.reject("Invalid alernate  mobile number");
+    //         }
 
-        }),
+    //     }),
     body("gender")
         .exists()
         .withMessage("gender is required"),

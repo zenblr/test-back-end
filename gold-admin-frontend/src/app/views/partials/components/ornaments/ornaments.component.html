@@ -1,27 +1,35 @@
 <!-- <kt-modal-header *ngIf="!viewOnly" [title]='"KYC Details"' (action)="action()"></kt-modal-header> -->
 <kt-portlet>
     <!-- <kt-portlet-header> -->
-    <kt-modal-header [title]='data.packetView ? "Packet Details":"Ornament Details"' (action)="close($event)" *ngIf="data.modal"></kt-modal-header>
+    <kt-modal-header [title]='data.packetView ? "Packet Details":"Ornament Details"' (action)="close($event)"
+        *ngIf="data.modal || data.scrapModal"></kt-modal-header>
     <!-- </kt-portlet-header> -->
     <div class="kt-padding-l-10 kt-padding-r-10" style="background: #fff">
         <div *ngIf="data.packetView" class="row kt-padding-t-10 kt-padding-b-10 kt-padding-l-35">
             <div class="col-2 form-label">
                 Number of Packets: {{ data.modalData.length }}
             </div>
-            <div class="col-3">
+            <div class="col-3" *ngIf="data.modal">
                 <select class="form-control" (change)="showPacketOrnament($event)">
                     <option [value]="i" [selected]="i == 0" *ngFor="let packet of data.modalData; index as i">
                         {{packet.packetUniqueId | uppercase}}
                     </option>
                 </select>
             </div>
+            <div class="col-3 align-self-center" *ngIf="data.scrapModal">
+                <ng-container *ngFor="let packet of data.modalData; last as l">
+                    <span>{{packet.packetUniqueId | uppercase}}</span>
+                    <span *ngIf="!l">, &nbsp;</span>
+                </ng-container>
+            </div>
         </div>
         <mat-tab-group [formGroup]="ornamentsForm" class="position-relative" [(selectedIndex)]="selected">
             <mat-tab formArrayName="ornamentData" *ngFor="let ornament of OrnamentsData.controls;index as idx">
                 <ng-template mat-tab-label>
                     Ornaments {{idx+1}}
-                    <img *ngIf="OrnamentsData.length > 1 && !disable" class="removeImageSize kt-padding-l-5 kt-pointer"
-                        [src]="'assets/media/icons/cancel.png'" (click)="deleteOrnaments(idx)" />
+                    <img *ngIf="OrnamentsData.length > 1 && (!disable && !isPartRelease)"
+                        class="removeImageSize kt-padding-l-5 kt-pointer" [src]="'assets/media/icons/cancel.png'"
+                        (click)="deleteOrnaments(idx)" />
                 </ng-template>
                 <ng-template mat-tab-body>
 
@@ -116,7 +124,7 @@
                                             <span *ngIf="ornament.controls.deductionWeight.errors?.required">Field
                                                 Required</span>
                                             <span *ngIf="ornament.controls.deductionWeight.errors?.weight">
-                                                <small>Deduction Weight should be lesser then Gross Weight</small>
+                                                <small>Deduction Weight should be less than Gross Weight</small>
                                             </span>
                                         </mat-error>
                                     </div>
@@ -267,9 +275,10 @@
                                                 <span *ngIf="ornament.controls.purityReading.errors?.required">Field
                                                     Required</span>
                                             </mat-error>
-                                            <mat-error *ngIf="ornament.controls.purityReading.errors?.pattern && ornament.controls.purityReading.touched">
+                                            <mat-error
+                                                *ngIf="ornament.controls.purityReading.errors?.pattern && ornament.controls.purityReading.touched">
                                                 Invalid Number
-                                     </mat-error>
+                                            </mat-error>
                                         </div>
                                     </div>
                                 </div>
@@ -281,7 +290,7 @@
                                                 machine reading in %)</label>
                                         </div>
                                         <div class="col-8">
-                                            <input type="text" class="form-control" placeholder= "90"
+                                            <input type="text" class="form-control" placeholder="90"
                                                 formControlName="approxPurityReading" ktZeroToHundredWhole
                                                 [class.isError]="ornament.controls.approxPurityReading.touched && ornament.controls.approxPurityReading.invalid"
                                                 (input)="calculateScrapAmount(idx)">
@@ -291,9 +300,10 @@
                                                     *ngIf="ornament.controls.approxPurityReading.errors?.required">Field
                                                     Required</span>
                                             </mat-error>
-                                            <mat-error *ngIf="ornament.controls.approxPurityReading.errors?.pattern && ornament.controls.approxPurityReading.touched">
+                                            <mat-error
+                                                *ngIf="ornament.controls.approxPurityReading.errors?.pattern && ornament.controls.approxPurityReading.touched">
                                                 Invalid Number
-                                     </mat-error>
+                                            </mat-error>
                                         </div>
                                     </div>
                                 </div>
@@ -611,11 +621,29 @@
                                 <div class="col-6">
                                     <div class="row kt-margin-t-15 ">
                                         <div class="col-4 form-label">
+                                            <label class="text-color my-auto">Remark</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" class="form-control" placeholder="Remark"
+                                                formControlName="remark">
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                                <div class="col-6">
+                                    <div class="row kt-margin-t-15 " *ngIf="ornament.controls.loanAmount.value">
+                                        <div class="col-4 form-label">
                                             <label class="text-color mandatory my-auto">Loan Amount</label>
                                         </div>
                                         <div class="col-8">
                                             <input type="text" class="form-control" placeholder="100.00"
-                                                formControlName="loanAmount" readonly>
+                                                formControlName="loanAmount" readonly
+                                                [class.isError]="ornament.controls.loanAmount.touched && ornament.controls.loanAmount.invalid">
+                                            <mat-error
+                                                *ngIf="ornament.controls.loanAmount.touched && ornament.controls.loanAmount.invalid">
+                                                <span *ngIf="ornament.controls.loanAmount.errors?.required">Field
+                                                    Required</span>
+                                            </mat-error>
                                         </div>
                                     </div>
                                 </div>
@@ -645,7 +673,7 @@
                         </div>
                         <div class="img-container height220 bg-transparent"
                             *ngIf="ornament.controls.ornamentImageData.value">
-                            <img class="w-100" [src]="ornament.controls.ornamentImageData.value" alt="placeholder"
+                            <img class="w-100 h-100" [src]="ornament.controls.ornamentImageData.value" alt="placeholder"
                                 (click)="preview(ornament.controls.ornamentImageData.value,idx)">
                         </div>
                         <div class="form-label">
@@ -669,29 +697,43 @@
         </mat-tab-group>
     </div>
 
+    <div class="row kt-margin-t-20 justify-content-center">
+        <div class="offset-1 col form-label">
+            <label for="">
+                Total Gross Weight - {{totalGrossWeight }} gm
+            </label>
+        </div>
+        <div class="col form-label">
+            <label for="">
+                Total Deduction Weight - {{totalDeductionWeight}} gm
+            </label>
+        </div>
+        <div class="col form-label">
+            <label for="">
+                Total Net Weight - {{totalNetWeight}} gm
+            </label>
+        </div>
+        <div class="col form-label">
+            <label for="">
+                Total Purity - {{totalPurtiy }} 
+            </label>
+        </div>
+    </div>
 
-    <div class="row kt-margin-t-10" *ngIf="!data?.modal">
+    <div class="row kt-margin-t-10" *ngIf="!(data?.modal || data.scrapModal)">
         <div class="col-12">
             <mat-divider></mat-divider>
         </div>
     </div>
 
-    <div class="row justify-content-center" *ngIf="!data?.modal">
-        <!-- <div class="col-4 py-2" *ngIf="scrapIds">
-        <h3 class="text-center my-3" *ngIf="meltingOrnament">
-            <b *ngIf="buttonValue == 'Pay Processing Charges'">
-                Processing Charges - <span class="currency">
-                    {{'1000' | indianCurrencyFormat}}</span>
-            </b>
-        </h3>
-    </div> -->
-        <div class="col-12 py-2">
-            <h3 class="text-center my-3">
+    <div class="row justify-content-center" *ngIf="!(data?.modal || data.scrapModal)">
+        <div class="col-12 py-3">
+            <h3 class="text-center m-0">
                 <b *ngIf="buttonValue == 'Pay Processing Charges'" class="float-left">
                     Processing Charges - <span class="currency">
                         {{processingCharges | indianCurrencyFormat}}</span>
                 </b>
-                <b [ngClass]="{'float-right': buttonValue == 'Pay Processing Charges'}">
+                <b [ngClass]="{'float-right': buttonValue == 'Pay Processing Charges'}" *ngIf="scrapIds">
                     {{scrapIds ? 'Total Scrap Amount' : 'Total Eligible Amount'}} - <span class="currency">
                         {{totalAmount | indianCurrencyFormat}}</span>
                 </b>
@@ -699,7 +741,7 @@
         </div>
     </div>
 
-    <div class="row" *ngIf="!data?.modal">
+    <div class="row" *ngIf="!(data?.modal || data.scrapModal)">
         <div class="col-12 kt-margin-b-10">
             <mat-divider></mat-divider>
         </div>
@@ -709,7 +751,8 @@
             <kt-button [value]="buttonValue" [type]="'button'" (click)="nextAction()"></kt-button>
         </div>
     </div>
-    <button *ngIf="showAddMoreBtn" (click)="addmore()" class="addmore" [disabled]="disable" [hidden]="meltingOrnament">+
+    <button *ngIf="showAddMoreBtn" (click)="addmore()" class="addmore" [disabled]="disable || isPartRelease"
+        [hidden]="meltingOrnament">+
         Add
         More</button>
 

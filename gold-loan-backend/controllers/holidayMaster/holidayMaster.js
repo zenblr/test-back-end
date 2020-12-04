@@ -34,7 +34,7 @@ exports.updateHolidayMaster = async (req, res) => {
     if (!updateHolidayMaster[0]) {
         return res.status(404).json({ message: 'holiday master updated failed' });
     }
-    return res.status(200).json({ message: 'success' });
+    return res.status(200).json({ message: 'Success' });
 }
 
 //read Holiday List

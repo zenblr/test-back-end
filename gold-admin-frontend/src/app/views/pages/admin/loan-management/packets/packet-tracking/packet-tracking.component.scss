@@ -1,22 +1,24 @@
 :host{
     .mat-column-customerId{
-        padding-left: 10px !important;
-        flex: 0 0 10% !important;
+        flex: 0 0 6% !important;
+    }
+    .mat-column-mobile{
+        flex: 0 0 6% !important;
     }
     .mat-column-loanId{
         flex: 0 0 8% !important;
     }
     .mat-column-actions{
-        flex: 0 0 32% !important;
+        flex: 0 0 26% !important;
     } 
     .mat-column-internalBranch{
         flex: 0 0 7% !important;
     }
     .mat-column-customerName{
-        flex: 0 0 12% !important;
+        flex: 0 0 10% !important;
     } 
     .mat-column-userName{
-        flex: 0 0 12% !important;
+        flex: 0 0 10% !important;
     }
     .mat-column-loanAmount{
         flex: 0 0 7% !important;
@@ -25,9 +27,50 @@
         flex: 0 0 7% !important;
     }
     .mat-column-currentLocation{
-        flex: 0 0 12% !important;
+        flex: 0 0 10% !important;
+    }
+    .mat-column-time{
+        flex: 0 0 6% !important;
+    }
+    .mat-column-status{
+        flex: 0 0 6% !important;
     }
     mat-row,mat-header-row{
-        width: 125% !important;
+        width: 157% !important;
+    }
+    .multiple {
+        display: flex;
+        flex-direction: column;
+    }
+    .red-alert {
+        height: 12px;
+        width: 12px;
+        background: red;
+        border-radius: 50%;
+        animation: blink 2s infinite ease-in-out;
+    }
+    .alert-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+    
+    @keyframes blink {
+        0% {
+            background: red;
+            // height: 12px;
+            // width: 12px;
+        }
+        50% {
+            background: rgb(255, 168, 168);
+            // height: 10px;
+            // width: 10px;
+        }
+        100% {
+            background: red;
+            // height: 12px;
+            // width: 12px;
+        }
     }
 }

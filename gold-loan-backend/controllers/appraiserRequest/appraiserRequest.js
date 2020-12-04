@@ -2,10 +2,13 @@ const models = require('../../models');
 const check = require('../../lib/checkLib');
 const extend = require('extend')
 const Sequelize = models.Sequelize;
+const sequelize = models.sequelize;
 const Op = Sequelize.Op;
 const paginationFUNC = require('../../utils/pagination'); // IMPORTING PAGINATION FUNCTION
 const _ = require('lodash');
-let { sendMessageAssignedCustomerToAppraiser, sendMessageCustomerForAssignAppraiser } = require('../../utils/SMS')
+let { sendMessageAssignedCustomerToAppraiser, sendMessageCustomerForAssignAppraiser } = require('../../utils/SMS');
+const { orderBy } = require('lodash');
+const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 
 
 //FUNCTION TO ADD NEW REQUEST 
@@ -13,12 +16,66 @@ exports.addAppraiserRequest = async (req, res, next) => {
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let { customerId, moduleId } = req.body;
+
+    let status = await models.status.findOne({ where: { statusName: "confirm" } })
+    let statusId = status.id
+
+    let checkStatusCustomer = await models.customer.findOne({
+        where: { statusId, id: customerId },
+        include: {
+            model: models.customerKyc,
+            as: 'customerKyc'
+        }
+    });
+
+    if (!check.isEmpty(checkStatusCustomer.customerKyc)) {
+        let oldReqModule = checkStatusCustomer.customerKyc.currentKycModuleId;
+
+        if (oldReqModule != moduleId) {
+            if (moduleId == 1) {
+                if (checkStatusCustomer.scrapKycStatus != "approved") {
+                    return res.status(404).json({ message: "Kindly complete your pending scrap KYC" });
+                }
+            }
+            if (moduleId == 3) {
+                if (checkStatusCustomer.kycStatus != "approved") {
+                    return res.status(404).json({ message: "Kindly complete your pending loan KYC" });
+                }
+            }
+        }
+
+
+    }
+
+
+    if (checkStatusCustomer.scrapKycStatus == "approved") {
+        if (checkStatusCustomer.userType == "Corporate") {
+            return res.status(400).json({ message: "Please create new customer since you have completed Corporate kyc" });
+        }
+    }
+
+    let customerLoan = await models.customerLoanMaster.findAll({where : {
+        customerId,isLoanTransfer:true,loanStageId:{ [Op.in]: [1,2,3,4,6,7,9] } 
+    }})
+    if(customerLoan.length != 0){
+        return res.status(400).json({ message: `This customer's loan transfer is in process` })
+    }
+
     let requestExist = await models.appraiserRequest.findOne({ where: { moduleId: moduleId, customerId: customerId, status: 'incomplete' } })
 
     if (!check.isEmpty(requestExist)) {
         return res.status(400).json({ message: 'This product Request already Exists' });
     }
-    let appraiserRequest = await models.appraiserRequest.create({ customerId, moduleId, createdBy, modifiedBy })
+
+    await sequelize.transaction(async (t) => {
+        let modulePoint = await models.module.findOne({ where: { id: moduleId }, transaction: t })
+        let checkPoint = checkStatusCustomer.allModulePoint & modulePoint.modulePoint
+        if (checkPoint == 0) {
+            let updatePoint = checkStatusCustomer.allModulePoint | modulePoint.modulePoint
+            await models.customer.update({ allModulePoint: updatePoint }, { where: { id: customerId }, transaction: t });
+        }
+        let appraiserRequest = await models.appraiserRequest.create({ customerId, moduleId, createdBy, modifiedBy }, { transaction: t })
+    })
     return res.status(201).json({ message: `Request Created` })
 }
 
@@ -32,7 +89,27 @@ exports.updateAppraiserRequest = async (req, res, next) => {
         return res.status(400).json({ message: 'This product Request already Exists' });
     }
 
-    let appraiserRequest = await models.appraiserRequest.update({ moduleId, modifiedBy }, { where: { id } })
+    let status = await models.status.findOne({ where: { statusName: "confirm" } })
+    let statusId = status.id
+    let checkStatusCustomer = await models.customer.findOne({
+        where: { id: customerId },
+        include: {
+            model: models.customerKyc,
+            as: 'customerKyc'
+        }
+    });
+
+    await sequelize.transaction(async (t) => {
+        let modulePoint = await models.module.findOne({ where: { id: moduleId }, transaction: t })
+        let checkPoint = checkStatusCustomer.allModulePoint & modulePoint.modulePoint
+        if (checkPoint == 0) {
+            let updatePoint = checkStatusCustomer.allModulePoint | modulePoint.modulePoint
+            await models.customer.update({ allModulePoint: updatePoint }, { where: { id: customerId }, transaction: t });
+        }
+
+        let appraiserRequest = await models.appraiserRequest.update({ moduleId, modifiedBy }, { where: { id }, transaction: t })
+    })
+
     return res.status(200).json({ message: `Request updated` })
 
 }
@@ -53,26 +130,31 @@ exports.getAllNewRequest = async (req, res, next) => {
             },
         }]
     };
+    let customerSearch = { isActive: true }
+
+    if (!check.isPermissionGive(req.permissionArray, VIEW_ALL_CUSTOMER)) {
+        customerSearch = { isActive: true, internalBranchId: req.userData.internalBranchId }
+    }
 
     let associateModel = [
         {
             model: models.customer,
-            required: false,
+            // required: false,
             as: 'customer',
-            where: { isActive: true },
-            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'kycStatus', 'internalBranchId'],
+            where: customerSearch,
+            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'kycStatus', 'internalBranchId', 'scrapKycStatus'],
             include: [
                 {
                     model: models.customerKyc,
                     as: 'customerKyc',
-                    attributes: ['id', 'isKycSubmitted']
+                    attributes: ['id', 'isKycSubmitted', 'isScrapKycSubmitted', 'isAppliedForKyc']
                 }
             ]
         },
         {
             model: models.customerLoanMaster,
             as: 'masterLoan',
-            attributes: ['id', 'isLoanTransfer']
+            attributes: ['id', 'isLoanTransfer', 'isLoanCompleted'],
         },
         {
             model: models.module,
@@ -125,9 +207,9 @@ exports.assignAppraiser = async (req, res) => {
 
     const data = await models.appraiserRequest.update({ appraiserId, appoinmentDate, startTime, endTime, modifiedBy, isAssigned: true }, { where: { id: id } })
 
-    // await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerUniqueId);
+    await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
-    // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+    await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
 
     if (data.length === 0) {
@@ -149,9 +231,9 @@ exports.updateAppraiser = async (req, res) => {
     const data = await models.appraiserRequest.update({ appraiserId, appoinmentDate, startTime, endTime, modifiedBy, isAssigned: true }, { where: { id: id } })
     //console.log(data)
     if (requestInfo.appraiserId != appraiserId) {
-        // await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
+        await sendMessageAssignedCustomerToAppraiser(mobileNumber, firstName, customerInfo.customerUniqueId);
 
-        // await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
+        await sendMessageCustomerForAssignAppraiser(customerInfo.mobileNumber, firstName, userUniqueId, customerInfo.firstName)
 
     }
 

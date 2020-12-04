@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'internal_branch_id',
         },
+        allModulePoint: {
+            type: DataTypes.INTEGER,
+            field: 'all_module_point'
+        },
         merchantId: {
             type: DataTypes.INTEGER,
             field: 'merchant_id',
@@ -125,6 +129,37 @@ module.exports = (sequelize, DataTypes) => {
         panImage: {
             type: DataTypes.TEXT,
             field: 'pan_image',
+        },
+        scrapKycStatus: {
+            type: DataTypes.ENUM,
+            field: 'scrap_kyc_status',
+            defaultValue: "pending",
+            values: ['approved', 'pending', 'rejected']
+        },
+        userType: {
+            type: DataTypes.ENUM,
+            field: 'user_type',
+            values: ['Individual', 'Corporate']
+        },
+        organizationTypeId: {
+            type: DataTypes.INTEGER,
+            field: 'organization_type_id',
+        },
+        dateOfIncorporation:{
+            type: DataTypes.DATE,
+            field: 'date_of_incorporation',
+        },
+        customerAddress:{
+            type: DataTypes.TEXT,
+            field: 'customer_address',
+        },
+        gender:{
+            type: DataTypes.STRING,
+            field: 'customer_address',
+        },
+        dateOfBirth:{
+            type: DataTypes.DATE,
+            field: 'date_of_birth',
         }
     }, {
         freezeTableName: true,
@@ -163,6 +198,8 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.belongsTo(models.module, { foreignKey: 'moduleId', as: 'module' });
 
+        Customer.belongsTo(models.organizationType, { foreignKey: 'organizationTypeId', as: 'organizationType' });
+        Customer.hasOne(models.customerKycOrganizationDetail, { foreignKey: 'customerId', as: 'organizationDetail' });
 
     }
 

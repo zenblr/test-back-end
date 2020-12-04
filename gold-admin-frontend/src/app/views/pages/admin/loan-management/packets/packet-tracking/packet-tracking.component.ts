@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { Subscription, merge, Subject, from } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
@@ -8,30 +8,41 @@ import { AssignPacketsComponent } from '../assign-packets/assign-packets.compone
 import { LayoutUtilsService } from '../../../../../../core/_base/crud';
 import { ToastrService } from 'ngx-toastr';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { UpdateLocationComponent } from '../update-location/update-location.component';
+import { UpdateLocationComponent } from '../../../../../partials/components/update-location/update-location.component';
 import { ViewPacketLogComponent } from '../view-packet-log/view-packet-log.component';
 import { Router } from '@angular/router';
 import { OrnamentsComponent } from '../../../../../partials/components/ornaments/ornaments.component';
+import { SharedService } from '../../../../../../core/shared/services/shared.service';
 
 @Component({
   selector: 'kt-packet-tracking',
   templateUrl: './packet-tracking.component.html',
-  styleUrls: ['./packet-tracking.component.scss']
+  styleUrls: ['./packet-tracking.component.scss'],
+
 })
 export class PacketTrackingComponent implements OnInit {
   dataSource: PacketTrackingDatasource;
-  displayedColumns = ['userName', 'customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'actions'];
+  displayedColumns = ['userName', 'mobile', 'customerId', 'customerName', 'loanId', 'loanAmount', 'internalBranch', 'currentLocation', 'status', 'time', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  // Filter fields
-  // @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
-  // @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   destroy$ = new Subject();
-
+  filter$ = new Subject();
+  queryParamsData = {
+    from: 1,
+    to: 25,
+    search: '',
+    packetTrackingLocation: '',
+  }
   // Subscriptions
   private subscriptions: Subscription[] = [];
   private unsubscribeSearch$ = new Subject();
-  searchValue = '';
+  filteredDataList = {};
+  previousSyncArray: any[];
+  currentSyncArray: any[];
+  interval: NodeJS.Timeout;
+  searchQuery: any;
+  userDetails: any;
+  // filteredDataList: any = {};
 
   constructor(
     public dialog: MatDialog,
@@ -40,7 +51,9 @@ export class PacketTrackingComponent implements OnInit {
     private layoutUtilsService: LayoutUtilsService,
     private toastr: ToastrService,
     private ngxPermissionService: NgxPermissionsService,
-    private router: Router
+    private router: Router,
+    private ref: ChangeDetectorRef,
+    private sharedService: SharedService
   ) {
     this.packetTrackingService.openModal$.pipe(
       map(res => {
@@ -49,6 +62,15 @@ export class PacketTrackingComponent implements OnInit {
         }
       }),
       takeUntil(this.destroy$)).subscribe();
+
+    this.packetTrackingService.applyFilter$
+      .pipe(takeUntil(this.filter$))
+      .subscribe((res) => {
+        if (Object.entries(res).length) {
+          this.applyFilter(res);
+        }
+      });
+      this.sharedService.getUserDetailsFromStorage().subscribe(res => this.userDetails = res.userDetails)
   }
 
   ngOnInit() {
@@ -67,7 +89,8 @@ export class PacketTrackingComponent implements OnInit {
 
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
-        this.searchValue = res;
+        this.queryParamsData.search = res;
+        this.searchQuery = res;
         this.paginator.pageIndex = 0;
         this.loadPackets();
       });
@@ -79,14 +102,55 @@ export class PacketTrackingComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(res => {
       this.leadsResult = res;
+      this.checkPacketTracking(this.leadsResult)
     });
     this.subscriptions.push(entitiesSubscription);
 
-    // First load
-    // this.loadLeadsPage();
+    this.dataSource.loadpackets(this.queryParamsData);
 
-    this.dataSource.loadpackets(this.searchValue, 1, 25);
+    this.interval = setInterval(() => {
+      this.dataSource.loadpackets(this.queryParamsData);
+      this.checkPacketTracking(this.leadsResult)
+    }, 30000)
 
+    this.sharedService.hideLoader.next(true)
+  }
+
+
+
+  checkPacketTracking(packetList) {
+    packetList.forEach(element => {
+      let date = new Date()
+      if (element.lastSyncTime && element.locationData[element.locationData.length - 1].status == 'in transit') {
+        let lastSyncTime = new Date(element.lastSyncTime)
+        let diff = date.getTime() - lastSyncTime.getTime()
+        let allowedInterval = 5 * 60000 // no of minutes * (1min to milliseconds)
+        if (diff > allowedInterval) {
+          element.showPopUp = true;
+        } else {
+          element.showPopUp = false;
+        }
+      }
+
+    });
+
+    // console.log(this.leadsResult)
+    // this.currentSyncArray = new Array(packetList.length).fill(null);
+    // this.currentSyncArray = packetList.map(e => e.lastSyncTime)
+
+    // if (this.previousSyncArray != this.currentSyncArray) {
+    //   this.previousSyncArray = this.currentSyncArray
+    // }
+  }
+
+  isTrackingDisabled(index) {
+    if (!(this.previousSyncArray && this.currentSyncArray)) return
+
+    return this.previousSyncArray[index] === this.currentSyncArray[index] ? true : false
+  }
+
+  ngAfterContentChecked() {
+    this.ref.detectChanges();
   }
 
   ngOnDestroy() {
@@ -95,20 +159,31 @@ export class PacketTrackingComponent implements OnInit {
     this.unsubscribeSearch$.complete();
     this.destroy$.next();
     this.destroy$.complete();
+    this.filter$.next();
+    this.filter$.complete();
+    this.packetTrackingService.applyFilter.next({});
+    clearInterval(this.interval)
+    this.sharedService.hideLoader.next(false)
+    this.sharedService.closeFilter.next(true);
   }
 
+  applyFilter(data) {
+    this.queryParamsData.packetTrackingLocation = data.data.packetTrackingLocation;
+    this.queryParamsData.search = this.searchQuery
+    this.dataSource.loadpackets(this.queryParamsData);
+    this.filteredDataList = data.list;
+  }
 
   loadPackets() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
-    let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
-    let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
+    this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
+    this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadpackets(this.searchValue, from, to);
+    this.dataSource.loadpackets(this.queryParamsData);
   }
 
   assignPackets() {
-    // console.log(event);
     const dialogRef = this.dialog.open(AssignPacketsComponent, {
       data: { action: 'add' },
       width: '400px'
@@ -121,26 +196,44 @@ export class PacketTrackingComponent implements OnInit {
     });
   }
 
+
+
   updatePacket(packet) {
-    // console.log(packet)
-    const dialogRef = this.dialog.open(UpdateLocationComponent,
-      {
-        data: { packetData: packet.loanPacketDetails[0].packets, action: 'edit' },
-        width: '450px'
+
+    const isNotAllowed = this.checkForPartnerBranchIn(packet)
+
+    if (isNotAllowed) return
+
+    if (packet.loanStageId === 11) {
+      const dialogRef = this.dialog.open(UpdateLocationComponent,
+        {
+          data: { packetData: packet.loanPacketDetails[0].packets, action: 'edit', stage: packet.loanStageId },
+          width: '450px'
+        });
+      dialogRef.afterClosed().subscribe(res => {
+        if (res) {
+          this.loadPackets();
+        }
       });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        this.loadPackets();
-      }
-    });
+    } else {
+      const dialogRef = this.dialog.open(UpdateLocationComponent,
+        {
+          data: { packetData: packet.loanPacketDetails[0].packets, action: 'edit', isOut: true },
+          width: '450px'
+        });
+      dialogRef.afterClosed().subscribe(res => {
+        if (res) {
+          this.loadPackets();
+        }
+      });
+    }
   }
 
   viewPacketLog(packet) {
-    console.log(packet)
     const dialogRef = this.dialog.open(ViewPacketLogComponent,
       {
         data: { packetData: packet, action: 'edit' },
-        width: '80%',
+        width: '90%',
       });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
@@ -159,7 +252,6 @@ export class PacketTrackingComponent implements OnInit {
     const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        console.log(res);
         this.packetTrackingService.deletePacket(role.id).subscribe(successDelete => {
           this.toastr.success(_deleteMessage);
           this.loadPackets();
@@ -168,8 +260,6 @@ export class PacketTrackingComponent implements OnInit {
             this.toastr.error(errorDelete.error.message);
           });
       }
-      // this.store.dispatch(new RoleDeleted({ id: _item.id }));
-      // this.layoutUtilsService.showActionNotification(_deleteMessage, MessageType.Delete);
     });
   }
 
@@ -192,4 +282,18 @@ export class PacketTrackingComponent implements OnInit {
     )).subscribe()
   }
 
+  checkForPartnerBranchIn(packet) {
+    const lastIndex = packet.locationData[packet.locationData.length - 1]
+    const id = lastIndex.packetLocation.id
+    const isNotAllowed = id == 6 || id == 1 || id == 4 || id == 3 || id == 7 || packet.isLoanCompleted || this.userDetails.internalBranchId != packet.internalBranchId ? true : false
+    return isNotAllowed
+  }
+
+  colorCodeEntry(packet) {
+    const locationData = packet.locationData
+    const currentLocation = locationData[locationData.length - 1]
+
+    const colorClass = currentLocation.status == 'complete' ? currentLocation.packetLocation.id === 2 && packet.isLoanCompleted ? 'text-primary' : 'text-success' : currentLocation.status == 'incomplete' ? 'text-danger' : 'text-grey'
+    return colorClass
+  }
 }

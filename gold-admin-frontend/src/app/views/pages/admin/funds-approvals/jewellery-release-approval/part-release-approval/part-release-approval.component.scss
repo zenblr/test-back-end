@@ -1,12 +1,13 @@
 :host{
     ::ng-deep.mat-row,
     ::ng-deep.mat-header-row{
-        width: 250% !important;
+        width: 275% !important;
     }
 
     .mat-column-netWeightReleaseOrnament{
         display: flex;
         flex-direction: column;
+        flex: 0 0 5%;
     }
 
     .mat-column-netWeightRemainingOrnament{
@@ -23,7 +24,7 @@
 
     }
     .mat-column-ornaments{
-        flex: 0 0 4%;
+        flex: 0 0 3%;
     }
     .mat-column-tenure{
         flex: 0 0 3%;
@@ -32,7 +33,52 @@
         flex: 0 0 5%;
     }
     .mat-column-loanAmount{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
         flex: 0 0 4%;
     }
-
+    .mat-column-principalAmount{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        flex: 0 0 5%;
+    }
+    .mat-column-uploadDocument{
+        flex: 0 0 5%;
+    }
+    .mat-column-updateStatus {
+        flex: 0 0 5%;
+    }
+    .mat-column-view {
+        display: flex;
+        justify-content: center;
+        flex: 0 0 5%;
+    }
+    .mat-column-loanAmount{
+        padding-right: 25px;
+        justify-content: flex-start;
+    }
+    .mat-column-principalAmount{
+        padding-right: 25px;
+        justify-content: flex-start;
+    }
+    .mat-column-totalPayableAmount{
+        padding-right: 25px;
+        // justify-content: flex-end;
+        flex: 0 0 6%;
+    }
+    .mat-column-penalInterest{
+        padding-right: 25px;
+        // justify-content: flex-end;
+    }
+    .mat-column-interestAmount{
+        padding-right: 25px;
+        // justify-content: flex-end;
+    }
+    .mat-column-ornamentReleaseAmount{
+        padding-right: 25px;
+        // justify-content: flex-end;
+    }
+    
 }

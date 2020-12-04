@@ -1,7 +1,7 @@
 // Angular
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
+import { NavigationEnd, Router, RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 // NGRX
@@ -50,16 +50,18 @@ import { InternalUserBranchListComponent } from './internal-user-branch/internal
 import { AddInternalUserBranchComponent } from './internal-user-branch/add-internal-user-branch/add-internal-user-branch.component';
 import { CreateStoreComponent } from './store/create-store/create-store.component';
 import { StoreListComponent } from './store/store-list/store-list.component';
-import { NgxPermissionsModule } from 'ngx-permissions';
+import { NgxPermissionsModule, NgxPermissionsService } from 'ngx-permissions';
 import { AddPartnerBranchUserComponent } from './partner-branch-user/add-partner-branch-user/add-partner-branch-user.component';
 import { PartnerBranchUserListComponent } from './partner-branch-user/partner-branch-user-list/partner-branch-user-list.component';
+import { ConcurrentUserLoginComponent } from './concurrent-user-login/concurrent-user-login.component';
+import { SharedService } from '../../../../core/shared/services/shared.service';
 
-
+let parnter: any = '';
 const routes: Routes = [
 
 	{
 		path: '',
-		redirectTo: 'partner',
+		redirectTo: parnter,
 		pathMatch: 'full'
 	},
 	{
@@ -121,6 +123,10 @@ const routes: Routes = [
 	{
 		path: 'partner-branch-user',
 		component: PartnerBranchUserListComponent
+	},
+	{
+		path: 'concurrent-login',
+		component: ConcurrentUserLoginComponent
 	}
 
 ]
@@ -170,6 +176,7 @@ const routes: Routes = [
 	declarations: [
 		// RolesListComponent,
 		// RoleAddDialogComponent,
+		ConcurrentUserLoginComponent,
 		PartnerListComponent,
 		BranchListComponent,
 		BranchAddComponent,
@@ -195,4 +202,87 @@ const routes: Routes = [
 		PartnerBranchUserListComponent
 	]
 })
-export class UserManagementModule { }
+export class UserManagementModule {
+
+	constructor(private sharedService: SharedService,
+		private permission: NgxPermissionsService,
+		private router: Router,
+	) {
+		this.router.events.subscribe(event => {
+			if (event instanceof NavigationEnd) {
+				// console.log(event)
+				if (event.url == '/admin/user-management') {
+					this.userManagementRoute()
+				}
+
+			}
+		});
+	}
+	userManagementRoute() {
+		let userManagementPermission = this.sharedService.getUserManagmentPermission()
+		let userPermission = []
+		let permission = JSON.parse(localStorage.getItem('UserDetails'))
+		// console.log(Object.keys(res).length)
+		permission.permissions.forEach(ele => {
+			userPermission.push(ele.description)
+		})
+		// })
+
+		this.compareBothPermission(userManagementPermission, userPermission)
+	}
+
+	compareBothPermission(managementPermission, userPermission) {
+		for (let i = 0; i < managementPermission.length; i++) {
+			const management = managementPermission[i];
+			for (let j = 0; j < userPermission.length; j++) {
+				const user = userPermission[j];
+				if (management == user) {
+					var title = user
+					i = managementPermission.length
+					break;
+				}
+			}
+		}
+		this.routeToPage(title)
+		// console.log(title)
+	}
+
+	routeToPage(permission) {
+
+		switch (permission) {
+			case 'partnerView':
+				parnter = 'partner'
+				this.router.navigate(['/admin/user-management/partner'])
+				break;
+			case 'partnerBranchView':
+				parnter = 'branch'
+				this.router.navigate(['/admin/user-management/branch'])
+				break;
+			case 'internalUserView':
+				this.router.navigate(['/admin/user-management/internal-user'])
+				break;
+			case 'internalBranchView':
+				this.router.navigate(['/admin/user-management/internal-user-branch'])
+				break;
+			case 'merchantView':
+				this.router.navigate(['/admin/user-management/merchant'])
+				break;
+			case 'brokerView':
+				this.router.navigate(['/admin/user-management/broker'])
+				break;
+			case 'storeView':
+				this.router.navigate(['/admin/user-management/store'])
+				break;
+			case 'concurrentLoginView':
+				this.router.navigate(['/admin/user-management/concurrent-login'])
+				break;
+			case 'partnerBranchUserView':
+				this.router.navigate(['/admin/user-management/partner-branch-user'])
+				break;
+
+			default:
+				// this.router.navigate(['/admin/user-management/partner-branch-user'])
+				break;
+		}
+	}
+}

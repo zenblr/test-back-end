@@ -1,12 +1,15 @@
 :host{
     ::ng-deep.mat-row, ::ng-deep.mat-header-row  {
-        width: 110% !important;
+        width: 120% !important;
     }
     .mat-column-pan{
-        flex: 0 0 9% !important;
+        flex: 0 0 8% !important;
+    }
+    .mat-column-loanType{
+        flex: 0 0 7% !important;
     }
     .mat-column-date{
-        flex: 0 0 7% !important;
+        flex: 0 0 6% !important;
     }
     // .mat-column-mobile{
     //     flex: 0 0 8% !important;
@@ -18,13 +21,15 @@
         word-break: break-all;
     }
     .mat-column-loanAmount{
-        flex: 0 0 9% !important;
+        flex: 0 0 8% !important;
+        // justify-content: flex-end;
+        padding-right: 20px;
     }
     .mat-column-schemeName{
         flex: 0 0 10% !important;
     }
     .mat-column-actions{
-        flex:0 0 13% !important;
+        flex:0 0 12% !important;
 
         button {
             width: 140px;
@@ -32,7 +37,7 @@
     }
   
     .mat-column-customerID{
-        flex: 0 0 8% !important;
+        flex: 0 0 7% !important;
     }
     .mat-column-appraisalApproval{ 
         flex: 0 0 11% !important;        

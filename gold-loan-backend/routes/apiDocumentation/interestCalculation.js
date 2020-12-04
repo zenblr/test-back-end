@@ -47,6 +47,13 @@
  *     summary: To get interest table in excel
  *     security:
  *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "masterLoanId"
+ *       in: "query"
+ *       description: "masterLoanId your keyword"
+ *       type: "integer"
  *     responses:
  *       200:
  *          description: interest table
@@ -92,4 +99,48 @@
  *     responses:
  *       200:
  *          description: interest table
+ * /calculation/interest-cron:
+ *   post:
+ *     tags:
+ *       - Interest calculation for failed cron
+ *     name: Perform interest calculation for cron
+ *     summary: To perform interest calculation
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             cronId:
+ *               type: integer
+ *         required:
+ *     responses:
+ *       200:
+ *          description: interest calculation
+ * /calculation/penal-cron:
+ *   post:
+ *     tags:
+ *       - penal interest calculation for failed cron
+ *     name: Perform penal interest calculation for cron
+ *     summary: To perform penal interest calculation
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             cronId:
+ *               type: integer
+ *         required:
+ *     responses:
+ *       200:
+ *          description: interest calculation
  */

@@ -29,7 +29,8 @@ export class SharedService {
 	isSubHeaderVisible = new BehaviorSubject<boolean>(false);
 	isSubHeaderVisible$ = this.isSubHeaderVisible.asObservable();
 
-
+	hideLoader = new BehaviorSubject(false);
+	hideLoader$ = this.hideLoader.asObservable()
 
 	appraiserOrCCE = [
 		{ value: 'pending', name: 'pending' },
@@ -37,20 +38,59 @@ export class SharedService {
 		{ value: 'rejected', name: 'rejected' }
 	];
 	appraiserOrCCEScrap = [
-		{ value: 'incomplete', name: 'incomplete' },
+		{ value: 'pending', name: 'pending' },
+		{ value: 'approved', name: 'approved' },
 		{ value: 'rejected', name: 'rejected' },
-		{ value: 'approved', name: 'approved' }
 	];
 	branchManagerScrap = [
 		{ value: 'incomplete', name: 'incomplete' },
+		{ value: 'approved', name: 'approved' },
 		{ value: 'rejected', name: 'rejected' },
-		{ value: 'approved', name: 'approved' }
 	];
 	branchManagerLoan = [
 		{ value: 'incomplete', name: 'incomplete' },
 		{ value: 'approved', name: 'approved' },
 		{ value: 'rejected', name: 'rejected' },
 	];
+	branchManagerLoanFilter = [
+		{ value: 'pending', name: 'pending' },
+		{ value: 'incomplete', name: 'incomplete' },
+		{ value: 'approved', name: 'approved' },
+		{ value: 'rejected', name: 'rejected' },
+	];
+
+	product = [
+		{ name: 'loan', value: 'loan' },
+		{ name: 'emi', value: 'emi' }
+	]
+
+	cronStatus = [
+		{ name: 'failed', value: 'failed' },
+		{ name: 'success', value: 'success' }
+	]
+
+	cronType = [
+		{ name: 'loan Penal Interest', value: 'loan Penal Interest' },
+		{ name: 'loan Interest', value: 'loan Interest' },
+		{ name: 'cancel order data transfer', value: 'cancel order data transfer' },
+		{ name: 'deposit data transfer', value: 'deposit data transfer' },
+		{ name: 'user data transfer', value: 'user data transfer' },
+		{ name: 'order data transfer', value: 'order data transfer' },
+		{ name: 'order status to defaulter', value: 'order status to defaulter' },
+		{ name: 'emi reminder', value: 'emi reminder' }
+
+	]
+
+	userManagementPermission = [
+		'partnerView',
+		'partnerBranchView',
+		'internalUserView',
+		'internalBranchView',
+		'merchantView',
+		'brokerView',
+		'storeView',
+		'concurrentLoginView'
+	]
 
 	constructor(
 		private http: HttpClient,
@@ -58,7 +98,7 @@ export class SharedService {
 		private toastr: ToastrService) { }
 
 	getStatus() {
-		return of({ apprsiserOrCCE: this.appraiserOrCCE, appraiserOrCCEScrap: this.appraiserOrCCEScrap, bm: this.branchManagerScrap, bml: this.branchManagerLoan })
+		return of({ apprsiserOrCCE: this.appraiserOrCCE, appraiserOrCCEScrap: this.appraiserOrCCEScrap, bm: this.branchManagerScrap, bml: this.branchManagerLoan, bmlfilter: this.branchManagerLoanFilter })
 	}
 
 	getScrapStatus(): Observable<any> {
@@ -178,18 +218,18 @@ export class SharedService {
 	}
 
 	//  for quick pay and part payment 
-	paymentGateWay(amount):Observable<any>{
-		return this.http.post(`api/quick-pay/razor-pay`,{amount}).pipe(
-		  map(res=> res)
-		  )
-	  }
+	paymentGateWay(amount, masterLoanId): Observable<any> {
+		return this.http.post(`api/quick-pay/razor-pay`, { amount, masterLoanId }).pipe(
+			map(res => res)
+		)
+	}
 
-	  //  for quick pay and part payment 
-	paymentGateWayForFullAndPart(masterLoanId,ornamentId):Observable<any>{
-		return this.http.post(`api/jewellery-release/razor-pay`,{masterLoanId,ornamentId}).pipe(
-		  map(res=> res)
-		  )
-	  }
+	//  for quick pay and part payment 
+	paymentGateWayForFullAndPart(masterLoanId, ornamentId): Observable<any> {
+		return this.http.post(`api/jewellery-release/razor-pay`, { masterLoanId, ornamentId }).pipe(
+			map(res => res)
+		)
+	}
 
 
 	soaDownload(masterLoanId): Observable<any> {
@@ -210,8 +250,14 @@ export class SharedService {
 		);
 	}
 
-	fileValidator(event) {
-		const validFormats = ['jpg', 'jpeg', 'png', 'pdf']
+	fileValidator(event, type = null) {
+		let validFormats = ['jpg', 'jpeg', 'png', 'pdf']
+		if (type && type == 'pdf') {
+			validFormats = validFormats.filter(format => format === 'pdf')
+		}
+		if (type && type == 'image') {
+			validFormats = validFormats.filter(format => format !== 'pdf')
+		}
 		const name = event.target.files[0].name
 		const split = name.split('.')
 		const ext = (split[split.length - 1]).toLowerCase()
@@ -229,4 +275,22 @@ export class SharedService {
 		const ext = (split[split.length - 1]).toLowerCase()
 		return ext
 	}
+
+	getCronProduct() {
+		return this.product
+	}
+
+	getCronStatus() {
+		return this.cronStatus
+	}
+
+	getCronType() {
+		return this.cronType
+	}
+
+	getUserManagmentPermission() {
+		return this.userManagementPermission
+	}
+
+
 }

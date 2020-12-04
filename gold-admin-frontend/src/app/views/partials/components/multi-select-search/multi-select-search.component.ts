@@ -30,6 +30,8 @@ export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestr
 	@Input() placeholder: String;
 	@Input() style: boolean = false;
 	@Input() selectAll: boolean;
+	@Input() searchable = true;
+	@Input() isError
 	form: FormGroup;
 	subscriptions: Subscription[] = [];
 
@@ -62,6 +64,10 @@ export class MultiSelectSearchComponent implements ControlValueAccessor, OnDestr
 		if (changes.isClear && changes.isClear.currentValue) {
 			this.form.reset();
 
+		}
+
+		if(changes.isError){
+			
 		}
 		// if(changes.style && changes.style.currentValue){
 

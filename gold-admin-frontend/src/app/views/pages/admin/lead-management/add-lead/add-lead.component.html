@@ -60,7 +60,7 @@
 
                             <div class="col-4">
                                 <input type="text" aria-label="First name" placeholder="First Name" ktAlphabets
-                                    class="form-control" formControlName="firstName"
+                                    ktTrimControl class="form-control" formControlName="firstName"
                                     [class.isError]="controls.firstName.touched && controls.firstName.invalid">
                                 <mat-error *ngIf="controls.firstName.errors?.required && controls.firstName.touched">
                                     Required field
@@ -69,7 +69,7 @@
                             <div class="col-4">
 
                                 <input type="text" aria-label="Last name" placeholder="Last Name" ktAlphabets
-                                    class="form-control" formControlName="lastName"
+                                    ktTrimControl class="form-control" formControlName="lastName"
                                     [class.isError]="controls.lastName.touched && controls.lastName.invalid">
 
                                 <mat-error *ngIf=" controls.lastName.errors?.required && controls.lastName.touched">
@@ -130,8 +130,8 @@
 
                                 <div class="col-5 kt-padding-t-15">
                                     <!-- <mat-form-field appearance="outline" class="w-100"> -->
-                                    <input class="form-control" formControlName="otp" autocomplete="off"
-                                        placeholder="Enter OTP"
+                                    <input class="form-control" numbersOnly maxlength="4" formControlName="otp"
+                                        autocomplete="off" placeholder="Enter OTP"
                                         [class.isError]="controls.otp.touched && controls.otp.invalid">
                                     <mat-error *ngIf="controls.otp.errors?.required && controls.otp.touched">
                                         Required field
@@ -257,7 +257,7 @@
                                 <select class="form-control" formControlName="internalBranchId"
                                     (change)="patchStateCity($event.target.value)"
                                     [class.isError]="controls.internalBranchId.touched && controls.internalBranchId.invalid">
-                                    <option value="" [disabled]="true" [selected]="true"> Select Internal Branch
+                                    <option [value]=null [disabled]="true" [selected]="true"> Select Internal Branch
                                     </option>
                                     <option *ngFor="let branch of branches" [value]="branch.id">
                                         {{branch.name | titlecase}}
@@ -317,7 +317,8 @@
 
                             <div class="col-8">
                                 <input class="form-control" formControlName="pinCode" numbersOnly maxlength="6"
-                                    placeholder="000 000">
+                                    placeholder="000 000"
+                                    [class.isError]="controls.pinCode.invalid && controls.pinCode.touched">
                                 <mat-error *ngIf="controls.pinCode.errors?.required && controls.pinCode.touched">
                                     Required field</mat-error>
                                 <mat-error *ngIf="controls.pinCode.errors?.pattern && controls.pinCode.touched">
@@ -391,7 +392,8 @@
                 <div class="p-3" *ngIf="data.action != 'view'">
                     <kt-modal-footer *ngIf="data.action == 'add'" (action)="action($event)" [value]="data.action">
                     </kt-modal-footer>
-                    <kt-modal-footer *ngIf="data.action == 'edit'" (action)="action($event)" [value]="'Update'">
+                    <kt-modal-footer *ngIf="data.action == 'edit' || data.action == 'assignBranch'"
+                        (action)="action($event)" [value]="'Update'">
                     </kt-modal-footer>
                 </div>
             </form>

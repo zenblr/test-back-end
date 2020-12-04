@@ -5,6 +5,7 @@ module.exports = {
 
     //global jwt expiration time
     JWT_EXPIRATIONTIME: "24h",
+    JWT_EXPIRATIONTIME_CUSTOMER: '365d',
 
 
 

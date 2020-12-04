@@ -31,6 +31,8 @@ export class LoanTransferComponent implements OnInit {
   appraiserOrCCE: { value: string; name: string; }[];
   disabledForm: boolean;
   permission: any;
+  action: any;
+  amount: any = 0;
 
   constructor(
     private custClassificationService: CustomerClassificationService,
@@ -48,7 +50,7 @@ export class LoanTransferComponent implements OnInit {
       this.permission = res
     })
     this.getReasonsList()
-    this.id = this.rout.snapshot.params.id;;
+    this.id = this.rout.snapshot.params.id;
     if (this.id) {
       this.getSingleDetails(this.id)
     }
@@ -56,6 +58,11 @@ export class LoanTransferComponent implements OnInit {
       this.branchManager = res.bm
       this.appraiserOrCCE = res.apprsiserOrCCE
 
+    })
+
+    this.rout.queryParams.subscribe(res => {
+      this.action = res.action
+      if (this.action === 'view') this.showButton = false
     })
 
 
@@ -71,6 +78,7 @@ export class LoanTransferComponent implements OnInit {
           let stage = res.data.masterLoan.loanTransfer.loanTransferCurrentStage;
           // this.next(Number(stage) - 1);
           this.selected = 0;
+          if (this.action == 'view') this.loanTransferStage = stage - 1
           if (stage == '4') {
             if (!this.permission.loanTransferRating) {
               this.toast.error('Access Denied')
@@ -128,11 +136,13 @@ export class LoanTransferComponent implements OnInit {
             this.approvalForm.disable()
           }
 
+          this.amount = res.data.masterLoan.loanTransfer.disbursedLoanAmount
           this.disbursalForm.patchValue(res.data.masterLoan.loanTransfer)
-          this.disbursalForm.patchValue(res.data)
+          this.disbursalForm.patchValue({loanUniqueId:res.data.loanUniqueId})
+          this.ref.detectChanges()
         }
         this.masterAndLoanIds = { loanId: res.data.masterLoan.id, masterLoanId: res.data.masterLoanId }
-      }
+      } 
     })
   }
 
@@ -149,6 +159,21 @@ export class LoanTransferComponent implements OnInit {
       } else {
         this.approvalForm.controls.reasonByBM.setValidators(Validators.required)
         this.approvalForm.controls.reasonByBM.updateValueAndValidity()
+      }
+    })
+
+    this.disbursalForm.controls.processingCharge.valueChanges.subscribe(res => {
+      if (Number(this.disbursalForm.controls.processingCharge.value)) {
+
+        if (Number(this.amount) < Number(this.disbursalForm.controls.processingCharge.value)) {
+          this.disbursalForm.controls.processingCharge.setErrors({ lessThan: true })
+          return
+        }
+
+        let amt = this.amount - this.disbursalForm.controls.processingCharge.value
+        this.disbursalForm.controls.disbursedLoanAmount.patchValue(amt)
+      } else {
+        this.disbursalForm.controls.disbursedLoanAmount.patchValue(this.amount)
       }
     })
   }
@@ -169,19 +194,21 @@ export class LoanTransferComponent implements OnInit {
       loanTransferStatusForAppraiser: ['', Validators.required],
       reasonByBM: ['', Validators.required],
       reasonByAppraiser: ['', Validators.required],
-      reason: ['', Validators.required]
+      reason: ['', Validators.required],
     })
     this.disbursalForm = this.fb.group({
+      processingCharge: ['', Validators.required],
       disbursedLoanAmount: [],
       loanUniqueId: [],
-      transactionId: ['', Validators.required]
+      transactionId: ['', Validators.required],
+      bankTransferType:[null,Validators.required]
     })
   }
 
   getReasonsList() {
     this.custClassificationService.getReasonsList().pipe(
       map(res => {
-        console.log(res)
+        // console.log(res)
         this.reasons = res.data;
       })
     ).subscribe()
@@ -200,8 +227,12 @@ export class LoanTransferComponent implements OnInit {
 
     if (this.approvalForm.controls.reason.value == "Other") {
       this.approvalForm.controls[formControl].reset()
+      this.approvalForm.controls[formControl].setValidators([Validators.required])
+      this.approvalForm.controls[formControl].updateValueAndValidity()
     } else {
       this.approvalForm.controls[formControl].patchValue(this.approvalForm.controls.reason.value)
+      this.approvalForm.controls[formControl].setValidators([])
+      this.approvalForm.controls[formControl].updateValueAndValidity()
     }
   }
 
@@ -225,6 +256,7 @@ export class LoanTransferComponent implements OnInit {
         if (res) {
           if (this.approvalForm.controls.loanTransferStatusForBM.value == 'approved') {
             this.approvalForm.disable()
+            this.amount = res.disbursedLoanAmount
             this.disbursalForm.patchValue(res)
             if (res.loanCurrentStage && this.permission.loanTransferDisbursal) {
               let stage = Number(res.loanCurrentStage) - 1
@@ -292,6 +324,7 @@ export class LoanTransferComponent implements OnInit {
       this.approvalForm.controls.reason.updateValueAndValidity();
       this.approvalForm.controls.reason.markAsUntouched()
       this.resetAppraiser()
+      this.clearAppraiser()
     }
   }
 
@@ -315,6 +348,7 @@ export class LoanTransferComponent implements OnInit {
       this.approvalForm.controls.reason.updateValueAndValidity();
       this.approvalForm.controls.reason.markAsUntouched()
       this.resetBM()
+      this.clearBM()
     }
   }
 

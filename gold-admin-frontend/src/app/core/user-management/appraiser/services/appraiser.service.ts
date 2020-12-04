@@ -14,10 +14,13 @@ export class AppraiserService {
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }
 
-  getAllAppraiser(internalBranchId?): Observable<any> {
+  getAllAppraiser(internalBranchId?, customerId?): Observable<any> {
     const reqParams: any = {}
     if (internalBranchId) {
       reqParams.internalBranchId = internalBranchId
+    }
+    if (customerId) {
+      reqParams.customerId = customerId
     }
     return this.http.get(`/api/user/appraiser-list`, { params: reqParams }).pipe(
       map(res => res)
@@ -78,10 +81,13 @@ export class AppraiserService {
       }))
   }
 
-  getAllReleaser(internalBranchId?): Observable<any> {
+  getAllReleaser(internalBranchId?, customerId?): Observable<any> {
     const reqParams: any = {}
     if (internalBranchId) {
       reqParams.internalBranchId = internalBranchId
+    }
+    if (customerId) {
+      reqParams.customerId = customerId
     }
     return this.http.get(`api/user/releaser-list`, { params: reqParams }).pipe(
       map(res => res)

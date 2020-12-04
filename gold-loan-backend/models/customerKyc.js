@@ -6,9 +6,18 @@ module.exports = (sequelize, DataTypes) => {
             field: 'customer_id',
             allowNull: false,
         },
+        currentKycModuleId:{
+            type: DataTypes.INTEGER,
+            field: 'current_kyc_module_id',
+        },
         isKycSubmitted: {
             type: DataTypes.BOOLEAN,
             field: 'is_kyc_submitted',
+            defaultValue: false
+        },
+        isScrapKycSubmitted: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_scrap_kyc_submitted',
             defaultValue: false
         },
         isAppliedForKyc: {

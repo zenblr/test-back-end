@@ -39,6 +39,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
   @Output() apiHit: EventEmitter<any> = new EventEmitter();
   @Output() finalLoanAmount: EventEmitter<any> = new EventEmitter();
   @Output() finalScrapAmount: EventEmitter<any> = new EventEmitter();
+  @Output() isPartRelease: EventEmitter<any> = new EventEmitter();
   @Input() loanTransfer
   @Input() showButton
 
@@ -155,6 +156,8 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
         this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
         this.basicForm.patchValue(changes.scrapDetails.currentValue.customer)
         this.basicForm.controls.scrapId.patchValue(changes.scrapDetails.currentValue.id)
+        this.basicForm.controls.requestId.patchValue(changes.scrapDetails.currentValue.appraiserRequestId)
+        this.basicForm.controls.kycStatus.patchValue(changes.scrapDetails.currentValue.customer.scrapKycStatus);
         this.ref.detectChanges()
       }
     }
@@ -166,13 +169,16 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.basicForm.controls.purpose.disable()
       this.basicForm.controls.requestId.patchValue(changes.loanTransfer.currentValue.masterLoan.appraiserRequestId)
       this.controls.customerId.patchValue(changes.loanTransfer.currentValue.customer.id)
-      this.basicForm.patchValue(changes.loanTransfer.currentValue.loanPersonalDetail)
-      this.currentDate = new Date(changes.loanTransfer.currentValue.loanPersonalDetail.startDate)
-      this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
       this.basicForm.patchValue(changes.loanTransfer.currentValue.customer)
+      if (changes.loanTransfer.currentValue.loanPersonalDetail) {
+        this.basicForm.patchValue(changes.loanTransfer.currentValue.loanPersonalDetail)
+        this.currentDate = new Date(changes.loanTransfer.currentValue.loanPersonalDetail.startDate)
+        this.basicForm.controls.startDate.patchValue(this.datePipe.transform(this.currentDate, 'mediumDate'));
+      }
       if (changes.loanTransfer.currentValue.masterLoan.loanTransfer.loanTransferStatusForBM == 'approved') {
         this.disable = true
       }
+
     }
   }
 
@@ -194,6 +200,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
       this.loanApplicationFormService.applyLoanFromPartRelease(params).pipe(map(res => {
         console.log(res)
         if (res.loanCurrentStage) {
+          this.isPartRelease.emit(true)
           let stage = res.loanCurrentStage
 
           stage = Number(stage) - 1;
@@ -263,10 +270,6 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
               this.basicForm.controls.customerId.patchValue(this.customerDetail.id)
             }
           }
-        }),
-        catchError(err => {
-          this.toast.error(err.error.message)
-          throw err;
         })
       ).subscribe()
     }
@@ -323,6 +326,7 @@ export class BasicDetailsComponent implements OnInit, OnChanges, AfterViewInit {
           } else {
             this.customerDetail = res.customerData;
             this.basicForm.patchValue(this.customerDetail);
+            this.basicForm.controls.kycStatus.patchValue(this.customerDetail.scrapKycStatus);
             this.basicForm.controls.customerId.patchValue(this.customerDetail.id);
           }
           this.basicForm.disable()

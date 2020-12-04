@@ -7,7 +7,7 @@
                         <kt-basic-details [action]="action" (apiHit)="editId($event)" [details]="customerDetail"
                             [disable]="disabledForm" (finalLoanAmount)="finalLoanAmount($event)" (id)="loan($event)"
                             (next)="next($event)" (totalEligibleAmt)="totalEligibleAmt($event)"
-                            [showButton]="showButton" (loanStage)="stage($event)">
+                            [showButton]="showButton" (loanStage)="stage($event)" (isPartRelease)="partRelease($event)">
                         </kt-basic-details>
                     </mat-tab>
                     <!-- <mat-tab label="KYC Details" [disabled]="disabled[1]">
@@ -23,9 +23,10 @@
                         <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0"
                             style="padding:0px !important">
                             <kt-ornaments [action]="action" (next)="next($event)" [disable]="disabledForm"
-                                [details]="customerDetail" (totalAmt)="total($event)" (fullAmt)="fullAmt($event)"
+                                [details]="customerDetail" (ornamentValue)="ornamentValue($event)" (fullAmt)="fullAmt($event)"
                                 [masterAndLoanIds]="masterAndLoanIds" [ornamentType]="ornamentType"
-                                [showButton]="showButton" (loanTransfer)="loanTransfer($event)" (partPayment)=partPayment($event)>
+                                [showButton]="showButton" (loanTransfer)="loanTransfer($event)"
+                                (partPayment)=partPayment($event) [isPartRelease]="isPartRelease" (ornamentDetails)="getOrnamentDetailsArray($event)">
                             </kt-ornaments>
                         </div>
                         <!-- </ng-template> -->
@@ -34,8 +35,8 @@
                         <kt-interest-calculator (next)="next($event)" [disable]="disabledForm" [action]="action"
                             (finalLoanAmount)="finalLoanAmount($event)" [totalAmt]="totalAmount"
                             [fullAmount]="fullAmount" [details]="customerDetail" [masterAndLoanIds]="masterAndLoanIds"
-                            [showButton]="showButton" (accountHolderName)="accountHolder($event)"
-                            [loanTransfer]=loanTransferdata [disbursed]="disbursed" [partPaymentdata]="partPaymentdata">
+                            [showButton]="showButton" (accountHolderName)="accountHolder($event)" [ornamentRate]="ornamentRate"
+                            [loanTransfer]=loanTransferdata [disbursed]="disbursed" [ornamentDetails]="ornamentDetailsArray" [partPaymentdata]="partPaymentdata">
                         </kt-interest-calculator>
                     </mat-tab>
                     <mat-tab label="Bank Details" [disabled]="disabled[4]">
@@ -81,7 +82,7 @@
                     </mat-tab>
 
                     <mat-tab label="Loan Status Approval" [disabled]="disabled[7]"
-                        *ngIf="loanStage?.id == 7 || loanStage?.id == 4 || (url == 'view-loan' && loanStage?.id == 7) || (url == 'view-loan' && loanStage?.id == 4) || (url == 'view-loan' && loanStage?.id == 5)">
+                        *ngIf="loanStage?.id == 7 || loanStage?.id == 4 || loanStage?.id >= 10 || (url == 'view-loan' && loanStage?.id == 7) || (url == 'view-loan' && loanStage?.id == 4) || (url == 'view-loan' && loanStage?.id == 5)">
                         <kt-approval [action]="action" [disable]="approvalFrom" [details]="customerDetail"
                             [masterAndLoanIds]="masterAndLoanIds" [loanStage]="loanStage"
                             (disbursal)="disbursal($event)">
@@ -89,7 +90,7 @@
                     </mat-tab>
 
                     <mat-tab label="Disbursement"
-                        *ngIf="loanStage?.id == 4 || (loanStage?.id == 5 && url =='view-loan')">
+                        *ngIf="loanStage?.id == 4 || loanStage?.id >= 10 || (loanStage?.id == 5 && url =='view-loan')">
                         <kt-disburse [masterAndLoanIds]="masterAndLoanIds" [loanDetials]="customerDetail"
                             [disable]="disabledForm" [showButton]="true" [disbursed]="disbursed"></kt-disburse>
                     </mat-tab>

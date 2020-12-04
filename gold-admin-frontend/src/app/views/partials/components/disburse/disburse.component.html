@@ -22,8 +22,37 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-6" *ngIf="!scrapIds && controls.paymentMode.value === 'bank'">
+                <div class="row justify-content-center kt-margin-t-10">
+                    <div class="col-4 form-label">
+                        <label class="kt-padding-l-10 mandatory">Payment Type</label>
+                    </div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-10">
+                                <select class="form-control" formControlName="bankTransferType"
+                                    [class.isError]="controls.bankTransferType.invalid &&  controls.bankTransferType.touched">
+                                    <option [value]=null selected disabled>Select Payment Type</option>
+                                    <option value="IMPS">IMPS</option>
+                                    <option value="NEFT">NEFT</option>
+                                    <option value="RTGS">RTGS</option>
+                                </select>
+                                <mat-error *ngIf="controls.bankTransferType.touched && controls.bankTransferType.errors?.required">
+                                    Required field
+                                </mat-error>
+                            </div>
+                            <div class="col kt-pointer d-flex justify-content-center align-items-center pl-0"
+                                [class.cursor-not-allowed]="!controls.bankTransferType.value" (click)="download()">
+                                <img src="../../../../../assets/media/icons/_download.svg" alt="Download"
+                                    width="20px" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- <div class="col-6"></div> -->
+
         <div class="row">
             <div class="col-6" *ngIf="scrapIds">
                 <div class="row justify-content-center kt-margin-t-10">
@@ -55,7 +84,7 @@
                         <label class="kt-padding-l-10 mandatory">Loan Amount</label>
                     </div>
                     <div class="col-8">
-                        <input type="text" class="form-control" formControlName="securedLoanAmount">
+                        <input type="text" class="form-control" formControlName="fullSecuredAmount">
                     </div>
                 </div>
             </div>
@@ -72,7 +101,7 @@
             <div class="col-6" *ngIf="scrapIds">
                 <div class="row justify-content-center kt-margin-t-10">
                     <div class="col-4 form-label">
-                        <label class="kt-padding-l-10 mandatory">Transaction Id</label>
+                        <label class="kt-padding-l-10 mandatory">Transaction ID</label>
                     </div>
                     <div class="col-8">
                         <input type="text" class="form-control" formControlName="transactionId"
@@ -86,7 +115,7 @@
             <div class="col-6" *ngIf="!scrapIds">
                 <div class="row justify-content-center kt-margin-t-10">
                     <div class="col-4 form-label">
-                        <label class="kt-padding-l-10 mandatory">Transaction Id</label>
+                        <label class="kt-padding-l-10 mandatory">Transaction ID</label>
                     </div>
                     <div class="col-8">
                         <input type="text" class="form-control" formControlName="securedTransactionId"
@@ -125,7 +154,7 @@
             <div class="col-6" *ngIf="details?.isUnsecuredSchemeApplied">
                 <div class="row justify-content-center kt-margin-t-10">
                     <div class="col-4 form-label">
-                        <label class="kt-padding-l-10 mandatory">Transaction Id</label>
+                        <label class="kt-padding-l-10 mandatory">Transaction ID</label>
                     </div>
                     <div class="col-8">
                         <input type="text" class="form-control" formControlName="unsecuredTransactionId"
@@ -165,6 +194,38 @@
             </div>
         </div> -->
         <div class="row">
+            <div class="col-6" *ngIf="details?.isLoanTransferExtraAmountAdded">
+                <div class="row justify-content-center kt-margin-t-10">
+                    <div class="col-4 form-label">
+                        <label class="kt-padding-l-10 mandatory">Transaction ID</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" formControlName="otherAmountTransactionId"
+                            [class.isError]="controls.otherAmountTransactionId.invalid &&  controls.otherAmountTransactionId.touched">
+                        <mat-error
+                            *ngIf="controls.otherAmountTransactionId.touched && controls.otherAmountTransactionId.errors?.required">
+                            Required field
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6" *ngIf="details?.isLoanTransferExtraAmountAdded">
+                <div class="row justify-content-center kt-margin-t-10">
+                    <div class="col-4 form-label">
+                        <label class="kt-padding-l-10 mandatory">Other Amount</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" formControlName="loanTransferExtraAmount" readonly
+                            [class.isError]="controls.loanTransferExtraAmount.invalid &&  controls.loanTransferExtraAmount.touched">
+                        <mat-error
+                            *ngIf="controls.loanTransferExtraAmount.touched && controls.loanTransferExtraAmount.errors?.required">
+                            Required field
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-6">
                 <div class="row justify-content-center kt-margin-t-10">
                     <div class="col-4 form-label">
@@ -185,12 +246,12 @@
                 </div>
             </div>
             <div class="col-6">
-                <div class="row justify-content-center kt-margin-t-10">
+                <div class="row justify-content-center kt-margin-t-10" *ngIf="!scrapIds">
                     <div class="col-4 form-label">
                         <label class="kt-padding-l-10 mandatory">Final Loan Amount</label>
                     </div>
                     <div class="col-8">
-                        <input type="text" class="form-control" formControlName="finalAmount">
+                        <input type="text" class="form-control" formControlName="loanAmount">
                     </div>
                 </div>
             </div>
@@ -240,7 +301,16 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6"></div>
+            <div class="col-6" *ngIf="!scrapIds">
+                <div class="row justify-content-center kt-margin-t-10">
+                    <div class="col-4 form-label">
+                        <label class="kt-padding-l-10 mandatory">Amount to be Disbursed</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" formControlName="finalAmount">
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="row">

@@ -21,4 +21,25 @@
 	.th-padding-style{
 		padding-left:3% ;
 	}
+	// .table-amount {
+	// 	text-align: right;
+	// }
+
+	.altered-row thead th:not(:first-child):not(:last-child), .altered-row tbody tr td:not(:first-child):not(:last-child) {
+		padding: 1rem 1.5rem;
+	}
+
+	// .altered-row-4 thead th:not(:first-child):not(:last-child), .altered-row tbody tr td:not(:first-child):not(:last-child) {
+	// 	padding: 1rem 4rem;
+	// }
+	.padding-8 {
+		padding-right: 8%
+	}
+	.th-padding-left {
+		padding-left: 3%;
+    	width: 10%;
+	}
+	.th-padding-right {
+		padding-right: 2% !important;
+	}
 }

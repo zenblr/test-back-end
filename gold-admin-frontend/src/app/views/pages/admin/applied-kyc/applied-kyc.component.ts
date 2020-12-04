@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AppliedKycDatasource } from '../../../../core/applied-kyc/datasources/applied-kyc.datasource';
 import { AppliedKycService } from '../../../../core/applied-kyc/services/applied-kyc.service';
-import { MatPaginator, MatSort, MatDialog,MatTooltipModule,TooltipPosition } from '@angular/material';
+import { MatPaginator, MatSort, MatDialog, MatTooltipModule, TooltipPosition } from '@angular/material';
 import { Subject, Subscription, merge } from 'rxjs';
 import { tap, takeUntil, skip, distinctUntilChanged, map } from 'rxjs/operators';
 import { DataTableService } from '../../../../core/shared/services/data-table.service';
@@ -20,7 +20,7 @@ export class AppliedKycComponent implements OnInit {
 
   filteredDataList: any = {};
   dataSource: AppliedKycDatasource;
-  displayedColumns = ['fullName', 'pan', 'customerId', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view'];
+  displayedColumns = ['fullName', 'pan', 'customerId', 'currentProduct', 'date', 'cceApprovalStatus', 'kycStatus', 'scrapCceApprovalStatus', 'scrapKycStatus', 'action', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
@@ -36,6 +36,8 @@ export class AppliedKycComponent implements OnInit {
     search: '',
     cceStatus: '',
     kycStatus: '',
+    scrapKycStatusFromCce: '',
+    scrapKycStatus: ''
   }
   permission: any;
 
@@ -89,13 +91,9 @@ export class AppliedKycComponent implements OnInit {
       skip(1),
       distinctUntilChanged()
     ).subscribe(res => {
-      // console.log(res);
       this.leadsResult = res;
     });
     this.subscriptions.push(entitiesSubscription);
-
-    // First load
-    // this.loadLeadsPage();
 
     this.dataSource.loadKyc(this.queryParamsData);
   }
@@ -110,9 +108,10 @@ export class AppliedKycComponent implements OnInit {
   }
 
   applyFilter(data) {
-    // console.log(data);
     this.queryParamsData.cceStatus = data.data.cceStatus;
     this.queryParamsData.kycStatus = data.data.kycStatus;
+    this.queryParamsData.scrapKycStatusFromCce = data.data.scrapKycStatusFromCce;
+    this.queryParamsData.scrapKycStatus = data.data.scrapKycStatus;
     this.dataSource.loadKyc(this.queryParamsData);
     this.filteredDataList = data.list;
   }
@@ -136,7 +135,8 @@ export class AppliedKycComponent implements OnInit {
       map(res => {
         // console.log(res);
         this.appliedKycService.editKyc.next({ editable: true });
-        this.router.navigate(['/admin/kyc-setting/edit-kyc']);
+        const disabled = (res.customerKycReview.customerKyc.currentKycModuleId == 1 && res.customerKycReview.scrapKycStatus === 'approved') ? true : false
+        this.router.navigate(['/admin/kyc-setting/edit-kyc'], { queryParams: { disabled } });
       })
     ).subscribe();
   }

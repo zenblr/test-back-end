@@ -72,6 +72,7 @@ export class UploadDocumentsComponent implements OnInit {
   isEdit: boolean;
   globalValue: any;
   showCustomerConfirmationFlag: boolean;
+  images = { pawnCopy: [] }
 
   constructor(
     private fb: FormBuilder,
@@ -126,12 +127,16 @@ export class UploadDocumentsComponent implements OnInit {
         this.buttonValue = 'Next'
       }
       if (changes.scrapStage.currentValue.id == 9 || changes.scrapStage.currentValue.id == 10) {
-        this.documentsForm.disable()
+        setTimeout(() => {
+          this.documentsForm.disable();
+        });
       }
     }
     if (changes.scrapAcknowledgmentStage && changes.scrapAcknowledgmentStage.currentValue) {
       if (changes.scrapAcknowledgmentStage.currentValue.id == 9 || changes.scrapAcknowledgmentStage.currentValue.id == 10) {
-        this.documentsForm.disable()
+        setTimeout(() => {
+          this.documentsForm.disable();
+        });
       }
     }
     if (changes.loanDocumnets && changes.loanDocumnets.currentValue) {
@@ -139,13 +144,16 @@ export class UploadDocumentsComponent implements OnInit {
 
       if (documents && documents.pawnCopyImage.length) {
         this.documentsForm.patchValue({
-          pawnCopyImage: documents.pawnCopyImage[0],
+          pawnCopyImage: documents.pawnCopyImage,
           schemeConfirmationCopyImage: documents.schemeConfirmationCopyImage[0],
           loanAgreementCopyImage: documents.loanAgreementCopyImage[0],
           loanAgreementCopy: documents.loanAgreementCopy,
           pawnCopy: documents.pawnCopy,
           schemeConfirmationCopy: documents.schemeConfirmationCopy,
         })
+        documents.pawnCopyImage.forEach(element => {
+          this.images.pawnCopy.push({ path: '', originalname: '', URL: element })
+        });
         this.pdfCheck();
       }
     }
@@ -165,6 +173,9 @@ export class UploadDocumentsComponent implements OnInit {
           })
         }
         this.pdfCheck();
+        if (changes.acknowledgmentDocuments.currentValue.scrapStatusForAppraiser == 'pending') {
+          this.disableCustomerConfirmationStatus();
+        }
         if (changes.acknowledgmentDocuments.currentValue.scrapStatusForAppraiser == 'approved') {
           this.isEdit = false
           this.documentsForm.disable()
@@ -202,7 +213,7 @@ export class UploadDocumentsComponent implements OnInit {
         this.documentsForm.patchValue({
           declarationCopyImage: documents.declarationImage[0],
           signedChequeImage: documents.signedChequeImage[0],
-          pawnCopyImage: documents.pawnTicketImage[0],
+          pawnCopyImage: documents.pawnTicketImage,
           pawnCopy: documents.pawnTicket,
           outstandingLoanAmount: documents.outstandingLoanAmount,
           declaration: documents.declaration,
@@ -225,6 +236,7 @@ export class UploadDocumentsComponent implements OnInit {
         } else {
           this.controls.processingCharges.patchValue(this.globalValue.processingChargesFixed);
         }
+        this.calculateAfterDeduction();
       }
     }
   }
@@ -393,10 +405,12 @@ export class UploadDocumentsComponent implements OnInit {
             controls.loanAgreementCopy.patchValue([res.uploadFile.path])
             controls.loanAgreementImageName.patchValue(res.uploadFile.originalname)
             controls.loanAgreementCopyImage.patchValue(res.uploadFile.URL)
-          } else if (value == 'pawnCopy') {
-            controls.pawnCopy.patchValue([res.uploadFile.path])
+          } else if (value == 'pawnCopy' && this.images.pawnCopy.length < 2) {
+            this.images.pawnCopy.push({ path: res.uploadFile.path, originalname: res.uploadFile.originalname, URL: res.uploadFile.URL })
+            controls.pawnCopy.patchValue(this.getPathArray('pawnCopy'))
             controls.pawnCopyImageName.patchValue(res.uploadFile.originalname)
-            controls.pawnCopyImage.patchValue(res.uploadFile.URL)
+            controls.pawnCopyImage.patchValue(this.getURLArray('pawnCopy'))
+            console.log({ pawnCopy: controls.pawnCopy.value, images: this.images })
           } else if (value == 'schemeConfirmationCopy') {
             controls.schemeConfirmationCopy.patchValue([res.uploadFile.path])
             controls.schemeConfirmationCopyImageName.patchValue(res.uploadFile.originalname)
@@ -425,6 +439,8 @@ export class UploadDocumentsComponent implements OnInit {
             controls.saleInvoice.patchValue([res.uploadFile.path])
             controls.saleInvoiceImageName.patchValue(res.uploadFile.originalname)
             controls.saleInvoiceImage.patchValue(res.uploadFile.URL)
+          } else {
+            this.toastr.error('Cannot upload more than 2 attachments')
           }
           if (ext[ext.length - 1] == 'pdf') {
             this.pdf[value] = true
@@ -433,11 +449,13 @@ export class UploadDocumentsComponent implements OnInit {
           }
         }), finalize(() => {
           this[value].nativeElement.value = ''
+          event.target.value = ''
           this.ref.detectChanges()
         })).subscribe()
     }
     else {
       this.toastr.error('Upload Valid File Format');
+      event.target.value = ''
     }
   }
 
@@ -478,7 +496,6 @@ export class UploadDocumentsComponent implements OnInit {
       this.loanService.getPdf(this.masterAndLoanIds.masterLoanId).subscribe()
     }
   }
-
 
   calculateAfterDeduction() {
     const controls = this.documentsForm as FormGroup;
@@ -525,6 +542,7 @@ export class UploadDocumentsComponent implements OnInit {
           }
         })).subscribe()
     } else if (this.url == 'scrap-buying-application-form') {
+      this.enableCustomerConfirmationStatus();
       this.scrapApplicationFormService.acknowledgementSubmit(this.documentsForm.value, this.scrapIds).pipe(
         map(res => {
           if (this.buttonValue == 'Next') {
@@ -537,6 +555,9 @@ export class UploadDocumentsComponent implements OnInit {
           } else {
             this.toastr.success(res.message)
             this.router.navigate(['/admin/scrap-management/applied-scrap'])
+          }
+          if (this.acknowledgmentDocuments.scrapStatusForAppraiser == 'pending') {
+            this.disableCustomerConfirmationStatus();
           }
         })).subscribe();
     } else if (this.showScrapFlag) {
@@ -552,5 +573,46 @@ export class UploadDocumentsComponent implements OnInit {
           this.router.navigate(['/admin/loan-management/applied-loan'])
         })).subscribe();
     }
+  }
+
+  getPathArray(type: string) {
+    const pathArray = this.images[type].map(e => e.path)
+    return pathArray
+  }
+
+  getURLArray(type: string) {
+    const urlArray = this.images[type].map(e => e.URL)
+    return urlArray
+  }
+
+  getNameArray(type: string) {
+    const nameArray = this.images[type].map(e => e.URL)
+    return nameArray
+  }
+
+  remove(type, index) {
+    this.images[type].splice(index, 1)
+    if (type == 'pawnCopy') {
+      this.documentsForm.patchValue({
+        pawnCopy: this.getPathArray(type),
+        pawnCopyImage: this.getURLArray(type),
+        pawnCopyImageName: this.images.pawnCopy.length ? this.images.pawnCopy[0].originalname : ''
+      })
+    }
+    console.log(this.images, this.controls.pawnCopyImage)
+  }
+
+  isPdf(image: string): boolean {
+    const ext = this.sharedService.getExtension(image)
+    const isPdf = ext == 'pdf' ? true : false
+    return isPdf
+  }
+
+  disableCustomerConfirmationStatus() {
+    this.controls.customerConfirmationStatus.disable();
+  }
+
+  enableCustomerConfirmationStatus() {
+    this.controls.customerConfirmationStatus.enable();
   }
 }

@@ -1,17 +1,8 @@
 <kt-filtered-data [filteredList]="filteredDataList"></kt-filtered-data>
 <kt-portlet>
     <kt-portlet-body>
-        <!-- <button mat-icon-button class="btn-transparent" ngbDropdown>
-            <a class="nav-link" style="cursor: pointer" ngbDropdownToggle id="navbarDropdown2" role="button">
-                <img src="../../../../../../assets/media/icons/options.svg" alt="">
-                <mat-icon>more_vert</mat-icon>
-            </a>
-            <div ngbDropdownMenu aria-labelledby="navbarDropdown2" class="dropdown-menu dropdown-menu-right">
-                <a ngbDropdownItem (click)="applyLoan(loan)">Apply Loan</a>
-                <a ngbDropdownItem (click)="transferLoan(loan)">Transfer Loan</a>
-            </div>
-        </button> -->
-        <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'auto'}">
+        <div class="mat-table__wrapper" [class.filter]="(filteredDataList | json) !== '{}'"
+            [ngStyle]="{'overflow-x':'auto'}">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource" matSort #sort1="matSort"
                 matSortActive="id" matSortDirection="asc" matSortDisableClear>
 
@@ -24,7 +15,8 @@
 
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.customer.panCardNumber | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let role">
+                        {{role.customer?.panCardNumber ? role.customer?.panCardNumber : 'NA' | uppercase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="date">
@@ -35,36 +27,46 @@
                     </mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="currentProduct">
+                    <mat-header-cell *matHeaderCellDef>Current Product</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.currentKycModuleId == 1">Gold Loan</span>
+                        <span *ngIf="role.currentKycModuleId == 3">Scrap Gold</span>
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="cceApprovalStatus">
-                    <mat-header-cell *matHeaderCellDef>CCE Approval Status</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Loan CCE <br> Approval Status</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <span class="text-success"
-                            *ngIf="role.customerKycClassification?.kycStatusFromCce == 'approved'">
-                            {{role.customerKycClassification?.kycStatusFromCce | titlecase}} </span>
-                        <span *ngIf="role.customerKycClassification?.kycStatusFromCce == 'pending'">
+                            *ngIf="role?.customerKycClassification?.kycStatusFromCce == 'approved'">
+                            {{role?.customerKycClassification?.kycStatusFromCce | titlecase}} </span>
+                        <span *ngIf="role?.customerKycClassification?.kycStatusFromCce == 'pending'">
                             <span
-                                class="text-warning">{{role.customerKycClassification?.kycStatusFromCce | titlecase}}</span>
-                            <span *ngIf="role.customerKycClassification?.reasonFromCce"
+                                class="text-warning kt-padding-r-5">{{role?.customerKycClassification?.kycStatusFromCce | titlecase}}</span>
+                            <span *ngIf="role?.customerKycClassification?.reasonFromCce"
                                 class="material-icons custom-icon" mat-raised-button
-                                matTooltip={{role.customerKycClassification?.reasonFromCce}} matTooltipPosition="above"
+                                matTooltip={{role?.customerKycClassification?.reasonFromCce}} matTooltipPosition="above"
                                 matTooltipClass="custom-tooltip-white">
                                 info
                             </span>
                         </span>
-                        <span *ngIf="role.customerKycClassification?.kycStatusFromCce == 'rejected'">
+                        <span *ngIf="role?.customerKycClassification?.kycStatusFromCce == 'rejected'">
                             <span
-                                class="text-danger kt-padding-r-5">{{role.customerKycClassification?.kycStatusFromCce | titlecase}}</span>
+                                class="text-danger kt-padding-r-5">{{role?.customerKycClassification?.kycStatusFromCce | titlecase}}</span>
                             <span class="material-icons custom-icon" mat-raised-button
-                                matTooltip={{role.customerKycClassification?.reasonFromCce}} matTooltipPosition="above"
+                                matTooltip={{role?.customerKycClassification?.reasonFromCce}} matTooltipPosition="above"
                                 matTooltipClass="custom-tooltip-white">
                                 info
                             </span>
                         </span>
+                        <span
+                            *ngIf="!role?.customerKycClassification?.kycStatusFromCce && role?.customerKycClassification?.kycStatusFromOperationalTeam">-</span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="kycStatus">
-                    <mat-header-cell *matHeaderCellDef>KYC Status</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Loan KYC Status</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <span class="text-success" *ngIf="role.customer?.kycStatus == 'approved'">
                             {{role.customer?.kycStatus | titlecase}}
@@ -73,26 +75,104 @@
                             <span class="text-warning">{{role.customer?.kycStatus | titlecase}}</span>
 
                             <span class="material-icons custom-icon" mat-raised-button
-                                matTooltip={{role.customerKycClassification?.reasonFromOperationalTeam}}
+                                matTooltip={{role?.customerKycClassification?.reasonFromOperationalTeam}}
                                 matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
                                 info
                             </span>
                         </span>
                         <span *ngIf="role.customer?.kycStatus == 'pending'">
-                            <span class="text-warning"> {{role.customer?.kycStatus | titlecase}}</span>
+                            <ng-container *ngIf="role?.customerKycClassification?.kycStatusFromCce else blank">
+                                <span class="text-warning kt-padding-r-5">
+                                    {{role.customer?.kycStatus | titlecase}}</span>
 
-                            <span *ngIf="role.customerKycClassification?.reasonFromOperationalTeam"
-                                class="material-icons custom-icon" mat-raised-button
-                                matTooltip={{role.customerKycClassification?.reasonFromOperationalTeam}}
+                                <span *ngIf="role?.customerKycClassification?.reasonFromOperationalTeam"
+                                    class="material-icons custom-icon" mat-raised-button
+                                    matTooltip={{role?.customerKycClassification?.reasonFromOperationalTeam}}
+                                    matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                                    info
+                                </span>
+                            </ng-container>
+                        </span>
+                        <span *ngIf="role.customer?.kycStatus == 'rejected'">
+                            <span class="text-danger kt-padding-r-5">{{role.customer?.kycStatus | titlecase}}</span>
+
+                            <span class="material-icons  custom-icon" mat-raised-button
+                                matTooltip={{role?.customerKycClassification?.reasonFromOperationalTeam}}
                                 matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
                                 info
                             </span>
                         </span>
-                        <span *ngIf="role.customer?.kycStatus == 'rejected'">
-                            <span class="text-danger">{{role.customer?.kycStatus | titlecase}}</span>
+
+                    </mat-cell>
+                </ng-container>
+
+                <ng-template #blank>-</ng-template>
+
+                <ng-container matColumnDef="scrapCceApprovalStatus">
+                    <mat-header-cell *matHeaderCellDef>Scrap CCE Approval Status</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span class="text-success"
+                            *ngIf="role?.customerKycClassification?.scrapKycStatusFromCce == 'approved'">
+                            {{role?.customerKycClassification?.scrapKycStatusFromCce | titlecase}} </span>
+                        <span *ngIf="role?.customerKycClassification?.scrapKycStatusFromCce == 'pending'">
+                            <span
+                                class="text-warning kt-padding-r-5">{{role?.customerKycClassification?.scrapKycStatusFromCce | titlecase}}</span>
+                            <span *ngIf="role?.customerKycClassification?.scrapReasonFromCce"
+                                class="material-icons custom-icon" mat-raised-button
+                                matTooltip={{role?.customerKycClassification?.scrapReasonFromCce}}
+                                matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                                info
+                            </span>
+                        </span>
+                        <span *ngIf="role?.customerKycClassification?.scrapKycStatusFromCce == 'rejected'">
+                            <span
+                                class="text-danger kt-padding-r-5">{{role?.customerKycClassification?.scrapKycStatusFromCce | titlecase}}</span>
+                            <span class="material-icons custom-icon" mat-raised-button
+                                matTooltip={{role?.customerKycClassification?.scrapReasonFromCce}}
+                                matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                                info
+                            </span>
+                        </span>
+                        <span
+                            *ngIf="!role?.customerKycClassification?.scrapKycStatusFromCce && role?.customerKycClassification?.scrapKycStatusFromOperationalTeam">-</span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="scrapKycStatus">
+                    <mat-header-cell *matHeaderCellDef>Scrap KYC Status</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span class="text-success" *ngIf="role.customer?.scrapKycStatus == 'approved'">
+                            {{role.customer?.scrapKycStatus | titlecase}}
+                        </span>
+                        <span *ngIf="role.customer?.scrapKycStatus == 'incomplete'">
+                            <span class="text-warning">{{role.customer?.scrapKycStatus | titlecase}}</span>
+
+                            <span class="material-icons custom-icon" mat-raised-button
+                                matTooltip={{role?.customerKycClassification?.scrapReasonFromOperationalTeam}}
+                                matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                                info
+                            </span>
+                        </span>
+                        <span *ngIf="role.customer?.scrapKycStatus == 'pending'">
+                            <ng-container *ngIf="role?.customerKycClassification?.scrapKycStatusFromCce else blank">
+                                <span class="text-warning kt-padding-r-5">
+                                    {{role.customer?.scrapKycStatus | titlecase}}</span>
+
+                                <span *ngIf="role?.customerKycClassification?.scrapReasonFromOperationalTeam"
+                                    class="material-icons custom-icon" mat-raised-button
+                                    matTooltip={{role?.customerKycClassification?.scrapReasonFromOperationalTeam}}
+                                    matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                                    info
+                                </span>
+                            </ng-container>
+
+                        </span>
+                        <span *ngIf="role.customer?.scrapKycStatus == 'rejected'">
+                            <span
+                                class="text-danger kt-padding-r-5">{{role.customer?.scrapKycStatus | titlecase}}</span>
 
                             <span class="material-icons  custom-icon" mat-raised-button
-                                matTooltip={{role.customerKycClassification?.reasonFromOperationalTeam}}
+                                matTooltip={{role?.customerKycClassification?.scrapReasonFromOperationalTeam}}
                                 matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
                                 info
                             </span>
@@ -108,10 +188,15 @@
                                 *ngxPermissionsOnly="['cceKycRating', 'opsKycRating']">
 
                                 <span
-                                    *ngIf="(permission.cceKycRating  && role.customerKycClassification?.kycStatusFromCce == 'pending') 
-                                    || (permission.opsKycRating && role.customerKycClassification?.kycStatusFromCce == 'approved' && 
-                                    (role.customerKycClassification?.kycStatusFromOperationalTeam == 'incomplete' || role.customerKycClassification?.kycStatusFromOperationalTeam == 'pending'))">
-                                    <!-- <img src="../../../../assets/media/icons/action.svg"> -->
+                                    *ngIf="(permission.cceKycRating  && role?.customerKycClassification?.kycStatusFromCce == 'pending') 
+                                    || (permission.opsKycRating && role?.customerKycClassification?.kycStatusFromCce == 'approved' && 
+                                    (role?.customerKycClassification?.kycStatusFromOperationalTeam == 'incomplete' || role?.customerKycClassification?.kycStatusFromOperationalTeam == 'pending'))">
+                                    <strong>Action ></strong>
+                                </span>
+                                <span
+                                    *ngIf="(permission.cceKycRating  && role?.customerKycClassification?.scrapKycStatusFromCce == 'pending') 
+                                    || (permission.opsKycRating && role?.customerKycClassification?.scrapKycStatusFromCce == 'approved' && 
+                                    (role?.customerKycClassification?.scrapKycStatusFromOperationalTeam == 'incomplete' || role?.customerKycClassification?.scrapKycStatusFromOperationalTeam == 'pending'))">
                                     <strong>Action ></strong>
                                 </span>
                             </div>
@@ -121,7 +206,7 @@
 
                 <ng-container matColumnDef="view">
                     <mat-header-cell *matHeaderCellDef>KYC Details</mat-header-cell>
-                    <mat-cell *matCellDef="let role" (click)="viewKYC(role)" class="kt-pointer">
+                    <mat-cell *matCellDef="let role" (click)="viewKYC(role)" class="kt-pointer view-link">
                         <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['appliedKycView']">
                             View
                         </div>
@@ -133,13 +218,13 @@
                     <mat-cell *matCellDef="let role" class="kt-pointer">
                         <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserAdd']">
                             <button style="width: 120px;" class="apply-kyc" (click)="assign(role)"
-                                *ngIf="role.customer.kycStatus == 'approved' && role.customerKycClassification?.kycStatusFromCce == 'approved' && !role.customer.customerAssignAppraiser">Assign
+                                *ngIf="role.customer.kycStatus == 'approved' && role?.customerKycClassification?.kycStatusFromCce == 'approved' && !role.customer.customerAssignAppraiser">Assign
                                 Appraiser</button>
                         </div>
                         <div [ngStyle]="{'display': 'inherit'}" *ngxPermissionsOnly="['assignAppraiserEdit']">
 
                             <button style="width: 120px;" class="apply-kyc" (click)="updateAppraiser(role)"
-                                *ngIf="role.customer.kycStatus == 'approved' && role.customerKycClassification?.kycStatusFromCce == 'approved' && role.customer.customerAssignAppraiser">Update
+                                *ngIf="role.customer.kycStatus == 'approved' && role?.customerKycClassification?.kycStatusFromCce == 'approved' && role.customer.customerAssignAppraiser">Update
                                 Appraiser</button>
                         </div>
                     </mat-cell>
@@ -167,7 +252,7 @@
                         <ng-container
                             *ngxPermissionsOnly="['addLoanTransfer', 'loanTransferAppraiserRating', 'scrapApplicationAdd']">
                             <ng-container
-                                *ngIf="role.customer.kycStatus == 'approved' && role.customerKycClassification?.kycStatusFromCce == 'approved' && role.customer.customerAssignAppraiser">
+                                *ngIf="role.customer.kycStatus == 'approved' && role?.customerKycClassification?.kycStatusFromCce == 'approved' && role.customer.customerAssignAppraiser">
                                 <button mat-button [matMenuTriggerFor]="menu">
                                     <mat-icon>more_vert</mat-icon>
                                 </button>

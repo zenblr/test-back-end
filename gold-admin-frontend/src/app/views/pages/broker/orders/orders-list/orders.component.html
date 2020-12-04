@@ -129,7 +129,7 @@
                 <ng-container matColumnDef="cancelOrder">
                     <mat-header-cell *matHeaderCellDef>Cancel Order</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <span *ngIf="element['orderCurrentStatus.id'] == 2 || element['orderCurrentStatus.id'] == 3">
+                        <span *ngIf="(element['orderCurrentStatus.id'] == 2 && element['paymentType.id'] != 4) || element['orderCurrentStatus.id'] == 3">
                             <kt-button [value]="'Cancel'" [type]="'button'" (click)="cancelOrder(element)">
                             </kt-button>
                         </span>

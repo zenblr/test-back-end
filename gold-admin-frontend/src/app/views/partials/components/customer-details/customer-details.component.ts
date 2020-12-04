@@ -5,6 +5,8 @@ import { ScrapCustomerManagementService } from '../../../../core/scrap-managemen
 import { tap } from 'rxjs/operators';
 import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
 import { MatDialog } from '@angular/material';
+import { SharedService } from '../../../../core/shared/services/shared.service';
+import { PdfViewerComponent } from '../pdf-viewer/pdf-viewer.component';
 
 @Component({
   selector: 'kt-customer-details',
@@ -22,7 +24,8 @@ export class CustomerDetailsComponent implements OnInit {
     private scrapCustomerManagementService: ScrapCustomerManagementService,
     private route: ActivatedRoute,
     private router: Router,
-    private dilaog: MatDialog
+    private dilaog: MatDialog,
+    private sharedService: SharedService
   ) {
     this.url = (this.router.url.split('/')[2]);
   }
@@ -52,8 +55,12 @@ export class CustomerDetailsComponent implements OnInit {
       })).subscribe();
   }
 
-  viewLoan( masterLoanId) {
+  viewLoan(masterLoanId) {
     this.router.navigate([`/admin/customer-management/loan-details/${masterLoanId}`])
+  }
+
+  viewTransfer(masterLoanId) {
+    this.router.navigate([`/admin//loan-management/loan-transfer/${masterLoanId}`], { queryParams: { action: 'view' } })
   }
 
   viewScrap(scrap) {
@@ -61,22 +68,56 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   prepareImages() {
-    Array.prototype.push.apply(this.images, this.cutomerDetails.customerKycAddress[0].addressProofImage)
-    Array.prototype.push.apply(this.images, this.cutomerDetails.customerKycAddress[1].addressProofImage)
+    if (this.cutomerDetails.userType == 'Individual') {
+      Array.prototype.push.apply(this.images, this.cutomerDetails.customerKycAddress[0].addressProofImage)
+    } else {
+      Array.prototype.push.apply(this.images, this.cutomerDetails.customerKycAddress[0].addressProofImage)
+      Array.prototype.push.apply(this.images, this.cutomerDetails.customerKycAddress[1].addressProofImage)
+    }
     // Array.prototype.push.apply(this.images,this.cutomerDetails.customerKycBank[0].passbookProof)
-    Array.prototype.push.apply(this.images, this.cutomerDetails.customerKycPersonal.identityProofImage)
-    // console.log(this.images)
+    if (this.cutomerDetails.customerKycPersonal && this.cutomerDetails.customerKycPersonal.identityProofImage) {
+      Array.prototype.push.apply(this.images, this.cutomerDetails.customerKycPersonal.identityProofImage)
+    }
+    this.images.push(this.cutomerDetails.panImg)
+    if (this.cutomerDetails.customerKycPersonal && this.cutomerDetails.customerKycPersonal.profileImg) {
+      this.images.push(this.cutomerDetails.customerKycPersonal.profileImg)
+    }
+    // this.images = this.images.filter(e => e)
+    console.log(this.images)
   }
 
   preview(value) {
-    let index = this.images.indexOf(value)
+    if (this.isPdf(value)) return this.viewPdf(value)
+
+    const img = this.images.filter(e => {
+      const ext = this.sharedService.getExtension(e)
+      return ext !== 'pdf'
+    })
+    let index = img.indexOf(value)
     this.dilaog.open(ImagePreviewDialogComponent, {
       data: {
-        images: this.images,
+        images: img,
         index: index
       },
       width: 'auto'
     })
+  }
+
+  viewPdf(value) {
+    this.dilaog.open(PdfViewerComponent, {
+      data: {
+        pdfSrc: value,
+        page: 1,
+        showAll: true
+      },
+      width: "80%"
+    })
+  }
+
+  isPdf(image: string): boolean {
+    const ext = this.sharedService.getExtension(image)
+    const isPdf = ext == 'pdf' ? true : false
+    return isPdf
   }
 
 }

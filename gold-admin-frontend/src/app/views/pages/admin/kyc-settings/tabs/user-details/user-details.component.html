@@ -4,6 +4,24 @@
 			<div class="col-6 align-self-center">
 				<form action="" [formGroup]="userBasicForm">
 
+					<div *ngIf="controls.moduleId.value == 3" class="row kt-padding-t-15">
+						<div class="col-4 align-self-center form-label">
+							<label class="mandatory">User Type </label>
+						</div>
+						<div class="col-8">
+							<select class="form-control" formControlName="userType"
+								(change)='changeUserType($event.target.value)'
+								[class.isError]="controls.userType.invalid && controls.userType.touched">
+								<option value=null selected disabled>Select User Type</option>
+								<option value="Individual">Individual</option>
+								<option value="Corporate">Corporate</option>
+							</select>
+							<mat-error *ngIf="controls.userType.invalid && controls.userType.touched">
+								Required field
+							</mat-error>
+						</div>
+					</div>
+
 					<div class="row kt-padding-t-15">
 						<!-- Mobile -->
 						<div class="col-4 align-self-center form-label">
@@ -16,7 +34,7 @@
 								autocomplete="off" placeholder="Enter mobile number" margin [class.isError]="
 											controls.mobileNumber.touched &&
 											controls.mobileNumber.invalid
-										" />
+										" maxlength="10" (input)="inputNumber()" />
 							<mat-error *ngIf="
 											controls.mobileNumber.errors?.required &&
 											controls.mobileNumber.touched
@@ -94,11 +112,11 @@
 
 						<div class="col-4">
 							<input type="text" aria-label="First name" placeholder="First Name" ktAlphabets
-								class="form-control" formControlName="firstName" [class.isError]="
+								ktTrimControl class="form-control" formControlName="firstName" [class.isError]="
 									controls.firstName.touched &&
 									controls.firstName.invalid
-								"  />
-								<!-- [readOnly]="true" style="text-transform: capitalize;" -->
+								" />
+							<!-- [readOnly]="true" style="text-transform: capitalize;" -->
 							<mat-error *ngIf="
 									controls.firstName.errors?.required &&
 									controls.firstName.touched
@@ -107,12 +125,12 @@
 							</mat-error>
 						</div>
 						<div class="col-4">
-							<input type="text" aria-label="Last name" placeholder="Last Name" ktAlphabets
+							<input type="text" aria-label="Last name" placeholder="Last Name" ktAlphabets ktTrimControl
 								class="form-control" formControlName="lastName" [class.isError]="
 									controls.lastName.touched &&
 									controls.lastName.invalid
-								"  />
-								<!-- [readOnly]="true" style="text-transform: capitalize;" -->
+								" />
+							<!-- [readOnly]="true" style="text-transform: capitalize;" -->
 							<mat-error *ngIf="
 									controls.lastName.errors?.required &&
 									controls.lastName.touched
@@ -127,11 +145,18 @@
 							<label class="mandatory  text-color font-weight-500">PAN / FORM 60 </label>
 						</div>
 						<div class="col-8">
-							<select class="form-control" formControlName="panType" (change)='remove()'>
+							<select class="form-control" formControlName="panType" (change)='remove()'
+								[class.isError]="controls.panType.touched && controls.panType.invalid">
 								<option value=null selected disabled>Select</option>
 								<option value="pan">PAN</option>
 								<option value="form60">FORM 60</option>
 							</select>
+							<mat-error *ngIf="
+									controls.panType.errors?.required &&
+									controls.panType.touched
+								">
+								Required field
+							</mat-error>
 						</div>
 					</div>
 
@@ -172,7 +197,8 @@
 							</div>
 
 							<div *ngIf="isPanVerified">
-								<button class="w-100 success-button" mat-raised-button matTooltip="Pan Verified">
+								<button class="w-100 success-button" mat-raised-button matTooltip="Pan Verified"
+									[disabled]="disabled">
 									Verified
 								</button>
 							</div>
@@ -185,22 +211,27 @@
 								ngClass="{'mandatory': controls.panType.value != ''}"
 								class="text-color font-weight-500">
 							</label>
-							<label *ngIf="controls.panType.value != ''"
+							<label *ngIf="controls.panType.value != 'pan'"
 								class="mandatory  text-color font-weight-500">{{ controls.panType.value | uppercase }}
 							</label>
 						</div>
 						<div class="col-8">
-							<div class="input-group mb-3">
+							<div class="input-group">
 								<input type="text" class="form-control" placeholder="Select File"
 									aria-label="Recipient's username" aria-describedby="basic-addon2"
-									formControlName="form60"
-									[class.isError]="controls.form60.touched && controls.form60.invalid" />
+									formControlName="form60" readonly
+									[class.isError]="controls.panImage.touched && controls.panImage.invalid" />
 								<div class="input-group-append">
 									<span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-										(click)="form60.click()">Attach</span>
+										(click)="pan.click()">Attach</span>
 								</div>
-								<input type="file" class="d-none" accept="image/png, image/jpeg" #form60
+								<input type="file" class="d-none" accept="image/*,application/pdf" #pan
 									(input)="getFileInfo($event)">
+								<div class="w-100">
+									<mat-error *ngIf="controls.panImage.errors?.required && controls.panImage.touched">
+										Required field
+									</mat-error>
+								</div>
 							</div>
 						</div>
 						<!-- <div class="col-2 form-label" *ngIf="controls.form60.value">
@@ -208,28 +239,67 @@
 						</div> -->
 					</div>
 
-					<div class="row kt-margin-t-20 kt-margin-b-20" *ngIf="controls.panType.value">
+					<div class="row kt-margin-t-15" *ngIf="controls.panImg.value">
 						<div class="col offset-4">
 							<div class="img-container" *ngIf="controls.panImg.value">
 								<img *ngIf="!controls.panImg.value" class=""
 									src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
-								<img class="fetched-image" *ngIf="controls.panImg.value && !pdf.panImg"
+								<img class="fetched-image"
+									*ngIf="controls.panImg.value && !isPdf(controls?.panImg.value)"
 									(click)="preview(controls?.panImg.value)" [src]="controls.panImg.value"
 									style="border-radius: 15px;" alt="" />
 								<img src="../../../../../assets/media/icons/edit.svg" alt=""
-									class="kt-pointer remove-icon" (click)="form60.click()"
+									class="kt-pointer remove-icon" (click)="editPan.click()"
 									*ngIf="controls.panImg.value && !(controls.panType.status == 'DISABLED')">
-								<input type="file" class="d-none" accept="image/png, image/jpeg" #form60
+								<input type="file" class="d-none" accept="image/*,application/pdf" #editPan
 									(input)="getFileInfo($event)">
 								<div class="iframeWrapper" (click)="preview(controls?.panImg.value)">
 									<iframe [src]="controls?.panImg.value | safe : 'resourceUrl'" height="250"
-										width="290" scrolling="no" *ngIf="pdf.panImg"></iframe>
+										width="290" scrolling="no" *ngIf="isPdf(controls?.panImg.value)"></iframe>
 								</div>
 							</div>
 						</div>
 					</div>
 
-					<div class="row kt-margin-t-10 kt-margin-b-20">
+					<div *ngIf="controls.userType.value === 'Corporate'">
+						<div class="row kt-padding-t-15">
+							<div class="col-4 align-self-center form-label">
+								<label class="mandatory">Organization Type</label>
+							</div>
+							<div class="col-8">
+								<select class="form-control" formControlName="organizationTypeId"
+									[class.isError]="controls.organizationTypeId.invalid && controls.organizationTypeId.touched">
+									<option value=null selected disabled>Select Organization</option>
+									<option [value]="item.id" *ngFor="let item of organizationTypes">
+										{{ item.organizationType }}</option>
+								</select>
+								<mat-error
+									*ngIf="controls.organizationTypeId.invalid && controls.organizationTypeId.touched">
+									Required field
+								</mat-error>
+							</div>
+						</div>
+
+						<div class="row kt-padding-t-15">
+							<div class="col-4 align-self-center form-label">
+								<label class="mandatory">Date of Incorporation</label>
+							</div>
+							<div class="col-8">
+								<input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
+									formControlName="dateOfIncorporation" [max]="maxDate"
+									[class.isError]="controls.dateOfIncorporation.touched && controls.dateOfIncorporation.invalid"
+									readonly placeholder="DD/MM/YYYY">
+								<mat-datepicker #picker></mat-datepicker>
+								<mat-error
+									*ngIf="controls.dateOfIncorporation.invalid && controls.dateOfIncorporation.touched">
+									Required field
+								</mat-error>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="row kt-margin-t-20 kt-margin-b-20">
 						<div class="col-8 offset-4">
 							<kt-button [value]="'Next'" [type]="'button'" (action)="submit()">
 							</kt-button>

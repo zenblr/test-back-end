@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
@@ -13,7 +13,7 @@ export class AppliedScrapService {
   applyFilter$ = this.applyFilter.asObservable();
 
   constructor(
-    private http: HttpClient, private toastr: ToastrService
+    private http: HttpClient, private toastr: ToastrService,
   ) { }
 
   getAppliedScraps(event): Observable<any> {
@@ -30,8 +30,11 @@ export class AppliedScrapService {
     if (event && event.appraiserApproval) {
       reqParams.appraiserApproval = event.appraiserApproval;
     }
-    if (event && event.scrapStage) {
-      reqParams.scrapStageId = event.scrapStage;
+    if (event && event.bmApproval) {
+      reqParams.bmApproval = event.bmApproval;
+    }
+    if (event && event.operatinalTeamApproval) {
+      reqParams.operatinalTeamApproval = event.operatinalTeamApproval;
     }
     return this.http.get(`/api/scrap/scrap-process/applied-scrap-details`, {
       params: reqParams,
@@ -77,4 +80,7 @@ export class AppliedScrapService {
         throw (err);
       }))
   }
+
+ 
+
 }

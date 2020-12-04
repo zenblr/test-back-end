@@ -19,7 +19,9 @@
                 </ng-container> -->
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN Number</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item?.customer?.panCardNumber | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let item">
+                        {{item?.customer?.panCardNumber ? (item?.customer?.panCardNumber| uppercase) : 'NA' }}
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="date">
                     <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
@@ -49,12 +51,12 @@
                             [ngClass]="item?.scrapStatusForAppraiser == 'pending' ? 'text-warning' : item?.scrapStatusForAppraiser == 'approved' ? 'text-success' : 'text-danger'">
                             {{item?.scrapStage?.id == 9 || item?.scrapStage?.id == 10 ? '-'  : item?.scrapStatusForAppraiser | titlecase}}
                         </span>
-                        <span *ngIf="item?.commentByAppraiser"
-                        class="material-icons custom-icon" mat-raised-button
-                        matTooltip={{item?.commentByAppraiser}} matTooltipPosition="above"
-                        matTooltipClass="custom-tooltip-white">
-                        info
-                    </span>
+                        <span
+                            *ngIf="item?.commentByAppraiser && !(item?.scrapStage?.id == 9 || item?.scrapStage?.id == 10)"
+                            class="material-icons custom-icon" mat-raised-button matTooltip={{item?.commentByAppraiser}}
+                            matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                            info
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="bMApproval">
@@ -64,12 +66,11 @@
                             [ngClass]="item?.scrapStatusForBM == 'pending' ? 'text-warning' : item?.scrapStatusForBM == 'approved' ? 'text-success' : 'text-danger'">
                             {{item?.scrapStage?.id == 9 || item?.scrapStage?.id == 10 ? '-'  : item?.scrapStatusForBM | titlecase}}
                         </span>
-                        <span *ngIf="item?.commentByBM"
-                        class="material-icons custom-icon" mat-raised-button
-                        matTooltip={{item?.commentByBM}} matTooltipPosition="above"
-                        matTooltipClass="custom-tooltip-white">
-                        info
-                    </span>
+                        <span *ngIf="item?.commentByBM && !(item?.scrapStage?.id == 9 || item?.scrapStage?.id == 10)"
+                            class="material-icons custom-icon" mat-raised-button matTooltip={{item?.commentByBM}}
+                            matTooltipPosition="above" matTooltipClass="custom-tooltip-white">
+                            info
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="oTApproval">
@@ -79,12 +80,13 @@
                             [ngClass]="item?.scrapStatusForOperatinalTeam == 'pending' ? 'text-warning' : item?.scrapStatusForOperatinalTeam == 'approved' ? 'text-success' : 'text-danger'">
                             {{item?.scrapStage?.id == 9 || item?.scrapStage?.id == 10 ? '-'  : item?.scrapStatusForOperatinalTeam | titlecase}}
                         </span>
-                        <span *ngIf="item?.commentByOperatinalTeam"
-                        class="material-icons custom-icon" mat-raised-button
-                        matTooltip={{item?.commentByOperatinalTeam}} matTooltipPosition="above"
-                        matTooltipClass="custom-tooltip-white">
-                        info
-                    </span>
+                        <span
+                            *ngIf="item?.commentByOperatinalTeam && !(item?.scrapStage?.id == 9 || item?.scrapStage?.id == 10)"
+                            class="material-icons custom-icon" mat-raised-button
+                            matTooltip={{item?.commentByOperatinalTeam}} matTooltipPosition="above"
+                            matTooltipClass="custom-tooltip-white">
+                            info
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="actions">
@@ -95,6 +97,8 @@
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)"
                                         [ngClass]="{'cursor-not-allowed':  !permission.addAppraiserRating}"
+                                        [disabled]="item?.scrapStatusForAppraiser == 'rejected'"
+                                        [class.cursor-not-allowed]="item?.scrapStatusForAppraiser == 'rejected'"
                                         class="primary-button">{{item?.scrapStage?.stageName | uppercase}}</button>
                                 </div>
                             </div>
@@ -102,6 +106,8 @@
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)"
                                         [ngClass]="{'cursor-not-allowed': !permission.addBmRating}"
+                                        [disabled]="item?.scrapStatusForBM == 'rejected'"
+                                        [class.cursor-not-allowed]="item?.scrapStatusForBM == 'rejected'"
                                         class="primary-button">{{item?.scrapStage?.stageName | uppercase}}</button>
                                 </div>
                             </div>
@@ -109,6 +115,8 @@
                                 <div class="kt-pointer">
                                     <button (click)="editScrap(item)"
                                         [ngClass]="{'cursor-not-allowed': !permission.addOpsRating}"
+                                        [disabled]="item?.scrapStatusForOperatinalTeam == 'rejected'"
+                                        [class.cursor-not-allowed]="item?.scrapStatusForOperatinalTeam == 'rejected'"
                                         class="primary-button">{{item?.scrapStage?.stageName | uppercase}}</button>
                                 </div>
                             </div>
@@ -148,13 +156,27 @@
                                     <button class="warning-button">{{'customer disagreed' | titlecase}}</button>
                                 </div>
                             </div>
+                            <div *ngIf="item?.scrapStage?.id == 11">
+                                <button (click)="getPacketDetails(item)"
+                                    [class.cursor-not-allowed]="getPermission(item)"
+                                    class="primary-button">{{item?.scrapStage?.stageName | uppercase}}</button>
+                            </div>
+                            <div *ngIf="item?.scrapStage?.id == 12">
+                                <button class="primary-button">{{item?.scrapStage?.stageName | uppercase}}</button>
+                            </div>
+                            <div *ngIf="item?.scrapStage?.id == 13">
+                                <button class="primary-button">{{item?.scrapStage?.stageName | uppercase}}</button>
+                            </div>
+                            <div *ngIf="item?.scrapStage?.id == 14">
+                                <button class="primary-button">{{item?.scrapStage?.stageName | uppercase}}</button>
+                            </div>
                         </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="view">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let item">
-                        <span (click)="viewScrap(item)" class="kt-pointer">
+                        <span (click)="viewScrap(item)" class="kt-pointer view-link">
                             View
                         </span>
                     </mat-cell>

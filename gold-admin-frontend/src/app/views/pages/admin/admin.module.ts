@@ -7,6 +7,7 @@ import { CoreModule } from '../../../core/core.module';
 import { PartialsModule } from '../../partials/partials.module';
 import { AdminComponent } from './admin.component';
 
+
 @NgModule({
 	imports: [
 		CommonModule,
@@ -70,6 +71,11 @@ import { AdminComponent } from './admin.component';
 						loadChildren: () => import('./user-management/user-management.module').then(m => m.UserManagementModule)
 					},
 					{
+						path: 'error',
+						loadChildren: () => import('./error/error.module').then(m => m.ErrorModule)
+					},
+
+					{
 						path: 'emi-management',
 						loadChildren: () => import('./emi-management/emi-management.module').then(m => m.EMIManagementModule)
 					},
@@ -80,6 +86,10 @@ import { AdminComponent } from './admin.component';
 					{
 						path: 'global-settings',
 						loadChildren: () => import('./settings/global-settings/global-settings.module').then(m => m.GlobalSettingsModule)
+					},
+					{
+						path: 'cron-list',
+						loadChildren: () => import('./settings/cron-list/cron-list.module').then(m => m.CronListModule)
 					},
 					{
 						path: 'masters',

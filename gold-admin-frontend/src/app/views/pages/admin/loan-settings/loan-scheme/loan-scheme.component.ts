@@ -6,8 +6,10 @@ import { map, takeUntil, catchError, finalize } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';
-import { SharedService } from '../../../../..//core/shared/services/shared.service';
+import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { ToastrService } from 'ngx-toastr';
+import { LayoutUtilsService } from '../../../../../core/_base/crud';
+import { RpgEditComponent } from '../rpg-edit/rpg-edit.component';
 
 @Component({
   selector: 'kt-loan-scheme',
@@ -36,7 +38,8 @@ export class LoanSchemeComponent implements OnInit {
     private parnterServices: PartnerService,
     private eleref: ElementRef,
     private sharedService: SharedService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private layoutUtilsService: LayoutUtilsService
   ) {
     this.loanSettingService.openModal$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       if (res) {
@@ -117,6 +120,18 @@ export class LoanSchemeComponent implements OnInit {
       this.loanSettingService.openModal.next(false);
     });
   }
+  openRpgModal(scheme) {
+    const dialogRef = this.dialog.open(RpgEditComponent, {
+      data:  scheme,
+      width: '450px'
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.getScheme()
+      }
+      this.loanSettingService.openModal.next(false);
+    });
+  }
   ngOnDestroy() {
     this.destroy$.next()
     this.destroy$.complete()
@@ -126,33 +141,18 @@ export class LoanSchemeComponent implements OnInit {
     this.sharedService.closeFilter.next(true);
   }
 
-  changeDefault(event, index, item, partnerIdx) {
-    // let partnerArr: [] = this.schemes[partnerIdx].schemes;
-    // let count = 0;
-    // partnerArr.forEach(element => {
-    //   if (element['default']) {
-    //     count++;
-    //   }
-    // });
-    // if (count > 1) {
-    //   this.toastr.error('Please set another scheme as default from the selected partner')
-    //   return
-    // }
-
-    // let defaultStatus = event;
-    this.schemes[partnerIdx].schemes[index].default = true
-    // console.log(item)
-    this.loanSettingService.toogleDefault(item).subscribe(res => {
-      if (res) {
-        this.toastr.success("Updated Successfully")
-        this.getScheme()
-      }
-    }, err => {
-      this.schemes[partnerIdx].schemes[index].default = false
-      this.getScheme()
-    })
-    // console.log(event, index)
-  }
+  // changeDefault(event, index, item, partnerIdx) {
+  //   this.schemes[partnerIdx].schemes[index].default = true
+  //   this.loanSettingService.toogleDefault(item).subscribe(res => {
+  //     if (res) {
+  //       this.toastr.success("Updated Successfully")
+  //       this.getScheme()
+  //     }
+  //   }, err => {
+  //     this.schemes[partnerIdx].schemes[index].default = false
+  //     this.getScheme()
+  //   })
+  // }
 
   changeStatus(event, partnerIndex, schemeIndex, item) {
     // console.log(event, partnerIndex, schemeIndex, item);
@@ -185,18 +185,9 @@ export class LoanSchemeComponent implements OnInit {
           this.toastr.success('Scheme Deactivated');
           this.schemes[partnerIndex].schemes[schemeIndex].isActive = !event
         }
-        // this.getScheme()
       }),
         catchError(err => {
           if (err) {
-            // if (!event) {
-            //   this.schemes[partnerIndex].schemes[schemeIndex].isActive = false
-            // } else {
-            //   this.schemes[partnerIndex].schemes[schemeIndex].isActive = true
-            // }
-            // setTimeout(() => {
-            //   this.schemes[partnerIndex].schemes[schemeIndex].isActive = false
-            // }, 500)
           }
           throw (err)
         }),
@@ -205,6 +196,27 @@ export class LoanSchemeComponent implements OnInit {
           this.ref.detectChanges()
         })
       ).subscribe()
+  }
+
+  scrollToUnsecuredScheme(id) {
+    setTimeout(() => {
+      let view = this.eleref.nativeElement.querySelector(`#${id}`) as HTMLElement
+      view.scrollIntoView({ behavior: "smooth", block: "start" })
+    }, 250)
+  }
+
+  confirmation(event, partnerIndex, schemeIndex, item) {
+    const _title = 'Deactivate Scheme';
+    const _description = 'Are you sure you want to deactivate  this Scheme?';
+    const _waitDesciption = ' Scheme is deactivating.';
+    const _deleteMessage = ` Logistic Partner has been deleted`;
+
+    const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.changeStatus(event, partnerIndex, schemeIndex, item)
+      }
+    });
   }
 
 }

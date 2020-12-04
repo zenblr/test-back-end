@@ -13,6 +13,8 @@ import { UpdateStatusComponent } from '../../update-status/update-status.compone
 import { Router } from '@angular/router';
 import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
+import { UpdateLocationComponent } from '../../../../../partials/components/update-location/update-location.component';
+import { FullReleaseFinalService } from '../../../../../../core/funds-approvals/jewellery-release-final/full-release-final/services/full-release-final.service';
 
 @Component({
   selector: 'kt-part-release-final',
@@ -22,7 +24,7 @@ import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewe
 export class PartReleaseFinalComponent implements OnInit {
 
   dataSource;
-  displayedColumns = ['customerId', 'loanId', 'appointmentDate', 'appointmentTime', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPaidAmount', 'status', 'ornaments', 'view', 'updateStatus',];
+  displayedColumns = ['customerName', 'customerId', 'loanId', 'appointmentDate', 'appointmentTime', 'loanAmount', 'loanStartDate', 'loanEndDate', 'tenure', 'principalAmount', 'totalGrossWeight', 'totalDeductionWeight', 'netWeightReleaseOrnament', 'netWeightRemainingOrnament', 'ornamentReleaseAmount', 'interestAmount', 'penalInterest', 'totalPaidAmount', 'status', 'ornaments', 'parnterName', 'partnerBranch', 'currentLocation', 'view', 'updateStatus',];
   result = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   unsubscribeSearch$ = new Subject();
@@ -37,6 +39,7 @@ export class PartReleaseFinalComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private layoutUtilsService: LayoutUtilsService,
+    private fullReleaseFinalService: FullReleaseFinalService
   ) { }
 
   ngOnInit() {
@@ -145,5 +148,58 @@ export class PartReleaseFinalComponent implements OnInit {
         // height: "75%",
       })
     }
+  }
+
+  collect(masterLoanId, packet, data, packetLocationId) {
+    let partnerBranchId = data.customerPacketTracking[data.customerPacketTracking.length - 1].partnerBranchId
+    let internalBranchId = data.customerPacketTracking[data.customerPacketTracking.length - 1].internalBranchId
+
+    const dataObject = packetLocationId == 4 ?
+      {
+        isPartnerOut: true,
+        masterLoanId: masterLoanId,
+        packetData: packet,
+        partnerBranchId: partnerBranchId
+      } :
+      {
+        isPartnerOut: true,
+        masterLoanId: masterLoanId,
+        packetData: packet,
+        internalBranchId: internalBranchId
+      }
+    let dialogRef = this.dialog.open(UpdateLocationComponent, {
+      data: dataObject,
+      width: "450px",
+    })
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPage();
+      }
+    });
+  }
+
+  homeIn(masterLoanId, packet, id) {
+
+    this.fullReleaseFinalService.getCutsomerDetails(masterLoanId).subscribe(res => {
+      if (res.data) {
+        let dialogRef = this.dialog.open(UpdateLocationComponent, {
+          data: {
+            isCustomerHomeIn: true,
+            response: res.data,
+            masterLoanId: masterLoanId,
+            packetData: packet,
+            releaseId: id,
+            isPartRelease: true
+          },
+          width: "450px",
+        })
+        dialogRef.afterClosed().subscribe(res => {
+          if (res) {
+            this.loadPage();
+          }
+        });
+      }
+    })
+
   }
 }

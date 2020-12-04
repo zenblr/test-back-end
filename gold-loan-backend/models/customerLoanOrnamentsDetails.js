@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'quantity'
         },
+        remark: {
+            type: DataTypes.STRING,
+            field: 'remark'
+        },
         grossWeight: {
             type: DataTypes.STRING,
             field: 'gross_weight'
@@ -66,6 +70,10 @@ module.exports = (sequelize, DataTypes) => {
         ornamentImage: {
             type: DataTypes.TEXT,
             field: 'ornament_image'
+        },
+        evaluation:{
+            type: DataTypes.FLOAT,
+            field: 'evaluation'
         },
         ltvPercent: {
             type: DataTypes.STRING,

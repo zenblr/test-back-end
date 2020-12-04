@@ -110,14 +110,15 @@ export function hljsLanguages(): HighlightLanguage[] {
 		NgSelectModule,
 		FormsModule,
 		ReactiveFormsModule,
-		// AgmCoreModule.forRoot({
-		// 	apiKey: 'AIzaSyAxRpruuBm-e5L-et6Wd7uP77LoCcaliMc',
-		// 	libraries: ['places']
-		//   }),
 		AgmCoreModule.forRoot({
-			apiKey: 'AIzaSyDjXD71h3mA6_g0s27spZfEup9onPbqHZc',
+			apiKey: 'AIzaSyDF795Qei3-5g2dGHVc-mVlzZoHZ3SKb3o',
 			libraries: ['places']
-		}),
+		})
+		// AgmCoreModule.forRoot({
+		// apiKey: 'AIzaSyA1__NTCgMO2aEsv9HR35ES66f5N3sIj80',
+		// libraries: ['places']
+		// }),
+
 	],
 	exports: [],
 	providers: [

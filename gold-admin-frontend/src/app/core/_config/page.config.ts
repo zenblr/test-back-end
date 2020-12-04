@@ -1,3 +1,5 @@
+import { Title } from '@angular/platform-browser'
+
 export class PageConfig {
 	public defaults = {
 		'admin': {
@@ -17,6 +19,9 @@ export class PageConfig {
 				"show-feedback": {
 					page: { title: "Show Feedback", desc: "" },
 				},
+			},
+			error:{
+				page: { title: "Error Logs", desc: "" },
 			},
 			masters: {
 				reasons: {
@@ -46,6 +51,11 @@ export class PageConfig {
 			},
 			"global-settings": {
 				page: { title: "Global Settings", desc: "" },
+			},
+			"cron-list": {
+				"cron": {
+					page: { title: "Cron Logs", desc: "" },
+				}
 			},
 			roles: {
 				page: { title: "Roles", desc: "" },
@@ -85,6 +95,9 @@ export class PageConfig {
 				"gold-rate": {
 					page: { title: "Gold Rate", desc: "" },
 				},
+				"process-note": {
+					page: { title: "Process Note (SOP)", desc: "" },
+				},
 			},
 			"user-management": {
 				partner: {
@@ -108,6 +121,9 @@ export class PageConfig {
 				},
 				'redirect-assign-appraiser': {
 					page: { title: "Assigned Appraiser", desc: "" },
+				},
+				'concurrent-login': {
+					page: { title: "Concurrent Login", desc: "" },
 				},
 				merchant: {
 					page: { title: "All Merchants", desc: "" },
@@ -140,6 +156,9 @@ export class PageConfig {
 				},
 				"my-requests": {
 					page: { title: "My Requests", desc: "" },
+				},
+				"registered-customers": {
+					page: { title: "Customer Registration List", desc: "" }
 				}
 			},
 			"account": {
@@ -358,6 +377,9 @@ export class PageConfig {
 						page: { title: "View Location", desc: "" },
 					}
 				},
+				"my-packets": {
+					page: { title: "My Packets", desc: "" },
+				},
 			},
 			"scrap-management": {
 				"scrap-buying-calculator": {
@@ -382,6 +404,9 @@ export class PageConfig {
 				'packets': {
 					page: { title: "Packets", desc: "" },
 				},
+				"packet-tracking": {
+					page: { title: "Packet Tracking", desc: "" },
+				},
 				"applied-scrap": {
 					page: { title: "Applied Scrap", desc: "" },
 				},
@@ -405,7 +430,10 @@ export class PageConfig {
 				"standard-deduction": {
 					page: { title: "Standard deduction", desc: "" },
 				},
-			}
+			},
+			"global-map": {
+				page: { title: "Global Map", desc: "" },
+			},
 		},
 		'broker': {
 			'dashboard': {

@@ -8,7 +8,7 @@ const _ = require('lodash');
 const moment = require('moment')
 const { dailyIntrestCalculation, cronForDailyPenalInterest } = require('../../utils/interestCron');
 const { getCustomerInterestAmount, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan, updateInterestAftertOutstandingAmount,
-    calculationData, getInterestTableOfSingleLoan, getAllPaidInterest } = require('../../utils/loanFunction');
+    calculationData, getInterestTableOfSingleLoan, getAllPaidInterest, intrestCalculationForSelectedLoanWithOutT, penalInterestCalculationForSelectedLoanWithOutT } = require('../../utils/loanFunction');
 
 
 // add internal branch
@@ -78,19 +78,20 @@ exports.penalInterestCalculation = async (req, res) => {
 }
 
 exports.interestCalculationOneLoan = async (req, res) => {
-    let data;
+    let interestData;
+    let penalData;
     let { date, masterLoanId } = req.body;
     if (date) {
-        data = await intrestCalculationForSelectedLoan(date, masterLoanId);
-        await penalInterestCalculationForSelectedLoan(date, masterLoanId)
+        interestData = await intrestCalculationForSelectedLoan(date, masterLoanId);
+        penalData = await penalInterestCalculationForSelectedLoan(date, masterLoanId)
 
     } else {
         date = moment();
-        data = await intrestCalculationForSelectedLoan(date, masterLoanId);
-        await penalInterestCalculationForSelectedLoan(date, masterLoanId)
+        interestData = await intrestCalculationForSelectedLoan(date, masterLoanId);
+        penalData = await penalInterestCalculationForSelectedLoan(date, masterLoanId)
 
     }
-    return res.status(200).json(data);
+    return res.status(200).json({ interestData, penalData });
 }
 
 exports.interestCalculationUpdate = async (req, res) => {
@@ -112,7 +113,8 @@ exports.interestAmount = async (req, res) => {
 }
 
 exports.getInterestTableInExcel = async (req, res) => {
-    let interestData = await models.customerLoanInterest.findAll({ order: [['id', 'ASC']] });
+    let { masterLoanId } = req.query;
+    let interestData = await models.customerLoanInterest.findAll({where:{masterLoanId}, order: [['id', 'ASC']] });
 
     let finalData = [];
 
@@ -123,6 +125,9 @@ exports.getInterestTableInExcel = async (req, res) => {
         interest["masterLoanId"] = data.masterLoanId;
         interest["emiDueDate"] = data.emiDueDate;
         interest["interestRate"] = data.interestRate;
+        interest["rebateInterestRate"] = data.rebateInterestRate;
+        interest["rebateAmount"] = data.rebateAmount;
+        interest["highestInterestAmount"] = data.highestInterestAmount;
         interest["interestAmount"] = data.interestAmount;
         interest["paidAmount"] = data.paidAmount;
         interest["interestAccrual"] = data.interestAccrual;
@@ -244,4 +249,85 @@ exports.app = async (req, res) => {
 
     return res.status(200).json({ data: [] })
 
+}
+
+
+
+// await sequelize.transaction(async (t) => {
+
+
+//     let interestFinalCal = await intrestCalculationForSelectedLoanWithOutT(date, masterLoanId)
+
+//     for (let i = 0; i < interestFinalCal.transactionData.length; i++) {
+//         let element = interestFinalCal.transactionData[i]
+//         let transactionNew = await models.customerTransactionDetail.create(element, { transaction: t })
+//         let a = await models.customerTransactionDetail.update({ referenceId: `${element.loanUniqueId}-${transactionNew.id}` }, { where: { id: transactionNew.id }, transaction: t });
+//     }
+
+//     for (let i = 0; i < interestFinalCal.interestDataObject.length; i++) {
+//         const element = interestFinalCal.interestDataObject[i]
+//         if (element.id) {
+//             let a = await models.customerLoanInterest.update(element, { where: { id: element.id }, transaction: t })
+//         } else {
+//             let b = await models.customerLoanInterest.create(element, { transaction: t })
+//         }
+//     }
+
+//     for (let i = 0; i < interestFinalCal.customerLoanData.length; i++) {
+//         let element = interestFinalCal.customerLoanData[i]
+//         let a = await models.customerLoan.update(element, { where: { id: element.id }, transaction: t })
+//     }
+
+//     let penalFinalCal = await penalInterestCalculationForSelectedLoanWithOutT(date, masterLoanId)
+//     for (let i = 0; i < penalFinalCal.penalData.length; i++) {
+//         const element = penalFinalCal.penalData[i]
+//         let a = await models.customerLoanInterest.update(element, { where: { id: element.id }, transaction: t })
+//     }
+// })
+
+
+// add internal branch
+
+exports.interestCalculationCron = async (req, res) => {
+    date = moment();
+    let { cronId } = req.body;
+    try {
+        let cronData = await models.cronLogger.findOne({ where: { id: cronId, cronType: 'loan Interest' } });
+        if (cronData) {
+        let data = await dailyIntrestCalculation(date);
+        let endTime = moment();
+        var penalProcessingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(date, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        await models.cronLogger.update({ date: date, startTime: date, endTime: endTime, processingTime: penalProcessingTime, status: "success", notes: "re-executed", message: "success" }, { where: { id: cronId } });
+        return res.status(200).json({ message: 'Success', data });
+        }else{
+            return res.status(400).json({ message: 'Invalid cron id' });
+        }
+    } catch (Err) {
+        let endTime = moment();
+        var penalProcessingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(date, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        await models.cronLogger.update({ date: date, startTime: date, endTime: endTime, processingTime: penalProcessingTime, status: "failed", notes: "re-executed", message: Err.message }, { where: { id: cronId } });
+        return res.status(400).json({ message: 'failed' });
+    }
+}
+
+exports.penalInterestCalculationCron = async (req, res) => {
+    date = moment();
+    let { cronId } = req.body;
+    try {
+        let cronData = await models.cronLogger.findOne({ where: { id: cronId, cronType: 'loan Penal Interest' } });
+        if (cronData) {
+            let data = await cronForDailyPenalInterest(date);
+            let endTime = moment();
+            var penalProcessingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(date, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+            await models.cronLogger.update({ date: date, startTime: date, endTime: endTime, processingTime: penalProcessingTime, status: "success", notes: "re-executed", message: "success" }, { where: { id: cronId } });
+            return res.status(200).json({ message: 'Success', data });
+        }else{
+            return res.status(400).json({ message: 'Invalid cron id' });
+        }
+    } catch (Err) {
+        let endTime = moment();
+        var penalProcessingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(date, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        await models.cronLogger.update({ date: date, startTime: date, endTime: endTime, processingTime: penalProcessingTime, status: "failed", notes: "re-executed", message: Err.message }, { where: { id: cronId } });
+        return res.status(400).json({ message: 'failed' });
+    }
 }

@@ -6,7 +6,7 @@
         <!-- <button (click)="checkout()"></button>
         <button (click)="submitPacket()"></button> -->
 
-        <div class="mat-table__wrapper">
+        <div class="mat-table__wrapper" [class.filter]="(filteredDataList | json) !== '{}'">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="fullName">
@@ -26,14 +26,23 @@
 
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN</mat-header-cell>
-                    <mat-cell *matCellDef="let loan">{{loan.customer.panCardNumber | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let loan">
+                        {{loan.customer.panCardNumber ? loan.customer.panCardNumber : 'NA' | uppercase }}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="date">
                     <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan.loanStartDate | date: 'mediumDate'}}</mat-cell>
                 </ng-container>
-
+                <ng-container matColumnDef="loanType">
+                    <mat-header-cell *matHeaderCellDef>Loan Type</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <span *ngIf="loan?.isLoanTransfer">BT Loan</span>
+                        <span *ngIf="loan?.isNewLoanFromPartRelease">Part Release</span>
+                        <span *ngIf="(!loan?.isLoanTransfer && !loan?.isNewLoanFromPartRelease)">New Loan</span>
+                    </mat-cell>
+                </ng-container>
+                
                 <ng-container matColumnDef="loanAmount">
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let loan" class="d-block">
@@ -94,7 +103,7 @@
                             [ngClass]="loan.loanStatusForOperatinalTeam == 'pending' ? 'text-warning' :loan.loanStatusForOperatinalTeam == 'approved' ? 'text-success' : 'text-danger'">
                             {{loan.loanStatusForOperatinalTeam | titlecase}}
                         </span>
-                        <span *ngIf="loan.loanStatusForOperatinalTeam == 'pending' && loan.commentByOperatinalTeam"
+                        <span *ngIf="loan.loanStatusForOperatinalTeam == 'incomplete' && loan.commentByOperatinalTeam"
                             class="material-icons custom-icon" mat-raised-button
                             matTooltip={{loan.commentByOperatinalTeam}} matTooltipPosition="above"
                             matTooltipClass="custom-tooltip-white">
@@ -119,6 +128,8 @@
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
                                     <button (click)="editLoan(loan)"
                                         [ngClass]="{'cursor-not-allowed':  !permission.addAppraiserRating}"
+                                        [disabled]="loan.loanStatusForAppraiser == 'rejected'"
+                                        [class.cursor-not-allowed]="loan.loanStatusForAppraiser == 'rejected'"
                                         class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                                 </div>
                             </div>
@@ -127,6 +138,8 @@
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
                                     <button (click)="editLoan(loan)"
                                         [ngClass]="{'cursor-not-allowed': !permission.addBmRating}"
+                                        [disabled]="loan.loanStatusForBM == 'rejected'"
+                                        [class.cursor-not-allowed]="loan.loanStatusForBM == 'rejected'"
                                         class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                                 </div>
                             </div>
@@ -135,6 +148,8 @@
                                     <!-- <img src="../../../../../assets/media/icons/action.svg" alt=""> -->
                                     <button (click)="editLoan(loan)"
                                         [ngClass]="{'cursor-not-allowed': !permission.addOpsRating}"
+                                        [disabled]="loan.loanStatusForOperatinalTeam == 'rejected'"
+                                        [class.cursor-not-allowed]="loan.loanStatusForOperatinalTeam == 'rejected'"
                                         class="primary-button">{{loan.loanStage.name | uppercase}}</button>
                                 </div>
                             </div>
@@ -170,11 +185,28 @@
                                 </div>
                             </div>
 
-                            <!-- <div *ngIf="loan.loanStage.id == 9">
-                                <button (click)="editLoan(loan)"
+                            <div *ngIf="loan.loanStage.id == 10">
+                                <button (click)="checkout(loan)" [class.cursor-not-allowed]="getPermission(loan)"
                                     class="primary-button">{{loan.loanStage.name | uppercase}}</button>
-                            </div> -->
+                            </div>
 
+                            <div *ngIf="loan.loanStage.id == 11">
+                                <button (click)="getPacketDetails(loan)"
+                                    [class.cursor-not-allowed]="getPermission(loan)"
+                                    class="primary-button">{{loan.loanStage.name | uppercase}}</button>
+                            </div>
+
+                            <div *ngIf="loan.loanStage.id == 12">
+                                <button class="primary-button">{{loan.loanStage.name | uppercase}}</button>
+                            </div>
+
+                            <div *ngIf="loan.loanStage.id == 13">
+                                <button class="primary-button">{{loan.loanStage.name | uppercase}}</button>
+                            </div>
+
+                            <div *ngIf="loan.loanStage.id == 14">
+                                <button class="primary-button">{{loan.loanStage.name | uppercase}}</button>
+                            </div>
 
                         </div>
                     </mat-cell>
@@ -182,7 +214,7 @@
                 <ng-container matColumnDef="view">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <span (click)="viewLoan(loan)" class="kt-pointer"
+                        <span (click)="viewLoan(loan)" class="kt-pointer view-link"
                             *ngxPermissionsOnly="['loanDetailsView','appliedLoanView']">
                             View
                         </span>

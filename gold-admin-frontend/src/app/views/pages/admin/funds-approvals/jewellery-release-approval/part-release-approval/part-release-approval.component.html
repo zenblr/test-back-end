@@ -7,12 +7,13 @@
 
                 <ng-container matColumnDef="transactionId">
                     <mat-header-cell *matHeaderCellDef>Transaction ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{ item.transaction?.transactionUniqueId }}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{ item.transaction?.transactionUniqueId | uppercase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="bankTransactionId">
                     <mat-header-cell *matHeaderCellDef>Bank Transaction ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{ item.transaction?.bankTransactionUniqueId }}</mat-cell>
+                    <mat-cell *matCellDef="let item">{{ item.transaction?.bankTransactionUniqueId | uppercase}}
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="appraiserName">
@@ -25,7 +26,11 @@
 
                 <ng-container matColumnDef="loanAmount">
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{ item.masterLoan.finalLoanAmount }}</mat-cell>
+                    <mat-cell *matCellDef="let item">
+                        <div *ngFor="let loan of item.masterLoan.customerLoan">
+                            {{loan.loanAmount }}
+                        </div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="loanStartDate">
@@ -35,7 +40,15 @@
 
                 <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.masterLoan.loanPersonalDetail.customerUniqueId | uppercase}}
+                    <mat-cell *matCellDef="let item">{{item.masterLoan.customer.customerUniqueId | uppercase}}
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="customerName">
+                    <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        {{ item.masterLoan.customer.firstName | titlecase }}
+                        {{ item.masterLoan.customer.lastName | titlecase }}
                     </mat-cell>
                 </ng-container>
 
@@ -62,8 +75,12 @@
                 </ng-container>
 
                 <ng-container matColumnDef="principalAmount">
-                    <mat-header-cell *matHeaderCellDef>Principal Outstanding Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.masterLoan.outstandingAmount}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef>Principal Outstanding</mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        <div *ngFor="let loan of item.masterLoan.customerLoan">
+                            {{loan.outstandingAmount }}
+                        </div>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="partReleaseAmountStatus">
@@ -85,7 +102,9 @@
                     <mat-cell *matCellDef="let item">{{item.interestAmount}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="ornamentReleaseAmount">
-                    <mat-header-cell *matHeaderCellDef>Ornament Release Amount</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>
+                        <div class="">Ornament Release Amount</div>
+                    </mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.releaseAmount }}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="netWeightRemainingOrnament">
@@ -114,9 +133,6 @@
                 <ng-container matColumnDef="ornaments">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let item">
-                        <!-- <button class="apply-kyc" (click)="ornamentsDetails(item.customerLoanOrnamentsDetails)">View
-                            Details
-                        </button> -->
                         <button class="apply-kyc" (click)="viewLoan(item)">View
                             Loan
                         </button>
@@ -144,9 +160,16 @@
                                 </button>
                             </div>
                         </ng-container>
+                    </mat-cell>
+                </ng-container>
 
-                        <!-- <button style="width: 120px;" class="apply-kyc" (click)="updateStatus(item)">Update
-                        </button> -->
+                <ng-container matColumnDef="view">
+                    <mat-header-cell *matHeaderCellDef> Acknowledgement Receipt </mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        <div *ngIf="item.documentsImages?.length" class="kt-pointer view-link"
+                            (click)="view(item.documentsImages[0])">
+                            View
+                        </div>
                     </mat-cell>
                 </ng-container>
 
@@ -157,7 +180,7 @@
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
             <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
         </div>
-        <div class="mat-table__bottom d-none">
+        <div class="mat-table__bottom">
             <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
             <mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
                 [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>

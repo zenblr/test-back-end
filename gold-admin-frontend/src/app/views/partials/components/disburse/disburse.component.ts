@@ -20,6 +20,7 @@ export class DisburseComponent implements OnInit {
   @Input() disbursementDetails;
   @Input() showButton;
   @Input() loanDetials;
+  @Input() scrapDetails;
   @Input() disable = false;
   @Input() disbursed = false;
   currentDate = new Date()
@@ -62,22 +63,24 @@ export class DisburseComponent implements OnInit {
           securedTransactionId: changes.loanDetials.currentValue.customerLoanDisbursement[0].transactionId,
         })
         if (changes.loanDetials.currentValue.customerLoanDisbursement.length > 1) {
-          console.log(changes.loanDetials.currentValue.customerLoanDisbursement)
+          // console.log(changes.loanDetials.currentValue.customerLoanDisbursement)
           this.disburseForm.patchValue({
             unsecuredTransactionId: changes.loanDetials.currentValue.customerLoanDisbursement[1].transactionId
           })
         }
-
         // if (this.disable) {
         //   this.disburseForm.disable()
         // }
+      }
+      if (changes.scrapDetails && changes.scrapDetails.currentValue) {
+        this.disburseForm.patchValue({
+          transactionId: changes.scrapDetails.currentValue.scrapDisbursement.transactionId,
+        })
       }
       if (this.disable) {
         this.disburseForm.disable()
       }
     }
-
-
     if (changes.scrapIds && changes.scrapIds.currentValue) {
       this.disburseForm.patchValue(this.scrapIds)
       this.getScrapBankDetails()
@@ -123,7 +126,11 @@ export class DisburseComponent implements OnInit {
       isUnsecuredSchemeApplied: [],
       securedLoanUniqueId: [],
       unsecuredLoanUniqueId: [],
-      finalAmount: []
+      finalAmount: [],
+      fullAmount: [],
+      bankTransferType: [],
+      loanTransferExtraAmount:[],
+      otherAmountTransactionId:[]
     })
     this.disableSchemeRelatedField()
   }
@@ -147,6 +154,7 @@ export class DisburseComponent implements OnInit {
     this.controls.processingCharge.disable()
     this.controls.fullUnsecuredAmount.disable()
     this.controls.disbursementStatus.disable()
+    this.controls.fullSecuredAmount.disable()
   }
 
   enableSchemeRelatedField() {
@@ -157,10 +165,11 @@ export class DisburseComponent implements OnInit {
     this.controls.processingCharge.enable()
     this.controls.fullUnsecuredAmount.enable()
     this.controls.disbursementStatus.enable()
+    this.controls.fullSecuredAmount.enable()
   }
 
   getBankDetails() {
-    console.log(this.masterAndLoanIds)
+    // console.log(this.masterAndLoanIds)
     this.loanService.getBankDetails(this.masterAndLoanIds.loanId, this.masterAndLoanIds.masterLoanId).subscribe(res => {
       if (Object.keys(res.data).length) {
         this.details = res.data
@@ -171,13 +180,28 @@ export class DisburseComponent implements OnInit {
           this.controls.unsecuredTransactionId.updateValueAndValidity()
         }
         this.disburseForm.patchValue({ loanAmount: res.data.finalLoanAmount })
+        this.calcfinalLoanAmount()
         if (Number(this.globalValue.cashTransactionLimit) < Number(this.disburseForm.controls.loanAmount.value)) {
           this.disburseForm.controls.paymentMode.patchValue('bank')
           this.disburseForm.controls.paymentMode.disable()
           return
         }
         this.disburseForm.controls.paymentMode.patchValue(res.data.paymentType)
-        this.calcfinalLoanAmount()
+        if(this.details.isLoanTransfer){
+          this.controls.unsecuredTransactionId.patchValue(res.data.unsecuredTransactionId)
+          this.controls.securedTransactionId.patchValue(res.data.securedTransactionId)
+          this.controls.loanTransferExtraAmount.patchValue(res.data.loanTransferExtraAmount)
+          this.disburseForm.controls.unsecuredTransactionId.disable()
+          this.disburseForm.controls.securedTransactionId.disable()
+          this.disburseForm.controls.loanTransferExtraAmount.disable()
+          if(res.data.loanTransferExtraAmount){
+            this.controls.otherAmountTransactionId.setValidators(Validators.required)
+          this.controls.otherAmountTransactionId.updateValueAndValidity()
+          }
+        }else{
+          this.controls.otherAmountTransactionId.clearValidators()
+          this.controls.otherAmountTransactionId.updateValueAndValidity()
+        }
       }
     })
   }
@@ -265,6 +289,11 @@ export class DisburseComponent implements OnInit {
     }
   }
 
+  download() {
+    if (!this.controls.bankTransferType.value) return this.controls.bankTransferType.markAsTouched()
+    this.loanService.downloadBankDetails(this.masterAndLoanIds.masterLoanId, this.controls.bankTransferType.value).subscribe()
+  }
+
   submit() {
     if (this.disburseForm.invalid) {
       this.disburseForm.markAllAsTouched()
@@ -290,7 +319,7 @@ export class DisburseComponent implements OnInit {
       this.loanService.disburse(this.disburseForm.value).pipe(
         map(res => {
           this.toast.success(res.message)
-          this.router.navigate(['/admin/loan-management/all-loan'])
+          this.router.navigate(['/admin/loan-management/applied-loan'])
         }),
         catchError(err => {
           if (err.error.message)
@@ -321,6 +350,14 @@ export class DisburseComponent implements OnInit {
     // }
     // this.disburseForm.updateValueAndValidity();
 
+    if (selectedType === 'bank') {
+      this.controls.bankTransferType.setValidators([Validators.required])
+      this.controls.bankTransferType.updateValueAndValidity()
+    } else {
+      this.controls.bankTransferType.reset()
+      this.controls.bankTransferType.setValidators([])
+      this.controls.bankTransferType.updateValueAndValidity()
+    }
   }
 
   patchValue(value) {
@@ -342,9 +379,15 @@ export class DisburseComponent implements OnInit {
 
     const fullUnsecuredAmount = this.controls.fullUnsecuredAmount.value ? this.controls.fullUnsecuredAmount.value : 0;
 
-    const finalAmount = this.controls.securedLoanAmount.value + fullUnsecuredAmount - this.controls.processingCharge.value
+    const finalAmount = Number((this.controls.fullSecuredAmount.value + fullUnsecuredAmount - this.controls.processingCharge.value).toFixed(2))
+
+    const fullAmount = this.controls.fullSecuredAmount.value + fullUnsecuredAmount + this.controls.processingCharge.value
+
+    this.controls.fullAmount.patchValue(fullAmount)
 
     this.controls.finalAmount.patchValue(finalAmount)
+
+    this.controls.finalAmount.disable()
 
     this.ref.detectChanges()
     // console.log(this.disburseForm.value)

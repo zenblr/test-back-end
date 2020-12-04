@@ -5,6 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { RolesService } from '../../../../../core/user-management/roles';
 import { catchError, map } from 'rxjs/operators';
 import { NewRequestService } from '../../../../../core/lead-management/services/new-request.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-new-request-add',
@@ -24,6 +25,7 @@ export class NewRequestAddComponent implements OnInit {
     public dialogRef: MatDialogRef<NewRequestAddComponent>,
     private newRequestService: NewRequestService,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -93,12 +95,22 @@ export class NewRequestAddComponent implements OnInit {
     if (this.requestForm.invalid) return this.requestForm.markAllAsTouched()
 
     if (this.data.action == 'add') {
-      this.newRequestService.newRequestAdd(this.requestForm.value).pipe(map(res => {
-        if (res) {
-          this.toastr.success(res.message)
-          this.dialogRef.close(true)
-        }
-      })).subscribe()
+      this.newRequestService.newRequestAdd(this.requestForm.value).pipe(
+        map(res => {
+          if (res) {
+            this.toastr.success(res.message)
+            this.dialogRef.close(true)
+          }
+        }),
+        catchError(err => {
+          const message = err.error.message
+          if (message === 'Kindly complete your pending scrap KYC' || message === 'Kindly complete your pending loan KYC') {
+            this.dialogRef.close(false)
+            this.router.navigate(['/admin/lead-management/new-requests'])
+          }
+          throw err
+        })
+      ).subscribe()
     } else {
       this.newRequestService.newRequestUpdate(this.requestForm.value).pipe(map(res => {
         if (res) {

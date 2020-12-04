@@ -46,4 +46,16 @@ export class FullReleaseFinalService {
       })
     )
   }
+
+
+  getCutsomerDetails(masterLoanId): Observable<any> {
+    return this.http.get(`/api/packet-tracking/customer-info?masterLoanId=${masterLoanId}`).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    )
+  }
 }

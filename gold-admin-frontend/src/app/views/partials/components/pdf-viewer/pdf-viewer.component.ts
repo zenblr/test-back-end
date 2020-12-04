@@ -26,7 +26,7 @@ export class PdfViewerComponent implements OnInit, OnChanges {
     private appRef: ApplicationRef
 
   ) {
-    spinner.show();
+    // spinner.show();
   }
 
   ngOnChanges(change: SimpleChanges) {
@@ -37,7 +37,7 @@ export class PdfViewerComponent implements OnInit, OnChanges {
       // this.ref.markForCheck()
       // this.appRef.attachView(this.src)
 
-      console.log(change.pdfSrc.currentValue)
+      // console.log(change.pdfSrc.currentValue)
     }
   }
 
@@ -50,12 +50,12 @@ export class PdfViewerComponent implements OnInit, OnChanges {
   }
 
   pageRendered(e: CustomEvent) {
-    console.log('(page-rendered)', e);
+    // console.log('(page-rendered)', e);
   }
 
   onProgress(progressData: PDFProgressData) {
     if (progressData.loaded == progressData.total) {
-      this.spinner.hide()
+      // this.spinner.hide()
       this.show = true;
     }
     // do anything with progress data. For example progress indicator

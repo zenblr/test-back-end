@@ -3,6 +3,9 @@ const Sequelize = models.Sequelize;
 const sequelize = models.sequelize;
 const Op = Sequelize.Op;
 const { getSingleLoanDetail } = require('../../utils/loanFunction')
+const check = require("../../lib/checkLib");
+const moment = require('moment')
+
 exports.readBanner = async (req, res, next) => {
     console.log("banner")
     let banner = await models.banner.readBanner()
@@ -141,8 +144,9 @@ exports.readPartnerBranch = async (req, res, next) => {
 exports.readMyLoan = async (req, res, next) => {
     let customerId = req.userData.id;
     let stageId = await models.loanStage.findOne({ where: { name: 'disbursed' } })
+
     let loanDetails = await models.customerLoanMaster.findAll({
-        where: { isActive: true, customerId: customerId, loanStageId: stageId.id },
+        where: { isActive: true, customerId: customerId, isLoanCompleted: true },
         order: [
             [models.customerLoan, 'id', 'asc'],
             [models.customerLoan, models.customerLoanInterest, 'id', 'asc']
@@ -163,9 +167,42 @@ exports.readMyLoan = async (req, res, next) => {
                     },
 
                 ]
-            }
+            },
+            {
+                model: models.partRelease,
+                as: 'partRelease',
+            },
+            {
+                model: models.fullRelease,
+                as: 'fullRelease',
+            },
         ]
     });
+
+
+    for (let i = 0; i < loanDetails.length; i++) {
+        const element = loanDetails[i];
+        let nextDueDate = null
+
+        nextDueDate = await models.customerLoanInterest.findOne({
+
+            where: {
+                emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
+                masterLoanId: element.id
+            },
+            attributes: ['emiDueDate', 'emiStatus'],
+            order: [['id', 'asc']]
+        })
+
+        if (nextDueDate) {
+            element.dataValues.nextDueDate = nextDueDate.emiDueDate
+            element.dataValues.status = nextDueDate.emiStatus
+        } else {
+            element.dataValues.nextDueDate = nextDueDate
+            element.dataValues.status = nextDueDate
+        }
+    }
+
     return res.status(200).json({ data: loanDetails })
 }
 
@@ -184,7 +221,7 @@ exports.readLoanDetails = async (req, res, next) => {
 
     let customerLoan = await getSingleLoanDetail(customerLoanId, masterLoanId)
 
-    return res.status(200).json({ message: 'success', data: customerLoan })
+    return res.status(200).json({ message: 'Success', data: customerLoan })
 }
 
 exports.schemeBasedOnPriceRange = async (req, res, next) => {
@@ -217,7 +254,7 @@ exports.readFeedBack = async (req, res) => {
     let readCustomerFeedBack = await models.feedBack.findAll({ attributes: ['customerName', 'feedBack', 'rating', 'profileImage'], where: { isActive: true } });
 
     if (!readCustomerFeedBack[0]) {
-        return res.status(404).json({ message: 'data not found' });
+        return res.status(404).json({ message: 'Data not found' });
     }
     return res.status(200).json({ data: readCustomerFeedBack });
 }
@@ -232,8 +269,29 @@ exports.addFeedBack = async (req, res) => {
         let profileImage = customerPersonalDetails.dataValues.profileImage;
         let addFeedBackData = await models.feedBack.create({ customerName, contactNumber, feedBack, rating, customerId, profileImage }, { transaction: t });
         if (!addFeedBackData) {
-            return res.status(422).json({ message: 'feedback is not created' });
+            return res.status(422).json({ message: 'Feedback is not created' });
         }
-        return res.status(201).json({ message: 'created' });
+        return res.status(201).json({ message: 'Created' });
     })
+}
+
+exports.updatePassword = async (req, res, next) => {
+    const { referenceCode, otp, newPassword } = req.body
+    var todayDateTime = new Date();
+
+    let verifyUser = await models.customerOtp.findOne({ where: { referenceCode, isVerified: true } })
+
+    if (check.isEmpty(verifyUser)) {
+        return res.status(400).json({ message: `INVALID OTP.` })
+    }
+    let user = await models.customer.findOne({ where: { mobileNumber: verifyUser.mobileNumber } });
+
+    if (check.isEmpty(user)) {
+        return res.status(404).json({ message: 'Customer not found.' });
+    }
+    let updatePassword = await user.update({ otp: null, password: newPassword }, { where: { id: user.dataValues.id } });
+    if (updatePassword[0] == 0) {
+        return res.status(400).json({ message: `Password update failed.` })
+    }
+    return res.status(200).json({ message: 'Password Updated.' });
 }

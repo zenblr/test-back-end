@@ -5,7 +5,7 @@ import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { LoanApplicationFormService } from '../../../../core/loan-management';
 import { ScrapApplicationFormService } from '../../../../core/scrap-management';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { PdfViewerComponent } from '../pdf-viewer/pdf-viewer.component';
 import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
@@ -26,6 +26,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   @Input() action
   @Input() finalLoanAmt
   @Input() finalScrapAmt
+  @Input() stage
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Input() showButton
   @Input() accountHolderName
@@ -42,17 +43,25 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     public sharedService: SharedService,
     public loanFormService: LoanApplicationFormService,
     public scrapApplicationFormService: ScrapApplicationFormService,
-    private router: Router
+    private router: Router,
+    private rout: ActivatedRoute
   ) {
     this.initForm()
     this.url = this.router.url.split("/")[3]
+    this.rout.queryParams.subscribe(res => {
+      if (res.customerID) {
+        // this.getBankDetails(res.customerID)
+      }
+    })
   }
 
   ngOnInit() {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes, this.details);
+    console.log(changes)
+
+    // console.log(changes, this.details);
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
         if (changes.details.currentValue && changes.details.currentValue.loanBankDetail) {
@@ -71,18 +80,26 @@ export class BankDetailsComponent implements OnInit, OnChanges {
           let name = changes.details.currentValue.customer.firstName + " " + changes.details.currentValue.customer.lastName
           this.bankForm.patchValue({ accountHolderName: name })
         }
+        if (changes.details.currentValue.masterLoan.customerLoanCurrentStage == '5') {
+          this.getBankDetails()
+
+        }
       }
     }
 
     if (changes.accountHolderName && changes.accountHolderName.currentValue) {
       this.bankForm.patchValue({ accountHolderName: changes.accountHolderName.currentValue })
+      this.getBankDetails()
     }
 
     if (changes.finalLoanAmt) {
       if (Number(changes.finalLoanAmt.currentValue) > 200000) {
         this.controls.paymentType.patchValue('bank')
         this.controls.paymentType.disable()
+      } else {
+        this.controls.paymentType.enable()
       }
+      this.ref.detectChanges()
     }
 
     if (changes.finalScrapAmt && changes.finalScrapAmt.currentValue) {
@@ -91,6 +108,8 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       if (Number(changes.finalScrapAmt.currentValue) > 200000) {
         this.controls.paymentType.patchValue('bank')
         this.controls.paymentType.disable()
+      } else {
+        this.controls.paymentType.enable()
       }
       this.ref.detectChanges()
     }
@@ -98,6 +117,13 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     if (this.disable) {
       this.bankForm.disable()
     }
+
+  }
+
+  getBankDetails() {
+    this.loanFormService.getBankDetails(this.masterAndLoanIds.masterLoanId).subscribe(res => {
+      this.bankForm.patchValue(res.data.loanBankDetail)
+    })
   }
 
   initForm() {
@@ -108,7 +134,8 @@ export class BankDetailsComponent implements OnInit, OnChanges {
       accountNumber: [, [Validators.required, Validators.pattern('^(?=.*\\d)(?=.*[1-9]).{3,21}$')]],
       ifscCode: ['', [Validators.required, Validators.pattern('[A-Za-z]{4}[a-zA-Z0-9]{7}')]],
       accountType: [],
-      accountHolderName: [, [Validators.required, Validators.pattern("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")]],
+      // accountHolderName: [, [Validators.required, Validators.pattern("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")]],
+      accountHolderName: [, [Validators.required]],
       bankBranchName: [, [Validators.required]],
       passbookProof: [[], [Validators.required]],
       passbookProofImage: [[]],

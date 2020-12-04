@@ -173,8 +173,9 @@ export class LeadManagementComponent implements OnInit {
     var mobile = '';
     this.leadService.getLeadById(data.id).pipe(
       map(res => {
-        mobile = res.singleCustomer.mobileNumber
-        this.router.navigate(['/admin/kyc-setting'], { queryParams: { mob: mobile } });
+        mobile = res.singleCustomer.mobileNumber;
+        const disabled = res.singleCustomer.moduleId === 1 && res.singleCustomer.scrapKycStatus === 'approved' ? true : false
+        this.router.navigate(['/admin/kyc-setting'], { queryParams: { mob: mobile, moduleId: data.module.id, disabled } });
       }))
       .subscribe();
   }
@@ -205,6 +206,19 @@ export class LeadManagementComponent implements OnInit {
     const dialogRef = this.dialog.open(NewRequestAddComponent, { data: { action: 'add', leadData: loan }, width: '500px' });
     dialogRef.afterClosed().subscribe(res => {
       if (res) this.router.navigate(['/admin/lead-management/new-requests'], { queryParams: { origin: 'leads' } })
+    });
+  }
+
+  assignBranch(loan) {
+    const dialogRef = this.dialog.open(AddLeadComponent,
+      {
+        data: { id: loan.id, action: 'assignBranch' },
+        width: '500px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadLeadsPage();
+      }
     });
   }
 

@@ -15,7 +15,7 @@ export class LoanDetailsComponent implements OnInit {
 
   roles: any
   dataSource: LoanDetailsDatasource;
-  displayedColumns = ['customerID', 'customerName', 'loanId', 'schemeName', 'amount', 'interestRate', 'tenure', 'interestRestDays', 'startDate', 'endDate', 'partRelease', 'fullRelease', 'actions'];
+  displayedColumns = ['customerID', 'customerName', 'branchName','loanId', 'schemeName', 'amount', 'interestRate', 'tenure', 'interestRestDays', 'applicationDate','startDate', 'endDate', 'partRelease', 'fullRelease', 'actions'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // Filter fields
@@ -95,7 +95,7 @@ export class LoanDetailsComponent implements OnInit {
   }
 
   viewLoan(loan) {
-    this.router.navigate(['/admin/customer-management/loan-details', loan.id])
+    this.router.navigate(['/admin/customer-management/loan-details', loan.id], { queryParams: { 'loan-details': true } })
   }
 
   newLoan(loan) {
@@ -107,7 +107,7 @@ export class LoanDetailsComponent implements OnInit {
   }
 
   topUp(loan) {
-    this.router.navigate(['/admin/loan-management/topup'])
+    this.router.navigate(['/admin/loan-management/topup', loan.id])
   }
 
   interestEmi(loan) {
@@ -123,5 +123,13 @@ export class LoanDetailsComponent implements OnInit {
     this.router.navigate(['/admin/repayment/part-payment', loan.id])
   }
 
+  show(loan) {
+    if (new Date() > new Date(loan.loanEndDate)) {
+      return false
+    } else {
+      return true
+    }
+
+  }
 
 }

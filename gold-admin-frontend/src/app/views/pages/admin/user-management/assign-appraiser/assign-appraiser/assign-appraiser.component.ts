@@ -8,6 +8,7 @@ import { PartnerService } from '../../../../../../core/user-management/partner/s
 import { AppraiserService } from '../../../../../../core/user-management/appraiser';
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
 import { map, finalize } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'kt-assign-appraiser',
@@ -55,7 +56,8 @@ export class AssignAppraiserComponent implements OnInit {
     private fb: FormBuilder,
     private branchService: BranchService,
     private appraiserService: AppraiserService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private toaster: ToastrService
   ) { }
 
   ngOnInit() {
@@ -95,6 +97,14 @@ export class AssignAppraiserComponent implements OnInit {
         this.appraiserForm.controls.id.patchValue(this.data.requestData.id)
       }
 
+      if (this.data.fullReleaseId) {
+        this.appraiserForm.patchValue({
+          userType: (this.data.appraiser.appraiser.Usertype.userType).toLowerCase()
+        })
+        if (this.controls.userType.value === 'appraiser' && this.controls.releaserId.value) {
+          this.appraiserForm.patchValue({ appraiserId: this.controls.releaserId.value })
+        }
+      }
 
       if (this.data.customer) {
         this.appraiserForm.patchValue({ customerName: this.data.customer.firstName + ' ' + this.data.customer.lastName })
@@ -128,7 +138,7 @@ export class AssignAppraiserComponent implements OnInit {
       userType: [, [Validators.required]],
       appraiserId: [, [Validators.required]],
       releaserId: [, [Validators.required]],
-      appoinmentDate: [],
+      appoinmentDate: [, [Validators.required]],
       startTime: [this.addStartTime, [Validators.required]],
       endTime: [, [Validators.required]],
       partReleaseId: [],
@@ -144,7 +154,8 @@ export class AssignAppraiserComponent implements OnInit {
   getUserDetails() {
     this.sharedService.getUserDetailsFromStorage().pipe(map(res => {
 
-      this.internalBranchId = res.userDetails.internalBranchId
+      // this.internalBranchId = res.userDetails.userTypeId == 4 ? this.data.customer.internalBranchId : res.userDetails.internalBranchId
+      this.internalBranchId = this.data.customer.internalBranchId
       if (this.data.isReleaser) {
         this.getAllReleaser()
         this.getAllAppraiser()
@@ -155,13 +166,13 @@ export class AssignAppraiserComponent implements OnInit {
   }
 
   getAllAppraiser() {
-    this.appraiserService.getAllAppraiser(this.internalBranchId).subscribe(res => {
+    this.appraiserService.getAllAppraiser(this.internalBranchId, this.data.customerId).subscribe(res => {
       this.appraisers = res.data;
     })
   }
 
   getAllReleaser() {
-    this.appraiserService.getAllReleaser(this.internalBranchId).subscribe(res => {
+    this.appraiserService.getAllReleaser(this.internalBranchId, this.data.customerId).subscribe(res => {
       this.releasers = res.data;
     })
   }
@@ -209,7 +220,6 @@ export class AssignAppraiserComponent implements OnInit {
     if (this.appraiserForm.controls.startTime.value == this.appraiserForm.controls.endTime.value) {
       return this.toastr.errorToastr('Time should not be same!')
     }
-
     const appoinmentDate = new Date(this.controls.appoinmentDate.value)
     const correctedDate = new Date(appoinmentDate.getTime() - appoinmentDate.getTimezoneOffset() * 60000)
     this.appraiserForm.patchValue({ appoinmentDate: correctedDate })
@@ -293,6 +303,7 @@ export class AssignAppraiserComponent implements OnInit {
   }
 
   setStartTime(event) {
+    this.controls.startTime.patchValue(event)
     if (this.controls.startTime.valid) {
       this.startTime = event;
       this.ref.detectChanges()
@@ -338,7 +349,8 @@ export class AssignAppraiserComponent implements OnInit {
       this.controls.endTime.reset()
     } else {
       this.minStartTime()
-
+      this.controls.startTime.reset()
+      this.controls.endTime.reset()
     }
 
   }

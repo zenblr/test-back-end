@@ -2,7 +2,7 @@ const models = require('../../models');
 
 // add karat details
 exports.addKaratDetails = async (req, res) => {
-    const { karat, fromPercentage, toPercentage, range } = req.body;
+    const { karat, fromPercentage, toPercentage, range, hm } = req.body;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     if (toPercentage <= fromPercentage) {
@@ -11,7 +11,7 @@ exports.addKaratDetails = async (req, res) => {
     if (fromPercentage == 0 || toPercentage == 0 || karat == 0) {
         return res.status(400).json({ message: 'Value cannot be zero!' })
     }
-    let addKaratDetails = await models.karatDetails.create({ karat, fromPercentage, toPercentage, range, createdBy, modifiedBy })
+    let addKaratDetails = await models.karatDetails.create({ karat, fromPercentage, toPercentage, range, createdBy, modifiedBy, hm })
     if (!addKaratDetails) {
         return res.status(422).json({ message: 'karat details is not created ' })
     }
@@ -63,8 +63,8 @@ exports.readKaratDetailsById = async (req, res) => {
 
 exports.updateKaratDetails = async (req, res) => {
     let karatDetailsId = req.params.id;
-   
-    const { karat, fromPercentage, toPercentage } = req.body;
+
+    const { karat, fromPercentage, toPercentage, hm } = req.body;
     let modifiedBy = req.userData.id;
     if (toPercentage <= fromPercentage) {
         return res.status(400).json({ message: 'From percentage should less than to percentage' })
@@ -72,7 +72,7 @@ exports.updateKaratDetails = async (req, res) => {
     if (fromPercentage == 0 || toPercentage == 0 || karat == 0) {
         return res.status(400).json({ message: 'Value cannot be zero!' })
     }
-    let updateKaratDetails = await models.karatDetails.update({ karat, fromPercentage, toPercentage, modifiedBy }, { where: { id: karatDetailsId, isActive: true } });
+    let updateKaratDetails = await models.karatDetails.update({ karat, fromPercentage, toPercentage, modifiedBy, hm }, { where: { id: karatDetailsId, isActive: true } });
     if (!updateKaratDetails[0]) {
         return res.status(404).json({ message: 'karat details  update failed' });
     }

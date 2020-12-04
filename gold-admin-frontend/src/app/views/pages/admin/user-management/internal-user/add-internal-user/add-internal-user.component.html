@@ -113,7 +113,7 @@
                             </div>
                         </div>
 
-                        <div class="row kt-padding-t-15" *ngIf="data.action != 'edit'">
+                        <div class="row kt-padding-t-15" >
                             <div class="col-4 form-label">
                                 <label for="" class="kt-padding-l-10 text-color"
                                     [class.mandatory]="controls.userTypeId.value == '7'">
@@ -149,7 +149,8 @@
     </div>
     <kt-portlet-footer *ngIf="data.action != 'view'">
         <div class="p-3">
-            <kt-modal-footer (action)="action($event)" [value]="data.action"></kt-modal-footer>
+            <kt-modal-footer (action)="action($event)" [value]="'add'" *ngIf="data.action == 'add'"></kt-modal-footer>
+            <kt-modal-footer (action)="action($event)" [value]="'update'" *ngIf="data.action == 'edit'"></kt-modal-footer>
         </div>
     </kt-portlet-footer>
 </div>

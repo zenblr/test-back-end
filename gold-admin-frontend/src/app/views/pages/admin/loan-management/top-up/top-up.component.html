@@ -1,21 +1,19 @@
 <kt-portlet>
     <kt-portlet-body>
-        <div class="main">
+        <div class="main" id="container">
             <div class="table-div table-responsive kt-padding-t-15">
-                <table class="table outer-border">
+                <table class="table outer-border top-up-details">
                     <thead>
                         <th class="transparent">Loan ID</th>
                         <th class="transparent">Loan Amount</th>
                         <th class="transparent">Loan Date</th>
                         <th class="transparent">Outstanding Loan Amount</th>
-                        <th class="transparent">Last Payment Date</th>
-                        <th class="transparent">Scheme Name</th>
+                        <th class="transparent">Last Top Up Amount Availed</th>
+                        <th class="transparent"> Top Up Date</th>
                         <th class="transparent">Gross Weight</th>
                         <th class="transparent">Net Weight</th>
                         <th class="transparent">Previous LTV</th>
                         <th class="transparent">Current LTV</th>
-                        <th class="transparent">Top Up Amount</th>
-                        <th class="transparent">Top Up Date</th>
                         <th class="transparent last"></th>
                     </thead>
                     <tbody>
@@ -25,15 +23,13 @@
                             <td>21 Jan 2020</td>
                             <td>5,50,000</td>
                             <td>21 Jan 2020</td>
-                            <td>Micro Scheme</td>
+                            <td>21 Jan 2020</td>
                             <td>11.50 gm</td>
                             <td>10.50 gm</td>
                             <td>3,25,000</td>
                             <td>2,95,000</td>
-                            <td>1,20,000</td>
-                            <td>21 Jan 2020</td>
                             <td class="last">
-                                <kt-button [value]="'Ornaments Details'" [type]="'button'" (click)="viewOrnaments()">
+                                <kt-button [value]="'Ornaments Details'" [type]="'button'">
                                 </kt-button>
                             </td>
                         </tr>
@@ -69,12 +65,18 @@
                         <div class="table-div table-responsive kt-padding-t-15">
                             <table class="table outer-border">
                                 <thead>
-                                    <th class="transparent">Eligible TOP UP amount</th>
+                                    <th class="transparent">Eligible TOP UP Amount</th>
                                     <th class="transparent w100">1,20,000</th>
                                     <th class="transparent">Processing Charges</th>
                                     <th class="transparent w100">500</th>
                                     <th class="transparent">Enter Top Up Amount</th>
-                                    <th class="transparent"><input class="form-control" /></th>
+                                    <th class="transparent" style="font-weight: unset;">
+                                        <input ktWeight [class.isError]="topUp.touched && topUp.invalid"
+                                            class="form-control" type="text" [formControl]="topUp" />
+                                        <mat-error *ngIf="topUp.errors?.required && topUp.touched">
+                                            Field Required
+                                        </mat-error>
+                                    </th>
                                 </thead>
                             </table>
                         </div>
@@ -87,29 +89,29 @@
                             <kt-button [value]="'Proceed'" [type]="'button'" (click)="enterTopUp()">
                             </kt-button>
                         </span>
-                        <kt-button [value]="'Cancel'" [type]="'reset'" (click)="eligibleTopUp()">
+                        <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancelTopUp()">
                         </kt-button>
                     </div>
                 </div>
 
                 <ng-container *ngIf="showPaymentConfirmation">
                     <div class="table-div table-responsive kt-padding-t-15">
-                        <table class="table outer-border">
+                        <table class="table outer-border payment-details">
                             <thead>
                                 <th class="transparent" style="width: 150px;">Customer Name</th>
                                 <th class="transparent">Mobile Number</th>
-                                <th class="transparent">Email ID </th>
-                                <th class="transparent" style="width: 100px;">Top up Date</th>
-                                <th class="transparent" style="width: 100px;">Top up Amount</th>
-                                <th class="transparent" style="width: 180px;">Principal Outstanding Amount</th>
+                                <th class="transparent w200">Email ID </th>
+                                <th class="transparent">Top up Date</th>
+                                <th class="transparent">Top up Amount</th>
+                                <th class="transparent" style="width: 180px;">Principal Outstanding</th>
                                 <th class="transparent">Last Paymnet Date</th>
-                                <th class="transparent" style="width: 100px;">Interest Amount</th>
-                                <th class="transparent" style="width: 100px;">Penal Interest </th>
+                                <th class="transparent">Interest Amount</th>
+                                <th class="transparent">Penal Interest </th>
 
 
                                 <th class="transparent">New Loan Amount</th>
-                                <th class="transparent" style="width: 100px;">Net Amount</th>
-                                <th class="transparent last">Select Payment Option</th>
+                                <th class="transparent">Net Amount</th>
+                                <th class="transparent w200">Select Payment Option</th>
                             </thead>
                             <tbody>
                                 <tr>
@@ -124,13 +126,19 @@
                                     <td>2500</td>
                                     <td>2,95,000</td>
                                     <td>1,20,000</td>
-                                    <td class="last">
-                                        <select class="form-control">
+                                    <td class="">
+                                        <!-- <select class="form-control">
                                             <option value="" selected disabled>Select Payment</option>
                                             <option value="cash">CASH</option>
                                             <option value="bank">RTGS/NEFT/IMPS</option>
                                             <option value="cheque">CHEQUE</option>
-                                        </select>
+                                        </select> -->
+                                        <button *ngIf="!paymentValue" (click)="choosePaymentMethod()"
+                                            class="apply-kyc">Select
+                                            Payment</button>
+                                        <button *ngIf="paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">
+                                            {{ paymentValue.paymentType  | uppercase }}
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>

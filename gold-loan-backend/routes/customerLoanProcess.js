@@ -4,12 +4,12 @@ const route = express.Router();
 const { wrapper } = require('../utils/errorWrap'); // IMPORTING ERROR WRAPPER FUNCTION
 const { loanDateChange, addPackageImagesForLoan, disbursementOfLoanAmount, interestRate, generateInterestTable, unsecuredTableGeneration,
   disbursementOfLoanBankDetails, getLoanDetails, getSingleLoanDetails, appliedLoanDetails, customerDetails, loanBmRating, loanOpsTeamRating, checkForLoanType,
-  loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getSingleLoanInCustomerManagment, getDetailsForPrint, getLoanOrnaments, getUnsecuredScheme } =
+  loanBasicDeatils, loanNomineeDetails, loanOrnmanetDetails, loanDocuments, loanFinalLoan, loanBankDetails, loanAppraiserRating, getSingleLoanInCustomerManagment, getDetailsForPrint, getLoanOrnaments, getUnsecuredScheme,getCustomerBankDetails,getBankInfo,termsConditions,getCustomerBankDetailsByCustomerId } =
   require('../controllers/customerLoanProcess/customerLoanProcess'); // IMPORTING LOAN PROCESS FUNCTIONS
 const checkRolePermission = require('../middleware/checkRolesPermissions');
 
 
-const { loanRequest } = require('../controllers/customerLoanProcess/customerLoanProcessForApp')
+const { loanRequest, getLoanDetailsForPrint } = require('../controllers/customerLoanProcess/customerLoanProcessForApp')
 
 const checkAuth = require('../middleware/checkAuth'); // IMPORTING CHECK AUTH MIDDLEWARE
 
@@ -43,6 +43,10 @@ route.get('/single-loan', checkAuth, wrapper(getSingleLoanDetails)); // ADD CUST
 
 route.get('/single-loan-customer', checkAuth, wrapper(getSingleLoanInCustomerManagment))//customer-managment single loan
 
+route.get('/bank-details',checkAuth,wrapper(getCustomerBankDetails));  //get customer bank details
+
+route.get('/customer-bank-details',checkAuth,wrapper(getCustomerBankDetailsByCustomerId));  //get customer bank details
+
 route.post('/add-packet-images', checkAuth, wrapper(addPackageImagesForLoan)); // ADD PACKAGE IMAGES
 
 route.post('/disbursement-of-loan', checkAuth, wrapper(disbursementOfLoanAmount)); // DISBURSEMENT OF LOAN AMOUNT
@@ -63,7 +67,13 @@ route.get('/get-loan-ornamets', checkAuth, wrapper(getLoanOrnaments)) //GET LOAN
 
 route.get('/unsecured-scheme', checkAuth, wrapper(getUnsecuredScheme)) //GET unsecured Scheme
 
+route.get('/download-bank-details', checkAuth, wrapper(getBankInfo)) // DOWNLOAD BANK DETAILS IN DISBURSMENT PAGE
+
+route.post('/terms-conditions', checkAuth, wrapper(termsConditions))
+
 // appraiseApp 
-route.post('/loan-request', checkAuth, wrapper(loanRequest)); //apply loan for backoffice app 
+route.post('/loan-request', checkAuth, wrapper(loanRequest)); //apply loan for backoffice app
+
+route.get('/get-loanDetails', checkAuth, wrapper(getLoanDetailsForPrint)); //Print details
 
 module.exports = route; // EXPORTING ALL ROUTES

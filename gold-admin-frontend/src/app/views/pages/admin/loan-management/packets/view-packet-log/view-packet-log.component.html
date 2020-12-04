@@ -10,8 +10,9 @@
                     </div>
                     <div class="col">
                         <label> Loan ID:
-                            <ng-container *ngFor="let item of modalData.customerLoan">
-                                <span *ngIf="item.loanType === 'secured'">{{ item.loanUniqueId | uppercase }}</span>
+                            <ng-container *ngFor="let item of modalData.customerLoan; last as l">
+                                <span>{{ item.loanUniqueId | uppercase }}</span>
+                                <span *ngIf="!l">, &nbsp;</span>
                             </ng-container>
                         </label>
                     </div>
@@ -19,7 +20,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col-3">
                 <label for="">Packets:
                     <ng-container *ngFor="let item of modalData.loanPacketDetails[0].packets; last as l">
                         <span>{{ item.packetUniqueId | uppercase }}</span>
@@ -27,14 +28,18 @@
                     </ng-container>
                 </label>
             </div>
+            <div class="col">
+                <label *ngIf="currentLocation$" for="">Current Location:</label>
+                {{ currentLocation$ | async }}
+            </div>
         </div>
         <div class="mat-table__wrapper custom" [ngStyle]="{'overflow-x':'hidden'}">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
                 <ng-container matColumnDef="location">
                     <mat-header-cell *matHeaderCellDef>Location</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span *ngFor="let sender of role.senderData">
-                            {{sender.location | titlecase}}
+                        <span *ngIf="role.packetLocation">
+                            {{role?.packetLocation?.location | titlecase}}
                         </span>
 
                     </mat-cell>
@@ -44,7 +49,9 @@
                     <mat-header-cell *matHeaderCellDef>Updated By</mat-header-cell>
                     <mat-cell *matCellDef="let role">
                         <span *ngFor="let sender of role.senderData">
-                            {{sender.firstName | titlecase}}&nbsp; {{sender.lastName | titlecase}}
+                            <span *ngIf="sender.firstName">
+                                {{sender.firstName | titlecase}}&nbsp; {{sender.lastName | titlecase}}
+                            </span>
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -52,16 +59,50 @@
                 <ng-container matColumnDef="handover">
                     <mat-header-cell *matHeaderCellDef>Handover</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span *ngFor="let receiver of role.receiverData">
-                            {{receiver.firstName | titlecase}}&nbsp; {{receiver.lastName | titlecase}}
+                        <span
+                            *ngIf="!(role?.packetLocation?.id == 1 || role?.packetLocation?.id == 8 || role?.packetLocation?.id == 5 || role?.packetLocation?.id == 6)">
+                            <span *ngFor="let receiver of role.receiverData">
+                                {{receiver.firstName | titlecase}}&nbsp; {{receiver.lastName | titlecase}}
+                            </span>
                         </span>
                     </mat-cell>
                 </ng-container>
+
+                <ng-container matColumnDef="internalBranch">
+                    <mat-header-cell *matHeaderCellDef>Internal Branch</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.internalBranch else blank">
+                            {{role?.internalBranch?.name | titlecase}}
+                        </span>
+
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="partner">
+                    <mat-header-cell *matHeaderCellDef>Partner</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.partnerBranch else blank">
+                            {{role?.partnerBranch?.partner?.name | titlecase}}
+                        </span>
+
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="partnerBranch">
+                    <mat-header-cell *matHeaderCellDef>Partner Branch</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.partnerBranch else blank">
+                            {{role?.partnerBranch?.name | titlecase}}
+                        </span>
+
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="date">
                     <mat-header-cell *matHeaderCellDef>Date </mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span *ngFor="let sender of role.senderData">
-                            {{sender.dateAndTime | date:'mediumDate'}}
+                        <span *ngIf="role.updatedAt">
+                            {{role.updatedAt | date:'mediumDate'}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -69,12 +110,24 @@
                 <ng-container matColumnDef="time">
                     <mat-header-cell *matHeaderCellDef>Time</mat-header-cell>
                     <mat-cell *matCellDef="let role">
-                        <span *ngFor="let sender of role.senderData">
-                            {{ sender.dateAndTime | date:'shortTime'}}
+                        <span *ngIf="role.updatedAt">
+                            {{ role.updatedAt | date:'shortTime'}}
                         </span>
-                        
                     </mat-cell>
                 </ng-container>
+
+                <ng-container matColumnDef="timeTaken">
+                    <mat-header-cell *matHeaderCellDef>Time Taken</mat-header-cell>
+                    <mat-cell *matCellDef="let role">
+                        <span *ngIf="role.processingTime">
+                            {{ role.processingTime}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-template #blank>
+                    -
+                </ng-template>
 
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 

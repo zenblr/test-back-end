@@ -1,6 +1,6 @@
 :host {
     mat-header-row, mat-row {
-        width: 145%
+        width: 160%
     }
     .mat-column-bankTransactionId {
         flex: 0 0 8%;
@@ -9,9 +9,15 @@
         flex: 0 0 8%;
     }
     .mat-column-depositBranchName {
-        flex: 0 0 8%;
+        flex: 0 0 9%;
     }
-
+    .mat-column-depositAmount{
+        padding-right: 25px;
+        // justify-content: flex-end;
+    }
+    .mat-column-update{
+        flex: 0 0 9%;
+    }
     .loanID {
         display: flex;
         flex-direction: column;

@@ -71,7 +71,7 @@
                 </select> -->
 
                 <ng-select [items]="states" bindLabel="name" placeholder="Select State" (change)="getCities($event)"
-                  formControlName="states" >
+                  formControlName="states">
 
                 </ng-select>
 
@@ -101,17 +101,37 @@
           <form class="kt-form" [formGroup]="filterForm">
             <div class="row">
               <div class="col">
-                <label>By CCE Status</label>
+                <label>By Loan CCE Status</label>
                 <kt-multi-select-search formControlName="cceStatus" [items]="approvalStatus.apprsiserOrCCE"
-                  [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'CCE Status'">
+                  [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'CCE Status'"
+                  [searchable]="false">
                 </kt-multi-select-search>
               </div>
 
               <div class="col">
-                <label>By KYC Status</label>
-                <kt-multi-select-search formControlName="kycStatus" [items]="approvalStatus.bm" [multiple]="true"
-                  [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'KYC Status'"></kt-multi-select-search>
+                <label>By Loan KYC Status</label>
+                <kt-multi-select-search formControlName="kycStatus" [items]="approvalStatus.apprsiserOrCCE"
+                  [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'KYC Status'"
+                  [searchable]="false">
+                </kt-multi-select-search>
               </div>
+
+              <div class="col">
+                <label>By Scrap CCE Status</label>
+                <kt-multi-select-search formControlName="scrapKycStatusFromCce" [items]="approvalStatus.apprsiserOrCCE"
+                  [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'CCE Status'"
+                  [searchable]="false">
+                </kt-multi-select-search>
+              </div>
+
+              <div class="col">
+                <label>By Scrap KYC Status</label>
+                <kt-multi-select-search formControlName="scrapKycStatus" [items]="approvalStatus.apprsiserOrCCE"
+                  [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'KYC Status'"
+                  [searchable]="false">
+                </kt-multi-select-search>
+              </div>
+
               <div class="col-2 d-flex align-items-end">
                 <label></label>
                 <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
@@ -130,10 +150,20 @@
                   [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'Appraiser Status'">
                 </kt-multi-select-search>
               </div>
-              <div class="col">
+              <!-- <div class="col">
                 <label>By Loan Status</label>
                 <kt-multi-select-search formControlName="loanStatus" [items]="approvalStatus.bm" [multiple]="true"
                   [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'Loan Status'"></kt-multi-select-search>
+              </div> -->
+              <div class="col">
+                <label>By BM Status</label>
+                <kt-multi-select-search formControlName="bmStatus" [items]="approvalStatus.bmlfilter" [multiple]="true"
+                  [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'BM Status'"></kt-multi-select-search>
+              </div>
+              <div class="col">
+                <label>By OPS Team Status</label>
+                <kt-multi-select-search formControlName="otStatus" [items]="approvalStatus.bmlfilter" [multiple]="true"
+                  [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'OPS Status'"></kt-multi-select-search>
               </div>
               <div class="col-2 d-flex align-items-end">
                 <label></label>
@@ -154,11 +184,21 @@
                   [multiple]="true" [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'Appraiser Status'">
                 </kt-multi-select-search>
               </div>
-              <div class="col">
+              <!-- <div class="col">
                 <label>By Scrap Status</label>
                 <kt-multi-select-search formControlName="scrapStatus" [items]="scrapStatusList" [multiple]="true"
                   [bindLabel]="'stageName'" [isClear]="clearData" [placeholder]="'Scrap Status'">
                 </kt-multi-select-search>
+              </div> -->
+              <div class="col">
+                <label>By BM Status</label>
+                <kt-multi-select-search formControlName="bmStatus" [items]="approvalStatus.bmlfilter" [multiple]="true"
+                  [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'BM Status'"></kt-multi-select-search>
+              </div>
+              <div class="col">
+                <label>By OPS Team Status</label>
+                <kt-multi-select-search formControlName="otStatus" [items]="approvalStatus.bmlfilter" [multiple]="true"
+                  [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'OPS Status'"></kt-multi-select-search>
               </div>
               <div class="col-2 d-flex align-items-end">
                 <label></label>
@@ -175,9 +215,9 @@
             <div class="row">
               <div class="col-9">
                 <label>By Packet Assigned</label>
-                <select placeholder="Packet Assigned" class="form-control" formControlName="scheme">
-                  <option selected disabled value="null">Select Type</option>
-                  <option value="All">All</option>
+                <select placeholder="Packet Assigned" class="form-control" formControlName="packets">
+                  <!-- <option selected disabled value="null">Select Type</option> -->
+                  <option selected value="">All</option>
                   <option value=true>Used</option>
                   <option value=false>Unused</option>
                 </select>
@@ -195,11 +235,51 @@
             <div class="row">
               <div class="col-9">
                 <label>By Deposit Status</label>
-                <select  class="form-control" formControlName="scheme">
-                  <option value="null" selected disabled>Select Status</option>
-                  <option value="Pending">PENDING</option>
-                  <option value="Completed">COMPLETED</option>
-                  <option value="Rejected">REJECTED</option>
+                <select class="form-control" formControlName="depositStatus">
+                  <option value="" selected>All</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </div>
+              <div class="col-3 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="kt-portlet__body" *ngIf="filterName == 'packet-tracking'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col-9">
+                <label>By Tracking Status</label>
+                <select class="form-control" formControlName="packetTrackingLocation">
+                  <option value="" selected>All</option>
+                  <option value="in transit">In Transit</option>
+                  <option value="incomplete">Incomplete</option>
+                  <option value="complete">Complete</option>
+                </select>
+              </div>
+              <div class="col-3 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Scrap Packet Tracking -->
+        <div class="kt-portlet__body" *ngIf="filterName == 'scrap-packet-tracking'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col-9">
+                <label>By Tracking Status</label>
+                <select class="form-control" formControlName="packetTracking">
+                  <option value="" selected>All</option>
+                  <option value="incomplete">Incomplete</option>
+                  <option value="complete">Complete</option>
                 </select>
               </div>
               <div class="col-3 d-flex align-items-end">
@@ -216,7 +296,7 @@
             <div class="row">
               <div class="col-9">
                 <label>By Scheme Type</label>
-                <select placeholder="Scheme Type" class="form-control" formControlName="scheme" >
+                <select placeholder="Scheme Type" class="form-control" formControlName="scheme">
                   <option selected disabled value="null"> Scheme Type </option>
                   <option value="All">All</option>
                   <option value=true>Active</option>
@@ -383,6 +463,61 @@
               </div>
             </form>
           </div>
+        </div>
+
+        <!-- CRON -->
+        <div class="kt-portlet__body" *ngIf="filterName == 'cron'">
+          <form class="kt-form" [formGroup]="filterForm">
+            <div class="row">
+              <div class="col">
+                <label>Product</label>
+                <kt-multi-select-search formControlName="product" [items]="cronProductArray" [multiple]="true"
+                  [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'Product'">
+                </kt-multi-select-search>
+              </div>
+              <!-- emi,loan -->
+              <!-- failed,success -->
+              <div class="col">
+                <label>Status</label>
+                <kt-multi-select-search formControlName="cronStatus" [items]="cronStatusArray" [multiple]="true"
+                  [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'Status'"></kt-multi-select-search>
+              </div>
+              <!-- <div class="col-2 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div> -->
+            </div>
+            <div class="row">
+              <div class="col">
+                <label>Type</label>
+                <kt-multi-select-search formControlName="cronType" [items]="cronTypeArray" [multiple]="true"
+                  [bindLabel]="'name'" [isClear]="clearData" [placeholder]="'Type'">
+                </kt-multi-select-search>
+              </div>
+              <!-- emi,loan -->
+              <!-- failed,success -->
+              <div class="col">
+                <label>From Date</label>
+                <input class="form-control" [matDatepicker]="picker" (click)="picker.open()" formControlName="startDate"
+                  readonly placeholder="4/5/2020" [max]="currentDate" (dateChange)="validations()" />
+                <mat-datepicker #picker></mat-datepicker>
+              </div>
+
+              <!--  -->
+            </div>
+            <div class="row kt-padding-t-5">
+              <div class="col-6">
+                <label>To Date</label>
+                <input class="form-control" [matDatepicker]="picker1" (click)="picker1.open()" formControlName="endDate"
+                  readonly placeholder="4/5/2020" [max]="currentDate" (dateChange)="validations()" />
+                <mat-datepicker #picker1></mat-datepicker>
+              </div>
+              <div class="col-2 d-flex align-items-end">
+                <label></label>
+                <kt-button [value]="'Apply'" [type]="'button'" (click)="applyFilter()"></kt-button>
+              </div>
+            </div>
+          </form>
         </div>
 
         <!-- from and to date -->

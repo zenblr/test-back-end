@@ -1,10 +1,10 @@
 
 :host {
 	mat-row, mat-header-row {
-		width: 100%;
+		width: 120%;
 	}
 	.mat-column-fullName {
-        // flex: 0 0 15% !important;
+        flex: 0 0 12% !important;
         padding-left: 10px !important;
 	}
 	// .mat-column-pan {
@@ -14,7 +14,7 @@
 	// 	flex: 0 0 12% !important;
 	// }
 	.mat-column-cceApprovalStatus {
-		flex: 0 0 14%  !important;
+		flex: 0 0 10%  !important;
 	}
 	// .mat-column-kycStatus {
 	// 	flex: 0 0 12% !important;

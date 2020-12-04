@@ -39,6 +39,9 @@ export class LoanApplicationFormComponent implements OnInit {
   loanTransferdata: any;
   disbursed: boolean = false;
   partPaymentdata: any;
+  isPartRelease: any;
+  ornamentRate: any;
+  ornamentDetailsArray: any;
 
   constructor(
     public ref: ChangeDetectorRef,
@@ -75,11 +78,14 @@ export class LoanApplicationFormComponent implements OnInit {
       this.masterAndLoanIds = { loanId: res.data.id, masterLoanId: res.data.masterLoanId }
       this.loanStage = this.customerDetail.masterLoan.loanStage
       this.ornamentDetails = res.data.ornamentType
-      if(this.loanStage.id == 5){
+      if(res.newLoanAmount){
+        this.isPartRelease = true
+      }
+      if(this.loanStage.id == 5 || this.loanStage.id == 10){
         this.disbursed = true
       }
       // this.totalAmount = res.data.totalEligibleAmt
-      if (this.url == "packet-image-upload") {
+      if (this.url == "packet-image-upload" || this.loanStage.name == 'assign packet') {
         if (this.customerDetail.loanPacketDetails.length) {
           this.selected = 8;
         } else {
@@ -153,6 +159,10 @@ export class LoanApplicationFormComponent implements OnInit {
     this.partPaymentdata = event
   }
 
+  partRelease(event){
+    this.isPartRelease =event
+  }
+
   loanTransfer(event){
     this.loanTransferdata = event
   }
@@ -197,6 +207,14 @@ export class LoanApplicationFormComponent implements OnInit {
     this.totalAmount = event
   }
 
+  ornamentValue(event){
+    this.ornamentRate = event
+  }
+
+  getOrnamentDetailsArray(event){
+    this.ornamentDetailsArray = event
+    console.log(event)
+  }
 
 
   next(event) {

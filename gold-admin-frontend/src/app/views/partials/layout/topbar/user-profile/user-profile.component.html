@@ -8,7 +8,7 @@
 			<i *ngIf="icon" class="flaticon2-user-outline-symbol"></i>
 			<!-- <img *ngIf="(_user?.userDetail?.data?.UserImage != 'NA')" alt="Pic"
 				[attr.src]="_user?.userDetail?.data?.UserImage"> -->
-			<img alt="Pic" src="assets/media/icons/user.svg">
+			<img alt="Pic" src="../../../../../../assets/media/icons/user.svg" height="34" width="34">
 			<span *ngIf="badge"
 				class="kt-badge kt-badge--username kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold">{{_user?.fullname|firstLetter}}</span>
 		</div>
@@ -29,7 +29,8 @@
 				<div class="kt-user-card__name">
 					{{(_user?.firstName + ' ' + _user?.lastName ) | titlecase}}
 				</div>
-				<div class="kt-user-card__name">
+				<div style="color: #fff;
+				padding-left: 1rem;">
 					Role: {{_user?.roleName[0]| titlecase}}
 				</div>
 			</div>

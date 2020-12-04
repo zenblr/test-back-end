@@ -1,20 +1,57 @@
+<kt-filtered-data [filteredList]="filteredDataList"></kt-filtered-data>
+
 <kt-portlet>
 
     <kt-portlet-body>
-        <div class="mat-table__wrapper">
+        <div class="mat-table__wrapper" [class.filter]="(filteredDataList | json) !== '{}'">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
                 <ng-container matColumnDef="userName">
                     <mat-header-cell *matHeaderCellDef>User Name</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        {{packet.loanPacketDetails[0].packets[0].appraiser.firstName + " " + 
-                        packet.loanPacketDetails[0].packets[0].appraiser.lastName | titlecase}}</mat-cell>
+                        <!-- {{packet.Createdby.firstName + " " + 
+                        packet.Createdby.lastName | titlecase}} -->
+                        <span [ngClass]="colorCodeEntry(packet)">
+                            <span *ngIf="packet?.customerPacketTracking[0]?.customer">
+                                {{ packet?.customerPacketTracking[0]?.customer.firstName | titlecase }}
+                                {{ packet?.customerPacketTracking[0]?.customer.lastName | titlecase }}
+                            </span>
+                            <span *ngIf="packet?.customerPacketTracking[0]?.receiverPartner">
+                                {{ packet?.customerPacketTracking[0]?.receiverPartner.firstName | titlecase }}
+                                {{ packet?.customerPacketTracking[0]?.receiverPartner.lastName | titlecase }}
+
+                            </span>
+                            <span *ngIf="packet?.customerPacketTracking[0]?.receiverUser">
+                                {{ packet?.customerPacketTracking[0]?.receiverUser.firstName | titlecase }}
+                                {{ packet?.customerPacketTracking[0]?.receiverUser.lastName | titlecase }}
+                            </span>
+                        </span>
+                        <div *ngIf="packet?.showPopUp" class="alert-container kt-padding-l-10">
+                            <div class="red-alert"></div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="mobile">
+                    <mat-header-cell *matHeaderCellDef>Mobile No.</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span [ngClass]="colorCodeEntry(packet)">
+                            <span *ngIf="packet?.customerPacketTracking[0]?.customer">
+                                {{ packet?.customerPacketTracking[0]?.customer.mobileNumber }}</span>
+                            <span *ngIf="packet?.customerPacketTracking[0]?.receiverPartner">
+                                {{ packet?.customerPacketTracking[0]?.receiverPartner.mobileNumber }}</span>
+                            <span *ngIf="packet?.customerPacketTracking[0]?.receiverUser">
+                                {{ packet?.customerPacketTracking[0]?.receiverUser.mobileNumber }}</span>
+                        </span>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="internalBranch">
                     <mat-header-cell *matHeaderCellDef>Branch</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
                         <span *ngIf="packet.customer">
-                            {{packet.loanPacketDetails[0].packets[0].internalBranch.name | titlecase}}
+                            <span [ngClass]="colorCodeEntry(packet)">
+                                {{packet.internalBranch.name | titlecase}}
+                            </span>
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -23,51 +60,102 @@
                     <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
                         <span *ngIf="packet.customer">
-                            {{packet.customer.customerUniqueId}}
+                            <span [ngClass]="colorCodeEntry(packet)">
+                                {{packet.customer.customerUniqueId}}
+                            </span>
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <div *ngFor="let item of packet.customerLoan">
-                            <span *ngIf="item.loanType === 'secured'">
-                                {{ item.loanUniqueId | uppercase }}
-                            </span>
-                        </div>
+                        <span [ngClass]="colorCodeEntry(packet)">
+                            <div class="multiple">
+                                <div *ngFor="let item of packet.customerLoan">
+                                    {{ item.loanUniqueId | uppercase }}
+                                </div>
+                            </div>
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="customerName">
                     <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngIf="packet.customerLoan">
-                            {{packet.customer.firstName + " " + packet.customer.lastName |titlecase}}
+                        <span [ngClass]="colorCodeEntry(packet)">
+                            <span *ngIf="packet.customerLoan">
+                                {{packet.customer.firstName + " " + packet.customer.lastName |titlecase}}
+
+                            </span>
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="loanAmount">
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <div *ngFor="let item of packet.customerLoan">
-                            <span *ngIf="item.loanType === 'secured'">
-                                {{ item.loanAmount | uppercase }}
-                            </span>
-                        </div>
+                        <span [ngClass]="colorCodeEntry(packet)">
+                            <div class="multiple">
+                                <div *ngFor="let item of packet.customerLoan">
+                                    <!-- <span *ngIf="item.loanType === 'secured'"> -->
+                                    {{ item.loanAmount | uppercase }}
+                                    <!-- </span> -->
+                                </div>
+                            </div>
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="currentLocation">
                     <mat-header-cell *matHeaderCellDef>Current Location</mat-header-cell>
                     <mat-cell *matCellDef="let packet">
-                        <span *ngIf="packet.customerPacketTracking.length">
-                            {{packet?.customerPacketTracking[0].packetLocation.location |titlecase}}
+                        <span [ngClass]="colorCodeEntry(packet)">
+                            <span *ngFor="let item of packet.locationData; last as l">
+                                <span *ngIf="l">
+                                    {{item?.packetLocation?.location | titlecase}}
+                                </span>
+                            </span>
                         </span>
                     </mat-cell>
                 </ng-container>
+
+                <ng-container matColumnDef="time">
+                    <mat-header-cell *matHeaderCellDef>Elapsed Time</mat-header-cell>
+                    <mat-cell *matCellDef="let packet; index as i">
+                        <ng-container *ngFor="let item of packet.locationData; last as l">
+                            <ng-container *ngIf="l">
+                                <div style="width: 100%;" [ngClass]="colorCodeEntry(packet)"
+                                    *ngIf="item.packetLocationId === 6 || item.packetLocationId === 3 || item.packetLocationId === 5 || item.packetLocationId === 1">
+                                    <kt-elapsed-time [startTime]="item?.createdAt"
+                                        [locationTracking]="packet?.lastSyncTime"></kt-elapsed-time>
+                                </div>
+                                <div style="width: 100%;" [ngClass]="colorCodeEntry(packet)"
+                                    *ngIf="item.packetLocationId === 2 && !packet.isLoanCompleted">
+                                    <kt-elapsed-time [startTime]="packet?.customerLoanDisbursement[0].createdAt"
+                                        [locationTracking]="packet?.lastSyncTime">
+                                    </kt-elapsed-time>
+                                </div>
+
+                            </ng-container>
+                        </ng-container>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngFor="let item of packet.locationData; last as l">
+                            <span *ngIf="l"
+                                [ngClass]="item.status == 'complete' ? item.packetLocation.id === 2 && packet.isLoanCompleted ? 'text-primary' : 'text-success' : item.status == 'incomplete' ? 'text-danger' : 'text-grey'">
+                                {{item?.status |titlecase}}
+                            </span>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let packet">
                         <button (click)="ornaments(packet)" class="btn-transparent kt-margin-r-15">View Packets</button>
-                        <button (click)="updatePacket(packet)" class="btn-transparent kt-margin-r-15">Update
+                        <button [class.cursor-not-allowed]="checkForPartnerBranchIn(packet)"
+                            (click)="updatePacket(packet)" class="btn-transparent kt-margin-r-15">Update
                             Location</button>
                         <button (click)="viewPacketLog(packet)" class="btn-transparent kt-margin-r-15">View Log</button>
                         <button (click)="viewLocation(packet)" class="btn-transparent kt-margin-r-15">View

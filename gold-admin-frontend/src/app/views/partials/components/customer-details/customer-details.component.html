@@ -5,7 +5,9 @@
                 <div class="col">
                     <div class="row">
                         <div class="col-1">
-                            <img class="kt-margin-t-10 profile" [src]="cutomerDetails?.customerKycPersonal?.profileImg">
+                            <img class="kt-margin-t-10 profile"
+                                (click)="preview(cutomerDetails?.customerKycPersonal?.profileImg)"
+                                [src]="cutomerDetails?.customerKycPersonal?.profileImg  ? cutomerDetails?.customerKycPersonal?.profileImg : 'assets/media/icons/user.png'">
                             <!-- <img [src]="customer.image" *ngIf="customer.image != '' || customer.image != null"> -->
                         </div>
                         <div class="col kt-padding-l-25">
@@ -20,7 +22,8 @@
                         <div class="col">
                             <div class="kt-margin-t-30 text-gray font-weight-500 kt-margin-b-5">PAN</div>
                             <div class="text-color font-weight-500">
-                                {{cutomerDetails?.panCardNumber ? cutomerDetails?.panCardNumber : '-'}}</div>
+                                {{cutomerDetails?.panCardNumber ? (cutomerDetails?.panCardNumber | uppercase) : 'NA' }}
+                            </div>
                         </div>
                         <div class="col" *ngIf="cutomerDetails.panType == 'form60'">
                             <div class="kt-margin-t-30 text-gray font-weight-500 kt-margin-b-5">FORM 60</div>
@@ -62,16 +65,19 @@
                         {{cutomerDetails?.customerKycAddress[0]?.pinCode}}
                     </div>
                 </div>
-                <div class="col">
+                <div *ngIf="(cutomerDetails?.customerScrap && cutomerDetails?.userType == 'Corporate') || cutomerDetails?.masterLoan"
+                    class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">
                         Residential Address</div>
                     <div class="text-color font-weight-500 kt-margin-b-5"
-                        [ngStyle]="{'width':'65%','line-height':'1.5'}">
+                        [ngStyle]="{'width':'65%','line-height':'1.5'}"
+                        *ngIf="cutomerDetails?.customerKycAddress[1]; else noCustomerKycAddress">
                         {{cutomerDetails?.customerKycAddress[1]?.address | titlecase}}
                         {{cutomerDetails?.customerKycAddress[1]?.city?.name}}
                         {{cutomerDetails?.customerKycAddress[1]?.state?.name}}
                         {{cutomerDetails?.customerKycAddress[1]?.pinCode}}
                     </div>
+                    <ng-template #noCustomerKycAddress>-</ng-template>
                 </div>
                 <div class="col">
                     <div class="text-gray font-weight-500 kt-margin-b-5">Bank Details</div>
@@ -101,11 +107,12 @@
             <div class="row kt-margin-t-10 kt-padding-b-25 justify-content-around">
                 <div class="col offset-1 kt-padding-l-25">
                     <div class="text-primary font-weight-500 kt-pointer"
-                        (click)="preview(cutomerDetails?.customerKycAddress[0]?.addressProof[0])">View Proof</div>
+                        (click)="preview(cutomerDetails?.customerKycAddress[0]?.addressProofImage[0])">View Proof</div>
                 </div>
-                <div class="col">
-                    <div class="text-primary font-weight-500 kt-pointer"
-                        (click)="preview(cutomerDetails?.customerKycAddress[1]?.addressProof[0])">View Proof</div>
+                <div *ngIf="(cutomerDetails?.customerScrap && cutomerDetails?.userType == 'Corporate') || cutomerDetails?.masterLoan"
+                    class="col">
+                    <div class="text-primary font-weight-500 kt-pointer" *ngIf="cutomerDetails?.customerKycAddress[1]"
+                        (click)="preview(cutomerDetails?.customerKycAddress[1]?.addressProofImage[0])">View Proof</div>
                 </div>
                 <div class="col">
                     <!--  <div class="text-primary font-weight-500 kt-pointer"
@@ -113,7 +120,7 @@
                 </div>
                 <div class="col">
                     <div class="text-primary font-weight-500 kt-pointer"
-                        (click)="preview(cutomerDetails?.customerKycPersonal?.identityProof[0])">View
+                        (click)="preview(cutomerDetails?.customerKycPersonal?.identityProofImage[0])">View
                         {{cutomerDetails?.customerKycPersonal?.identityType?.name}}</div>
                 </div>
                 <!-- <div class="col-2">
@@ -130,23 +137,52 @@
                     <div class="card kt-padding-15" [class.kt-margin-r-15]="(i+1)%4!=0">
                         <div class="text-gray font-weight-500 kt-margin-b-5">Loan ID</div>
                         <div class="row kt-margin-b-5 text-color font-weight-500">
-                            <div class="col-5  ">
+                            <div class="col-4">
                                 <div>
                                     {{masterLoan.customerLoan[0].loanUniqueId}} <br>
                                 </div>
                                 <div>
                                     {{masterLoan?.customerLoan[1]?.loanUniqueId}}
                                 </div>
-    
+
                             </div>
                             <div class="col">
-                                <span *ngIf="masterLoan?.isLoanTransfer">Loan Transfer <br> </span> 
-                                <span *ngIf="masterLoan?.isOrnamentsReleased &&!masterLoan?.isFullOrnamentsReleased">Part Released Master Loan <br> </span> 
-                                <span *ngIf="masterLoan?.isNewLoanFromPartRelease ">Part Release New Loan <br> </span>
-                                <span *ngIf="masterLoan?.isOrnamentsReleased && masterLoan?.isFullOrnamentsReleased">Full Released Master Loan <br> </span>
+                                <div *ngIf="masterLoan?.isLoanTransfer">Loan Transfer </div>
+
+                                <div *ngIf="masterLoan.isLoanTransfer">
+                                    <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10"
+                                        (click)="viewTransfer(masterLoan.customerLoan[0].id)"
+                                        *ngxPermissionsOnly="['loanDetailsView']">
+                                        View Loan Transfer
+                                    </div>
+                                </div>
+
+                                <span *ngIf="masterLoan?.isNewLoanFromPartRelease">Part Release New Loan <br> </span>
+
+                                <div class="col" *ngIf="masterLoan.parentLoan">
+                                    <span style="margin-left: -10px;">Master Loan</span>
+                                    <div>
+                                        <span *ngFor="let item of masterLoan.parentLoan.customerLoan; last as l">
+                                            <span>{{ item.loanUniqueId }}</span>
+                                            <span *ngIf="!l && item.loanUniqueId">,&nbsp; </span>
+                                        </span>
+                                    </div>
+                                    <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10"
+                                        (click)="viewLoan(masterLoan.parentLoanId)"
+                                        *ngxPermissionsOnly="['loanDetailsView']">
+                                        View Old Loan
+                                    </div>
+                                </div>
+
+                                <span *ngIf="masterLoan?.isOrnamentsReleased && !masterLoan?.isFullOrnamentsReleased">
+                                    Master Loan <br> </span>
+                                <span *ngIf="masterLoan?.isOrnamentsReleased && masterLoan?.isFullOrnamentsReleased">
+                                    Full Release Master Loan <br> </span>
+
+
                             </div>
                         </div>
-                        
+
                         <mat-divider class="kt-margin-b-10 kt-margin-t-10"></mat-divider>
                         <div class="row kt-margin-b-15">
                             <div class="col-6">
@@ -163,7 +199,7 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="text-gray font-weight-500">Loan Tennure</div>
+                                <div class="text-gray font-weight-500">Loan Tenure</div>
                                 <div class="text-color font-weight-500">{{masterLoan?.tenure}} Months</div>
                             </div>
                         </div>
@@ -181,9 +217,42 @@
                             </div>
                         </div>
 
-                        <div class="text-primary font-weight-500 kt-pointer kt-margin-b-10"
-                            (click)="viewLoan(masterLoan.id)" *ngxPermissionsOnly="['loanDetailsView']">View
-                            Details</div>
+                        <div class="row">
+                            <div class="text-primary col font-weight-500 kt-pointer kt-margin-b-10"
+                                (click)="viewLoan(masterLoan.id)" *ngxPermissionsOnly="['loanDetailsView']">View
+                                Details
+                            </div>
+
+
+
+                            <div class="col">
+                                <div>
+                                    <div *ngIf="!masterLoan.partRelease">
+                                        Part Release: -
+                                    </div>
+                                    <div *ngIf="masterLoan.partRelease?.partReleaseStatus == 'pending'">
+                                        Part Release: Initiated
+                                    </div>
+                                    <div *ngIf="masterLoan.partRelease?.partReleaseStatus == 'released'">
+                                        Part Release: Completed
+                                    </div>
+                                </div>
+                                <div>
+                                    <div *ngIf="!masterLoan.fullRelease">
+                                        Full Release: -
+                                    </div>
+                                    <div *ngIf="masterLoan.fullRelease?.fullReleaseStatus == 'pending'">
+                                        Full Release: Initiated
+                                    </div>
+                                    <div *ngIf="masterLoan.fullRelease?.fullReleaseStatus == 'released'">
+                                        Full Release: Completed
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
                     </div>
                 </div>
             </div>

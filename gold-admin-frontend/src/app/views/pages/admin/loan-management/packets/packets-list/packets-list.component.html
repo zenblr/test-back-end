@@ -1,3 +1,5 @@
+<kt-filtered-data [filteredList]="filteredDataList"></kt-filtered-data>
+
 <kt-portlet>
 
     <kt-portlet-body>
@@ -21,12 +23,12 @@
 
                 <ng-container matColumnDef="packetUniqueId">
                     <mat-header-cell *matHeaderCellDef>Packet ID</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.packetUniqueId | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let role">{{role.packetUniqueId}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="barcode">
                     <mat-header-cell *matHeaderCellDef>Barcode</mat-header-cell>
-                    <mat-cell *matCellDef="let role">{{role.barcodeNumber | uppercase}}</mat-cell>
+                    <mat-cell *matCellDef="let role">{{role.barcodeNumber}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="internalBranch">

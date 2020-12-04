@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChildren, QueryList, AfterViewInit, ElementRef } from '@angular/core';
 import { LoanApplicationFormService } from '../../../../core/loan-management';
 import { ScrapCustomerManagementService } from '../../../../core/scrap-management';
 import { ActivatedRoute } from '@angular/router';
@@ -6,45 +6,57 @@ import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
 import { PdfViewerComponent } from '../pdf-viewer/pdf-viewer.component';
 import { SharedService } from '../../../../core/shared/services/shared.service';
-import { takeUntil, distinctUntilChanged, skip } from 'rxjs/operators';
+import { takeUntil, distinctUntilChanged, skip, map, finalize } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { EmiLogsDialogComponent } from '../emi-logs-dialog/emi-logs-dialog.component';
 import { PartPaymentLogDialogComponent } from '../part-payment-log-dialog/part-payment-log-dialog.component';
+import { NgxPermissionsService } from 'ngx-permissions';
 @Component({
   selector: 'kt-loan-scrap-details',
   templateUrl: './loan-scrap-details.component.html',
   styleUrls: ['./loan-scrap-details.component.scss']
 })
-export class LoanScrapDetailsComponent implements OnInit {
+export class LoanScrapDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
   images: any = []
   loanId;
   scrapId;
   details: any
   pdf = {
     loanAgreementCopyImage: false, pawnCopyImage: false, schemeConfirmationCopyImage: false,
-    purchaseVoucherImage: false, purchaseInvoiceImage: false, saleInvoiceImage: false
+    purchaseVoucherImage: false, purchaseInvoiceImage: false, saleInvoiceImage: false, declarationImage: false,
+    loanTransferPawnImage: false, signedChequeImage: false
   }
   masterLoanId: any;
   masterAndLoanIds: { loanId: any; masterLoanId: any; };
+  scrapIds: { scrapId: any; };
   destroy$ = new Subject();
+  packetImages = { loan: { documents: [] = [], packet: [] = [], transfer: [] = [] }, scrap: [], transfer: [], termsAndConditions: [] };
+  @ViewChildren('termsConditions') termsConditions: QueryList<ElementRef>;
+  edit: boolean;
+  permission: any;
 
   constructor(
     private loanservice: LoanApplicationFormService,
     private scrapCustomerManagementService: ScrapCustomerManagementService,
     private route: ActivatedRoute,
     public dialog: MatDialog,
-    private sharedService:SharedService
-  ) { 
+    private sharedService: SharedService,
+    private ngxPermission: NgxPermissionsService,
+  ) {
     this.sharedService.exportExcel$
-    .pipe(
-      skip(1),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$))
-    .subscribe((res) => {
-      if (res) {
-        this.soaDownload();
-      }
-    });
+      .pipe(
+        skip(1),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$))
+      .subscribe((res) => {
+        if (res) {
+          this.soaDownload();
+        }
+      });
+
+    this.ngxPermission.permissions$.subscribe(res => {
+      this.permission = res
+    })
   }
 
   ngOnInit() {
@@ -52,13 +64,25 @@ export class LoanScrapDetailsComponent implements OnInit {
       this.getScrapDetails();
     } else {
       this.getLoanDetails();
+      this.initiateTermsAndConditions()
+      this.route.queryParams.subscribe(res => {
+        if (res['loan-details']) {
+          this.edit = true
+          // console.log(this.edit)
+        }
+      }
+      );
     }
   }
 
-  ngDestroy() {
+  ngAfterViewInit() {
+  }
+
+  ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
   getLoanDetails() {
     this.loanId = this.route.snapshot.params.loanId
     this.masterLoanId = this.route.snapshot.params.masterLoanId
@@ -67,14 +91,16 @@ export class LoanScrapDetailsComponent implements OnInit {
       this.masterAndLoanIds = { loanId: res.data.customerLoanDisbursement[0].loanId, masterLoanId: res.data.customerLoanDisbursement[0].masterLoanId }
       this.createOrnamentsImage()
       this.pdfCheck()
-      console.log(this.images)
+      // console.log(this.images)
+      this.getTermsConditions()
     });
   }
 
   getScrapDetails() {
     this.scrapId = this.route.snapshot.params.scrapId;
     this.scrapCustomerManagementService.getScrapDetails(this.scrapId).subscribe(res => {
-      this.details = res.data
+      this.details = res.data;
+      this.scrapIds = { scrapId: res.data.scrapDisbursement.scrapId, }
       this.createOrnamentsImage()
       this.pdfCheck()
       console.log(this.images)
@@ -82,7 +108,7 @@ export class LoanScrapDetailsComponent implements OnInit {
   }
 
   pdfCheck() {
-    let laonAgree, pawn, scheme, voucher, invoice, sale;
+    let laonAgree, pawn, scheme, voucher, invoice, sale, declaration, loanTransferPawn, signedCheque;
     if (this.details.customerLoanDocument) {
       if (this.details.customerLoanDocument.loanAgreementCopy) {
         laonAgree = this.details.customerLoanDocument.loanAgreementCopyImage[0].split('.')
@@ -105,6 +131,19 @@ export class LoanScrapDetailsComponent implements OnInit {
         sale = this.details.scrapDocument.saleInvoiceImage[0].split('.')
       }
     }
+
+    if (this.details.loanTransfer) {
+      if (this.details.loanTransfer.declarationImage) {
+        declaration = this.details.loanTransfer.declarationImage[0].split('.')
+      }
+      if (this.details.loanTransfer.pawnTicket) {
+        loanTransferPawn = this.details.loanTransfer.pawnTicketImage[0].split('.')
+      }
+      if (this.details.loanTransfer.signedCheque) {
+        signedCheque = this.details.loanTransfer.signedChequeImage[0].split('.')
+      }
+    }
+
     if (laonAgree && laonAgree[laonAgree.length - 1] == 'pdf') {
       this.pdf.loanAgreementCopyImage = true
     } else {
@@ -135,6 +174,21 @@ export class LoanScrapDetailsComponent implements OnInit {
     } else {
       this.pdf.saleInvoiceImage = false
     }
+    if (declaration && declaration[declaration.length - 1] == 'pdf') {
+      this.pdf.declarationImage = true
+    } else {
+      this.pdf.declarationImage = false
+    }
+    if (loanTransferPawn && loanTransferPawn[loanTransferPawn.length - 1] == 'pdf') {
+      this.pdf.loanTransferPawnImage = true
+    } else {
+      this.pdf.loanTransferPawnImage = false
+    }
+    if (signedCheque && signedCheque[signedCheque.length - 1] == 'pdf') {
+      this.pdf.signedChequeImage = true
+    } else {
+      this.pdf.signedChequeImage = false
+    }
   }
 
   createOrnamentsImage() {
@@ -148,6 +202,28 @@ export class LoanScrapDetailsComponent implements OnInit {
           this.patchUrlIntoForm(keys[index], url, ornametsIndex)
         }
       }
+
+      let packets = this.details.scrapPacketDetails[0]
+      let documents = this.details.scrapDocument
+      let temp = [];
+      if (documents.purchaseVoucherImage) {
+        temp.push(documents.purchaseVoucherImage[0])
+      }
+      if (documents.purchaseInvoiceImage) {
+        temp.push(documents.purchaseInvoiceImage[0])
+      }
+      if (documents.saleInvoiceImage) {
+        temp.push(documents.saleInvoiceImage[0])
+      }
+      temp.push(packets.emptyPacketWithNoOrnamentImage,
+        packets.sealingPacketWithCustomerImage,
+        packets.sealingPacketWithWeightImage)
+      this.packetImages.scrap = [...temp]
+      this.packetImages.scrap = this.packetImages.scrap.filter(e => {
+        let ext = this.sharedService.getExtension(e)
+        return e && ext != 'pdf'
+      })
+
     } else {
       for (let ornametsIndex = 0; ornametsIndex < this.details.loanOrnamentsDetail.length; ornametsIndex++) {
         let ornamets = this.details.loanOrnamentsDetail[ornametsIndex]
@@ -158,6 +234,31 @@ export class LoanScrapDetailsComponent implements OnInit {
           this.patchUrlIntoForm(keys[index], url, ornametsIndex)
         }
       }
+
+      let packets = this.details.loanPacketDetails[0]
+      let documents = this.details.customerLoanDocument
+      let temp = [];
+      let transfer = []
+      temp = [...documents.loanAgreementCopyImage, ...documents.pawnCopyImage, ...documents.schemeConfirmationCopyImage]
+      if (this.details.loanTransfer) {
+        let loanTransfer = this.details.loanTransfer
+        transfer = [...loanTransfer.declarationImage, ...loanTransfer.pawnTicketImage, ...loanTransfer.signedChequeImage]
+
+      }
+      let packet = []
+      packet.push(packets.emptyPacketWithNoOrnamentImage,
+        packets.sealingPacketWithCustomerImage,
+        packets.sealingPacketWithWeightImage)
+      this.packetImages.loan.documents = [...temp]
+      this.packetImages.loan.transfer = [...transfer]
+      this.packetImages.loan.packet = [...packet]
+      // this.packetImages.loan = 
+      Object.keys(this.packetImages.loan).forEach(ele => {
+        this.packetImages.loan[ele] = this.packetImages.loan[ele].filter(e => {
+          let ext = this.sharedService.getExtension(e)
+          return e && ext != 'pdf'
+        })
+      })
     }
   }
 
@@ -243,13 +344,33 @@ export class LoanScrapDetailsComponent implements OnInit {
     }
   }
 
-  viewPartPaymnetsLogs(){
-  
-      const dialogRef = this.dialog.open(PartPaymentLogDialogComponent, {
-        data: { id: this.details.id },
-        width: 'auto'
-      })
-  
+  viewPackets(value,loanType?) {
+    const type = this.masterLoanId ? 'loan' : 'scrap'
+    let images = []
+    if(type == 'loan'){
+       images = this.packetImages[type][loanType]
+    }else{
+       images = this.packetImages[type]
+
+    }
+    const index = images.indexOf(value)
+
+    this.dialog.open(ImagePreviewDialogComponent, {
+      data: {
+        images: images,
+        index: index
+      },
+      width: "auto"
+    })
+  }
+
+  viewPartPaymnetsLogs() {
+
+    const dialogRef = this.dialog.open(PartPaymentLogDialogComponent, {
+      data: { id: this.details.id },
+      width: 'auto'
+    })
+
   }
 
   viewEmiLogs() {
@@ -259,10 +380,77 @@ export class LoanScrapDetailsComponent implements OnInit {
     })
   }
 
-  soaDownload(){
+  soaDownload() {
     this.masterLoanId = this.route.snapshot.params.masterLoanId
     this.sharedService.soaDownload(this.masterLoanId).subscribe();
     this.sharedService.exportExcel.next(false);
+  }
+
+  isPdf(image: string): boolean {
+    const ext = this.sharedService.getExtension(image)
+    const isPdf = ext == 'pdf' ? true : false
+    return isPdf
+  }
+
+  initiateTermsAndConditions() {
+    const NUMBER_OF_DOCUMENTS = 5
+    let array = Array(NUMBER_OF_DOCUMENTS).fill({ path: null, URL: null, name: null })
+    this.packetImages.termsAndConditions = array
+  }
+
+  getPathArray(type: string) {
+    const pathArray = this.packetImages[type].map(e => e.path)
+    return pathArray
+  }
+
+  getURLArray(type: string) {
+    const urlArray = this.packetImages[type].map(e => e.URL)
+    return urlArray
+  }
+
+  uploadTnC(event, index) {
+    var file = event.target.files[0];
+
+    if (this.sharedService.fileValidator(event, 'pdf')) {
+      const params = {
+        reason: 'loan',
+        masterLoanId: this.masterAndLoanIds.masterLoanId
+      }
+      this.sharedService.uploadFile(file, params).pipe(
+        map(res => {
+          this.packetImages.termsAndConditions.splice(index, 1, { path: res.uploadFile.path, URL: res.uploadFile.URL, name: res.uploadFile.originalname })
+        }),
+        finalize(() => {
+          this.termsConditions.forEach(e => {
+            if (e && e.nativeElement.value) e.nativeElement.value = ''
+          })
+          event.target.value = ''
+        })
+      ).subscribe()
+    } else {
+      event.target.value = ''
+    }
+
+  }
+
+  removeTnC(index) {
+    this.packetImages.termsAndConditions.splice(index, 1, { path: null, URL: null, name: null })
+  }
+
+  SaveTnC() {
+    const termsConditions = this.getPathArray('termsAndConditions')
+    const masterLoanId = this.masterAndLoanIds.masterLoanId
+
+    this.loanservice.uploadTermsAndConditions({ termsConditions, masterLoanId }).pipe().subscribe()
+  }
+
+  getTermsConditions() {
+    if (this.details.termsAndCondition && this.details.termsAndCondition.length) {
+      this.packetImages.termsAndConditions = []
+      this.details.termsAndConditionUrl.forEach((element, index) => {
+        this.packetImages.termsAndConditions.push({ path: this.details.termsAndCondition[index], URL: element, name: null })
+      });
+    }
   }
 
 }

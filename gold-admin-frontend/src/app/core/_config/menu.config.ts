@@ -72,7 +72,7 @@ export class MenuConfig {
 							title: "User Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-04.svg",
-							page: "/admin/user-management",
+							page:'/admin/user-management',
 							permission: !(this.permissionsArr.includes('merchantView') ||
 								this.permissionsArr.includes('brokerView') ||
 								this.permissionsArr.includes('storeView') ||
@@ -82,6 +82,8 @@ export class MenuConfig {
 								this.permissionsArr.includes('internalBranchView') ||
 								this.permissionsArr.includes('internalUserView') ||
 								this.permissionsArr.includes('assignAppraiserView') ||
+								this.permissionsArr.includes('concurrentLoginView') ||
+								this.permissionsArr.includes('partnerBranchUserView') ||
 								this.userType === 4),
 						},
 						{
@@ -90,7 +92,7 @@ export class MenuConfig {
 							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-05.svg",
 							page: "/admin/lead-management",
-							permission: !(this.permissionsArr.includes('leadManagmentView') || this.permissionsArr.includes('viewNewRequest')),
+							permission: !(this.permissionsArr.includes('leadManagmentView') || this.permissionsArr.includes('viewNewRequest') || this.permissionsArr.includes('customerRegistrationView')),
 							submenu: [
 								{
 									title: "All Leads",
@@ -107,6 +109,11 @@ export class MenuConfig {
 								// 	page: "/admin/lead-management/my-requests",
 								// 	permission: false,
 								// },
+								{
+									title: "Customer Registration List",
+									page: "/admin/lead-management/registered-customers",
+									permission: !this.permissionsArr.includes('customerRegistrationView')
+								}
 							],
 						},
 						{
@@ -165,9 +172,13 @@ export class MenuConfig {
 									title: "Packet Tracking",
 									page: "/admin/loan-management/packet-tracking",
 									bullet: 'dot',
-									permission: !(this.permissionsArr.includes('packetEdit') ||
-										this.permissionsArr.includes('packetAdd') ||
-										this.permissionsArr.includes('packetView')),
+									permission: !this.permissionsArr.includes('packetTrackingView'),
+								},
+								{
+									title: "My Packets",
+									page: "/admin/loan-management/my-packets",
+									bullet: 'dot',
+									permission: !this.permissionsArr.includes('myPacket'),
 								},
 								{
 									title: "Applied Loan",
@@ -189,12 +200,12 @@ export class MenuConfig {
 								}
 							],
 						},
-						{
-							title: "Global Map",
-							root: true,
-							src: "assets/media/aside-icons/icons-08.svg",
-							page: "/admin/global-map",
-						},
+						// {
+						// 	title: "Global Map",
+						// 	root: true,
+						// 	src: "assets/media/aside-icons/icons-08.svg",
+						// 	page: "/admin/global-map",
+						// },
 						{
 							title: "Customer Management",
 							root: true,
@@ -241,18 +252,22 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-12.svg",
 							bullet: 'dot',
-							permission: false,
+							permission: !(this.permissionsArr.includes('partReleaseApprovalView') ||
+								this.permissionsArr.includes('fullReleaseApprovalView') ||
+								this.permissionsArr.includes('viewDeposit') ||
+								this.permissionsArr.includes('partReleaseApprovedView') ||
+								this.permissionsArr.includes('fullReleaseApprovedView')),
 							submenu: [
 								{
 									title: "Deposit",
 									page: "/admin/funds-approvals/deposit",
 									permission: !this.permissionsArr.includes('viewDeposit'),
 								},
-								// {
-								// 	title: "Top-Up Approval",
-								// 	page: "/admin/funds-approvals/top-up-approval",
-								// 	permission: false,
-								// },
+								{
+									title: "Top-Up Approval",
+									page: "/admin/funds-approvals/top-up-approval",
+									permission: false,
+								},
 								{
 									title: "Jewellery Release Approval",
 									bullet: 'dot',
@@ -289,44 +304,44 @@ export class MenuConfig {
 								},
 							],
 						},
-						{
-							title: "Report",
-							root: true,
-							bullet: 'dot',
-							src: "assets/media/aside-icons/icons-27.svg",
-							permission: false,
-							submenu: [
-								{
-									title: "KYC",
-									page: "/admin/kyc",
-									bullet: 'dot',
-									permission: false,
-								},
-								{
-									title: "Loan Status Report",
-									page: "/admin/loan-status",
-									bullet: 'dot',
-									permission: false,
-								},
-								{
-									title: "Branch Report",
-									page: "/admin/branch",
-									bullet: 'dot',
-									permission: false,
-								},
-								{
-									title: "Loan Type Reports",
-									page: "/admin/loan-type",
-									bullet: 'dot',
-									permission: false,
-								},
-								{
-									title: "Margin Reports",
-									page: "/admin/marign",
-									permission: false,
-								},
-							],
-						},
+						// {
+						// 	title: "Report",
+						// 	root: true,
+						// 	bullet: 'dot',
+						// 	src: "assets/media/aside-icons/icons-27.svg",
+						// 	permission: false,
+						// 	submenu: [
+						// 		{
+						// 			title: "KYC",
+						// 			page: "/admin/kyc",
+						// 			bullet: 'dot',
+						// 			permission: false,
+						// 		},
+						// 		{
+						// 			title: "Loan Status Report",
+						// 			page: "/admin/loan-status",
+						// 			bullet: 'dot',
+						// 			permission: false,
+						// 		},
+						// 		{
+						// 			title: "Branch Report",
+						// 			page: "/admin/branch",
+						// 			bullet: 'dot',
+						// 			permission: false,
+						// 		},
+						// 		{
+						// 			title: "Loan Type Reports",
+						// 			page: "/admin/loan-type",
+						// 			bullet: 'dot',
+						// 			permission: false,
+						// 		},
+						// 		{
+						// 			title: "Margin Reports",
+						// 			page: "/admin/marign",
+						// 			permission: false,
+						// 		},
+						// 	],
+						// },
 						{
 							title: "EMI Management",
 							root: true,
@@ -395,6 +410,11 @@ export class MenuConfig {
 													title: "Partner Banners",
 													page: "/admin/upload-data/upload-lender-banner",
 													permission: !this.permissionsArr.includes('partnerBannerView'),
+												},
+												{
+													title: "Process Note (SOP)",
+													page: "/admin/upload-data/process-note",
+													permission: false,
 												},
 
 											],
@@ -497,6 +517,11 @@ export class MenuConfig {
 											],
 										},
 										{
+											title: "Error Logs",
+											page: "/admin/error",
+											permission: !(this.userType === 4)
+										},
+										{
 											title: "Roles and Permissions",
 											page: "/admin/roles",
 											bullet: 'dot',
@@ -508,6 +533,11 @@ export class MenuConfig {
 									title: "Global Settings",
 									page: "/admin/global-settings",
 									permission: !this.permissionsArr.includes('viewGlobalSetting')
+								},
+								{
+									title: "Cron Logs",
+									page: "/admin/cron-list",
+									permission: !(this.userType === 4)
 								},
 							]
 						},
@@ -537,6 +567,7 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-14.svg",
 							page: "/admin/user-management/partner-branch-user",
+							permission: !this.permissionsArr.includes('partnerBranchUserView'),
 						},
 						{
 							title: "Internal User",
@@ -579,6 +610,14 @@ export class MenuConfig {
 							page: "/admin/user-management/store",
 							src: "assets/media/aside-icons/icons-19.svg",
 							permission: !this.permissionsArr.includes('storeView')
+						},
+						{
+							title: "Concurrent User",
+							root: true,
+							page: "/admin/user-management/concurrent-login",
+							src: "assets/media/aside-icons/icons-06.svg",
+							permission: !this.permissionsArr.includes('concurrentLoginView')
+
 						},
 						// {
 						// 	title: "Roles and permissions",
@@ -817,19 +856,26 @@ export class MenuConfig {
 							page: "/admin/scrap-management/scrap-buying-calculator",
 							permission: false,
 						},
-						{
-							title: "Scrap Buying Application",
-							root: true,
-							src: "assets/media/aside-icons/icons-35.svg",
-							page: "/admin/scrap-management/scrap-buying-application-form",
-							permission: !this.permissionsArr.includes('scrapApplicationAdd'),
-						},
+						// {
+						// 	title: "Scrap Buying Application",
+						// 	root: true,
+						// 	src: "assets/media/aside-icons/icons-35.svg",
+						// 	page: "/admin/scrap-management/scrap-buying-application-form",
+						// 	permission: !this.permissionsArr.includes('scrapApplicationAdd'),
+						// },
 						{
 							title: "Packet",
 							root: true,
 							src: "assets/media/aside-icons/icons-36.svg",
 							page: "/admin/scrap-management/packets",
 							permission: !this.permissionsArr.includes('scrapPacketView'),
+						},
+						{
+							title: "Packet Tracking",
+							root: true,
+							src: "assets/media/aside-icons/shopping-bags.svg",
+							page: "/admin/scrap-management/packet-tracking",
+							permission: !this.permissionsArr.includes('scrapPacketTrackingView'),
 						},
 						{
 							title: "Applied Scrap",

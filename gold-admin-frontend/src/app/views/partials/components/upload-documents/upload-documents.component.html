@@ -5,7 +5,7 @@
                 <label class="kt-padding-l-10">Outstanding Loan Amount</label>
             </div>
             <div class="col-4">
-                <input type="text" formControlName="outstandingLoanAmount" class="form-control "
+                <input ktWeight type="text" formControlName="outstandingLoanAmount" class="form-control "
                     [class.isError]="controls.outstandingLoanAmount.touched && controls.outstandingLoanAmount.invalid"
                     placeholder="Outstanding">
                 <mat-error *ngIf="controls.outstandingLoanAmount.touched && controls.outstandingLoanAmount.invalid">
@@ -18,15 +18,15 @@
         </div>
         <div class="row kt-padding-t-15 kt-padding-b-20 justify-content-around">
             <div class="col form-label" *ngIf="showLoanFlag">
-                <label class="kt-padding-l-10">Loan Agreement Copy</label>
+                <label class="kt-padding-l-10 mandatory">Loan Agreement Copy</label>
             </div>
             <div class="col form-label" *ngIf="showLoanTransferFlag || showLoanFlag">
-                <label class="kt-padding-l-10 kt-padding-r-25">Pawn Ticket/Copy of Pledge</label>
+                <label class="kt-padding-l-10 kt-padding-r-25 mandatory">Pawn Ticket/Copy of Pledge</label>
                 <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"
                     *ngIf="showLoanFlag && buttonValue =='save'"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showLoanFlag">
-                <label class="kt-padding-l-10">Scheme Confirmation Copy</label>
+                <label class="kt-padding-l-10 mandatory">Scheme Confirmation Copy</label>
             </div>
             <div class="col form-label" *ngIf="showLoanTransferFlag">
                 <label class="kt-padding-l-10">Signed Cheque Copy</label>
@@ -35,21 +35,21 @@
                 <label class="kt-padding-l-10">Declaration Copy</label>
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
-                <label class="kt-padding-l-10">Processing Charges</label>
+                <label class="kt-padding-l-10 mandatory">Processing Charges</label>
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
-                <label class="kt-padding-l-10">Standard Deduction %</label>
+                <label class="kt-padding-l-10 mandatory">Standard Deduction(%)</label>
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
-                <label class="kt-padding-l-10">Customer confirmation Status</label>
+                <label class="kt-padding-l-10 mandatory">Customer confirmation Status</label>
             </div>
             <div class="col form-label" *ngIf="showScrapAcknowledgementFlag && showCustomerConfirmationFlag">
-                <label class="kt-padding-l-10 kt-padding-r-25">Customer Confirmation(Melting)</label>
-                <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
+                <label class="kt-padding-l-10 kt-padding-r-25 mandatory">Customer Confirmation(Melting)</label>
+                <kt-button *ngIf="isEdit" [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showScrapFlag">
-                <label class="kt-padding-l-10 kt-padding-r-25">Purchase Voucher</label>
-                <kt-button [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
+                <label class="kt-padding-l-10 kt-padding-r-25 mandatory">Purchase Voucher</label>
+                <kt-button *ngIf="isEdit" [value]="'print'" [type]="'button'" (click)="ExportAsPdf()"></kt-button>
             </div>
             <div class="col form-label" *ngIf="showScrapFlag">
                 <label class="kt-padding-l-10">Original Purchase Invoice</label>
@@ -67,25 +67,26 @@
                     Field Required</mat-error>
             </div>
             <div class="col">
-            <div class="col" *ngIf="showScrapAcknowledgementFlag">
-                <input type="text" class="form-control"  (keyup)= "calculateAfterDeduction()" placeholder="0" formControlName="standardDeduction"
-                numbersOnly
-                [class.isError]="controls.standardDeduction.touched && controls.standardDeduction.invalid">
-            <mat-error *ngIf="(controls.standardDeduction.errors?.max || controls.standardDeduction.errors?.min) && controls.standardDeduction.touched">
-                Invalid Number</mat-error>
-                <mat-error
-                *ngIf="controls.standardDeduction.touched && controls.standardDeduction.errors?.required">
-                Field Required
-            </mat-error>
-            </div>
-            <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
-                <label>Before Standard Deduction - <span class="currency">
-                    {{totalAmt | indianCurrencyFormat}}</span></label>
-            </div>
-            <div class="col form-label" *ngIf="showScrapAcknowledgementFlag">
-                <label>After Standard Deduction - <span class="currency">
-                    {{total | indianCurrencyFormat}}</span></label>
-            </div>
+                <div class="col" *ngIf="showScrapAcknowledgementFlag">
+                    <input type="text" class="form-control" (keyup)="calculateAfterDeduction()" placeholder="0"
+                        formControlName="standardDeduction" numbersOnly
+                        [class.isError]="controls.standardDeduction.touched && controls.standardDeduction.invalid">
+                    <mat-error
+                        *ngIf="(controls.standardDeduction.errors?.max || controls.standardDeduction.errors?.min) && controls.standardDeduction.touched">
+                        Invalid Number</mat-error>
+                    <mat-error
+                        *ngIf="controls.standardDeduction.touched && controls.standardDeduction.errors?.required">
+                        Field Required
+                    </mat-error>
+                </div>
+                <div class="col pt-3" *ngIf="showScrapAcknowledgementFlag">
+                    <label class="font-weight-500">Before Standard Deduction - <span class="currency">
+                            {{totalAmt | indianCurrencyFormat}}</span></label>
+                </div>
+                <div class="col" *ngIf="showScrapAcknowledgementFlag">
+                    <label class="font-weight-500">After Standard Deduction - <span class="currency">
+                            {{total | indianCurrencyFormat}}</span></label>
+                </div>
             </div>
             <div class="col" *ngIf="showScrapAcknowledgementFlag">
                 <select class="form-control" formControlName="customerConfirmationStatus"
@@ -309,7 +310,8 @@
             <div class="col" *ngIf="showLoanTransferFlag || showLoanFlag">
                 <div class="row">
                     <div class="col-10">
-                        <div class="img-container width" *ngIf="!controls?.pawnCopyImage?.value">
+                        <div class="img-container width"
+                            *ngIf="!controls?.pawnCopyImage?.value || !controls?.pawnCopyImage?.value.length">
                             <img src="../../../../../../../assets/media/icons/image-placeholder.png"
                                 class="placeholder-image">
                         </div>
@@ -320,8 +322,26 @@
                                 (click)="editImages('pawnCopy');">
                         </div> -->
 
+                        <div class="mb-3" *ngFor="let item of controls?.pawnCopyImage?.value; index as i">
+                            <div class="" *ngIf="item">
+                                <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
+                                    <img (click)="preview(item)" class="fetched-image" [src]="item"
+                                        *ngIf="!isPdf(item)">
 
-                        <div class="" *ngIf="controls?.pawnCopyImage?.value">
+                                    <!-- <img class="edit-icon kt-pointer" src="../../../../../assets/media/icons/edit.svg"
+                                        (click)="editImages('pawnCopy')" *ngIf="isEdit && item"> -->
+                                    <img class="edit-icon kt-pointer" src="../../../../../assets/media/icons/cancel.svg"
+                                        (click)="remove('pawnCopy', i)" *ngIf="isEdit && item">
+                                    <div class="iframeWrapper" (click)="preview(item)">
+                                        <iframe [src]="item | safe : 'resourceUrl'" height="250" width="290"
+                                            scrolling="no" *ngIf="isPdf(item)" class="position-relative"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- <div class="" *ngIf="controls?.pawnCopyImage?.value">
                             <div class="d-inline-block img-container width kt-margin-r-15 position-relative">
                                 <img (click)="preview(controls?.pawnCopyImage?.value)" class="fetched-image"
                                     [src]="controls?.pawnCopyImage?.value" *ngIf="!pdf.pawnCopy">
@@ -333,11 +353,8 @@
                                         width="290" scrolling="no" *ngIf="pdf.pawnCopy"
                                         class="position-relative"></iframe>
                                 </div>
-                                <!-- <kt-pdf-viewer [page]="1" [showAll]="false" *ngIf="pdf.pawnCopy"
-                                    [pdfSrc]="controls?.pawnCopyImage.value"
-                                    (click)="preview(controls?.pawnCopyImage.value)"></kt-pdf-viewer> -->
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 

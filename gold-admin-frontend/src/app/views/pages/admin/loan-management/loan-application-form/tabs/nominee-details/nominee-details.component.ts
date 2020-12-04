@@ -76,12 +76,12 @@ export class NomineeDetailsComponent implements OnInit, AfterViewInit {
       this.controls.guardianRelationship.clearValidators();
     }
     else if (this.controls.nomineeAge.value < 18) {
-      this.controls.guardianAge.setValidators(Validators.required);
-      this.controls.guardianRelationship.setValidators(Validators.required);
-      this.controls.guardianName.setValidators(Validators.required);
-      this.controls.guardianAge.setValidators(Validators.pattern('^0*(1[89]|[2-9][0-9]|100)$'));
-      this.controls.guardianRelationship.setValidators(Validators.pattern('^[a-zA-Z ]*$'));
-      this.controls.guardianName.setValidators(Validators.pattern('^[a-zA-Z ]*$'));
+      this.controls.guardianAge.setValidators([Validators.required,Validators.pattern('^0*(1[89]|[2-9][0-9]|100)$')]);
+      // this.controls.guardianAge.setValidators();
+      this.controls.guardianRelationship.setValidators([Validators.required,Validators.pattern('^[a-zA-Z ]*$')]);
+      this.controls.guardianName.setValidators([Validators.required,Validators.pattern('^[a-zA-Z ]*$')]);
+      // this.controls.guardianRelationship.setValidators();
+      // this.controls.guardianName.setValidators();
       this.controls.nomineeType.patchValue("minor")
     }
     this.controls.guardianAge.updateValueAndValidity()

@@ -350,6 +350,10 @@ input[type="number"] {
 .text-danger {
 	color: #ff7272;
 }
+.text-grey {
+	color: grey;
+}
+
 .kt-portlet .kt-portlet__body {
 	padding: 5px 15px !important;
 }
@@ -368,6 +372,11 @@ mat-header-row {
 .mat-table__wrapper {
 	min-height: 70vh !important; //set table height
 	max-height: 74vh;
+}
+
+.mat-table__wrapper.filter {
+	min-height: 60vh !important; //set table height
+	max-height: 64vh;
 }
 
 .mat-table__wrapper.custom{
@@ -452,6 +461,7 @@ mat-header-row {
 	justify-content: center;
 	overflow: hidden;
 	position: relative;
+	border: 1px solid #dee2e6;
 	// cursor: pointer;
 
 	.fetched-image {
@@ -774,4 +784,15 @@ mat-header-row {
 	pointer-events: none;
 	margin-top: -65px;
 	margin-left: -7px;
+}
+
+.mat-tooltip {
+	font-size: 12px !important;
+}
+// .table-amount {
+// 	text-align: right;
+// }
+
+.view-link {
+	font-weight: 500;
 }

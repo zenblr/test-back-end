@@ -1,0 +1,123 @@
+<kt-portlet>
+
+    <kt-portlet-body>
+        <div class="mat-table__wrapper">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
+                <!-- <ng-container matColumnDef="userName">
+                    <mat-header-cell *matHeaderCellDef>User Name</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        {{packet.loanPacketDetails[0].packets[0].appraiser.firstName + " " + 
+                        packet.loanPacketDetails[0].packets[0].appraiser.lastName | titlecase}}</mat-cell>
+                </ng-container> -->
+
+                <ng-container matColumnDef="internalBranch">
+                    <mat-header-cell *matHeaderCellDef>Branch</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngIf="packet.masterLoan?.internalBranch">
+                            {{packet.masterLoan?.internalBranch?.name | titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="partner">
+                    <mat-header-cell *matHeaderCellDef>Partner</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngIf="packet.partnerBranch?.partner">
+                            {{packet.partnerBranch?.partner?.name | titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="partnerBranch">
+                    <mat-header-cell *matHeaderCellDef>Partner Branch</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngIf="packet.partnerBranch">
+                            {{packet.partnerBranch?.name | titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="customerId">
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngIf="packet?.masterLoan?.customer">
+                            {{packet?.masterLoan?.customer.customerUniqueId}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="loanId">
+                    <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <div class="multiple">
+                            <div *ngFor="let item of packet?.masterLoan?.customerLoan">{{ item.loanUniqueId }}</div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="customerName">
+                    <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <span *ngIf="packet.masterLoan?.customer">
+                            {{packet?.masterLoan?.customer?.firstName + " " + packet?.masterLoan?.customer?.lastName |titlecase}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="loanAmount">
+                    <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <div class="multiple">
+                            <div *ngFor="let item of packet?.masterLoan?.customerLoan">{{ item.outstandingAmount }}
+                            </div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="currentLocation">
+                    <mat-header-cell *matHeaderCellDef>Current Location</mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+
+                        <span *ngFor="let item of packet.masterLoan?.locationData; last as l">
+                            <span *ngIf="l">
+                                {{item?.packetLocation?.location |titlecase}}
+                            </span>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="viewPackets">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <button (click)="viewPackets(packet)" class="btn-transparent kt-margin-r-15">View
+                            Packets
+                        </button>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let packet">
+                        <button (click)="deliver(packet)" class="btn-transparent kt-margin-r-15">
+                            Deliver
+                        </button>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <!-- Message for empty data  -->
+            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+        </div>
+
+        <!-- start: BOTTOM -->
+        <div class="mat-table__bottom">
+            <!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
+            <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+            <!-- MATERIAL PAGINATOR | Binded to dasources -->
+            <!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
+                [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

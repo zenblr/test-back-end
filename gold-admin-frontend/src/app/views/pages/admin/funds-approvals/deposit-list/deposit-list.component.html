@@ -1,3 +1,5 @@
+<kt-filtered-data [filteredList]="filteredDataList"></kt-filtered-data>
+
 <kt-portlet>
     <kt-portlet-body>
         <div class="mat-table__wrapper">
@@ -10,7 +12,7 @@
 
                 <ng-container matColumnDef="bankTransactionId">
                     <mat-header-cell *matHeaderCellDef>Bank Transaction ID</mat-header-cell>
-                    <mat-cell *matCellDef="let deposit">{{deposit.bankTransactionUniqueId | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.bankTransactionUniqueId | uppercase}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="customerId">
@@ -59,12 +61,12 @@
 
                 <ng-container matColumnDef="depositBankName">
                     <mat-header-cell *matHeaderCellDef>Deposit Bank Name</mat-header-cell>
-                    <mat-cell *matCellDef="let deposit">{{deposit.bankName | titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.bankName}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="depositBranchName">
                     <mat-header-cell *matHeaderCellDef>Deposit Branch Name</mat-header-cell>
-                    <mat-cell *matCellDef="let deposit">{{deposit.branchName| titlecase}}</mat-cell>
+                    <mat-cell *matCellDef="let deposit">{{deposit.branchName}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="depositAmount">
@@ -91,8 +93,9 @@
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let deposit">
                         <div *ngxPermissionsOnly="['approveDeposit']">
-                            <button *ngIf="deposit.depositStatus == 'Pending'" style="width: 120px;" class="apply-kyc"
-                                (click)="updateStatus(deposit)">Edit
+                            <button
+                                *ngIf="deposit.depositStatus == 'Pending' && (deposit.paymentFor != 'partRelease' && deposit.paymentFor != 'fullRelease')"
+                                style="width: 120px;" class="apply-kyc" (click)="updateStatus(deposit)">Edit
                             </button>
                         </div>
 
@@ -106,7 +109,7 @@
             <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
             <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
         </div>
-        <div class="mat-table__bottom d-none">
+        <div class="mat-table__bottom">
             <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
             <mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
                 [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>

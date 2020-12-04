@@ -95,16 +95,16 @@ exports.customerUpdateValidation = [
   //   .exists()
   //   .withMessage('referenceCode is required'),
 
-  body('mobileNumber')
-    .exists()
-    .withMessage('mobile number is require')
-    .custom(async value => {
+  // body('mobileNumber')
+  //   .exists()
+  //   .withMessage('mobile number is require')
+  //   .custom(async value => {
 
-      if (!/^[0-9]{10}$/i.test(value)) {
-        return Promise.reject("Invalid mobile number");
-      }
+  //     if (!/^[0-9]{10}$/i.test(value)) {
+  //       return Promise.reject("Invalid mobile number");
+  //     }
 
-    }),
+  //   }),
 
   // body('email')
   //   .exists()
@@ -134,6 +134,46 @@ exports.customerUpdateValidation = [
     .exists()
     .isInt()
     .withMessage("statusId is required"),
+  body('panCardNumber')
+    .exists()
+    .withMessage('Pan Card Number is required')
+    .custom(async (value, { req }) => {
+      return await models.customer.findOne({
+        where: {
+          panCardNumber: {
+            [op.iLike]: value
+          },
+          id: { [op.not]: req.params.customerId },
+          isActive: true
+        }
+      }).then(panCardNumber => {
+        if (panCardNumber) {
+          return Promise.reject("Pan Card Number already exist !");
+        }
+      })
+    }),
 
 
+]
+
+
+exports.registerCustomerValidation = [
+  body('firstName')
+    .exists()
+    .withMessage('first name is required'),
+
+  body('lastName')
+    .exists()
+    .withMessage('last name is required'),
+
+  body('mobileNumber')
+    .exists()
+    .withMessage('mobile number is required')
+    .custom(async value => {
+
+      if (!/^[0-9]{10}$/i.test(value)) {
+        return Promise.reject("Invalid mobile number");
+      }
+
+    })
 ]

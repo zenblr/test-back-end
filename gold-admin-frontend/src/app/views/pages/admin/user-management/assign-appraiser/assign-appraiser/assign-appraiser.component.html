@@ -58,7 +58,7 @@
                                 <select class="form-control" name="" id="" formControlName="userType"
                                     (change)="selectUsertype($event.target.value)"
                                     [class.isError]="controls.userType.touched && controls.userType.invalid">
-                                    <option [selected]="true" [disabled]="true" value=null>Select User Type</option>
+                                    <option [disabled]="true" value=null>Select User Type</option>
                                     <option value="appraiser"> Appraiser </option>
                                     <option value="releaser"> Releaser </option>
                                     <!-- <option *ngFor="let appraiser of appraisers" [value]="appraiser.id">
@@ -81,7 +81,7 @@
                             <div class="col-8">
                                 <select class="form-control" name="" id="" formControlName="appraiserId"
                                     [class.isError]="controls.appraiserId.touched && controls.appraiserId.invalid">
-                                    <option [selected]="true" [disabled]="true" value=null>Select Appraiser</option>
+                                    <option [disabled]="true" value=null>Select Appraiser</option>
                                     <option *ngFor="let appraiser of appraisers" [value]="appraiser.id">
                                         {{appraiser.firstName | titlecase}}&nbsp;{{appraiser.lastName | titlecase}}
                                     </option>
@@ -103,7 +103,7 @@
                             <div *ngIf="data.isReleaser" class="col-8">
                                 <select class="form-control" name="" id="" formControlName="releaserId"
                                     [class.isError]="controls.releaserId.touched && controls.releaserId.invalid">
-                                    <option [selected]="true" [disabled]="true" value=null>Select Releaser</option>
+                                    <option [disabled]="true" value=null>Select Releaser</option>
                                     <option *ngFor="let appraiser of releasers" [value]="appraiser.id">
                                         {{appraiser.firstName | titlecase}}&nbsp;{{appraiser.lastName | titlecase}}
                                     </option>
@@ -126,11 +126,12 @@
                                     readonly placeholder="DD/MM/YYYY" [min]="currentDate"
                                     (dateChange)="setMinimumStartTime($event)">
                                 <mat-datepicker #picker></mat-datepicker>
+                                <mat-error
+                                    *ngIf="controls.appoinmentDate.touched && controls.appoinmentDate.errors?.required">
+                                    Required field
+                                </mat-error>
                             </div>
-                            <mat-error
-                                *ngIf="controls.appoinmentDate.touched && controls.appoinmentDate.errors?.required">
-                                Required field
-                            </mat-error>
+
                         </div>
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
@@ -141,23 +142,24 @@
                                 <input [ngxTimepicker]="picker1" class="form-control" formControlName="startTime"
                                     placeholder="From" [min]="addStartTime" [max]="max"
                                     [class.isError]="controls.startTime.touched && controls.startTime.invalid">
-                                <ngx-material-timepicker #picker1 (timeChanged)="setStartTime($event)">
+                                <ngx-material-timepicker #picker1 (timeSet)="setStartTime($event)">
                                 </ngx-material-timepicker>
                                 <mat-error *ngIf="controls.startTime.touched && controls.startTime.errors?.required">
                                     Required field
                                 </mat-error>
                             </div>
-                            
+
                             <div class="col-4">
                                 <input [ngxTimepicker]="picker2" class="form-control" formControlName="endTime"
                                     placeholder="To" [min]="startTime" [max]="'06:00 pm'"
                                     [class.isError]="controls.endTime.touched && controls.endTime.invalid">
-                                <ngx-material-timepicker #picker2 (timeChanged)="setMaxStartTime($event)"></ngx-material-timepicker>
+                                <ngx-material-timepicker #picker2 (timeChanged)="setMaxStartTime($event)">
+                                </ngx-material-timepicker>
                                 <mat-error *ngIf="controls.endTime.touched && controls.endTime.errors?.required">
                                     Required field
                                 </mat-error>
                             </div>
-                            
+
 
                         </div>
                     </div>

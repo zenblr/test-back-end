@@ -7,13 +7,13 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 // components
 import { ToastrComponent } from '../../../../../views/partials/components/toastr/toastr.component';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, finalize } from 'rxjs/operators';
 import { LeadService } from '../../../../../core/lead-management/services/lead.service';
 import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { LeadSourceService } from '../../../../../core/masters/lead-source/services/lead-source.service';
 import { RolesService } from '../../../../../core/user-management/roles';
 import { PdfViewerComponent } from '../../../../partials/components/pdf-viewer/pdf-viewer.component';
-
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'kt-add-lead',
   templateUrl: './add-lead.component.html',
@@ -55,7 +55,8 @@ export class AddLeadComponent implements OnInit {
     private dialog: MatDialog,
     private leadSourceService: LeadSourceService,
     private ref: ChangeDetectorRef,
-    private roleService: RolesService
+    private roleService: RolesService,
+    private toaster: ToastrService,
   ) {
     this.details = this.sharedService.getDataFromStorage()
 
@@ -175,7 +176,12 @@ export class AddLeadComponent implements OnInit {
       this.getLeadById(this.data['id']);
       this.modalTitle = 'View Lead'
       this.leadForm.disable()
-    } else {
+    } else if (this.data.action == 'assignBranch') {
+      this.getLeadById(this.data['id']);
+      this.modalTitle = 'Assign Branch';
+      this.disableAssignBranch()
+    }
+    else {
       this.modalTitle = 'Add New Lead'
     }
   }
@@ -195,6 +201,7 @@ export class AddLeadComponent implements OnInit {
   getStates() {
     this.sharedService.getStates().subscribe(res => {
       this.states = res.data;
+      this.ref.detectChanges()
     });
   }
 
@@ -202,6 +209,12 @@ export class AddLeadComponent implements OnInit {
     const stateId = this.controls.stateId.value;
     this.sharedService.getCities(stateId).subscribe(res => {
       this.cities = res.data;
+      this.ref.detectChanges()
+      const cityExists = this.cities.find(e => e.id === this.controls.cityId.value)
+      if (!cityExists) {
+        this.controls.cityId.reset();
+        this.controls.cityId.patchValue('');
+      }
     });
   }
 
@@ -235,7 +248,16 @@ export class AddLeadComponent implements OnInit {
 
   sendOTP() {
     const mobileNumber = this.controls.mobileNumber.value;
-    this.leadService.sendOtp({ mobileNumber, type: 'lead' }).subscribe(res => {
+    const firstName = this.controls.firstName.value;
+    const lastName = this.controls.lastName.value;
+
+    if (this.controls.firstName.invalid || this.controls.lastName.invalid) {
+      this.controls.firstName.markAsTouched()
+      this.controls.lastName.markAsTouched()
+      return
+    }
+
+    this.leadService.sendOtp({ mobileNumber, firstName, lastName, type: 'lead' }).subscribe(res => {
       if (res.message == 'Mobile number is already exist.') {
         this.toastr.errorToastr('Mobile Number already exists');
         this.mobileAlreadyExists = true;
@@ -273,6 +295,7 @@ export class AddLeadComponent implements OnInit {
       this.controls.otp.setErrors(null)
     } else if (!this.isMobileVerified) {
       this.controls.otp.setErrors({ verifyOTP: true })
+      return this.toaster.error('Mobile number not verified!')
     }
   }
 
@@ -289,9 +312,11 @@ export class AddLeadComponent implements OnInit {
   }
 
   resendOTP() {
+    const firstName = this.controls.firstName.value;
+    const lastName = this.controls.lastName.value;
     const mobileNumber = this.controls.mobileNumber.value;
     // use send function OTP for resend OTP
-    this.leadService.sendOtp({ mobileNumber, type: 'lead' }).subscribe(res => {
+    this.leadService.sendOtp({ mobileNumber, firstName, lastName, type: 'lead' }).subscribe(res => {
       if (res) {
         this.otpSent = true;
         this.refCode = res.referenceCode;
@@ -322,6 +347,7 @@ export class AddLeadComponent implements OnInit {
             this.controls.panImage.patchValue(res.uploadFile.path)
           }
         }), catchError(err => {
+          if (err.error.message) this.toastr.errorToastr(err.error.message)
           throw err
         })).subscribe()
     }
@@ -367,7 +393,6 @@ export class AddLeadComponent implements OnInit {
     ///this.leadForm.controls.cityId.enable();
   }
   onSubmit() {
-
     if (this.data.action == 'add') {
       if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists) {
         this.checkforVerfication()
@@ -425,8 +450,8 @@ export class AddLeadComponent implements OnInit {
           }
         }
       );
-    } else if (this.data.action == 'edit') {
-
+    } else if (this.data.action == 'edit' || this.data.action == 'assignBranch') {
+      if (this.data.action == 'assignBranch') this.leadForm.enable()
       if (this.leadForm.invalid) {
         // this.checkforVerfication()
         this.leadForm.markAllAsTouched();
@@ -459,18 +484,20 @@ export class AddLeadComponent implements OnInit {
       this.enable();
       const leadData = this.leadForm.value;
 
-      this.leadService.editLead(this.data.id, leadData).subscribe(res => {
-
-        if (res) {
-          const msg = 'Lead Edited Successfully';
-          this.toastr.successToastr(msg);
-          this.dialogRef.close(true);
-        }
-      }, () => {
-        if (this.details.userDetails.userTypeId != 4) {
-          this.disable();
-        }
-      });
+      this.leadService.editLead(this.data.id, leadData).pipe(
+        map(res => {
+          if (res) {
+            const msg = 'Lead Edited Successfully';
+            this.toastr.successToastr(msg);
+            this.dialogRef.close(true);
+          }
+        }),
+        finalize(() => {
+          if (this.details.userDetails.userTypeId != 4) {
+            this.disable();
+          }
+          if (this.data.action == 'assignBranch') this.disableAssignBranch()
+        })).subscribe();
     }
 
   }
@@ -520,6 +547,18 @@ export class AddLeadComponent implements OnInit {
         this.getCities()
       })
     ).subscribe()
+  }
+
+  disableAssignBranch() {
+    this.leadForm.disable()
+    this.leadForm.controls.internalBranchId.enable()
+    this.leadForm.controls.statusId.enable()
+    this.leadForm.controls.comment.enable()
+    this.leadForm.controls.panCardNumber.enable()
+    this.leadForm.controls.panType.enable()
+    this.leadForm.controls.form60.enable()
+    this.leadForm.controls.panImage.enable()
+    this.leadForm.controls.panImg.enable()
   }
 
 }

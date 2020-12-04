@@ -34,6 +34,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() loanTransfer: EventEmitter<any> = new EventEmitter();
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Output() totalAmt: EventEmitter<any> = new EventEmitter();
+  @Output() ornamentValue: EventEmitter<any> = new EventEmitter();
   @Output() finaltotalAmt: EventEmitter<any> = new EventEmitter();
   @Output() fullAmt: EventEmitter<any> = new EventEmitter();
   @Output() finalScrapAmount: EventEmitter<any> = new EventEmitter();
@@ -47,7 +48,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() karatArr
   @Input() customerConfirmationArr
   @Input() karatFlag
-  @Output() partPayment:EventEmitter<any> = new EventEmitter();
+  @Input() isPartRelease
+  @Output() partPayment: EventEmitter<any> = new EventEmitter();
+  @Output() ornamentDetails: EventEmitter<any> = new EventEmitter();
   @ViewChild('weightMachineZeroWeight', { static: false }) weightMachineZeroWeight: ElementRef
   @ViewChild('withOrnamentWeight', { static: false }) withOrnamentWeight: ElementRef
   @ViewChild('stoneTouch', { static: false }) stoneTouch: ElementRef
@@ -72,8 +75,17 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   buttonValue = 'Next';
   showAddMoreBtn: Boolean = true;
   modalView: any = { details: { currentValue: { loanOrnamentsDetail: [] } }, action: { currentValue: 'edit' } };
+  scrapModalView: any = {
+    meltingDetails: { currentValue: { meltingOrnament: {} } }, action: { currentValue: 'edit' },
+    scrapIds: { currentValue: { scrapId: 0 } },
+    meltingOrnament: { currentValue: true },
+    customerConfirmationArr: { currentValue: [] },
+  };
   firstView: boolean;
-
+  totalGrossWeight: number;
+  totalDeductionWeight: number;
+  totalNetWeight: number;
+  totalPurtiy: number;
 
   constructor(
     public fb: FormBuilder,
@@ -106,7 +118,12 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.getOrnamentType()
       this.setModalData()
     }
-    
+    if (this.data && this.data.scrapModal) {
+      this.showAddMoreBtn = false;
+      this.disable = true;
+      this.getOrnamentType();
+      this.setScrapModalData();
+    }
   }
 
   setModalData() {
@@ -116,6 +133,18 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.modalView.details.currentValue.loanOrnamentsDetail = this.data.modalData
     }
     this.ngOnChanges(this.modalView)
+  }
+
+  setScrapModalData() {
+    if (this.data.packetView) {
+      this.scrapModalView.scrapIds.currentValue.scrapId = this.data.scrapId;
+      this.scrapModalView.meltingDetails.currentValue.meltingOrnament = this.data.customerScrapOrnamentsDetails;
+      this.scrapModalView.meltingDetails.currentValue.finalScrapAmountAfterMelting = this.data.finalScrapAmountAfterMelting;
+      Array.prototype.push.apply(this.scrapModalView.customerConfirmationArr.currentValue, this.data.customerConfirmationArr);
+    } else {
+      this.scrapModalView.meltingDetails.currentValue.meltingOrnament = this.data.modalData;
+    }
+    this.ngOnChanges(this.scrapModalView);
   }
 
   showPacketOrnament(event) {
@@ -158,6 +187,10 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (changes.isPartRelease) {
+      // console.log(changes.isPartRelease.currentValue)
+
+    }
     if (changes.ornamentType) {
       this.ornamentType = changes.ornamentType.currentValue
     }
@@ -183,9 +216,23 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
             this.addmore()
           }
         }
+        let ornamentDetail = []
         for (let index = 0; index < array.length; index++) {
+
           const group = this.OrnamentsData.at(index) as FormGroup
           group.patchValue(array[index])
+          if (this.isPartRelease) {
+            group.patchValue({ currentLtvAmount: this.ltvGoldRate, currentGoldRate: this.goldRate })
+            this.calculateLtvAmount(index)
+           
+          
+          }
+          let data = { id: 0, loanAmount: 0,ornamentsCal:0 }
+          const controls = this.OrnamentsData.at(index) as FormGroup;
+          controls.controls.id.patchValue(array[index].id)
+          data.id = array[index].id
+          data.ornamentsCal = controls.controls.evaluation.value
+          ornamentDetail.push(data)
           // this.calcGoldDeductionWeight(index)
           Object.keys(group.value).forEach(key => {
 
@@ -201,7 +248,10 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           })
           this.ref.detectChanges()
         }
+        this.ornamentDetails.emit(ornamentDetail)
+        this.calculateTotal()
       }
+
     }
     if (changes.meltingDetails) {
       if (changes.action.currentValue == 'edit') {
@@ -220,12 +270,17 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           })
           this.ref.detectChanges()
         }
+        if (changes.meltingDetails.currentValue.scrapStatusForAppraiser == 'pending') {
+          this.disableCustomerConfirmation();
+        }
       }
     }
     if (changes.scrapIds) {
+      this.scrapIds = changes.scrapIds.currentValue;
       this.validation(0);
     }
     if (changes.meltingOrnament) {
+      this.meltingOrnament = changes.meltingOrnament.currentValue;
       const matTabHeader = (this.ele.nativeElement.querySelector('.mat-tab-header') as HTMLElement);
       matTabHeader.style.display = 'none';
     }
@@ -257,6 +312,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     })
 
     this.ornamentsForm.valueChanges.subscribe(() => {
+      // console.log(this.ornamentsForm.value)
       if (this.ornamentsForm.valid) {
         this.totalAmount = 0;
         this.fullAmount = 0;
@@ -280,17 +336,21 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
             this.totalAmount = Math.round(this.totalAmount)
             this.totalAmt.emit(this.totalAmount)
           }
-        } else {
-          this.OrnamentsData.value.forEach(element => {
-            this.totalAmount += Number(element.loanAmount)
-            this.fullAmount += Number(element.ornamentFullAmount)
-          });
-          this.totalAmount = Math.round(this.totalAmount)
-          this.fullAmount = Math.round(this.fullAmount)
-          this.totalAmt.emit(this.totalAmount)
-          this.fullAmt.emit(this.fullAmount)
         }
+        //  else {
+        //   this.OrnamentsData.value.forEach(element => {
+        //     // this.totalAmount += Number(element.evaluation)
+        //     // this.fullAmount += Number(element.ornamentFullAmount)
+        //   });
+        //   // this.totalAmount = Math.round(this.totalAmount)
+        //   // this.fullAmount = Math.round(this.fullAmount)
+        //   // this.totalAmt.emit(0)
+        //   // this.ornamentValue.emit(this.totalAmount)
+        //   // this.fullAmt.emit(this.fullAmount)
+        // }
       }
+      this.calculateTotal()
+
     })
 
     const controls = this.OrnamentsData.at(0) as FormGroup;
@@ -312,7 +372,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       return this.ornamentsForm.controls.ornamentData as FormArray;
   }
 
-  
+
   createPurityImageArray(purity) {
     let data = { URL: [], path: [] }
     // console.log(purity)
@@ -332,14 +392,18 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         group.controls.deductionWeight.setErrors({ weight: true })
       } else {
         group.controls.deductionWeight.setErrors(null)
+        group.controls.deductionWeight.setValidators([Validators.required, Validators.pattern('^\\s*(?=.*[0-9])\\d*(?:\\.\\d{1,2})?\\s*$')])
+        group.controls.deductionWeight.updateValueAndValidity()
       }
     }
+    this.calculateTotal()
+
   }
 
   calcGoldDeductionWeight(index) {
     const group = this.OrnamentsData.at(index) as FormGroup;
     if (group.controls.grossWeight.valid && group.controls.deductionWeight.valid
-      && group.controls.grossWeight.value && group.controls.deductionWeight.value) {
+      && group.controls.grossWeight.value) {
       const deductionWeight = Number(group.controls.grossWeight.value) - Number(group.controls.deductionWeight.value);
       group.controls.netWeight.patchValue(deductionWeight.toFixed(2));
       // this.finalNetWeight(index)
@@ -347,6 +411,8 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.calculateScrapAmount(index)
       this.calculateMeltingScrapAmount(index)
     }
+    this.calculateTotal()
+
   }
 
   finalNetWeight(index) {
@@ -356,6 +422,29 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       group.controls.finalNetWeight.patchValue(netWeight)
       this.calculateLtvAmount(index)
     }
+    this.calculateTotal()
+
+  }
+
+  calculateTotal() {
+    this.totalGrossWeight = 0
+    this.totalDeductionWeight = 0
+    this.totalNetWeight = 0
+    this.totalPurtiy = 0;
+    this.OrnamentsData.value.forEach(gross => {
+      if (gross.grossWeight) {
+        this.totalGrossWeight += Number(gross.grossWeight)
+      }
+      if (gross.netWeight) {
+        this.totalNetWeight += Number(gross.netWeight)
+      }
+      if (gross.deductionWeight) {
+        this.totalDeductionWeight += Number(gross.deductionWeight)
+      }
+      if (gross.ltvPercent && gross.netWeight) {
+        this.totalPurtiy += (gross.ltvPercent/100 * gross.netWeight)
+      }
+    })
   }
 
   addmore() {
@@ -401,7 +490,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       purityTest: [[]],
       ltvPercent: [, [Validators.required]],
       ltvAmount: [],
-      loanAmount: [''],
+      loanAmount: [],
       id: [],
       currentLtvAmount: [this.ltvGoldRate],
       ornamentImageData: [, Validators.required],
@@ -422,11 +511,14 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       customerConfirmation: [],
       finalScrapAmountAfterMelting: [],
       processingCharges: [],
-      packetId: []
+      packetId: [],
+      evaluation: [],
+      remark:[]
     }))
     this.createImageArray()
     this.selected = this.OrnamentsData.length;
     this.validation(this.OrnamentsData.length - 1);
+
   }
 
   validation(index) {
@@ -444,17 +536,19 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         controls.controls.ornamentImageData.updateValueAndValidity()
       controls.controls.karat.setValidators([]),
         controls.controls.karat.updateValueAndValidity()
+      controls.controls.loanAmount.setValidators([]),
+        controls.controls.loanAmount.updateValueAndValidity()
       if (this.meltingOrnament) {
-        controls.controls.purityReading.setValidators([Validators.required, Validators.pattern('^[0-9][0-9]?$|^100$')]),
+        controls.controls.purityReading.setValidators([Validators.required, Validators.pattern('^[1-9][0-9]?$|^100$')]),
           controls.controls.purityReading.updateValueAndValidity()
-        controls.controls.customerConfirmation.setValidators(Validators.required),
-          controls.controls.customerConfirmation.updateValueAndValidity()
+        // controls.controls.customerConfirmation.setValidators(Validators.required),
+        //   controls.controls.customerConfirmation.updateValueAndValidity()
         controls.controls.ornamentTypeId.setValidators([]),
           controls.controls.ornamentTypeId.updateValueAndValidity()
         controls.controls.quantity.setValidators([]),
           controls.controls.quantity.updateValueAndValidity()
       } else {
-        controls.controls.approxPurityReading.setValidators([Validators.required, Validators.pattern('^[0-9][0-9]?$|^100$')]),
+        controls.controls.approxPurityReading.setValidators([Validators.required, Validators.pattern('^[1-9][0-9]?$|^100$')]),
           controls.controls.approxPurityReading.updateValueAndValidity()
       }
     }
@@ -523,7 +617,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.ref.detectChanges()
   }
 
-  uploadFile(index, event, string, ) {
+  uploadFile(index, event, string) {
     var name = event.target.files[0].name
     var ext = name.split('.')
     if (ext[ext.length - 1] == 'jpg' || ext[ext.length - 1] == 'png' || ext[ext.length - 1] == 'jpeg') {
@@ -708,7 +802,6 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
 
   calculateScrapAmount(index: number) {
     const controls = this.OrnamentsData.at(index) as FormGroup;
-    console.log(controls.controls.approxPurityReading.value, "qwertyuiop")
     if (controls.controls.netWeight.valid && controls.controls.approxPurityReading.valid
       && controls.controls.netWeight.value && controls.controls.approxPurityReading.value) {
       let approxPurityReading = controls.controls.approxPurityReading.value
@@ -716,7 +809,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       controls.controls.ltvAmount.patchValue(ltv)
       controls.controls.scrapAmount.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
     }
-    console.log(this.OrnamentsData.value);
+    // console.log(this.OrnamentsData.value);
   }
 
   calculateMeltingScrapAmount(index: number) {
@@ -728,21 +821,23 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       controls.controls.ltvAmount.patchValue(ltv)
       controls.controls.finalScrapAmountAfterMelting.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
     }
-    console.log(this.OrnamentsData.value);
+    // console.log(this.OrnamentsData.value);
   }
 
   calculateLtvAmount(index: number) {
     const controls = this.OrnamentsData.at(index) as FormGroup;
     if (controls.controls.ltvPercent.valid) {
       let ltvPercent = controls.controls.ltvPercent.value
-      let ltv = controls.controls.currentLtvAmount.value * (ltvPercent / 100)
-      controls.controls.ltvAmount.patchValue(ltv)
-      controls.controls.loanAmount.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
-      let fullAmount = controls.controls.currentGoldRate.value * (ltvPercent / 100)
-      controls.controls.ornamentFullAmount.patchValue((fullAmount * controls.controls.netWeight.value).toFixed(2))
-      console.log(controls.controls.ornamentFullAmount.value)
+      let ltv = (ltvPercent / 100)
+      // controls.controls.ltvAmount.patchValue(ltv)
+      // controls.controls.loanAmount.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
+      controls.controls.evaluation.patchValue((ltv * controls.controls.netWeight.value).toFixed(2))
+      
+      // let fullAmount = controls.controls.currentGoldRate.value * (ltvPercent / 100)
+      // controls.controls.ornamentFullAmount.patchValue((fullAmount * controls.controls.netWeight.value).toFixed(2))
+      // console.log(controls.controls.ornamentFullAmount.value)
     }
-    console.log(this.OrnamentsData.value)
+    // console.log(this.OrnamentsData.value)
   }
 
   nextAction() {
@@ -760,6 +855,11 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         return
       }
     }
+    if (this.meltingOrnament) {
+      const controls = this.OrnamentsData.at(0) as FormGroup;
+      controls.controls.customerConfirmation.setValidators(Validators.required),
+        controls.controls.customerConfirmation.updateValueAndValidity()
+    }
     if (this.ornamentsForm.invalid) {
       let array = this.OrnamentsData.controls
       for (let index = 0; index < array.length; index++) {
@@ -776,6 +876,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     if (this.scrapIds) {
       if (this.meltingOrnament) {
         if (this.buttonValue == 'Next') {
+          this.enableCustomerConfirmation()
           this.scrapApplicationFormService.submitMeltingOrnaments(this.OrnamentsData.value[0], this.totalAmount, this.scrapIds).pipe(
             map(res => {
               res.ornamentsArr = [];
@@ -790,6 +891,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
               let stage = res.scrapCurrentStage
               stage = Number(stage) - 1;
               this.next.emit(stage)
+              if (this.meltingDetails.scrapStatusForAppraiser == 'pending') {
+                this.disableCustomerConfirmation();
+              }
             })
           ).subscribe();
         } else {
@@ -799,7 +903,7 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
           });
           dialogRef.afterClosed().subscribe(res => {
             if (res) {
-              console.log(res)
+              // console.log(res)
               this.router.navigate(['/admin/scrap-management/applied-scrap'])
             }
           });
@@ -822,12 +926,18 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
       this.loanApplicationFormService.submitOrnaments(this.OrnamentsData.value, this.totalAmount, this.masterAndLoanIds, this.fullAmount).pipe(
         map(res => {
           let array = this.OrnamentsData.controls
+          let ornamentDetail = []
           for (let index = 0; index < array.length; index++) {
+            let data = { id: 0, loanAmount: 0,ornamentsCal:0 }
             const controls = this.OrnamentsData.at(index) as FormGroup;
             controls.controls.id.patchValue(res.ornaments[index].id)
+            data.id = res.ornaments[index].id
+            data.ornamentsCal = controls.controls.evaluation.value
+            ornamentDetail.push(data)
           }
-          if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.disbursedLoanAmount) {
-            this.loanTransfer.emit(res.loanTransferData.loanTransfer.disbursedLoanAmount)
+          this.ornamentDetails.emit(ornamentDetail)
+          if (res.loanTransferData && res.loanTransferData.loanTransfer && res.loanTransferData.loanTransfer.outstandingLoanAmount) {
+            this.loanTransfer.emit(res.loanTransferData.loanTransfer)
           }
           if (res.newLoanAmount) {
             this.partPayment.emit(res.newLoanAmount)
@@ -877,9 +987,19 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     return Array.isArray(obj)
   }
 
-close(event: Event){
-if(!event){
-  this.dialogRef.close()
-}
-}
+  close(event: Event) {
+    if (!event) {
+      this.dialogRef.close()
+    }
+  }
+
+  disableCustomerConfirmation() {
+    const controls = this.OrnamentsData.at(0) as FormGroup;
+    controls.controls.customerConfirmation.disable();
+  }
+
+  enableCustomerConfirmation() {
+    const controls = this.OrnamentsData.at(0) as FormGroup;
+    controls.controls.customerConfirmation.enable();
+  }
 }

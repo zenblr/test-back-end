@@ -70,7 +70,8 @@ exports.getScrapDetailCustomerManagement = async (req, res, next) => {
             },
         }],
         isActive: true,
-        scrapStageId: stageId.id
+        isScrapCompleted: true,
+
     };
     let internalBranchId = req.userData.internalBranchId
     let internalBranchWhere;
@@ -191,7 +192,8 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
         {
             model: models.customerScrap,
             as: 'customerScrap',
-            where: { scrapStageId: stageId.id },
+            // where: { scrapStageId: stageId.id },
+            where: {isScrapCompleted: true},
             required: true,
             attributes: ['id', 'customerId', 'scrapUniqueId', 'scrapStageId', 'finalScrapAmountAfterMelting']
         },
@@ -264,7 +266,7 @@ exports.getsingleCustomerManagement = async (req, res) => {
             {
                 model: models.customerScrap,
                 as: 'customerScrap',
-                where: { scrapStageId: stageId.id },
+                where: { isScrapCompleted: true },
                 required: true,
                 attributes: ['id', 'customerId', 'scrapUniqueId', 'finalScrapAmountAfterMelting', 'scrapStageId'],
                 include:[
@@ -352,16 +354,11 @@ exports.getSingleScrapInCustomerManagment = async (req, res, next) => {
                     attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy'] },
                     include: [{
                         model: models.scrapPacket,
-                        as: 'CustomerScrapPackageDetail',
                         attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
                         include: [
                             {
                                 model: models.scrapPacketOrnament,
                                 as: 'scrapPacketOrnament',
-                                // include: [{
-                                //     model: models.ornamentType,
-                                //     as: 'ornamentType'
-                                // }]
                             }
                         ]
                     }]
@@ -376,11 +373,16 @@ exports.getSingleScrapInCustomerManagment = async (req, res, next) => {
                     as: 'customer',
                     where: { isActive: true },
                     attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+                },
+                {
+                    model: models.customerScrapDisbursement,
+                    as: 'scrapDisbursement',
+                    attributes: ['scrapId', 'scrapAmount', 'transactionId', 'date', 'paymentMode', 'ifscCode', 'bankName', 'bankBranch', 'acHolderName', 'acNumber']
                 }
             ]
     
         });
-        return res.status(200).json({ message: 'success', data: customerScrap })
+        return res.status(200).json({ message: 'Success', data: customerScrap })
 
      
 }

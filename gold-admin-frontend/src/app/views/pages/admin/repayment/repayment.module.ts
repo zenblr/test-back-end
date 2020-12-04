@@ -17,6 +17,7 @@ import { EmiLogsDialogComponent } from '../../../partials/components/emi-logs-di
 import { PaymentDialogComponent } from '../../../../views/partials/components/payment-dialog/payment-dialog.component';
 import { PartPaymentComponent } from './part-payment/part-payment.component';
 import { PartPaymentLogDialogComponent } from '../../../partials/components/part-payment-log-dialog/part-payment-log-dialog.component';
+import { QuickPayHistoryComponent } from './quick-pay-history/quick-pay-history.component';
 
 const routes: Routes = [
   {
@@ -48,6 +49,7 @@ const routes: Routes = [
     QuickPayComponent,
     PartReleaseComponent,
     PartPaymentComponent,
+    QuickPayHistoryComponent
   ],
   imports: [
     CommonModule,
@@ -84,7 +86,8 @@ const routes: Routes = [
     MonthlyPaymentAddComponent,
     EmiLogsDialogComponent,
     PaymentDialogComponent,
-    PartPaymentLogDialogComponent
+    PartPaymentLogDialogComponent,
+    QuickPayHistoryComponent
   ]
 })
 export class RepaymentModule { }

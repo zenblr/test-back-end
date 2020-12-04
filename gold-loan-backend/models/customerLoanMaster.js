@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'customer_id',
             allowNull: false
         },
+        partnerBranchId: {
+            type: DataTypes.INTEGER,
+            field: 'partner_branch_id',
+        },
         loanTransferId: {
             type: DataTypes.INTEGER,
             field: 'loan_transfer_id'
@@ -156,6 +160,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_loan_submitted',
             defaultValue: false
         },
+        isLoanCompleted: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_loan_completed',
+            defaultValue: false
+        },
         internalBranchId: {
             type: DataTypes.INTEGER,
             field: 'internal_branch_id'
@@ -164,6 +173,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'is_loan_transfer',
             defaultValue: false
+        },
+        isLoanTransferExtraAmountAdded: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_loan_transfer_extra_amount_added',
+            defaultValue: false
+        },
+        loanTransferExtraAmount: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'loan_transfer_extra_amount'
         },
         isUnsecuredSchemeApplied: {
             type: DataTypes.BOOLEAN,
@@ -183,15 +201,28 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_ornaments_released',
             defaultValue: false
         },
-        isFullOrnamentsReleased:{
+        isFullOrnamentsReleased: {
             type: DataTypes.BOOLEAN,
             field: 'is_full_ornaments_released',
             defaultValue: false
         },
-        isNewLoanFromPartRelease:{
+        isNewLoanFromPartRelease: {
             type: DataTypes.BOOLEAN,
             field: 'is_new_loan_from_part_release',
             defaultValue: false
+        },
+        packetLocationStatus: {
+            type: DataTypes.STRING,
+            field: 'packet_location_status',
+        },
+        packetSubmittedDate: {
+            type: DataTypes.DATE,
+            field: 'packet_submitted_date'
+        },
+        termsAndCondition: {
+            type: DataTypes.ARRAY(DataTypes.TEXT),
+            field: 'terms_and_condition',
+            defaultValue: []
         },
         isActive: {
             type: DataTypes.BOOLEAN,
@@ -239,11 +270,15 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanMaster.hasOne(models.partRelease, { foreignKey: 'masterLoanId', as: 'partRelease' });
         CustomerLoanMaster.hasOne(models.fullRelease, { foreignKey: 'masterLoanId', as: 'fullRelease' });
         CustomerLoanMaster.hasMany(models.customerPacketTracking, { foreignKey: 'masterLoanId', as: 'customerPacketTracking' });
+        CustomerLoanMaster.hasMany(models.customerLoanPacketData, { foreignKey: 'masterLoanId', as: 'locationData' });
 
         CustomerLoanMaster.hasMany(models.packetTracking, { foreignKey: 'masterLoanId', as: 'packetTracking' });
         CustomerLoanMaster.hasMany(models.customerTransactionSplitUp, { foreignKey: 'masterLoanId', as: 'transactionSplitUp' });
+        CustomerLoanMaster.hasMany(models.packetTrackingMasterloan, { foreignKey: 'masterLoanId', as: 'packetTrackingMasterloan' })
 
         CustomerLoanMaster.belongsTo(models.appraiserRequest, { foreignKey: 'appraiserRequestId', as: 'appraiserRequest' });
+
+        CustomerLoanMaster.belongsTo(models.partnerBranch, { foreignKey: 'partnerBranchId', as: 'partnerBranch' });
 
     }
 
@@ -547,6 +582,21 @@ module.exports = (sequelize, DataTypes) => {
                 }
                 values.loanTransfer.declarationImage = declarationImage;
             }
+        }
+
+        if (values.termsAndCondition) {
+            let termsAndConditionUrl = []
+            for (imgUrl of values.termsAndCondition) {
+
+                let URL;
+                if (imgUrl == 'NULL' || imgUrl == null) {
+                    URL = imgUrl;
+                } else {
+                    URL = process.env.BASE_URL + imgUrl;
+                }
+                termsAndConditionUrl.push(URL)
+            }
+            values.termsAndConditionUrl = termsAndConditionUrl
         }
         return values
     }

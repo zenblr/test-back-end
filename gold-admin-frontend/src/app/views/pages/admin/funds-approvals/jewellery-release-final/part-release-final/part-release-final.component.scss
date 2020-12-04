@@ -1,31 +1,114 @@
 :host{
     ::ng-deep.mat-row,
     ::ng-deep.mat-header-row{
-        width: 250% !important;
+        width: 315% !important;
     }
 
     .mat-column-netWeightReleaseOrnament{
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        flex: 0 0 5%;
     }
 
     .mat-column-netWeightRemainingOrnament{
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        flex: 0 0 5%;
     }
     .mat-column-loanId {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        flex: 0 0 4%;
+        flex: 0 0 3%;
     }
     .mat-column-updateStatus{
-        flex: 0 0 5%;
+        flex: 0 0 4%;
+    }
+    .mat-column-status{
+        flex: 0 0 3%;
     }
 
-    .mat-column-status{
+    .mat-column-tenure {
+        flex: 0 0 3%;
+    }
+    .mat-column-loanAmount{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        // padding-right: 25px;
+        justify-content: flex-end;
+        flex: 0 0 3%;
+    }
+    .mat-column-principalAmount{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        // padding-right: 25px;
+        justify-content: flex-end;
+        flex: 0 0 4%;
+    }
+    .mat-column-totalPaidAmount{
+        // padding-right: 25px;
+        justify-content: flex-start;
+        flex: 0 0 5%;
+    }
+    .mat-column-penalInterest{
+        // padding-right: 25px;
+        justify-content: flex-start;
+        flex: 0 0 4%;
+    }
+    .mat-column-interestAmount{
+        flex: 0 0 4%;
+        // padding-right: 25px;
+        justify-content: flex-start;
+    }
+    .mat-column-ornamentReleaseAmount{
+        // padding-right: 25px;
+        justify-content: flex-start;
+        flex: 0 0 4.5%;
+    }
+    .mat-column-currentLocation{
+        flex: 0 0 4%;
+    }
+    .mat-column-view {
+        display: flex;
+        justify-content: center;
+        flex: 0 0 4%;
+    }
+    .mat-column-totalDeductionWeight {
+        flex: 0 0 5%;
+    }
+    .mat-column-totalGrossWeight {
+        flex: 0 0 5%;
+    }
+    .mat-column-appointmentDate {
+        flex: 0 0 4%;
+    }
+    .mat-column-appointmentTime {
+        flex: 0 0 4%;
+    }
+    .mat-column-customerName {
+        flex: 0 0 4%;
+        padding-left: 0;
+    }
+    .mat-column-loanStartDate {
+        flex: 0 0 4%;
+    }
+    .mat-column-loanEndDate {
+        flex: 0 0 4%;
+    }
+    .mat-column-parnterName {
+        flex: 0 0 4%;
+    }
+    .mat-column-partnerBranch {
+        flex: 0 0 4%;
+    }
+    .mat-column-ornaments {
+        flex: 0 0 4%;
+    }
+    .mat-column-customerId {
         flex: 0 0 3%;
     }
 }
