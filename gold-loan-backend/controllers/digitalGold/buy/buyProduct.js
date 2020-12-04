@@ -15,12 +15,20 @@ var fs = require('fs');
 const numToWords = require('../../../utils/numToWords');
 const html = fs.readFileSync(path.join(__dirname, '..', '..', '..', 'templates', 'invoiceTemplate.html'), 'utf8')
 const errorLogger = require('../../../utils/errorLogger');
+const sequelize = models.sequelize;
+const Sequelize = models.Sequelize;
+const Op = Sequelize.Op;
 
 
 exports.buyProduct = async (req, res) => {
   try {
-    const { metalType, quantity, lockPrice, blockId, transactionDetails, amount, quantityBased, modeOfPayment } = req.body;
-    const id = req.userData.id;
+    // const { metalType, quantity, lockPrice, blockId, transactionDetails, amount, quantityBased, modeOfPayment } = req.body;
+
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, requestFrom } = req.body;
+
+    let tempOrderData = await models.digiGoldTempOrderDetail.getTempOrderDetail(razorpay_order_id);
+
+    const id = tempOrderData.customerId;
     const razorPay = await getRazorpayCredentails();
     let customerDetails = await models.customer.findOne({
       where: { id, isActive: true },
@@ -28,15 +36,17 @@ exports.buyProduct = async (req, res) => {
     if (check.isEmpty(customerDetails)) {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     }
+
+
     //const transactionId = transactionDetails.razorpay_payment_id;
     const generated_signature = crypto
       .createHmac(
         "SHA256",
         razorPay.razorPayConfig.key_secret
       )
-      .update(transactionDetails.razorpay_order_id + "|" + transactionDetails.razorpay_payment_id)
+      .update(razorpay_order_id + "|" + razorpay_payment_id)
       .digest("hex");
-    if (generated_signature == transactionDetails.razorpay_signature) {
+    if (generated_signature == razorpay_signature) {
       signatureVerification = true
     }
     if (signatureVerification == false) {
@@ -56,23 +66,23 @@ exports.buyProduct = async (req, res) => {
     //razorPayOrder.items[0].wallet
     const getUserDetails = getUser.data.result.data;
     const data = {
-      'lockPrice': lockPrice,
+      'lockPrice': tempOrderData.lockPrice,
       'emailId': getUserDetails.userEmail,
-      'metalType': metalType,
-      'merchantTransactionId': transactionDetails.razorpay_payment_id,
+      'metalType': tempOrderData.metalType,
+      'merchantTransactionId': razorpay_payment_id,
       'userName': getUserDetails.userName,
       'userCity': getUserDetails.userCityId,
       'userState': getUserDetails.userStateId,
       'userPincode': getUserDetails.userPincode,
       'uniqueId': customerUniqueId,
-      'blockId': blockId,
-      'modeOfPayment': modeOfPayment,
+      'blockId': tempOrderData.blockId,
+      'modeOfPayment': tempOrderData.modeOfPayment,
       'mobileNumber': customerDetails.mobileNumber
     };
-    if (quantityBased == true) {
-      data.quantity = quantity;
+    if (tempOrderData.quantityBased == true) {
+      data.quantity = tempOrderData.quantity;
     } else {
-      data.amount = amount;
+      data.amount = tempOrderData.amount;
     }
     const result = await models.axios({
       method: 'POST',
@@ -85,7 +95,7 @@ exports.buyProduct = async (req, res) => {
     })
     await models.axios({
       method: 'PATCH',
-      url: `https://api.razorpay.com/v1/payments/${transactionDetails.razorpay_payment_id}`,
+      url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
       auth: {
         username: razorPay.razorPayConfig.key_id,
         password: razorPay.razorPayConfig.key_secret
@@ -94,10 +104,37 @@ exports.buyProduct = async (req, res) => {
     })
     const customerName = customerDetails.firstName + " " + customerDetails.lastName;
     if (result.data.statusCode === 200) {
+
+      await sequelize.transaction(async (t) => {
+
+        let orderUniqueId = `dg_buy${Math.floor(1000 + Math.random() * 9000)}`;
+
+        let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderData.id, customerId: id, orderTypeId: 1, orderId: orderUniqueId, metalType: tempOrderData.metalType, quantity: tempOrderData.quantity, lockPrice: tempOrderData.lockPrice, blockId: tempOrderData.blockId, amount: tempOrderData.amount, rate: result.data.result.data.rate, quantityBased: tempOrderData.quantityBased, modeOfPayment: tempOrderData.modeOfPayment, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, orderSatatus: "pending", totalAmount: tempOrderData.amount });
+
+        await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { razorpayOrderId: razorpay_order_id } });
+
+        let CustomerBalanceData = await models.digiGoldCustomerBalance.findOne({ where: { customerId: id, isActive: true } })
+        if (CustomerBalanceData) {
+          await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: id } });
+        } else {
+          await models.digiGoldCustomerBalance.create({ customerId: id, currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance });
+        }
+        console.log(result.data);
+        await models.digiGoldOrderTaxDetail.create({ orderDetailId: orderDetail.id, totalTaxAmount: result.data.result.data.totalTaxAmount, cgst: result.data.result.data.taxes.taxSplit[0].cgst, sgst: result.data.result.data.taxes.taxSplit[0].scgst, isActive: true });
+      })
+
       await sms.sendMessageForBuy(customerName, customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
     }
-    return res.status(200).json(result.data);
+    if (requestFrom == "mobileApp") {
+      return res.status(200).json(result.data);
+    }
+    console.log(result.data.result.data.metalType);
+    res.cookie(`metalObject`, `${JSON.stringify(result.data.result.data.metalType)}`);
+    res.redirect(`${process.env.BASE_URL_CUSTOMER}/digi-gold/order-success/buy/${result.data.result.data.merchantTransactionId}`);
+
   } catch (err) {
+    console.log(err);
+
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
     if (err.response) {
@@ -105,6 +142,17 @@ exports.buyProduct = async (req, res) => {
     } else {
       console.log('Error', err.message);
     }
+    // if (err.response) {
+    //   if(err.response.data.errors.userKyc && err.response.data.errors.userKyc.length ){
+
+    //     res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
+    //     res.redirect(`https://${process.env.DIGITALGOLDAPI}/profile`);
+    //   }else{
+    //     return res.status(422).json(err.response.data);
+    //   }
+    // } else {
+    //   console.log('Error', err.message);
+    // }
   };
 }
 

@@ -7,7 +7,7 @@ const errorLogger = require('../../../utils/errorLogger');
 
 exports.createCustomerAddress = async(req, res)=>{
   try{
-    const {name, mobileNumber, email, address, stateId, cityId, pincode} = req.body;
+    const {name, mobileNumber, email, address, stateId, cityId, pinCode} = req.body;
     const id = req.userData.id;
     let customerDetails = await models.customer.findOne({
       where: { id, isActive:true },
@@ -24,7 +24,7 @@ exports.createCustomerAddress = async(req, res)=>{
       'address':address,
       'state':"ep9kJ7Px",
       'city':"1GXDPyX2",
-      'pincode':pincode
+      'pincode':pinCode
     })
     const result = await models.axios({
         method: 'POST',

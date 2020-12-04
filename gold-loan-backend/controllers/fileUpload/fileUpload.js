@@ -48,6 +48,8 @@ exports.uploadFile =
             destination = `public/uploads/scrap/customerDocumentDetails/${scrapId}/`
         } else if (fileFor == "fullRelease") {
             destination = `public/uploads/fullRelease/${fullReleaseId}/`;
+        }else if (fileFor == "ecsForm") {
+            destination = `public/uploads/sip/ecsForm/${customerId}`;
         } else {
             return res.status(422).json({ message: 'Reason not found' });
         }

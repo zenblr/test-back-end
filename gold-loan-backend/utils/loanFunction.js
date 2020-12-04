@@ -156,11 +156,47 @@ let getAllCustomerLoanId = async () => {
             }],
     });
     let customerLoanId = [];
-    console.log(customerLoanId)
     for (const masterLoanData of masterLona) {
         await masterLoanData.customerLoan.map((data) => { customerLoanId.push(data.id) });
     }
     return customerLoanId
+}
+
+let getAllOrnamentReleasedCustomerLoanId = async () => {
+    let masterLona = await models.customerLoanMaster.findAll({
+        order: [
+            [models.customerLoan, 'id', 'asc']
+        ],
+        where: {
+            isActive: true,
+            isLoanCompleted: true,
+            isOrnamentsReleased : true
+        },
+        attributes: ['id'],
+        include: [{
+                model: models.customerLoan,
+                as: 'customerLoan',
+                attributes: ['id']
+            }],
+    });
+    let customerLoanId = [];
+    for (const masterLoanData of masterLona) {
+        await masterLoanData.customerLoan.map((data) => { customerLoanId.push(data.id) });
+    }
+    return customerLoanId
+}
+
+let calculationDataForReleasedLoan = async () => {
+    let customerLoanId = await getAllOrnamentReleasedCustomerLoanId();
+    let loanInfo = [];
+    for (const id of customerLoanId) {
+        let info = await getAllDetailsOfCustomerLoan(id);
+        loanInfo.push(info);
+    }
+    let noOfDaysInYear = 360
+    let global = await models.globalSetting.findAll()
+    let { gracePeriodDays } = global[0]
+    return { noOfDaysInYear, gracePeriodDays, loanInfo };
 }
 
 let getAllDetailsOfCustomerLoan = async (customerLoanId) => {
@@ -319,6 +355,13 @@ let getAllPaidInterestForCalculation = async (loanId) => {
         where: { loanId: loanId, emiStatus: 'paid' }
     });
     return allPaidInterest;
+}
+
+let getAllPaidPartialyPaidInterest = async (loanId) => {
+    let allpaidPartialyPaidInterest = await models.customerLoanInterest.findAll({
+        where: { loanId: loanId,  emiStatus: { [Op.in]: ['paid','partially paid'] } }
+    });
+    return allpaidPartialyPaidInterest;
 }
 
 let getAllInterestLessThanDate = async (loanId, date) => {
@@ -1451,19 +1494,21 @@ let nextDueDateInterest = async (loan) => {
 
 
     let securedPerDayInterestAmount = ((securedInterest / 100) * securedOutstandingAmount * (paymentFrequency / 30)) / paymentFrequency
-
     let secured = await models.customerLoanInterest.findAll({
-        where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[0].id, isExtraDaysInterest: false },
+        where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[0].id, },
         order: [['emiEndDate', 'asc']]
     });
+
     var securedTotalInterest = 0
     var unsecuredTotalInterest = 0
+
     if (secured.length > 0) {
         let startDate = moment(secured[0].emiStartDate)
         let index = secured.findIndex(ele => {
-            let a = new Date(ele.emiEndDate);
-            let b = new Date()
-            return a.getTime() > b.getTime()
+            let loanEndDate = moment(ele.emiEndDate);
+            let currentDate = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+            let noOfDays = loanEndDate.diff(currentDate, 'days');
+            return noOfDays >= 0
         })
         let securedMonthRebateInterest = 0
         for (let securedIndex = 0; securedIndex <= index; securedIndex++) {
@@ -1472,6 +1517,9 @@ let nextDueDateInterest = async (loan) => {
 
         if (index < 0) {
             securedTotalInterest = 0
+            secured.forEach(interest => {
+                securedTotalInterest += Number(interest.outstandingInterest)
+            })
         } else {
             let partialPaidSecuredIndex = secured.findIndex(ele => {
                 return ele.emiStatus == 'partially paid'
@@ -1511,9 +1559,10 @@ let nextDueDateInterest = async (loan) => {
         if (unsecured.length > 0) {
             let startDate = moment(unsecured[0].emiStartDate)
             let index = unsecured.findIndex(ele => {
-                let a = new Date(ele.emiEndDate);
-                let b = new Date()
-                return a.getTime() > b.getTime()
+                let loanEndDate = moment(ele.emiEndDate);
+                let currentDate = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+                let noOfDays = loanEndDate.diff(currentDate, 'days');
+                return noOfDays >= 0
             })
             var unsecureRebateInterest = 0;
             for (let unsecuredIndex = 0; unsecuredIndex <= index; unsecuredIndex++) {
@@ -1523,7 +1572,9 @@ let nextDueDateInterest = async (loan) => {
 
             if (index < 0) {
                 unsecuredTotalInterest = 0
-
+                unsecured.forEach(interest => {
+                    unsecuredTotalInterest += Number(interest.outstandingInterest)
+                })
             } else {
                 let partialPaidSecuredIndex = unsecured.findIndex(ele => {
                     return ele.emiStatus == 'partially paid'
@@ -2553,5 +2604,7 @@ module.exports = {
     ornementsDetails:ornementsDetails,
     allOrnamentsDetails:allOrnamentsDetails,
     getornamentsWeightInfo:getornamentsWeightInfo,
-    getornamentLoanInfo:getornamentLoanInfo
+    getornamentLoanInfo:getornamentLoanInfo,
+    calculationDataForReleasedLoan:calculationDataForReleasedLoan,
+    getAllPaidPartialyPaidInterest:getAllPaidPartialyPaidInterest
 }

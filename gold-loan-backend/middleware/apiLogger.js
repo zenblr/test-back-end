@@ -80,11 +80,12 @@ module.exports = async (req, res, next) => {
             "/api/digital-gold/cart",
             "/api/digital-gold/cart/"+getParams1,
             "/api/digital-gold/cart/"+getParams2+"/"+getParams1,
-            "/api/digital-gold/redeem-order",
+            "/api/digital-gold/redeem-order/delivery",
             "/api/digital-gold/redeem-order/order-info/"+getParams1,
             "/api/digital-gold/redeem-order/invoice/"+getParams1,
             "/api/digital-gold/redeem-order/invoice-web/"+getParams1,
             "/api/digital-gold/buy",
+            "/api/digital-gold/buy/buy-metal",
             "/api/digital-gold/buy/buy-info/"+getParams1,
             "/api/digital-gold/buy/generate-invoice/"+getParams1,
             "/api/digital-gold/buy/generate-invoice-web/"+getParams1,
@@ -95,7 +96,6 @@ module.exports = async (req, res, next) => {
             "/api/digital-gold/contact-us",
             "/api/digital-gold/customer/create-existent-customer"
         ];
-    
         if (!skipUrls.includes(req._parsedUrl.pathname)) {
             try {
                 const token = req.headers.authorization.split(" ")[1];
