@@ -62,7 +62,14 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
 
         let kycInfo = await sequelize.transaction(async t => {
 
-            await models.customer.update({ firstName, lastName, panCardNumber: panCardNumber, panType, panImage, modifiedBy, modifiedByCustomer }, { where: { id: customerId }, transaction: t })
+            await models.customer.update({
+                firstName, lastName, panCardNumber: panCardNumber, panType, panImage, modifiedBy, modifiedByCustomer,
+                //dob changes
+                dateOfBirth: date,
+                gender: gender,
+                age: age,
+                //dob changes
+            }, { where: { id: customerId }, transaction: t })
 
             let customerKycAdd = await models.customerKyc.create({ currentKycModuleId: moduleId, isAppliedForKyc: true, customerKycCurrentStage: '4', customerId: getCustomerInfo.id, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer }, { transaction: t })
 
@@ -73,10 +80,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                 lastName: lastName,
                 panCardNumber: panCardNumber,
                 profileImage: profileImage,
-                dateOfBirth: date,
                 alternateMobileNumber: alternateMobileNumber,
-                gender: gender,
-                age: age,
                 martialStatus: martialStatus,
                 occupationId: occupationId,
                 spouseName: spouseName,
@@ -213,7 +217,14 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
         }
 
         let customerKycId = await sequelize.transaction(async t => {
-            let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer, customerKycCurrentStage: "2", currentKycModuleId: moduleId }, { transaction: t })
+            let customerKycAdd = await models.customerKyc.create({
+                isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer, customerKycCurrentStage: "2", currentKycModuleId: moduleId,
+                //dob changes
+                dateOfBirth: dateOfBirth,
+                gender: gender,
+                age: age,
+                //dob changes
+            }, { transaction: t })
 
 
             await models.customer.update({ firstName: firstName, lastName: lastName, panCardNumber: panCardNumber, panType: panType, panImage: panImage, organizationTypeId, dateOfIncorporation, userType: userType, moduleId: moduleId, modifiedBy, modifiedByCustomer }, { where: { id: getCustomerInfo.id }, transaction: t })
@@ -250,10 +261,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
                     createdByCustomer,
                     modifiedByCustomer,
                     profileImage: profileImage,
-                    dateOfBirth: dateOfBirth,
                     alternateMobileNumber: alternateMobileNumber,
-                    gender: gender,
-                    age: age,
                     martialStatus: martialStatus,
                     occupationId: occupationId,
                     spouseName: spouseName,
@@ -399,7 +407,21 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
 
         let personalId = await models.customerKycPersonalDetail.findOne({ where: { customerId: customerId }, transaction: t });
 
-        await models.customer.update({ firstName: customerKycBasicDetails.firstName, lastName: customerKycBasicDetails.lastName, panCardNumber: customerKycBasicDetails.panCardNumber, panType: customerKycBasicDetails.panType, panImage: customerKycBasicDetails.panImage, userType: customerKycBasicDetails.userType, organizationTypeId: customerKycBasicDetails.organizationTypeId, dateOfIncorporation: customerKycBasicDetails.dateOfIncorporation, modifiedBy, modifiedByCustomer }, { where: { id: customerId }, transaction: t })
+        await models.customer.update({
+            firstName: customerKycBasicDetails.firstName, lastName: customerKycBasicDetails.lastName, panCardNumber: customerKycBasicDetails.panCardNumber, panType: customerKycBasicDetails.panType, panImage: customerKycBasicDetails.panImage, userType: customerKycBasicDetails.userType, organizationTypeId: customerKycBasicDetails.organizationTypeId, dateOfIncorporation: customerKycBasicDetails.dateOfIncorporation, modifiedBy, modifiedByCustomer,
+            //dob changes
+            age: customerKycPersonal.age,
+            gender: customerKycPersonal.gender,
+            dateOfBirth: customerKycPersonal.dateOfBirth
+            //dob changes
+
+        }, { where: { id: customerId }, transaction: t })
+
+        //dob changes
+        delete customerKycPersonal.age;
+        delete customerKycPersonal.gender;
+        delete customerKycPersonal.dateOfBirth;
+        //dob changes
 
         if (moduleId == 1) {
             await models.customerKycPersonalDetail.update(customerKycPersonal, { where: { customerId: customerId }, transaction: t });
@@ -481,11 +503,11 @@ let getKycInfo = async (customerId) => {
     })
     let customerKycReview = await models.customer.findOne({
         where: { id: customerId },
-        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'moduleId', 'userType', 'dateOfIncorporation', 'kycStatus', 'scrapKycStatus'],
+        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'moduleId', 'userType', 'dateOfIncorporation', 'kycStatus', 'scrapKycStatus', 'gender', 'age', 'dateOfBirth'],
         include: [{
             model: models.customerKycPersonalDetail,
             as: 'customerKycPersonal',
-            attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
+            attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'alternateMobileNumber', 'panCardNumber', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
             include: [{
                 model: models.occupation,
                 as: 'occupation'
@@ -525,6 +547,15 @@ let getKycInfo = async (customerId) => {
         }
         ]
     })
+
+    //dob changes
+    if (customerKycReview != null && customerKycReview.customerKycPersonal != null) {
+        customerKycReview.dataValues.customerKycPersonal.dataValues.age = customerKycReview.age
+        customerKycReview.dataValues.customerKycPersonal.dataValues.gender = customerKycReview.gender
+        customerKycReview.dataValues.customerKycPersonal.dataValues.dateOfBirth = customerKycReview.dateOfBirth
+    }
+    //dob changes
+
     let userType = null;
     let moduleId = null;
     if (!check.isEmpty(customerKycReview.customerKyc)) {
@@ -617,7 +648,7 @@ let kycBasicDetails = async (req) => {
 
     let checkStatusCustomer = await models.customer.findOne({
         where: { statusId, id: numberExistInCustomer.id },
-        attributes: ['firstName', 'lastName', 'panCardNumber', 'panType', 'panCardNumber', 'panImage', 'userType', 'moduleId', 'organizationTypeId', 'dateOfIncorporation', 'scrapKycStatus'],
+        attributes: ['firstName', 'lastName', 'panCardNumber', 'panType', 'panCardNumber', 'panImage', 'userType', 'moduleId', 'organizationTypeId', 'dateOfIncorporation', 'scrapKycStatus', 'dateOfBirth', 'gender', 'age'],
         include: [{
             model: models.organizationType,
             as: "organizationType",
@@ -647,7 +678,7 @@ let kycBasicDetails = async (req) => {
         {
             model: models.customerKycPersonalDetail,
             as: 'customerKycPersonal',
-            attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
+            attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'alternateMobileNumber', 'panCardNumber', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
             include: [{
                 model: models.occupation,
                 as: 'occupation'
@@ -658,6 +689,14 @@ let kycBasicDetails = async (req) => {
         }
         ]
     })
+
+    //dob changes
+    if (checkStatusCustomer != null && checkStatusCustomer.customerKycPersonal != null) {
+        checkStatusCustomer.dataValues.customerKycPersonal.dataValues.age = checkStatusCustomer.age
+        checkStatusCustomer.dataValues.customerKycPersonal.dataValues.gender = checkStatusCustomer.gender
+        checkStatusCustomer.dataValues.customerKycPersonal.dataValues.dateOfBirth = checkStatusCustomer.dateOfBirth
+    }
+    //dob changes
 
     //check kyc status  scrap == approve 
     // check user type == corporate == you cant apply loan == due to corporeate kyc
@@ -843,12 +882,12 @@ let submitKycInfo = async (req) => {
         } else if (KycStage.customerKycCurrentStage == "4") {
             let customerKycReview = await models.customer.findOne({
                 where: { id: KycStage.customerId },
-                attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'userType', 'organizationTypeId', 'dateOfIncorporation'],
+                attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'userType', 'organizationTypeId', 'dateOfIncorporation', 'dateOfBirth', 'gender', 'age'],
                 include: [{
                     model: models.customerKycPersonalDetail,
                     as: 'customerKycPersonal',
                     required: false,
-                    attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
+                    attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'alternateMobileNumber', 'panCardNumber', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
                     include: [{
                         model: models.occupation,
                         as: 'occupation'
@@ -885,6 +924,15 @@ let submitKycInfo = async (req) => {
                 },
                 ]
             })
+
+            //dob changes
+            if (customerKycReview != null && customerKycReview.customerKycPersonal != null) {
+                customerKycReview.dataValues.customerKycPersonal.dataValues.age = customerKycReview.age
+                customerKycReview.dataValues.customerKycPersonal.dataValues.gender = customerKycReview.gender
+                customerKycReview.dataValues.customerKycPersonal.dataValues.dateOfBirth = customerKycReview.dateOfBirth
+            }
+            //dob changes
+
             // return res.status(200).json({
             //     customerId: KycStage.customerId,
             //     customerKycId: KycStage.id,
@@ -1200,13 +1248,19 @@ let kycPersonalDetail = async (req) => {
 
     await sequelize.transaction(async t => {
         let details;
+
+        //dob changes
+        await models.customer.update({
+            dateOfBirth: dateOfBirth,
+            gender: gender,
+            age: age
+        }, { where: { id: customerId }, transaction: t })
+        //dob changes
+
         if (moduleId == 1) {
             details = await models.customerKycPersonalDetail.update({
                 profileImage: profileImage,
-                dateOfBirth: dateOfBirth,
                 alternateMobileNumber: alternateMobileNumber,
-                gender: gender,
-                age: age,
                 martialStatus: martialStatus,
                 occupationId: occupationId,
                 spouseName: spouseName,
@@ -1217,10 +1271,7 @@ let kycPersonalDetail = async (req) => {
             if (userType == "Individual") {
                 details = await models.customerKycPersonalDetail.update({
                     profileImage: profileImage,
-                    dateOfBirth: dateOfBirth,
                     alternateMobileNumber: alternateMobileNumber,
-                    gender: gender,
-                    age: age,
                     martialStatus: martialStatus,
                     occupationId: occupationId,
                     spouseName: spouseName,
@@ -1251,11 +1302,11 @@ let kycPersonalDetail = async (req) => {
     if (moduleId == 1) {
         customerKycReview = await models.customer.findOne({
             where: { id: customerId },
-            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage'],
+            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'dateOfBirth', 'gender', 'age'],
             include: [{
                 model: models.customerKycPersonalDetail,
                 as: 'customerKycPersonal',
-                attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
+                attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'alternateMobileNumber', 'panCardNumber', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
                 include: [{
                     model: models.occupation,
                     as: 'occupation'
@@ -1280,16 +1331,22 @@ let kycPersonalDetail = async (req) => {
                 order: [["id", "ASC"]]
             }]
         })
+
+        if (customerKycReview != null && customerKycReview.customerKycPersonal != null) {
+            customerKycReview.dataValues.customerKycPersonal.dataValues.age = customerKycReview.age
+            customerKycReview.dataValues.customerKycPersonal.dataValues.gender = customerKycReview.gender
+            customerKycReview.dataValues.customerKycPersonal.dataValues.dateOfBirth = customerKycReview.dateOfBirth
+        }
     } else if (moduleId == 3) {
         customerKycReview = await models.customer.findOne({
             where: { id: customerId },
-            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'userType', 'organizationTypeId', 'dateOfIncorporation', 'moduleId', 'panType', 'panImage'],
+            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'userType', 'organizationTypeId', 'dateOfIncorporation', 'moduleId', 'panType', 'panImage', 'gender', 'age', 'dateOfBirth'],
             include: [
                 {
                     model: models.customerKycPersonalDetail,
                     as: 'customerKycPersonal',
                     required: false,
-                    attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'dateOfBirth', 'alternateMobileNumber', 'panCardNumber', 'gender', 'age', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
+                    attributes: ['id', 'customerId', 'firstName', 'lastName', 'profileImage', 'alternateMobileNumber', 'panCardNumber', 'martialStatus', 'occupationId', 'identityTypeId', 'identityProofNumber', 'identityProof', 'spouseName', 'signatureProof'],
                     include: [{
                         model: models.occupation,
                         as: 'occupation'
@@ -1326,6 +1383,12 @@ let kycPersonalDetail = async (req) => {
                     attributes: ['id', 'organizationType']
                 }]
         })
+
+        if (customerKycReview != null && customerKycReview.customerKycPersonal != null) {
+            customerKycReview.dataValues.customerKycPersonal.dataValues.age = customerKycReview.age
+            customerKycReview.dataValues.customerKycPersonal.dataValues.gender = customerKycReview.gender
+            customerKycReview.dataValues.customerKycPersonal.dataValues.dateOfBirth = customerKycReview.dateOfBirth
+        }
     }
 
     let { customerKycCurrentStage } = await models.customerKyc.findOne({ where: { customerId } });

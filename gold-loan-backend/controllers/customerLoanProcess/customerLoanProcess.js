@@ -2456,12 +2456,12 @@ exports.getDetailsForPrint = async (req, res, next) => {
         {
             model: models.customer,
             as: 'customer',
-            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber'],
+            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'dateOfBirth'],
             include: [
                 {
                     model: models.customerKycPersonalDetail,
                     as: 'customerKycPersonal',
-                    attributes: ['dateOfBirth', 'identityProofNumber']
+                    attributes: ['identityProofNumber']
                 },
                 {
                     model: models.customerKycAddressDetail,
@@ -2535,7 +2535,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
         }
         customerLoanDetail.customerAddress = customerAddress
     }
-    var d = new Date(customerLoanDetail.customer.customerKycPersonal.dateOfBirth)
+    var d = new Date(customerLoanDetail.customer.dateOfBirth)
     dateOfBirth = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
     //console.log(customerLoanDetail.customerLoan[1])
     let customerUnsecureLoanData = [];
