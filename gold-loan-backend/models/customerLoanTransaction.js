@@ -10,6 +10,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'loan_id'
         },
+        customerId: {
+            type: DataTypes.INTEGER,
+            field: 'customer_id'
+        },
+        productTypeId: {
+            type: DataTypes.INTEGER,
+            field: 'product_type_id'
+        },
         transactionUniqueId: {
             type: DataTypes.STRING,
             field: 'transaction_unique_id'
@@ -64,6 +72,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'payment_for',
         },
+        runningBalance:{
+            type: DataTypes.FLOAT,
+            field: 'running_balance'
+        },
+        freeBalance:{
+            type: DataTypes.FLOAT,
+            field: 'free_balance'
+        },
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by'
@@ -88,6 +104,7 @@ module.exports = (sequelize, DataTypes) => {
         CustomerLoanTransaction.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
         CustomerLoanTransaction.hasMany(models.customerTransactionDetail, { foreignKey: 'customerLoanTransactionId', as: 'transaction' });
         CustomerLoanTransaction.hasMany(models.customerTransactionSplitUp, { foreignKey: 'customerLoanTransactionId', as: 'transactionSplitUp' });
+        CustomerLoanTransaction.belongsTo(models.module, { foreignKey: 'productTypeId', as: 'module' })
     }
 
     return CustomerLoanTransaction;

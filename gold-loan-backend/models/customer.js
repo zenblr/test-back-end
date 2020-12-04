@@ -160,6 +160,16 @@ module.exports = (sequelize, DataTypes) => {
         dateOfBirth:{
             type: DataTypes.DATE,
             field: 'date_of_birth',
+        },
+        currentWalletBalance: {
+            type: DataTypes.FLOAT,
+            field: 'current_wallet_balance',
+            defaultValue: 0
+        },
+        walletFreeBalance: {
+            type: DataTypes.FLOAT,
+            field: 'wallet_free_balance',
+            defaultValue: 0
         }
     }, {
         freezeTableName: true,
