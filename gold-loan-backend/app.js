@@ -32,7 +32,7 @@ app.use(useragent.express());
 //swagger _setup
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swagger.swaggerSpec));
 
-app.use('/scrap/api-docs', swaggerUi.serve, swaggerUi.setup(scrapSwagger.swaggerSpec));
+// app.use('/scrap/api-docs', swaggerUi.serve, swaggerUi.setup(scrapSwagger.swaggerSpec));
 
 
 // view engine setup
