@@ -4,10 +4,12 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const moment = require('moment')
-
+const getRazorPayDetails = require('../../utils/razorpay');
+var uniqid = require('uniqid');
+const {  getAllPartAndFullReleaseData } = require('../../utils/loanFunction') 
 exports.razorPayCreateOrder = async (req, res, next) => {
     try {
-        let { amount, masterLoanId, paymentType, paymentFor } = req.body;
+        let { amount, masterLoanId, paymentType, paymentFor,ornamentId } = req.body;
         let razorPayTempDetails
         const razorpay = await getRazorPayDetails();
         let transactionUniqueId = uniqid.time().toUpperCase();
@@ -18,17 +20,17 @@ exports.razorPayCreateOrder = async (req, res, next) => {
             transactionUniqueId = uniqid.time().toUpperCase();
             payableAmount = await Math.round(amount * 100);
         } else {
-
             payableAmount = await Math.round(amount * 100);
         }
         let loanData = await models.customerLoan.findOne({ where: { masterLoanId: masterLoanId }, order: [['id', 'asc']] });
         let razorPayOrder = await razorpay.instance.orders.create({ amount: payableAmount, currency: "INR", receipt: `${transactionUniqueId}`, payment_capture: 1, notes: { product: "gold loan", loanId: loanData.loanUniqueId } });
-
         if (paymentType) {
-             razorPayTempDetails = await models.tempRazorPayDetails.create({ paymentFor, paymentType, amount, masterLoanId, razorPayOrder: razorPayOrder.id, depositDate: moment() })
+            razorPayTempDetails = await models.tempRazorPayDetails.create({ paymentFor, paymentType, amount, masterLoanId, razorPayOrderId: razorPayOrder.id, depositDate: moment(),transactionUniqueId,ornamentId })
+            console.log(razorPayTempDetails)
         }
-        return res.status(200).json({ razorPayOrder, razerPayConfig: razorpay.razorPayConfig.key_id,razorPayTempDetails });
+        return res.status(200).json({ razorPayOrder, razerPayConfig: razorpay.razorPayConfig.key_id, razorPayTempDetails });
     } catch (err) {
+        console.log(err)
         await models.errorLogger.create({
             message: err.message,
             url: req.url,

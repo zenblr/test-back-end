@@ -174,38 +174,45 @@ exports.payableAmountConfirm = async (req, res, next) => {
 
 exports.quickPayment = async (req, res, next) => {
     try {
-        let createdBy = req.userData.id;
+        // let createdBy = req.userData.id;
         let modifiedBy = null;
         let { paymentDetails, payableAmount, masterLoanId, transactionDetails, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-        let { bankName, branchName, chequeNumber, depositDate, depositTransactionId, paymentType, transactionId } = paymentDetails
         const razorpay = await getRazorPayDetails();
+        let isAdmin 
+        let transactionUniqueId = uniqid.time().toUpperCase();
+        if (razorpay_order_id) {
+            var tempRazorData = await models.tempRazorPayDetails.findOne({ where: { razorPayOrderId: razorpay_order_id } })
+            depositDate = tempRazorData.depositDate
+            masterLoanId = tempRazorData.masterLoanId
+            paymentType = tempRazorData.paymentType
+            payableAmount = tempRazorData.amount
+            transactionId = tempRazorData.transactionUniqueId
+        } else {
+            var { bankName, branchName, chequeNumber, depositDate, depositTransactionId, paymentType, transactionId } = paymentDetails
+        }
         let amount = await getCustomerInterestAmount(masterLoanId);
         let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
-        let transactionUniqueId = uniqid.time().toUpperCase();
-
         if (!['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'upi', 'card', 'netbanking', 'wallet'].includes(paymentType)) {
             return res.status(400).json({ message: "Invalid payment type" })
         }
         let signatureVerification = false;
         let razorPayTransactionId;
         let isRazorPay = false;
-        if (razorpay_order_id) {
-            tempRazorData = await models.tempRazorPayDetails.findOne({ where: { razorpayOrderId: razorpay_order_id } })
-            depositDate = tempRazorData.depositDate
-            masterLoanId = tempRazorData.masterLoanId
-            paymentType = tempRazorData.paymentType
-            payableAmount = tempRazorData.amount
-        }
+
         if (paymentType == 'upi' || paymentType == 'netbanking' || paymentType == 'wallet' || paymentType == 'card') {
+            paymentDetails = {}
+
             let razerpayData
             if (razorpay_order_id) {
+                isAdmin = false
+                transactionDetails = {}
                 razerpayData = await razorpay.instance.orders.fetch(razorpay_order_id);
                 transactionDetails.razorpay_order_id = razorpay_order_id
                 transactionDetails.razorpay_payment_id = razorpay_payment_id
-                transactionDetails.razorpay_signature = razorpay_order_id
+                transactionDetails.razorpay_signature = razorpay_signature
 
             } else {
-
+                isAdmin = true
                 razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
             }
             transactionUniqueId = razerpayData.receipt;
@@ -258,6 +265,8 @@ exports.quickPayment = async (req, res, next) => {
         // }
 
         paymentDetails.masterLoanId = masterLoanId
+        paymentDetails.depositDate = depositDate
+        paymentDetails.paymentType = paymentType
         paymentDetails.transactionAmont = payableAmount
         paymentDetails.depositDate = moment(moment(depositDate).format("YYYY-MM-DD"));
         paymentDetails.transactionUniqueId = transactionUniqueId //ye change karna h
@@ -455,9 +464,11 @@ exports.quickPayment = async (req, res, next) => {
 
         await intrestCalculationForSelectedLoan(moment(), masterLoanId)
         await penalInterestCalculationForSelectedLoan(moment(), masterLoanId)
-
-        return res.status(200).json({ data: 'success' })
-
+        if (isAdmin) {
+            return res.status(200).json({ data: 'success' })
+        } else {
+            res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/loan-details`)
+        }
     } catch (err) {
         await models.errorLogger.create({
             message: err.message,

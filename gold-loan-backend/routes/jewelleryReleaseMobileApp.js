@@ -14,9 +14,9 @@ route.get('/:masterLoanId', customerCheckAuth, wrapper(ornamentsDetails));
 
 route.post('/', customerCheckAuth, wrapper(ornamentsAmountDetails));
 
-route.post('/part-release', customerCheckAuth, partReleasePayment, validatiError, wrapper(ornamentsPartRelease));
+route.post('/part-release', partReleasePayment, wrapper(ornamentsPartRelease));
 
-route.post('/full-release', customerCheckAuth, fullReleasePayment, validatiError, wrapper(ornamentsFullRelease));
+route.post('/full-release', fullReleasePayment, wrapper(ornamentsFullRelease));
 
 route.post('/razor-pay', customerCheckAuth, wrapper(razorPayCreateOrderForOrnament));
 

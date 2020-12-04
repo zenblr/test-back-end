@@ -28,12 +28,15 @@ module.exports = (sequelize, DataTypes) => {
         paymentType: {
             type: DataTypes.STRING,
             field: 'payment_type',
-            defaultValue: null
         },
         ornamentId: {
             type: DataTypes.ARRAY(DataTypes.TEXT),
-            field: 'payment_type',
+            field: 'ornament_id',
             defaultValue: null
+        },
+        transactionUniqueId:{
+            type: DataTypes.STRING,
+            field: 'transaction_unique_id'
         }
     }, {
         freezeTableName: true,

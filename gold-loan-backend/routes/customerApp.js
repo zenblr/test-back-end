@@ -69,7 +69,7 @@ router.use('/quick-pay', quickPay)
 
 router.use('/contact-us', contactUsEmail)
 
-router.post('/razor-pay', customerCheckAuth, wrapper(razorPayCreateOrder));
+router.post('/razor-pay', wrapper(razorPayCreateOrder));
 
 
 module.exports = router;
