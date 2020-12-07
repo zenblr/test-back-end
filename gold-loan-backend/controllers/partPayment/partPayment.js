@@ -125,7 +125,7 @@ exports.payableAmountConfirmPartPayment = async (req, res, next) => {
         return res.status(400).json({ message: `Your payable amount is greater than paid amount. You have to pay ${payableAmount}` })
     }
 
-    let { securedRatio, unsecuredRatio } = await     (loan, amount, paidAmount)
+    let { securedRatio, unsecuredRatio } = await  getAmountLoanSplitUpData(loan, amount, paidAmount)
     loan.dataValues.customerLoan[0].dataValues.partPayment = (securedRatio - securedInterest - securedPenalInterest).toFixed(2)
 
     if (loan.isUnsecuredSchemeApplied) {
@@ -138,11 +138,22 @@ exports.payableAmountConfirmPartPayment = async (req, res, next) => {
 
 exports.partPayment = async (req, res, next) => {
     try {
-        let { masterLoanId, paidAmount, paymentDetails, transactionDetails } = req.body
-        let { bankName, branchName, chequeNumber, depositDate, depositTransactionId, paymentType, transactionId } = paymentDetails
-        let createdBy = req.userData.id;
+        let { masterLoanId, paidAmount, paymentDetails, transactionDetails, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+        // let createdBy = req.userData.id;
+        let isAdmin 
         let modifiedBy = null;
         const razorpay = await getRazorPayDetails();
+        if (razorpay_order_id) {
+            var tempRazorData = await models.tempRazorPayDetails.findOne({ where: { razorPayOrderId: razorpay_order_id } })
+            depositDate = tempRazorData.depositDate
+            masterLoanId = tempRazorData.masterLoanId
+            paymentType = tempRazorData.paymentType
+            paidAmount = tempRazorData.amount
+            transactionId = tempRazorData.transactionUniqueId
+        }else{
+            var { bankName, branchName, chequeNumber, depositDate, depositTransactionId, paymentType, transactionId } = paymentDetails
+
+        }
         let amount = await getCustomerInterestAmount(masterLoanId);
         let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
         let { payableAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest } = await payableAmountForLoan(amount, loan)
@@ -151,17 +162,32 @@ exports.partPayment = async (req, res, next) => {
             return res.status(400).json({ message: `Your payable amount is greater than paid amount. You have to pay ${payableAmount}` })
         }
 
+        
+
         let transactionUniqueId = uniqid.time().toUpperCase();
 
 
         if (!['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'upi', 'card', 'netbanking', 'wallet'].includes(paymentType)) {
             return res.status(400).json({ message: "Invalid payment type" })
         }
+        paymentDetails = {}
         let signatureVerification = false;
         let razorPayTransactionId;
         let isRazorPay = false;
         if (paymentType == 'upi' || paymentType == 'netbanking' || paymentType == 'wallet' || paymentType == 'card') {
-            let razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
+            let razerpayData
+            if (razorpay_order_id) {
+                isAdmin = false
+                transactionDetails = {}
+                razerpayData = await razorpay.instance.orders.fetch(razorpay_order_id);
+                transactionDetails.razorpay_order_id = razorpay_order_id
+                transactionDetails.razorpay_payment_id = razorpay_payment_id
+                transactionDetails.razorpay_signature = razorpay_signature
+
+            } else {
+                isAdmin = true
+                razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
+            }
             transactionUniqueId = razerpayData.receipt;
             const generated_signature = crypto
                 .createHmac(
@@ -195,16 +221,18 @@ exports.partPayment = async (req, res, next) => {
             return res.status(400).json({ message: `Your payable amount is greater than paid amount. You have to pay ${payableAmount}` })
         }
         let { securedRatio, unsecuredRatio, isUnsecuredSchemeApplied } = await getAmountLoanSplitUpData(loan, amount, paidAmount)
-
         paymentDetails.masterLoanId = masterLoanId
-        paymentDetails.transactionAmont = paidAmount
+        paymentDetails.paymentType = paymentType
+        paymentDetails.transactionAmont = payableAmount
+        paymentDetails.depositDate = moment(moment(depositDate).format("YYYY-MM-DD"));
+        paymentDetails.transactionUniqueId = transactionUniqueId
+        
         if (isRazorPay) {
 
         } else {
 
         }
-        paymentDetails.depositDate = moment(moment(depositDate).format("YYYY-MM-DD"));
-        paymentDetails.transactionUniqueId = transactionUniqueId //ye chanege hoyega
+       
         if (isRazorPay) {
             paymentDetails.razorPayTransactionId = razorPayTransactionId
         }
@@ -625,7 +653,11 @@ exports.partPayment = async (req, res, next) => {
             return customerLoanTransaction
         })
 
-        return res.status(200).json({ message: 'Success' })
+        if (isAdmin) {
+            return res.status(200).json({ data: 'success' })
+        } else {
+            res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/loan-details`)
+        }
     } catch (err) {
         await models.errorLogger.create({
             message: err.message,

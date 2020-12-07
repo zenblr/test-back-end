@@ -13,12 +13,20 @@ const errorLogger = require('../../../utils/errorLogger');
 exports.getCustomerPassbookDetails = async (req, res) => {
   try {
     const id = req.userData.id;
+    console.log("id", id)
     let customerDetails = await models.customer.findOne({
       where: { id, isActive: true },
     });
+
+    let availableBalance = await models.digiGoldCustomerBalance.findOne({
+      where: { customerId: id, isActive: true },
+    });
+    
     if (check.isEmpty(customerDetails)) {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     };
+
+
     const customerUniqueId = customerDetails.customerUniqueId;
     const merchantData = await getMerchantData();
     const result = await models.axios({
@@ -32,6 +40,7 @@ exports.getCustomerPassbookDetails = async (req, res) => {
     });
     return res.status(200).json(result.data);
   } catch (err) {
+    console.log(err);
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
     if (err.response) {
@@ -153,12 +162,12 @@ exports.updateCustomerDetails = async (req, res) => {
 }
 
 exports.createCustomerInAugmontDb = async (req, res) => {
-  try{
+  try {
     const id = req.userData.id;
     const merchantData = await getMerchantData();
 
     const customer = await models.customer.findOne({ where: { id, isActive: true } });
-  
+
     let customerUniqueId;
     await sequelize.transaction(async (t) => {
       if (!customer.customerUniqueId) {
@@ -168,7 +177,7 @@ exports.createCustomerInAugmontDb = async (req, res) => {
         customerUniqueId = customer.customerUniqueId;
       }
     });
-  
+
     const data = qs.stringify({
       'mobileNumber': customer.mobileNumber,
       // 'emailId': email,
@@ -193,17 +202,17 @@ exports.createCustomerInAugmontDb = async (req, res) => {
       },
       data: data
     });
-  
+
     return res.status(200).json({ message: "Success" });
-  
-  }catch(err){
+
+  } catch (err) {
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
-  
-      if (err.response) {
-        return res.status(422).json(err.response.data);
-      } else {
-        console.log('Error', err.message);
-      }
+
+    if (err.response) {
+      return res.status(422).json(err.response.data);
+    } else {
+      console.log('Error', err.message);
+    }
   }
 
 }

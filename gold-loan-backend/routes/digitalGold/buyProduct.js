@@ -9,7 +9,7 @@ const checkRolePermission = require('../../middleware/checkRolesPermissions');
 const customerCheckAuth = require('../../middleware/customerCheckAuth'); // IMPORTING CHECKAUTH MIDDLEWARE
 
 
-route.post('/', customerCheckAuth, buyValidation, validationError, wrapper(buyProduct)); 
+route.post('/buy-metal',  wrapper(buyProduct));
 
 route.get('/', customerCheckAuth, wrapper(getAllBuyDetails));
 

@@ -16,6 +16,8 @@ const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetai
 const { getSoa } = require('../controllers/soaOfLoan/soaOfLoan');
 
 const { uploadFile, base64Convertor } = require('../controllers/fileUpload/fileUpload'); // importing fileUpload controller.
+const { razorPayCreateOrder } = require('../controllers/razorpay/razorpay')
+
 
 //customer App
 
@@ -74,6 +76,7 @@ router.use('/contact-us', contactUsEmail)
 
 router.use('/kyc', customerWebsiteKyc)
 
+router.post('/razor-pay', wrapper(razorPayCreateOrder));
 
 
 module.exports = router;

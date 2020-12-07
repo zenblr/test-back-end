@@ -145,6 +145,7 @@ export class InterestCalculatorComponent implements OnInit {
         }
 
         if (changes.totalAmt.currentValue <= Number(this.controls.finalLoanAmount.value)) {
+          this.controls.loanTransferExtraAmount.reset()
           this.controls.loanTransferExtraAmount.disable()
         } else {
           this.controls.loanTransferExtraAmount.enable()

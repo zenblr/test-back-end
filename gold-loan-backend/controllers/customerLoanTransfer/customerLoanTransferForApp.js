@@ -55,7 +55,7 @@ exports.applyLoanTransferFromApp = async (req, res, next) => {
         if (check.isEmpty(masterLoan)) {
             let createLoanTransfer = await models.customerLoanTransfer.create({ createdBy, modifiedBy }, { transaction: t });
 
-            let newMasterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, createdBy, modifiedBy, internalBranchId: req.userData.internalBranchId, loanTransferId: createLoanTransfer.id, appraiserRequestId: requestId, isLoanTransfer: true }, { transaction: t })
+            let newMasterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, createdBy, modifiedBy, internalBranchId: req.userData.internalBranchId, loanTransferId: createLoanTransfer.id, appraiserRequestId: requestId, isLoanTransfer: true , customerLoanCurrentStage: '1'}, { transaction: t })
 
             let loan = await models.customerLoan.create({ customerId, masterLoanId: newMasterLoan.id, loanType: 'secured', createdBy, modifiedBy }, { transaction: t })
 

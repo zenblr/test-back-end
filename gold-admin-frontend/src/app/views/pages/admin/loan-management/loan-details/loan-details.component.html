@@ -24,7 +24,7 @@
                 <ng-container matColumnDef="branchName">
                     <mat-header-cell *matHeaderCellDef>Branch Name</mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        {{loan?.customer?.internalBranch?.bankBranch | titlecase}}
+                        {{loan?.customer?.internalBranch?.name | titlecase}}
                     </mat-cell>
                 </ng-container>
                 
