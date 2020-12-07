@@ -433,16 +433,16 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
     this.totalPurtiy = 0;
     this.OrnamentsData.value.forEach(gross => {
       if (gross.grossWeight) {
-        this.totalGrossWeight += Number(gross.grossWeight)
+        this.totalGrossWeight += Number(gross.grossWeight.toFixed(2))
       }
       if (gross.netWeight) {
-        this.totalNetWeight += Number(gross.netWeight)
+        this.totalNetWeight += Number(gross.netWeight.toFixed(2))
       }
       if (gross.deductionWeight) {
-        this.totalDeductionWeight += Number(gross.deductionWeight)
+        this.totalDeductionWeight += Number(gross.deductionWeight.toFixed(2))
       }
       if (gross.ltvPercent && gross.netWeight) {
-        this.totalPurtiy += (gross.ltvPercent/100 * gross.netWeight)
+        this.totalPurtiy += Number((gross.ltvPercent/100 * gross.netWeight).toFixed(2))
       }
     })
   }
