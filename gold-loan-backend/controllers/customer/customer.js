@@ -30,7 +30,7 @@ exports.getOtp = async (req, res, next) => {
 }
 
 exports.addCustomer = async (req, res, next) => {
-  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId, source, panType, panImage, leadSourceId, moduleId } = req.body;
+  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId, source, panType, panImage, leadSourceId, moduleId, form60Image } = req.body;
   // cheanges needed here
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
@@ -61,7 +61,7 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint.modulePoint, sourceFrom: sourcePoint },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint.modulePoint, sourceFrom: sourcePoint, form60Image },
       { transaction: t }
     );
 
@@ -284,7 +284,7 @@ exports.editCustomer = async (req, res, next) => {
   let modifiedBy = req.userData.id;
   const { customerId } = req.params;
 
-  let { cityId, stateId, pinCode, internalBranchId, statusId, comment, source, panType, panCardNumber, panImage, leadSourceId, moduleId } = req.body;
+  let { cityId, stateId, pinCode, internalBranchId, statusId, comment, source, panType, panCardNumber, panImage, form60Image, leadSourceId, moduleId } = req.body;
   let { id } = await models.status.findOne({ where: { statusName: "confirm" } })
 
   let customerExist = await models.customer.findOne({ where: { id: customerId } });
@@ -296,7 +296,7 @@ exports.editCustomer = async (req, res, next) => {
   }
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.update(
-      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy, source, panType, panCardNumber, panImage, leadSourceId },
+      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy, source, panType, panCardNumber, panImage, leadSourceId, form60Image },
       { where: { id: customerId }, transaction: t }
     );
   });
@@ -652,7 +652,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
 
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
-    attributes: { exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
     order: [["id", "DESC"]],
     offset: offset,
     subQuery: false,

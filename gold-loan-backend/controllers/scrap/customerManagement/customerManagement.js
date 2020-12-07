@@ -143,7 +143,7 @@ exports.getScrapDetailCustomerManagement = async (req, res, next) => {
         include: associateModel,
     });
     if (scrapDetails.length === 0) {
-        return res.status(200).json({data: scrapDetails, count: count.length});
+        return res.status(200).json({ data: scrapDetails, count: count.length });
     } else {
         return res.status(200).json({ data: scrapDetails, count: count.length });
     }
@@ -193,7 +193,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
             model: models.customerScrap,
             as: 'customerScrap',
             // where: { scrapStageId: stageId.id },
-            where: {isScrapCompleted: true},
+            where: { isScrapCompleted: true },
             required: true,
             attributes: ['id', 'customerId', 'scrapUniqueId', 'scrapStageId', 'finalScrapAmountAfterMelting']
         },
@@ -217,7 +217,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
 
     let allCustomers = await models.customer.findAll({
         where: searchQuery,
-        attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panCardNumber', 'email', 'panImage', 'stateId', 'cityId', 'pinCode'],
+        attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panCardNumber', 'email', 'panImage', 'form60Image', 'stateId', 'cityId', 'pinCode'],
         order: [["id", "DESC"]],
         offset: offset,
         subQuery: false,
@@ -231,7 +231,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
     });
     console.log(allCustomers);
     if (allCustomers.length === 0) {
-        return res.status(200).json({data: allCustomers, count: count.length});
+        return res.status(200).json({ data: allCustomers, count: count.length });
     } else {
         return res.status(200).json({ message: 'Success', data: allCustomers, count: count.length });
     }
@@ -269,7 +269,7 @@ exports.getsingleCustomerManagement = async (req, res) => {
                 where: { isScrapCompleted: true },
                 required: true,
                 attributes: ['id', 'customerId', 'scrapUniqueId', 'finalScrapAmountAfterMelting', 'scrapStageId'],
-                include:[
+                include: [
                     {
                         model: models.customerScrapPersonalDetail,
                         as: 'scrapPersonalDetail',
@@ -286,10 +286,10 @@ exports.getsingleCustomerManagement = async (req, res) => {
                         where: { isActive: true },
                         attributes: ['id', 'scrapId', 'paymentType', 'bankName', 'bankBranch', 'acHolderName', 'acNumber', 'ifscCode', 'passbookProof', 'isActive']
                     }
-                ] 
-                
+                ]
+
             }
-            
+
         ]
     })
 
@@ -298,91 +298,91 @@ exports.getsingleCustomerManagement = async (req, res) => {
 
 //get function for single scrap in customer management
 exports.getSingleScrapInCustomerManagment = async (req, res, next) => {
-        let { customerScrapId } = req.query;
+    let { customerScrapId } = req.query;
 
 
-        let customerScrap = await models.customerScrap.findOne({
-            where: { id: customerScrapId },
-            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-            include: [
-                {
-                    model: models.scrapStage,
-                    as: 'scrapStage',
-                    attributes: ['id', 'stageName']
-                },
-                {
-                    model: models.customerScrapPersonalDetail,
-                    as: 'scrapPersonalDetail',
-                    where: { isActive: true },
-                    attributes: ['id', 'scrapId', 'customerUniqueId', 'startDate', 'kycStatus']
-                },
-                {
-                    model: models.customerAcknowledgement,
-                    as: 'customerScrapAcknowledgement',
-                    where: { isActive: true },
-                    attributes: ['id', 'scrapId', 'processingCharges', 'standardDeduction', 'customerConfirmationStatus', 'customerConfirmation']
-                },
-                {
-                    model: models.customerScrapBankDetails,
-                    as: 'scrapBankDetails',
-                    where: { isActive: true },
-                    attributes: ['id', 'scrapId', 'paymentType', 'bankName', 'bankBranch', 'acHolderName', 'acNumber', 'ifscCode', 'passbookProof', 'isActive']
-                },
-                {
-                    model: models.customerScrapOrnamentsDetail,
-                    as: 'scrapOrnamentsDetail',
-                    where: { isActive: true },
-                    attributes: ['id', 'scrapId', 'ornamentTypeId', 'quantity', 'grossWeight', 'netWeight', 'deductionWeight', 'karat', 'approxPurityReading', 'ornamentImage', 'ornamentImageWithWeight', 'ornamentImageWithXrfMachineReading', 'ltvAmount', 'scrapAmount', 'isActive'],
+    let customerScrap = await models.customerScrap.findOne({
+        where: { id: customerScrapId },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+        include: [
+            {
+                model: models.scrapStage,
+                as: 'scrapStage',
+                attributes: ['id', 'stageName']
+            },
+            {
+                model: models.customerScrapPersonalDetail,
+                as: 'scrapPersonalDetail',
+                where: { isActive: true },
+                attributes: ['id', 'scrapId', 'customerUniqueId', 'startDate', 'kycStatus']
+            },
+            {
+                model: models.customerAcknowledgement,
+                as: 'customerScrapAcknowledgement',
+                where: { isActive: true },
+                attributes: ['id', 'scrapId', 'processingCharges', 'standardDeduction', 'customerConfirmationStatus', 'customerConfirmation']
+            },
+            {
+                model: models.customerScrapBankDetails,
+                as: 'scrapBankDetails',
+                where: { isActive: true },
+                attributes: ['id', 'scrapId', 'paymentType', 'bankName', 'bankBranch', 'acHolderName', 'acNumber', 'ifscCode', 'passbookProof', 'isActive']
+            },
+            {
+                model: models.customerScrapOrnamentsDetail,
+                as: 'scrapOrnamentsDetail',
+                where: { isActive: true },
+                attributes: ['id', 'scrapId', 'ornamentTypeId', 'quantity', 'grossWeight', 'netWeight', 'deductionWeight', 'karat', 'approxPurityReading', 'ornamentImage', 'ornamentImageWithWeight', 'ornamentImageWithXrfMachineReading', 'ltvAmount', 'scrapAmount', 'isActive'],
+                include: [
+                    {
+                        model: models.ornamentType,
+                        as: "ornamentType",
+                        attributes: ['id', 'name']
+                    }
+                ]
+            },
+            {
+                model: models.scrapMeltingOrnament,
+                as: 'meltingOrnament',
+                where: { isActive: true },
+                attributes: ['id', 'scrapId', 'grossWeight', 'netWeight', 'deductionWeight', 'karat', 'purityReading', 'ornamentImageWithWeight', 'ornamentImageWithXrfMachineReading', 'ornamentImage', 'customerConfirmation', 'isActive']
+            },
+            {
+                model: models.customerScrapPackageDetails,
+                as: 'scrapPacketDetails',
+                where: { isActive: true },
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy'] },
+                include: [{
+                    model: models.scrapPacket,
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
                     include: [
                         {
-                            model: models.ornamentType,
-                            as: "ornamentType",
-                            attributes: ['id', 'name']
+                            model: models.scrapPacketOrnament,
+                            as: 'scrapPacketOrnament',
                         }
                     ]
-                },
-                {
-                    model: models.scrapMeltingOrnament,
-                    as: 'meltingOrnament',
-                    where: { isActive: true },
-                    attributes: ['id', 'scrapId', 'grossWeight', 'netWeight', 'deductionWeight', 'karat', 'purityReading', 'ornamentImageWithWeight', 'ornamentImageWithXrfMachineReading', 'ornamentImage', 'customerConfirmation', 'isActive']
-                },
-                {
-                    model: models.customerScrapPackageDetails,
-                    as: 'scrapPacketDetails',
-                    where: { isActive: true },
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy'] },
-                    include: [{
-                        model: models.scrapPacket,
-                        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                        include: [
-                            {
-                                model: models.scrapPacketOrnament,
-                                as: 'scrapPacketOrnament',
-                            }
-                        ]
-                    }]
-                },
-                {
-                    model: models.customerScrapDocument,
-                    as: 'scrapDocument',
-                    where: { isActive: true },
-                },
-                {
-                    model: models.customer,
-                    as: 'customer',
-                    where: { isActive: true },
-                    attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
-                },
-                {
-                    model: models.customerScrapDisbursement,
-                    as: 'scrapDisbursement',
-                    attributes: ['scrapId', 'scrapAmount', 'transactionId', 'date', 'paymentMode', 'ifscCode', 'bankName', 'bankBranch', 'acHolderName', 'acNumber']
-                }
-            ]
-    
-        });
-        return res.status(200).json({ message: 'Success', data: customerScrap })
+                }]
+            },
+            {
+                model: models.customerScrapDocument,
+                as: 'scrapDocument',
+                where: { isActive: true },
+            },
+            {
+                model: models.customer,
+                as: 'customer',
+                where: { isActive: true },
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'form60Image', 'mobileNumber'],
+            },
+            {
+                model: models.customerScrapDisbursement,
+                as: 'scrapDisbursement',
+                attributes: ['scrapId', 'scrapAmount', 'transactionId', 'date', 'paymentMode', 'ifscCode', 'bankName', 'bankBranch', 'acHolderName', 'acNumber']
+            }
+        ]
 
-     
+    });
+    return res.status(200).json({ message: 'Success', data: customerScrap })
+
+
 }

@@ -170,14 +170,14 @@ let getAllOrnamentReleasedCustomerLoanId = async () => {
         where: {
             isActive: true,
             isLoanCompleted: true,
-            isOrnamentsReleased : true
+            isOrnamentsReleased: true
         },
         attributes: ['id'],
         include: [{
-                model: models.customerLoan,
-                as: 'customerLoan',
-                attributes: ['id']
-            }],
+            model: models.customerLoan,
+            as: 'customerLoan',
+            attributes: ['id']
+        }],
     });
     let customerLoanId = [];
     for (const masterLoanData of masterLona) {
@@ -359,7 +359,7 @@ let getAllPaidInterestForCalculation = async (loanId) => {
 
 let getAllPaidPartialyPaidInterest = async (loanId) => {
     let allpaidPartialyPaidInterest = await models.customerLoanInterest.findAll({
-        where: { loanId: loanId,  emiStatus: { [Op.in]: ['paid','partially paid'] } }
+        where: { loanId: loanId, emiStatus: { [Op.in]: ['paid', 'partially paid'] } }
     });
     return allpaidPartialyPaidInterest;
 }
@@ -1347,7 +1347,7 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'form60Image', 'mobileNumber'],
             },
             {
                 model: models.customerLoanDisbursement,
@@ -1719,7 +1719,7 @@ let getSingleMasterLoanDetail = async (masterLoanId) => {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'form60Image', 'mobileNumber'],
             },
             {
                 model: models.customerLoanDisbursement,
@@ -2438,7 +2438,7 @@ let allOrnamentsDetails = async (masterLoanId) => {
     return ornaments;
 }
 
-let getornamentsWeightInfo = async(requestedOrnaments, otherOrnaments, loanData, allOrnaments) => {
+let getornamentsWeightInfo = async (requestedOrnaments, otherOrnaments, loanData, allOrnaments) => {
     let ornamentsWeightInfo = {
         releaseGrossWeight: 0,
         releaseDeductionWeight: 0,
@@ -2519,7 +2519,7 @@ let getornamentsWeightInfo = async(requestedOrnaments, otherOrnaments, loanData,
     return ornamentsWeightInfo;
 }
 
-let getornamentLoanInfo = async(masterLoanId, ornamentWeight, amount)=> {
+let getornamentLoanInfo = async (masterLoanId, ornamentWeight, amount) => {
     let loanData = await models.customerLoan.findAll({ where: { masterLoanId }, attributes: ['loanUniqueId', 'loanAmount'] });
     let loanAmountData = await models.customerLoanMaster.findOne({ where: { id: masterLoanId }, attributes: ['finalLoanAmount', 'outstandingAmount'] });
     let loanDetails = {
@@ -2601,10 +2601,10 @@ module.exports = {
     interestSplit: interestSplit,
     getAllPaidInterestForCalculation: getAllPaidInterestForCalculation,
     getAllPartAndFullReleaseData: getAllPartAndFullReleaseData,
-    ornementsDetails:ornementsDetails,
-    allOrnamentsDetails:allOrnamentsDetails,
-    getornamentsWeightInfo:getornamentsWeightInfo,
-    getornamentLoanInfo:getornamentLoanInfo,
-    calculationDataForReleasedLoan:calculationDataForReleasedLoan,
-    getAllPaidPartialyPaidInterest:getAllPaidPartialyPaidInterest
+    ornementsDetails: ornementsDetails,
+    allOrnamentsDetails: allOrnamentsDetails,
+    getornamentsWeightInfo: getornamentsWeightInfo,
+    getornamentLoanInfo: getornamentLoanInfo,
+    calculationDataForReleasedLoan: calculationDataForReleasedLoan,
+    getAllPaidPartialyPaidInterest: getAllPaidPartialyPaidInterest
 }
