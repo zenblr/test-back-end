@@ -2052,7 +2052,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 model: models.customer,
                 as: 'customer',
                 attributes: {
-                    exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'],
+                    exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'],
                 },
                 include: [
                     {
