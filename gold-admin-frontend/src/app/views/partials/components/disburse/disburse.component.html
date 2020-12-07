@@ -9,8 +9,7 @@
                     <div class="col-8">
                         <!-- <input type="text" class="form-control" formControlName="paymentMode"
                                     [class.isError]="controls.paymentMode.invalid &&  controls.paymentMode.touched"> -->
-                        <select class="form-control" formControlName="paymentMode"
-                            (change)="setConditionalValidation($event)"
+                        <select class="form-control" formControlName="paymentMode" (change)="setConditionalValidation()"
                             [class.isError]="controls.paymentMode.invalid &&  controls.paymentMode.touched">
                             <option value="" selected disabled>Select Payment Mode</option>
                             <option value="cash">Cash Mode</option>
@@ -38,7 +37,8 @@
                                     <option value="NEFT">NEFT</option>
                                     <option value="RTGS">RTGS</option>
                                 </select>
-                                <mat-error *ngIf="controls.bankTransferType.touched && controls.bankTransferType.errors?.required">
+                                <mat-error
+                                    *ngIf="controls.bankTransferType.touched && controls.bankTransferType.errors?.required">
                                     Required field
                                 </mat-error>
                             </div>
