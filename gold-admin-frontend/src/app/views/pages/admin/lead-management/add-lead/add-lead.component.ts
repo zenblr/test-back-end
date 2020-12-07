@@ -45,6 +45,7 @@ export class AddLeadComponent implements OnInit {
   showCommentBox = false;
   leadSources = [];
   modules = [];
+  @ViewChild("file", { static: false }) file;
 
   constructor(
     public dialogRef: MatDialogRef<AddLeadComponent>,
@@ -95,16 +96,28 @@ export class AddLeadComponent implements OnInit {
               Validators.required
             ])
           this.controls.panCardNumber.updateValueAndValidity()
+
+          this.controls.form60Image.reset()
+          this.controls.form60Image.setValidators([])
+          this.controls.form60Image.updateValueAndValidity()
+          this.controls.panImage.reset()
+          this.controls.panImage.setValidators(Validators.required)
+          this.controls.panImage.updateValueAndValidity()
         } else {
           this.controls.panCardNumber.reset()
           this.controls.panCardNumber.clearValidators()
           this.controls.panCardNumber.updateValueAndValidity()
 
-
+          this.controls.form60Image.reset()
+          this.controls.panImage.reset()
+          this.controls.panImage.setValidators([])
+          this.controls.panImage.updateValueAndValidity()
+          this.controls.form60Image.setValidators(Validators.required)
+          this.controls.form60Image.updateValueAndValidity()
         }
-        this.controls.panImage.reset()
-        this.controls.panImage.setValidators(Validators.required)
-        this.controls.panImage.updateValueAndValidity()
+        // this.controls.panImage.reset()
+        // this.controls.panImage.setValidators(Validators.required)
+        // this.controls.panImage.updateValueAndValidity()
       } else {
         this.controls.panImage.clearValidators()
         this.controls.panImage.updateValueAndValidity()
@@ -118,6 +131,10 @@ export class AddLeadComponent implements OnInit {
         this.controls.panImg.clearValidators()
         this.controls.panImg.updateValueAndValidity()
         this.controls.panImg.reset()
+
+        this.controls.form60Image.clearValidators()
+        this.controls.form60Image.updateValueAndValidity()
+        this.controls.form60Image.reset()
 
         this.controls.form60Img.clearValidators()
         this.controls.form60Img.updateValueAndValidity()
@@ -165,7 +182,8 @@ export class AddLeadComponent implements OnInit {
       leadSourceId: [null],
       source: [''],
       moduleId: [, [Validators.required]],
-      form60Img: [],
+      form60Image: [],
+      form60Img: []
     });
     this.getCities()
   }
@@ -372,18 +390,28 @@ export class AddLeadComponent implements OnInit {
           if (res) {
             // this.controls.form60.patchValue(event.target.files[0].name)
             let formControl = this.getFormControlPanForm60()
-            this.controls[formControl].patchValue(res.uploadFile.path)
-            this.controls.panImg.patchValue(res.uploadFile.URL)
+            this.controls[formControl.path].patchValue(res.uploadFile.path)
+            this.controls[formControl.URL].patchValue(res.uploadFile.URL)
+
+            // this.controls.panImg.patchValue(res.uploadFile.URL)
           }
-        }), catchError(err => {
+        }),
+        catchError(err => {
           if (err.error.message) this.toastr.errorToastr(err.error.message)
           throw err
-        })).subscribe()
+        }),
+        finalize(() => {
+          if (this.file && this.file.nativeElement.value) this.file.nativeElement.value = '';
+          event.target.value = ''
+        })
+      ).subscribe()
+    } else {
+      event.target.value = ''
     }
   }
 
-  preview() {
-    const img = this.controls.panImg.value
+  preview(img) {
+    // const img = this.controls.panImg.value
     const ext = this.sharedService.getExtension(img)
     if (ext == 'pdf') {
       this.dialog.open(PdfViewerComponent, {
@@ -409,9 +437,10 @@ export class AddLeadComponent implements OnInit {
 
   remove() {
     let formControl = this.getFormControlPanForm60()
-    this.controls[formControl].patchValue(null)
+    this.controls[formControl.path].patchValue(null)
+    this.controls[formControl.URL].patchValue(null)
 
-    this.controls.panImg.patchValue(null)
+    // this.controls.panImg.patchValue(null)
   }
   disable() {
     this.leadForm.controls.internalBranchId.disable();
@@ -611,10 +640,24 @@ export class AddLeadComponent implements OnInit {
     let panType = this.controls.panType.value
     if (panType) {
       if (panType === 'pan') {
-        return 'panImage'
+        return { path: 'panImage', URL: 'panImg' }
       }
       if (panType === 'form60') {
-        return 'form60Img'
+        return { path: 'form60Image', URL: 'form60Img' }
+      }
+    }
+  }
+
+  changePanType() {
+    let panType = this.controls.panType.value
+    if (panType) {
+      if (panType === 'pan') {
+        this.controls.form60Image.patchValue(null)
+        this.controls.form60Img.patchValue(null)
+      }
+      if (panType === 'form60') {
+        this.controls.panImage.patchValue(null)
+        this.controls.panImg.patchValue(null)
       }
     }
   }

@@ -165,7 +165,7 @@
                                     <label class="text-color font-weight-500">PAN / FORM 60 </label>
                                 </div>
                                 <div class="col-8">
-                                    <select class="form-control" formControlName="panType" (change)='remove()'>
+                                    <select class="form-control" formControlName="panType" (change)='changePanType()'>
                                         <option value='' selected>Select</option>
                                         <option value="pan">PAN</option>
                                         <option value="form60">FORM 60</option>
@@ -176,18 +176,18 @@
                                 <div class="col-4 align-self-center form-label">
                                     <label class="mandatory  text-color font-weight-500">FORM 60 </label>
                                 </div>
-                                <div class="offset-5 col" *ngIf="!controls.panImg.value">
+                                <div class="offset-5 col" *ngIf="!controls.form60Img.value">
                                     <input type="file" #file (input)="getFileInfo($event)" class="d-none">
                                     <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Attach'"
                                         (click)="file.click()">
                                     </kt-button>
                                 </div>
-                                <div class="col-5 form-label" *ngIf="controls.panImg.value">
+                                <div class="col-5 form-label" *ngIf="controls.form60Img.value">
                                     <label for="" class="text-primary kt-padding-l-15 kt-pointer"
-                                        (click)="preview()">View
+                                        (click)="preview(controls.form60Img.value)">View
                                         Image</label>
                                 </div>
-                                <div class="col form-label" *ngIf="controls.panImg.value">
+                                <div class="col form-label" *ngIf="controls.form60Img.value">
                                     <label *ngIf="data.action != 'view'" class="text-danger kt-padding-l-15 kt-pointer"
                                         (click)="remove()">Remove</label>
                                 </div>
@@ -236,7 +236,7 @@
                                 </div>
                                 <div class="offset-4 col-5 form-label" *ngIf="controls.panImg.value">
                                     <label for="" class="text-primary kt-padding-l-15 kt-pointer"
-                                        (click)="preview()">View
+                                        (click)="preview(controls.panImg.value)">View
                                         Image</label>
                                 </div>
                                 <div class="col form-label" *ngIf="controls.panImg.value">
