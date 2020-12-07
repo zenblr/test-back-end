@@ -99,6 +99,8 @@ export class AddLeadComponent implements OnInit {
           this.controls.panCardNumber.reset()
           this.controls.panCardNumber.clearValidators()
           this.controls.panCardNumber.updateValueAndValidity()
+
+
         }
         this.controls.panImage.reset()
         this.controls.panImage.setValidators(Validators.required)
@@ -117,6 +119,9 @@ export class AddLeadComponent implements OnInit {
         this.controls.panImg.updateValueAndValidity()
         this.controls.panImg.reset()
 
+        this.controls.form60Img.clearValidators()
+        this.controls.form60Img.updateValueAndValidity()
+        this.controls.form60Img.reset()
       }
     });
 
@@ -159,7 +164,8 @@ export class AddLeadComponent implements OnInit {
       comment: [''],
       leadSourceId: [null],
       source: [''],
-      moduleId: [, [Validators.required]]
+      moduleId: [, [Validators.required]],
+      form60Img: [],
     });
     this.getCities()
   }
@@ -365,8 +371,9 @@ export class AddLeadComponent implements OnInit {
         map(res => {
           if (res) {
             // this.controls.form60.patchValue(event.target.files[0].name)
+            let formControl = this.getFormControlPanForm60()
+            this.controls[formControl].patchValue(res.uploadFile.path)
             this.controls.panImg.patchValue(res.uploadFile.URL)
-            this.controls.panImage.patchValue(res.uploadFile.path)
           }
         }), catchError(err => {
           if (err.error.message) this.toastr.errorToastr(err.error.message)
@@ -401,7 +408,9 @@ export class AddLeadComponent implements OnInit {
   }
 
   remove() {
-    this.controls.panImage.patchValue(null)
+    let formControl = this.getFormControlPanForm60()
+    this.controls[formControl].patchValue(null)
+
     this.controls.panImg.patchValue(null)
   }
   disable() {
@@ -416,6 +425,8 @@ export class AddLeadComponent implements OnInit {
   }
   onSubmit() {
     if (this.data.action == 'add') {
+      console.log(this.leadForm.getRawValue())
+      return
       if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists) {
         this.checkforVerfication()
         this.leadForm.markAllAsTouched();
@@ -596,4 +607,15 @@ export class AddLeadComponent implements OnInit {
     // this.leadForm.controls.panImg.enable()
   }
 
+  getFormControlPanForm60() {
+    let panType = this.controls.panType.value
+    if (panType) {
+      if (panType === 'pan') {
+        return 'panImage'
+      }
+      if (panType === 'form60') {
+        return 'form60Img'
+      }
+    }
+  }
 }
