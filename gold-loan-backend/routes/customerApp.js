@@ -9,6 +9,7 @@ const jewelleryRelease = require('./jewelleryReleaseMobileApp');  //upload Packe
 const partPayment = require('./partPaymentCustomerApp');  //upload Packets List 
 const quickPay = require('./quickPayCustomerApp');  //upload Packets List 
 const contactUsEmail = require('./contactUs')
+const walletCustomer = require('./walletCustomer')
 
 const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetailsOfCustomer, readBankDetailsOfCustomer, readNomineeDetailsOfCustomer, readAddressDetailsOfCustomer,
     readPanCardImageOfCustomer, readAddressImageOfCustomer, readPartnerBranch, readAllScheme, readMyLoan
@@ -67,6 +68,6 @@ router.use('/quick-pay', quickPay)
 
 router.use('/contact-us', contactUsEmail)
 
-
+router.use('/wallet', walletCustomer)
 
 module.exports = router;
