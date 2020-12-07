@@ -579,7 +579,13 @@ let getKycInfo = async (customerId) => {
 let updateCompleteKycModule = async (oldCompleteKycPoint, moduleId) => {
     let whereCondition
     if (moduleId == 3) {
-        whereCondition = { id: { [Op.not]: 1 } }
+        whereCondition = { id: { [Op.not]: [1, 4] } }
+    } else if (moduleId == 1) {
+        whereCondition = { id: { [Op.not]: [4] } }
+    } else if (moduleId == 4) {
+        whereCondition = { id: { [Op.in]: [4] } }
+    } else if (moduleId == 2) {
+        whereCondition = { id: { [Op.in]: [2] } }
     }
 
     let kycCompletePoint = oldCompleteKycPoint
