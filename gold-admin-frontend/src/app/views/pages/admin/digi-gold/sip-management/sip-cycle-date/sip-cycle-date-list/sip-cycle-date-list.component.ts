@@ -14,7 +14,6 @@ import { SipCycleDateDatasource, SipCycleDateService } from '../../../../../../.
   styleUrls: ['./sip-cycle-date-list.component.scss']
 })
 export class SipCycleDateListComponent implements OnInit {
-
   dataSource: SipCycleDateDatasource;
   displayedColumns = ['sipCycleDate', 'sipCycleDateStatus', 'action'];
   result = []
@@ -23,6 +22,12 @@ export class SipCycleDateListComponent implements OnInit {
   destroy$ = new Subject();
   searchValue = '';
   private subscriptions: Subscription[] = [];
+  queryParamsData = {
+    from: 1,
+    to: 25,
+    search: '',
+    cycleDateStatus: ''
+  }
 
   constructor(
     private dataTableService: DataTableService,
@@ -46,7 +51,6 @@ export class SipCycleDateListComponent implements OnInit {
     ).subscribe();
     this.subscriptions.push(paginatorSubscriptions);
 
-
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.searchValue = res;
@@ -62,8 +66,7 @@ export class SipCycleDateListComponent implements OnInit {
       this.result = res;
     });
     this.subscriptions.push(entitiesSubscription);
-
-    this.dataSource.getCycleDate(1, 25, this.searchValue, '');
+    this.dataSource.loadCycleDate(this.queryParamsData);
   }
 
   ngOnDestroy() {
@@ -74,14 +77,13 @@ export class SipCycleDateListComponent implements OnInit {
     this.destroy$.complete();
   }
 
-
   loadPage() {
     if (this.paginator.pageIndex < 0 || this.paginator.pageIndex > (this.paginator.length / this.paginator.pageSize))
       return;
-    let from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
-    let to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
-
-    this.dataSource.getCycleDate(from, to, this.searchValue, '');
+    this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
+    this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
+    this.queryParamsData.search = this.searchValue
+    this.dataSource.loadCycleDate(this.queryParamsData);
   }
 
   addCycleDate() {
@@ -129,6 +131,4 @@ export class SipCycleDateListComponent implements OnInit {
       }
     });
   }
-
-
 }
