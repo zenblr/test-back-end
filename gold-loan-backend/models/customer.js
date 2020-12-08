@@ -291,7 +291,6 @@ module.exports = (sequelize, DataTypes) => {
         if (values.panImage) {
             values.panImg = process.env.BASE_URL + values.panImage;
         }
-        var values = Object.assign({}, this.get());
         if (values.form60Image) {
             values.form60Img = process.env.BASE_URL + values.form60Image;
         }

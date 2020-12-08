@@ -283,8 +283,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
 
     let getCustomerInfo = await models.customer.findOne({
         where: { id: customerId, statusId: 1 },
-        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage', 'form60Image',
-            , 'panCardNumber', 'internalBranchId'],
+        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage', 'form60Image', 'panCardNumber', 'internalBranchId'],
     })
 
     //change
