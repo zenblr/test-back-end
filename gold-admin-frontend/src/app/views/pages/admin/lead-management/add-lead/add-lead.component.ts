@@ -454,8 +454,8 @@ export class AddLeadComponent implements OnInit {
   }
   onSubmit() {
     if (this.data.action == 'add') {
-      console.log(this.leadForm.getRawValue())
-      return
+      // console.log(this.leadForm.getRawValue())
+      // return
       if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists) {
         this.checkforVerfication()
         this.leadForm.markAllAsTouched();
