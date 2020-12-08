@@ -10,6 +10,7 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 const extend = require('extend')
 const { customerKycAdd, customerKycEdit, getKycInfo, digiOrEmiKyc } = require('../../service/customerKyc')
 const check = require("../../lib/checkLib");
+const { updateCompleteKycModule } = require('../../service/customerKyc')
 
 exports.submitApplyKyc = async (req, res, next) => {
     let modifiedByCustomer = req.userData.id;
@@ -91,14 +92,23 @@ exports.digiOrEmiKyc = async (req, res, next) => {
 
         await sequelize.transaction(async (t) => {
             let modulePoint = await models.module.findOne({ where: { id: req.body.moduleId }, transaction: t })
-            let { allModulePoint } = await model.customer.findOne({ where: { id: id }, transaction: t })
+            let { allModulePoint, kycCompletePoint } = await model.customer.findOne({ where: { id: id }, transaction: t })
+
+            //update complate kyc points
+            kycCompletePoint = await updateCompleteKycModule(kycCompletePoint, moduleId)
 
             allModulePoint = allModulePoint | modulePoint.modulePoint
-            await models.customer.update({ panType, panImage, panCardNumber: panNumber, allModulePoint }, { where: { id: id }, transaction: t })
+            await models.customer.update({ panType, panImage, panCardNumber: panNumber, allModulePoint, kycCompletePoint }, { where: { id: id }, transaction: t })
         })
 
         return res.status(data.status).json({ customerKycReview: data.customerKycReview, moduleId: data.moduleId, userType: data.userType, customerId: data.customerId, customerKycId: data.customerKycId })
     } else {
-        return res.status(data.status).json({ message: data.message })
+        if(req.body.moduleId == 2){
+            return res.status(500).json({ message: 'Server Error' })
+
+        }else{
+            return res.status(data.status).json({ message: data.message })
+
+        }
     }
 }

@@ -583,7 +583,7 @@ let updateCompleteKycModule = async (oldCompleteKycPoint, moduleId) => {
     } else if (moduleId == 1) {
         whereCondition = { id: { [Op.not]: [4] } }
     } else if (moduleId == 4) {
-        whereCondition = { id: { [Op.in]: [4] } }
+        whereCondition = { id: { [Op.in]: [4, 2] } }
     } else if (moduleId == 2) {
         whereCondition = { id: { [Op.in]: [2] } }
     }
