@@ -42,7 +42,7 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
   reasons: any[] = [];
   viewOpertaionalForm: boolean = true;
   stage: any;
-  isLoanTransfer: boolean;
+  isNewLoanFromPartRelease: boolean;
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
@@ -200,8 +200,8 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
         // this.statusAppraiser()
         // this.statusBM()
 
-        if (changes.details.currentValue.masterLoan.loanTransfer || changes.details.currentValue.masterLoan.isNewLoanFromPartRelease) {
-          this.isLoanTransfer = true
+        if ( changes.details.currentValue.masterLoan.isNewLoanFromPartRelease) {
+          this.isNewLoanFromPartRelease = true
         }
         this.ref.detectChanges()
 
@@ -473,13 +473,13 @@ export class ApprovalComponent implements OnInit, AfterViewInit, OnChanges {
         this.loanFormService.opsRating(this.approvalForm.value, this.masterAndLoanIds).pipe(
           map(res => {
             if (this.approvalForm.controls.loanStatusForOperatinalTeam.value == 'approved') {
-              // if (!this.isLoanTransfer) {
+              if (!this.isNewLoanFromPartRelease) {
                 this.disableForm(4)
                 this.stage = 4
                 this.disbursal.emit(4)
-              // } else {
-              //   this.router.navigate(['/admin/loan-management/applied-loan'])
-              // }
+              } else {
+                this.router.navigate(['/admin/loan-management/applied-loan'])
+              }
             } else {
               this.router.navigate(['/admin/loan-management/applied-loan'])
             }
