@@ -1534,12 +1534,12 @@ exports.loanOpsTeamRating = async (req, res, next) => {
                         let parentDisbursementData = await models.customerLoanDisbursement.findAll({ where: { masterLoanId: loanMaster.parentLoanId }, order: [['id']] })
                         if (loan.loanType == "secured") {
                             await models.customerLoanDisbursement.create({
-                                loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy, transactionId: parentDisbursementData[0].transactionId
+                                loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy, transactionId: parentDisbursementData[0].transactionId , bankTransferType:parentDisbursementData[0].bankTransferType
                             }, { transaction: t })
                         } else {
                             if (parentDisbursementData.length > 1) {
                                 await models.customerLoanDisbursement.create({
-                                    loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy, transactionId: parentDisbursementData[1].transactionId
+                                    loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy, transactionId: parentDisbursementData[1].transactionId, bankTransferType:parentDisbursementData[1].bankTransferType
                                 }, { transaction: t })
                             } else {
                                 await models.customerLoanDisbursement.create({
@@ -2052,7 +2052,7 @@ exports.getSingleLoanDetails = async (req, res, next) => {
                 model: models.customer,
                 as: 'customer',
                 attributes: {
-                    exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'],
+                    exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'],
                 },
                 include: [
                     {

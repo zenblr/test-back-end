@@ -742,6 +742,7 @@ exports.updateAmountStatus = async (req, res, next) => {
                 return res.status(200).json({ message: "Success" });
             } else if (amountStatus == 'pending') {
                 await sequelize.transaction(async t => {
+                    await models.customerLoanTransaction.update({ depositStatus: "Pending" }, { where: { id: partReleaseData.customerLoanTransactionId }, transaction: t });
                     await models.partRelease.update({ amountStatus: 'pending', modifiedBy }, { where: { id: partReleaseId }, transaction: t });
                     await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_AMOUNT_STATUS_P, createdBy, modifiedBy }, { transaction: t });
                 });
@@ -1257,7 +1258,8 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                     finalNetWeight: oldOrnaments[i]['finalNetWeight'],
                     isReleased: false,
                     currentLtvAmount: currentLtvAmount,
-                    ltvPercent: oldOrnaments[i]['ltvPercent']
+                    ltvPercent: oldOrnaments[i]['ltvPercent'],
+                    remark:oldOrnaments[i]['remark']
                 }
 
                 allOrnmanets.push(ornamentData);
@@ -1797,6 +1799,7 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
                 return res.status(200).json({ message: "Success" });
             } else if (amountStatus == 'pending') {
                 await sequelize.transaction(async t => {
+                    await models.customerLoanTransaction.update({ depositStatus: "Pending" }, { where: { id: fullReleaseData.customerLoanTransactionId }, transaction: t });
                     await models.fullRelease.update({ amountStatus: 'pending', modifiedBy }, { where: { id: fullReleaseId }, transaction: t });
                     await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_AMOUNT_STATUS_P, createdBy, modifiedBy }, { transaction: t });
                 });
