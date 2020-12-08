@@ -1399,7 +1399,8 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                     finalNetWeight: oldOrnaments[i]['finalNetWeight'],
                     isReleased: false,
                     currentLtvAmount: currentLtvAmount,
-                    ltvPercent: oldOrnaments[i]['ltvPercent']
+                    ltvPercent: oldOrnaments[i]['ltvPercent'],
+                    remark:oldOrnaments[i]['remark']
                 }
 
                 allOrnmanets.push(ornamentData);
