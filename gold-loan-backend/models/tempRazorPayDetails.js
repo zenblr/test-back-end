@@ -37,7 +37,12 @@ module.exports = (sequelize, DataTypes) => {
         transactionUniqueId:{
             type: DataTypes.STRING,
             field: 'transaction_unique_id'
-        }
+        },
+        isOrderPlaced: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_order_placed',
+            defaultValue: false,
+        },
     }, {
         freezeTableName: true,
         tableName: 'razor_temp_details',
