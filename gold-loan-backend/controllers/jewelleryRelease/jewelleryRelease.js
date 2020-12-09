@@ -1538,7 +1538,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                 return addFullRelease
             })
             if (isAdmin) {
-                return res.status(200).json({ message: "Success", partRelease });
+                return res.status(200).json({ message: "Success", fullRelease });
             } else {
                 res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/loan-details`)
             }        } else {
