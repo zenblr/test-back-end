@@ -3,7 +3,10 @@ module.exports = (sequelize, DataTypes) => {
         masterLoanId: {
             type: DataTypes.INTEGER,
             field: 'master_loan_id',
-            allowNull: false
+        },
+        customerId: {
+            type: DataTypes.INTEGER,
+            field: 'customer_id',
         },
         razorPayOrderId: {
             type: DataTypes.STRING,
@@ -18,7 +21,6 @@ module.exports = (sequelize, DataTypes) => {
         paymentFor: {
             type: DataTypes.STRING,
             field: 'payment_for',
-            values: ['quickPay', 'partPayment', 'jewelleryRelease']
         },
         depositDate: {
             type: DataTypes.DATEONLY,
@@ -28,6 +30,18 @@ module.exports = (sequelize, DataTypes) => {
         paymentType: {
             type: DataTypes.STRING,
             field: 'payment_type',
+        },
+        chequeNumber: {
+            type: DataTypes.STRING,
+            field: 'cheque_number',
+        },
+        bankName: {
+            type: DataTypes.STRING,
+            field: 'bank_name',
+        },
+        branchName: {
+            type: DataTypes.STRING,
+            field: 'branch_name',
         },
         ornamentId: {
             type: DataTypes.ARRAY(DataTypes.TEXT),
@@ -47,6 +61,8 @@ module.exports = (sequelize, DataTypes) => {
         freezeTableName: true,
         tableName: 'razor_temp_details',
     })
+
+    tempRazorPayDetails.getTempOrderDetail = (razorPayOrderId) => tempRazorPayDetails.findOne({where:{razorPayOrderId}})
 
     return tempRazorPayDetails;
 }

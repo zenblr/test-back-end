@@ -10,6 +10,7 @@ const partPayment = require('./partPaymentCustomerApp');  //upload Packets List
 const quickPay = require('./quickPayCustomerApp');  //upload Packets List 
 const customerWebsiteKyc = require('./customerWebsiteKyc') //customer website kyc
 const contactUsEmail = require('./contactUs')
+const walletCustomer = require('./walletCustomer')
 
 const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetailsOfCustomer, readBankDetailsOfCustomer, readNomineeDetailsOfCustomer, readAddressDetailsOfCustomer, readPanCardImageOfCustomer, readAddressImageOfCustomer, readPartnerBranch, readAllScheme, readMyLoan, schemeBasedOnPriceRange, readLoanDetails, readFeedBack, addFeedBack, updatePassword, personalInfo } = require('../controllers/customer/customerApp')
 
@@ -78,5 +79,6 @@ router.use('/kyc', customerWebsiteKyc)
 
 router.post('/razor-pay', wrapper(razorPayCreateOrder));
 
+router.use('/customer-wallet', walletCustomer)
 
 module.exports = router;

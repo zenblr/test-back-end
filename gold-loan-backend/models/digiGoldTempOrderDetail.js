@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'order_type_id',
             allowNull: false
         },
+        walletTempId: {
+            type: DataTypes.INTEGER,
+            field: 'wallet_temp_id',
+        },
         totalAmount: {
             type: DataTypes.FLOAT,
             field: 'total_amount',
