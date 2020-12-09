@@ -29,9 +29,17 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'bank_transaction_unique_id'
         },
-        razorPayTransactionId: {
+        razorpayOrderId:{
             type: DataTypes.STRING,
-            field: 'razor_pay_transaction_id'
+            field: 'razorpay_order_id'
+        },
+        razorpayPaymentId:{
+            type: DataTypes.STRING,
+            field: 'razorpay_payment_id'
+        },
+        razorpaySignature:{
+            type: DataTypes.STRING,
+            field: 'razorpay_signature'
         },
         paymentType: {
             type: DataTypes.STRING,

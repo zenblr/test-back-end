@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'customer_id',
         },
         amount: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.FLOAT,
             field: 'amount',
         },
         paymentDirection: {

@@ -13,10 +13,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'order_type_id',
         },
-        tempOrderDetailId: {
-            type: DataTypes.INTEGER,
-            field: 'temp_order_detail_id',
-        },
+        // tempOrderDetailId: {
+        //     type: DataTypes.INTEGER,
+        //     field: 'temp_order_detail_id',
+        // },
         walletTempId: {
             type: DataTypes.INTEGER,
             field: 'wallet_temp_id',
