@@ -1,15 +1,6 @@
-
 module.exports = (sequelize, DataTypes) => {
-    const CustomerLoanTransaction = sequelize.define('customerLoanTransaction', {
+    const WalletTransactionDetails = sequelize.define('walletTransactionDetails', {
         //attribute
-        masterLoanId: {
-            type: DataTypes.INTEGER,
-            field: 'master_loan_id'
-        },
-        loanId: {
-            type: DataTypes.INTEGER,
-            field: 'loan_id'
-        },
         customerId: {
             type: DataTypes.INTEGER,
             field: 'customer_id'
@@ -17,6 +8,18 @@ module.exports = (sequelize, DataTypes) => {
         productTypeId: {
             type: DataTypes.INTEGER,
             field: 'product_type_id'
+        },
+        orderTypeId: {
+            type: DataTypes.INTEGER,
+            field: 'order_type_id',
+        },
+        // orderDetailId: {
+        //     type: DataTypes.INTEGER,
+        //     field: 'order_detail_id',
+        // },
+        walletId: {
+            type: DataTypes.INTEGER,
+            field: 'wallet_id',
         },
         transactionUniqueId: {
             type: DataTypes.STRING,
@@ -68,46 +71,31 @@ module.exports = (sequelize, DataTypes) => {
             values: ['Pending', 'Completed', 'Rejected'],
             defaultValue: 'Pending'
         },
-        paymentFor: {
-            type: DataTypes.STRING,
-            field: 'payment_for',
-        },
-        // runningBalance:{
-        //     type: DataTypes.FLOAT,
-        //     field: 'running_balance'
+        // paymentFor: {
+        //     type: DataTypes.STRING,
+        //     field: 'payment_for',
         // },
-        // freeBalance:{
-        //     type: DataTypes.FLOAT,
-        //     field: 'free_balance'
-        // },
-        createdBy: {
-            type: DataTypes.INTEGER,
-            field: 'created_by'
+        runningBalance:{
+            type: DataTypes.FLOAT,
+            field: 'running_balance'
         },
-        modifiedBy: {
-            type: DataTypes.INTEGER,
-            field: 'modified_by'
+        freeBalance:{
+            type: DataTypes.FLOAT,
+            field: 'free_balance'
         },
     },
         {
             freezeTableName: true,
             allowNull: false,
-            tableName: 'customer_loan_transaction',
+            tableName: 'wallet_transaction_details',
         },
     )
 
-    CustomerLoanTransaction.associate = function (models) {
-        CustomerLoanTransaction.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
-        CustomerLoanTransaction.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'modifieby' });
-
-        CustomerLoanTransaction.belongsTo(models.customerLoanMaster, { foreignKey: 'masterLoanId', as: 'masterLoan' });
-        CustomerLoanTransaction.belongsTo(models.customerLoan, { foreignKey: 'loanId', as: 'customerLoan' });
-        CustomerLoanTransaction.hasMany(models.customerTransactionDetail, { foreignKey: 'customerLoanTransactionId', as: 'transaction' });
-        CustomerLoanTransaction.hasMany(models.customerTransactionSplitUp, { foreignKey: 'customerLoanTransactionId', as: 'transactionSplitUp' });
-        CustomerLoanTransaction.belongsTo(models.module, { foreignKey: 'productTypeId', as: 'module' });
-        CustomerLoanTransaction.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer'});
+    WalletTransactionDetails.associate = function (models) {
+        // WalletTransactionDetails.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
+       
     }
 
-    return CustomerLoanTransaction;
+    return WalletTransactionDetails;
 
 }

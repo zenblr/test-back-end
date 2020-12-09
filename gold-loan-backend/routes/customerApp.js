@@ -68,6 +68,6 @@ router.use('/quick-pay', quickPay)
 
 router.use('/contact-us', contactUsEmail)
 
-router.use('/wallet', walletCustomer)
+router.use('/customer-wallet', walletCustomer)
 
 module.exports = router;

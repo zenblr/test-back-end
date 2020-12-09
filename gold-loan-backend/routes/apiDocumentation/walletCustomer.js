@@ -1,9 +1,41 @@
 /**
  * @swagger
- * /customer/app/wallet/pay:
+ * /customer/app/customer-wallet:
+ *   get:
+ *     tags:
+ *       -  Customer Wallet
+ *     name: read deposit request
+ *     summary: To read wallet deposit request
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "search"
+ *       in: "query"
+ *       description: "search your keyword"
+ *       type: "string"
+ *     - name: "from"
+ *       in: "query"
+ *       description: "Pagination starting point"
+ *       type: "string"
+ *     - name: "to"
+ *       in: "query"
+ *       description: "Pagination ending point"
+ *       type: "string"
+ *     - name: "paymentFor"
+ *       in: "query"
+ *       description: "paymentFor"
+ *       type: "string"
+ *     responses:
+ *       200:
+ *          description: deposit request fetch successfully
+ *       404:
+ *          description: no deposit request found
+ * /customer/app/customer-wallet/pay:
  *   post:
  *     tags:
- *       - wallet
+ *       - Customer Wallet
  *     name: wallwt
  *     summary: add Wallet Amount Temp(step 1)  
  *     consumes:
@@ -27,7 +59,9 @@
  *             bankName:
  *               type: string
  *             branchName:
- *               type: string     
+ *               type: string
+ *             bankTransactionId:
+ *               type: string
  *         required:
  *           - amount
  *           - paymentType
@@ -37,10 +71,10 @@
  *          description: success
  *       404:
  *          description: failed to add amount to the wallet
- * /customer/app/wallet/add-amount:
+ * /customer/app/customer-wallet/add-amount:
  *   post:
  *     tags:
- *       - wallet
+ *       - Customer Wallet
  *     name: wallwt
  *     summary: add Wallet Amount(step 2)  
  *     consumes:
@@ -66,4 +100,24 @@
  *          description: success
  *       404:
  *          description: Amount added successfully
+ * /customer/app/customer-wallet/{depositWithdrawId}:
+ *   get:
+ *     tags:
+ *       - Wallet
+ *     summary: To read Wallet by Id
+ *     parameters:
+ *     - name: "depositWithdrawId"
+ *       in: "path"
+ *       description: "Id of wallet to read"
+ *       required: true
+ *       type: integer
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Success.
+ *       404:
+ *         description: Customer not found 
  */
