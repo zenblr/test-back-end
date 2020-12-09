@@ -96,8 +96,11 @@ export class SipCycleDateAddComponent implements OnInit {
   }
 
   getStatus() {
+    const queryParamsData = {
+      inactive: 'inactive'
+    }
     
-    this.sipCycleDateService.getCycleDate('','','','inactive').pipe(
+    this.sipCycleDateService.getCycleDate(queryParamsData).pipe(
       map(res =>{
         // this.statusList = res.data;
         this.cycleDate = res.data;

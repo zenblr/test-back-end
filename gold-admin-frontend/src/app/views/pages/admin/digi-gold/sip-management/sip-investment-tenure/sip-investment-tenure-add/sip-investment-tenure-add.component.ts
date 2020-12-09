@@ -75,8 +75,10 @@ export class SipInvestmentTenureAddComponent implements OnInit {
     }
   }
   getStatus() {
-    
-    this.sipInvestmentTenureService.getInvestmentTenure('','','','inactive').pipe(
+    const queryParamsData = {
+      inactive: 'inactive'
+    }
+    this.sipInvestmentTenureService.getInvestmentTenure(queryParamsData).pipe(
       map(res =>{
         // this.statusList = res.data;
         this.investmentTenureList = res.data;
