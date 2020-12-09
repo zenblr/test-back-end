@@ -11,6 +11,10 @@ const extend = require('extend')
 const check = require("../lib/checkLib");
 var uniqid = require('uniqid');
 const errorLogger = require('../utils/errorLogger');
+const getMerchantData = require('../controllers/auth/getMerchantData')
+const fs = require('fs');
+const FormData = require('form-data');
+let sms = require('../utils/SMS');
 
 
 let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer, isFromCustomerWebsite) => {
@@ -577,7 +581,13 @@ let getKycInfo = async (customerId) => {
 let updateCompleteKycModule = async (oldCompleteKycPoint, moduleId) => {
     let whereCondition
     if (moduleId == 3) {
-        whereCondition = { id: { [Op.not]: 1 } }
+        whereCondition = { id: { [Op.not]: [1, 4] } }
+    } else if (moduleId == 1) {
+        whereCondition = { id: { [Op.not]: [4] } }
+    } else if (moduleId == 4) {
+        whereCondition = { id: { [Op.in]: [4, 2] } }
+    } else if (moduleId == 2) {
+        whereCondition = { id: { [Op.in]: [2] } }
     }
 
     let kycCompletePoint = oldCompleteKycPoint
