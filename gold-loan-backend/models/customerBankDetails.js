@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const customerBankDetail = sequelize.define('customerBankDetail', {
+    const customerBankDetail = sequelize.define('customerBankDetails', {
         // attributes
         customerId: {
             type: DataTypes.INTEGER,
@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'customer_loan_bank_detail',
+        tableName: 'customer_bank_details',
     });
 
 

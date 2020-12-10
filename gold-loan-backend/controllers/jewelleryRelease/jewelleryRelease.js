@@ -7,7 +7,7 @@ const check = require("../../lib/checkLib");
 const action = require('../../utils/partReleaseHistory');
 const actionFullRelease = require('../../utils/fullReleaseHistory');
 const loanFunction = require('../../utils/loanFunction');
-const { getCustomerInterestAmount, customerLoanDetailsByMasterLoanDetails, getGlobalSetting, getLoanDetails, allInterestPayment, getAmountLoanSplitUpData, getTransactionPrincipalAmount, customerNameNumberLoanId, nextDueDateInterest,getAllPartAndFullReleaseData,ornementsDetails,allOrnamentsDetails,getornamentsWeightInfo,getornamentLoanInfo } = require('../../utils/loanFunction');
+const { getCustomerInterestAmount, customerLoanDetailsByMasterLoanDetails, getGlobalSetting, getLoanDetails, allInterestPayment, getAmountLoanSplitUpData, getTransactionPrincipalAmount, customerNameNumberLoanId, nextDueDateInterest, getAllPartAndFullReleaseData, ornementsDetails, allOrnamentsDetails, getornamentsWeightInfo, getornamentLoanInfo } = require('../../utils/loanFunction');
 const moment = require('moment')
 const uniqid = require('uniqid');
 const _ = require('lodash');
@@ -282,7 +282,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
         let modifiedBy = null;
         let isAdmin
 
-        
+
         if (razorpay_order_id) {
             var tempRazorData = await models.tempRazorPayDetails.findOne({ where: { razorPayOrderId: razorpay_order_id } })
             depositDate = tempRazorData.depositDate
@@ -1259,7 +1259,7 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                     isReleased: false,
                     currentLtvAmount: currentLtvAmount,
                     ltvPercent: oldOrnaments[i]['ltvPercent'],
-                    remark:oldOrnaments[i]['remark']
+                    remark: oldOrnaments[i]['remark']
                 }
 
                 allOrnmanets.push(ornamentData);
@@ -1280,6 +1280,28 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                 accountHolderName: oldLoanData.loanBankDetail.accountHolderName,
                 passbookProof: oldLoanData.loanBankDetail.passbookProof
             }
+
+            //added customer bank details
+            if (oldLoanData.loanBankDetail.paymentType == 'bank') {
+
+                let checkBankDetailExist = await customerBankDetails.findAll({ where: { accountNumber: oldLoanData.loanBankDetail.accountNumber, customerId: customerData.id } })
+
+                if (checkBankDetailExist.length == 0) {
+                    await models.customerBankDetails.create({
+                        moduleId: 1,
+                        customerId: customerData.id,
+                        bankName: oldLoanData.loanBankDetail.bankName,
+                        accountNumber: oldLoanData.loanBankDetail.accountNumber,
+                        ifscCode: oldLoanData.loanBankDetail.ifscCode,
+                        bankBranchName: oldLoanData.loanBankDetail.bankBranchName,
+                        accountHolderName: oldLoanData.loanBankDetail.accountHolderName,
+                        passbookProof: oldLoanData.loanBankDetail.passbookProof,
+                        description: `Added while Creating jewellery release`
+                    }, { transaction: t });
+                }
+            }
+            //added customer bank details
+
             await models.customerLoanBankDetail.create(bankData, { transaction: t });
             return { loan, masterLoan }
         });
@@ -1541,7 +1563,8 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                 return res.status(200).json({ message: "Success", fullRelease });
             } else {
                 res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/loan-details`)
-            }        } else {
+            }
+        } else {
             return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
         }
     } catch (err) {
