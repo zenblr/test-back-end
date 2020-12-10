@@ -75,6 +75,8 @@ module.exports = (sequelize, DataTypes) => {
        
     }
 
+    WalletTransactionTempDetails.getWalletTempTransactionDetails = (razorPayTransactionId) => WalletTransactionTempDetails.findOne({where:{razorPayTransactionId}});
+
     return WalletTransactionTempDetails;
 
 }

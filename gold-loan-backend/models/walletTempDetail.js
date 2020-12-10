@@ -34,5 +34,8 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'wallet_temp_details',
     })
 
+    WalletTempDetails.getTempWalletData = (id) => WalletTempDetails.findOne({where:{id }});
+
+
     return WalletTempDetails;
 }

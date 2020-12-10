@@ -13,8 +13,8 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op
 
 //To get wallet transaction detail by id
-exports.walletTransactionDetailById = async (depositWithdrawId) => {
+exports.walletTransactionDetailById = async (walletTransactionId) => {
     
-    let transactionData = await models.customerLoanTransaction.findOne({ where: { id: depositWithdrawId } });
+    let transactionData = await models.walletTransactionDetails.findOne({ where: { id: walletTransactionId } });
     return transactionData;
 }

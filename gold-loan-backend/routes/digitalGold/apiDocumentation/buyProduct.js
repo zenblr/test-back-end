@@ -1,6 +1,6 @@
 /**
 * @swagger
-* /digital-gold/buy:
+* /digital-gold/buy-metal:
 *   post:
 *     tags:
 *       - Buy Gold/Silver

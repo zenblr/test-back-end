@@ -100,8 +100,7 @@ module.exports = (sequelize, DataTypes) => {
     )
 
     WalletTransactionDetails.associate = function (models) {
-        // WalletTransactionDetails.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
-       
+        WalletTransactionDetails.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
     }
 
     return WalletTransactionDetails;

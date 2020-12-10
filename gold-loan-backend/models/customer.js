@@ -211,7 +211,7 @@ module.exports = (sequelize, DataTypes) => {
         Customer.belongsTo(models.organizationType, { foreignKey: 'organizationTypeId', as: 'organizationType' });
         Customer.hasOne(models.customerKycOrganizationDetail, { foreignKey: 'customerId', as: 'organizationDetail' });
         Customer.hasMany(models.customerLoanTransaction, { foreignKey: 'customerId', as: 'customerLoanTransaction' });
-
+        Customer.hasMany(models.walletTransactionDetails, { foreignKey: 'customerId', as: 'walletTransactionDetails' });
     }
 
     // This hook is always run before create.

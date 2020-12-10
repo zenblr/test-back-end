@@ -7,7 +7,7 @@ const { makePayment, addAmountWallet, getAllDepositDetails, getWalletDetailByIdA
 const validatiError = require('../middleware/validationError');
 const { addWalletAmountValidation } = require('../validations/wallet');
 
-route.get('/', customerCheckAuth, wrapper(getAllDepositDetails));
+route.get('/deposit-detail', customerCheckAuth, wrapper(getAllDepositDetails));
 
 route.post('/pay', customerCheckAuth, addWalletAmountValidation, validatiError, wrapper(makePayment));
 
