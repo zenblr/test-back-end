@@ -61,6 +61,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'is_order_placed',
             defaultValue: false,
+        },
+        refundCronExecuted: {
+            type: DataTypes.BOOLEAN,
+            field: 'refund_cron_executed',
+            defaultValue: false,
         }
     },
         {

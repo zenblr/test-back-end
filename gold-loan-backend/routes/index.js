@@ -280,4 +280,7 @@ router.use('/error-logs', errorLogger)
 const wallet = require('./wallet')
 router.use('/wallet', wallet)
 
+const razorPayCron = require('./razorPayCron')
+router.use('/razor-pay-cron', razorPayCron)
+
 module.exports = router;

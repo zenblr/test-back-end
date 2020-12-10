@@ -57,6 +57,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_order_placed',
             defaultValue: false,
         },
+        refundCronExecuted: {
+            type: DataTypes.BOOLEAN,
+            field: 'refund_cron_executed',
+            defaultValue: false,
+        }
     }, {
         freezeTableName: true,
         tableName: 'razor_temp_details',
