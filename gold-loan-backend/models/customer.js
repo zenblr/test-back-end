@@ -183,6 +183,15 @@ module.exports = (sequelize, DataTypes) => {
         sourceFrom: {
             type: DataTypes.INTEGER,
             field: 'source_from',
+        },
+        suspiciousActivity: {
+            type: DataTypes.BOOLEAN,
+            field: 'suspicious_activity',
+            defaultValue: false
+        },
+        note: {
+            type: DataTypes.TEXT,
+            field: 'note'
         }
 
     }, {
