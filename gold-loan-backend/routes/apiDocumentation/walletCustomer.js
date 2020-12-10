@@ -121,82 +121,82 @@
  *       404:
  *         description: Customer not found
  * /customer/app/customer-wallet/deposit-detail:
- * get:
- * tags:
- * - Customer Wallet
- * name: Customer-deposit-api
- * summary: To get deposite and Withdraw Details
- * security:
- * - bearerAuth: []
- * consumes:
- * - application/json
- * parameters:
- * - name: "search"
- * in: "query"
- * description: "search your keyword"
- * type: "string"
- * - name: "from"
- * in: "query"
- * description: "Pagination starting point"
- * type: "string"
- * - name: "to"
- * in: "query"
- * description: "Pagination ending point"
- * type: "string"
- * - name: "orderTypeId"
- * in: "query"
- * description: "orderTypeId"
- * type: "string" 
- * responses: 
- * 200: 
- * description: deposite/Withdraw details are fetch successfully 
- * 404: 
- * description: No deposite/Withdraw details found 
+ *   get:
+ *     tags:
+ *       - Customer Wallet
+ *     name: Customer-deposit-api
+ *     summary: To get deposite and Withdraw Details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: "search"
+ *         in: "query"
+ *         description: "search your keyword"
+ *         type: "string"
+ *       - name: "from"
+ *         in: "query"
+ *         description: "Pagination starting point"
+ *         type: "string"
+ *       - name: "to"
+ *         in: "query"
+ *         description: "Pagination ending point"
+ *         type: "string"
+ *       - name: "orderTypeId"
+ *         in: "query"
+ *         description: "orderTypeId"
+ *         type: "string" 
+ *     responses: 
+ *       200: 
+ *         description: deposite/Withdraw details are fetch successfully 
+ *       404: 
+ *         description: No deposite/Withdraw details found 
  * /customer/app/customer-wallet/transaction-detail: 
- * get:
- * tags:
- * - Customer Wallet
- * name: Transaction Details
- * summary: To get transaction details
- * security:
- * - bearerAuth: []
- * consumes:
- * - application/json
- * parameters:
- * - name: "search"
- * in: "query"
- * description: "search your keyword"
- * type: "string"
- * - name: "from"
- * in: "query"
- * description: "Pagination starting point"
- * type: "string"
- * - name: "to"
- * in: "query"
- * description: "Pagination ending point"
- * type: "string"
- * - name: "paymentFor"
- * in: "query"
- * description: "paymentFor"
- * type: "string"
- * responses:
- * 200:
- * description: Transaction details are fetch successfully
- * 404:
- * description: No Transaction details found
+ *   get:
+ *     tags:
+ *       - Customer Wallet
+ *     name: Transaction Details
+ *     summary: To get transaction details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: "search"
+ *         in: "query"
+ *         description: "search your keyword"
+ *         type: "string"
+ *       - name: "from"
+ *         in: "query"
+ *         description: "Pagination starting point"
+ *         type: "string"
+ *       - name: "to"
+ *         in: "query"
+ *         description: "Pagination ending point"
+ *         type: "string"
+ *       - name: "paymentFor"
+ *         in: "query"
+ *         description: "paymentFor"
+ *         type: "string"
+ *     responses:
+ *       200:
+ *         description: Transaction details are fetch successfully
+ *       404:
+ *         description: No Transaction details found
  * /digital-gold/augmont-bank-details:
- * get:
- * tags:
- * - Customer Wallet
- * name: Augmont Bank details
- * summary: To get augmont Bank details
- * security:
- * - bearerAuth: []
- * consumes:
- * - application/json
- * responses:
- * 200:
- * description: Augmont Bank details are fetch successfully
- * 404:
- * description: No bank details found.
+ *   get:
+ *     tags:
+ *       - Customer Wallet
+ *     name: Augmont Bank details
+ *     summary: To get augmont Bank details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Augmont Bank details are fetch successfully
+ *       404:
+ *         description: No bank details found.
  */
