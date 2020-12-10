@@ -1,0 +1,211 @@
+<kt-toastr #toastr></kt-toastr>
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="row justify-content-center scroll kt-padding-t-10 kt-padding-b-10">
+            <div class="col-6">
+                <form [formGroup]="orderForm">
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Customer Id</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="memberId" class="form-control" numbersOnly disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Order Id</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="orderId" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Order Total Amount</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="orderTotalAmount" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Order Initial Amount</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="orderInitialAmount" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">EMI Tenure</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="emiTenure" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Product Name</label>
+                        </div>
+                        <div class="col-8">
+                            <textarea type="text" formControlName="productName" class="form-control" id="autoresizing"
+                                disabled>
+                            </textarea>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">SKU</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="sku" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">EMI Start Date</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" formControlName="emiStartDate"
+                                [value]="controls?.emiStartDate?.value | date: 'MMM d, y, h:mm a'" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">EMI End Date</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" formControlName="emiEndDate"
+                                [value]="controls?.emiEndDate?.value | date: 'MMM d, y, h:mm a'" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15" *ngIf="showUploadFile">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="showUploadFile">Upload Awb
+                                File</label>
+                        </div>
+                        <div class="col-8">
+                            <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'uploadedAwbFile'"
+                                [fileAcceptType]="'image/x-png,image/jpeg,image/jpg'" [action]="'remove'"
+                                [reason]="'order'" (upload)="uploadImage($event)" (remove)="removeImage($event)">
+                            </kt-uplod-preview-image>
+                            <input type="text" formControlName="uploadedAwbFile" class="form-control"
+                                [class.isError]="controls.uploadedAwbFile.touched && controls.uploadedAwbFile.invalid"
+                                hidden>
+                            <div *ngIf="controls.uploadedAwbFile.touched && controls.uploadedAwbFile.invalid">
+                                <mat-error
+                                    *ngIf="controls.uploadedAwbFile.touched && controls.uploadedAwbFile.errors?.required">
+                                    Awb File is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15" *ngIf="showUploadFile">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color" [class.mandatory]="showUploadFile">Upload Awb
+                                Box</label>
+                        </div>
+                        <div class="col-8">
+                            <kt-uplod-preview-image [type]="'formField'" [formFieldName]="'uploadedAwbBox'"
+                                [fileAcceptType]="'image/x-png,image/jpeg,image/jpg, .pdf'" [action]="'remove'"
+                                [reason]="'order'" (upload)="uploadImage($event)" (remove)="removeImage($event)">
+                            </kt-uplod-preview-image>
+                            <input type="text" formControlName="uploadedAwbBox" class="form-control"
+                                [class.isError]="controls.uploadedAwbBox.touched && controls.uploadedAwbBox.invalid"
+                                hidden>
+                            <div *ngIf="controls.uploadedAwbBox.touched && controls.uploadedAwbBox.invalid">
+                                <mat-error
+                                    *ngIf="controls.uploadedAwbBox.touched && controls.uploadedAwbBox.errors?.required">
+                                    Awb Box is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15" *ngIf="showUploadedFile">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Upload Awb File</label>
+                        </div>
+                        <div class="col-8">
+                            <a class="text-body" [href]="orderInfo?.trackingDetails?.uploadedAwbFile?.URL"
+                                download="{{orderInfo?.trackingDetails?.uploadedAwbFile?.originalname}}"
+                                target="_blank">
+                                <span>{{orderInfo?.trackingDetails?.uploadedAwbFile?.originalname}}</span>
+                                <span class="pl-2">
+                                    <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15" *ngIf="showUploadedFile">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Upload Awb Box</label>
+                        </div>
+                        <div class="col-8">
+                            <a class="text-body" [href]="orderInfo?.trackingDetails?.uploadedAwbBox?.URL"
+                                download="{{orderInfo?.trackingDetails?.uploadedAwbBox?.originalname}}" target="_blank">
+                                <span>{{orderInfo?.trackingDetails?.uploadedAwbBox?.originalname}}</span>
+                                <span class="pl-2">
+                                    <img height="12" width="12" [src]="'assets/media/icons/_download.svg'">
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Logistic Name</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" formControlName="logisticPartnerId"
+                                [class.isError]="controls.logisticPartnerId.touched && controls.logisticPartnerId.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select Status</option>
+                                <option [value]="item.id" *ngFor="let item of orderLogistic">
+                                    {{item.name | titlecase}}</option>
+                            </select>
+                            <div *ngIf="controls.logisticPartnerId.touched && controls.logisticPartnerId.invalid">
+                                <mat-error
+                                    *ngIf="controls.logisticPartnerId.touched && controls.logisticPartnerId.errors?.required">
+                                    Field
+                                    is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Tracking No</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="trackingId" class="form-control"
+                                [class.isError]="controls.trackingId.touched && controls.trackingId.invalid">
+                            <div *ngIf="controls.trackingId.touched && controls.trackingId.invalid">
+                                <mat-error *ngIf="controls.trackingId.touched && controls.trackingId.errors?.required">
+                                    Field is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15" *ngIf="hiddenFlag">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Order Status</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" formControlName="statusId"
+                                [class.isError]="controls.statusId.touched && controls.statusId.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select Status</option>
+                                <option [value]="status.statusId" *ngFor="let status of orderInfo?.nextStatus">
+                                    {{status.statusName | titlecase}}</option>
+                            </select>
+                            <div *ngIf="controls.statusId.touched && controls.statusId.invalid">
+                                <mat-error *ngIf="controls.statusId.touched && controls.statusId.errors?.required">
+                                    Field
+                                    is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15" *ngIf="hiddenFlag">
+                        <div class="col-12 text-right">
+                            <kt-button [value]="'Update'" [type]="'submit'" (click)="submit()"></kt-button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

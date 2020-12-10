@@ -1,0 +1,85 @@
+<kt-toastr #toastr></kt-toastr>
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="row justify-content-center scroll kt-padding-t-10 kt-padding-b-10">
+            <div class="col-6">
+                <form [formGroup]="depositForm">
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Bank Transaction ID</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="bankTransactionID" class="form-control" numbersOnly disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Deposit mode of payment</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="depositmodeofpayment" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Deposit Bank Name</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="depositBankName" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Deposit Branch Name</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="depositBranchName" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Deposit Date </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="depositDate" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Deposit Amount</label>
+                        </div>
+                        <div class="col-8">
+                            <textarea type="text" formControlName="depositAmount" class="form-control" id="autoresizing"
+                                disabled>
+                            </textarea>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Deposit Status</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" formControlName="depositStatus"
+                                [class.isError]="controls.depositStatus.touched && controls.depositStatus.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select Status</option>
+                                <option [value]="status.value" *ngFor="let status of depositStatus">
+                                    {{status.name | titlecase}}</option>
+                            </select>
+                            <div *ngIf="controls.depositStatus.touched && controls.depositStatus.invalid">
+                                <mat-error *ngIf="controls.depositStatus.touched && controls.depositStatus.errors?.required">
+                                    Field
+                                    is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="row kt-margin-t-15">
+                        <div class="col-12 text-right">
+                            <kt-button [value]="'Update'" [type]="'submit'" (click)="submit()"></kt-button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

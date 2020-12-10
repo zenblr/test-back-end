@@ -360,7 +360,8 @@ export class MenuConfig {
 							title: "Digi Gold",
 							root: true,
 							src: "assets/media/aside-icons/icons-39.svg",
-							page: "/admin/digi-gold",
+							page: "/admin/digi-gold/wallet",
+							bullet: 'dot',
 							permission: false,
 						},
 						{
@@ -930,12 +931,33 @@ export class MenuConfig {
 					],
 					digiGoldItems: [
 						{
+							title: "Wallet",
+							bullet: 'dot',
+							src: "assets/media/aside-icons/icons-35.svg",
+							permission: false,
+							submenu: [
+								{
+									title: "Deposit Requests",
+									page: "/admin/digi-gold/wallet/deposit-requests",
+									bullet: 'dot',
+									permission: false,
+								},
+								{
+									title: "Withdrawal Requests",
+									page: "/admin/digi-gold/wallet/withdrawal-requests",
+									bullet: 'dot',
+									permission: false,
+								}
+							  
+							]
+						},
+						{
 							title: "SIP Management",
 							root: true,
 							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-35.svg",
 							permission: false,
-							submenu: [
+							submenu: [								
 								{
 									title: "SIP Application",
 									page: "/admin/digi-gold/sip-management/sip-application",
