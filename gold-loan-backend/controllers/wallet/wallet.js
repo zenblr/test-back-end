@@ -93,7 +93,7 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
                 depositDetail: [], count: 0
             })
         }
-        return res.status(200).json({ depositDetail: depositDetail, count: count });
+        return res.status(200).json({ depositDetail: depositDetail, count: count.length });
     } catch (err) {
         console.log(err);
 

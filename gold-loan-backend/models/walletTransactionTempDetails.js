@@ -57,6 +57,19 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'branch_name',
         },
+        accountHolderName: {
+            type: DataTypes.STRING,
+            field: 'account_holder_name'
+        },
+        accountNumber: {
+            type: DataTypes.STRING,
+            field: 'account_number'
+        },
+        ifscCode: {
+            type: DataTypes.STRING,
+            field: 'ifsc_code'
+        },
+
         isOrderPlaced: {
             type: DataTypes.BOOLEAN,
             field: 'is_order_placed',
@@ -72,10 +85,10 @@ module.exports = (sequelize, DataTypes) => {
 
     WalletTransactionTempDetails.associate = function (models) {
         // WalletTransactionTempDetails.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
-       
+
     }
 
-    WalletTransactionTempDetails.getWalletTempTransactionDetails = (razorPayTransactionId) => WalletTransactionTempDetails.findOne({where:{razorPayTransactionId}});
+    WalletTransactionTempDetails.getWalletTempTransactionDetails = (razorPayTransactionId) => WalletTransactionTempDetails.findOne({ where: { razorPayTransactionId } });
 
     return WalletTransactionTempDetails;
 

@@ -29,15 +29,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'bank_transaction_unique_id'
         },
-        razorpayOrderId:{
+        razorpayOrderId: {
             type: DataTypes.STRING,
             field: 'razorpay_order_id'
         },
-        razorpayPaymentId:{
+        razorpayPaymentId: {
             type: DataTypes.STRING,
             field: 'razorpay_payment_id'
         },
-        razorpaySignature:{
+        razorpaySignature: {
             type: DataTypes.STRING,
             field: 'razorpay_signature'
         },
@@ -53,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'payment_received_date'
         },
-        depositDate:{
+        depositDate: {
             type: DataTypes.DATEONLY,
             field: 'deposit_date'
         },
@@ -73,21 +73,29 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'branch_name',
         },
+        accountHolderName: {
+            type: DataTypes.STRING,
+            field: 'account_holder_name'
+        },
+        accountNumber: {
+            type: DataTypes.STRING,
+            field: 'account_number'
+        },
+        ifscCode: {
+            type: DataTypes.STRING,
+            field: 'ifsc_code'
+        },
         depositStatus: {
             type: DataTypes.ENUM,
             field: 'deposit_status',
             values: ['Pending', 'Completed', 'Rejected'],
             defaultValue: 'Pending'
         },
-        // paymentFor: {
-        //     type: DataTypes.STRING,
-        //     field: 'payment_for',
-        // },
-        runningBalance:{
+        runningBalance: {
             type: DataTypes.FLOAT,
             field: 'running_balance'
         },
-        freeBalance:{
+        freeBalance: {
             type: DataTypes.FLOAT,
             field: 'free_balance'
         },
