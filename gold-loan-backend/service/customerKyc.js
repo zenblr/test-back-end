@@ -607,7 +607,7 @@ let updateCompleteKycModule = async (oldCompleteKycPoint, moduleId) => {
 
 let updateCustomerUniqueId = async (checkCustomerUniqueId) => {
     let customerUniqueId = checkCustomerUniqueId
-    if (check.isEmpty(checkUniqueId.customerUniqueId)) {
+    if (check.isEmpty(customerUniqueId)) {
         customerUniqueId = uniqid.time().toUpperCase();
     } else {
         customerUniqueId = customerUniqueId
