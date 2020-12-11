@@ -183,6 +183,15 @@ module.exports = (sequelize, DataTypes) => {
         sourceFrom: {
             type: DataTypes.INTEGER,
             field: 'source_from',
+        },
+        suspiciousActivity: {
+            type: DataTypes.BOOLEAN,
+            field: 'suspicious_activity',
+            defaultValue: false
+        },
+        note: {
+            type: DataTypes.TEXT,
+            field: 'note'
         }
 
     }, {
@@ -226,6 +235,10 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.belongsTo(models.organizationType, { foreignKey: 'organizationTypeId', as: 'organizationType' });
         Customer.hasOne(models.customerKycOrganizationDetail, { foreignKey: 'customerId', as: 'organizationDetail' });
+
+        Customer.hasMany(models.customerBankDetails, { foreignKey: 'customerId', as: 'customerBankDetail' });
+
+        Customer.hasMany(models.productRequest, { foreignKey: 'customerId', as: 'productRequest' });
 
     }
 

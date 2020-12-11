@@ -326,3 +326,17 @@ exports.personalInfo = async (req, res, next) => {
 
     return res.status(200).json({ message: 'Success', data: customerInfo })
 }
+
+exports.customerProductRequest = async (req, res, next) => {
+    let { customerId, moduleId } = req.body
+
+    let checkExist = await models.productRequest.findAll({ where: { customerId: customerId } })
+
+    if (checkExist.length != 0) {
+        return res.status(200).json({ message: `Thank you` })
+    }
+    await models.productRequest.create({ customerId, moduleId })
+
+    return res.status(200).json({ message: `Thank you` })
+
+}

@@ -979,22 +979,32 @@ exports.loanBankDetails = async (req, res, next) => {
 
     let checkBank = await models.customerLoanBankDetail.findOne({ where: { masterLoanId: masterLoanId } })
 
-    if (check.isEmpty(checkBank)) {
-        let loanData = await sequelize.transaction(async t => {
+    let masterLoan = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
+
+    let loanData = await sequelize.transaction(async t => {
+
+        //added customer bank details
+        if (paymentType == 'bank') {
+
+            let checkBankDetailExist = await customerBankDetails.findAll({ where: { accountNumber: accountNumber, customerId: masterLoan.customerId } })
+
+            if (checkBankDetailExist.length == 0) {
+                await models.customerBankDetails.create({ moduleId: 1, customerId: masterLoan.customerId, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, description: `Added while Creating Loan` }, { transaction: t });
+            }
+        }
+        //added customer bank details
+
+        if (check.isEmpty(checkBank)) {
             await models.customerLoanMaster.update({ customerLoanCurrentStage: '6', modifiedBy }, { where: { id: masterLoanId }, transaction: t })
 
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: BANK_DETAILS, modifiedBy }, { transaction: t });
 
             let loan = await models.customerLoanBankDetail.create({ loanId, masterLoanId, paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { transaction: t });
 
-            return loan
-        })
-        return res.status(200).json({ message: 'Success', loanId, masterLoanId, loanCurrentStage: '6' })
-    } else {
+        } else {
 
-        let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
+            let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
 
-        let loanData = await sequelize.transaction(async t => {
             // if (loanSubmitted.isLoanSubmitted == false) {
             var a = await models.customerLoanMaster.update({ customerLoanCurrentStage: '6', modifiedBy }, { where: { id: masterLoanId }, transaction: t })
             // }
@@ -1002,10 +1012,10 @@ exports.loanBankDetails = async (req, res, next) => {
             console.log(a)
             let loan = await models.customerLoanBankDetail.update({ paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
 
-            return loan
-        })
-        return res.status(200).json({ message: 'Success', loanId, masterLoanId, loanCurrentStage: '6' })
-    }
+        }
+    })
+    return res.status(200).json({ message: 'Success', loanId, masterLoanId, loanCurrentStage: '6' })
+
 
 }
 
@@ -1534,12 +1544,12 @@ exports.loanOpsTeamRating = async (req, res, next) => {
                         let parentDisbursementData = await models.customerLoanDisbursement.findAll({ where: { masterLoanId: loanMaster.parentLoanId }, order: [['id']] })
                         if (loan.loanType == "secured") {
                             await models.customerLoanDisbursement.create({
-                                loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy, transactionId: parentDisbursementData[0].transactionId , bankTransferType:parentDisbursementData[0].bankTransferType
+                                loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy, transactionId: parentDisbursementData[0].transactionId, bankTransferType: parentDisbursementData[0].bankTransferType
                             }, { transaction: t })
                         } else {
                             if (parentDisbursementData.length > 1) {
                                 await models.customerLoanDisbursement.create({
-                                    loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy, transactionId: parentDisbursementData[1].transactionId, bankTransferType:parentDisbursementData[1].bankTransferType
+                                    loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy, transactionId: parentDisbursementData[1].transactionId, bankTransferType: parentDisbursementData[1].bankTransferType
                                 }, { transaction: t })
                             } else {
                                 await models.customerLoanDisbursement.create({

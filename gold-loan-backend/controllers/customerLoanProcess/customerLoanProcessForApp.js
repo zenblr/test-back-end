@@ -335,6 +335,18 @@ exports.loanRequest = async (req, res, next) => {
                 await models.customerLoan.destroy({ where: { id: getUnsecuredLoanId.unsecuredLoanId }, transaction: t })
             }
         }
+
+        //added customer bank details
+        if (paymentType == 'bank') {
+
+            let checkBankDetailExist = await customerBankDetails.findAll({ where: { accountNumber: accountNumber, customerId: customerId } })
+
+            if (checkBankDetailExist.length == 0) {
+                await models.customerBankDetails.create({ moduleId: 1, customerId: customerId, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, description: `Added while Creating Loan from appraiser app` }, { transaction: t });
+            }
+        }
+        //added customer bank details
+
         // bank details
         if (!isEdit) {
             await models.customerLoanMaster.update({ customerLoanCurrentStage: '6', modifiedBy }, { where: { id: masterLoanId }, transaction: t })
