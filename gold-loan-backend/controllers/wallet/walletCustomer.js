@@ -125,7 +125,7 @@ exports.addAmountWallet = async (req, res) => {
 
                 WalletDetail = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "add amount", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate }, { transaction: t });
 
-                walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: WalletDetail.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmont: tempWalletTransaction.transactionAmont, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "Completed", runningBalance: customerUpdatedBalance, freeBalance: customer.walletFreeBalance }, { transaction: t })
+                walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: WalletDetail.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmont: tempWalletTransaction.transactionAmont, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "completed", runningBalance: customerUpdatedBalance, freeBalance: customer.walletFreeBalance }, { transaction: t })
 
                 await models.walletTransactionTempDetails.update({ isOrderPlaced: true }, { where: { id: tempWalletTransaction.id }, transaction: t });
 
@@ -153,7 +153,7 @@ exports.addAmountWallet = async (req, res) => {
 
             await sequelize.transaction(async (t) => {
 
-                walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, transactionUniqueId, bankTransactionUniqueId: tempWalletTransaction.bankTransactionUniqueId, paymentType: tempWalletTransaction.paymentType, transactionAmont: tempWalletTransaction.transactionAmont, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, chequeNumber: tempWalletTransaction.chequeNumber, bankName: tempWalletTransaction.bankName, branchName: tempWalletTransaction.branchName, depositStatus: "Pending", runningBalance: customer.currentWalletBalance, freeBalance: customer.walletFreeBalance }, { transaction: t });
+                walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, transactionUniqueId, bankTransactionUniqueId: tempWalletTransaction.bankTransactionUniqueId, paymentType: tempWalletTransaction.paymentType, transactionAmont: tempWalletTransaction.transactionAmont, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, chequeNumber: tempWalletTransaction.chequeNumber, bankName: tempWalletTransaction.bankName, branchName: tempWalletTransaction.branchName, depositStatus: "pending", runningBalance: customer.currentWalletBalance, freeBalance: customer.walletFreeBalance }, { transaction: t });
 
                 await models.tempRazorPayDetails.update({ isOrderPlaced: true }, { where: { id: tempWalletTransaction.id } });
             })
@@ -308,7 +308,7 @@ exports.getTransactionDetails = async (req, res) => {
         // isActive: true,
         // customerId: CusData,
         customerId: id,
-        depositStatus: 'Completed',
+        depositStatus: 'completed',
         // paymentType: { [Op.in]: ['4', '5'] }
 
     };
@@ -335,18 +335,47 @@ exports.getTransactionDetails = async (req, res) => {
         })
     }
     return res.status(200).json(transactionDetails);
-
 }
 
 exports.getWalletBalance = async (req, res) => {
-
-
     const id = req.userData.id;
 
     let getWalletbalance = await models.customer.findOne({ where: { id: id, isActive: true } })
 
-    const walletFreeBalance = getWalletbalance.walletFreeBalance
-    const currentWalletBalance = getWalletbalance.currentWalletBalance
-    return res.status(200).json({ walletFreeBalance, currentWalletBalance });
+    if (check.isEmpty(getWalletbalance)) {
+        return res.status(400).json({ message: `Data Not Found.` });
+    } else {
+        const walletFreeBalance = getWalletbalance.walletFreeBalance
+        const currentWalletBalance = getWalletbalance.currentWalletBalance
+        return res.status(200).json({ walletFreeBalance, currentWalletBalance });
+    }
+}
+
+exports.withdrawAmount = async (req, res) => {
+
+    const { withdrawAmount, bankName, branchName, accountHolderName, accountNumber, ifscCode } = req.body;
+
+    const id = req.userData.id;
+
+    let customerFreeBalance = await models.customer.findOne({ where: { id: id, isActive: true } })
+    if (withdrawAmount > customerFreeBalance.walletFreeBalance) {
+
+        return res.status(400).json({ message: `Insufficient free wallet balance.` });
+    } else {
+        console.log("withdraw amt ")
+        await sequelize.transaction(async (t) => {
+
+            tempWallet = await models.walletTempDetails.create({ customerId: id, amount: withdrawAmount, paymentDirection: "debit", description: "withdraw amount", productTypeId: 4 }, { transaction: t });
+
+            let transactionUniqueId = uniqid.time().toUpperCase();
+
+            tempOrderDetail = await models.walletTransactionTempDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, walletTempId: tempWallet.id, transactionUniqueId, transactionAmont: withdrawAmount, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode }, { transaction: t });
+
+            tempOrderDetail = await models.walletTransactionDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, transactionUniqueId, transactionAmont: withdrawAmount, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, depositStatus: "pending" }, { transaction: t });
+
+        })
+
+        return res.status(200).json({ message: `Success` });
+    }
 
 }

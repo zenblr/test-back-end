@@ -28,8 +28,11 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
         );
         let { paymentFor } = req.query;
         let orderType;
-        if(paymentFor){
-            orderType = await models.digiGoldOrderType.findOne({where: { orderType: paymentFor}})
+        if (paymentFor) {
+            orderType = await models.digiGoldOrderType.findOne({ where: { orderType: paymentFor } })
+        }else{
+        return res.status(400).json({ message: "paymentFor is required" });
+
         }
         let query = {};
         if (orderType) {
@@ -102,7 +105,7 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
 
 exports.updateDepositWithdrawStatus = async (req, res) => {
     try {
-    
+
         let depositWithdrawId = req.params.depositWithdrawId;
         let { depositStatus } = req.body
         let customerUpdatedBalance;
@@ -113,31 +116,56 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
             return res.status(404).json({ message: 'Data not found' });
         }
 
-        if (transactionData.depositStatus == "Completed" || transactionData.depositStatus == "Rejected") {
+        if (transactionData.depositStatus == "completed" || transactionData.depositStatus == "rejected") {
             return res.status(400).json({ message: 'You can not change the status for this transaction' });
         }
-        if(transactionData.orderTypeId == 4){
-            let customer = await models.customer.findOne({ id: transactionData.customerId });
+        let customer = await models.customer.findOne({ id: transactionData.customerId });
+        let date = moment()
 
-            let date = moment()
-    
+        if (transactionData.orderTypeId == 4) {
+
             await sequelize.transaction(async (t) => {
+                if(depositStatus = "completed"){
+                    if (customer.currentWalletBalance) {
+                        customerUpdatedBalance = Number(customer.currentWalletBalance) + Number(transactionData.transactionAmont);
+                    } else {
+                        customerUpdatedBalance = Number(transactionData.transactionAmont);
+                    }
+                    await models.customer.update({ currentWalletBalance: customerUpdatedBalance }, { where: { id: customer.id }, transaction: t });
     
-            if (customer.currentWalletBalance) {
-                customerUpdatedBalance = Number(customer.currentWalletBalance) + Number(transactionData.transactionAmont);
-            } else {
-                customerUpdatedBalance = Number(transactionData.transactionAmont);
-            }
-            await models.customer.update({ currentWalletBalance: customerUpdatedBalance}, {where: { id: customer.id}, transaction: t});
+                    let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmont, paymentDirection: "credit", description: "add amount", productTypeId: 4, transactionDate: date }, { transaction: t });
+    
+                    await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
+                }else{
 
-            let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmont, paymentDirection: "credit", description: "add amount", productTypeId: 4, transactionDate: date }, { transaction: t });
-
-            await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
-
+                    await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
+                    
+                }
+                
             });
-            return res.status(200).json({message: "Success"});
-        }
+            return res.status(200).json({ message: "Success" });
+        } else if (transactionData.orderTypeId == 5) {
+            if (customer.walletFreeBalance < transactionData.transactionAmont) {
+                return res.status(400).json({ message: 'You have insufficient free wallet balance.' });
+            }
 
+            await sequelize.transaction(async (t) => {
+
+                if(depositStatus = "completed"){
+                    customerUpdatedFreeBalance = Number(customer.walletFreeBalance) + Number(transactionData.transactionAmont);
+
+                    await models.customer.update({ walletFreeBalance: customerUpdatedBalance }, { where: { id: customer.id }, transaction: t });
+    
+                    let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmont, paymentDirection: "debit", description: "withdraw amount", productTypeId: 4, transactionDate: date }, { transaction: t });
+    
+                    await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
+                }else{
+
+                    await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
+                }
+            });
+            return res.status(200).json({ message: "Success" });
+        }
     } catch (err) {
         console.log(err);
     }
@@ -148,9 +176,9 @@ exports.getWalletDetailByIdAdmin = async (req, res) => {
 
     let transactionData = await walletService.walletTransactionDetailById(depositWithdrawId);
 
-        if (!transactionData) {
-            return res.status(404).json({ message: 'Data not found' });
-        }else{
-            return res.status(200).json({transactionData});
-        }
+    if (!transactionData) {
+        return res.status(404).json({ message: 'Data not found' });
+    } else {
+        return res.status(200).json({ transactionData });
+    }
 }

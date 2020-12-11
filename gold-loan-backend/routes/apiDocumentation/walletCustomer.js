@@ -184,7 +184,7 @@
  *         description: Transaction details are fetch successfully
  *       404:
  *         description: No Transaction details found
- * /digital-gold/augmont-bank-details:
+ * /customer/app/augmont-bank-detail:
  *   get:
  *     tags:
  *       - Customer Wallet

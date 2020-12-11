@@ -88,8 +88,8 @@ module.exports = (sequelize, DataTypes) => {
         depositStatus: {
             type: DataTypes.ENUM,
             field: 'deposit_status',
-            values: ['Pending', 'Completed', 'Rejected'],
-            defaultValue: 'Pending'
+            values: ['pending', 'completed', 'rejected'],
+            defaultValue: 'pending'
         },
         runningBalance: {
             type: DataTypes.FLOAT,

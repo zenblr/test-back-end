@@ -3,7 +3,7 @@ const route = express.Router();
 
 const { wrapper } = require('../utils/errorWrap');
 const customerCheckAuth = require('../middleware/customerCheckAuth');
-const { makePayment, addAmountWallet, getAllDepositDetails, getWalletDetailByIdAdmin, getTransactionDetails, getWalletBalance } = require('../controllers/wallet/walletCustomer');
+const { makePayment, addAmountWallet, getAllDepositDetails, getWalletDetailByIdAdmin, getTransactionDetails, getWalletBalance, withdrawAmount } = require('../controllers/wallet/walletCustomer');
 const validatiError = require('../middleware/validationError');
 const { addWalletAmountValidation } = require('../validations/wallet');
 
@@ -13,10 +13,12 @@ route.post('/pay', customerCheckAuth, addWalletAmountValidation, validatiError, 
 
 route.post('/add-amount', wrapper(addAmountWallet));
 
-route.get('/:depositWithdrawId', customerCheckAuth, wrapper(getWalletDetailByIdAdmin));
-
 route.get('/transaction-detail', customerCheckAuth,wrapper(getTransactionDetails));
 
+route.post('/withdraw-amount', customerCheckAuth,wrapper(withdrawAmount));
+
 route.get('/wallet-balance', customerCheckAuth,wrapper(getWalletBalance));
+
+route.get('/:depositWithdrawId', customerCheckAuth, wrapper(getWalletDetailByIdAdmin));
 
 module.exports = route;
