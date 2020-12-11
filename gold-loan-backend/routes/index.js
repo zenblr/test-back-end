@@ -283,4 +283,7 @@ router.use('/wallet', wallet)
 const razorPayCron = require('./razorPayCron')
 router.use('/razor-pay-cron', razorPayCron)
 
+const razorPay = require('./razorPay')
+router.use('/razor-pay', razorPay)
+
 module.exports = router;
