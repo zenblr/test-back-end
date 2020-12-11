@@ -434,7 +434,7 @@ export class PageConfig {
 					"deposit-requests": {
 						page: { title: "Deposit Requests", desc: "" },
 						id: {
-							page: { title: "Deposit Requests", desc: "" },
+							page: { title: "Deposit Requests Details", desc: "" },
 						},
 					},
 					"withdrawal-requests": {

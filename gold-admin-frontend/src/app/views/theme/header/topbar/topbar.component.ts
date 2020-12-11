@@ -727,6 +727,9 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes("admin/digi-gold/sip-management/create-sip")) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes("/admin/digi-gold/wallet/deposit-requests")) {
+			this.showBackButton = true;
+		}
 		if (location.href.includes("admin/digi-gold/wallet/deposit-requests/deposit-requests-edit")) {
 			this.showBackButton = true;
 		}
