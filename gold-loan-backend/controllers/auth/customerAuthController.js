@@ -20,7 +20,7 @@ exports.customerLogin = async (req, res, next) => {
             mobile: checkCustomer.dataValues.mobileNumber,
             firstName: checkCustomer.dataValues.firstName,
             lastName: checkCustomer.dataValues.lastName,
-            email:checkCustomer.dataValues.email,
+            email: checkCustomer.dataValues.email,
             userBelongsTo: "CustomerUser"
         },
             JWT_SECRETKEY, {
@@ -33,6 +33,9 @@ exports.customerLogin = async (req, res, next) => {
         await models.customer.update({ lastLogin: createdTime }, {
             where: { id: decoded.id }
         });
+
+        await models.customerLogger.destroy({ where: { customerId: decoded.id } })
+        
         await models.customerLogger.create({
             customerId: decoded.id,
             token: Token,
@@ -40,7 +43,7 @@ exports.customerLogin = async (req, res, next) => {
             createdDate: createdTime
         });
 
-        return res.status(200).json({ message: 'Login successful', token:Token });
+        return res.status(200).json({ message: 'Login successful', token: Token });
     } else {
         return res.status(401).json({ message: 'Wrong Credentials' });
     }
@@ -92,6 +95,9 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
         await models.customer.update({ lastLogin: createdTime }, {
             where: { id: decoded.id }, transaction: t
         });
+
+        await models.customerLogger.destroy({ where: { customerId: decoded.id } })
+
         await models.customerLogger.create({
             customerId: decoded.id,
             token: Token,
