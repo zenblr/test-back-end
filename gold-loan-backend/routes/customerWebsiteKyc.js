@@ -1,5 +1,5 @@
 const express = require('express');
-const { submitApplyKyc, submitEditKycInfo, getKycInfo, digiOrEmiKyc } = require('../controllers/customerKyc/customerWebsiteKyc');
+const { submitApplyKyc, submitEditKycInfo, getKycInfo, digiOrEmiKyc, getDigiOrEmiKyc } = require('../controllers/customerKyc/customerWebsiteKyc');
 const route = express.Router();
 const validatiError = require('../middleware/validationError');
 const { wrapper } = require('../utils/errorWrap');
@@ -7,6 +7,8 @@ const customerCheckAuth = require('../middleware/customerCheckAuth');
 
 
 route.post('/', customerCheckAuth, wrapper(digiOrEmiKyc))
+
+route.get('/', customerCheckAuth, wrapper(getDigiOrEmiKyc))
 
 route.post('/apply-kyc', customerCheckAuth, wrapper(submitApplyKyc));
 

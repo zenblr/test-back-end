@@ -5,6 +5,7 @@ const Op = Sequelize.Op;
 const { getSingleLoanDetail } = require('../../utils/loanFunction')
 const check = require("../../lib/checkLib");
 const moment = require('moment')
+const { allKycCompleteInfo } = require('../../service/customerKyc')
 
 exports.readBanner = async (req, res, next) => {
     console.log("banner")
@@ -317,6 +318,10 @@ exports.personalInfo = async (req, res, next) => {
             },
         ]
     })
+
+    let kycApproval = await allKycCompleteInfo(customerInfo)
+
+    customerInfo.dataValues.kycApproval = kycApproval
 
     return res.status(200).json({ message: 'Success', data: customerInfo })
 }

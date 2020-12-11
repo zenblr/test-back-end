@@ -11,6 +11,10 @@ const extend = require('extend')
 const check = require("../lib/checkLib");
 var uniqid = require('uniqid');
 const errorLogger = require('../utils/errorLogger');
+const getMerchantData = require('../controllers/auth/getMerchantData')
+const fs = require('fs');
+const FormData = require('form-data');
+let sms = require('../utils/SMS');
 
 
 let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer, isFromCustomerWebsite) => {
@@ -545,6 +549,10 @@ let getKycInfo = async (customerId) => {
             model: models.customerKyc,
             as: 'customerKyc',
             attributes: ['id', 'currentKycModuleId']
+        },
+        {
+            model: models.customerKycClassification,
+            as: 'customerKycClassification'
         }
         ]
     })
@@ -1474,6 +1482,44 @@ let digiOrEmiKyc = async (req) => {
     };
 }
 
+let allKycCompleteInfo = async (customerInfo) => {
+
+    let kycCompletePoint = customerInfo.kycCompletePoint
+
+    let kycApproval = {
+        goldLoan: false,
+        goldEmi: false,
+        goldScrap: false,
+        digiGold: false
+    }
+
+    let goldPoint = await models.module.findOne({ where: { id: 1 } })
+    let checkGoldKyc = kycCompletePoint & goldPoint.modulePoint
+    if (checkGoldKyc != 0) {
+        kycApproval.goldLoan = true
+    }
+
+    let goldEmi = await models.module.findOne({ where: { id: 2 } })
+    let checkEmiKyc = kycCompletePoint & goldEmi.modulePoint
+    if (checkEmiKyc != 0) {
+        kycApproval.goldEmi = true
+    }
+
+    let goldScrap = await models.module.findOne({ where: { id: 3 } })
+    let checkSprapKyc = kycCompletePoint & goldScrap.modulePoint
+    if (checkSprapKyc != 0) {
+        kycApproval.goldScrap = true
+    }
+
+    let digiGold = await models.module.findOne({ where: { id: 4 } })
+    let checkDigiGoldKyc = kycCompletePoint & digiGold.modulePoint
+    if (checkDigiGoldKyc != 0) {
+        kycApproval.digiGold = true
+    }
+
+    return kycApproval
+}
+
 module.exports = {
     customerKycAdd: customerKycAdd,
     customerKycEdit: customerKycEdit,
@@ -1484,5 +1530,6 @@ module.exports = {
     submitKycInfo: submitKycInfo,
     kycAddressDeatil: kycAddressDeatil,
     kycPersonalDetail: kycPersonalDetail,
-    digiOrEmiKyc: digiOrEmiKyc
+    digiOrEmiKyc: digiOrEmiKyc,
+    allKycCompleteInfo: allKycCompleteInfo
 }
