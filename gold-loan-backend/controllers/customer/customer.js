@@ -906,3 +906,52 @@ exports.getAllRegisteredCustomer = async (req, res) => {
     return res.status(200).json({ message: 'Success', data: allCustomers, count: count.length });
   }
 }
+
+exports.getProductRequest = async (req, res, next) => {
+
+  const { search, offset, pageSize } = paginationWithFromTo(
+    req.query.search,
+    req.query.from,
+    req.query.to
+  );
+
+  let includeArray = [
+    {
+      model: models.customer,
+      as: 'customer',
+      include: [
+        {
+          model: models.state,
+          as: 'state'
+        },
+        {
+          model: models.city,
+          as: 'city'
+        }
+      ]
+    },
+    {
+      model: models.module,
+      as: 'module'
+    }
+  ]
+
+  let getAllProductRequest = await models.productRequest.findAll({
+    // where: searchQuery,
+    attributes: { exclude: ['createdBy', 'modifiedBy', 'isActive'] },
+    order: [["createdAt", "desc"]],
+    offset: offset,
+    limit: pageSize,
+    include: includeArray,
+  });
+  let getAllProductRequestCount = await models.productRequest.findAll({
+    // where: searchQuery,
+    include: includeArray,
+  });
+
+  if (allCustomers.length == 0) {
+    return res.status(200).json({ data: [] });
+  }
+  return res.status(200).json({ count: getAllProductRequestCount.length, data: getAllProductRequest });
+
+}

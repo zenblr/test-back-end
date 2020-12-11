@@ -238,6 +238,7 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.hasMany(models.customerBankDetails, { foreignKey: 'customerId', as: 'customerBankDetail' });
 
+        Customer.hasMany(models.productRequest, { foreignKey: 'customerId', as: 'productRequest' });
 
     }
 
