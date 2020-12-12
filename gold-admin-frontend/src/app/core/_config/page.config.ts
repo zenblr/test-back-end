@@ -440,7 +440,7 @@ export class PageConfig {
 					"withdrawal-requests": {
 						page: { title: "Withdrawal Requests", desc: "" },
 						id: {
-							page: { title: "Withdrawal Requests", desc: "" },
+							page: { title: "Withdrawal Requests Details", desc: "" },
 						},
 					},
 

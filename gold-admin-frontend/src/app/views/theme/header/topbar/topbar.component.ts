@@ -730,7 +730,13 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes("/admin/digi-gold/wallet/deposit-requests")) {
 			this.showBackButton = true;
 		}
+		if (location.href.includes("/admin/digi-gold/wallet/withdrawal-requests")) {
+			this.showBackButton = true;
+		}
 		if (location.href.includes("admin/digi-gold/wallet/deposit-requests/deposit-requests-edit")) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes("admin/digi-gold/wallet/withdrawal-requests/withdrawal-requests-edit")) {
 			this.showBackButton = true;
 		}
 		if (location.href.includes("packet-image-upload")) {

@@ -164,9 +164,7 @@ export class DepositRequestsComponent implements OnInit {
 	}
 
 	editDeposit(id) {
-		this.router.navigate([
-			'admin/digi-gold/wallet/deposit-requests/', id
-		]);
+		this.router.navigate(['admin/digi-gold/wallet/deposit-requests/', id]);
 	}
 
 	/**

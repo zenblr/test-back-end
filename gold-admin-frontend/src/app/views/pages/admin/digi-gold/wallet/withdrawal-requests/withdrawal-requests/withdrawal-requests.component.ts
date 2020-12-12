@@ -3,6 +3,7 @@ import {
   LayoutUtilsService,
   QueryParamsModel,
 } from "../../../../../../../core/_base/crud";
+import { Router } from "@angular/router";
 import {
   MatSnackBar,
   MatDialog,
@@ -82,6 +83,7 @@ export class WithdrawalRequestsComponent implements OnInit {
     private  withdrawalRequestsService:  WithdrawalRequestsService,
     private dataTableService: DataTableService,
     private sharedService: SharedService,
+    private router: Router,
   ) {
     // this.withdrawalRequestsService.exportExcel$
     //   .pipe(takeUntil(this.destroy$))
@@ -194,6 +196,10 @@ export class WithdrawalRequestsComponent implements OnInit {
     this.dataSource.loadWithdrawalRequests(this.withdrawRequestsData);
     this.filteredDataList = data.list;
   }
+
+  editWithdrawal(id) {
+		this.router.navigate(['admin/digi-gold/wallet/withdrawal-requests/', id]);
+	}
 
   // updateStatus(details) {
   //   const dialogRef = this.dialog.open(DepositDetailsEditComponent, {

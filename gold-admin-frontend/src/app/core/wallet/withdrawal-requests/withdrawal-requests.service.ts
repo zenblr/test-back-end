@@ -41,6 +41,17 @@ export class WithdrawalRequestsService {
       })
     );
   }
+  
+  getWithdrawById(id): Observable<any> {
+		return this.http.get<any>(`/api/wallet/${id}`
+		);
+	}
+  
+  editWithdrawStatus(data, id): Observable<any> {
+		return this.http.put<any>(`/api/wallet/${id}`,
+			data
+		);
+	}
 
 
 
