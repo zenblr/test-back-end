@@ -45,8 +45,11 @@ exports.getCustomerPassbookDetails = async (req, res) => {
         'Authorization': `Bearer ${merchantData.accessToken}`,
       },
     });
-    const resultData = result.data
-    return res.status(200).json({ resultData, currentGoldBalance: currentGoldBalance, currentSilverBalance: currentSilverBalance, sellableGoldBalance: sellableGoldBalance, sellableSilverBalance: sellableSilverBalance });
+    // const resultData = result.data;
+    result.data.result.data.sellableGoldBalance = sellableGoldBalance;
+    result.data.result.data.sellableSilverBalance = sellableSilverBalance;
+
+    return res.status(200).json( result.data );
   } catch (err) {
     console.log(err);
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);

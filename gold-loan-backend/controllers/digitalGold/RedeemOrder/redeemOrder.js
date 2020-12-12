@@ -107,13 +107,17 @@ exports.AddOrder = async (req, res) => {
         if (totalGoldWeight) {
 
           updatedSellableGold = Number(customerBal.sellableGoldBalance) - Number(totalGoldWeight)
-
+          if(!updatedSellableGold || updatedSellableGold <= 0){
+            updatedSellableGold == 0;
+          }
           await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: updatedSellableGold }, { where: { customerId: id }, transaction: t });
         }
 
         if (totalSilverWeight) {
           updatedSellableSilver = Number(customerBal.sellableSilverBalance) - Number(totalSilverWeight);
-
+          if(!updatedSellableSilver || updatedSellableSilver <= 0){
+            updatedSellableSilver == 0;
+          }
           await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilver }, { where: { customerId: id }, transaction: t });
         }
 

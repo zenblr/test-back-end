@@ -22,7 +22,6 @@ const Op = Sequelize.Op;
 exports.buyProduct = async (req, res) => {
   try {
     const { amount, metalType, quantity, lockPrice, blockId, quantityBased, modeOfPayment } = req.body;
-    console.log(req.userData);
 
     const id = req.userData.id;
     let customerDetails = await models.customer.findOne({

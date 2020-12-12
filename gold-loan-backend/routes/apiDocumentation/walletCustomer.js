@@ -199,4 +199,52 @@
  *         description: Augmont Bank details are fetch successfully
  *       404:
  *         description: No bank details found.
+ * /customer/app/customer-wallet/wallet-balance:
+ *   get:
+ *     tags:
+ *       - Customer Wallet
+ *     name: Customer wallet details
+ *     summary: To get customer wallet details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: customer wallet details are fetch successfully
+ *       404:
+ *         description: No bank details found.
+ * /customer/app/customer-wallet/withdraw-amount:
+ *   post:
+ *     tags:
+ *       - Customer Wallet
+ *     name: withdraw amount
+ *     summary: withdraw amount  
+ *     consumes:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             withdrawAmount:
+ *               type: number
+ *             bankName:
+ *               type: string
+ *             branchName:
+ *               type: string
+ *             accountHolderName:
+ *               type: string
+ *             accountNumber:
+ *               type: string
+ *             ifscCode:
+ *               type: string
+ *     responses:
+ *       200:
+ *          description: success
+ *       404:
+ *          description: Insuffcient balance
  */

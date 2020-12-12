@@ -96,7 +96,7 @@ module.exports = async () => {
         allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
             where: {
                 createdAt: { [Op.between]: [newDateBeforfifteenMin, newDate] },
-                orderTypeId: 1
+                // orderTypeId: 1
             }
         });
         console.log("allCustomerBeforScheduleTime", allCustomerBeforScheduleTime)
