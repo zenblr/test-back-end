@@ -15,6 +15,13 @@ const Op = Sequelize.Op
 //To get wallet transaction detail by id
 exports.walletTransactionDetailById = async (walletTransactionId) => {
     
-    let transactionData = await models.walletTransactionDetails.findOne({ where: { id: walletTransactionId } });
+    let transactionData = await models.walletTransactionDetails.findOne({
+         where: { id: walletTransactionId },
+         include: {
+             model: models.customer,
+             as: 'customer',
+             attribute: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+         }
+        });
     return transactionData;
 }

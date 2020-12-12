@@ -109,6 +109,7 @@ module.exports = (sequelize, DataTypes) => {
 
     WalletTransactionDetails.associate = function (models) {
         WalletTransactionDetails.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
+        WalletTransactionDetails.belongsTo(models.walletDetails, { foreignKey: 'walletId', as: 'wallet' });
     }
 
     return WalletTransactionDetails;

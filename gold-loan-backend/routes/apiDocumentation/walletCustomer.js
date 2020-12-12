@@ -1,37 +1,5 @@
 /**
  * @swagger
- * /customer/app/customer-wallet:
- *   get:
- *     tags:
- *       -  Customer Wallet
- *     name: read deposit request
- *     summary: To read wallet deposit request
- *     security:
- *       - bearerAuth: []
- *     consumes:
- *       - application/json
- *     parameters:
- *     - name: "search"
- *       in: "query"
- *       description: "search your keyword"
- *       type: "string"
- *     - name: "from"
- *       in: "query"
- *       description: "Pagination starting point"
- *       type: "string"
- *     - name: "to"
- *       in: "query"
- *       description: "Pagination ending point"
- *       type: "string"
- *     - name: "paymentFor"
- *       in: "query"
- *       description: "paymentFor"
- *       type: "string"
- *     responses:
- *       200:
- *          description: deposit request fetch successfully
- *       404:
- *          description: no deposit request found
  * /customer/app/customer-wallet/pay:
  *   post:
  *     tags:
@@ -247,4 +215,56 @@
  *          description: success
  *       404:
  *          description: Insuffcient balance
+ * /customer/app/customer-wallet/bank-detail-customer:
+ *   get:
+ *     tags:
+ *       - Customer Wallet
+ *     name: Customer bank details
+ *     summary: To get customer bank details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: customer wallet bank details are fetch successfully
+ *       404:
+ *         description: No bank details found.
+ * /customer/app/customer-wallet/add-bank-details:
+ *   post:
+ *     tags:
+ *       - Customer Wallet
+ *     name: Add Bank Details 
+ *     summary: Add Bank Details  
+ *     consumes:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             moduleId:
+ *               type: string
+ *             description:
+ *               type: string
+ *             bankName:
+ *               type: string
+ *             bankBranchName:
+ *               type: string
+ *             accountHolderName:
+ *               type: string
+ *             accountNumber:
+ *               type: string
+ *             ifscCode:
+ *               type: string
+  *             accountType:
+ *               type: string
+ *     responses:
+ *       200:
+ *          description: success
+ *       404:
+ *          description: Data Not Found.
  */

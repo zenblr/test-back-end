@@ -177,6 +177,9 @@ exports.getAllDepositDetails = async (req, res) => {
         req.query.from,
         req.query.to
     );
+    if (!orderTypeId) {
+        return res.status(400).json({ message: 'orderTypeId is required' });
+    }
     const orderType = orderTypeId
     let orderTypeData = await models.digiGoldOrderType.findOne({ where: { orderType, isActive: true } })
 
@@ -279,6 +282,13 @@ exports.getTransactionDetails = async (req, res) => {
         req.query.to
     );
 
+    let includeArray = [{
+        model: models.walletDetails,
+        as: 'wallet',
+
+        attributes: ['customerId', 'amount', 'paymentDirection', 'description',]
+    }]
+
     let query = {};
     let searchQuery = {
         [Op.and]: [query, {
@@ -352,13 +362,12 @@ exports.getWalletBalance = async (req, res) => {
 }
 
 exports.withdrawAmount = async (req, res) => {
-
     const { withdrawAmount, bankName, branchName, accountHolderName, accountNumber, ifscCode } = req.body;
 
     const id = req.userData.id;
 
     let customerFreeBalance = await models.customer.findOne({ where: { id: id, isActive: true } })
-    if (withdrawAmount > customerFreeBalance.walletFreeBalance) {
+    if (customerFreeBalance.walletFreeBalance < withdrawAmount) {
 
         return res.status(400).json({ message: `Insufficient free wallet balance.` });
     } else {
@@ -377,5 +386,39 @@ exports.withdrawAmount = async (req, res) => {
 
         return res.status(200).json({ message: `Success` });
     }
+
+}
+
+
+exports.AddCustomerBankDetails = async (req, res) => {
+
+    const { bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifscCode } = req.body;
+
+    console.log("addbankdetail")
+    const id = req.userData.id;
+
+    customerBankDetails = await models.customerBankDetails.create({ customerId: id, moduleId: 4, description: 'withdraw wallet amount', bankName: bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifscCode, isActive: 'true' });
+
+    if(customerBankDetails){
+        return res.status(200).json({ message: 'Success' });
+    }else{
+        return res.status(404).json({ message: `Failed to add bank details.` });
+    }
+
+
+
+}
+
+exports.getAllBankDetails = async (req, res) => {
+
+    const id = req.userData.id;
+    let bankDetails = await models.customerBankDetails.findAll({ where: { customerId: id, isActive: 'true' } });
+
+    if (check.isEmpty(bankDetails)) {
+        return res.status(404).json({ message: `Data Not Found.` });
+    } else {
+        return res.status(200).json({ bankDetails });
+    }
+
 
 }

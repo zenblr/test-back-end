@@ -111,7 +111,6 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
         let customerUpdatedBalance;
 
         let transactionData = await models.walletTransactionDetails.findOne({ where: { id: depositWithdrawId } });
-
         if (!transactionData) {
             return res.status(404).json({ message: 'Data not found' });
         }
@@ -119,7 +118,8 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
         if (transactionData.depositStatus == "completed" || transactionData.depositStatus == "rejected") {
             return res.status(400).json({ message: 'You can not change the status for this transaction' });
         }
-        let customer = await models.customer.findOne({ id: transactionData.customerId });
+        let customer = await models.customer.findOne({where:{id: transactionData.customerId, isActive: true}});
+
         let date = moment()
 
         if (transactionData.orderTypeId == 4) {
