@@ -86,5 +86,6 @@ router.use('/kyc', customerWebsiteKyc)
 
 router.post('/razor-pay', wrapper(razorPayCreateOrder));
 
+router.use('/customer-wallet', walletCustomer)
 
 module.exports = router;

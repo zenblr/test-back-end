@@ -102,7 +102,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_active',
             defaultValue: true,
         },
-
+        refundCronExecuted: {
+            type: DataTypes.BOOLEAN,
+            field: 'refund_cron_executed',
+            defaultValue: false,
+        }
     }, {
         freezeTableName: true,
         allowNull: false,

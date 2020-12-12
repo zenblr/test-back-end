@@ -202,6 +202,16 @@ module.exports = (sequelize, DataTypes) => {
         note: {
             type: DataTypes.TEXT,
             field: 'note'
+        },
+        currentWalletBalance: {
+            type: DataTypes.FLOAT,
+            field: 'current_wallet_balance',
+            defaultValue: 0
+        },
+        walletFreeBalance: {
+            type: DataTypes.FLOAT,
+            field: 'wallet_free_balance',
+            defaultValue: 0
         }
 
     }, {

@@ -251,6 +251,11 @@ exports.partPayment = async (req, res, next) => {
             let customerLoanTransaction = await models.customerLoanTransaction.create(paymentDetails, { transaction: t })
             //////razorPay
             if (isRazorPay) {
+                if(isAdmin){
+                    await models.tempRazorPayDetails.update({isOrderPlaced:true},{ where: { razorPayOrderId: transactionDetails.razorpay_order_id } })
+                }else{
+                    await models.tempRazorPayDetails.update({isOrderPlaced:true},{ where: { razorPayOrderId: razorpay_order_id } })
+                }
                 //new loan
                 let status = "Completed";
                 let receivedDate = moment(depositDate).format("YYYY-MM-DD");

@@ -282,6 +282,11 @@ exports.quickPayment = async (req, res, next) => {
             //////razorPay
             if (isRazorPay) {
                 //new loan
+                if(isAdmin){
+                    await models.tempRazorPayDetails.update({isOrderPlaced:true},{ where: { razorPayOrderId: transactionDetails.razorpay_order_id } })
+                }else{
+                    await models.tempRazorPayDetails.update({isOrderPlaced:true},{ where: { razorPayOrderId: razorpay_order_id } })
+                }
                 let status = "Completed";
                 let receivedDate = moment(moment(depositDate).format("YYYY-MM-DD"));
                 let transactionId = customerLoanTransaction.id;
