@@ -63,6 +63,10 @@ module.exports = async (req, res, next) => {
     
             "/api/state",
             "/api/city",
+            "/api/identity-type",
+            "/api/address-proof-type",
+            "/api/occupation",
+            "/api/organization-type",
 
             "/api/digital-gold/rates",
             "/api/digital-gold/bank",

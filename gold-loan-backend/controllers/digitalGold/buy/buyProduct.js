@@ -262,8 +262,9 @@ exports.buyProduct1 = async (req, res) => {
     if (requestFrom == "mobileApp") {
       return res.status(200).json(result.data);
     }
+    console.log(result.data.result.data.metalType);
     res.cookie(`metalObject`, `${JSON.stringify(result.data.result.data.metalType)}`);
-    res.redirect(`http://${process.env.DIGITALGOLDAPI}/digi-gold/order-success/buy/${result.data.result.data.merchantTransactionId}`);
+    res.redirect(`${process.env.BASE_URL_CUSTOMER}/digi-gold/order-success/buy/${result.data.result.data.merchantTransactionId}`);
 
   } catch (err) {
     console.log(err);

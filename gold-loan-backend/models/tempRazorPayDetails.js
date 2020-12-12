@@ -7,10 +7,12 @@ module.exports = (sequelize, DataTypes) => {
         customerId: {
             type: DataTypes.INTEGER,
             field: 'customer_id',
+            allowNull: false
         },
         razorPayOrderId: {
             type: DataTypes.STRING,
             field: 'razor_pay_order_id',
+            defaultValue: null
         },
         amount: {
             type: DataTypes.STRING,
@@ -20,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         paymentFor: {
             type: DataTypes.STRING,
             field: 'payment_for',
+            values: ['quickPay', 'partPayment', 'jewelleryRelease']
         },
         depositDate: {
             type: DataTypes.DATEONLY,

@@ -156,11 +156,47 @@ let getAllCustomerLoanId = async () => {
             }],
     });
     let customerLoanId = [];
-    console.log(customerLoanId)
     for (const masterLoanData of masterLona) {
         await masterLoanData.customerLoan.map((data) => { customerLoanId.push(data.id) });
     }
     return customerLoanId
+}
+
+let getAllOrnamentReleasedCustomerLoanId = async () => {
+    let masterLona = await models.customerLoanMaster.findAll({
+        order: [
+            [models.customerLoan, 'id', 'asc']
+        ],
+        where: {
+            isActive: true,
+            isLoanCompleted: true,
+            isOrnamentsReleased : true
+        },
+        attributes: ['id'],
+        include: [{
+                model: models.customerLoan,
+                as: 'customerLoan',
+                attributes: ['id']
+            }],
+    });
+    let customerLoanId = [];
+    for (const masterLoanData of masterLona) {
+        await masterLoanData.customerLoan.map((data) => { customerLoanId.push(data.id) });
+    }
+    return customerLoanId
+}
+
+let calculationDataForReleasedLoan = async () => {
+    let customerLoanId = await getAllOrnamentReleasedCustomerLoanId();
+    let loanInfo = [];
+    for (const id of customerLoanId) {
+        let info = await getAllDetailsOfCustomerLoan(id);
+        loanInfo.push(info);
+    }
+    let noOfDaysInYear = 360
+    let global = await models.globalSetting.findAll()
+    let { gracePeriodDays } = global[0]
+    return { noOfDaysInYear, gracePeriodDays, loanInfo };
 }
 
 let getAllDetailsOfCustomerLoan = async (customerLoanId) => {
@@ -319,6 +355,13 @@ let getAllPaidInterestForCalculation = async (loanId) => {
         where: { loanId: loanId, emiStatus: 'paid' }
     });
     return allPaidInterest;
+}
+
+let getAllPaidPartialyPaidInterest = async (loanId) => {
+    let allpaidPartialyPaidInterest = await models.customerLoanInterest.findAll({
+        where: { loanId: loanId,  emiStatus: { [Op.in]: ['paid','partially paid'] } }
+    });
+    return allpaidPartialyPaidInterest;
 }
 
 let getAllInterestLessThanDate = async (loanId, date) => {
@@ -1386,7 +1429,7 @@ async function getAmountLoanSplitUpData(loan, amount, splitUpRatioAmount) {
 
 }
 
-async function interestSplit(loan,amount,splitUpRatioAmount){
+async function interestSplit(loan, amount, splitUpRatioAmount) {
     let { securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest } = await payableAmountForLoan(amount, loan)
 
     let securedOutstandingAmount = loan.customerLoan[0].outstandingAmount
@@ -1395,20 +1438,20 @@ async function interestSplit(loan,amount,splitUpRatioAmount){
     let unsecuredInterestRate = 0
     if (loan.isUnsecuredSchemeApplied) {
         unsecuredOutstandingAmount = loan.customerLoan[1].outstandingAmount
-     unsecuredInterestRate = loan.customerLoan[1].interestRate
+        unsecuredInterestRate = loan.customerLoan[1].interestRate
 
     }
     let totalOutstandingAmount = Number(securedOutstandingAmount) + Number(unsecuredOutstandingAmount)
 
     let securedLoanId = loan.customerLoan[0].id
-    let securedRatio = Number(((securedOutstandingAmount * securedInterestRate/ ((securedOutstandingAmount * securedInterestRate) + (unsecuredOutstandingAmount * unsecuredInterestRate)))*splitUpRatioAmount).toFixed(2))
+    let securedRatio = Number(((securedOutstandingAmount * securedInterestRate / ((securedOutstandingAmount * securedInterestRate) + (unsecuredOutstandingAmount * unsecuredInterestRate))) * splitUpRatioAmount).toFixed(2))
     let newSecuredOutstandingAmount = securedOutstandingAmount - securedRatio
     let newUnsecuredOutstandingAmount = 0
     let unsecuredRatio = 0
     let unsecuredLoanId = null
     if (loan.isUnsecuredSchemeApplied) {
         unsecuredLoanId = loan.customerLoan[1].id
-        unsecuredRatio = Number(((unsecuredOutstandingAmount * unsecuredInterestRate/ ((securedOutstandingAmount * securedInterestRate) + (unsecuredOutstandingAmount * unsecuredInterestRate)))*splitUpRatioAmount).toFixed(2))
+        unsecuredRatio = Number(((unsecuredOutstandingAmount * unsecuredInterestRate / ((securedOutstandingAmount * securedInterestRate) + (unsecuredOutstandingAmount * unsecuredInterestRate))) * splitUpRatioAmount).toFixed(2))
         newUnsecuredOutstandingAmount = Number(unsecuredOutstandingAmount) - unsecuredRatio
     }
     let newMasterOutstandingAmount = newSecuredOutstandingAmount + newUnsecuredOutstandingAmount
@@ -1451,19 +1494,21 @@ let nextDueDateInterest = async (loan) => {
 
 
     let securedPerDayInterestAmount = ((securedInterest / 100) * securedOutstandingAmount * (paymentFrequency / 30)) / paymentFrequency
-
     let secured = await models.customerLoanInterest.findAll({
-        where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[0].id, isExtraDaysInterest: false },
+        where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[0].id, },
         order: [['emiEndDate', 'asc']]
     });
+
     var securedTotalInterest = 0
     var unsecuredTotalInterest = 0
+
     if (secured.length > 0) {
         let startDate = moment(secured[0].emiStartDate)
         let index = secured.findIndex(ele => {
-            let a = new Date(ele.emiEndDate);
-            let b = new Date()
-            return a.getTime() > b.getTime()
+            let loanEndDate = moment(ele.emiEndDate);
+            let currentDate = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+            let noOfDays = loanEndDate.diff(currentDate, 'days');
+            return noOfDays >= 0
         })
         let securedMonthRebateInterest = 0
         for (let securedIndex = 0; securedIndex <= index; securedIndex++) {
@@ -1472,6 +1517,9 @@ let nextDueDateInterest = async (loan) => {
 
         if (index < 0) {
             securedTotalInterest = 0
+            secured.forEach(interest => {
+                securedTotalInterest += Number(interest.outstandingInterest)
+            })
         } else {
             let partialPaidSecuredIndex = secured.findIndex(ele => {
                 return ele.emiStatus == 'partially paid'
@@ -1511,9 +1559,10 @@ let nextDueDateInterest = async (loan) => {
         if (unsecured.length > 0) {
             let startDate = moment(unsecured[0].emiStartDate)
             let index = unsecured.findIndex(ele => {
-                let a = new Date(ele.emiEndDate);
-                let b = new Date()
-                return a.getTime() > b.getTime()
+                let loanEndDate = moment(ele.emiEndDate);
+                let currentDate = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+                let noOfDays = loanEndDate.diff(currentDate, 'days');
+                return noOfDays >= 0
             })
             var unsecureRebateInterest = 0;
             for (let unsecuredIndex = 0; unsecuredIndex <= index; unsecuredIndex++) {
@@ -1523,7 +1572,9 @@ let nextDueDateInterest = async (loan) => {
 
             if (index < 0) {
                 unsecuredTotalInterest = 0
-
+                unsecured.forEach(interest => {
+                    unsecuredTotalInterest += Number(interest.outstandingInterest)
+                })
             } else {
                 let partialPaidSecuredIndex = unsecured.findIndex(ele => {
                     return ele.emiStatus == 'partially paid'
@@ -2328,6 +2379,178 @@ let getSecuredScheme = async (securedSchemeId) => {
     return securedScheme
 }
 
+let getAllPartAndFullReleaseData = async (masterLoanId, ornamentId) => {
+    let whereSelectedOrmenemts = { id: { [Op.in]: ornamentId }, isActive: true, isReleased: false };
+    let whereOtherOrmenemts = { id: { [Op.notIn]: ornamentId }, isActive: true, isReleased: false };
+    let loanData = await getLoanDetails(masterLoanId);
+    let amount = await getCustomerInterestAmount(masterLoanId);
+    let requestedOrnaments = await ornementsDetails(masterLoanId, whereSelectedOrmenemts);
+    let otherOrnaments = await ornementsDetails(masterLoanId, whereOtherOrmenemts);
+    let allOrnaments = await allOrnamentsDetails(masterLoanId);
+    let ornamentWeight = await getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanData, allOrnaments);
+    let loanInfo = await getornamentLoanInfo(masterLoanId, ornamentWeight, amount);
+    return { ornamentWeight, loanInfo, amount }
+}
+
+let ornementsDetails = async (masterLoanId, whereBlock) => {
+    let ornaments = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        attributes: ['customerId', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
+        include: [{
+            model: models.customerLoanOrnamentsDetail,
+            as: 'loanOrnamentsDetail',
+            where: whereBlock,
+            include: [
+                {
+                    model: models.ornamentType,
+                    as: "ornamentType",
+                    attributes: ['name', 'id'],
+                },
+                {
+                    model: models.packet,
+                }
+            ]
+        }]
+    });
+    return ornaments;
+}
+
+let allOrnamentsDetails = async (masterLoanId) => {
+    let ornaments = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        attributes: ['customerId', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
+        include: [{
+            model: models.customerLoanOrnamentsDetail,
+            as: 'loanOrnamentsDetail',
+            where: { isActive: true, isReleased: false },
+            include: [
+                {
+                    model: models.ornamentType,
+                    as: "ornamentType",
+                    attributes: ['name', 'id'],
+                },
+                {
+                    model: models.packet,
+                }
+            ]
+        }]
+    });
+    return ornaments;
+}
+
+let getornamentsWeightInfo = async(requestedOrnaments, otherOrnaments, loanData, allOrnaments) => {
+    let ornamentsWeightInfo = {
+        releaseGrossWeight: 0,
+        releaseDeductionWeight: 0,
+        releaseNetWeight: 0,
+        remainingGrossWeight: 0,
+        remainingDeductionWeight: 0,
+        remainingNetWeight: 0,
+        releaseAmount: 0,
+        currentLtv: 0,
+        previousLtv: 0,
+        currentOutstandingAmount: 0,
+        allOrnamentsGrossWeight: 0,
+        allOrnamentsDeductionWeight: 0,
+        allOrnamentsNetWeight: 0,
+        totalOfReleaseOrnaments: 0,
+        totalOfRemainingOrnaments: 0,
+        previousOutstandingAmount: 0,
+        remainingOrnamentAmount: 0,//remning ornament
+        newLoanAmount: 0,//new loan amount
+    }
+    if (requestedOrnaments || allOrnaments) {
+        let securedLoanRpg = loanData.customerLoan[0].scheme.rpg;
+        let unSecuredLoanRpg = 0;
+        if (loanData.customerLoan.length > 1) {
+            unSecuredLoanRpg = loanData.customerLoan[1].scheme.rpg;
+        }
+        // let globalSettings = await getGlobalSetting();
+        // let goldRate = await getGoldRate();
+        ornamentsWeightInfo.currentLtv = Number(securedLoanRpg) + Number(unSecuredLoanRpg);
+        ornamentsWeightInfo.previousLtv = requestedOrnaments.loanOrnamentsDetail[0].currentLtvAmount;
+        ornamentsWeightInfo.previousOutstandingAmount = loanData.outstandingAmount;
+
+        //current outstanding amount
+        if (allOrnaments != null) {
+            for (const ornaments of allOrnaments.loanOrnamentsDetail) {
+                ornamentsWeightInfo.allOrnamentsGrossWeight = ornamentsWeightInfo.allOrnamentsGrossWeight + parseFloat(ornaments.grossWeight);
+                ornamentsWeightInfo.allOrnamentsDeductionWeight = ornamentsWeightInfo.allOrnamentsDeductionWeight + parseFloat(ornaments.deductionWeight);
+                ornamentsWeightInfo.allOrnamentsNetWeight = ornamentsWeightInfo.allOrnamentsNetWeight + parseFloat(ornaments.netWeight);
+                let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
+                ornamentsWeightInfo.currentOutstandingAmount = ornamentsWeightInfo.currentOutstandingAmount + (ltvAmount * parseFloat(ornaments.netWeight));
+            }
+        }
+
+
+        if (requestedOrnaments != null) {
+            for (const ornaments of requestedOrnaments.loanOrnamentsDetail) {
+                ornamentsWeightInfo.releaseGrossWeight = ornamentsWeightInfo.releaseGrossWeight + parseFloat(ornaments.grossWeight);
+                ornamentsWeightInfo.releaseDeductionWeight = ornamentsWeightInfo.releaseDeductionWeight + parseFloat(ornaments.deductionWeight);
+                ornamentsWeightInfo.releaseNetWeight = ornamentsWeightInfo.releaseNetWeight + parseFloat(ornaments.netWeight);
+                let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
+                ornamentsWeightInfo.totalOfReleaseOrnaments = ornamentsWeightInfo.totalOfReleaseOrnaments + (ltvAmount * parseFloat(ornaments.netWeight));
+            }
+        }
+
+        if (otherOrnaments != null) {
+            for (const ornaments of otherOrnaments.loanOrnamentsDetail) {
+                ornamentsWeightInfo.remainingGrossWeight = ornamentsWeightInfo.remainingGrossWeight + parseFloat(ornaments.grossWeight);
+                ornamentsWeightInfo.remainingDeductionWeight = ornamentsWeightInfo.remainingDeductionWeight + parseFloat(ornaments.deductionWeight);
+                ornamentsWeightInfo.remainingNetWeight = ornamentsWeightInfo.remainingNetWeight + parseFloat(ornaments.netWeight);
+                let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
+                ornamentsWeightInfo.totalOfRemainingOrnaments = ornamentsWeightInfo.totalOfRemainingOrnaments + (ltvAmount * parseFloat(ornaments.netWeight));
+            }
+        }
+
+
+        ornamentsWeightInfo.currentOutstandingAmount = Math.round(ornamentsWeightInfo.currentOutstandingAmount);
+        ornamentsWeightInfo.totalOfReleaseOrnaments = Math.round(ornamentsWeightInfo.totalOfReleaseOrnaments);
+        ornamentsWeightInfo.totalOfRemainingOrnaments = Math.round(ornamentsWeightInfo.totalOfRemainingOrnaments);
+        ornamentsWeightInfo.releaseAmount = ornamentsWeightInfo.currentOutstandingAmount - ornamentsWeightInfo.previousOutstandingAmount - ornamentsWeightInfo.totalOfReleaseOrnaments;
+        if (ornamentsWeightInfo.releaseAmount > 0) {
+            ornamentsWeightInfo.releaseAmount = 0
+        } else {
+            ornamentsWeightInfo.releaseAmount = Math.round(Math.abs(ornamentsWeightInfo.releaseAmount));
+        }
+        ornamentsWeightInfo.remainingOrnamentAmount = Math.round(ornamentsWeightInfo.currentOutstandingAmount - ornamentsWeightInfo.previousOutstandingAmount - ornamentsWeightInfo.totalOfRemainingOrnaments);
+        ornamentsWeightInfo.newLoanAmount = ornamentsWeightInfo.currentOutstandingAmount - ornamentsWeightInfo.previousOutstandingAmount - ornamentsWeightInfo.remainingOrnamentAmount;
+    }
+    return ornamentsWeightInfo;
+}
+
+let getornamentLoanInfo = async(masterLoanId, ornamentWeight, amount)=> {
+    let loanData = await models.customerLoan.findAll({ where: { masterLoanId }, attributes: ['loanUniqueId', 'loanAmount'] });
+    let loanAmountData = await models.customerLoanMaster.findOne({ where: { id: masterLoanId }, attributes: ['finalLoanAmount', 'outstandingAmount'] });
+    let loanDetails = {
+        loanData,
+        finalLoanAmount: 0,
+        interestAmount: 0,
+        penalInterest: 0,
+        totalPayableAmount: 0,
+        securedInterest: 0,
+        securedPenalInterest: 0,
+        unsecuredInterest: 0,
+        unsecuredPenalInterest: 0
+    }
+    loanDetails.interestAmount = amount.secured.interest;
+    loanDetails.penalInterest = amount.secured.penalInterest;
+    loanDetails.securedInterest = amount.secured.interest;
+    loanDetails.securedPenalInterest = amount.secured.penalInterest;
+    if (amount.unsecured) {
+        loanDetails.interestAmount = loanDetails.interestAmount + amount.unsecured.interest;
+        loanDetails.penalInterest = loanDetails.penalInterest + amount.unsecured.penalInterest;
+        loanDetails.unsecuredInterest = amount.unsecured.interest;
+        loanDetails.unsecuredPenalInterest = amount.unsecured.penalInterest;
+    }
+    //calculate value here
+    loanDetails.totalPayableAmount = Number((ornamentWeight.releaseAmount + loanDetails.penalInterest + loanDetails.interestAmount).toFixed(2));
+    loanDetails.interestAmount = Number(loanDetails.interestAmount.toFixed(2));
+    loanDetails.penalInterest = Number(loanDetails.penalInterest.toFixed(2));
+    loanDetails.finalLoanAmount = loanAmountData.finalLoanAmount;
+    return loanDetails;
+}
+
 module.exports = {
     getGlobalSetting: getGlobalSetting,
     getAllCustomerLoanId: getAllCustomerLoanId,
@@ -2375,6 +2598,13 @@ module.exports = {
     customerNameNumberLoanId: customerNameNumberLoanId,
     getAllInterest: getAllInterest,
     getSecuredScheme: getSecuredScheme,
-    interestSplit:interestSplit,
-    getAllPaidInterestForCalculation:getAllPaidInterestForCalculation
+    interestSplit: interestSplit,
+    getAllPaidInterestForCalculation: getAllPaidInterestForCalculation,
+    getAllPartAndFullReleaseData: getAllPartAndFullReleaseData,
+    ornementsDetails:ornementsDetails,
+    allOrnamentsDetails:allOrnamentsDetails,
+    getornamentsWeightInfo:getornamentsWeightInfo,
+    getornamentLoanInfo:getornamentLoanInfo,
+    calculationDataForReleasedLoan:calculationDataForReleasedLoan,
+    getAllPaidPartialyPaidInterest:getAllPaidPartialyPaidInterest
 }

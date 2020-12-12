@@ -212,7 +212,11 @@
 								class="text-color font-weight-500">
 							</label>
 							<label *ngIf="controls.panType.value != 'pan'"
-								class="mandatory  text-color font-weight-500">{{ controls.panType.value | uppercase }}
+								class="mandatory  text-color font-weight-500">
+								<span *ngIf="controls.panType.value == 'pan'">
+									{{ controls.panType.value | uppercase }}
+								</span>
+								<span *ngIf="controls.panType.value == 'form60'">FORM 60</span>
 							</label>
 						</div>
 						<div class="col-8">

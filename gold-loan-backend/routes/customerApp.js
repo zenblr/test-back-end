@@ -8,16 +8,17 @@ const customerCheckAuth = require('../middleware/customerCheckAuth');
 const jewelleryRelease = require('./jewelleryReleaseMobileApp');  //upload Packets List '
 const partPayment = require('./partPaymentCustomerApp');  //upload Packets List 
 const quickPay = require('./quickPayCustomerApp');  //upload Packets List 
+const customerWebsiteKyc = require('./customerWebsiteKyc') //customer website kyc
 const contactUsEmail = require('./contactUs')
 const walletCustomer = require('./walletCustomer');
 const augmontBankDetails = require('./digitalGold/augmontBankDetail')
 
-const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetailsOfCustomer, readBankDetailsOfCustomer, readNomineeDetailsOfCustomer, readAddressDetailsOfCustomer,
-    readPanCardImageOfCustomer, readAddressImageOfCustomer, readPartnerBranch, readAllScheme, readMyLoan
-    , schemeBasedOnPriceRange, readLoanDetails,
-    readFeedBack, addFeedBack, updatePassword } = require('../controllers/customer/customerApp')
+const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetailsOfCustomer, readBankDetailsOfCustomer, readNomineeDetailsOfCustomer, readAddressDetailsOfCustomer, readPanCardImageOfCustomer, readAddressImageOfCustomer, readPartnerBranch, readAllScheme, readMyLoan, schemeBasedOnPriceRange, readLoanDetails, readFeedBack, addFeedBack, updatePassword, personalInfo, customerProductRequest } = require('../controllers/customer/customerApp')
 
 const { getSoa } = require('../controllers/soaOfLoan/soaOfLoan');
+
+const { uploadFile, base64Convertor } = require('../controllers/fileUpload/fileUpload'); // importing fileUpload controller.
+const { razorPayCreateOrder } = require('../controllers/razorpay/razorpay')
 
 
 //customer App
@@ -58,6 +59,14 @@ router.post('/customer-feedback', customerCheckAuth, wrapper(addFeedBack)); // a
 
 router.post('/loan-soa', customerCheckAuth, wrapper(getSoa));
 
+router.post('/upload-file', customerCheckAuth, wrapper(uploadFile)) //file upload by form data 
+
+router.post('/base', customerCheckAuth, wrapper(base64Convertor)) //file upload by base 64
+
+router.get('/personal-info', customerCheckAuth, wrapper(personalInfo)) //personal info
+
+router.post('/product-request', customerCheckAuth, wrapper(customerProductRequest)) //personal info
+
 //customer App
 router.post('/update-password', wrapper(updatePassword));//To change password of customer
 
@@ -72,6 +81,10 @@ router.use('/contact-us', contactUsEmail)
 router.use('/customer-wallet', walletCustomer)
 
 router.use('/augmont-bank-detail', augmontBankDetails)
+
+router.use('/kyc', customerWebsiteKyc)
+
+router.post('/razor-pay', wrapper(razorPayCreateOrder));
 
 
 module.exports = router;

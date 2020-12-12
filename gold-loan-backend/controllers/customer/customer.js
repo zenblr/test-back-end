@@ -18,6 +18,7 @@ const qs = require('qs');
 const getMerchantData = require('../auth/getMerchantData')
 const jwt = require('jsonwebtoken');
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/constant');
+const { ADMIN_PANEL, CUSTOMER_WEBSITE } = require('../../utils/sourceFrom')
 
 exports.getOtp = async (req, res, next) => {
   let getOtp = await models.customerOtp.findAll({
@@ -56,13 +57,51 @@ exports.addCustomer = async (req, res, next) => {
   let email = "nimap@infotech.com";
   let password = `${firstName}@1234`;
 
+  let { sourcePoint } = await models.source.findOne({ where: { sourceName: 'ADMIN_PANEL' } })
+
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint.modulePoint },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint.modulePoint, sourceFrom: sourcePoint },
       { transaction: t }
     );
 
-    await models.appraiserRequest.create({ customerId: customer.id, moduleId, createdBy, modifiedBy }, { transaction: t })
+    if (moduleId == 1 || moduleId == 3) {
+      await models.appraiserRequest.create({ customerId: customer.id, moduleId, createdBy, modifiedBy }, { transaction: t })
+    }
+
+    if (moduleId == 4) {
+      const customerUniqueId = uniqid.time().toUpperCase();
+      const merchantData = await getMerchantData();
+
+      await models.customer.update({ customerUniqueId }, { where: { id: customer.id }, transaction: t })
+
+      const data = qs.stringify({
+        'mobileNumber': mobileNumber,
+        // 'emailId': email,
+        'uniqueId': customerUniqueId,
+        'userName': firstName + " " + lastName,
+        // 'userAddress': address,
+        // 'userCity': cityId,
+        'userState': "joXp8X42",
+        // 'userPincode': pinCode,
+        // 'dateOfBirth':dateOfBirth,
+        // 'gender':gender,
+        // 'utmSource': utmSource,
+        // 'utmMedium': utmMedium,
+        // 'utmCampaign': utmCampaign
+      })
+
+      const result = await models.axios({
+        method: 'POST',
+        url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${merchantData.accessToken}`,
+        },
+        data: data
+      });
+
+    }
 
   });
   return res.status(200).json({ messgae: `Customer created` });
@@ -264,6 +303,33 @@ exports.editCustomer = async (req, res, next) => {
   return res.status(200).json({ messgae: `User Updated` });
 };
 
+exports.addBranch = async (req, res, next) => {
+
+  let { internalBranchId, customerId } = req.body
+  let modifiedBy = req.userData.id
+  let findClassification = await models.customerKycClassification.findOne({ where: { customerId: customerId } })
+
+
+  await sequelize.transaction(async (t) => {
+
+    const customer = await models.customer.update(
+      { internalBranchId },
+      { where: { id: customerId }, transaction: t }
+    );
+
+    if (!check.isEmpty(findClassification)) {
+      await models.customerKyc.update(
+        { isVerifiedByCce: true, modifiedByCustomer: customerId, isKycSubmitted: true, isScrapKycSubmitted: true },
+        { where: { customerId: customerId }, transaction: t })
+
+      await models.customerKycClassification.update({ kycRatingFromCce: 4, kycStatusFromCce: "approved", modifiedBy }, { where: { customerId }, transaction: t })
+    }
+
+  })
+
+  return res.status(200).json({ message: 'Success' })
+
+}
 
 exports.deactivateCustomer = async (req, res, next) => {
   const { customerId, isActive } = req.query;
@@ -282,7 +348,7 @@ exports.deactivateCustomer = async (req, res, next) => {
 
 
 exports.getAllCustomersForLead = async (req, res, next) => {
-  let { stageName, cityId, stateId, statusId, modulePoint } = req.query;
+  let { stageName, cityId, stateId, statusId, modulePoint, completeKycModule } = req.query;
   const { search, offset, pageSize } = paginationWithFromTo(
     req.query.search,
     req.query.from,
@@ -361,6 +427,33 @@ exports.getAllCustomersForLead = async (req, res, next) => {
         Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[1]}`), '!=', 0),
         Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[2]}`), '!=', 0),
         Sequelize.where(Sequelize.literal(`all_module_point & ${moduleArray[3]}`), '!=', 0)
+      )
+    }
+  }
+
+  if (!check.isEmpty(completeKycModule)) {
+    let completeKycModuleArray = completeKycModule.split(',')
+    if (completeKycModuleArray.length == 1) {
+      query.kyc_complete_point = Sequelize.or(
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[0]}`), '!=', 0)
+      )
+    } else if (completeKycModuleArray.length == 2) {
+      query.kyc_complete_point = Sequelize.or(
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[0]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[1]}`), '!=', 0)
+      )
+    } else if (completeKycModuleArray.length == 3) {
+      query.kyc_complete_point = Sequelize.or(
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[0]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[1]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[2]}`), '!=', 0)
+      )
+    } else if (completeKycModuleArray.length == 4) {
+      query.kyc_complete_point = Sequelize.or(
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[0]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[1]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[2]}`), '!=', 0),
+        Sequelize.where(Sequelize.literal(`kyc_complete_point & ${completeKycModuleArray[3]}`), '!=', 0)
       )
     }
   }
@@ -658,8 +751,8 @@ exports.getsingleCustomerManagement = async (req, res) => {
 
 //To register customer by their own
 exports.signUpCustomer = async (req, res) => {
-  let { firstName, lastName, mobileNumber, email, referenceCode, otp, stateId } = req.body;
-
+  let { firstName, lastName, mobileNumber, email, referenceCode, otp, stateId, cityId } = req.body;
+  let { sourcePoint } = await models.source.findOne({ where: { sourceName: 'CUSTOMER_WEBSITE' } })
   var todayDateTime = new Date();
   // console.log('abc')
   let verifyUser = await models.customerOtp.findOne({
@@ -713,7 +806,7 @@ exports.signUpCustomer = async (req, res) => {
     let modulePoint = await models.module.findOne({ where: { id: 4 }, transaction: t })
 
     let customer = await models.customer.create(
-      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint,statusId:status.id },
+      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint },
       { transaction: t }
     );
 
@@ -812,4 +905,53 @@ exports.getAllRegisteredCustomer = async (req, res) => {
   } else {
     return res.status(200).json({ message: 'Success', data: allCustomers, count: count.length });
   }
+}
+
+exports.getProductRequest = async (req, res, next) => {
+
+  const { search, offset, pageSize } = paginationWithFromTo(
+    req.query.search,
+    req.query.from,
+    req.query.to
+  );
+
+  let includeArray = [
+    {
+      model: models.customer,
+      as: 'customer',
+      include: [
+        {
+          model: models.state,
+          as: 'state'
+        },
+        {
+          model: models.city,
+          as: 'city'
+        }
+      ]
+    },
+    {
+      model: models.module,
+      as: 'module'
+    }
+  ]
+
+  let getAllProductRequest = await models.productRequest.findAll({
+    // where: searchQuery,
+    attributes: { exclude: ['createdBy', 'modifiedBy', 'isActive'] },
+    order: [["createdAt", "desc"]],
+    offset: offset,
+    limit: pageSize,
+    include: includeArray,
+  });
+  let getAllProductRequestCount = await models.productRequest.findAll({
+    // where: searchQuery,
+    include: includeArray,
+  });
+
+  if (allCustomers.length == 0) {
+    return res.status(200).json({ data: [] });
+  }
+  return res.status(200).json({ count: getAllProductRequestCount.length, data: getAllProductRequest });
+
 }
