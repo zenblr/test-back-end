@@ -137,22 +137,22 @@ exports.buyProduct = async (req, res) => {
 
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
-    if (err.response) {
-      return res.status(422).json(err.response.data);
-    } else {
-      console.log('Error', err.message);
-    }
     // if (err.response) {
-    //   if(err.response.data.errors.userKyc && err.response.data.errors.userKyc.length ){
-
-    //     res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
-    //     res.redirect(`https://${process.env.DIGITALGOLDAPI}/profile`);
-    //   }else{
-    //     return res.status(422).json(err.response.data);
-    //   }
+    //   return res.status(422).json(err.response.data);
     // } else {
     //   console.log('Error', err.message);
     // }
+    if (err.response) {
+      if(err.response.data.errors.userKyc && err.response.data.errors.userKyc.length ){
+
+        res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
+        res.redirect(`${process.env.BASE_URL_CUSTOMER}/kyc/digi-gold`);
+      }else{
+        return res.status(422).json(err.response.data);
+      }
+    } else {
+      console.log('Error', err.message);
+    }
   };
 }
 

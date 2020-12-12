@@ -986,7 +986,7 @@ exports.loanBankDetails = async (req, res, next) => {
         //added customer bank details
         if (paymentType == 'bank') {
 
-            let checkBankDetailExist = await customerBankDetails.findAll({ where: { accountNumber: accountNumber, customerId: masterLoan.customerId } })
+            let checkBankDetailExist = await models.customerBankDetails.findAll({ where: { accountNumber: accountNumber, customerId: masterLoan.customerId } })
 
             if (checkBankDetailExist.length == 0) {
                 await models.customerBankDetails.create({ moduleId: 1, customerId: masterLoan.customerId, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, description: `Added while Creating Loan` }, { transaction: t });

@@ -1284,7 +1284,7 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
             //added customer bank details
             if (oldLoanData.loanBankDetail.paymentType == 'bank') {
 
-                let checkBankDetailExist = await customerBankDetails.findAll({ where: { accountNumber: oldLoanData.loanBankDetail.accountNumber, customerId: customerData.id } })
+                let checkBankDetailExist = await models.customerBankDetails.findAll({ where: { accountNumber: oldLoanData.loanBankDetail.accountNumber, customerId: customerData.id } })
 
                 if (checkBankDetailExist.length == 0) {
                     await models.customerBankDetails.create({
