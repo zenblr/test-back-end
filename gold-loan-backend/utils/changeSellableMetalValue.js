@@ -78,7 +78,7 @@ module.exports = async () => {
 
                 sellableSilverBalance = customerBal.currentSilverBalance - totalSilverBoughtInFixDuration;
 
-                console.log("sellableGoldBalance    ", sellableGoldBalance, "sellableSilverBalance    ", sellableSilverBalance);
+                console.log("sellableGoldBalance", sellableGoldBalance, "sellableSilverBalance", sellableSilverBalance);
 
                 await models.digiGoldCustomerBalance.update({
                     sellableGoldBalance: sellableGoldBalance,
@@ -90,9 +90,17 @@ module.exports = async () => {
             }
 
         }
-
+        console.log("nonRepeatCustomerId", nonRepeatCustomerId);
         let newDateBeforfifteenMin = moment(newDate).subtract(15, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
         console.log(newDateBeforfifteenMin);
+        if(nonRepeatCustomerId.length){
+            allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
+                where: {
+                    createdAt: { [Op.between]: [newDateBeforfifteenMin, newDate] },
+                    customerId: { [Op.notIn]: [nonRepeatCustomerId]}
+                    // orderTypeId: 1
+                }
+            });
         allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
             where: {
                 createdAt: { [Op.between]: [newDateBeforfifteenMin, newDate] },
@@ -121,6 +129,7 @@ module.exports = async () => {
                     });
             }
         }
+    }
 
         return
     } catch (err) {

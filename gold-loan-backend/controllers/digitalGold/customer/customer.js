@@ -22,10 +22,11 @@ exports.getCustomerPassbookDetails = async (req, res) => {
     let availableBalance = await models.digiGoldCustomerBalance.findOne({
       where: { customerId: id, isActive: true },
     });
-    const currentGoldBalance = availableBalance.currentGoldBalance;
-    const currentSilverBalance = availableBalance.currentSilverBalance;
-    const sellableGoldBalance = availableBalance.sellableGoldBalance;
-    const sellableSilverBalance = availableBalance.sellableSilverBalance
+    
+    const currentGoldBalance = availableBalance.currentGoldBalance ? availableBalance.currentGoldBalance : 0 ;
+    const currentSilverBalance = availableBalance.currentSilverBalance ? availableBalance.currentSilverBalance : 0;
+    const sellableGoldBalance = availableBalance.sellableGoldBalance ? availableBalance.sellableGoldBalance : 0;
+    const sellableSilverBalance = availableBalance.sellableSilverBalance ? availableBalance.sellableSilverBalance: 0;
     const metalType = [];
     // metalType.push(currentGoldBalance,currentSilverBalance,sellableGoldBalance,sellableSilverBalance)
     console.log("availablanavce", availableBalance)

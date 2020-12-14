@@ -16,22 +16,28 @@
 *         schema:
 *           type: object
 *           properties:
+*             amount:
+*               type: number
 *             metalType:
 *               type: string
 *             quantity:
-*               type: string
+*               type: number
 *             lockPrice:
-*               type: string
+*               type: number
 *             blockId:
 *               type: string
-*             transactionDetails:
+*             quantityBased:
+*               type: string
+*             modeOfPayment:
 *               type: string
 *         required:
+*           - amount
 *           - metalType
 *           - quantity
 *           - lockPrice
 *           - blockId
-*           - transactionDetails
+*           - quantityBased
+*           - modeOfPayment
 *   get:
 *     tags:
 *       - Buy Gold/Silver

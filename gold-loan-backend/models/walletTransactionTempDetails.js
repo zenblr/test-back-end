@@ -69,7 +69,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'ifsc_code'
         },
-
         isOrderPlaced: {
             type: DataTypes.BOOLEAN,
             field: 'is_order_placed',
@@ -79,7 +78,31 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'refund_cron_executed',
             defaultValue: false,
-        }
+        },
+        orderAmount: {
+            type: DataTypes.FLOAT,
+            field: 'order_amount',
+        },
+        metalType: {
+            type: DataTypes.STRING,
+            field: 'metal_type',
+        },
+        qtyAmtType: {
+            type: DataTypes.STRING,
+            field: 'qty_amt_type',
+        },
+        quantity: {
+            type: DataTypes.FLOAT,
+            field: 'quantity',
+        },
+        type: {
+            type: DataTypes.STRING,
+            field: 'type',
+        },
+        redirectOn: {
+            type: DataTypes.STRING,
+            field: 'redirectOn',
+        },
     },
         {
             freezeTableName: true,
