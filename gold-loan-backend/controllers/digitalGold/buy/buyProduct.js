@@ -146,7 +146,7 @@ exports.buyProduct = async (req, res) => {
       if(err.response.data.errors.userKyc && err.response.data.errors.userKyc.length ){
 
         res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
-        res.redirect(`https://${process.env.DIGITALGOLDAPI}/profile`);
+        res.redirect(`${process.env.BASE_URL_CUSTOMER}/kyc/digi-gold`);
       }else{
         return res.status(422).json(err.response.data);
       }
