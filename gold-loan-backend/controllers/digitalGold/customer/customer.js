@@ -168,6 +168,7 @@ exports.updateCustomerDetails = async (req, res) => {
     });
     return res.status(200).json(result.data);
   } catch (err) {
+    console.log(err);
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
     if (err.response) {
