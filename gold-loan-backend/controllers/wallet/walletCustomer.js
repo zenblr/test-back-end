@@ -69,6 +69,11 @@ exports.makePayment = async (req, res) => {
         }
     } catch (err) {
         console.log(err);
+        if(err.statusCode == 400 && err.error.code){
+            return res.status(400).json({message: err.error.description});
+          }else{
+            return res.status(400).json({err});
+          }
     }
 
 }
@@ -117,7 +122,7 @@ exports.addAmountWallet = async (req, res) => {
             if (customer.currentWalletBalance) {
                 customerUpdatedBalance = Number(customer.currentWalletBalance) + Number(tempWalletTransaction.transactionAmont);
             } else {
-                customerUpdatedBalance = Number(tempWalletTransaction.amount);
+                customerUpdatedBalance = Number(tempWalletTransaction.transactionAmont);
             }
             let WalletDetail;
             await sequelize.transaction(async (t) => {
@@ -136,7 +141,7 @@ exports.addAmountWallet = async (req, res) => {
                 qtyAmtType: tempWalletTransaction.qtyAmtType,
                 quantity: tempWalletTransaction.quantity,
                 type: tempWalletTransaction.type,
-                redirectOn: tempWalletTransaction.redirectOn
+                redirectOn: process.env.DIGITALGOLDAPI+tempWalletTransaction.redirectOn
             }
 
             res.cookie(`orderData`, `${JSON.stringify(orderData)}`);
@@ -365,8 +370,8 @@ exports.getWalletBalance = async (req, res) => {
     if (check.isEmpty(getWalletbalance)) {
         return res.status(400).json({ message: `Data Not Found.` });
     } else {
-        const walletFreeBalance = getWalletbalance.walletFreeBalance
-        const currentWalletBalance = getWalletbalance.currentWalletBalance
+        const walletFreeBalance = getWalletbalance.walletFreeBalance.toFixed(2);
+        const currentWalletBalance = getWalletbalance.currentWalletBalance.toFixed(2);
         return res.status(200).json({ walletFreeBalance, currentWalletBalance });
     }
 }
@@ -422,10 +427,17 @@ exports.AddCustomerBankDetails = async (req, res) => {
 exports.getAllBankDetails = async (req, res) => {
 
     const id = req.userData.id;
-    let bankDetails = await models.customerBankDetails.findAll({ where: { customerId: id, isActive: 'true' } });
+    let bankDetails = await models.customerBankDetails.findAll({
+        where: { customerId: id, isActive: 'true' },
+    include: {
+        model: models.customer,
+        as: "customer",
+        attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+    } });
 
     if (check.isEmpty(bankDetails)) {
-        return res.status(404).json({ message: `Data Not Found.` });
+        bankDetails = []
+        return res.status(200).json({ bankDetails });
     } else {
         return res.status(200).json({ bankDetails });
     }

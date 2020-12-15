@@ -22,18 +22,23 @@ exports.getCustomerPassbookDetails = async (req, res) => {
     let availableBalance = await models.digiGoldCustomerBalance.findOne({
       where: { customerId: id, isActive: true },
     });
-    
-    const currentGoldBalance = availableBalance.currentGoldBalance ? availableBalance.currentGoldBalance : 0 ;
-    const currentSilverBalance = availableBalance.currentSilverBalance ? availableBalance.currentSilverBalance : 0;
-    const sellableGoldBalance = availableBalance.sellableGoldBalance ? availableBalance.sellableGoldBalance : 0;
-    const sellableSilverBalance = availableBalance.sellableSilverBalance ? availableBalance.sellableSilverBalance: 0;
-    const metalType = [];
+    let currentGoldBalance =  0 ;
+    let currentSilverBalance =  0;
+    let sellableGoldBalance = 0;
+    let sellableSilverBalance = 0;
+
+    if(availableBalance){
+      currentGoldBalance = availableBalance.currentGoldBalance ? availableBalance.currentGoldBalance : 0 ;
+      currentSilverBalance = availableBalance.currentSilverBalance ? availableBalance.currentSilverBalance : 0;
+      sellableGoldBalance = availableBalance.sellableGoldBalance ? availableBalance.sellableGoldBalance : 0;
+      sellableSilverBalance = availableBalance.sellableSilverBalance ? availableBalance.sellableSilverBalance: 0;
+    }
+    // const metalType = [];
     // metalType.push(currentGoldBalance,currentSilverBalance,sellableGoldBalance,sellableSilverBalance)
     console.log("availablanavce", availableBalance)
     if (check.isEmpty(customerDetails)) {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     };
-
 
     const customerUniqueId = customerDetails.customerUniqueId;
     const merchantData = await getMerchantData();
