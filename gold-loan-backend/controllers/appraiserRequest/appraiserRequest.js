@@ -59,21 +59,10 @@ exports.addAppraiserRequest = async (req, res, next) => {
     }
 
     let customerLoan = await models.customerLoanMaster.findAll({where : {
-        customerId,isLoanTransfer:true,loanStageId:{ [Op.in]: [1,2,3,4,6,7,9] }
-    },
-        include: {
-            model: models.customerLoanTransfer,
-            as: 'loanTransfer'
-        }
-    })
+        customerId,isLoanTransfer:true,loanStageId:{ [Op.in]: [1,2,3,4,6,7] } 
+    }})
     if(customerLoan.length != 0){
-        for(const loan of customerLoan){
-            if(loan.loanTransfer.loanTransferStatusForBM == 'rejected' || loan.loanTransfer.loanTransferStatusForAppraiser == 'rejected'){
-                console.log("false")
-            }else{
-                return res.status(400).json({ message: `This customer's loan transfer is in process` })
-            }
-        }
+        return res.status(400).json({ message: `This customer's loan transfer is in process` })
     }
 
     let requestExist = await models.appraiserRequest.findOne({ where: { moduleId: moduleId, customerId: customerId, status: 'incomplete' } })
