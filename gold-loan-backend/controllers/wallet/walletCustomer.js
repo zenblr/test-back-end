@@ -370,8 +370,8 @@ exports.getWalletBalance = async (req, res) => {
     if (check.isEmpty(getWalletbalance)) {
         return res.status(400).json({ message: `Data Not Found.` });
     } else {
-        const walletFreeBalance = getWalletbalance.walletFreeBalance.toFixed(2);
-        const currentWalletBalance = getWalletbalance.currentWalletBalance.toFixed(2);
+        const walletFreeBalance = getWalletbalance.walletFreeBalance? getWalletbalance.walletFreeBalance.toFixed(2): 0.00;
+        const currentWalletBalance = getWalletbalance.currentWalletBalance ? getWalletbalance.currentWalletBalance.toFixed(2): 0.00;
         return res.status(200).json({ walletFreeBalance, currentWalletBalance });
     }
 }
