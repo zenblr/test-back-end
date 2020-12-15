@@ -805,3 +805,74 @@ exports.transcationHistory = async (req, res, next) => {
     return res.status(200).json({ data: data })
 
 }
+
+exports.check = async (req, res, next) => {
+
+    let { client, our } = req.body
+
+    let matchCount = 0
+    let matchCity = []
+    let unmatchCount = 0
+    let unmatchCity = []
+    let withBreak = []
+    let withOutBreak = []
+    for await (const singleClient of client) {
+        let clientName = (singleClient.Name).toLowerCase()
+        for (let i = 0; i < our.length; i++) {
+            let ourName = (our[i].name).toLowerCase()
+            if (clientName == ourName) {
+                let data = {}
+                matchCount = matchCount + 1
+                // data.cityName = clientName
+                singleClient.isPresent = true
+                withBreak.push(clientName)
+                break;
+            }
+        }
+    }
+
+    for await (const singleClient of client) {
+        let clientName = (singleClient.Name).toLowerCase()
+        for (let i = 0; i < our.length; i++) {
+            let ourName = (our[i].name).toLowerCase()
+            if (clientName == ourName) {
+                let data = {}
+                matchCount = matchCount + 1
+                // data.cityName = clientName
+                singleClient.isPresent = true
+                withOutBreak.push(clientName)
+                // break;
+            }
+        }
+    }
+
+    var withBreakUnique = withBreak.filter(function (elem, index, self) {
+        return index === self.indexOf(elem);
+    })
+    var withOutBreakUnique = withBreak.filter(function (elem, index, self) {
+        return index === self.indexOf(elem);
+    })
+
+    var withOutBreakDubplicate = _.filter(withOutBreak, (val, i, iteratee) => _.includes(iteratee, val, i + 1));
+    var withBreakDubplicate = _.filter(withBreak, (val, i, iteratee) => _.includes(iteratee, val, i + 1));
+
+
+    return res.status(200).json({
+        withOutBreakDubplicateLength: withOutBreakDubplicate.length,
+        withOutBreakDubplicate,
+
+        withOutBreakLength: withOutBreak.length,
+        withOutBreakUniqueLength: withOutBreakUnique.length,
+        withOutBreak,
+        withOutBreakUnique,
+
+        withBreakDubplicateLength: withBreakDubplicate.length,
+        withBreakDubplicate,
+
+        withBreakLength: withBreak.length,
+        withBreakUniqueLength: withBreakUnique.length,
+        withBreak,
+        withBreakUnique
+    })
+
+}
