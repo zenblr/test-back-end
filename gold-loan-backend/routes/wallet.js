@@ -13,4 +13,6 @@ route.put('/:depositWithdrawId', checkAuth, editWalletStatusValidation, validati
 
 route.get('/:depositWithdrawId', checkAuth, wrapper(getWalletDetailByIdAdmin));
 
+
+
 module.exports = route;   

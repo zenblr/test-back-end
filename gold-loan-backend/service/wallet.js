@@ -12,6 +12,9 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op
 
+
+
+
 //To get wallet transaction detail by id
 exports.walletTransactionDetailById = async (walletTransactionId) => {
     
