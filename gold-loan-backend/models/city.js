@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         stateUniqueCode: {
             type: DataTypes.STRING,
-            field: 'state_unique_id',
+            field: 'state_unique_code',
         },
         cityUniqueCode: {
             type: DataTypes.STRING,
