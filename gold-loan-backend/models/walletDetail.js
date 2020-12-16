@@ -34,5 +34,8 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'wallet_details',
     })
 
+
+
+    
     return WalletDetail;
 }
