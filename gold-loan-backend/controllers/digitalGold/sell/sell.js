@@ -14,19 +14,9 @@ const Op = Sequelize.Op;
 
 exports.sellProduct = async (req, res) => {
   try {
-    const { metalType, quantity, lockPrice, blockId, userBankId, accountName, bankId, accountNumber, ifscCode, totalAmount, quantityBased, modeOfPayment ,branchName,amount} = req.body;
+    const { metalType, quantity, lockPrice, blockId, userBankId, accountName, bankId, accountNumber, ifscCode, totalAmount, quantityBased, modeOfPayment, branchName, amount } = req.body;
     const id = req.userData.id;
-    const type = 'sell';
-    // let orderType= await models.digiGoldOrderTypeMaster.findOne({
-    //   where: { id },
-    // });
 
-    let orderType = await models.digiGoldOrderType.findOne({
-      where: { orderType: type, isActive: true },
-    });
-
-    // console.log("orderType",orderTypeId.orderType)
-    let orderTypeId = orderType.id;
     // return;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
@@ -35,15 +25,14 @@ exports.sellProduct = async (req, res) => {
       where: { id, isActive: true },
     });
 
-    await sequelize.transaction(async (t) => {
-      await models.digiGoldTempOrderDetail.create(
-        {
-          customerId: id, orderTypeId: orderTypeId, totalAmount: amount, metalType: metalType, quantity: quantity,
-          lockPrice: lockPrice, blockId: blockId, amount: amount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy
-        },
-        { transaction: t }
-      );
-    })
+    // await sequelize.transaction(async (t) => {
+    let tempId = await models.digiGoldTempOrderDetail.create(
+      {
+        customerId: id, orderTypeId: 2, totalAmount: amount, metalType: metalType, quantity: quantity,
+        lockPrice: lockPrice, blockId: blockId, amount: amount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy
+      }
+    );
+    // })
     // return;
     if (check.isEmpty(customerDetails)) {
       return res.status(404).json({ message: "Customer Does Not Exists" });
@@ -72,59 +61,153 @@ exports.sellProduct = async (req, res) => {
         return res.status(400).json({ message: `Our policy dose not allow customer to sell gold and silver within ${getConfigSetting.configSettingValue} hours of purchasing it. You have purhased ${nonSellableAmount} gram of ${metalType} in last ${getConfigSetting.configSettingValue} hours. Please try again later.` });
       }
     }
+    let customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: id } });
+    let orderUniqueId = `dg_sell${Math.floor(1000 + Math.random() * 9000)}`;
 
-    const customerUniqueId = customerDetails.customerUniqueId;
-    const merchantData = await getMerchantData();
-    const transactionId = uniqid(merchantData.merchantId, customerUniqueId);
-    const data = qs.stringify({
-      'lockPrice': lockPrice,
-      'metalType': metalType,
-      'quantity': quantity,
-      //  'amount': amount,
-      'merchantTransactionId': transactionId,
-      'uniqueId': customerUniqueId,
-      'blockId': blockId,
-      'userBank[userBankId]': userBankId,
-      'userBank[accountName]': accountName,
-      'userBank[bankId]': bankId,
-      'userBank[accountNumber]': accountNumber,
-      'userBank[ifscCode]': ifscCode,
-      'mobileNumber': customerDetails.mobileNumber
-    })
-    const result = await models.axios({
-      method: 'POST',
-      url: `${process.env.DIGITALGOLDAPI}/merchant/v1/sell`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Bearer ${merchantData.accessToken}`,
-      },
-      data: data
-    })
+    if (modeOfPayment == "bankTransfer") {
 
-    if (result.data.statusCode === 200) {
+      const customerUniqueId = customerDetails.customerUniqueId;
+      const merchantData = await getMerchantData();
+      const transactionId = uniqid(merchantData.merchantId, customerUniqueId);
+      const data = qs.stringify({
+        'lockPrice': lockPrice,
+        'metalType': metalType,
+        'quantity': quantity,
+        //  'amount': amount,
+        'merchantTransactionId': transactionId,
+        'uniqueId': customerUniqueId,
+        'blockId': blockId,
+        'userBank[userBankId]': userBankId,
+        'userBank[accountName]': accountName,
+        'userBank[bankId]': bankId,
+        'userBank[accountNumber]': accountNumber,
+        'userBank[ifscCode]': ifscCode,
+        'mobileNumber': customerDetails.mobileNumber
+      })
+      const result = await models.axios({
+        method: 'POST',
+        url: `${process.env.DIGITALGOLDAPI}/merchant/v1/sell`,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${merchantData.accessToken}`,
+        },
+        data: data
+      })
 
-      const id = req.userData.id;
-      await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: id } });
+      if (result.data.statusCode === 200) {
 
-      await sms.sendMessageForSell(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+        let updatesSellableGoldBal;
+        let updatedSellableSilverBal;
 
-      let tempId = await models.digiGoldTempOrderDetail.findOne({ where: { blockId: blockId } });
+        await sequelize.transaction(async (t) => {
 
-      await sequelize.transaction(async (t) => {
+          if (result.data.result.data.metalType == "gold") {
+            updatesSellableGoldBal = Number(customerBal.sellableGoldBalance) - Number(result.data.result.data.quantity);
 
-        let orderUniqueId = `dg_sell${Math.floor(1000 + Math.random() * 9000)}`;
-        let orderDetail = await models.digiGoldOrderDetail.create({
-          tempOrderId: tempId.id, customerId: id, orderTypeId: orderTypeId, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
-            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy
+            await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: updatesSellableGoldBal }, { where: { customerId: id }, transaction: t });
+
+          } else if (result.data.result.data.metalType == "silver") {
+            updatedSellableSilverBal = Number(customerBal.sellableSilverBalance) - Number(result.data.result.data.quantity)
+
+            await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilverBal }, { where: { customerId: id }, transaction: t });
+          }
+
+          let amountOfWallet;
+          if(customerDetails.walletFreeBalance){
+           amountOfWallet = Number(customerDetails.walletFreeBalance) + Number(amount)
+          }else{
+           amountOfWallet = Number(amount)
+          }
+          // await models.customer.update({ walletFreeBalance: amountOfWallet }, { where: { id: customerDetails.id }, transaction: t });
+
+          let orderDetail = await models.digiGoldOrderDetail.create({
+            tempOrderId: tempId.id, customerId: id, orderTypeId: 2, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
+            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: amountOfWallet
           }, { transaction: t });
 
-        await models.digiGoldTempOrderDetail.update(
-          { isOrderPlaced: true, modifiedBy },{ where: { customerId: id }, transaction: t });
+          await models.digiGoldTempOrderDetail.update(
+            { isOrderPlaced: true, modifiedBy }, { where: { id: tempId.id }, transaction: t });
 
-        await models.digiGoldOrderBankDetail.create({orderDetailId: orderDetail.id, accountNumber: accountNumber, bankId: bankId, ifscCode: ifscCode, userBankId: userBankId,bankName :branchName,isActive: true},{ transaction: t });
-      })
+          await models.digiGoldOrderBankDetail.create({ orderDetailId: orderDetail.id, accountNumber: accountNumber, bankId: bankId, ifscCode: ifscCode, userBankId: userBankId, bankName: branchName, isActive: true }, { transaction: t });
+
+          await sms.sendMessageForSell(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+
+        })
+      }
+      return res.status(200).json(result.data);
+    } else {
+
+      // const customerUniqueId = customerDetails.customerUniqueId;
+      // const merchantData = await getMerchantData();
+      // const transactionId = uniqid(merchantData.merchantId, customerUniqueId);
+      // const data = qs.stringify({
+      //   'lockPrice': lockPrice,
+      //   'metalType': metalType,
+      //   'quantity': quantity,
+      //   //  'amount': amount,
+      //   'merchantTransactionId': transactionId,
+      //   'uniqueId': customerUniqueId,
+      //   'blockId': blockId,
+      //   'userBank[userBankId]': userBankId,
+      //   'userBank[accountName]': accountName,
+      //   'userBank[bankId]': bankId,
+      //   'userBank[accountNumber]': accountNumber,
+      //   'userBank[ifscCode]': ifscCode,
+      //   'mobileNumber': customerDetails.mobileNumber
+      // })
+      // const result = await models.axios({
+      //   method: 'POST',
+      //   url: `${process.env.DIGITALGOLDAPI}/merchant/v1/sell`,
+      //   headers: {
+      //     'Content-Type': 'application/x-www-form-urlencoded',
+      //     'Authorization': `Bearer ${merchantData.accessToken}`,
+      //   },
+      //   data: data
+      // })
+
+      if (result.data.statusCode === 200) {
+
+        await sequelize.transaction(async (t) => {
+
+          let updatesSellableGoldBal;
+          let updatedSellableSilverBal;
+
+          if (result.data.result.data.metalType == "gold") {
+            updatesSellableGoldBal = Number(customerBal.sellableGoldBalance) - Number(result.data.result.data.quantity);
+
+            await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: updatesSellableGoldBal }, { where: { customerId: id }, transaction: t });
+
+          } else if (result.data.result.data.metalType == "silver") {
+            updatedSellableSilverBal = Number(customerBal.sellableSilverBalance) - Number(result.data.result.data.quantity)
+
+            await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilverBal }, { where: { customerId: id }, transaction: t });
+          }
+
+          let orderDetail = await models.digiGoldOrderDetail.create({
+            tempOrderId: tempId.id, customerId: id, orderTypeId: 2, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
+            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: amountOfWallet
+          }, { transaction: t });
+
+
+          await models.digiGoldTempOrderDetail.update(
+            { isOrderPlaced: true, modifiedBy }, { where: { id: tempId.id }, transaction: t });
+
+          await models.walletDetails.create({ customerId: id, amount: result.data.result.data.totalAmount, paymentDirection: "debit", description: "sell metal", productTypeId: 4, transactionDate: moment() }, { transaction: t })
+        })
+        let amountOfWallet
+        if(customerDetails.walletFreeBalance){
+          amountOfWallet = Number(customerDetails.walletFreeBalance) + Number(amount)
+        }else{
+          amountOfWallet = Number(amount)
+        }
+        await models.customer.update(
+          { walletFreeBalance: amountOfWallet }, { where: { id: customerDetails.id }, transaction: t });
+
+          await sms.sendMessageForSell(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+      }
+      return res.status(200).json(result.data);
     }
-    return res.status(200).json(result.data);
+
   } catch (err) {
     console.log(err);
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);

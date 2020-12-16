@@ -12,7 +12,7 @@ exports.makePayment = async(req, res)=>{
   try{
     const id = req.userData.id;
     const {amount, paymentMode, metalType, quantity, lockPrice, blockId, quantityBased, modeOfPayment, orderType, cartData, shippingCharges, totalQuantity, totalWeight, orderAddress, userAddressId, }= req.body;
-    console.log(req.body);
+    
     const razorPay = await getRazorPayDetails();
     let customerDetails = await models.customer.findOne({
       where: { id, isActive:true },
