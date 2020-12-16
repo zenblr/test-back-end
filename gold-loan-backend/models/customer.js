@@ -142,6 +142,12 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: "pending",
             values: ['approved', 'pending', 'rejected']
         },
+        digiKycStatus: {
+            type: DataTypes.ENUM,
+            field: 'digi_kyc_status',
+            defaultValue: "pending",
+            values: ['approved', 'waiting', 'pending', 'rejected']
+        },
         userType: {
             type: DataTypes.ENUM,
             field: 'user_type',

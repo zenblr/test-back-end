@@ -24,7 +24,6 @@ const customerKycStatusMessage = require("./utils/customerKycStatusMessage");
 const withDrawStatusMessage = require("./utils/withDrawStatusMessage");
 const changeSellableMetalValue = require("./utils/changeSellableMetalValue")
 const {getErrorForMail} = require('./controllers/errorLogs/errorLogs');
-const {refundCron} = require('./controllers/razorpay/razorpay');
 
 //model
 const models = require('./models');
@@ -243,25 +242,6 @@ cron.schedule('0 */15 * * * *', async () => {
         let endTime = moment();
         var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
         await cronLogger("calculate sellable metal", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
-    }
-});
-
-// cron to refund amount
-
-cron.schedule('0 4 * * *', async () => {
-    let date = moment();
-    let startTime = moment();
-
-    try {
-        await refundCron();
-        let endTime = moment();
-        let processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS");
-        await cronLogger("Refund cron", date, startTime, endTime, processingTime, "success", "success", null);
-
-    } catch (err) {
-        let endTime = moment();
-        var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
-        await cronLogger("Refund cron", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
     }
 });
 

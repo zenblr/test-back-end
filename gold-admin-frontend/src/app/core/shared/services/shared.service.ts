@@ -218,8 +218,8 @@ export class SharedService {
 	}
 
 	//  for quick pay and part payment 
-	paymentGateWay(amount, masterLoanId,paymentType,paymentFor,ornamentId): Observable<any> {
-		return this.http.post(`api/razor-pay`, { amount, masterLoanId ,paymentType,paymentFor,ornamentId}).pipe(
+	paymentGateWay(amount, masterLoanId): Observable<any> {
+		return this.http.post(`api/quick-pay/razor-pay`, { amount, masterLoanId }).pipe(
 			map(res => res)
 		)
 	}

@@ -13,10 +13,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'order_type_id',
         },
-        walletId: {
-            type: DataTypes.INTEGER,
-            field: 'wallet_id',
-        },
         orderId: {
             type: DataTypes.STRING,
             field: 'order_id',
@@ -32,18 +28,6 @@ module.exports = (sequelize, DataTypes) => {
         walletBalance: {
             type: DataTypes.FLOAT,
             field: 'wallet_balance',
-        },
-        razorpayOrderId:{
-            type: DataTypes.STRING,
-            field: 'razorpay_order_id'
-        },
-        razorpayPaymentId:{
-            type: DataTypes.STRING,
-            field: 'razorpay_payment_id'
-        },
-        razorpaySignature:{
-            type: DataTypes.STRING,
-            field: 'razorpay_signature'
         },
         metalType: {
             type: DataTypes.STRING,

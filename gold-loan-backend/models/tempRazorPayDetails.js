@@ -33,18 +33,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'payment_type',
         },
-        chequeNumber: {
-            type: DataTypes.STRING,
-            field: 'cheque_number',
-        },
-        bankName: {
-            type: DataTypes.STRING,
-            field: 'bank_name',
-        },
-        branchName: {
-            type: DataTypes.STRING,
-            field: 'branch_name',
-        },
         ornamentId: {
             type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'ornament_id',
@@ -52,23 +40,11 @@ module.exports = (sequelize, DataTypes) => {
         transactionUniqueId:{
             type: DataTypes.STRING,
             field: 'transaction_unique_id'
-        },
-        isOrderPlaced: {
-            type: DataTypes.BOOLEAN,
-            field: 'is_order_placed',
-            defaultValue: false,
-        },
-        refundCronExecuted: {
-            type: DataTypes.BOOLEAN,
-            field: 'refund_cron_executed',
-            defaultValue: false,
         }
     }, {
         freezeTableName: true,
         tableName: 'razor_temp_details',
     })
-
-    tempRazorPayDetails.getTempOrderDetail = (razorPayOrderId) => tempRazorPayDetails.findOne({where:{razorPayOrderId}})
 
     return tempRazorPayDetails;
 }

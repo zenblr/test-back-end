@@ -986,7 +986,7 @@ exports.loanBankDetails = async (req, res, next) => {
         //added customer bank details
         if (paymentType == 'bank') {
 
-            let checkBankDetailExist = await customerBankDetails.findAll({ where: { accountNumber: accountNumber, customerId: masterLoan.customerId } })
+            let checkBankDetailExist = await models.customerBankDetails.findAll({ where: { accountNumber: accountNumber, customerId: masterLoan.customerId } })
 
             if (checkBankDetailExist.length == 0) {
                 await models.customerBankDetails.create({ moduleId: 1, customerId: masterLoan.customerId, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, description: `Added while Creating Loan` }, { transaction: t });
@@ -1573,7 +1573,9 @@ exports.loanOpsTeamRating = async (req, res, next) => {
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: OPERATIONAL_TEAM_RATING, modifiedBy }, { transaction: t });
 
         })
-
+        if (loanMaster.isNewLoanFromPartRelease == true) {
+            await intrestCalculationForSelectedLoan(moment(),masterLoanId);
+        }
         return res.status(200).json({ message: 'Success' })
     }
 }
@@ -1881,6 +1883,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
             await sendDisbursalMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
 
         })
+        await intrestCalculationForSelectedLoan(moment(),masterLoanId);
         return res.status(200).json({ message: 'Your loan amount has been disbursed successfully' });
     } else {
         return res.status(404).json({ message: 'Given loan id is not proper' })

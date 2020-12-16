@@ -34,7 +34,7 @@ exports.customerLogin = async (req, res, next) => {
             where: { id: decoded.id }
         });
 
-        await models.customerLogger.destroy({ where: { customerId: decoded.id } })
+        // await models.customerLogger.destroy({ where: { customerId: decoded.id } })
         
         await models.customerLogger.create({
             customerId: decoded.id,
@@ -96,7 +96,7 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
             where: { id: decoded.id }, transaction: t
         });
 
-        await models.customerLogger.destroy({ where: { customerId: decoded.id } })
+        // await models.customerLogger.destroy({ where: { customerId: decoded.id } })
 
         await models.customerLogger.create({
             customerId: decoded.id,

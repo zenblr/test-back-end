@@ -97,12 +97,17 @@ exports.digiOrEmiKyc = async (req, res, next) => {
         await sequelize.transaction(async (t) => {
             let modulePoint = await models.module.findOne({ where: { id: moduleId }, transaction: t })
             let { allModulePoint, kycCompletePoint } = await models.customer.findOne({ where: { id: id }, transaction: t })
+            allModulePoint = allModulePoint | modulePoint.modulePoint
 
             //update complate kyc points
-            kycCompletePoint = await updateCompleteKycModule(kycCompletePoint, moduleId)
+            if (req.body.moduleId == 2) {
+                kycCompletePoint = await updateCompleteKycModule(kycCompletePoint, moduleId)
+                await models.customer.update({ panType, panImage, panCardNumber: panNumber, allModulePoint, kycCompletePoint }, { where: { id: id }, transaction: t })
 
-            allModulePoint = allModulePoint | modulePoint.modulePoint
-            await models.customer.update({ panType, panImage, panCardNumber: panNumber, allModulePoint, kycCompletePoint }, { where: { id: id }, transaction: t })
+            } else if (req.body.moduleId == 4) {
+                await models.customer.update({ panType, panImage, panCardNumber: panNumber, allModulePoint, digiKycStatus: 'waiting' }, { where: { id: id }, transaction: t })
+
+            }
         })
 
         return res.status(data.status).json({ message: `Success` })

@@ -251,11 +251,6 @@ exports.partPayment = async (req, res, next) => {
             let customerLoanTransaction = await models.customerLoanTransaction.create(paymentDetails, { transaction: t })
             //////razorPay
             if (isRazorPay) {
-                if(isAdmin){
-                    await models.tempRazorPayDetails.update({isOrderPlaced:true},{ where: { razorPayOrderId: transactionDetails.razorpay_order_id } })
-                }else{
-                    await models.tempRazorPayDetails.update({isOrderPlaced:true},{ where: { razorPayOrderId: razorpay_order_id } })
-                }
                 //new loan
                 let status = "Completed";
                 let receivedDate = moment(depositDate).format("YYYY-MM-DD");
@@ -567,7 +562,7 @@ exports.partPayment = async (req, res, next) => {
                         loanStartDate = moment(lastPaidEmi.emiDueDate);
                         noOfDays = currentDate.diff(loanStartDate, 'days');
                     }
-
+                    noOfDays += 1;
                     //scenario 2 slab changed
                     let stepUpSlab = await getStepUpslab(loan.id, noOfDays);
                     let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, stepUpSlab.interestRate, loan.selectedSlab, loan.masterLoan.tenure);
@@ -1210,7 +1205,7 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
                     loanStartDate = moment(lastPaidEmi.emiDueDate);
                     noOfDays = currentDate.diff(loanStartDate, 'days');
                 }
-
+                noOfDays += 1;
                 //scenario 2 slab changed
                 let stepUpSlab = await getStepUpslab(loan.id, noOfDays);
                 let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, stepUpSlab.interestRate, loan.selectedSlab, loan.masterLoan.tenure);

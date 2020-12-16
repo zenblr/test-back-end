@@ -48,7 +48,7 @@ exports.sellProduct = async (req, res) => {
         let getConfigSetting = await models.digiGoldConfigDetails.getConfigDetail(configSettingName);
 
         nonSellableAmount = getCustomerBalance.currentGoldBalance - getCustomerBalance.sellableGoldBalance;
-        return res.status(400).json({ message: `Our policy dose not allow customer to sell gold and silver within ${getConfigSetting.configSettingValue} hours of purchasing it. You have purhased ${nonSellableAmount} grams of ${metalType} in last ${getConfigSetting.configSettingValue} hours. Please try again later.` });
+        return res.status(400).json({ message: `Our policy dose not allow customer to sell gold and silver within ${getConfigSetting.configSettingValue} hours of purchasing it. You have purhased ${nonSellableAmount} gram of ${metalType} in last ${getConfigSetting.configSettingValue} hours. Please try again later.` });
       }
     }
     if (metalType == "silver") {
@@ -58,7 +58,7 @@ exports.sellProduct = async (req, res) => {
         let getConfigSetting = await models.digiGoldConfigDetails.getConfigDetail(configSettingName);
 
         nonSellableAmount = getCustomerBalance.currentSilverBalance - getCustomerBalance.sellableSilverBalance;
-        return res.status(400).json({ message: `Our policy dose not allow customer to sell gold and silver within ${getConfigSetting.configSettingValue} hours of purchasing it. You have purhased ${nonSellableAmount} grams of ${metalType} in last ${getConfigSetting.configSettingValue} hours. Please try again later.` });
+        return res.status(400).json({ message: `Our policy dose not allow customer to sell gold and silver within ${getConfigSetting.configSettingValue} hours of purchasing it. You have purhased ${nonSellableAmount} gram of ${metalType} in last ${getConfigSetting.configSettingValue} hours. Please try again later.` });
       }
     }
     let customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: id } });

@@ -273,17 +273,7 @@ router.use('/migration', migration)
 
 const configDetail = require('./digitalGold/configDetail')
 router.use('/digital-gold/config-detail', configDetail);
-
 const errorLogger = require('./errorLogs');
 router.use('/error-logs', errorLogger)
-
-const wallet = require('./wallet')
-router.use('/wallet', wallet)
-
-const razorPayCron = require('./razorPayCron')
-router.use('/razor-pay-cron', razorPayCron)
-
-const razorPay = require('./razorPay')
-router.use('/razor-pay', razorPay)
 
 module.exports = router;

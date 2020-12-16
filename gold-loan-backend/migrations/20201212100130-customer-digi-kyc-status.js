@@ -2,14 +2,13 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addColumn('customer_loan_transaction', 'customer_id', {
-      type: Sequelize.DataTypes.INTEGER,
-    }).then(() => {
-      return queryInterface.addColumn('customer_loan_transaction', 'product_type_id', {
-        type: Sequelize.DataTypes.INTEGER,
-      });
+    return queryInterface.addColumn('customer', 'digi_kyc_status', {
+      type: Sequelize.DataTypes.ENUM,
+      defaultValue: "pending",
+      values: ['approved', 'waiting', 'pending', 'rejected']
     })
   },
+
   down: (queryInterface, Sequelize) => {
     /*
       Add reverting commands here.

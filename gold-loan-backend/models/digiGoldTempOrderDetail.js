@@ -12,10 +12,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'order_type_id',
             allowNull: false
         },
-        walletTempId: {
-            type: DataTypes.INTEGER,
-            field: 'wallet_temp_id',
-        },
         totalAmount: {
             type: DataTypes.FLOAT,
             field: 'total_amount',
@@ -102,11 +98,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_active',
             defaultValue: true,
         },
-        refundCronExecuted: {
-            type: DataTypes.BOOLEAN,
-            field: 'refund_cron_executed',
-            defaultValue: false,
-        }
+
     }, {
         freezeTableName: true,
         allowNull: false,

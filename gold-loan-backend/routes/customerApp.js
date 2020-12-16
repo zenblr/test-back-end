@@ -17,7 +17,7 @@ const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetai
 
 const { getSoa } = require('../controllers/soaOfLoan/soaOfLoan');
 
-const { uploadFile, base64Convertor } = require('../controllers/fileUpload/fileUpload'); // importing fileUpload controller.
+const { uploadFile, base64Convertor, pathToBase64 } = require('../controllers/fileUpload/fileUpload'); // importing fileUpload controller.
 const { razorPayCreateOrder } = require('../controllers/razorpay/razorpay')
 
 
@@ -63,6 +63,8 @@ router.post('/upload-file', customerCheckAuth, wrapper(uploadFile)) //file uploa
 
 router.post('/base', customerCheckAuth, wrapper(base64Convertor)) //file upload by base 64
 
+router.post('/convent-base', customerCheckAuth, wrapper(pathToBase64)) //convert path to base 64 
+
 router.get('/personal-info', customerCheckAuth, wrapper(personalInfo)) //personal info
 
 router.post('/product-request', customerCheckAuth, wrapper(customerProductRequest)) //personal info
@@ -86,6 +88,5 @@ router.use('/kyc', customerWebsiteKyc)
 
 router.post('/razor-pay', wrapper(razorPayCreateOrder));
 
-router.use('/customer-wallet', walletCustomer)
 
 module.exports = router;
