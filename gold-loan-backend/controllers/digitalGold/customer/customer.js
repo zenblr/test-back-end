@@ -9,6 +9,8 @@ const uniqid = require('uniqid');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../../utils/constant');
 const errorLogger = require('../../../utils/errorLogger');
+const { getCustomerCityById, getCustomerStateById } = require('../../../service/customerAddress')
+
 
 exports.getCustomerPassbookDetails = async (req, res) => {
   try {
@@ -116,6 +118,10 @@ exports.updateCustomerDetails = async (req, res) => {
     if (check.isEmpty(customerDetails)) {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     }
+
+    let city = await getCustomerCityById(cityId);
+    let state = await getCustomerStateById(stateId);
+  
     const customerUniqueId = customerDetails.customerUniqueId;
     const merchantData = await getMerchantData();
     const data = qs.stringify({
@@ -123,9 +129,9 @@ exports.updateCustomerDetails = async (req, res) => {
       'emailId': email,
       'userName': firstName + " " + lastName,
       'userAddress': address,
-      'userCity': "1GXDPyX2",
+       'userCity': city.cityUniqueCode,
       // 'userState': stateId,
-      'userState': "ep9kJ7Px",
+      'userState': state.stateUniqueCode,
       'userPincode': pinCode,
       'dateOfBirth': dateOfBirth,
       'gender': gender,
@@ -185,7 +191,8 @@ exports.createCustomerInAugmontDb = async (req, res) => {
     const merchantData = await getMerchantData();
 
     const customer = await models.customer.findOne({ where: { id, isActive: true } });
-
+    let state = await getCustomerStateById(stateId);
+    let city = await getCustomerCityById(cityId);
     let customerUniqueId;
     await sequelize.transaction(async (t) => {
       if (!customer.customerUniqueId) {
@@ -202,8 +209,9 @@ exports.createCustomerInAugmontDb = async (req, res) => {
       'uniqueId': customerUniqueId,
       'userName': customer.firstName + " " + customer.lastName,
       // 'userAddress': address,
-      'userCity': "1GXDPyX2",
-      'userState': "ep9kJ7Px",
+      'userCity': city.cityUniqueCode,
+      // 'userState': stateId,
+      'userState': state.stateUniqueCode,
       // 'userPincode': pinCode,
       // 'dateOfBirth':dateOfBirth,
       // 'gender':gender,

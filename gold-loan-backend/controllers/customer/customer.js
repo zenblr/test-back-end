@@ -19,6 +19,8 @@ const getMerchantData = require('../auth/getMerchantData')
 const jwt = require('jsonwebtoken');
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/constant');
 const { ADMIN_PANEL, CUSTOMER_WEBSITE } = require('../../utils/sourceFrom')
+const { getCustomerCityById, getCustomerStateById } = require('../../service/customerAddress')
+
 
 exports.getOtp = async (req, res, next) => {
   let getOtp = await models.customerOtp.findAll({
@@ -75,14 +77,18 @@ exports.addCustomer = async (req, res, next) => {
 
       await models.customer.update({ customerUniqueId }, { where: { id: customer.id }, transaction: t })
 
+      let state = await getCustomerStateById(stateId);
+      let city = await getCustomerCityById(cityId);
+
       const data = qs.stringify({
         'mobileNumber': mobileNumber,
         // 'emailId': email,
         'uniqueId': customerUniqueId,
         'userName': firstName + " " + lastName,
         // 'userAddress': address,
-        // 'userCity': cityId,
-        'userState': "joXp8X42",
+        'userCity': city.cityUniqueCode,
+        // 'userState': stateId,
+        'userState': state.stateUniqueCode,
         // 'userPincode': pinCode,
         // 'dateOfBirth':dateOfBirth,
         // 'gender':gender,
@@ -809,6 +815,8 @@ exports.signUpCustomer = async (req, res) => {
       { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age },
       { transaction: t }
     );
+    let state = await getCustomerStateById(stateId);
+    let city = await getCustomerCityById(cityId);
 
     const data = qs.stringify({
       'mobileNumber': mobileNumber,
@@ -816,8 +824,9 @@ exports.signUpCustomer = async (req, res) => {
       'uniqueId': customerUniqueId,
       'userName': firstName + " " + lastName,
       // 'userAddress': address,
-      // 'userCity': cityId,
-      'userState': "joXp8X42",
+      'userCity': city.cityUniqueCode,
+      // 'userState': stateId,
+      'userState': state.stateUniqueCode,
       // 'userPincode': pinCode,
       // 'dateOfBirth':dateOfBirth,
       // 'gender':gender,
