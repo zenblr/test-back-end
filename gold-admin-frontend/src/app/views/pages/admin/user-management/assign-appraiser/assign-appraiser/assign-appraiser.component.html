@@ -151,7 +151,7 @@
 
                             <div class="col-4">
                                 <input [ngxTimepicker]="picker2" class="form-control" formControlName="endTime"
-                                    placeholder="To" [min]="startTime" [max]="'06:00 pm'"
+                                    placeholder="To" [min]="startTime" [max]="'11:59 pm'"
                                     [class.isError]="controls.endTime.touched && controls.endTime.invalid">
                                 <ngx-material-timepicker #picker2 (timeChanged)="setMaxStartTime($event)">
                                 </ngx-material-timepicker>

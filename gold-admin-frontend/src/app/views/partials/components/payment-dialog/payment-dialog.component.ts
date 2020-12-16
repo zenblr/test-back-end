@@ -6,6 +6,7 @@ import { map, catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { DatePipe } from '@angular/common';
 import { LayoutUtilsService } from "../../../../core/_base/crud";
+import { GlobalSettingService } from '../../../../core/global-setting/services/global-setting.service';
 
 @Component({
   selector: 'kt-payment-dialog',
@@ -23,6 +24,7 @@ export class PaymentDialogComponent implements OnInit {
   title: string = ''
   minDate: Date;
   maxDate = new Date()
+  globalData: any;
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<PaymentDialogComponent>,
@@ -30,8 +32,14 @@ export class PaymentDialogComponent implements OnInit {
     private depositService: DepositService,
     private toast: ToastrService,
     private dataPipe: DatePipe,
-    private layoutUtilsService: LayoutUtilsService
+    private layoutUtilsService: LayoutUtilsService,
+    private globalSettingService:GlobalSettingService
+
   ) {
+    
+      this.globalSettingService.globalSetting$.subscribe(res =>{
+        this.globalData = res
+      })
   }
 
   ngOnInit() {
@@ -77,6 +85,10 @@ export class PaymentDialogComponent implements OnInit {
         this.paymentForm.controls.depositTransactionId.disable();
         this.paymentForm.controls.paymentReceivedDate.disable();
 
+      }
+
+      if(Number(this.globalData['cashTransactionLimit']) < Number(this.paymentForm.controls.paidAmount.value)){
+        this.paymentTypeList.splice(4,1)
       }
     }
   }
