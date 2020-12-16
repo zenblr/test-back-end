@@ -47,7 +47,7 @@ export class AssignAppraiserComponent implements OnInit {
   endTime: string;
   addStartTime: string;
   internalBranchId: any;
-  max: string = '06:00 pm';
+  max: string = '11:59 pm';
 
   constructor(
     public dialogRef: MatDialogRef<AssignAppraiserComponent>,
