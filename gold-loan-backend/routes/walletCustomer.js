@@ -26,4 +26,6 @@ route.post('/add-bank-details',customerCheckAuth, addCustomerBankDetails,validat
 
 route.get('/:depositWithdrawId', customerCheckAuth, wrapper(getWalletDetailByIdAdmin));
 
+
+
 module.exports = route;

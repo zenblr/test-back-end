@@ -37,5 +37,7 @@ module.exports = (sequelize, DataTypes) => {
 
 
     
+
+    
     return WalletDetail;
 }
