@@ -12,6 +12,8 @@ exports.addWalletAmountValidation = [
     .withMessage('paymentType is required')
 ]
 
+
+
 exports.editWalletStatusValidation = [
   body('depositStatus')
     .exists()
