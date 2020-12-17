@@ -25,15 +25,6 @@ exports.sellProduct = async (req, res) => {
       where: { id, isActive: true },
     });
 
-    // await sequelize.transaction(async (t) => {
-    let tempId = await models.digiGoldTempOrderDetail.create(
-      {
-        customerId: id, orderTypeId: 2, totalAmount: amount, metalType: metalType, quantity: quantity,
-        lockPrice: lockPrice, blockId: blockId, amount: amount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy
-      }
-    );
-    // })
-    // return;
     if (check.isEmpty(customerDetails)) {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     }
@@ -61,10 +52,18 @@ exports.sellProduct = async (req, res) => {
         return res.status(400).json({ message: `Our policy dose not allow customer to sell gold and silver within ${getConfigSetting.configSettingValue} hours of purchasing it. You have purhased ${nonSellableAmount} gram of ${metalType} in last ${getConfigSetting.configSettingValue} hours. Please try again later.` });
       }
     }
+
+    let tempId = await models.digiGoldTempOrderDetail.create(
+      {
+        customerId: id, orderTypeId: 2, totalAmount: amount, metalType: metalType, quantity: quantity,
+        lockPrice: lockPrice, blockId: blockId, amount: amount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy
+      }
+    );
+
     let customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: id } });
     let orderUniqueId = `dg_sell${Math.floor(1000 + Math.random() * 9000)}`;
 
-    if (modeOfPayment == "bankTransfer") {
+    if (modeOfPayment == "bankAccount") {
 
       const customerUniqueId = customerDetails.customerUniqueId;
       const merchantData = await getMerchantData();
@@ -112,17 +111,18 @@ exports.sellProduct = async (req, res) => {
             await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilverBal }, { where: { customerId: id }, transaction: t });
           }
 
-          let amountOfWallet;
-          if(customerDetails.walletFreeBalance){
-           amountOfWallet = Number(customerDetails.walletFreeBalance) + Number(amount)
-          }else{
-           amountOfWallet = Number(amount)
-          }
+          // let amountOfWallet;
+          // if(customerDetails.walletFreeBalance){
+          //  amountOfWallet = Number(customerDetails.walletFreeBalance) + Number(amount);
+
+          // }else{
+          //  amountOfWallet = Number(amount)
+          // }
           // await models.customer.update({ walletFreeBalance: amountOfWallet }, { where: { id: customerDetails.id }, transaction: t });
 
           let orderDetail = await models.digiGoldOrderDetail.create({
             tempOrderId: tempId.id, customerId: id, orderTypeId: 2, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
-            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: amountOfWallet
+            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: customerDetails.currentWalletBalance
           }, { transaction: t });
 
           await models.digiGoldTempOrderDetail.update(
@@ -135,7 +135,7 @@ exports.sellProduct = async (req, res) => {
         })
       }
       return res.status(200).json(result.data);
-    } else {
+    } else if(modeOfPayment == "augmontWallet") {
 
       // const customerUniqueId = customerDetails.customerUniqueId;
       // const merchantData = await getMerchantData();
