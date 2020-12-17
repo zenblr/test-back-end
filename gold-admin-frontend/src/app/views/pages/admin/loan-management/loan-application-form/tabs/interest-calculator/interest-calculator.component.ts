@@ -433,6 +433,13 @@ export class InterestCalculatorComponent implements OnInit {
         return
       }
 
+      // 
+      if(Number(this.controls.finalLoanAmount.value)> Number(this.selectedScheme.schemeAmountEnd) || Number(this.controls.finalLoanAmount.value)> Number(this.selectedScheme.schemeAmountStart)){
+        
+        this.controls.finalLoanAmount.setErrors({ schemeAmt: true })
+          return
+      }
+
       //rbi guidelines check
       // let rbiLoanPercent = (this.globalValue.ltvGoldValue / 100)
       // if (amt > Math.round(this.fullAmount * rbiLoanPercent)) {
