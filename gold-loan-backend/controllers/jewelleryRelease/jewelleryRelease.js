@@ -7,7 +7,7 @@ const check = require("../../lib/checkLib");
 const action = require('../../utils/partReleaseHistory');
 const actionFullRelease = require('../../utils/fullReleaseHistory');
 const loanFunction = require('../../utils/loanFunction');
-const { getCustomerInterestAmount, customerLoanDetailsByMasterLoanDetails, getGlobalSetting, getLoanDetails, allInterestPayment, getAmountLoanSplitUpData, getTransactionPrincipalAmount, customerNameNumberLoanId,nextDueDateInterest } = require('../../utils/loanFunction');
+const { getCustomerInterestAmount, customerLoanDetailsByMasterLoanDetails, getGlobalSetting, getLoanDetails, allInterestPayment, getAmountLoanSplitUpData, getTransactionPrincipalAmount, customerNameNumberLoanId, nextDueDateInterest, getAllPartAndFullReleaseData, ornementsDetails, allOrnamentsDetails, getornamentsWeightInfo, getornamentLoanInfo } = require('../../utils/loanFunction');
 const moment = require('moment')
 const uniqid = require('uniqid');
 const _ = require('lodash');
@@ -80,177 +80,8 @@ async function getGoldRate() {
 }
 
 
-async function ornementsDetails(masterLoanId, whereBlock) {
-    let ornaments = await models.customerLoanMaster.findOne({
-        where: { id: masterLoanId },
-        attributes: ['customerId', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
-        include: [{
-            model: models.customerLoanOrnamentsDetail,
-            as: 'loanOrnamentsDetail',
-            where: whereBlock,
-            include: [
-                {
-                    model: models.ornamentType,
-                    as: "ornamentType",
-                    attributes: ['name', 'id'],
-                },
-                {
-                    model: models.packet,
-                }
-            ]
-        }]
-    });
-    return ornaments;
-}
-
-async function allOrnamentsDetails(masterLoanId) {
-    let ornaments = await models.customerLoanMaster.findOne({
-        where: { id: masterLoanId },
-        attributes: ['customerId', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
-        include: [{
-            model: models.customerLoanOrnamentsDetail,
-            as: 'loanOrnamentsDetail',
-            where: { isActive: true, isReleased: false },
-            include: [
-                {
-                    model: models.ornamentType,
-                    as: "ornamentType",
-                    attributes: ['name', 'id'],
-                },
-                {
-                    model: models.packet,
-                }
-            ]
-        }]
-    });
-    return ornaments;
-}
-
-async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanData, allOrnaments) {
-    let ornamentsWeightInfo = {
-        releaseGrossWeight: 0,
-        releaseDeductionWeight: 0,
-        releaseNetWeight: 0,
-        remainingGrossWeight: 0,
-        remainingDeductionWeight: 0,
-        remainingNetWeight: 0,
-        releaseAmount: 0,
-        currentLtv: 0,
-        previousLtv: 0,
-        currentOutstandingAmount: 0,
-        allOrnamentsGrossWeight: 0,
-        allOrnamentsDeductionWeight: 0,
-        allOrnamentsNetWeight: 0,
-        totalOfReleaseOrnaments: 0,
-        totalOfRemainingOrnaments: 0,
-        previousOutstandingAmount: 0,
-        remainingOrnamentAmount: 0,//remning ornament
-        newLoanAmount: 0,//new loan amount
-    }
-    if (requestedOrnaments || allOrnaments) {
-        let securedLoanRpg = loanData.customerLoan[0].scheme.rpg;
-        let unSecuredLoanRpg = 0;
-        if (loanData.customerLoan.length > 1) {
-            unSecuredLoanRpg = loanData.customerLoan[1].scheme.rpg;
-        }
-        // let globalSettings = await getGlobalSetting();
-        // let goldRate = await getGoldRate();
-        ornamentsWeightInfo.currentLtv = Number(securedLoanRpg) + Number(unSecuredLoanRpg);
-        ornamentsWeightInfo.previousLtv = requestedOrnaments.loanOrnamentsDetail[0].currentLtvAmount;
-        ornamentsWeightInfo.previousOutstandingAmount = loanData.outstandingAmount;
-
-        //current outstanding amount
-        if (allOrnaments != null) {
-            for (const ornaments of allOrnaments.loanOrnamentsDetail) {
-                ornamentsWeightInfo.allOrnamentsGrossWeight = ornamentsWeightInfo.allOrnamentsGrossWeight + parseFloat(ornaments.grossWeight);
-                ornamentsWeightInfo.allOrnamentsDeductionWeight = ornamentsWeightInfo.allOrnamentsDeductionWeight + parseFloat(ornaments.deductionWeight);
-                ornamentsWeightInfo.allOrnamentsNetWeight = ornamentsWeightInfo.allOrnamentsNetWeight + parseFloat(ornaments.netWeight);
-                let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
-                ornamentsWeightInfo.currentOutstandingAmount = ornamentsWeightInfo.currentOutstandingAmount + (ltvAmount * parseFloat(ornaments.netWeight));
-            }
-        }
 
 
-        if (requestedOrnaments != null) {
-            for (const ornaments of requestedOrnaments.loanOrnamentsDetail) {
-                ornamentsWeightInfo.releaseGrossWeight = ornamentsWeightInfo.releaseGrossWeight + parseFloat(ornaments.grossWeight);
-                ornamentsWeightInfo.releaseDeductionWeight = ornamentsWeightInfo.releaseDeductionWeight + parseFloat(ornaments.deductionWeight);
-                ornamentsWeightInfo.releaseNetWeight = ornamentsWeightInfo.releaseNetWeight + parseFloat(ornaments.netWeight);
-                let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
-                ornamentsWeightInfo.totalOfReleaseOrnaments = ornamentsWeightInfo.totalOfReleaseOrnaments + (ltvAmount * parseFloat(ornaments.netWeight));
-            }
-        }
-
-        if (otherOrnaments != null) {
-            for (const ornaments of otherOrnaments.loanOrnamentsDetail) {
-                ornamentsWeightInfo.remainingGrossWeight = ornamentsWeightInfo.remainingGrossWeight + parseFloat(ornaments.grossWeight);
-                ornamentsWeightInfo.remainingDeductionWeight = ornamentsWeightInfo.remainingDeductionWeight + parseFloat(ornaments.deductionWeight);
-                ornamentsWeightInfo.remainingNetWeight = ornamentsWeightInfo.remainingNetWeight + parseFloat(ornaments.netWeight);
-                let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
-                ornamentsWeightInfo.totalOfRemainingOrnaments = ornamentsWeightInfo.totalOfRemainingOrnaments + (ltvAmount * parseFloat(ornaments.netWeight));
-            }
-        }
-
-
-        ornamentsWeightInfo.currentOutstandingAmount = Math.round(ornamentsWeightInfo.currentOutstandingAmount);
-        ornamentsWeightInfo.totalOfReleaseOrnaments = Math.round(ornamentsWeightInfo.totalOfReleaseOrnaments);
-        ornamentsWeightInfo.totalOfRemainingOrnaments = Math.round(ornamentsWeightInfo.totalOfRemainingOrnaments);
-        ornamentsWeightInfo.releaseAmount = ornamentsWeightInfo.currentOutstandingAmount - ornamentsWeightInfo.previousOutstandingAmount - ornamentsWeightInfo.totalOfReleaseOrnaments;
-        if (ornamentsWeightInfo.releaseAmount > 0) {
-            ornamentsWeightInfo.releaseAmount = 0
-        } else {
-            ornamentsWeightInfo.releaseAmount = Math.round(Math.abs(ornamentsWeightInfo.releaseAmount));
-        }
-        ornamentsWeightInfo.remainingOrnamentAmount = Math.round(ornamentsWeightInfo.currentOutstandingAmount - ornamentsWeightInfo.previousOutstandingAmount - ornamentsWeightInfo.totalOfRemainingOrnaments);
-        ornamentsWeightInfo.newLoanAmount = ornamentsWeightInfo.currentOutstandingAmount - ornamentsWeightInfo.previousOutstandingAmount - ornamentsWeightInfo.remainingOrnamentAmount;
-    }
-    return ornamentsWeightInfo;
-}
-
-async function getornamentLoanInfo(masterLoanId, ornamentWeight, amount) {
-    let loanData = await models.customerLoan.findAll({ where: { masterLoanId }, attributes: ['loanUniqueId', 'loanAmount'] });
-    let loanAmountData = await models.customerLoanMaster.findOne({ where: { id: masterLoanId }, attributes: ['finalLoanAmount', 'outstandingAmount'] });
-    let loanDetails = {
-        loanData,
-        finalLoanAmount: 0,
-        interestAmount: 0,
-        penalInterest: 0,
-        totalPayableAmount: 0,
-        securedInterest: 0,
-        securedPenalInterest: 0,
-        unsecuredInterest: 0,
-        unsecuredPenalInterest: 0
-    }
-    loanDetails.interestAmount = amount.secured.interest;
-    loanDetails.penalInterest = amount.secured.penalInterest;
-    loanDetails.securedInterest = amount.secured.interest;
-    loanDetails.securedPenalInterest = amount.secured.penalInterest;
-    if (amount.unsecured) {
-        loanDetails.interestAmount = loanDetails.interestAmount + amount.unsecured.interest;
-        loanDetails.penalInterest = loanDetails.penalInterest + amount.unsecured.penalInterest;
-        loanDetails.unsecuredInterest = amount.unsecured.interest;
-        loanDetails.unsecuredPenalInterest = amount.unsecured.penalInterest;
-    }
-    //calculate value here
-    loanDetails.totalPayableAmount = Number((ornamentWeight.releaseAmount + loanDetails.penalInterest + loanDetails.interestAmount).toFixed(2));
-    loanDetails.interestAmount = Number(loanDetails.interestAmount.toFixed(2));
-    loanDetails.penalInterest = Number(loanDetails.penalInterest.toFixed(2));
-    loanDetails.finalLoanAmount = loanAmountData.finalLoanAmount;
-    return loanDetails;
-}
-
-async function getAllPartAndFullReleaseData(masterLoanId, ornamentId) {
-    let whereSelectedOrmenemts = { id: { [Op.in]: ornamentId }, isActive: true, isReleased: false };
-    let whereOtherOrmenemts = { id: { [Op.notIn]: ornamentId }, isActive: true, isReleased: false };
-    let loanData = await getLoanDetails(masterLoanId);
-    let amount = await getCustomerInterestAmount(masterLoanId);
-    let requestedOrnaments = await ornementsDetails(masterLoanId, whereSelectedOrmenemts);
-    let otherOrnaments = await ornementsDetails(masterLoanId, whereOtherOrmenemts);
-    let allOrnaments = await allOrnamentsDetails(masterLoanId);
-    let ornamentWeight = await getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanData, allOrnaments);
-    let loanInfo = await getornamentLoanInfo(masterLoanId, ornamentWeight, amount);
-    return { ornamentWeight, loanInfo, amount }
-}
 
 async function getOldLoanData(customerLoanId) {
     let customerLoan = await models.customerLoan.findOne({
@@ -375,7 +206,7 @@ exports.ornamentsAmountDetails = async (req, res, next) => {
         let ornamentWeight = releaseData.ornamentWeight;
         let loanInfo = releaseData.loanInfo;
         let amount = releaseData.amount;
-        return res.status(200).json({ message: 'Success', ornamentWeight, loanInfo, amount,interest });
+        return res.status(200).json({ message: 'Success', ornamentWeight, loanInfo, amount, interest });
     } else {
         return res.status(400).json({ message: "Can't proceed further as you have already applied for part released or full release" });
     }
@@ -446,9 +277,21 @@ exports.razorPayCreateOrderForOrnament = async (req, res, next) => {
 
 exports.ornamentsPartRelease = async (req, res, next) => {
     try {
-        let { paymentType, paidAmount, bankName, chequeNumber, ornamentId, depositDate, transactionDetails, branchName, transactionId, masterLoanId } = req.body;
+        let { paymentType, paidAmount, bankName, chequeNumber, ornamentId, depositDate, transactionDetails, branchName, transactionId, masterLoanId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
         let createdBy = null;
         let modifiedBy = null;
+        let isAdmin
+
+
+        if (razorpay_order_id) {
+            var tempRazorData = await models.tempRazorPayDetails.findOne({ where: { razorPayOrderId: razorpay_order_id } })
+            depositDate = tempRazorData.depositDate
+            masterLoanId = tempRazorData.masterLoanId
+            paymentType = tempRazorData.paymentType
+            paidAmount = tempRazorData.amount
+            transactionId = tempRazorData.transactionUniqueId
+            ornamentId = tempRazorData.ornamentId
+        }
         let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
             where: { isReleased: true, masterLoanId: masterLoanId }
         });
@@ -469,7 +312,19 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                     let isRazorPay = false;
                     let razorPayTransactionId;
                     if (paymentType == 'upi' || paymentType == 'netbanking' || paymentType == 'wallet' || paymentType == 'card') {
-                        let razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
+                        let razerpayData
+                        if (razorpay_order_id) {
+                            isAdmin = false
+                            transactionDetails = {}
+                            razerpayData = await razorpay.instance.orders.fetch(razorpay_order_id);
+                            transactionDetails.razorpay_order_id = razorpay_order_id
+                            transactionDetails.razorpay_payment_id = razorpay_payment_id
+                            transactionDetails.razorpay_signature = razorpay_signature
+
+                        } else {
+                            isAdmin = true
+                            razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
+                        }
                         transactionUniqueId = razerpayData.receipt;
                         const generated_signature = crypto
                             .createHmac(
@@ -559,7 +414,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                                         let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: false, credit: 0.00 } });
                                         if (checkDebitEntry.length == 0) {
                                             let rebateAmount = amount.highestInterestAmount - amount.interestAmount;
-                                            let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: amount.interestAmount, description: `Extra days interest`, paymentDate: moment(),rebateAmount }, { transaction: t });
+                                            let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: amount.interestAmount, description: `Extra days interest`, paymentDate: moment(), rebateAmount }, { transaction: t });
                                             await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                                         } else {
                                             let debitedAmount = await checkDebitEntry.map((data) => Number(data.debit));
@@ -567,7 +422,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                                             let newDebitAmount = amount.interestAmount - totalDebitedAmount;
                                             if (newDebitAmount > 0) {
                                                 let rebateAmount = -Math.abs(newDebitAmount)
-                                                let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: newDebitAmount, description: `Extra days interest`, paymentDate: moment(),rebateAmount}, { transaction: t });
+                                                let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: newDebitAmount, description: `Extra days interest`, paymentDate: moment(), rebateAmount }, { transaction: t });
                                                 await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                                             }
                                         }
@@ -622,7 +477,11 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                 await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_APPLIED }, { transaction: t });
                 return addPartRelease
             });
-            return res.status(200).json({ message: "Success", partRelease });
+            if (isAdmin) {
+                return res.status(200).json({ message: "Success", partRelease });
+            } else {
+                res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/loan-details`)
+            }
         } else {
             return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
         }
@@ -820,7 +679,7 @@ exports.updateAmountStatus = async (req, res, next) => {
                                     let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: false, credit: 0.00 } });
                                     if (checkDebitEntry.length == 0) {
                                         let rebateAmount = amount.highestInterestAmount - amount.interestAmount;
-                                        let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: amount.interestAmount, description: `Extra days interest`, paymentDate: moment(),rebateAmount }, { transaction: t });
+                                        let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: amount.interestAmount, description: `Extra days interest`, paymentDate: moment(), rebateAmount }, { transaction: t });
                                         await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                                     } else {
                                         let debitedAmount = await checkDebitEntry.map((data) => Number(data.debit));
@@ -828,7 +687,7 @@ exports.updateAmountStatus = async (req, res, next) => {
                                         let newDebitAmount = amount.interestAmount - totalDebitedAmount;
                                         if (newDebitAmount > 0) {
                                             let rebateAmount = -Math.abs(newDebitAmount)
-                                            let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: newDebitAmount, description: `Extra days interest`, paymentDate: moment(),rebateAmount }, { transaction: t });
+                                            let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: newDebitAmount, description: `Extra days interest`, paymentDate: moment(), rebateAmount }, { transaction: t });
                                             await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                                         }
                                     }
@@ -1400,7 +1259,7 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                     isReleased: false,
                     currentLtvAmount: currentLtvAmount,
                     ltvPercent: oldOrnaments[i]['ltvPercent'],
-                    remark:oldOrnaments[i]['remark']
+                    remark: oldOrnaments[i]['remark']
                 }
 
                 allOrnmanets.push(ornamentData);
@@ -1421,6 +1280,28 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                 accountHolderName: oldLoanData.loanBankDetail.accountHolderName,
                 passbookProof: oldLoanData.loanBankDetail.passbookProof
             }
+
+            //added customer bank details
+            if (oldLoanData.loanBankDetail.paymentType == 'bank') {
+
+                let checkBankDetailExist = await models.customerBankDetails.findAll({ where: { accountNumber: oldLoanData.loanBankDetail.accountNumber, customerId: customerData.id } })
+
+                if (checkBankDetailExist.length == 0) {
+                    await models.customerBankDetails.create({
+                        moduleId: 1,
+                        customerId: customerData.id,
+                        bankName: oldLoanData.loanBankDetail.bankName,
+                        accountNumber: oldLoanData.loanBankDetail.accountNumber,
+                        ifscCode: oldLoanData.loanBankDetail.ifscCode,
+                        bankBranchName: oldLoanData.loanBankDetail.bankBranchName,
+                        accountHolderName: oldLoanData.loanBankDetail.accountHolderName,
+                        passbookProof: oldLoanData.loanBankDetail.passbookProof,
+                        description: `Added while Creating jewellery release`
+                    }, { transaction: t });
+                }
+            }
+            //added customer bank details
+
             await models.customerLoanBankDetail.create(bankData, { transaction: t });
             return { loan, masterLoan }
         });
@@ -1485,9 +1366,19 @@ exports.getPartReleaseNewLonaAmount = async (req, res, next) => {
 
 exports.ornamentsFullRelease = async (req, res, next) => {
     try {
-        let { paymentType, paidAmount, bankName, chequeNumber, ornamentId, depositDate, branchName, transactionId, masterLoanId, transactionDetails } = req.body;
+        let { paymentType, paidAmount, bankName, chequeNumber, ornamentId, depositDate, branchName, transactionId, masterLoanId, transactionDetails, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
         // let createdBy = req.userData.id;
         // let modifiedBy = req.userData.id;
+        let isAdmin
+        if (razorpay_order_id) {
+            var tempRazorData = await models.tempRazorPayDetails.findOne({ where: { razorPayOrderId: razorpay_order_id } })
+            depositDate = tempRazorData.depositDate
+            masterLoanId = tempRazorData.masterLoanId
+            paymentType = tempRazorData.paymentType
+            paidAmount = tempRazorData.amount
+            transactionId = tempRazorData.transactionUniqueId
+            ornamentId = tempRazorData.ornamentId
+        }
         let releaseData = await getAllPartAndFullReleaseData(masterLoanId, ornamentId);
         let ornamentData = releaseData.ornamentWeight;
         let loanInfo = releaseData.loanInfo;
@@ -1508,7 +1399,19 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                     let isRazorPay = false;
                     let razorPayTransactionId;
                     if (paymentType == 'upi' || paymentType == 'netbanking' || paymentType == 'wallet' || paymentType == 'card') {
-                        let razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
+                        let razerpayData
+                        if (razorpay_order_id) {
+                            isAdmin = false
+                            transactionDetails = {}
+                            razerpayData = await razorpay.instance.orders.fetch(razorpay_order_id);
+                            transactionDetails.razorpay_order_id = razorpay_order_id
+                            transactionDetails.razorpay_payment_id = razorpay_payment_id
+                            transactionDetails.razorpay_signature = razorpay_signature
+
+                        } else {
+                            isAdmin = true
+                            razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
+                        }
                         transactionUniqueId = razerpayData.receipt;
                         const generated_signature = crypto
                             .createHmac(
@@ -1598,7 +1501,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                                         let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: false, credit: 0.00 } });
                                         if (checkDebitEntry.length == 0) {
                                             let rebateAmount = amount.highestInterestAmount - amount.interestAmount;
-                                            let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: amount.interestAmount, description: `Extra days interest`, paymentDate: moment(),rebateAmount }, { transaction: t });
+                                            let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: amount.interestAmount, description: `Extra days interest`, paymentDate: moment(), rebateAmount }, { transaction: t });
                                             await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                                         } else {
                                             let debitedAmount = await checkDebitEntry.map((data) => Number(data.debit));
@@ -1606,7 +1509,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                                             let newDebitAmount = amount.interestAmount - totalDebitedAmount;
                                             if (newDebitAmount > 0) {
                                                 let rebateAmount = -Math.abs(newDebitAmount)
-                                                let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: newDebitAmount, description: `Extra days interest`, paymentDate: moment(),rebateAmount}, { transaction: t });
+                                                let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: newDebitAmount, description: `Extra days interest`, paymentDate: moment(), rebateAmount }, { transaction: t });
                                                 await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                                             }
                                         }
@@ -1656,7 +1559,11 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                 await models.fullReleaseHistory.create({ fullReleaseId: addFullRelease.id, action: actionFullRelease.FULL_RELEASE_APPLIED }, { transaction: t });
                 return addFullRelease
             })
-            return res.status(200).json({ message: "Success", fullRelease });
+            if (isAdmin) {
+                return res.status(200).json({ message: "Success", fullRelease });
+            } else {
+                res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/loan-details`)
+            }
         } else {
             return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
         }
@@ -1855,7 +1762,7 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
                                     let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: false, credit: 0.00 } });
                                     if (checkDebitEntry.length == 0) {
                                         let rebateAmount = amount.highestInterestAmount - amount.interestAmount;
-                                        let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: amount.interestAmount, description: `Extra days interest`, paymentDate: moment(),rebateAmount }, { transaction: t });
+                                        let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: amount.interestAmount, description: `Extra days interest`, paymentDate: moment(), rebateAmount }, { transaction: t });
                                         await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                                     } else {
                                         let debitedAmount = await checkDebitEntry.map((data) => Number(data.debit));
@@ -1863,7 +1770,7 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
                                         let newDebitAmount = amount.interestAmount - totalDebitedAmount;
                                         if (newDebitAmount > 0) {
                                             let rebateAmount = -Math.abs(newDebitAmount)
-                                            let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: newDebitAmount, description: `Extra days interest`, paymentDate: moment(),rebateAmount }, { transaction: t });
+                                            let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: newDebitAmount, description: `Extra days interest`, paymentDate: moment(), rebateAmount }, { transaction: t });
                                             await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                                         }
                                     }
@@ -2249,3 +2156,4 @@ exports.uploadDocumentFullRelease = async (req, res, next) => {
         return res.status(400).json({ message: "This full release process is not assigned to you!" })
     }
 }
+

@@ -9,6 +9,6 @@ const checkRolePermission = require('../middleware/checkRolesPermissions');
 
 route.post('/', checkAuth, wrapper(addUpdateOrganisationType));
 
-route.get('/', checkAuth, wrapper(readOrganizationType));
+route.get('/', wrapper(readOrganizationType));
 
 module.exports = route;

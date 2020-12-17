@@ -442,10 +442,9 @@ export class OrnamentsComponent implements OnInit, AfterViewInit, OnChanges {
         this.totalDeductionWeight +=  Number(Number(gross.deductionWeight).toFixed(2))
       }
       if (gross.ltvPercent && gross.netWeight) {
-        this.totalPurtiy +=  Number((gross.ltvPercent/100 * gross.netWeight).toFixed(2))
+        this.totalPurtiy +=  Number(Number(gross.ltvPercent/100 * gross.netWeight).toFixed(2))
       }
     })
-    this.totalPurtiy = Number(this.totalPurtiy.toFixed(2))
   }
 
   addmore() {

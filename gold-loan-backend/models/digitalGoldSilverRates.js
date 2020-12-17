@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     },
         {
             freezeTableName: true,
-            tableName: 'digital_gold_silver_rate',
+            tableName: 'digi_gold_silver_rate',
         })
     return DigitalGoldSilverRate;
 }

@@ -14,7 +14,7 @@ route.post('/check-part-amount', checkAuth, wrapper(checkPartAmount))
 
 route.post('/confirm-payment-info', checkAuth, wrapper(payableAmountConfirmPartPayment))
 
-route.post('/payment', checkAuth, wrapper(partPayment))
+route.post('/payment', wrapper(partPayment))
 
 
 
