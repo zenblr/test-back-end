@@ -32,6 +32,8 @@ import {
 	DepositDetailsService,
 	EmiDetailsService,
 } from "../../../../core/emi-management/order-management";
+import { DepositRequestsService } from '../../../../core/wallet/deposit-requests/deposit-requests.service';
+import { WithdrawalRequestsService } from '../../../../core/wallet/withdrawal-requests/withdrawal-requests.service';
 import { MonthlyService } from "../../../../core/repayment/services/monthly.service";
 import { CustomerDetailsService } from "../../../../core/emi-management/customer-details";
 import { LeadService } from "../../../../core/lead-management/services/lead.service";
@@ -134,6 +136,8 @@ export class TopbarComponent implements OnInit {
 		private logisticPartnerService: LogisticPartnerService,
 		private karatDetailsService: KaratDetailsService,
 		private productService: ProductService,
+		private depositRequestsService: DepositRequestsService,
+		private withdrawalRequestsService: WithdrawalRequestsService,
 		private orderDetailsService: OrderDetailsService,
 		private cancelOrderDetailsService: CancelOrderDetailsService,
 		private depositDetailsService: DepositDetailsService,
@@ -584,6 +588,36 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "admin-log") {
 			this.showInput = true;
 		}
+		if (this.path == "deposit-requests") {
+			this.showInput = true;
+			this.filterName = "depositRequests";
+			this.filterWidth = "630px";
+			this.listType = "tenure,orderStatus";
+			this.showfilter = true;
+			// this.showDropdown = true;
+			// this.dropdownTitle = "Generate";
+			// this.dropdownValue = [
+			// 	{ label: "Label", value: "label" },
+			// 	{ label: "Manifest", value: "mainfest" },
+			// 	{ label: "Deli Manifest", value: "deliMainfest" },
+			// 	{ label: "Uninsured Manifest", value: "uninsuredMainfest" },
+			// ]
+		}
+		if (this.path == "withdrawal-requests") {
+			this.showInput = true;
+			this.filterName = "withdrawalRequests";
+			this.filterWidth = "630px";
+			this.listType = "tenure,orderStatus";
+			this.showfilter = true;
+			// this.showDropdown = true;
+			// this.dropdownTitle = "Generate";
+			// this.dropdownValue = [
+			// 	{ label: "Label", value: "label" },
+			// 	{ label: "Manifest", value: "mainfest" },
+			// 	{ label: "Deli Manifest", value: "deliMainfest" },
+			// 	{ label: "Uninsured Manifest", value: "uninsuredMainfest" },
+			// ]
+		}
 		if (this.path == "order-details") {
 			this.showInput = true;
 			this.value1 = "Export";
@@ -637,6 +671,14 @@ export class TopbarComponent implements OnInit {
 			this.value1 = "";
 			this.type1 = "";
 		}
+		if (location.href.includes("edit-deposit-requests")) {
+			this.value5 = "Print Proforma";
+			this.type5 = "button";
+			this.value4 = "Contract";
+			this.type4 = "reset";
+			this.rightButton = true;
+			this.showBackButton = true;
+		}
 		if (location.href.includes("edit-order-details")) {
 			this.value5 = "Print Proforma";
 			this.type5 = "button";
@@ -683,6 +725,18 @@ export class TopbarComponent implements OnInit {
 			this.showBackButton = true;
 		}
 		if (location.href.includes("admin/digi-gold/sip-management/create-sip")) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes("/admin/digi-gold/wallet/deposit-requests")) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes("/admin/digi-gold/wallet/withdrawal-requests")) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes("admin/digi-gold/wallet/deposit-requests/deposit-requests-edit")) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes("admin/digi-gold/wallet/withdrawal-requests/withdrawal-requests-edit")) {
 			this.showBackButton = true;
 		}
 		if (location.href.includes("packet-image-upload")) {
@@ -963,6 +1017,12 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'other-charges') {
 			this.otherChargesService.openModal.next(true);
 		}
+		// if (this.path == 'deposit-requests') {
+		// 	this.sipInvestmentTenureService.openModal.next(true)
+		// }
+		// if (this.path == 'withdrawal-requests') {
+		// 	this.sipInvestmentTenureService.openModal.next(true)
+		// }
 		if (this.path == 'sip-investment-tenure') {
 			this.sipInvestmentTenureService.openModal.next(true)
 		}
@@ -1055,6 +1115,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "order-details") {
 			this.orderDetailsService.applyFilter.next(data);
+		}
+		if (this.path == "deposit-requests") {
+			this.depositRequestsService.applyFilter.next(data);
+		}
+		if (this.path == "withdrawal-requests") {
+			this.withdrawalRequestsService.applyFilter.next(data);
 		}
 		if (this.path == "emi-details") {
 			this.emiDetailsService.applyFilter.next(data);

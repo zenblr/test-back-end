@@ -429,7 +429,23 @@ export class PageConfig {
 				},
 			},
 			"digi-gold": {
-				
+
+				"wallet": {
+					"deposit-requests": {
+						page: { title: "Deposit Requests", desc: "" },
+						id: {
+							page: { title: "Deposit Requests Details", desc: "" },
+						},
+					},
+					"withdrawal-requests": {
+						page: { title: "Withdrawal Requests", desc: "" },
+						id: {
+							page: { title: "Withdrawal Requests Details", desc: "" },
+						},
+					},
+
+				       
+					},
 				"global-settings": {
 				        page: { title: "Global Setting", desc: "" },
 					},

@@ -21,6 +21,10 @@ const routes: Routes = [
 				loadChildren: () => import('./sip-management/sip-management.module').then(m => m.SipManagementModule)
 			},
 			{
+				path: 'wallet',
+				loadChildren: () => import('./wallet/wallet.module').then(m => m.WalletModule)
+			},
+			{
 				path: 'global-settings',
 				component: GlobalSettingsComponent
 			},
@@ -38,7 +42,8 @@ const routes: Routes = [
 	providers: [],
 	declarations: [
 		DigiGoldComponent,
-		GlobalSettingsComponent
+		GlobalSettingsComponent,
+	
 	]
 })
 export class DigiGoldModule { }
