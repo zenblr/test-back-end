@@ -27,7 +27,7 @@
                         {{loan?.customer?.internalBranch?.name | titlecase}}
                     </mat-cell>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
                     <mat-cell *matCellDef="let loan" class="d-block">
@@ -64,7 +64,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="interestRate">
-                    <mat-header-cell *matHeaderCellDef>Intrest Rate</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Interest Rate</mat-header-cell>
                     <mat-cell *matCellDef="let loan" class="d-block">
                         <div>
                             {{loan?.customerLoan[0]?.interestRate}} % P.M
@@ -162,7 +162,7 @@
                                         (click)="partPayment(loan)">Part Payment</button>
                                 </ng-container>
 
-                                <!-- <button mat-menu-item (click)="topUp(loan)">Top Up</button> -->
+                                <button mat-menu-item (click)="topUp(loan)">Top Up</button>
                                 <button *ngxPermissionsOnly="['partReleaseAdd', 'fullReleaseAdd']" mat-menu-item
                                     (click)="jewelleryRelease(loan)">Jewellery
                                     Release</button>

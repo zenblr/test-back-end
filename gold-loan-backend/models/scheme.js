@@ -1,6 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
     const Scheme = sequelize.define('scheme', {
         //attribute
+        unsecuredSchemeId: {
+            type: DataTypes.INTEGER,
+            field: 'unsecured_scheme_id',
+        },
         schemeName: {
             type: DataTypes.STRING,
             field: 'scheme_name'
@@ -21,18 +25,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'processing_charge_percent'
         },
-        maximumPercentageAllowed: {
+        rpg:{
             type: DataTypes.FLOAT,
-            field: 'maximum_percentage_allowed'
+            field: 'rpg',
+            allowNull: false
         },
         penalInterest: {
             type: DataTypes.FLOAT,
             field: 'penal_interest'
-        },
-        default: {
-            type: DataTypes.BOOLEAN,
-            field: 'default',
-            defaultValue: false
         },
         schemeType: {
             type: DataTypes.ENUM,
@@ -66,7 +66,11 @@ module.exports = (sequelize, DataTypes) => {
 
         Scheme.belongsToMany(models.partner, { through: models.partnerScheme });
 
+        Scheme.belongsTo(models.scheme, { foreignKey: 'unsecuredSchemeId', as: 'unsecuredScheme' })
+
         Scheme.hasMany(models.schemeInterest, { foreignKey: 'schemeId', as: 'schemeInterest' })
+
+        Scheme.belongsToMany(models.internalBranch, { through: models.schemeInternalBranch, foreignKey: 'schemeId' })
 
     }
     return Scheme;

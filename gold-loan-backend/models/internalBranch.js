@@ -80,6 +80,8 @@ module.exports = (sequelize, DataTypes) => {
         InternalBranch.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         InternalBranch.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
 
+        InternalBranch.belongsToMany(models.scheme, { through: models.schemeInternalBranch, foreignKey: 'internalBranchId' })
+
         InternalBranch.belongsToMany(models.user, { through: models.userInternalBranch });
         InternalBranch.belongsToMany(models.partner, { through: models.internalBranchPartner })
 

@@ -194,13 +194,14 @@ export class LoanTransferComponent implements OnInit {
       loanTransferStatusForAppraiser: ['', Validators.required],
       reasonByBM: ['', Validators.required],
       reasonByAppraiser: ['', Validators.required],
-      reason: ['', Validators.required]
+      reason: ['', Validators.required],
     })
     this.disbursalForm = this.fb.group({
       processingCharge: ['', Validators.required],
       disbursedLoanAmount: [],
       loanUniqueId: [],
-      transactionId: ['', Validators.required]
+      transactionId: ['', Validators.required],
+      bankTransferType:[null,Validators.required]
     })
   }
 

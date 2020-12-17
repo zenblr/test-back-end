@@ -621,6 +621,18 @@
                                 <div class="col-6">
                                     <div class="row kt-margin-t-15 ">
                                         <div class="col-4 form-label">
+                                            <label class="text-color my-auto">Remark</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" class="form-control" placeholder="Remark"
+                                                formControlName="remark">
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                                <div class="col-6">
+                                    <div class="row kt-margin-t-15 " *ngIf="ornament.controls.loanAmount.value">
+                                        <div class="col-4 form-label">
                                             <label class="text-color mandatory my-auto">Loan Amount</label>
                                         </div>
                                         <div class="col-8">
@@ -721,7 +733,7 @@
                     Processing Charges - <span class="currency">
                         {{processingCharges | indianCurrencyFormat}}</span>
                 </b>
-                <b [ngClass]="{'float-right': buttonValue == 'Pay Processing Charges'}">
+                <b [ngClass]="{'float-right': buttonValue == 'Pay Processing Charges'}" *ngIf="scrapIds">
                     {{scrapIds ? 'Total Scrap Amount' : 'Total Eligible Amount'}} - <span class="currency">
                         {{totalAmount | indianCurrencyFormat}}</span>
                 </b>
