@@ -16,6 +16,7 @@ exports.getCustomerPassbookDetails = async (req, res) => {
   try {
     const id = req.userData.id;
     console.log("id", id)
+
     let customerDetails = await models.customer.findOne({
       where: { id, isActive: true },
     });
@@ -23,11 +24,23 @@ exports.getCustomerPassbookDetails = async (req, res) => {
     let availableBalance = await models.digiGoldCustomerBalance.findOne({
       where: { customerId: id, isActive: true },
     });
-    
+    let currentGoldBalance =  0 ;
+    let currentSilverBalance =  0;
+    let sellableGoldBalance = 0;
+    let sellableSilverBalance = 0;
+
+    if(availableBalance){
+      currentGoldBalance = availableBalance.currentGoldBalance ? availableBalance.currentGoldBalance : 0 ;
+      currentSilverBalance = availableBalance.currentSilverBalance ? availableBalance.currentSilverBalance : 0;
+      sellableGoldBalance = availableBalance.sellableGoldBalance ? availableBalance.sellableGoldBalance : 0;
+      sellableSilverBalance = availableBalance.sellableSilverBalance ? availableBalance.sellableSilverBalance: 0;
+    }
+    // const metalType = [];
+    // metalType.push(currentGoldBalance,currentSilverBalance,sellableGoldBalance,sellableSilverBalance)
+    console.log("availablanavce", availableBalance)
     if (check.isEmpty(customerDetails)) {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     };
-
 
     const customerUniqueId = customerDetails.customerUniqueId;
     const merchantData = await getMerchantData();
@@ -40,7 +53,11 @@ exports.getCustomerPassbookDetails = async (req, res) => {
         'Authorization': `Bearer ${merchantData.accessToken}`,
       },
     });
-    return res.status(200).json(result.data);
+    // const resultData = result.data;
+    result.data.result.data.sellableGoldBalance = sellableGoldBalance;
+    result.data.result.data.sellableSilverBalance = sellableSilverBalance;
+
+    return res.status(200).json( result.data );
   } catch (err) {
     console.log(err);
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
@@ -157,6 +174,7 @@ exports.updateCustomerDetails = async (req, res) => {
     });
     return res.status(200).json(result.data);
   } catch (err) {
+    console.log(err);
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
     if (err.response) {
