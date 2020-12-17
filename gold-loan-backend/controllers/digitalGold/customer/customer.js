@@ -24,16 +24,16 @@ exports.getCustomerPassbookDetails = async (req, res) => {
     let availableBalance = await models.digiGoldCustomerBalance.findOne({
       where: { customerId: id, isActive: true },
     });
-    let currentGoldBalance =  0 ;
-    let currentSilverBalance =  0;
+    let currentGoldBalance = 0;
+    let currentSilverBalance = 0;
     let sellableGoldBalance = 0;
     let sellableSilverBalance = 0;
 
-    if(availableBalance){
-      currentGoldBalance = availableBalance.currentGoldBalance ? availableBalance.currentGoldBalance : 0 ;
+    if (availableBalance) {
+      currentGoldBalance = availableBalance.currentGoldBalance ? availableBalance.currentGoldBalance : 0;
       currentSilverBalance = availableBalance.currentSilverBalance ? availableBalance.currentSilverBalance : 0;
       sellableGoldBalance = availableBalance.sellableGoldBalance ? availableBalance.sellableGoldBalance : 0;
-      sellableSilverBalance = availableBalance.sellableSilverBalance ? availableBalance.sellableSilverBalance: 0;
+      sellableSilverBalance = availableBalance.sellableSilverBalance ? availableBalance.sellableSilverBalance : 0;
     }
     // const metalType = [];
     // metalType.push(currentGoldBalance,currentSilverBalance,sellableGoldBalance,sellableSilverBalance)
@@ -57,7 +57,7 @@ exports.getCustomerPassbookDetails = async (req, res) => {
     result.data.result.data.sellableGoldBalance = sellableGoldBalance;
     result.data.result.data.sellableSilverBalance = sellableSilverBalance;
 
-    return res.status(200).json( result.data );
+    return res.status(200).json(result.data);
   } catch (err) {
     console.log(err);
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
@@ -91,10 +91,15 @@ exports.getCustomerDetails = async (req, res) => {
         'Authorization': `Bearer ${merchantData.accessToken}`,
       },
     });
+    let cityId = await getCustomerCityById(null, result.data.result.data.userCityId)
+    let stateId = await getCustomerStateById(null, result.data.result.data.userStateId)
+
     const name = result.data.result.data.userName.split(' ');
     result.data.result.data.firstName = name[0];
     result.data.result.data.lastName = name[1];
     result.data.result.data.mobileNumber = customerDetails.mobileNumber;
+    result.data.result.data.stateId = stateId
+    result.data.result.data.cityId = cityId
     return res.status(200).json(result.data);
   } catch (err) {
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
@@ -119,9 +124,9 @@ exports.updateCustomerDetails = async (req, res) => {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     }
 
-    let city = await getCustomerCityById(cityId);
-    let state = await getCustomerStateById(stateId);
-  
+    let city = await getCustomerCityById(cityId, null);
+    let state = await getCustomerStateById(stateId, null);
+
     const customerUniqueId = customerDetails.customerUniqueId;
     const merchantData = await getMerchantData();
     const data = qs.stringify({
@@ -129,7 +134,7 @@ exports.updateCustomerDetails = async (req, res) => {
       'emailId': email,
       'userName': firstName + " " + lastName,
       'userAddress': address,
-       'userCity': city.cityUniqueCode,
+      'userCity': city.cityUniqueCode,
       // 'userState': stateId,
       'userState': state.stateUniqueCode,
       'userPincode': pinCode,
@@ -191,8 +196,8 @@ exports.createCustomerInAugmontDb = async (req, res) => {
     const merchantData = await getMerchantData();
 
     const customer = await models.customer.findOne({ where: { id, isActive: true } });
-    let state = await getCustomerStateById(stateId);
-    let city = await getCustomerCityById(cityId);
+    let state = await getCustomerStateById(stateId, null);
+    let city = await getCustomerCityById(cityId, null);
     let customerUniqueId;
     await sequelize.transaction(async (t) => {
       if (!customer.customerUniqueId) {
