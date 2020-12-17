@@ -81,109 +81,105 @@ exports.makePayment = async (req, res) => {
 }
 
 exports.addAmountWallet = async (req, res) => {
-    try {
-        const { razorpay_order_id, razorpay_payment_id, razorpay_signature, transactionUniqueId } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, transactionUniqueId } = req.body;
 
-        let walletTransactionDetails;
-        if (razorpay_order_id && razorpay_payment_id && razorpay_signature) {
+    let walletTransactionDetails;
+    if (razorpay_order_id && razorpay_payment_id && razorpay_signature) {
 
-            let tempWalletTransaction = await models.walletTransactionTempDetails.getWalletTempTransactionDetails(razorpay_order_id);
+        let tempWalletTransaction = await models.walletTransactionTempDetails.getWalletTempTransactionDetails(razorpay_order_id);
 
-            let tempWalletDetail = await models.walletTempDetails.getTempWalletData(tempWalletTransaction.walletTempId);
+        let tempWalletDetail = await models.walletTempDetails.getTempWalletData(tempWalletTransaction.walletTempId);
 
-            // if(tempWalletTransaction.isOrderPlaced == true){
-            //     return res.status(400).json({ message: "Order id already placed for this order ID" });
-            // }
-            let customer = await models.customer.findOne({ where: { id: tempWalletTransaction.customerId } });
+        // if(tempWalletTransaction.isOrderPlaced == true){
+        //     return res.status(400).json({ message: "Order id already placed for this order ID" });
+        // }
+        let customer = await models.customer.findOne({ where: { id: tempWalletTransaction.customerId } });
 
-            const razorPay = await getRazorPayDetails();
-            const generated_signature = crypto
-                .createHmac(
-                    "SHA256",
-                    razorPay.razorPayConfig.key_secret
-                )
-                .update(razorpay_order_id + "|" + razorpay_payment_id)
-                .digest("hex");
-            if (generated_signature == razorpay_signature) {
-                signatureVerification = true
-            }
-            if (signatureVerification == false) {
-                return res.status(422).json({ message: "Payment verification failed" });
-            }
-
-            await models.axios({
-                method: 'PATCH',
-                url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
-                auth: {
-                    username: razorPay.razorPayConfig.key_id,
-                    password: razorPay.razorPayConfig.key_secret
-                },
-                data: qs.stringify({ notes: { transactionId: tempWalletTransaction.transactionUniqueId, uniqueId: customer.customerUniqueId } })
-            })
-            let customerUpdatedBalance
-            if (customer.currentWalletBalance) {
-                customerUpdatedBalance = Number(customer.currentWalletBalance) + Number(tempWalletTransaction.transactionAmount);
-            } else {
-                customerUpdatedBalance = Number(tempWalletTransaction.transactionAmount);
-            }
-            let WalletDetail;
-            await sequelize.transaction(async (t) => {
-                await models.customer.update({ currentWalletBalance: customerUpdatedBalance }, { where: { id: customer.id } })
-
-                WalletDetail = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "add amount", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate }, { transaction: t });
-
-                walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: WalletDetail.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "completed", runningBalance: customerUpdatedBalance, freeBalance: customer.walletFreeBalance }, { transaction: t })
-
-                await models.walletTransactionTempDetails.update({ isOrderPlaced: true }, { where: { id: tempWalletTransaction.id }, transaction: t });
-
-            });
-            let orderData = {
-                amount: tempWalletTransaction.orderAmount,
-                metalType: tempWalletTransaction.metalType,
-                qtyAmtType: tempWalletTransaction.qtyAmtType,
-                quantity: tempWalletTransaction.quantity,
-                type: tempWalletTransaction.type,
-                redirectOn: process.env.DIGITALGOLDAPI + tempWalletTransaction.redirectOn
-            }
-            if(tempWalletTransaction.type == "buy"){
-                res.cookie(`orderData`, `${JSON.stringify(orderData)}`);
-            }
-            if(tempWalletTransaction.type == "deposit"){
-                res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
-                // res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
-            }else{
-                res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}`);
-                // res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}`);
-            }
-
-            // return res.status(200).json(walletTransactionDetails);
-
-        } else {
-            if (!transactionUniqueId) {
-                return res.status(404).json({ message: "Transaction Unique Id is required" });
-            }
-            let tempWalletTransaction = await models.walletTransactionTempDetails.findOne({ where: { transactionUniqueId: transactionUniqueId } });
-
-            if (!tempWalletTransaction) {
-                return res.status(404).json({ message: "Order Does Not Exists" });
-            }
-            if (tempWalletTransaction.isOrderPlaced == true) {
-                return res.status(422).json({ message: "Order id already placed for this order ID" });
-            }
-
-            let customer = await models.customer.findOne({ where: { id: tempWalletTransaction.customerId } });
-
-            await sequelize.transaction(async (t) => {
-
-                walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, transactionUniqueId, bankTransactionUniqueId: tempWalletTransaction.bankTransactionUniqueId, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, chequeNumber: tempWalletTransaction.chequeNumber, bankName: tempWalletTransaction.bankName, branchName: tempWalletTransaction.branchName, depositStatus: "pending", runningBalance: customer.currentWalletBalance, freeBalance: customer.walletFreeBalance }, { transaction: t });
-
-                await models.tempRazorPayDetails.update({ isOrderPlaced: true }, { where: { id: tempWalletTransaction.id }, transaction: t });
-            })
-
-            return res.status(200).json({message: "Payment request created Successfully",walletTransactionDetails});
+        const razorPay = await getRazorPayDetails();
+        const generated_signature = crypto
+            .createHmac(
+                "SHA256",
+                razorPay.razorPayConfig.key_secret
+            )
+            .update(razorpay_order_id + "|" + razorpay_payment_id)
+            .digest("hex");
+        if (generated_signature == razorpay_signature) {
+            signatureVerification = true
         }
-    } catch (err) {
-        console.log(err);
+        if (signatureVerification == false) {
+            return res.status(422).json({ message: "Payment verification failed" });
+        }
+
+        await models.axios({
+            method: 'PATCH',
+            url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
+            auth: {
+                username: razorPay.razorPayConfig.key_id,
+                password: razorPay.razorPayConfig.key_secret
+            },
+            data: qs.stringify({ notes: { transactionId: tempWalletTransaction.transactionUniqueId, uniqueId: customer.customerUniqueId } })
+        })
+        let customerUpdatedBalance
+        if (customer.currentWalletBalance) {
+            customerUpdatedBalance = Number(customer.currentWalletBalance) + Number(tempWalletTransaction.transactionAmount);
+        } else {
+            customerUpdatedBalance = Number(tempWalletTransaction.transactionAmount);
+        }
+        let WalletDetail;
+        await sequelize.transaction(async (t) => {
+            await models.customer.update({ currentWalletBalance: customerUpdatedBalance }, { where: { id: customer.id } })
+
+            WalletDetail = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "add amount", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate }, { transaction: t });
+
+            walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: WalletDetail.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "completed", runningBalance: customerUpdatedBalance, freeBalance: customer.walletFreeBalance }, { transaction: t })
+
+            await models.walletTransactionTempDetails.update({ isOrderPlaced: true }, { where: { id: tempWalletTransaction.id }, transaction: t });
+
+        });
+        let orderData = {
+            amount: tempWalletTransaction.orderAmount,
+            metalType: tempWalletTransaction.metalType,
+            qtyAmtType: tempWalletTransaction.qtyAmtType,
+            quantity: tempWalletTransaction.quantity,
+            type: tempWalletTransaction.type,
+            redirectOn: process.env.DIGITALGOLDAPI + tempWalletTransaction.redirectOn
+        }
+        if (tempWalletTransaction.type == "buy") {
+            res.cookie(`orderData`, `${JSON.stringify(orderData)}`);
+        }
+        if (tempWalletTransaction.type == "deposit") {
+            res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
+            // res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
+        } else {
+            res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}`);
+            // res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}`);
+        }
+
+        // return res.status(200).json(walletTransactionDetails);
+
+    } else {
+        if (!transactionUniqueId) {
+            return res.status(404).json({ message: "Transaction Unique Id is required" });
+        }
+        let tempWalletTransaction = await models.walletTransactionTempDetails.findOne({ where: { transactionUniqueId: transactionUniqueId } });
+
+        if (!tempWalletTransaction) {
+            return res.status(404).json({ message: "Order Does Not Exists" });
+        }
+        if (tempWalletTransaction.isOrderPlaced == true) {
+            return res.status(422).json({ message: "Order id already placed for this order ID" });
+        }
+
+        let customer = await models.customer.findOne({ where: { id: tempWalletTransaction.customerId } });
+
+        await sequelize.transaction(async (t) => {
+
+            walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, transactionUniqueId, bankTransactionUniqueId: tempWalletTransaction.bankTransactionUniqueId, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, chequeNumber: tempWalletTransaction.chequeNumber, bankName: tempWalletTransaction.bankName, branchName: tempWalletTransaction.branchName, depositStatus: "pending", runningBalance: customer.currentWalletBalance, freeBalance: customer.walletFreeBalance }, { transaction: t });
+
+            await models.tempRazorPayDetails.update({ isOrderPlaced: true }, { where: { id: tempWalletTransaction.id }, transaction: t });
+        })
+
+        return res.status(200).json({ message: "Payment request created Successfully", walletTransactionDetails });
     }
 
 }

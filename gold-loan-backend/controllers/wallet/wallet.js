@@ -22,155 +22,148 @@ const walletService = require('../../service/wallet');
 
 
 exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
-    try {
-        const { search, offset, pageSize } = paginationWithFromTo(
-            req.query.search,
-            req.query.from,
-            req.query.to
-        );
-        let { paymentFor } = req.query;
-        let orderType;
-        if (paymentFor) {
-            orderType = await models.digiGoldOrderType.findOne({ where: { orderType: paymentFor } })
-        }else{
+    const { search, offset, pageSize } = paginationWithFromTo(
+        req.query.search,
+        req.query.from,
+        req.query.to
+    );
+    let { paymentFor } = req.query;
+    let orderType;
+    if (paymentFor) {
+        orderType = await models.digiGoldOrderType.findOne({ where: { orderType: paymentFor } })
+    } else {
         return res.status(400).json({ message: "paymentFor is required" });
 
-        }
-        let query = {};
-        if (orderType) {
-            query.orderTypeId = orderType.id
-        }
+    }
+    let query = {};
+    if (orderType) {
+        query.orderTypeId = orderType.id
+    }
 
-        let searchQuery = {
-            [Op.and]: [query, {
-                [Op.or]: {
-                    depositStatus: sequelize.where(
-                        sequelize.cast(sequelize.col("walletTransactionDetails.deposit_status"), "varchar"),
-                        {
-                            [Op.iLike]: search + "%",
-                        }
-                    ),
-                    applicationDate: sequelize.where(
-                        sequelize.cast(sequelize.col("walletTransactionDetails.deposit_date"), "varchar"),
-                        {
-                            [Op.iLike]: search + "%",
-                        }
-                    ),
-                    // "$walletTransactionDetails.payment_for$": { [Op.iLike]: search + '%' },
-                    "$walletTransactionDetails.bank_name$": { [Op.iLike]: search + '%' },
-                    "$walletTransactionDetails.cheque_number$": { [Op.iLike]: search + '%' },
-                    "$walletTransactionDetails.branch_name$": { [Op.iLike]: search + '%' },
-                },
-            }],
-        };
-
-        let includeArray = [
-            {
-                model: models.customer,
-                as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'currentWalletBalance', 'walletFreeBalance']
-            }
-        ]
-
-        let depositDetail = await models.walletTransactionDetails.findAll({
-
-            include: includeArray,
-            where: searchQuery,
-            offset: offset,
-            limit: pageSize,
-            subQuery: false,
-            order: [
-                ["updatedAt", "DESC"]
-            ],
-        });
-
-        let count = await models.walletTransactionDetails.findAll({
-            where: searchQuery,
-            order: [
-                ["updatedAt", "DESC"]
-            ],
-            include: includeArray
-
-        });
-
-        if (check.isEmpty(depositDetail)) {
-            return res.status(200).json({
-                depositDetail: [], count: 0
-            })
-        }
-        return res.status(200).json({ depositDetail: depositDetail, count: count.length });
-    } catch (err) {
-        console.log(err);
-
+    let searchQuery = {
+        [Op.and]: [query, {
+            [Op.or]: {
+                depositStatus: sequelize.where(
+                    sequelize.cast(sequelize.col("walletTransactionDetails.deposit_status"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
+                applicationDate: sequelize.where(
+                    sequelize.cast(sequelize.col("walletTransactionDetails.deposit_date"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
+                // "$walletTransactionDetails.payment_for$": { [Op.iLike]: search + '%' },
+                "$walletTransactionDetails.bank_name$": { [Op.iLike]: search + '%' },
+                "$walletTransactionDetails.cheque_number$": { [Op.iLike]: search + '%' },
+                "$walletTransactionDetails.branch_name$": { [Op.iLike]: search + '%' },
+            },
+        }],
     };
+
+    let includeArray = [
+        {
+            model: models.customer,
+            as: 'customer',
+            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'currentWalletBalance', 'walletFreeBalance']
+        }
+    ]
+
+    let depositDetail = await models.walletTransactionDetails.findAll({
+
+        include: includeArray,
+        where: searchQuery,
+        offset: offset,
+        limit: pageSize,
+        subQuery: false,
+        order: [
+            ["updatedAt", "DESC"]
+        ],
+    });
+
+    let count = await models.walletTransactionDetails.findAll({
+        where: searchQuery,
+        order: [
+            ["updatedAt", "DESC"]
+        ],
+        include: includeArray
+
+    });
+
+    if (check.isEmpty(depositDetail)) {
+        return res.status(200).json({
+            depositDetail: [], count: 0
+        })
+    }
+    return res.status(200).json({ depositDetail: depositDetail, count: count.length });
+
 }
 
 exports.updateDepositWithdrawStatus = async (req, res) => {
-    try {
 
-        let depositWithdrawId = req.params.depositWithdrawId;
-        let { depositStatus } = req.body
-        let customerUpdatedBalance;
+    let depositWithdrawId = req.params.depositWithdrawId;
+    let { depositStatus } = req.body
+    let customerUpdatedBalance;
 
-        let transactionData = await models.walletTransactionDetails.findOne({ where: { id: depositWithdrawId } });
-        if (!transactionData) {
-            return res.status(404).json({ message: 'Data not found' });
-        }
+    let transactionData = await models.walletTransactionDetails.findOne({ where: { id: depositWithdrawId } });
+    if (!transactionData) {
+        return res.status(404).json({ message: 'Data not found' });
+    }
 
-        if (transactionData.depositStatus == "completed" || transactionData.depositStatus == "rejected") {
-            return res.status(400).json({ message: 'You can not change the status for this transaction' });
-        }
-        let customer = await models.customer.findOne({where:{id: transactionData.customerId, isActive: true}});
+    if (transactionData.depositStatus == "completed" || transactionData.depositStatus == "rejected") {
+        return res.status(400).json({ message: 'You can not change the status for this transaction' });
+    }
+    let customer = await models.customer.findOne({ where: { id: transactionData.customerId, isActive: true } });
 
-        let date = moment()
+    let date = moment()
 
-        if (transactionData.orderTypeId == 4) {
+    if (transactionData.orderTypeId == 4) {
 
-            await sequelize.transaction(async (t) => {
-                if(depositStatus = "completed"){
-                    if (customer.currentWalletBalance) {
-                        customerUpdatedBalance = Number(customer.currentWalletBalance) + Number(transactionData.transactionAmount);
-                    } else {
-                        customerUpdatedBalance = Number(transactionData.transactionAmount);
-                    }
-                    await models.customer.update({ currentWalletBalance: customerUpdatedBalance }, { where: { id: customer.id }, transaction: t });
-    
-                    let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "credit", description: "add amount", productTypeId: 4, transactionDate: date }, { transaction: t });
-    
-                    await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
-                }else{
-
-                    await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
-                    
+        await sequelize.transaction(async (t) => {
+            if (depositStatus == "completed") {
+                if (customer.currentWalletBalance) {
+                    customerUpdatedBalance = Number(customer.currentWalletBalance) + Number(transactionData.transactionAmount);
+                } else {
+                    customerUpdatedBalance = Number(transactionData.transactionAmount);
                 }
-                
-            });
-            return res.status(200).json({ message: "Success" });
-        } else if (transactionData.orderTypeId == 5) {
-            if (customer.walletFreeBalance < transactionData.transactionAmount) {
-                return res.status(400).json({ message: 'You have insufficient free wallet balance.' });
+                await models.customer.update({ currentWalletBalance: customerUpdatedBalance }, { where: { id: customer.id }, transaction: t });
+
+                let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "credit", description: "add amount", productTypeId: 4, transactionDate: date }, { transaction: t });
+
+                await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
+            } else {
+
+                await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date }, { where: { id: transactionData.id }, transaction: t });
+
             }
 
-            await sequelize.transaction(async (t) => {
-
-                if(depositStatus = "completed"){
-                    customerUpdatedFreeBalance = Number(customer.walletFreeBalance) + Number(transactionData.transactionAmount);
-
-                    await models.customer.update({ walletFreeBalance: customerUpdatedBalance }, { where: { id: customer.id }, transaction: t });
-    
-                    let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "debit", description: "withdraw amount", productTypeId: 4, transactionDate: date }, { transaction: t });
-    
-                    await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
-                }else{
-
-                    await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
-                }
-            });
-            return res.status(200).json({ message: "Success" });
+        });
+        return res.status(200).json({ message: "Success" });
+    } else if (transactionData.orderTypeId == 5) {
+        if (customer.walletFreeBalance < transactionData.transactionAmount) {
+            return res.status(400).json({ message: 'You have insufficient free wallet balance.' });
         }
-    } catch (err) {
-        console.log(err);
+
+        await sequelize.transaction(async (t) => {
+
+            if (depositStatus == "completed") {
+                customerUpdatedFreeBalance = Number(customer.walletFreeBalance) + Number(transactionData.transactionAmount);
+
+                await models.customer.update({ walletFreeBalance: customerUpdatedBalance }, { where: { id: customer.id }, transaction: t });
+
+                let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "debit", description: "withdraw amount", productTypeId: 4, transactionDate: date }, { transaction: t });
+
+                await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
+            } else {
+
+                await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
+            }
+        });
+        return res.status(200).json({ message: "Success" });
     }
+
 }
 
 exports.getWalletDetailByIdAdmin = async (req, res) => {
@@ -189,7 +182,7 @@ exports.getWalletDetailByIdAdmin = async (req, res) => {
 
 exports.getDepositReuest = async (req, res) => {
 
-    
+
 
     const { startDate, endDate } = req.query;
     let endDateNew = moment(moment(endDate).utcOffset("+05:30").endOf('day'));
@@ -220,7 +213,7 @@ exports.getDepositReuest = async (req, res) => {
 
     for (const order of depositData) {
 
-     
+
 
         let depositReportData = {};
         depositReportData["Customer Id"] = order.customer.customerUniqueId;
@@ -248,28 +241,28 @@ exports.getDepositReuest = async (req, res) => {
     }
 
 
-// let depositDetail = await models.walletTransactionDetails.findAll({
-//     where: { orderTypeId:4 ,depositStatus:'completed'},
-//     include: [{
-//         model: models.walletDetails,
-//         as: "walletDetails",
-//         attributes: ['customerId', 'amount', 'payment_direction','description','productTypeId','transactionDate']
-//     }]
-// })
+    // let depositDetail = await models.walletTransactionDetails.findAll({
+    //     where: { orderTypeId:4 ,depositStatus:'completed'},
+    //     include: [{
+    //         model: models.walletDetails,
+    //         as: "walletDetails",
+    //         attributes: ['customerId', 'amount', 'payment_direction','description','productTypeId','transactionDate']
+    //     }]
+    // })
 
-// if (check.isEmpty(depositDetail) ){
-//     return res.status(404).json({ message: 'Data not found' });
-// } else {
-//     return res.status(200).json({ depositDetail });
-// }
+    // if (check.isEmpty(depositDetail) ){
+    //     return res.status(404).json({ message: 'Data not found' });
+    // } else {
+    //     return res.status(200).json({ depositDetail });
+    // }
 
 
 }
 
 exports.getwithdrawDetail = async (req, res) => {
-    
+
     const { startDate, endDate } = req.query;
-  
+
     let query = {}
 
     let endDateNew = moment(moment(endDate).utcOffset("+05:30").endOf('day'));
@@ -293,12 +286,12 @@ exports.getwithdrawDetail = async (req, res) => {
             attributes: ['firstName', 'lastName', 'customerUniqueId', 'mobileNumber']
         }]
     });
-  
+
     let finalData = [];
 
     for (const order of withdrawData) {
 
-     
+
 
         let withdrawReportData = {};
         withdrawReportData["Customer Id"] = order.customer.customerUniqueId;
@@ -324,23 +317,23 @@ exports.getwithdrawDetail = async (req, res) => {
         return res.status(200).json({ message: "Data Not Found" });
     }
 
-// }
-//    return
+    // }
+    //    return
 
-// let withdrawDetailData = await models.walletTransactionDetails.findAll({
-//     where: { orderTypeId:5 ,depositStatus:'completed'},
-//     include: [{
-//         model: models.walletDetails,
-//         as: "walletDetails",
-//         attributes: ['customerId', 'amount', 'payment_direction','description','productTypeId','transactionDate']
-//     }]
-// })
+    // let withdrawDetailData = await models.walletTransactionDetails.findAll({
+    //     where: { orderTypeId:5 ,depositStatus:'completed'},
+    //     include: [{
+    //         model: models.walletDetails,
+    //         as: "walletDetails",
+    //         attributes: ['customerId', 'amount', 'payment_direction','description','productTypeId','transactionDate']
+    //     }]
+    // })
 
-// if (check.isEmpty(withdrawDetailData) ){
-//     return res.status(404).json({ message: 'Data not found' });
-// } else {
-//     return res.status(200).json({ withdrawDetailData });
-// }
+    // if (check.isEmpty(withdrawDetailData) ){
+    //     return res.status(404).json({ message: 'Data not found' });
+    // } else {
+    //     return res.status(200).json({ withdrawDetailData });
+    // }
 
 
 }
