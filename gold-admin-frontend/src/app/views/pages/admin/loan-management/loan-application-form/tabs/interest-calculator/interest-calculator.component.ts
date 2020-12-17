@@ -293,6 +293,8 @@ export class InterestCalculatorComponent implements OnInit {
     if (!this.transferLoan)
       this.controls.processingCharge.reset()
     this.selectedScheme = ''
+    
+
   }
 
   partnerReset() {

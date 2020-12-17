@@ -7,7 +7,7 @@
                         <label class="mandatory">Partner Name</label>
                     </div>
                     <div class="col-7">
-                        <select formControlName="partnerId" class="form-control" (change)="reset();returnScheme()"
+                        <select formControlName="partnerId" class="form-control" (change)="controls.schemeId.reset();reset();returnScheme()"
                             [class.isError]="controls.partnerId.touched && controls.partnerId.invalid">
                             <option value="null" [selected]="true" [disabled]="true">Select Partner</option>
                             <option value="" selected disabled *ngIf="partnerList.length == 0">No matching Scheme found
