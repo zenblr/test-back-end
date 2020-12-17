@@ -279,7 +279,7 @@ exports.getAllDepositDetails = async (req, res) => {
             depositDetail: [], count: 0
         })
     }
-    return res.status(200).json({ depositDetail: depositDetail, count: count });
+    return res.status(200).json({ depositDetail: depositDetail, count: count.length });
 
 }
 
@@ -300,9 +300,9 @@ exports.getTransactionDetails = async (req, res) => {
 
     const id = req.userData.id;
     const { orderTypeId } = req.query;
-    if (!orderTypeId) {
-        return res.status(404).json({ message: 'orderTypeId is required' });
-    }
+    // if (!orderTypeId) {
+    //     return res.status(404).json({ message: 'orderTypeId is required' });
+    // }
     let orderTypeData = await models.digiGoldOrderType.findOne({ where: { id: orderTypeId } })
 
     if (!orderTypeData) {
@@ -372,7 +372,7 @@ exports.getTransactionDetails = async (req, res) => {
 
         })
     }
-    return res.status(200).json(transactionDetails);
+    return res.status(200).json({transactionDetails, count: count.length});
 }
 
 exports.getWalletBalance = async (req, res) => {

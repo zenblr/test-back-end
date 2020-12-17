@@ -149,9 +149,9 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
         await sequelize.transaction(async (t) => {
 
             if (depositStatus == "completed") {
-                customerUpdatedFreeBalance = Number(customer.walletFreeBalance) + Number(transactionData.transactionAmount);
+                customerUpdatedFreeBalance = Number(customer.walletFreeBalance) - Number(transactionData.transactionAmount);
 
-                await models.customer.update({ walletFreeBalance: customerUpdatedBalance }, { where: { id: customer.id }, transaction: t });
+                await models.customer.update({ walletFreeBalance: customerUpdatedFreeBalance }, { where: { id: customer.id }, transaction: t });
 
                 let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "debit", description: "withdraw amount", productTypeId: 4, transactionDate: date }, { transaction: t });
 
@@ -181,8 +181,6 @@ exports.getWalletDetailByIdAdmin = async (req, res) => {
 
 
 exports.getDepositReuest = async (req, res) => {
-
-
 
     const { startDate, endDate } = req.query;
     let endDateNew = moment(moment(endDate).utcOffset("+05:30").endOf('day'));
