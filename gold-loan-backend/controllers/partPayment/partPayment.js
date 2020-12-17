@@ -562,7 +562,7 @@ exports.partPayment = async (req, res, next) => {
                         loanStartDate = moment(lastPaidEmi.emiDueDate);
                         noOfDays = currentDate.diff(loanStartDate, 'days');
                     }
-
+                    noOfDays += 1;
                     //scenario 2 slab changed
                     let stepUpSlab = await getStepUpslab(loan.id, noOfDays);
                     let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, stepUpSlab.interestRate, loan.selectedSlab, loan.masterLoan.tenure);
@@ -1205,7 +1205,7 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
                     loanStartDate = moment(lastPaidEmi.emiDueDate);
                     noOfDays = currentDate.diff(loanStartDate, 'days');
                 }
-
+                noOfDays += 1;
                 //scenario 2 slab changed
                 let stepUpSlab = await getStepUpslab(loan.id, noOfDays);
                 let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, stepUpSlab.interestRate, loan.selectedSlab, loan.masterLoan.tenure);

@@ -1573,7 +1573,9 @@ exports.loanOpsTeamRating = async (req, res, next) => {
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: OPERATIONAL_TEAM_RATING, modifiedBy }, { transaction: t });
 
         })
-
+        if (loanMaster.isNewLoanFromPartRelease == true) {
+            await intrestCalculationForSelectedLoan(moment(),masterLoanId);
+        }
         return res.status(200).json({ message: 'Success' })
     }
 }
@@ -1881,6 +1883,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
             await sendDisbursalMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
 
         })
+        await intrestCalculationForSelectedLoan(moment(),masterLoanId);
         return res.status(200).json({ message: 'Your loan amount has been disbursed successfully' });
     } else {
         return res.status(404).json({ message: 'Given loan id is not proper' })
