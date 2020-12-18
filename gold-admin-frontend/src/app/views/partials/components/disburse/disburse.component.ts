@@ -197,7 +197,7 @@ export class DisburseComponent implements OnInit {
           this.disburseForm.controls.unsecuredTransactionId.disable()
           this.disburseForm.controls.securedTransactionId.disable()
           this.disburseForm.controls.loanTransferExtraAmount.disable()
-          if (res.data.loanTransferExtraAmount) {
+          if (Number(res.data.loanTransferExtraAmount) > 0) {
             this.controls.otherAmountTransactionId.setValidators(Validators.required)
             this.controls.otherAmountTransactionId.updateValueAndValidity()
           }
