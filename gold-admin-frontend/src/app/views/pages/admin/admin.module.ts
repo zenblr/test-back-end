@@ -47,6 +47,10 @@ import { AdminComponent } from './admin.component';
 						loadChildren: () => import('./scrap-management/scrap-management.module').then(m => m.ScrapManagementModule)
 					},
 					{
+						path: 'digi-gold',
+						loadChildren: () => import('./digi-gold/digi-gold.module').then(m => m.DigiGoldModule)
+					},
+					{
 						path: 'upload-data',
 						loadChildren: () => import('./upload-data/upload-data.module').then(m => m.UploadDataModule),
 					},

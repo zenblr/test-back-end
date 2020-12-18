@@ -1,0 +1,115 @@
+<kt-toastr #toastr></kt-toastr>
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="row justify-content-center scroll kt-padding-t-10 kt-padding-b-10">
+            <div class="col-6">
+                <form [formGroup]="withdrawForm">
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Customer Id</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="customerId" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Customer Full Name</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="customerFullName" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Mobile Number </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="mobileNumber" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Withdrawal Transaction ID</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="transactionUniqueId" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Withdrawal Initiated Date</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="withdrawalInitiatedDate" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Withdrawal Amount</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="withdrawalAmount" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Bank Name</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="bankName" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Branch Name </label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" formControlName="branchName" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Account Number</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" formControlName="accountNumber" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">IFSC Code</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" formControlName="ifscCode" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Withdrawal Status</label>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control" formControlName="withdrawalStatus"
+                                [class.isError]="controls.withdrawalStatus.touched && controls.withdrawalStatus.invalid">
+                                <option value="" [selected]="true" [disabled]="true">Select Status</option>
+                                <option [value]="status.value" *ngFor="let status of withdrawalStatus">
+                                    {{status.name | titlecase}}</option>
+                            </select>
+                            <div *ngIf="controls.withdrawalStatus.touched && controls.withdrawalStatus.invalid">
+                                <mat-error
+                                    *ngIf="controls.withdrawalStatus.touched && controls.withdrawalStatus.errors?.required">
+                                    Field is required</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="withdrawInfo?.transactionData?.withdrawalStatus == 'pending'"
+                        class="row kt-margin-t-15">
+                        <div class="col-12 text-right">
+                            <kt-button [value]="'Update'" [type]="'submit'" (click)="submit()"></kt-button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

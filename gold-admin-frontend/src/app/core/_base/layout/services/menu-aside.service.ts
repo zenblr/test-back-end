@@ -55,6 +55,8 @@ export class MenuAsideService {
 						break;
 					case 'scrap-management': aside = 'aside.scrapMgmtItems';
 						break;
+					case 'digi-gold': aside = 'aside.digiGoldItems';
+						break;
 				}
 				break;
 			case 'broker': aside = 'aside.brokerItems';

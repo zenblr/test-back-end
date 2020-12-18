@@ -32,6 +32,8 @@ import {
 	DepositDetailsService,
 	EmiDetailsService,
 } from "../../../../core/emi-management/order-management";
+import { DepositRequestsService } from '../../../../core/wallet/deposit-requests/deposit-requests.service';
+import { WithdrawalRequestsService } from '../../../../core/wallet/withdrawal-requests/withdrawal-requests.service';
 import { MonthlyService } from "../../../../core/repayment/services/monthly.service";
 import { CustomerDetailsService } from "../../../../core/emi-management/customer-details";
 import { LeadService } from "../../../../core/lead-management/services/lead.service";
@@ -57,6 +59,9 @@ import { ScrapCustomerManagementService } from '../../../../core/scrap-managemen
 import { PartnerBranchUserService } from '../../../../core/user-management/partner-branch-user/services/partner-branch-user.service'
 import { DepositService } from "../../../../core/funds-approvals/deposit/services/deposit.service";
 import { CronListService } from '../../../../core/cron-list/services/cron-list.service';
+import { SipInvestmentTenureService } from '../../../../core/sip-management';
+import { SipCycleDateService } from '../../../../core/sip-management/sip-cycle-date';
+import { SipTradesService, CreateSipService, SipApplicationService } from '../../../../core/sip-management';
 
 @Component({
 	selector: "kt-topbar",
@@ -131,6 +136,8 @@ export class TopbarComponent implements OnInit {
 		private logisticPartnerService: LogisticPartnerService,
 		private karatDetailsService: KaratDetailsService,
 		private productService: ProductService,
+		private depositRequestsService: DepositRequestsService,
+		private withdrawalRequestsService: WithdrawalRequestsService,
 		private orderDetailsService: OrderDetailsService,
 		private cancelOrderDetailsService: CancelOrderDetailsService,
 		private depositDetailsService: DepositDetailsService,
@@ -163,7 +170,13 @@ export class TopbarComponent implements OnInit {
 		private scrapCustomerManagementService: ScrapCustomerManagementService,
 		private partnerBranchUserservice: PartnerBranchUserService,
 		private depositService: DepositService,
-		private cronService: CronListService
+		private sipInvestmentTenureService: SipInvestmentTenureService,
+		private cronService: CronListService,
+		private sipCycleDateService: SipCycleDateService,
+		private sipTradesService: SipTradesService,
+		private createSipService: CreateSipService,
+		private sipApplicationService: SipApplicationService
+
 	) {
 
 		this.router.events.subscribe(val => {
@@ -469,6 +482,31 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader();
 			this.permissionType = "addLeadSource";
 		}
+		if (this.path == "sip-investment-tenure") {
+			this.value1 = "Add Investment Tenure";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "addLeadSource";
+		}
+		if (this.path == "sip-application") {
+			this.value1 = "Create SIP";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "addLeadSource";
+		}
+		if (this.path == "sip-cycle-date") {
+			this.value1 = "Add Cycle Date";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "addLeadSource";
+		}
+	
+		if (this.path == "sip-trades") {
+			this.value1 = "Add Trades";
+			this.showInput = true;
+			this.dataSourceHeader();
+			// this.permissionType = "addLeadSource";
+		}
 		if (this.path == "roles") {
 			this.showInput = true;
 			this.rightButton = true;
@@ -550,6 +588,36 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "admin-log") {
 			this.showInput = true;
 		}
+		if (this.path == "deposit-requests") {
+			this.showInput = true;
+			this.filterName = "depositRequests";
+			this.filterWidth = "630px";
+			this.listType = "tenure,orderStatus";
+			this.showfilter = true;
+			// this.showDropdown = true;
+			// this.dropdownTitle = "Generate";
+			// this.dropdownValue = [
+			// 	{ label: "Label", value: "label" },
+			// 	{ label: "Manifest", value: "mainfest" },
+			// 	{ label: "Deli Manifest", value: "deliMainfest" },
+			// 	{ label: "Uninsured Manifest", value: "uninsuredMainfest" },
+			// ]
+		}
+		if (this.path == "withdrawal-requests") {
+			this.showInput = true;
+			this.filterName = "withdrawalRequests";
+			this.filterWidth = "630px";
+			this.listType = "tenure,orderStatus";
+			this.showfilter = true;
+			// this.showDropdown = true;
+			// this.dropdownTitle = "Generate";
+			// this.dropdownValue = [
+			// 	{ label: "Label", value: "label" },
+			// 	{ label: "Manifest", value: "mainfest" },
+			// 	{ label: "Deli Manifest", value: "deliMainfest" },
+			// 	{ label: "Uninsured Manifest", value: "uninsuredMainfest" },
+			// ]
+		}
 		if (this.path == "order-details") {
 			this.showInput = true;
 			this.value1 = "Export";
@@ -603,6 +671,14 @@ export class TopbarComponent implements OnInit {
 			this.value1 = "";
 			this.type1 = "";
 		}
+		if (location.href.includes("edit-deposit-requests")) {
+			this.value5 = "Print Proforma";
+			this.type5 = "button";
+			this.value4 = "Contract";
+			this.type4 = "reset";
+			this.rightButton = true;
+			this.showBackButton = true;
+		}
 		if (location.href.includes("edit-order-details")) {
 			this.value5 = "Print Proforma";
 			this.type5 = "button";
@@ -646,6 +722,21 @@ export class TopbarComponent implements OnInit {
 			this.showBackButton = true;
 		}
 		if (location.href.includes("view-scrap/")) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes("admin/digi-gold/sip-management/create-sip")) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes("/admin/digi-gold/wallet/deposit-requests")) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes("/admin/digi-gold/wallet/withdrawal-requests")) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes("admin/digi-gold/wallet/deposit-requests/deposit-requests-edit")) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes("admin/digi-gold/wallet/withdrawal-requests/withdrawal-requests-edit")) {
 			this.showBackButton = true;
 		}
 		if (location.href.includes("packet-image-upload")) {
@@ -926,6 +1017,25 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'other-charges') {
 			this.otherChargesService.openModal.next(true);
 		}
+		// if (this.path == 'deposit-requests') {
+		// 	this.sipInvestmentTenureService.openModal.next(true)
+		// }
+		// if (this.path == 'withdrawal-requests') {
+		// 	this.sipInvestmentTenureService.openModal.next(true)
+		// }
+		if (this.path == 'sip-investment-tenure') {
+			this.sipInvestmentTenureService.openModal.next(true)
+		}
+		if (this.path == 'sip-cycle-date') {
+			this.sipCycleDateService.openModal.next(true)
+		}
+		if (this.path == 'sip-application') {
+			this.sipApplicationService.openModal.next(true)
+		}
+		if (this.path == 'sip-trades') {
+			this.sipTradesService.openModal.next(true)
+		}
+	
 		if (this.path == 'lead-source') {
 			this.leadSourceService.openModal.next(true)
 		}
@@ -1005,6 +1115,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "order-details") {
 			this.orderDetailsService.applyFilter.next(data);
+		}
+		if (this.path == "deposit-requests") {
+			this.depositRequestsService.applyFilter.next(data);
+		}
+		if (this.path == "withdrawal-requests") {
+			this.withdrawalRequestsService.applyFilter.next(data);
 		}
 		if (this.path == "emi-details") {
 			this.emiDetailsService.applyFilter.next(data);
