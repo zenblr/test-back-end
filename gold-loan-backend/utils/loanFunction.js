@@ -156,11 +156,47 @@ let getAllCustomerLoanId = async () => {
             }],
     });
     let customerLoanId = [];
-    console.log(customerLoanId)
     for (const masterLoanData of masterLona) {
         await masterLoanData.customerLoan.map((data) => { customerLoanId.push(data.id) });
     }
     return customerLoanId
+}
+
+let getAllOrnamentReleasedCustomerLoanId = async () => {
+    let masterLona = await models.customerLoanMaster.findAll({
+        order: [
+            [models.customerLoan, 'id', 'asc']
+        ],
+        where: {
+            isActive: true,
+            isLoanCompleted: true,
+            isOrnamentsReleased : true
+        },
+        attributes: ['id'],
+        include: [{
+                model: models.customerLoan,
+                as: 'customerLoan',
+                attributes: ['id']
+            }],
+    });
+    let customerLoanId = [];
+    for (const masterLoanData of masterLona) {
+        await masterLoanData.customerLoan.map((data) => { customerLoanId.push(data.id) });
+    }
+    return customerLoanId
+}
+
+let calculationDataForReleasedLoan = async () => {
+    let customerLoanId = await getAllOrnamentReleasedCustomerLoanId();
+    let loanInfo = [];
+    for (const id of customerLoanId) {
+        let info = await getAllDetailsOfCustomerLoan(id);
+        loanInfo.push(info);
+    }
+    let noOfDaysInYear = 360
+    let global = await models.globalSetting.findAll()
+    let { gracePeriodDays } = global[0]
+    return { noOfDaysInYear, gracePeriodDays, loanInfo };
 }
 
 let getAllDetailsOfCustomerLoan = async (customerLoanId) => {
@@ -170,7 +206,7 @@ let getAllDetailsOfCustomerLoan = async (customerLoanId) => {
             ['id', 'asc'],
             [models.customerLoanInterest, 'id', 'asc'],
         ],
-        attributes: ['id', 'masterLoanId', 'loanUniqueId', 'selectedSlab', 'loanAmount', 'outstandingAmount', 'currentSlab', 'currentInterestRate', 'penalInterestLastReceivedDate', 'penalInterest', 'loanType', 'rebateInterestRate','schemeId'],
+        attributes: ['id', 'masterLoanId', 'loanUniqueId', 'selectedSlab', 'loanAmount', 'outstandingAmount', 'currentSlab', 'currentInterestRate', 'penalInterestLastReceivedDate', 'penalInterest', 'loanType', 'rebateInterestRate', 'schemeId'],
         include: [{
             model: models.customerLoanSlabRate,
             as: 'slab',
@@ -293,7 +329,7 @@ let getLastInterest = async (loanId, masterLaonId) => {
     let lastInterest = await models.customerLoanInterest.findOne({
         where: { loanId: loanId, masterLoanId: masterLaonId, isExtraDaysInterest: false },
         order: [['emiDueDate', 'DESC']],
-        attributes: ['id', 'paidAmount', 'highestInterestAmount', 'rebateAmount','interestAmount']
+        attributes: ['id', 'paidAmount', 'highestInterestAmount', 'rebateAmount', 'interestAmount']
     });
     return lastInterest;
 }
@@ -312,6 +348,20 @@ let getAllInterest = async (loanId) => {
         attributes: ['id', 'interestAmount', 'paidAmount', 'emiDueDate', 'highestInterestAmount', 'rebateAmount']
     });
     return allNotPaidInterest;
+}
+
+let getAllPaidInterestForCalculation = async (loanId) => {
+    let allPaidInterest = await models.customerLoanInterest.findAll({
+        where: { loanId: loanId, emiStatus: 'paid' }
+    });
+    return allPaidInterest;
+}
+
+let getAllPaidPartialyPaidInterest = async (loanId) => {
+    let allpaidPartialyPaidInterest = await models.customerLoanInterest.findAll({
+        where: { loanId: loanId,  emiStatus: { [Op.in]: ['paid','partially paid'] } }
+    });
+    return allpaidPartialyPaidInterest;
 }
 
 let getAllInterestLessThanDate = async (loanId, date) => {
@@ -466,7 +516,8 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                         as: 'schemeInterest'
                     }]
                 })
-                let rebateInterestRate = scheme.schemeInterest[0].interestRate;
+                if(scheme){
+                    let rebateInterestRate = scheme.schemeInterest[0].interestRate;
                 await models.customerLoan.update({rebateInterestRate},{ where: { id: loan.id }, transaction: t });
                 let allInterest = await getAllInterest(loan.id);
                 let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, rebateInterestRate, loan.selectedSlab, loan.masterLoan.tenure);
@@ -485,13 +536,14 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                     let rebateAmount = highestInterestAmount - lastInterest.interestAmount;
                     await models.customerLoanInterest.update({ rebateAmount,highestInterestAmount,rebateInterestRate }, { where: { id: lastInterest.id}, transaction: t });
                 }
+                }
             }
         }
     })
     ///
     let data = await calculationDataOneLoan(masterLoanId);
     let loanInfo = data.loanInfo;
-    let currentDate = moment(date);
+    let currentDate = moment();
     let noOfDays = 0;
     await sequelize.transaction(async t => {
         for (const loan of loanInfo) {
@@ -509,6 +561,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
             if (firstInterestToPay) {
                 var checkDueDateForSlab = moment(date).isAfter(firstInterestToPay.emiDueDate);//check due date to change slab
             }
+            noOfDays += 1;
             if (noOfDays > loan.currentSlab && checkDueDateForSlab) {
                 //scenario 2 slab changed
                 let stepUpSlab = await getStepUpslab(loan.id, noOfDays);
@@ -521,7 +574,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                     let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: 0.00, isPenalInterest: false } });
                     if (checkDebitEntry.length == 0) {
                         let rebateAmount = interestData.highestInterestAmount - interest.amount;
-                        let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interest.amount, description: `Net interest due (after rebate) ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment(), rebateAmount }, { transaction: t });
+                        let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interest.amount, description: `Net interest due (after rebate) ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment(),rebateAmount:rebateAmount }, { transaction: t });
                         await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                     } else {
                         let debitedAmount = await checkDebitEntry.map((data) => Number(data.debit));
@@ -529,11 +582,11 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                         let newDebitAmount = interest.amount - totalDebitedAmount;
                         if (newDebitAmount > 0) {
                             let rebateAmount = -Math.abs(newDebitAmount)
-                            let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: newDebitAmount, description: `stepUpInterest ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment(), rebateAmount }, { transaction: t });
+                            let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: newDebitAmount, description: `stepUpInterest ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment(),rebateAmount }, { transaction: t });
                             await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                         } else if (newDebitAmount < 0) {
-                            let rebateAmount = Math.abs(newDebitAmount);
-                            let credit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: Math.abs(newDebitAmount) , description: `stepDownInterest ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment(), rebateAmount }, { transaction: t });
+                            let rebateAmount = Math.abs(newDebitAmount)
+                            let credit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: Math.abs(newDebitAmount), description: `stepDownInterest ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment(),rebateAmount }, { transaction: t });
                             await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${credit.id}` }, { where: { id: credit.id }, transaction: t });
                         }
                     }
@@ -579,13 +632,11 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                         //
                         if (!extraInterest) {
                             let amount = pendingDaysAmount;
-                            await models.customerLoanInterest.create({ loanId: loan.id, masterLoanId: loan.masterLoanId, emiStartDate: date, emiDueDate: date, emiEndDate: date, interestRate: stepUpSlab.interestRate, interestAmount: amount, interestAccrual: amount, totalInterestAccrual: amount, outstandingInterest: amount, isExtraDaysInterest: true, rebateAmount, highestInterestAmount, rebateInterestRate: loan.rebateInterestRate }, { transaction: t });
+                            await models.customerLoanInterest.create({ loanId: loan.id, masterLoanId: loan.masterLoanId, emiStartDate: date, emiDueDate: date, emiEndDate: date, interestRate: stepUpSlab.interestRate, interestAmount: amount, interestAccrual: amount, totalInterestAccrual: amount, outstandingInterest: amount, isExtraDaysInterest: true, rebateAmount,highestInterestAmount,rebateInterestRate:loan.rebateInterestRate  }, { transaction: t });
                         } else {
                             let amount = pendingDaysAmount;
-                            let interestAccrual;
-                            let outstandingInterest;
-                            interestAccrual = amount - extraInterest.paidAmount;
-                            outstandingInterest = amount - extraInterest.paidAmount;
+                            let interestAccrual = amount - extraInterest.paidAmount;
+                            let outstandingInterest = amount - extraInterest.paidAmount;
                             if (amount > Number(extraInterest.paidAmount)) {
                                 interestAccrual = amount - extraInterest.paidAmount;
                                 outstandingInterest = amount - extraInterest.paidAmount;
@@ -593,7 +644,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                                 interestAccrual = extraInterest.paidAmount - amount;
                                 outstandingInterest = extraInterest.paidAmount - amount;
                             }
-                            await models.customerLoanInterest.update({ interestAmount: amount, emiDueDate: date, emiEndDate: date, interestAccrual, totalInterestAccrual: amount, outstandingInterest, interestRate: stepUpSlab.interestRate, rebateAmount, highestInterestAmount, rebateInterestRate: loan.rebateInterestRate }, { where: { id: extraInterest.id }, transaction: t });
+                            await models.customerLoanInterest.update({ interestAmount: amount, emiDueDate: date, emiEndDate: date, interestAccrual, totalInterestAccrual: amount, outstandingInterest, interestRate: stepUpSlab.interestRate, rebateAmount,highestInterestAmount,rebateInterestRate:loan.rebateInterestRate }, { where: { id: extraInterest.id }, transaction: t });
                         }
                     }
                 }
@@ -601,13 +652,11 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                 for (const interestData of allInterest) {
                     let outstandingInterest = interest.amount - interestData.paidAmount;
                     let rebateAmount = interestData.highestInterestAmount - interest.amount;
-                    if (outstandingInterest >= 0) {
-                        let rebateAmount = interestData.highestInterestAmount - interest.amount;
-                        await models.customerLoanInterest.update({ interestAmount: interest.amount, outstandingInterest, interestRate: stepUpSlab.interestRate, rebateAmount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
-                    } else {
-                        await models.customerLoanInterest.update({ interestAmount: interest.amount, outstandingInterest: 0.00, interestRate: stepUpSlab.interestRate, rebateAmount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    if(outstandingInterest >= 0){
+                        await models.customerLoanInterest.update({ interestAmount: interest.amount, outstandingInterest, interestRate: stepUpSlab.interestRate,rebateAmount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    }else{
+                        await models.customerLoanInterest.update({ interestAmount: interest.amount, outstandingInterest : 0.00, interestRate: stepUpSlab.interestRate,rebateAmount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                     }
-
                 }
                 //update last interest if changed
                 if (!Number.isInteger(interest.length)) {
@@ -617,12 +666,11 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                     let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
                     let outstandingInterest = amount - lastInterest.paidAmount;
                     let rebateAmount = lastInterest.highestInterestAmount - amount;
-                    if (outstandingInterest >= 0) {
-                        await models.customerLoanInterest.update({ interestAmount: amount, outstandingInterest, interestRate: stepUpSlab.interestRate, rebateAmount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
-                    } else {
-                        await models.customerLoanInterest.update({ interestAmount: amount, outstandingInterest: 0.00, interestRate: stepUpSlab.interestRate, rebateAmount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    if(outstandingInterest >= 0){
+                        await models.customerLoanInterest.update({ interestAmount: amount, outstandingInterest, interestRate: stepUpSlab.interestRate,rebateAmount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    }else{
+                        await models.customerLoanInterest.update({ interestAmount: amount, outstandingInterest:0.00, interestRate: stepUpSlab.interestRate,rebateAmount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                     }
-
                 }
                 //update current slab in customer loan table
                 await models.customerLoan.update({ currentInterestRate: stepUpSlab.interestRate, currentSlab: stepUpSlab.days }, { where: { id: loan.id }, transaction: t });
@@ -639,7 +687,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                         if (isDueDate) {
                             let checkDebitEntry = await models.customerTransactionDetail.findOne({ where: { masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, credit: 0.00, isPenalInterest: false } });
                             if (!checkDebitEntry) {
-                                let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interestData.interestAmount, description: `Net interest due (after rebate) ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment(), rebateAmount: interestData.rebateAmount }, { transaction: t });
+                                let debit = await models.customerTransactionDetail.create({ masterLoanId: loan.masterLoanId, loanId: loan.id, loanInterestId: interestData.id, debit: interestData.interestAmount, description: `Net interest due (after rebate) ${moment(interestData.emiDueDate).format('DD/MM/YYYY')}`, paymentDate: moment(), rebateAmount:interestData.rebateAmount }, { transaction: t });
                                 await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                             }
                         }
@@ -677,15 +725,9 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                             let oneDayAmount = loan.outstandingAmount * (oneDayInterest / 100);
                             let pendingDaysAmount = pendingNoOfDays * oneDayAmount;
                             let extraInterest = await getExtraInterest(loan.id);
-                            //rebate
-                            let oneDayInterestRebate = loan.rebateInterestRate / 30;
-                            let oneDayAmountRebate = loan.outstandingAmount * (oneDayInterestRebate / 100);
-                            let highestInterestAmount = pendingNoOfDays * oneDayAmountRebate;
-                            let rebateAmount = highestInterestAmount - pendingDaysAmount;
-                            //
                             if (!extraInterest) {
                                 let amount = pendingDaysAmount;
-                                await models.customerLoanInterest.create({ loanId: loan.id, masterLoanId: loan.masterLoanId, emiStartDate: date, emiDueDate: date, emiEndDate: date, interestRate: loan.currentInterestRate, interestAmount: amount, interestAccrual: amount, totalInterestAccrual: amount, outstandingInterest: amount, isExtraDaysInterest: true, rebateAmount, highestInterestAmount, rebateInterestRate: loan.rebateInterestRate }, { transaction: t });
+                                await models.customerLoanInterest.create({ loanId: loan.id, masterLoanId: loan.masterLoanId, emiStartDate: date, emiDueDate: date, emiEndDate: date, interestRate: loan.currentInterestRate, interestAmount: amount, interestAccrual: amount, totalInterestAccrual: amount, outstandingInterest: amount, isExtraDaysInterest: true }, { transaction: t });
                             } else {
                                 let amount = pendingDaysAmount;
                                 let interestAccrual
@@ -698,7 +740,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                                     interestAccrual = extraInterest.paidAmount - amount;
                                     outstandingInterest = extraInterest.paidAmount - amount;
                                 }
-                                await models.customerLoanInterest.update({ interestAmount: amount, interestAccrual, emiDueDate: date, emiEndDate: date, totalInterestAccrual: amount, outstandingInterest, rebateAmount, highestInterestAmount }, { where: { id: extraInterest.id }, transaction: t });
+                                await models.customerLoanInterest.update({ interestAmount: amount, interestAccrual, emiDueDate: date, emiEndDate: date, totalInterestAccrual: amount, outstandingInterest }, { where: { id: extraInterest.id }, transaction: t });
                             }
                         }
                     }
@@ -727,6 +769,7 @@ let updateInterestAftertOutstandingAmount = async (date, masterLoanId) => {
                 loanStartDate = moment(lastPaidEmi.emiDueDate);
                 noOfDays = currentDate.diff(loanStartDate, 'days');
             }
+            noOfDays += 1;
             let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, loan.currentInterestRate, loan.selectedSlab, loan.masterLoan.tenure);
             let allInterest = await getAllNotPaidInterest(loan.id)//get all interest
             let interestLessThanDate = await getAllInterestLessThanDate(loan.id, date);
@@ -1201,96 +1244,108 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
         whereCondition = { id: loanId }
     }
 
+    let customerLoanInterest = await models.customerLoanInterest.findAll({
+        order: [
+            ['id', 'asc']
+        ],
+        where: {
+            emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
+            emiStatus: { [Op.not]: 'paid' },
+            masterLoanId: masterLoanId
+        },
+    })
+
     let customerLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
         attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure', 'termsAndCondition'],
         order: [
             [models.customerLoanDisbursement, 'loanId', 'asc'],
             [models.customerLoan, 'id', 'asc'],
-            [models.customerLoanInterest, 'id', 'asc']
+            // [models.customerLoanInterest, 'id', 'asc']
         ],
-        include: [{
-            model: models.customerLoanInterest,
-            as: 'customerLoanInterest',
-            where: {
-                emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
-                emiStatus: { [Op.not]: 'paid' }
-            },
-            // attributes: ['emiDueDate', 'emiStatus'],
+        include: [
+            // {
+            //     model: models.customerLoanInterest,
+            //     as: 'customerLoanInterest',
+            //     where: {
+            //         emiDueDate: { [Op.gte]: moment().format('YYYY-MM-DD') },
+            //         emiStatus: { [Op.not]: 'paid' }
+            //     },
+            //     // attributes: ['emiDueDate', 'emiStatus'],
 
-        },
-        {
-            model: models.customerLoan,
-            as: 'customerLoan',
-            where: whereCondition,
-            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-            include: [
-                {
-                    model: models.scheme,
-                    as: 'scheme'
-                },
-                {
-                    model: models.customerLoan,
-                    as: 'unsecuredLoan',
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-                    include: [{
+            // },
+            {
+                model: models.customerLoan,
+                as: 'customerLoan',
+                where: whereCondition,
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                include: [
+                    {
                         model: models.scheme,
-                        as: 'scheme',
-                    }]
-                }
-            ]
-        },
-        {
-            model: models.partRelease,
-            as: 'partRelease',
-        },
-        {
-            model: models.fullRelease,
-            as: 'fullRelease',
-        },
-        {
-            model: models.loanStage,
-            as: 'loanStage',
-            attributes: ['id', 'name']
-        },
-        {
-            model: models.customerLoanTransfer,
-            as: "loanTransfer",
-            attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
-        },
-        {
-            model: models.customerLoanPersonalDetail,
-            as: 'loanPersonalDetail',
-        }, {
-            model: models.customerLoanBankDetail,
-            as: 'loanBankDetail',
-        }, {
-            model: models.customerLoanNomineeDetail,
-            as: 'loanNomineeDetail',
-        },
-        {
-            model: models.customerLoanOrnamentsDetail,
-            as: 'loanOrnamentsDetail',
-            include: [
-                {
-                    model: models.ornamentType,
-                    as: "ornamentType"
-                }
-            ]
-        },
-        {
-            model: models.customerLoanDocument,
-            as: 'customerLoanDocument'
-        },
-        {
-            model: models.customer,
-            as: 'customer',
-            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
-        },
-        {
-            model: models.customerLoanDisbursement,
-            as: 'customerLoanDisbursement'
-        }
+                        as: 'scheme'
+                    },
+                    {
+                        model: models.customerLoan,
+                        as: 'unsecuredLoan',
+                        attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+                        include: [{
+                            model: models.scheme,
+                            as: 'scheme',
+                        }]
+                    }
+                ]
+            },
+            {
+                model: models.partRelease,
+                as: 'partRelease',
+            },
+            {
+                model: models.fullRelease,
+                as: 'fullRelease',
+            },
+            {
+                model: models.loanStage,
+                as: 'loanStage',
+                attributes: ['id', 'name']
+            },
+            {
+                model: models.customerLoanTransfer,
+                as: "loanTransfer",
+                attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+            },
+            {
+                model: models.customerLoanPersonalDetail,
+                as: 'loanPersonalDetail',
+            }, {
+                model: models.customerLoanBankDetail,
+                as: 'loanBankDetail',
+            }, {
+                model: models.customerLoanNomineeDetail,
+                as: 'loanNomineeDetail',
+            },
+            {
+                model: models.customerLoanOrnamentsDetail,
+                as: 'loanOrnamentsDetail',
+                include: [
+                    {
+                        model: models.ornamentType,
+                        as: "ornamentType"
+                    }
+                ]
+            },
+            {
+                model: models.customerLoanDocument,
+                as: 'customerLoanDocument'
+            },
+            {
+                model: models.customer,
+                as: 'customer',
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+            },
+            {
+                model: models.customerLoanDisbursement,
+                as: 'customerLoanDisbursement'
+            }
         ]
     })
 
@@ -1307,6 +1362,7 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
             }]
         }]
     })
+    customerLoan.dataValues.customerLoanInterest = customerLoanInterest
     customerLoan.dataValues.loanPacketDetails = packet
 
     return customerLoan
@@ -1366,6 +1422,61 @@ async function getAmountLoanSplitUpData(loan, amount, splitUpRatioAmount) {
 
 }
 
+async function interestSplit(loan, amount, splitUpRatioAmount) {
+    let { securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest } = await payableAmountForLoan(amount, loan)
+
+    let securedOutstandingAmount = loan.customerLoan[0].outstandingAmount
+    let securedInterestRate = loan.customerLoan[0].interestRate
+    let unsecuredOutstandingAmount = 0
+    let unsecuredInterestRate = 0
+    if (loan.isUnsecuredSchemeApplied) {
+        unsecuredOutstandingAmount = loan.customerLoan[1].outstandingAmount
+        unsecuredInterestRate = loan.customerLoan[1].interestRate
+
+    }
+    let totalOutstandingAmount = Number(securedOutstandingAmount) + Number(unsecuredOutstandingAmount)
+
+    let securedLoanId = loan.customerLoan[0].id
+    let securedRatio = Number(((securedOutstandingAmount * securedInterestRate / ((securedOutstandingAmount * securedInterestRate) + (unsecuredOutstandingAmount * unsecuredInterestRate))) * splitUpRatioAmount).toFixed(2))
+    let newSecuredOutstandingAmount = securedOutstandingAmount - securedRatio
+    let newUnsecuredOutstandingAmount = 0
+    let unsecuredRatio = 0
+    let unsecuredLoanId = null
+    if (loan.isUnsecuredSchemeApplied) {
+        unsecuredLoanId = loan.customerLoan[1].id
+        unsecuredRatio = Number(((unsecuredOutstandingAmount * unsecuredInterestRate / ((securedOutstandingAmount * securedInterestRate) + (unsecuredOutstandingAmount * unsecuredInterestRate))) * splitUpRatioAmount).toFixed(2))
+        newUnsecuredOutstandingAmount = Number(unsecuredOutstandingAmount) - unsecuredRatio
+    }
+    let newMasterOutstandingAmount = newSecuredOutstandingAmount + newUnsecuredOutstandingAmount
+
+    let isUnsecuredSchemeApplied = false
+    if (loan.isUnsecuredSchemeApplied) {
+        isUnsecuredSchemeApplied = true
+    }
+
+
+
+    let data = {
+        securedOutstandingAmount,
+        unsecuredOutstandingAmount,
+        totalOutstandingAmount,
+        securedRatio,
+        unsecuredRatio,
+        newSecuredOutstandingAmount,
+        newUnsecuredOutstandingAmount,
+        newMasterOutstandingAmount,
+        isUnsecuredSchemeApplied,
+        securedPenalInterest,
+        unsecuredPenalInterest,
+        securedInterest,
+        unsecuredInterest,
+        securedLoanId,
+        unsecuredLoanId
+    }
+    return data
+
+}
+
 let nextDueDateInterest = async (loan) => {
 
     let paymentFrequency = loan.paymentFrequency
@@ -1376,19 +1487,21 @@ let nextDueDateInterest = async (loan) => {
 
 
     let securedPerDayInterestAmount = ((securedInterest / 100) * securedOutstandingAmount * (paymentFrequency / 30)) / paymentFrequency
-
     let secured = await models.customerLoanInterest.findAll({
-        where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[0].id, isExtraDaysInterest: false },
+        where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: loan.customerLoan[0].id, },
         order: [['emiEndDate', 'asc']]
     });
+
     var securedTotalInterest = 0
     var unsecuredTotalInterest = 0
+
     if (secured.length > 0) {
         let startDate = moment(secured[0].emiStartDate)
         let index = secured.findIndex(ele => {
-            let a = new Date(ele.emiEndDate);
-            let b = new Date()
-            return a.getTime() > b.getTime()
+            let loanEndDate = moment(ele.emiEndDate);
+            let currentDate = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+            let noOfDays = loanEndDate.diff(currentDate, 'days');
+            return noOfDays >= 0
         })
         let securedMonthRebateInterest = 0
         for (let securedIndex = 0; securedIndex <= index; securedIndex++) {
@@ -1397,6 +1510,9 @@ let nextDueDateInterest = async (loan) => {
 
         if (index < 0) {
             securedTotalInterest = 0
+            secured.forEach(interest => {
+                securedTotalInterest += Number(interest.outstandingInterest)
+            })
         } else {
             let partialPaidSecuredIndex = secured.findIndex(ele => {
                 return ele.emiStatus == 'partially paid'
@@ -1436,9 +1552,10 @@ let nextDueDateInterest = async (loan) => {
         if (unsecured.length > 0) {
             let startDate = moment(unsecured[0].emiStartDate)
             let index = unsecured.findIndex(ele => {
-                let a = new Date(ele.emiEndDate);
-                let b = new Date()
-                return a.getTime() > b.getTime()
+                let loanEndDate = moment(ele.emiEndDate);
+                let currentDate = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+                let noOfDays = loanEndDate.diff(currentDate, 'days');
+                return noOfDays >= 0
             })
             var unsecureRebateInterest = 0;
             for (let unsecuredIndex = 0; unsecuredIndex <= index; unsecuredIndex++) {
@@ -1448,7 +1565,9 @@ let nextDueDateInterest = async (loan) => {
 
             if (index < 0) {
                 unsecuredTotalInterest = 0
-
+                unsecured.forEach(interest => {
+                    unsecuredTotalInterest += Number(interest.outstandingInterest)
+                })
             } else {
                 let partialPaidSecuredIndex = unsecured.findIndex(ele => {
                     return ele.emiStatus == 'partially paid'
@@ -1967,6 +2086,7 @@ let intrestCalculationForSelectedLoanWithOutT = async (date, masterLoanId, secur
                 loanStartDate = moment(lastPaidEmi.emiDueDate);
                 noOfDays = currentDate.diff(loanStartDate, 'days');
             }
+            noOfDays += 1;
             //scenario 2 slab changed
             let interest
             if (securedInterest || unsecuredInterest) {
@@ -2234,6 +2354,196 @@ let customerNameNumberLoanId = async (masterLoanId) => {
         sendLoanUniqueId: sendLoanUniqueId
     }
 }
+let getSecuredScheme = async (securedSchemeId) => {
+    let securedScheme = await models.scheme.findOne({
+        where: { id: securedSchemeId },
+        // attributes: ['id'],
+        order: [
+            [models.schemeInterest, 'days', 'asc']
+        ],
+        include: [{
+            model: models.schemeInterest,
+            as: 'schemeInterest',
+            attributes: ['days', 'interestRate']
+        }, {
+            model: models.scheme,
+            as: 'unsecuredScheme'
+        }]
+    })
+    return securedScheme
+}
+
+let getAllPartAndFullReleaseData = async (masterLoanId, ornamentId) => {
+    let whereSelectedOrmenemts = { id: { [Op.in]: ornamentId }, isActive: true, isReleased: false };
+    let whereOtherOrmenemts = { id: { [Op.notIn]: ornamentId }, isActive: true, isReleased: false };
+    let loanData = await getLoanDetails(masterLoanId);
+    let amount = await getCustomerInterestAmount(masterLoanId);
+    let requestedOrnaments = await ornementsDetails(masterLoanId, whereSelectedOrmenemts);
+    let otherOrnaments = await ornementsDetails(masterLoanId, whereOtherOrmenemts);
+    let allOrnaments = await allOrnamentsDetails(masterLoanId);
+    let ornamentWeight = await getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanData, allOrnaments);
+    let loanInfo = await getornamentLoanInfo(masterLoanId, ornamentWeight, amount);
+    return { ornamentWeight, loanInfo, amount }
+}
+
+let ornementsDetails = async (masterLoanId, whereBlock) => {
+    let ornaments = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        attributes: ['customerId', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
+        include: [{
+            model: models.customerLoanOrnamentsDetail,
+            as: 'loanOrnamentsDetail',
+            where: whereBlock,
+            include: [
+                {
+                    model: models.ornamentType,
+                    as: "ornamentType",
+                    attributes: ['name', 'id'],
+                },
+                {
+                    model: models.packet,
+                }
+            ]
+        }]
+    });
+    return ornaments;
+}
+
+let allOrnamentsDetails = async (masterLoanId) => {
+    let ornaments = await models.customerLoanMaster.findOne({
+        where: { id: masterLoanId },
+        attributes: ['customerId', 'masterLoanUniqueId', 'finalLoanAmount', 'tenure', 'loanStartDate', 'loanEndDate'],
+        include: [{
+            model: models.customerLoanOrnamentsDetail,
+            as: 'loanOrnamentsDetail',
+            where: { isActive: true, isReleased: false },
+            include: [
+                {
+                    model: models.ornamentType,
+                    as: "ornamentType",
+                    attributes: ['name', 'id'],
+                },
+                {
+                    model: models.packet,
+                }
+            ]
+        }]
+    });
+    return ornaments;
+}
+
+let getornamentsWeightInfo = async(requestedOrnaments, otherOrnaments, loanData, allOrnaments) => {
+    let ornamentsWeightInfo = {
+        releaseGrossWeight: 0,
+        releaseDeductionWeight: 0,
+        releaseNetWeight: 0,
+        remainingGrossWeight: 0,
+        remainingDeductionWeight: 0,
+        remainingNetWeight: 0,
+        releaseAmount: 0,
+        currentLtv: 0,
+        previousLtv: 0,
+        currentOutstandingAmount: 0,
+        allOrnamentsGrossWeight: 0,
+        allOrnamentsDeductionWeight: 0,
+        allOrnamentsNetWeight: 0,
+        totalOfReleaseOrnaments: 0,
+        totalOfRemainingOrnaments: 0,
+        previousOutstandingAmount: 0,
+        remainingOrnamentAmount: 0,//remning ornament
+        newLoanAmount: 0,//new loan amount
+    }
+    if (requestedOrnaments || allOrnaments) {
+        let securedLoanRpg = loanData.customerLoan[0].scheme.rpg;
+        let unSecuredLoanRpg = 0;
+        if (loanData.customerLoan.length > 1) {
+            unSecuredLoanRpg = loanData.customerLoan[1].scheme.rpg;
+        }
+        // let globalSettings = await getGlobalSetting();
+        // let goldRate = await getGoldRate();
+        ornamentsWeightInfo.currentLtv = Number(securedLoanRpg) + Number(unSecuredLoanRpg);
+        ornamentsWeightInfo.previousLtv = requestedOrnaments.loanOrnamentsDetail[0].currentLtvAmount;
+        ornamentsWeightInfo.previousOutstandingAmount = loanData.outstandingAmount;
+
+        //current outstanding amount
+        if (allOrnaments != null) {
+            for (const ornaments of allOrnaments.loanOrnamentsDetail) {
+                ornamentsWeightInfo.allOrnamentsGrossWeight = ornamentsWeightInfo.allOrnamentsGrossWeight + parseFloat(ornaments.grossWeight);
+                ornamentsWeightInfo.allOrnamentsDeductionWeight = ornamentsWeightInfo.allOrnamentsDeductionWeight + parseFloat(ornaments.deductionWeight);
+                ornamentsWeightInfo.allOrnamentsNetWeight = ornamentsWeightInfo.allOrnamentsNetWeight + parseFloat(ornaments.netWeight);
+                let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
+                ornamentsWeightInfo.currentOutstandingAmount = ornamentsWeightInfo.currentOutstandingAmount + (ltvAmount * parseFloat(ornaments.netWeight));
+            }
+        }
+
+
+        if (requestedOrnaments != null) {
+            for (const ornaments of requestedOrnaments.loanOrnamentsDetail) {
+                ornamentsWeightInfo.releaseGrossWeight = ornamentsWeightInfo.releaseGrossWeight + parseFloat(ornaments.grossWeight);
+                ornamentsWeightInfo.releaseDeductionWeight = ornamentsWeightInfo.releaseDeductionWeight + parseFloat(ornaments.deductionWeight);
+                ornamentsWeightInfo.releaseNetWeight = ornamentsWeightInfo.releaseNetWeight + parseFloat(ornaments.netWeight);
+                let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
+                ornamentsWeightInfo.totalOfReleaseOrnaments = ornamentsWeightInfo.totalOfReleaseOrnaments + (ltvAmount * parseFloat(ornaments.netWeight));
+            }
+        }
+
+        if (otherOrnaments != null) {
+            for (const ornaments of otherOrnaments.loanOrnamentsDetail) {
+                ornamentsWeightInfo.remainingGrossWeight = ornamentsWeightInfo.remainingGrossWeight + parseFloat(ornaments.grossWeight);
+                ornamentsWeightInfo.remainingDeductionWeight = ornamentsWeightInfo.remainingDeductionWeight + parseFloat(ornaments.deductionWeight);
+                ornamentsWeightInfo.remainingNetWeight = ornamentsWeightInfo.remainingNetWeight + parseFloat(ornaments.netWeight);
+                let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
+                ornamentsWeightInfo.totalOfRemainingOrnaments = ornamentsWeightInfo.totalOfRemainingOrnaments + (ltvAmount * parseFloat(ornaments.netWeight));
+            }
+        }
+
+
+        ornamentsWeightInfo.currentOutstandingAmount = Math.round(ornamentsWeightInfo.currentOutstandingAmount);
+        ornamentsWeightInfo.totalOfReleaseOrnaments = Math.round(ornamentsWeightInfo.totalOfReleaseOrnaments);
+        ornamentsWeightInfo.totalOfRemainingOrnaments = Math.round(ornamentsWeightInfo.totalOfRemainingOrnaments);
+        ornamentsWeightInfo.releaseAmount = ornamentsWeightInfo.currentOutstandingAmount - ornamentsWeightInfo.previousOutstandingAmount - ornamentsWeightInfo.totalOfReleaseOrnaments;
+        if (ornamentsWeightInfo.releaseAmount > 0) {
+            ornamentsWeightInfo.releaseAmount = 0
+        } else {
+            ornamentsWeightInfo.releaseAmount = Math.round(Math.abs(ornamentsWeightInfo.releaseAmount));
+        }
+        ornamentsWeightInfo.remainingOrnamentAmount = Math.round(ornamentsWeightInfo.currentOutstandingAmount - ornamentsWeightInfo.previousOutstandingAmount - ornamentsWeightInfo.totalOfRemainingOrnaments);
+        ornamentsWeightInfo.newLoanAmount = ornamentsWeightInfo.currentOutstandingAmount - ornamentsWeightInfo.previousOutstandingAmount - ornamentsWeightInfo.remainingOrnamentAmount;
+    }
+    return ornamentsWeightInfo;
+}
+
+let getornamentLoanInfo = async(masterLoanId, ornamentWeight, amount)=> {
+    let loanData = await models.customerLoan.findAll({ where: { masterLoanId }, attributes: ['loanUniqueId', 'loanAmount'] });
+    let loanAmountData = await models.customerLoanMaster.findOne({ where: { id: masterLoanId }, attributes: ['finalLoanAmount', 'outstandingAmount'] });
+    let loanDetails = {
+        loanData,
+        finalLoanAmount: 0,
+        interestAmount: 0,
+        penalInterest: 0,
+        totalPayableAmount: 0,
+        securedInterest: 0,
+        securedPenalInterest: 0,
+        unsecuredInterest: 0,
+        unsecuredPenalInterest: 0
+    }
+    loanDetails.interestAmount = amount.secured.interest;
+    loanDetails.penalInterest = amount.secured.penalInterest;
+    loanDetails.securedInterest = amount.secured.interest;
+    loanDetails.securedPenalInterest = amount.secured.penalInterest;
+    if (amount.unsecured) {
+        loanDetails.interestAmount = loanDetails.interestAmount + amount.unsecured.interest;
+        loanDetails.penalInterest = loanDetails.penalInterest + amount.unsecured.penalInterest;
+        loanDetails.unsecuredInterest = amount.unsecured.interest;
+        loanDetails.unsecuredPenalInterest = amount.unsecured.penalInterest;
+    }
+    //calculate value here
+    loanDetails.totalPayableAmount = Number((ornamentWeight.releaseAmount + loanDetails.penalInterest + loanDetails.interestAmount).toFixed(2));
+    loanDetails.interestAmount = Number(loanDetails.interestAmount.toFixed(2));
+    loanDetails.penalInterest = Number(loanDetails.penalInterest.toFixed(2));
+    loanDetails.finalLoanAmount = loanAmountData.finalLoanAmount;
+    return loanDetails;
+}
 
 module.exports = {
     getGlobalSetting: getGlobalSetting,
@@ -2280,5 +2590,15 @@ module.exports = {
     intrestCalculationForSelectedLoanWithOutT: intrestCalculationForSelectedLoanWithOutT,
     penalInterestCalculationForSelectedLoanWithOutT: penalInterestCalculationForSelectedLoanWithOutT,
     customerNameNumberLoanId: customerNameNumberLoanId,
-    getAllInterest:getAllInterest
+    getAllInterest: getAllInterest,
+    getSecuredScheme: getSecuredScheme,
+    interestSplit: interestSplit,
+    getAllPaidInterestForCalculation: getAllPaidInterestForCalculation,
+    getAllPartAndFullReleaseData: getAllPartAndFullReleaseData,
+    ornementsDetails:ornementsDetails,
+    allOrnamentsDetails:allOrnamentsDetails,
+    getornamentsWeightInfo:getornamentsWeightInfo,
+    getornamentLoanInfo:getornamentLoanInfo,
+    calculationDataForReleasedLoan:calculationDataForReleasedLoan,
+    getAllPaidPartialyPaidInterest:getAllPaidPartialyPaidInterest
 }

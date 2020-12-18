@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'quantity'
         },
+        remark: {
+            type: DataTypes.STRING,
+            field: 'remark'
+        },
         grossWeight: {
             type: DataTypes.STRING,
             field: 'gross_weight'

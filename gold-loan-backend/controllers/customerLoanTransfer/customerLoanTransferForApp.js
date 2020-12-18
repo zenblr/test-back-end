@@ -15,12 +15,18 @@ const { sendDisbursalMessage, sendTransferLoanRequestMessage } = require('../../
 exports.applyLoanTransferFromApp = async (req, res, next) => {
 
 
-    let { customerId, customerUniqueId, kycStatus, startDate, masterLoanId, requestId, pawnTicket, signedCheque, declaration, outstandingLoanAmount, loanTransferStatusForAppraiser, reasonByAppraiser } = req.body
+    let { customerId, customerUniqueId, kycStatus, startDate, masterLoanId, requestId, pawnTicket, signedCheque, declaration, outstandingLoanAmount, loanTransferStatusForAppraiser, reasonByAppraiser, isEdit } = req.body
     let disbursedLoanAmount = outstandingLoanAmount;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
     let stageId = await models.loanStage.findOne({ where: { name: 'loan transfer' } })
 
+    let checkApprasierRequest = await models.customerLoanMaster.findOne({ where: { appraiserRequestId: requestId } })
+    if (!isEdit) {
+        if (!check.isEmpty(checkApprasierRequest)) {
+            return res.status(400).json({ message: 'Your loan request is already in queue' });
+        }
+    }
 
     let masterLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
@@ -35,13 +41,13 @@ exports.applyLoanTransferFromApp = async (req, res, next) => {
             }
         ]
     });
-    
+
     if (!check.isEmpty(masterLoan)) {
         if (masterLoan.loanTransfer.loanTransferStatusForBM == "approved" || masterLoan.loanTransfer.loanTransferStatusForBM == "rejected" || masterLoan.loanTransfer.loanTransferStatusForAppraiser == "approved" || masterLoan.loanTransfer.loanTransferStatusForAppraiser == "rejected") {
             return res.status(400).json({ message: 'You cannot change documents now' })
         }
     }
-    
+
     let loanId
     let loanTransferId
     await sequelize.transaction(async t => {
@@ -49,7 +55,7 @@ exports.applyLoanTransferFromApp = async (req, res, next) => {
         if (check.isEmpty(masterLoan)) {
             let createLoanTransfer = await models.customerLoanTransfer.create({ createdBy, modifiedBy }, { transaction: t });
 
-            let newMasterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, createdBy, modifiedBy, internalBranchId: req.userData.internalBranchId, loanTransferId: createLoanTransfer.id, appraiserRequestId: requestId, isLoanTransfer: true }, { transaction: t })
+            let newMasterLoan = await models.customerLoanMaster.create({ customerId: customerId, loanStageId: stageId.id, createdBy, modifiedBy, internalBranchId: req.userData.internalBranchId, loanTransferId: createLoanTransfer.id, appraiserRequestId: requestId, isLoanTransfer: true , customerLoanCurrentStage: '1'}, { transaction: t })
 
             let loan = await models.customerLoan.create({ customerId, masterLoanId: newMasterLoan.id, loanType: 'secured', createdBy, modifiedBy }, { transaction: t })
 

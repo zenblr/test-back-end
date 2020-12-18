@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'merchant_id',
         },
-        moduleId:{
+        moduleId: {
             type: DataTypes.INTEGER,
             field: 'module_id',
         },
@@ -102,12 +102,18 @@ module.exports = (sequelize, DataTypes) => {
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by',
-            allowNull: false,
         },
         modifiedBy: {
             type: DataTypes.INTEGER,
             field: 'modified_by',
-            allowNull: false,
+        },
+        createdByCustomer: {
+            type: DataTypes.INTEGER,
+            field: 'created_by_customer',
+        },
+        modifiedByCustomer: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by_customer',
         },
         lastLogin: {
             type: DataTypes.DATE,
@@ -136,6 +142,12 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: "pending",
             values: ['approved', 'pending', 'rejected']
         },
+        digiKycStatus: {
+            type: DataTypes.ENUM,
+            field: 'digi_kyc_status',
+            defaultValue: "pending",
+            values: ['approved', 'waiting', 'pending', 'rejected']
+        },
         userType: {
             type: DataTypes.ENUM,
             field: 'user_type',
@@ -145,22 +157,69 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'organization_type_id',
         },
-        dateOfIncorporation:{
+        dateOfIncorporation: {
             type: DataTypes.DATE,
             field: 'date_of_incorporation',
         },
-        customerAddress:{
+        customerAddress: {
             type: DataTypes.TEXT,
             field: 'customer_address',
         },
-        gender:{
+        gender: {
             type: DataTypes.STRING,
-            field: 'customer_address',
+            field: 'gender',
         },
-        dateOfBirth:{
+        dateOfBirth: {
             type: DataTypes.DATE,
             field: 'date_of_birth',
+        },
+        currentWalletBalance: {
+            type: DataTypes.FLOAT,
+            field: 'current_wallet_balance',
+            defaultValue: 0
+        },
+        walletFreeBalance: {
+            type: DataTypes.FLOAT,
+            field: 'wallet_free_balance',
+            defaultValue: 0
+        },
+        age: {
+            type: DataTypes.STRING,
+            field: 'age'
+        },
+        allowCustomerEdit: {
+            type: DataTypes.BOOLEAN,
+            field: 'allow_customer_edit',
+            defaultValue: true
+        },
+        kycCompletePoint: {
+            type: DataTypes.INTEGER,
+            field: 'kyc_complete_point',
+        },
+        sourceFrom: {
+            type: DataTypes.INTEGER,
+            field: 'source_from',
+        },
+        suspiciousActivity: {
+            type: DataTypes.BOOLEAN,
+            field: 'suspicious_activity',
+            defaultValue: false
+        },
+        note: {
+            type: DataTypes.TEXT,
+            field: 'note'
+        },
+        currentWalletBalance: {
+            type: DataTypes.FLOAT,
+            field: 'current_wallet_balance',
+            defaultValue: 0
+        },
+        walletFreeBalance: {
+            type: DataTypes.FLOAT,
+            field: 'wallet_free_balance',
+            defaultValue: 0
         }
+
     }, {
         freezeTableName: true,
         tableName: 'customer',
@@ -188,6 +247,8 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         Customer.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+        Customer.belongsTo(models.customer, { foreignKey: 'createdByCustomer', as: 'CreatedbyCustomer' });
+        Customer.belongsTo(models.customer, { foreignKey: 'createdByCustomer', as: 'ModifiedbyCustomer' });
 
         Customer.belongsTo(models.lead, { foreignKey: 'leadSourceId', as: 'lead' });
 
@@ -200,6 +261,12 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.belongsTo(models.organizationType, { foreignKey: 'organizationTypeId', as: 'organizationType' });
         Customer.hasOne(models.customerKycOrganizationDetail, { foreignKey: 'customerId', as: 'organizationDetail' });
+        Customer.hasMany(models.customerLoanTransaction, { foreignKey: 'customerId', as: 'customerLoanTransaction' });
+        Customer.hasMany(models.walletTransactionDetails, { foreignKey: 'customerId', as: 'walletTransactionDetails' });
+
+        Customer.hasMany(models.customerBankDetails, { foreignKey: 'customerId', as: 'customerBankDetail' });
+
+        Customer.hasMany(models.productRequest, { foreignKey: 'customerId', as: 'productRequest' });
 
     }
 

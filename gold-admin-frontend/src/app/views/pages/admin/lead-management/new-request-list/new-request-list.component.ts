@@ -12,6 +12,7 @@ import { AssignAppraiserComponent } from '../../user-management/assign-appraiser
 import { NewRequestAssignAppraiserComponent } from '../new-request-assign-appraiser/new-request-assign-appraiser.component';
 import { NewRequestService } from '../../../../../core/lead-management/services/new-request.service';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { AddLeadComponent } from '../add-lead/add-lead.component';
 
 @Component({
   selector: 'kt-new-request-list',
@@ -174,6 +175,19 @@ export class NewRequestListComponent implements OnInit {
 
   applyLoanTransfer(loan) {
     this.router.navigate(['/admin/loan-management/loan-transfer'], { queryParams: { customerID: loan.id } })
+  }
+
+  assignBranch(loan) {
+    const dialogRef = this.dialog.open(AddLeadComponent,
+      {
+        data: { id: loan.customerId, action: 'assignBranch' },
+        width: '500px'
+      });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.loadPage();
+      }
+    });
   }
 
 }

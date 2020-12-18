@@ -5,7 +5,7 @@ import { map, catchError, finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { LoanApplicationFormService } from '../../../../core/loan-management';
 import { ScrapApplicationFormService } from '../../../../core/scrap-management';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { PdfViewerComponent } from '../pdf-viewer/pdf-viewer.component';
 import { ImagePreviewDialogComponent } from '../image-preview-dialog/image-preview-dialog.component';
@@ -26,6 +26,7 @@ export class BankDetailsComponent implements OnInit, OnChanges {
   @Input() action
   @Input() finalLoanAmt
   @Input() finalScrapAmt
+  @Input() stage
   @Output() next: EventEmitter<any> = new EventEmitter();
   @Input() showButton
   @Input() accountHolderName
@@ -42,16 +43,24 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     public sharedService: SharedService,
     public loanFormService: LoanApplicationFormService,
     public scrapApplicationFormService: ScrapApplicationFormService,
-    private router: Router
+    private router: Router,
+    private rout: ActivatedRoute
   ) {
     this.initForm()
     this.url = this.router.url.split("/")[3]
+    this.rout.queryParams.subscribe(res => {
+      if (res.customerID) {
+        // this.getBankDetails(res.customerID)
+      }
+    })
   }
 
   ngOnInit() {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    console.log(changes)
+
     // console.log(changes, this.details);
     if (changes.details) {
       if (changes.action.currentValue == 'edit') {
@@ -71,11 +80,16 @@ export class BankDetailsComponent implements OnInit, OnChanges {
           let name = changes.details.currentValue.customer.firstName + " " + changes.details.currentValue.customer.lastName
           this.bankForm.patchValue({ accountHolderName: name })
         }
+        if (changes.details.currentValue.masterLoan.customerLoanCurrentStage == '5') {
+          this.getBankDetails()
+
+        }
       }
     }
 
     if (changes.accountHolderName && changes.accountHolderName.currentValue) {
       this.bankForm.patchValue({ accountHolderName: changes.accountHolderName.currentValue })
+      this.getBankDetails()
     }
 
     if (changes.finalLoanAmt) {
@@ -103,6 +117,13 @@ export class BankDetailsComponent implements OnInit, OnChanges {
     if (this.disable) {
       this.bankForm.disable()
     }
+
+  }
+
+  getBankDetails() {
+    this.loanFormService.getBankDetails(this.masterAndLoanIds.masterLoanId).subscribe(res => {
+      this.bankForm.patchValue(res.data.loanBankDetail)
+    })
   }
 
   initForm() {

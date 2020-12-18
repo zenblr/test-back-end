@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'digital_gold_cart'
+        tableName: 'digi_gold_cart'
     });
 
     DigiGoldCart.associate = function (models) {

@@ -4,7 +4,7 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const jwt = require('jsonwebtoken');
 
-const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../utils/constant');
+const { JWT_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/constant');
 let check = require('../../lib/checkLib');
 
 exports.customerLogin = async (req, res, next) => {
@@ -20,11 +20,11 @@ exports.customerLogin = async (req, res, next) => {
             mobile: checkCustomer.dataValues.mobileNumber,
             firstName: checkCustomer.dataValues.firstName,
             lastName: checkCustomer.dataValues.lastName,
-            email:checkCustomer.dataValues.email,
+            email: checkCustomer.dataValues.email,
             userBelongsTo: "CustomerUser"
         },
             JWT_SECRETKEY, {
-            expiresIn: JWT_EXPIRATIONTIME
+            expiresIn: JWT_EXPIRATIONTIME_CUSTOMER
         });
         const decoded = jwt.verify(Token, JWT_SECRETKEY);
         const createdTime = new Date(decoded.iat * 1000).toGMTString();
@@ -33,6 +33,9 @@ exports.customerLogin = async (req, res, next) => {
         await models.customer.update({ lastLogin: createdTime }, {
             where: { id: decoded.id }
         });
+
+        // await models.customerLogger.destroy({ where: { customerId: decoded.id } })
+        
         await models.customerLogger.create({
             customerId: decoded.id,
             token: Token,
@@ -40,7 +43,7 @@ exports.customerLogin = async (req, res, next) => {
             createdDate: createdTime
         });
 
-        return res.status(200).json({ message: 'Login successful', token:Token });
+        return res.status(200).json({ message: 'Login successful', token: Token });
     } else {
         return res.status(401).json({ message: 'Wrong Credentials' });
     }
@@ -82,7 +85,7 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
             userBelongsTo: "customer"
         },
             JWT_SECRETKEY, {
-            expiresIn: JWT_EXPIRATIONTIME
+            expiresIn: JWT_EXPIRATIONTIME_CUSTOMER
         });
 
         const decoded = jwt.verify(Token, JWT_SECRETKEY);
@@ -92,6 +95,9 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
         await models.customer.update({ lastLogin: createdTime }, {
             where: { id: decoded.id }, transaction: t
         });
+
+        // await models.customerLogger.destroy({ where: { customerId: decoded.id } })
+
         await models.customerLogger.create({
             customerId: decoded.id,
             token: Token,
@@ -101,6 +107,6 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
         return Token
 
     })
-    return res.status(200).json({ message: 'Login successful', token });
+    return res.status(200).json({ message: 'Successfully Logged In', token });
 
 }

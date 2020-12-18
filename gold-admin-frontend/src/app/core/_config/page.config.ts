@@ -20,6 +20,9 @@ export class PageConfig {
 					page: { title: "Show Feedback", desc: "" },
 				},
 			},
+			error:{
+				page: { title: "Error Logs", desc: "" },
+			},
 			masters: {
 				reasons: {
 					page: { title: "Reasons", desc: "" },

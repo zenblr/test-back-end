@@ -425,7 +425,7 @@ export class TopbarComponent implements OnInit {
 			this.showfilter = true;
 			this.filterName = "kyc";
 			this.filterWidth = "1000px";
-			this.listType = "approval";
+			this.listType = "modulePoint";
 		}
 		if (this.path == "assigned-customers") {
 			this.showInput = true;

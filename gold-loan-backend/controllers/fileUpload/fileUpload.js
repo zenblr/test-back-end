@@ -48,6 +48,8 @@ exports.uploadFile =
             destination = `public/uploads/scrap/customerDocumentDetails/${scrapId}/`
         } else if (fileFor == "fullRelease") {
             destination = `public/uploads/fullRelease/${fullReleaseId}/`;
+        } else if (fileFor == "ecsForm") {
+            destination = `public/uploads/sip/ecsForm/${customerId}`;
         } else {
             return res.status(422).json({ message: 'Reason not found' });
         }
@@ -242,4 +244,15 @@ exports.base64ConvertorWithPath = async (req, res, next) => {
             imgUrl: `${process.env.BASE_URL}/uploads/images/${fileName}.jpeg`, uploadFile
         })
     }
+}
+
+exports.pathToBase64 = async (req, res, next) => {
+
+
+    let { path } = req.body
+    let buff = fs.readFileSync(`public/${path}`);
+    let base64data = buff.toString('base64');
+
+    let data = `data:image/jpeg;base64,${base64data}`
+    return res.status(200).json({ data: data })
 }

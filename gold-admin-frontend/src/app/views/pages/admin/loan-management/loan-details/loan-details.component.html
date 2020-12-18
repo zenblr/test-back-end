@@ -21,6 +21,12 @@
                         {{loan?.customer?.lastName | titlecase}}
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="branchName">
+                    <mat-header-cell *matHeaderCellDef>Branch Name</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        {{loan?.customer?.internalBranch?.name | titlecase}}
+                    </mat-cell>
+                </ng-container>
 
                 <ng-container matColumnDef="loanId">
                     <mat-header-cell *matHeaderCellDef>Loan ID</mat-header-cell>
@@ -58,7 +64,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="interestRate">
-                    <mat-header-cell *matHeaderCellDef>Intrest Rate</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Interest Rate</mat-header-cell>
                     <mat-cell *matCellDef="let loan" class="d-block">
                         <div>
                             {{loan?.customerLoan[0]?.interestRate}} % P.M

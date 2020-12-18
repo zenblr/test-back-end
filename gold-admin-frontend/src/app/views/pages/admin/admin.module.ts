@@ -75,6 +75,11 @@ import { AdminComponent } from './admin.component';
 						loadChildren: () => import('./user-management/user-management.module').then(m => m.UserManagementModule)
 					},
 					{
+						path: 'error',
+						loadChildren: () => import('./error/error.module').then(m => m.ErrorModule)
+					},
+
+					{
 						path: 'emi-management',
 						loadChildren: () => import('./emi-management/emi-management.module').then(m => m.EMIManagementModule)
 					},

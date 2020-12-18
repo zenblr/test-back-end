@@ -22,6 +22,8 @@ const getGoldSilverRate = require("./utils/digitalGoldSilverRates");
 const merchantLogin = require('./utils/merchantLogin');
 const customerKycStatusMessage = require("./utils/customerKycStatusMessage");
 const withDrawStatusMessage = require("./utils/withDrawStatusMessage");
+const changeSellableMetalValue = require("./utils/changeSellableMetalValue")
+const {getErrorForMail} = require('./controllers/errorLogs/errorLogs');
 
 //model
 const models = require('./models');
@@ -37,7 +39,7 @@ app.use(useragent.express());
 //swagger _setup
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swagger.swaggerSpec));
 
-app.use('/scrap/api-docs', swaggerUi.serve, swaggerUi.setup(scrapSwagger.swaggerSpec));
+// app.use('/scrap/api-docs', swaggerUi.serve, swaggerUi.setup(scrapSwagger.swaggerSpec));
 
 app.use('/digi-gold/api-docs', swaggerUi.serve, swaggerUi.setup(digiGoldSwagger.swaggerSpec));
 
@@ -104,9 +106,9 @@ app.use(function (err, req, res, next) {
     res.status(500).send({ message: "something went wrong" });
 });
 
-// cron.schedule(' * * * * *', async function () {
-//     await interest.test('1');
-// })
+cron.schedule(' 0 */30 * * * *', async function () {
+    await getErrorForMail();
+})
 
 cron.schedule('0 1 * * *', async function () {
     let date = moment()
@@ -222,6 +224,24 @@ cron.schedule('0 */30 * * * *', async () => {
         let endTime = moment();
         var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
         await cronLogger("withdraw message", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
+    }
+});
+
+cron.schedule('0 */15 * * * *', async () => {
+    let date = moment()
+    let startTime = moment();
+
+    try {
+        await changeSellableMetalValue();
+        let endTime = moment();
+        let processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS");
+        await cronLogger("calculate sellable metal", date, startTime, endTime, processingTime, "success", "success", null);
+
+    } catch (err) {
+        console.log(err)
+        let endTime = moment();
+        var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        await cronLogger("calculate sellable metal", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
     }
 });
 

@@ -22,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'address',
             allowNull: false
         },
+        landmark: {
+            type: DataTypes.STRING,
+            field: 'landmark'
+        },
         stateId: {
             type: DataTypes.INTEGER,
             field: 'state_id',
@@ -56,6 +60,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'modified_by'
         },
+        createdByCustomer: {
+            type: DataTypes.INTEGER,
+            field: 'created_by_customer',
+        },
+        modifiedByCustomer: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by_customer',
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -82,6 +94,9 @@ module.exports = (sequelize, DataTypes) => {
 
         CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         CustomerKycAddressDetail.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+
+        CustomerKycAddressDetail.belongsTo(models.customer, { foreignKey: 'createdByCustomer', as: 'CreatedbyCustomer' });
+        CustomerKycAddressDetail.belongsTo(models.customer, { foreignKey: 'createdByCustomer', as: 'ModifiedbyCustomer' });
 
 
     }

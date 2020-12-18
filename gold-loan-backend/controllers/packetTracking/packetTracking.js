@@ -1538,7 +1538,7 @@ exports.submitLoanPacketLocationForHomeIn = async (req, res, next) => {
             if (isFullRelease) {
                 await models.fullRelease.update({ fullReleaseStatus: 'released', modifiedBy, releaseDate, isCustomerReceivedPacket: true }, { where: { id: releaseId }, transaction: t })
 
-                await models.customerLoanMaster.update({ isOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
+                await models.customerLoanMaster.update({ isOrnamentsReleased: true,isFullOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
 
                 let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
 
@@ -1546,7 +1546,7 @@ exports.submitLoanPacketLocationForHomeIn = async (req, res, next) => {
 
             } else {
                 await models.partRelease.update({ partReleaseStatus: 'released', modifiedBy, releaseDate, isCustomerReceivedPacket: true }, { where: { id: releaseId }, transaction: t })
-                await models.customerLoanMaster.update({ isOrnamentsReleased: true, isFullOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
+                await models.customerLoanMaster.update({ isOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
 
                 let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
 

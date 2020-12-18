@@ -26,7 +26,7 @@ exports.createCart = async (req, res) => {
                   { transaction: t }
                 );
             });
-            return res.status(201).json({message:"Product added to cart"});
+            return res.status(200).json({message:"Product added to cart"});
         }
 
 };
@@ -129,5 +129,5 @@ exports.reAddItemsToCart = async (req, res) => {
             });
         }
     }
-    return res.status(201).json({message:"Product added to cart"});
+    return res.status(200).json({message:"Product added to cart"});
 };

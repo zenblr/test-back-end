@@ -12,46 +12,47 @@
                     </div>
 
                     <div class="col-lg-12 kt-margin-bottom-20-mobile">
+                        <ng-container *ngIf="data.action !== 'assignBranch'">
+                            <!-- Lead Drop Down -->
+                            <div class="row">
+                                <div class="col-4 form-label">
+                                    <mat-label>Lead Source</mat-label>
+                                </div>
 
-                        <!-- Lead Drop Down -->
-                        <div class="row">
-                            <div class="col-4 form-label">
-                                <mat-label>Lead Source</mat-label>
+                                <div class="col-8">
+                                    <select class="form-control" formControlName="leadSourceId"
+                                        [class.isError]="controls.leadSourceId.touched && controls.leadSourceId.invalid">
+                                        <option value="null" [selected]="true"> Select Lead </option>
+                                        <option *ngFor="let lead of leadSources" [value]="lead.id">
+                                            {{lead.leadName | titlecase}}
+                                        </option>
+                                    </select>
+                                    <mat-error
+                                        *ngIf="controls.leadSourceId.touched && controls.leadSourceId.errors?.required">
+                                        Required field
+                                    </mat-error>
+
+                                    <!-- </mat-form-field> -->
+                                </div>
                             </div>
 
-                            <div class="col-8">
-                                <select class="form-control" formControlName="leadSourceId"
-                                    [class.isError]="controls.leadSourceId.touched && controls.leadSourceId.invalid">
-                                    <option value="null" [selected]="true"> Select Lead </option>
-                                    <option *ngFor="let lead of leadSources" [value]="lead.id">
-                                        {{lead.leadName | titlecase}}
-                                    </option>
-                                </select>
-                                <mat-error
-                                    *ngIf="controls.leadSourceId.touched && controls.leadSourceId.errors?.required">
-                                    Required field
-                                </mat-error>
+                            <!-- Source -->
 
-                                <!-- </mat-form-field> -->
+                            <div class="row kt-padding-t-15">
+                                <div class="col-4 form-label">
+                                    <mat-label>Comment</mat-label>
+                                </div>
+
+                                <div class="col-8">
+                                    <input class="form-control" formControlName="source">
+                                    <mat-error *ngIf="controls.source.touched && controls.source.errors?.required">
+                                        Required field
+                                    </mat-error>
+
+                                    <!-- </mat-form-field> -->
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- Source -->
-
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4 form-label">
-                                <mat-label>Comment</mat-label>
-                            </div>
-
-                            <div class="col-8">
-                                <input class="form-control" formControlName="source">
-                                <mat-error *ngIf="controls.source.touched && controls.source.errors?.required">
-                                    Required field
-                                </mat-error>
-
-                                <!-- </mat-form-field> -->
-                            </div>
-                        </div>
+                        </ng-container>
                         <!-- Name -->
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
@@ -60,7 +61,7 @@
 
                             <div class="col-4">
                                 <input type="text" aria-label="First name" placeholder="First Name" ktAlphabets
-                                    class="form-control" formControlName="firstName"
+                                    ktTrimControl class="form-control" formControlName="firstName"
                                     [class.isError]="controls.firstName.touched && controls.firstName.invalid">
                                 <mat-error *ngIf="controls.firstName.errors?.required && controls.firstName.touched">
                                     Required field
@@ -69,7 +70,7 @@
                             <div class="col-4">
 
                                 <input type="text" aria-label="Last name" placeholder="Last Name" ktAlphabets
-                                    class="form-control" formControlName="lastName"
+                                    ktTrimControl class="form-control" formControlName="lastName"
                                     [class.isError]="controls.lastName.touched && controls.lastName.invalid">
 
                                 <mat-error *ngIf=" controls.lastName.errors?.required && controls.lastName.touched">
@@ -158,119 +159,98 @@
 
                         </div>
 
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4 align-self-center form-label">
-                                <label class="text-color font-weight-500">PAN / FORM 60 </label>
+                        <ng-container *ngIf="data.action !== 'assignBranch'">
+                            <div class="row kt-padding-t-15">
+                                <div class="col-4 align-self-center form-label">
+                                    <label class="text-color font-weight-500">PAN / FORM 60 </label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-control" formControlName="panType" (change)='remove()'>
+                                        <option value='' selected>Select</option>
+                                        <option value="pan">PAN</option>
+                                        <option value="form60">FORM 60</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-8">
-                                <select class="form-control" formControlName="panType" (change)='remove()'>
-                                    <option value='' selected>Select</option>
-                                    <option value="pan">PAN</option>
-                                    <option value="form60">FORM 60</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'form60'">
-                            <div class="col-4 align-self-center form-label">
-                                <label class="mandatory  text-color font-weight-500">FORM 60 </label>
-                            </div>
-                            <div class="offset-5 col" *ngIf="!controls.panImg.value">
-                                <input type="file" #file (input)="getFileInfo($event)" class="d-none">
-                                <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Attach'"
-                                    (click)="file.click()">
-                                </kt-button>
-                            </div>
-                            <div class="col-5 form-label" *ngIf="controls.panImg.value">
-                                <label for="" class="text-primary kt-padding-l-15 kt-pointer" (click)="preview()">View
-                                    Image</label>
-                            </div>
-                            <div class="col form-label" *ngIf="controls.panImg.value">
-                                <label *ngIf="data.action != 'view'" class="text-danger kt-padding-l-15 kt-pointer"
-                                    (click)="remove()">Remove</label>
-                            </div>
-                        </div>
-
-                        <div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
-                            <!-- PAN -->
-                            <div class="col-4 form-label">
-                                <mat-label class="mandatory">PAN</mat-label>
+                            <div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'form60'">
+                                <div class="col-4 align-self-center form-label">
+                                    <label class="mandatory  text-color font-weight-500">FORM 60 </label>
+                                </div>
+                                <div class="offset-5 col" *ngIf="!controls.panImg.value">
+                                    <input type="file" #file (input)="getFileInfo($event)" class="d-none">
+                                    <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Attach'"
+                                        (click)="file.click()">
+                                    </kt-button>
+                                </div>
+                                <div class="col-5 form-label" *ngIf="controls.panImg.value">
+                                    <label for="" class="text-primary kt-padding-l-15 kt-pointer"
+                                        (click)="preview()">View
+                                        Image</label>
+                                </div>
+                                <div class="col form-label" *ngIf="controls.panImg.value">
+                                    <label *ngIf="data.action != 'view'" class="text-danger kt-padding-l-15 kt-pointer"
+                                        (click)="remove()">Remove</label>
+                                </div>
                             </div>
 
-                            <div [ngClass]="data.action != 'view'?'col-5':'col-8'">
-                                <!-- <mat-form-field appearance="outline" class="w-100"> -->
-                                <input class="form-control" formControlName="panCardNumber" autocomplete="off"
-                                    placeholder="PAN" maxlength="10"
-                                    [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
-                                    style="text-transform: uppercase;">
-                                <!-- <mat-error
+                            <div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
+                                <!-- PAN -->
+                                <div class="col-4 form-label">
+                                    <mat-label class="mandatory">PAN</mat-label>
+                                </div>
+
+                                <div [ngClass]="data.action != 'view'?'col-5':'col-8'">
+                                    <!-- <mat-form-field appearance="outline" class="w-100"> -->
+                                    <input class="form-control" formControlName="panCardNumber" autocomplete="off"
+                                        placeholder="PAN" maxlength="10"
+                                        [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
+                                        style="text-transform: uppercase;">
+                                    <!-- <mat-error
                                         *ngIf="controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
                                         Required field
                                     </mat-error> -->
-                                <mat-error
-                                    *ngIf="controls.panCardNumber.errors?.pattern && controls.panCardNumber.touched">
-                                    Invalid Input
-                                </mat-error>
-                                <mat-error
-                                    *ngIf="controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
-                                    Required field
-                                </mat-error>
-                                <!-- </mat-form-field> -->
+                                    <mat-error
+                                        *ngIf="controls.panCardNumber.errors?.pattern && controls.panCardNumber.touched">
+                                        Invalid Input
+                                    </mat-error>
+                                    <mat-error
+                                        *ngIf="controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
+                                        Required field
+                                    </mat-error>
+                                    <!-- </mat-form-field> -->
+                                </div>
+                                <div class="col" *ngIf="data.action != 'view'">
+                                    <div *ngIf="!isPanVerified">
+                                        <kt-button [myClass]="'w-100'" [isDisabled]="panButton" [type]="'button'"
+                                            [value]="'Verify'" (action)="verifyPAN()">
+                                        </kt-button>
+                                    </div>
+
+                                    <div *ngIf="isPanVerified">
+                                        <button class="w-100 success-button" mat-raised-button
+                                            matTooltip="Pan Verified">Verified</button>
+                                    </div>
+                                </div>
+
                             </div>
-                            <div class="col" *ngIf="data.action != 'view'">
-                                <div *ngIf="!isPanVerified">
-                                    <kt-button [myClass]="'w-100'" [isDisabled]="panButton" [type]="'button'"
-                                        [value]="'Verify'" (action)="verifyPAN()">
+                            <div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
+                                <div class="offset-9 col" *ngIf="!controls.panImg.value">
+                                    <input type="file" #file (input)="getFileInfo($event)" class="d-none">
+                                    <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Attach'"
+                                        (click)="file.click()">
                                     </kt-button>
                                 </div>
-
-                                <div *ngIf="isPanVerified">
-                                    <button class="w-100 success-button" mat-raised-button
-                                        matTooltip="Pan Verified">Verified</button>
+                                <div class="offset-4 col-5 form-label" *ngIf="controls.panImg.value">
+                                    <label for="" class="text-primary kt-padding-l-15 kt-pointer"
+                                        (click)="preview()">View
+                                        Image</label>
+                                </div>
+                                <div class="col form-label" *ngIf="controls.panImg.value">
+                                    <label *ngIf="data.action != 'view'" class="text-danger kt-padding-l-15 kt-pointer"
+                                        (click)="remove()">Remove</label>
                                 </div>
                             </div>
-
-                        </div>
-                        <div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
-                            <div class="offset-9 col" *ngIf="!controls.panImg.value">
-                                <input type="file" #file (input)="getFileInfo($event)" class="d-none">
-                                <kt-button [myClass]="'w-100'" [type]="'button'" [value]="'Attach'"
-                                    (click)="file.click()">
-                                </kt-button>
-                            </div>
-                            <div class="offset-4 col-5 form-label" *ngIf="controls.panImg.value">
-                                <label for="" class="text-primary kt-padding-l-15 kt-pointer" (click)="preview()">View
-                                    Image</label>
-                            </div>
-                            <div class="col form-label" *ngIf="controls.panImg.value">
-                                <label *ngIf="data.action != 'view'" class="text-danger kt-padding-l-15 kt-pointer"
-                                    (click)="remove()">Remove</label>
-                            </div>
-                        </div>
-                        
-
-
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4 form-label">
-                                <mat-label class="mandatory">Internal Branch</mat-label>
-                            </div>
-
-                            <div class="col-8">
-                                <select class="form-control" formControlName="internalBranchId"
-                                    (change)="patchStateCity($event.target.value)"
-                                    [class.isError]="controls.internalBranchId.touched && controls.internalBranchId.invalid">
-                                    <option [value]=null [disabled]="true" [selected]="true"> Select Internal Branch
-                                    </option>
-                                    <option *ngFor="let branch of branches" [value]="branch.id">
-                                        {{branch.name | titlecase}}
-                                    </option>
-                                </select>
-                                <mat-error
-                                    *ngIf="controls.internalBranchId.touched && controls.internalBranchId.errors?.required">
-                                    Required field
-                                </mat-error>
-                            </div>
-                        </div>
-
+                        </ng-container>
 
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
@@ -299,7 +279,7 @@
                             </div>
 
                             <div class="col-8">
-                                <select class="form-control" formControlName="cityId" margin
+                                <select class="form-control" formControlName="cityId" (change)="getBranchFromCity()"
                                     [class.isError]="controls.cityId.touched && controls.cityId.invalid">
                                     <option selected value="" disabled> Select City</option>
                                     <option *ngFor="let city of cities" [value]="city.id">
@@ -313,80 +293,105 @@
 
                         <div class="row kt-padding-t-15">
                             <div class="col-4 form-label">
-                                <mat-label class="mandatory">Pin Code</mat-label>
+                                <mat-label class="mandatory">Internal Branch</mat-label>
                             </div>
 
                             <div class="col-8">
-                                <input class="form-control" formControlName="pinCode" numbersOnly maxlength="6"
-                                    placeholder="000 000"
-                                    [class.isError]="controls.pinCode.invalid && controls.pinCode.touched">
-                                <mat-error *ngIf="controls.pinCode.errors?.required && controls.pinCode.touched">
-                                    Required field</mat-error>
-                                <mat-error *ngIf="controls.pinCode.errors?.pattern && controls.pinCode.touched">
-                                    Invalid Input</mat-error>
-                            </div>
-                        </div>
-
-                        <!-- Date & Time -->
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4 form-label">
-                                <mat-label>Date & Time</mat-label>
-                            </div>
-
-                            <div class="col-8">
-                                <input class="form-control" formControlName="dateTime" readonly
-                                    placeholder="Enter Full Name" value="{{currentDate |  date:'medium'}}">
-                                <mat-error *ngIf="controls.dateTime.errors?.required ">Required field</mat-error>
-                            </div>
-                        </div>
-
-                        <div class="row kt-padding-t-15">
-                            <div class="col-4 form-label">
-                                <mat-label class="mandatory">Select Product</mat-label>
-                            </div>
-
-                            <div class="col-8">
-                                <select class="form-control" formControlName="moduleId"
-                                    [class.isError]="controls.moduleId.touched && controls.moduleId.invalid">
-                                    <option selected disabled value=null>Select Product</option>
-                                    <option *ngFor="let module of modules" [value]="module.id">
-                                        {{module.moduleName | titlecase}}
+                                <select class="form-control" formControlName="internalBranchId"
+                                    (change)="patchStateCity($event.target.value)"
+                                    [class.isError]="controls.internalBranchId.touched && controls.internalBranchId.invalid">
+                                    <option [value]=null [disabled]="true" [selected]="true"> Select Internal Branch
+                                    </option>
+                                    <option *ngFor="let branch of branches" [value]="branch.id">
+                                        {{branch.name | titlecase}}
                                     </option>
                                 </select>
-                                <mat-error *ngIf="controls.moduleId.errors?.required && controls.moduleId.touched">
-                                    Required field</mat-error>
+                                <mat-error
+                                    *ngIf="controls.internalBranchId.touched && controls.internalBranchId.errors?.required">
+                                    Required field
+                                </mat-error>
                             </div>
                         </div>
 
-                        <div class="row kt-padding-t-15 kt-padding-b-15">
-                            <div class="col-4 form-label">
-                                <mat-label class="mandatory">Select Status</mat-label>
+                        <ng-container *ngIf="data.action !== 'assignBranch'">
+                            <div class="row kt-padding-t-15">
+                                <div class="col-4 form-label">
+                                    <mat-label class="mandatory">Pin Code</mat-label>
+                                </div>
+
+                                <div class="col-8">
+                                    <input class="form-control" formControlName="pinCode" numbersOnly maxlength="6"
+                                        placeholder="000 000"
+                                        [class.isError]="controls.pinCode.invalid && controls.pinCode.touched">
+                                    <mat-error *ngIf="controls.pinCode.errors?.required && controls.pinCode.touched">
+                                        Required field</mat-error>
+                                    <mat-error *ngIf="controls.pinCode.errors?.pattern && controls.pinCode.touched">
+                                        Invalid Input</mat-error>
+                                </div>
                             </div>
 
-                            <div class="col-8">
-                                <select class="form-control" formControlName="statusId" (change)="commentBox()"
-                                    [class.isError]="controls.statusId.touched && controls.statusId.invalid">
-                                    <option selected disabled value=null>Select Status</option>
-                                    <option *ngFor="let stat of status" [value]="stat.id">
-                                        {{stat.statusName | titlecase}}
-                                    </option>
-                                </select>
-                                <mat-error *ngIf="controls.statusId.errors?.required && controls.statusId.touched">
-                                    Required field</mat-error>
-                            </div>
-                        </div>
-                        <div class="row kt-padding-t-15" *ngIf="controls.statusId.value != 1 && showCommentBox">
-                            <div class="col-4 form-label">
-                                <mat-label class="mandatory">Comment</mat-label>
+                            <!-- Date & Time -->
+                            <div class="row kt-padding-t-15">
+                                <div class="col-4 form-label">
+                                    <mat-label>Date & Time</mat-label>
+                                </div>
+
+                                <div class="col-8">
+                                    <input class="form-control" formControlName="dateTime" readonly
+                                        placeholder="Enter Full Name" value="{{currentDate |  date:'medium'}}">
+                                    <mat-error *ngIf="controls.dateTime.errors?.required ">Required field</mat-error>
+                                </div>
                             </div>
 
-                            <div class="col-8">
-                                <textarea name="" id="" cols="3" rows="3" formControlName="comment" class="form-control"
-                                    [class.isError]="controls.comment.touched && controls.comment.invalid"></textarea>
-                                <mat-error *ngIf="controls.comment.errors?.required && controls.comment.touched">
-                                    Required field</mat-error>
+                            <div class="row kt-padding-t-15">
+                                <div class="col-4 form-label">
+                                    <mat-label class="mandatory">Select Product</mat-label>
+                                </div>
+
+                                <div class="col-8">
+                                    <select class="form-control" formControlName="moduleId"
+                                        [class.isError]="controls.moduleId.touched && controls.moduleId.invalid">
+                                        <option selected disabled value=null>Select Product</option>
+                                        <option *ngFor="let module of modules" [value]="module.id">
+                                            {{module.moduleName | titlecase}}
+                                        </option>
+                                    </select>
+                                    <mat-error *ngIf="controls.moduleId.errors?.required && controls.moduleId.touched">
+                                        Required field</mat-error>
+                                </div>
                             </div>
-                        </div>
+
+                            <div class="row kt-padding-t-15 kt-padding-b-15">
+                                <div class="col-4 form-label">
+                                    <mat-label class="mandatory">Select Status</mat-label>
+                                </div>
+
+                                <div class="col-8">
+                                    <select class="form-control" formControlName="statusId" (change)="commentBox()"
+                                        [class.isError]="controls.statusId.touched && controls.statusId.invalid">
+                                        <option selected disabled value=null>Select Status</option>
+                                        <option *ngFor="let stat of status" [value]="stat.id">
+                                            {{stat.statusName | titlecase}}
+                                        </option>
+                                    </select>
+                                    <mat-error *ngIf="controls.statusId.errors?.required && controls.statusId.touched">
+                                        Required field</mat-error>
+                                </div>
+                            </div>
+                            <div class="row kt-padding-t-15" *ngIf="controls.statusId.value != 1 && showCommentBox">
+                                <div class="col-4 form-label">
+                                    <mat-label class="mandatory">Comment</mat-label>
+                                </div>
+
+                                <div class="col-8">
+                                    <textarea name="" id="" cols="3" rows="3" formControlName="comment"
+                                        class="form-control"
+                                        [class.isError]="controls.comment.touched && controls.comment.invalid"></textarea>
+                                    <mat-error *ngIf="controls.comment.errors?.required && controls.comment.touched">
+                                        Required field</mat-error>
+                                </div>
+                            </div>
+                        </ng-container>
                     </div>
                 </div>
 

@@ -34,7 +34,15 @@
                     <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
                     <mat-cell *matCellDef="let loan">{{loan.loanStartDate | date: 'mediumDate'}}</mat-cell>
                 </ng-container>
-
+                <ng-container matColumnDef="loanType">
+                    <mat-header-cell *matHeaderCellDef>Loan Type</mat-header-cell>
+                    <mat-cell *matCellDef="let loan">
+                        <span *ngIf="loan?.isLoanTransfer">BT Loan</span>
+                        <span *ngIf="loan?.isNewLoanFromPartRelease">Part Release</span>
+                        <span *ngIf="(!loan?.isLoanTransfer && !loan?.isNewLoanFromPartRelease)">New Loan</span>
+                    </mat-cell>
+                </ng-container>
+                
                 <ng-container matColumnDef="loanAmount">
                     <mat-header-cell *matHeaderCellDef>Loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let loan" class="d-block">

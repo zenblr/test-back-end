@@ -176,12 +176,12 @@ exports.readSchemeByPartnerId = async (req, res, next) => {
 //scheme Read based on amount
 
 exports.readSchemeOnAmount = async (req, res, next) => {
-    let { masterLoanId } = req.params;
+    let { internalBranchId } = req.params;
 
-    let loan = await models.customerLoanMaster.findOne({
-        where: { id: masterLoanId },
-        attributes: ['internalBranchId']
-    })
+    // let loan = await models.customerLoanMaster.findOne({
+    //     where: { id: masterLoanId },
+    //     attributes: ['internalBranchId']
+    // })
 
     let partnerSecuredScheme = await models.partner.findAll({
         order: [
@@ -203,7 +203,7 @@ exports.readSchemeOnAmount = async (req, res, next) => {
                     as: 'schemeInterest'
                 }, {
                     model: models.internalBranch,
-                    where: { id: loan.internalBranchId }
+                    where: { id: internalBranchId }
                 }, {
                     model: models.scheme,
                     as: 'unsecuredScheme'
@@ -477,9 +477,11 @@ exports.exportSchemes = async (req, res, next) => {
                 attributes: ['id', 'schemeName', 'schemeType', 'rpg']
             }],
         })
-        if (readSchemeByPartner.schemes.length > 0) {
-            let data = readSchemeByPartner;
-            schemeData.push(data)
+        if(readSchemeByPartner){
+            if (readSchemeByPartner.schemes.length > 0) {
+                let data = readSchemeByPartner;
+                schemeData.push(data)
+            }
         }
 
     }
@@ -510,47 +512,57 @@ exports.exportSchemes = async (req, res, next) => {
 
 
 exports.editSchemeThorughExcel = async (req, res, next) => {
-        let allExcelData = [];
-        let excelData = await xlsx2json(`./${req.body.url}`);
-        if (fs.existsSync(`./${req.body.url}`)) {
-            fs.unlinkSync(`./${req.body.url}`);
-        }
-        for (const data of excelData) {
-            const dataArray = data;
-            if (dataArray.length != 0) {
-                const finalArray = await dataArray.reduce(
-                    (object, item, index) => {
-                        if (index === 0) {
-                            object.mapper = item;
-                            return object;
-                        }
-                        const data = {};
-                        Object.keys(item).forEach((key) => {
-                            data[object.mapper[key].replace(/\s/g, "")] = item[key];
-                        });
-                        object.data.push(data);
+    let allExcelData = [];
+    let excelData = await xlsx2json(`./${req.body.url}`);
+    if (fs.existsSync(`./${req.body.url}`)) {
+        fs.unlinkSync(`./${req.body.url}`);
+    }
+    for (const data of excelData) {
+        const dataArray = data;
+        if (dataArray.length != 0) {
+            const finalArray = await dataArray.reduce(
+                (object, item, index) => {
+                    if (index === 0) {
+                        object.mapper = item;
                         return object;
-                    },
-                    { mapper: {}, data: [] }
-                );
-                allExcelData.push(finalArray.data)
-            } 
+                    }
+                    const data = {};
+                    Object.keys(item).forEach((key) => {
+                        data[object.mapper[key].replace(/\s/g, "")] = item[key];
+                    });
+                    object.data.push(data);
+                    return object;
+                },
+                { mapper: {}, data: [] }
+            );
+            allExcelData.push(finalArray.data)
         }
-        await sequelize.transaction(async t => {
-        for(const data of allExcelData){
-            if(data.length != 0){
-                for(const scheme of data){
+    }
+    await sequelize.transaction(async t => {
+        for (const data of allExcelData) {
+            if (data.length != 0) {
+                for (const scheme of data) {
                     let rpg = Number(scheme.rpg);
                     let id = Number(scheme.id);
-                    if(rpg > 0 && id > 0){
-                        await models.scheme.update({ rpg: scheme.rpg }, { where: { id:scheme.id },transaction: t })
+                    if (rpg > 0 && id > 0) {
+                        await models.scheme.update({ rpg: scheme.rpg }, { where: { id: scheme.id }, transaction: t })
                     }
                 }
             }
         }
     });
-        return res.status(200).json({ allExcelData });
+    return res.status(200).json({ allExcelData });
 };
+
+
+exports.updateRpg = async (req, res, next) => {
+    let { id, rpg } = req.body
+    await sequelize.transaction(async t => {
+        await models.scheme.update({ rpg }, { where: { id }, transaction: t })
+    });
+    return res.status(200).json({ message: "Success" });
+};
+
 
 
 

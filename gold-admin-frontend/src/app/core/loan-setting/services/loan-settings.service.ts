@@ -44,6 +44,16 @@ export class LoanSettingsService {
         throw (err)
       }))
   }
+
+  editRpg(data): Observable<any> {
+    return this.http.put('api/scheme/update-single-rpg', data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this._toastr.error(err.error.message)
+        throw (err)
+      }))
+  }
   // old
   // uplaodCSV(data): Observable<any> {
   //   return this.http.post('api/upload-scheme', data).pipe(

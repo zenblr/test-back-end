@@ -1,4 +1,4 @@
-const { addScheme, readScheme,exportSchemes, readSchemeById, readSchemeByPartnerId, deactiveScheme, readSchemeOnAmount, UpdateDefault, readUnsecuredSchemeOnAmount, checkSlab, getUnsecuredScheme,editSchemeThorughExcel } = require("../controllers/scheme/scheme");
+const { addScheme, readScheme,exportSchemes, readSchemeById, readSchemeByPartnerId, deactiveScheme, readSchemeOnAmount, UpdateDefault, readUnsecuredSchemeOnAmount, checkSlab, getUnsecuredScheme,editSchemeThorughExcel,updateRpg } = require("../controllers/scheme/scheme");
 
 const { wrapper } = require('../utils/errorWrap');
 const validationError = require('../middleware/validationError');
@@ -22,11 +22,13 @@ route.get('/export-scheme', checkAuth, wrapper(exportSchemes));
 
 route.get('/partner-scheme/:id', checkAuth, checkRolePermission, wrapper(readSchemeByPartnerId)) //read partner scheme
 
-route.get('/partner-scheme-amount/:masterLoanId', checkAuth, wrapper(readSchemeOnAmount)) //read scheme on amount
+route.get('/partner-scheme-amount/:internalBranchId', checkAuth, wrapper(readSchemeOnAmount)) //read scheme on amount
 
 route.get('/:id', checkAuth, checkRolePermission, wrapper(readSchemeById)); // read scheme by id route
 
 route.put('/update-rpg', checkAuth, wrapper(editSchemeThorughExcel));
+
+route.put('/update-single-rpg', checkAuth, wrapper(updateRpg)); //update selected scheme rpg
 
 route.put('/update-default/:id', checkAuth, checkRolePermission, wrapper(UpdateDefault)); // api to update default
 
