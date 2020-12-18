@@ -148,11 +148,11 @@ exports.addAmountWallet = async (req, res) => {
             res.cookie(`orderData`, `${JSON.stringify(orderData)}`);
         }
         if (tempWalletTransaction.type == "deposit") {
-            res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
-            // res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
+            // res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
+            res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
         } else {
-            res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}`);
-            // res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}`);
+            // res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}`);
+            res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}`);
         }
 
         // return res.status(200).json(walletTransactionDetails);
