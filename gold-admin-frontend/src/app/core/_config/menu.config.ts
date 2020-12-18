@@ -948,45 +948,45 @@ export class MenuConfig {
 									bullet: 'dot',
 									permission: false,
 								}
-							  
+
 							]
 						},
-						{
-							title: "SIP Management",
-							root: true,
-							bullet: 'dot',
-							src: "assets/media/aside-icons/icons-35.svg",
-							permission: false,
-							submenu: [								
-								{
-									title: "SIP Application",
-									page: "/admin/digi-gold/sip-management/sip-application",
-									root: true,
-								},
-								{
-									title: "Sip Trades",
-									page: "/admin/digi-gold/sip-management/sip-trades",
-									root: true,
-								},
-								{
-									title: "Masters",
-									root: true,
-									bullet: 'dot',
-									submenu: [
-										{
-											title: "SIP Cycle Date",
-											page: "/admin/digi-gold/sip-management/sip-cycle-date",
-											permission: false,
-										},
-										{
-											title: "SIP Investment Tenure",
-											page: "/admin/digi-gold/sip-management/sip-investment-tenure",
-											permission: false,
-										},
-									]
-								},
-							]
-						},
+						// {
+						// 	title: "SIP Management",
+						// 	root: true,
+						// 	bullet: 'dot',
+						// 	src: "assets/media/aside-icons/icons-35.svg",
+						// 	permission: false,
+						// 	submenu: [
+						// 		{
+						// 			title: "SIP Application",
+						// 			page: "/admin/digi-gold/sip-management/sip-application",
+						// 			root: true,
+						// 		},
+						// 		{
+						// 			title: "Sip Trades",
+						// 			page: "/admin/digi-gold/sip-management/sip-trades",
+						// 			root: true,
+						// 		},
+						// 		{
+						// 			title: "Masters",
+						// 			root: true,
+						// 			bullet: 'dot',
+						// 			submenu: [
+						// 				{
+						// 					title: "SIP Cycle Date",
+						// 					page: "/admin/digi-gold/sip-management/sip-cycle-date",
+						// 					permission: false,
+						// 				},
+						// 				{
+						// 					title: "SIP Investment Tenure",
+						// 					page: "/admin/digi-gold/sip-management/sip-investment-tenure",
+						// 					permission: false,
+						// 				},
+						// 			]
+						// 		},
+						// 	]
+						// },
 						{
 							title: "Settings",
 							root: true,

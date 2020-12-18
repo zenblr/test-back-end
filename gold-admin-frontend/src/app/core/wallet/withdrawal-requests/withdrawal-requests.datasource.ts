@@ -4,7 +4,6 @@ import { BehaviorSubject, of } from 'rxjs';
 import { WithdrawalRequestsService } from '../withdrawal-requests/withdrawal-requests.service';
 
 export class WithdrawalRequestsDatasource extends BaseDataSource {
-
     private loadingSubject = new BehaviorSubject<boolean>(false);
     private isPreloadTextViewedSubject = new BehaviorSubject<boolean>(true);
 
@@ -17,8 +16,6 @@ export class WithdrawalRequestsDatasource extends BaseDataSource {
 
     loadWithdrawalRequests(data) {
         this.loadingSubject.next(true);
-
-        // this.entitySubject.next(this.leads); // delete this
 
         this.withdrawalRequestsService.getWithdrawalRequests(data)
             .pipe(

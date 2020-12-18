@@ -9,7 +9,7 @@
                             <label class="font-weight-500 text-color">Bank Transaction ID</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" formControlName="bankTransactionID" class="form-control" numbersOnly disabled>
+                            <input type="text" formControlName="bankTransactionID" class="form-control" disabled>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">
@@ -41,7 +41,8 @@
                             <label class="font-weight-500 text-color">Deposit Date </label>
                         </div>
                         <div class="col-8">
-                            <input type="text" formControlName="depositDate" class="form-control" disabled>
+                            <input type="text" formControlName="depositDate" class="form-control"
+                                [value]="controls?.depositDate?.value | date: 'MMM d, y, h:mm a'" disabled>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">
@@ -49,8 +50,7 @@
                             <label class="font-weight-500 text-color">Deposit Amount</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" formControlName="depositAmount" class="form-control" id="autoresizing"
-                                disabled>
+                            <input type="text" formControlName="depositAmount" class="form-control" disabled>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">
@@ -65,14 +65,13 @@
                                     {{status.name | titlecase}}</option>
                             </select>
                             <div *ngIf="controls.depositStatus.touched && controls.depositStatus.invalid">
-                                <mat-error *ngIf="controls.depositStatus.touched && controls.depositStatus.errors?.required">
-                                    Field
-                                    is required</mat-error>
+                                <mat-error
+                                    *ngIf="controls.depositStatus.touched && controls.depositStatus.errors?.required">
+                                    Field is required</mat-error>
                             </div>
                         </div>
                     </div>
-                   
-                    <div *ngIf="depositInfo.transactionData.depositStatus == 'pending'" class="row kt-margin-t-15">
+                    <div *ngIf="depositInfo?.transactionData?.depositStatus == 'pending'" class="row kt-margin-t-15">
                         <div class="col-12 text-right">
                             <kt-button [value]="'Update'" [type]="'submit'" (click)="submit()"></kt-button>
                         </div>

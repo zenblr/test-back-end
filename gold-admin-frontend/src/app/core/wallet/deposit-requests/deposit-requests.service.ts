@@ -8,13 +8,10 @@ import { map, catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class DepositRequestsService {
-
-    applyFilter = new BehaviorSubject<any>({});
-	applyFilter$ = this.applyFilter.asObservable();
-
+  applyFilter = new BehaviorSubject<any>({});
+  applyFilter$ = this.applyFilter.asObservable();
 
   constructor(public http: HttpClient, private toastr: ToastrService) { }
-
 
   getDepositRequests(data): Observable<any> {
     const reqParams: any = {};
@@ -30,9 +27,7 @@ export class DepositRequestsService {
     if (data && data.paymentFor) {
       reqParams.paymentFor = data.paymentFor;
     }
-    return this.http.get('api/wallet/get-request-admin', {
-      params: reqParams
-    }).pipe(
+    return this.http.get('api/wallet/get-request-admin', {params: reqParams}).pipe(
       map(res => res),
       catchError(err => {
         if (err.error.message)
@@ -41,17 +36,12 @@ export class DepositRequestsService {
       })
     );
   }
-  
+
   getDepositById(id): Observable<any> {
-		return this.http.get<any>(`/api/wallet/${id}`
-		);
-	}
-  
+    return this.http.get<any>(`/api/wallet/${id}`);
+  }
+
   editDepositStatus(data, id): Observable<any> {
-		return this.http.put<any>(`/api/wallet/${id}`,
-			data
-		);
-	}
-
-
+    return this.http.put<any>(`/api/wallet/${id}`, data);
+  }
 }

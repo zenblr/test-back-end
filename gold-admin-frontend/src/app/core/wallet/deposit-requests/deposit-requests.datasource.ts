@@ -3,9 +3,7 @@ import { BaseDataSource } from '../../_base/crud';
 import { BehaviorSubject, of } from 'rxjs';
 import { DepositRequestsService } from '../deposit-requests/deposit-requests.service';
 
-
 export class DepositRequestsDatasource extends BaseDataSource {
-
     private loadingSubject = new BehaviorSubject<boolean>(false);
     private isPreloadTextViewedSubject = new BehaviorSubject<boolean>(true);
 
@@ -18,8 +16,6 @@ export class DepositRequestsDatasource extends BaseDataSource {
 
     loadDepositRequests(data) {
         this.loadingSubject.next(true);
-
-        // this.entitySubject.next(this.leads); // delete this
 
         this.depositRequestsService.getDepositRequests(data)
             .pipe(

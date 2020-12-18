@@ -18,25 +18,25 @@ const routes: Routes = [
 		children: [
 			{
 				path: '',
-				redirectTo: 'sip-management',
+				redirectTo: 'deposit-requests',
 				pathMatch: 'full'
 			},
 			{
 				path: 'deposit-requests',
 				component: DepositRequestsComponent
-            },
-            {
+			},
+			{
 				path: 'withdrawal-requests',
 				component: WithdrawalRequestsComponent
 			},
 			{
 				path: 'deposit-requests/:id',
 				component: DepositRequestsEditComponent
-            },
-            {
+			},
+			{
 				path: 'withdrawal-requests/:id',
 				component: WithdrawalRequestsEditComponent
-            },
+			},
 		],
 	},
 ]
@@ -48,7 +48,7 @@ const routes: Routes = [
 		CoreModule,
 		RouterModule.forChild(routes),
 		AngularMaterialModule,
-		ReactiveFormsModule, 
+		ReactiveFormsModule,
 		FormsModule
 	],
 	providers: [],

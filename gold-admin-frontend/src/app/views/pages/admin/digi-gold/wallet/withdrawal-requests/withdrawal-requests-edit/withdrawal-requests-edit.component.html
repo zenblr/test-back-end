@@ -9,7 +9,7 @@
                             <label class="font-weight-500 text-color">Customer Id</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" formControlName="customerId" class="form-control" numbersOnly disabled>
+                            <input type="text" formControlName="customerId" class="form-control" disabled>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">
@@ -49,8 +49,7 @@
                             <label class="font-weight-500 text-color">Withdrawal Amount</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" formControlName="withdrawalAmount" class="form-control" id="autoresizing"
-                                disabled>
+                            <input type="text" formControlName="withdrawalAmount" class="form-control" disabled>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">
@@ -97,13 +96,14 @@
                                     {{status.name | titlecase}}</option>
                             </select>
                             <div *ngIf="controls.withdrawalStatus.touched && controls.withdrawalStatus.invalid">
-                                <mat-error *ngIf="controls.withdrawalStatus.touched && controls.withdrawalStatus.errors?.required">
-                                    Field
-                                    is required</mat-error>
+                                <mat-error
+                                    *ngIf="controls.withdrawalStatus.touched && controls.withdrawalStatus.errors?.required">
+                                    Field is required</mat-error>
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="withdrawInfo.transactionData.depositStatus == 'pending'" class="row kt-margin-t-15">
+                    <div *ngIf="withdrawInfo?.transactionData?.withdrawalStatus == 'pending'"
+                        class="row kt-margin-t-15">
                         <div class="col-12 text-right">
                             <kt-button [value]="'Update'" [type]="'submit'" (click)="submit()"></kt-button>
                         </div>
