@@ -273,7 +273,12 @@ router.use('/migration', migration)
 
 const configDetail = require('./digitalGold/configDetail')
 router.use('/digital-gold/config-detail', configDetail);
+
 const errorLogger = require('./errorLogs');
 router.use('/error-logs', errorLogger)
+
+const wallet = require('./wallet');
+router.use('/wallet', wallet)
+
 
 module.exports = router;

@@ -37,9 +37,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'payment_type',
         },
-        transactionAmont: {
+        transactionAmount: {
             type: DataTypes.DECIMAL(10, 2),
-            field: 'transaction_amont'
+            field: 'transaction_amount'
         },
         paymentReceivedDate: {
             type: DataTypes.DATE,
