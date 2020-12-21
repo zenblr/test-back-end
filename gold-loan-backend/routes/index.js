@@ -280,5 +280,8 @@ router.use('/error-logs', errorLogger)
 const karza = require('./karza');
 router.use('/e-kyc', karza)
 
+const wallet = require('./wallet');
+router.use('/wallet', wallet)
+
 
 module.exports = router;

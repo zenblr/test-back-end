@@ -19,6 +19,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
             defaultValue: true,
+        },
+        stateUniqueCode: {
+            type: DataTypes.STRING,
+            field: 'state_unique_code',
+        },
+        cityUniqueCode: {
+            type: DataTypes.STRING,
+            field: 'city_unique_code',
         }
     }, {
         freezeTableName: true,
@@ -27,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false
     });
 
-    City.associate = function(models) {
+    City.associate = function (models) {
         City.belongsTo(models.state, { foreignKey: 'stateId', as: 'state' });
     }
     return City;

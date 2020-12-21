@@ -223,7 +223,7 @@ exports.partPayment = async (req, res, next) => {
         let { securedRatio, unsecuredRatio, isUnsecuredSchemeApplied } = await getAmountLoanSplitUpData(loan, amount, paidAmount)
         paymentDetails.masterLoanId = masterLoanId
         paymentDetails.paymentType = paymentType
-        paymentDetails.transactionAmont = payableAmount
+        paymentDetails.transactionAmont = paidAmount
         paymentDetails.depositDate = moment(moment(depositDate).format("YYYY-MM-DD"));
         paymentDetails.transactionUniqueId = transactionUniqueId
         

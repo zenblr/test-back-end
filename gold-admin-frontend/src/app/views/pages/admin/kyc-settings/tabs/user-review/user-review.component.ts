@@ -64,6 +64,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
   isAddressSame: boolean = false;
   disabled: boolean;
   permission: any;
+  resetOnPanChange = true;
 
   constructor(private userAddressService:
     UserAddressService, private fb: FormBuilder,
@@ -211,7 +212,10 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     this.reviewForm.patchValue(this.data.customerKycReview)
     if (this.data.customerKycReview.customerKycPersonal) {
       this.reviewForm.patchValue(this.data.customerKycReview.customerKycPersonal)
-      this.reviewForm.patchValue({ panCardNumber: this.data.customerKycReview.panCardNumber })
+      if (this.data.customerKycReview.panCardNumber) {
+        this.reviewForm.patchValue({ panCardNumber: this.data.customerKycReview.panCardNumber })
+        this.resetOnPanChange = false
+      }
 
     }
 
@@ -359,8 +363,10 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     // this.controls.panType.valueChanges.subscribe(res => {
     const value = this.controls.panType.value
     if (value == 'form60') {
-      this.controls.panCardNumber.reset()
-      this.controls.panCardNumber.patchValue('')
+      if (this.resetOnPanChange) {
+        this.controls.panCardNumber.reset()
+        this.controls.panCardNumber.patchValue('')
+      }
       this.controls.panCardNumber.clearValidators()
       this.controls.panCardNumber.updateValueAndValidity()
     }
@@ -588,8 +594,10 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     // }
     else if (type == 'panType') {
       this.data.customerKycReview.panImage = ''
-      this.reviewForm.controls.panCardNumber.patchValue(null)
-      this.customerKycPersonal.controls.panCardNumber.patchValue(null)
+      if (this.resetOnPanChange) {
+        this.reviewForm.controls.panCardNumber.patchValue(null)
+        this.customerKycPersonal.controls.panCardNumber.patchValue(null)
+      }
       this.reviewForm.controls.form60.patchValue(null)
       this.reviewForm.controls.panImage.patchValue(null)
       this.reviewForm.controls.panImg.patchValue(null)

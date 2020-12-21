@@ -72,7 +72,7 @@ export class MenuConfig {
 							title: "User Management",
 							root: true,
 							src: "assets/media/aside-icons/icons-04.svg",
-							page:'/admin/user-management',
+							page: '/admin/user-management',
 							permission: !(this.permissionsArr.includes('merchantView') ||
 								this.permissionsArr.includes('brokerView') ||
 								this.permissionsArr.includes('storeView') ||
@@ -355,6 +355,14 @@ export class MenuConfig {
 							src: "assets/media/aside-icons/icons-39.svg",
 							page: "/admin/scrap-management",
 							// permission: !this.modulesArr.includes(3),
+						},
+						{
+							title: "Digi Gold",
+							root: true,
+							src: "assets/media/aside-icons/icons-39.svg",
+							page: "/admin/digi-gold/wallet",
+							bullet: 'dot',
+							permission: false,
 						},
 						{
 							title: "Broker",
@@ -916,6 +924,86 @@ export class MenuConfig {
 								// 	permission: !this.permissionsArr.includes('viewStandardDeduction'),
 								// 	page: "/admin/scrap-management/standard-deduction"
 								// },
+							]
+						},
+						{
+							title: 'Back',
+							root: true,
+							src: "assets/media/aside-icons/icons-21.svg",
+							page: "/admin/dashboard",
+							permission: false,
+						},
+					],
+					digiGoldItems: [
+						{
+							title: "Wallet",
+							bullet: 'dot',
+							src: "assets/media/aside-icons/icons-35.svg",
+							permission: false,
+							submenu: [
+								{
+									title: "Deposit Requests",
+									page: "/admin/digi-gold/wallet/deposit-requests",
+									bullet: 'dot',
+									permission: false,
+								},
+								{
+									title: "Withdrawal Requests",
+									page: "/admin/digi-gold/wallet/withdrawal-requests",
+									bullet: 'dot',
+									permission: false,
+								}
+
+							]
+						},
+						// {
+						// 	title: "SIP Management",
+						// 	root: true,
+						// 	bullet: 'dot',
+						// 	src: "assets/media/aside-icons/icons-35.svg",
+						// 	permission: false,
+						// 	submenu: [
+						// 		{
+						// 			title: "SIP Application",
+						// 			page: "/admin/digi-gold/sip-management/sip-application",
+						// 			root: true,
+						// 		},
+						// 		{
+						// 			title: "Sip Trades",
+						// 			page: "/admin/digi-gold/sip-management/sip-trades",
+						// 			root: true,
+						// 		},
+						// 		{
+						// 			title: "Masters",
+						// 			root: true,
+						// 			bullet: 'dot',
+						// 			submenu: [
+						// 				{
+						// 					title: "SIP Cycle Date",
+						// 					page: "/admin/digi-gold/sip-management/sip-cycle-date",
+						// 					permission: false,
+						// 				},
+						// 				{
+						// 					title: "SIP Investment Tenure",
+						// 					page: "/admin/digi-gold/sip-management/sip-investment-tenure",
+						// 					permission: false,
+						// 				},
+						// 			]
+						// 		},
+						// 	]
+						// },
+						{
+							title: "Settings",
+							root: true,
+							bullet: 'dot',
+							src: "assets/media/aside-icons/icons-03.svg",
+							permission: false,
+							submenu: [
+								{
+									title: "Global Settings",
+									page: "/admin/digi-gold/global-settings",
+									permission: false
+								},
 							]
 						},
 						{
