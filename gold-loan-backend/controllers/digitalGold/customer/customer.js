@@ -196,8 +196,8 @@ exports.createCustomerInAugmontDb = async (req, res) => {
     const merchantData = await getMerchantData();
 
     const customer = await models.customer.findOne({ where: { id, isActive: true } });
-    let state = await getCustomerStateById(stateId, null);
-    let city = await getCustomerCityById(cityId, null);
+    let state = await getCustomerStateById(customer.stateId, null);
+    let city = await getCustomerCityById(customer.cityId, null);
     let customerUniqueId;
     await sequelize.transaction(async (t) => {
       if (!customer.customerUniqueId) {

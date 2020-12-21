@@ -94,13 +94,13 @@ module.exports = async () => {
         let newDateBeforfifteenMin = moment(newDate).subtract(15, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
         console.log(newDateBeforfifteenMin);
         if(nonRepeatCustomerId.length){
-            allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
-                where: {
-                    createdAt: { [Op.between]: [newDateBeforfifteenMin, newDate] },
-                    customerId: { [Op.notIn]: [nonRepeatCustomerId]}
-                    // orderTypeId: 1
-                }
-            });
+            // allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
+            //     where: {
+            //         createdAt: { [Op.between]: [newDateBeforfifteenMin, newDate] },
+            //         customerId: { [Op.notIn]: [nonRepeatCustomerId]}
+            //         // orderTypeId: 1
+            //     }
+            // });
         allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
             where: {
                 createdAt: { [Op.between]: [newDateBeforfifteenMin, newDate] },
