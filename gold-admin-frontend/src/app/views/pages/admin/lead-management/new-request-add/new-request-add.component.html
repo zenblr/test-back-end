@@ -65,12 +65,36 @@
                         <div class="col-12">
                             <div class="row">
                                 <div class="col-4 form-label">
+                                    <label class="mandatory">Internal Branch</label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-control" formControlName="internalBranchId"
+                                        [class.isError]="controls.internalBranchId.touched && controls.internalBranchId.invalid">
+                                        <option [value]=null [disabled]="true"> Select Internal Branch
+                                        </option>
+                                        <option *ngFor="let branch of branches" [value]="branch.id">
+                                            {{branch.name | titlecase}}
+                                        </option>
+                                    </select>
+                                    <mat-error
+                                        *ngIf="controls.internalBranchId.touched && controls.internalBranchId.errors?.required">
+                                        Required field
+                                    </mat-error>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row kt-margin-b-15">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-4 form-label">
                                     <label class="mandatory">Product</label>
                                 </div>
                                 <div class="col-8">
                                     <select class="form-control" formControlName="moduleId"
                                         [class.isError]="controls.moduleId.touched && controls.moduleId.invalid">
-                                        <option value=null selected disabled>Select Product</option>
+                                        <option [value]=null selected disabled>Select Product</option>
                                         <option *ngFor="let item of modules" [value]="item.id">
                                             {{item.moduleName | titlecase}}
                                         </option>
