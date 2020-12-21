@@ -103,8 +103,12 @@ export class LeadService {
     return this.http.post<any>(`/api/customer/resend-otp`, data);
   }
 
-  verifyPAN(data): Observable<any> {
-    return this.http.post<any>(`/api/customer/verify-pan`, data);
+  panDetails(data): Observable<any> {
+    return this.http.post<any>(`/api/e-kyc/pan-details`, data);
+  }
+
+  verifyPAN(data) :Observable<any> {
+    return this.http.post<any>(`/api/e-kyc/pan-status`, data);
   }
 
   getInternalBranhces(data?): Observable<any> {

@@ -90,18 +90,24 @@ export class AddLeadComponent implements OnInit {
     this.controls.panType.valueChanges.subscribe(res => {
       if (this.controls.panType.value) {
         if (this.controls.panType.value == "pan") {
+          this.controls.dateOfBirth.setValidators(Validators.required)
           this.controls.panCardNumber.setValidators(
             [
               Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$'),
               Validators.required
             ])
           this.controls.panCardNumber.updateValueAndValidity()
+          this.controls.dateOfBirth.updateValueAndValidity()
+
         } else {
           if (this.resetPanOnChange) {
             this.controls.panCardNumber.reset()
           }
           this.controls.panCardNumber.clearValidators()
           this.controls.panCardNumber.updateValueAndValidity()
+          this.controls.dateOfBirth.clearValidators()
+          this.controls.dateOfBirth.updateValueAndValidity()
+
         }
         this.controls.panImage.reset()
         this.controls.panImage.setValidators(Validators.required)
@@ -121,7 +127,8 @@ export class AddLeadComponent implements OnInit {
         this.controls.panImg.clearValidators()
         this.controls.panImg.updateValueAndValidity()
         this.controls.panImg.reset()
-
+        this.controls.dateOfBirth.clearValidators()
+        this.controls.dateOfBirth.updateValueAndValidity()
       }
     });
 
@@ -157,6 +164,7 @@ export class AddLeadComponent implements OnInit {
       pinCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
       dateTime: [this.currentDate, [Validators.required]],
       statusId: [, [Validators.required]],
+      dateOfBirth: [],
       panType: [''],
       form60: [''],
       panImage: [null],
@@ -329,16 +337,44 @@ export class AddLeadComponent implements OnInit {
     }
   }
 
+  public ageValidation() {
+    const today = new Date();
+    const birthDate = new Date(this.controls.dateOfBirth.value);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    if (age < 18) {
+      this.controls.dateOfBirth.setErrors({ invalid: true })
+    }
+    // this.controls.age.patchValue(age);
+    // this.ageValidation()
+  }
+
   verifyPAN() {
     const panCardNumber = this.controls.panCardNumber.value;
-    // this.leadService.verifyPAN({ panCardNumber }).subscribe(res => {
-    //   if (res) {
-    //     this.isPanVerified = true;
-    //   }
-    // });
+    const dateOfBirth = this.controls.dateOfBirth.value
+    this.leadService.panDetails({ panCardNumber }).subscribe(res => {
+      if (res) {
+        this.getVerified(panCardNumber, dateOfBirth, res.data.name)
+        console.log(res)
+        // this.isPanVerified = true;
+      }
+    });
     // setTimeout(() => {
-    this.isPanVerified = true;
+    // this.isPanVerified = true;
     // }, 1000);
+  }
+
+  getVerified(panCardNumber, dateOfBirth, fullName) {
+    let data = { panCardNumber, dateOfBirth, fullName }
+    this.leadService.verifyPAN(data).subscribe(res => {
+      if (res.data.status == "Active") {
+        this.isPanVerified = true;
+      }
+    });
   }
 
   resendOTP() {

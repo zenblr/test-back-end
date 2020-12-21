@@ -192,7 +192,31 @@
                                         (click)="remove()">Remove</label>
                                 </div>
                             </div>
+                            <div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
+                                <!-- PAN -->
+                                <div class="col-4 form-label">
+                                    <mat-label class="mandatory">D.O.B</mat-label>
+                                </div>
 
+                                <div class="col-8">
+                                    <input type="text" class="form-control" [matDatepicker]="picker"
+                                        (click)="picker.open()" formControlName="dateOfBirth"
+                                        [class.isError]="controls.dateOfBirth.touched && controls.dateOfBirth.invalid"
+                                        readonly placeholder="DD/MM/YYYY" [max]="currentDate"
+                                        (dateChange)="ageValidation()">
+                                        <mat-datepicker #picker></mat-datepicker>
+                                        <mat-error
+                                            *ngIf="controls.dateOfBirth.errors?.required && controls.dateOfBirth.touched">
+                                            Required field
+                                        </mat-error>
+                                        <mat-error
+                                            *ngIf="controls.dateOfBirth.errors?.invalid && controls.dateOfBirth.touched">
+                                            Age should be above 18
+                                        </mat-error>
+                                </div>
+
+
+                            </div>
                             <div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
                                 <!-- PAN -->
                                 <div class="col-4 form-label">
