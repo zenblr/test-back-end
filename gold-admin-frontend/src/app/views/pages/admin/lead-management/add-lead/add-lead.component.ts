@@ -67,7 +67,7 @@ export class AddLeadComponent implements OnInit {
     this.formInitialize();
     this.setForm();
     this.getLeadSourceWithoutPagination();
-    this.getInternalBranhces();
+    // this.getInternalBranhces();
     this.getStates();
     this.getStatus();
     this.getModules();
@@ -147,7 +147,7 @@ export class AddLeadComponent implements OnInit {
     this.leadForm = this.fb.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
-      internalBranchId: [this.details.userDetails.internalBranchId, Validators.required],
+      // internalBranchId: [this.details.userDetails.internalBranchId, Validators.required],
       mobileNumber: ['', [Validators.required, Validators.pattern('^[6-9][0-9]{9}$')]],
       otp: [, [Validators.required, Validators.pattern('^[0-9]{4}$')]],
       referenceCode: [this.refCode],
@@ -182,15 +182,15 @@ export class AddLeadComponent implements OnInit {
       this.modalTitle = 'View Lead'
       this.leadForm.disable()
     } else if (this.data.action == 'assignBranch') {
-      this.getLeadById(this.data['id']);
-      this.modalTitle = 'Assign Branch';
-      Object.keys(this.controls).forEach(res => {
-        this.controls[res].setValidators([])
-        this.controls[res].updateValueAndValidity()
-      })
-      this.controls.internalBranchId.setValidators([Validators.required])
-      this.controls.internalBranchId.updateValueAndValidity()
-      this.disableAssignBranch()
+      // this.getLeadById(this.data['id']);
+      // this.modalTitle = 'Assign Branch';
+      // Object.keys(this.controls).forEach(res => {
+      //   this.controls[res].setValidators([])
+      //   this.controls[res].updateValueAndValidity()
+      // })
+      // this.controls.internalBranchId.setValidators([Validators.required])
+      // this.controls.internalBranchId.updateValueAndValidity()
+      // this.disableAssignBranch()
     }
     else {
       this.modalTitle = 'Add New Lead'
@@ -201,16 +201,11 @@ export class AddLeadComponent implements OnInit {
     const cityId = this.data.action == 'assignBranch' ? this.controls.cityId.value : null
     this.leadService.getInternalBranhces({ cityId }).subscribe(res => {
       this.branches = res.data;
-      // const branchExists = this.branches.find(e => e.id === this.controls.internalBranchId.value)
-      // if (!branchExists) {
-      //   this.controls.internalBranchId.reset();
-      //   this.controls.internalBranchId.patchValue('');
-      // }
     });
   }
 
   getBranchFromCity() {
-    if (this.data.action == 'edit') this.getInternalBranhces()
+    // if (this.data.action == 'edit') this.getInternalBranhces()
   }
 
   getLeadSourceWithoutPagination() {
@@ -413,14 +408,10 @@ export class AddLeadComponent implements OnInit {
     this.controls.panImg.patchValue(null)
   }
   disable() {
-    this.leadForm.controls.internalBranchId.disable();
-    // this.leadForm.controls.stateId.disable();
-    // this.leadForm.controls.cityId.disable();
+    // this.leadForm.controls.internalBranchId.disable();
   }
   enable() {
-    this.leadForm.controls.internalBranchId.enable();
-    // this.leadForm.controls.stateId.enable();
-    ///this.leadForm.controls.cityId.enable();
+    // this.leadForm.controls.internalBranchId.enable();
   }
   onSubmit() {
     if (this.data.action == 'add') {
@@ -481,9 +472,7 @@ export class AddLeadComponent implements OnInit {
         }
       );
     } else if (this.data.action == 'edit' || this.data.action == 'assignBranch') {
-      // if (this.data.action == 'assignBranch') this.leadForm.enable()
       if (this.leadForm.invalid) {
-        // this.checkforVerfication()
         this.leadForm.markAllAsTouched();
         if (this.controls.panImage.invalid) {
           if (this.controls.panType.value == 'pan') {
@@ -579,29 +568,22 @@ export class AddLeadComponent implements OnInit {
   }
 
   patchStateCity(internalBranchId) {
-    if (this.data.action != 'assignBranch') {
-      this.leadService.patchStateCityAdmin(internalBranchId).pipe(
-        map(res => {
-          this.leadForm.patchValue({
-            stateId: res.stateId,
-            cityId: res.cityId
-          })
-          this.getCities()
-        })
-      ).subscribe()
-    }
+    // if (this.data.action != 'assignBranch') {
+    //   this.leadService.patchStateCityAdmin(internalBranchId).pipe(
+    //     map(res => {
+    //       this.leadForm.patchValue({
+    //         stateId: res.stateId,
+    //         cityId: res.cityId
+    //       })
+    //       this.getCities()
+    //     })
+    //   ).subscribe()
+    // }
   }
 
   disableAssignBranch() {
     this.leadForm.disable()
-    this.leadForm.controls.internalBranchId.enable()
-    // this.leadForm.controls.statusId.enable()
-    // this.leadForm.controls.comment.enable()
-    // this.leadForm.controls.panCardNumber.enable()
-    // this.leadForm.controls.panType.enable()
-    // this.leadForm.controls.form60.enable()
-    // this.leadForm.controls.panImage.enable()
-    // this.leadForm.controls.panImg.enable()
+    // this.leadForm.controls.internalBranchId.enable()
   }
 
 }
