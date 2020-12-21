@@ -855,29 +855,7 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
 
             break;
 
-        } else if (pendingSecuredAmount < Number(loanArray[index]['outstandingInterest']) && Number(loanArray[index]['outstandingInterest']) - pendingSecuredAmount >= 0.5) {
-
-            loanArray[index]['emiStatus'] = "partially paid"
-            loanArray[index]['paidAmount'] = Number(loanArray[index]['paidAmount']) + Number(pendingSecuredAmount.toFixed(2))
-            transactionData.loanInterestId = loanArray[index]['id']
-            transactionData.isExtraDaysInterest = loanArray[index]['isExtraDaysInterest']
-            transactionData.interestAmount = loanArray[index]['interestAmount']
-            transactionData.highestInterestAmount = loanArray[index]['highestInterestAmount']
-            transactionData.rebateAmount = loanArray[index]['rebateAmount']
-            transactionData.penalInterest = loanArray[index]['penalInterest']
-            transactionData.emiDueDate = loanArray[index]['emiDueDate']
-            transactionData.loanId = loanArray[index]['loanId']
-            transactionData.masterLoanId = loanArray[index]['masterLoanId']
-            transactionData.credit = pendingSecuredAmount.toFixed(2)
-            transactionData.loanUniqueId = loanArray[index]['customerLoan'].loanUniqueId
-            transaction.push(transactionData)
-            // pendingSecuredAmount = (loanArray[index]['outstandingInterest'] - pendingSecuredAmount).toFixed(2)
-            loanArray[index]['outstandingInterest'] = loanArray[index]['outstandingInterest'] - Number(pendingSecuredAmount.toFixed(2))
-            pendingSecuredAmount = 0.00;
-            loanArray[index]['emiReceivedDate'] = paymentReceivedDate
-
-
-        } else if (pendingSecuredAmount >= Number(loanArray[index]['outstandingInterest']) || Number(loanArray[index]['outstandingInterest']) - pendingSecuredAmount <= 0.5) {
+        }   else if (pendingSecuredAmount >= Number(loanArray[index]['outstandingInterest']) || Number(loanArray[index]['outstandingInterest']) - pendingSecuredAmount <= 0.5) {
 
             loanArray[index]['paidAmount'] = Number(loanArray[index]['paidAmount']) + Number(loanArray[index]['outstandingInterest'])
             loanArray[index]['emiStatus'] = "paid"
@@ -896,7 +874,28 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
             pendingSecuredAmount = Number((Number(pendingSecuredAmount) - Number(loanArray[index]['outstandingInterest'])).toFixed(2))
             loanArray[index]['outstandingInterest'] = 0.00
             loanArray[index]['emiReceivedDate'] = paymentReceivedDate
+        }else if (pendingSecuredAmount < Number(loanArray[index]['outstandingInterest']) && pendingSecuredAmount >= 0.5) {
+
+            loanArray[index]['emiStatus'] = "partially paid"
+            loanArray[index]['paidAmount'] = Number(loanArray[index]['paidAmount']) + Number(pendingSecuredAmount.toFixed(2))
+            transactionData.loanInterestId = loanArray[index]['id']
+            transactionData.isExtraDaysInterest = loanArray[index]['isExtraDaysInterest']
+            transactionData.interestAmount = loanArray[index]['interestAmount']
+            transactionData.highestInterestAmount = loanArray[index]['highestInterestAmount']
+            transactionData.rebateAmount = loanArray[index]['rebateAmount']
+            transactionData.penalInterest = loanArray[index]['penalInterest']
+            transactionData.emiDueDate = loanArray[index]['emiDueDate']
+            transactionData.loanId = loanArray[index]['loanId']
+            transactionData.masterLoanId = loanArray[index]['masterLoanId']
+            transactionData.credit = pendingSecuredAmount.toFixed(2)
+            transactionData.loanUniqueId = loanArray[index]['customerLoan'].loanUniqueId
+            transaction.push(transactionData)
+            pendingSecuredAmount = Number((Number(pendingSecuredAmount) - Number(loanArray[index]['outstandingInterest'])).toFixed(2))
+            loanArray[index]['outstandingInterest'] = 0.00
+            loanArray[index]['emiReceivedDate'] = paymentReceivedDate
+
         }
+       
 
     }
     for (let index = 0; index < loanArray.length; index++) {
