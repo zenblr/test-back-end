@@ -76,7 +76,7 @@
                     <mat-cell *matCellDef="let row">
                         <div *ngxPermissionsOnly="['assignAppraiserAdd']" [ngStyle]="{'display': 'inherit'}">
                             <button style="width: 120px;" class="apply-kyc" (click)="assignAppraiser(row)"
-                                *ngIf="!row.isAssigned && row?.customer?.internalBranchId">Assign
+                                *ngIf="!row.isAssigned">Assign
                                 Appraiser</button>
                         </div>
                         <div *ngxPermissionsOnly="['assignAppraiserEdit']" [ngStyle]="{'display': 'inherit'}">
@@ -84,11 +84,11 @@
                                 *ngIf="row.isAssigned && !row?.masterLoan?.isLoanCompleted">Update
                                 Appraiser</button>
                         </div>
-                        <div *ngxPermissionsOnly="['addBranchCustomer']" [ngStyle]="{'display': 'inherit'}">
+                        <!-- <div *ngxPermissionsOnly="['addBranchCustomer']" [ngStyle]="{'display': 'inherit'}">
                             <button style="width: 120px;" class="apply-kyc" (click)="assignBranch(row)"
                                 *ngIf="!row.isAssigned && !row?.customer?.internalBranchId">Assign Branch
                             </button>
-                        </div>
+                        </div> -->
                     </mat-cell>
                 </ng-container>
 
