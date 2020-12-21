@@ -10,6 +10,8 @@ const errorLogger = require('../../../utils/errorLogger');
 const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
+const moment = require('moment');
+
 
 
 exports.sellProduct = async (req, res) => {
@@ -169,7 +171,7 @@ exports.sellProduct = async (req, res) => {
       })
 
       if (result.data.statusCode === 200) {
-
+        let walletData;
         await sequelize.transaction(async (t) => {
 
           let updatesSellableGoldBal;
@@ -186,8 +188,14 @@ exports.sellProduct = async (req, res) => {
             await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilverBal }, { where: { customerId: id }, transaction: t });
           }
 
-          let walletData = await models.walletDetails.create({ customerId: id, amount: result.data.result.data.totalAmount, paymentDirection: "credit", description: "sell metal", productTypeId: 4, transactionDate: moment() }, { transaction: t })
+          walletData = await models.walletDetails.create({ customerId: id, amount: result.data.result.data.totalAmount, paymentDirection: "credit", description: "sell metal", productTypeId: 4, transactionDate: moment() }, { transaction: t })
 
+          let amountOfWallet
+          if (customerDetails.walletFreeBalance) {
+            amountOfWallet = Number(customerDetails.walletFreeBalance) + Number(amount)
+          } else {
+            amountOfWallet = Number(amount)
+          }
 
           let orderDetail = await models.digiGoldOrderDetail.create({
             tempOrderId: tempId.id, customerId: id, orderTypeId: 2, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
@@ -197,12 +205,6 @@ exports.sellProduct = async (req, res) => {
           await models.digiGoldTempOrderDetail.update(
             { isOrderPlaced: true, modifiedBy }, { where: { id: tempId.id }, transaction: t });
 
-          let amountOfWallet
-          if (customerDetails.walletFreeBalance) {
-            amountOfWallet = Number(customerDetails.walletFreeBalance) + Number(amount)
-          } else {
-            amountOfWallet = Number(amount)
-          }
           await models.customer.update(
             { walletFreeBalance: amountOfWallet }, { where: { id: customerDetails.id }, transaction: t });
         })
