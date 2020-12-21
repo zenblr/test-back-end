@@ -24,7 +24,7 @@ export class InterestCalculatorComponent implements OnInit {
   @Input() disable
   currentDate = new Date();
   colJoin: any;
-  checkForLoanTypeError:any = '';
+  checkForLoanTypeError: any = '';
   securedInterestAmount: any = 0;
   unSecuredInterestAmount: any = 0;
   totalinterestAmount: any = 0;
@@ -69,7 +69,7 @@ export class InterestCalculatorComponent implements OnInit {
   subscription: Subscription[] = []
   isNewLoanFromPartRelease: boolean = false;
   tempPaymentFrequency: any[];
-  internalBranchId:any;
+  internalBranchId: any;
   constructor(
     public fb: FormBuilder,
     public partnerService: PartnerService,
@@ -79,10 +79,10 @@ export class InterestCalculatorComponent implements OnInit {
     public loanFormService: LoanApplicationFormService,
     private dialog: MatDialog,
     private globalSettingService: GlobalSettingService,
-    private sharedService:SharedService
+    private sharedService: SharedService
   ) {
     this.initForm();
-    this.sharedService.getTokenDecode().subscribe(res=>{
+    this.sharedService.getTokenDecode().subscribe(res => {
       this.internalBranchId = res.internalBranchId
     })
 
@@ -92,7 +92,7 @@ export class InterestCalculatorComponent implements OnInit {
     this.globalSettingService.globalSetting$.pipe(takeUntil(this.unsubscribe$)).subscribe(res => {
       this.globalValue = res;
     })
-      this.partner()
+    this.partner()
 
 
 
@@ -209,8 +209,8 @@ export class InterestCalculatorComponent implements OnInit {
               paymentType: this.paymentType,
               securedInterestAmount: interset.interestAmount,
               unsecuredInterestAmount: 0,
-              secureHighestInterestAmount:Number(interset.highestInterestAmount),
-              securedRebateAmount:Number(interset.rebateAmount),
+              secureHighestInterestAmount: Number(interset.highestInterestAmount),
+              securedRebateAmount: Number(interset.rebateAmount),
               totalAmount: Number(interset.interestAmount)
             }
             temp.push(data)
@@ -226,8 +226,8 @@ export class InterestCalculatorComponent implements OnInit {
               temp[index].unsecuredInterestAmount = finalLoan.unsecuredLoan.customerLoanInterest[index].interestAmount
               temp[index].totalAmount = Number(temp[index].securedInterestAmount) +
                 Number(temp[index].unsecuredInterestAmount)
-                temp[index].unsecureHighestInterestAmount = Number(finalLoan.unsecuredLoan.customerLoanInterest[index].highestInterestAmount)
-                temp[index].unsecuredRebateAmount = Number(finalLoan.unsecuredLoan.customerLoanInterest[index].rebateAmount)
+              temp[index].unsecureHighestInterestAmount = Number(finalLoan.unsecuredLoan.customerLoanInterest[index].highestInterestAmount)
+              temp[index].unsecuredRebateAmount = Number(finalLoan.unsecuredLoan.customerLoanInterest[index].rebateAmount)
             }
             // this.getIntrest()
 
@@ -254,7 +254,7 @@ export class InterestCalculatorComponent implements OnInit {
     this.partnerService.getPartnerBySchemeAmount(this.internalBranchId).subscribe(res => {
       this.partnerList = res.data;
       this.returnScheme()
-      if(this.controls.partnerId.valid){
+      if (this.controls.partnerId.valid) {
         this.calcualteLoanAmount()
       }
       this.ref.detectChanges()
@@ -262,16 +262,16 @@ export class InterestCalculatorComponent implements OnInit {
     })
     // }
     // if (this.controls.finalLoanAmount.valid || this.controls.finalLoanAmount.status == 'DISABLED') {
-      // let amt = Number(this.controls.finalLoanAmount.value)
-      // if (this.transferLoan && this.controls.loanTransferExtraAmount.value) {
-      //   amt += Number(this.controls.loanTransferExtraAmount.value)
-      // }
-      // this.partnerService.getPartnerBySchemeAmount(Math.floor(amt)).subscribe(res => {
-      //   this.partnerList = res.data;
-      //   this.returnScheme()
-      //   this.ref.detectChanges()
-      // })
-    }
+    // let amt = Number(this.controls.finalLoanAmount.value)
+    // if (this.transferLoan && this.controls.loanTransferExtraAmount.value) {
+    //   amt += Number(this.controls.loanTransferExtraAmount.value)
+    // }
+    // this.partnerService.getPartnerBySchemeAmount(Math.floor(amt)).subscribe(res => {
+    //   this.partnerList = res.data;
+    //   this.returnScheme()
+    //   this.ref.detectChanges()
+    // })
+  }
   // }
 
   // getUnsecuredScheme() {
@@ -293,8 +293,10 @@ export class InterestCalculatorComponent implements OnInit {
     if (!this.transferLoan)
       this.controls.processingCharge.reset()
     this.selectedScheme = ''
+    
+
   }
-  
+
   partnerReset() {
     this.controls.partnerId.reset();
     this.schemesList = []
@@ -332,9 +334,9 @@ export class InterestCalculatorComponent implements OnInit {
       securedLoanAmount: [],
       unsecuredLoanAmount: [],
       isUnsecuredSchemeApplied: [false],
-      unsecuredRebateInterest:[],
-      securedRebateInterest:[],
-      otherAmount:[null,Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')],
+      unsecuredRebateInterest: [],
+      securedRebateInterest: [],
+      otherAmount: [null, Validators.pattern('^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$')],
       loanTransferExtraAmount: []
     })
 
@@ -367,18 +369,18 @@ export class InterestCalculatorComponent implements OnInit {
     this.ref.detectChanges()
   }
 
-  calcualteLoanAmount(){
+  calcualteLoanAmount() {
     this.totalAmt = 0;
     this.ornamentDetails.forEach(element => {
       let rpg = 0
-      if(this.selectedUnsecuredscheme){
+      if (this.selectedUnsecuredscheme) {
         rpg = this.selectedUnsecuredscheme.rpg
         this.controls.isUnsecuredSchemeApplied.patchValue(true)
-      }else{
+      } else {
         this.controls.isUnsecuredSchemeApplied.patchValue(false)
 
       }
-      element.loanAmount = (Number(this.selectedScheme.rpg) + Number(rpg))* element.ornamentsCal
+      element.loanAmount = (Number(this.selectedScheme.rpg) + Number(rpg)) * element.ornamentsCal
       element.rpg = Number(this.selectedScheme.rpg) + Number(rpg)
       this.totalAmt += element.loanAmount
     });
@@ -399,13 +401,13 @@ export class InterestCalculatorComponent implements OnInit {
       amt += Number(this.controls.loanTransferExtraAmount.value)
     }
     this.controls.isUnsecuredSchemeApplied.patchValue(false)
-    if(this.selectedUnsecuredscheme){
+    if (this.selectedUnsecuredscheme) {
       unsecuredSchemeId = this.selectedUnsecuredscheme.id
       this.controls.isUnsecuredSchemeApplied.patchValue(true)
     }
     this.dateOfPayment = []
     const scheme = this.selectedScheme
-   
+
 
     let data = {
       loanAmount: amt,
@@ -414,8 +416,8 @@ export class InterestCalculatorComponent implements OnInit {
       partnerId: this.controls.partnerId.value,
       isLoanTransfer: this.transferLoan,
       isNewLoanFromPartRelease: this.isNewLoanFromPartRelease,
-      unsecuredSchemeId:unsecuredSchemeId,
-      isUnsecuredSchemeApplied:this.controls.isUnsecuredSchemeApplied.value
+      unsecuredSchemeId: unsecuredSchemeId,
+      isUnsecuredSchemeApplied: this.controls.isUnsecuredSchemeApplied.value
     }
 
     let check = this.eligibleCheck(amt, data)
@@ -430,6 +432,17 @@ export class InterestCalculatorComponent implements OnInit {
         this.controls.finalLoanAmount.setErrors(null)
       } else {
         this.controls.finalLoanAmount.setErrors({ mimimumAmt: true })
+        return
+      }
+
+      // 
+      if (Number(this.controls.finalLoanAmount.value) > Number(this.selectedScheme.schemeAmountEnd)) {
+        this.controls.finalLoanAmount.setErrors({ schemeAmt: true })
+        return
+      }
+      if (Number(this.controls.finalLoanAmount.value) < Number(this.selectedScheme.schemeAmountStart)) {
+
+        this.controls.finalLoanAmount.setErrors({ schemeAmt: true })
         return
       }
 
@@ -603,7 +616,7 @@ export class InterestCalculatorComponent implements OnInit {
       return
     }
     this.controls.finalLoanAmount.enable()
-    this.loanFormService.submitFinalIntrest(this.finalInterestForm.value, this.masterAndLoanIds, this.dateOfPayment,this.ornamentDetails,this.totalAmt).pipe(
+    this.loanFormService.submitFinalIntrest(this.finalInterestForm.value, this.masterAndLoanIds, this.dateOfPayment, this.ornamentDetails, this.totalAmt).pipe(
       map(res => {
         if (res.finalLoanAmount)
           this.finalLoanAmount.emit(res.finalLoanAmount)

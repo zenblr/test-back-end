@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
             defaultValue: true,
+        },
+        stateUniqueCode: {
+            type: DataTypes.STRING,
+            field: 'state_unique_code',
         }
     }, {
         freezeTableName: true,

@@ -547,7 +547,7 @@ let getKycInfo = async (customerId) => {
         {
             model: models.customerKyc,
             as: 'customerKyc',
-            attributes: ['id', 'currentKycModuleId']
+            attributes: ['id', 'currentKycModuleId', 'isAppliedForKyc']
         },
         {
             model: models.customerKycClassification,
