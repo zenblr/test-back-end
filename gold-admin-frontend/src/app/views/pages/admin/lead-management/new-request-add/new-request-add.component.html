@@ -73,7 +73,7 @@
                                         <option [value]=null [disabled]="true"> Select Internal Branch
                                         </option>
                                         <option *ngFor="let branch of branches" [value]="branch.id">
-                                            {{branch.name | titlecase}}
+                                            {{branch.name | titlecase}} {{ '(' + branch?.city?.name + ')' }}
                                         </option>
                                     </select>
                                     <mat-error
