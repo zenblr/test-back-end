@@ -168,6 +168,8 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
                 let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
                 ornamentsWeightInfo.currentOutstandingAmount = ornamentsWeightInfo.currentOutstandingAmount + (ltvAmount * parseFloat(ornaments.netWeight));
             }
+            ornamentsWeightInfo.releaseGrossWeight = Number(ornamentsWeightInfo.releaseGrossWeight.toFixed(2))
+            ornamentsWeightInfo.releaseNetWeight = Number(ornamentsWeightInfo.releaseNetWeight.toFixed(2))
         }
 
 
