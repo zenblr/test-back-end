@@ -70,6 +70,7 @@ export class WithdrawalRequestsEditComponent implements OnInit {
 			ifscCode: [''],
 			withdrawalStatus: ['', Validators.required],
 		});
+		this.withdrawForm.disable()
 		this.withdrawForm.valueChanges.subscribe((val) => console.log(val));
 	}
 
@@ -85,22 +86,24 @@ export class WithdrawalRequestsEditComponent implements OnInit {
 			customerFullName: this.withdrawInfo.transactionData.customer.firstName + ' ' + this.withdrawInfo.transactionData.customer.lastName,
 			mobileNumber: this.withdrawInfo.transactionData.customer.mobileNumber,
 			transactionUniqueId: this.withdrawInfo.transactionData.transactionUniqueId,
-			withdrawalInitiatedDate: this.withdrawInfo.transactionData.depositDate,
-			withdrawalAmount: this.withdrawInfo.transactionData.transactionAmont,
+			withdrawalInitiatedDate: this.withdrawInfo.transactionData.createdAt,
+			withdrawalAmount: this.withdrawInfo.transactionData.transactionAmount,
 			bankName: this.withdrawInfo.transactionData.bankName,
 			branchName: this.withdrawInfo.transactionData.branchName,
 			accountNumber: this.withdrawInfo.transactionData.accountNumber,
 			accountHolderName: this.withdrawInfo.transactionData.accountHolderName,
 			ifscCode: this.withdrawInfo.transactionData.ifscCode,
-			withdrawalStatus: ''
+			withdrawalStatus: '',
 		};
 		this.withdrawForm.patchValue(data);
 
-		if (!(this.withdrawInfo.transactionData.withdrawalStatus == 'pending')) {
-			data.withdrawalStatus = this.withdrawInfo.transactionData.withdrawalStatus;
+		if (!(this.withdrawInfo.transactionData.depositStatus == 'pending')) {
+			data.withdrawalStatus = this.withdrawInfo.transactionData.depositStatus;
 			this.withdrawForm.patchValue(data);
-		} else {
-			this.withdrawForm.disable();
+			// this.controls.withdrawalStatus.disable();
+		} 
+		else {
+			this.controls.withdrawalStatus.enable();
 		}
 	}
 
