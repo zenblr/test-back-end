@@ -32,10 +32,19 @@ exports.getOtp = async (req, res, next) => {
 }
 
 exports.addCustomer = async (req, res, next) => {
-  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId, source, panType, panImage, leadSourceId, moduleId } = req.body;
+  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, source, panType, panImage, leadSourceId, moduleId } = req.body;
   // cheanges needed here
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
+
+  let userData = await models.user.findOne({
+    where: { id: req.userData.id },
+    include: [{
+      model: models.internalBranch
+    }]
+  })
+
+  let internalBranchId = userData.internalBranches[0].userInternalBranch.internalBranchId
 
   let getMobileNumber = await models.customerOtp.findOne({
     where: { referenceCode, isVerified: true },
@@ -67,9 +76,9 @@ exports.addCustomer = async (req, res, next) => {
       { transaction: t }
     );
 
-    if (moduleId == 1 || moduleId == 3) {
-      await models.appraiserRequest.create({ customerId: customer.id, moduleId, createdBy, modifiedBy }, { transaction: t })
-    }
+    // if (moduleId == 1 || moduleId == 3) {
+    //   await models.appraiserRequest.create({ customerId: customer.id, moduleId, createdBy, modifiedBy }, { transaction: t })
+    // }
 
     if (moduleId == 4) {
       const customerUniqueId = uniqid.time().toUpperCase();
@@ -812,7 +821,7 @@ exports.signUpCustomer = async (req, res) => {
     let modulePoint = await models.module.findOne({ where: { id: 4 }, transaction: t })
 
     let customer = await models.customer.create(
-      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age },
+      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, internalBranchId: 1 },
       { transaction: t }
     );
     let state = await getCustomerStateById(stateId, null);

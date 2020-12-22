@@ -457,12 +457,13 @@ exports.getConcurrentList = async (req, res, next) => {
                 where: {
                     isActive: true
                 }
-            }, {
-                model: models.userType,
-                as: 'Usertype',
-                where: { isInternal: true, userType: 'Appraiser' },
-                attributes: []
-            }
+            },
+            // {
+            //     model: models.userType,
+            //     as: 'Usertype',
+            //     where: { isInternal: true, userType: 'Appraiser' },
+            //     attributes: []
+            // }
         ]
     });
 

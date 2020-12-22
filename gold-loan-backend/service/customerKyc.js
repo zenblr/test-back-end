@@ -116,9 +116,9 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
 
             await models.customerKycClassification.create({ customerId, customerKycId: customerKycAdd.id, kycStatusFromCce: "pending", cceId: createdBy, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer }, { transaction: t })
             //for create appraiser Request
-            if (isFromCustomerWebsite) {
-                let appraiserRequest = await models.appraiserRequest.create({ customerId, moduleId, createdBy, modifiedBy }, { transaction: t })
-            }
+            // if (isFromCustomerWebsite) {
+            //     let appraiserRequest = await models.appraiserRequest.create({ customerId, moduleId, createdBy, modifiedBy }, { transaction: t })
+            // }
             //for create appraiser Request
 
             //for approved the status by default
@@ -1517,6 +1517,30 @@ let allKycCompleteInfo = async (customerInfo) => {
     }
 
     return kycApproval
+}
+
+let customerBalance = async (customerData, amount) => {
+    let { currentWalletBalance, walletFreeBalance } = customerData
+
+    let paymentGateWayAmount = 0
+    if (amount >= currentWalletBalance) {
+        let checkAmount = amount - currentWalletBalance
+        paymentGateWayAmount = checkAmount
+        currentWalletBalance = 0
+        walletFreeBalance = 0
+    } else {
+        currentWalletBalance = currentWalletBalance - amount
+        if (currentWalletBalance < walletFreeBalance) {
+            let checkWalletFreeBalance = currentWalletBalance - walletFreeBalance
+            walletFreeBalance = walletFreeBalance - checkWalletFreeBalance
+        }
+    }
+
+    return {
+        paymentGateWayAmount,
+        currentWalletBalance,
+        walletFreeBalance
+    }
 }
 
 module.exports = {
