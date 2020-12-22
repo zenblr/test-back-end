@@ -415,7 +415,7 @@ exports.generateInvoice = async (req, res) => {
     if (generateInvoice.created) {
 
       res.status(200).json({ invoice: process.env.URL + `/uploads/digitalGoldKyc/pdf/${generateInvoice.fileName}.pdf` });
-
+      res.setHeader('Content-Disposition', `attachment; filename=${enerateInvoice.fileName}.pdf`);
       setTimeout(async function () {
         fs.readFile(`./public/uploads/digitalGoldKyc/pdf/${generateInvoice.fileName}.pdf`, (err, data) => {
 

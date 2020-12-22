@@ -144,17 +144,22 @@ exports.addAmountWallet = async (req, res) => {
             type: tempWalletTransaction.type,
             redirectOn: process.env.DIGITALGOLDAPI + tempWalletTransaction.redirectOn
         }
-        if (tempWalletTransaction.type == "buy") {
-            res.cookie(`orderData`, `${JSON.stringify(orderData)}`);
-        }
-        if (tempWalletTransaction.type == "deposit") {
-            // res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
-            res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
-        } else {
-            // res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}`);
-            res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}`);
-        }
 
+        if(tempWalletTransaction.redirectOn){
+            if (tempWalletTransaction.type == "buy") {
+                res.cookie(`orderData`, `${JSON.stringify(orderData)}`);
+            }
+            if (tempWalletTransaction.type == "deposit") {
+                // res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
+                res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
+            } else {
+                // res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}`);
+                res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}`);
+            }
+        }else{
+        return res.status(200).json({message: "success", walletTransactionDetails});
+        }
+        
         // return res.status(200).json(walletTransactionDetails);
 
     } else {
@@ -297,19 +302,20 @@ exports.getWalletDetailById = async (req, res) => {
 }
 
 exports.getTransactionDetails = async (req, res) => {
-
     const id = req.userData.id;
-    const { orderTypeId } = req.query;
+    const { paymentFor } = req.query;
     // if (!orderTypeId) {
     //     return res.status(404).json({ message: 'orderTypeId is required' });
     // }
-    let orderTypeData = await models.digiGoldOrderType.findOne({ where: { id: orderTypeId } })
-
-    if (!orderTypeData) {
-        return res.status(404).json({ message: 'Data not found' });
+    let orderTypeData
+    if (paymentFor) {
+        orderTypeData = await models.digiGoldOrderType.findOne({ where: { orderType: paymentFor } })
     }
+    // if (!orderTypeData) {
+    //     return res.status(404).json({ message: 'Data not found' });
+    // }
     let query = {};
-    if (orderTypeId) {
+    if (paymentFor) {
         query.orderTypeId = orderTypeData.id
     }
     const { search, offset, pageSize } = paginationWithFromTo(
@@ -372,7 +378,8 @@ exports.getTransactionDetails = async (req, res) => {
 
         })
     }
-    return res.status(200).json({transactionDetails, count: count.length});
+    return res.status(200).json({ transactionDetails, count: count.length });
+
 }
 
 exports.getWalletBalance = async (req, res) => {
@@ -400,7 +407,6 @@ exports.withdrawAmount = async (req, res) => {
 
         return res.status(400).json({ message: `Insufficient free wallet balance.` });
     } else {
-        console.log("withdraw amt ")
         await sequelize.transaction(async (t) => {
 
             tempWallet = await models.walletTempDetails.create({ customerId: id, amount: withdrawAmount, paymentDirection: "debit", description: "withdraw amount", productTypeId: 4 }, { transaction: t });
@@ -423,7 +429,6 @@ exports.AddCustomerBankDetails = async (req, res) => {
 
     const { bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifscCode } = req.body;
 
-    console.log("addbankdetail")
     const id = req.userData.id;
 
     customerBankDetails = await models.customerBankDetails.create({ customerId: id, moduleId: 4, description: 'withdraw wallet amount', bankName: bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifscCode, isActive: 'true' });
