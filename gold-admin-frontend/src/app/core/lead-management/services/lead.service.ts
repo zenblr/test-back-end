@@ -104,13 +104,28 @@ export class LeadService {
   }
 
   panDetails(data): Observable<any> {
-    return this.http.post<any>(`/api/e-kyc/pan-details`, data);
+    return this.http.post<any>(`/api/e-kyc/pan-details`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message)
+        throw (err)
+      })
+    )
   }
 
-  verifyPAN(data) :Observable<any> {
-    return this.http.post<any>(`/api/e-kyc/pan-status`, data);
-  }
 
+  verifyPAN(data): Observable<any> {
+    return this.http.post<any>(`/api/e-kyc/pan-status`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message)
+        throw (err)
+      })
+    )
+  }
+  
   getInternalBranhces(data?): Observable<any> {
     const reqParams: any = {};
     if (data && data.cityId) {

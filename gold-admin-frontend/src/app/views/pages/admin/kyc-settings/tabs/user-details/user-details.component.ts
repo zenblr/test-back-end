@@ -9,6 +9,7 @@ import { SharedService } from '../../../../../../core/shared/services/shared.ser
 import { MatDialog } from '@angular/material';
 import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
+import { LeadService } from '../../../../../../core/lead-management/services/lead.service';
 
 @Component({
   selector: 'kt-user-details',
@@ -47,7 +48,8 @@ export class UserDetailsComponent implements OnInit {
     private dialog: MatDialog,
     private toast: ToastrService,
     private sharedService: SharedService,
-    private router: Router
+    private router: Router,
+    private leadService:LeadService
   ) { }
 
   ngOnInit() {
@@ -112,11 +114,16 @@ export class UserDetailsComponent implements OnInit {
         }
         this.controls.panCardNumber.clearValidators()
         this.controls.panCardNumber.updateValueAndValidity()
+
+        this.controls.dateOfBirth.clearValidators()
+        this.controls.dateOfBirth.updateValueAndValidity()
       }
       if (res == 'pan') {
         this.controls.form60.reset()
         this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
         this.controls.panCardNumber.updateValueAndValidity()
+        this.controls.dateOfBirth.setValidators(Validators.required)
+        this.controls.dateOfBirth.updateValueAndValidity()
       }
     });
 
@@ -165,6 +172,7 @@ export class UserDetailsComponent implements OnInit {
       panImg: [],
       panCardNumber: [''],
       id: [],
+      dateOfBirth:[],
       userType: [null],
       moduleId: [null],
       organizationTypeId: [null],
@@ -297,23 +305,40 @@ export class UserDetailsComponent implements OnInit {
 
 
   verifyPAN() {
-    // const panCardNumber = this.controls.panCardNumber.value;
-    // this.userDetailsService.verifyPAN({ panCardNumber }).subscribe(res => {
-    //   if (res) {
-    //     this.isPanVerified = true;
-    //   }
-    // });
+    const panCardNumber = this.controls.panCardNumber.value;
+    const dateOfBirth = this.controls.dateOfBirth.value
+    this.leadService.panDetails({ panCardNumber }).subscribe(res => {
+      if (res) {
+        this.getVerified(panCardNumber, dateOfBirth, res.data.name)
+        console.log(res)
+        // this.isPanVerified = true;
+      }
+    });
+  }
 
-    // if (this.controls.panCardNumber.status == 'DISABLED' || this.controls.panCardNumber.valid) {
-    //   this.panButton = false;
-    //   this.isPanVerified = true;
+  getVerified(panCardNumber, dateOfBirth, fullName) {
+    let data = { panCardNumber, dateOfBirth, fullName }
+    this.leadService.verifyPAN(data).subscribe(res => {
+      if (res.data.status == "Active") {
+        this.isPanVerified = true;
+      }
+    });
+  }
 
-    // } else {
-    //   this.panButton = true;
-    //   this.isPanVerified = false;
-    // }
+  public ageValidation() {
+    const today = new Date();
+    const birthDate = new Date(this.controls.dateOfBirth.value);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
 
-    this.isPanVerified = true;
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    if (age < 18) {
+      this.controls.dateOfBirth.setErrors({ invalid: true })
+    }
+    // this.controls.age.patchValue(age);
+    // this.ageValidation()
   }
 
   submit() {
