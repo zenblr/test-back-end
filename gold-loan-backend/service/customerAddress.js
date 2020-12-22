@@ -21,8 +21,8 @@ let getCustomerCityById = async (cityId, cityUnqieCode) => {
     let whereCondition;
     if (cityId != null) {
         whereCondition = { id: cityId }
-    } else if (cityUnqieId != null) {
-        whereCondition = { cityUnqieCode: cityUnqieCode }
+    } else if (cityUnqieCode != null) {
+        whereCondition = { cityUniqueCode: cityUnqieCode }
     }
 
     let city = await models.city.findOne({ where: whereCondition });

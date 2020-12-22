@@ -21,6 +21,7 @@ const Op = Sequelize.Op;
 
 exports.buyProduct = async (req, res) => {
   try {
+    
     const { amount, metalType, quantity, lockPrice, blockId, quantityBased, modeOfPayment } = req.body;
 
     const id = req.userData.id;

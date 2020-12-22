@@ -36,7 +36,6 @@ exports.sellProduct = async (req, res) => {
     if (metalType == "gold") {
       let nonSellableAmount;
       if (quantity >= getCustomerBalance.sellableGoldBalance) {
-
         let configSettingName = "digiGoldSellableHour"
         let getConfigSetting = await models.digiGoldConfigDetails.getConfigDetail(configSettingName);
 
@@ -190,11 +189,14 @@ exports.sellProduct = async (req, res) => {
 
           walletData = await models.walletDetails.create({ customerId: id, amount: result.data.result.data.totalAmount, paymentDirection: "credit", description: "sell metal", productTypeId: 4, transactionDate: moment() }, { transaction: t })
 
-          let amountOfWallet
+          let amountOfWallet;
+          let currentWalletBalance;
           if (customerDetails.walletFreeBalance) {
             amountOfWallet = Number(customerDetails.walletFreeBalance) + Number(amount)
+            currentWalletBalance = Number(customerDetails.currentWalletBalance) + Number(amount)
           } else {
-            amountOfWallet = Number(amount)
+            amountOfWallet = Number(amount);
+            currentWalletBalance = Number(amount)
           }
 
           let orderDetail = await models.digiGoldOrderDetail.create({
@@ -206,10 +208,11 @@ exports.sellProduct = async (req, res) => {
             { isOrderPlaced: true, modifiedBy }, { where: { id: tempId.id }, transaction: t });
 
           await models.customer.update(
-            { walletFreeBalance: amountOfWallet }, { where: { id: customerDetails.id }, transaction: t });
+            { walletFreeBalance: amountOfWallet, currentWalletBalance: currentWalletBalance }, { where: { id: customerDetails.id }, transaction: t });
         })
 
         await sms.sendMessageForSell(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+        console.log("success")
       }
       return res.status(200).json(result.data);
     }

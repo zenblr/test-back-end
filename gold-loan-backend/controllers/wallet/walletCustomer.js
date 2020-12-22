@@ -18,15 +18,11 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const walletService = require('../../service/wallet');
 
-
-
-
 exports.makePayment = async (req, res) => {
     try {
         const id = req.userData.id;
 
         const { amount, paymentType, depositDate, chequeNumber, bankName, branchName, bankTransactionId, orderAmount, metalType, qtyAmtType, quantity, type, redirectOn } = req.body;
-        console.log(req.body);
 
         let customerDetails = await models.customer.findOne({
             where: { id, isActive: true },
@@ -357,8 +353,17 @@ exports.getTransactionDetails = async (req, res) => {
 
     };
 
+    let includeArray = [
+        {
+            model: models.walletDetails,
+            as: 'wallet',
+            attributes: ['customerId', 'paymentDirection', 'description']
+        }
+    ]
+
     let transactionDetails = await models.walletTransactionDetails.findAll({
         where: searchQuery,
+        include: includeArray,
         offset: offset,
         limit: pageSize,
         subQuery: false,
@@ -366,10 +371,13 @@ exports.getTransactionDetails = async (req, res) => {
 
     let count = await models.walletTransactionDetails.findAll({
         where: searchQuery,
+        include: includeArray,
         order: [
             ["updatedAt", "DESC"]
         ],
-
+        offset: offset,
+        limit: pageSize,
+        subQuery: false,
     });
 
     if (check.isEmpty(transactionDetails)) {
