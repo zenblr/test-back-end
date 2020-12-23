@@ -11,11 +11,13 @@ import { ImagePreviewDialogComponent } from '../../../../../partials/components/
 import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
 import { ActivatedRoute } from '@angular/router';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'kt-user-review',
   templateUrl: './user-review.component.html',
   styleUrls: ['./user-review.component.scss'],
+  providers:[DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserReviewComponent implements OnInit, OnDestroy {
@@ -80,6 +82,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     private ele: ElementRef,
     private route: ActivatedRoute,
     private ngxPermission: NgxPermissionsService,
+    private datePipe:DatePipe
   ) {
     let res = this.sharedService.getDataFromStorage();
     this.userType = res.userDetails.userTypeId;
@@ -383,6 +386,8 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     }
 
     this.customerKycPersonal.controls.age.patchValue(age)
+    this.customerKycPersonal.controls.dateOfBirth.patchValue(this.datePipe.transform(this.customerKycPersonal.controls.dateOfBirth.value,'yyyy-MM-dd'))
+
   }
 
   ageValidation() {

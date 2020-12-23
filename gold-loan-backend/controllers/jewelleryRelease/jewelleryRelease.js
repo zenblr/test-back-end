@@ -168,6 +168,8 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
                 let ltvAmount = ornamentsWeightInfo.currentLtv * (ornaments.ltvPercent / 100)
                 ornamentsWeightInfo.currentOutstandingAmount = ornamentsWeightInfo.currentOutstandingAmount + (ltvAmount * parseFloat(ornaments.netWeight));
             }
+            ornamentsWeightInfo.releaseGrossWeight = Number(ornamentsWeightInfo.releaseGrossWeight.toFixed(2))
+            ornamentsWeightInfo.releaseNetWeight = Number(ornamentsWeightInfo.releaseNetWeight.toFixed(2))
         }
 
 
@@ -192,17 +194,17 @@ async function getornamentsWeightInfo(requestedOrnaments, otherOrnaments, loanDa
         }
 
 
-        ornamentsWeightInfo.currentOutstandingAmount = Math.round(ornamentsWeightInfo.currentOutstandingAmount);
-        ornamentsWeightInfo.totalOfReleaseOrnaments = Math.round(ornamentsWeightInfo.totalOfReleaseOrnaments);
-        ornamentsWeightInfo.totalOfRemainingOrnaments = Math.round(ornamentsWeightInfo.totalOfRemainingOrnaments);
+        ornamentsWeightInfo.currentOutstandingAmount = Number(ornamentsWeightInfo.currentOutstandingAmount.toFixed(2));
+        ornamentsWeightInfo.totalOfReleaseOrnaments = Number(ornamentsWeightInfo.totalOfReleaseOrnaments.toFixed(2));
+        ornamentsWeightInfo.totalOfRemainingOrnaments = Number(ornamentsWeightInfo.totalOfRemainingOrnaments.toFixed(2));
         ornamentsWeightInfo.releaseAmount = ornamentsWeightInfo.currentOutstandingAmount - ornamentsWeightInfo.previousOutstandingAmount - ornamentsWeightInfo.totalOfReleaseOrnaments;
         if (ornamentsWeightInfo.releaseAmount > 0) {
             ornamentsWeightInfo.releaseAmount = 0
         } else {
-            ornamentsWeightInfo.releaseAmount = Math.round(Math.abs(ornamentsWeightInfo.releaseAmount));
+            ornamentsWeightInfo.releaseAmount = Number(Math.abs(ornamentsWeightInfo.releaseAmount.toFixed(2)));
         }
-        ornamentsWeightInfo.remainingOrnamentAmount = Math.round(ornamentsWeightInfo.currentOutstandingAmount - ornamentsWeightInfo.previousOutstandingAmount - ornamentsWeightInfo.totalOfRemainingOrnaments);
-        ornamentsWeightInfo.newLoanAmount = ornamentsWeightInfo.currentOutstandingAmount - ornamentsWeightInfo.previousOutstandingAmount - ornamentsWeightInfo.remainingOrnamentAmount;
+        ornamentsWeightInfo.remainingOrnamentAmount = Number((ornamentsWeightInfo.currentOutstandingAmount - ornamentsWeightInfo.previousOutstandingAmount - ornamentsWeightInfo.totalOfRemainingOrnaments).toFixed(2));
+        ornamentsWeightInfo.newLoanAmount = Number((ornamentsWeightInfo.currentOutstandingAmount - ornamentsWeightInfo.previousOutstandingAmount - ornamentsWeightInfo.remainingOrnamentAmount).toFixed(2));
     }
     return ornamentsWeightInfo;
 }

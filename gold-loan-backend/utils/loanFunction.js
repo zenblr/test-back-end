@@ -559,6 +559,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                 noOfDays = currentDate.diff(loanStartDate, 'days');
             }
             if (firstInterestToPay) {
+                date = moment(date).format('YYYY-MM-DD')
                 var checkDueDateForSlab = moment(date).isAfter(firstInterestToPay.emiDueDate);//check due date to change slab
             }
             noOfDays += 1;
@@ -592,7 +593,11 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                     }
                     let outstandingInterest = interest.amount - interestData.paidAmount;
                     let interestAccrual = interest.amount - interestData.paidAmount;
-                    await models.customerLoanInterest.update({ interestAmount: interest.amount, totalInterestAccrual: interest.amount, outstandingInterest, interestAccrual, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    if(interestAccrual < 0){
+                        await models.customerLoanInterest.update({ interestAmount: interest.amount, totalInterestAccrual: interest.amount, outstandingInterest, interestAccrual : 0, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    }else{
+                        await models.customerLoanInterest.update({ interestAmount: interest.amount, totalInterestAccrual: interest.amount, outstandingInterest, interestAccrual, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    }
                 }
 
                 if (allInterest.length != interestLessThanDate.length) {
@@ -692,7 +697,12 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                             }
                         }
                         let interestAccrual = interest.amount - interestData.paidAmount;
-                        await models.customerLoanInterest.update({ interestAccrual, totalInterestAccrual: interest.amount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                        if(interestAccrual < 0){
+                            await models.customerLoanInterest.update({ interestAccrual : 0, totalInterestAccrual: interest.amount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                        }else{
+                            await models.customerLoanInterest.update({ interestAccrual, totalInterestAccrual: interest.amount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                        }
+                      
                         //current date == selected interest emi due date then debit
                     }
                     if (allInterest.length != interestLessThanDate.length) {
@@ -777,7 +787,11 @@ let updateInterestAftertOutstandingAmount = async (date, masterLoanId) => {
             for (const interestData of interestLessThanDate) {
                 let outstandingInterest = interest.amount - interestData.paidAmount;
                 let interestAccrual = interest.amount - interestData.paidAmount;
-                await models.customerLoanInterest.update({ interestAmount: interest.amount, outstandingInterest, interestAccrual }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                if(interestAccrual < 0){
+                    await models.customerLoanInterest.update({ interestAmount: interest.amount, outstandingInterest, interestAccrual : 0 }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                }else {
+                    await models.customerLoanInterest.update({ interestAmount: interest.amount, outstandingInterest, interestAccrual }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                }
             }
             if (allInterest.length != interestLessThanDate.length) {
                 let pendingNoOfDays = noOfDays - (interestLessThanDate.length * loan.selectedSlab);
@@ -2160,6 +2174,11 @@ let intrestCalculationForSelectedLoanWithOutT = async (date, masterLoanId, secur
                 interestObject = {}
 
                 //
+                if(interestAccrual < 0){
+                    interestObject.interestAccrual = 0
+                }else{
+                    interestObject.interestAccrual = interestAccrual
+                }
                 interestObject.interestAmount = interest.amount
                 interestObject.totalInterestAccrual = interest.amount
                 interestObject.outstandingInterest = outstandingInterest
