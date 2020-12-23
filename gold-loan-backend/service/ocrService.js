@@ -1,42 +1,133 @@
 const models = require('../models');
 const fs = require('fs').promises;
 const request = require('request');
-PDFDocument = require('pdfkit');
 const fse = require('fs');
 const karzaService = require('./karzaService');
 const env = process.env.KARZA_ENV || 'TEST';
 
-let ocrService = async (fileId, idProofTypeId, customerName, idProofNumber) => {
+// let ocrService = async (fileId, idProofTypeId, customerName, idProofNumber) => {
+//     let apiPath;
+//     let requestBody;
+//     try {
+
+//         const karzaDetail = await models.karzaDetails.findOne({ //Fetching Karza API detail
+//             where: {
+//                 isActive: true, env: env
+//             }
+//         });
+//         apiPath = karzaDetail.ocrUrl;
+
+//         const idProofType = await models.identityType.findOne({ //Fetching Type of Id proof
+//             where: {
+//                 id: idProofTypeId,
+//                 isActive: true
+//             }
+//         });
+
+//         const pdfData = await createPdf(fileId, idProofType.name);
+
+//         // Creating Request body for Karza Ocr
+//         let data = {
+//             "fileB64": pdfData.contents,
+//             "maskAadhaar": idProofType.name.toLowerCase().includes('aadhaar') ? true : false,
+//             "hideAadhaar": idProofType.name.toLowerCase().includes('aadhaar') ? true : false,
+//             "conf": true
+//         }
+
+//         // If the Id Proof is DL adding one more key in Request body
+//         if (idProofType.name.toLowerCase().includes('driving')) {
+//             data['docType'] = "dl"
+//         }
+
+//         requestBody = data;
+//         const apiType = 'Karza OCR';
+
+//         let options = {
+//             method: 'POST',
+//             url: karzaDetail.ocrUrl,
+//             headers: {
+//                 'x-karza-key': karzaDetail.key,
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(data)
+//         }
+
+//         return new Promise((resolve, reject) => {
+//             request(options, async function (error, response, body) {
+//                 if (error) {
+//                     await insertInExternalApiLogger(apiType, null, null, karzaDetail.ocrUrl, JSON.stringify(data), JSON.stringify(error), 'Error');
+//                     return resolve({ error: 'Something Went Wrong' });
+//                 }
+//                 const respBody = JSON.parse(body);
+//                 if (respBody.statusCode === 101) {
+//                     await insertInExternalApiLogger(apiType, null, null, karzaDetail.ocrUrl, JSON.stringify(data), body, 'Success');
+//                     const ocrResp = await getOcrResponse(respBody.result, idProofType.name, karzaDetail.confidenceVal1, idProofNumber);
+//                     if (ocrResp.error) {
+//                         return resolve({ error: ocrResp.error });
+//                     }
+//                     // Karza Name match
+//                     const karzaNameMatchResp = await karzaNameMatch(customerName, ocrResp.name);
+//                     if (karzaNameMatchResp.error) {
+//                         return resolve({ error: karzaNameMatchResp.error });
+//                     }
+//                     if (karzaNameMatchResp.score < 70) {
+//                         return resolve({ error: 'Customer Name and Name on Documents doesn\'t match' });
+//                     }
+
+//                     const validationResp = await documentValidation(ocrResp, idProofType.name, karzaDetail, idProofNumber);
+//                     if (!validationResp.error) {
+//                         return resolve({ data: ocrResp, fileData: pdfData.fileUpload });
+//                     } else {
+//                         return resolve({ error: validationResp.error });
+//                     }
+
+//                 } else {
+//                     await insertInExternalApiLogger(apiType, null, null, karzaDetail.ocrUrl, JSON.stringify(data), body, 'Error');
+//                     return resolve({ error: 'Ocr Failed' });
+//                 }
+//             })
+//         })
+//     } catch (err) {
+//         await insertInExternalApiLogger('Karza OCR', null, null, apiPath, JSON.stringify(requestBody), JSON.stringify(err), 'Error');
+//         return { error: 'Something Went Wrong' }
+//     }
+// }
+
+// Function to Insert into External API Logger
+
+let ocrService = async (fileUrl, idProofTypeId, customerId) => {
     let apiPath;
     let requestBody;
+    let idProofType = null;
     try {
-
         const karzaDetail = await models.karzaDetails.findOne({ //Fetching Karza API detail
             where: {
                 isActive: true, env: env
             }
         });
-        apiPath = karzaDetail.ocrUrl;
+        apiPath = karzaDetail.kycOcrUrl;
 
-        const idProofType = await models.identityType.findOne({ //Fetching Type of Id proof
+        const idProofTypeData = await models.identityType.findOne({ 
             where: {
                 id: idProofTypeId,
                 isActive: true
             }
         });
-
-        const pdfData = await createPdf(fileId, idProofType.name);
+        if(idProofTypeData){
+            idProofType = idProofTypeData.name
+        }else{
+            return ({ error: "Invalid ID proof type" });
+        }
 
         // Creating Request body for Karza Ocr
         let data = {
-            "fileB64": pdfData.contents,
-            "maskAadhaar": idProofType.name.toLowerCase().includes('aadhaar') ? true : false,
-            "hideAadhaar": idProofType.name.toLowerCase().includes('aadhaar') ? true : false,
+            "url": fileUrl,
+            "maskAadhaar": idProofType.toLowerCase().includes('aadhaar card') ? true : false,
             "conf": true
         }
 
         // If the Id Proof is DL adding one more key in Request body
-        if (idProofType.name.toLowerCase().includes('driving')) {
+        if (idProofType.toLowerCase().includes('driving license')) {
             data['docType'] = "dl"
         }
 
@@ -45,7 +136,7 @@ let ocrService = async (fileId, idProofTypeId, customerName, idProofNumber) => {
 
         let options = {
             method: 'POST',
-            url: karzaDetail.ocrUrl,
+            url: karzaDetail.kycOcrUrl,
             headers: {
                 'x-karza-key': karzaDetail.key,
                 'Content-Type': 'application/json'
@@ -56,34 +147,25 @@ let ocrService = async (fileId, idProofTypeId, customerName, idProofNumber) => {
         return new Promise((resolve, reject) => {
             request(options, async function (error, response, body) {
                 if (error) {
-                    await insertInExternalApiLogger(apiType, null, null, karzaDetail.ocrUrl, JSON.stringify(data), JSON.stringify(error), 'Error');
+                    await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), JSON.stringify(error), 'Error');
                     return resolve({ error: 'Something Went Wrong' });
                 }
                 const respBody = JSON.parse(body);
                 if (respBody.statusCode === 101) {
-                    await insertInExternalApiLogger(apiType, null, null, karzaDetail.ocrUrl, JSON.stringify(data), body, 'Success');
-                    const ocrResp = await getOcrResponse(respBody.result, idProofType.name, karzaDetail.confidenceVal1, idProofNumber);
+                    await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), body, 'Success');
+                    const ocrResp = await getOcrResponse(respBody.result, idProofType, karzaDetail.confidenceVal1);
                     if (ocrResp.error) {
                         return resolve({ error: ocrResp.error });
                     }
-                    // Karza Name match
-                    const karzaNameMatchResp = await karzaNameMatch(customerName, ocrResp.name);
-                    if (karzaNameMatchResp.error) {
-                        return resolve({ error: karzaNameMatchResp.error });
-                    }
-                    if (karzaNameMatchResp.score < 70) {
-                        return resolve({ error: 'Customer Name and Name on Documents doesn\'t match' });
-                    }
-
-                    const validationResp = await documentValidation(ocrResp, idProofType.name, karzaDetail, idProofNumber);
+                    const validationResp = await documentValidation(ocrResp, idProofType, karzaDetail);
                     if (!validationResp.error) {
-                        return resolve({ data: ocrResp, fileData: pdfData.fileUpload });
+                        return resolve({ data: ocrResp });
                     } else {
                         return resolve({ error: validationResp.error });
                     }
 
                 } else {
-                    await insertInExternalApiLogger(apiType, null, null, karzaDetail.ocrUrl, JSON.stringify(data), body, 'Error');
+                    await insertInExternalApiLogger(apiType, null, null, karzaDetail.kycOcrUrl, JSON.stringify(data), body, 'Error');
                     return resolve({ error: 'Ocr Failed' });
                 }
             })
@@ -94,7 +176,6 @@ let ocrService = async (fileId, idProofTypeId, customerName, idProofNumber) => {
     }
 }
 
-// Function to Insert into External API Logger
 let insertInExternalApiLogger = async (apiType, userId, customerId, api, request, response, status) => {
     models.externalApiLogger.create({
         apiType, userId, customerId, api, request, response, status
@@ -102,7 +183,7 @@ let insertInExternalApiLogger = async (apiType, userId, customerId, api, request
     return;
 }
 
-let getOcrResponse = async (responseBody, idProofType, confidenceValue, idProofNumber) => {
+let getOcrResponse = async (responseBody, idProofType, confidenceValue) => {
     const proofType = idProofType.toLowerCase();
     let userDetailBody = {
         name: null,
@@ -116,16 +197,16 @@ let getOcrResponse = async (responseBody, idProofType, confidenceValue, idProofN
         fileNum: null
     };
 
-    if (proofType.includes('aadhaar')) {
+    if (proofType.includes('aadhaar card')) {
         const extractedData = await getAadhaarResp(responseBody, confidenceValue, userDetailBody);
         return extractedData;
     } else if (proofType.includes('passport')) {
         const extractedData = await getPassportResp(responseBody, confidenceValue, userDetailBody);
         return extractedData;
-    } else if (proofType.includes('driving')) {
-        const extractedData = await getDrivingLicenseResp(responseBody, userDetailBody, idProofNumber);
+    } else if (proofType.includes('driving license')) {
+        const extractedData = await getDrivingLicenseResp(responseBody, userDetailBody);
         return extractedData;
-    } else {
+    } else if(proofType.includes('voter id')){
         const extractedData = await getElectiondIdCardResp(responseBody, confidenceValue, userDetailBody);
         return extractedData;
     }
@@ -149,6 +230,7 @@ let getAadhaarResp = async (respBody, confidenceValue, userDetailBody) => {
             userDetailBody.pincode = returnValueFunction(respObject.details.pin);
             userDetailBody.state = respObject.details.addressSplit.state;
             userDetailBody.city = respObject.details.addressSplit.district;
+            userDetailBody.aadharImageUrl = respObject.details.imageUrl.value
             aadharImageUrl = respObject.details.imageUrl.value
         } else if (respObject.type.toLowerCase().includes('aadhaar front bottom')) {
             userDetailBody.name = returnValueFunction(respObject.details.name);
@@ -156,6 +238,7 @@ let getAadhaarResp = async (respBody, confidenceValue, userDetailBody) => {
             userDetailBody.dob = returnValueFunction(respObject.details.dob);
             if (!aadharImageUrl) {
                 aadharImageUrl = respObject.details.imageUrl.value;
+                userDetailBody.aadharImageUrl = respObject.details.imageUrl.value;
             }
         } else {
             userDetailBody.address = returnValueFunction(respObject.details.address);
@@ -165,18 +248,13 @@ let getAadhaarResp = async (respBody, confidenceValue, userDetailBody) => {
         }
     }
 
-    if (aadharImageUrl) {
-        const maskedAadharImageData = await storeMaskAadhaarImage(aadharImageUrl);
-        userDetailBody.maskedAadhaarImage = maskedAadharImageData;
-    } else {
-        return { error: 'Please Upload Aadhaar Card Image' };
-    }
-
-    if (isAadharConfPass && isNameConfPass) {
-        return userDetailBody;
-    } else {
-        return { error: 'Low Confidence' }
-    }
+    // if (aadharImageUrl) {
+    //     const maskedAadharImageData = await storeMaskAadhaarImage(aadharImageUrl);
+    //     userDetailBody.maskedAadhaarImage = maskedAadharImageData;
+    // } else {
+    //     return { error: 'Please Upload Aadhaar Card Image' };
+    // }
+    return {userDetailBody ,isAadharConfPass,isNameConfPass}
 }
 
 let getPassportResp = async (respBody, confidenceValue, userDetailBody) => {
@@ -203,22 +281,19 @@ let getPassportResp = async (respBody, confidenceValue, userDetailBody) => {
             userDetailBody.fileNum = returnValueFunction(respObject.details.fileNum);
         }
     }
-
-    if (isPassportConfPass && isNameConfPass) {
-        return userDetailBody;
-    } else {
-        return { error: 'Low Confidence' }
-    }
+    return userDetailBody;
+    // if (isPassportConfPass && isNameConfPass) {
+    //     return userDetailBody;
+    // } else {
+    //     return { error: 'Low Confidence' }
+    // }
 }
 
-let getDrivingLicenseResp = async (respBody, userDetailBody, idProofNumber) => {
+let getDrivingLicenseResp = async (respBody, userDetailBody) => {
     let isDLConfPass = false;
     for (let index = 0; index < respBody.length; index++) {
         const respObject = respBody[index]
-        if (respObject.details.dlNo && returnValueFunction(respObject.details.dlNo) == idProofNumber) {
-            isDLConfPass = true;
-        }
-
+        isDLConfPass = true
         if (respObject.type.toLowerCase().includes('dl front')) {
             userDetailBody.name = returnValueFunction(respObject.details.name);
             userDetailBody.idNumber = returnValueFunction(respObject.details.dlNo);
@@ -301,7 +376,7 @@ let createPdf = async (fileId, idProofType) => {
 
     // Converting file to base64
     const contents = await fs.readFile('./public/output.pdf', { encoding: 'base64' });
-    if (!idProofType.toLowerCase().includes('aadhaar')) {
+    if (!idProofType.toLowerCase().includes('aadhaar card')) {
         let fileName = Date.now();
         await fs.writeFile(`./public/uploads/images/${fileName}.pdf`, contents, 'base64');
         const fileUploadData = await storeFinalPdf(`${fileName}.pdf`);
@@ -350,9 +425,10 @@ let karzaNameMatch = async (customerName, nameOnDocument) => {
 let documentValidation = async (ocrResp, idProofType, karzaDetail, idProofNumber) => {
     const proofType = idProofType.toLowerCase();
     if (proofType.includes('passport')) {
-        const validatedData = await passportValidation(ocrResp, karzaDetail, idProofNumber);
-        return validatedData;
-    } else if (proofType.includes('driving')) {
+        // const validatedData = await passportValidation(ocrResp, karzaDetail, idProofNumber);
+        // return validatedData;
+        return { error: false };
+    } else if (proofType.includes('driving license')) {
         const validatedData = await dlValidation(ocrResp, karzaDetail, idProofNumber);
         return validatedData;
     } else {
@@ -365,7 +441,7 @@ let passportValidation = async (ocrResp, karzaDetail, idProofNumber) => {
         "consent": karzaDetail.consent,
         "fileNo": ocrResp.fileNum,
         "dob": ocrResp.dob,
-        "passportNo": idProofNumber
+        "passportNo": ocrResp.idNumber
     }
 
     const validationResp = await karzaValidationApiCallFunction(data, karzaDetail.passportVerificationUrl, karzaDetail.key, 'Karza Passport Validation');

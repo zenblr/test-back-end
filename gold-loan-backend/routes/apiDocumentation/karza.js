@@ -84,4 +84,35 @@
  *          description: varified pan 
  *       400:
  *          description: Invalid ID Number or combination of inputs
+ * /e-kyc/ocr:
+ *   post:
+ *     tags:
+ *       - E KYC API
+ *     name: KYC OCR ( Aadhaar, VoterID, Passport and DL Driving License )
+ *     summary: KYC OCR
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             fileUrl:
+ *               type: string
+ *             idProofTypeId:
+ *               type: number
+ *             customerId:
+ *               type: number
+ *         required:
+ *           - fileUrl
+ *           - idProofTypeId
+ *           - customerId
+ *     responses:
+ *       200:
+ *          description: document details
+ *       400:
+ *          description: failed to retrive data
  */
