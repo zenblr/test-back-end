@@ -5,7 +5,7 @@ module.exports = {
     return queryInterface.addColumn('loan_scheme', 'rpg', {
       type: Sequelize.DataTypes.FLOAT,
       allowNull: false,
-      defaultValue: 4000
+      defaultValue: 3375
     }).then(() => {
       return queryInterface.addColumn('loan_scheme', 'unsecured_scheme_id', {
         type: Sequelize.DataTypes.INTEGER,
