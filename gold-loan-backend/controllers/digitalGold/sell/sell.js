@@ -14,13 +14,13 @@ const Op = Sequelize.Op;
 
 exports.sellProduct = async (req, res) => {
   try {
-    const { metalType, quantity, lockPrice, blockId, userBankId, accountName, bankId, accountNumber, ifscCode, totalAmount, quantityBased, modeOfPayment, branchName, amount } = req.body;
+    const { metalType, quantity, lockPrice, blockId, userBankId, accountName, bankId, accountNumber, ifscCode, modeOfPayment, branchName, amount } = req.body;
     const id = req.userData.id;
 
     // return;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
-    console.log("id", id)
+    
     let customerDetails = await models.customer.findOne({
       where: { id, isActive: true },
     });
@@ -62,9 +62,9 @@ exports.sellProduct = async (req, res) => {
 
     let customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: id } });
     let orderUniqueId = `dg_sell${Math.floor(1000 + Math.random() * 9000)}`;
-
+    let paymentBankType;
     if (modeOfPayment == "bankAccount") {
-
+      paymentBankType = "userbank";
       const customerUniqueId = customerDetails.customerUniqueId;
       const merchantData = await getMerchantData();
       const transactionId = uniqid(merchantData.merchantId, customerUniqueId);
@@ -81,7 +81,8 @@ exports.sellProduct = async (req, res) => {
         'userBank[bankId]': bankId,
         'userBank[accountNumber]': accountNumber,
         'userBank[ifscCode]': ifscCode,
-        'mobileNumber': customerDetails.mobileNumber
+        'mobileNumber': customerDetails.mobileNumber,
+        'paymentBankType': paymentBankType
       })
       const result = await models.axios({
         method: 'POST',
@@ -135,35 +136,37 @@ exports.sellProduct = async (req, res) => {
         })
       }
       return res.status(200).json(result.data);
-    } else if(modeOfPayment == "augmontWallet") {
+    } else if (modeOfPayment == "augmontWallet") {
+      paymentBankType = "partnerbank";
+      const customerUniqueId = customerDetails.customerUniqueId;
+      const merchantData = await getMerchantData();
+      const transactionId = uniqid(merchantData.merchantId, customerUniqueId);
+      const data = qs.stringify({
+        'lockPrice': lockPrice,
+        'metalType': metalType,
+        'quantity': quantity,
+        //  'amount': amount,
+        'merchantTransactionId': transactionId,
+        'uniqueId': customerUniqueId,
+        'blockId': blockId,
+        // 'userBank[userBankId]': userBankId,
+        // 'userBank[accountName]': accountName,
+        // 'userBank[bankId]': bankId,
+        // 'userBank[accountNumber]': accountNumber,
+        // 'userBank[ifscCode]': ifscCode,
+        'mobileNumber': customerDetails.mobileNumber,
+        'paymentBankType': paymentBankType
 
-      // const customerUniqueId = customerDetails.customerUniqueId;
-      // const merchantData = await getMerchantData();
-      // const transactionId = uniqid(merchantData.merchantId, customerUniqueId);
-      // const data = qs.stringify({
-      //   'lockPrice': lockPrice,
-      //   'metalType': metalType,
-      //   'quantity': quantity,
-      //   //  'amount': amount,
-      //   'merchantTransactionId': transactionId,
-      //   'uniqueId': customerUniqueId,
-      //   'blockId': blockId,
-      //   'userBank[userBankId]': userBankId,
-      //   'userBank[accountName]': accountName,
-      //   'userBank[bankId]': bankId,
-      //   'userBank[accountNumber]': accountNumber,
-      //   'userBank[ifscCode]': ifscCode,
-      //   'mobileNumber': customerDetails.mobileNumber
-      // })
-      // const result = await models.axios({
-      //   method: 'POST',
-      //   url: `${process.env.DIGITALGOLDAPI}/merchant/v1/sell`,
-      //   headers: {
-      //     'Content-Type': 'application/x-www-form-urlencoded',
-      //     'Authorization': `Bearer ${merchantData.accessToken}`,
-      //   },
-      //   data: data
-      // })
+      })
+      const result = await models.axios({
+        method: 'POST',
+        url: `${process.env.DIGITALGOLDAPI}/merchant/v1/sell`,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${merchantData.accessToken}`,
+        },
+        data: data
+      })
 
       if (result.data.statusCode === 200) {
 
@@ -183,27 +186,28 @@ exports.sellProduct = async (req, res) => {
             await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilverBal }, { where: { customerId: id }, transaction: t });
           }
 
+          let walletData = await models.walletDetails.create({ customerId: id, amount: result.data.result.data.totalAmount, paymentDirection: "credit", description: "sell metal", productTypeId: 4, transactionDate: moment() }, { transaction: t })
+
+
           let orderDetail = await models.digiGoldOrderDetail.create({
             tempOrderId: tempId.id, customerId: id, orderTypeId: 2, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
-            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: amountOfWallet
+            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: amountOfWallet, walletId: walletData.id
           }, { transaction: t });
-
 
           await models.digiGoldTempOrderDetail.update(
             { isOrderPlaced: true, modifiedBy }, { where: { id: tempId.id }, transaction: t });
 
-          await models.walletDetails.create({ customerId: id, amount: result.data.result.data.totalAmount, paymentDirection: "debit", description: "sell metal", productTypeId: 4, transactionDate: moment() }, { transaction: t })
+          let amountOfWallet
+          if (customerDetails.walletFreeBalance) {
+            amountOfWallet = Number(customerDetails.walletFreeBalance) + Number(amount)
+          } else {
+            amountOfWallet = Number(amount)
+          }
+          await models.customer.update(
+            { walletFreeBalance: amountOfWallet }, { where: { id: customerDetails.id }, transaction: t });
         })
-        let amountOfWallet
-        if(customerDetails.walletFreeBalance){
-          amountOfWallet = Number(customerDetails.walletFreeBalance) + Number(amount)
-        }else{
-          amountOfWallet = Number(amount)
-        }
-        await models.customer.update(
-          { walletFreeBalance: amountOfWallet }, { where: { id: customerDetails.id }, transaction: t });
 
-          await sms.sendMessageForSell(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+        await sms.sendMessageForSell(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
       }
       return res.status(200).json(result.data);
     }
