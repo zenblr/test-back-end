@@ -3,6 +3,7 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const check = require('../../lib/checkLib');
 let {getNameByPANCard, verifyName, verifyPANCard} = require('../../service/karzaService');
+let {ocrService} = require('../../service/ocrService');
 const moment = require('moment');
 
 exports.panCardNameByPan = async (req, res, next) => {
@@ -47,5 +48,15 @@ exports.verifyPanCardData = async (req, res, next) => {
             return res.status(400).json({message: 'Please try again'})
         }
         return res.status(400).json({message: 'Invalid ID Number or combination of inputs'})
+    }
+}
+
+exports.kycOcr = async (req, res, next) => {
+    let { fileUrl, idProofTypeId, customerId } = req.body;
+    let ocrData = await ocrService(fileUrl, idProofTypeId, customerId)
+    if(!ocrData.error){
+        return res.status(200).json({message: 'Success',data: ocrData.data })
+    }else{
+        return res.status(400).json({message: ocrData.error})
     }
 }
