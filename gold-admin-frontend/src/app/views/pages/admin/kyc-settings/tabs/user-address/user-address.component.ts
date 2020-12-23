@@ -50,10 +50,12 @@ export class UserAddressComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
-
     this.getStates();
     this.getIdentityType();
-    this.getAddressProofType()
+    this.getAddressProofType() 
+    this.identityForm.controls.identityProofImg.valueChanges.subscribe(res=>{
+      console.log(res)
+    })
   }
 
   initForm() {
@@ -334,12 +336,14 @@ export class UserAddressComponent implements OnInit {
       this.identityFileNameArray.splice(index, 1);
       this.identityForm.get('identityProofFileName').patchValue(this.identityFileNameArray);
       // this.removeImageFromAddress(index)           // remove from permanent address
-    } else if (type == 'residential') {
+    }
+     if (type == 'residential' || this.addressControls.at(0).value.addressProofTypeId == 2) {
       this.images.residential.splice(index, 1);
       this.imageId.residential.splice(index, 1);
       this.addressFileNameArray2.splice(index, 1);
       this.addressControls.at(1)['controls'].addressProofFileName.patchValue(this.addressFileNameArray2)
-    } else if (type == 'permanent') {
+    } 
+     if (type == 'permanent' || this.addressControls.at(1).value.addressProofTypeId == 2) {
       this.images.permanent.splice(index, 1);
       this.imageId.permanent.splice(index, 1);
       this.addressFileNameArray1.splice(index, 1);

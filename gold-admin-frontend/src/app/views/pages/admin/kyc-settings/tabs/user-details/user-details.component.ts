@@ -124,6 +124,7 @@ export class UserDetailsComponent implements OnInit {
         this.controls.panCardNumber.updateValueAndValidity()
         this.controls.dateOfBirth.setValidators(Validators.required)
         this.controls.dateOfBirth.updateValueAndValidity()
+        console.log(this.isPanVerified)
       }
     });
 
@@ -209,6 +210,8 @@ export class UserDetailsComponent implements OnInit {
 
         if (res.customerInfo.panCardNumber !== null) {
           this.isPanVerified = true;
+          this.controls.panType.disable()
+          this.controls.panCardNumber.disable()
         } else {
           this.showVerifyPAN = true;
         }
