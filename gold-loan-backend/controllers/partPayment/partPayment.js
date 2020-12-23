@@ -563,7 +563,11 @@ exports.partPayment = async (req, res, next) => {
                         }
                         let outstandingInterest = interest.amount - interestData.paidAmount;
                         let interestAccrual = interest.amount - interestData.paidAmount;
-                        await models.customerLoanInterest.update({ interestAmount: interest.amount, totalInterestAccrual: interest.amount, outstandingInterest, interestAccrual, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                        if(interestAccrual < 0){
+                            await models.customerLoanInterest.update({ interestAmount: interest.amount, totalInterestAccrual: interest.amount, outstandingInterest, interestAccrual : 0, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                        }else{
+                            await models.customerLoanInterest.update({ interestAmount: interest.amount, totalInterestAccrual: interest.amount, outstandingInterest, interestAccrual, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                        }
                     }
 
                     if (allInterest.length != interestLessThanDate.length) {
@@ -617,9 +621,9 @@ exports.partPayment = async (req, res, next) => {
                     await models.customerLoan.update({ currentInterestRate: stepUpSlab.interestRate, currentSlab: stepUpSlab.days }, { where: { id: loan.id }, transaction: t });
                 }
 
-                let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
+                // let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
 
-                await sendPaymentMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, depositAmount)
+                // await sendPaymentMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId, depositAmount)
             }
             ///////////
             return customerLoanTransaction
@@ -1202,7 +1206,11 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
                     }
                     let outstandingInterest = interest.amount - interestData.paidAmount;
                     let interestAccrual = interest.amount - interestData.paidAmount;
-                    await models.customerLoanInterest.update({ interestAmount: interest.amount, totalInterestAccrual: interest.amount, outstandingInterest, interestAccrual, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    if(interestAccrual < 0){
+                        await models.customerLoanInterest.update({ interestAmount: interest.amount, totalInterestAccrual: interest.amount, outstandingInterest, interestAccrual : 0, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    }else{
+                        await models.customerLoanInterest.update({ interestAmount: interest.amount, totalInterestAccrual: interest.amount, outstandingInterest, interestAccrual, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    }
                 }
 
                 if (allInterest.length != interestLessThanDate.length) {

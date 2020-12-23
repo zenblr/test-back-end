@@ -72,6 +72,7 @@ exports.dailyIntrestCalculation = async (date) => {
                 noOfDays = currentDate.diff(loanStartDate, 'days');
             }
             if (firstInterestToPay) {
+                date = moment(date).format('YYYY-MM-DD')
                 var checkDueDateForSlab = moment(date).isAfter(firstInterestToPay.emiDueDate);//check due date to change slab
             }
             noOfDays += 1;
@@ -105,7 +106,12 @@ exports.dailyIntrestCalculation = async (date) => {
                     }
                     let outstandingInterest = interest.amount - interestData.paidAmount;
                     let interestAccrual = interest.amount - interestData.paidAmount;
-                    await models.customerLoanInterest.update({ interestAmount: interest.amount, totalInterestAccrual: interest.amount, outstandingInterest, interestAccrual, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    if(interestAccrual < 0){
+                        await models.customerLoanInterest.update({ interestAmount: interest.amount, totalInterestAccrual: interest.amount, outstandingInterest, interestAccrual : 0, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    }else{
+                        await models.customerLoanInterest.update({ interestAmount: interest.amount, totalInterestAccrual: interest.amount, outstandingInterest, interestAccrual, interestRate: stepUpSlab.interestRate }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    }
+                    
                 }
 
                 if (allInterest.length != interestLessThanDate.length) {
@@ -149,6 +155,9 @@ exports.dailyIntrestCalculation = async (date) => {
                         } else {
                             let amount = pendingDaysAmount;
                             let interestAccrual = amount - extraInterest.paidAmount;
+                            if(interestAccrual < 0){
+                                interestAccrual = 0
+                            }
                             let outstandingInterest = amount - extraInterest.paidAmount;
                             if (amount > Number(extraInterest.paidAmount)) {
                                 interestAccrual = amount - extraInterest.paidAmount;
@@ -205,7 +214,11 @@ exports.dailyIntrestCalculation = async (date) => {
                             }
                         }
                         let interestAccrual = interest.amount - interestData.paidAmount;
-                        await models.customerLoanInterest.update({ interestAccrual, totalInterestAccrual: interest.amount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                        if(interestAccrual < 0){
+                            await models.customerLoanInterest.update({ interestAccrual : 0, totalInterestAccrual: interest.amount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                        }else{
+                            await models.customerLoanInterest.update({ interestAccrual, totalInterestAccrual: interest.amount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                        }
                         //current date == selected interest emi due date then debit
                     }
                     if (allInterest.length != interestLessThanDate.length) {
