@@ -26,10 +26,10 @@
         "operatorsAliases": false
     },
     "production": {
-        "username": "postgres",
-        "password": "d51FZuIHOX5pL8ja4Y4r",
-        "database": "gold_all_db",
-        "host": "gold-for-all-cluster.cluster-cdqj1gojl1vk.ap-south-1.rds.amazonaws.com",
+        "username": "root",
+        "password": null,
+        "database": "database_production",
+        "host": "127.0.0.1",
         "dialect": "postgres",
         "operatorsAliases": false
     },
