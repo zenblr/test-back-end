@@ -82,7 +82,7 @@ export class WithdrawalRequestsEditComponent implements OnInit {
 
 	editWithdraw() {
 		const data = {
-			customerId: this.withdrawInfo.transactionData.customerId,
+			customerId: this.withdrawInfo.transactionData.customer.customerUniqueId,
 			customerFullName: this.withdrawInfo.transactionData.customer.firstName + ' ' + this.withdrawInfo.transactionData.customer.lastName,
 			mobileNumber: this.withdrawInfo.transactionData.customer.mobileNumber,
 			transactionUniqueId: this.withdrawInfo.transactionData.transactionUniqueId,

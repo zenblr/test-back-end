@@ -90,10 +90,9 @@ export class DepositRequestsEditComponent implements OnInit {
 		if (!(this.depositInfo.transactionData.depositStatus == 'pending')) {
 			data.depositStatus = this.depositInfo.transactionData.depositStatus;
 			this.depositForm.patchValue(data);
-			// this.controls.withdrawalStatus.disable();
 		} 
 		else {
-			this.controls.withdrawalStatus.enable();
+			this.controls.depositStatus.enable();
 		}
 
 	}
