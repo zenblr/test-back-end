@@ -140,7 +140,7 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
             }
 
         });
-        return res.status(200).json({ message: "Success" });
+        return res.status(200).json({ message: "Success", transactionId: transactionData.id });
     } else if (transactionData.orderTypeId == 5) {
         if (customer.walletFreeBalance < transactionData.transactionAmount) {
             return res.status(400).json({ message: 'You have insufficient free wallet balance.' });
@@ -161,7 +161,7 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, }, { where: { id: transactionData.id }, transaction: t });
             }
         });
-        return res.status(200).json({ message: "Success" });
+        return res.status(200).json({ message: "Success", transactionId: transactionData.id });
     }
 
 }
@@ -169,8 +169,14 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
 exports.getWalletDetailByIdAdmin = async (req, res) => {
     let depositWithdrawId = req.params.depositWithdrawId;
 
-    let transactionData = await walletService.walletTransactionDetailById(depositWithdrawId);
-
+    let transactionData = await models.walletTransactionDetails.findOne({
+        where: { id: depositWithdrawId },
+        include: {
+          model: models.customer,
+          as: 'customer',
+          attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+        }
+      });
     if (!transactionData) {
         return res.status(404).json({ message: 'Data not found' });
     } else {

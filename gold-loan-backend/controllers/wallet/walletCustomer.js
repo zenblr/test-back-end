@@ -27,7 +27,7 @@ exports.makePayment = async (req, res) => {
 
     const { amount, paymentType, depositDate, chequeNumber, bankName, branchName, bankTransactionId, orderAmount, metalType, qtyAmtType, quantity, type, redirectOn,
       lockPrice, blockId, quantityBased, modeOfPayment,
-      shippingCharges, totalQuantity, totalWeight, userAddressId, cartData, orderAddress  } = req.body;
+      shippingCharges, totalQuantity, totalWeight, userAddressId, cartData, orderAddress } = req.body;
 
     let customerDetails = await models.customer.findOne({
       where: { id, isActive: true },
@@ -37,6 +37,12 @@ exports.makePayment = async (req, res) => {
     };
     let transactionUniqueId = uniqid.time().toUpperCase();
     let tempWallet;
+
+
+    const checkLimit = await checkBuyLimit(id, orderAmount);
+    if(!checkLimit.success){
+      return res.status(404).json({ message: checkLimit.message });
+    }
 
     if (paymentType == 'upi' || paymentType == 'netbanking' || paymentType == 'wallet' || paymentType == 'card') {
 
@@ -72,14 +78,14 @@ exports.makePayment = async (req, res) => {
           let orderUniqueId = `dg_delivery${Math.floor(1000 + Math.random() * 9000)}`;
           let currentTempWalletBal = Number(customerDetails.currentWalletBalance) - Number(orderAmount);
 
-          tempOrderDetail = await models.digiGoldTempOrderDetail.create({ customerId: id, orderTypeId: 3, totalAmount: orderAmount, blockId: orderUniqueId, amount: orderAmount, modeOfPayment: modeOfPayment, createdBy: 1, modifiedBy: 1, deliveryShippingCharges: shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, userAddressId, walletTempId: walletData.id, walletBalance: currentTempWalletBal, razorpayOrderId: razorPayOrder.id  }, { transaction: t });
+          tempOrderDetail = await models.digiGoldTempOrderDetail.create({ customerId: id, orderTypeId: 3, totalAmount: orderAmount, blockId: orderUniqueId, amount: orderAmount, modeOfPayment: modeOfPayment, createdBy: 1, modifiedBy: 1, deliveryShippingCharges: shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, userAddressId, walletTempId: walletData.id, walletBalance: currentTempWalletBal, razorpayOrderId: razorPayOrder.id }, { transaction: t });
 
           for (let cart of cartData) {
-            await models.digiGoldTempOrderProductDetail.create({ orderDetailId: tempOrderDetail.id, productSku: cart.productSku, productWeight: cart.productWeight, productName: cart.productName, amount: cart.amount, productImage: cart.productImage, totalAmount: cart.totalProductAmount, metalType: cart.metalType, quantity: cart.quantity, createdBy: 1, modifiedBy: 1 }, { transaction: t });
+            await models.digiGoldTempOrderProductDetail.create({ tempOrderDetailId: tempOrderDetail.id, productSku: cart.productSku, productWeight: cart.productWeight, productName: cart.productName, amount: cart.amount, productImage: cart.productImage, totalAmount: cart.totalProductAmount, metalType: cart.metalType, quantity: cart.quantity, createdBy: 1, modifiedBy: 1 }, { transaction: t });
           }
-  
+
           for (let address of orderAddress) {
-            await models.digiGoldTempOrderAddress.create({ orderDetailId: tempOrderDetail.id, customerName: address.customerName, addressType: address.addressType, address: address.address, stateId: address.stateId, cityId: address.cityId, pinCode: address.pinCode }, { transaction: t });
+            await models.digiGoldTempOrderAddress.create({ tempOrderDetailId: tempOrderDetail.id, customerName: address.customerName, addressType: address.addressType, address: address.address, stateId: address.stateId, cityId: address.cityId, pinCode: address.pinCode }, { transaction: t });
           }
         }
       })
@@ -107,7 +113,6 @@ exports.addAmountWallet = async (req, res) => {
   try {
 
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, transactionUniqueId } = req.body;
-
     let walletTransactionDetails;
     if (razorpay_order_id && razorpay_payment_id && razorpay_signature) {
 
@@ -178,7 +183,7 @@ exports.addAmountWallet = async (req, res) => {
 
         if (tempWalletTransaction.redirectOn) {
 
-          res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}`);
+          res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
           // res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}`);
 
         } else {
@@ -191,22 +196,15 @@ exports.addAmountWallet = async (req, res) => {
           let tempOrderData;
           let currentTempBal;
           let walletData
-          await sequelize.transaction(async (t) => {
-            // walletData = await models.walletTempDetails.create({ customerId: customer.id, amount: tempWalletDetail.amount, paymentDirection: "debit", description: "buy product", productTypeId: 4, transactionDate: moment() }, { transaction: t });
-
-            // currentTempBal = Number(customer.currentWalletBalance) - Number(tempWalletDetail.amount);
-
-            // tempOrderData = await models.digiGoldTempOrderDetail.create({ customerId: customer.id, orderTypeId: 1, totalAmount: tempWalletDetail.amount, metalType: tempWalletDetail.metalType, quantity: tempWalletDetail.quantity, lockPrice: tempWalletDetail.lockPrice, blockId: tempWalletDetail.blockId, amount: tempWalletDetail.amount, quantityBased: orderData.quantityBased, modeOfPayment: tempWalletDetail.modeOfPayment, createdBy: 1, modifiedBy: 1, walletTempId: walletData.id, walletBalance: currentTempBal }, { transaction: t });
-
-          })
-
+          
           let orderBuy = await walletBuy(walletTransactionDetails.customerId, orderData.lockPrice, orderData.metalType, orderData.blockId, orderData.modeOfPayment, orderData.quantity, orderData.orderAmount, orderData.id, orderData.quantityBased, orderData.walletTempId, orderData.id);
+
           if (tempWalletTransaction.redirectOn) {
             // return res.status(200).json({ message: "success", orderBuy });
 
 
-            res.cookie(`orderData`, `${JSON.stringify(orderBuy)}`);
-            res.redirect(`http://localhost:4200${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
+            res.cookie(`metalObject`, `${JSON.stringify(orderBuy.result.data.metalType)}`);
+            res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
 
             // res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
           } else {
@@ -215,24 +213,24 @@ exports.addAmountWallet = async (req, res) => {
 
         } else if (tempWalletTransaction.type == "delivery") {
           // if wallet called for delivery product 
+          console.log(tempWalletTransaction.type);
+          let cartData = await models.digiGoldTempOrderProductDetail.findAll({ where: { tempOrderDetailId: orderData.id } });
 
-          let cartData = await models.digiGoldTempOrderProductDetail.findAll({where: { orderDetailId: orderData.id }});
+          let orderAddress = await models.digiGoldTempOrderAddress.findAll({ where: { tempOrderDetailId: orderData.id } })
 
-          let orderAddress = await models.digiGoldTempOrderAddress.findAll({where: { orderDetailId: orderData.id}})
-
-          let orderDelivery = await walletDelivery(customerDetails.id, orderData.amount, orderData.modeOfPayment, orderData.orderTypeId, cartData, orderData.deliveryTotalQuantity, orderData.deliveryTotalQuantity, orderData.deliveryTotalWeight, orderAddress, orderData.userAddressId, orderData.walletTempId, orderData.id, orderData.blockId );
+          let orderDelivery = await walletDelivery(walletTransactionDetails.customerId, orderData.amount, orderData.modeOfPayment, orderData.orderTypeId, cartData, orderData.deliveryTotalQuantity, orderData.deliveryTotalWeight, orderAddress, orderData.userAddressId, orderData.walletTempId, orderData.id, orderData.blockId);
 
           if (tempWalletTransaction.redirectOn) {
-            // return res.status(200).json({ message: "success", orderBuy });
-
-
-            res.cookie(`orderData`, `${JSON.stringify(orderDelivery)}`);
-            res.redirect(`http://localhost:4200${tempWalletTransaction.redirectOn}`);
+            console.log(orderDelivery);
+            // res.cookie(`orderData`, `${JSON.stringify(orderDelivery)}`);
+            res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${orderDelivery.result.data.merchantTransactionId}`);
 
             // res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
           } else {
             return res.status(200).json({ message: "success", orderDelivery });
           }
+
+
         }
       }
     } else {
@@ -386,15 +384,28 @@ exports.getAllDepositDetails = async (req, res) => {
 
 
 exports.getWalletDetailById = async (req, res) => {
-  let depositWithdrawId = req.params.depositWithdrawId;
+  try{
 
-  let transactionData = await walletService.walletTransactionDetailById(depositWithdrawId);
+    let depositWithdrawId = req.params.depositWithdrawId;
 
-  if (!transactionData) {
-    return res.status(404).json({ message: 'Data not found' });
-  } else {
-    return res.status(200).json({ transactionData });
+    let transactionData = await models.walletTransactionDetails.findOne({
+    where: { id: depositWithdrawId },
+    include: {
+      model: models.customer,
+      as: 'customer',
+      attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+    }
+  });
+  
+    if (!transactionData) {
+      return res.status(404).json({ message: 'Data not found' });
+    } else {
+      return res.status(200).json({ transactionData });
+    }
+  }catch(err){
+    console.log(err);
   }
+  
 }
 
 exports.getTransactionDetails = async (req, res) => {
@@ -523,9 +534,9 @@ exports.withdrawAmount = async (req, res) => {
 
       let transactionUniqueId = uniqid.time().toUpperCase();
 
-      tempOrderDetail = await models.walletTransactionTempDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, walletTempId: tempWallet.id, transactionUniqueId, transactionAmount: withdrawAmount, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode }, { transaction: t });
+      tempOrderDetail = await models.walletTransactionTempDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, walletTempId: tempWallet.id, transactionUniqueId, transactionAmount: withdrawAmount, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, paymentReceivedDate: moment() }, { transaction: t });
 
-      orderDetail = await models.walletTransactionDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, transactionUniqueId, transactionAmount: withdrawAmount, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, depositStatus: "pending" }, { transaction: t });
+      orderDetail = await models.walletTransactionDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, transactionUniqueId, transactionAmount: withdrawAmount, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, depositStatus: "pending", paymentReceivedDate: moment() }, { transaction: t });
 
     })
 
@@ -575,3 +586,120 @@ exports.getAllBankDetails = async (req, res) => {
 
 }
 
+
+async function checkBuyLimit(id, totalAmount) {
+
+  totalAmount = totalAmount
+
+  const customerList = await models.digiGoldOrderDetail.findAll({
+    where: { customerId: id, orderTypeId: '1' },
+  });
+
+  const digiGoldKycLimit = await models.digiGoldConfigDetails.findOne({
+    where: { configSettingName: 'digiGoldKycLimit', isActive: "true" },
+  });
+
+  const customer = await models.customer.findOne({
+    where: { id },
+  });
+ 
+
+  const limit = digiGoldKycLimit.configSettingValue;
+
+
+  if (customerList.length != 0) {
+    let totalAmountOfAll = 0;
+
+    for (let data of customerList) {
+      totalAmountOfAll += Number(data.totalAmount);
+    }
+
+    let total = totalAmountOfAll.toFixed(2)
+
+    if (total > limit && customer.digiKycStatus == 'pending') {
+
+      const panno = customer.panCardNumber
+
+      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+      
+        return ({ message: "your kyc status is pending", success: false });
+
+      } else {
+      
+        return ({ message: "your kyc  is pending.Please complete Kyc first" });
+
+      }
+
+    } else if (totalAmount > limit && customer.digiKycStatus == 'pending') {
+
+      const panno = customer.panCardNumber
+    
+
+      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+     
+        return ({ message: "your kyc status is pending", success: false });
+
+      } else {
+       
+        return ({ message: "your kyc  is pending.Please complete Kyc first" });
+
+      }
+
+    } else if (total > limit && customer.digiKycStatus == 'approved') {
+    
+      return ({ message: "your kyc  is approved", success: true });
+    } else if (totalAmount >= limit && customer.digiKycStatus == 'approved') {
+     
+      return ({ message: "your kyc  is approved", success: true });
+    } else if (total < limit && customer.digiKycStatus == 'approved' || customer.digiKycStatus == 'pending') {
+     
+      return ({ message: "no need of kyc", success: true });
+    } else if (total > limit && customer.digiKycStatus == 'rejected') {
+    
+      return ({ message: "your kyc approval is rejected", success: false });
+    } else if (totalAmount > limit && customer.digiKycStatus == 'rejected') {
+     
+    
+      return ({ message: "your kyc approval is rejected", success: false });
+    } else if (total > limit && customer.digiKycStatus == 'waiting') {
+
+      // if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+
+      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+       
+        return ({ message: "your kyc approval is pending", success: false });
+
+      }
+    } else if (totalAmount >= limit && customer.digiKycStatus == 'waiting') {
+
+      // if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+
+      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+      
+        return ({ message: "your kyc approval is pending", success: false });
+
+      }
+    }
+
+
+  } else {
+
+    if (totalAmount >= limit && customer.digiKycStatus == 'approved') {
+
+      return ({ message: "your kyc  is approved", success: true });
+    } else if (totalAmount >= limit && customer.digiKycStatus == 'pending') {
+      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+       
+        return ({ message: "your kyc status is pending", success: false });
+      } else {
+      
+        return ({ message: "your kyc status is pending.Please complete Kyc first", success: false });
+      }
+    } else if (totalAmount < limit && customer.digiKycStatus == 'approved'
+      || customer.digiKycStatus == 'pending') {
+     
+      return ({ message: "no need of kyc", success: true });
+
+    }
+  }
+}

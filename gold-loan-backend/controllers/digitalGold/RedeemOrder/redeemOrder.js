@@ -22,7 +22,7 @@ const { walletDelivery } = require('../../../service/wallet');
 
 exports.AddOrder = async (req, res) => {
   try {
-    const { amount, modeOfPayment, orderType, cartData, shippingCharges, totalQuantity, totalWeight, orderAddress, userAddressId } = req.body;
+    const { amount, modeOfPayment, cartData, shippingCharges, totalQuantity, totalWeight, orderAddress, userAddressId } = req.body;
 
     const id = req.userData.id;
 
@@ -47,14 +47,17 @@ exports.AddOrder = async (req, res) => {
 
       let tempOrderDetail = await models.digiGoldTempOrderDetail.create({ customerId: id, orderTypeId: 3, totalAmount: amount, blockId: orderUniqueId, amount, modeOfPayment: modeOfPayment, createdBy: 1, modifiedBy: 1, deliveryShippingCharges: shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, userAddressId, walletTempId: walletData.id, walletBalance: currentTempWalletBal }, { transaction: t });
 
-
-      let orderDelivery = await walletDelivery(customerDetails.id, amount, modeOfPayment, orderType, cartData, totalQuantity, totalWeight, orderAddress, userAddressId);
+      let orderType = 3;
+      let orderDelivery = await walletDelivery(customerDetails.id, amount, modeOfPayment, orderType, cartData, totalQuantity, totalWeight, orderAddress, userAddressId, walletData.id, tempOrderDetail.id, orderUniqueId);
 
       if (orderDelivery) {
         return res.status(200).json(orderDelivery);
       } else {
         return res.status(400).json({ message: "something went wrong" });
       }
+
+
+      
       const customerUniqueId = customerDetails.customerUniqueId;
       const merchantData = await getMerchantData();
       const transactionId = uniqid(merchantData.merchantId, customerUniqueId);
