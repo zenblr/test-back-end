@@ -65,6 +65,7 @@ export class DepositRequestsEditComponent implements OnInit {
 			depositAmount: [''],
 			depositStatus: ['', Validators.required],
 		});
+		this.depositForm.disable()
 		this.depositForm.valueChanges.subscribe((val) => console.log(val));
 	}
 
@@ -89,9 +90,12 @@ export class DepositRequestsEditComponent implements OnInit {
 		if (!(this.depositInfo.transactionData.depositStatus == 'pending')) {
 			data.depositStatus = this.depositInfo.transactionData.depositStatus;
 			this.depositForm.patchValue(data);
-		} else {
-			this.depositForm.disable();
+			// this.controls.withdrawalStatus.disable();
+		} 
+		else {
+			this.controls.withdrawalStatus.enable();
 		}
+
 	}
 
 	submit() {
