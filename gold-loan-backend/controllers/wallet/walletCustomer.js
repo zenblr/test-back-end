@@ -183,8 +183,8 @@ exports.addAmountWallet = async (req, res) => {
 
         if (tempWalletTransaction.redirectOn) {
 
-          res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
-          // res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}`);
+          // res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
+          res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
 
         } else {
           return res.status(200).json({ message: "success", walletTransactionDetails });
@@ -204,9 +204,9 @@ exports.addAmountWallet = async (req, res) => {
 
 
             res.cookie(`metalObject`, `${JSON.stringify(orderBuy.result.data.metalType)}`);
-            res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
+            // res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
 
-            // res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
+            res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
           } else {
             return res.status(200).json({ message: "success", orderBuy });
           }
@@ -223,9 +223,9 @@ exports.addAmountWallet = async (req, res) => {
           if (tempWalletTransaction.redirectOn) {
             console.log(orderDelivery);
             // res.cookie(`orderData`, `${JSON.stringify(orderDelivery)}`);
-            res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${orderDelivery.result.data.merchantTransactionId}`);
+            // res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${orderDelivery.result.data.merchantTransactionId}`);
 
-            // res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
+            res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${orderDelivery.result.data.merchantTransactionId}`);
           } else {
             return res.status(200).json({ message: "success", orderDelivery });
           }
