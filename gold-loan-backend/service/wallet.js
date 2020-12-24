@@ -13,7 +13,7 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op
 const getMerchantData = require('../controllers/auth/getMerchantData');
 let sms = require('../utils/SMS');
-var stringify = require('json-stringify');
+// var stringify = require('json-stringify');
 
 //To get wallet transaction detail by id
 exports.walletTransactionDetailById = async (walletTransactionId) => {
