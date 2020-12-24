@@ -10,6 +10,8 @@ const partPayment = require('./partPaymentCustomerApp');  //upload Packets List
 const quickPay = require('./quickPayCustomerApp');  //upload Packets List 
 const customerWebsiteKyc = require('./customerWebsiteKyc') //customer website kyc
 const contactUsEmail = require('./contactUs')
+const walletCustomer = require('./walletCustomer');
+const augmontBankDetails = require('./digitalGold/augmontBankDetail')
 
 const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetailsOfCustomer, readBankDetailsOfCustomer, readNomineeDetailsOfCustomer, readAddressDetailsOfCustomer, readPanCardImageOfCustomer, readAddressImageOfCustomer, readPartnerBranch, readAllScheme, readMyLoan, schemeBasedOnPriceRange, readLoanDetails, readFeedBack, addFeedBack, updatePassword, personalInfo, customerProductRequest } = require('../controllers/customer/customerApp')
 
@@ -77,6 +79,10 @@ router.use('/part-payment', partPayment)
 router.use('/quick-pay', quickPay)
 
 router.use('/contact-us', contactUsEmail)
+
+router.use('/customer-wallet', walletCustomer)
+
+router.use('/augmont-bank-detail', augmontBankDetails)
 
 router.use('/kyc', customerWebsiteKyc)
 

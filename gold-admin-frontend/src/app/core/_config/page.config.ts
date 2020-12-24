@@ -431,6 +431,51 @@ export class PageConfig {
 					page: { title: "Standard deduction", desc: "" },
 				},
 			},
+			"digi-gold": {
+
+				"wallet": {
+					"deposit-requests": {
+						page: { title: "Deposit Requests", desc: "" },
+						id: {
+							page: { title: "Deposit Requests Details", desc: "" },
+						},
+					},
+					"withdrawal-requests": {
+						page: { title: "Withdrawal Requests", desc: "" },
+						id: {
+							page: { title: "Withdrawal Requests Details", desc: "" },
+						},
+					},
+
+				       
+					},
+				"global-settings": {
+				        page: { title: "Global Setting", desc: "" },
+					},
+				
+				"sip-management":{
+			
+				    "sip-cycle-date": {
+				        page: { title: "SIP Cycle Date", desc: "" },
+					},
+					"sip-investment-tenure": {
+				        page: { title: "SIP Investment Tenure", desc: "" },
+					},
+					
+				    "create-sip": {
+				        page: { title: "Create SIP", desc: "" },
+					},
+					"sip-application": {
+				        page: { title: "SIP Application", desc: "" },
+					},
+					
+				    "sip-trades": {
+				        page: { title: "SIP Trades", desc: "" },
+					},
+
+				}
+			},
+
 			"global-map": {
 				page: { title: "Global Map", desc: "" },
 			},

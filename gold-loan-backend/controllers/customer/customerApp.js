@@ -333,7 +333,7 @@ exports.customerProductRequest = async (req, res, next) => {
     let checkExist = await models.productRequest.findAll({ where: { customerId: customerId } })
 
     if (checkExist.length != 0) {
-        return res.status(200).json({ message: `Thank you` })
+        return res.status(422).json({ message: `Thank you` })
     }
     await models.productRequest.create({ customerId, moduleId })
 

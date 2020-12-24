@@ -895,6 +895,7 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
             pendingSecuredAmount = 0.00;
             loanArray[index]['emiReceivedDate'] = paymentReceivedDate
 
+
         }
        
 

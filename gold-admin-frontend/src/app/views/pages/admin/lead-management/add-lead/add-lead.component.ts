@@ -45,6 +45,7 @@ export class AddLeadComponent implements OnInit {
   showCommentBox = false;
   leadSources = [];
   modules = [];
+  resetPanOnChange = true;
 
   constructor(
     public dialogRef: MatDialogRef<AddLeadComponent>,
@@ -96,7 +97,9 @@ export class AddLeadComponent implements OnInit {
             ])
           this.controls.panCardNumber.updateValueAndValidity()
         } else {
-          this.controls.panCardNumber.reset()
+          if (this.resetPanOnChange) {
+            this.controls.panCardNumber.reset()
+          }
           this.controls.panCardNumber.clearValidators()
           this.controls.panCardNumber.updateValueAndValidity()
         }
@@ -111,7 +114,9 @@ export class AddLeadComponent implements OnInit {
 
         this.controls.panCardNumber.clearValidators()
         this.controls.panCardNumber.updateValueAndValidity()
-        this.controls.panCardNumber.reset()
+        if (this.resetPanOnChange) {
+          this.controls.panCardNumber.reset()
+        }
 
         this.controls.panImg.clearValidators()
         this.controls.panImg.updateValueAndValidity()
@@ -256,6 +261,9 @@ export class AddLeadComponent implements OnInit {
       this.leadForm.patchValue(res.singleCustomer);
       this.leadForm.patchValue({ panImage: res.singleCustomer.panImage })
       this.leadForm.patchValue({ panImg: res.singleCustomer.panImg })
+      if (res.singleCustomer.panCardNumber) {
+        this.resetPanOnChange = false
+      }
 
       this.getCities();
       this.commentBox()

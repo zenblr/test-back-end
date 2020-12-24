@@ -35,6 +35,7 @@ export class UserDetailsComponent implements OnInit {
   maxDate = new Date()
   moduleId: any
   disabled: boolean;
+  resetOnPanChange = true;
 
   constructor(
     public fb: FormBuilder,
@@ -105,8 +106,10 @@ export class UserDetailsComponent implements OnInit {
 
     this.controls.panType.valueChanges.subscribe(res => {
       if (res == 'form60') {
-        this.controls.panCardNumber.reset()
-        this.controls.panCardNumber.patchValue('')
+        if (this.resetOnPanChange) {
+          this.controls.panCardNumber.reset()
+          this.controls.panCardNumber.patchValue('')
+        }
         this.controls.panCardNumber.clearValidators()
         this.controls.panCardNumber.updateValueAndValidity()
       }
@@ -179,6 +182,9 @@ export class UserDetailsComponent implements OnInit {
         this.refCode = res.referenceCode;
         this.controls.referenceCode.patchValue(this.refCode);
         this.userBasicForm.patchValue(res.customerInfo);
+        if (res.customerInfo.panCardNumber) {
+          this.resetOnPanChange = false
+        }
         this.userBasicForm.patchValue({ moduleId: this.moduleId })
         if (this.controls.moduleId.value == 1) {
           this.userBasicForm.patchValue({ userType: null })
@@ -353,7 +359,9 @@ export class UserDetailsComponent implements OnInit {
   }
 
   remove() {
-    this.controls.panCardNumber.patchValue(null)
+    if (this.resetOnPanChange) {
+      this.controls.panCardNumber.patchValue(null)
+    }
     this.controls.form60.patchValue(null)
     this.controls.panImage.patchValue(null)
     this.controls.panImg.patchValue(null)
