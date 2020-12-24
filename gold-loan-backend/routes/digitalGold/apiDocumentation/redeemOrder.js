@@ -18,11 +18,26 @@
 *           properties:
 *             userAddressId:
 *               type: integer
-*             transactionDetails:
+*             modeOfPayment:
 *               type: string
+*             amount:
+*               type: number
+*           orderAddress:
+*             type: array
+*             items:
+*               type: string
+*           cartData:
+*             type: array
+*             items:
+*               type: string
+*             shippingCharges:
+*               type: number
+*             totalQuantity:
+*               type: number
+*             totalWeight:
+*               type: number
 *         required:
 *           - userAddressId
-*           - transactionDetails
 *   get:
 *     tags:
 *       - Redeem Order

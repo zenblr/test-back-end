@@ -23,7 +23,7 @@ exports.walletTransactionDetailById = async (walletTransactionId) => {
          include: {
              model: models.customer,
              as: 'customer',
-             attribute: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+             attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
          }
         });
     return transactionData;

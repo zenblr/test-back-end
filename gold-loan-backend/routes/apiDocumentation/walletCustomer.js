@@ -111,9 +111,9 @@
  *         in: "query"
  *         description: "Pagination ending point"
  *         type: "string"
- *       - name: "orderType"
+ *       - name: "orderTypeId"
  *         in: "query"
- *         description: "orderType"
+ *         description: "orderTypeId"
  *         type: "string" 
  *     responses: 
  *       200: 
@@ -143,9 +143,9 @@
  *         in: "query"
  *         description: "Pagination ending point"
  *         type: "string"
- *       - name: "paymentFor"
+ *       - name: "orderTypeId"
  *         in: "query"
- *         description: "paymentFor"
+ *         description: "orderTypeId"
  *         type: "string"
  *     responses:
  *       200:

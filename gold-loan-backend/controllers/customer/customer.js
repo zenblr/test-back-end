@@ -77,8 +77,8 @@ exports.addCustomer = async (req, res, next) => {
 
       await models.customer.update({ customerUniqueId }, { where: { id: customer.id }, transaction: t })
 
-      let state = await getCustomerStateById(stateId);
-      let city = await getCustomerCityById(cityId);
+      let state = await getCustomerStateById(stateId, null);
+      let city = await getCustomerCityById(cityId, null);
 
       const data = qs.stringify({
         'mobileNumber': mobileNumber,
@@ -815,8 +815,8 @@ exports.signUpCustomer = async (req, res) => {
       { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age },
       { transaction: t }
     );
-    let state = await getCustomerStateById(stateId);
-    let city = await getCustomerCityById(cityId);
+    let state = await getCustomerStateById(stateId, null);
+    let city = await getCustomerCityById(cityId, null);
 
     const data = qs.stringify({
       'mobileNumber': mobileNumber,

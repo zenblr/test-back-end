@@ -83,41 +83,42 @@ exports.AddOrder = async (req, res) => {
 
         let customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: id } });
 
-        let updatedSellableGold;
-        let updatedSellableSilver;
-        let totalGoldWeight;
-        let totalSilverWeight;
+        let updatedSellableGold = 0;
+        let updatedSellableSilver = 0;
+        let totalGoldWeight = 0;
+        let totalSilverWeight = 0;
 
         for (let cart of cartData) {
           if (cart.metalType == "gold") {
             if (cart.quantity == 1) {
-              totalGoldWeight += parseFloat(cart.productWeight);
+              totalGoldWeight += Number(cart.productWeight);
             } else if (cart.quantity > 1) {
-              totalGoldWeight += parseFloat(cart.productWeight) * Number(cart.quantity);
+              totalGoldWeight += Number(cart.productWeight) * Number(cart.quantity);
             }
           } else if (cart.metalType == "silver") {
             if (cart.quantity == 1) {
-              totalSilverWeight += parseFloat(cart.productWeight);
+              totalSilverWeight += Number(cart.productWeight);
             } else if (cart.quantity > 1) {
-              totalSilverWeight += parseFloat(cart.productWeight) * Number(cart.quantity);
+              totalSilverWeight += Number(cart.productWeight) * Number(cart.quantity);
             }
           }
         }
+        console.log(totalSilverWeight, totalGoldWeight)
 
         if (totalGoldWeight) {
 
           updatedSellableGold = Number(customerBal.sellableGoldBalance) - Number(totalGoldWeight)
-          if(!updatedSellableGold || updatedSellableGold <= 0){
-            updatedSellableGold == 0;
+          if (!updatedSellableGold || updatedSellableGold <= 0) {
+            updatedSellableGold = 0;
           }
           await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: updatedSellableGold }, { where: { customerId: id }, transaction: t });
         }
-
         if (totalSilverWeight) {
           updatedSellableSilver = Number(customerBal.sellableSilverBalance) - Number(totalSilverWeight);
-          if(!updatedSellableSilver || updatedSellableSilver <= 0){
-            updatedSellableSilver == 0;
+          if (!updatedSellableSilver || updatedSellableSilver <= 0) {
+            updatedSellableSilver = 0;
           }
+          console.log("updatedSellableSilver", updatedSellableSilver);
           await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilver }, { where: { customerId: id }, transaction: t });
         }
 
@@ -141,7 +142,7 @@ exports.AddOrder = async (req, res) => {
 
         return res.status(200).json(result.data);
 
-        
+
       }
 
     })
@@ -289,9 +290,9 @@ exports.AddOrderOld = async (req, res) => {
 
         })
       }
-      if(requestFrom == "mobileApp"){
-      return res.status(200).json(result.data);
-      }else{
+      if (requestFrom == "mobileApp") {
+        return res.status(200).json(result.data);
+      } else {
         res.redirect(`${process.env.BASE_URL_CUSTOMER}/digi-gold/order-success/delivery/${result.data.result.data.merchantTransactionId}`);
       }
     }

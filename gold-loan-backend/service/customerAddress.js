@@ -17,17 +17,29 @@ const FormData = require('form-data');
 let sms = require('../utils/SMS');
 
 
-let getCustomerCityById = async (cityId) => {
+let getCustomerCityById = async (cityId, cityUnqieCode) => {
+    let whereCondition;
+    if (cityId != null) {
+        whereCondition = { id: cityId }
+    } else if (cityUnqieCode != null) {
+        whereCondition = { cityUniqueCode: cityUnqieCode }
+    }
 
-    let city = await models.city.findOne({ where: { id: cityId } });
+    let city = await models.city.findOne({ where: whereCondition });
     return city;
 }
 
 
-let getCustomerStateById = async (stateId) => {
+let getCustomerStateById = async (stateId, stateUniqueCode) => {
+    let whereCondition;
+    if (stateId != null) {
+        whereCondition = { id: stateId }
+    } else if (stateUniqueCode != null) {
+        whereCondition = { stateUniqueCode: stateUniqueCode }
+    }
 
-    let stste = await models.state.findOne({ where: { id: stateId } });
-    return stste;
+    let state = await models.state.findOne({ where: whereCondition });
+    return state;
 }
 
 

@@ -16,8 +16,8 @@ exports.createCustomerAddress = async (req, res) => {
     if (check.isEmpty(customerDetails)) {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     }
-    let state = await getCustomerStateById(stateId);
-    let city = await getCustomerCityById(cityId);
+    let state = await getCustomerStateById(stateId, null);
+    let city = await getCustomerCityById(cityId, null);
 
     const customerUniqueId = customerDetails.customerUniqueId;
     const merchantData = await getMerchantData();
