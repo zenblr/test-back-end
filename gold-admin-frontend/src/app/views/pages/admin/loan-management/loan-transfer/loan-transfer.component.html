@@ -328,7 +328,7 @@
                                         <input type="text" class="form-control" placeholder="1000000" ktWeight
                                             formControlName="processingCharge" [class.isError]="disbursalForm.controls.processingCharge.invalid && disbursalForm.controls.processingCharge.touched">
                                             <mat-error
-                                                *ngIf="disbursalForm.controls.processingCharge.invalid && disbursalForm.controls.processingCharge.touched">
+                                                *ngIf="disbursalForm.controls.processingCharge.invalid && disbursalForm.controls.processingCharge.touched && disbursalForm.controls.processingCharge.errors?.required">
                                                 Field Required
                                             </mat-error>
                                             <mat-error
