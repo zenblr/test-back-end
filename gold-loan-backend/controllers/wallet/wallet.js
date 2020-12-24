@@ -106,7 +106,7 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
     let depositWithdrawId = req.params.depositWithdrawId;
     let { depositStatus } = req.body
     let customerUpdatedBalance;
-
+    let currentWalletBalance;
     let transactionData = await models.walletTransactionDetails.findOne({ where: { id: depositWithdrawId } });
     if (!transactionData) {
         return res.status(404).json({ message: 'Data not found' });
@@ -125,9 +125,11 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
             if (depositStatus == "completed") {
                 if (customer.currentWalletBalance) {
                     customerUpdatedBalance = Number(customer.currentWalletBalance) + Number(transactionData.transactionAmount);
+
                 } else {
                     customerUpdatedBalance = Number(transactionData.transactionAmount);
                 }
+                
                 await models.customer.update({ currentWalletBalance: customerUpdatedBalance }, { where: { id: customer.id }, transaction: t });
 
                 let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "credit", description: "add amount", productTypeId: 4, transactionDate: date }, { transaction: t });
@@ -150,8 +152,9 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
 
             if (depositStatus == "completed") {
                 customerUpdatedFreeBalance = Number(customer.walletFreeBalance) - Number(transactionData.transactionAmount);
-
-                await models.customer.update({ walletFreeBalance: customerUpdatedFreeBalance }, { where: { id: customer.id }, transaction: t });
+                currentWalletBalance = Number(customer.currentWalletBalance) - Number(transactionData.transactionAmount);
+              
+                await models.customer.update({ walletFreeBalance: customerUpdatedFreeBalance, currentWalletBalance: currentWalletBalance }, { where: { id: customer.id }, transaction: t });
 
                 let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "debit", description: "withdraw amount", productTypeId: 4, transactionDate: date }, { transaction: t });
 
