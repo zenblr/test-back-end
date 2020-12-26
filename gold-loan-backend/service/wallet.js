@@ -16,7 +16,7 @@ let sms = require('../utils/SMS');
 // var stringify = require('json-stringify');
 
 //To get wallet transaction detail by id
-exports.walletTransactionDetailById = async (walletTransactionId) => {
+let walletTransactionDetailById = async (walletTransactionId) => {
 
   let transactionData = await models.walletTransactionDetails.findOne({
     where: { id: walletTransactionId },
@@ -113,10 +113,10 @@ let walletBuy = async (customerId, lockPrice, metalType, blockId, modeOfPayment,
       return result.data;
 
     }
-   
+
   } catch (err) {
-    if(err.response.data.statusCode == 422){
-      if(err.response.data.errors.userKyc.length){
+    if (err.response.data.statusCode == 422) {
+      if (err.response.data.errors.userKyc.length) {
         return err.response.data
       }
     }
@@ -251,7 +251,6 @@ let walletDelivery = async (customerId, amount, modeOfPayment, orderType, cartDa
   }
 }
 
-
 let customerBalance = async (customerData, amount) => {
   let { currentWalletBalance, walletFreeBalance } = customerData
 
@@ -280,6 +279,7 @@ let customerBalance = async (customerData, amount) => {
 module.exports = {
   walletBuy: walletBuy,
   walletDelivery: walletDelivery,
-  customerBalance: customerBalance
+  customerBalance: customerBalance,
+  walletTransactionDetailById: walletTransactionDetailById
 }
 

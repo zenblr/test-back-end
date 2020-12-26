@@ -2,43 +2,9 @@
     "development": {
         "username": "postgres",
         "password": "nimap@123",
-        "database": "new",
+        "database": "wallet_check",
         "host": "127.0.0.1",
-        "port": "7432",
-        "dialect": "postgres",
-        "operatorsAliases": false
-    },
-    "test": {
-        "username": "postgres",
-        "password": "nimap@123",
-        "database": "gold_master_live",
-        "host": "173.249.49.7",
-        "port": "3432",
-        "dialect": "postgres",
-        "operatorsAliases": false
-    },
-    "uat": {
-        "username": "loan_uat_admin",
-        "password": "hCVtBwCfBs658qp8JSOn",
-        "database": "emi-loan-uat",
-        "host": "emi-loan-uat.cdqj1gojl1vk.ap-south-1.rds.amazonaws.com",
-        "dialect": "postgres",
-        "operatorsAliases": false
-    },
-    "production": {
-        "username": "root",
-        "password": null,
-        "database": "database_production",
-        "host": "127.0.0.1",
-        "dialect": "postgres",
-        "operatorsAliases": false
-    },
-    "new": {
-        "username": "postgres",
-        "password": "nimap@123",
-        "database": "gold_new_changes",
-        "host": "173.249.49.7",
-        "port": "3432",
+        "port": "6432",
         "dialect": "postgres",
         "operatorsAliases": false
     }

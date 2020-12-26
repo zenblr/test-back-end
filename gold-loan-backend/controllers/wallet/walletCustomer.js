@@ -119,9 +119,7 @@ exports.addAmountWallet = async (req, res) => {
 
       let tempWalletDetail = await models.walletTempDetails.getTempWalletData(tempWalletTransaction.walletTempId);
 
-      // if(tempWalletTransaction.isOrderPlaced == true){
-      //     return res.status(400).json({ message: "Order id already placed for this order ID" });
-      // }
+  
       let customer = await models.customer.findOne({ where: { id: tempWalletTransaction.customerId } });
 
       const razorPay = await getRazorPayDetails();
@@ -195,10 +193,10 @@ exports.addAmountWallet = async (req, res) => {
           let tempOrderData;
           let currentTempBal;
           let walletData
-          
+
           let orderBuy = await walletBuy(walletTransactionDetails.customerId, orderData.lockPrice, orderData.metalType, orderData.blockId, orderData.modeOfPayment, orderData.quantity, orderData.orderAmount, orderData.id, orderData.quantityBased, orderData.walletTempId, orderData.id);
-          if(orderBuy.message){
-            return res.status(200).json({ message: orderBuy.message});
+          if (orderBuy.message) {
+            res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
           }
           if (tempWalletTransaction.redirectOn) {
             // return res.status(200).json({ message: "success", orderBuy });
@@ -223,8 +221,6 @@ exports.addAmountWallet = async (req, res) => {
 
           if (tempWalletTransaction.redirectOn) {
             console.log(orderDelivery);
-            // res.cookie(`orderData`, `${JSON.stringify(orderDelivery)}`);
-            // res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${orderDelivery.result.data.merchantTransactionId}`);
 
             res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${orderDelivery.result.data.merchantTransactionId}`);
           } else {
@@ -385,28 +381,28 @@ exports.getAllDepositDetails = async (req, res) => {
 
 
 exports.getWalletDetailById = async (req, res) => {
-  try{
+  try {
 
     let depositWithdrawId = req.params.depositWithdrawId;
 
     let transactionData = await models.walletTransactionDetails.findOne({
-    where: { id: depositWithdrawId },
-    include: {
-      model: models.customer,
-      as: 'customer',
-      attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
-    }
-  });
-  
+      where: { id: depositWithdrawId },
+      include: {
+        model: models.customer,
+        as: 'customer',
+        attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+      }
+    });
+
     if (!transactionData) {
       return res.status(404).json({ message: 'Data not found' });
     } else {
       return res.status(200).json({ transactionData });
     }
-  }catch(err){
+  } catch (err) {
     console.log(err);
   }
-  
+
 }
 
 exports.getTransactionDetails = async (req, res) => {
@@ -603,7 +599,7 @@ async function checkBuyLimit(id, totalAmount) {
   const customer = await models.customer.findOne({
     where: { id },
   });
- 
+
 
   const limit = digiGoldKycLimit.configSettingValue;
 
@@ -622,11 +618,11 @@ async function checkBuyLimit(id, totalAmount) {
       const panno = customer.panCardNumber
 
       if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
-      
+
         return ({ message: "your kyc status is pending", success: false });
 
       } else {
-      
+
         return ({ message: "your kyc  is pending.Please complete Kyc first" });
 
       }
@@ -634,40 +630,40 @@ async function checkBuyLimit(id, totalAmount) {
     } else if (totalAmount > limit && customer.digiKycStatus == 'pending') {
 
       const panno = customer.panCardNumber
-    
+
 
       if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
-     
+
         return ({ message: "your kyc status is pending", success: false });
 
       } else {
-       
+
         return ({ message: "your kyc  is pending.Please complete Kyc first" });
 
       }
 
     } else if (total > limit && customer.digiKycStatus == 'approved') {
-    
+
       return ({ message: "your kyc  is approved", success: true });
     } else if (totalAmount >= limit && customer.digiKycStatus == 'approved') {
-     
+
       return ({ message: "your kyc  is approved", success: true });
     } else if (total < limit && customer.digiKycStatus == 'approved' || customer.digiKycStatus == 'pending') {
-     
+
       return ({ message: "no need of kyc", success: true });
     } else if (total > limit && customer.digiKycStatus == 'rejected') {
-    
+
       return ({ message: "your kyc approval is rejected", success: false });
     } else if (totalAmount > limit && customer.digiKycStatus == 'rejected') {
-     
-    
+
+
       return ({ message: "your kyc approval is rejected", success: false });
     } else if (total > limit && customer.digiKycStatus == 'waiting') {
 
       // if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
 
       if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
-       
+
         return ({ message: "your kyc approval is pending", success: false });
 
       }
@@ -676,7 +672,7 @@ async function checkBuyLimit(id, totalAmount) {
       // if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
 
       if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
-      
+
         return ({ message: "your kyc approval is pending", success: false });
 
       }
@@ -690,15 +686,15 @@ async function checkBuyLimit(id, totalAmount) {
       return ({ message: "your kyc  is approved", success: true });
     } else if (totalAmount >= limit && customer.digiKycStatus == 'pending') {
       if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
-       
+
         return ({ message: "your kyc status is pending", success: false });
       } else {
-      
+
         return ({ message: "your kyc status is pending.Please complete Kyc first", success: false });
       }
     } else if (totalAmount < limit && customer.digiKycStatus == 'approved'
       || customer.digiKycStatus == 'pending') {
-     
+
       return ({ message: "no need of kyc", success: true });
 
     }
