@@ -48,7 +48,6 @@ exports.AddOrder = async (req, res) => {
       orderUniqueId = `dg_delivery${Math.floor(1000 + Math.random() * 9000)}`;
 
       tempOrderDetail = await models.digiGoldTempOrderDetail.create({ customerId: id, orderTypeId: 3, totalAmount: amount, blockId: orderUniqueId, amount, modeOfPayment: modeOfPayment, createdBy: 1, modifiedBy: 1, deliveryShippingCharges: shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, userAddressId, walletTempId: walletData.id, walletBalance: currentTempWalletBal }, { transaction: t });
-
     })
     let orderType = 3;
 
