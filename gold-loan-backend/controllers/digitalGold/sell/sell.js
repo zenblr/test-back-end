@@ -35,7 +35,7 @@ exports.sellProduct = async (req, res) => {
     console.log(getCustomerBalance);
     if (metalType == "gold") {
       let nonSellableAmount;
-      if (quantity >= getCustomerBalance.sellableGoldBalance) {
+      if (quantity > getCustomerBalance.sellableGoldBalance) {
         let configSettingName = "digiGoldSellableHour"
         let getConfigSetting = await models.digiGoldConfigDetails.getConfigDetail(configSettingName);
 
@@ -44,7 +44,7 @@ exports.sellProduct = async (req, res) => {
       }
     }
     if (metalType == "silver") {
-      if (quantity >= getCustomerBalance.sellableSilverBalance) {
+      if (quantity > getCustomerBalance.sellableSilverBalance) {
 
         let configSettingName = "digiGoldSellableHour"
         let getConfigSetting = await models.digiGoldConfigDetails.getConfigDetail(configSettingName);
@@ -191,13 +191,18 @@ exports.sellProduct = async (req, res) => {
 
           let amountOfWallet;
           let currentWalletBalance;
-          if (customerDetails.walletFreeBalance) {
+          if (customerDetails.walletFreeBalance ) {
             amountOfWallet = Number(customerDetails.walletFreeBalance) + Number(amount)
-            currentWalletBalance = Number(customerDetails.currentWalletBalance) + Number(amount)
           } else {
             amountOfWallet = Number(amount);
+          }
+
+          if (customerDetails.currentWalletBalance ){
+            currentWalletBalance = Number(customerDetails.currentWalletBalance) + Number(amount)
+          }else{
             currentWalletBalance = Number(amount)
           }
+          
 
           let orderDetail = await models.digiGoldOrderDetail.create({
             tempOrderId: tempId.id, customerId: id, orderTypeId: 2, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
