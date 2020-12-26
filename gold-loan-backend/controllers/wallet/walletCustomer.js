@@ -38,11 +38,10 @@ exports.makePayment = async (req, res) => {
     let transactionUniqueId = uniqid.time().toUpperCase();
     let tempWallet;
 
-
-    const checkLimit = await checkBuyLimit(id, orderAmount);
-    if(!checkLimit.success){
-      return res.status(404).json({ message: checkLimit.message });
-    }
+    // const checkLimit = await checkBuyLimit(id, orderAmount);
+    // if(!checkLimit.success){
+    //   return res.status(404).json({ message: checkLimit.message });
+    // }
 
     if (paymentType == 'upi' || paymentType == 'netbanking' || paymentType == 'wallet' || paymentType == 'card') {
 
