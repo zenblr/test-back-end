@@ -38,10 +38,13 @@ exports.makePayment = async (req, res) => {
     let transactionUniqueId = uniqid.time().toUpperCase();
     let tempWallet;
 
-    // const checkLimit = await checkBuyLimit(id, orderAmount);
-    // if(!checkLimit.success){
-    //   return res.status(404).json({ message: checkLimit.message });
-    // }
+    if(type == "buy"){
+    const checkLimit = await checkBuyLimit(id, orderAmount);
+    if(!checkLimit.success){
+      return res.status(404).json({ message: checkLimit.message });
+    }
+    }
+
 
     if (paymentType == 'upi' || paymentType == 'netbanking' || paymentType == 'wallet' || paymentType == 'card') {
 
@@ -195,9 +198,7 @@ exports.addAmountWallet = async (req, res) => {
           let walletData
 
           let orderBuy = await walletBuy(walletTransactionDetails.customerId, orderData.lockPrice, orderData.metalType, orderData.blockId, orderData.modeOfPayment, orderData.quantity, orderData.orderAmount, orderData.id, orderData.quantityBased, orderData.walletTempId, orderData.id);
-          if (orderBuy.message) {
-            res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
-          }
+          if(orderBuy.message){
           if (tempWalletTransaction.redirectOn) {
             // return res.status(200).json({ message: "success", orderBuy });
             console.log(orderBuy, orderBuy.result.data.metalType);
@@ -209,6 +210,16 @@ exports.addAmountWallet = async (req, res) => {
           } else {
             return res.status(200).json({ message: "success", orderBuy });
           }
+        }else if(orderBuy.errors.userKyc){
+          if(tempWalletTransaction.redirectOn){
+            res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
+            res.redirect(`https://${process.env.DIGITALGOLDAPI}/kyc/digi-gold`);
+          }else{
+            return res.status(400).json(orderBuy.result.data.metalType);
+
+          }
+
+        }
 
         } else if (tempWalletTransaction.type == "delivery") {
           // if wallet called for delivery product 
