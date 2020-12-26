@@ -198,7 +198,7 @@ exports.addAmountWallet = async (req, res) => {
           
           let orderBuy = await walletBuy(walletTransactionDetails.customerId, orderData.lockPrice, orderData.metalType, orderData.blockId, orderData.modeOfPayment, orderData.quantity, orderData.orderAmount, orderData.id, orderData.quantityBased, orderData.walletTempId, orderData.id);
           if(orderBuy.message){
-            return res.status(200).json({ message: orderBuy.message});
+            res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
           }
           if (tempWalletTransaction.redirectOn) {
             // return res.status(200).json({ message: "success", orderBuy });
