@@ -22,7 +22,7 @@ const { walletBuy } = require('../../../service/wallet');
 
 
 exports.buyProduct = async (req, res) => {
-  try {
+  // try {
 
     const { amount, metalType, quantity, lockPrice, blockId, quantityBased, modeOfPayment } = req.body;
 
@@ -57,21 +57,20 @@ exports.buyProduct = async (req, res) => {
 
     let orderBuy = await walletBuy(customerDetails.id, lockPrice, metalType, blockId, modeOfPayment, quantity, amount, tempOrderData.id, quantityBased, walletData.id, tempOrderData.id);
 
-    
-    if (orderBuy.data && orderBuy.data.errors.userKyc && orderBuy.data.errors.userKyc.length) {
-
-      res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
-      res.redirect(`https://${process.env.DIGITALGOLDAPI}/kyc/digi-gold`);
-    } else if (orderBuy.statusCode === 200) {
+     if (orderBuy && orderBuy.statusCode === 200) {
 
       return res.status(200).json(orderBuy);
     }
-    if (orderBuy) {
-      return res.status(200).json(orderBuy);
-    } else {
+
+    if(orderBuy.errors.userKyc){
+      return res.status(400).json(orderBuy);
+    }else{
       return res.status(400).json({ message: "something went wrong" });
-    }
 
+    }
+   
+
+    return
 
     await sequelize.transaction(async (t) => {
 
@@ -162,28 +161,28 @@ exports.buyProduct = async (req, res) => {
     // res.cookie(`metalObject`, `${JSON.stringify(result.data.result.data.metalType)}`);
     // res.redirect(`http://${process.env.DIGITALGOLDAPI}/digi-gold/order-success/buy/${result.data.result.data.merchantTransactionId}`);
 
-  } catch (err) {
-    console.log(err);
+  // } catch (err) {
+  //   console.log(err);
 
-    // let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
+  //   // let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
-    // if (err.response) {
-    //   return res.status(422).json(err.response.data);
-    // } else {
-    //   console.log('Error', err.message);
-    // }
-    if (err.response) {
-      if (err.response.data.errors.userKyc && err.response.data.errors.userKyc.length) {
+  //   // if (err.response) {
+  //   //   return res.status(422).json(err.response.data);
+  //   // } else {
+  //   //   console.log('Error', err.message);
+  //   // }
+  //   if (err.response) {
+  //     if (err.response.data.errors.userKyc && err.response.data.errors.userKyc.length) {
 
-        res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
-        res.redirect(`https://${process.env.DIGITALGOLDAPI}/kyc/digi-gold`);
-      } else {
-        return res.status(422).json(err.response.data);
-      }
-    } else {
-      console.log('Error', err.message);
-    }
-  };
+  //       res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
+  //       res.redirect(`https://${process.env.DIGITALGOLDAPI}/kyc/digi-gold`);
+  //     } else {
+  //       return res.status(422).json(err.response.data);
+  //     }
+  //   } else {
+  //     console.log('Error', err.message);
+  //   }
+  // };
 
 }
 

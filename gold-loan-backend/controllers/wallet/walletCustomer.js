@@ -198,13 +198,15 @@ exports.addAmountWallet = async (req, res) => {
           let walletData
           
           let orderBuy = await walletBuy(walletTransactionDetails.customerId, orderData.lockPrice, orderData.metalType, orderData.blockId, orderData.modeOfPayment, orderData.quantity, orderData.orderAmount, orderData.id, orderData.quantityBased, orderData.walletTempId, orderData.id);
-
+          if(orderBuy.message){
+            return res.status(200).json({ message: orderBuy.message});
+          }
           if (tempWalletTransaction.redirectOn) {
             // return res.status(200).json({ message: "success", orderBuy });
-
+            console.log(orderBuy, orderBuy.result.data.metalType);
 
             res.cookie(`metalObject`, `${JSON.stringify(orderBuy.result.data.metalType)}`);
-            // res.redirect(`http://localhost:4500${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
+            // res.redirect(`http://localhost:4200${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
 
             res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
           } else {

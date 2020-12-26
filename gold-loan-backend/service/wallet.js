@@ -57,7 +57,7 @@ let walletBuy = async (customerId, lockPrice, metalType, blockId, modeOfPayment,
       'userName': getUserDetails.userName,
       'userCity': getUserDetails.userCityId,
       'userState': getUserDetails.userStateId,
-      'userPincode': getUserDetails.userPincode,
+      'userPincode': null,
       'uniqueId': customerUniqueId,
       'blockId': blockId,
       'modeOfPayment': modeOfPayment,
@@ -70,7 +70,8 @@ let walletBuy = async (customerId, lockPrice, metalType, blockId, modeOfPayment,
       data.amount = orderAmount;
     }
 
-    console.log(data);
+    console.log(qs.stringify(data));
+
     const result = await models.axios({
       method: 'POST',
       url: `${process.env.DIGITALGOLDAPI}/merchant/v1/buy`,
@@ -80,7 +81,7 @@ let walletBuy = async (customerId, lockPrice, metalType, blockId, modeOfPayment,
       },
       data: qs.stringify(data)
     })
-
+    console.log(result);
     const customerName = customerDetails.firstName + " " + customerDetails.lastName;
 
     if (result.data.statusCode === 200) {
@@ -112,20 +113,23 @@ let walletBuy = async (customerId, lockPrice, metalType, blockId, modeOfPayment,
       return result.data;
 
     }
-    if (err.response) {
-      return err.response
-      // if (err.response.data.errors.userKyc && err.response.data.errors.userKyc.length) {
-
-      //   res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
-      //   res.redirect(`https://${process.env.DIGITALGOLDAPI}/kyc/digi-gold`);
-      // } else {
-      //   return res.status(422).json(err.response.data);
-      // }
-    } else {
-      console.log('Error', err.message);
-    }
+   
   } catch (err) {
-    console.log(err);
+    if(err.response.data.statusCode == 422){
+      if(err.response.data.errors.userKyc.length){
+        return err.response.data
+      }
+    }
+    // console.log(err.response.data.errors);
+    // console.log(err.result.data.statusCode)
+    // if(err.result.data.statusCode == 422){
+    //   if(err.result.data.errors && result.data.errors.userKyc.code ==  4557){
+    //     console.log(result.data.errors.userKyc.code);
+    //     return result.data.errors.userKyc.code
+    //   }
+    // }
+
+
   }
 }
 
