@@ -1492,29 +1492,45 @@ let allKycCompleteInfo = async (customerInfo) => {
         digiGold: false
     }
 
-    let goldPoint = await models.module.findOne({ where: { id: 1 } })
-    let checkGoldKyc = kycCompletePoint & goldPoint.modulePoint
-    if (checkGoldKyc != 0) {
-        kycApproval.goldLoan = true
+    if (customerInfo.kycStatus == "approved") {
+        goldLoan = true
     }
 
-    let goldEmi = await models.module.findOne({ where: { id: 2 } })
-    let checkEmiKyc = kycCompletePoint & goldEmi.modulePoint
-    if (checkEmiKyc != 0) {
-        kycApproval.goldEmi = true
+    if (customerInfo.digiKycStatus == "approved") {
+        digiGold = true
     }
 
-    let goldScrap = await models.module.findOne({ where: { id: 3 } })
-    let checkSprapKyc = kycCompletePoint & goldScrap.modulePoint
-    if (checkSprapKyc != 0) {
-        kycApproval.goldScrap = true
+    if (customerInfo.scrapKycStatus == "approved") {
+        goldScrap = true
     }
 
-    let digiGold = await models.module.findOne({ where: { id: 4 } })
-    let checkDigiGoldKyc = kycCompletePoint & digiGold.modulePoint
-    if (checkDigiGoldKyc != 0) {
-        kycApproval.digiGold = true
+    if (customerInfo.panCardNumber != null) {
+        goldEmi = true
     }
+
+    // let goldPoint = await models.module.findOne({ where: { id: 1 } })
+    // let checkGoldKyc = kycCompletePoint & goldPoint.modulePoint
+    // if (checkGoldKyc != 0) {
+    //     kycApproval.goldLoan = true
+    // }
+
+    // let goldEmi = await models.module.findOne({ where: { id: 2 } })
+    // let checkEmiKyc = kycCompletePoint & goldEmi.modulePoint
+    // if (checkEmiKyc != 0) {
+    //     kycApproval.goldEmi = true
+    // }
+
+    // let goldScrap = await models.module.findOne({ where: { id: 3 } })
+    // let checkSprapKyc = kycCompletePoint & goldScrap.modulePoint
+    // if (checkSprapKyc != 0) {
+    //     kycApproval.goldScrap = true
+    // }
+
+    // let digiGold = await models.module.findOne({ where: { id: 4 } })
+    // let checkDigiGoldKyc = kycCompletePoint & digiGold.modulePoint
+    // if (checkDigiGoldKyc != 0) {
+    //     kycApproval.digiGold = true
+    // }
 
     return kycApproval
 }
