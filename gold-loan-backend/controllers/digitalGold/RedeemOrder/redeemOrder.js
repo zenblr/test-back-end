@@ -37,10 +37,11 @@ exports.AddOrder = async (req, res) => {
       return res.status(422).json({ message: "Insuffecient wallet balance", walletBal: customerDetails.currentWalletBalance });
     }
     let tempOrderDetail;
-    let orderUniqueId
+    let orderUniqueId;
+    let walletData;
     await sequelize.transaction(async (t) => {
 
-      let walletData = await models.walletTempDetails.create({ customerId: id, amount, paymentDirection: "debit", description: "delivery", productTypeId: 4, transactionDate: moment() }, { transaction: t });
+      walletData = await models.walletTempDetails.create({ customerId: id, amount, paymentDirection: "debit", description: "delivery", productTypeId: 4, transactionDate: moment() }, { transaction: t });
 
       let currentTempWalletBal = Number(customerDetails.currentWalletBalance) - Number(amount);
 
