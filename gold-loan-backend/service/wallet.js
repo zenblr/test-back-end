@@ -14,6 +14,7 @@ const Op = Sequelize.Op
 const getMerchantData = require('../controllers/auth/getMerchantData');
 let sms = require('../utils/SMS');
 // var stringify = require('json-stringify');
+const { postMerchantOrder, getUserData, postBuy } = require('./digiGold')
 
 //To get wallet transaction detail by id
 let walletTransactionDetailById = async (walletTransactionId) => {
@@ -37,15 +38,18 @@ let walletBuy = async (customerId, lockPrice, metalType, blockId, modeOfPayment,
     const customerUniqueId = customerDetails.customerUniqueId;
     const merchantData = await getMerchantData();
 
-    const getUser = await models.axios({
-      method: 'GET',
-      url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/${customerUniqueId}`,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${merchantData.accessToken}`,
-      },
-    });
+
+    const getUser = await getUserData(customerUniqueId)
+
+    // const getUser = await models.axios({
+    //   method: 'GET',
+    //   url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/${customerUniqueId}`,
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Accept': 'application/json',
+    //     'Authorization': `Bearer ${merchantData.accessToken}`,
+    //   },
+    // });
     const getUserDetails = getUser.data.result.data;
     const transactionId = uniqid(merchantData.merchantId, customerUniqueId);
 
@@ -72,19 +76,19 @@ let walletBuy = async (customerId, lockPrice, metalType, blockId, modeOfPayment,
 
     console.log(qs.stringify(data));
 
-    const result = await models.axios({
-      method: 'POST',
-      url: `${process.env.DIGITALGOLDAPI}/merchant/v1/buy`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Bearer ${merchantData.accessToken}`,
-      },
-      data: qs.stringify(data)
-    })
-    console.log(result);
+    const result = await postBuy(data)
+    // const result = await models.axios({
+    //   method: 'POST',
+    //   url: `${process.env.DIGITALGOLDAPI}/merchant/v1/buy`,
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //     'Authorization': `Bearer ${merchantData.accessToken}`,
+    //   },
+    //   data: qs.stringify(data)
+    // })
     const customerName = customerDetails.firstName + " " + customerDetails.lastName;
 
-    if (result.data.statusCode === 200) {
+    if (result.isSuccess) {
 
       await sequelize.transaction(async (t) => {
         let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.totalAmount);
@@ -112,6 +116,8 @@ let walletBuy = async (customerId, lockPrice, metalType, blockId, modeOfPayment,
 
       return result.data;
 
+    } else if (!result.isSuccess) {
+      return { err }
     }
 
   } catch (err) {
@@ -160,18 +166,20 @@ let walletDelivery = async (customerId, amount, modeOfPayment, orderType, cartDa
 
     console.log(qs.stringify(data), "data");
 
-    const result = await models.axios({
-      method: 'POST',
-      url: `${process.env.DIGITALGOLDAPI}/merchant/v1/order`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Bearer ${merchantData.accessToken}`,
-      },
-      data: qs.stringify(data)
-    })
+
+    const result = await postMerchantOrder(data)
+    // const result = await models.axios({
+    //   method: 'POST',
+    //   url: `${process.env.DIGITALGOLDAPI}/merchant/v1/order`,
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //     'Authorization': `Bearer ${merchantData.accessToken}`,
+    //   },
+    //   data: qs.stringify(data)
+    // })
     console.log(result.data);
 
-    if (result.data.statusCode === 200) {
+    if (result.isSuccess) {
       await sequelize.transaction(async (t) => {
 
         await models.digiGoldCart.destroy({ where: { customerId: customerId } });
@@ -245,9 +253,11 @@ let walletDelivery = async (customerId, amount, modeOfPayment, orderType, cartDa
 
       })
       return result.data;
+    } else if (!result.isSuccess) {
+      return { err }
     }
   } catch (err) {
-    console.log(err);
+    return err
   }
 }
 
