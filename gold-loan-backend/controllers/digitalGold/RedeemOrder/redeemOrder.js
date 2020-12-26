@@ -40,7 +40,7 @@ exports.AddOrder = async (req, res) => {
     let tempOrderDetail;
     let orderUniqueId;
     let walletData;
-    await sequelize.transaction(async (t) => {
+    let output = await sequelize.transaction(async (t) => {
 
       walletData = await models.walletTempDetails.create({ customerId: id, amount, paymentDirection: "debit", description: "delivery", productTypeId: 4, transactionDate: moment() }, { transaction: t });
 
@@ -49,122 +49,124 @@ exports.AddOrder = async (req, res) => {
       orderUniqueId = `dg_delivery${Math.floor(1000 + Math.random() * 9000)}`;
 
       tempOrderDetail = await models.digiGoldTempOrderDetail.create({ customerId: id, orderTypeId: 3, totalAmount: amount, blockId: orderUniqueId, amount, modeOfPayment: modeOfPayment, createdBy: 1, modifiedBy: 1, deliveryShippingCharges: shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, userAddressId, walletTempId: walletData.id, walletBalance: currentTempWalletBal }, { transaction: t });
-    })
-    let orderType = 3;
+      let orderType = 3;
 
-    let walletDelivery1 = async (customerId, amount, modeOfPayment, orderType, cartData, totalQuantity, totalWeight, orderAddress, userAddressId, walletTempId, tempOrderDetailId, orderUniqueId) => {
-      try {
-        let customerDetails = await models.customer.findOne({ where: { id: customerId } });
+      let walletDelivery1 = async (customerId, amount, modeOfPayment, orderType, cartData, totalQuantity, totalWeight, orderAddress, userAddressId, walletTempId, tempOrderDetailId, orderUniqueId) => {
+        try {
+          let customerDetails = await models.customer.findOne({ where: { id: customerId } });
 
-        const customerUniqueId = customerDetails.customerUniqueId;
-        const merchantData = await getMerchantData();
-        const transactionId = uniqid(merchantData.merchantId, customerUniqueId);
-        const getCartDetails = await models.digiGoldCart.getCartDetails(customerId);
+          const customerUniqueId = customerDetails.customerUniqueId;
+          const merchantData = await getMerchantData();
+          const transactionId = uniqid(merchantData.merchantId, customerUniqueId);
+          const getCartDetails = await models.digiGoldCart.getCartDetails(customerId);
 
-        let data = {
-          'merchantTransactionId': transactionId,
-          'uniqueId': customerUniqueId,
-          'user[shipping][addressId]': userAddressId,
-          'merchantId': merchantData.merchantId,
-          'mobileNumber': customerDetails.mobileNumber,
-          'modeOfPayment': modeOfPayment
-        };
+          let data = {
+            'merchantTransactionId': transactionId,
+            'uniqueId': customerUniqueId,
+            'user[shipping][addressId]': userAddressId,
+            'merchantId': merchantData.merchantId,
+            'mobileNumber': customerDetails.mobileNumber,
+            'modeOfPayment': modeOfPayment
+          };
 
-        console.log(data)
+          console.log(data)
 
-        for (let [index, ele] of getCartDetails.entries()) {
-          data[`product[${index}][sku]`] = ele.productSku;
-          data[`product[${index}][quantity]`] = ele.quantity;
-        }
+          for (let [index, ele] of getCartDetails.entries()) {
+            data[`product[${index}][sku]`] = ele.productSku;
+            data[`product[${index}][quantity]`] = ele.quantity;
+          }
 
-        console.log(qs.stringify(data), "data");
+          console.log(qs.stringify(data), "data");
 
 
-        const result = await postMerchantOrder(data)
+          const result = await postMerchantOrder(data)
 
-        console.log(result.data);
+          console.log(result.data);
 
-        if (result.isSuccess) {
+          if (result.isSuccess) {
 
-          await models.digiGoldCart.destroy({ where: { customerId: customerId } });
+            await models.digiGoldCart.destroy({ where: { customerId: customerId } });
 
-          let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.shippingCharges);
+            let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.shippingCharges);
 
-          await models.customer.update({ currentWalletBalance: currentBal }, { where: { id: customerId }, transaction: t });
+            await models.customer.update({ currentWalletBalance: currentBal }, { where: { id: customerId }, transaction: t });
 
-          let customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customerId } });
+            let customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customerId } });
 
-          let updatedSellableGold = 0;
-          let updatedSellableSilver = 0;
-          let totalGoldWeight = 0;
-          let totalSilverWeight = 0;
+            let updatedSellableGold = 0;
+            let updatedSellableSilver = 0;
+            let totalGoldWeight = 0;
+            let totalSilverWeight = 0;
 
-          for (let cart of cartData) {
-            if (cart.metalType == "gold") {
-              if (cart.quantity == 1) {
-                totalGoldWeight += Number(cart.productWeight);
-              } else if (cart.quantity > 1) {
-                totalGoldWeight += Number(cart.productWeight) * Number(cart.quantity);
+            for (let cart of cartData) {
+              if (cart.metalType == "gold") {
+                if (cart.quantity == 1) {
+                  totalGoldWeight += Number(cart.productWeight);
+                } else if (cart.quantity > 1) {
+                  totalGoldWeight += Number(cart.productWeight) * Number(cart.quantity);
+                }
+              } else if (cart.metalType == "silver") {
+                if (cart.quantity == 1) {
+                  totalSilverWeight += Number(cart.productWeight);
+                } else if (cart.quantity > 1) {
+                  totalSilverWeight += Number(cart.productWeight) * Number(cart.quantity);
+                }
               }
-            } else if (cart.metalType == "silver") {
-              if (cart.quantity == 1) {
-                totalSilverWeight += Number(cart.productWeight);
-              } else if (cart.quantity > 1) {
-                totalSilverWeight += Number(cart.productWeight) * Number(cart.quantity);
+            }
+            console.log(totalSilverWeight, totalGoldWeight)
+
+            if (totalGoldWeight) {
+
+              updatedSellableGold = Number(customerBal.sellableGoldBalance) - Number(totalGoldWeight)
+              if (!updatedSellableGold || updatedSellableGold <= 0) {
+                updatedSellableGold = 0;
               }
+              await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: updatedSellableGold }, { where: { customerId: customerId }, transaction: t });
             }
-          }
-          console.log(totalSilverWeight, totalGoldWeight)
-
-          if (totalGoldWeight) {
-
-            updatedSellableGold = Number(customerBal.sellableGoldBalance) - Number(totalGoldWeight)
-            if (!updatedSellableGold || updatedSellableGold <= 0) {
-              updatedSellableGold = 0;
+            // console.log(updatedSellableGold, "updatedSellableGold");
+            if (totalSilverWeight) {
+              updatedSellableSilver = Number(customerBal.sellableSilverBalance) - Number(totalSilverWeight);
+              if (!updatedSellableSilver || updatedSellableSilver <= 0) {
+                updatedSellableSilver = 0;
+              }
+              console.log("updatedSellableSilver", updatedSellableSilver);
+              await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilver }, { where: { customerId: customerId }, transaction: t });
             }
-            await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: updatedSellableGold }, { where: { customerId: customerId }, transaction: t });
-          }
-          // console.log(updatedSellableGold, "updatedSellableGold");
-          if (totalSilverWeight) {
-            updatedSellableSilver = Number(customerBal.sellableSilverBalance) - Number(totalSilverWeight);
-            if (!updatedSellableSilver || updatedSellableSilver <= 0) {
-              updatedSellableSilver = 0;
+
+            // await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: id }, transaction: t });
+
+            let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.shippingCharges, paymentDirection: "debit", description: "Order Delivery", productTypeId: 4, transactionDate: moment(), walletTempDetailId: walletTempId }, { transaction: t });
+            console.log(walletData, "walletData");
+
+            let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetailId, customerId: customerId, orderTypeId: 3, orderId: result.data.result.data.orderId, totalAmount: amount, blockId: orderUniqueId, amount: amount, modeOfPayment: modeOfPayment, userAddressId: userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.orderId, orderSatatus: "pending", deliveryShippingCharges: result.data.result.data.shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, walletBalance: currentBal, walletId: walletData.id }, { transaction: t });
+            console.log(orderDetail, "orderDetail");
+            await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { id: tempOrderDetailId }, transaction: t })
+
+            for (let cart of cartData) {
+              let productData = await models.digiGoldOrderProductDetail.create({ orderDetailId: orderDetail.id, productSku: cart.productSku, productWeight: cart.productWeight, productName: cart.productName, amount: cart.amount, productImage: cart.productImage, totalAmount: cart.totalProductAmount, metalType: cart.metalType, quantity: cart.quantity, createdBy: 1, modifiedBy: 1 }, { transaction: t });
+              console.log(productData, " productData");
             }
-            console.log("updatedSellableSilver", updatedSellableSilver);
-            await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilver }, { where: { customerId: customerId }, transaction: t });
+
+            for (let address of orderAddress) {
+              await models.digiGoldOrderAddressDetail.create({ orderDetailId: orderDetail.id, customerName: address.customerName, addressType: address.addressType, address: address.address, stateId: address.stateId, cityId: address.cityId, pinCode: address.pinCode }, { transaction: t });
+              console.log(address, "addressaddressaddressaddressaddressaddress");
+            }
+
+            await sms.sendMessageForOrderPlaced(customerDetails.mobileNumber, result.data.result.data.orderId);
+
+            return result.data;
+          } else if (!result.isSuccess) {
+            return { err }
           }
-
-          // await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: id }, transaction: t });
-
-          let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.shippingCharges, paymentDirection: "debit", description: "Order Delivery", productTypeId: 4, transactionDate: moment(), walletTempDetailId: walletTempId }, { transaction: t });
-          console.log(walletData, "walletData");
-
-          let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetailId, customerId: customerId, orderTypeId: 3, orderId: result.data.result.data.orderId, totalAmount: amount, blockId: orderUniqueId, amount: amount, modeOfPayment: modeOfPayment, userAddressId: userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.orderId, orderSatatus: "pending", deliveryShippingCharges: result.data.result.data.shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, walletBalance: currentBal, walletId: walletData.id }, { transaction: t });
-          console.log(orderDetail, "orderDetail");
-          await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { id: tempOrderDetailId }, transaction: t })
-
-          for (let cart of cartData) {
-            let productData = await models.digiGoldOrderProductDetail.create({ orderDetailId: orderDetail.id, productSku: cart.productSku, productWeight: cart.productWeight, productName: cart.productName, amount: cart.amount, productImage: cart.productImage, totalAmount: cart.totalProductAmount, metalType: cart.metalType, quantity: cart.quantity, createdBy: 1, modifiedBy: 1 }, { transaction: t });
-            console.log(productData, " productData");
-          }
-
-          for (let address of orderAddress) {
-            await models.digiGoldOrderAddressDetail.create({ orderDetailId: orderDetail.id, customerName: address.customerName, addressType: address.addressType, address: address.address, stateId: address.stateId, cityId: address.cityId, pinCode: address.pinCode }, { transaction: t });
-            console.log(address, "addressaddressaddressaddressaddressaddress");
-          }
-
-          await sms.sendMessageForOrderPlaced(customerDetails.mobileNumber, result.data.result.data.orderId);
-
-          return result.data;
-        } else if (!result.isSuccess) {
-          return { err }
+        } catch (err) {
+          return err
         }
-      } catch (err) {
-        return err
       }
-    }
 
-    let orderDelivery = await walletDelivery1(customerDetails.id, amount, modeOfPayment, orderType, cartData, totalQuantity, totalWeight, orderAddress, userAddressId, walletData.id, tempOrderDetail.id, orderUniqueId);
+      let orderDelivery = await walletDelivery1(customerDetails.id, amount, modeOfPayment, orderType, cartData, totalQuantity, totalWeight, orderAddress, userAddressId, walletData.id, tempOrderDetail.id, orderUniqueId);
+      return { orderDelivery }
+    })
+    let { orderDelivery } = output
 
     if (orderDelivery) {
       return res.status(200).json(orderDelivery);
