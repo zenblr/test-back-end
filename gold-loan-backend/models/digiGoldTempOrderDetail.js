@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'wallet_balance',
         },
+        walletTempId: {
+            type: DataTypes.INTEGER,
+            field: 'wallet_temp_id',
+        },
         metalType: {
             type: DataTypes.STRING,
             field: 'metal_type',
@@ -107,6 +111,7 @@ module.exports = (sequelize, DataTypes) => {
 
     DigiGoldTempOrderDetail.associate = function(models) {
         DigiGoldTempOrderDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
+        DigiGoldTempOrderDetail.belongsTo(models.walletTempDetails, { foreignKey: 'walletTempId', as: 'walletTemp' });
 
     }
 

@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'wallet_balance',
         },
+        walletId: {
+            type: DataTypes.INTEGER,
+            field: 'wallet_id',
+        },
         metalType: {
             type: DataTypes.STRING,
             field: 'metal_type',
@@ -128,7 +132,7 @@ module.exports = (sequelize, DataTypes) => {
         DigiGoldOrderDetail.hasOne(models.digiGoldOrderTaxDetail, {foreignKey: 'orderDetailId', as: 'orderTaxDetail' });
         DigiGoldOrderDetail.hasMany(models.digiGoldOrderProductDetail, {foreignKey: 'orderDetailId', as: 'orderProductDetail' });
         // DigiGoldOrderDetail.hasOne(models.digiGoldCustomerBankDetail, {foreignKey: 'orderDetailId', as: 'orderDetail' });
-        
+        DigiGoldOrderDetail.belongsTo(models.walletDetails, { foreignKey: 'walletId', as: 'wallet' });
     }
 
 
