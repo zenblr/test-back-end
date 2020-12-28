@@ -26,30 +26,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-6 kt-margin-t-20">
-                            <div class="row">
-                                <div class="col-3 offset-1 p-0">
-                                    <label class="mandatory font-weight-500 text-color">Aadhaar No.</label>
-                                </div>
-                                <div class="col-7">
-                                    <input formControlName="identityProofNumber" type="text" aria-label="Pin Code"
-                                        placeholder="Aadhaar Number" class="form-control" numbersOnly maxlength="12"
-                                        [class.isError]="controls.identityProofNumber.touched && controls.identityProofNumber.invalid">
-                                    <mat-error
-                                        *ngIf="controls.identityProofNumber.errors?.required && controls.identityProofNumber.touched">
-                                        Required field
-                                    </mat-error>
-                                    <mat-error
-                                        *ngIf="controls.identityProofNumber.errors?.minlength && controls.identityProofNumber.touched">
-                                        Invalid Input
-                                    </mat-error>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-6 kt-margin-t-20">
                             <div class="row">
                                 <div class="col-3 offset-1 p-0">
@@ -74,6 +50,30 @@
                                             (input)="getFileInfo($event,'identityProof')">
                                         <span class="file-custom"></span>
                                     </label>
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 kt-margin-t-20">
+                            <div class="row">
+                                <div class="col-3 offset-1 p-0">
+                                    <label class="mandatory font-weight-500 text-color">Aadhaar No.</label>
+                                </div>
+                                <div class="col-7">
+                                    <input formControlName="identityProofNumber" type="text" aria-label="Pin Code"
+                                        placeholder="Aadhaar Number" class="form-control" numbersOnly maxlength="12"
+                                        [class.isError]="controls.identityProofNumber.touched && controls.identityProofNumber.invalid">
+                                    <mat-error
+                                        *ngIf="controls.identityProofNumber.errors?.required && controls.identityProofNumber.touched">
+                                        Required field
+                                    </mat-error>
+                                    <mat-error
+                                        *ngIf="controls.identityProofNumber.errors?.minlength && controls.identityProofNumber.touched">
+                                        Invalid Input
+                                    </mat-error>
                                 </div>
                             </div>
                         </div>
@@ -144,6 +144,194 @@
                         *ngFor="let addressForm of identityForm.get('address')['controls']; index as i;">
                         <div [formGroupName]="i" class="col-6">
 
+
+                            <div class=" kt-margin-t-20">
+                                <div class="row">
+                                    <div class="col-3 offset-1 p-0">
+                                        <label class="mandatory  font-weight-500 text-color">Address Proof
+                                        </label>
+                                    </div>
+                                    <div class="col-7">
+                                        <select formControlName="addressProofTypeId" class="form-control"
+                                            (change)="checkForAadhar(i)"
+                                            [class.isError]="addressForm.controls.addressProofTypeId.touched && addressForm.controls.addressProofTypeId.invalid">
+                                            <option value="" [disabled]=true [selected]="true"> Select Proof
+                                            </option>
+                                            <option *ngFor="let proof of addressProofs" [value]="proof.id">
+                                                {{proof.name | titlecase}}
+                                            </option>
+                                        </select>
+                                        <mat-error
+                                            *ngIf="addressForm.controls.addressProofTypeId.errors?.required && addressForm.controls.addressProofTypeId.touched">
+                                            Required field
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="kt-margin-t-20">
+                                <div class="row">
+                                    <div class="col-3 offset-1 p-0">
+                                        <label class="mandatory font-weight-500 text-color">Unique Identity
+                                            No.</label>
+                                    </div>
+                                    <div class="col-7">
+                                        <input *ngIf="addressControls.at(i).value.addressProofTypeId == 2"
+                                            formControlName="addressProofNumber" type="text" maxlength="12"
+                                            placeholder="Unique Identity Number" class="form-control" numbersOnly
+                                            [class.isError]="addressForm.controls.addressProofNumber.touched && addressForm.controls.addressProofNumber.invalid">
+                                        <input *ngIf="addressControls.at(i).value.addressProofTypeId != 2"
+                                            formControlName="addressProofNumber" type="text"
+                                            placeholder="Unique Identity Number" class="form-control"
+                                            [class.isError]="addressForm.controls.addressProofNumber.touched && addressForm.controls.addressProofNumber.invalid">
+                                        <mat-error
+                                            *ngIf="addressForm.controls.addressProofNumber.errors?.required && addressForm.controls.addressProofNumber.touched">
+                                            Required field
+                                        </mat-error>
+                                        <mat-error
+                                            *ngIf="(addressForm.controls.addressProofNumber.errors?.pattern) && addressForm.controls.addressProofNumber.touched">
+                                            Invalid Input
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class=" kt-margin-t-20">
+                                    <div class="row">
+                                        <div class="col-3 offset-1 p-0">
+                                            <label class="mandatory  font-weight-500 text-color">Attach
+                                                Proof</label>
+                                        </div>
+                                        <div class="col-7 mb-3" *ngIf="i==0">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" placeholder="Select"
+                                                    aria-label="Recipient's username"
+                                                    aria-describedby="basic-addon2" readonly
+                                                    [class.isError]="addressForm.controls.addressProofFileName.invalid && addressForm.controls.addressProofFileName.touched"
+                                                    formControlName="addressProofFileName">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text bg kt-pointer font-weight"
+                                                        [class.cursor-not-allowed]="identityForm.controls.moduleId.value == 1 && addressForm.controls.addressProofTypeId.value == 2"
+                                                        id="basic-addon2"
+                                                        (click)="(identityForm.controls.moduleId.value == 1 && addressForm.controls.addressProofTypeId.value != 2 && permanent.click()) || 
+                                                        (identityForm.controls.moduleId.value == 3 && permanent.click())"
+                                                        style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                                </div>
+                                            </div>
+                                            <mat-error
+                                                *ngIf="addressForm.controls.addressProofFileName.errors?.required && addressForm.controls.addressProofFileName.touched">
+                                                Required field
+                                            </mat-error>
+                                            <label class="mandatory  file d-none">
+                                                <input type="file" accept="image/*,application/pdf" id="file"
+                                                    aria-label="File browser example" #permanent
+                                                    (input)="getFileInfo($event,i)">
+                                                <span class="file-custom"></span>
+                                            </label>
+                                        </div>
+
+                                        <div class="col-7 mb-3" *ngIf="i==1">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" placeholder="Select"
+                                                    aria-label="Recipient's username"
+                                                    aria-describedby="basic-addon2" readonly
+                                                    [class.isError]="addressForm.controls.addressProofFileName.invalid && addressForm.controls.addressProofFileName.touched"
+                                                    formControlName="addressProofFileName">
+                                                <div class="input-group-append">
+                                                    <span
+                                                        [class.cursor-not-allowed]="sameAdd || addressForm.controls.addressProofTypeId.value == 2"
+                                                        class="input-group-text bg kt-pointer font-weight"
+                                                        id="basic-addon2"
+                                                        (click)="addressForm.controls.addressProofTypeId.value != 2 && !sameAdd && residential.click()"
+                                                        style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
+                                                </div>
+                                            </div>
+                                            <mat-error
+                                                *ngIf="addressForm.controls.addressProofFileName.errors?.required && addressForm.controls.addressProofFileName.touched">
+                                                Required field
+                                            </mat-error>
+                                            <label class="mandatory  file d-none">
+                                                <input type="file" accept="image/*,application/pdf" id="file"
+                                                    aria-label="File browser example" #residential
+                                                    (input)="getFileInfo($event,i)">
+                                                <span class="file-custom"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class=" kt-margin-t-20 kt-margin-b-20">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="offset-4 img-container"
+                                            *ngIf="(i==1 && images.residential.length== 0)">
+                                            <img class="placeholder-image"
+                                                src="../../../../../../assets/media/icons/image-placeholder.png"
+                                                alt="placeholder">
+                                        </div>
+                                        <div class="offset-4 img-container"
+                                            *ngIf="(i==0 && images.permanent.length==0)">
+                                            <img class="placeholder-image"
+                                                src="../../../../../../assets/media/icons/image-placeholder.png"
+                                                alt="placeholder">
+                                        </div>
+
+                                        <div *ngIf="i==1 && images.residential.length > 0">
+                                            <div class="row">
+                                                <div class="col-6" [class.offset-4]="images.residential.length == 1"
+                                                    *ngFor="let img of images.residential, index as idx">
+                                                    <div class="img-container"
+                                                        [class.ml-auto]="images.residential.length == 2 && idx == 0"
+                                                        [class.mr-auto]="images.residential.length == 2 && idx == 1">
+                                                        <img *ngIf="!isPdf(img)" class="fetched-image" [src]="img"
+                                                            alt="" (click)="preview(img, idx)">
+                                                        <!-- <img src="../../../../../assets/media/icons/edit.svg" alt=""
+                                                            class="kt-pointer edit-icon"
+                                                            (click)="editImages(idx, 'residential');"> -->
+                                                        <img *ngIf="!sameAdd && addressForm.controls.addressProofTypeId.value != 2"
+                                                            src="../../../../../assets/media/icons/cancel.svg"
+                                                            alt="" class="kt-pointer remove-icon"
+                                                            (click)="removeImages(idx, 'residential');">
+                                                        <div class="iframeWrapper" (click)="previewPdf(img)">
+                                                            <iframe [src]="img | safe : 'resourceUrl'" height="250"
+                                                                width="290" scrolling="no"
+                                                                *ngIf="isPdf(img)"></iframe>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div *ngIf="i==0 && images.permanent.length > 0">
+                                            <div class="row">
+                                                <div class="col-6" [class.offset-4]="images.permanent.length == 1"
+                                                    *ngFor="let img of images.permanent, index as idx">
+                                                    <div class="img-container"
+                                                        [class.ml-auto]="images.permanent.length == 2 && idx == 0"
+                                                        [class.mr-auto]="images.permanent.length == 2 && idx == 1">
+                                                        <img *ngIf="!isPdf(img)" class="fetched-image" [src]="img"
+                                                            alt="" (click)="preview(img, idx)">
+                                                        <!-- <img src="../../../../../assets/media/icons/dit.svg" alt=""
+                                                            class="kt-pointer edit-icon"
+                                                        (click)="editImages(idx, 'permanent');"> -->
+                                                        <img *ngIf="(addressForm.controls.addressProofTypeId.value != 2 && identityForm.controls.moduleId.value == 1) || identityForm.controls.moduleId.value == 3"
+                                                            src="../../../../../assets/media/icons/cancel.svg"
+                                                            alt="" class="kt-pointer remove-icon"
+                                                            (click)="removeImages(idx, 'permanent');">
+                                                        <div class="iframeWrapper" (click)="previewPdf(img)">
+                                                            <iframe [src]="img | safe : 'resourceUrl'" height="250"
+                                                                width="290" scrolling="no"
+                                                                *ngIf="isPdf(img)"></iframe>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class=" kt-margin-t-20">
                                 <div class="row">
@@ -268,193 +456,7 @@
                                     </div>
                                 </div>
 
-                                <div class=" kt-margin-t-20">
-                                    <div class="row">
-                                        <div class="col-3 offset-1 p-0">
-                                            <label class="mandatory  font-weight-500 text-color">Address Proof
-                                            </label>
-                                        </div>
-                                        <div class="col-7">
-                                            <select formControlName="addressProofTypeId" class="form-control"
-                                                (change)="checkForAadhar(i)"
-                                                [class.isError]="addressForm.controls.addressProofTypeId.touched && addressForm.controls.addressProofTypeId.invalid">
-                                                <option value="" [disabled]=true [selected]="true"> Select Proof
-                                                </option>
-                                                <option *ngFor="let proof of addressProofs" [value]="proof.id">
-                                                    {{proof.name | titlecase}}
-                                                </option>
-                                            </select>
-                                            <mat-error
-                                                *ngIf="addressForm.controls.addressProofTypeId.errors?.required && addressForm.controls.addressProofTypeId.touched">
-                                                Required field
-                                            </mat-error>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="kt-margin-t-20">
-                                    <div class="row">
-                                        <div class="col-3 offset-1 p-0">
-                                            <label class="mandatory font-weight-500 text-color">Unique Identity
-                                                No.</label>
-                                        </div>
-                                        <div class="col-7">
-                                            <input *ngIf="addressControls.at(i).value.addressProofTypeId == 2"
-                                                formControlName="addressProofNumber" type="text" maxlength="12"
-                                                placeholder="Unique Identity Number" class="form-control" numbersOnly
-                                                [class.isError]="addressForm.controls.addressProofNumber.touched && addressForm.controls.addressProofNumber.invalid">
-                                            <input *ngIf="addressControls.at(i).value.addressProofTypeId != 2"
-                                                formControlName="addressProofNumber" type="text"
-                                                placeholder="Unique Identity Number" class="form-control"
-                                                [class.isError]="addressForm.controls.addressProofNumber.touched && addressForm.controls.addressProofNumber.invalid">
-                                            <mat-error
-                                                *ngIf="addressForm.controls.addressProofNumber.errors?.required && addressForm.controls.addressProofNumber.touched">
-                                                Required field
-                                            </mat-error>
-                                            <mat-error
-                                                *ngIf="(addressForm.controls.addressProofNumber.errors?.pattern) && addressForm.controls.addressProofNumber.touched">
-                                                Invalid Input
-                                            </mat-error>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <div class=" kt-margin-t-20">
-                                        <div class="row">
-                                            <div class="col-3 offset-1 p-0">
-                                                <label class="mandatory  font-weight-500 text-color">Attach
-                                                    Proof</label>
-                                            </div>
-                                            <div class="col-7 mb-3" *ngIf="i==0">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control" placeholder="Select"
-                                                        aria-label="Recipient's username"
-                                                        aria-describedby="basic-addon2" readonly
-                                                        [class.isError]="addressForm.controls.addressProofFileName.invalid && addressForm.controls.addressProofFileName.touched"
-                                                        formControlName="addressProofFileName">
-                                                    <div class="input-group-append">
-                                                        <span class="input-group-text bg kt-pointer font-weight"
-                                                            [class.cursor-not-allowed]="identityForm.controls.moduleId.value == 1 && addressForm.controls.addressProofTypeId.value == 2"
-                                                            id="basic-addon2"
-                                                            (click)="(identityForm.controls.moduleId.value == 1 && addressForm.controls.addressProofTypeId.value != 2 && permanent.click()) || 
-                                                            (identityForm.controls.moduleId.value == 3 && permanent.click())"
-                                                            style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
-                                                    </div>
-                                                </div>
-                                                <mat-error
-                                                    *ngIf="addressForm.controls.addressProofFileName.errors?.required && addressForm.controls.addressProofFileName.touched">
-                                                    Required field
-                                                </mat-error>
-                                                <label class="mandatory  file d-none">
-                                                    <input type="file" accept="image/*,application/pdf" id="file"
-                                                        aria-label="File browser example" #permanent
-                                                        (input)="getFileInfo($event,i)">
-                                                    <span class="file-custom"></span>
-                                                </label>
-                                            </div>
-
-                                            <div class="col-7 mb-3" *ngIf="i==1">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control" placeholder="Select"
-                                                        aria-label="Recipient's username"
-                                                        aria-describedby="basic-addon2" readonly
-                                                        [class.isError]="addressForm.controls.addressProofFileName.invalid && addressForm.controls.addressProofFileName.touched"
-                                                        formControlName="addressProofFileName">
-                                                    <div class="input-group-append">
-                                                        <span
-                                                            [class.cursor-not-allowed]="sameAdd || addressForm.controls.addressProofTypeId.value == 2"
-                                                            class="input-group-text bg kt-pointer font-weight"
-                                                            id="basic-addon2"
-                                                            (click)="addressForm.controls.addressProofTypeId.value != 2 && !sameAdd && residential.click()"
-                                                            style="border-top-right-radius: 9px !important; border-bottom-right-radius: 9px !important;">Attach</span>
-                                                    </div>
-                                                </div>
-                                                <mat-error
-                                                    *ngIf="addressForm.controls.addressProofFileName.errors?.required && addressForm.controls.addressProofFileName.touched">
-                                                    Required field
-                                                </mat-error>
-                                                <label class="mandatory  file d-none">
-                                                    <input type="file" accept="image/*,application/pdf" id="file"
-                                                        aria-label="File browser example" #residential
-                                                        (input)="getFileInfo($event,i)">
-                                                    <span class="file-custom"></span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class=" kt-margin-t-20 kt-margin-b-20">
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="offset-4 img-container"
-                                                *ngIf="(i==1 && images.residential.length== 0)">
-                                                <img class="placeholder-image"
-                                                    src="../../../../../../assets/media/icons/image-placeholder.png"
-                                                    alt="placeholder">
-                                            </div>
-                                            <div class="offset-4 img-container"
-                                                *ngIf="(i==0 && images.permanent.length==0)">
-                                                <img class="placeholder-image"
-                                                    src="../../../../../../assets/media/icons/image-placeholder.png"
-                                                    alt="placeholder">
-                                            </div>
-
-                                            <div *ngIf="i==1 && images.residential.length > 0">
-                                                <div class="row">
-                                                    <div class="col-6" [class.offset-4]="images.residential.length == 1"
-                                                        *ngFor="let img of images.residential, index as idx">
-                                                        <div class="img-container"
-                                                            [class.ml-auto]="images.residential.length == 2 && idx == 0"
-                                                            [class.mr-auto]="images.residential.length == 2 && idx == 1">
-                                                            <img *ngIf="!isPdf(img)" class="fetched-image" [src]="img"
-                                                                alt="" (click)="preview(img, idx)">
-                                                            <!-- <img src="../../../../../assets/media/icons/edit.svg" alt=""
-                                                                class="kt-pointer edit-icon"
-                                                                (click)="editImages(idx, 'residential');"> -->
-                                                            <img *ngIf="!sameAdd && addressForm.controls.addressProofTypeId.value != 2"
-                                                                src="../../../../../assets/media/icons/cancel.svg"
-                                                                alt="" class="kt-pointer remove-icon"
-                                                                (click)="removeImages(idx, 'residential');">
-                                                            <div class="iframeWrapper" (click)="previewPdf(img)">
-                                                                <iframe [src]="img | safe : 'resourceUrl'" height="250"
-                                                                    width="290" scrolling="no"
-                                                                    *ngIf="isPdf(img)"></iframe>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div *ngIf="i==0 && images.permanent.length > 0">
-                                                <div class="row">
-                                                    <div class="col-6" [class.offset-4]="images.permanent.length == 1"
-                                                        *ngFor="let img of images.permanent, index as idx">
-                                                        <div class="img-container"
-                                                            [class.ml-auto]="images.permanent.length == 2 && idx == 0"
-                                                            [class.mr-auto]="images.permanent.length == 2 && idx == 1">
-                                                            <img *ngIf="!isPdf(img)" class="fetched-image" [src]="img"
-                                                                alt="" (click)="preview(img, idx)">
-                                                            <!-- <img src="../../../../../assets/media/icons/dit.svg" alt=""
-                                                                class="kt-pointer edit-icon"
-                                                            (click)="editImages(idx, 'permanent');"> -->
-                                                            <img *ngIf="(addressForm.controls.addressProofTypeId.value != 2 && identityForm.controls.moduleId.value == 1) || identityForm.controls.moduleId.value == 3"
-                                                                src="../../../../../assets/media/icons/cancel.svg"
-                                                                alt="" class="kt-pointer remove-icon"
-                                                                (click)="removeImages(idx, 'permanent');">
-                                                            <div class="iframeWrapper" (click)="previewPdf(img)">
-                                                                <iframe [src]="img | safe : 'resourceUrl'" height="250"
-                                                                    width="290" scrolling="no"
-                                                                    *ngIf="isPdf(img)"></iframe>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
                     </ng-container>

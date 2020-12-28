@@ -49,7 +49,7 @@ export class UserDetailsComponent implements OnInit {
     private toast: ToastrService,
     private sharedService: SharedService,
     private router: Router,
-    private leadService:LeadService
+    private leadService: LeadService
   ) { }
 
   ngOnInit() {
@@ -173,7 +173,7 @@ export class UserDetailsComponent implements OnInit {
       panImg: [],
       panCardNumber: [''],
       id: [],
-      dateOfBirth:[],
+      dateOfBirth: [],
       userType: [null],
       moduleId: [null],
       organizationTypeId: [null],
@@ -210,8 +210,6 @@ export class UserDetailsComponent implements OnInit {
 
         if (res.customerInfo.panCardNumber !== null) {
           this.isPanVerified = true;
-          this.controls.panType.disable()
-          this.controls.panCardNumber.disable()
         } else {
           this.showVerifyPAN = true;
         }
@@ -256,33 +254,81 @@ export class UserDetailsComponent implements OnInit {
 
   getFileInfo(event) {
     if (this.sharedService.fileValidator(event)) {
-      const params = {
-        reason: 'lead',
-        customerId: this.controls.id.value
-      }
-      this.sharedServices.uploadFile(event.target.files[0], params).pipe(
-        map(res => {
-          if (res) {
-            this.controls.form60.patchValue(event.target.files[0].name)
-            this.controls.panImage.patchValue(res.uploadFile.path)
-            this.controls.panImg.patchValue(res.uploadFile.URL)
-          }
-        }),
-        catchError(err => {
-          if (err.error.message) this.toast.error(err.error.message)
-          throw err
-        }),
-        finalize(() => {
-          if (this.editPan && this.editPan.nativeElement.value) this.editPan.nativeElement.value = ''
-          if (this.pan && this.pan.nativeElement.value) this.pan.nativeElement.value = ''
-          event.target.value = ''
-
-        })).subscribe()
+      let data = this.getImageValidationForKarza(event)
+      console.log(data)
     } else {
       event.target.value = ''
     }
   }
 
+  getImageValidationForKarza(event) {
+    var details = event.target.files
+    let ext = this.sharedService.getExtension(details[0].name)
+    if (Math.round(details[0].size / 1024) > 4000 && ext != 'pdf') {
+      this.toast.error('Maximun size is 4MB')
+      event.target.value = ''
+      return
+    }
+
+    if (ext == 'pdf') {
+      if (Math.round(details[0].size / 1024) > 2000) {
+        this.toast.error('Maximun size is 2MB')
+      } else {
+        this.uploadFile(event.target.files[0])
+      }
+      event.target.value = ''
+      return
+    }
+
+    var reader = new FileReader()
+    var reader = new FileReader();
+    const img = new Image();
+    
+    img.src = window.URL.createObjectURL(details[0]);
+    reader.readAsDataURL(event.target.files[0]);
+    reader.onload = (_event) => {
+      setTimeout(() => {
+        const width = img.naturalWidth;
+        const height = img.naturalHeight;
+        window.URL.revokeObjectURL(img.src);
+        if (width > 3000 || height > 3000) {
+          this.toast.error('Image of height and width should be less than 3000px')
+          event.target.value = ''
+        } else {
+          this.uploadFile(event.target.files[0])
+          event.target.value = ''
+
+        }
+      }, 1000);
+    }
+    // return data
+  }
+
+  uploadFile(file) {
+    const params = {
+      reason: 'lead',
+      customerId: this.controls.id.value
+    }
+    this.sharedServices.uploadFile(file, params).pipe(
+      map(res => {
+        if (res) {
+          this.controls.form60.patchValue(file.name)
+          this.controls.panImage.patchValue(res.uploadFile.path)
+          this.controls.panImg.patchValue(res.uploadFile.URL)
+        }
+      }),
+      catchError(err => {
+        if (err.error.message) this.toast.error(err.error.message)
+        throw err
+      }),
+      finalize(() => {
+        if (this.editPan && this.editPan.nativeElement.value) this.editPan.nativeElement.value = ''
+        if (this.pan && this.pan.nativeElement.value) this.pan.nativeElement.value = ''
+        this.ref.detectChanges()
+
+      })).subscribe()
+
+  }
   preview(value) {
     const img = value
     const ext = this.sharedService.getExtension(img)
