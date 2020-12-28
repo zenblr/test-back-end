@@ -205,6 +205,9 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
     let error = null;
     for (const fileUrl of fileUrls){
         let info = await ocrService(fileUrl, idProofType, customerId)
+        if(info.error){
+            return res.status(400).json({message: 'KYC failed' })
+        }
         ocrData.push(info)
     }
     // let ocrData = [
