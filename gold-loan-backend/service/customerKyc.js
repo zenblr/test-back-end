@@ -1493,19 +1493,19 @@ let allKycCompleteInfo = async (customerInfo) => {
     }
 
     if (customerInfo.kycStatus == "approved") {
-        goldLoan = true
+        kycApproval.goldLoan = true
     }
 
     if (customerInfo.digiKycStatus == "approved") {
-        digiGold = true
+        kycApproval.digiGold = true
     }
 
     if (customerInfo.scrapKycStatus == "approved") {
-        goldScrap = true
+        kycApproval.goldScrap = true
     }
 
     if (customerInfo.panCardNumber != null) {
-        goldEmi = true
+        kycApproval.goldEmi = true
     }
 
     // let goldPoint = await models.module.findOne({ where: { id: 1 } })
