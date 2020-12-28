@@ -95,10 +95,9 @@ const env = process.env.KARZA_ENV || 'TEST';
 
 // Function to Insert into External API Logger
 
-let ocrService = async (fileUrl, idProofTypeId, customerId) => {
+let ocrService = async (fileUrl, idProofType, customerId) => {
     let apiPath;
     let requestBody;
-    let idProofType = null;
     try {
         const karzaDetail = await models.karzaDetails.findOne({ //Fetching Karza API detail
             where: {
@@ -106,18 +105,6 @@ let ocrService = async (fileUrl, idProofTypeId, customerId) => {
             }
         });
         apiPath = karzaDetail.kycOcrUrl;
-
-        const idProofTypeData = await models.identityType.findOne({ 
-            where: {
-                id: idProofTypeId,
-                isActive: true
-            }
-        });
-        if(idProofTypeData){
-            idProofType = idProofTypeData.name
-        }else{
-            return ({ error: "Invalid ID proof type" });
-        }
 
         // Creating Request body for Karza Ocr
         let data = {
@@ -199,16 +186,13 @@ let getOcrResponse = async (responseBody, idProofType, confidenceValue) => {
 
     if (proofType.includes('aadhaar card')) {
         const extractedData = await getAadhaarResp(responseBody, confidenceValue, userDetailBody);
-        return extractedData;
-    } else if (proofType.includes('passport')) {
-        const extractedData = await getPassportResp(responseBody, confidenceValue, userDetailBody);
-        return extractedData;
-    } else if (proofType.includes('driving license')) {
+        return {extractedData,idProofType};
+    }  else if (proofType.includes('driving license')) {
         const extractedData = await getDrivingLicenseResp(responseBody, userDetailBody);
-        return extractedData;
+        return {extractedData,idProofType};
     } else if(proofType.includes('voter id')){
         const extractedData = await getElectiondIdCardResp(responseBody, confidenceValue, userDetailBody);
-        return extractedData;
+        return {extractedData,idProofType};
     }
 }
 
@@ -224,6 +208,9 @@ let getAadhaarResp = async (respBody, confidenceValue, userDetailBody) => {
         if (respObject.details.name && Number(respObject.details.name.conf) >= confidenceValue) {
             isNameConfPass = true;
         }
+        if(respObject.details.dob && Number(respObject.details.dob.conf) >= confidenceValue) {
+            isDobConfPass = true;
+        }
         if (respObject.type.toLowerCase().includes('aadhaar front top')) {
             userDetailBody.idNumber = returnValueFunction(respObject.details.aadhaar);
             userDetailBody.address = returnValueFunction(respObject.details.address);
@@ -231,14 +218,14 @@ let getAadhaarResp = async (respBody, confidenceValue, userDetailBody) => {
             userDetailBody.state = respObject.details.addressSplit.state;
             userDetailBody.city = respObject.details.addressSplit.district;
             userDetailBody.aadharImageUrl = respObject.details.imageUrl.value
-            aadharImageUrl = respObject.details.imageUrl.value
         } else if (respObject.type.toLowerCase().includes('aadhaar front bottom')) {
             userDetailBody.name = returnValueFunction(respObject.details.name);
             userDetailBody.idNumber = returnValueFunction(respObject.details.aadhaar);
             userDetailBody.dob = returnValueFunction(respObject.details.dob);
+            userDetailBody.aahaarNameScore = returnConfFunction(respObject.details.name);
+            userDetailBody.aahaarDOBScore = returnConfFunction(respObject.details.name);
             if (!aadharImageUrl) {
-                aadharImageUrl = respObject.details.imageUrl.value;
-                userDetailBody.aadharImageUrl = respObject.details.imageUrl.value;
+                userDetailBody.aadharImageUrl2 = respObject.details.imageUrl.value;
             }
         } else {
             userDetailBody.address = returnValueFunction(respObject.details.address);
@@ -254,7 +241,26 @@ let getAadhaarResp = async (respBody, confidenceValue, userDetailBody) => {
     // } else {
     //     return { error: 'Please Upload Aadhaar Card Image' };
     // }
-    return {userDetailBody ,isAadharConfPass,isNameConfPass}
+    let confidenceValueResult = {isAadharConfPass,isNameConfPass}
+    return {userDetailBody ,confidenceValueResult}
+}
+
+let mergeUserDetailBody = async (body1, body2) => {
+    let clean = (obj) => {
+        for (var propName in obj) {
+            if (obj[propName] === null || obj[propName] === undefined) {
+                delete obj[propName];
+            }
+        }
+        return obj
+    }
+    let data1 = await clean(body1);
+    let data2 = await clean(body2);
+    let data = {
+        ...data1,
+        ...data2
+    }
+    return data;
 }
 
 let getPassportResp = async (respBody, confidenceValue, userDetailBody) => {
@@ -281,7 +287,8 @@ let getPassportResp = async (respBody, confidenceValue, userDetailBody) => {
             userDetailBody.fileNum = returnValueFunction(respObject.details.fileNum);
         }
     }
-    return userDetailBody;
+    let confidenceValueResult = {isPassportConfPass,isNameConfPass}
+    return { userDetailBody, confidenceValueResult};
     // if (isPassportConfPass && isNameConfPass) {
     //     return userDetailBody;
     // } else {
@@ -343,53 +350,8 @@ let returnValueFunction = (val) => {
     return val ? val.value : null;
 }
 
-let createPdf = async (fileId, idProofType) => {
-    let doc = new PDFDocument;
-    await doc.pipe(fse.createWriteStream('./public/output.pdf'));
-    for (let index = 0; index < fileId.length; index++) {
-        const filename = await models.fileUpload.findOne({ // getting stored file
-            where: {
-                id: fileId[index]
-            }
-        });
-
-        if (index == 0) {
-            //Add an image, constrain it to a given size, and center it vertically and horizontally 
-            await doc.image(`./public/uploads/images/${filename.filename}`, {
-                fit: [500, 400],
-                align: 'center',
-                valign: 'center'
-            });
-        } else {
-            await doc.addPage()
-                .image(`./public/uploads/images/${filename.filename}`, {
-                    fit: [500, 400],
-                    align: 'center',
-                    valign: 'center'
-                });
-        }
-
-        if (index == fileId.length - 1) {
-            await doc.end();
-        }
-    }
-
-    // Converting file to base64
-    const contents = await fs.readFile('./public/output.pdf', { encoding: 'base64' });
-    if (!idProofType.toLowerCase().includes('aadhaar card')) {
-        let fileName = Date.now();
-        await fs.writeFile(`./public/uploads/images/${fileName}.pdf`, contents, 'base64');
-        const fileUploadData = await storeFinalPdf(`${fileName}.pdf`);
-        return {
-            contents: contents,
-            fileUpload: fileUploadData
-        }
-    } else {
-        return {
-            contents: contents,
-            fileUpload: null
-        }
-    }
+let returnConfFunction = (confInfo) => {
+    return confInfo ? confInfo.conf : null;
 }
 
 let storeMaskAadhaarImage = async (fileDownloadUrl) => {
@@ -477,7 +439,7 @@ let dlValidation = async (ocrResp, karzaDetail) => {
     }
 }
 
-let karzaValidationApiCallFunction = async (data, apiUrl, key, apiType) => {
+let karzaValidationApiCallFunction = async (urls) => {
     try {
         let options = {
             method: 'POST',
@@ -511,6 +473,7 @@ let karzaValidationApiCallFunction = async (data, apiUrl, key, apiType) => {
     }
 }
 
+
 module.exports = {
     ocrService: ocrService,
     insertInExternalApiLogger: insertInExternalApiLogger,
@@ -520,12 +483,12 @@ module.exports = {
     getDrivingLicenseResp: getDrivingLicenseResp,
     getElectiondIdCardResp: getElectiondIdCardResp,
     returnValueFunction: returnValueFunction,
-    createPdf: createPdf,
     storeFinalPdf: storeFinalPdf,
     storeMaskAadhaarImage: storeMaskAadhaarImage,
     karzaNameMatch: karzaNameMatch,
     documentValidation: documentValidation,
     passportValidation: passportValidation,
     dlValidation: dlValidation,
-    karzaValidationApiCallFunction: karzaValidationApiCallFunction
+    karzaValidationApiCallFunction: karzaValidationApiCallFunction,
+    mergeUserDetailBody:mergeUserDetailBody
 }

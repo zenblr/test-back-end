@@ -84,11 +84,11 @@
  *          description: varified pan 
  *       400:
  *          description: Invalid ID Number or combination of inputs
- * /e-kyc/ocr:
+ * /e-kyc/ocr-aadhaar:
  *   post:
  *     tags:
  *       - E KYC API
- *     name: KYC OCR ( Aadhaar, VoterID, Passport and DL Driving License )
+ *     name: KYC OCR ( Aadhaar)
  *     summary: KYC OCR
  *     security:
  *       - bearerAuth: []
@@ -100,16 +100,72 @@
  *         schema:
  *           type: object
  *           properties:
- *             fileUrl:
- *               type: string
- *             idProofTypeId:
- *               type: number
+ *             fileUrls:
+ *               type: array
+ *               items:
+ *                type: string
  *             customerId:
  *               type: number
  *         required:
- *           - fileUrl
- *           - idProofTypeId
+ *           - fileUrls
  *           - customerId
+ *     responses:
+ *       200:
+ *          description: document details
+ *       400:
+ *          description: failed to retrive data
+ * /e-kyc/ocr-pan:
+ *   post:
+ *     tags:
+ *       - E KYC API
+ *     name: KYC OCR ( pan card)
+ *     summary: KYC OCR
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             fileUrls:
+ *               type: array
+ *               items:
+ *                type: string
+ *             customerId:
+ *               type: number
+ *         required:
+ *           - fileUrls
+ *           - customerId
+ *     responses:
+ *       200:
+ *          description: document details
+ *       400:
+ *          description: failed to retrive data
+ * /e-kyc/test:
+ *   post:
+ *     tags:
+ *       - E KYC API
+ *     name: test base 64
+ *     summary: test base 64
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             fileUrls:
+ *               type: array
+ *               items:
+ *                type: string
+ *         required:
+ *           - fileUrls
  *     responses:
  *       200:
  *          description: document details
