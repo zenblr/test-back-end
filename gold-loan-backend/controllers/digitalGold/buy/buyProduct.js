@@ -25,6 +25,7 @@ const { postMerchantOrder, getUserData, postBuy } = require('../../../service/di
 exports.buyProduct = async (req, res) => {
   // try {
 
+
   const { amount, metalType, quantity, lockPrice, blockId, quantityBased, modeOfPayment } = req.body;
 
   const id = req.userData.id;
@@ -45,6 +46,7 @@ exports.buyProduct = async (req, res) => {
   //   return res.status(404).json({ message: checkLimit.message });
   // }
 
+  
   let tempOrderData;
   let currentTempBal;
   let walletData
