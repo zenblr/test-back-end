@@ -263,7 +263,8 @@ let walletDelivery = async (customerId, amount, modeOfPayment, orderType, cartDa
 
 let customerBalance = async (customerData, amount) => {
   let { currentWalletBalance, walletFreeBalance } = customerData
-
+  currentWalletBalance = Number(currentWalletBalance)
+  walletFreeBalance = Number(walletFreeBalance)
   let paymentGateWayAmount = 0
   if (amount >= currentWalletBalance) {
     let checkAmount = amount - currentWalletBalance
