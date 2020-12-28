@@ -1,4 +1,5 @@
 const models = require('../../models');
+const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const check = require('../../lib/checkLib');
@@ -200,50 +201,53 @@ exports.kycOcrAddress = async (req, res, next) => {
 exports.kycOcrForAadhaar = async (req, res, next) => {
     let { fileUrls, customerId } = req.body;
     let idProofType = "aadhaar card";
-    // let ocrData = [];
-    // let error = null;
-    // for (const fileUrl of fileUrls){
-    //     let info = await ocrService(fileUrl, idProofType, customerId)
-    //     ocrData.push(info)
-    // }
-    let ocrData = [
-        {
-          "data": {
-            "extractedData": {
-              "userDetailBody": {
-                "name": "Ram Sagar Kewala Prasad Gupta",
-                "idNumber": "783570468537",
-                "dob": "24/03/1988",
-                "aahaarNameScore": 0.98,
-                "aahaarDOBScore": 0.98,
-                "aadharImageUrl2": "https://download.karza.in/kyc-ocr/cGVhZVVKRU00eGRuS2pQczV6ZnU4M283S3o4MTVHa1I2SlBtMC9Fd0MxQlV3WEFBKy82OSs1d2hnSjlDUDI3U29JMUJuVG1uRWROaCtrTjdwOWsyeGlWWStHd0lqb3lLNU43d2pjWEJETzJxcGtRaEMrOUYvV2wwTlhJTC9TdjlFOUVLU29janhyb00zdk9sdkVsOEEvbEMwS2lIdU5FYmk5em1ycTFSS2pVPQ=="
-              },
-              "confidenceValueResult": {
-                "isAadharConfPass": true,
-                "isNameConfPass": true
-              }
-            },
-            "idProofType": "aadhaar card"
-          }
-        },
-        {
-          "data": {
-            "extractedData": {
-              "userDetailBody": {
-                "address": "S/O Kewala Prasad Gupta, room no. 12 GSM, 185 / 12/ 24, sane guruji nagar, j. r. boricha marg, opp. kasturba hospital, satrasta, jacob cirole, Mumbai, Maharashtra - 400011 ",
-                "pincode": "400011",
-                "state": "Maharashtra",
-                "city": "Mumbai"
-              },
-              "confidenceValueResult": {
-                "isAadharConfPass": true,
-                "isNameConfPass": false
-              }
-            },
-            "idProofType": "aadhaar card"
-          }
-        }
-      ]
+    let ocrData = [];
+    let error = null;
+    for (const fileUrl of fileUrls){
+        let info = await ocrService(fileUrl, idProofType, customerId)
+        ocrData.push(info)
+    }
+    // let ocrData = [
+    //     {
+    //       "data": {
+    //         "extractedData": {
+    //           "userDetailBody": {
+    //             "name": "Ram Sagar Kewala Prasad Gupta",
+    //             "idNumber": "783570468537",
+    //             "dob": "24/03/1988",
+    //             "aahaarNameScore": 0.98,
+    //             "aahaarDOBScore": 0.98,
+    //             "aadharImageUrl": "https://download.karza.in/kyc-ocr/TFZmNnliaC9VTGI1S2Z6dnlLM2Y0TWppWk9BTlI1NVFzRllMdXZZTGNkZVNDOTcxeFRsR3ZVRmI0SWtRZmYwYjNYMEU1a01Kb01mZHJKcVh0ZWdVUHJSWFF3d3l2dzErcnk2czY5cWRQSmZocWJuUEIwUGlRRGlIUGtPNDNDZjNxL3RXcWVLTDZUdHJ3OVJVODBLU3VrZDM5andUakpJaFFPOHFmU0FLSStZPQ=="
+    //           },
+    //           "confidenceValueResult": {
+    //             "isAadharConfPass": true,
+    //             "isNameConfPass": true,
+    //             "isDobConfPass": true
+    //           }
+    //         },
+    //         "idProofType": "aadhaar card"
+    //       }
+    //     },
+    //     {
+    //       "data": {
+    //         "extractedData": {
+    //           "userDetailBody": {
+    //             "address": "S/O Kewala Prasad Gupta, room no. 12 GSM, 185 / 12/ 24, sane guruji nagar, j. r. boricha marg, opp. kasturba hospital, satrasta, jacob cirole, Mumbai, Maharashtra - 400011 ",
+    //             "pincode": "400011",
+    //             "state": "Maharashtra",
+    //             "city": "Mumbai",
+    //             "aadharImageUrl2": "https://download.karza.in/kyc-ocr/ejh1WTlyYU52eDNaeE1lNVMxNXVZTW0wcGN2cmt2VDdqRTdleFNtdWF4aFBrR3VqOWtGYi9mNkVQSktRRFJONldocXBMRlJOY1hTeGNkZmhPTTNGY2xnekVnYUNDNERjM2RYemg2T2d2SnV0b2lXMjNST2RRNHhBTU5YSS9Wemo5WFhSb2lQNmloc3RNbnBBQjFkV1E3WjBZendEY3orMEtkNXBsK01rL0tRPQ=="
+    //           },
+    //           "confidenceValueResult": {
+    //             "isAadharConfPass": true,
+    //             "isNameConfPass": false,
+    //             "isDobConfPass": true
+    //           }
+    //         },
+    //         "idProofType": "aadhaar card"
+    //       }
+    //     }
+    //   ]
     //check for error
     for( const ocr of ocrData){
         if(ocr.error){
@@ -258,6 +262,7 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
         if(ocrData[0].data.idProofType.toLowerCase().includes('aadhaar card')){
             let isAadharConfPass = false;
             let isNameConfPass = false;
+            let isDobConfPass = false;
             let data = {};
             for(i = 0; i < ocrData.length; i++){
             if(ocrData.length == 2){
@@ -267,6 +272,9 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
                 if(ocrData[0].data.extractedData.confidenceValueResult.isNameConfPass || ocrData[1].data.extractedData.confidenceValueResult.isNameConfPass){
                     isNameConfPass = true
                 }
+                if(ocrData[0].data.extractedData.confidenceValueResult.isNameConfPass || ocrData[1].data.extractedData.confidenceValueResult.isNameConfPass){
+                    isDobConfPass = true
+                }
             }
             if(ocrData.length == 2){
                 data = await mergeUserDetailBody(ocrData[0].data.extractedData.userDetailBody,ocrData[1].data.extractedData.userDetailBody)
@@ -274,9 +282,30 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
                 data = ocrData[0].data.extractedData.userDetailBody;
             }
             }
-            return res.status(200).json({message: 'Success', isAadharConfPass, isNameConfPass,data })
+            let isAahaarVerified = false;
+            if(isAadharConfPass && isNameConfPass && isDobConfPass){
+                isAahaarVerified = true;
+            }
+            await sequelize.transaction(async t => {
+            let checkCustomerEkyc = await models.customerEKycDetails.findOne({where:{
+                customerId
+            },transaction: t });
+            if(checkCustomerEkyc){
+                await models.customerEKycDetails.update({
+                    isAppliedForAahaarVification:true,isAahaarVerified,aahaarNameScore:data.aahaarNameScore,aahaarName: data.name, aahaarDOBScore: data.aahaarDOBScore,aahaarDOB:data.dob,aahaarNumber:data.idNumber,
+                    aadhaarAddress:data.address,aadhaarPinCode:data.pincode, aadhaarState: data.state,aadhaarCity:data.city
+                },{where:{customerId},transaction: t })
+            }else{
+                await models.customerEKycDetails.create({
+                    customerId,isAppliedForAahaarVification:true,isAahaarVerified,aahaarNameScore:data.aahaarNameScore,aahaarName: data.name, aahaarDOBScore: data.aahaarDOBScore,aahaarDOB:data.dob,aahaarNumber:data.idNumber,
+                    aadhaarAddress:data.address,aadhaarPinCode:data.pincode, aadhaarState: data.state,aadhaarCity:data.city
+                },{transaction: t })
+            }
+            await models.customer.update({aadhaarMaskedImage1 : data.aadharImageUrl, aadhaarMaskedImage2: data.aadharImageUrl2},{where:{id:customerId},transaction: t });
+        })
+            return res.status(200).json({message: 'Success', isAadharConfPass, isNameConfPass, data, isDobConfPass, isAahaarVerified })
         }
-        return res.status(200).json({message: 'Success',data: ocrData })
+        return res.status(400).json({message: 'Please try again' })
     }
     // if(!ocrData.error){
     //     //id proof type check

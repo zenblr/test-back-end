@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: false
         },
         panNameScore: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'pan-name-score',
         },
         panName: {
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'pan-name',
         },
         panDOBScore: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'pan-DOB-score',
         },
         panDOB: {
@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: false
         },
         aahaarNameScore: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'aahaar-name-score',
         },
         aahaarName: {
@@ -55,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'aahaar-name',
         },
         aahaarDOBScore: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'aahaar-DOB-score',
         },
         aahaarDOB: {
@@ -83,7 +83,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'aadhaar-city',
         },
         aadharAndPanNameScore: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'aadhar-and-pan-name-score',
         },
         isAadhaarAndPanDOBSame: {
@@ -97,7 +97,7 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: false
         },
         addressProofScore: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'address-proof-score',
         },
         addressProofNumber: {
@@ -110,7 +110,7 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: false
         },
         currentAddressProofScore: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'current-address-proof-score',
         },
         currentAddressProofNumber: {
@@ -120,7 +120,7 @@ module.exports = (sequelize, DataTypes) => {
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
-            defaultValue: false
+            defaultValue: true
         }
 
     }, {

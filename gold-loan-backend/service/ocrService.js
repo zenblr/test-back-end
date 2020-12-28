@@ -225,13 +225,14 @@ let getAadhaarResp = async (respBody, confidenceValue, userDetailBody) => {
             userDetailBody.aahaarNameScore = returnConfFunction(respObject.details.name);
             userDetailBody.aahaarDOBScore = returnConfFunction(respObject.details.name);
             if (!aadharImageUrl) {
-                userDetailBody.aadharImageUrl2 = respObject.details.imageUrl.value;
+                userDetailBody.aadharImageUrl = respObject.details.imageUrl.value;
             }
         } else {
             userDetailBody.address = returnValueFunction(respObject.details.address);
             userDetailBody.pincode = returnValueFunction(respObject.details.pin);
             userDetailBody.state = respObject.details.addressSplit ? respObject.details.addressSplit.state : null;
             userDetailBody.city = respObject.details.addressSplit ? respObject.details.addressSplit.district : null;
+            userDetailBody.aadharImageUrl2 = respObject.details.imageUrl.value;
         }
     }
 
@@ -241,7 +242,7 @@ let getAadhaarResp = async (respBody, confidenceValue, userDetailBody) => {
     // } else {
     //     return { error: 'Please Upload Aadhaar Card Image' };
     // }
-    let confidenceValueResult = {isAadharConfPass,isNameConfPass}
+    let confidenceValueResult = {isAadharConfPass,isNameConfPass, isDobConfPass}
     return {userDetailBody ,confidenceValueResult}
 }
 
