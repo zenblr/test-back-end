@@ -9,80 +9,80 @@
                 <ng-container matColumnDef="customerId">
                     <mat-header-cell *matHeaderCellDef>Customer ID </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.customer?.customerUniqueId ? element?.customer?.customerUniqueId : '-'}}
+                        {{element?.customer?.customerUniqueId ? element?.customer?.customerUniqueId : 'NA'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="customerFullName">
                     <mat-header-cell *matHeaderCellDef>Customer Full Name</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.customer?.firstName || element?.customer?.lastName ? (element?.customer?.firstName + ' ' + element?.customer?.lastName | titlecase) : '-'}}
+                        {{element?.customer?.firstName || element?.customer?.lastName ? (element?.customer?.firstName + ' ' + element?.customer?.lastName | titlecase) : 'NA'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="mobileNumber">
                     <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.customer?.mobileNumber ? element?.customer?.mobileNumber : '-'}}</mat-cell>
+                        {{element?.customer?.mobileNumber ? element?.customer?.mobileNumber : 'NA'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="withdrawalTransactionID">
                     <mat-header-cell *matHeaderCellDef>Withdrawal Transaction ID</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.transactionUniqueId ? element?.transactionUniqueId : '-'}}</mat-cell>
+                    <mat-cell *matCellDef="let element">{{element?.transactionUniqueId ? element?.transactionUniqueId : 'NA'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="withdrawalInitiatedDate">
                     <mat-header-cell *matHeaderCellDef>Withdrawal Initiated Date</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div class="d-block">
-                            <div>{{element?.paymentReceivedDate ? (element?.paymentReceivedDate | date : 'yyyy-MM-dd') : '-'}}</div>
+                            <div>{{element?.paymentReceivedDate ? (element?.paymentReceivedDate | date : 'yyyy-MM-dd') : 'NA'}}</div>
                         </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="withdrawalAmount">
                     <mat-header-cell *matHeaderCellDef>Withdrawal Amount </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.transactionAmount ? element?.transactionAmount : '-'}}</mat-cell>
+                        {{element?.transactionAmount ? element?.transactionAmount : 'NA'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="bankName">
                     <mat-header-cell *matHeaderCellDef class="align-right">Bank Name </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="align-right">
-                        {{element?.bankName ? element?.bankName : '-'}}</mat-cell>
+                        {{element?.bankName ? element?.bankName : 'NA'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="branchName">
                     <mat-header-cell *matHeaderCellDef>Branch Name </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.branchName ? element?.branchName : '-'}}</mat-cell>
+                        {{element?.branchName ? element?.branchName : 'NA'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="accountNumber">
                     <mat-header-cell *matHeaderCellDef class="align-right">Account Number </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="align-right">
-                        {{element?.accountNumber ? element?.accountNumber : '-'}}
+                        {{element?.accountNumber ? element?.accountNumber : 'NA'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="accountHolderName">
                     <mat-header-cell *matHeaderCellDef class="align-right">Account Holder Name
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="align-right">
-                        {{element?.accountHolderName ? element?.accountHolderName : '-'}}
+                        {{element?.accountHolderName ? element?.accountHolderName : 'NA'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="ifscCode">
                     <mat-header-cell *matHeaderCellDef class="align-right">IFSC Code</mat-header-cell>
                     <mat-cell *matCellDef="let element" class="align-right">
-                        {{element?.ifscCode ? (element?.ifscCode | uppercase) : '-'}}</mat-cell>
+                        {{element?.ifscCode ? (element?.ifscCode | uppercase) : 'NA'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="withdrawalPaymentDate">
                     <mat-header-cell *matHeaderCellDef>Withdrawal Payment Date</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.depositApprovedDate ? (element?.depositApprovedDate | date : 'yyyy-MM-dd') : '-'}}</mat-cell>
+                        {{element?.depositApprovedDate ? (element?.depositApprovedDate | date : 'yyyy-MM-dd') : 'NA'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="bankTransactionID">
                     <mat-header-cell *matHeaderCellDef>Bank Transaction ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.bankTransactionUniqueId ? element?.bankTransactionUniqueId : '-'}}
+                        {{element?.bankTransactionUniqueId ? element?.bankTransactionUniqueId : 'NA'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="depositmodeofpayment">
                     <mat-header-cell *matHeaderCellDef>Deposit Mode Of Payment </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.paymentType ? (element?.paymentType | uppercase) : '-'}}
+                        {{element?.paymentType ? (element?.paymentType | uppercase) : 'NA'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="withdrawalStatus">

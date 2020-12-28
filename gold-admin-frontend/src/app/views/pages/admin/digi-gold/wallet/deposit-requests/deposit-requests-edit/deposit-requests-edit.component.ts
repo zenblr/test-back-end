@@ -77,10 +77,10 @@ export class DepositRequestsEditComponent implements OnInit {
 
 	editOrder() {
 		const data = {
-			bankTransactionID: this.depositInfo.transactionData.bankTransactionUniqueId,
+			bankTransactionID: this.depositInfo.transactionData.bankTransactionUniqueId ? this.depositInfo.transactionData.bankTransactionUniqueId : 'NA',
 			depositmodeofpayment: this.depositInfo.transactionData.paymentType,
-			depositBankName: this.depositInfo.transactionData.bankName,
-			depositBranchName: this.depositInfo.transactionData.branchName,
+			depositBankName: this.depositInfo.transactionData.bankName ? this.depositInfo.transactionData.bankName : 'NA',
+			depositBranchName: this.depositInfo.transactionData.branchName ? this.depositInfo.transactionData.branchName : 'NA',
 			depositDate: this.depositInfo.transactionData.depositDate,
 			depositAmount: this.depositInfo.transactionData.transactionAmount,
 			depositStatus: '',
@@ -90,11 +90,10 @@ export class DepositRequestsEditComponent implements OnInit {
 		if (!(this.depositInfo.transactionData.depositStatus == 'pending')) {
 			data.depositStatus = this.depositInfo.transactionData.depositStatus;
 			this.depositForm.patchValue(data);
-		} 
+		}
 		else {
 			this.controls.depositStatus.enable();
 		}
-
 	}
 
 	submit() {
