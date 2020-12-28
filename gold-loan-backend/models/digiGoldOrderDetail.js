@@ -97,9 +97,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'razorpay_signature'
         },
-        orderSatatus: {
+        orderStatus: {
             type: DataTypes.STRING,
-            field: 'order_satatus',
+            field: 'order_status',
             defaultValue: "pending",
         },
         deliveryShippingCharges: {
