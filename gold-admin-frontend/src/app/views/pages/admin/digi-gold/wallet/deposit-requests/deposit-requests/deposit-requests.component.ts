@@ -79,6 +79,8 @@ export class DepositRequestsComponent implements OnInit {
 		const entitiesSubscription = this.dataSource.entitySubject.pipe(skip(1), distinctUntilChanged())
 			.subscribe((res) => {
 				this.depositDetailsResult = res;
+				// console.log(this.depositDetailsResult);
+				
 			});
 		this.subscriptions.push(entitiesSubscription);
 		this.dataSource.loadDepositRequests(this.depositData);
@@ -108,6 +110,8 @@ export class DepositRequestsComponent implements OnInit {
 	}
 
 	applyFilter(data) {
+		console.log(data);
+		this.dataSource.loadDepositRequests(this.depositData);
 		this.filteredDataList = data.list;
 	}
 

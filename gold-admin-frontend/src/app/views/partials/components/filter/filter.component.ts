@@ -376,6 +376,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.depositStatus = controls['depositStatus'].value
 				this.filterObject.list.depositStatus = controls['depositStatus'].value;
 			}
+			
 			return this.filterObject;
 		}
 	}

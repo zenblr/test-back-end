@@ -592,7 +592,7 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.filterName = "depositRequests";
 			this.filterWidth = "630px";
-			this.listType = "tenure,orderStatus";
+			// this.listType = "startDate,depositRequestsStatus";
 			this.showfilter = true;
 			// this.showDropdown = true;
 			// this.dropdownTitle = "Generate";
@@ -607,7 +607,7 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 			this.filterName = "withdrawalRequests";
 			this.filterWidth = "630px";
-			this.listType = "tenure,orderStatus";
+			// this.listType = "startDate,withdrawalRequestsStatus";
 			this.showfilter = true;
 			// this.showDropdown = true;
 			// this.dropdownTitle = "Generate";
