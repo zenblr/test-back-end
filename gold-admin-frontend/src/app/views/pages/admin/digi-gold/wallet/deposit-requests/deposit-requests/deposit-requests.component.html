@@ -10,23 +10,23 @@
                 <ng-container matColumnDef="transactionID">
                     <mat-header-cell *matHeaderCellDef>Transaction ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.transactionUniqueId ? element?.transactionUniqueId : '-'}}
+                        {{element?.transactionUniqueId ? element?.transactionUniqueId : 'NA'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="bankTransactionID">
                     <mat-header-cell *matHeaderCellDef>Bank Transaction ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.bankTransactionUniqueId ? element?.bankTransactionUniqueId: '-'}}
+                        {{element?.bankTransactionUniqueId ? element?.bankTransactionUniqueId: 'NA'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="customerID">
                     <mat-header-cell *matHeaderCellDef>Customer ID </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.customer?.customerUniqueId ? element?.customer?.customerUniqueId : '-'}}</mat-cell>
+                        {{element?.customer?.customerUniqueId ? element?.customer?.customerUniqueId : 'NA'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="depositDate">
                     <mat-header-cell *matHeaderCellDef>Deposit Date </mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.depositDate ? element?.depositDate : '-'}}
+                    <mat-cell *matCellDef="let element">{{element?.depositDate ? element?.depositDate : 'NA'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="fullName">
@@ -34,7 +34,7 @@
                     <mat-cell *matCellDef="let element">
                         <div class="d-block">
                             <div>
-                                {{element?.customer?.firstName || element?.customer?.lastName ? (element?.customer?.firstName + ' ' + element?.customer?.lastName | titlecase) : '-'}}
+                                {{element?.customer?.firstName || element?.customer?.lastName ? (element?.customer?.firstName + ' ' + element?.customer?.lastName | titlecase) : 'NA'}}
                             </div>
                         </div>
                     </mat-cell>
@@ -42,28 +42,28 @@
                 <ng-container matColumnDef="mobileNumber">
                     <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.customer?.mobileNumber ? element?.customer?.mobileNumber : '-'}}</mat-cell>
+                        {{element?.customer?.mobileNumber ? element?.customer?.mobileNumber : 'NA'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="depositmodeofpayment">
                     <mat-header-cell *matHeaderCellDef class="align-right">Deposit Mode Of Payment</mat-header-cell>
                     <mat-cell *matCellDef="let element" class="align-right">
-                        {{element?.paymentType ? (element?.paymentType | uppercase) : '-'}}</mat-cell>
+                        {{element?.paymentType ? (element?.paymentType | uppercase) : 'NA'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="depositBankName">
                     <mat-header-cell *matHeaderCellDef>Deposit Bank Name</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.bankName ? element?.bankName : '-'}}</mat-cell>
+                        {{element?.bankName ? element?.bankName : 'NA'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="depositBranchName">
                     <mat-header-cell *matHeaderCellDef class="align-right">Deposit Branch Name</mat-header-cell>
                     <mat-cell *matCellDef="let element" class="align-right">
-                        {{element?.branchName ? (element?.branchName | titlecase) : '-'}}
+                        {{element?.branchName ? (element?.branchName | titlecase) : 'NA'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="depositAmount">
                     <mat-header-cell *matHeaderCellDef class="align-right">Deposit Amount</mat-header-cell>
                     <mat-cell *matCellDef="let element" class="align-right">
-                        {{element?.transactionAmount ? element?.transactionAmount : '-'}}
+                        {{element?.transactionAmount ? element?.transactionAmount : 'NA'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="depositStatus">

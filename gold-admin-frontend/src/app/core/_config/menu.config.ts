@@ -359,7 +359,7 @@ export class MenuConfig {
 						{
 							title: "Digi Gold",
 							root: true,
-							src: "assets/media/aside-icons/icons-39.svg",
+							src: "assets/media/aside-icons/digi-gold.png",
 							page: "/admin/digi-gold/wallet",
 							bullet: 'dot',
 							permission: false,
@@ -938,7 +938,7 @@ export class MenuConfig {
 						{
 							title: "Wallet",
 							bullet: 'dot',
-							src: "assets/media/aside-icons/icons-35.svg",
+							src: "assets/media/aside-icons/wallet.png",
 							permission: false,
 							submenu: [
 								{
