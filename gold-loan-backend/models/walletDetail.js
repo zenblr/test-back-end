@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATEONLY,
             field: 'transaction_date',
         },
-        walletTempDetailId:{
+        walletTempDetailId: {
             type: DataTypes.INTEGER,
             field: 'wallet_temp_detail_id',
         }
@@ -42,10 +42,13 @@ module.exports = (sequelize, DataTypes) => {
     WalletDetail.associate = function (models) {
         WalletDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         WalletDetail.belongsTo(models.walletTempDetails, { foreignKey: 'walletTempDetailId', as: 'walletTempDetails' });
+        WalletDetail.hasOne(models.walletTransactionDetails, { foreignKey: 'walletId', as: 'walletTransactionDetails' });
+        WalletDetail.hasOne(models.digiGoldOrderDetail, { foreignKey: 'walletId', as: 'digiGoldOrderDetail' });
+
     }
 
-    
 
-    
+
+
     return WalletDetail;
 }
