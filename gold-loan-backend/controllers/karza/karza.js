@@ -323,134 +323,61 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
     // }
 }
 
+
 exports.kycOcrFoPanCard = async (req, res, next) => {
-    let { fileUrls, customerId } = req.body;
+    let { fileUrl, customerId } = req.body;
     let idProofType = "pan card";
-    // let ocrData = [];
     let error = null;
-    // for (const fileUrl of fileUrls){
-    //     let info = await ocrService(fileUrl, idProofType, customerId)
-    //     ocrData.push(info)
-    // }
-    let ocrData =  [
-        {
-          "data": {
-            "extractedData": {
-              "userDetailBody": {
-                "name": "Ram Sagar Kewala Prasad Gupta",
-                "idNumber": "783570468537",
-                "dob": "24/03/1988",
-                "address": null,
-                "pincode": null,
-                "state": null,
-                "city": null,
-                "maskedAadhaarImage": null,
-                "fileNum": null,
-                "aadharImageUrl": "https://download.karza.in/kyc-ocr/YmNYTTd3VlFTNXBmanNUOTF1L3BjZHJkVVAwTjhtOWJPYStHY2c3dlJVMS9jVDRjb1B3alJBemhDSmpwOVlFdGptcFhaR2lpeWlEVHZSL1NNakZDYldzQ2pUNlJpQUhCZUdBMlZOSlFEOEphYnBLWnpFQ1d4WXFyTlRvMXZsR0pjWmhOK3pRdkdCa3pkaXlkUWdlM1ZnKy85L3RFZlNIT1l0d0VXUEdwV1cwPQ=="
-              },
-              "confidenceValueResult": {
-                "isAadharConfPass": true,
-                "isNameConfPass": true
-              }
-            },
-            "idProofType": "Aadhaar Card"
-          }
-        },
-        {
-          "data": {
-            "extractedData": {
-              "userDetailBody": {
-                "name": null,
-                "idNumber": null,
-                "dob": null,
-                "address": "S/O Kewala Prasad Gupta, room no. 12 GSM, 185 / 12/ 24, sane guruji nagar, j. r. boricha marg, opp. kasturba hospital, satrasta, jacob cirole, Mumbai, Maharashtra - 400011 ",
-                "pincode": "400011",
-                "state": "Maharashtra",
-                "city": "Mumbai",
-                "maskedAadhaarImage2": null,
-                "fileNum": null
-              },
-              "confidenceValueResult": {
-                "isAadharConfPass": true,
-                "isNameConfPass": false
-              }
-            },
-            "idProofType": "Aadhaar Card"
-          }
-        }
-      ]
-    //check for error
-    for( const ocr of ocrData){
-        if(ocr.error){
-            error = ocr.error
-            break
-        }
+    let ocrData = await ocrService(fileUrl, idProofType, customerId)
+    if(ocrData.error){
+         return res.status(400).json({message: 'KYC failed' })
     }
-    if(error){
+    if(ocrData.error){
         return res.status(400).json({message: error})
     }else{
         //aadahar card data
-        if(ocrData[0].data.idProofType.toLowerCase().includes('pan card')){
-            let isAadharConfPass = false;
-            let isNameConfPass = false;
-            let data = {};
-            for(i = 0; i < ocrData.length; i++){
-            if(ocrData.length = 2){
-                if(ocrData[0].data.extractedData.confidenceValueResult.isAadharConfPass || ocrData[0].data.extractedData.confidenceValueResult.isAadharConfPass){
-                    isAadharConfPass = true
+        if(ocrData.data.idProofType.toLowerCase().includes('pan card')){
+            let isPanConfPass = ocrData.data.extractedData.confidenceValueResult.isPanConfPass;
+            let isNameConfPass = ocrData.data.extractedData.confidenceValueResult.isNameConfPass;;
+            let isDobConfPass = ocrData.data.extractedData.confidenceValueResult.isDobConfPass;;
+            let data = ocrData.data.extractedData.userDetailBody;
+            let isPanVerified = false;
+            //check pan starus
+            let panVerification = await verifyPANCard(data.idNumber, data.name, data.dob)
+            if(panVerification.error == false){
+                if(panVerification.data.status == "Active"){
+                    isPanVerified = true
                 }
-                if(ocrData[0].data.extractedData.confidenceValueResult.isNameConfPass || ocrData[0].data.extractedData.confidenceValueResult.isNameConfPass){
-                    isNameConfPass = true
-                }
-                ///////////
-                var test = ocrData[0].data.extractedData.userDetailBody
-                var test1 = ocrData[1].data.extractedData.userDetailBody
-                let clean = (obj) => {
-                    for (var propName in obj) {
-                        if (obj[propName] === null || obj[propName] === undefined) {
-                            delete obj[propName];
-                        }
-                    }
-                    return obj
-                }
-            
-                let newTest1 = await clean(test)
-                let newTest2 = await clean(test1)
-            
-                
-                data = {
-                    ...newTest1,
-                    ...newTest2
-                }
-                // console.log(...newTest1, ...newTest2)
-                // data = Object.assign(ocrData[0].data.extractedData.userDetailBody, ocrData[1].data.extractedData.userDetailBody);
-                // data.uar1 = ocrData[0].data.extractedData.userDetailBody;
-                // data.url2 = ocrData[1].data.extractedData.userDetailBody;
-                // data = _.merge(ocrData[0].data.extractedData.userDetailBody,ocrData[1].data.extractedData.userDetailBody)
-                // data = {
-                //     ...ocrData[0].data.extractedData.userDetailBody,
-                //     ...ocrData[1].data.extractedData.userDetailBody
-                // }
-                console.log(data)
+            }
+            await sequelize.transaction(async t => {
+            let checkCustomerEkyc = await models.customerEKycDetails.findOne({where:{
+                customerId
+            },transaction: t });
+            if(checkCustomerEkyc){
+                await models.customerEKycDetails.update({
+                    isAppliedForPanVerification:true,isPanVerified,panNameScore:data.panNameScore,panName: data.name, panDOBScore: data.panDOBScore,panDOB:data.dob,panNumber:data.idNumber,fatherName:data.fatherName
+                },{where:{customerId},transaction: t })
             }else{
-                data = ocrData[0].data.extractedData.userDetailBody;
+                await models.customerEKycDetails.create({
+                    customerId,isAppliedForPanVerification:true,isPanVerified,panNameScore:data.panNameScore,panName: data.name, panDOBScore: data.panDOBScore,panDOB:data.dob,panNumber:data.idNumber, fatherName:data.fatherName
+                },{transaction: t })
             }
-            }
-            return res.status(200).json({message: 'Success', data, isAadharConfPass, isNameConfPass })
+        })
+            return res.status(200).json({message: 'Success', isPanConfPass, isNameConfPass, data, isDobConfPass, isPanVerified })
         }
-        return res.status(200).json({message: 'Success',data: ocrData })
+        return res.status(400).json({message: 'Please try again' })
     }
-    // if(!ocrData.error){
-    //     //id proof type check
-    //     if(ocrData.extractedData.idProofType.toLowerCase().includes('aadhaar card')){
-    //         if(ocrData.extractedData.isAadharConfPass || ocrData.extractedData.isAadharConfPass){
+}
 
-    //         }
-    //     }
-    //     return res.status(200).json({message: 'Success',data: ocrData.data })
-    // }else{
-    //     return res.status(400).json({message: ocrData.error})
-    // }
+exports.getCustomerEkycData = async (req, res, next) => {
+    let { customerId } = req.query;
+    let customerDta = await models.customerEKycDetails.findOne({where:{customerId}});
+    if(customerDta){
+        return res.status(200).json({message: 'Success', data : customerDta })
+    }else{
+        return res.status(404).json({message: 'No data found' })
+    }
+
 }
 
 

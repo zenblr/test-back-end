@@ -173,15 +173,6 @@ let insertInExternalApiLogger = async (apiType, userId, customerId, api, request
 let getOcrResponse = async (responseBody, idProofType, confidenceValue) => {
     const proofType = idProofType.toLowerCase();
     let userDetailBody = {
-        name: null,
-        idNumber: null,
-        dob: null,
-        address: null,
-        pincode: null,
-        state: null,
-        city: null,
-        maskedAadhaarImage: null,
-        fileNum: null
     };
 
     if (proofType.includes('aadhaar card')) {
@@ -193,12 +184,16 @@ let getOcrResponse = async (responseBody, idProofType, confidenceValue) => {
     } else if(proofType.includes('voter id')){
         const extractedData = await getElectiondIdCardResp(responseBody, confidenceValue, userDetailBody);
         return {extractedData,idProofType};
+    } else if(proofType.includes('pan card')) {
+        const extractedData = await getPanCardResp(responseBody, confidenceValue, userDetailBody);
+        return {extractedData,idProofType};
     }
 }
 
 let getAadhaarResp = async (respBody, confidenceValue, userDetailBody) => {
     let isAadharConfPass = false;
     let isNameConfPass = false;
+    let isDobConfPass = false;
     let aadharImageUrl;
     for (let index = 0; index < respBody.length; index++) {
         const respObject = respBody[index]
@@ -218,6 +213,7 @@ let getAadhaarResp = async (respBody, confidenceValue, userDetailBody) => {
             userDetailBody.state = respObject.details.addressSplit.state;
             userDetailBody.city = respObject.details.addressSplit.district;
             userDetailBody.aadharImageUrl = respObject.details.imageUrl.value
+            aadharImageUrl = respObject.details.imageUrl.value
         } else if (respObject.type.toLowerCase().includes('aadhaar front bottom')) {
             userDetailBody.name = returnValueFunction(respObject.details.name);
             userDetailBody.idNumber = returnValueFunction(respObject.details.aadhaar);
@@ -243,6 +239,41 @@ let getAadhaarResp = async (respBody, confidenceValue, userDetailBody) => {
     //     return { error: 'Please Upload Aadhaar Card Image' };
     // }
     let confidenceValueResult = {isAadharConfPass,isNameConfPass, isDobConfPass}
+    return {userDetailBody ,confidenceValueResult}
+}
+
+let getPanCardResp = async (respBody, confidenceValue, userDetailBody) => {
+    let isPanConfPass = false;
+    let isNameConfPass = false;
+    let isDobConfPass = false;
+    for (let index = 0; index < respBody.length; index++) {
+        const respObject = respBody[index]
+        if (respObject.details.panNo && Number(respObject.details.panNo.conf) >= confidenceValue) {
+            isPanConfPass = true;
+        }
+        if (respObject.details.name && Number(respObject.details.name.conf) >= confidenceValue) {
+            isNameConfPass = true;
+        }
+        if(respObject.details.date && Number(respObject.details.date.conf) >= confidenceValue) {
+            isDobConfPass = true;
+        }
+        if (respObject.type.toLowerCase().includes('pan')) {
+            userDetailBody.dob = returnValueFunction(respObject.details.date);
+            userDetailBody.idNumber = returnValueFunction(respObject.details.panNo);
+            userDetailBody.fatherName = returnValueFunction(respObject.details.father);
+            userDetailBody.name = returnValueFunction(respObject.details.name);
+            userDetailBody.panNameScore =  returnConfFunction(respObject.details.name);
+            userDetailBody.panDOBScore = returnConfFunction(respObject.details.date);
+        }
+    }
+
+    // if (aadharImageUrl) {
+    //     const maskedAadharImageData = await storeMaskAadhaarImage(aadharImageUrl);
+    //     userDetailBody.maskedAadhaarImage = maskedAadharImageData;
+    // } else {
+    //     return { error: 'Please Upload Aadhaar Card Image' };
+    // }
+    let confidenceValueResult = {isPanConfPass,isNameConfPass, isDobConfPass}
     return {userDetailBody ,confidenceValueResult}
 }
 
@@ -491,5 +522,6 @@ module.exports = {
     passportValidation: passportValidation,
     dlValidation: dlValidation,
     karzaValidationApiCallFunction: karzaValidationApiCallFunction,
-    mergeUserDetailBody:mergeUserDetailBody
+    mergeUserDetailBody:mergeUserDetailBody,
+    getPanCardResp:getPanCardResp
 }

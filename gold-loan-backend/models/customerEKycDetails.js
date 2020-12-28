@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'pan-name',
         },
+        fatherName: {
+            type: DataTypes.STRING,
+            field: 'father_name',
+        },
         panDOBScore: {
             type: DataTypes.STRING,
             field: 'pan-DOB-score',
