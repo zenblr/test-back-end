@@ -554,7 +554,7 @@ exports.getAllDepositDetails = async (req, res) => {
         "$walletTransactionDetails.branch_name$": { [Op.iLike]: search + '%' },
       },
     }],
-    customerId: id,
+    // customerId: id,
 
 
   };
@@ -572,6 +572,9 @@ exports.getAllDepositDetails = async (req, res) => {
     {
       model: models.walletTransactionDetails,
       as: 'walletTransactionDetails',
+      where:{
+        customerId: id
+      }
     },
     {
       model: models.customer,
@@ -661,7 +664,7 @@ exports.getTransactionDetails = async (req, res) => {
         "$walletTransactionDetails.branch_name$": { [Op.iLike]: search + '%' },
       },
     }],
-    customerId: id,
+    
 
 
   };
@@ -672,12 +675,12 @@ exports.getTransactionDetails = async (req, res) => {
       orderTypeId: { [Op.notIn]: [4] }
     }
   }
-
+  console.log(id)
   if (paymentFor) {
     if (orderTypeData.id == 4) {
       searchQuery = { paymentOrderTypeId: { [Op.in]: [4] }, orderTypeId: { [Op.notIn]: [4] } }
     } else if (orderTypeData.id == 5) {
-      searchQuery = { paymentOrderTypeId: { [Op.in]: [5] }, orderTypeId: { [Op.notIn]: [4] } }
+      searchQuery = {  paymentOrderTypeId: { [Op.in]: [5] }, orderTypeId: { [Op.notIn]: [4] } }
     } else if (orderTypeData.id == 6) {
       searchQuery = { paymentOrderTypeId: { [Op.in]: [6] }, orderTypeId: { [Op.notIn]: [4] } }
     }
@@ -688,10 +691,16 @@ exports.getTransactionDetails = async (req, res) => {
     {
       model: models.walletTransactionDetails,
       as: 'walletTransactionDetails',
+      where:{
+        customerId: id
+      }
     },
     {
       model: models.digiGoldOrderDetail,
       as: 'digiGoldOrderDetail',
+      where:{
+        customerId: id
+      }
     }
   ]
 
