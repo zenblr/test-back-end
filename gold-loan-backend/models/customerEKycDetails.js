@@ -50,6 +50,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is-aahaar-verified',
             defaultValue: false
         },
+        gender : {
+            type: DataTypes.STRING,
+            field: 'gender'
+        },
         aahaarNameScore: {
             type: DataTypes.STRING,
             field: 'aahaar-name-score',
@@ -100,26 +104,26 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is-address-proof-added',
             defaultValue: false
         },
-        addressProofScore: {
+        addressProof: {
             type: DataTypes.STRING,
-            field: 'address-proof-score',
-        },
-        addressProofNumber: {
-            type: DataTypes.STRING,
-            field: 'address-proof-number',
+            field: 'address-proof',
         },
         isCurrentAddressProofAdded: {
             type: DataTypes.BOOLEAN,
             field: 'is-current-address-proof-added',
             defaultValue: false
         },
-        currentAddressProofScore: {
+        isCurrentAddressProof: {
             type: DataTypes.STRING,
-            field: 'current-address-proof-score',
+            field: 'is-current-address-proof',
         },
-        currentAddressProofNumber: {
+        voterIdNumber: {
             type: DataTypes.STRING,
-            field: 'current-address-proof-number',
+            field: 'voter-id-number',
+        },
+        VoterIdAddress: {
+            type: DataTypes.STRING,
+            field: 'voter-id-address',
         },
         isActive: {
             type: DataTypes.BOOLEAN,

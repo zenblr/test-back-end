@@ -216,6 +216,7 @@ let getAadhaarResp = async (respBody, confidenceValue, userDetailBody) => {
             aadharImageUrl = respObject.details.imageUrl.value
         } else if (respObject.type.toLowerCase().includes('aadhaar front bottom')) {
             userDetailBody.name = returnValueFunction(respObject.details.name);
+            userDetailBody.gender = returnValueFunction(respObject.details.gender);
             userDetailBody.idNumber = returnValueFunction(respObject.details.aadhaar);
             userDetailBody.dob = returnValueFunction(respObject.details.dob);
             userDetailBody.aahaarNameScore = returnConfFunction(respObject.details.name);
@@ -348,14 +349,10 @@ let getDrivingLicenseResp = async (respBody, userDetailBody) => {
 
 let getElectiondIdCardResp = async (respBody, confidenceValue, userDetailBody) => {
     let isVoterIdConfPass = false;
-    let isNameConfPass = false;
     for (let index = 0; index < respBody.length; index++) {
         const respObject = respBody[index]
         if (respObject.details.voterid && Number(respObject.details.voterid.conf) >= confidenceValue) {
             isVoterIdConfPass = true;
-        }
-        if (respObject.details.name && Number(respObject.details.name.conf) >= confidenceValue) {
-            isNameConfPass = true;
         }
 
         if (respObject.type.toLowerCase().includes('voterid front')) {
@@ -371,11 +368,8 @@ let getElectiondIdCardResp = async (respBody, confidenceValue, userDetailBody) =
             userDetailBody.city = respObject.details.addressSplit ? respObject.details.addressSplit.district : null;
         }
     }
-    if (isVoterIdConfPass && isNameConfPass) {
-        return userDetailBody;
-    } else {
-        return { error: 'Low Confidence' }
-    }
+    let confidenceValueResult = {isPassportConfPass}
+    return {userDetailBody,confidenceValueResult};
 }
 
 let returnValueFunction = (val) => {
