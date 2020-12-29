@@ -120,7 +120,7 @@ module.exports = (sequelize, DataTypes) => {
 
     }, {
         freezeTableName: true,
-        tableName: 'customer-e-kyc-details',
+        tableName: 'customer_e_kyc_details',
     });
 
     return CustomerEKycDetails;
