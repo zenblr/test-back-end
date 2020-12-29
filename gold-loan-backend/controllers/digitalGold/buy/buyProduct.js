@@ -46,7 +46,7 @@ exports.buyProduct = async (req, res) => {
   //   return res.status(404).json({ message: checkLimit.message });
   // }
 
-  
+
   let tempOrderData;
   let currentTempBal;
   let walletData
@@ -109,7 +109,7 @@ exports.buyProduct = async (req, res) => {
 
           let orderUniqueId = `dg_buy${Math.floor(1000 + Math.random() * 9000)}`;
 
-          let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.totalAmount, paymentDirection: "debit", description: result.data.message, productTypeId: 4, transactionDate: moment(), walletTempDetailId: tempWalletId }, { transaction: t });
+          let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.totalAmount, paymentDirection: "debit", description: result.data.message, productTypeId: 4, transactionDate: moment(), walletTempDetailId: tempWalletId, orderTypeId: 1, paymentOrderTypeId: 6 }, { transaction: t });
 
           let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: temporderDetailId, customerId: customerId, orderTypeId: 1, orderId: orderUniqueId, metalType: result.data.result.data.metalType, quantity: quantity, lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, rate: result.data.result.data.rate, quantityBased: quantityBased, modeOfPayment: modeOfPayment, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, orderStatus: "pending", totalAmount: result.data.result.data.totalAmount, walletBalance: checkBalance.currentWalletBalance, walletId: walletData.id }, { transaction: t });
 
@@ -383,7 +383,7 @@ async function checkBuyLimit(id, totalAmount) {
         return ({ message: "your kyc status is pending", success: false });
 
       } else {
-      
+
         return ({ message: "your kyc  is pending.Please complete Kyc first", success: false });
 
       }
@@ -398,7 +398,7 @@ async function checkBuyLimit(id, totalAmount) {
         return ({ message: "your kyc status is pending", success: false });
 
       } else {
-       
+
         return ({ message: "your kyc  is pending.Please complete Kyc first", success: false });
 
       }
