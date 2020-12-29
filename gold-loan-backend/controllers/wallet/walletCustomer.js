@@ -540,21 +540,21 @@ exports.getAllDepositDetails = async (req, res) => {
   );
 
   let searchQuery = {
-    [Op.and]: [query, {
-      [Op.or]: {
-        paymentType: sequelize.where(
-          sequelize.cast(sequelize.col("walletTransactionDetails.payment_type"), "varchar"),
-          {
-            [Op.iLike]: search + "%",
-          }
-        ),
-        "$walletTransactionDetails.bank_name$": { [Op.iLike]: search + '%' },
-        "$walletTransactionDetails.cheque_number$": { [Op.iLike]: search + '%' },
+    // [Op.and]: [query, {
+    //   [Op.or]: {
+    //     paymentType: sequelize.where(
+    //       sequelize.cast(sequelize.col("walletTransactionDetails.payment_type"), "varchar"),
+    //       {
+    //         [Op.iLike]: search + "%",
+    //       }
+    //     ),
+    //     "$walletTransactionDetails.bank_name$": { [Op.iLike]: search + '%' },
+    //     "$walletTransactionDetails.cheque_number$": { [Op.iLike]: search + '%' },
 
-        "$walletTransactionDetails.branch_name$": { [Op.iLike]: search + '%' },
-      },
-    }],
-    // customerId: id,
+    //     "$walletTransactionDetails.branch_name$": { [Op.iLike]: search + '%' },
+    //   },
+    // }],
+    customerId: id,
 
 
   };
@@ -650,42 +650,36 @@ exports.getTransactionDetails = async (req, res) => {
   );
 
   let searchQuery = {
-    [Op.and]: [query, {
-      [Op.or]: {
-        paymentType: sequelize.where(
-          sequelize.cast(sequelize.col("walletTransactionDetails.payment_type"), "varchar"),
-          {
-            [Op.iLike]: search + "%",
-          }
-        ),
-        "$walletTransactionDetails.bank_name$": { [Op.iLike]: search + '%' },
-        "$walletTransactionDetails.cheque_number$": { [Op.iLike]: search + '%' },
+    // [Op.and]: [query, {
+    //   [Op.or]: {
+    //     paymentType: sequelize.where(
+    //       sequelize.cast(sequelize.col("walletTransactionDetails.payment_type"), "varchar"),
+    //       {
+    //         [Op.iLike]: search + "%",
+    //       }
+    //     ),
+    //     "$walletTransactionDetails.bank_name$": { [Op.iLike]: search + '%' },
+    //     "$walletTransactionDetails.cheque_number$": { [Op.iLike]: search + '%' },
 
-        "$walletTransactionDetails.branch_name$": { [Op.iLike]: search + '%' },
-      },
-    }],
-    
-
-
+    //     "$walletTransactionDetails.branch_name$": { [Op.iLike]: search + '%' },
+    //   },
+    // }],
+    customerId: id,
+    orderTypeId: { [Op.notIn]: [4] }
   };
 
   if (!paymentFor) {
-    searchQuery.paymentOrderTypeId = { [Op.in]: [4, 5, 6] },
-      searchQuery.orderTypeId = { [Op.notIn]: [4] }
-
+    searchQuery.paymentOrderTypeId = { [Op.in]: [4, 5, 6] }
   }
   console.log(id)
   if (paymentFor) {
     if (orderTypeData.id == 4) {
-      searchQuery.paymentOrderTypeId = { [Op.in]: [4] },
-        searchQuery.orderTypeId = { [Op.notIn]: [4] }
+      searchQuery.paymentOrderTypeId = { [Op.in]: [4] }
     }
     else if (orderTypeData.id == 5) {
-      searchQuery.paymentOrderTypeId = { [Op.in]: [5] },
-        searchQuery.orderTypeId = { [Op.notIn]: [4] }
+      searchQuery.paymentOrderTypeId = { [Op.in]: [5] }
     } else if (orderTypeData.id == 6) {
-      searchQuery.paymentOrderTypeId = { [Op.in]: [6] },
-        searchQuery.orderTypeId = { [Op.notIn]: [4] }
+      searchQuery.paymentOrderTypeId = { [Op.in]: [6] }
     }
   }
 
