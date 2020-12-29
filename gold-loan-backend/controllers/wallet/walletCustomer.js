@@ -206,7 +206,7 @@ exports.addAmountWallet = async (req, res) => {
             let currentTempBal;
             let walletData
 
-            let WalletDetailBuy = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "deposite while buy", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 1, paymentOrderTypeId: 4 }, { transaction: t });
+            let WalletDetailBuy = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "deposit while buy", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 1, paymentOrderTypeId: 4 }, { transaction: t });
 
             let walletTransactionDetailsBuy = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: WalletDetailBuy.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "completed", runningBalance: customerUpdatedBalance, freeBalance: customer.walletFreeBalance }, { transaction: t })
 
@@ -521,10 +521,14 @@ exports.addAmountWallet = async (req, res) => {
 exports.getAllDepositDetails = async (req, res) => {
 
   const id = req.userData.id;
-  let { orderTypeId, depositStatus } = req.query
+  let { paymentFor, depositStatus } = req.query;
 
-  if (!orderTypeId) {
+  if (!paymentFor) {
     return res.status(200).json({ message: `Parameter are missing` })
+  }
+  let orderTypeId
+  if (paymentFor) {
+    orderTypeId = await models.digiGoldOrderType.findOne({ where: { orderType: paymentFor } })
   }
 
   let query = {};
@@ -556,9 +560,9 @@ exports.getAllDepositDetails = async (req, res) => {
   };
 
   if (orderTypeId) {
-    if (orderTypeId == 4) {
+    if (orderTypeId.id == 4) {
       searchQuery = { paymentOrderTypeId: { [Op.in]: [4] }, orderTypeId: { [Op.in]: [4] } }
-    } else if (orderTypeId == 5) {
+    } else if (orderTypeId.id == 5) {
       searchQuery = { paymentOrderTypeId: { [Op.in]: [5] }, orderTypeId: { [Op.notIn]: [4] } }
     }
   }
@@ -568,6 +572,11 @@ exports.getAllDepositDetails = async (req, res) => {
     {
       model: models.walletTransactionDetails,
       as: 'walletTransactionDetails',
+    },
+    {
+      model: models.customer,
+      as: 'customer',
+      attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
     }
   ]
 
