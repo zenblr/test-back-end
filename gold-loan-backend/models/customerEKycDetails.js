@@ -99,27 +99,14 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is-aadhaar-and-pan-DOB-same',
             defaultValue: false
         },
-        isAddressProofAdded: {
-            type: DataTypes.BOOLEAN,
-            field: 'is-address-proof-added',
-            defaultValue: false
-        },
-        addressProof: {
-            type: DataTypes.STRING,
-            field: 'address-proof',
-        },
-        isCurrentAddressProofAdded: {
-            type: DataTypes.BOOLEAN,
-            field: 'is-current-address-proof-added',
-            defaultValue: false
-        },
-        isCurrentAddressProof: {
-            type: DataTypes.STRING,
-            field: 'is-current-address-proof',
-        },
         voterIdNumber: {
             type: DataTypes.STRING,
             field: 'voter-id-number',
+        },
+        isVoterIdConfPass: {
+            type: DataTypes.BOOLEAN,
+            field: 'is-voter-id-conf-pass',
+            defaultValue: false
         },
         VoterIdAddress: {
             type: DataTypes.STRING,

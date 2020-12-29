@@ -76,21 +76,13 @@ exports.kycOcrAddressVoterId = async (req, res, next) => {
         return res.status(400).json({message: error})
     }else{
         //aadahar card data
-        if(ocrData[0].data.idProofType.toLowerCase().includes('aadhaar card')){
-            let isAadharConfPass = false;
-            let isNameConfPass = false;
-            let isDobConfPass = false;
+        if(ocrData[0].data.idProofType.toLowerCase().includes('voter id')){
+            let isVoterIdConfPass = false;
             let data = {};
             for(i = 0; i < ocrData.length; i++){
             if(ocrData.length == 2){
-                if(ocrData[0].data.extractedData.confidenceValueResult.isAadharConfPass || ocrData[1].data.extractedData.confidenceValueResult.isAadharConfPass){
-                    isAadharConfPass = true
-                }
-                if(ocrData[0].data.extractedData.confidenceValueResult.isNameConfPass || ocrData[1].data.extractedData.confidenceValueResult.isNameConfPass){
-                    isNameConfPass = true
-                }
-                if(ocrData[0].data.extractedData.confidenceValueResult.isNameConfPass || ocrData[1].data.extractedData.confidenceValueResult.isNameConfPass){
-                    isDobConfPass = true
+                if(ocrData[0].data.extractedData.confidenceValueResult.isVoterIdConfPass || ocrData[1].data.extractedData.confidenceValueResult.isVoterIdConfPass){
+                    isVoterIdConfPass = true
                 }
             }
             if(ocrData.length == 2){
@@ -99,42 +91,24 @@ exports.kycOcrAddressVoterId = async (req, res, next) => {
                 data = ocrData[0].data.extractedData.userDetailBody;
             }
             }
-            let isAahaarVerified = false;
-            if(isAadharConfPass && isNameConfPass && isDobConfPass){
-                isAahaarVerified = true;
-            }
             await sequelize.transaction(async t => {
             let checkCustomerEkyc = await models.customerEKycDetails.findOne({where:{
                 customerId
             },transaction: t });
             if(checkCustomerEkyc){
                 await models.customerEKycDetails.update({
-                    isAppliedForAahaarVification:true,isAahaarVerified,aahaarNameScore:data.aahaarNameScore,aahaarName: data.name, aahaarDOBScore: data.aahaarDOBScore,aahaarDOB:data.dob,aahaarNumber:data.idNumber,
-                    aadhaarAddress:data.address,aadhaarPinCode:data.pincode, aadhaarState: data.state,aadhaarCity:data.city,gender:data.gender
+                    voterIdNumber:data.idNumber,isVoterIdConfPass,VoterIdAddress:data.address
                 },{where:{customerId},transaction: t })
             }else{
                 await models.customerEKycDetails.create({
-                    customerId,isAppliedForAahaarVification:true,isAahaarVerified,aahaarNameScore:data.aahaarNameScore,aahaarName: data.name, aahaarDOBScore: data.aahaarDOBScore,aahaarDOB:data.dob,aahaarNumber:data.idNumber,
-                    aadhaarAddress:data.address,aadhaarPinCode:data.pincode, aadhaarState: data.state,aadhaarCity:data.city,gender:data.gender
+                    voterIdNumber:data.idNumber,isVoterIdConfPass,VoterIdAddress:data.address,customerId
                 },{transaction: t })
             }
-            await models.customer.update({aadhaarMaskedImage1 : data.aadharImageUrl, aadhaarMaskedImage2: data.aadharImageUrl2},{where:{id:customerId},transaction: t });
         })
-            return res.status(200).json({message: 'Success', isAadharConfPass, isNameConfPass, data, isDobConfPass, isAahaarVerified })
+            return res.status(200).json({message: 'Success', isVoterIdConfPass, data})
         }
         return res.status(400).json({message: 'Please try again' })
     }
-    // if(!ocrData.error){
-    //     //id proof type check
-    //     if(ocrData.extractedData.idProofType.toLowerCase().includes('aadhaar card')){
-    //         if(ocrData.extractedData.isAadharConfPass || ocrData.extractedData.isAadharConfPass){
-
-    //         }
-    //     }
-    //     return res.status(200).json({message: 'Success',data: ocrData.data })
-    // }else{
-    //     return res.status(400).json({message: ocrData.error})
-    // }
 }
 
 
@@ -209,17 +183,6 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
         }
         return res.status(400).json({message: 'Please try again' })
     }
-    // if(!ocrData.error){
-    //     //id proof type check
-    //     if(ocrData.extractedData.idProofType.toLowerCase().includes('aadhaar card')){
-    //         if(ocrData.extractedData.isAadharConfPass || ocrData.extractedData.isAadharConfPass){
-
-    //         }
-    //     }
-    //     return res.status(200).json({message: 'Success',data: ocrData.data })
-    // }else{
-    //     return res.status(400).json({message: ocrData.error})
-    // }
 }
 
 exports.kycOcrFoPanCard = async (req, res, next) => {

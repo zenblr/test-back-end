@@ -368,7 +368,7 @@ let getElectiondIdCardResp = async (respBody, confidenceValue, userDetailBody) =
             userDetailBody.city = respObject.details.addressSplit ? respObject.details.addressSplit.district : null;
         }
     }
-    let confidenceValueResult = {isPassportConfPass}
+    let confidenceValueResult = {isVoterIdConfPass}
     return {userDetailBody,confidenceValueResult};
 }
 
