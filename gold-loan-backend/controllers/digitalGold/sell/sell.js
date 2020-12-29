@@ -22,7 +22,7 @@ exports.sellProduct = async (req, res) => {
     // return;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
-    
+
     let customerDetails = await models.customer.findOne({
       where: { id, isActive: true },
     });
@@ -187,22 +187,22 @@ exports.sellProduct = async (req, res) => {
             await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilverBal }, { where: { customerId: id }, transaction: t });
           }
 
-          walletData = await models.walletDetails.create({ customerId: id, amount: result.data.result.data.totalAmount, paymentDirection: "credit", description: "sell metal", productTypeId: 4, transactionDate: moment() }, { transaction: t })
+          walletData = await models.walletDetails.create({ customerId: id, amount: result.data.result.data.totalAmount, paymentDirection: "credit", description: "sell metal", productTypeId: 4, transactionDate: moment(), orderTypeId: 2, paymentOrderTypeId: 4 }, { transaction: t })
 
           let amountOfWallet;
           let currentWalletBalance;
-          if (customerDetails.walletFreeBalance ) {
+          if (customerDetails.walletFreeBalance) {
             amountOfWallet = Number(customerDetails.walletFreeBalance) + Number(amount)
           } else {
             amountOfWallet = Number(amount);
           }
 
-          if (customerDetails.currentWalletBalance ){
+          if (customerDetails.currentWalletBalance) {
             currentWalletBalance = Number(customerDetails.currentWalletBalance) + Number(amount)
-          }else{
+          } else {
             currentWalletBalance = Number(amount)
           }
-          
+
 
           let orderDetail = await models.digiGoldOrderDetail.create({
             tempOrderId: tempId.id, customerId: id, orderTypeId: 2, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
