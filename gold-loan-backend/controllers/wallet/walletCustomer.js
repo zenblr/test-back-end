@@ -561,9 +561,9 @@ exports.getAllDepositDetails = async (req, res) => {
 
   if (orderTypeId) {
     if (orderTypeId.id == 4) {
-      searchQuery = { paymentOrderTypeId: { [Op.in]: [4] }, orderTypeId: { [Op.in]: [4] } }
+      searchQuery.paymentOrderTypeId = { [Op.in]: [4] }, searchQuery.orderTypeId = { [Op.in]: [4] }
     } else if (orderTypeId.id == 5) {
-      searchQuery = { paymentOrderTypeId: { [Op.in]: [5] }, orderTypeId: { [Op.notIn]: [4] } }
+      searchQuery.paymentOrderTypeId = { [Op.in]: [5] }, searchQuery.orderTypeId = { [Op.notIn]: [4] }
     }
   }
 
@@ -667,19 +667,22 @@ exports.getTransactionDetails = async (req, res) => {
   };
 
   if (!paymentFor) {
-    searchQuery = {
-      paymentOrderTypeId: { [Op.in]: [4, 5, 6] },
-      orderTypeId: { [Op.notIn]: [4] }
-    }
+    searchQuery.paymentOrderTypeId = { [Op.in]: [4, 5, 6] },
+      searchQuery.orderTypeId = { [Op.notIn]: [4] }
+
   }
 
   if (paymentFor) {
     if (orderTypeData.id == 4) {
-      searchQuery = { paymentOrderTypeId: { [Op.in]: [4] }, orderTypeId: { [Op.notIn]: [4] } }
-    } else if (orderTypeData.id == 5) {
-      searchQuery = { paymentOrderTypeId: { [Op.in]: [5] }, orderTypeId: { [Op.notIn]: [4] } }
+      searchQuery.paymentOrderTypeId = { [Op.in]: [4] },
+        searchQuery.orderTypeId = { [Op.notIn]: [4] }
+    }
+    else if (orderTypeData.id == 5) {
+      searchQuery.paymentOrderTypeId = { [Op.in]: [5] },
+        searchQuery.orderTypeId = { [Op.notIn]: [4] }
     } else if (orderTypeData.id == 6) {
-      searchQuery = { paymentOrderTypeId: { [Op.in]: [6] }, orderTypeId: { [Op.notIn]: [4] } }
+      searchQuery.paymentOrderTypeId = { [Op.in]: [6] },
+        searchQuery.orderTypeId = { [Op.notIn]: [4] }
     }
   }
 
