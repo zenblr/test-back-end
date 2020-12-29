@@ -130,26 +130,43 @@
  *         schema:
  *           type: object
  *           properties:
- *             fileUrls:
- *               type: array
- *               items:
- *                type: string
+ *             fileUrl:
+ *               type: string
  *             customerId:
  *               type: number
  *         required:
- *           - fileUrls
+ *           - fileUrl
  *           - customerId
  *     responses:
  *       200:
  *          description: document details
  *       400:
  *          description: failed to retrive data
- * /e-kyc/test:
+ * /e-kyc/data:
+ *   get:
+ *     tags:
+ *       - E KYC API
+ *     name: get customer ekyc data
+ *     summary: to get customer ekyc data
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *     - name: "customerId"
+ *       in: "query"
+ *       description: "customerId to get data"
+ *     responses:
+ *       200:
+ *          description: document details
+ *       400:
+ *          description: failed to retrive data
+ * /e-kyc/ocr-voter:
  *   post:
  *     tags:
  *       - E KYC API
- *     name: test base 64
- *     summary: test base 64
+ *     name: KYC OCR ( Voter id)
+ *     summary: KYC OCR
  *     security:
  *       - bearerAuth: []
  *     consumes:
@@ -164,8 +181,11 @@
  *               type: array
  *               items:
  *                type: string
+ *             customerId:
+ *               type: number
  *         required:
  *           - fileUrls
+ *           - customerId
  *     responses:
  *       200:
  *          description: document details

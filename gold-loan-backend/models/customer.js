@@ -218,8 +218,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'wallet_free_balance',
             defaultValue: 0
+        },
+        aadhaarMaskedImage1: {
+            type: DataTypes.TEXT,
+            field: 'aadhaar_masked_image1',
+        },
+        aadhaarMaskedImage2: {
+            type: DataTypes.TEXT,
+            field: 'aadhaar_masked_image2',
         }
-
     }, {
         freezeTableName: true,
         tableName: 'customer',

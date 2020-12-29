@@ -17,15 +17,19 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: false
         },
         panNameScore: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'pan-name-score',
         },
         panName: {
             type: DataTypes.STRING,
             field: 'pan-name',
         },
+        fatherName: {
+            type: DataTypes.STRING,
+            field: 'father_name',
+        },
         panDOBScore: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'pan-DOB-score',
         },
         panDOB: {
@@ -46,8 +50,12 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is-aahaar-verified',
             defaultValue: false
         },
+        gender : {
+            type: DataTypes.STRING,
+            field: 'gender'
+        },
         aahaarNameScore: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'aahaar-name-score',
         },
         aahaarName: {
@@ -55,7 +63,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'aahaar-name',
         },
         aahaarDOBScore: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'aahaar-DOB-score',
         },
         aahaarDOB: {
@@ -83,7 +91,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'aadhaar-city',
         },
         aadharAndPanNameScore: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'aadhar-and-pan-name-score',
         },
         isAadhaarAndPanDOBSame: {
@@ -91,36 +99,23 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is-aadhaar-and-pan-DOB-same',
             defaultValue: false
         },
-        isAddressProofAdded: {
+        voterIdNumber: {
+            type: DataTypes.STRING,
+            field: 'voter-id-number',
+        },
+        isVoterIdConfPass: {
             type: DataTypes.BOOLEAN,
-            field: 'is-address-proof-added',
+            field: 'is-voter-id-conf-pass',
             defaultValue: false
         },
-        addressProofScore: {
-            type: DataTypes.INTEGER,
-            field: 'address-proof-score',
-        },
-        addressProofNumber: {
+        VoterIdAddress: {
             type: DataTypes.STRING,
-            field: 'address-proof-number',
-        },
-        isCurrentAddressProofAdded: {
-            type: DataTypes.BOOLEAN,
-            field: 'is-current-address-proof-added',
-            defaultValue: false
-        },
-        currentAddressProofScore: {
-            type: DataTypes.INTEGER,
-            field: 'current-address-proof-score',
-        },
-        currentAddressProofNumber: {
-            type: DataTypes.STRING,
-            field: 'current-address-proof-number',
+            field: 'voter-id-address',
         },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
-            defaultValue: false
+            defaultValue: true
         }
 
     }, {

@@ -1,4 +1,4 @@
-const { panCardNameByPan, checkNameSimilarity, verifyPanCardData, kycOcrForAadhaar, kycOcrFoPanCard } = require('../controllers/karza/karza');
+const { panCardNameByPan, checkNameSimilarity, verifyPanCardData, kycOcrForAadhaar, kycOcrFoPanCard, getCustomerEkycData, kycOcrAddressVoterId  } = require('../controllers/karza/karza');
 const express = require('express');
 const route = express.Router();
 const { wrapper } = require('../utils/errorWrap');
@@ -15,6 +15,8 @@ route.post('/ocr-aadhaar',  checkAuth, wrapper(kycOcrForAadhaar));
 
 route.post('/ocr-pan',  checkAuth, wrapper(kycOcrFoPanCard));
 
-// route.post('/test',  checkAuth, wrapper(test));
+route.get('/data', checkAuth, wrapper(getCustomerEkycData));
+
+route.post('/ocr-voter',  checkAuth, wrapper(kycOcrAddressVoterId));
 
 module.exports = route;
