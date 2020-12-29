@@ -105,7 +105,8 @@ exports.kycOcrAddressVoterId = async (req, res, next) => {
                 },{transaction: t })
             }
         })
-            return res.status(200).json({message: 'Success', isVoterIdConfPass, data})
+        data.isVoterIdConfPass = isVoterIdConfPass
+            return res.status(200).json({message: 'Success', data})
         }
         return res.status(400).json({message: 'Please try again' })
     }
@@ -179,7 +180,11 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
             }
             await models.customer.update({aadhaarMaskedImage1 : data.aadharImageUrl, aadhaarMaskedImage2: data.aadharImageUrl2},{where:{id:customerId},transaction: t });
         })
-            return res.status(200).json({message: 'Success', isAadharConfPass, isNameConfPass, data, isDobConfPass, isAahaarVerified })
+        data.isAadharConfPass = isAadharConfPass
+        data.isNameConfPass = isNameConfPass
+        data.isDobConfPass = isDobConfPass
+        data.isAahaarVerified = isAahaarVerified
+            return res.status(200).json({message: 'Success',data  })
         }
         return res.status(400).json({message: 'Please try again' })
     }
@@ -224,7 +229,11 @@ exports.kycOcrFoPanCard = async (req, res, next) => {
                 },{transaction: t })
             }
         })
-            return res.status(200).json({message: 'Success', isPanConfPass, isNameConfPass, data, isDobConfPass, isPanVerified })
+        data.isPanConfPass = isPanConfPass
+        data.isNameConfPass = isNameConfPass
+        data.isDobConfPass = isDobConfPass
+        data.isPanVerified = isPanVerified
+            return res.status(200).json({message: 'Success',  data })
         }
         return res.status(400).json({message: 'Please try again' })
     }
