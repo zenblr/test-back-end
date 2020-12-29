@@ -27,7 +27,7 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
         req.query.from,
         req.query.to
     );
-    let { paymentFor } = req.query;
+    let { paymentFor, depositStatus, paymentReceivedDate } = req.query;
     let orderType;
     if (paymentFor) {
         orderType = await models.digiGoldOrderType.findOne({ where: { orderType: paymentFor } })
@@ -36,9 +36,18 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
 
     }
     let query = {};
-    // if (orderType) {
-    //     query.orderTypeId = orderType.id
-    // }
+    if (depositStatus) {
+        query.depositStatus = depositStatus.split(",");
+    }
+    if (paymentReceivedDate) {
+        let start = moment(moment(paymentReceivedDate).utcOffset("+05:30").startOf('day'));
+        let end = moment(moment(paymentReceivedDate).utcOffset("+05:30").endOf('day'));
+
+        let endDate = moment(end).format('YYYY-MM-DD HH:mm:ss');
+        let startDate = moment(start).format('YYYY-MM-DD HH:mm:ss');
+
+        query.paymentReceivedDate = await { [Op.between]: [startDate, endDate] }
+    }
 
     let searchQuery = {
         [Op.and]: [query, {
@@ -55,10 +64,23 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
                         [Op.iLike]: search + "%",
                     }
                 ),
+                transactionAmount: sequelize.where(
+                    sequelize.cast(sequelize.col("walletTransactionDetails.deposit_date"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
                 // "$walletTransactionDetails.payment_for$": { [Op.iLike]: search + '%' },
                 "$walletTransactionDetails.bank_name$": { [Op.iLike]: search + '%' },
                 "$walletTransactionDetails.cheque_number$": { [Op.iLike]: search + '%' },
                 "$walletTransactionDetails.branch_name$": { [Op.iLike]: search + '%' },
+                "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+                "$customer.first_name$": { [Op.iLike]: search + '%' },
+                "$customer.last_name$": { [Op.iLike]: search + '%' },
+                "$walletTransactionDetails.transaction_unique_id$": { [Op.iLike]: search + '%' },
+                "$walletTransactionDetails.ifsc_code$": { [Op.iLike]: search + '%' },
+                "$walletTransactionDetails.payment_type$": { [Op.iLike]: search + '%' },
+                
             },
         }],
     };
