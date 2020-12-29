@@ -523,96 +523,73 @@ exports.getAllDepositDetails = async (req, res) => {
   const id = req.userData.id;
   let { orderTypeId, depositStatus } = req.query
 
+  if (!orderTypeId) {
+    return res.status(200).json({ message: `Parameter are missing` })
+  }
+
+  let query = {};
+
   const { search, offset, pageSize } = paginationWithFromTo(
     req.query.search,
     req.query.from,
     req.query.to
   );
-  if (!orderTypeId) {
-    return res.status(404).json({ message: 'orderTypeId is required' });
-  }
-  // if (!depositStatus) {
-  //     return res.status(404).json({ message: 'depositStatus is required' });
-  // }
-
-  let orderTypeData = await models.digiGoldOrderType.findOne({ where: { id: orderTypeId, isActive: true } })
-
-
-  if (!orderTypeData) {
-    return res.status(404).json({ message: 'Data not found' });
-  }
-  let query = {};
-  if (orderTypeId) {
-    query.orderTypeId = orderTypeData.id
-  }
-  if (depositStatus) {
-    query.depositStatus = depositStatus
-  }
 
   let searchQuery = {
     [Op.and]: [query, {
       [Op.or]: {
-        depositStatus: sequelize.where(
-          sequelize.cast(sequelize.col("walletTransactionDetails.deposit_status"), "varchar"),
-          {
-            [Op.iLike]: search + "%",
-          }
-        ),
-        depositDate: sequelize.where(
-          sequelize.cast(sequelize.col("walletTransactionDetails.deposit_date"), "varchar"),
-          {
-            [Op.iLike]: search + "%",
-          }
-        ),
         paymentType: sequelize.where(
           sequelize.cast(sequelize.col("walletTransactionDetails.payment_type"), "varchar"),
           {
             [Op.iLike]: search + "%",
           }
         ),
-        // "$walletTransactionDetails.payment_type$": { [Op.iLike]: search + '%' },
         "$walletTransactionDetails.bank_name$": { [Op.iLike]: search + '%' },
         "$walletTransactionDetails.cheque_number$": { [Op.iLike]: search + '%' },
 
         "$walletTransactionDetails.branch_name$": { [Op.iLike]: search + '%' },
       },
     }],
-    // isActive: true,
     customerId: id,
+
 
   };
 
+  if (orderTypeId) {
+    if (orderTypeId == 4) {
+      searchQuery = { paymentOrderTypeId: { [Op.in]: [4] }, orderTypeId: { [Op.in]: [4] } }
+    } else if (orderTypeId == 5) {
+      searchQuery = { paymentOrderTypeId: { [Op.in]: [5] }, orderTypeId: { [Op.notIn]: [4] } }
+    }
+  }
+
+
   let includeArray = [
     {
-      model: models.customer,
-      as: 'customer',
-
-      attributes: ['id', 'customerUniqueId', 'firstName', 'lastName']
+      model: models.walletTransactionDetails,
+      as: 'walletTransactionDetails',
     }
   ]
 
-  let depositDetail = await models.walletTransactionDetails.findAll({
-    include: includeArray,
+  let depositDetail = await models.walletDetails.findAll({
     where: searchQuery,
+    order: [['updatedAt', 'DESC']],
+    include: includeArray,
     offset: offset,
     limit: pageSize,
     subQuery: false,
   });
 
-  let count = await models.walletTransactionDetails.findAll({
+  let count = await models.walletDetails.findAll({
     where: searchQuery,
+    include: includeArray,
     order: [
       ["updatedAt", "DESC"]
     ],
-    include: includeArray
-
+    offset: offset,
+    limit: pageSize,
+    subQuery: false,
   });
-
-  if (check.isEmpty(depositDetail)) {
-    return res.status(200).json({
-      depositDetail: [], count: 0
-    })
-  }
   return res.status(200).json({ depositDetail: depositDetail, count: count.length });
 
 }
@@ -653,19 +630,6 @@ exports.getTransactionDetails = async (req, res) => {
   }
 
   let query = {};
-  // if (paymentFor) {
-  //   query.orderTypeId = orderTypeData.id
-  // }
-
-  // if (paymentFor) {
-  //   if (orderTypeData.id == 4) {
-  //     query.orderTypeId = { paymentOrderTypeId: { [Op.in]: [4] } }
-  //   } else if (orderTypeData.id == 5) {
-  //     query.orderTypeId = { paymentOrderTypeId: { [Op.in]: [5] } }
-  //   } else if (orderTypeData.id == 6) {
-  //     query.orderTypeId = { paymentOrderTypeId: { [Op.in]: [6] } }
-  //   }
-  // }
 
   const { search, offset, pageSize } = paginationWithFromTo(
     req.query.search,
