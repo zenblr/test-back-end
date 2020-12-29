@@ -36,9 +36,9 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
 
     }
     let query = {};
-    if (orderType) {
-        query.orderTypeId = orderType.id
-    }
+    // if (orderType) {
+    //     query.orderTypeId = orderType.id
+    // }
 
     let searchQuery = {
         [Op.and]: [query, {
@@ -62,12 +62,26 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
             },
         }],
     };
+    // let whereCondition = { paymentOrderTypeId: { [Op.in]: [4, 5] }, orderTypeId: { [Op.in]: [4] } }
+
+    // if (paymentFor) {
+    //     if (orderType.id == 4) {
+    //       whereCondition = { paymentOrderTypeId: { [Op.in]: [4] }, orderTypeId: { [Op.in]: [4] } }
+    //     } else if (orderType.id == 5) {
+    //       whereCondition = { paymentOrderTypeId: { [Op.in]: [5] }, orderTypeId: { [Op.notIn]: [4] } }
+    //     }
+    //   }
 
     let includeArray = [
         {
             model: models.customer,
             as: 'customer',
             attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'currentWalletBalance', 'walletFreeBalance']
+        },
+        {
+            model: models.walletDetails,
+            as: 'wallet',
+            // where: whereCondition
         }
     ]
 

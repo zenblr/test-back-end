@@ -41,10 +41,10 @@ exports.buyProduct = async (req, res) => {
   }
 
 
-  // const checkLimit = await checkBuyLimit(id, amount);
-  // if(!checkLimit.success){
-  //   return res.status(404).json({ message: checkLimit.message });
-  // }
+  const checkLimit = await checkBuyLimit(id, amount);
+  if(!checkLimit.success){
+    return res.status(404).json({ message: checkLimit.message });
+  }
 
 
   let tempOrderData;
@@ -370,9 +370,12 @@ async function checkBuyLimit(id, totalAmount) {
 
     for (let data of customerList) {
       totalAmountOfAll += Number(data.totalAmount);
+
     }
 
     let total = totalAmountOfAll.toFixed(2)
+
+
 
     if (total > limit && customer.digiKycStatus == 'pending') {
 
@@ -390,7 +393,7 @@ async function checkBuyLimit(id, totalAmount) {
 
     } else if (totalAmount > limit && customer.digiKycStatus == 'pending') {
 
-      const panno = customer.panCardNumber
+
 
 
       if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
@@ -409,13 +412,29 @@ async function checkBuyLimit(id, totalAmount) {
     } else if (totalAmount >= limit && customer.digiKycStatus == 'approved') {
 
       return ({ message: "your kyc  is approved", success: true });
-    } else if (total < limit && customer.digiKycStatus == 'approved' || customer.digiKycStatus == 'pending') {
+    } else if (total < limit && customer.digiKycStatus == 'approved' || customer.digiKycStatus == 'pending' || customer.digiKycStatus == 'waiting') {
 
-      return ({ message: "no need of kyc", success: true });
-    } else if (total > limit && customer.digiKycStatus == 'rejected') {
+
+
+      if (totalAmount > limit) {
+        if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+
+          return ({ message: "your kyc status is pending", success: false });
+
+        } else {
+
+          return ({ message: "your kyc  is pending.Please complete Kyc first", success: false });
+
+        }
+      } else {
+
+        return ({ message: "no need of kyc", success: true });
+      }
+
+    } else if (total > limit || totalAmount > limit && customer.digiKycStatus == 'rejected') {
 
       return ({ message: "your kyc approval is rejected", success: false });
-    } else if (totalAmount > limit && customer.digiKycStatus == 'rejected') {
+    } else if (total < limit || totalAmount < limit && customer.digiKycStatus == 'rejected') {
 
 
       return ({ message: "your kyc approval is rejected", success: false });
@@ -427,14 +446,21 @@ async function checkBuyLimit(id, totalAmount) {
 
         return ({ message: "your kyc approval is pending", success: false });
 
+      } else {
+
+        return ({ message: "your kyc  is pending.Please complete Kyc first", success: false });
+
       }
     } else if (totalAmount >= limit && customer.digiKycStatus == 'waiting') {
 
-      // if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
-
       if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
 
+
         return ({ message: "your kyc approval is pending", success: false });
+
+      } else {
+
+        return ({ message: "your kyc  is pending.Please complete Kyc first", success: false });
 
       }
     }
@@ -454,10 +480,30 @@ async function checkBuyLimit(id, totalAmount) {
         return ({ message: "your kyc status is pending.Please complete Kyc first", success: false });
       }
     } else if (totalAmount < limit && customer.digiKycStatus == 'approved'
-      || customer.digiKycStatus == 'pending') {
+      || customer.digiKycStatus == 'pending' || customer.digiKycStatus == 'waiting') {
 
       return ({ message: "no need of kyc", success: true });
 
+    } else if (totalAmount > limit && customer.digiKycStatus == 'rejected') {
+
+
+      return ({ message: "your kyc approval is rejected", success: false });
+    } else if (totalAmount < limit && customer.digiKycStatus == 'rejected') {
+
+
+      return ({ message: "your kyc approval is rejected", success: false });
+    } else if (totalAmount >= limit && customer.digiKycStatus == 'waiting') {
+
+      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+
+        return ({ message: "your kyc approval is pending", success: false });
+
+      } else {
+
+        return ({ message: "your kyc  is pending.Please complete Kyc first", success: false });
+
+      }
     }
+
   }
 }
