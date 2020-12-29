@@ -36,9 +36,9 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
 
     }
     let query = {};
-    if (orderType) {
-        query.orderTypeId = orderType.id
-    }
+    // if (orderType) {
+    //     query.orderTypeId = orderType.id
+    // }
 
     let searchQuery = {
         [Op.and]: [query, {
@@ -62,12 +62,26 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
             },
         }],
     };
+    // let whereCondition = { paymentOrderTypeId: { [Op.in]: [4, 5] }, orderTypeId: { [Op.in]: [4] } }
+
+    // if (paymentFor) {
+    //     if (orderType.id == 4) {
+    //       whereCondition = { paymentOrderTypeId: { [Op.in]: [4] }, orderTypeId: { [Op.in]: [4] } }
+    //     } else if (orderType.id == 5) {
+    //       whereCondition = { paymentOrderTypeId: { [Op.in]: [5] }, orderTypeId: { [Op.notIn]: [4] } }
+    //     }
+    //   }
 
     let includeArray = [
         {
             model: models.customer,
             as: 'customer',
             attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'currentWalletBalance', 'walletFreeBalance']
+        },
+        {
+            model: models.walletDetails,
+            as: 'wallet',
+            // where: whereCondition
         }
     ]
 
@@ -129,10 +143,10 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
                 } else {
                     customerUpdatedBalance = Number(transactionData.transactionAmount);
                 }
-                
+
                 await models.customer.update({ currentWalletBalance: customerUpdatedBalance }, { where: { id: customer.id }, transaction: t });
 
-                let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "credit", description: "add amount", productTypeId: 4, transactionDate: date }, { transaction: t });
+                let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "credit", description: "add amount", productTypeId: 4, transactionDate: date, orderTypeId: 4, paymentOrderTypeId: 4 }, { transaction: t });
 
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
             } else {
@@ -153,10 +167,10 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
             if (depositStatus == "completed") {
                 customerUpdatedFreeBalance = Number(customer.walletFreeBalance) - Number(transactionData.transactionAmount);
                 currentWalletBalance = Number(customer.currentWalletBalance) - Number(transactionData.transactionAmount);
-              
+
                 await models.customer.update({ walletFreeBalance: customerUpdatedFreeBalance, currentWalletBalance: currentWalletBalance }, { where: { id: customer.id }, transaction: t });
 
-                let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "debit", description: "withdraw amount", productTypeId: 4, transactionDate: date }, { transaction: t });
+                let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "debit", description: "withdraw amount", productTypeId: 4, transactionDate: date, orderTypeId: 5, paymentOrderTypeId: 5 }, { transaction: t });
 
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
             } else {
@@ -175,11 +189,11 @@ exports.getWalletDetailByIdAdmin = async (req, res) => {
     let transactionData = await models.walletTransactionDetails.findOne({
         where: { id: depositWithdrawId },
         include: {
-          model: models.customer,
-          as: 'customer',
-          attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
+            model: models.customer,
+            as: 'customer',
+            attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber']
         }
-      });
+    });
     if (!transactionData) {
         return res.status(404).json({ message: 'Data not found' });
     } else {
