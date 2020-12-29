@@ -501,7 +501,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     this.getCities('residential');
   }
 
-  getCities(type?) {
+ async getCities(type?) {
     let stateId = null;
     if (type == 'permanent') {
       stateId = this.customerKycAddressOne.controls.stateId.value;
@@ -512,9 +512,9 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     }
 
     if (stateId) {
-      this.sharedService.getCities(stateId).subscribe(res => {
+      let res = await this.sharedService.getCities(stateId)
         if (type == 'permanent') {
-          this.cities0 = res.data;
+          this.cities0 = res['data'];
           const city0Exists = this.cities0.find(e => e.id === this.customerKycAddressOne.controls.cityId.value)
           if (!city0Exists) {
             this.customerKycAddressOne.controls.cityId.patchValue('');
@@ -522,7 +522,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
           this.ref.detectChanges();
 
         } else if (type == 'residential') {
-          this.cities1 = res.data;
+          this.cities1 = res['data'];
           if ((this.data.moduleId == 3 && this.data.userType === 'Corporate') || this.data.moduleId == 1) {
             const city1Exists = this.cities1.find(e => e.id === this.customerKycAddressTwo.controls.cityId.value)
             if (!city1Exists) {
@@ -531,7 +531,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
           }
           this.ref.detectChanges();
         }
-      });
+  
     }
 
 

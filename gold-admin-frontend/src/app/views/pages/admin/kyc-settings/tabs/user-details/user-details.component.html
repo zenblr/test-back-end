@@ -160,30 +160,42 @@
 						</div>
 					</div>
 
-					<div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
-						<!-- PAN -->
-						<div class="col-4 form-label">
-							<mat-label class="mandatory">D.O.B</mat-label>
+					<div class="row kt-padding-t-15" *ngIf="!controls.panImage.value && controls.panType.value">
+						<div class="col-4 align-self-center form-label">
+							<label *ngIf="controls.panType.value == ''"
+								ngClass="{'mandatory': controls.panType.value != ''}"
+								class="text-color font-weight-500">
+							</label>
+							<label *ngIf="controls.panType.value != 'pan'"
+								class="mandatory  text-color font-weight-500">
+								<span *ngIf="controls.panType.value == 'pan'">
+									{{ controls.panType.value | uppercase }}
+								</span>
+								<span *ngIf="controls.panType.value == 'form60'">FORM 60</span>
+							</label>
 						</div>
-
 						<div class="col-8">
-							<input type="text" class="form-control" [matDatepicker]="picker"
-								(click)="picker.open()" formControlName="dateOfBirth"
-								[class.isError]="controls.dateOfBirth.touched && controls.dateOfBirth.invalid"
-								readonly placeholder="DD/MM/YYYY" [max]="currentDate"
-								(dateChange)="ageValidation()">
-								<mat-datepicker #picker></mat-datepicker>
-								<mat-error
-									*ngIf="controls.dateOfBirth.errors?.required && controls.dateOfBirth.touched">
-									Required field
-								</mat-error>
-								<mat-error
-									*ngIf="controls.dateOfBirth.errors?.invalid && controls.dateOfBirth.touched">
-									Age should be above 18
-								</mat-error>
+							<div class="input-group">
+								<input type="text" class="form-control" placeholder="Select File"
+									aria-label="Recipient's username" aria-describedby="basic-addon2"
+									formControlName="form60" readonly
+									[class.isError]="controls.panImage.touched && controls.panImage.invalid" />
+								<div class="input-group-append">
+									<span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
+										(click)="pan.click()">Attach</span>
+								</div>
+								<input type="file" class="d-none" accept="image/*,application/pdf" #pan
+									(input)="getFileInfo($event)">
+								<div class="w-100">
+									<mat-error *ngIf="controls.panImage.errors?.required && controls.panImage.touched">
+										Required field
+									</mat-error>
+								</div>
+							</div>
 						</div>
-
-
+						<!-- <div class="col-2 form-label" *ngIf="controls.form60.value">
+							<label class="text-primary text-center kt-pointer" (click)="preview()">View Images</label>
+						</div> -->
 					</div>
 					<div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
 						<div class="col-4 align-self-center form-label">
@@ -229,43 +241,7 @@
 						</div>
 					</div>
 
-					<div class="row kt-padding-t-15" *ngIf="!controls.panImage.value && controls.panType.value">
-						<div class="col-4 align-self-center form-label">
-							<label *ngIf="controls.panType.value == ''"
-								ngClass="{'mandatory': controls.panType.value != ''}"
-								class="text-color font-weight-500">
-							</label>
-							<label *ngIf="controls.panType.value != 'pan'"
-								class="mandatory  text-color font-weight-500">
-								<span *ngIf="controls.panType.value == 'pan'">
-									{{ controls.panType.value | uppercase }}
-								</span>
-								<span *ngIf="controls.panType.value == 'form60'">FORM 60</span>
-							</label>
-						</div>
-						<div class="col-8">
-							<div class="input-group">
-								<input type="text" class="form-control" placeholder="Select File"
-									aria-label="Recipient's username" aria-describedby="basic-addon2"
-									formControlName="form60" readonly
-									[class.isError]="controls.panImage.touched && controls.panImage.invalid" />
-								<div class="input-group-append">
-									<span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-										(click)="pan.click()">Attach</span>
-								</div>
-								<input type="file" class="d-none" accept="image/*,application/pdf" #pan
-									(input)="getFileInfo($event)">
-								<div class="w-100">
-									<mat-error *ngIf="controls.panImage.errors?.required && controls.panImage.touched">
-										Required field
-									</mat-error>
-								</div>
-							</div>
-						</div>
-						<!-- <div class="col-2 form-label" *ngIf="controls.form60.value">
-							<label class="text-primary text-center kt-pointer" (click)="preview()">View Images</label>
-						</div> -->
-					</div>
+					
 
 					<div class="row kt-margin-t-15" *ngIf="controls.panImg.value">
 						<div class="col offset-4">

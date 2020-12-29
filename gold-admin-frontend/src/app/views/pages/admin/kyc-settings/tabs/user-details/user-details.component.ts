@@ -122,7 +122,7 @@ export class UserDetailsComponent implements OnInit {
         this.controls.form60.reset()
         this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
         this.controls.panCardNumber.updateValueAndValidity()
-        this.controls.dateOfBirth.setValidators(Validators.required)
+        // this.controls.dateOfBirth.setValidators()
         this.controls.dateOfBirth.updateValueAndValidity()
         console.log(this.isPanVerified)
       }
@@ -283,7 +283,7 @@ export class UserDetailsComponent implements OnInit {
     var reader = new FileReader()
     var reader = new FileReader();
     const img = new Image();
-    
+
     img.src = window.URL.createObjectURL(details[0]);
     reader.readAsDataURL(event.target.files[0]);
     reader.onload = (_event) => {
@@ -315,6 +315,8 @@ export class UserDetailsComponent implements OnInit {
           this.controls.form60.patchValue(file.name)
           this.controls.panImage.patchValue(res.uploadFile.path)
           this.controls.panImg.patchValue(res.uploadFile.URL)
+          this.getPanDetails()
+
         }
       }),
       catchError(err => {
@@ -350,6 +352,21 @@ export class UserDetailsComponent implements OnInit {
         width: "auto"
       })
     }
+  }
+
+  getPanDetails() {
+    this.leadService.getPanDetailsFromKarza(this.controls.panImg.value, this.controls.id.value).subscribe(res => {
+
+      let name = res.data.name.split(" ")
+      let lastName = name[name.length - 1]
+      name.splice(name.length - 1, 1)
+      this.controls.firstName.patchValue(name.join(" "))
+      this.controls.lastName.patchValue(lastName)
+      this.controls.panCardNumber.patchValue(res.data.idNumber)
+      this.isPanVerified = res.data.isPanVerified
+      this.controls.panCardNumber.disable()
+
+    })
   }
 
 

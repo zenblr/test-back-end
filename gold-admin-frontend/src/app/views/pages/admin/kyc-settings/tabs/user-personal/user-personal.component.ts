@@ -9,11 +9,14 @@ import { MatDialog } from '@angular/material';
 import { WebcamDialogComponent } from '../../webcam-dialog/webcam-dialog.component';
 import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
+import { DatePipe } from '@angular/common';
+import * as moment from 'moment';
 
 @Component({
   selector: 'kt-user-personal',
   templateUrl: './user-personal.component.html',
-  styleUrls: ['./user-personal.component.scss']
+  styleUrls: ['./user-personal.component.scss'],
+  providers:[DatePipe]
 })
 export class UserPersonalComponent implements OnInit {
 
@@ -37,12 +40,14 @@ export class UserPersonalComponent implements OnInit {
     private userPersonalService: UserPersonalService,
     private sharedService: SharedService, private ref: ChangeDetectorRef,
     private toastr: ToastrService,
-    private dialog: MatDialog) { }
+    private dialog: MatDialog,
+    private datePipe:DatePipe) { }
 
   ngOnInit() {
 
     this.getOccupation();
     this.initForm();
+    this.getCustomerDetails()
   }
 
   initForm() {
@@ -361,6 +366,29 @@ export class UserPersonalComponent implements OnInit {
   getURLArray(type: string) {
     const urlArray = this.images[type].map(e => e.URL)
     return urlArray
+  }
+
+  getCustomerDetails() {
+    this.userPersonalService.getUserDetails(this.controls.customerId.value).subscribe(res => {
+      if (res.data) {
+        let myMoment = moment(res.data.aahaarDOB,"DD/MM/YYYY").format("YYYY-MM-DD");
+        this.controls.dateOfBirth.patchValue(myMoment)
+        let gender
+        if (res.data.gender == 'MALE') {
+          gender = 'm'
+        } else if (res.data.gender == 'FEMALE') {
+          gender = 'f'
+        } else {
+          gender = 'o'
+        }
+        this.controls.gender.patchValue(gender)
+        this.controls.spouseName.patchValue(res.data.fatherName)
+        this.ageValidation()
+        // console.log(this.datePipe.transform(res.data.aahaarDOB,'yyyy-MM-dd'))
+        console.log(myMoment)
+        this.ref.detectChanges()
+      }
+    })
   }
 
 }

@@ -234,17 +234,17 @@ export class AddLeadComponent implements OnInit {
     });
   }
 
-  getCities() {
+  async getCities() {
     const stateId = this.controls.stateId.value;
-    this.sharedService.getCities(stateId).subscribe(res => {
-      this.cities = res.data;
-      this.ref.detectChanges()
-      const cityExists = this.cities.find(e => e.id === this.controls.cityId.value)
-      if (!cityExists) {
-        this.controls.cityId.reset();
-        this.controls.cityId.patchValue('');
-      }
-    });
+    let res = await this.sharedService.getCities(stateId)
+    this.cities = res['data'];
+    this.ref.detectChanges()
+    const cityExists = this.cities.find(e => e.id === this.controls.cityId.value)
+    if (!cityExists) {
+      this.controls.cityId.reset();
+      this.controls.cityId.patchValue('');
+    }
+
   }
 
   getModules() {

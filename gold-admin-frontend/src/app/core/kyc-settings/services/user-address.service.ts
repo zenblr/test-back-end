@@ -43,4 +43,28 @@ export class UserAddressService {
       }))
   }
 
+  getAaddharDetails(fileUrls, customerId): Observable<any> {
+    return this.http.post(`/api/e-kyc/ocr-aadhaar`, { fileUrls, customerId }).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err)
+      }))
+  }
+
+  getVoterIdDetails(fileUrls, customerId): Observable<any> {
+    fileUrls = ['https://augmont-loan-prod.s3.ap-south-1.amazonaws.com/public/uploads/customer/2/WhatsApp+Image+2020-12-23+at+5.19.57+PM.jpeg',
+
+      'https://augmont-loan-prod.s3.ap-south-1.amazonaws.com/public/uploads/customer/2/WhatsApp+Image+2020-12-23+at+5.20.08+PM.jpeg'
+      
+    ]
+    return this.http.post(`/api/e-kyc/ocr-voter`, { fileUrls, customerId }).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err)
+      }))
+  }
 }

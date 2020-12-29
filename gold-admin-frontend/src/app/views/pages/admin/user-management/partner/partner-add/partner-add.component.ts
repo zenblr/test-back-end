@@ -77,16 +77,13 @@ export class PartnerAddComponent implements OnInit {
       });
   }
 
-  getCities(event) {
+  async getCities(event) {
 
     const stateId = this.controls.state.value;
 
-    this.sharedService.getCities(stateId).subscribe(res => {
-      this.cities = res.data;
-    },
-      error => {
-        // console.error(error);
-      });
+    let res = await this.sharedService.getCities(stateId)
+    this.cities = res['data'];
+
   }
 
   getPartnerById(id) {
@@ -176,9 +173,9 @@ export class PartnerAddComponent implements OnInit {
   //   return 'New role';
   // }
 
-	/**
-	 * Returns is title valid
-	 */
+  /**
+   * Returns is title valid
+   */
   // isTitleValid(): boolean {
   //   return (this.role && this.role.title && this.role.title.length > 0);
   // }

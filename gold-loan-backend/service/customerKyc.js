@@ -662,7 +662,7 @@ let kycBasicDetails = async (req) => {
 
     let checkStatusCustomer = await models.customer.findOne({
         where: { statusId, id: numberExistInCustomer.id },
-        attributes: ['firstName', 'lastName', 'panCardNumber', 'panType', 'panCardNumber', 'panImage', 'userType', 'moduleId', 'organizationTypeId', 'dateOfIncorporation', 'scrapKycStatus', 'dateOfBirth', 'gender', 'age'],
+        attributes: ['firstName', 'lastName', 'panCardNumber', 'panType', 'panCardNumber', 'panImage', 'userType', 'moduleId', 'organizationTypeId', 'dateOfIncorporation', 'scrapKycStatus', 'dateOfBirth', 'gender', 'age','id'],
         include: [{
             model: models.organizationType,
             as: "organizationType",

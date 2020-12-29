@@ -35,4 +35,17 @@ export class UserPersonalService {
         throw (err)
       }))
   }
+
+  getUserDetails(customerId): Observable<any> {
+    return this.http.get(`/api/e-kyc/data?customerId=${customerId}`).pipe(
+      tap(res => {
+        this.kycDetails = res;
+        return res;
+      }),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err)
+      }))
+  }
 }

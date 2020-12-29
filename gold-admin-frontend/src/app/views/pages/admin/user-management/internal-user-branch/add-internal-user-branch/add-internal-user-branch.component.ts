@@ -96,16 +96,15 @@ export class AddInternalUserBranchComponent implements OnInit {
       })).subscribe()
   }
 
-  getCites() {
-    this.sharedService.getCities(this.controls.stateId.value).pipe(
-      map(res => {
-        this.cities = res.data;
-        const cityExists = this.cities.find(e => e.id === this.controls.cityId.value)
-        if (!cityExists) {
-          this.controls.cityId.reset();
-          this.controls.cityId.patchValue('');
-        }
-      })).subscribe()
+  async getCites() {
+    let res = await this.sharedService.getCities(this.controls.stateId.value)
+    this.cities = res['data'];
+    const cityExists = this.cities.find(e => e.id === this.controls.cityId.value)
+    if (!cityExists) {
+      this.controls.cityId.reset();
+      this.controls.cityId.patchValue('');
+    }
+
   }
 
   get controls() {

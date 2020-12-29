@@ -592,12 +592,11 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		});
 	}
 
-	getCities(event) {
+	async getCities(event) {
 		if (event) {
 			const stateId = event.id;
-			this.sharedService.getCities(stateId).subscribe(res => {
-				this.cities = res.data;
-			});
+			let res = await this.sharedService.getCities(stateId)
+			this.cities = res['data'];
 		} else {
 			this.cities = [];
 		}

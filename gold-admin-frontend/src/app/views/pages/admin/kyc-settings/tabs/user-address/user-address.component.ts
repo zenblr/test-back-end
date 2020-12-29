@@ -36,6 +36,7 @@ export class UserAddressComponent implements OnInit {
   identityFileNameArray = [];
   addressFileNameArray1 = [];
   addressFileNameArray2 = [];
+  aadharCardUserDetails: any;
   // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456, moduleId: 1, userType: null }
 
   constructor(
@@ -173,7 +174,7 @@ export class UserAddressComponent implements OnInit {
     const img = new Image();
 
     img.src = window.URL.createObjectURL(details[0]);
-    reader.readAsDataURL(type);
+    reader.readAsDataURL(details[0]);
     reader.onload = (_event) => {
       setTimeout(() => {
         const width = img.naturalWidth;
@@ -183,7 +184,7 @@ export class UserAddressComponent implements OnInit {
           this.toastr.error('Image of height and width should be less than 3000px')
           event.target.value = ''
         } else {
-          this.uploadFile(event.target.files[0])
+          this.uploadFile(type)
           event.target.value = ''
 
         }
@@ -212,6 +213,9 @@ export class UserAddressComponent implements OnInit {
           this.identityForm.patchValue({ identityProofImg: this.images.identityProof });
           this.identityForm.patchValue({ identityProof: this.imageId.identityProof });
           this.identityForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
+          if (this.images.identityProof.length == 2) {
+            this.getAaddharDetails()
+          }
 
         } else if (type == 1 && this.images.residential.length < 2) {
           this.imageId.residential.push(res.uploadFile.path)
@@ -227,6 +231,11 @@ export class UserAddressComponent implements OnInit {
           this.addressControls.controls[0].patchValue({ addressProof: this.imageId.permanent });
           this.addressControls.controls[0].patchValue({ addressProofImg: this.images.permanent });
           this.addressControls.controls[0].patchValue({ addressProofFileName: this.addressFileNameArray1[this.addressFileNameArray1.length - 1] });
+          const controls = this.addressControls.at(1)
+
+          if (this.images.permanent.length == 2 && controls.get('addressTypeId').value == 1) {
+            this.getVoterIdDetails()
+          }
         } else {
           this.toastr.error("Cannot upload more than two images")
         }
@@ -245,36 +254,47 @@ export class UserAddressComponent implements OnInit {
     ).subscribe()
   }
 
+  getAaddharDetails() {
+    let fileUrls = [
+      "https://gold-loan-uat.s3.ap-south-1.amazonaws.com/public/uploads/images/1606826344404.jpeg",
+      "https://gold-loan-uat.s3.ap-south-1.amazonaws.com/public/uploads/images/1606826352209.jpeg"
+    ]
+    this.userAddressService.getAaddharDetails(fileUrls, this.controls.customerId.value).subscribe(res => {
+      this.aadharCardUserDetails = res.data
+      this.controls.identityProofNumber.patchValue(res.data.idNumber)
+    })
+  }
+
   getStates() {
     this.sharedService.getStates().subscribe(res => {
       this.states = res.data;
     });
   }
 
-  getCities(index) {
+  async getCities(index) {
 
     const stateId = this.addressControls.controls[index]['controls'].stateId.value;
 
-    this.sharedService.getCities(stateId).subscribe(res => {
-      if (index == 0) {
-        this.cities0 = res.data;
-        const cityId = this.addressControls.at(0).get('cityId')
-        // console.log(cityId, this.cities0)
-        const cityExists = this.cities0.find(e => e.id === cityId.value)
-        if (!cityExists) {
-          cityId.reset();
-          cityId.patchValue('');
-        }
-      } else {
-        this.cities1 = res.data;
-        const cityId = this.addressControls.at(1).get('cityId')
-        const cityExists = this.cities1.find(e => e.id === cityId.value)
-        if (!cityExists) {
-          cityId.reset();
-          cityId.patchValue('');
-        }
+    let res = await this.sharedService.getCities(stateId)
+    if (index == 0) {
+      this.cities0 = res['data'];
+      const cityId = this.addressControls.at(0).get('cityId');
+      // console.log(cityId, this.cities0)
+      const cityExists = this.cities0.find(e => e.id === cityId.value);
+      if (!cityExists) {
+        cityId.reset();
+        cityId.patchValue('');
       }
-    });
+    } else {
+      this.cities1 = res['data'];
+      const cityId = this.addressControls.at(1).get('cityId');
+      const cityExists = this.cities1.find(e => e.id === cityId.value);
+      if (!cityExists) {
+        cityId.reset();
+        cityId.patchValue('');
+      }
+    }
+
   }
 
   selectAadhar() {
@@ -478,6 +498,8 @@ export class UserAddressComponent implements OnInit {
             this.addressControls.at(0)['controls'].addressProofNumber.disable()
           }
           this.addressFileNameArray1 = this.identityFileNameArray
+          this.patchAaddarValue(0)
+          console.log(this.addressControls.at(0).value, this.aadharCardUserDetails)
         } else {
           this.images.permanent = [];
           this.imageId.permanent = [];
@@ -487,6 +509,9 @@ export class UserAddressComponent implements OnInit {
           this.addressControls.controls[0].patchValue({ addressProofFileName: '' });
           this.addressControls.at(0)['controls'].addressProofNumber.enable()
           this.addressFileNameArray1 = []
+          if (this.addressControls.at(0).value.addressProofTypeId == 1) {
+            this.getVoterIdDetails()
+          }
         }
       } else {
         if (this.addressControls.at(1).value.addressProofTypeId == 2) {
@@ -551,6 +576,44 @@ export class UserAddressComponent implements OnInit {
     const ext = this.sharedService.getExtension(image)
     const isPdf = ext == 'pdf' ? true : false
     return isPdf
+  }
+
+
+  async patchAaddarValue(index) {
+    if (this.aadharCardUserDetails) {
+      let controls = this.addressControls.controls[index]
+      controls['controls'].pinCode.patchValue(this.aadharCardUserDetails.pincode)
+      controls['controls'].address.patchValue(this.aadharCardUserDetails.address)
+      let stateId = this.states.filter(res => {
+        if (res.name == this.aadharCardUserDetails.state)
+          return res
+      })
+      if (stateId.length > 0) {
+        controls['controls'].stateId.patchValue(stateId[0]['id'])
+        await this.getCities(index)
+      }
+
+      let city = this.cities0.filter(res => {
+        if (res.name == this.aadharCardUserDetails.city)
+          return res
+      })
+
+      if (city.length > 0) {
+        controls['controls'].cityId.patchValue(city[0]['id'])
+      }
+      // controls.disable()
+    }
+  }
+
+  getVoterIdDetails() {
+    this.userAddressService.getVoterIdDetails(this.images.permanent, this.controls.customerId.value).subscribe(res => {
+      console.log(res)
+      let controls = this.addressControls.controls[0]
+      controls['controls'].address.patchValue(res.data.address)
+      controls['controls'].addressProofNumber.patchValue(res.data.idNumber)
+      controls['controls'].pinCode.patchValue(res.data.pincode)
+
+    })
   }
 
 }

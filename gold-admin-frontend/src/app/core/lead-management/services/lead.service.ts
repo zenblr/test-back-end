@@ -156,4 +156,14 @@ export class LeadService {
     );
   }
 
+  getPanDetailsFromKarza(fileUrl, customerId): Observable<any> {
+    fileUrl = 'https://gold-loan-uat.s3.ap-south-1.amazonaws.com/public/uploads/images/1606826338257.jpeg'
+    return this.http.post<any>(`/api/e-kyc/ocr-pan`, { fileUrl, customerId }).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message)
+        throw (err)
+      })
+    );
+  }
 }
