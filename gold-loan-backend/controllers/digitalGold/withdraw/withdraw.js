@@ -21,7 +21,7 @@ exports.getWithdrawDetailsWithTransId = async (req, res) => {
 
         if (orderSellData.modeOfPayment == "augmontWallet") {
             let result = { data: { result: { data: orderSellData } } };
-            // result.data.result.data = orderSellData;
+            result.data.result.data.status = orderSellData.dataValues.orderStatus;
             return res.status(200).json(result.data);
         }
 
