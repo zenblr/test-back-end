@@ -423,7 +423,7 @@ async function checkBuyLimit(id, totalAmount) {
 
         } else {
 
-          return ({ message: "your kyc  is pending.Please complete Kyc first", success: false });
+          return ({ message: "your kyc is pending.Please complete Kyc first", success: false });
 
         }
       } else {

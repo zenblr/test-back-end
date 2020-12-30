@@ -309,7 +309,7 @@ exports.addAmountWallet = async (req, res) => {
             } else if (orderBuy.errors.userKyc) {
               if (tempWalletTransaction.redirectOn) {
                 res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
-                res.redirect(`https://${process.env.DIGITALGOLDAPI}/kyc/digi-gold`);
+                res.redirect(`${process.env.BASE_URL_CUSTOMER}/kyc/digi-gold`);
               } else {
                 // return res.status(400).json(orderBuy.result.data.metalType);
                 return { isSuccess: false, status: 400, data: { data: err.response.data.errors.userKyc[0] } }
@@ -664,22 +664,31 @@ exports.getTransactionDetails = async (req, res) => {
     //     "$walletTransactionDetails.branch_name$": { [Op.iLike]: search + '%' },
     //   },
     // }],
-    customerId: id,
-    orderTypeId: { [Op.notIn]: [4] }
+    // customerId: id,
+    // orderTypeId: { [Op.notIn]: [4] }
   };
 
   if (!paymentFor) {
     searchQuery.paymentOrderTypeId = { [Op.in]: [4, 5, 6] }
+    searchQuery.customerId = id
+    searchQuery.orderTypeId = { [Op.notIn]: [4] }
+
   }
   console.log(id)
   if (paymentFor) {
     if (orderTypeData.id == 4) {
       searchQuery.paymentOrderTypeId = { [Op.in]: [4] }
+      searchQuery.customerId = id
+      searchQuery.orderTypeId = { [Op.notIn]: [4] }
     }
     else if (orderTypeData.id == 5) {
       searchQuery.paymentOrderTypeId = { [Op.in]: [5] }
+      searchQuery.customerId = id
+      searchQuery.orderTypeId = { [Op.notIn]: [4] }
     } else if (orderTypeData.id == 6) {
       searchQuery.paymentOrderTypeId = { [Op.in]: [6] }
+      searchQuery.customerId = id
+      searchQuery.orderTypeId = { [Op.notIn]: [4] }
     }
   }
 
@@ -688,16 +697,12 @@ exports.getTransactionDetails = async (req, res) => {
     {
       model: models.walletTransactionDetails,
       as: 'walletTransactionDetails',
-      where:{
-        customerId: id
-      }
+     
     },
     {
       model: models.digiGoldOrderDetail,
       as: 'digiGoldOrderDetail',
-      where:{
-        customerId: id
-      }
+      
     }
   ]
 
