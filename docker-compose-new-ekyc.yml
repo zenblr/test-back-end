@@ -1,0 +1,36 @@
+version: "3"
+services:
+  web:
+    build: ./gold-loan-backend/
+    container_name: gold-loan-new-nodejs-demo
+    image: gold-loan-new:nodejs-demo
+    environment:
+      - NODE_ENV=ekyc
+    links:
+      - redis:redis
+    ports:
+      - "9000:3000"
+    volumes:
+      - gold-loan-new-public-data:/usr/src/app/public/uploads
+    restart: always
+
+  redis:
+    container_name: gold-loan-new-redis-demo
+    restart: always
+    image: redis:latest
+    expose:
+      - "8579"
+
+  nginx:
+    restart: always
+    container_name: gold-loan-new-nginx-demo
+    image: gold-loan-new:nginx-demo
+    build: ./gold-admin-frontend/
+    volumes:
+      - ./logs/:/gold/logs
+    ports:
+      - "9200:80"
+    links:
+      - web
+volumes:
+  gold-loan-new-public-data:
