@@ -169,32 +169,7 @@
                                 </div>
                             </div>
 
-                            <div class="kt-margin-t-20">
-                                <div class="row">
-                                    <div class="col-3 offset-1 p-0">
-                                        <label class="mandatory font-weight-500 text-color">Unique Identity
-                                            No.</label>
-                                    </div>
-                                    <div class="col-7">
-                                        <input *ngIf="addressControls.at(i).value.addressProofTypeId == 2"
-                                            formControlName="addressProofNumber" type="text" maxlength="12"
-                                            placeholder="Unique Identity Number" class="form-control" numbersOnly
-                                            [class.isError]="addressForm.controls.addressProofNumber.touched && addressForm.controls.addressProofNumber.invalid">
-                                        <input *ngIf="addressControls.at(i).value.addressProofTypeId != 2"
-                                            formControlName="addressProofNumber" type="text"
-                                            placeholder="Unique Identity Number" class="form-control"
-                                            [class.isError]="addressForm.controls.addressProofNumber.touched && addressForm.controls.addressProofNumber.invalid">
-                                        <mat-error
-                                            *ngIf="addressForm.controls.addressProofNumber.errors?.required && addressForm.controls.addressProofNumber.touched">
-                                            Required field
-                                        </mat-error>
-                                        <mat-error
-                                            *ngIf="(addressForm.controls.addressProofNumber.errors?.pattern) && addressForm.controls.addressProofNumber.touched">
-                                            Invalid Input
-                                        </mat-error>
-                                    </div>
-                                </div>
-                            </div>
+                            
 
                             <div>
                                 <div class=" kt-margin-t-20">
@@ -332,7 +307,32 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="kt-margin-t-20">
+                                <div class="row">
+                                    <div class="col-3 offset-1 p-0">
+                                        <label class="mandatory font-weight-500 text-color">Unique Identity
+                                            No.</label>
+                                    </div>
+                                    <div class="col-7">
+                                        <input *ngIf="addressControls.at(i).value.addressProofTypeId == 2"
+                                            formControlName="addressProofNumber" type="text" maxlength="12"
+                                            placeholder="Unique Identity Number" class="form-control" numbersOnly
+                                            [class.isError]="addressForm.controls.addressProofNumber.touched && addressForm.controls.addressProofNumber.invalid">
+                                        <input *ngIf="addressControls.at(i).value.addressProofTypeId != 2"
+                                            formControlName="addressProofNumber" type="text"
+                                            placeholder="Unique Identity Number" class="form-control"
+                                            [class.isError]="addressForm.controls.addressProofNumber.touched && addressForm.controls.addressProofNumber.invalid">
+                                        <mat-error
+                                            *ngIf="addressForm.controls.addressProofNumber.errors?.required && addressForm.controls.addressProofNumber.touched">
+                                            Required field
+                                        </mat-error>
+                                        <mat-error
+                                            *ngIf="(addressForm.controls.addressProofNumber.errors?.pattern) && addressForm.controls.addressProofNumber.touched">
+                                            Invalid Input
+                                        </mat-error>
+                                    </div>
+                                </div>
+                            </div>
                             <div class=" kt-margin-t-20">
                                 <div class="row">
                                     <div class="col-3 offset-1 p-0">

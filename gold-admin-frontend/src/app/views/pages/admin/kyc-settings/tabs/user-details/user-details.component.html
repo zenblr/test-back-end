@@ -206,7 +206,7 @@
 							<input class="form-control" formControlName="panCardNumber" autocomplete="off"
 								placeholder="PAN"
 								[class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
-								maxlength="10" style="text-transform: uppercase;" />
+								maxlength="10" style="text-transform: uppercase;" readonly/>
 							<mat-error *ngIf="
 									controls.panCardNumber.errors?.required &&
 									controls.panCardNumber.touched

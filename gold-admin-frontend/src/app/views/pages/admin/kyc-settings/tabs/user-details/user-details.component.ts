@@ -363,7 +363,8 @@ export class UserDetailsComponent implements OnInit {
       this.controls.firstName.patchValue(name.join(" "))
       this.controls.lastName.patchValue(lastName)
       this.controls.panCardNumber.patchValue(res.data.idNumber)
-      this.isPanVerified = res.data.isPanVerified
+      this.isPanVerified = true
+      // this.isPanVerified = res.data.isPanVerified
       this.controls.panCardNumber.disable()
 
     })
@@ -408,6 +409,7 @@ export class UserDetailsComponent implements OnInit {
   }
 
   submit() {
+    
     if (this.userBasicForm.invalid) {
       this.userBasicForm.markAllAsTouched()
       return
