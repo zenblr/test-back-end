@@ -67,7 +67,7 @@ exports.sendOtp = async (req, res, next) => {
     let userDetails = await models.user.findOne({ where: { mobileNumber } });
     if (userDetails) {
         let otp;
-        if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new") {
+        if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new" || process.env.NODE_ENV == "ekyc") {
             otp = 1234
         } else {
             otp = Math.floor(1000 + Math.random() * 9000);
