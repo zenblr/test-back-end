@@ -542,21 +542,21 @@ exports.getAllDepositDetails = async (req, res) => {
   );
 
   let searchQuery = {
-    // [Op.and]: [query, {
-    //   [Op.or]: {
-    //     paymentType: sequelize.where(
-    //       sequelize.cast(sequelize.col("walletTransactionDetails.payment_type"), "varchar"),
-    //       {
-    //         [Op.iLike]: search + "%",
-    //       }
-    //     ),
-    //     "$walletTransactionDetails.bank_name$": { [Op.iLike]: search + '%' },
-    //     "$walletTransactionDetails.cheque_number$": { [Op.iLike]: search + '%' },
+    [Op.and]: [query, {
+      [Op.or]: {
+        paymentType: sequelize.where(
+          sequelize.cast(sequelize.col("walletTransactionDetails.payment_type"), "varchar"),
+          {
+            [Op.iLike]: search + "%",
+          }
+        ),
+        "$walletTransactionDetails.bank_name$": { [Op.iLike]: search + '%' },
+        "$walletTransactionDetails.cheque_number$": { [Op.iLike]: search + '%' },
 
-    //     "$walletTransactionDetails.branch_name$": { [Op.iLike]: search + '%' },
-    //   },
-    // }],
-    customerId: id,
+        "$walletTransactionDetails.branch_name$": { [Op.iLike]: search + '%' },
+      },
+    }],
+    // customerId: id,
 
 
   };
@@ -637,107 +637,131 @@ exports.getWalletDetailById = async (req, res) => {
 }
 
 exports.getTransactionDetails = async (req, res) => {
-  const id = req.userData.id;
-  const { paymentFor } = req.query;
-
-  let orderTypeData
-  if (paymentFor) {
-    orderTypeData = await models.digiGoldOrderType.findOne({ where: { orderType: paymentFor } })
-  }
-
-  let query = {};
-
-  const { search, offset, pageSize } = paginationWithFromTo(
-    req.query.search,
-    req.query.from,
-    req.query.to
-  );
-
-  let searchQuery = {
-    [Op.and]: [query, {
-      [Op.or]: {
-        paymentType: sequelize.where(
-          sequelize.cast(sequelize.col("walletTransactionDetails.payment_type"), "varchar"),
-          {
-            [Op.iLike]: search + "%",
-          }
-        ),
-        "$walletTransactionDetails.bank_name$": { [Op.iLike]: search + '%' },
-        "$walletTransactionDetails.cheque_number$": { [Op.iLike]: search + '%' },
-
-        "$walletTransactionDetails.branch_name$": { [Op.iLike]: search + '%' },
+  try{
+    const id = req.userData.id;
+    const { paymentFor } = req.query;
+  
+    let orderTypeData
+    if (paymentFor) {
+      orderTypeData = await models.digiGoldOrderType.findOne({ where: { orderType: paymentFor } })
+    }
+  
+    let query = {};
+  
+    const { search, offset, pageSize } = paginationWithFromTo(
+      req.query.search,
+      req.query.from,
+      req.query.to
+    );
+  
+    let searchQuery = {
+      [Op.and]: [query, {
+        // [Op.or]: {
+          // depositStatus: sequelize.where(
+          //     sequelize.cast(sequelize.col("walletTransactionDetails.deposit_status"), "varchar"),
+          //     {
+          //         [Op.iLike]: search + "%",
+          //     }
+          // ),
+          // applicationDate: sequelize.where(
+          //     sequelize.cast(sequelize.col("walletTransactionDetails.deposit_date"), "varchar"),
+          //     {
+          //         [Op.iLike]: search + "%",
+          //     }
+          // ),
+          // transactionAmount: sequelize.where(
+          //     sequelize.cast(sequelize.col("walletTransactionDetails.deposit_date"), "varchar"),
+          //     {
+          //         [Op.iLike]: search + "%",
+          //     }
+          // ),
+          // "$walletTransactionDetails.bank_name$": { [Op.iLike]: search + '%' },
+          // "$walletTransactionDetails.cheque_number$": { [Op.iLike]: search + '%' },
+          // "$walletTransactionDetails.branch_name$": { [Op.iLike]: search + '%' },
+          // "$walletTransactionDetails.transaction_unique_id$": { [Op.iLike]: search + '%' },
+          // "$walletTransactionDetails.ifsc_code$": { [Op.iLike]: search + '%' },
+          // "$walletTransactionDetails.payment_type$": { [Op.iLike]: search + '%' },
+          
+      // },
+      }],
+      // customerId: id,
+      // orderTypeId: { [Op.notIn]: [4] }
+    };
+  
+    if (!paymentFor) {
+      searchQuery.paymentOrderTypeId = { [Op.in]: [4, 5, 6] }
+      searchQuery.customerId = id
+      searchQuery.transactionStatus = "completed"
+      // searchQuery.orderTypeId = { [Op.notIn]: [4] }
+  
+    }
+    console.log(id)
+    if (paymentFor) {
+      if (orderTypeData.id == 4) {
+        searchQuery.paymentOrderTypeId = { [Op.in]: [4] }
+        searchQuery.customerId = id,
+        searchQuery.transactionStatus = "completed"
+        // searchQuery.orderTypeId = { [Op.notIn]: [4] }
+      }
+      else if (orderTypeData.id == 5) {
+        searchQuery.paymentOrderTypeId = { [Op.in]: [5] }
+        searchQuery.customerId = id
+        searchQuery.transactionStatus = "completed"
+        // searchQuery.orderTypeId = { [Op.notIn]: [4] }
+      } else if (orderTypeData.id == 6) {
+        searchQuery.paymentOrderTypeId = { [Op.in]: [6] }
+        searchQuery.customerId = id
+        searchQuery.transactionStatus = "completed"
+        // searchQuery.orderTypeId = { [Op.notIn]: [4] }
+      }
+    }
+  
+  
+    let includeArray = [
+      {
+        model: models.walletTransactionDetails,
+        as: 'walletTransactionDetails',
+  
       },
-    }],
-    // customerId: id,
-    // orderTypeId: { [Op.notIn]: [4] }
-  };
-
-  if (!paymentFor) {
-    searchQuery.paymentOrderTypeId = { [Op.in]: [4, 5, 6] }
-    searchQuery.customerId = id
-    searchQuery.orderTypeId = { [Op.notIn]: [4] }
-
-  }
-  console.log(id)
-  if (paymentFor) {
-    if (orderTypeData.id == 4) {
-      searchQuery.paymentOrderTypeId = { [Op.in]: [4] }
-      searchQuery.customerId = id
-      searchQuery.orderTypeId = { [Op.notIn]: [4] }
+      {
+        model: models.digiGoldOrderDetail,
+        as: 'digiGoldOrderDetail',
+  
+      }
+    ]
+  
+    let transactionDetails = await models.walletDetails.findAll({
+      where: searchQuery,
+      order: [['updatedAt', 'DESC']],
+      include: includeArray,
+      offset: offset,
+      limit: pageSize,
+      subQuery: false,
+    });
+  
+    let count = await models.walletDetails.findAll({
+      where: searchQuery,
+      include: includeArray,
+      order: [
+        ["updatedAt", "DESC"]
+      ],
+      offset: offset,
+      limit: pageSize,
+      subQuery: false,
+    });
+  
+    if (check.isEmpty(transactionDetails)) {
+      return res.status(200).json({
+        data: [], count: 0
+  
+      })
     }
-    else if (orderTypeData.id == 5) {
-      searchQuery.paymentOrderTypeId = { [Op.in]: [5] }
-      searchQuery.customerId = id
-      searchQuery.orderTypeId = { [Op.notIn]: [4] }
-    } else if (orderTypeData.id == 6) {
-      searchQuery.paymentOrderTypeId = { [Op.in]: [6] }
-      searchQuery.customerId = id
-      searchQuery.orderTypeId = { [Op.notIn]: [4] }
-    }
+    return res.status(200).json({ transactionDetails, count: count.length });
+  
+  }catch(err){
+    console.log(err);
   }
-
-
-  let includeArray = [
-    {
-      model: models.walletTransactionDetails,
-      as: 'walletTransactionDetails',
-
-    },
-    {
-      model: models.digiGoldOrderDetail,
-      as: 'digiGoldOrderDetail',
-
-    }
-  ]
-
-  let transactionDetails = await models.walletDetails.findAll({
-    where: searchQuery,
-    order: [['updatedAt', 'DESC']],
-    include: includeArray,
-    offset: offset,
-    limit: pageSize,
-    subQuery: false,
-  });
-
-  let count = await models.walletDetails.findAll({
-    where: searchQuery,
-    include: includeArray,
-    order: [
-      ["updatedAt", "DESC"]
-    ],
-    offset: offset,
-    limit: pageSize,
-    subQuery: false,
-  });
-
-  if (check.isEmpty(transactionDetails)) {
-    return res.status(200).json({
-      data: [], count: 0
-
-    })
-  }
-  return res.status(200).json({ transactionDetails, count: count.length });
-
+  
 }
 
 exports.getWalletBalance = async (req, res) => {

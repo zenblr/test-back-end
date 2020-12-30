@@ -124,7 +124,7 @@ exports.sellProduct = async (req, res) => {
 
           let orderDetail = await models.digiGoldOrderDetail.create({
             tempOrderId: tempId.id, customerId: id, orderTypeId: 2, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
-            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: customerDetails.currentWalletBalance
+            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: customerDetails.currentWalletBalance, orderStatus: "completed"
           }, { transaction: t });
 
           await models.digiGoldTempOrderDetail.update(
@@ -206,7 +206,7 @@ exports.sellProduct = async (req, res) => {
 
           let orderDetail = await models.digiGoldOrderDetail.create({
             tempOrderId: tempId.id, customerId: id, orderTypeId: 2, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
-            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: amountOfWallet, walletId: walletData.id
+            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: amountOfWallet, walletId: walletData.id, orderStatus: "completed"
           }, { transaction: t });
 
           await models.digiGoldTempOrderDetail.update(

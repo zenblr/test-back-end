@@ -205,7 +205,7 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
                 customerUpdatedFreeBalance = Number(customer.walletFreeBalance) + Number(transactionData.transactionAmount);
                 currentWalletBalance = Number(customer.currentWalletBalance) + Number(transactionData.transactionAmount);
 
-                await models.customer.update({ walletFreeBalance: customerUpdatedFreeBalance, currentWalletBalance: currentWalletBalance }, { where: { id: customerFreeBalance.id }, transaction: t });
+                await models.customer.update({ walletFreeBalance: customerUpdatedFreeBalance, currentWalletBalance: currentWalletBalance }, { where: { id: customer.id }, transaction: t });
 
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, }, { where: { id: transactionData.id }, transaction: t });
 
