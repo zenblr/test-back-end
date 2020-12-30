@@ -41,5 +41,14 @@
         "port": "3432",
         "dialect": "postgres",
         "operatorsAliases": false
+    },
+    "ekyc": {
+        "username": "postgres",
+        "password": "nimap@123",
+        "database": "gold_ekyc",
+        "host": "173.249.49.7",
+        "port": "3432",
+        "dialect": "postgres",
+        "operatorsAliases": false
     }
 }
