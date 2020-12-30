@@ -15,6 +15,7 @@ const getMerchantData = require('../controllers/auth/getMerchantData')
 const fs = require('fs');
 const FormData = require('form-data');
 let sms = require('../utils/SMS');
+let {verifyName} = require('./karzaService');
 
 
 let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer, isFromCustomerWebsite) => {
@@ -1306,6 +1307,50 @@ let kycPersonalDetail = async (req) => {
                 }, { where: { customerId: customerId }, transaction: t });
             }
 
+        }
+        //ekyc atuo approval check
+        let checkAddressProof = await models.customerKycAddressDetail.findAll({where:{customerId,addressProofTypeId:{[Op.in]: [1,3,4,5,6]}}});
+        let ekycData = await models.customerEKycDetails.findOne({where:{customerId}});
+        if(checkAddressProof.length == 0  && ekycData.isAahaarVerified && ekycData.isPanVerified){
+            let panAndAadhaarNameMatch = false;
+            let aadharAndPanNameScore = 0;
+            let panAndAadhaarDOBMatch = false;
+            if(ekycData){
+                    let name = {name1:ekycData.panName,name2:ekycData.aahaarName}
+                    let nameData = await verifyName(name);
+                    if(nameData.error == false){
+                        if(nameData.nameConfidence <= nameData.score){
+                            panAndAadhaarNameMatch = true
+                            aadharAndPanNameScore = nameData.score;
+                        }
+                    }
+                    let date1 = new Date(ekycData.panDOB.replace( /(\d{2})\/(\d{2})\/(\d{4})/, "$2/$1/$3"))
+                    let date2 = new Date(ekycData.aahaarDOB.replace( /(\d{2})\/(\d{2})\/(\d{4})/, "$2/$1/$3"))
+                    panAndAadhaarDOBMatch = moment(date1).isSame(date2); 
+            }
+            if(panAndAadhaarDOBMatch && panAndAadhaarNameMatch){
+                console.log("success")
+                // await models.customerKycClassification.create({ customerId, customerKycId,kycStatusFromCce:'approved',kycStatusFromOperationalTeam:'approved',scrapKycStatusFromCce:'approved',scrapKycStatusFromOperationalTeam:'approved' }, { transaction: t })
+
+                // ///
+
+                // let checkUniqueId = await models.customer.findOne({ where: { id: customerId } })
+                // let customerUniqueId = await updateCustomerUniqueId(checkUniqueId.customerUniqueId)
+                // let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
+                // if (getMobileNumber.scrapKycStatus == "pending") {
+                //     let customerKycClassificationData = await models.customerKycClassification.findOne({ where: { customerId: customerId } })
+
+                //     await models.customer.update({ kycCompletePoint, customerUniqueId, kycStatus: "approved", scrapKycStatus: "approved", userType: "Individual" }, { where: { id: customerId }, transaction: t })
+
+                //     await models.customerKyc.update(
+                //         { isVerifiedByOperationalTeam: true, operationalTeamVerifiedBy: operationalTeamId },
+                //         { where: { customerId: customerId }, transaction: t })
+
+                //     await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId, scrapKycRatingFromCce: customerKycClassificationData.kycRatingFromCce, scrapKycStatusFromCce: customerKycClassificationData.kycStatusFromCce, scrapCceId: customerKycClassificationData.cceId, scrapKycStatusFromOperationalTeam: kycStatusFromOperationalTeam, scrapReasonFromOperationalTeam: reasonFromOperationalTeam, scrapOperationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
+                // }
+            }
+            await models.customerEKycDetails.update({aadharAndPanNameScore},{where:{customerId}});
+            
         }
 
         await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
