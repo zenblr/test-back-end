@@ -51,7 +51,7 @@ exports.buyProduct = async (req, res) => {
   let currentTempBal;
   let walletData
   let output = await sequelize.transaction(async (t) => {
-    walletData = await models.walletTempDetails.create({ customerId: id, amount, paymentDirection: "debit", description: "buy product", productTypeId: 4, transactionDate: moment() }, { transaction: t });
+    walletData = await models.walletTempDetails.create({ customerId: id, amount, paymentDirection: "debit", description: `${metalType} bought ${quantity} grams`, productTypeId: 4, transactionDate: moment() }, { transaction: t });
 
     currentTempBal = Number(customerDetails.currentWalletBalance) - Number(amount);
 
@@ -109,7 +109,7 @@ exports.buyProduct = async (req, res) => {
 
           let orderUniqueId = `dg_buy${Math.floor(1000 + Math.random() * 9000)}`;
 
-          let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.totalAmount, paymentDirection: "debit", description: result.data.message, productTypeId: 4, transactionDate: moment(), walletTempDetailId: tempWalletId, orderTypeId: 1, paymentOrderTypeId: 6 }, { transaction: t });
+          let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.totalAmount, paymentDirection: "debit", description: `${metalType} bought ${quantity} grams`, productTypeId: 4, transactionDate: moment(), walletTempDetailId: tempWalletId, orderTypeId: 1, paymentOrderTypeId: 6 }, { transaction: t });
 
           let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: temporderDetailId, customerId: customerId, orderTypeId: 1, orderId: orderUniqueId, metalType: result.data.result.data.metalType, quantity: quantity, lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, rate: result.data.result.data.rate, quantityBased: quantityBased, modeOfPayment: modeOfPayment, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, orderStatus: "pending", totalAmount: result.data.result.data.totalAmount, walletBalance: checkBalance.currentWalletBalance, walletId: walletData.id }, { transaction: t });
 
