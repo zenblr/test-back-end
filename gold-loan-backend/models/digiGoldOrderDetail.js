@@ -114,6 +114,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'delivery_total_weight'
         },
+        orderCreatedDate: {
+            type: DataTypes.DATE,
+            field: 'order_created_date'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',

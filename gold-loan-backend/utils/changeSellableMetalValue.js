@@ -29,7 +29,7 @@ module.exports = async () => {
         console.log("newDate", newDate);     //9.24
         allCustomer = await models.digiGoldOrderDetail.findAll({
             where: {
-                createdAt: { [Op.gt]: newDate },
+                orderCreatedDate: { [Op.gt]: newDate },
                 orderTypeId: 1
             }
         });
@@ -46,7 +46,7 @@ module.exports = async () => {
             digiGoldOrderDetail = await models.digiGoldOrderDetail.findAll({
                 where:
                 {
-                    createdAt:
+                    orderCreatedDate:
                         { [Op.gt]: newDate },
                     customerId: customer,
                     orderTypeId: 1
@@ -96,15 +96,15 @@ module.exports = async () => {
         if(nonRepeatCustomerId.length){
             // allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
             //     where: {
-            //         createdAt: { [Op.between]: [newDateBeforfifteenMin, newDate] },
+            //         orderCreatedDate: { [Op.between]: [newDateBeforfifteenMin, newDate] },
             //         customerId: { [Op.notIn]: [nonRepeatCustomerId]}
             //         // orderTypeId: 1
             //     }
             // });
         allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
             where: {
-                createdAt: { [Op.between]: [newDateBeforfifteenMin, newDate] },
-                customerId: { [Op.notIn]: [nonRepeatCustomerId]}
+                orderCreatedDate: { [Op.between]: [newDateBeforfifteenMin, newDate] },
+                customerId: { [Op.notIn]: nonRepeatCustomerId}
                 // orderTypeId: 1
             }
         });
