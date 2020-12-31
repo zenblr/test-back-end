@@ -1,6 +1,6 @@
 const multer = require('multer');
 
-const models = require('../../models'); // importing models.
+const models = require('../models'); // importing models.
 const multerS3 = require('multer-s3');
 const fs = require('fs');
 let AWS = require('aws-sdk');
