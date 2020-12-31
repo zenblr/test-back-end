@@ -15,6 +15,7 @@ const getMerchantData = require('../controllers/auth/getMerchantData')
 const fs = require('fs');
 const FormData = require('form-data');
 let sms = require('../utils/SMS');
+let {verifyName} = require('./karzaService');
 
 
 let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer, isFromCustomerWebsite) => {
@@ -1307,8 +1308,139 @@ let kycPersonalDetail = async (req) => {
             }
 
         }
-
-        await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
+        //ekyc atuo approval check
+        let checkAddressProof = await models.customerKycAddressDetail.findAll({where:{customerId,addressProofTypeId:{[Op.in]: [1,3,4,5,6]}}});
+        let ekycData = await models.customerEKycDetails.findOne({where:{customerId}});
+        if(checkAddressProof.length == 0  && ekycData.isAahaarVerified && ekycData.isPanVerified){
+            let panAndAadhaarNameMatch = false;
+            let aadharAndPanNameScore = 0;
+            let panAndAadhaarDOBMatch = false;
+            if(ekycData){
+                    let name = {name1:ekycData.panName,name2:ekycData.aahaarName}
+                    let nameData = await verifyName(name);
+                    if(nameData.error == false){
+                        if(nameData.nameConfidence <= nameData.score){
+                            panAndAadhaarNameMatch = true
+                            aadharAndPanNameScore = nameData.score;
+                        }
+                    }
+                    let date1 = new Date(ekycData.panDOB.replace( /(\d{2})\/(\d{2})\/(\d{4})/, "$2/$1/$3"))
+                    let date2 = new Date(ekycData.aahaarDOB.replace( /(\d{2})\/(\d{2})\/(\d{4})/, "$2/$1/$3"))
+                    panAndAadhaarDOBMatch = moment(date1).isSame(date2); 
+            }
+            //if pan and aadhar name same and date on pan and aadhaar same
+            if(panAndAadhaarDOBMatch && panAndAadhaarNameMatch){
+                console.log("success")
+                //////////////////////
+                if (moduleId == 1) {
+                    //if loan => scrap and loan true
+                    await models.customerKyc.update(
+                            { isVerifiedByCce: true, isKycSubmitted: true, isScrapKycSubmitted: true },
+                            { where: { customerId: customerId }, transaction: t })
+            
+                    // let customerRating = await models.customerKycClassification.findOne({ where: { customerId } })
+                    //change check unique id
+            
+                    // let operationalTeamId = req.userData.id
+            
+                    // if (customerRating.kycStatusFromOperationalTeam == "approved" || customerRating.kycStatusFromOperationalTeam == "rejected") {
+                    //     return res.status(400).json({ message: `You cannot change status for this customer` })
+                    // }
+                    //     reasonFromOperationalTeam = ""
+            
+                    //     //change check unique id
+                        let checkUniqueId = await models.customer.findOne({ where: { id: customerId } })
+                        let customerUniqueId = await updateCustomerUniqueId(checkUniqueId.customerUniqueId)
+                        //change check unique id
+            
+                        // //add complete kyc point
+                        // let kycCompletePoint = await updateCompleteKycModule(checkUniqueId.kycCompletePoint, moduleId)
+                        //add complete kyc point
+                        let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
+                            // cust- check - scrap kyc complete
+                            // customerKycClassification get data of cce 
+                            if (getMobileNumber.scrapKycStatus == "pending") {
+                                
+                                await models.customer.update({  customerUniqueId, kycStatus: "approved", scrapKycStatus: "approved", userType: "Individual" }, { where: { id: customerId }, transaction: t })
+            
+                                await models.customerKyc.update(
+                                    { isVerifiedByOperationalTeam: true, isKycSubmitted: true, isScrapKycSubmitted: true,isVerifiedByCce:true }, { where: { customerId: customerId }, transaction: t })
+                                    let customerRating = await models.customerKycClassification.findOne({ where: { customerId } })
+                                    if(customerRating){
+                                        await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce:5,
+                                            kycStatusFromCce:"approved",kycStatusFromOperationalTeam: "approved", scrapKycRatingFromCce:5,scrapKycStatusFromCce:"approved",scrapKycStatusFromOperationalTeam:"approved" }, {where:{customerId},  transaction: t })
+                                    }else{
+                                        await models.customerKycClassification.create({ customerId, customerKycId, kycRatingFromCce:5,
+                                            kycStatusFromCce:"approved",kycStatusFromOperationalTeam: "approved", scrapKycRatingFromCce:5,scrapKycStatusFromCce:"approved",scrapKycStatusFromOperationalTeam:"approved" }, {  transaction: t })
+                                    }
+                                
+                            } else {
+                                await models.customer.update({  customerUniqueId, kycStatus: "approved", userType: "Individual" }, { where: { id: customerId }, transaction: t })
+            
+                                await models.customerKyc.update(
+                                    { isVerifiedByOperationalTeam: true, isKycSubmitted: true, isScrapKycSubmitted: true,isVerifiedByCce:true }, { where: { customerId: customerId }, transaction: t })
+                                    let customerRating = await models.customerKycClassification.findOne({ where: { customerId } })
+                                    if(customerRating){
+                                        await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce:5,
+                                            kycStatusFromCce:"approved",kycStatusFromOperationalTeam: "approved" }, { where:{customerId}, transaction: t })
+                                    }else{
+                                        await models.customerKycClassification.create({ customerId, customerKycId, kycRatingFromCce:5,
+                                            kycStatusFromCce:"approved",kycStatusFromOperationalTeam: "approved" }, {  transaction: t })
+                                    }
+                                
+                            }
+            
+                        // let cusMobile = getMobileNumber.mobileNumber
+            
+                        // await sendKYCApprovalStatusMessage(cusMobile, getMobileNumber.firstName, "Gold Loan", kycStatusFromOperationalTeam)
+            
+                        // await sendCustomerUniqueId(cusMobile, getMobileNumber.firstName, customerUniqueId)
+                        //message for customer
+                        // request(
+                        //     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is  ${customerUniqueId} `
+                        // );
+                        // let getBm = await models.user.findOne({ where: { id: operationalTeamId } });
+                        // let bmMobile = getBm.mobileNumber
+            
+                        // await sendMessageToOperationsTeam(bmMobile, customerUniqueId)
+            
+                        //message for BranchManager
+                        // request(
+                        //     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is  ${customerUniqueId} Assign appraiser for further process.`
+                        // );
+                        // return res.status(200).json({ message: 'success' })
+                } else {
+                    //update in customer kyc
+                    await models.customerKyc.update(
+                        { isScrapKycSubmitted: true },
+                        { where: { customerId: customerId }, transaction: t })
+            
+                        //change check unique id
+                        let checkUniqueId = await models.customer.findOne({ where: { id: customerId } })
+                        let customerUniqueId = await updateCustomerUniqueId(checkUniqueId.customerUniqueId)
+                        //change check unique id
+            
+                        //add complete kyc point
+                        let kycCompletePoint = await updateCompleteKycModule(checkUniqueId.kycCompletePoint, moduleId)
+                        //add complete kyc point
+                            await models.customer.update({ kycCompletePoint, customerUniqueId, scrapKycStatus: "approved" }, { where: { id: customerId }, transaction: t })
+            
+                            // await models.customerKyc.update(
+                            //     { isVerifiedByOperationalTeam: true, operationalTeamVerifiedBy: scrapOperationalTeamId },
+                            //     { where: { customerId: customerId }, transaction: t })
+                            let customerRating = await models.customerKycClassification.findOne({ where: { customerId } })
+                                    if(customerRating){
+                                        await models.customerKycClassification.create({ customerId, customerKycId, scrapKycRatingFromCce:5, scrapKycStatusFromCce: "approved",scrapKycStatusFromOperationalTeam : "approved" }, { transaction: t })
+                                    }else{
+                                        await models.customerKycClassification.update({ customerId, customerKycId, scrapKycRatingFromCce:5, scrapKycStatusFromCce: "approved",scrapKycStatusFromOperationalTeam : "approved" }, { where: { customerId }, transaction: t })
+                                    }
+                }
+                /////////////////////
+            }
+            await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "6" }, { where: { customerId }, transaction: t });
+            await models.customerEKycDetails.update({aadharAndPanNameScore},{where:{customerId}});
+        }
+        // await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
 
     })
 
