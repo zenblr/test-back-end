@@ -8,7 +8,7 @@ const CONSTANT = require("../../utils/constant");
 const moment = require("moment");
 const { paginationWithFromTo } = require("../../utils/pagination");
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
-const { customerKycEdit, getKycInfo, kycBasicDetails, submitKycInfo, kycPersonalDetail, kycAddressDeatil, digiOrEmiKyc } = require('../../service/customerKyc')
+const { customerKycEdit, getKycInfo, kycBasicDetails, submitKycInfo, kycPersonalDetail, kycAddressDeatil, digiOrEmiKyc, applyDigiKyc } = require('../../service/customerKyc')
 
 const check = require("../../lib/checkLib");
 
@@ -1250,6 +1250,19 @@ exports.changeDigiKycStatus = async (req, res) => {
         return res.status(data.status).json({ message: data.message })
 
     }
+}
+
+exports.applyDigiKyc = async (req, res) => {
+
+    let data = await applyDigiKyc(req)
+
+    if (data.success) {
+        return res.status(data.status).json({ message: data.message })
+    } else {
+        return res.status(data.status).json({ message: data.message })
+    }
+
+
 }
 
 

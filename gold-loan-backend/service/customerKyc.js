@@ -1481,6 +1481,25 @@ let digiOrEmiKyc = async (req) => {
     };
 }
 
+let applyDigiKyc = async (req) => {
+
+    let { customerId, panImage, panCardNumber, panType } = req.body
+    let checkApplied = await models.digiKycApplied.findOne({ where: { customerId } })
+
+    if (checkApplied) {
+        // return res.status(400).json({ message: `Already applied for kyc` })
+        return { status: 400, success: false, message: `Already applied for kyc` }
+    }
+    await sequelize.transaction(async (t) => {
+        await models.digiKycApplied.create({ customerId: customer.id, status: 'pending' })
+
+        await models.customer.update({ digiKycStatus: 'waiting', panCardNumber, panImage, panType }, { where: { id: customer.id }, transaction: t })
+    })
+
+    // return res.status(200).json({ message: `success` })
+    return { status: 200, success: true, message: `success` }
+}
+
 let allKycCompleteInfo = async (customerInfo) => {
 
     let kycCompletePoint = customerInfo.kycCompletePoint
@@ -1546,5 +1565,6 @@ module.exports = {
     kycAddressDeatil: kycAddressDeatil,
     kycPersonalDetail: kycPersonalDetail,
     digiOrEmiKyc: digiOrEmiKyc,
+    applyDigiKyc: applyDigiKyc,
     allKycCompleteInfo: allKycCompleteInfo
 }

@@ -4,7 +4,7 @@ const { wrapper } = require('../utils/errorWrap');
 const validationError = require('../middleware/validationError');
 const { submitCustomerKycAddressValidation, submitAllKycInfoValidation, submitCustomerKycBankDetailValidation,
     submitCustomerKycInfoValidation, submitCustomerKycpersonalDetailValidation, getCustomerDetailsValidation, submitCustomerKycDetailValidation } = require('../validations/customerKyc');
-const { getCustomerDetails, submitCustomerKycinfo, submitCustomerKycAddress, submitCustomerKycPersonalDetail, submitCustomerKycBankDetail, submitAllKycInfo, appliedKyc, getReviewAndSubmit, allowToEdit, changeDigiKycStatus, getDigiKycList } = require('../controllers/customerKyc/customerKyc')
+const { getCustomerDetails, submitCustomerKycinfo, submitCustomerKycAddress, submitCustomerKycPersonalDetail, submitCustomerKycBankDetail, submitAllKycInfo, appliedKyc, getReviewAndSubmit, allowToEdit, changeDigiKycStatus, getDigiKycList, applyDigiKyc } = require('../controllers/customerKyc/customerKyc')
 
 const { submitAppKyc, getAssignedCustomer, editAppKyc, checkDuplicatePan, checkDuplicateAadhar, checkLoanAppraiser } = require('../controllers/customerKyc/appCustomerKyc')
 const checkAuth = require('../middleware/checkAuth');
@@ -30,6 +30,8 @@ route.get('/kyc-form-review', checkAuth, checkRolePermission, wrapper(getReviewA
 route.post('/allow-to-edit', checkAuth, wrapper(allowToEdit))
 
 route.get('/digi-list', checkAuth, wrapper(getDigiKycList))
+
+route.post('/apply-digi-kyc', checkAuth, wrapper(applyDigiKyc))
 
 route.post('/update-digi-status', checkAuth, wrapper(changeDigiKycStatus))
 
