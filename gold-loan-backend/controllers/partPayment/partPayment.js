@@ -214,6 +214,8 @@ exports.partPayment = async (req, res, next) => {
             if (signatureVerification == false) {
                 return res.status(422).json({ message: "razorpay payment verification failed" });
             }
+        }else{
+            isAdmin = true
         }
 
         let partPaymentAmount = paidAmount - payableAmount
