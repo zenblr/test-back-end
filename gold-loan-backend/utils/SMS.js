@@ -224,14 +224,88 @@ exports.sendMessageForBuy = async (customerName,mobileNumber,quantity, metalType
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<quantity>", quantity).replace("<metalType>", metalType).replace("<amount>", amount).replace("<name>",customerName)
         await sms.sendSms(mobileNumber, message);
+      
     }
 }
 
-exports.sendMessageForSell = async (mobileNumber,quantity, metalType, amount) => {
+// exports.sendMessageForBuy = async (mobileNumber,quantity, metalType, amount) => {
+//     let messageTemplate = await models.smsAlert.getSmsTemplate('buy');
+//     if (messageTemplate) {
+//         let message = await messageTemplate.content.replace("{#var#}", quantity).replace(" {#var#} ", metalType).replace("{#var#}", amount)
+//         await sms.sendSms(mobileNumber, message);
+       
+//     }
+// }
+exports.sendMessageForSell = async (mobileNumber,quantity, metalType, amount,type) => {
+if(type=="bankAccount"){
     let messageTemplate = await models.smsAlert.getSmsTemplate('sell');
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<quantity>", quantity).replace("<metalType>", metalType).replace("<amount>", amount)
+        let message = await messageTemplate.content.replace("{#var#}", quantity).replace("{#var#}", metalType).replace("{#var#}", amount)
         await sms.sendSms(mobileNumber, message);
+        
+    }
+}else if (type=="augmontWallet"){
+    let messageTemplate = await models.smsAlert.getSmsTemplate('sell & wallet ');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", quantity).replace("{#var#}", metalType).replace("{#var#}", amount)
+        await sms.sendSms(mobileNumber, message);
+      
+    }
+}
+    
+}
+
+// exports.sendMessageForSell = async (mobileNumber,quantity, metalType, amount) => {
+
+//     let messageTemplate = await models.smsAlert.getSmsTemplate('sell');
+//     if (messageTemplate) {
+//         let message = await messageTemplate.content.replace("{#var#}", quantity).replace("{#var#}", metalType).replace("{#var#}", amount)
+//         await sms.sendSms(mobileNumber, message);
+//         console.log("message",message)
+//     }
+// } 
+
+exports.sendMessageForDepositRequest = async (mobileNumber, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Deposit Request placed');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", amount)
+        await sms.sendSms(mobileNumber, message);
+       
+    }
+}
+
+exports.sendMessageForDepositRequestAccepted = async (mobileNumber, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Deposit Request Accepted');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", amount)
+        await sms.sendSms(mobileNumber, message);
+        
+    }
+}
+
+exports.sendMessageForDepositRequestRejected = async (mobileNumber, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Deposit Request Rejected');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", amount)
+        await sms.sendSms(mobileNumber, message);
+        
+    }
+}
+
+exports.sendMessageForWithdrawalPaymentCompleted = async (mobileNumber, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Withdrawal Payment Completed');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", amount)
+        await sms.sendSms(mobileNumber, message);
+       
+    }
+}
+exports.sendMessageForWithdrawalPaymentRejected = async (mobileNumber, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Withdrawal Payment Rejected');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", amount)
+        await sms.sendSms(mobileNumber, message);
+     
     }
 }
 

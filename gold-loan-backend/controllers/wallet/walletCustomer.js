@@ -166,7 +166,7 @@ exports.addAmountWallet = async (req, res) => {
         let getCustomer = await models.customer.findOne({
           transaction: t,
           where: { id: tempWalletDetail.customerId },
-          attributes: ['currentWalletBalance', 'walletFreeBalance']
+          attributes: ['currentWalletBalance', 'walletFreeBalance','mobileNumber']
         })
 
         await models.walletTransactionTempDetails.update({ isOrderPlaced: true }, { where: { id: tempWalletTransaction.id }, transaction: t });
@@ -189,7 +189,8 @@ exports.addAmountWallet = async (req, res) => {
             type: tempWalletTransaction.type,
             redirectOn: process.env.DIGITALGOLDAPI + tempWalletTransaction.redirectOn
           }
-
+       
+          await sms.sendMessageForDepositRequest( customer.mobileNumber, tempWalletTransaction.orderAmount);
 
           if (tempWalletTransaction.redirectOn) {
             res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);

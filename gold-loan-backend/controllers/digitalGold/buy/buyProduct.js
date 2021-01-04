@@ -123,7 +123,8 @@ exports.buyProduct = async (req, res) => {
           }
           await models.digiGoldOrderTaxDetail.create({ orderDetailId: orderDetail.id, totalTaxAmount: result.data.result.data.totalTaxAmount, cgst: result.data.result.data.taxes.taxSplit[0].cgst, sgst: result.data.result.data.taxes.taxSplit[0].scgst, isActive: true }, { transaction: t });
 
-          await sms.sendMessageForBuy(customerName, customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+          // await sms.sendMessageForBuy(customerName, customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+          await sms.sendMessageForBuy( customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
 
           return result.data;
 
@@ -132,7 +133,7 @@ exports.buyProduct = async (req, res) => {
         }
 
       } catch (err) {
-        console.log(err)
+        console.log("ggg",err)
         if (err.response.data.statusCode == 422) {
           if (err.response.data.errors.userKyc.length) {
             return err.response.data
