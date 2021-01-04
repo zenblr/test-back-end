@@ -133,6 +133,8 @@ exports.payableAmount = async (req, res, next) => {
     data.securedTotalInterest = interest.securedTotalInterest
     data.securedRebate = interest.securedRebate
     data.unsecuredRebate = interest.unsecuredRebate
+    data.totalInterest = interest.totalInterest
+    data.outstandingAmount = loan.loan.outstandingAmount
     return res.status(200).json({ data });
 }
 
