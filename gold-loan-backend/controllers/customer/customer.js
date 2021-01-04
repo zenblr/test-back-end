@@ -53,7 +53,11 @@ exports.addCustomer = async (req, res, next) => {
     return res.status(404).json({ message: "This Mobile number already Exists" });
   }
 
-  let modulePoint = await models.module.findOne({ where: { id: moduleId } })
+  let getModulePoint = await models.module.findOne({ where: { id: moduleId } })
+
+  let digiGoldModulePoint = await models.module.findOne({ where: { id: 4 } })
+
+  let modulePoint = getModulePoint.modulePoint | digiGoldModulePoint.modulePoint
 
   let getStageId = await models.stage.findOne({ where: { stageName: "lead" } });
   let stageId = getStageId.id;
@@ -65,7 +69,7 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint.modulePoint, sourceFrom: sourcePoint, customerUniqueId },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint, sourceFrom: sourcePoint, customerUniqueId },
       { transaction: t }
     );
 
