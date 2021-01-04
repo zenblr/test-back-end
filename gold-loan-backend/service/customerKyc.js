@@ -1523,7 +1523,7 @@ let allKycCompleteInfo = async (customerInfo) => {
         kycApproval.goldScrap = true
     }
 
-    if (customerInfo.panCardNumber != null) {
+    if (customerInfo.emiKycStatus == "approved") {
         kycApproval.goldEmi = true
     }
 
