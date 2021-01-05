@@ -18,7 +18,7 @@ import { LeadService } from '../../../../../core/lead-management/services/lead.s
 export class AppliedKycComponent implements OnInit {
 
   dataSource: AppliedKycDatasource;
-  displayedColumns = ['fullName', 'pan', 'customerId', 'currentProduct', 'date', 'cceApprovalStatus', 'kycStatus', 'action', 'view'];
+  displayedColumns = ['fullName', 'pan', 'customerId', 'kycStatus', 'action', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
@@ -107,7 +107,7 @@ export class AppliedKycComponent implements OnInit {
     // this.filteredDataList = data.list;
   }
 
-  editKyc(data) {
+  editKyc(id) {
     // const params = { customerId: data.customerId, customerKycId: data.id };
     // this.appliedKycService.editKycDetails(params).pipe(
     //   map(res => {
@@ -116,13 +116,19 @@ export class AppliedKycComponent implements OnInit {
     //     this.router.navigate(['/admin/kyc-setting/edit-kyc'], { queryParams: { disabled } });
     //   })
     // ).subscribe();
+
+    this.leadService.getLeadById(id).subscribe(res => {
+      // console.log(res.singleCustomer)
+      // this.appliedKycService.kycData.next(res.singleCustomer)
+      this.router.navigate([`/admin/applied-kyc-digi-gold/edit/${id}`]);
+    })
   }
 
-  viewKYC(data) {
-    // const params = { customerId: data.customerId, customerKycId: data.id };
-    const params = { id: data.id };
-    this.leadService.getLeadById(params).subscribe(res => {
-      const dialogRef = this.dialog.open(KycDetailsComponent, { data: { action: 'view' }, width: '900px' });
+  viewKYC(id) {
+    this.leadService.getLeadById(id).subscribe(res => {
+      console.log(res.singleCustomer)
+      // this.appliedKycService.kycData.next(res.singleCustomer)
+      const dialogRef = this.dialog.open(KycDetailsComponent, { data: { action: 'view', data: res.singleCustomer }, width: '900px' });
     })
   }
 }
