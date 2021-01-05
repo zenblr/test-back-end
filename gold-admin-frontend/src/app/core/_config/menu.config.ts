@@ -134,6 +134,11 @@ export class MenuConfig {
 									page: "/admin/applied-kyc",
 									permission: !this.permissionsArr.includes('appliedKycView'),
 								},
+								{
+									title: "Applied KYC - Digi Gold",
+									page: "/admin/applied-kyc-digi-gold",
+									// permission: !this.permissionsArr.includes('appliedKycView'),
+								},
 								// {
 								// 	title: "Assigned Customers",
 								// 	page: "/admin/assigned-customers",
