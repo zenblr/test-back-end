@@ -1,6 +1,6 @@
 const models = require('../../models');
 const getMerchantData = require('../auth/getMerchantData');
-const check = require('../../../lib/checkLib');
+const check = require('../../lib/checkLib');
 const sequelize = models.sequelize;
 let sms = require('../../utils/SMS');
 const errorLogger = require('../../utils/errorLogger');
@@ -43,11 +43,36 @@ exports.changeWithdrawStatus = async (req, res) => {
                         await models.digiGoldOrderDetail.update({ orderStatus: ele.status }, { where: { id: orderData.id  }, transaction: t });
 
                         if (ele.status == 'completed') {
-                            await sms.sendMessageForWithdrawCompleted(getCustomerWithdraw.mobileNumber, getCustomerWithdraw.amount);
+                            // await sms.sendMessageForWithdrawCompleted(getCustomerWithdraw.mobileNumber, getCustomerWithdraw.amount);
                         } else if (ele.status == 'rejected') {
-                            await sms.sendMessageForWithdrawReject(getCustomerWithdraw.mobileNumber);
+
+                            const currentBalcnce = await models.axios({
+                                method: 'GET',
+                                url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/${customer.customerUniqueId}/passbook`,
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                  'Accept': 'application/json',
+                                  'Authorization': `Bearer ${merchantData.accessToken}`,
+                                },
+                              });
+                            
+                            let customerMetalBalance = await models.digiGoldCustomerBalance.findOne({where: { customerId: customer.id}});
+
+                            if(orderData.metalType == "gold"){
+                                updatesSellableGoldBal = orderData.quantity + customerMetalBalance.sellableGoldBalance
+
+                                await models.digiGoldCustomerBalance.update({currentGoldBalance: currentBalcnce.data.result.data.goldGrms, sellableGoldBalance: updatesSellableGoldBal}, {where: { id: customerMetalBalance.id}})
+                                
+                            }else if(orderData.metalType == "silver"){
+                                updatedSellableSilverBal = orderData.quantity + customerMetalBalance.sellableSilverBalance
+
+                                await models.digiGoldCustomerBalance.update({currentGoldBalance: currentBalcnce.data.result.data.silverGrms, sellableSilverBalance: updatedSellableSilverBal}, {where: { id: customerMetalBalance.id}});
+                                
+                            }
+
+                            // await sms.sendMessageForWithdrawReject(getCustomerWithdraw.mobileNumber);
                         } else if (ele.status == 'accepted') {
-                            await sms.sendMessageForWithdrawAccept(getCustomerWithdraw.mobileNumber, getCustomerWithdraw.amount);
+                            // await sms.sendMessageForWithdrawAccept(getCustomerWithdraw.mobileNumber, getCustomerWithdraw.amount);
                         }
                     })
 
@@ -64,7 +89,7 @@ exports.changeWithdrawStatus = async (req, res) => {
     }
 
     catch (err) {
-
+        console.log(err);
         let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
         if (err.response) {
