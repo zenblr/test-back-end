@@ -1,5 +1,6 @@
 <kt-portlet>
-    <kt-modal-header [title]='"KYC Details"' [noTitleCase]="true" (action)="action()">
+    <kt-modal-header *ngIf="modalData.action !== 'view'" [title]='"KYC Details"' [noTitleCase]="true"
+        (action)="action()">
     </kt-modal-header>
     <kt-portlet-body>
         <div>
@@ -22,20 +23,22 @@
                                 <label class="mandatory">PAN</label>
                             </div>
                             <div class="col-8">
-                                <input class="form-control" formControlName="panNumber" autocomplete="off"
+                                <input class="form-control" formControlName="panCardNumber" autocomplete="off"
                                     placeholder="PAN"
-                                    [class.isError]="controls.panNumber.touched && controls.panNumber.invalid"
+                                    [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
                                     maxlength="10" />
-                                <!-- <select class="form-control" formControlName="panNumber" disabled
-                                    [class.isError]="controls.panNumber.invalid && controls.panNumber.touched">
+                                <!-- <select class="form-control" formControlName="panCardNumber" disabled
+                                    [class.isError]="controls.panCardNumber.invalid && controls.panCardNumber.touched">
                                     <option value=null selected disabled>Select User Type</option>
                                     <option value="Individual">Individual</option>
                                     <option value="Corporate">Corporate</option>
                                 </select> -->
-                                <mat-error *ngIf="controls.panNumber.errors?.required && controls.panNumber.touched">
+                                <mat-error
+                                    *ngIf="controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
                                     Field Required
                                 </mat-error>
-                                <mat-error *ngIf="controls.panNumber.errors?.pattern && controls.panNumber.touched">
+                                <mat-error
+                                    *ngIf="controls.panCardNumber.errors?.pattern && controls.panCardNumber.touched">
                                     Invalid Input
                                 </mat-error>
                             </div>
@@ -75,21 +78,6 @@
                                 <label class="mandatory">Attach PAN</label>
                             </div>
                             <div class="col-8">
-                                <!-- <input type="text" class="form-control" placeholder="Select File"
-                                    aria-label="Recipient's username" aria-describedby="basic-addon2"
-                                    formControlName="form60"
-                                    [class.isError]="controls.panImg.touched && controls.panImg.invalid" />
-                                <div class="input-group-append">
-                                    <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                                        (click)="form60.click()">Attach</span>
-                                </div>
-
-                                <input type="file" class="d-none" accept="image/jpg, image/png, image/jpeg" #pan
-                                    (input)="uploadFile($event)">
-
-                                <mat-error *ngIf="controls.panAttachment.invalid && controls.panAttachment.touched">
-                                    Field Required
-                                </mat-error> -->
 
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control" placeholder="Attach PAN"
@@ -130,7 +118,27 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div *ngIf="modalData.action !== 'view'" class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Status</label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-control" formControlName="status">
+                                    <option [value]=null disabled>Select Status</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                                <mat-error *ngIf="controls.status.invalid && controls.status.touched">
+                                    Field Required
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="modalData.action !== 'view'" class="row">
                     <div class="col-6">
                         <div class="offset-4">
                             <div class="col kt-margin-t-20 kt-margin-b-20">

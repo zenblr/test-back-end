@@ -5,6 +5,9 @@ import { SharedService } from '../../../../../core/shared/services/shared.servic
 import { ToastrService } from 'ngx-toastr';
 import { map, finalize } from 'rxjs/operators';
 import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
+import { AppliedKycService } from '../../../../../core/digi-gold-kyc/applied-kyc/service/applied-kyc.service';
+import { ActivatedRoute } from '@angular/router';
+import { LeadService } from '../../../../../core/lead-management/services/lead.service';
 
 @Component({
   selector: 'kt-kyc-details',
@@ -16,6 +19,7 @@ export class KycDetailsComponent implements OnInit {
   maxDate = new Date();
   images = { pan: {} };
   @ViewChild("pan", { static: false }) pan;
+  customerId: string;
 
   constructor(
     public dialogRef: MatDialogRef<KycDetailsComponent>,
@@ -23,16 +27,48 @@ export class KycDetailsComponent implements OnInit {
     private dialog: MatDialog,
     public fb: FormBuilder,
     public sharedService: SharedService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private appliedKycService: AppliedKycService,
+    private route: ActivatedRoute,
+    private leadService: LeadService
   ) { }
 
   ngOnInit() {
     this.initForm()
+
+    this.customerId = this.route.snapshot.paramMap.get("id");
+    // console.log(this.customerId)
+    if (this.customerId) {
+      this.getKYCDetails()
+      this.setPanAttachmentValidation()
+      this.digiGoldKycForm.disable()
+    }
+    if (this.modalData.data) {
+      // this.appliedKycService.kycData$.subscribe(res => {
+      // console.log(res)
+      this.digiGoldKycForm.patchValue(this.modalData.data)
+      this.patchImage(this.modalData.data)
+      // })
+    }
+  }
+
+  getKYCDetails() {
+    this.leadService.getLeadById(this.customerId).subscribe(res => {
+      console.log(res.singleCustomer)
+      this.digiGoldKycForm.patchValue(res.singleCustomer)
+      this.digiGoldKycForm.patchValue({
+        moduleId: 4,
+        customerId: res.singleCustomer.id,
+        panType: 'pan',
+        status: null
+      })
+      this.patchImage(res.singleCustomer)
+    })
   }
 
   initForm() {
     this.digiGoldKycForm = this.fb.group({
-      panNumber: [, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
+      panCardNumber: [, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       panFileName: [],
       panAttachment: [, [Validators.required]],
       moduleId: [4],
@@ -41,7 +77,15 @@ export class KycDetailsComponent implements OnInit {
       panImage: [],
       dateOfBirth: [, [Validators.required]],
       age: [, [Validators.min(18), Validators.max(100)]],
+      customerId: [],
+      status: [],
+      id: []
     })
+  }
+
+  setPanAttachmentValidation() {
+    this.controls.panAttachment.setValidators([])
+    this.controls.panAttachment.updateValueAndValidity()
   }
 
   get controls() {
@@ -157,6 +201,7 @@ export class KycDetailsComponent implements OnInit {
     if (this.digiGoldKycForm.invalid) {
       return this.digiGoldKycForm.markAllAsTouched()
     }
+    this.appliedKycService.editKycDetails(this.digiGoldKycForm.getRawValue()).subscribe()
     console.log(this.digiGoldKycForm.getRawValue())
   }
 

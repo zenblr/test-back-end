@@ -12,6 +12,9 @@ export class AppliedKycService {
   applyFilter = new BehaviorSubject<any>({});
   applyFilter$ = this.applyFilter.asObservable();
 
+  kycData = new BehaviorSubject<any>({});
+  kycData$ = this.kycData.asObservable();
+
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   getAllKyc(data): Observable<any> {
@@ -51,8 +54,8 @@ export class AppliedKycService {
     );
   }
 
-  editKycDetails(params) {
-    return this.http.get<any>(`api/kyc/kyc-form-review?customerId=${params.customerId}&customerKycId=${params.customerKycId}`).pipe(
+  editKycDetails(data) {
+    return this.http.post<any>(`/api/kyc/update-digi-status`, data).pipe(
       map(res => res),
       // tap(res => this.userData.next(res)),
       catchError(err => {
