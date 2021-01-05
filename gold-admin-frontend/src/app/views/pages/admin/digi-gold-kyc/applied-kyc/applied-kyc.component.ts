@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { AppliedKycService } from '../../../../../core/digi-gold-kyc/applied-kyc/service/applied-kyc.service';
 import { AppliedKycDatasource } from '../../../../../core/digi-gold-kyc/applied-kyc/datasource/applied-kyc.datasource';
+import { KycDetailsComponent } from '../kyc-details/kyc-details.component';
+import { LeadService } from '../../../../../core/lead-management/services/lead.service';
 
 @Component({
   selector: 'kt-applied-kyc',
@@ -39,7 +41,8 @@ export class AppliedKycComponent implements OnInit {
     private dataTableService: DataTableService,
     private router: Router,
     private sharedService: SharedService,
-    private appliedKycService: AppliedKycService
+    private appliedKycService: AppliedKycService,
+    private leadService: LeadService
   ) { }
 
   ngOnInit() {
@@ -117,8 +120,9 @@ export class AppliedKycComponent implements OnInit {
 
   viewKYC(data) {
     // const params = { customerId: data.customerId, customerKycId: data.id };
-    // this.appliedKycService.editKycDetails(params).subscribe(res => {
-    //   const dialogRef = this.dialog.open(UserReviewComponent, { data: { action: 'view' }, width: '900px' });
-    // })
+    const params = { id: data.id };
+    this.leadService.getLeadById(params).subscribe(res => {
+      const dialogRef = this.dialog.open(KycDetailsComponent, { data: { action: 'view' }, width: '900px' });
+    })
   }
 }

@@ -53,5 +53,6 @@ const rout: Routes = [
     TypesUtilsService,
     LayoutUtilsService
   ],
+  entryComponents: [KycDetailsComponent]
 })
 export class DigiGoldKycModule { }

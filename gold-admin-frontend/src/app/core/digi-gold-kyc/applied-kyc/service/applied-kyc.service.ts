@@ -41,8 +41,20 @@ export class AppliedKycService {
       reqParams.modulePoint = data.modulePoint
     }
 
-    return this.http.get<any>(`/api/kyc/applied-kyc`, { params: reqParams }).pipe(
+    return this.http.get<any>(`/api/kyc/digi-list`, { params: reqParams }).pipe(
       map(res => res),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
+  editKycDetails(params) {
+    return this.http.get<any>(`api/kyc/kyc-form-review?customerId=${params.customerId}&customerKycId=${params.customerKycId}`).pipe(
+      map(res => res),
+      // tap(res => this.userData.next(res)),
       catchError(err => {
         if (err.error.message)
           this.toastr.error(err.error.message);
