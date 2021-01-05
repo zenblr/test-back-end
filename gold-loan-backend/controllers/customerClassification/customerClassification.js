@@ -47,7 +47,7 @@ exports.cceKycRating = async (req, res, next) => {
 
                     await models.customerKycClassification.create({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { transaction: t })
                 });
-                if (checkRatingExist.kycStatusFromCce !== "rejected") {
+                if (kycStatusFromCce == "rejected") {
                     await sms.sendMessageForKycRejected(customer.mobileNumber, customer.customerUniqueId);
                 } else {
                     await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
@@ -75,14 +75,21 @@ exports.cceKycRating = async (req, res, next) => {
                     return res.status(400).json({ message: `If you are not approved the customer kyc you have to give a reason.` })
                 }
                 await sequelize.transaction(async (t) => {
+                    
+                    if (kycStatusFromCce == "rejected") {
+                        await models.customer.update(
+                            { digiKycStatus: kycStatusFromCce, emiKycStatus: kycStatusFromCce, kycStatus: kycStatusFromCce, scrapKycStatus: kycStatusFromCce }, { where: { id: customerId }, transaction: t }
+                        )
+                    }
+
                     await models.customerKyc.update(
                         { cceVerifiedBy: cceId, isKycSubmitted: true, isScrapKycSubmitted: true },
                         { where: { customerId: customerId }, transaction: t })
 
                     await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
                 });
-                if (checkRatingExist.kycStatusFromCce !== "rejected") {
-                    await sms.sendMessageForKycRejected(customer.mobileNumber,  customer.customerUniqueId);
+                if (kycStatusFromCce == "rejected") {
+                    await sms.sendMessageForKycRejected(customer.mobileNumber, customer.customerUniqueId);
                 } else {
                     await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
                 }
@@ -101,7 +108,7 @@ exports.cceKycRating = async (req, res, next) => {
 
                     await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
                 });
-                await sms.sendMessageAfterKycApproved(customer.mobileNumber,  customer.customerUniqueId);
+                await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
                 return res.status(200).json({ message: 'Success' })
             }
         }
@@ -135,7 +142,13 @@ exports.cceKycRating = async (req, res, next) => {
 
                     await models.customerKycClassification.create({ customerId, customerKycId, scrapKycRatingFromCce, scrapKycStatusFromCce, scrapReasonFromCce, scrapCceId }, { transaction: t })
                 });
-                
+
+                if (scrapKycStatusFromCce == "rejected") {
+                    await sms.sendMessageForKycRejected(customer.mobileNumber, customer.customerUniqueId);
+                } else {
+                    await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
+                }
+
             } else {
                 reasonFromCce = ""
                 await sequelize.transaction(async (t) => {
@@ -162,12 +175,24 @@ exports.cceKycRating = async (req, res, next) => {
                 }
                 await sequelize.transaction(async (t) => {
 
+                    if (scrapKycStatusFromCce == "rejected") {
+                        await models.customer.update(
+                            { digiKycStatus: scrapKycStatusFromCce, emiKycStatus: scrapKycStatusFromCce, kycStatus: scrapKycStatusFromCce, scrapKycStatus: scrapKycStatusFromCce }, { where: { id: customerId }, transaction: t }
+                        )
+                    }
+
                     await models.customerKyc.update(
                         { isScrapKycSubmitted: true },
                         { where: { customerId: customerId }, transaction: t })
 
                     await models.customerKycClassification.update({ customerId, customerKycId, scrapKycRatingFromCce, scrapKycStatusFromCce, scrapReasonFromCce, scrapCceId }, { where: { customerId }, transaction: t })
                 });
+
+                if (scrapKycStatusFromCce == "rejected") {
+                    await sms.sendMessageForKycRejected(customer.mobileNumber, customer.customerUniqueId);
+                } else {
+                    await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
+                }
                 return res.status(200).json({ message: 'Success' })
             } else {
                 if ((scrapKycRatingFromCce == 1 || scrapKycRatingFromCce == 2 || scrapKycRatingFromCce == 3) && scrapKycStatusFromCce == "approved") {
@@ -670,7 +695,7 @@ exports.updateRatingAppraiserOrCce = async (req, res, next) => {
 
     let customerRating = await models.customerKycClassification.findOne({ where: { customerId } })
     let customer = await models.customer.findOne({ where: { customerId } })
-       
+
     if (check.isEmpty(customerRating)) {
         return res.status(400).json({ message: `This customer rating is not available` })
     }
@@ -701,8 +726,8 @@ exports.updateRatingAppraiserOrCce = async (req, res, next) => {
 
             await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
         });
-        if (checkRatingExist.kycStatusFromCce !== "rejected") {
-            await sms.sendMessageForKycRejected(customer.mobileNumber,  customer.customerUniqueId);
+        if (checkRatingExist.kycStatusFromCce == "rejected") {
+            await sms.sendMessageForKycRejected(customer.mobileNumber, customer.customerUniqueId);
         } else {
             await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
         }
@@ -719,7 +744,7 @@ exports.updateRatingAppraiserOrCce = async (req, res, next) => {
 
             await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
         });
-        await sms.sendMessageAfterKycApproved(customer.mobileNumber,  customer.customerUniqueId);
+        await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
         return res.status(200).json({ message: 'success' })
     }
 }
