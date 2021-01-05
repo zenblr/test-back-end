@@ -312,7 +312,6 @@ exports.sendMessageForBuy = async (mobileNumber,quantity, metalType, amount) => 
         let message = await messageTemplate.content.replace("{#var#}", quantity).replace("{#var#}", metalType).replace("{#var#}", amount)
         let smsFrom = "customer"
         await sms.sendSms(mobileNumber, message,smsFrom);
-        console.log("3333333333333333333333333333333333",message)
     }
 }
 exports.sendMessageForSell = async (mobileNumber,quantity, metalType, amount,type) => {
@@ -322,7 +321,6 @@ if(type=="bankAccount"){
         let message = await messageTemplate.content.replace("{#var#}", quantity).replace("{#var#}", metalType).replace("{#var#}", amount)
         let smsFrom = "customer"
         await sms.sendSms(mobileNumber, message,smsFrom);
-        console.log("message",message)
     }
 }else if (type=="augmontWallet"){
     let messageTemplate = await models.smsAlert.getSmsTemplate('sell & wallet ');
@@ -330,7 +328,6 @@ if(type=="bankAccount"){
         let message = await messageTemplate.content.replace("{#var#}", quantity).replace("{#var#}", metalType).replace("{#var#}", amount)
         let smsFrom = "customer"
         await sms.sendSms(mobileNumber, message,smsFrom);
-        console.log("message",message)
     }
 }
     
@@ -352,7 +349,6 @@ exports.sendMessageForDepositRequest = async (mobileNumber, amount) => {
         let message = await messageTemplate.content.replace("{#var#}", amount)
         let smsFrom = "customer"
         await sms.sendSms(mobileNumber, message,smsFrom);
-        console.log("message",message)
     }
 }
 
@@ -362,7 +358,6 @@ exports.sendMessageForDepositRequestAccepted = async (mobileNumber, amount) => {
         let message = await messageTemplate.content.replace("{#var#}", amount)
         let smsFrom = "customer"
         await sms.sendSms(mobileNumber, message,smsFrom);
-        console.log("message",message)
     }
 }
 
@@ -372,7 +367,6 @@ exports.sendMessageForDepositRequestRejected = async (mobileNumber, amount) => {
         let message = await messageTemplate.content.replace("{#var#}", amount)
         let smsFrom = "customer"
         await sms.sendSms(mobileNumber, message,smsFrom);
-        console.log("message",message,smsFrom)
     }
 }
 
@@ -382,7 +376,6 @@ exports.sendMessageForWithdrawalPaymentCompleted = async (mobileNumber, amount) 
         let message = await messageTemplate.content.replace("{#var#}", amount)
         let smsFrom = "customer"
         await sms.sendSms(mobileNumber, message,smsFrom);
-        console.log("message",message,smsFrom)
     }
 }
 exports.sendMessageForWithdrawalRejected = async (mobileNumber, amount) => {
@@ -391,7 +384,6 @@ exports.sendMessageForWithdrawalRejected = async (mobileNumber, amount) => {
         let message = await messageTemplate.content.replace("{#var#}", amount)
         let smsFrom = "customer"
         await sms.sendSms(mobileNumber, message,smsFrom);
-        console.log("message",message,smsFrom)
     }
 }
 
@@ -401,6 +393,5 @@ exports.sendMessageForOrderPlaced = async (mobileNumber, orderId) => {
         let message = await messageTemplate.content.replace("{#var#}", orderId)
         let smsFrom = "customer"
         await sms.sendSms(mobileNumber, message,smsFrom);
-        console.log("message",message,smsFrom)
     }
 }
