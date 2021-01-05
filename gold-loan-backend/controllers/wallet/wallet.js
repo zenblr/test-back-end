@@ -172,7 +172,7 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
 
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
 
-                await sms.sendMessageForDepositRequestAccepted( customerDetails.mobileNumber,transactionData.transactionAmount );
+                await sms.sendMessageForDepositRequestAccepted( customer.mobileNumber,transactionData.transactionAmount );
 
             } else {
 
@@ -216,7 +216,7 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
 
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, }, { where: { id: transactionData.id }, transaction: t });
         
-                await sms.sendMessageForWithdrawalPaymentRejected( customer.mobileNumber,transactionData.transactionAmount );
+                await sms.sendMessageForWithdrawalRejected(customer.mobileNumber,transactionData.transactionAmount );
             }else{
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, }, { where: { id: transactionData.id }, transaction: t });
 

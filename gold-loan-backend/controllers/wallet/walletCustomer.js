@@ -190,7 +190,7 @@ exports.addAmountWallet = async (req, res) => {
             redirectOn: process.env.DIGITALGOLDAPI + tempWalletTransaction.redirectOn
           }
        
-          await sms.sendMessageForDepositRequest( customer.mobileNumber, tempWalletTransaction.orderAmount);
+          await sms.sendMessageForDepositRequest( customer.mobileNumber, tempWalletDetail.amount);
 
           if (tempWalletTransaction.redirectOn) {
             res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
@@ -285,7 +285,9 @@ exports.addAmountWallet = async (req, res) => {
                 }
                 await models.digiGoldOrderTaxDetail.create({ orderDetailId: orderDetail.id, totalTaxAmount: result.data.result.data.totalTaxAmount, cgst: result.data.result.data.taxes.taxSplit[0].cgst, sgst: result.data.result.data.taxes.taxSplit[0].scgst, isActive: true }, { transaction: t });
 
-                await sms.sendMessageForBuy(customerName, customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+                // await sms.sendMessageForBuy(customerName, customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+                await sms.sendMessageForBuy( customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+
 
                 return result.data;
 
@@ -494,6 +496,9 @@ exports.addAmountWallet = async (req, res) => {
         walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, transactionUniqueId, bankTransactionUniqueId: tempWalletTransaction.bankTransactionUniqueId, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, chequeNumber: tempWalletTransaction.chequeNumber, bankName: tempWalletTransaction.bankName, branchName: tempWalletTransaction.branchName, depositStatus: "pending", runningBalance: customer.currentWalletBalance, freeBalance: customer.walletFreeBalance }, { transaction: t });
 
         await models.walletTransactionTempDetails.update({ isOrderPlaced: true }, { where: { id: tempWalletTransaction.id }, transaction: t });
+
+
+        await sms.sendMessageForDepositRequest( customer.mobileNumber, tempWalletDetail.amount);
 
       })
 
