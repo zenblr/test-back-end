@@ -1483,7 +1483,7 @@ let digiOrEmiKyc = async (req) => {
 
 let applyDigiKyc = async (req) => {
 
-    let { customerId, panImage, panCardNumber, panType } = req.body
+    let { customerId, panImage, panCardNumber, panType, dateOfBirth, age } = req.body
     let checkApplied = await models.digiKycApplied.findOne({ where: { customerId } })
 
     if (checkApplied) {
@@ -1493,7 +1493,7 @@ let applyDigiKyc = async (req) => {
     await sequelize.transaction(async (t) => {
         await models.digiKycApplied.create({ customerId: customer.id, status: 'pending' })
 
-        await models.customer.update({ digiKycStatus: 'waiting', panCardNumber, panImage, panType }, { where: { id: customer.id }, transaction: t })
+        await models.customer.update({ digiKycStatus: 'waiting', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customer.id }, transaction: t })
     })
 
     // return res.status(200).json({ message: `success` })
