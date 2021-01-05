@@ -286,11 +286,33 @@ let customerBalance = async (customerData, amount) => {
   }
 }
 
+let customerNonSellableMetal = async (currentMetalWeight, sellableMetal, nonSellableMetal, deliveryMetal) => {
+  currentMetalWeight = currentMetalWeight - deliveryMetal
+
+  checkRemaingBalance = deliveryMetal - nonSellableMetal
+
+  nonSellableMetal = Math.abs(checkRemaingBalance);
+
+  if (checkRemaingBalance > 0) {
+    nonSellableMetal = 0
+    if (sellableMetal > checkRemaingBalance) {
+      sellableMetal = sellableMetal - checkRemaingBalance
+    } else {
+      sellableMetal = 0
+    }
+  }
+
+  return {
+    sellableMetal,
+    nonSellableMetal
+  }
+}
+
 
 module.exports = {
   walletBuy: walletBuy,
   walletDelivery: walletDelivery,
   customerBalance: customerBalance,
-  walletTransactionDetailById: walletTransactionDetailById
+  walletTransactionDetailById: walletTransactionDetailById,
+  customerNonSellableMetal: customerNonSellableMetal
 }
-

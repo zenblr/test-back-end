@@ -171,9 +171,14 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
                 let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "credit", description: "Amount added to your balance", productTypeId: 4, transactionDate: date, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
 
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
+
+                await sms.sendMessageForDepositRequestAccepted( customer.mobileNumber,transactionData.transactionAmount );
+
             } else {
 
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date }, { where: { id: transactionData.id }, transaction: t });
+
+                await sms.sendMessageForDepositRequestRejected( customer.mobileNumber,transactionData.transactionAmount );
 
             }
 
@@ -197,6 +202,8 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, }, { where: { id: transactionData.id }, transaction: t });
 
                 await models.walletDetails.update({transactionStatus: "completed" }, {where: { id: transactionData.walletId }});
+               
+                await sms.sendMessageForWithdrawalPaymentCompleted( customer.mobileNumber,transactionData.transactionAmount );
             } else if(depositStatus == "rejected"){
 
                 //rejected code
@@ -208,7 +215,8 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
                 await models.customer.update({ walletFreeBalance: customerUpdatedFreeBalance, currentWalletBalance: currentWalletBalance }, { where: { id: customer.id }, transaction: t });
 
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, }, { where: { id: transactionData.id }, transaction: t });
-
+        
+                await sms.sendMessageForWithdrawalRejected(customer.mobileNumber,transactionData.transactionAmount );
             }else{
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, }, { where: { id: transactionData.id }, transaction: t });
 

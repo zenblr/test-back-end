@@ -1,8 +1,11 @@
 const request = require('request');
 const models = require('../models');
 
-let sendSms = async (mobileNumber, message) => {
-    const getSmsCredential = await models.loanSmsCredential.findOne({where:{isActive:true}});
+let sendSms = async (mobileNumber, message, smsFrom) => {
+    if(!smsFrom){
+        smsFrom = "admin"
+    }
+    const getSmsCredential = await models.loanSmsCredential.findOne({where:{isActive:true, smsFrom}});
     let headers = {
         'content-type': 'application/json',
     };

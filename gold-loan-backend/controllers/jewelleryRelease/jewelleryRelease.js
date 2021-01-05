@@ -351,6 +351,8 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                         if (signatureVerification == false) {
                             return res.status(422).json({ message: "razorpay payment verification failed" });
                         }
+                    } else{
+                        isAdmin = true
                     }
                     if (isRazorPay) {
                         loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "partRelease", depositDate: moment(depositDate).format("YYYY-MM-DD"), razorPayTransactionId }, { transaction: t });
@@ -1438,6 +1440,8 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                         if (signatureVerification == false) {
                             return res.status(422).json({ message: "razorpay payment verification failed" });
                         }
+                    }else{
+                        isAdmin = true
                     }
                     if (isRazorPay) {
                         loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "fullRelease", depositDate: moment(depositDate).format("YYYY-MM-DD"), razorPayTransactionId }, { transaction: t });

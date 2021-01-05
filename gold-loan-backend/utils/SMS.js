@@ -219,29 +219,16 @@ exports.sendUpdateLocationHandoverMessage = async (mobileNumber, otp, receiverNa
     }
 }
 
-exports.sendMessageForBuy = async (customerName,mobileNumber,quantity, metalType, amount) => {
-    let messageTemplate = await models.smsAlert.getSmsTemplate('buy');
-    if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<quantity>", quantity).replace("<metalType>", metalType).replace("<amount>", amount).replace("<name>",customerName)
-        await sms.sendSms(mobileNumber, message);
-    }
-}
+// exports.sendMessageForBuy = async (customerName,mobileNumber,quantity, metalType, amount) => {
+//     let messageTemplate = await models.smsAlert.getSmsTemplate('buy');
+//     if (messageTemplate) {
+//         let message = await messageTemplate.content.replace("<quantity>", quantity).replace("<metalType>", metalType).replace("<amount>", amount).replace("<name>",customerName)
+//         await sms.sendSms(mobileNumber, message);
+//         console.log("message",message)
+//     }
+// }
 
-exports.sendMessageForSell = async (mobileNumber,quantity, metalType, amount) => {
-    let messageTemplate = await models.smsAlert.getSmsTemplate('sell');
-    if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<quantity>", quantity).replace("<metalType>", metalType).replace("<amount>", amount)
-        await sms.sendSms(mobileNumber, message);
-    }
-}
 
-exports.sendMessageForOrderPlaced = async (mobileNumber, orderId) => {
-    let messageTemplate = await models.smsAlert.getSmsTemplate('Order Placed');
-    if (messageTemplate) {
-        let message = await messageTemplate.content.replace("<orderId>", orderId)
-        await sms.sendSms(mobileNumber, message);
-    }
-}
 
 exports.sendMessageForKycUpdate = async (mobileNumber) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Bank and Kyc update');
@@ -287,5 +274,133 @@ exports.sendMessageForWithdrawCompleted = async (mobileNumber, amount) => {
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<amount>", amount)
         await sms.sendSms(mobileNumber, message);
+    }
+}
+// kyc message
+exports.sendMessageForKycRejected = async (mobileNumber, accountId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('KYC Verification(Reject)');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", accountId)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}
+
+
+exports.sendMessageAfterKycApproved= async (mobileNumber, accountId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('KYC Verification(Approve)');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", accountId)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}
+
+exports.sendMessageForKycPending= async (mobileNumber, memberId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('KYC Update(Pending)');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", memberId)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}
+
+///for wallet buy sell deposit withdraw 
+exports.sendMessageForBuy = async (mobileNumber,quantity, metalType, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('buy');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", quantity).replace("{#var#}", metalType).replace("{#var#}", amount)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+        console.log("3333333333333333333333333333333333",message)
+    }
+}
+exports.sendMessageForSell = async (mobileNumber,quantity, metalType, amount,type) => {
+if(type=="bankAccount"){
+    let messageTemplate = await models.smsAlert.getSmsTemplate('sell');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", quantity).replace("{#var#}", metalType).replace("{#var#}", amount)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+        console.log("message",message)
+    }
+}else if (type=="augmontWallet"){
+    let messageTemplate = await models.smsAlert.getSmsTemplate('sell & wallet ');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", quantity).replace("{#var#}", metalType).replace("{#var#}", amount)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+        console.log("message",message)
+    }
+}
+    
+}
+
+// exports.sendMessageForSell = async (mobileNumber,quantity, metalType, amount) => {
+
+//     let messageTemplate = await models.smsAlert.getSmsTemplate('sell');
+//     if (messageTemplate) {
+//         let message = await messageTemplate.content.replace("{#var#}", quantity).replace("{#var#}", metalType).replace("{#var#}", amount)
+//         await sms.sendSms(mobileNumber, message);
+//         console.log("message",message)
+//     }
+// } 
+
+exports.sendMessageForDepositRequest = async (mobileNumber, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Deposit Request placed');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", amount)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+        console.log("message",message)
+    }
+}
+
+exports.sendMessageForDepositRequestAccepted = async (mobileNumber, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Deposit Request Accepted');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", amount)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+        console.log("message",message)
+    }
+}
+
+exports.sendMessageForDepositRequestRejected = async (mobileNumber, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Deposit Request Rejected');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", amount)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+        console.log("message",message,smsFrom)
+    }
+}
+
+exports.sendMessageForWithdrawalPaymentCompleted = async (mobileNumber, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Withdrawal Payment Completed');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", amount)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+        console.log("message",message,smsFrom)
+    }
+}
+exports.sendMessageForWithdrawalRejected = async (mobileNumber, amount) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Withdrawal Payment Rejected');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", amount)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+        console.log("message",message,smsFrom)
+    }
+}
+
+exports.sendMessageForOrderPlaced = async (mobileNumber, orderId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Order Placed');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", orderId)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+        console.log("message",message,smsFrom)
     }
 }
