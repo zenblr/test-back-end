@@ -17,7 +17,7 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const walletService = require('../../service/wallet');
-const { walletBuy, walletDelivery, customerBalance } = require('../../service/wallet');
+const { walletBuy, walletDelivery, customerBalance, customerNonSellableMetal } = require('../../service/wallet');
 const { postMerchantOrder, getUserData, postBuy } = require('../../service/digiGold')
 
 const getMerchantData = require('../auth/getMerchantData');
@@ -381,8 +381,8 @@ exports.addAmountWallet = async (req, res) => {
 
                 let customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customerId } });
 
-                let updatedSellableGold = 0;
-                let updatedSellableSilver = 0;
+                // let updatedSellableGold = 0;
+                // let updatedSellableSilver = 0;
                 let totalGoldWeight = 0;
                 let totalSilverWeight = 0;
 
@@ -405,20 +405,25 @@ exports.addAmountWallet = async (req, res) => {
 
                 if (totalGoldWeight) {
 
-                  updatedSellableGold = Number(customerBal.sellableGoldBalance) - Number(totalGoldWeight)
-                  if (!updatedSellableGold || updatedSellableGold <= 0) {
-                    updatedSellableGold = 0;
-                  }
-                  await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: updatedSellableGold }, { where: { customerId: customerId }, transaction: t });
+                  // updatedSellableGold = Number(customerBal.sellableGoldBalance) - Number(totalGoldWeight)
+                  // if (!updatedSellableGold || updatedSellableGold <= 0) {
+                  //   updatedSellableGold = 0;
+                  // }
+
+                  let checkBalance = await customerNonSellableMetal(result.data.result.data.goldBalance, customerBal.sellableGoldBalance, customerBal.nonSellableGoldBalance, totalGoldWeight);
+
+                  await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: checkBalance.sellableMetal, nonSellableGoldBalance: checkBalance.nonSellableMetal }, { where: { customerId: customerId }, transaction: t });
                 }
                 // console.log(updatedSellableGold, "updatedSellableGold");
                 if (totalSilverWeight) {
-                  updatedSellableSilver = Number(customerBal.sellableSilverBalance) - Number(totalSilverWeight);
-                  if (!updatedSellableSilver || updatedSellableSilver <= 0) {
-                    updatedSellableSilver = 0;
-                  }
-                  console.log("updatedSellableSilver", updatedSellableSilver);
-                  await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilver }, { where: { customerId: customerId }, transaction: t });
+                  // updatedSellableSilver = Number(customerBal.sellableSilverBalance) - Number(totalSilverWeight);
+                  // if (!updatedSellableSilver || updatedSellableSilver <= 0) {
+                  //   updatedSellableSilver = 0;
+                  // }
+
+                  let checkBalance = await customerNonSellableMetal(result.data.result.data.goldBalance, customerBal.sellableSilverBalance, customerBal.nonSellableSilverBalance, totalSilverWeight);
+
+                  await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: checkBalance.sellableMetal, nonSellableSilverBalance: checkBalance.nonSellableMetal }, { where: { customerId: customerId }, transaction: t });
                 }
 
                 // await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: id }, transaction: t });
@@ -518,7 +523,7 @@ exports.addAmountWallet = async (req, res) => {
       if (err.response.data.errors.userKyc && err.response.data.errors.userKyc.length) {
 
         res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
-        res.redirect(`https://${process.env.DIGITALGOLDAPI}/kyc/digi-gold`);
+        res.redirect(`${process.env.BASE_URL_CUSTOMER}/kyc/digi-gold`);
       } else {
         return res.status(422).json(err.response.data);
       }
