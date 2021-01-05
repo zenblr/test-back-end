@@ -40,7 +40,7 @@ exports.cceKycRating = async (req, res, next) => {
 
                     await models.customerKycClassification.create({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { transaction: t })
                 });
-                if (checkRatingExist.kycStatusFromCce !== "rejected") {
+                if (checkRatingExist.kycStatusFromCce == "rejected") {
                     await sms.sendMessageForKycRejected(customer.mobileNumber, customer.customerUniqueId);
                 } else {
                     await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
@@ -74,7 +74,7 @@ exports.cceKycRating = async (req, res, next) => {
 
                     await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
                 });
-                if (checkRatingExist.kycStatusFromCce !== "rejected") {
+                if (checkRatingExist.kycStatusFromCce == "rejected") {
                     await sms.sendMessageForKycRejected(customer.mobileNumber,  customer.customerUniqueId);
                 } else {
                     await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
@@ -677,7 +677,7 @@ exports.updateRatingAppraiserOrCce = async (req, res, next) => {
 
             await models.customerKycClassification.update({ customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, cceId }, { where: { customerId }, transaction: t })
         });
-        if (checkRatingExist.kycStatusFromCce !== "rejected") {
+        if (checkRatingExist.kycStatusFromCce == "rejected") {
             await sms.sendMessageForKycRejected(customer.mobileNumber,  customer.customerUniqueId);
         } else {
             await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
