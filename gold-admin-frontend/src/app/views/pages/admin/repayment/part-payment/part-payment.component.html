@@ -4,15 +4,19 @@
             <div class="table-div kt-padding-t-10">
                 <table class="table outer-border altered-row">
                     <thead>
-                        <th class="transparent th-style th-padding-style">Loan ID</th>
-                        <th class="transparent th-style table-amount">Loan Amount</th>
-                        <th class="transparent th-style ">Loan Date</th>
-                        <th class="transparent th-style ">Last Part Payment Date</th>
-                        <th class="transparent th-style table-amount">Principal Outstanding</th>
+                        <th class="transparent">Loan ID</th>
+                        <th class="transparent table-amount">Loan Amount</th>
+                        <th class="transparent">Loan Date</th>
+                        <th class="transparent">Scheme Name</th>
+                        <th class="transparent">Tenure</th>
+                        <th class="transparent">Interest Rate</th>
+                        <th class="transparent"> Interest Rate after <br>Rebate</th>
+                        <th class="transparent">Next Due Date</th>
+                        <th class="transparent">Status</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="th-style th-padding-style">
+                            <td class="">
                                 <span>{{loanDetails?.loan?.customerLoan[0]?.loanUniqueId}}</span>
                                 <br>
                                 <span *ngIf="loanDetails?.loan?.customerLoan.length > 1">
@@ -28,16 +32,39 @@
                             </td>
                             <td class="">{{loanDetails?.loan?.loanStartDate | date :'mediumDate'}}</td>
 
-                            <td class="" *ngIf="loanDetails?.loan?.lastPaymentDate else blankTableValue">
-                                {{loanDetails?.loan?.lastPaymentDate | date :'mediumDate'}}
-
-                            </td>
-                            <td class="table-amount table-last">
-                                <span>{{loanDetails?.loan?.customerLoan[0]?.outstandingAmount}}</span>
+                            <td class="">
+                                <span>{{loanDetails?.loan?.customerLoan[0]?.scheme.schemeName | uppercase}}</span>
                                 <br>
                                 <span *ngIf="loanDetails?.loan?.customerLoan.length > 1">
-                                    {{loanDetails?.loan?.customerLoan[1]?.outstandingAmount}}
+                                    {{loanDetails?.loan?.customerLoan[1]?.scheme.schemeName | uppercase}}
                                 </span>
+
+                            </td>
+                            <td class="">
+                                <span>{{loanDetails?.loan?.tenure}}</span>
+                            </td>
+                            <td class="">
+                                <span>{{loanDetails?.loan?.customerLoan[0]?.rebateInterestRate}} %</span>
+                                <br>
+                                <span *ngIf="loanDetails?.loan?.customerLoan.length > 1">
+                                    {{loanDetails?.loan?.customerLoan[1]?.rebateInterestRate}} %
+                                </span>
+                            </td>
+                            <td class="">
+                                <span>{{loanDetails?.loan?.customerLoan[0]?.currentInterestRate}} %</span>
+                                <br>
+                                <span *ngIf="loanDetails?.loan?.customerLoan.length > 1">
+                                    {{loanDetails?.loan?.customerLoan[1]?.currentInterestRate}} %
+                                </span>
+                            </td>
+                            <td *ngIf="loanDetails?.loan?.nextDueDate else blankTableValue">
+                                {{loanDetails?.loan?.nextDueDate | date : 'mediumDate'}}</td>
+                            <td class="text-warning"
+                                *ngIf="loanDetails?.loan?.status == 'pending' || loanDetails?.loan?.status == 'partially paid'">
+                                {{loanDetails?.loan?.status | titlecase}}
+                            </td>
+                            <td class="text-success" *ngIf="loanDetails?.loan?.status == 'paid'">
+                                {{loanDetails?.loan?.status | titlecase}}
                             </td>
                         </tr>
                     </tbody>
@@ -47,44 +74,46 @@
             <div class="table-div kt-padding-t-10">
                 <table class="table outer-border altered-row">
                     <thead>
-                        <th class="transparent th-style th-padding-style">Interest Payable</th>
-                        <th class="transparent th-style table-amount">Augmont Rebate</th>
-                        <th class="transparent th-style ">Net Interest </th>
-                        <th class="transparent th-style ">Penal Interest </th>
-                        <th class="transparent th-style table-amount">Minimum Amount Payable</th>
+                        <th class="transparent table-amount">Principal Outstanding</th>
+                        <th class="transparent table-amount">Next Due Date Amount</th>
+                        <th class="transparent table-amount">Interest Amount till date</th>
+                        <th class="transparent table-amount">Penal Interest</th>
+                        <th class="transparent">Payment Amount</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="th-style th-padding-style">
-                                <span>{{loanDetails?.amount?.securedTotalInterest}}</span>
-                                <br>
-                                <span *ngIf="loanDetails?.loan?.customerLoan.length > 1">
-                                    {{loanDetails?.amount?.unsecuredTotalInterest}}
-                                </span>
+                            <td class="table-amount">
+                                <span>{{payableAmount?.outstandingAmount}}</span><br>
+                                <!-- <span *ngIf="loanDetails?.customerLoan[1]">
+                                    {{payableAmount?.unsecuredOutstandingAmount}}
+                                </span> -->
+                            </td>
+
+                            <td class="table-amount">
+                                <span>{{payableAmount?.totalInterest}}</span><br>
+                                <!-- <span *ngIf="loanDetails?.customerLoan[1]">
+                                    {{payableAmount?.unsecuredTotalInterest}}
+                                </span> -->
                             </td>
                             <td class="table-amount">
-                                <span>{{loanDetails?.amount?.securedRebate}}</span>
-                                <br>
-                                <span *ngIf="loanDetails?.loan?.customerLoan.length > 1">
-                                    {{loanDetails?.amount?.unsecuredRebate}}
+                                <span>{{payableAmount?.securedInterest}}</span> <br>
+                                <span *ngIf="loanDetails?.loan?.customerLoan[1]">
+                                    {{payableAmount?.unsecuredInterest}}
                                 </span>
                             </td>
+
                             <td class="table-amount">
-                                <span>{{loanDetails?.amount?.secured?.interest}}</span>
-                                <br>
-                                <span *ngIf="loanDetails?.loan?.customerLoan.length > 1">
-                                    {{loanDetails?.amount?.unsecured?.interest}}
-                                </span>
-                            </td>
-                            <td class="table-amount">
-                                <span>{{loanDetails?.amount?.secured?.penalInterest}}</span>
-                                <br>
-                                <span *ngIf="loanDetails?.loan?.customerLoan.length > 1">
-                                    {{loanDetails?.amount?.unsecured?.penalInterest}}
+                                <span>{{payableAmount?.securedPenalInterest}}</span><br>
+                                <span *ngIf="loanDetails?.loan?.customerLoan[1]">
+                                    {{payableAmount?.unsecuredPenalInterest}}
                                 </span>
                             </td>
                             <td class="table-amount table-last">
-                                <span>{{loanDetails?.amount?.minimumAmount}}</span>
+                                <input ktWeight [class.isError]="partAmount.touched && partAmount.invalid"
+                                    class="form-control" type="text" [formControl]="partAmount" />
+                                <mat-error *ngIf="partAmount.errors?.required && partAmount.touched">
+                                    Field Required
+                                </mat-error>
                             </td>
                         </tr>
                     </tbody>
@@ -102,7 +131,7 @@
                     <h5>Part Payment</h5>
                     <mat-divider></mat-divider>
                 </div>
-                <div class="col-12">
+                <!-- <div class="col-12">
                     <div class="row justify-content-center">
                         <div class="col-6">
                             <div class="row kt-margin-t-15">
@@ -119,7 +148,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <div class="row justify-content-center kt-padding-t-25 kt-padding-b-15">
@@ -138,12 +167,13 @@
                 <div class="table-div kt-padding-t-10">
                     <table class="table outer-border">
                         <thead>
-                            <th class="transparent th-width-style  table-amount">Net Interest Paid</th>
-                            <th class="transparent th-width-style table-amount">Penal Paid
-                            <th class="transparent th-width-style table-amount">Principal Paid
+                            <th class="transparent   table-amount">Adjusted towards interest amount</th>
+                            <th class="transparent  table-amount">Adjusted towards penal amount
+                            <th class="transparent  table-amount">Final Part Payment Amount
                             </th>
-                            <th class="transparent th-width-style th-padding-style">Total Paid</th>
-                            
+                            <th class="transparent  table-amount">Outstanding Principal</th>
+                            <th class="transparent">Total Paid</th>
+
                         </thead>
                         <tbody>
                             <tr>
@@ -167,11 +197,19 @@
                                 <td class="table-amount">
                                     <span>{{payableAmountSummary?.securedRatio}}</span>
                                     <br>
-                                    <span>{{payableAmountSummary?.unsecuredRatio}}</span>
+                                    <span
+                                        *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">{{payableAmountSummary?.unsecuredRatio}}</span>
                                 </td>
-                                <td class="th-style th-padding-style">
-                                    <span>{{payableAmountSummary?.paidAmount}}</span>
+                                <td class="table-amount">
+                                    <span>{{payableAmountSummary?.newSecuredOutstanding}}</span>
                                     <br>
+                                    <span
+                                        *ngIf="payableAmountSummary?.loanDetails?.customerLoan[1]">{{payableAmountSummary?.newUnSecuredOutstanding}}</span>
+                                </td>
+                                <td class="">
+                                    <kt-select-payment [minDate]="payableAmountSummary?.loanDetails?.loanStartDate"
+                                        [amount]="partAmount?.value" 
+                                        (paymentData)="paymentData($event)"></kt-select-payment>
                                 </td>
 
 
@@ -182,7 +220,7 @@
 
                 <div class="row justify-content-center kt-padding-t-25 kt-padding-b-10">
                     <div class="col-6 text-center">
-                        <kt-button [value]="'Proceed'" [type]="'button'" (click)="proceed()"></kt-button>
+                        <kt-button [value]="'Proceed'" [type]="'button'" (click)="submitPaymentConfirmation()"></kt-button>
                         <span class="kt-padding-5"></span>
                         <kt-button [value]="'Cancel'" [type]="'reset'" (click)="cancelPayableAmountSummary()">
                         </kt-button>

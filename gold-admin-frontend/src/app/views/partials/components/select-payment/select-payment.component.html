@@ -1,0 +1,6 @@
+<select class="form-control packet-dropdown mandatory " (change)="choosePaymentMethod()" [formControl]="showPaymentValue">
+    <option value=null>Select Payment option</option>
+    <option [value]="item.value" *ngFor="let item of paymentTypeList;">
+        {{item.name | uppercase}}
+    </option>
+</select>
