@@ -97,9 +97,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'razorpay_signature'
         },
-        orderSatatus: {
+        orderStatus: {
             type: DataTypes.STRING,
-            field: 'order_satatus',
+            field: 'order_status',
             defaultValue: "pending",
         },
         deliveryShippingCharges: {
@@ -113,6 +113,10 @@ module.exports = (sequelize, DataTypes) => {
         deliveryTotalWeight: {
             type: DataTypes.FLOAT,
             field: 'delivery_total_weight'
+        },
+        orderCreatedDate: {
+            type: DataTypes.DATE,
+            field: 'order_created_date'
         },
         isActive: {
             type: DataTypes.BOOLEAN,

@@ -22,7 +22,7 @@ exports.sellProduct = async (req, res) => {
     // return;
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
-    
+
     let customerDetails = await models.customer.findOne({
       where: { id, isActive: true },
     });
@@ -40,7 +40,7 @@ exports.sellProduct = async (req, res) => {
         let getConfigSetting = await models.digiGoldConfigDetails.getConfigDetail(configSettingName);
 
         nonSellableAmount = getCustomerBalance.currentGoldBalance - getCustomerBalance.sellableGoldBalance;
-        return res.status(400).json({ message: `Our policy dose not allow customer to sell gold and silver within ${getConfigSetting.configSettingValue} hours of purchasing it. You have purhased ${nonSellableAmount} gram of ${metalType} in last ${getConfigSetting.configSettingValue} hours. Please try again later.` });
+        return res.status(400).json({ message: `Our policy dose not allow customer to sell gold and silver within ${getConfigSetting.configSettingValue} hours of purchasing it. You have purchased ${nonSellableAmount} gram of ${metalType} in last ${getConfigSetting.configSettingValue} hours. Please try again later.` });
       }
     }
     if (metalType == "silver") {
@@ -50,7 +50,7 @@ exports.sellProduct = async (req, res) => {
         let getConfigSetting = await models.digiGoldConfigDetails.getConfigDetail(configSettingName);
 
         nonSellableAmount = getCustomerBalance.currentSilverBalance - getCustomerBalance.sellableSilverBalance;
-        return res.status(400).json({ message: `Our policy dose not allow customer to sell gold and silver within ${getConfigSetting.configSettingValue} hours of purchasing it. You have purhased ${nonSellableAmount} gram of ${metalType} in last ${getConfigSetting.configSettingValue} hours. Please try again later.` });
+        return res.status(400).json({ message: `Our policy dose not allow customer to sell gold and silver within ${getConfigSetting.configSettingValue} hours of purchasing it. You have purchased ${nonSellableAmount} gram of ${metalType} in last ${getConfigSetting.configSettingValue} hours. Please try again later.` });
       }
     }
 
@@ -122,9 +122,11 @@ exports.sellProduct = async (req, res) => {
           // }
           // await models.customer.update({ walletFreeBalance: amountOfWallet }, { where: { id: customerDetails.id }, transaction: t });
 
+          let orderCreatedDate = moment(moment().utcOffset("+05:30"));
+
           let orderDetail = await models.digiGoldOrderDetail.create({
             tempOrderId: tempId.id, customerId: id, orderTypeId: 2, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
-            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: customerDetails.currentWalletBalance
+            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: customerDetails.currentWalletBalance, orderStatus: "completed", orderCreatedDate: orderCreatedDate
           }, { transaction: t });
 
           await models.digiGoldTempOrderDetail.update(
@@ -132,7 +134,7 @@ exports.sellProduct = async (req, res) => {
 
           await models.digiGoldOrderBankDetail.create({ orderDetailId: orderDetail.id, accountNumber: accountNumber, bankId: bankId, ifscCode: ifscCode, userBankId: userBankId, bankName: branchName, isActive: true }, { transaction: t });
 
-          await sms.sendMessageForSell(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+          await sms.sendMessageForSell(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount,'bankAccount');
 
         })
       }
@@ -187,26 +189,27 @@ exports.sellProduct = async (req, res) => {
             await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilverBal }, { where: { customerId: id }, transaction: t });
           }
 
-          walletData = await models.walletDetails.create({ customerId: id, amount: result.data.result.data.totalAmount, paymentDirection: "credit", description: "sell metal", productTypeId: 4, transactionDate: moment() }, { transaction: t })
+          walletData = await models.walletDetails.create({ customerId: id, amount: result.data.result.data.totalAmount, paymentDirection: "credit", description: `${result.data.result.data.metalType} sold ${quantity} grams`, productTypeId: 4, transactionDate: moment(), orderTypeId: 2, paymentOrderTypeId: 4, transactionStatus: "completed"  }, { transaction: t })
 
           let amountOfWallet;
           let currentWalletBalance;
-          if (customerDetails.walletFreeBalance ) {
+          if (customerDetails.walletFreeBalance) {
             amountOfWallet = Number(customerDetails.walletFreeBalance) + Number(amount)
           } else {
             amountOfWallet = Number(amount);
           }
 
-          if (customerDetails.currentWalletBalance ){
+          if (customerDetails.currentWalletBalance) {
             currentWalletBalance = Number(customerDetails.currentWalletBalance) + Number(amount)
-          }else{
+          } else {
             currentWalletBalance = Number(amount)
           }
-          
+
+          let orderCreatedDate = moment(moment().utcOffset("+05:30"));
 
           let orderDetail = await models.digiGoldOrderDetail.create({
             tempOrderId: tempId.id, customerId: id, orderTypeId: 2, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
-            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: amountOfWallet, walletId: walletData.id
+            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: amountOfWallet, walletId: walletData.id, orderStatus: "completed", orderCreatedDate: orderCreatedDate
           }, { transaction: t });
 
           await models.digiGoldTempOrderDetail.update(
@@ -216,7 +219,7 @@ exports.sellProduct = async (req, res) => {
             { walletFreeBalance: amountOfWallet, currentWalletBalance: currentWalletBalance }, { where: { id: customerDetails.id }, transaction: t });
         })
 
-        await sms.sendMessageForSell(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+        await sms.sendMessageForSell(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount,"augmontWallet");
         console.log("success")
       }
       return res.status(200).json(result.data);

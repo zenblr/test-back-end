@@ -163,6 +163,11 @@ exports.readMyLoan = async (req, res, next) => {
                         as: 'scheme'
                     },
                     {
+                        model: models.partner,
+                        as: 'partner',
+                        attributes: ['id', 'name']
+                    },
+                    {
                         model: models.customerLoanInterest,
                         as: 'customerLoanInterest',
                         where: { emiStatus: { [Op.notIn]: ['paid'] } },//isExtraDaysInterest: false
