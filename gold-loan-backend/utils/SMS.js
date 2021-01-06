@@ -395,3 +395,30 @@ exports.sendMessageForOrderPlaced = async (mobileNumber, orderId) => {
         await sms.sendSms(mobileNumber, message,smsFrom);
     }
 }
+///
+exports.sendMessageForDeliveredToClient = async (mobileNumber, orderId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Delivered to Client');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", orderId)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}
+
+exports.sendMessageForDispatchedButNotDelivered = async (mobileNumber,firstName, orderId,courierCompany,trackingId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Dispatched but not Delivered');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", firstName).replace("{#var#}", orderId).replace("{#var#}", courierCompany).replace("{#var#}", trackingId)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}
+
+exports.sendMessageForDispatchedButNotDelivered = async (mobileNumber,firstName, orderId,courierCompany,trackingId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Dispatched but not Delivered');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("{#var#}", firstName).replace("{#var#}", orderId).replace("{#var#}", courierCompany).replace("{#var#}", trackingId)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}

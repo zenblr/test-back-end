@@ -1,7 +1,7 @@
-const models = require('../../../models');
+const models = require('../../models');
 const getMerchantData = require('../auth/getMerchantData');
 const sequelize = models.sequelize;
-let sms = require('../../../utils/SMS');
+let sms = require('../../utils/SMS');
 // const errorLogger = require('../../../utils/errorlogger');
 
 
@@ -47,7 +47,7 @@ exports.changeKycStatus = async (req, res) => {
                     await sequelize.transaction(async (t) => {
                     if (ele.status == 'approved') {
                         if (!customer.approvedMessageSent) {
-                            await sms.sendMessageForKycApproved(customer.mobileNumber, getCustomerkycStatusData.accountId);
+                            await sms.sendMessageAfterKycApproved(customer.mobileNumber, getCustomerkycStatusData.accountId);
                           
                                 await models.digitalGoldCustomerKyc.update(
                                     { approvedMessageSent: true },
@@ -60,7 +60,7 @@ exports.changeKycStatus = async (req, res) => {
                            
                         }
                     } else if (ele.status == 'rejected') {
-                        await sms.sendMessageForKycReject(customer.mobileNumber, getCustomerkycStatusData.accountId);
+                        await sms.sendMessageForKycRejected(customer.mobileNumber, getCustomerkycStatusData.accountId);
                         if (!ele.rejectedMessageSent) {
                          
                                 await models.digitalGoldCustomerKyc.update(
