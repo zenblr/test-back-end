@@ -1,5 +1,5 @@
 <kt-portlet>
-    <kt-modal-header *ngIf="modalData.action !== 'view'" [title]='"KYC Details"' [noTitleCase]="true"
+    <kt-modal-header *ngIf="modalData.action == 'view'" [title]='"KYC Details"' [noTitleCase]="true"
         (action)="action()">
     </kt-modal-header>
     <kt-portlet-body>
@@ -79,14 +79,14 @@
                             </div>
                             <div class="col-8">
 
-                                <div class="input-group mb-3">
+                                <div *ngIf="modalData.action != 'view'" class="input-group mb-3">
                                     <input type="text" class="form-control" placeholder="Attach PAN"
                                         aria-label="Attach PAN" formControlName="panFileName"
                                         [class.isError]="controls.panAttachment.touched && controls.panAttachment.invalid" />
 
                                     <div class="input-group-append">
-                                        <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
-                                            (click)="pan.click()">Attach</span>
+                                        <span [ngClass]="modalData.action != 'view' && isEditable ? 'kt-pointer' : 'cursor-not-allowed'" class="input-group-text bg font-weight" id="basic-addon2"
+                                            (click)="modalData.action != 'view' && isEditable && pan.click()">Attach</span>
                                     </div>
                                     <input type="file" class="d-none" accept="image/jpg, image/png, image/jpeg" #pan
                                         (input)="uploadFile($event)">
@@ -107,8 +107,9 @@
                                 src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
                             <img *ngIf="images.pan['URL'] && !isPdf(images.pan['URL'])" (click)="images.pan['URL']"
                                 class="fetched-image" [src]="images.pan['URL']" style="border-radius: 15px;" alt="" />
-                            <img *ngIf="images.pan['URL']" src="../../../../../assets/media/icons/edit.svg" alt=""
-                                class="kt-pointer remove-icon" (click)="pan.click()">
+                            <img *ngIf="images.pan['URL'] && modalData.action != 'view' && isEditable"
+                                src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer remove-icon"
+                                (click)="pan.click()">
                             <div *ngIf="isPdf(images.pan['URL'])" class="iframeWrapper"
                                 (click)="previewPdf(images.pan['URL'])">
                                 <iframe [src]="images.pan['URL'] | safe : 'resourceUrl'" height="250" width="290"
@@ -125,7 +126,8 @@
                                 <label class="mandatory">Status</label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="status">
+                                <select class="form-control" formControlName="status"
+                                    [class.isError]="controls.status.invalid && controls.status.touched">
                                     <option [value]=null disabled>Select Status</option>
                                     <option value="approved">Approved</option>
                                     <option value="rejected">Rejected</option>

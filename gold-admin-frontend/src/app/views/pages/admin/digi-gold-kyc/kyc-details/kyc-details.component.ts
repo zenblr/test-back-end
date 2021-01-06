@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { map, finalize } from 'rxjs/operators';
 import { ImagePreviewDialogComponent } from '../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { AppliedKycService } from '../../../../../core/digi-gold-kyc/applied-kyc/service/applied-kyc.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LeadService } from '../../../../../core/lead-management/services/lead.service';
 
 @Component({
@@ -20,6 +20,8 @@ export class KycDetailsComponent implements OnInit {
   images = { pan: {} };
   @ViewChild("pan", { static: false }) pan;
   customerId: string;
+  id: string;
+  isEditable: boolean;
 
   constructor(
     public dialogRef: MatDialogRef<KycDetailsComponent>,
@@ -30,18 +32,20 @@ export class KycDetailsComponent implements OnInit {
     private toastr: ToastrService,
     private appliedKycService: AppliedKycService,
     private route: ActivatedRoute,
-    private leadService: LeadService
+    private leadService: LeadService,
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.initForm()
 
-    this.customerId = this.route.snapshot.paramMap.get("id");
+    this.customerId = this.route.snapshot.paramMap.get("customerId");
+    this.id = this.route.snapshot.queryParamMap.get("id");
+
     // console.log(this.customerId)
     if (this.customerId) {
       this.getKYCDetails()
       this.setPanAttachmentValidation()
-      this.digiGoldKycForm.disable()
     }
     if (this.modalData.data) {
       // this.appliedKycService.kycData$.subscribe(res => {
@@ -50,6 +54,8 @@ export class KycDetailsComponent implements OnInit {
       this.patchImage(this.modalData.data)
       // })
     }
+    this.digiGoldKycForm.disable()
+    this.digiGoldKycForm.controls.status.enable()
   }
 
   getKYCDetails() {
@@ -60,7 +66,8 @@ export class KycDetailsComponent implements OnInit {
         moduleId: 4,
         customerId: res.singleCustomer.id,
         panType: 'pan',
-        status: null
+        status: null,
+        id: Number(this.id)
       })
       this.patchImage(res.singleCustomer)
     })
@@ -86,6 +93,8 @@ export class KycDetailsComponent implements OnInit {
   setPanAttachmentValidation() {
     this.controls.panAttachment.setValidators([])
     this.controls.panAttachment.updateValueAndValidity()
+    this.controls.status.setValidators([Validators.required])
+    this.controls.status.updateValueAndValidity()
   }
 
   get controls() {
@@ -201,7 +210,11 @@ export class KycDetailsComponent implements OnInit {
     if (this.digiGoldKycForm.invalid) {
       return this.digiGoldKycForm.markAllAsTouched()
     }
-    this.appliedKycService.editKycDetails(this.digiGoldKycForm.getRawValue()).subscribe()
+    this.appliedKycService.editKycDetails(this.digiGoldKycForm.getRawValue())
+      .subscribe(res => {
+        this.toastr.success(res.message)
+        this.router.navigate(['/admin/applied-kyc-digi-gold'])
+      })
     console.log(this.digiGoldKycForm.getRawValue())
   }
 

@@ -314,6 +314,13 @@ export class PageConfig {
 			},
 			"applied-kyc-digi-gold": {
 				page: { title: "Applied KYC - Digi Gold", desc: "" },
+				"edit": {
+					id: {
+						// id: {
+						page: { title: "Customer KYC", desc: "" },
+						// }
+					}
+				},
 			},
 			"holidays": {
 				page: { title: "Holidays", desc: "" },

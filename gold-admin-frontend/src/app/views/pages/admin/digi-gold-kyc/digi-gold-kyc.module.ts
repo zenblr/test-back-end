@@ -18,7 +18,7 @@ const rout: Routes = [
     component: AppliedKycComponent
   },
   {
-    path: 'edit/:id',
+    path: 'edit/:customerId',
     component: KycDetailsComponent
   }
 ]

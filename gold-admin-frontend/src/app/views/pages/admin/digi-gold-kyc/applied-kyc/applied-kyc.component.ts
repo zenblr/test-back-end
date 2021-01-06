@@ -107,7 +107,7 @@ export class AppliedKycComponent implements OnInit {
     // this.filteredDataList = data.list;
   }
 
-  editKyc(id) {
+  editKyc(customerId, id) {
     // const params = { customerId: data.customerId, customerKycId: data.id };
     // this.appliedKycService.editKycDetails(params).pipe(
     //   map(res => {
@@ -120,7 +120,7 @@ export class AppliedKycComponent implements OnInit {
     this.leadService.getLeadById(id).subscribe(res => {
       // console.log(res.singleCustomer)
       // this.appliedKycService.kycData.next(res.singleCustomer)
-      this.router.navigate([`/admin/applied-kyc-digi-gold/edit/${id}`]);
+      this.router.navigate([`/admin/applied-kyc-digi-gold/edit/${customerId}`], { queryParams: { id: id } });
     })
   }
 
