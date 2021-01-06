@@ -543,7 +543,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
     ///
     let data = await calculationDataOneLoan(masterLoanId);
     let loanInfo = data.loanInfo;
-    let currentDate = moment();
+    let currentDate = moment(date);
     let noOfDays = 0;
     await sequelize.transaction(async t => {
         for (const loan of loanInfo) {
@@ -705,6 +705,22 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                       
                         //current date == selected interest emi due date then debit
                     }
+
+                    //update last interest if changed
+                if (!Number.isInteger(interest.length)) {
+                    const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterestTable.length - 1) * loan.selectedSlab)) / 30)
+                    let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
+                    let amount = (oneMonthAmount * noOfMonths).toFixed(2);
+                    let lastInterest = await getLastInterest(loan.id, loan.masterLoanId)
+                    let interestAccrual = amount - lastInterest.paidAmount;
+                    if(interestAccrual < 0){
+                        await models.customerLoanInterest.update({ interestAccrual : 0,totalInterestAccrual:amount}, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    }else{
+                        await models.customerLoanInterest.update({ interestAccrual,totalInterestAccrual:amount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                    }
+                }
+
+
                     if (allInterest.length != interestLessThanDate.length) {
                         let pendingNoOfDays = noOfDays - (interestLessThanDate.length * loan.selectedSlab);
                         if (pendingNoOfDays > 0) {
