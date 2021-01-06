@@ -53,6 +53,30 @@ module.exports = async () => {
 
                 }
             });
+
+
+            // digiGoldDeliveryOrderDetail = await models.digiGoldOrderDetail.findAll({
+            //     where:
+            //     {
+            //         orderCreatedDate:
+            //             { [Op.gt]: newDate },
+            //         customerId: customer,
+            //         orderTypeId: 3
+
+            //     }
+            // });
+            // if(digiGoldDeliveryOrderDetail.length){
+            //     for (let ele of digiGoldDeliveryOrderDetail) {
+
+            //         if (ele.metalType == "gold") {
+            //             totalGoldDeliveryInFixDuration += parseFloat(ele.quantity);
+            //         }
+            //         if (ele.metalType == "silver") {
+            //             totalSilverDeliveryInFixDuration += parseFloat(ele.quantity)
+            //         }
+            //     }
+            // }
+
             console.log("digiGoldOrderDetail ", digiGoldOrderDetail);   // 262
 
             customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customer } });
@@ -75,7 +99,7 @@ module.exports = async () => {
                 console.log("gold silver", totalGoldBoughtInFixDuration, totalSilverBoughtInFixDuration);
 
                 sellableGoldBalance = customerBal.currentGoldBalance - totalGoldBoughtInFixDuration;
-
+                
                 sellableSilverBalance = customerBal.currentSilverBalance - totalSilverBoughtInFixDuration;
 
                 console.log("sellableGoldBalance", sellableGoldBalance, "sellableSilverBalance", sellableSilverBalance);
