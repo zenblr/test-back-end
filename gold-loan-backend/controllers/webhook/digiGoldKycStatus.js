@@ -1,7 +1,7 @@
-const models = require('../../../models');
+const models = require('../../models');
 const getMerchantData = require('../auth/getMerchantData');
 const sequelize = models.sequelize;
-let sms = require('../../../utils/SMS');
+let sms = require('../../utils/SMS');
 // const errorLogger = require('../../../utils/errorlogger');
 
 exports.changeKycStatus = async (req, res) => {
