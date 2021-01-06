@@ -27,6 +27,12 @@ export class DepositRequestsService {
     if (data && data.paymentFor) {
       reqParams.paymentFor = data.paymentFor;
     }
+    if (data && data.startDate) {
+			reqParams.startDate = data.startDate;
+    }
+    if (data && data.depositStatus) {
+			reqParams.depositStatus = data.depositStatus;
+		}
     return this.http.get('api/wallet/get-request-admin', {params: reqParams}).pipe(
       map(res => res),
       catchError(err => {
