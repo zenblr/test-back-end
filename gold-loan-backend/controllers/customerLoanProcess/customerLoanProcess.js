@@ -515,9 +515,14 @@ exports.generateInterestTable = async (req, res, next) => {
     console.log(length)
     for (let index = 0; index < Number(length); index++) {
         // let date = new Date("2020/03/08")
-        let date = new Date()
+        let date 
+        if(index ==0){
+            date = new Date()
+        }else{
+            date = new Date(interestTable[interestTable.length-1].emiDueDate)
+        }
         let data = {
-            emiDueDate: moment(new Date(date.setDate(date.getDate() + ((paymentFrequency-1) * (index + 1)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
+            emiDueDate: moment(new Date(date.setDate(date.getDate() + (Number(paymentFrequency)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
             month: "Month " + ((paymentFrequency / 30) * (index + 1)).toString(),
             paymentType: paymentFrequency,
             securedInterestAmount: securedInterestAmount,
@@ -532,10 +537,11 @@ exports.generateInterestTable = async (req, res, next) => {
     }
 
     if (!Number.isInteger(length)) {
-        let date = new Date()
+        
 
         const noOfMonths = (((tenure * 30) - ((interestTable.length - 1) * paymentFrequency)) / 30)
         const lastElementOfTable = interestTable[interestTable.length - 1]
+        let date = new Date(lastElementOfTable.emiDueDate)
         const oneMonthSecured = securedInterestAmount / (paymentFrequency / 30)
         const oneMonthRebate = secureHighestInterestAmount / (paymentFrequency / 30)
         let secure = (oneMonthSecured * noOfMonths).toFixed(2)
@@ -544,7 +550,7 @@ exports.generateInterestTable = async (req, res, next) => {
         lastElementOfTable.secureHighestInterestAmount = secureRebate;
         lastElementOfTable.securedRebateAmount = (secureRebate - secure),
             lastElementOfTable.month = "Month " + tenure;
-        lastElementOfTable.emiDueDate = moment(new Date(date.setDate(date.getDate() + (30 * tenure)-interestTable.length)), "DD-MM-YYYY").format('YYYY-MM-DD')
+        lastElementOfTable.emiDueDate = moment(new Date(date.setDate(date.getDate() + (30 * (tenure-(paymentFrequency*(interestTable.length-1)))))), "DD-MM-YYYY").format('YYYY-MM-DD')
 
         if (isUnsecuredSchemeApplied) {
             const oneMonthUnsecured = unsecuredInterestAmount / (paymentFrequency / 30)

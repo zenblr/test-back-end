@@ -18,17 +18,109 @@ exports.interestCalculation = async (req, res) => {
     // let loanStartDate = moment('2021-03-06')
     // let noOfDays = currentDate.diff(loanStartDate, 'days');
     // noOfDays += 1
-    let data;
-    let { date } = req.body;
-    if (date) {
-        data = await dailyIntrestCalculation(date);
-        await cronForDailyPenalInterest(date)
-    } else {
-        date = moment();
-        data = await dailyIntrestCalculation(date);
-        await cronForDailyPenalInterest(date)
+    // let data;
+    // let { date } = req.body;
+    // if (date) {
+    //     data = await dailyIntrestCalculation(date);
+    //     await cronForDailyPenalInterest(date)
+    // } else {
+    //     date = moment();
+    //     data = await dailyIntrestCalculation(date);
+    //     await cronForDailyPenalInterest(date)
+    // }
+    let data =await calculationData()
+    let calculatedInterest = [];
+    await sequelize.transaction(async (t) => {
+    for(const loanData of data.loanInfo){
+        let Loan = await models.customerLoanMaster.findOne({
+            where: { id: loanData.masterLoanId },
+            attributes: ['paymentFrequency', 'processingCharge', 'isUnsecuredSchemeApplied', 'tenure', 'isLoanTransfer', 'isLoanTransferExtraAmountAdded', 'loanTransferExtraAmount'],
+            include: [{
+                model: models.customerLoanInterest,
+                as: 'customerLoanInterest',
+                where: { isActive: true, loanId: loanData.id }
+            }, {
+                model: models.customerLoanTransfer,
+                as: "loanTransfer"
+            }]
+        })
+        let interest = await getInterestTable(loanData.masterLoanId, loanData.id, Loan,loanData.masterLoan.loanStartDate);
+        calculatedInterest.push(interest);
+        for (let a = 0; a < interest.length; a++) {
+            let updateDate = interest[a].emiDueDate
+            let emiStartDate = interest[a].emiStartDate
+            let emiEndDate = interest[a].emiEndDate
+            await models.customerLoanInterest.update({ emiDueDate: updateDate, emiStartDate, emiEndDate }, { where: { id: interest[a].id }, transaction: t })
+        }
     }
-    return res.status(200).json(noOfDays);
+})
+    async function getInterestTable(masterLoanId, loanId, Loan,loanStartDate) {
+
+        let startDate = Loan.customerLoanInterest[0].emiDueDate;
+        let endDate = Loan.customerLoanInterest[Loan.customerLoanInterest.length - 1].emiDueDate;
+    
+        let holidayDate = await models.holidayMaster.findAll({
+            attributes: ['holidayDate'],
+            where: {
+                holidayDate: {
+                    [Op.between]: [startDate, endDate]
+                },
+                isActive: true,
+            }
+        })
+    
+        let interestTable = await models.customerLoanInterest.findAll({
+            where: { loanId: loanId, isExtraDaysInterest: false },
+            order: [['id', 'asc']]
+        })
+    
+        for (let i = 0; i < interestTable.length; i++) {
+            let date = new Date(loanStartDate);
+            let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number((Loan.paymentFrequency-1)) * (i + 1))))
+            interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
+            interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
+    
+            if (i == 0) {
+                console.log(new Date(loanStartDate).toISOString(), 'date')
+                interestTable[i].emiStartDate = new Date(loanStartDate).toISOString()
+            }
+            else {
+                let startDate = new Date(interestTable[i - 1].emiEndDate)
+                console.log(startDate, i)
+                interestTable[i].emiStartDate = new Date(startDate.setDate(startDate.getDate() + 1))
+            }
+    
+            if (i == interestTable.length - 1) {
+                let newDate = new Date(loanStartDate)
+                newEmiDueDate = new Date(newDate.setDate(newDate.getDate() + (30 * (Loan.tenure))-interestTable.length ))
+                interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
+                interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
+            }
+            let x = interestTable.map(ele => ele.emiDueDate)
+            // console.log(x)
+    
+            // for (let j = 0; j < holidayDate.length; j++) {
+            //     let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
+            //     let sunday = moment(momentDate, 'YYYY-MM-DD').weekday();
+            //     let newDate = new Date(newEmiDueDate);
+            //     if (momentDate == holidayDate[j].holidayDate || sunday == 0) {
+            //         let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
+            //         interestTable[i].emiDueDate = moment(holidayEmiDueDate).format('YYYY-MM-DD')
+    
+            //         newEmiDueDate = holidayEmiDueDate
+            //         j = 0
+            //     }
+    
+            // }
+    
+            interestTable.loanId = loanId
+            interestTable.masterLoanId = masterLoanId
+        }
+        let y = interestTable.map(ele => ele.emiDueDate)
+        console.log(y)
+        return interestTable
+    }
+    return res.status(200).json({ loanId :data.loanId,calculatedInterest });
 }
 
 exports.penalInterestCalculation = async (req, res) => {
