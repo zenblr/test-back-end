@@ -1246,7 +1246,7 @@ exports.changeDigiKycStatus = async (req, res) => {
             //update complate kyc points
             // kycCompletePoint = await updateCompleteKycModule(kycCompletePoint, moduleId)
             await models.customer.update({ emiKycStatus: status, digiKycStatus: status }, { where: { id: customerId }, transaction: t })
-            await models.digiKycApplied.update({ status }, { where: { id: id } })
+            await models.digiKycApplied.update({ status, reasonForDigiKyc }, { where: { id: id } })
 
         })
         return res.status(data.status).json({ message: 'success' })

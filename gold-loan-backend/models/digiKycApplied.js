@@ -7,13 +7,16 @@ module.exports = (sequelize, DataTypes) => {
         status: {
             type: DataTypes.STRING,
             field: 'status'
+        },
+        reasonForDigiKyc: {
+            type: DataTypes.TEXT,
+            field: 'reason_for_digi_kyc'
         }
 
     },
         {
             freezeTableName: true,
             tableName: 'digi_kyc_applied',
-            timestamps: false
         })
 
     DigiKycApplied.associate = function (models) {

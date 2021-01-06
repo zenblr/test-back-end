@@ -1491,7 +1491,7 @@ let applyDigiKyc = async (req) => {
         return { status: 400, success: false, message: `Already applied for kyc` }
     }
     await sequelize.transaction(async (t) => {
-        await models.digiKycApplied.create({ customerId: customerId, status: 'pending' })
+        await models.digiKycApplied.create({ customerId: customerId, status: 'waiting' })
 
         await models.customer.update({ digiKycStatus: 'waiting', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
     })

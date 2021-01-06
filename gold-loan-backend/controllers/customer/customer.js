@@ -111,7 +111,7 @@ exports.addCustomer = async (req, res, next) => {
     // });
 
     if (panCardNumber != null && panImage != null) {
-      await models.digiKycApplied.create({ customerId: customer.id, status: 'pending' })
+      await models.digiKycApplied.create({ customerId: customer.id, status: 'waiting' })
 
       await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customer.id }, transaction: t })
     }
