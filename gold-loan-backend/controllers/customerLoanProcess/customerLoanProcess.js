@@ -517,7 +517,7 @@ exports.generateInterestTable = async (req, res, next) => {
         // let date = new Date("2020/03/08")
         let date = new Date()
         let data = {
-            emiDueDate: moment(new Date(date.setDate(date.getDate() + (paymentFrequency * (index + 1)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
+            emiDueDate: moment(new Date(date.setDate(date.getDate() + ((paymentFrequency-1) * (index + 1)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
             month: "Month " + ((paymentFrequency / 30) * (index + 1)).toString(),
             paymentType: paymentFrequency,
             securedInterestAmount: securedInterestAmount,
@@ -544,7 +544,7 @@ exports.generateInterestTable = async (req, res, next) => {
         lastElementOfTable.secureHighestInterestAmount = secureRebate;
         lastElementOfTable.securedRebateAmount = (secureRebate - secure),
             lastElementOfTable.month = "Month " + tenure;
-        lastElementOfTable.emiDueDate = moment(new Date(date.setDate(date.getDate() + (30 * tenure))), "DD-MM-YYYY").format('YYYY-MM-DD')
+        lastElementOfTable.emiDueDate = moment(new Date(date.setDate(date.getDate() + (30 * tenure)-interestTable.length)), "DD-MM-YYYY").format('YYYY-MM-DD')
 
         if (isUnsecuredSchemeApplied) {
             const oneMonthUnsecured = unsecuredInterestAmount / (paymentFrequency / 30)
@@ -1903,7 +1903,7 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
 
     for (let i = 0; i < interestTable.length; i++) {
         let date = new Date();
-        let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency) * (i + 1))))
+        let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number((Loan.paymentFrequency-1)) * (i + 1))))
         interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
         interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
 
@@ -1919,7 +1919,7 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
 
         if (i == interestTable.length - 1) {
             let newDate = new Date()
-            newEmiDueDate = new Date(newDate.setDate(newDate.getDate() + (30 * (Loan.tenure))))
+            newEmiDueDate = new Date(newDate.setDate(newDate.getDate() + (30 * (Loan.tenure))-interestTable.length ))
             interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
             interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
         }

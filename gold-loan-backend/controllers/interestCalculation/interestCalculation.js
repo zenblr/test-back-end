@@ -14,6 +14,10 @@ const { getCustomerInterestAmount, intrestCalculationForSelectedLoan, penalInter
 // add internal branch
 
 exports.interestCalculation = async (req, res) => {
+    // let currentDate = moment('2021-04-04')
+    // let loanStartDate = moment('2021-03-06')
+    // let noOfDays = currentDate.diff(loanStartDate, 'days');
+    // noOfDays += 1
     let data;
     let { date } = req.body;
     if (date) {
@@ -24,7 +28,7 @@ exports.interestCalculation = async (req, res) => {
         data = await dailyIntrestCalculation(date);
         await cronForDailyPenalInterest(date)
     }
-    return res.status(200).json(data);
+    return res.status(200).json(noOfDays);
 }
 
 exports.penalInterestCalculation = async (req, res) => {
