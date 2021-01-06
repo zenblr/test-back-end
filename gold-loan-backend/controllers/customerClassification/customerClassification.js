@@ -1,3 +1,4 @@
+
 const models = require('../../models');
 const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
@@ -16,13 +17,13 @@ let { updateCompleteKycModule, updateCustomerUniqueId } = require('../../service
 exports.cceKycRating = async (req, res, next) => {
 
     let { customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, moduleId, scrapKycRatingFromCce, scrapKycStatusFromCce, scrapReasonFromCce } = req.body;
-
+    let customer = await models.customer.findOne({ where: { customerId } })
     if (moduleId == 1) {
 
         let cceId = req.userData.id
 
         let checkRatingExist = await models.customerKycClassification.findOne({ where: { customerId } })
-        let customer = await models.customer.findOne({ where: { customerId } })
+      
         if (check.isEmpty(checkRatingExist)) {
             if ((kycRatingFromCce == 1 || kycRatingFromCce == 2 || kycRatingFromCce == 3) && kycStatusFromCce == "approved") {
                 return res.status(400).json({ message: `Please check rating.` })
@@ -75,7 +76,6 @@ exports.cceKycRating = async (req, res, next) => {
                     return res.status(400).json({ message: `If you are not approved the customer kyc you have to give a reason.` })
                 }
                 await sequelize.transaction(async (t) => {
-                    
                     if (kycStatusFromCce == "rejected") {
                         await models.customer.update(
                             { digiKycStatus: kycStatusFromCce, emiKycStatus: kycStatusFromCce, kycStatus: kycStatusFromCce, scrapKycStatus: kycStatusFromCce }, { where: { id: customerId }, transaction: t }
@@ -329,7 +329,7 @@ exports.operationalTeamKycRating = async (req, res, next) => {
             await sendCustomerUniqueId(cusMobile, getMobileNumber.firstName, customerUniqueId)
             //message for customer
             // request(
-            //     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is  ${customerUniqueId} `
+            // `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is ${customerUniqueId} `
             // );
             let getBm = await models.user.findOne({ where: { id: operationalTeamId } });
             let bmMobile = getBm.mobileNumber
@@ -338,7 +338,7 @@ exports.operationalTeamKycRating = async (req, res, next) => {
 
             //message for BranchManager
             // request(
-            //     `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is  ${customerUniqueId} Assign appraiser for further process.`
+            // `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is ${customerUniqueId} Assign appraiser for further process.`
             // );
             return res.status(200).json({ message: 'success' })
         }
@@ -364,8 +364,8 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                 await sequelize.transaction(async (t) => {
 
                     // await models.customerKyc.update(
-                    //     { operationalTeamVerifiedBy: scrapOperationalTeamId, isVerifiedByCce: false },
-                    //     { where: { customerId: customerId }, transaction: t })
+                    // { operationalTeamVerifiedBy: scrapOperationalTeamId, isVerifiedByCce: false },
+                    // { where: { customerId: customerId }, transaction: t })
 
                     await models.customer.update({ scrapKycStatus: "pending" }, { where: { id: customerId } })
 
@@ -380,12 +380,12 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                         await models.customer.update({ scrapKycStatus: scrapKycStatusFromOperationalTeam }, { where: { id: customerId }, transaction: t })
 
                         // await models.customerKyc.update(
-                        //     { operationalTeamVerifiedBy: scrapOperationalTeamId },
-                        //     { where: { customerId: customerId }, transaction: t })
+                        // { operationalTeamVerifiedBy: scrapOperationalTeamId },
+                        // { where: { customerId: customerId }, transaction: t })
 
                         await models.customerKycClassification.update({
                             customerId, customerKycId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, scrapOperationalTeamId: scrapOperationalTeamId,
-                            //  kycRatingFromCce: kycClassificationData.scrapKycRatingFromCce, kycStatusFromCce: kycClassificationData.scrapKycStatusFromCce, reasonFromCce: kycClassificationData.scrapReasonFromCce, cceId: kycClassificationData.scrapCceId, kycStatusFromOperationalTeam: scrapKycStatusFromOperationalTeam, reasonFromOperationalTeam: scrapReasonFromOperationalTeam, operationalTeamId: scrapOperationalTeamId 
+                            // kycRatingFromCce: kycClassificationData.scrapKycRatingFromCce, kycStatusFromCce: kycClassificationData.scrapKycStatusFromCce, reasonFromCce: kycClassificationData.scrapReasonFromCce, cceId: kycClassificationData.scrapCceId, kycStatusFromOperationalTeam: scrapKycStatusFromOperationalTeam, reasonFromOperationalTeam: scrapReasonFromOperationalTeam, operationalTeamId: scrapOperationalTeamId 
                         }, { where: { customerId }, transaction: t })
                     });
 
@@ -398,8 +398,8 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                             { where: { id: customerId }, transaction: t })
 
                         // await models.customerKyc.update(
-                        //     { operationalTeamVerifiedBy: scrapOperationalTeamId },
-                        //     { where: { customerId: customerId }, transaction: t })
+                        // { operationalTeamVerifiedBy: scrapOperationalTeamId },
+                        // { where: { customerId: customerId }, transaction: t })
 
                         await models.customerKycClassification.update({ customerId, customerKycId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, scrapOperationalTeamId: scrapOperationalTeamId, kycRatingFromCce: kycClassificationData.scrapKycRatingFromCce, kycStatusFromCce: kycClassificationData.scrapKycStatusFromCce, reasonFromCce: kycClassificationData.scrapReasonFromCce, cceId: kycClassificationData.scrapCceId, kycStatusFromOperationalTeam: scrapKycStatusFromOperationalTeam, reasonFromOperationalTeam: scrapReasonFromOperationalTeam, operationalTeamId: scrapOperationalTeamId }, { where: { customerId }, transaction: t })
                     });
@@ -428,8 +428,8 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                 await models.customer.update({ kycCompletePoint, customerUniqueId, digiKycStatus: "approved", emiKycStatus: "Approved", scrapKycStatus: "approved" }, { where: { id: customerId }, transaction: t })
 
                 // await models.customerKyc.update(
-                //     { isVerifiedByOperationalTeam: true, operationalTeamVerifiedBy: scrapOperationalTeamId },
-                //     { where: { customerId: customerId }, transaction: t })
+                // { isVerifiedByOperationalTeam: true, operationalTeamVerifiedBy: scrapOperationalTeamId },
+                // { where: { customerId: customerId }, transaction: t })
 
                 await models.customerKycClassification.update({ customerId, customerKycId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, scrapOperationalTeamId: scrapOperationalTeamId }, { where: { customerId }, transaction: t })
             });
@@ -441,7 +441,7 @@ exports.operationalTeamKycRating = async (req, res, next) => {
             // await sendCustomerUniqueId(cusMobile, getMobileNumber.firstName, customerUniqueId)
             //message for customer
             request(
-                `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is  ${customerUniqueId} `
+                `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is ${customerUniqueId} `
             );
             let getBm = await models.user.findOne({ where: { id: scrapOperationalTeamId } });
             let bmMobile = getBm.mobileNumber
@@ -450,7 +450,7 @@ exports.operationalTeamKycRating = async (req, res, next) => {
 
             //message for BranchManager
             request(
-                `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is  ${customerUniqueId} Assign appraiser for further process.`
+                `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is ${customerUniqueId} Assign appraiser for further process.`
             );
             return res.status(200).json({ message: 'success' })
         }
@@ -563,7 +563,7 @@ exports.updateRating = async (req, res, next) => {
                 // await sendCustomerUniqueId(cusMobile, getMobileNumber.firstName, customerUniqueId)
                 //message for customer
                 request(
-                    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is  ${customerUniqueId} `
+                    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is ${customerUniqueId} `
                 );
                 let getBm = await models.user.findOne({ where: { id: operationalTeamId } });
                 let bmMobile = getBm.mobileNumber
@@ -572,7 +572,7 @@ exports.updateRating = async (req, res, next) => {
 
                 //message for BranchManager
                 request(
-                    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is  ${customerUniqueId} Assign appraiser for further process.`
+                    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is ${customerUniqueId} Assign appraiser for further process.`
                 );
                 return res.status(200).json({ message: 'success' })
 
@@ -609,8 +609,8 @@ exports.updateRating = async (req, res, next) => {
                         await models.customer.update({ scrapKycStatus: "pending" }, { where: { id: customerId } })
 
                         // await models.customerKyc.update(
-                        //     { operationalTeamVerifiedBy: operationalTeamId, isVerifiedByCce: false },
-                        //     { where: { customerId: customerId }, transaction: t })
+                        // { operationalTeamVerifiedBy: operationalTeamId, isVerifiedByCce: false },
+                        // { where: { customerId: customerId }, transaction: t })
 
                         await models.customerKycClassification.update({ customerId, customerKycId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, scrapOperationalTeamId: operationalTeamId, scrapKycStatusFromCce: "pending" }, { where: { customerId }, transaction: t })
                     });
@@ -623,8 +623,8 @@ exports.updateRating = async (req, res, next) => {
                             let kycClassificationData = await models.customerKycClassification.findOne({ where: { customerId } });
 
                             // await models.customerKyc.update(
-                            //     { operationalTeamVerifiedBy: operationalTeamId },
-                            //     { where: { customerId: customerId }, transaction: t })
+                            // { operationalTeamVerifiedBy: operationalTeamId },
+                            // { where: { customerId: customerId }, transaction: t })
 
                             await models.customerKycClassification.update({
                                 customerId, customerKycId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, scrapOperationalTeamId: operationalTeamId,
@@ -637,8 +637,8 @@ exports.updateRating = async (req, res, next) => {
                             let kycClassificationData = await models.customerKycClassification.findOne({ where: { customerId } });
 
                             // await models.customerKyc.update(
-                            //     { operationalTeamVerifiedBy: operationalTeamId },
-                            //     { where: { customerId: customerId }, transaction: t })
+                            // { operationalTeamVerifiedBy: operationalTeamId },
+                            // { where: { customerId: customerId }, transaction: t })
 
                             await models.customerKycClassification.update({ customerId, customerKycId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, scrapOperationalTeamId: operationalTeamId, kycRatingFromCce: kycClassificationData.scrapKycRatingFromCce, kycStatusFromCce: kycClassificationData.scrapKycStatusFromCce, reasonFromCce: kycClassificationData.scrapReasonFromCce, cceId: kycClassificationData.scrapCceId, kycStatusFromOperationalTeam: scrapKycStatusFromOperationalTeam, reasonFromOperationalTeam: scrapReasonFromOperationalTeam, operationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
                         });
@@ -654,8 +654,8 @@ exports.updateRating = async (req, res, next) => {
                     await models.customer.update({ customerUniqueId, scrapKycStatus: "approved" }, { where: { id: customerId }, transaction: t })
 
                     // await models.customerKyc.update(
-                    //     { isVerifiedByOperationalTeam: true, operationalTeamVerifiedBy: operationalTeamId },
-                    //     { where: { customerId: customerId }, transaction: t })
+                    // { isVerifiedByOperationalTeam: true, operationalTeamVerifiedBy: operationalTeamId },
+                    // { where: { customerId: customerId }, transaction: t })
 
                     await models.customerKycClassification.update({ customerId, customerKycId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, scrapOperationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
                 });
@@ -666,7 +666,7 @@ exports.updateRating = async (req, res, next) => {
                 // await sendCustomerUniqueId(cusMobile, getMobileNumber.firstName, customerUniqueId)
                 //message for customer
                 request(
-                    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is  ${customerUniqueId} `
+                    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is ${customerUniqueId} `
                 );
                 let getBm = await models.user.findOne({ where: { id: operationalTeamId } });
                 let bmMobile = getBm.mobileNumber
@@ -675,7 +675,7 @@ exports.updateRating = async (req, res, next) => {
 
                 //message for BranchManager
                 request(
-                    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is  ${customerUniqueId} Assign appraiser for further process.`
+                    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is ${customerUniqueId} Assign appraiser for further process.`
                 );
                 return res.status(200).json({ message: 'success' })
 

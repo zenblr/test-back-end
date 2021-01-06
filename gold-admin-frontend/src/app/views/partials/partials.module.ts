@@ -109,6 +109,7 @@ import { PartPaymentLogDialogComponent } from './components/part-payment-log-dia
 import { UpdateLocationComponent } from './components/update-location/update-location.component';
 import { ElapsedTimeComponent } from './components/elapsed-time/elapsed-time.component';
 import { ScrapUpdateLocationComponent } from './components/scrap-update-location/scrap-update-location.component';
+import { SelectPaymentComponent } from './components/select-payment/select-payment.component';
 
 @NgModule({
 	declarations: [
@@ -181,6 +182,7 @@ import { ScrapUpdateLocationComponent } from './components/scrap-update-location
 		UpdateLocationComponent,
 		ElapsedTimeComponent,
 		ScrapUpdateLocationComponent,
+		SelectPaymentComponent,
 	],
 	exports: [
 		WidgetModule,
@@ -261,6 +263,7 @@ import { ScrapUpdateLocationComponent } from './components/scrap-update-location
 		UpdateLocationComponent,
 		ElapsedTimeComponent,
 		ScrapUpdateLocationComponent,
+		SelectPaymentComponent
 	],
 	imports: [
 		PdfViewerModule,

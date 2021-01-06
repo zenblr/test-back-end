@@ -503,7 +503,7 @@ exports.addAmountWallet = async (req, res) => {
         await models.walletTransactionTempDetails.update({ isOrderPlaced: true }, { where: { id: tempWalletTransaction.id }, transaction: t });
 
 
-        await sms.sendMessageForDepositRequest( customer.mobileNumber, tempWalletDetail.amount);
+        await sms.sendMessageForDepositRequest( customer.mobileNumber, tempWalletTransaction.transactionAmount);
 
       })
 
