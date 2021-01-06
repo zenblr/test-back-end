@@ -133,6 +133,8 @@ exports.payableAmount = async (req, res, next) => {
     data.securedTotalInterest = interest.securedTotalInterest
     data.securedRebate = interest.securedRebate
     data.unsecuredRebate = interest.unsecuredRebate
+    data.totalInterest = interest.totalInterest
+    data.outstandingAmount = loan.loan.outstandingAmount
     return res.status(200).json({ data });
 }
 
@@ -241,6 +243,8 @@ exports.quickPayment = async (req, res, next) => {
             if (signatureVerification == false) {
                 return res.status(422).json({ message: "razorpay payment verification failed" });
             }
+        }else{
+            isAdmin = true
         }
         // // let { penalInterest } = await payableAmountForLoan(amount, loan)
         // // let splitUpAmount = payableAmount - penalInterest

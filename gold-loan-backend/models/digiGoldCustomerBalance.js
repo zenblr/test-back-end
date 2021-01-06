@@ -20,6 +20,17 @@ module.exports = (sequelize, DataTypes) => {
         sellableSilverBalance: {
             type: DataTypes.FLOAT,
             field: 'sellable_silver_balance',
+            defaultValue: 0,
+        },
+        nonSellableGoldBalance: {
+            type: DataTypes.FLOAT,
+            field: 'non_sellable_gold_balance',
+            defaultValue: 0,
+        },
+        nonSellableSilverBalance: {
+            type: DataTypes.FLOAT,
+            field: 'non_sellable_silver_balance',
+            defaultValue: 0,
         },
         isActive: {
             type: DataTypes.BOOLEAN,

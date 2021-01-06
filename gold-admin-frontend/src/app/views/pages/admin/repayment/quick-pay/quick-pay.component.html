@@ -72,33 +72,26 @@
                     <table class="table outer-border">
                         <thead>
                             <th class="transparent table-amount">Principal Outstanding</th>
-                            <th class="transparent table-amount">Augmont Rebate</th>
                             <th class="transparent table-amount">Next Due Date Amount</th>
-                            <th class="transparent table-amount">Interest Amount</th>
+                            <th class="transparent table-amount">Interest Amount till date</th>
                             <th class="transparent table-amount">Penal Interest</th>
-                            <th class="transparent table-amount">Payable Amount</th>
                             <th class="transparent">Payment Amount</th>
 
                         </thead>
                         <tbody>
                             <tr>
                                 <td class="table-amount">
-                                    <span>{{payableAmount?.securedOutstandingAmount}}</span><br>
-                                    <span *ngIf="loanDetails?.customerLoan[1]">
+                                    <span>{{payableAmount?.outstandingAmount}}</span><br>
+                                    <!-- <span *ngIf="loanDetails?.customerLoan[1]">
                                         {{payableAmount?.unsecuredOutstandingAmount}}
-                                    </span>
+                                    </span> -->
                                 </td>
+                                
                                 <td class="table-amount">
-                                    <span>{{payableAmount?.securedRebate}}</span><br>
-                                    <span *ngIf="loanDetails?.customerLoan[1]">
-                                        {{payableAmount?.unsecuredRebate}}
-                                    </span>
-                                </td>
-                                <td class="table-amount">
-                                    <span>{{payableAmount?.securedTotalInterest}}</span><br>
-                                    <span *ngIf="loanDetails?.customerLoan[1]">
+                                    <span>{{payableAmount?.totalInterest}}</span><br>
+                                    <!-- <span *ngIf="loanDetails?.customerLoan[1]">
                                         {{payableAmount?.unsecuredTotalInterest}}
-                                    </span>
+                                    </span> -->
                                 </td>
                                 <td class="table-amount">
                                     <span>{{payableAmount?.securedInterest}}</span> <br>
@@ -114,7 +107,6 @@
                                     </span>
                                 </td>
 
-                                <td class="table-amount">{{payableAmount?.payableAmount}}</td>
                                 <td><input ktWeight type="text" class="form-control" [formControl]="payableAmt"
                                         [class.isError]="payableAmt.touched && payableAmt.invalid">
                                     <mat-error *ngIf="payableAmt.errors?.required && payableAmt.touched">
@@ -168,7 +160,7 @@
                 <table class="table outer-border altered-row-4">
                     <thead>
                         <th class="transparent th-style th-padding-style">Loan ID</th>
-                        <th class="transparent th-style">Loan Payment Date</th>
+                        <th class="transparent th-style">Payment Date</th>
                         <!-- <th class="transparent th-style">Loan Amount</th> -->
                         <th class="transparent th-style table-amount padding-8">Total Payment Amount</th>
                         <th class="transparent th-style text-left">Select Payment option</th>
@@ -187,11 +179,12 @@
                             <td class="font-weight-500 table-amount padding-8" style="font-size: 14px;">
                                 {{payableAmt.value}}</td>
                             <td class=" text-left">
-                                <button *ngIf="!paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">Select
+                                <kt-select-payment [minDate]="quickPayinfo?.loanStartDate" [amount]="amount?.value"  (paymentData)="paymentData($event)"></kt-select-payment>
+                                <!-- <button *ngIf="!paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">Select
                                     Payment</button>
                                 <button *ngIf="paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">
                                     {{ paymentValue.paymentType | uppercase }}
-                                </button>
+                                </button> -->
                             </td>
                         </tr>
                     </tbody>
@@ -201,7 +194,7 @@
                 <div class="col-6 text-center">
                     <kt-button [value]="'Confirm'" [type]="'button'" (click)="submit()"></kt-button>
                     <span class="kt-padding-5 "></span>
-                    <kt-button [value]="'Cancel'" [type]="'reset'" (click)="paymentDetails = '';payableAmt.enable()">
+                    <kt-button [value]="'Cancel'" [type]="'reset'" (click)="paymentDetails = '';payableAmt.enable();paymentValue={}">
                     </kt-button>
                     <div class="kt-padding-t-5"> <i>On clicking confirm you will be redirected to available payment
                             options.</i> </div>

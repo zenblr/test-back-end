@@ -134,7 +134,7 @@ exports.sellProduct = async (req, res) => {
 
           await models.digiGoldOrderBankDetail.create({ orderDetailId: orderDetail.id, accountNumber: accountNumber, bankId: bankId, ifscCode: ifscCode, userBankId: userBankId, bankName: branchName, isActive: true }, { transaction: t });
 
-          await sms.sendMessageForSell(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+          await sms.sendMessageForSell(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount,'bankAccount');
 
         })
       }
@@ -219,7 +219,7 @@ exports.sellProduct = async (req, res) => {
             { walletFreeBalance: amountOfWallet, currentWalletBalance: currentWalletBalance }, { where: { id: customerDetails.id }, transaction: t });
         })
 
-        await sms.sendMessageForSell(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+        await sms.sendMessageForSell(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount,"augmontWallet");
         console.log("success")
       }
       return res.status(200).json(result.data);
