@@ -133,10 +133,10 @@ exports.checkPartAmount = async (req, res, next) => {
     let { securedRatio, unsecuredRatio, isUnsecuredSchemeApplied } = await getAmountLoanSplitUpData(loan.loan, amount, paidAmount);
 
     data.securedRatio = (securedRatio.toFixed(2))
-    data.newSecuredOutstanding = data.securedOutstandingAmount - securedRatio
+    data.newSecuredOutstanding = (data.securedOutstandingAmount - securedRatio).toFixed(2)
     if (isUnsecuredSchemeApplied) {
         data.unsecuredRatio = (unsecuredRatio.toFixed(2))
-        data.newUnSecuredOutstanding = data.unsecuredOutstandingAmount - unsecuredRatio
+        data.newUnSecuredOutstanding = (data.unsecuredOutstandingAmount - unsecuredRatio).toFixed(2)
 
     }
 

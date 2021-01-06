@@ -10,6 +10,7 @@ import { PartPaymentLogDialogComponent } from '../../../../partials/components/p
 import { ToastrService } from 'ngx-toastr';
 import { RazorpayPaymentService } from '../../../../../core/shared/services/razorpay-payment.service';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
+import { QuickPayService } from '../../../../../core/repayment/quick-pay/quick-pay.service';
 
 @Component({
   selector: 'kt-part-payment',
@@ -24,6 +25,8 @@ export class PartPaymentComponent implements OnInit {
   payableAmountSummary: any;
   paymentDetails: any;
   paymentValue: any;
+  payableAmount: any;
+  sum: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -35,6 +38,7 @@ export class PartPaymentComponent implements OnInit {
     private toastr: ToastrService,
     private razorpayPaymentService: RazorpayPaymentService,
     private zone: NgZone,
+    private quickPayServie: QuickPayService,
     private sharedService: SharedService
   ) { }
 
@@ -42,12 +46,23 @@ export class PartPaymentComponent implements OnInit {
     this.masterLoanId = this.route.snapshot.params.id
     this.getPreviousPartPaymentInfo(this.masterLoanId)
     this.partPayment()
+    this.getPayableAmount()
   }
 
   getPreviousPartPaymentInfo(id) {
     this.partPaymentService.getPreviousPartPaymentInfo(id).subscribe(res => {
       this.loanDetails = res.data
       this.ref.detectChanges();
+    })
+  }
+
+  getPayableAmount() {
+    this.quickPayServie.getPayableAmount(this.masterLoanId).subscribe(res => {
+      this.payableAmount = res.data;
+      this.sum = 0;
+      this.sum = Number((Number(this.payableAmount.securedPenalInterest) + Number(this.payableAmount.unsecuredPenalInterest) + Number(this.payableAmount.unsecuredTotalInterest) + Number(this.payableAmount.securedTotalInterest)).toFixed(2))
+      this.partAmount.patchValue(this.sum)
+      this.ref.detectChanges()
     })
   }
 
@@ -82,6 +97,7 @@ export class PartPaymentComponent implements OnInit {
 
   cancelPayableAmountSummary() {
     this.payableAmountSummary = null
+    this.paymentValue = {}
     this.scrollToBottom()
   }
 
@@ -103,6 +119,11 @@ export class PartPaymentComponent implements OnInit {
         this.ref.detectChanges()
       }
     })
+  }
+
+  
+  paymentData(event){
+    this.paymentValue = event
   }
 
   submitPaymentConfirmation() {
