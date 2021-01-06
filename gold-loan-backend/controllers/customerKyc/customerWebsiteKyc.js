@@ -8,7 +8,7 @@ const CONSTANT = require("../../utils/constant");
 const moment = require("moment");
 const { paginationWithFromTo } = require("../../utils/pagination");
 const extend = require('extend')
-const { customerKycAdd, customerKycEdit, getKycInfo, digiOrEmiKyc, updateCompleteKycModule, allKycCompleteInfo } = require('../../service/customerKyc')
+const { customerKycAdd, customerKycEdit, getKycInfo, digiOrEmiKyc, applyDigiKyc, updateCompleteKycModule, allKycCompleteInfo } = require('../../service/customerKyc')
 const check = require("../../lib/checkLib");
 
 exports.submitApplyKyc = async (req, res, next) => {
@@ -80,6 +80,7 @@ exports.getKycInfo = async (req, res, next) => {
 
 exports.digiOrEmiKyc = async (req, res, next) => {
 
+    req.body.customerId = req.userData.id
     let data = await applyDigiKyc(req)
 
     if (data.success) {

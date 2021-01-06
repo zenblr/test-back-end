@@ -15,5 +15,9 @@ module.exports = (sequelize, DataTypes) => {
             tableName: 'digi_kyc_applied',
             timestamps: false
         })
+
+    DigiKycApplied.associate = function (models) {
+        DigiKycApplied.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' })
+    }
     return DigiKycApplied;
 }

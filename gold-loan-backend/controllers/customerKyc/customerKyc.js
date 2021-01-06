@@ -9,7 +9,7 @@ const moment = require("moment");
 const { paginationWithFromTo } = require("../../utils/pagination");
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
 const { customerKycEdit, getKycInfo, kycBasicDetails, submitKycInfo, kycPersonalDetail, kycAddressDeatil, digiOrEmiKyc, applyDigiKyc } = require('../../service/customerKyc')
-
+const { pathToBase64 } = require('../../service/fileUpload')
 const check = require("../../lib/checkLib");
 
 
@@ -1184,11 +1184,11 @@ exports.getDigiKycList = async (req, res) => {
 
 
     const searchQuery = {
-        [Op.and]: [query, {
-            [Op.or]: {
+        // [Op.and]: [query, {
+        //     [Op.or]: {
 
-            }
-        }],
+        //     }
+        // }],
     }
 
     const includeArray = [
@@ -1220,7 +1220,10 @@ exports.getDigiKycList = async (req, res) => {
 
 exports.changeDigiKycStatus = async (req, res) => {
 
-    let panBase64 = pathToBase64(req.body.panImage)
+    let customerDigi = await models.digiKycApplied.findOne({ where: { id: req.body.id } })
+
+    let customer = await models.customer.findOne({ where: { id: customerDigi.customerId } })
+    let panBase64 = await pathToBase64(customer.panImage)
 
     if (!panBase64.success) {
         return res.status(panBase64.status).json({ data: panBase64.message })
@@ -1228,7 +1231,7 @@ exports.changeDigiKycStatus = async (req, res) => {
 
     req.body.panNumber = req.body.panCardNumber
     req.body.panAttachment = panBase64.data
-
+    req.body.panCardNumber = customer.panCardNumber
     var data = await digiOrEmiKyc(req)
 
     if (data.success) {
@@ -1242,10 +1245,11 @@ exports.changeDigiKycStatus = async (req, res) => {
 
             //update complate kyc points
             // kycCompletePoint = await updateCompleteKycModule(kycCompletePoint, moduleId)
-            await models.customer.update({ emiKycStatus: status, digiOrEmiKyc: status }, { where: { id: customerId }, transaction: t })
+            await models.customer.update({ emiKycStatus: status, digiKycStatus: status }, { where: { id: customerId }, transaction: t })
             await models.digiKycApplied.update({ status }, { where: { id: id } })
 
         })
+        return res.status(data.status).json({ message: 'success' })
     } else {
         return res.status(data.status).json({ message: data.message })
 

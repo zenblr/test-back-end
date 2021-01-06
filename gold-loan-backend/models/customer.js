@@ -273,6 +273,7 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.hasMany(models.productRequest, { foreignKey: 'customerId', as: 'productRequest' });
 
+        Customer.hasOne(models.digiKycApplied, { foreignKey: 'customerId', as: 'digiKycApplied' });
     }
 
     // This hook is always run before create.

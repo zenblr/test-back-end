@@ -980,7 +980,7 @@ exports.getProductRequest = async (req, res, next) => {
     include: includeArray,
   });
 
-  if (allCustomers.length == 0) {
+  if (getAllProductRequest.length == 0) {
     return res.status(200).json({ data: [] });
   }
   return res.status(200).json({ count: getAllProductRequestCount.length, data: getAllProductRequest });

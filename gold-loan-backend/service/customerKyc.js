@@ -1415,7 +1415,7 @@ let kycPersonalDetail = async (req) => {
 let digiOrEmiKyc = async (req) => {
     try {
         const id = req.userData.id;
-        const { panNumber, panAttachment, aadharNumber, aadharAttachment } = req.body;
+        const { panCardNumber, panAttachment, aadharNumber, aadharAttachment } = req.body;
         const merchantData = await getMerchantData();
         let customerDetails = await models.customer.findOne({
             where: { id, isActive: true },
@@ -1448,7 +1448,7 @@ let digiOrEmiKyc = async (req) => {
         const panPath = `public/uploads/digitalGoldKyc/pan-${customerUniqueId}.jpeg`;
         fs.writeFileSync(panPath, base64Image, { encoding: 'base64' });
         const data = new FormData();
-        data.append('panNumber', panNumber);
+        data.append('panNumber', panCardNumber);
         data.append('panAttachment', fs.createReadStream(panPath));
 
         const result = await models.axios({
@@ -1491,9 +1491,9 @@ let applyDigiKyc = async (req) => {
         return { status: 400, success: false, message: `Already applied for kyc` }
     }
     await sequelize.transaction(async (t) => {
-        await models.digiKycApplied.create({ customerId: customer.id, status: 'pending' })
+        await models.digiKycApplied.create({ customerId: customerId, status: 'pending' })
 
-        await models.customer.update({ digiKycStatus: 'waiting', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customer.id }, transaction: t })
+        await models.customer.update({ digiKycStatus: 'waiting', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
     })
 
     // return res.status(200).json({ message: `success` })
