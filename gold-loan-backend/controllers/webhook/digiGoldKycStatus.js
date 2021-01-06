@@ -4,9 +4,6 @@ const sequelize = models.sequelize;
 let sms = require('../../utils/SMS');
 // const errorLogger = require('../../../utils/errorlogger');
 
-
-
-
 exports.changeKycStatus = async (req, res) => {
 
     try {
