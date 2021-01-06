@@ -15,7 +15,7 @@ const _ = require('lodash');
 module.exports = async () => {
     try {
         let digiGoldOrderDetail;
-
+        let digiGoldDeliveryOrderDetail;
         let configSettingName = "digiGoldSellableHour"
         let duration = await models.digiGoldConfigDetails.getConfigDetail(configSettingName);
 
@@ -54,28 +54,30 @@ module.exports = async () => {
                 }
             });
 
+            let totalGoldDeliveryInFixDuration
+            let totalSilverDeliveryInFixDuration
 
-            // digiGoldDeliveryOrderDetail = await models.digiGoldOrderDetail.findAll({
-            //     where:
-            //     {
-            //         orderCreatedDate:
-            //             { [Op.gt]: newDate },
-            //         customerId: customer,
-            //         orderTypeId: 3
+            digiGoldDeliveryOrderDetail = await models.digiGoldOrderDetail.findAll({
+                where:
+                {
+                    orderCreatedDate:
+                        { [Op.gt]: newDate },
+                    customerId: customer,
+                    orderTypeId: 3
 
-            //     }
-            // });
-            // if(digiGoldDeliveryOrderDetail.length){
-            //     for (let ele of digiGoldDeliveryOrderDetail) {
+                }
+            });
+            if (digiGoldDeliveryOrderDetail.length) {
+                for (let ele of digiGoldDeliveryOrderDetail) {
 
-            //         if (ele.metalType == "gold") {
-            //             totalGoldDeliveryInFixDuration += parseFloat(ele.quantity);
-            //         }
-            //         if (ele.metalType == "silver") {
-            //             totalSilverDeliveryInFixDuration += parseFloat(ele.quantity)
-            //         }
-            //     }
-            // }
+                    if (ele.metalType == "gold") {
+                        totalGoldDeliveryInFixDuration += parseFloat(ele.quantity);
+                    }
+                    if (ele.metalType == "silver") {
+                        totalSilverDeliveryInFixDuration += parseFloat(ele.quantity)
+                    }
+                }
+            }
 
             console.log("digiGoldOrderDetail ", digiGoldOrderDetail);   // 262
 
@@ -98,9 +100,19 @@ module.exports = async () => {
                 }
                 console.log("gold silver", totalGoldBoughtInFixDuration, totalSilverBoughtInFixDuration);
 
-                sellableGoldBalance = customerBal.currentGoldBalance - totalGoldBoughtInFixDuration;
-                
-                sellableSilverBalance = customerBal.currentSilverBalance - totalSilverBoughtInFixDuration;
+                let buyDeliveryDifferenceGold = totalGoldBoughtInFixDuration - totalGoldDeliveryInFixDuration
+                if (buyDeliveryDifferenceGold <= 0) {
+                    sellableGoldBalance = customerBal.currentGoldBalance
+                } else {
+                    sellableGoldBalance = customerBal.sellableGoldBalance + (customerBal.currentGoldBalance - buyDeliveryDifferenceGold);
+                }
+
+                let buyDeliveryDifferenceSilver = totalSilverBoughtInFixDuration - totalSilverDeliveryInFixDuration
+                if (buyDeliveryDifferenceSilver <= 0) {
+                    sellableSilverBalance = customerBal.currentSilverBalance
+                } else {
+                    sellableSilverBalance = customerBal.sellableSilverBalance + (customerBal.currentSilverBalance - buyDeliveryDifferenceSilver);
+                }
 
                 console.log("sellableGoldBalance", sellableGoldBalance, "sellableSilverBalance", sellableSilverBalance);
 
@@ -117,7 +129,7 @@ module.exports = async () => {
         console.log("nonRepeatCustomerId", nonRepeatCustomerId);
         let newDateBeforfifteenMin = moment(newDate).subtract(15, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
         console.log(newDateBeforfifteenMin);
-        if(nonRepeatCustomerId.length){
+        if (nonRepeatCustomerId.length) {
             // allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
             //     where: {
             //         orderCreatedDate: { [Op.between]: [newDateBeforfifteenMin, newDate] },
@@ -125,35 +137,35 @@ module.exports = async () => {
             //         // orderTypeId: 1
             //     }
             // });
-        allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
-            where: {
-                orderCreatedDate: { [Op.between]: [newDateBeforfifteenMin, newDate] },
-                customerId: { [Op.notIn]: nonRepeatCustomerId}
-                // orderTypeId: 1
-            }
-        });
-        console.log("allCustomerBeforScheduleTime", allCustomerBeforScheduleTime)
-        if (allCustomerBeforScheduleTime.length) {
-            for (let data of allCustomerBeforScheduleTime) {
-                allCustomerId.push(data.customerId)
-            }
-            const nonRepeatCustomerNewId = _.uniq(allCustomerId);
-            console.log(nonRepeatCustomerNewId);   // 262
+            allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
+                where: {
+                    orderCreatedDate: { [Op.between]: [newDateBeforfifteenMin, newDate] },
+                    customerId: { [Op.notIn]: nonRepeatCustomerId }
+                    // orderTypeId: 1
+                }
+            });
+            console.log("allCustomerBeforScheduleTime", allCustomerBeforScheduleTime)
+            if (allCustomerBeforScheduleTime.length) {
+                for (let data of allCustomerBeforScheduleTime) {
+                    allCustomerId.push(data.customerId)
+                }
+                const nonRepeatCustomerNewId = _.uniq(allCustomerId);
+                console.log(nonRepeatCustomerNewId);   // 262
 
-            for (let customer of nonRepeatCustomerNewId) {
+                for (let customer of nonRepeatCustomerNewId) {
 
-                let newCustomerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customer } });
-                console.log("newCustomerBal.currentGoldBalance, newCustomerBal.currentSilverBalance", newCustomerBal.currentGoldBalance, newCustomerBal.currentSilverBalance);
-                await models.digiGoldCustomerBalance.update({
-                    sellableGoldBalance: newCustomerBal.currentGoldBalance,
-                    sellableSilverBalance: newCustomerBal.currentSilverBalance
-                },
-                    {
-                        where: { customerId: customer }
-                    });
+                    let newCustomerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customer } });
+                    console.log("newCustomerBal.currentGoldBalance, newCustomerBal.currentSilverBalance", newCustomerBal.currentGoldBalance, newCustomerBal.currentSilverBalance);
+                    await models.digiGoldCustomerBalance.update({
+                        sellableGoldBalance: newCustomerBal.currentGoldBalance,
+                        sellableSilverBalance: newCustomerBal.currentSilverBalance
+                    },
+                        {
+                            where: { customerId: customer }
+                        });
+                }
             }
         }
-    }
 
         return
     } catch (err) {
