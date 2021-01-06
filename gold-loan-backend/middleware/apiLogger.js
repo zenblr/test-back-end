@@ -101,7 +101,8 @@ module.exports = async (req, res, next) => {
             "/api/digital-gold/customer/create-existent-customer",
             "/api/web-hook/generate-api-key",
             "/api/web-hook/change-order-status",
-            "/api/web-hook/change-withdraw-status"
+            "/api/web-hook/change-withdraw-status",
+            "/api/web-hook/change-kyc-status"
         ];
         if (!skipUrls.includes(req._parsedUrl.pathname)) {
             try {

@@ -18,7 +18,8 @@ exports.changeOrderDeliveryStatus = async (req, res) => {
                     attributes: ['id', 'customerUniqueId', 'mobileNumber', 'firstName', 'lastName'],
                 });
 
-               
+              
+             
                 if (!check.isEmpty(customer)) {
 
                     const result = await models.axios({
@@ -38,16 +39,17 @@ exports.changeOrderDeliveryStatus = async (req, res) => {
                         return res.status(400).json({ message: "Invaid Transaction Id" });
                     }
 
+                    const customerName = customer.firstName + ' ' + customer.lastName 
                     let orderStatus = await sequelize.transaction(async (t) => {
 
                         await models.digiGoldOrderDetail.update({ orderStatus: ele.status }, { where: { id: orderData.id  }, transaction: t });
 
                         if (ele.status == "delivered_to_client") {
-                            // await sms.sendMessageForDeliveredToClient(customer.mobileNumber, customer.firstName, customer.lastName, ele.transactionId);
+                            await sms.sendMessageForDeliveredToClient(customer.mobileNumber,  ele.transactionId);
                         } else if (ele.status == "dispatched_but_not_delivered") {
-                            // await sms.sendMessageForDispatchedButNotDelivered(customer.mobileNumber, customer.firstName, customer.lastName, getCustomerOrderStatusData.awbNo, getCustomerOrderStatusData.logisticName, ele.transactionId);
+                            await sms.sendMessageForDispatchedButNotDelivered(customer.mobileNumber, customerName, getCustomerOrderStatusData.awbNo, getCustomerOrderStatusData.logisticName, ele.transactionId);
                         } else if (ele.status == 're-dispatched') {
-                            await sms.sendMessageForReDispatched(customer.mobileNumber, customer.firstName, customer.lastName, getCustomerOrderStatusData.awbNo, getCustomerOrderStatusData.logisticName, ele.transactionId);
+                            // await sms.sendMessageForReDispatched(customer.mobileNumber, customer.firstName, customer.lastName, getCustomerOrderStatusData.awbNo, getCustomerOrderStatusData.logisticName, ele.transactionId);
                         } else if (ele.status == 'rto') {
                             // await sms.sendMessageForRto(customer.mobileNumber, customer.firstName, customer.lastName, ele.transactionId);
                         }
