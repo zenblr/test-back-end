@@ -297,6 +297,9 @@ let customerNonSellableMetal = async (currentMetalWeight, sellableMetal, nonSell
     nonSellableMetal = 0
     if (sellableMetal > checkRemaingBalance) {
       sellableMetal = sellableMetal - checkRemaingBalance
+      if(sellableMetal < 0){
+        sellableMetal = 0
+      }
     } else {
       sellableMetal = 0
     }
@@ -304,7 +307,8 @@ let customerNonSellableMetal = async (currentMetalWeight, sellableMetal, nonSell
 
   return {
     sellableMetal,
-    nonSellableMetal
+    nonSellableMetal,
+    currentMetalWeight
   }
 }
 
