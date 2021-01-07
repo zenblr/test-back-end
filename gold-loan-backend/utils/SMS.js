@@ -280,7 +280,7 @@ exports.sendMessageForWithdrawCompleted = async (mobileNumber, amount) => {
 exports.sendMessageForKycRejected = async (mobileNumber, accountId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('KYC Verification(Reject)');
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("{#var#}", accountId)
+        let message = await messageTemplate.content.replace("<accountId>", accountId)
         let smsFrom = "customer"
         await sms.sendSms(mobileNumber, message,smsFrom);
     }
@@ -290,8 +290,8 @@ exports.sendMessageForKycRejected = async (mobileNumber, accountId) => {
 exports.sendMessageAfterKycApproved= async (mobileNumber, accountId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('KYC Verification(Approve)');
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("{#var#}", accountId)
-        let smsFrom = "customer"
+        let message = await messageTemplate.content.replace("<accountId>", accountId)
+        let smsFrom = "customer" 
         await sms.sendSms(mobileNumber, message,smsFrom);
     }
 }
@@ -299,8 +299,9 @@ exports.sendMessageAfterKycApproved= async (mobileNumber, accountId) => {
 exports.sendMessageForKycPending= async (mobileNumber, memberId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('KYC Update(Pending)');
     if (messageTemplate) {
-        let message = await messageTemplate.content.replace("{#var#}", memberId)
+        let message = await messageTemplate.content.replace("<memberId>", memberId)
         let smsFrom = "customer"
+        console.log("sendMessageForKycPending",message)
         await sms.sendSms(mobileNumber, message,smsFrom);
     }
 }
@@ -395,3 +396,22 @@ exports.sendMessageForOrderPlaced = async (mobileNumber, orderId) => {
         await sms.sendSms(mobileNumber, message,smsFrom);
     }
 }
+///
+exports.sendMessageForDeliveredToClient = async (mobileNumber, orderId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Delivered to Client');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<orderId>", orderId)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}
+
+exports.sendMessageForDispatchedButNotDelivered = async (mobileNumber,customerName, orderId,courierCompany,trackingId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Dispatched but not Delivered');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<customerName>",customerName).replace("<orderId>", orderId).replace("<courierCompany>", courierCompany).replace("<trackingId>", trackingId)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}
+
