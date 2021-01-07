@@ -360,7 +360,7 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "lead-management") {
 			this.dataSourceHeader();
-			this.value1 = "Add New Lead";
+			this.value1 = "Add Customer";
 			this.showfilter = true;
 			this.filterName = "leads";
 			this.filterWidth = "900px";
@@ -500,7 +500,7 @@ export class TopbarComponent implements OnInit {
 			this.dataSourceHeader();
 			// this.permissionType = "addLeadSource";
 		}
-	
+
 		if (this.path == "sip-trades") {
 			this.value1 = "Add Trades";
 			this.showInput = true;
@@ -915,6 +915,15 @@ export class TopbarComponent implements OnInit {
 		if (location.href.includes('/admin/loan-management/loan-application-form/')) {
 			this.showBackButton = true;
 		}
+		if (this.path == "applied-kyc-digi-gold") {
+			this.showInput = true;
+		}
+		if (location.href.includes('/admin/applied-kyc-digi-gold/edit/' && '?id=')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/admin/applied-kyc-digi-gold/apply/')) {
+			this.showBackButton = true;
+		}
 	}
 
 	action(event: Event) {
@@ -1035,7 +1044,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'sip-trades') {
 			this.sipTradesService.openModal.next(true)
 		}
-	
+
 		if (this.path == 'lead-source') {
 			this.leadSourceService.openModal.next(true)
 		}
