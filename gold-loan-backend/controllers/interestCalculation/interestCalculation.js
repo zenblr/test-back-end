@@ -28,37 +28,37 @@ exports.interestCalculation = async (req, res) => {
     //     data = await dailyIntrestCalculation(date);
     //     await cronForDailyPenalInterest(date)
     // }
-    let data =await calculationData()
+    let data = await calculationData()
     let calculatedInterest = [];
     await sequelize.transaction(async (t) => {
-    for(const loanData of data.loanInfo){
-        let Loan = await models.customerLoanMaster.findOne({
-            where: { id: loanData.masterLoanId },
-            attributes: ['paymentFrequency', 'processingCharge', 'isUnsecuredSchemeApplied', 'tenure', 'isLoanTransfer', 'isLoanTransferExtraAmountAdded', 'loanTransferExtraAmount'],
-            include: [{
-                model: models.customerLoanInterest,
-                as: 'customerLoanInterest',
-                where: { isActive: true, loanId: loanData.id }
-            }, {
-                model: models.customerLoanTransfer,
-                as: "loanTransfer"
-            }]
-        })
-        let interest = await getInterestTable(loanData.masterLoanId, loanData.id, Loan,loanData.masterLoan.loanStartDate);
-        calculatedInterest.push(interest);
-        for (let a = 0; a < interest.length; a++) {
-            let updateDate = interest[a].emiDueDate
-            let emiStartDate = interest[a].emiStartDate
-            let emiEndDate = interest[a].emiEndDate
-            await models.customerLoanInterest.update({ emiDueDate: updateDate, emiStartDate, emiEndDate }, { where: { id: interest[a].id }, transaction: t })
+        for (const loanData of data.loanInfo) {
+            let Loan = await models.customerLoanMaster.findOne({
+                where: { id: loanData.masterLoanId },
+                attributes: ['paymentFrequency', 'processingCharge', 'isUnsecuredSchemeApplied', 'tenure', 'isLoanTransfer', 'isLoanTransferExtraAmountAdded', 'loanTransferExtraAmount'],
+                include: [{
+                    model: models.customerLoanInterest,
+                    as: 'customerLoanInterest',
+                    where: { isActive: true, loanId: loanData.id }
+                }, {
+                    model: models.customerLoanTransfer,
+                    as: "loanTransfer"
+                }]
+            })
+            let interest = await getInterestTable(loanData.masterLoanId, loanData.id, Loan, loanData.masterLoan.loanStartDate);
+            calculatedInterest.push(interest);
+            for (let a = 0; a < interest.length; a++) {
+                let updateDate = interest[a].emiDueDate
+                let emiStartDate = interest[a].emiStartDate
+                let emiEndDate = interest[a].emiEndDate
+                await models.customerLoanInterest.update({ emiDueDate: updateDate, emiStartDate, emiEndDate }, { where: { id: interest[a].id }, transaction: t })
+            }
         }
-    }
-})
-    async function getInterestTable(masterLoanId, loanId, Loan,loanStartDate) {
+    })
+    async function getInterestTable(masterLoanId, loanId, Loan, loanStartDate) {
 
         let startDate = Loan.customerLoanInterest[0].emiDueDate;
         let endDate = Loan.customerLoanInterest[Loan.customerLoanInterest.length - 1].emiDueDate;
-    
+
         let holidayDate = await models.holidayMaster.findAll({
             attributes: ['holidayDate'],
             where: {
@@ -68,18 +68,23 @@ exports.interestCalculation = async (req, res) => {
                 isActive: true,
             }
         })
-    
+
         let interestTable = await models.customerLoanInterest.findAll({
             where: { loanId: loanId, isExtraDaysInterest: false },
             order: [['id', 'asc']]
         })
-    
+
         for (let i = 0; i < interestTable.length; i++) {
-            let date = new Date(loanStartDate);
-            let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number((Loan.paymentFrequency-1)) * (i + 1))))
+            let date
+            if (i == 0) {
+                date = new Date(loanStartDate);
+            } else {
+                date = new Date(interestTable[i - 1].emiDueDate);
+            }
+            let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency))))
             interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
             interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
-    
+
             if (i == 0) {
                 console.log(new Date(loanStartDate).toISOString(), 'date')
                 interestTable[i].emiStartDate = new Date(loanStartDate).toISOString()
@@ -89,16 +94,16 @@ exports.interestCalculation = async (req, res) => {
                 console.log(startDate, i)
                 interestTable[i].emiStartDate = new Date(startDate.setDate(startDate.getDate() + 1))
             }
-    
+
             if (i == interestTable.length - 1) {
                 let newDate = new Date(loanStartDate)
-                newEmiDueDate = new Date(newDate.setDate(newDate.getDate() + (30 * (Loan.tenure))-interestTable.length ))
+                newEmiDueDate = new Date(newDate.setDate(newDate.getDate() + (30 * Loan.tenure)))
                 interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
                 interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
             }
             let x = interestTable.map(ele => ele.emiDueDate)
             // console.log(x)
-    
+
             // for (let j = 0; j < holidayDate.length; j++) {
             //     let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
             //     let sunday = moment(momentDate, 'YYYY-MM-DD').weekday();
@@ -106,13 +111,13 @@ exports.interestCalculation = async (req, res) => {
             //     if (momentDate == holidayDate[j].holidayDate || sunday == 0) {
             //         let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
             //         interestTable[i].emiDueDate = moment(holidayEmiDueDate).format('YYYY-MM-DD')
-    
+
             //         newEmiDueDate = holidayEmiDueDate
             //         j = 0
             //     }
-    
+
             // }
-    
+
             interestTable.loanId = loanId
             interestTable.masterLoanId = masterLoanId
         }
@@ -120,7 +125,7 @@ exports.interestCalculation = async (req, res) => {
         console.log(y)
         return interestTable
     }
-    return res.status(200).json({ loanId :data.loanId,calculatedInterest });
+    return res.status(200).json({ loanId: data.loanId, calculatedInterest });
 }
 
 exports.penalInterestCalculation = async (req, res) => {
@@ -210,7 +215,7 @@ exports.interestAmount = async (req, res) => {
 
 exports.getInterestTableInExcel = async (req, res) => {
     let { masterLoanId } = req.query;
-    let interestData = await models.customerLoanInterest.findAll({where:{masterLoanId}, order: [['id', 'ASC']] });
+    let interestData = await models.customerLoanInterest.findAll({ where: { masterLoanId }, order: [['id', 'ASC']] });
 
     let finalData = [];
 
@@ -390,12 +395,12 @@ exports.interestCalculationCron = async (req, res) => {
     try {
         let cronData = await models.cronLogger.findOne({ where: { id: cronId, cronType: 'loan Interest' } });
         if (cronData) {
-        let data = await dailyIntrestCalculation(date);
-        let endTime = moment();
-        var penalProcessingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(date, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
-        await models.cronLogger.update({ date: date, startTime: date, endTime: endTime, processingTime: penalProcessingTime, status: "success", notes: "re-executed", message: "success" }, { where: { id: cronId } });
-        return res.status(200).json({ message: 'Success', data });
-        }else{
+            let data = await dailyIntrestCalculation(date);
+            let endTime = moment();
+            var penalProcessingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(date, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+            await models.cronLogger.update({ date: date, startTime: date, endTime: endTime, processingTime: penalProcessingTime, status: "success", notes: "re-executed", message: "success" }, { where: { id: cronId } });
+            return res.status(200).json({ message: 'Success', data });
+        } else {
             return res.status(400).json({ message: 'Invalid cron id' });
         }
     } catch (Err) {
@@ -417,7 +422,7 @@ exports.penalInterestCalculationCron = async (req, res) => {
             var penalProcessingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(date, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
             await models.cronLogger.update({ date: date, startTime: date, endTime: endTime, processingTime: penalProcessingTime, status: "success", notes: "re-executed", message: "success" }, { where: { id: cronId } });
             return res.status(200).json({ message: 'Success', data });
-        }else{
+        } else {
             return res.status(400).json({ message: 'Invalid cron id' });
         }
     } catch (Err) {

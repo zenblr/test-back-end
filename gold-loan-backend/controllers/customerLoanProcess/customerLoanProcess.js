@@ -515,11 +515,11 @@ exports.generateInterestTable = async (req, res, next) => {
     console.log(length)
     for (let index = 0; index < Number(length); index++) {
         // let date = new Date("2020/03/08")
-        let date 
-        if(index ==0){
+        let date
+        if (index == 0) {
             date = new Date()
-        }else{
-            date = new Date(interestTable[interestTable.length-1].emiDueDate)
+        } else {
+            date = new Date(interestTable[interestTable.length - 1].emiDueDate)
         }
         let data = {
             emiDueDate: moment(new Date(date.setDate(date.getDate() + (Number(paymentFrequency)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
@@ -537,20 +537,22 @@ exports.generateInterestTable = async (req, res, next) => {
     }
 
     if (!Number.isInteger(length)) {
-        
+
 
         const noOfMonths = (((tenure * 30) - ((interestTable.length - 1) * paymentFrequency)) / 30)
         const lastElementOfTable = interestTable[interestTable.length - 1]
-        let date = new Date(lastElementOfTable.emiDueDate)
+        const secondLast = interestTable[interestTable.length - 2]
+        let date = new Date(secondLast.emiDueDate)
         const oneMonthSecured = securedInterestAmount / (paymentFrequency / 30)
         const oneMonthRebate = secureHighestInterestAmount / (paymentFrequency / 30)
         let secure = (oneMonthSecured * noOfMonths).toFixed(2)
         let secureRebate = (oneMonthRebate * noOfMonths).toFixed(2)
         lastElementOfTable.securedInterestAmount = secure;
         lastElementOfTable.secureHighestInterestAmount = secureRebate;
-        lastElementOfTable.securedRebateAmount = (secureRebate - secure),
-            lastElementOfTable.month = "Month " + tenure;
-        lastElementOfTable.emiDueDate = moment(new Date(date.setDate(date.getDate() + (30 * (tenure-(paymentFrequency*(interestTable.length-1)))))), "DD-MM-YYYY").format('YYYY-MM-DD')
+        lastElementOfTable.securedRebateAmount = (secureRebate - secure);
+        lastElementOfTable.month = "Month " + tenure;
+        let r = (tenure * 30) - (paymentFrequency * (interestTable.length - 1))
+        lastElementOfTable.emiDueDate = moment(new Date(date.setDate(date.getDate() + (r))), "DD-MM-YYYY").format('YYYY-MM-DD')
 
         if (isUnsecuredSchemeApplied) {
             const oneMonthUnsecured = unsecuredInterestAmount / (paymentFrequency / 30)
@@ -1540,12 +1542,12 @@ exports.loanOpsTeamRating = async (req, res, next) => {
                         let parentDisbursementData = await models.customerLoanDisbursement.findAll({ where: { masterLoanId: loanMaster.parentLoanId }, order: [['id']] })
                         if (loan.loanType == "secured") {
                             await models.customerLoanDisbursement.create({
-                                loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy, transactionId: parentDisbursementData[0].transactionId , bankTransferType:parentDisbursementData[0].bankTransferType
+                                loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy, transactionId: parentDisbursementData[0].transactionId, bankTransferType: parentDisbursementData[0].bankTransferType
                             }, { transaction: t })
                         } else {
                             if (parentDisbursementData.length > 1) {
                                 await models.customerLoanDisbursement.create({
-                                    loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy, transactionId: parentDisbursementData[1].transactionId, bankTransferType:parentDisbursementData[1].bankTransferType
+                                    loanId: loan.id, masterLoanId, disbursementAmount: loan.loanAmount, date: moment(), paymentMode: 'Part release', createdBy, modifiedBy, transactionId: parentDisbursementData[1].transactionId, bankTransferType: parentDisbursementData[1].bankTransferType
                                 }, { transaction: t })
                             } else {
                                 await models.customerLoanDisbursement.create({
@@ -1570,7 +1572,7 @@ exports.loanOpsTeamRating = async (req, res, next) => {
 
         })
         if (loanMaster.isNewLoanFromPartRelease == true) {
-            await intrestCalculationForSelectedLoan(moment(),masterLoanId);
+            await intrestCalculationForSelectedLoan(moment(), masterLoanId);
         }
         return res.status(200).json({ message: 'Success' })
     }
@@ -1879,7 +1881,7 @@ exports.disbursementOfLoanAmount = async (req, res, next) => {
             await sendDisbursalMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
 
         })
-        await intrestCalculationForSelectedLoan(moment(),masterLoanId);
+        await intrestCalculationForSelectedLoan(moment(), masterLoanId);
         return res.status(200).json({ message: 'Your loan amount has been disbursed successfully' });
     } else {
         return res.status(404).json({ message: 'Given loan id is not proper' })
@@ -1908,8 +1910,13 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
     })
 
     for (let i = 0; i < interestTable.length; i++) {
-        let date = new Date();
-        let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number((Loan.paymentFrequency-1)) * (i + 1))))
+         let date
+        if (i == 0) {
+            date = new Date()
+        } else {
+            date = new Date(interestTable[interestTable.length - 1].emiDueDate)
+        }
+        let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency))))
         interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
         interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
 
@@ -1925,7 +1932,7 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
 
         if (i == interestTable.length - 1) {
             let newDate = new Date()
-            newEmiDueDate = new Date(newDate.setDate(newDate.getDate() + (30 * (Loan.tenure))-interestTable.length ))
+            newEmiDueDate = new Date(newDate.setDate(newDate.getDate() + (30 * Loan.tenure)))
             interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
             interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
         }
