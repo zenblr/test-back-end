@@ -95,7 +95,7 @@ export class MenuConfig {
 							permission: !(this.permissionsArr.includes('leadManagmentView') || this.permissionsArr.includes('viewNewRequest') || this.permissionsArr.includes('customerRegistrationView')),
 							submenu: [
 								{
-									title: "All Leads",
+									title: "All Customers",
 									page: "/admin/lead-management",
 									permission: !this.permissionsArr.includes('leadManagmentView'),
 								},
@@ -112,7 +112,7 @@ export class MenuConfig {
 								{
 									title: "Customer Registration List",
 									page: "/admin/lead-management/registered-customers",
-									permission: !this.permissionsArr.includes('customerRegistrationView')
+									// permission: !this.permissionsArr.includes('customerRegistrationView')
 								}
 							],
 						},
@@ -133,6 +133,11 @@ export class MenuConfig {
 									title: "Applied KYC",
 									page: "/admin/applied-kyc",
 									permission: !this.permissionsArr.includes('appliedKycView'),
+								},
+								{
+									title: "Applied KYC - Digi Gold",
+									page: "/admin/applied-kyc-digi-gold",
+									// permission: !this.permissionsArr.includes('appliedKycView'),
 								},
 								// {
 								// 	title: "Assigned Customers",

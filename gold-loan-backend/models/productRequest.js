@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'module_id'
         },
+        requestFor: {
+            type: DataTypes.STRING,
+            field: 'request_for'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',

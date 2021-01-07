@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'url'
         },
+        smsFrom: {
+            type: DataTypes.STRING,
+            field: 'sms_from'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',

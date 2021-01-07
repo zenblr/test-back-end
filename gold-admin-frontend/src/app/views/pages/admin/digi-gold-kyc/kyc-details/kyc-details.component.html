@@ -1,0 +1,179 @@
+<kt-portlet>
+    <kt-modal-header *ngIf="modalData.action == 'view'" [title]='"KYC Details"' [noTitleCase]="true"
+        (action)="action()">
+    </kt-modal-header>
+    <kt-portlet-body>
+        <div>
+            <div class="row kt-margin-t-30">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="offset-1 col-12 form-label header">
+                            <h4> Digi Gold KYC</h4>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <form [formGroup]="digiGoldKycForm">
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">PAN</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" formControlName="panCardNumber" autocomplete="off"
+                                    placeholder="PAN"
+                                    [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
+                                    maxlength="10" />
+                                <!-- <select class="form-control" formControlName="panCardNumber" disabled
+                                    [class.isError]="controls.panCardNumber.invalid && controls.panCardNumber.touched">
+                                    <option value=null selected disabled>Select User Type</option>
+                                    <option value="Individual">Individual</option>
+                                    <option value="Corporate">Corporate</option>
+                                </select> -->
+                                <mat-error
+                                    *ngIf="controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
+                                    Field Required
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="controls.panCardNumber.errors?.pattern && controls.panCardNumber.touched">
+                                    Invalid Input
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Date of Birth</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
+                                    formControlName="dateOfBirth" (dateChange)="ageValidation()" [class.isError]="(controls.dateOfBirth.touched && controls.dateOfBirth.invalid) || 
+                                    (controls.age.touched && controls.age.invalid)" readonly placeholder="DD/MM/YYYY"
+                                    [max]="maxDate" />
+                                <mat-datepicker #picker></mat-datepicker>
+                                <mat-error *ngIf="controls.dateOfBirth.invalid && controls.dateOfBirth.touched">
+                                    Field Required
+                                </mat-error>
+
+                                <mat-error *ngIf="controls.age.errors?.min && controls.age.touched">
+                                    Age should be 18 and above
+                                </mat-error>
+                                <mat-error *ngIf="controls.age.errors?.max && controls.age.touched">
+                                    Age should not be above 100
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Attach PAN</label>
+                            </div>
+                            <div class="col-8">
+
+                                <div *ngIf="modalData.action != 'view'" class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Attach PAN"
+                                        aria-label="Attach PAN" formControlName="panFileName"
+                                        [class.isError]="controls.panAttachment.touched && controls.panAttachment.invalid" />
+
+                                    <div class="input-group-append">
+                                        <span
+                                            [ngClass]="modalData.action != 'view' && isEditable ? 'kt-pointer' : 'cursor-not-allowed'"
+                                            class="input-group-text bg font-weight" id="basic-addon2"
+                                            (click)="modalData.action != 'view' && isEditable && pan.click()">Attach</span>
+                                    </div>
+                                    <input type="file" class="d-none" accept="image/jpg, image/png, image/jpeg" #pan
+                                        (input)="uploadFile($event)">
+                                </div>
+                                <mat-error *ngIf="controls.panAttachment.invalid && controls.panAttachment.touched">
+                                    Field Required
+                                </mat-error>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="images.pan['URL']" class="row kt-margin-t-20 kt-margin-b-20">
+                    <div class="col offset-2">
+                        <div class="img-container">
+                            <img *ngIf="!images.pan['URL']" class=""
+                                src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
+                            <img *ngIf="images.pan['URL'] && !isPdf(images.pan['URL'])" (click)="images.pan['URL']"
+                                class="fetched-image" [src]="images.pan['URL']" style="border-radius: 15px;" alt="" />
+                            <img *ngIf="images.pan['URL'] && modalData.action != 'view' && isEditable"
+                                src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer remove-icon"
+                                (click)="pan.click()">
+                            <div *ngIf="isPdf(images.pan['URL'])" class="iframeWrapper"
+                                (click)="previewPdf(images.pan['URL'])">
+                                <iframe [src]="images.pan['URL'] | safe : 'resourceUrl'" height="250" width="290"
+                                    scrolling="no"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="kycStage == 'edit'" class="row kt-margin-t-20">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Status</label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-control" formControlName="status" (change)="setReasonValidation()"
+                                    [class.isError]="controls.status.invalid && controls.status.touched">
+                                    <option [value]=null disabled>Select Status</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                                <mat-error *ngIf="controls.status.invalid && controls.status.touched">
+                                    Field Required
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div *ngIf="controls.status.value && controls.status.value != 'approved'" class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Reason</label>
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" formControlName="reasonForDigiKyc"
+                                    [class.isError]="controls.reasonForDigiKyc.invalid && controls.reasonForDigiKyc.touched">
+                                    <option [value]=null disabled>Select Reason</option>
+                                    <option *ngFor="let item of reasonsList" [value]="item.description">
+                                        {{item.description}}</option>
+                                </select>
+                                <mat-error
+                                    *ngIf="controls.reasonForDigiKyc.invalid && controls.reasonForDigiKyc.touched">
+                                    Field Required
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="modalData.action !== 'view'" class="row">
+                    <div class="col-6">
+                        <div class="offset-4">
+                            <div class="col kt-margin-t-20 kt-margin-b-20">
+                                <kt-button [value]="'Submit'" [type]="'button'" (action)="submit()"></kt-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

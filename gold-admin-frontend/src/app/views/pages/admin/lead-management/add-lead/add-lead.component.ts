@@ -21,7 +21,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class AddLeadComponent implements OnInit {
 
-  modalTitle = 'Add New Lead';
+  modalTitle = 'Add Customer';
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   leadForm: FormGroup;
   states: any;
@@ -172,14 +172,14 @@ export class AddLeadComponent implements OnInit {
   setForm() {
     if (this.data.action == 'edit') {
       this.getLeadById(this.data['id']);
-      this.modalTitle = 'Edit Lead'
+      this.modalTitle = 'Edit Customer'
       this.viewOnly = true;
       this.leadForm.controls.mobileNumber.disable()
       this.leadForm.controls.moduleId.disable()
       this.leadForm.controls.otp.disable()
     } else if (this.data.action == 'view') {
       this.getLeadById(this.data['id']);
-      this.modalTitle = 'View Lead'
+      this.modalTitle = 'View Customer'
       this.leadForm.disable()
     } else if (this.data.action == 'assignBranch') {
       this.getLeadById(this.data['id']);
@@ -193,7 +193,7 @@ export class AddLeadComponent implements OnInit {
       this.disableAssignBranch()
     }
     else {
-      this.modalTitle = 'Add New Lead'
+      this.modalTitle = 'Add Customer'
     }
   }
 

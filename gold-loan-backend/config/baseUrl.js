@@ -5,5 +5,5 @@ module.exports = {
 
     BASEURLFORSWAGGER: '173.249.49.7:8200',
 
-    EMIAPI: "https://emiap1.nimapinfotech.com"
+    EMIAPI: "https://emiapi1.nimapinfotech.com"
 }

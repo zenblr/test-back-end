@@ -8,8 +8,8 @@ const CONSTANT = require("../../utils/constant");
 const moment = require("moment");
 const { paginationWithFromTo } = require("../../utils/pagination");
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck')
-const { customerKycEdit, getKycInfo, kycBasicDetails, submitKycInfo, kycPersonalDetail, kycAddressDeatil } = require('../../service/customerKyc')
-
+const { customerKycEdit, getKycInfo, kycBasicDetails, submitKycInfo, kycPersonalDetail, kycAddressDeatil, digiOrEmiKyc, applyDigiKyc } = require('../../service/customerKyc')
+const { pathToBase64 } = require('../../service/fileUpload')
 const check = require("../../lib/checkLib");
 
 
@@ -495,8 +495,8 @@ exports.submitCustomerKycPersonalDetail = async (req, res, next) => {
     let data = await kycPersonalDetail(req)
 
     if (data.success) {
-        let { customerId, customerKycId, customerKycCurrentStage, customerKycReview, moduleId, userType  } = data
-        return res.status(data.status).json({ customerId, customerKycId, customerKycCurrentStage, customerKycReview, moduleId, userType  })
+        let { customerId, customerKycId, customerKycCurrentStage, customerKycReview, moduleId, userType } = data
+        return res.status(data.status).json({ customerId, customerKycId, customerKycCurrentStage, customerKycReview, moduleId, userType })
     } else {
         return res.status(data.status).json({ message: data.message })
     }
@@ -1171,6 +1171,116 @@ exports.allowToEdit = async (req, res, next) => {
     await models.customer.update({ allowCustomerEdit }, { where: { id: customerId } })
 
     return res.status(200).json({ message: `Success` })
+}
+
+exports.getDigiKycList = async (req, res) => {
+
+    const { search, offset, pageSize } = paginationWithFromTo(
+        req.query.search,
+        req.query.from,
+        req.query.to
+    );
+    let query = {};
+
+
+    const searchQuery = {
+        // [Op.and]: [query, {
+        //     [Op.or]: {
+
+        //     }
+        // }],
+    }
+
+    const includeArray = [
+        {
+            model: models.customer,
+            as: 'customer'
+        }
+    ]
+
+    let data = await models.digiKycApplied.findAll({
+        where: searchQuery,
+        subQuery: false,
+        order: [["updatedAt", "DESC"]],
+        offset: offset,
+        limit: pageSize,
+        include: includeArray
+    })
+    let count = await models.digiKycApplied.findAll({
+        where: searchQuery,
+        include: includeArray,
+    });
+    if (data.length == 0) {
+        return res.status(200).json({ data: [] })
+    }
+    return res.status(200).json({ data: data, count: count.length })
+
+}
+
+
+exports.changeDigiKycStatus = async (req, res) => {
+
+    let customerDigi = await models.digiKycApplied.findOne({ where: { id: req.body.id } })
+
+    let customer = await models.customer.findOne({ where: { id: customerDigi.customerId } })
+
+    if (req.body.status != "approved") {
+        const { id, customerId, status, aadharNumber, aadharAttachment, moduleId, reasonForDigiKyc } = req.body;
+        console.log(req.body)
+        await sequelize.transaction(async (t) => {
+
+            await models.customer.update({ emiKycStatus: status, digiKycStatus: status }, { where: { id: customerId }, transaction: t })
+            await models.digiKycApplied.update({ status, reasonForDigiKyc }, { where: { id: id } })
+
+        })
+        return res.status(200).json({ message: 'success' })
+    }
+
+    let panBase64 = await pathToBase64(customer.panImage)
+
+    if (!panBase64.success) {
+        return res.status(panBase64.status).json({ data: panBase64.message })
+    }
+
+    req.body.panNumber = req.body.panCardNumber
+    req.body.panAttachment = panBase64.data
+    req.body.panCardNumber = customer.panCardNumber
+    req.body.customerId = customerDigi.customerId
+    var data = await digiOrEmiKyc(req)
+
+    if (data.success) {
+        const { id, customerId, status, aadharNumber, aadharAttachment, moduleId, reasonForDigiKyc } = req.body;
+
+        await sequelize.transaction(async (t) => {
+
+            // let modulePoint = await models.module.findOne({ where: { id: moduleId }, transaction: t })
+            // let { allModulePoint, kycCompletePoint } = await models.customer.findOne({ where: { id: id }, transaction: t })
+            // allModulePoint = allModulePoint | modulePoint.modulePoint
+
+            //update complate kyc points
+            // kycCompletePoint = await updateCompleteKycModule(kycCompletePoint, moduleId)
+            await models.customer.update({ emiKycStatus: status, digiKycStatus: status }, { where: { id: customerId }, transaction: t })
+            await models.digiKycApplied.update({ status, reasonForDigiKyc }, { where: { id: id } })
+
+        })
+        return res.status(data.status).json({ message: 'success' })
+    } else {
+        return res.status(data.status).json({ message: data.message })
+
+    }
+}
+
+exports.applyDigiKyc = async (req, res) => {
+
+    let data = await applyDigiKyc(req)
+
+    if (data.success) {
+        return res.status(data.status).json({ message: data.message })
+    } else {
+        return res.status(data.status).json({ message: data.message })
+    }
+
+
 }
 
 
