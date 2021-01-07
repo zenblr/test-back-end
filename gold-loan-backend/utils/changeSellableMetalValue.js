@@ -15,7 +15,7 @@ const _ = require('lodash');
 module.exports = async () => {
     try {
         let digiGoldOrderDetail;
-
+        let digiGoldDeliveryOrderDetail;
         let configSettingName = "digiGoldSellableHour"
         let duration = await models.digiGoldConfigDetails.getConfigDetail(configSettingName);
 
@@ -23,6 +23,8 @@ module.exports = async () => {
         let customerBal;
         let dateBeforSpcifiedTime = new Date();
         let date = dateBeforSpcifiedTime.setHours(dateBeforSpcifiedTime.getHours() - Number(duration.configSettingValue));
+        // let date = dateBeforSpcifiedTime.setMinutes(dateBeforSpcifiedTime.getMinutes() - Number(6));
+
         // let newDate = moment(moment(date).utcOffset("+05:30")).format('YYYY-MM-DD HH:mm:ss.SSS');
         let newDate = moment(date).format('YYYY-MM-DD HH:mm:ss.SSS');
 
@@ -43,16 +45,49 @@ module.exports = async () => {
         console.log(nonRepeatCustomerId);   // 262 
 
         for (let customer of nonRepeatCustomerId) {
-            digiGoldOrderDetail = await models.digiGoldOrderDetail.findAll({
+
+            digiGoldDeliveryOrderDetail = await models.digiGoldOrderDetail.findAll({
                 where:
                 {
                     orderCreatedDate:
                         { [Op.gt]: newDate },
                     customerId: customer,
-                    orderTypeId: 1
+                    orderTypeId: 3
+
+                },
+                include: {
+                    model: models.digiGoldOrderProductDetail,
+                    as: 'orderProductDetail',
+                }
+            });
+
+
+            let totalGoldDeliveryInFixDuration = 0;
+            let totalSilverDeliveryInFixDuration = 0;
+            digiGoldDeliveryOrderDetail = await models.digiGoldOrderDetail.findAll({
+                where:
+                {
+                    orderCreatedDate:
+                        { [Op.gt]: newDate },
+                    customerId: customer,
+                    orderTypeId: 3
 
                 }
             });
+            if (digiGoldDeliveryOrderDetail.length) {
+                for await (let ele of digiGoldDeliveryOrderDetail) {
+                    for await (let product of ele.orderProductDetail) {
+                        console.log(product);
+                        if (product.metalType == "gold") {
+                            totalGoldDeliveryInFixDuration += parseFloat(product.quantity);
+                        }
+                        if (product.metalType == "silver") {
+                            totalSilverDeliveryInFixDuration += parseFloat(product.quantity)
+                        }
+                    }
+                }
+            }
+
             console.log("digiGoldOrderDetail ", digiGoldOrderDetail);   // 262
 
             customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customer } });
@@ -74,9 +109,21 @@ module.exports = async () => {
                 }
                 console.log("gold silver", totalGoldBoughtInFixDuration, totalSilverBoughtInFixDuration);
 
-                sellableGoldBalance = customerBal.currentGoldBalance - totalGoldBoughtInFixDuration;
+                let buyDeliveryDifferenceGold = totalGoldBoughtInFixDuration - totalGoldDeliveryInFixDuration
+                if (buyDeliveryDifferenceGold <= 0) {
+                    sellableGoldBalance = customerBal.currentGoldBalance
+                } else {
+                    sellableGoldBalance = customerBal.currentGoldBalance - buyDeliveryDifferenceGold;
+                    // sellableGoldBalance = customerBal.sellableGoldBalance + (customerBal.currentGoldBalance - buyDeliveryDifferenceGold);
+                }
 
-                sellableSilverBalance = customerBal.currentSilverBalance - totalSilverBoughtInFixDuration;
+                let buyDeliveryDifferenceSilver = totalSilverBoughtInFixDuration - totalSilverDeliveryInFixDuration
+                if (buyDeliveryDifferenceSilver <= 0) {
+                    sellableSilverBalance = customerBal.currentSilverBalance
+                } else {
+                    sellableSilverBalance = customerBal.currentSilverBalance - buyDeliveryDifferenceSilver;
+                    // sellableSilverBalance = customerBal.sellableSilverBalance + (customerBal.currentSilverBalance - buyDeliveryDifferenceSilver);
+                }
 
                 console.log("sellableGoldBalance", sellableGoldBalance, "sellableSilverBalance", sellableSilverBalance);
 
@@ -91,20 +138,21 @@ module.exports = async () => {
 
         }
         console.log("nonRepeatCustomerId", nonRepeatCustomerId);
+        // let newDateBeforfifteenMin = moment(newDate).subtract(3, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
         let newDateBeforfifteenMin = moment(newDate).subtract(15, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
         console.log(newDateBeforfifteenMin);
-        if(nonRepeatCustomerId.length){
-            // allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
-            //     where: {
-            //         orderCreatedDate: { [Op.between]: [newDateBeforfifteenMin, newDate] },
-            //         customerId: { [Op.notIn]: [nonRepeatCustomerId]}
-            //         // orderTypeId: 1
-            //     }
-            // });
+        // if (nonRepeatCustomerId.length) {
+        // allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
+        //     where: {
+        //         orderCreatedDate: { [Op.between]: [newDateBeforfifteenMin, newDate] },
+        //         customerId: { [Op.notIn]: [nonRepeatCustomerId]}
+        //         // orderTypeId: 1
+        //     }
+        // });
         allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
             where: {
                 orderCreatedDate: { [Op.between]: [newDateBeforfifteenMin, newDate] },
-                customerId: { [Op.notIn]: nonRepeatCustomerId}
+                customerId: { [Op.notIn]: nonRepeatCustomerId }
                 // orderTypeId: 1
             }
         });
@@ -129,7 +177,7 @@ module.exports = async () => {
                     });
             }
         }
-    }
+        // }
 
         return
     } catch (err) {

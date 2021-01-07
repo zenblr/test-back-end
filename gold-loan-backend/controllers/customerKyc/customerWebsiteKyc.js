@@ -8,7 +8,7 @@ const CONSTANT = require("../../utils/constant");
 const moment = require("moment");
 const { paginationWithFromTo } = require("../../utils/pagination");
 const extend = require('extend')
-const { customerKycAdd, customerKycEdit, getKycInfo, digiOrEmiKyc, updateCompleteKycModule, allKycCompleteInfo } = require('../../service/customerKyc')
+const { customerKycAdd, customerKycEdit, getKycInfo, digiOrEmiKyc, applyDigiKyc, updateCompleteKycModule, allKycCompleteInfo } = require('../../service/customerKyc')
 const check = require("../../lib/checkLib");
 
 exports.submitApplyKyc = async (req, res, next) => {
@@ -80,53 +80,61 @@ exports.getKycInfo = async (req, res, next) => {
 
 exports.digiOrEmiKyc = async (req, res, next) => {
 
-    if (req.body.moduleId == 4) {
-        var data = await digiOrEmiKyc(req)
-    }
-    const id = req.userData.id;
+    req.body.customerId = req.userData.id
+    let data = await applyDigiKyc(req)
 
-    if (data == undefined) {
-        data = {}
-        data.success = true
-        data.status = 200
-    }
-
-    if (data.success || req.body.moduleId == 2) {
-        const { panType, panImage, panNumber, panAttachment, aadharNumber, aadharAttachment, moduleId } = req.body;
-
-        await sequelize.transaction(async (t) => {
-            let modulePoint = await models.module.findOne({ where: { id: moduleId }, transaction: t })
-            let { allModulePoint, kycCompletePoint } = await models.customer.findOne({ where: { id: id }, transaction: t })
-            allModulePoint = allModulePoint | modulePoint.modulePoint
-
-            //update complate kyc points
-            if (req.body.moduleId == 2) {
-                kycCompletePoint = await updateCompleteKycModule(kycCompletePoint, moduleId)
-                await models.customer.update({ panType, panImage, panCardNumber: panNumber, allModulePoint, kycCompletePoint }, { where: { id: id }, transaction: t })
-
-            } else if (req.body.moduleId == 4) {
-                await models.customer.update({ panType, panImage, panCardNumber: panNumber, allModulePoint, digiKycStatus: 'waiting' }, { where: { id: id }, transaction: t })
-
-            }
-        })
-
-        return res.status(data.status).json({ message: `Success` })
+    if (data.success) {
+        return res.status(data.status).json({ message: data.message })
     } else {
-        if (req.body.moduleId == 2) {
-            return res.status(500).json({ message: 'Server Error' })
-
-        } else {
-            return res.status(data.status).json({ message: data.message })
-
-        }
+        return res.status(data.status).json({ message: data.message })
     }
+
+    // if (req.body.moduleId == 4) {
+    //     var data = await digiOrEmiKyc(req)
+    // }
+    // const id = req.userData.id;
+    // if (data == undefined) {
+    //     data = {}
+    //     data.success = true
+    //     data.status = 200
+    // }
+    // if (data.success || req.body.moduleId == 2) {
+    //     const { panType, panImage, panNumber, panAttachment, aadharNumber, aadharAttachment, moduleId } = req.body;
+    //    await sequelize.transaction(async (t) => {
+    //         let modulePoint = await models.module.findOne({ where: { id: moduleId }, transaction: t })
+    //         let { allModulePoint, kycCompletePoint } = await models.customer.findOne({ where: { id: id }, transaction: t })
+    //         allModulePoint = allModulePoint | modulePoint.modulePoint
+    //         //update complate kyc points
+    //         if (req.body.moduleId == 2) {
+    //             kycCompletePoint = await updateCompleteKycModule(kycCompletePoint, moduleId)
+    //             await models.customer.update({ panType, panImage, panCardNumber: panNumber, allModulePoint, kycCompletePoint }, { where: { id: id }, transaction: t }
+    //         } else if (req.body.moduleId == 4) {
+    //             await models.customer.update({ panType, panImage, panCardNumber: panNumber, allModulePoint, digiKycStatus: 'waiting' }, { where: { id: id }, transaction: t })
+    //         }
+    //     })
+    //     return res.status(data.status).json({ message: `Success` })
+    // } else {
+    //     if (req.body.moduleId == 2) {
+    //        return res.status(500).json({ message: 'Server Error' })
+    //     } else {
+    //        return res.status(data.status).json({ message: data.message })
+    //     }
+    // }
 }
 
 exports.getDigiOrEmiKyc = async (req, res, next) => {
 
     const id = req.userData.id;
 
-    let customerInfo = await models.customer.findOne({ where: { id: id } });
+    let customerInfo = await models.customer.findOne({
+        where: { id: id },
+        include: [
+            {
+                model: models.digiKycApplied,
+                as: 'digiKycApplied'
+            }
+        ]
+    });
 
     let kycApproval = await allKycCompleteInfo(customerInfo)
 

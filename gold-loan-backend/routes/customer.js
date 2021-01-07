@@ -48,9 +48,9 @@ router.get('/customer-management/:customerId', checkAuth, checkRolePermission, w
 
 router.get('/customer-unique', checkAuth, wrapper(getCustomerUniqueId));
 
-router.get('/:customerId', checkAuth, checkRolePermission, wrapper(getSingleCustomer));
-
 router.get('/product-request', checkAuth, wrapper(getProductRequest))
+
+router.get('/:customerId', checkAuth, checkRolePermission, wrapper(getSingleCustomer));
 
 router.use('/app', customerApp)
 

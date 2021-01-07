@@ -23,7 +23,7 @@ export class RegisteredCustomerRequestService {
       reqParams.search = data.search;
     }
   
-    return this.http.get<any>(`/api/customer/registered-customer`, { params: reqParams })
+    return this.http.get<any>(`/api/customer/product-request`, { params: reqParams })
       .pipe(map(res => res),
         catchError(err => {
           if (err.error.message) this.toastr.error(err.error.message)
