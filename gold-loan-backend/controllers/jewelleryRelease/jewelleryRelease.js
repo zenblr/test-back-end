@@ -482,7 +482,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
             if (isAdmin) {
                 return res.status(200).json({ message: "Success", partRelease });
             } else {
-                res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/loan-details`)
+                res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/thank-you?payemntDone=yes&amount=${tempRazorData.amount}`)
             }
         } else {
             return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });

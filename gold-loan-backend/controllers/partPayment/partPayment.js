@@ -688,7 +688,7 @@ exports.partPayment = async (req, res, next) => {
         if (isAdmin) {
             return res.status(200).json({ data: 'success' })
         } else {
-            res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/loan-details`)
+            res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/thank-you?payemntDone=yes&amount=${tempRazorData.amount}`)
         }
     } catch (err) {
         await models.errorLogger.create({
