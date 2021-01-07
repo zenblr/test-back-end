@@ -1,12 +1,13 @@
 const models = require('../../models');
-const getMerchantData = require('../auth/getMerchantData');
+// const getMerchantData = require('../auth/getMerchantData');
 const sequelize = models.sequelize;
-let sms = require('../../utils/SMS');
+const sms = require('../../utils/SMS');
+const check = require('../../lib/checkLib');
 // const errorLogger = require('../../../utils/errorlogger');
 
 exports.changeKycStatus = async (req, res) => {
 
-    const { data, type } = req.body;
+    const {  type } = req.body;
     let customerKycData = req.body.data
 
     if (type == "kyc") {
@@ -40,6 +41,7 @@ exports.changeKycStatus = async (req, res) => {
                 });
             }
         }
+   
         return res.status(200).json({ message: "Success" });
     } else {
         return res.status(400).json({ message: "Invalid Type" });

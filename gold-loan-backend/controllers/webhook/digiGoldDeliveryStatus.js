@@ -19,7 +19,7 @@ exports.changeOrderDeliveryStatus = async (req, res) => {
                 });
 
               
-             
+         
                 if (!check.isEmpty(customer)) {
 
                     const result = await models.axios({
@@ -47,7 +47,7 @@ exports.changeOrderDeliveryStatus = async (req, res) => {
                         if (ele.status == "delivered_to_client") {
                             await sms.sendMessageForDeliveredToClient(customer.mobileNumber,  ele.transactionId);
                         } else if (ele.status == "dispatched_but_not_delivered") {
-                            await sms.sendMessageForDispatchedButNotDelivered(customer.mobileNumber, customerName, getCustomerOrderStatusData.awbNo, getCustomerOrderStatusData.logisticName, ele.transactionId);
+                            await sms.sendMessageForDispatchedButNotDelivered(customer.mobileNumber, customerName, ele.transactionId, getCustomerOrderStatusData.logisticName, getCustomerOrderStatusData.awbNo);
                         } else if (ele.status == 're-dispatched') {
                             // await sms.sendMessageForReDispatched(customer.mobileNumber, customer.firstName, customer.lastName, getCustomerOrderStatusData.awbNo, getCustomerOrderStatusData.logisticName, ele.transactionId);
                         } else if (ele.status == 'rto') {
@@ -55,12 +55,12 @@ exports.changeOrderDeliveryStatus = async (req, res) => {
                         }
                     })
                 }else{
-                    return res.status(400).json({ message: "Invaid Customer Id" });
+                    return res.status(400).json({ message: "Invalid Customer Id" });
                 }
             }
             return res.status(200).json({ message: "Success" });
         } else {
-            return res.status(400).json({ message: "Invaid Type" });
+            return res.status(400).json({ message: "Invalid Type" });
         }
 
 
