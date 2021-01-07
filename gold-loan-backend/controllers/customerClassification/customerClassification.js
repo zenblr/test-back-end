@@ -17,7 +17,7 @@ let { updateCompleteKycModule, updateCustomerUniqueId } = require('../../service
 exports.cceKycRating = async (req, res, next) => {
 
     let { customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, moduleId, scrapKycRatingFromCce, scrapKycStatusFromCce, scrapReasonFromCce } = req.body;
-    let customer = await models.customer.findOne({ where: { customerId } })
+    let customer = await models.customer.findOne({ where: { id:customerId } })
     if (moduleId == 1) {
 
         let cceId = req.userData.id
