@@ -251,7 +251,8 @@ let calculationData = async () => {
     let noOfDaysInYear = 360
     let global = await models.globalSetting.findAll()
     let { gracePeriodDays } = global[0]
-    return { noOfDaysInYear, gracePeriodDays, loanInfo };
+    let loanId = await loanInfo.map((data) => data.id);
+    return { noOfDaysInYear, gracePeriodDays, loanInfo,loanId };
 }
 
 let checkPaidInterest = async (loanId, masterLaonId) => {
@@ -554,6 +555,7 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
             if (!lastPaidEmi) {
                 loanStartDate = moment(loan.masterLoan.loanStartDate);
                 noOfDays = currentDate.diff(loanStartDate, 'days');
+                noOfDays += 1;
             } else {
                 loanStartDate = moment(lastPaidEmi.emiDueDate);
                 noOfDays = currentDate.diff(loanStartDate, 'days');
@@ -562,7 +564,6 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                 date = moment(date).format('YYYY-MM-DD')
                 var checkDueDateForSlab = moment(date).isAfter(firstInterestToPay.emiDueDate);//check due date to change slab
             }
-            noOfDays += 1;
             if (noOfDays > loan.currentSlab && checkDueDateForSlab) {
                 //scenario 2 slab changed
                 let stepUpSlab = await getStepUpslab(loan.id, noOfDays);
@@ -791,11 +792,11 @@ let updateInterestAftertOutstandingAmount = async (date, masterLoanId) => {
             if (!lastPaidEmi) {
                 loanStartDate = moment(loan.masterLoan.loanStartDate);
                 noOfDays = currentDate.diff(loanStartDate, 'days');
+                noOfDays += 1;
             } else {
                 loanStartDate = moment(lastPaidEmi.emiDueDate);
                 noOfDays = currentDate.diff(loanStartDate, 'days');
             }
-            noOfDays += 1;
             let interest = await newSlabRateInterestCalcultaion(loan.outstandingAmount, loan.currentInterestRate, loan.selectedSlab, loan.masterLoan.tenure);
             let allInterest = await getAllNotPaidInterest(loan.id)//get all interest
             let interestLessThanDate = await getAllInterestLessThanDate(loan.id, date);
@@ -2112,11 +2113,11 @@ let intrestCalculationForSelectedLoanWithOutT = async (date, masterLoanId, secur
             if (!lastPaidEmi) {
                 loanStartDate = moment(loan.masterLoan.loanStartDate);
                 noOfDays = currentDate.diff(loanStartDate, 'days');
+                noOfDays += 1;
             } else {
                 loanStartDate = moment(lastPaidEmi.emiDueDate);
                 noOfDays = currentDate.diff(loanStartDate, 'days');
             }
-            noOfDays += 1;
             //scenario 2 slab changed
             let interest
             if (securedInterest || unsecuredInterest) {
