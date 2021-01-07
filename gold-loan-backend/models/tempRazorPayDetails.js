@@ -4,11 +4,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'master_loan_id',
         },
-        customerId: {
-            type: DataTypes.INTEGER,
-            field: 'customer_id',
-            allowNull: false
-        },
         razorPayOrderId: {
             type: DataTypes.STRING,
             field: 'razor_pay_order_id',

@@ -4,19 +4,19 @@
             <div class="table-div kt-padding-t-10 ">
                 <table class="table outer-border altered-row">
                     <thead>
-                        <th class="transparent th-padding-left">Loan ID</th>
+                        <th class="transparent ">Loan ID</th>
                         <th class="transparent table-amount">Loan Amount</th>
                         <th class="transparent">Loan Date</th>
                         <th class="transparent">Scheme Name</th>
                         <th class="transparent">Tenure</th>
                         <th class="transparent">Interest Rate</th>
-                        <th class="transparent"> Interest Rate after Rebate</th>
+                        <th class="transparent"> Interest Rate after  <br>Rebate</th>
                         <th class="transparent">Next Due Date</th>
                         <th class="transparent">Status</th>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="th-padding-left">{{loanDetails?.customerLoan[0]?.loanUniqueId}}
+                            <td>{{loanDetails?.customerLoan[0]?.loanUniqueId}}
                                 <br>
                                 <span *ngIf="loanDetails?.customerLoan[1]">
                                     {{loanDetails?.customerLoan[1]?.loanUniqueId}}

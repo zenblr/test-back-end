@@ -102,6 +102,7 @@ exports.getCustomerDetails = async (req, res) => {
     result.data.result.data.cityId = cityId
     return res.status(200).json(result.data);
   } catch (err) {
+    console.log(err);
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
     if (err.response) {

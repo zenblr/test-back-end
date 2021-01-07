@@ -6,7 +6,7 @@
                 <form [formGroup]="withdrawForm">
                     <div class="row kt-margin-t-15">
                         <div class="col-4 align-self-center">
-                            <label class="font-weight-500 text-color">Customer Id</label>
+                            <label class="font-weight-500 text-color">Customer ID</label>
                         </div>
                         <div class="col-8">
                             <input type="text" formControlName="customerId" class="form-control" disabled>
@@ -41,7 +41,8 @@
                             <label class="font-weight-500 text-color">Withdrawal Initiated Date</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" formControlName="withdrawalInitiatedDate" class="form-control" disabled>
+                            <input type="text" formControlName="withdrawalInitiatedDate" class="form-control"
+                            [value]="controls?.withdrawalInitiatedDate?.value | date: 'MMM d, y, h:mm a'" disabled>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">
@@ -91,7 +92,7 @@
                         <div class="col-8">
                             <select class="form-control" formControlName="withdrawalStatus"
                                 [class.isError]="controls.withdrawalStatus.touched && controls.withdrawalStatus.invalid">
-                                <option value="" [selected]="true" [disabled]="true">Select Status</option>
+                                <option value="">Select Status</option>
                                 <option [value]="status.value" *ngFor="let status of withdrawalStatus">
                                     {{status.name | titlecase}}</option>
                             </select>
@@ -102,7 +103,7 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="withdrawInfo?.transactionData?.withdrawalStatus == 'pending'"
+                    <div *ngIf="withdrawInfo?.transactionData?.depositStatus == 'pending'"
                         class="row kt-margin-t-15">
                         <div class="col-12 text-right">
                             <kt-button [value]="'Update'" [type]="'submit'" (click)="submit()"></kt-button>

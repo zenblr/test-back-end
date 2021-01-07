@@ -890,9 +890,11 @@ let generateTranscationAndUpdateInterestValue = async (loanArray, amount, create
             transactionData.credit = pendingSecuredAmount.toFixed(2)
             transactionData.loanUniqueId = loanArray[index]['customerLoan'].loanUniqueId
             transaction.push(transactionData)
-            pendingSecuredAmount = Number((Number(pendingSecuredAmount) - Number(loanArray[index]['outstandingInterest'])).toFixed(2))
-            loanArray[index]['outstandingInterest'] = 0.00
+            // pendingSecuredAmount = (loanArray[index]['outstandingInterest'] - pendingSecuredAmount).toFixed(2)
+            loanArray[index]['outstandingInterest'] = loanArray[index]['outstandingInterest'] - Number(pendingSecuredAmount.toFixed(2))
+            pendingSecuredAmount = 0.00;
             loanArray[index]['emiReceivedDate'] = paymentReceivedDate
+
 
         }
        

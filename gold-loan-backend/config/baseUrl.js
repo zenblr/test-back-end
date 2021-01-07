@@ -1,9 +1,9 @@
 module.exports = {
 
     // Server Url
-    BASEURL: 'https://goldapi.nimapinfotech.com/',
+    BASEURL: 'https://goldapi1.nimapinfotech.com/',
 
-    BASEURLFORSWAGGER: '173.249.49.7:8100',
+    BASEURLFORSWAGGER: '173.249.49.7:8200',
 
-    EMIAPI: "https://emiapi.nimapinfotech.com"
+    EMIAPI: "https://emiap1.nimapinfotech.com"
 }

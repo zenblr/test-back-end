@@ -99,6 +99,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'free_balance'
         },
+        transactionTempDetailId:{
+            type: DataTypes.INTEGER,
+            field: 'transaction_temp_detail_id',
+        }
     },
         {
             freezeTableName: true,
@@ -110,6 +114,8 @@ module.exports = (sequelize, DataTypes) => {
     WalletTransactionDetails.associate = function (models) {
         WalletTransactionDetails.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         WalletTransactionDetails.belongsTo(models.walletDetails, { foreignKey: 'walletId', as: 'wallet' });
+        WalletTransactionDetails.belongsTo(models.walletTransactionTempDetails, { foreignKey: 'transactionTempDetailId', as: 'walletTransactionTempDetails' });
+
     }
 
 
