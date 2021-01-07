@@ -115,11 +115,11 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
             let data = await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
 
             await models.customerKycClassification.create({ customerId, customerKycId: customerKycAdd.id, kycStatusFromCce: "pending", cceId: createdBy, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer }, { transaction: t })
-            //for create appraiser Request
-            if (isFromCustomerWebsite) {
-                let appraiserRequest = await models.appraiserRequest.create({ customerId, moduleId, createdBy, modifiedBy }, { transaction: t })
-            }
-            //for create appraiser Request
+            //// for create appraiser Request
+            //// if (isFromCustomerWebsite) {
+            ////     let appraiserRequest = await models.appraiserRequest.create({ customerId, moduleId, createdBy, modifiedBy }, { transaction: t })
+            //// }
+            //// for create appraiser Request
 
             //for approved the status by default
             if (isFromCustomerWebsite && getCustomerInfo.internalBranchId != null) {
@@ -1414,11 +1414,11 @@ let kycPersonalDetail = async (req) => {
 
 let digiOrEmiKyc = async (req) => {
     try {
-        const id = req.userData.id;
-        const { panNumber, panAttachment, aadharNumber, aadharAttachment } = req.body;
+        let { customerId } = req.body
+        const { panCardNumber, panAttachment, aadharNumber, aadharAttachment } = req.body;
         const merchantData = await getMerchantData();
         let customerDetails = await models.customer.findOne({
-            where: { id, isActive: true },
+            where: { id: customerId, isActive: true },
         });
         let customerUniqueId = customerDetails.customerUniqueId;
 
@@ -1448,7 +1448,7 @@ let digiOrEmiKyc = async (req) => {
         const panPath = `public/uploads/digitalGoldKyc/pan-${customerUniqueId}.jpeg`;
         fs.writeFileSync(panPath, base64Image, { encoding: 'base64' });
         const data = new FormData();
-        data.append('panNumber', panNumber);
+        data.append('panNumber', panCardNumber);
         data.append('panAttachment', fs.createReadStream(panPath));
 
         const result = await models.axios({
@@ -1481,6 +1481,26 @@ let digiOrEmiKyc = async (req) => {
     };
 }
 
+let applyDigiKyc = async (req) => {
+
+    let { id, customerId, panImage, panCardNumber, panType, dateOfBirth, age } = req.body
+    let checkApplied = await models.digiKycApplied.findOne({ where: { customerId } })
+
+    await sequelize.transaction(async (t) => {
+
+        if (checkApplied) {
+            await models.digiKycApplied.update({ status: 'waiting' }, { where: { id: id }, transaction: t })
+        } else {
+            await models.digiKycApplied.create({ customerId: customerId, status: 'waiting' })
+        }
+
+        await models.customer.update({ digiKycStatus: 'waiting', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
+    })
+
+    // return res.status(200).json({ message: `success` })
+    return { status: 200, success: true, message: `success` }
+}
+
 let allKycCompleteInfo = async (customerInfo) => {
 
     let kycCompletePoint = customerInfo.kycCompletePoint
@@ -1504,7 +1524,7 @@ let allKycCompleteInfo = async (customerInfo) => {
         kycApproval.goldScrap = true
     }
 
-    if (customerInfo.panCardNumber != null) {
+    if (customerInfo.emiKycStatus == "approved") {
         kycApproval.goldEmi = true
     }
 
@@ -1546,5 +1566,6 @@ module.exports = {
     kycAddressDeatil: kycAddressDeatil,
     kycPersonalDetail: kycPersonalDetail,
     digiOrEmiKyc: digiOrEmiKyc,
+    applyDigiKyc: applyDigiKyc,
     allKycCompleteInfo: allKycCompleteInfo
 }

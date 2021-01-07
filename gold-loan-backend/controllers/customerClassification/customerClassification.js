@@ -17,7 +17,7 @@ let { updateCompleteKycModule, updateCustomerUniqueId } = require('../../service
 exports.cceKycRating = async (req, res, next) => {
 
     let { customerId, customerKycId, kycRatingFromCce, kycStatusFromCce, reasonFromCce, moduleId, scrapKycRatingFromCce, scrapKycStatusFromCce, scrapReasonFromCce } = req.body;
-    let customer = await models.customer.findOne({ where: { customerId } })
+    let customer = await models.customer.findOne({ where: { id:customerId } })
     if (moduleId == 1) {
 
         let cceId = req.userData.id
@@ -76,7 +76,6 @@ exports.cceKycRating = async (req, res, next) => {
                     return res.status(400).json({ message: `If you are not approved the customer kyc you have to give a reason.` })
                 }
                 await sequelize.transaction(async (t) => {
-
                     if (kycStatusFromCce == "rejected") {
                         await models.customer.update(
                             { digiKycStatus: kycStatusFromCce, emiKycStatus: kycStatusFromCce, kycStatus: kycStatusFromCce, scrapKycStatus: kycStatusFromCce }, { where: { id: customerId }, transaction: t }

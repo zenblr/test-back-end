@@ -148,6 +148,12 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: "pending",
             values: ['approved', 'waiting', 'pending', 'rejected']
         },
+        emiKycStatus: {
+            type: DataTypes.ENUM,
+            field: 'emi_kyc_status',
+            defaultValue: "pending",
+            values: ['approved', 'pending', 'rejected']
+        },
         userType: {
             type: DataTypes.ENUM,
             field: 'user_type',
@@ -267,6 +273,7 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.hasMany(models.productRequest, { foreignKey: 'customerId', as: 'productRequest' });
 
+        Customer.hasOne(models.digiKycApplied, { foreignKey: 'customerId', as: 'digiKycApplied' });
     }
 
     // This hook is always run before create.
