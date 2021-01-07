@@ -515,14 +515,17 @@ exports.generateInterestTable = async (req, res, next) => {
     console.log(length)
     for (let index = 0; index < Number(length); index++) {
         // let date = new Date("2020/03/08")
-        let date
+        let date;
+        let newFrequency;
         if (index == 0) {
             date = new Date()
+            newFrequency = paymentFrequency - 1
         } else {
             date = new Date(interestTable[interestTable.length - 1].emiDueDate)
+            newFrequency = paymentFrequency
         }
         let data = {
-            emiDueDate: moment(new Date(date.setDate(date.getDate() + (Number(paymentFrequency)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
+            emiDueDate: moment(new Date(date.setDate(date.getDate() + (Number(newFrequency)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
             month: "Month " + ((paymentFrequency / 30) * (index + 1)).toString(),
             paymentType: paymentFrequency,
             securedInterestAmount: securedInterestAmount,
@@ -1910,13 +1913,16 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
     })
 
     for (let i = 0; i < interestTable.length; i++) {
-         let date
+         let date;
+         let newFrequency;
         if (i == 0) {
             date = new Date()
+            newFrequency = Loan.paymentFrequency - 1;
         } else {
             date = new Date(interestTable[interestTable.length - 1].emiDueDate)
+            newFrequency = Loan.paymentFrequency;
         }
-        let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency))))
+        let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(newFrequency))))
         interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
         interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
 

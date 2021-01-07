@@ -76,12 +76,15 @@ exports.interestCalculation = async (req, res) => {
 
         for (let i = 0; i < interestTable.length; i++) {
             let date
+            let newFrequency
             if (i == 0) {
                 date = new Date(loanStartDate);
+                newFrequency = Loan.paymentFrequency - 1;
             } else {
                 date = new Date(interestTable[i - 1].emiDueDate);
+                newFrequency = Loan.paymentFrequency
             }
-            let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency))))
+            let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(newFrequency))))
             interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
             interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
 
