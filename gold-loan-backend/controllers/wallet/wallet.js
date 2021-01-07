@@ -94,6 +94,18 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
     //     }
     //   }
 
+    if (orderType) {
+        if (orderType.id == 4) {
+        searchQuery.productTypeId = { [Op.in]: [4] }
+        searchQuery.orderTypeId = { [Op.in]: [4] }
+        // searchQuery.customerId = id
+        } else if (orderType.id == 5) {
+        searchQuery.productTypeId = { [Op.in]: [4] }
+        searchQuery.orderTypeId = { [Op.notIn]: [4] }
+        // searchQuery.customerId = id
+        }
+        }
+
     let includeArray = [
         {
             model: models.customer,
