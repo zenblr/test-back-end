@@ -20,6 +20,10 @@ const rout: Routes = [
   {
     path: 'edit/:customerId',
     component: KycDetailsComponent
+  },
+  {
+    path: 'apply/:customerId',
+    component: KycDetailsComponent
   }
 ]
 

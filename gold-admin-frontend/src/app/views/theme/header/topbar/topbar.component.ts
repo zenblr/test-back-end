@@ -360,7 +360,7 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "lead-management") {
 			this.dataSourceHeader();
-			this.value1 = "Add New Lead";
+			this.value1 = "Add Customer";
 			this.showfilter = true;
 			this.filterName = "leads";
 			this.filterWidth = "900px";
@@ -919,6 +919,9 @@ export class TopbarComponent implements OnInit {
 			this.showInput = true;
 		}
 		if (location.href.includes('/admin/applied-kyc-digi-gold/edit/' && '?id=')) {
+			this.showBackButton = true;
+		}
+		if (location.href.includes('/admin/applied-kyc-digi-gold/apply/')) {
 			this.showBackButton = true;
 		}
 	}

@@ -95,7 +95,7 @@ export class MenuConfig {
 							permission: !(this.permissionsArr.includes('leadManagmentView') || this.permissionsArr.includes('viewNewRequest') || this.permissionsArr.includes('customerRegistrationView')),
 							submenu: [
 								{
-									title: "All Leads",
+									title: "All Customers",
 									page: "/admin/lead-management",
 									permission: !this.permissionsArr.includes('leadManagmentView'),
 								},

@@ -150,7 +150,7 @@ export class PageConfig {
 				// }
 			},
 			"lead-management": {
-				page: { title: "All Leads", desc: "" },
+				page: { title: "All Customers", desc: "" },
 				"new-requests": {
 					page: { title: "Appraiser Requests", desc: "" },
 				},
@@ -316,9 +316,12 @@ export class PageConfig {
 				page: { title: "Applied KYC - Digi Gold", desc: "" },
 				"edit": {
 					id: {
-						// id: {
 						page: { title: "Customer KYC", desc: "" },
-						// }
+					}
+				},
+				"apply": {
+					id: {
+						page: { title: "Customer KYC", desc: "" },
 					}
 				},
 			},

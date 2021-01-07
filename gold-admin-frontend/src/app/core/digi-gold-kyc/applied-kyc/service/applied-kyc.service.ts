@@ -54,8 +54,20 @@ export class AppliedKycService {
     );
   }
 
-  editKycDetails(data) {
+  editDigiGoldKyc(data) {
     return this.http.post<any>(`/api/kyc/update-digi-status`, data).pipe(
+      map(res => res),
+      // tap(res => this.userData.next(res)),
+      catchError(err => {
+        if (err.error.message)
+          this.toastr.error(err.error.message);
+        throw (err);
+      })
+    );
+  }
+
+  applyDigiGoldKyc(data) {
+    return this.http.post<any>(`/api/kyc/apply-digi-kyc`, data).pipe(
       map(res => res),
       // tap(res => this.userData.next(res)),
       catchError(err => {

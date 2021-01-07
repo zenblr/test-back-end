@@ -52,18 +52,18 @@
                             </div>
                             <div class="col-7">
                                 <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
-                                    formControlName="dateOfBirth" (dateChange)="ageValidation()"
-                                    [class.isError]="controls.dateOfBirth.touched && controls.dateOfBirth.invalid"
-                                    readonly placeholder="DD/MM/YYYY" [max]="maxDate" />
+                                    formControlName="dateOfBirth" (dateChange)="ageValidation()" [class.isError]="(controls.dateOfBirth.touched && controls.dateOfBirth.invalid) || 
+                                    (controls.age.touched && controls.age.invalid)" readonly placeholder="DD/MM/YYYY"
+                                    [max]="maxDate" />
                                 <mat-datepicker #picker></mat-datepicker>
                                 <mat-error *ngIf="controls.dateOfBirth.invalid && controls.dateOfBirth.touched">
                                     Field Required
                                 </mat-error>
 
-                                <mat-error *ngIf="controls.dateOfBirth.errors?.min && controls.dateOfBirth.touched">
+                                <mat-error *ngIf="controls.age.errors?.min && controls.age.touched">
                                     Age should be 18 and above
                                 </mat-error>
-                                <mat-error *ngIf="controls.dateOfBirth.errors?.max && controls.dateOfBirth.touched">
+                                <mat-error *ngIf="controls.age.errors?.max && controls.age.touched">
                                     Age should not be above 100
                                 </mat-error>
                             </div>
@@ -85,7 +85,9 @@
                                         [class.isError]="controls.panAttachment.touched && controls.panAttachment.invalid" />
 
                                     <div class="input-group-append">
-                                        <span [ngClass]="modalData.action != 'view' && isEditable ? 'kt-pointer' : 'cursor-not-allowed'" class="input-group-text bg font-weight" id="basic-addon2"
+                                        <span
+                                            [ngClass]="modalData.action != 'view' && isEditable ? 'kt-pointer' : 'cursor-not-allowed'"
+                                            class="input-group-text bg font-weight" id="basic-addon2"
                                             (click)="modalData.action != 'view' && isEditable && pan.click()">Attach</span>
                                     </div>
                                     <input type="file" class="d-none" accept="image/jpg, image/png, image/jpeg" #pan
@@ -119,20 +121,41 @@
                     </div>
                 </div>
 
-                <div *ngIf="modalData.action !== 'view'" class="row kt-margin-t-20">
+                <div *ngIf="kycStage == 'edit'" class="row kt-margin-t-20">
                     <div class="col-6">
                         <div class="row">
                             <div class="offset-1 col-3 form-label">
                                 <label class="mandatory">Status</label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="status"
+                                <select class="form-control" formControlName="status" (change)="setReasonValidation()"
                                     [class.isError]="controls.status.invalid && controls.status.touched">
                                     <option [value]=null disabled>Select Status</option>
+                                    <option value="pending">Pending</option>
                                     <option value="approved">Approved</option>
                                     <option value="rejected">Rejected</option>
                                 </select>
                                 <mat-error *ngIf="controls.status.invalid && controls.status.touched">
+                                    Field Required
+                                </mat-error>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div *ngIf="controls.status.value && controls.status.value != 'approved'" class="row">
+                            <div class="offset-1 col-3 form-label">
+                                <label class="mandatory">Reason</label>
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" formControlName="reasonForDigiKyc"
+                                    [class.isError]="controls.reasonForDigiKyc.invalid && controls.reasonForDigiKyc.touched">
+                                    <option [value]=null disabled>Select Reason</option>
+                                    <option *ngFor="let item of reasonsList" [value]="item.description">
+                                        {{item.description}}</option>
+                                </select>
+                                <mat-error
+                                    *ngIf="controls.reasonForDigiKyc.invalid && controls.reasonForDigiKyc.touched">
                                     Field Required
                                 </mat-error>
                             </div>

@@ -30,6 +30,9 @@
                         <span *ngIf="role.status == 'pending'">
                             {{role.status | titlecase}}
                         </span>
+                        <span *ngIf="role.status == 'waiting'">
+                            {{role.status | titlecase}}
+                        </span>
 
 
                     </mat-cell>
@@ -42,8 +45,8 @@
                     <mat-cell *matCellDef="let role">
                         <div [ngStyle]="{'display': 'inherit'}">
                             <div class="kt-pointer" (click)="editKyc(role.customerId, role.id)" class="kt-pointer">
-                                <span>
-                                    <strong *ngIf="role.status == 'pending'">Action ></strong>
+                                <span *ngxPermissionsOnly="['digiGoldKycApproval']">
+                                    <strong *ngIf="role.status == 'waiting'">Action ></strong>
                                 </span>
                             </div>
                         </div>

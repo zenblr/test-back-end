@@ -8,6 +8,7 @@ import { ImagePreviewDialogComponent } from '../../../../partials/components/ima
 import { AppliedKycService } from '../../../../../core/digi-gold-kyc/applied-kyc/service/applied-kyc.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LeadService } from '../../../../../core/lead-management/services/lead.service';
+import { CustomerClassificationService } from '../../../../../core/kyc-settings/services/customer-classification.service';
 
 @Component({
   selector: 'kt-kyc-details',
@@ -22,6 +23,8 @@ export class KycDetailsComponent implements OnInit {
   customerId: string;
   id: string;
   isEditable: boolean;
+  kycStage: string;
+  reasonsList: any;
 
   constructor(
     public dialogRef: MatDialogRef<KycDetailsComponent>,
@@ -33,11 +36,29 @@ export class KycDetailsComponent implements OnInit {
     private appliedKycService: AppliedKycService,
     private route: ActivatedRoute,
     private leadService: LeadService,
-    private router: Router
+    private router: Router,
+    private custClassificationService: CustomerClassificationService,
   ) { }
 
   ngOnInit() {
     this.initForm()
+
+    console.log((this.router.url).split('/')[3])
+    this.kycStage = (this.router.url).split('/')[3]
+    if (this.kycStage == 'apply') {
+      this.isEditable = true
+      this.controls.status.disable()
+      this.setApplyValidation()
+    }
+    if (this.kycStage == 'edit') {
+      this.getReasonsList()
+      this.isEditable = false
+      this.digiGoldKycForm.disable()
+      this.controls.status.enable()
+      this.controls.reasonForDigiKyc.enable()
+      this.setEditValidation()
+    }
+
 
     this.customerId = this.route.snapshot.paramMap.get("customerId");
     this.id = this.route.snapshot.queryParamMap.get("id");
@@ -54,8 +75,7 @@ export class KycDetailsComponent implements OnInit {
       this.patchImage(this.modalData.data)
       // })
     }
-    this.digiGoldKycForm.disable()
-    this.digiGoldKycForm.controls.status.enable()
+    // this.digiGoldKycForm.controls.status.enable()
   }
 
   getKYCDetails() {
@@ -77,7 +97,7 @@ export class KycDetailsComponent implements OnInit {
     this.digiGoldKycForm = this.fb.group({
       panCardNumber: [, [Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]],
       panFileName: [],
-      panAttachment: [, [Validators.required]],
+      panAttachment: [],
       moduleId: [4],
       userType: [],
       panType: ['pan'],
@@ -86,15 +106,43 @@ export class KycDetailsComponent implements OnInit {
       age: [, [Validators.min(18), Validators.max(100)]],
       customerId: [],
       status: [],
-      id: []
+      id: [],
+      reasonForDigiKyc: []
     })
   }
 
   setPanAttachmentValidation() {
+    // this.controls.panAttachment.setValidators([])
+    // this.controls.panAttachment.updateValueAndValidity()
+    // this.controls.status.setValidators([Validators.required])
+    // this.controls.status.updateValueAndValidity()
+  }
+
+  setApplyValidation() {
+    this.controls.panAttachment.setValidators([Validators.required])
+    this.controls.panAttachment.updateValueAndValidity()
+  }
+
+  setEditValidation() {
     this.controls.panAttachment.setValidators([])
     this.controls.panAttachment.updateValueAndValidity()
     this.controls.status.setValidators([Validators.required])
     this.controls.status.updateValueAndValidity()
+  }
+
+  setReasonValidation() {
+    const { status, reasonForDigiKyc } = this.controls
+    if (status.value !== 'approved') {
+      reasonForDigiKyc.setValidators([Validators.required])
+      reasonForDigiKyc.updateValueAndValidity()
+    } else {
+      reasonForDigiKyc.setValidators([])
+      reasonForDigiKyc.updateValueAndValidity()
+      setTimeout(() => {
+        reasonForDigiKyc.reset()
+        // reasonForDigiKyc.markAsTouched()
+      })
+    }
   }
 
   get controls() {
@@ -210,16 +258,32 @@ export class KycDetailsComponent implements OnInit {
     if (this.digiGoldKycForm.invalid) {
       return this.digiGoldKycForm.markAllAsTouched()
     }
-    this.appliedKycService.editKycDetails(this.digiGoldKycForm.getRawValue())
-      .subscribe(res => {
-        this.toastr.success(res.message)
-        this.router.navigate(['/admin/applied-kyc-digi-gold'])
-      })
-    console.log(this.digiGoldKycForm.getRawValue())
+    if (this.kycStage == 'edit') {
+      this.appliedKycService.editDigiGoldKyc(this.digiGoldKycForm.getRawValue())
+        .subscribe(res => {
+          this.toastr.success(res.message)
+          this.router.navigate(['/admin/applied-kyc-digi-gold'])
+        })
+      console.log(this.digiGoldKycForm.getRawValue())
+    }
+    if (this.kycStage == 'apply') {
+      this.appliedKycService.applyDigiGoldKyc(this.digiGoldKycForm.getRawValue())
+        .subscribe(res => {
+          this.toastr.success(res.message)
+          this.router.navigate(['/admin/lead-management'])
+        })
+      console.log(this.digiGoldKycForm.getRawValue())
+    }
   }
 
   previewPdf() {
 
+  }
+
+  getReasonsList() {
+    this.custClassificationService.getReasonsList().pipe(
+      map(res => this.reasonsList = res.data))
+      .subscribe()
   }
 
 }
