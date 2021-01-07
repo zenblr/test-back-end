@@ -814,10 +814,10 @@ exports.withdrawAmount = async (req, res) => {
 
       let walletData = await models.walletDetails.create({ customerId: id, amount: withdrawAmount, paymentDirection: "debit", description: `Rs ${withdrawAmount} requested to be transferred to bank account`, productTypeId: 4, transactionDate: moment(), orderTypeId: 5, paymentOrderTypeId: 5, transactionStatus: "pending" }, { transaction: t });
 
-      orderDetail = await models.walletTransactionDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, transactionUniqueId, transactionAmount: withdrawAmount, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, depositStatus: "pending", walletId: walletData.id, paymentReceivedDate: moment() }, { transaction: t });
-
       customerUpdatedFreeBalance = Number(customerFreeBalance.walletFreeBalance) - Number(withdrawAmount);
       currentWalletBalance = Number(customerFreeBalance.currentWalletBalance) - Number(withdrawAmount);
+
+      orderDetail = await models.walletTransactionDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, transactionUniqueId, transactionAmount: withdrawAmount, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, depositStatus: "pending", walletId: walletData.id, paymentReceivedDate: moment(), runningBalance: currentWalletBalance }, { transaction: t });
 
       await models.customer.update({ walletFreeBalance: customerUpdatedFreeBalance, currentWalletBalance: currentWalletBalance }, { where: { id: customerFreeBalance.id }, transaction: t });
 
