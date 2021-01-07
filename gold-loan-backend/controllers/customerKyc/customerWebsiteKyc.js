@@ -126,7 +126,15 @@ exports.getDigiOrEmiKyc = async (req, res, next) => {
 
     const id = req.userData.id;
 
-    let customerInfo = await models.customer.findOne({ where: { id: id } });
+    let customerInfo = await models.customer.findOne({
+        where: { id: id },
+        include: [
+            {
+                model: models.digiKycApplied,
+                as: 'digiKycApplied'
+            }
+        ]
+    });
 
     let kycApproval = await allKycCompleteInfo(customerInfo)
 

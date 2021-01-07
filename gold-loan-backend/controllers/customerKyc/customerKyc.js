@@ -1223,6 +1223,19 @@ exports.changeDigiKycStatus = async (req, res) => {
     let customerDigi = await models.digiKycApplied.findOne({ where: { id: req.body.id } })
 
     let customer = await models.customer.findOne({ where: { id: customerDigi.customerId } })
+
+    if (req.body.status != "approved") {
+        const { id, customerId, status, aadharNumber, aadharAttachment, moduleId, reasonForDigiKyc } = req.body;
+        console.log(req.body)
+        await sequelize.transaction(async (t) => {
+
+            await models.customer.update({ emiKycStatus: status, digiKycStatus: status }, { where: { id: customerId }, transaction: t })
+            await models.digiKycApplied.update({ status, reasonForDigiKyc }, { where: { id: id } })
+
+        })
+        return res.status(200).json({ message: 'success' })
+    }
+
     let panBase64 = await pathToBase64(customer.panImage)
 
     if (!panBase64.success) {
@@ -1232,10 +1245,11 @@ exports.changeDigiKycStatus = async (req, res) => {
     req.body.panNumber = req.body.panCardNumber
     req.body.panAttachment = panBase64.data
     req.body.panCardNumber = customer.panCardNumber
+    req.body.customerId = customerDigi.customerId
     var data = await digiOrEmiKyc(req)
 
     if (data.success) {
-        const { id, customerId, status, aadharNumber, aadharAttachment, moduleId } = req.body;
+        const { id, customerId, status, aadharNumber, aadharAttachment, moduleId, reasonForDigiKyc } = req.body;
 
         await sequelize.transaction(async (t) => {
 

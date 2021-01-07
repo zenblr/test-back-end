@@ -23,6 +23,8 @@ module.exports = async () => {
         let customerBal;
         let dateBeforSpcifiedTime = new Date();
         let date = dateBeforSpcifiedTime.setHours(dateBeforSpcifiedTime.getHours() - Number(duration.configSettingValue));
+        // let date = dateBeforSpcifiedTime.setMinutes(dateBeforSpcifiedTime.getMinutes() - Number(6));
+
         // let newDate = moment(moment(date).utcOffset("+05:30")).format('YYYY-MM-DD HH:mm:ss.SSS');
         let newDate = moment(date).format('YYYY-MM-DD HH:mm:ss.SSS');
 
@@ -60,9 +62,8 @@ module.exports = async () => {
             });
 
 
-            let totalGoldDeliveryInFixDuration
-            let totalSilverDeliveryInFixDuration
-
+            let totalGoldDeliveryInFixDuration = 0;
+            let totalSilverDeliveryInFixDuration = 0;
             digiGoldDeliveryOrderDetail = await models.digiGoldOrderDetail.findAll({
                 where:
                 {
@@ -112,18 +113,16 @@ module.exports = async () => {
                 if (buyDeliveryDifferenceGold <= 0) {
                     sellableGoldBalance = customerBal.currentGoldBalance
                 } else {
-                    // if (customerBal.sellableGoldBalance == 0) {
-                    //     sellableGoldBalance = customerBal.currentGoldBalance
-                    // } else {
-                    sellableGoldBalance = customerBal.sellableGoldBalance + (customerBal.currentGoldBalance - buyDeliveryDifferenceGold);
-                    // }
+                    sellableGoldBalance = customerBal.currentGoldBalance - buyDeliveryDifferenceGold;
+                    // sellableGoldBalance = customerBal.sellableGoldBalance + (customerBal.currentGoldBalance - buyDeliveryDifferenceGold);
                 }
 
                 let buyDeliveryDifferenceSilver = totalSilverBoughtInFixDuration - totalSilverDeliveryInFixDuration
                 if (buyDeliveryDifferenceSilver <= 0) {
                     sellableSilverBalance = customerBal.currentSilverBalance
                 } else {
-                    sellableSilverBalance = customerBal.sellableSilverBalance + (customerBal.currentSilverBalance - buyDeliveryDifferenceSilver);
+                    sellableSilverBalance = customerBal.currentSilverBalance - buyDeliveryDifferenceSilver;
+                    // sellableSilverBalance = customerBal.sellableSilverBalance + (customerBal.currentSilverBalance - buyDeliveryDifferenceSilver);
                 }
 
                 console.log("sellableGoldBalance", sellableGoldBalance, "sellableSilverBalance", sellableSilverBalance);
@@ -139,6 +138,7 @@ module.exports = async () => {
 
         }
         console.log("nonRepeatCustomerId", nonRepeatCustomerId);
+        // let newDateBeforfifteenMin = moment(newDate).subtract(3, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
         let newDateBeforfifteenMin = moment(newDate).subtract(15, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
         console.log(newDateBeforfifteenMin);
         // if (nonRepeatCustomerId.length) {

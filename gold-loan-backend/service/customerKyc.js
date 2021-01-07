@@ -1414,11 +1414,11 @@ let kycPersonalDetail = async (req) => {
 
 let digiOrEmiKyc = async (req) => {
     try {
-        const id = req.userData.id;
+        let { customerId } = req.body
         const { panCardNumber, panAttachment, aadharNumber, aadharAttachment } = req.body;
         const merchantData = await getMerchantData();
         let customerDetails = await models.customer.findOne({
-            where: { id, isActive: true },
+            where: { id: customerId, isActive: true },
         });
         let customerUniqueId = customerDetails.customerUniqueId;
 
@@ -1483,15 +1483,16 @@ let digiOrEmiKyc = async (req) => {
 
 let applyDigiKyc = async (req) => {
 
-    let { customerId, panImage, panCardNumber, panType, dateOfBirth, age } = req.body
+    let { id, customerId, panImage, panCardNumber, panType, dateOfBirth, age } = req.body
     let checkApplied = await models.digiKycApplied.findOne({ where: { customerId } })
 
-    if (checkApplied) {
-        // return res.status(400).json({ message: `Already applied for kyc` })
-        return { status: 400, success: false, message: `Already applied for kyc` }
-    }
     await sequelize.transaction(async (t) => {
-        await models.digiKycApplied.create({ customerId: customerId, status: 'waiting' })
+
+        if (checkApplied) {
+            await models.digiKycApplied.update({ status: 'waiting' }, { where: { id: id }, transaction: t })
+        } else {
+            await models.digiKycApplied.create({ customerId: customerId, status: 'waiting' })
+        }
 
         await models.customer.update({ digiKycStatus: 'waiting', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
     })
