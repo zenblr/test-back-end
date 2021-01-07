@@ -521,7 +521,7 @@ exports.generateInterestTable = async (req, res, next) => {
             date = new Date()
             newFrequency = paymentFrequency - 1
         } else {
-            date = new Date(interestTable[interestTable.length - 1].emiDueDate)
+            date = new Date(interestTable[index - 1].emiDueDate)
             newFrequency = paymentFrequency
         }
         let data = {
@@ -1919,7 +1919,7 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
             date = new Date()
             newFrequency = Loan.paymentFrequency - 1;
         } else {
-            date = new Date(interestTable[interestTable.length - 1].emiDueDate)
+            date = new Date(interestTable[i - 1].emiDueDate)
             newFrequency = Loan.paymentFrequency;
         }
         let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(newFrequency))))
@@ -1938,26 +1938,26 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
 
         if (i == interestTable.length - 1) {
             let newDate = new Date()
-            newEmiDueDate = new Date(newDate.setDate(newDate.getDate() + (30 * Loan.tenure)))
+            newEmiDueDate = new Date(newDate.setDate(newDate.getDate() + (30 * Loan.tenure)-1))
             interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
             interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
         }
         let x = interestTable.map(ele => ele.emiDueDate)
         console.log(x)
 
-        for (let j = 0; j < holidayDate.length; j++) {
-            let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
-            let sunday = moment(momentDate, 'YYYY-MM-DD').weekday();
-            let newDate = new Date(newEmiDueDate);
-            if (momentDate == holidayDate[j].holidayDate || sunday == 0) {
-                let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
-                interestTable[i].emiDueDate = moment(holidayEmiDueDate).format('YYYY-MM-DD')
+        // for (let j = 0; j < holidayDate.length; j++) {
+        //     let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
+        //     let sunday = moment(momentDate, 'YYYY-MM-DD').weekday();
+        //     let newDate = new Date(newEmiDueDate);
+        //     if (momentDate == holidayDate[j].holidayDate || sunday == 0) {
+        //         let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
+        //         interestTable[i].emiDueDate = moment(holidayEmiDueDate).format('YYYY-MM-DD')
 
-                newEmiDueDate = holidayEmiDueDate
-                j = 0
-            }
+        //         newEmiDueDate = holidayEmiDueDate
+        //         j = 0
+        //     }
 
-        }
+        // }
 
         interestTable.loanId = loanId
         interestTable.masterLoanId = masterLoanId

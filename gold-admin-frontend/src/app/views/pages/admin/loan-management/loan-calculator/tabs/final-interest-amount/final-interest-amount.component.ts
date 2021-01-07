@@ -71,7 +71,7 @@ export class FinalInterestAmountComponent implements OnInit {
     if (this.controls.loanStartDate.valid && this.controls.tenure.valid) {
       let startDate = this.controls.loanStartDate.value;
       let date = new Date(startDate)
-      this.controls.loanEndDate.patchValue(new Date(date.setDate(startDate.getDate() + (Number(this.controls.tenure.value)) * 30)))
+      this.controls.loanEndDate.patchValue(new Date(date.setDate(startDate.getDate() + (((Number(this.controls.tenure.value)) * 30)-1))))
       console.log(this.controls.loanEndDate.value)
     } else {
       this.controls.loanStartDate.markAsTouched()
