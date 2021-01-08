@@ -697,14 +697,8 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                                 await models.customerTransactionDetail.update({ referenceId: `${loan.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                             }
                         }
-                        let interestAccrual = interest.amount - interestData.paidAmount;
-                        if(interestAccrual < 0){
-                            await models.customerLoanInterest.update({ interestAccrual : 0, totalInterestAccrual: interest.amount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
-                        }else{
-                            await models.customerLoanInterest.update({ interestAccrual, totalInterestAccrual: interest.amount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
-                        }
-                        ////////
-                        if (isDueDate && !Number.isInteger(interest.length) && interestGreaterThanDate.length == 0) {
+                        
+                        if (!Number.isInteger(interest.length) && interestGreaterThanDate.length == 0) {
                             const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterestTable.length - 1) * loan.selectedSlab)) / 30)
                             let oneMonthAmount = interest.amount / (loan.selectedSlab / 30);
                             let amount = (oneMonthAmount * noOfMonths).toFixed(2);
@@ -714,6 +708,13 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                                 await models.customerLoanInterest.update({ interestAccrual : 0,totalInterestAccrual:amount}, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                             }else{
                                 await models.customerLoanInterest.update({ interestAccrual,totalInterestAccrual:amount }, { where: { id: lastInterest.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                            }
+                        }else{
+                            let interestAccrual = interest.amount - interestData.paidAmount;
+                            if(interestAccrual < 0){
+                                await models.customerLoanInterest.update({ interestAccrual : 0, totalInterestAccrual: interest.amount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
+                            }else{
+                                await models.customerLoanInterest.update({ interestAccrual, totalInterestAccrual: interest.amount }, { where: { id: interestData.id, emiStatus: { [Op.notIn]: ['paid'] } }, transaction: t });
                             }
                         }
                         //current date == selected interest emi due date then debit
@@ -758,7 +759,13 @@ let intrestCalculationForSelectedLoan = async (date, masterLoanId) => {
                     //Extra interest
                     //calculate extra interest
                     if (interestGreaterThanDate.length == 0) {
-                        let pendingNoOfDays = noOfDays - (interestLessThanDate.length * loan.selectedSlab);
+                        let pendingNoOfDays = 0;
+                        if (!Number.isInteger(interest.length) && interestGreaterThanDate.length == 0){
+                            const noOfMonths = (((loan.masterLoan.tenure * 30) - ((allInterestTable.length - 1) * loan.selectedSlab)) / 30);
+                            pendingNoOfDays =  noOfDays - (30 * noOfMonths)
+                        }else{
+                            pendingNoOfDays = noOfDays - (interestLessThanDate.length * loan.selectedSlab);
+                        }
                         if (pendingNoOfDays > 0) {
                             let oneDayInterest = loan.currentInterestRate / 30;
                             let oneDayAmount = loan.outstandingAmount * (oneDayInterest / 100);
