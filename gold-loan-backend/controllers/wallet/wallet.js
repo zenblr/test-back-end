@@ -101,7 +101,7 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
         // searchQuery.customerId = id
         } else if (orderType.id == 5) {
         searchQuery.productTypeId = { [Op.in]: [4] }
-        searchQuery.orderTypeId = { [Op.notIn]: [4] }
+        searchQuery.orderTypeId = { [Op.in]: [5] }
         // searchQuery.customerId = id
         }
         }

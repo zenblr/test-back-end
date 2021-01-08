@@ -124,7 +124,9 @@ exports.AddOrder = async (req, res) => {
               // if (!updatedSellableGold || updatedSellableGold <= 0) {
               //   updatedSellableGold = 0;
               // }
-              await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: checkBalance.sellableMetal, nonSellableGoldBalance: checkBalance.nonSellableMetal }, { where: { customerId: customerId }, transaction: t });
+              let sellableBal = checkBalance.sellableMetal.toFixed(4);
+              let nonSellableBal = checkBalance.nonSellableMetal.toFixed(4)
+              await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: Number(sellableBal), nonSellableGoldBalance: Number(nonSellableBal) }, { where: { customerId: customerId }, transaction: t });
             }
             // console.log(updatedSellableGold, "updatedSellableGold");
             if (totalSilverWeight) {
@@ -135,7 +137,10 @@ exports.AddOrder = async (req, res) => {
               // }
               let checkBalance = await customerNonSellableMetal(result.data.result.data.goldBalance, customerBal.sellableSilverBalance, customerBal.nonSellableSilverBalance, totalSilverWeight);
 
-              await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: checkBalance.sellableMetal, nonSellableSilverBalance: checkBalance.nonSellableMetal }, { where: { customerId: customerId }, transaction: t });
+              let sellableBal = checkBalance.sellableMetal.toFixed(4);
+              let nonSellableBal = checkBalance.nonSellableMetal.toFixed(4);
+
+              await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: Number(sellableBal), nonSellableSilverBalance: Number(nonSellableBal) }, { where: { customerId: customerId }, transaction: t });
             }
 
             // await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: id }, transaction: t });
@@ -294,14 +299,14 @@ exports.AddOrderOld = async (req, res) => {
           if (totalGoldWeight) {
 
             updatedSellableGold = Number(customerBal.sellableGoldBalance) - Number(totalGoldWeight)
-
-            await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: updatedSellableGold }, { where: { customerId: id }, transaction: t });
+            let newUpdatedSellableGold = updatedSellableGold.toFixed(4)
+            await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: Number(newUpdatedSellableGold) }, { where: { customerId: id }, transaction: t });
           }
 
           if (totalSilverWeight) {
             updatedSellableSilver = Number(customerBal.sellableSilverBalance) - Number(totalSilverWeight);
-
-            await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilver }, { where: { customerId: id }, transaction: t });
+            let newUpdatedSellableSilver = updatedSellableSilver.toFixed(4)
+            await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: Number(newUpdatedSellableSilver) }, { where: { customerId: id }, transaction: t });
           }
           let orderCreatedDate = moment(moment().utcOffset("+05:30"));
 

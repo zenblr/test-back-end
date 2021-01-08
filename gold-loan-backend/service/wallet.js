@@ -223,7 +223,8 @@ let walletDelivery = async (customerId, amount, modeOfPayment, orderType, cartDa
           if (!updatedSellableGold || updatedSellableGold <= 0) {
             updatedSellableGold = 0;
           }
-          await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: updatedSellableGold }, { where: { customerId: customerId }, transaction: t });
+          let sellableGoldBalance = updatedSellableGold.toFixed(4);
+          await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: Number(sellableGoldBalance) }, { where: { customerId: customerId }, transaction: t });
         }
         // console.log(updatedSellableGold, "updatedSellableGold");
         if (totalSilverWeight) {
@@ -231,8 +232,9 @@ let walletDelivery = async (customerId, amount, modeOfPayment, orderType, cartDa
           if (!updatedSellableSilver || updatedSellableSilver <= 0) {
             updatedSellableSilver = 0;
           }
+          let sellableSilverBalance = updatedSellableSilver.toFixed(4);
           console.log("updatedSellableSilver", updatedSellableSilver);
-          await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilver }, { where: { customerId: customerId }, transaction: t });
+          await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: Number(sellableSilverBalance) }, { where: { customerId: customerId }, transaction: t });
         }
 
         // await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: id }, transaction: t });
