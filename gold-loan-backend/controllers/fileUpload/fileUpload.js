@@ -4,7 +4,7 @@ const models = require('../../models'); // importing models.
 const multerS3 = require('multer-s3');
 const fs = require('fs');
 let AWS = require('aws-sdk');
-
+const { pathToBase64 } = require('../../service/fileUpload')
 // File Upload.
 exports.uploadFile =
     async (req, res, next) => {
@@ -248,11 +248,13 @@ exports.base64ConvertorWithPath = async (req, res, next) => {
 
 exports.pathToBase64 = async (req, res, next) => {
 
+    let data = await pathToBase64(req.body.path)
 
-    let { path } = req.body
-    let buff = fs.readFileSync(`public/${path}`);
-    let base64data = buff.toString('base64');
+    if (data.success) {
+        return res.status(data.status).json({ data: data.data })
+    } else {
+        return res.status(data.status).json({ data: data.message })
 
-    let data = `data:image/jpeg;base64,${base64data}`
-    return res.status(200).json({ data: data })
+    }
+
 }

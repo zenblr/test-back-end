@@ -1258,7 +1258,7 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
 
     let customerLoan = await models.customerLoanMaster.findOne({
         where: { id: masterLoanId },
-        attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure', 'termsAndCondition'],
+        attributes: ['id', 'loanStartDate', 'loanEndDate', 'tenure', 'termsAndCondition','outstandingAmount','finalLoanAmount'],
         order: [
             [models.customerLoanDisbursement, 'loanId', 'asc'],
             [models.customerLoan, 'id', 'asc'],
@@ -1286,13 +1286,19 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
                         as: 'scheme'
                     },
                     {
+                        model: models.partner,
+                        as: 'partner',
+                        attributes: ['id', 'name']
+                    },
+                    {
                         model: models.customerLoan,
                         as: 'unsecuredLoan',
                         attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
                         include: [{
                             model: models.scheme,
                             as: 'scheme',
-                        }]
+                        },
+                        ]
                     }
                 ]
             },
