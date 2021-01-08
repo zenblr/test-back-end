@@ -1486,6 +1486,12 @@ let applyDigiKyc = async (req) => {
     let { id, customerId, panImage, panCardNumber, panType, dateOfBirth, age } = req.body
     let checkApplied = await models.digiKycApplied.findOne({ where: { customerId } })
 
+    let checkDigiKycRejected = await models.customer.findOne({ where: { id: customerId, digiKycStatus: "rejected" } })
+
+    if (checkDigiKycRejected !== null) {
+        return { status: 400, success: false, message: `Your digi gold kyc is already rejected.` }
+    }
+
     await sequelize.transaction(async (t) => {
 
         if (checkApplied) {
