@@ -159,9 +159,13 @@ exports.addAmountWallet = async (req, res) => {
         customerUpdatedBalance = Number(tempWalletTransaction.transactionAmount);
       }
       let WalletDetail;
+       
+      let newCustomerUpdatedBalance=customerUpdatedBalance.toFixed(2);
+
+
       let output = await sequelize.transaction(async (t) => {
 
-        await models.customer.update({ currentWalletBalance: customerUpdatedBalance }, { where: { id: customer.id }, transaction: t })
+        await models.customer.update({ currentWalletBalance: Number(newCustomerUpdatedBalance) }, { where: { id: customer.id }, transaction: t })
 
         let getCustomer = await models.customer.findOne({
           transaction: t,
@@ -259,7 +263,10 @@ exports.addAmountWallet = async (req, res) => {
                 //calculation function
                 let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.totalAmount);
 
-                await models.customer.update({ currentWalletBalance: checkBalance.currentWalletBalance, walletFreeBalance: checkBalance.walletFreeBalance }, { where: { id: customerId }, transaction: t })
+                let newCurrentWalletBal=checkBalance.currentWalletBalance.toFixed(2);
+                let newWalletFreeBalance=checkBalance.walletFreeBalance.toFixed(2);
+
+                await models.customer.update({ currentWalletBalance: Number(newCurrentWalletBal), walletFreeBalance: Number(newWalletFreeBalance) }, { where: { id: customerId }, transaction: t })
 
                 let getCustomer1 = await models.customer.findOne({
                   transaction: t,
@@ -377,7 +384,12 @@ exports.addAmountWallet = async (req, res) => {
                 //calculation function
                 let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.shippingCharges);
 
-                await models.customer.update({ currentWalletBalance: checkBalance.currentWalletBalance, walletFreeBalance: checkBalance.walletFreeBalance }, { where: { id: customerId }, transaction: t });
+                let newCurrentWalletBalance=checkBalance.currentWalletBalance.toFixed(2);
+                let newWalletFreBalance=checkBalance.walletFreeBalance.toFixed(2);
+
+
+
+                await models.customer.update({ currentWalletBalance: Number(newCurrentWalletBalance), walletFreeBalance: Number(newWalletFreBalance) }, { where: { id: customerId }, transaction: t });
 
                 let customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customerId } });
 
@@ -819,7 +831,12 @@ exports.withdrawAmount = async (req, res) => {
 
       orderDetail = await models.walletTransactionDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, transactionUniqueId, transactionAmount: withdrawAmount, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, depositStatus: "pending", walletId: walletData.id, paymentReceivedDate: moment(), runningBalance: currentWalletBalance }, { transaction: t });
 
-      await models.customer.update({ walletFreeBalance: customerUpdatedFreeBalance, currentWalletBalance: currentWalletBalance }, { where: { id: customerFreeBalance.id }, transaction: t });
+      let newCustomerUpdatedFreeBalance=customerUpdatedFreeBalance.toFixed(2);
+
+      let newCurrentWalletBal=currentWalletBalance.toFixed(2);
+
+
+      await models.customer.update({ walletFreeBalance: Number(newCustomerUpdatedFreeBalance), currentWalletBalance: Number(newCurrentWalletBal) }, { where: { id: customerFreeBalance.id }, transaction: t });
 
 
     })

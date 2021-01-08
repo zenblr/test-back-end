@@ -215,8 +215,11 @@ exports.sellProduct = async (req, res) => {
           await models.digiGoldTempOrderDetail.update(
             { isOrderPlaced: true, modifiedBy }, { where: { id: tempId.id }, transaction: t });
 
+            let newCurrentWalletBalance=currentWalletBalance.toFixed(2);
+            let newAmountOfWallet=amountOfWallet.toFixed(2);
+
           await models.customer.update(
-            { walletFreeBalance: amountOfWallet, currentWalletBalance: currentWalletBalance }, { where: { id: customerDetails.id }, transaction: t });
+            { walletFreeBalance: Number(newAmountOfWallet), currentWalletBalance: Number(newCurrentWalletBalance) }, { where: { id: customerDetails.id }, transaction: t });
         })
 
         await sms.sendMessageForSell(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount,"augmontWallet");

@@ -86,7 +86,10 @@ exports.AddOrder = async (req, res) => {
 
             let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.shippingCharges);
 
-            await models.customer.update({ currentWalletBalance: checkBalance.currentWalletBalance, walletFreeBalance: checkBalance.walletFreeBalance }, { where: { id: customerId }, transaction: t });
+            let newCurrentWalletBalance=checkBalance.currentWalletBalance.toFixed(2);
+            let newWalletFreeBalance=checkBalance.walletFreeBalance.toFixed(2);
+
+            await models.customer.update({ currentWalletBalance:Number(newCurrentWalletBalance) , walletFreeBalance:Number(newWalletFreeBalance) }, { where: { id: customerId }, transaction: t });
 
             let customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customerId } });
 

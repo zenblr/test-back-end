@@ -105,7 +105,11 @@ exports.buyProduct = async (req, res) => {
           let checkBalance = await customerBalance(customerDetails, result.data.result.data.totalAmount)
           //calculation function
 
-          await models.customer.update({ currentWalletBalance: checkBalance.currentWalletBalance, walletFreeBalance: checkBalance.walletFreeBalance }, { where: { id: customerId }, transaction: t })
+           let newCurrentWalletBalance=checkBalance.currentWalletBalance.toFixed(2);
+
+           let newWalletFreeBalance=checkBalance.walletFreeBalance.toFixed(2);
+
+          await models.customer.update({ currentWalletBalance: Number(newCurrentWalletBalance), walletFreeBalance: Number(newWalletFreeBalance) }, { where: { id: customerId }, transaction: t })
 
           let orderUniqueId = `dg_buy${Math.floor(1000 + Math.random() * 9000)}`;
 
