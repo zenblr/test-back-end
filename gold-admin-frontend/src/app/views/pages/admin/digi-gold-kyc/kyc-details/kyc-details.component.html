@@ -107,11 +107,12 @@
                         <div class="img-container">
                             <img *ngIf="!images.pan['URL']" class=""
                                 src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
-                            <img *ngIf="images.pan['URL'] && !isPdf(images.pan['URL'])" (click)="images.pan['URL']"
-                                class="fetched-image" [src]="images.pan['URL']" style="border-radius: 15px;" alt="" />
-                            <img *ngIf="images.pan['URL'] && modalData.action != 'view' && isEditable"
+                            <img *ngIf="images.pan['URL'] && !isPdf(images.pan['URL'])"
+                                (click)="preview(images.pan['URL'])" class="fetched-image" [src]="images.pan['URL']"
+                                style="border-radius: 15px;" alt="" />
+                            <!-- <img *ngIf="images.pan['URL'] && modalData.action != 'view' && isEditable"
                                 src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer remove-icon"
-                                (click)="pan.click()">
+                                (click)="pan.click()"> -->
                             <div *ngIf="isPdf(images.pan['URL'])" class="iframeWrapper"
                                 (click)="previewPdf(images.pan['URL'])">
                                 <iframe [src]="images.pan['URL'] | safe : 'resourceUrl'" height="250" width="290"
@@ -148,15 +149,26 @@
                                 <label class="mandatory">Reason</label>
                             </div>
                             <div class="col-7">
-                                <select class="form-control" formControlName="reasonForDigiKyc"
-                                    [class.isError]="controls.reasonForDigiKyc.invalid && controls.reasonForDigiKyc.touched">
+                                <select class="form-control" formControlName="reason" (change)="selectReason()"
+                                    [class.isError]="controls.reason.invalid && controls.reason.touched">
                                     <option [value]=null disabled>Select Reason</option>
                                     <option *ngFor="let item of reasonsList" [value]="item.description">
                                         {{item.description}}</option>
                                 </select>
+                                <mat-error *ngIf="controls.reason.invalid && controls.reason.touched">
+                                    Field Required
+                                </mat-error>
+                            </div>
+                            <div *ngIf="controls.reason.value == 'Other'" class="offset-4 col-7 mt-3">
+                                <div>
+                                    <textarea rows="4"
+                                        [class.isError]="controls.reasonForDigiKyc.invalid && controls.reasonForDigiKyc.touched"
+                                        class="w-100" formControlName="reasonForDigiKyc"
+                                        placeholder="Reason for {{ controls.status.value }}"></textarea>
+                                </div>
                                 <mat-error
                                     *ngIf="controls.reasonForDigiKyc.invalid && controls.reasonForDigiKyc.touched">
-                                    Field Required
+                                    Required field
                                 </mat-error>
                             </div>
                         </div>

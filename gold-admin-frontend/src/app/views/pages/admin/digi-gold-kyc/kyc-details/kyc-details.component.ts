@@ -56,6 +56,7 @@ export class KycDetailsComponent implements OnInit {
       this.digiGoldKycForm.disable()
       this.controls.status.enable()
       this.controls.reasonForDigiKyc.enable()
+      this.controls.reason.enable()
       this.setEditValidation()
     }
 
@@ -107,7 +108,8 @@ export class KycDetailsComponent implements OnInit {
       customerId: [],
       status: [],
       id: [],
-      reasonForDigiKyc: []
+      reasonForDigiKyc: [],
+      reason: []
     })
   }
 
@@ -131,15 +133,16 @@ export class KycDetailsComponent implements OnInit {
   }
 
   setReasonValidation() {
-    const { status, reasonForDigiKyc } = this.controls
+    const { status, reasonForDigiKyc, reason } = this.controls
     if (status.value !== 'approved') {
-      reasonForDigiKyc.setValidators([Validators.required])
-      reasonForDigiKyc.updateValueAndValidity()
+      reason.setValidators([Validators.required])
+      reason.updateValueAndValidity()
     } else {
-      reasonForDigiKyc.setValidators([])
-      reasonForDigiKyc.updateValueAndValidity()
+      reason.setValidators([])
+      reason.updateValueAndValidity()
+      this.unsetTextReasonValidation()
       setTimeout(() => {
-        reasonForDigiKyc.reset()
+        reason.reset()
         // reasonForDigiKyc.markAsTouched()
       })
     }
@@ -259,12 +262,14 @@ export class KycDetailsComponent implements OnInit {
       return this.digiGoldKycForm.markAllAsTouched()
     }
     if (this.kycStage == 'edit') {
+      this.patchToReason()
+      // return console.log(this.digiGoldKycForm.getRawValue())
       this.appliedKycService.editDigiGoldKyc(this.digiGoldKycForm.getRawValue())
+      .pipe(finalize(() => this.unpatchToReason()))
         .subscribe(res => {
           this.toastr.success(res.message)
           this.router.navigate(['/admin/applied-kyc-digi-gold'])
         })
-      console.log(this.digiGoldKycForm.getRawValue())
     }
     if (this.kycStage == 'apply') {
       this.appliedKycService.applyDigiGoldKyc(this.digiGoldKycForm.getRawValue())
@@ -286,4 +291,33 @@ export class KycDetailsComponent implements OnInit {
       .subscribe()
   }
 
+  selectReason() {
+    const { reason, reasonForDigiKyc } = this.controls
+    if ((reason.value).toString().toLowerCase() == "other") {
+      this.setTextReasonValidation()
+      setTimeout(() => {
+        reasonForDigiKyc.reset()
+      })
+    } else {
+      this.unsetTextReasonValidation()
+    }
+  }
+
+  setTextReasonValidation() {
+    this.controls.reasonForDigiKyc.setValidators([Validators.required])
+    this.controls.reasonForDigiKyc.updateValueAndValidity()
+  }
+
+  unsetTextReasonValidation() {
+    this.controls.reasonForDigiKyc.setValidators([])
+    this.controls.reasonForDigiKyc.updateValueAndValidity()
+  }
+
+  patchToReason() {
+    this.controls.reasonForDigiKyc.patchValue(this.controls.reason.value)
+  }
+
+  unpatchToReason() {
+    this.controls.reasonForDigiKyc.patchValue(null)    
+  }
 }
