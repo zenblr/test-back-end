@@ -35,6 +35,7 @@ export class UserPersonalComponent implements OnInit {
   @ViewChild("gstCertificate", { static: false }) gstCertificate;
 
   images = { constitutionsDeed: [], gstCertificate: [] }
+  customerData: any;
 
   constructor(private fb: FormBuilder, private userDetailsService: UserDetailsService,
     private userPersonalService: UserPersonalService,
@@ -224,7 +225,7 @@ export class UserPersonalComponent implements OnInit {
     this.personalForm.patchValue({
       martialStatus: this.controls.martialStatus.value == '' ? null : this.controls.martialStatus.value
     })
-    const basicForm = this.personalForm.value;
+    const basicForm = this.personalForm.getRawValue();
 
     this.userPersonalService.personalDetails(basicForm).pipe(
       map(res => {
@@ -331,7 +332,14 @@ export class UserPersonalComponent implements OnInit {
   }
 
   changeMaritalStatus() {
-    this.controls.spouseName.reset()
+    if(this.controls.martialStatus.value != 'married'){
+      this.controls.spouseName.patchValue(this.customerData.fatherName)
+      this.controls.spouseName.disable()
+
+    }else{
+      this.controls.spouseName.reset()
+      this.controls.spouseName.enable()
+    }
   }
 
   removeImages(index, type) {
@@ -371,6 +379,7 @@ export class UserPersonalComponent implements OnInit {
   getCustomerDetails() {
     this.userPersonalService.getUserDetails(this.controls.customerId.value).subscribe(res => {
       if (res.data) {
+        this.customerData = res.data
         let myMoment = moment(res.data.aahaarDOB,"DD/MM/YYYY").format("YYYY-MM-DD");
         this.controls.dateOfBirth.patchValue(myMoment)
         let gender
@@ -385,7 +394,10 @@ export class UserPersonalComponent implements OnInit {
         this.controls.spouseName.patchValue(res.data.fatherName)
         this.ageValidation()
         // console.log(this.datePipe.transform(res.data.aahaarDOB,'yyyy-MM-dd'))
-        console.log(myMoment)
+        // console.log(myMoment)
+        this.personalForm.controls.dateOfBirth.disable()
+        this.personalForm.controls.gender.disable()
+        this.controls.spouseName.disable()
         this.ref.detectChanges()
       }
     })

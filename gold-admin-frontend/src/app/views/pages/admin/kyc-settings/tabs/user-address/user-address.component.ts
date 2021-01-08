@@ -652,7 +652,6 @@ export class UserAddressComponent implements OnInit {
     controls['controls'].addressProofNumber.disable()
     controls['controls'].pinCode.disable()
     controls['controls'].stateId.disable()
-    controls['controls'].cityId.disable()
     
   }
 
@@ -670,7 +669,6 @@ export class UserAddressComponent implements OnInit {
     this.enableVoterIdFields(index)
     let controls = this.addressControls.controls[index]
     controls['controls'].stateId.enable()
-    controls['controls'].cityId.enable()
     controls['controls'].pinCode.enable()
     
   }
