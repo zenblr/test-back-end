@@ -64,19 +64,21 @@ module.exports = async () => {
 
             let totalGoldDeliveryInFixDuration = 0;
             let totalSilverDeliveryInFixDuration = 0;
-            digiGoldDeliveryOrderDetail = await models.digiGoldOrderDetail.findAll({
+
+            digiGoldOrderDetail = await models.digiGoldOrderDetail.findAll({
                 where:
                 {
                     orderCreatedDate:
                         { [Op.gt]: newDate },
                     customerId: customer,
-                    orderTypeId: 3
+                    orderTypeId: 1
 
                 }
             });
             if (digiGoldDeliveryOrderDetail.length) {
-                for await (let ele of digiGoldDeliveryOrderDetail) {
-                    for await (let product of ele.orderProductDetail) {
+                for (let ele of digiGoldDeliveryOrderDetail) {
+                    console.log(ele);
+                    for (let product of ele.orderProductDetail) {
                         console.log(product);
                         if (product.metalType == "gold") {
                             totalGoldDeliveryInFixDuration += parseFloat(product.quantity);
@@ -126,10 +128,11 @@ module.exports = async () => {
                 }
 
                 console.log("sellableGoldBalance", sellableGoldBalance, "sellableSilverBalance", sellableSilverBalance);
-
+                let newSellableGoldBalance = sellableGoldBalance.toFixed(4);
+                let newSellableSilverBalance = sellableSilverBalance.toFixed(4);
                 await models.digiGoldCustomerBalance.update({
-                    sellableGoldBalance: sellableGoldBalance,
-                    sellableSilverBalance: sellableSilverBalance
+                    sellableGoldBalance: Number(newSellableGoldBalance),
+                    sellableSilverBalance: Number(newSellableSilverBalance)
                 },
                     {
                         where: { customerId: customer }
@@ -168,9 +171,11 @@ module.exports = async () => {
 
                 let newCustomerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customer } });
                 console.log("newCustomerBal.currentGoldBalance, newCustomerBal.currentSilverBalance", newCustomerBal.currentGoldBalance, newCustomerBal.currentSilverBalance);
+                let newSellableGoldBalance = newCustomerBal.currentGoldBalance.toFixed(4);
+                let newSellableSilverBalance = newCustomerBal.currentSilverBalance.toFixed(4)
                 await models.digiGoldCustomerBalance.update({
-                    sellableGoldBalance: newCustomerBal.currentGoldBalance,
-                    sellableSilverBalance: newCustomerBal.currentSilverBalance
+                    sellableGoldBalance: Number(newSellableGoldBalance),
+                    sellableSilverBalance: Number(newSellableSilverBalance)
                 },
                     {
                         where: { customerId: customer }
