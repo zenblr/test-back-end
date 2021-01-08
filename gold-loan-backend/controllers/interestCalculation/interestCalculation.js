@@ -14,20 +14,21 @@ const { getCustomerInterestAmount, intrestCalculationForSelectedLoan, penalInter
 // add internal branch
 
 exports.interestCalculation = async (req, res) => {
-    // let currentDate = moment('2021-04-04')
-    // let loanStartDate = moment('2021-03-06')
-    // let noOfDays = currentDate.diff(loanStartDate, 'days');
-    // noOfDays += 1
-    // let data;
-    // let { date } = req.body;
-    // if (date) {
-    //     data = await dailyIntrestCalculation(date);
-    //     await cronForDailyPenalInterest(date)
-    // } else {
-    //     date = moment();
-    //     data = await dailyIntrestCalculation(date);
-    //     await cronForDailyPenalInterest(date)
-    // }
+    let data;
+    let { date } = req.body;
+    if (date) {
+        data = await dailyIntrestCalculation(date);
+        await cronForDailyPenalInterest(date)
+    } else {
+        date = moment();
+        data = await dailyIntrestCalculation(date);
+        await cronForDailyPenalInterest(date)
+    }
+    return res.status(200).json({ data });
+}
+
+//interest date change
+exports.interestCalculationDateChange = async (req, res) => {
     let data = await calculationData()
     let calculatedInterest = [];
     await sequelize.transaction(async (t) => {
@@ -106,21 +107,7 @@ exports.interestCalculation = async (req, res) => {
                 interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
             }
             let x = interestTable.map(ele => ele.emiDueDate)
-            // console.log(x)
-
-            // for (let j = 0; j < holidayDate.length; j++) {
-            //     let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
-            //     let sunday = moment(momentDate, 'YYYY-MM-DD').weekday();
-            //     let newDate = new Date(newEmiDueDate);
-            //     if (momentDate == holidayDate[j].holidayDate || sunday == 0) {
-            //         let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
-            //         interestTable[i].emiDueDate = moment(holidayEmiDueDate).format('YYYY-MM-DD')
-
-            //         newEmiDueDate = holidayEmiDueDate
-            //         j = 0
-            //     }
-
-            // }
+            console.log(x)
 
             interestTable.loanId = loanId
             interestTable.masterLoanId = masterLoanId
