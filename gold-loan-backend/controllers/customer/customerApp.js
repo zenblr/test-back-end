@@ -333,7 +333,7 @@ exports.personalInfo = async (req, res, next) => {
 }
 
 exports.customerProductRequest = async (req, res, next) => {
-    let { customerId, moduleId } = req.body
+    let { customerId, moduleId, requestFor } = req.body
 
     let checkExist = await models.productRequest.findAll({ where: { customerId: customerId, requestFor: 'kyc' } })
 
