@@ -59,14 +59,14 @@ exports.changeWithdrawStatus = async (req, res) => {
                             let customerMetalBalance = await models.digiGoldCustomerBalance.findOne({where: { customerId: customer.id}});
 
                             if(orderData.metalType == "gold"){
-                                updatesSellableGoldBal = orderData.quantity + customerMetalBalance.sellableGoldBalance
-
-                                await models.digiGoldCustomerBalance.update({currentGoldBalance: currentBalcnce.data.result.data.goldGrms, sellableGoldBalance: updatesSellableGoldBal}, {where: { id: customerMetalBalance.id}})
+                                let updatesSellableGoldBal = orderData.quantity + customerMetalBalance.sellableGoldBalance
+                                let sellableGoldBalance = updatesSellableGoldBal.toFixed(4);
+                                await models.digiGoldCustomerBalance.update({currentGoldBalance: currentBalcnce.data.result.data.goldGrms, sellableGoldBalance: Number(sellableGoldBalance)}, {where: { id: customerMetalBalance.id}})
                                 
                             }else if(orderData.metalType == "silver"){
-                                updatedSellableSilverBal = orderData.quantity + customerMetalBalance.sellableSilverBalance
-
-                                await models.digiGoldCustomerBalance.update({currentGoldBalance: currentBalcnce.data.result.data.silverGrms, sellableSilverBalance: updatedSellableSilverBal}, {where: { id: customerMetalBalance.id}});
+                                let updatedSellableSilverBal = orderData.quantity + customerMetalBalance.sellableSilverBalance
+                                let sellableSilverBalance = updatedSellableSilverBal.toFixed(4)
+                                await models.digiGoldCustomerBalance.update({currentGoldBalance: currentBalcnce.data.result.data.silverGrms, sellableSilverBalance: Number(sellableSilverBalance)}, {where: { id: customerMetalBalance.id}});
                                 
                             }
 
