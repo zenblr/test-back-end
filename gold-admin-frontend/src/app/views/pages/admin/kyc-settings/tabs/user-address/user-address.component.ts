@@ -322,7 +322,7 @@ export class UserAddressComponent implements OnInit {
 
     this.addressControls.at(0)['controls'].addressProofNumber.enable()
 
-    const data = this.identityForm.value;
+    const data = this.identityForm.getRawValue();
 
     this.userAddressService.addressDetails(data).pipe(
       map(res => {
@@ -356,13 +356,15 @@ export class UserAddressComponent implements OnInit {
   }
 
   sameAddress(event: MatCheckbox) {
-    this.addressControls.at(0).enable();
+    
+    // this.addressControls.at(0).enable();
     if (event) {
       this.sameAdd = true
       this.cities1 = this.cities0;
       this.images.residential = this.images.permanent;
       this.addressControls.at(1).disable();
-      this.addressControls.at(1).patchValue(this.addressControls.at(0).value)
+      let data = this.addressControls.getRawValue()
+      this.addressControls.at(1).patchValue(data[0])
 
       if (this.identityForm.controls.moduleId.value == 3) {
         if (this.identityForm.controls.userType.value === 'Corporate') {
@@ -512,6 +514,8 @@ export class UserAddressComponent implements OnInit {
           this.addressControls.controls[0].patchValue({ addressProofFileName: '' });
           this.addressControls.at(0)['controls'].addressProofNumber.enable()
           this.addressFileNameArray1 = []
+          this.enableAadharField(0)
+          this.resetAadharFields(0)
           this.checkForVoter(0,'permanent')
         }
       } else {
@@ -539,6 +543,8 @@ export class UserAddressComponent implements OnInit {
           this.addressControls.controls[1].patchValue({ addressProofFileName: '' });
           this.addressControls.at(1)['controls'].addressProofNumber.enable()
           this.addressFileNameArray1 = []
+          this.enableAadharField(1)
+          this.resetAadharFields(1)
           this.checkForVoter(1,'residential')
         }
       }
@@ -615,6 +621,7 @@ export class UserAddressComponent implements OnInit {
     this.userAddressService.getVoterIdDetails(this.images.permanent, this.controls.customerId.value).subscribe(res => {
       console.log(res)
       this.enableAadharField(index)
+      this.resetAadharFields(index)
       let controls = this.addressControls.controls[index]
       controls['controls'].address.patchValue(res.data.address)
       controls['controls'].addressProofNumber.patchValue(res.data.idNumber)
@@ -646,7 +653,17 @@ export class UserAddressComponent implements OnInit {
     controls['controls'].pinCode.disable()
     controls['controls'].stateId.disable()
     controls['controls'].cityId.disable()
-    controls['controls'].pinCode.disable()
+    
+  }
+
+  resetAadharFields(index){
+      let controls = this.addressControls.controls[index]
+      controls['controls'].address.reset()
+      controls['controls'].addressProofNumber.reset()
+      controls['controls'].pinCode.reset()
+      controls['controls'].stateId.reset()
+      controls['controls'].cityId.reset()
+      controls['controls'].pinCode.reset()
   }
 
   enableAadharField(index) {
