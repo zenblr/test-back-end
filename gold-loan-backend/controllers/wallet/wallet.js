@@ -80,7 +80,7 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
                 "$walletTransactionDetails.transaction_unique_id$": { [Op.iLike]: search + '%' },
                 "$walletTransactionDetails.ifsc_code$": { [Op.iLike]: search + '%' },
                 "$walletTransactionDetails.payment_type$": { [Op.iLike]: search + '%' },
-                
+
             },
         }],
     };
@@ -96,15 +96,15 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
 
     if (orderType) {
         if (orderType.id == 4) {
-        searchQuery.productTypeId = { [Op.in]: [4] }
-        searchQuery.orderTypeId = { [Op.in]: [4] }
-        // searchQuery.customerId = id
+            searchQuery.productTypeId = { [Op.in]: [4] }
+            searchQuery.orderTypeId = { [Op.in]: [4] }
+            // searchQuery.customerId = id
         } else if (orderType.id == 5) {
-        searchQuery.productTypeId = { [Op.in]: [4] }
-        searchQuery.orderTypeId = { [Op.notIn]: [4] }
-        // searchQuery.customerId = id
+            searchQuery.productTypeId = { [Op.in]: [4] }
+            searchQuery.orderTypeId = { [Op.in]: [5] }
+            // searchQuery.customerId = id
         }
-        }
+    }
 
     let includeArray = [
         {
@@ -184,13 +184,13 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
 
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id }, { where: { id: transactionData.id }, transaction: t });
 
-                await sms.sendMessageForDepositRequestAccepted( customer.mobileNumber,transactionData.transactionAmount );
+                await sms.sendMessageForDepositRequestAccepted(customer.mobileNumber, transactionData.transactionAmount);
 
             } else {
 
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date }, { where: { id: transactionData.id }, transaction: t });
 
-                await sms.sendMessageForDepositRequestRejected( customer.mobileNumber,transactionData.transactionAmount );
+                await sms.sendMessageForDepositRequestRejected(customer.mobileNumber, transactionData.transactionAmount);
 
             }
 
@@ -213,13 +213,13 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
 
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, }, { where: { id: transactionData.id }, transaction: t });
 
-                await models.walletDetails.update({transactionStatus: "completed" }, {where: { id: transactionData.walletId }});
-               
-                await sms.sendMessageForWithdrawalPaymentCompleted( customer.mobileNumber,transactionData.transactionAmount );
-            } else if(depositStatus == "rejected"){
+                await models.walletDetails.update({ transactionStatus: "completed" }, { where: { id: transactionData.walletId } });
+
+                await sms.sendMessageForWithdrawalPaymentCompleted(customer.mobileNumber, transactionData.transactionAmount);
+            } else if (depositStatus == "rejected") {
 
                 //rejected code
-                await models.walletDetails.update({transactionStatus: "rejected" }, {where: { id: transactionData.walletId }, transaction: t});
+                await models.walletDetails.update({ transactionStatus: "rejected" }, { where: { id: transactionData.walletId }, transaction: t });
 
                 customerUpdatedFreeBalance = Number(customer.walletFreeBalance) + Number(transactionData.transactionAmount);
                 currentWalletBalance = Number(customer.currentWalletBalance) + Number(transactionData.transactionAmount);
@@ -227,12 +227,12 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
                 await models.customer.update({ walletFreeBalance: customerUpdatedFreeBalance, currentWalletBalance: currentWalletBalance }, { where: { id: customer.id }, transaction: t });
 
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, }, { where: { id: transactionData.id }, transaction: t });
-        
-                await sms.sendMessageForWithdrawalRejected(customer.mobileNumber,transactionData.transactionAmount );
-            }else{
+
+                await sms.sendMessageForWithdrawalRejected(customer.mobileNumber, transactionData.transactionAmount);
+            } else {
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, }, { where: { id: transactionData.id }, transaction: t });
 
-                await models.walletDetails.update({transactionStatus: depositStatus }, {where: { id: transactionData.walletId }, transaction: t});
+                await models.walletDetails.update({ transactionStatus: depositStatus }, { where: { id: transactionData.walletId }, transaction: t });
 
             }
         });
