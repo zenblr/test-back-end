@@ -37,7 +37,7 @@ exports.buyProduct = async (req, res) => {
   }
 
   if (amount > customerDetails.currentWalletBalance || !customerDetails.currentWalletBalance) {
-    return res.status(422).json({ message: "Insuffecient wallet balance", walletBal: customerDetails.currentWalletBalance });
+    return res.status(420).json({ message: "Insuffecient wallet balance", walletBal: customerDetails.currentWalletBalance });
   }
 
 
