@@ -11,6 +11,7 @@ import { ImagePreviewDialogComponent } from '../../../../../partials/components/
 import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'kt-user-personal',
@@ -42,6 +43,7 @@ export class UserPersonalComponent implements OnInit {
     private sharedService: SharedService, private ref: ChangeDetectorRef,
     private toastr: ToastrService,
     private dialog: MatDialog,
+    private router:Router,
     private datePipe:DatePipe) { }
 
   ngOnInit() {
@@ -231,6 +233,11 @@ export class UserPersonalComponent implements OnInit {
       map(res => {
 
         if (res) {
+          if(res.customerKycCurrentStage == '6'){
+            this.router.navigate(['admin/applied-kyc'])
+            this.toastr.success('Success')
+            return
+          }
           this.next.emit(true);
         }
       }),

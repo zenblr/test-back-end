@@ -255,11 +255,11 @@ export class UserAddressComponent implements OnInit {
   }
 
   getAaddharDetails() {
-    let fileUrls = [
-      "https://gold-loan-uat.s3.ap-south-1.amazonaws.com/public/uploads/images/1606826344404.jpeg",
-      "https://gold-loan-uat.s3.ap-south-1.amazonaws.com/public/uploads/images/1606826352209.jpeg"
-    ]
-    this.userAddressService.getAaddharDetails(fileUrls, this.controls.customerId.value).subscribe(res => {
+    // let fileUrls = [
+    //   "https://gold-loan-uat.s3.ap-south-1.amazonaws.com/public/uploads/images/1606826344404.jpeg",
+    //   "https://gold-loan-uat.s3.ap-south-1.amazonaws.com/public/uploads/images/1606826352209.jpeg"
+    // ]
+    this.userAddressService.getAaddharDetails(this.images.identityProof, this.controls.customerId.value).subscribe(res => {
       this.aadharCardUserDetails = res.data
       this.controls.identityProofNumber.patchValue(res.data.idNumber)
     })

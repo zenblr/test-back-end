@@ -315,7 +315,8 @@ export class UserDetailsComponent implements OnInit {
           this.controls.form60.patchValue(file.name)
           this.controls.panImage.patchValue(res.uploadFile.path)
           this.controls.panImg.patchValue(res.uploadFile.URL)
-          this.getPanDetails()
+          if (this.controls.panType.value == 'pan')
+            this.getPanDetails()
 
         }
       }),
@@ -355,6 +356,7 @@ export class UserDetailsComponent implements OnInit {
   }
 
   getPanDetails() {
+    this.controls.id.patchValue(656)
     this.leadService.getPanDetailsFromKarza(this.controls.panImg.value, this.controls.id.value).subscribe(res => {
 
       let name = res.data.name.split(" ")
@@ -366,7 +368,8 @@ export class UserDetailsComponent implements OnInit {
       this.isPanVerified = true
       // this.isPanVerified = res.data.isPanVerified
       this.controls.panCardNumber.disable()
-
+      this.controls.firstName.disable()
+      this.controls.lastName.disable()
     })
   }
 
@@ -409,7 +412,7 @@ export class UserDetailsComponent implements OnInit {
   }
 
   submit() {
-    
+
     if (this.userBasicForm.invalid) {
       this.userBasicForm.markAllAsTouched()
       return
@@ -424,7 +427,7 @@ export class UserDetailsComponent implements OnInit {
       const PAN = this.controls.panCardNumber.value.toUpperCase();
       this.userBasicForm.get('panCardNumber').patchValue(PAN)
     }
-    const basicForm = this.userBasicForm.value;
+    const basicForm = this.userBasicForm.getRawValue();
     this.userDetailsService.basicDetails(basicForm).pipe(
       map(res => {
 

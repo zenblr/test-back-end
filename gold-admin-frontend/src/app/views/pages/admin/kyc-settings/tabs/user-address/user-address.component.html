@@ -64,7 +64,7 @@
                                 </div>
                                 <div class="col-7">
                                     <input formControlName="identityProofNumber" type="text" aria-label="Pin Code"
-                                        placeholder="Aadhaar Number" class="form-control" numbersOnly maxlength="12"
+                                        placeholder="Aadhaar Number" class="form-control" numbersOnly maxlength="12" readonly
                                         [class.isError]="controls.identityProofNumber.touched && controls.identityProofNumber.invalid">
                                     <mat-error
                                         *ngIf="controls.identityProofNumber.errors?.required && controls.identityProofNumber.touched">
