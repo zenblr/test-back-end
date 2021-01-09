@@ -11,6 +11,8 @@ const moment = require("moment");
 const check = require("../../lib/checkLib");
 var uniqid = require('uniqid');
 let { sendCustomerUniqueId, sendMessageToOperationsTeam, sendKYCApprovalMessage, sendKYCApprovalStatusMessage } = require('../../utils/SMS')
+let sms = require('../../utils/SMS')
+
 let { updateCompleteKycModule, updateCustomerUniqueId } = require('../../service/customerKyc')
 
 
