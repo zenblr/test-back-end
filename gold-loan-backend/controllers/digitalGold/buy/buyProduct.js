@@ -43,7 +43,7 @@ exports.buyProduct = async (req, res) => {
 
   const checkLimit = await checkBuyLimit(id, amount);
   if(!checkLimit.success){
-    return res.status(404).json({ message: checkLimit.message });
+    return res.status(422).json({ message: checkLimit.message });
   }
 
 
