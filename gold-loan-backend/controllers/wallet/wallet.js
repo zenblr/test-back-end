@@ -187,7 +187,9 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
 
                 var updtedRunningBalance = Number(transactionData.runningBalance) + Number(transactionData.transactionAmount)
 
-                await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id, runningBalance: updtedRunningBalance }, { where: { id: transactionData.id }, transaction: t });
+                let newUpdtedRunningBalance = updtedRunningBalance.toFixed(2);
+
+                await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id, runningBalance: Number(newUpdtedRunningBalance) }, { where: { id: transactionData.id }, transaction: t });
 
                 await sms.sendMessageForDepositRequestAccepted(customer.mobileNumber, transactionData.transactionAmount);
 
