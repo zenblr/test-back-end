@@ -49,7 +49,6 @@ let sendSms = async (mobileNumber, message, smsFrom) => {
                 ]
         }`;
     }
-    console.log(dataString);
     const options = {
         url: getSmsCredential.url,
         method: 'POST',
