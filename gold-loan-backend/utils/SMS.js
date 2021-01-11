@@ -324,10 +324,11 @@ if(type=="bankAccount"){
         await sms.sendSms(mobileNumber, message,smsFrom);
     }
 }else if (type=="augmontWallet"){
-    let messageTemplate = await models.smsAlert.getSmsTemplate('sell & wallet ');
+    let messageTemplate = await models.smsAlert.getSmsTemplate('sell & wallet');
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<quantity>", quantity).replace("<metalType>", metalType).replace("<amount>", amount)
         let smsFrom = "customer"
+      
         await sms.sendSms(mobileNumber, message,smsFrom);
     }
 }
@@ -408,6 +409,24 @@ exports.sendMessageForDeliveredToClient = async (mobileNumber, orderId) => {
 
 exports.sendMessageForDispatchedButNotDelivered = async (mobileNumber,customerName, orderId,courierCompany,trackingId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Dispatched but not Delivered');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<customerName>",customerName).replace("<orderId>", orderId).replace("<courierCompany>", courierCompany).replace("<trackingId>", trackingId)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}
+
+exports.sendMessageForRto = async (mobileNumber,customerName, orderId,courierCompany,trackingId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('RTO');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<customerName>",customerName).replace("<orderId>", orderId).replace("<courierCompany>", courierCompany).replace("<trackingId>", trackingId)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}
+
+exports.sendMessageForRedispach = async (mobileNumber,customerName, orderId,courierCompany,trackingId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Re-Dispatched');
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<customerName>",customerName).replace("<orderId>", orderId).replace("<courierCompany>", courierCompany).replace("<trackingId>", trackingId)
         let smsFrom = "customer"
