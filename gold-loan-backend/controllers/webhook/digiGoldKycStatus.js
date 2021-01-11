@@ -27,7 +27,7 @@ exports.changeKycStatus = async (req, res) => {
                             { digiKycStatus: ele.status, emiKycStatus: ele.status },
                             { where: { id: customer.id }, transaction: t }
                         );
-                        await models.digiKycApplied.update({ status: ele.status }, { where: { customeId: customer.id }, transaction: t })
+                        await models.digiKycApplied.update({ status: ele.status }, { where: { customerId: customer.id }, transaction: t })
 
                         await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
 
@@ -37,7 +37,7 @@ exports.changeKycStatus = async (req, res) => {
                             { where: { id: customer.id }, transaction: t }
                         );
 
-                        await models.digiKycApplied.update({ status: ele.status, reasonForDigiKyc: `rejected from webhook` }, { where: { customeId: customer.id }, transaction: t })
+                        await models.digiKycApplied.update({ status: ele.status, reasonForDigiKyc: `rejected from webhook` }, { where: { customerId: customer.id }, transaction: t })
                         await sms.sendMessageForKycRejected(customer.mobileNumber, customer.customerUniqueId);
                     }
                 });
