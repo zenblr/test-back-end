@@ -316,7 +316,7 @@
 
                 <div class="row kt-margin-t-20 kt-margin-b-20" *ngIf="controls.panType.value">
                     <div class="col offset-2">
-                        <div class="img-container" *ngIf="controls.panImg.value">
+                        <div class="img-container" *ngIf="controls.panType.value == 'pan' && controls.panImg.value">
                             <img *ngIf="!controls.panImg.value" class=""
                                 src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
                             <img (click)="previewImage(controls.panImg.value)" class="fetched-image"
@@ -333,7 +333,8 @@
                             </div>
                         </div>
 
-                        <div class="img-container" *ngIf="controls.form60Img.value">
+                        <div class="img-container"
+                            *ngIf="controls.panType.value == 'form60' && controls.form60Img.value">
                             <img *ngIf="!controls.form60Img.value" class=""
                                 src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
                             <img (click)="previewImage(controls.form60Img.value)" class="fetched-image"
