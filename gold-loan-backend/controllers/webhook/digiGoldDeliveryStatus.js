@@ -49,9 +49,9 @@ exports.changeOrderDeliveryStatus = async (req, res) => {
                         } else if (ele.status == "dispatched_but_not_delivered") {
                             await sms.sendMessageForDispatchedButNotDelivered(customer.mobileNumber, customerName, ele.transactionId, getCustomerOrderStatusData.logisticName, getCustomerOrderStatusData.awbNo);
                         } else if (ele.status == 're-dispatched') {
-                            // await sms.sendMessageForReDispatched(customer.mobileNumber, customer.firstName, customer.lastName, getCustomerOrderStatusData.awbNo, getCustomerOrderStatusData.logisticName, ele.transactionId);
+                            await sms.sendMessageForRedispach(customer.mobileNumber, customerName,ele.transactionId, getCustomerOrderStatusData.logisticName,getCustomerOrderStatusData.awbNo  );
                         } else if (ele.status == 'rto') {
-                            // await sms.sendMessageForRto(customer.mobileNumber, customer.firstName, customer.lastName, ele.transactionId);
+                            await sms.sendMessageForRto(customer.mobileNumber, customerName, ele.transactionId);
                         }
                     })
                 }else{
