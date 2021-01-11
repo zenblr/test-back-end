@@ -659,13 +659,15 @@ export class AddLeadComponent implements OnInit {
   changePanType() {
     let panType = this.controls.panType.value
     if (panType) {
-      if (panType === 'pan') {
-        this.controls.form60Image.patchValue(null)
-        this.controls.form60Img.patchValue(null)
-      }
-      if (panType === 'form60') {
-        this.controls.panImage.patchValue(null)
-        this.controls.panImg.patchValue(null)
+      if (this.resetPanOnChange) {
+        if (panType === 'pan') {
+          this.controls.form60Image.patchValue(null)
+          this.controls.form60Img.patchValue(null)
+        }
+        if (panType === 'form60') {
+          this.controls.panImage.patchValue(null)
+          this.controls.panImg.patchValue(null)
+        }
       }
     }
   }
