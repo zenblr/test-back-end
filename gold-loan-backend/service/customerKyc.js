@@ -1515,7 +1515,11 @@ let allKycCompleteInfo = async (customerInfo) => {
         goldLoan: false,
         goldEmi: false,
         goldScrap: false,
-        digiGold: false
+        digiGold: false,
+        kycStatus: customerInfo.kycStatus,
+        digiKycStatus: customerInfo.digiKycStatus,
+        scrapKycStatus: customerInfo.scrapKycStatus,
+        emiKycStatus: customerInfo.emiKycStatus
     }
 
     if (customerInfo.kycStatus == "approved") {
