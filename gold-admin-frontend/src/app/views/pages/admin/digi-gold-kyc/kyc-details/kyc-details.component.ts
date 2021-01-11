@@ -221,7 +221,7 @@ export class KycDetailsComponent implements OnInit {
 
   testUpload(event) {
     const file = event.target.files[0];
-    if (this.sharedService.fileValidator(event)) {
+    if (this.sharedService.fileValidator(event, 'image')) {
       const params = {
         reason: 'lead'
       }
