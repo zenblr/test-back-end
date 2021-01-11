@@ -204,9 +204,9 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
         });
         return res.status(200).json({ message: "Success", transactionId: transactionData.id });
     } else if (transactionData.orderTypeId == 5) {
-        if (customer.walletFreeBalance < transactionData.transactionAmount) {
-            return res.status(400).json({ message: 'You have insufficient free wallet balance.' });
-        }
+        // if (customer.walletFreeBalance < transactionData.transactionAmount) {
+        //     return res.status(400).json({ message: 'You have insufficient free wallet balance.' });
+        // }
 
         await sequelize.transaction(async (t) => {
 

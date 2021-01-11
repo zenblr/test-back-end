@@ -189,13 +189,13 @@
                             </div>
 
                             <ng-container
-                                *ngIf="laonTransferDetails && (loanTransferStage == '3' || loanTransferStage == '4' || loanTransferStage == '5')">
+                                *ngIf="laonTransferDetails && (loanTransferStage == '3'  || loanTransferStage == '5')">
                                 <div class="row justify-content-center mb-3" style="width: 600px; margin:auto"
                                     *ngIf="laonTransferDetails.masterLoan.loanTransfer.loanTransferStatusForBM == 'incomplete' && laonTransferDetails.masterLoan.loanTransfer.reasonByBM">
                                     <div class="col-12">
                                         <div class="row">
                                             <div class="col-6 pl-0">
-                                                <label style="font-weight: 400;" for="">Reason for
+                                                <label style="font-weight: 400;" for="">Reason for 
                                                     {{laonTransferDetails.masterLoan.loanTransfer.loanTransferStatusForBM | titlecase}}
                                                     <br>
                                                     (Branch

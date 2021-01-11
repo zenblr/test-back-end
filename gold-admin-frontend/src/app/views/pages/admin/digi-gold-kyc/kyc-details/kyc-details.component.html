@@ -82,7 +82,7 @@
                                 <div *ngIf="modalData.action != 'view'" class="input-group mb-3">
                                     <input type="text" class="form-control" placeholder="Attach PAN"
                                         aria-label="Attach PAN" formControlName="panFileName"
-                                        [class.isError]="controls.panAttachment.touched && controls.panAttachment.invalid" />
+                                        [class.isError]="controls.panImage.touched && controls.panImage.invalid" />
 
                                     <div class="input-group-append">
                                         <span
@@ -91,9 +91,9 @@
                                             (click)="modalData.action != 'view' && isEditable && pan.click()">Attach</span>
                                     </div>
                                     <input type="file" class="d-none" accept="image/jpg, image/png, image/jpeg" #pan
-                                        (input)="uploadFile($event)">
+                                        (input)="testUpload($event)">
                                 </div>
-                                <mat-error *ngIf="controls.panAttachment.invalid && controls.panAttachment.touched">
+                                <mat-error *ngIf="controls.panImage.invalid && controls.panImage.touched">
                                     Field Required
                                 </mat-error>
 
