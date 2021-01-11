@@ -281,7 +281,8 @@
                     </div>
                 </div>
 
-                <div class="row kt-padding-t-15" *ngIf="!controls.panImage.value && controls.panType.value && viewOnly">
+                <div class="row kt-padding-t-15"
+                    *ngIf="(!controls.panImage.value && !controls.form60Image.value) && controls.panType.value && viewOnly">
                     <div class="col-6">
                         <div class="row">
                             <div class="col-3  offset-1  form-label">
@@ -298,7 +299,7 @@
                                     <input type="text" class="form-control" placeholder="Select File"
                                         aria-label="Recipient's username" aria-describedby="basic-addon2"
                                         formControlName="form60"
-                                        [class.isError]="controls.panImg.touched && controls.panImg.invalid" />
+                                        [class.isError]="controls[getFormControlPanForm60().path].touched && controls[getFormControlPanForm60().path].invalid" />
 
                                     <div class="input-group-append">
                                         <span class="input-group-text bg kt-pointer font-weight" id="basic-addon2"
@@ -329,6 +330,23 @@
                             <div class="iframeWrapper" (click)="previewPdf(controls.panImg.value)">
                                 <iframe [src]="controls.panImg.value | safe : 'resourceUrl'" height="250" width="290"
                                     scrolling="no" *ngIf="isPdf(controls.panImg.value)"></iframe>
+                            </div>
+                        </div>
+
+                        <div class="img-container" *ngIf="controls.form60Img.value">
+                            <img *ngIf="!controls.form60Img.value" class=""
+                                src="../../../../../../assets/media/icons/image-placeholder.png" alt="" />
+                            <img (click)="previewImage(controls.form60Img.value)" class="fetched-image"
+                                *ngIf="controls.form60Img.value && !isPdf(controls.form60Img.value)"
+                                [src]="controls.form60Img.value" style="border-radius: 15px;" alt="" />
+                            <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer remove-icon"
+                                (click)="form60.click()"
+                                *ngIf="controls.form60Img.value && !(controls.panType.status == 'DISABLED')">
+                            <input type="file" class="d-none" accept="image/*,application/pdf" #form60
+                                (input)="getFileInfo($event ,'panType')">
+                            <div class="iframeWrapper" (click)="previewPdf(controls.form60Img.value)">
+                                <iframe [src]="controls.form60Img.value | safe : 'resourceUrl'" height="250" width="290"
+                                    scrolling="no" *ngIf="isPdf(controls.form60Img.value)"></iframe>
                             </div>
                         </div>
                     </div>
