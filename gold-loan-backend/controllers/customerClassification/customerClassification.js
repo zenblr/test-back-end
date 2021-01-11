@@ -280,7 +280,7 @@ exports.operationalTeamKycRating = async (req, res, next) => {
 
                         await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId, scrapKycRatingFromCce: kycClassificationData.kycRatingFromCce, scrapKycStatusFromCce: kycClassificationData.kycStatusFromCce, scrapReasonFromCce: kycClassificationData.reasonFromCce, scrapCceId: kycClassificationData.cceId, scrapKycStatusFromOperationalTeam: kycStatusFromOperationalTeam, scrapReasonFromOperationalTeam: reasonFromOperationalTeam, scrapOperationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
                     } else if (customerData.scrapKycStatus == 'approved') {
-                        await models.customer.update({ kycStatus: kycStatusFromOperationalTeam }, { where: { id: customerId }, transaction: t })
+                        await models.customer.update({ digiKycStatus: kycStatusFromOperationalTeam, emiKycStatus: kycStatusFromOperationalTeam, kycStatus: kycStatusFromOperationalTeam, scrapKycStatus: kycStatusFromOperationalTeam }, { where: { id: customerId }, transaction: t })
 
                         await models.customerKyc.update(
                             { operationalTeamVerifiedBy: operationalTeamId },
@@ -400,7 +400,7 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                 if (userType == "Corporate") {
 
                     await sequelize.transaction(async (t) => {
-                        await models.customer.update({ scrapKycStatus: scrapKycStatusFromOperationalTeam }, { where: { id: customerId }, transaction: t })
+                        await models.customer.update({ digiKycStatus: scrapKycStatusFromOperationalTeam, emiKycStatus: scrapKycStatusFromOperationalTeam, kycStatus: scrapKycStatusFromOperationalTeam, scrapKycStatus: scrapKycStatusFromOperationalTeam }, { where: { id: customerId }, transaction: t })
 
                         // await models.customerKyc.update(
                         // { operationalTeamVerifiedBy: scrapOperationalTeamId },
