@@ -145,7 +145,8 @@
 							<label class="mandatory  text-color font-weight-500">PAN / FORM 60 </label>
 						</div>
 						<div class="col-8">
-							<select class="form-control" formControlName="panType" (change)='remove()'
+							<select class="form-control" formControlName="panType"
+								(change)='setPanTypeValidation();remove()'
 								[class.isError]="controls.panType.touched && controls.panType.invalid">
 								<option value=null selected disabled>Select</option>
 								<option value="pan">PAN</option>
@@ -205,7 +206,8 @@
 						</div>
 					</div>
 
-					<div class="row kt-padding-t-15" *ngIf="!controls.panImage.value && controls.panType.value">
+					<div class="row kt-padding-t-15" *ngIf="(controls.panType.value && controls.panType.value == 'pan' && !controls.panImage.value) ||
+						(controls.panType.value && controls.panType.value == 'form60' && !controls.form60Image.value)">
 						<div class="col-4 align-self-center form-label">
 							<label *ngIf="controls.panType.value == ''"
 								ngClass="{'mandatory': controls.panType.value != ''}"
@@ -244,7 +246,7 @@
 						</div> -->
 					</div>
 
-					<div class="row kt-margin-t-15" *ngIf="controls.panImg.value">
+					<div class="row kt-margin-t-15" *ngIf="controls.panType.value == 'pan' && controls.panImg.value">
 						<div class="col offset-4">
 							<div class="img-container" *ngIf="controls.panImg.value">
 								<img *ngIf="!controls.panImg.value" class=""
@@ -266,7 +268,8 @@
 						</div>
 					</div>
 
-					<div class="row kt-margin-t-15" *ngIf="controls.form60Img.value">
+					<div class="row kt-margin-t-15"
+						*ngIf="controls.panType.value == 'form60' && controls.form60Img.value">
 						<div class="col offset-4">
 							<div class="img-container" *ngIf="controls.form60Img.value">
 								<img *ngIf="!controls.form60Img.value" class=""

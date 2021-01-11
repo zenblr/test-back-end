@@ -105,38 +105,41 @@ export class UserDetailsComponent implements OnInit {
     });
 
     this.controls.panType.valueChanges.subscribe(res => {
-      if (res == 'form60') {
+      // if (res == 'form60') {
 
-//         //current changes
-//         if (this.resetOnPanChange) {
-//           this.controls.panCardNumber.reset()
-//           this.controls.panCardNumber.patchValue('')
-//         }
-// =======
-//         this.controls.form60.reset()
-//         this.controls.panCardNumber.reset()
-//         this.controls.panCardNumber.patchValue(null)
-//         //current changes
+      //   //current changes
+      //   if (this.resetOnPanChange) {
+      //     this.controls.panCardNumber.patchValue('')
+      //     this.controls.form60.reset()
+      //     this.controls.panImage.setValidators([])
+      //     this.controls.panImage.updateValueAndValidity()
+      //     this.controls.form60Image.setValidators([Validators.required])
+      //     this.controls.form60Image.updateValueAndValidity()
+      //   }
+      //   //current changes
 
-        this.controls.form60.reset()
-        this.controls.panCardNumber.reset()
-        this.controls.panCardNumber.patchValue(null)
-        this.controls.panCardNumber.clearValidators()
-        this.controls.panCardNumber.updateValueAndValidity()
-        this.controls.panImage.setValidators([])
-        this.controls.panImage.updateValueAndValidity()
-        this.controls.form60Image.setValidators([Validators.required])
-        this.controls.form60Image.updateValueAndValidity()
-      }
-      if (res == 'pan') {
-        this.controls.form60.reset()
-        this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
-        this.controls.panCardNumber.updateValueAndValidity()
-        this.controls.panImage.setValidators([Validators.required])
-        this.controls.panImage.updateValueAndValidity()
-        this.controls.form60Image.setValidators([])
-        this.controls.form60Image.updateValueAndValidity()
-      }
+      //   // this.controls.form60.reset()
+      //   // this.controls.panCardNumber.reset()
+      //   // this.controls.panCardNumber.patchValue(null)
+      //   // this.controls.panCardNumber.clearValidators()
+      //   // this.controls.panCardNumber.updateValueAndValidity()
+      //   // this.controls.panImage.setValidators([])
+      //   // this.controls.panImage.updateValueAndValidity()
+      //   // this.controls.form60Image.setValidators([Validators.required])
+      //   // this.controls.form60Image.updateValueAndValidity()
+      // }
+      // if (res == 'pan') {
+      //   if (this.resetOnPanChange) {
+
+      //     this.controls.form60.reset()
+      //     this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
+      //     this.controls.panCardNumber.updateValueAndValidity()
+      //     this.controls.panImage.setValidators([Validators.required])
+      //     this.controls.panImage.updateValueAndValidity()
+      //     this.controls.form60Image.setValidators([])
+      //     this.controls.form60Image.updateValueAndValidity()
+      //   }
+      // }
     });
 
     this.controls.otp.valueChanges.subscribe(res => {
@@ -203,7 +206,7 @@ export class UserDetailsComponent implements OnInit {
         this.refCode = res.referenceCode;
         this.controls.referenceCode.patchValue(this.refCode);
         this.userBasicForm.patchValue(res.customerInfo);
-        if (res.customerInfo.panCardNumber) {
+        if ((res.customerInfo.panType && res.customerInfo.panType == 'pan' && res.customerInfo.panCardNumber) || (res.customerInfo.panType && res.customerInfo.panType == 'form60' && res.customerInfo.form60Image)) {
           this.resetOnPanChange = false
         }
         this.userBasicForm.patchValue({ moduleId: this.moduleId })
@@ -402,16 +405,18 @@ export class UserDetailsComponent implements OnInit {
 
     let panType = this.controls.panType.value
     if (panType) {
-      if (panType === 'pan') {
-        this.controls.form60Image.patchValue(null)
-        this.controls.form60Img.patchValue(null)
+      if (this.resetOnPanChange) {
+        if (panType === 'pan') {
+          this.controls.form60Image.patchValue(null)
+          this.controls.form60Img.patchValue(null)
+        }
+        if (panType === 'form60') {
+          this.controls.panImage.patchValue(null)
+          this.controls.panImg.patchValue(null)
+        }
+        this.controls.panCardNumber.patchValue(null)
+        this.controls.form60.patchValue(null)
       }
-      if (panType === 'form60') {
-        this.controls.panImage.patchValue(null)
-        this.controls.panImg.patchValue(null)
-      }
-      this.controls.panCardNumber.patchValue(null)
-      this.controls.form60.patchValue(null)
     }
   }
 
@@ -490,6 +495,32 @@ export class UserDetailsComponent implements OnInit {
       if (panType === 'form60') {
         return { path: 'form60Image', URL: 'form60Img' }
       }
+    }
+  }
+
+  setPanTypeValidation() {
+    const panType = this.controls.panType.value
+    if (panType == 'form60') {
+
+      //current changes
+      this.controls.panCardNumber.patchValue('')
+      this.controls.form60.reset()
+      this.controls.panImage.setValidators([])
+      this.controls.panImage.updateValueAndValidity()
+      this.controls.panCardNumber.setValidators([])
+      this.controls.panCardNumber.updateValueAndValidity()
+      this.controls.form60Image.setValidators([Validators.required])
+      this.controls.form60Image.updateValueAndValidity()
+    }
+    if (panType == 'pan') {
+
+      this.controls.form60.reset()
+      this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
+      this.controls.panCardNumber.updateValueAndValidity()
+      this.controls.panImage.setValidators([Validators.required])
+      this.controls.panImage.updateValueAndValidity()
+      this.controls.form60Image.setValidators([])
+      this.controls.form60Image.updateValueAndValidity()
     }
   }
 }
