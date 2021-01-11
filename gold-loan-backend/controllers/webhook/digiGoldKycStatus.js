@@ -7,7 +7,7 @@ const check = require('../../lib/checkLib');
 
 exports.changeKycStatus = async (req, res) => {
 
-    const {  type } = req.body;
+    const { type } = req.body;
     let customerKycData = req.body.data
 
     if (type == "kyc") {
@@ -27,21 +27,23 @@ exports.changeKycStatus = async (req, res) => {
                             { digiKycStatus: ele.status, emiKycStatus: ele.status },
                             { where: { id: customer.id }, transaction: t }
                         );
+                        await models.digiKycApplied.update({ status: ele.status }, { where: { customeId: customer.id }, transaction: t })
 
                         await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
 
                     } else if (ele.status == 'rejected') {
                         await models.customer.update(
-                            { digiKycStatus: ele.status, emiKycStatus: ele.status },
+                            { digiKycStatus: ele.status, emiKycStatus: ele.status, scrapKycStatus: ele.status, kycStatus: ele.status },
                             { where: { id: customer.id }, transaction: t }
                         );
 
+                        await models.digiKycApplied.update({ status: ele.status, reasonForDigiKyc: `rejected from webhook` }, { where: { customeId: customer.id }, transaction: t })
                         await sms.sendMessageForKycRejected(customer.mobileNumber, customer.customerUniqueId);
                     }
                 });
             }
         }
-   
+
         return res.status(200).json({ message: "Success" });
     } else {
         return res.status(400).json({ message: "Invalid Type" });

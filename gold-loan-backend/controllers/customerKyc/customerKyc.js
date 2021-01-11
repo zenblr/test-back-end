@@ -1228,9 +1228,12 @@ exports.changeDigiKycStatus = async (req, res) => {
         const { id, customerId, status, aadharNumber, aadharAttachment, moduleId, reasonForDigiKyc } = req.body;
         console.log(req.body)
         await sequelize.transaction(async (t) => {
-
-            await models.customer.update({ emiKycStatus: status, digiKycStatus: status }, { where: { id: customerId }, transaction: t })
-            await models.digiKycApplied.update({ status, reasonForDigiKyc }, { where: { id: id } })
+            if (req.body.status != "rejected") {
+                await models.customer.update({ kycStatus: status, scrapKycStatus: status, emiKycStatus: status, digiKycStatus: status }, { where: { id: customerId }, transaction: t })
+            } else {
+                await models.customer.update({ emiKycStatus: status, digiKycStatus: status }, { where: { id: customerId }, transaction: t })
+            }
+            await models.digiKycApplied.update({ status, reasonForDigiKyc }, { where: { id: id }, transaction: t })
 
         })
         return res.status(200).json({ message: 'success' })
@@ -1260,7 +1263,7 @@ exports.changeDigiKycStatus = async (req, res) => {
             //update complate kyc points
             // kycCompletePoint = await updateCompleteKycModule(kycCompletePoint, moduleId)
             await models.customer.update({ emiKycStatus: status, digiKycStatus: status }, { where: { id: customerId }, transaction: t })
-            await models.digiKycApplied.update({ status, reasonForDigiKyc }, { where: { id: id } })
+            await models.digiKycApplied.update({ status, reasonForDigiKyc }, { where: { id: id }, transaction: t })
 
         })
         return res.status(data.status).json({ message: 'success' })
