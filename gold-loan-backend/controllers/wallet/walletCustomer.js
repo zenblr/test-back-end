@@ -595,7 +595,7 @@ exports.getAllDepositDetails = async (req, res) => {
       searchQuery.orderTypeId = { [Op.in]: [4] }
       searchQuery.customerId = id
     } else if (orderTypeId.id == 5) {
-      searchQuery.paymentOrderTypeId = { [Op.in]: [4] }
+      searchQuery.paymentOrderTypeId = { [Op.in]: [5] }
       searchQuery.orderTypeId = { [Op.in]: [5] }
       searchQuery.customerId = id
     }
