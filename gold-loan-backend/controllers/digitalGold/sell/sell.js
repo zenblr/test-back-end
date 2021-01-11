@@ -125,9 +125,11 @@ exports.sellProduct = async (req, res) => {
 
           let orderCreatedDate = moment(moment().utcOffset("+05:30"));
 
+          let newWalletBalance = customerDetails.currentWalletBalance.toFixed(2);
+
           let orderDetail = await models.digiGoldOrderDetail.create({
             tempOrderId: tempId.id, customerId: id, orderTypeId: 2, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
-            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: customerDetails.currentWalletBalance, orderStatus: "pending", orderCreatedDate: orderCreatedDate
+            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: Number(newWalletBalance), orderStatus: "pending", orderCreatedDate: orderCreatedDate
           }, { transaction: t });
 
           await models.digiGoldTempOrderDetail.update(
@@ -205,19 +207,20 @@ exports.sellProduct = async (req, res) => {
           } else {
             currentWalletBalance = Number(amount)
           }
+          let newCurrentWalletBalance=currentWalletBalance.toFixed(2);
+          let newAmountOfWallet=amountOfWallet.toFixed(2);
 
           let orderCreatedDate = moment(moment().utcOffset("+05:30"));
 
           let orderDetail = await models.digiGoldOrderDetail.create({
             tempOrderId: tempId.id, customerId: id, orderTypeId: 2, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
-            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: amountOfWallet, walletId: walletData.id, orderStatus: "completed", orderCreatedDate: orderCreatedDate
+            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: Number(newCurrentWalletBalance), walletId: walletData.id, orderStatus: "completed", orderCreatedDate: orderCreatedDate
           }, { transaction: t });
 
           await models.digiGoldTempOrderDetail.update(
             { isOrderPlaced: true, modifiedBy }, { where: { id: tempId.id }, transaction: t });
 
-            let newCurrentWalletBalance=currentWalletBalance.toFixed(2);
-            let newAmountOfWallet=amountOfWallet.toFixed(2);
+            
 
           await models.customer.update(
             { walletFreeBalance: Number(newAmountOfWallet), currentWalletBalance: Number(newCurrentWalletBalance) }, { where: { id: customerDetails.id }, transaction: t });
