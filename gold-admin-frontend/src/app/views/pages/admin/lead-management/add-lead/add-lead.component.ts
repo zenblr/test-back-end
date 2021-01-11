@@ -21,7 +21,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class AddLeadComponent implements OnInit {
 
-  modalTitle = 'Add New Lead';
+  modalTitle = 'Add Customer';
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   leadForm: FormGroup;
   states: any;
@@ -45,6 +45,7 @@ export class AddLeadComponent implements OnInit {
   showCommentBox = false;
   leadSources = [];
   modules = [];
+  resetPanOnChange = true;
 
   constructor(
     public dialogRef: MatDialogRef<AddLeadComponent>,
@@ -96,7 +97,9 @@ export class AddLeadComponent implements OnInit {
             ])
           this.controls.panCardNumber.updateValueAndValidity()
         } else {
-          this.controls.panCardNumber.reset()
+          if (this.resetPanOnChange) {
+            this.controls.panCardNumber.reset()
+          }
           this.controls.panCardNumber.clearValidators()
           this.controls.panCardNumber.updateValueAndValidity()
         }
@@ -111,7 +114,9 @@ export class AddLeadComponent implements OnInit {
 
         this.controls.panCardNumber.clearValidators()
         this.controls.panCardNumber.updateValueAndValidity()
-        this.controls.panCardNumber.reset()
+        if (this.resetPanOnChange) {
+          this.controls.panCardNumber.reset()
+        }
 
         this.controls.panImg.clearValidators()
         this.controls.panImg.updateValueAndValidity()
@@ -167,14 +172,14 @@ export class AddLeadComponent implements OnInit {
   setForm() {
     if (this.data.action == 'edit') {
       this.getLeadById(this.data['id']);
-      this.modalTitle = 'Edit Lead'
+      this.modalTitle = 'Edit Customer'
       this.viewOnly = true;
       this.leadForm.controls.mobileNumber.disable()
       this.leadForm.controls.moduleId.disable()
       this.leadForm.controls.otp.disable()
     } else if (this.data.action == 'view') {
       this.getLeadById(this.data['id']);
-      this.modalTitle = 'View Lead'
+      this.modalTitle = 'View Customer'
       this.leadForm.disable()
     } else if (this.data.action == 'assignBranch') {
       this.getLeadById(this.data['id']);
@@ -188,7 +193,7 @@ export class AddLeadComponent implements OnInit {
       this.disableAssignBranch()
     }
     else {
-      this.modalTitle = 'Add New Lead'
+      this.modalTitle = 'Add Customer'
     }
   }
 
@@ -256,6 +261,9 @@ export class AddLeadComponent implements OnInit {
       this.leadForm.patchValue(res.singleCustomer);
       this.leadForm.patchValue({ panImage: res.singleCustomer.panImage })
       this.leadForm.patchValue({ panImg: res.singleCustomer.panImg })
+      if (res.singleCustomer.panCardNumber) {
+        this.resetPanOnChange = false
+      }
 
       this.getCities();
       this.commentBox()

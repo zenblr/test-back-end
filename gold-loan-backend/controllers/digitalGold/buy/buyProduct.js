@@ -18,142 +18,152 @@ const errorLogger = require('../../../utils/errorLogger');
 const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
+const { walletBuy, customerBalance } = require('../../../service/wallet');
+const { postMerchantOrder, getUserData, postBuy } = require('../../../service/digiGold')
 
 
 exports.buyProduct = async (req, res) => {
-  try {
-    // const { metalType, quantity, lockPrice, blockId, transactionDetails, amount, quantityBased, modeOfPayment } = req.body;
-
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, requestFrom } = req.body;
-
-    let tempOrderData = await models.digiGoldTempOrderDetail.getTempOrderDetail(razorpay_order_id);
-
-    const id = tempOrderData.customerId;
-    const razorPay = await getRazorpayCredentails();
-    let customerDetails = await models.customer.findOne({
-      where: { id, isActive: true },
-    });
-    if (check.isEmpty(customerDetails)) {
-      return res.status(404).json({ message: "Customer Does Not Exists" });
-    }
+  // try {
 
 
-    //const transactionId = transactionDetails.razorpay_payment_id;
-    const generated_signature = crypto
-      .createHmac(
-        "SHA256",
-        razorPay.razorPayConfig.key_secret
-      )
-      .update(razorpay_order_id + "|" + razorpay_payment_id)
-      .digest("hex");
-    if (generated_signature == razorpay_signature) {
-      signatureVerification = true
-    }
-    if (signatureVerification == false) {
-      return res.status(422).json({ message: "Payment verification failed" });
-    }
-    const customerUniqueId = customerDetails.customerUniqueId;
-    const merchantData = await getMerchantData();
-    const getUser = await models.axios({
-      method: 'GET',
-      url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/${customerUniqueId}`,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${merchantData.accessToken}`,
-      },
-    });
-    //razorPayOrder.items[0].wallet
-    const getUserDetails = getUser.data.result.data;
-    const data = {
-      'lockPrice': tempOrderData.lockPrice,
-      'emailId': getUserDetails.userEmail,
-      'metalType': tempOrderData.metalType,
-      'merchantTransactionId': razorpay_payment_id,
-      'userName': getUserDetails.userName,
-      'userCity': getUserDetails.userCityId,
-      'userState': getUserDetails.userStateId,
-      'userPincode': getUserDetails.userPincode,
-      'uniqueId': customerUniqueId,
-      'blockId': tempOrderData.blockId,
-      'modeOfPayment': tempOrderData.modeOfPayment,
-      'mobileNumber': customerDetails.mobileNumber
-    };
-    if (tempOrderData.quantityBased == true) {
-      data.quantity = tempOrderData.quantity;
-    } else {
-      data.amount = tempOrderData.amount;
-    }
-    const result = await models.axios({
-      method: 'POST',
-      url: `${process.env.DIGITALGOLDAPI}/merchant/v1/buy`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Bearer ${merchantData.accessToken}`,
-      },
-      data: qs.stringify(data)
-    })
-    await models.axios({
-      method: 'PATCH',
-      url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
-      auth: {
-        username: razorPay.razorPayConfig.key_id,
-        password: razorPay.razorPayConfig.key_secret
-      },
-      data: qs.stringify({ notes: { transactionId: result.data.result.data.transactionId, uniqueId: customerDetails.customerUniqueId } })
-    })
-    const customerName = customerDetails.firstName + " " + customerDetails.lastName;
-    if (result.data.statusCode === 200) {
+  const { amount, metalType, quantity, lockPrice, blockId, quantityBased, modeOfPayment } = req.body;
 
-      await sequelize.transaction(async (t) => {
+  const id = req.userData.id;
+  let customerDetails = await models.customer.findOne({
+    where: { id, isActive: true },
+  });
+  if (check.isEmpty(customerDetails)) {
+    return res.status(404).json({ message: "Customer Does Not Exists" });
+  }
 
-        let orderUniqueId = `dg_buy${Math.floor(1000 + Math.random() * 9000)}`;
+  if (amount > customerDetails.currentWalletBalance || !customerDetails.currentWalletBalance) {
+    return res.status(420).json({ message: "Insuffecient wallet balance", walletBal: customerDetails.currentWalletBalance });
+  }
 
-        let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderData.id, customerId: id, orderTypeId: 1, orderId: orderUniqueId, metalType: tempOrderData.metalType, quantity: tempOrderData.quantity, lockPrice: tempOrderData.lockPrice, blockId: tempOrderData.blockId, amount: tempOrderData.amount, rate: result.data.result.data.rate, quantityBased: tempOrderData.quantityBased, modeOfPayment: tempOrderData.modeOfPayment, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, orderSatatus: "pending", totalAmount: tempOrderData.amount });
 
-        await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { razorpayOrderId: razorpay_order_id } });
+  const checkLimit = await checkBuyLimit(id, amount);
+  if(!checkLimit.success){
+    return res.status(422).json({ message: checkLimit.message });
+  }
 
-        let CustomerBalanceData = await models.digiGoldCustomerBalance.findOne({ where: { customerId: id, isActive: true } })
-        if (CustomerBalanceData) {
-          await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: id } });
+
+  let tempOrderData;
+  let currentTempBal;
+  let walletData
+  let output = await sequelize.transaction(async (t) => {
+    walletData = await models.walletTempDetails.create({ customerId: id, amount, paymentDirection: "debit", description: `${metalType} bought ${quantity} grams`, productTypeId: 4, transactionDate: moment() }, { transaction: t });
+
+    currentTempBal = Number(customerDetails.currentWalletBalance) - Number(amount);
+
+    tempOrderData = await models.digiGoldTempOrderDetail.create({ customerId: id, orderTypeId: 1, totalAmount: amount, metalType, quantity, lockPrice, blockId, amount, quantityBased, modeOfPayment: modeOfPayment, createdBy: 1, modifiedBy: 1, walletTempId: walletData.id, walletBalance: currentTempBal }, { transaction: t });
+
+    let walletBuy1 = async (customerId, lockPrice, metalType, blockId, modeOfPayment, quantity, orderAmount, orderId, quantityBased, tempWalletId, temporderDetailId) => {
+      try {
+
+        let customerDetails = await models.customer.findOne({ where: { id: customerId } });
+
+        const customerUniqueId = customerDetails.customerUniqueId;
+        const merchantData = await getMerchantData();
+
+
+        const getUser = await getUserData(customerUniqueId)
+
+        const getUserDetails = getUser.data.result.data;
+        const transactionId = uniqid(merchantData.merchantId, customerUniqueId);
+
+        const data = {
+          'lockPrice': lockPrice,
+          'emailId': getUserDetails.userEmail,
+          'metalType': metalType,
+          'merchantTransactionId': transactionId,
+          'userName': getUserDetails.userName,
+          'userCity': getUserDetails.userCityId,
+          'userState': getUserDetails.userStateId,
+          'userPincode': null,
+          'uniqueId': customerUniqueId,
+          'blockId': blockId,
+          'modeOfPayment': modeOfPayment,
+          'mobileNumber': customerDetails.mobileNumber
+        };
+
+        if (quantityBased == true) {
+          data.quantity = quantity;
         } else {
-          await models.digiGoldCustomerBalance.create({ customerId: id, currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance });
+          data.amount = orderAmount;
         }
-        console.log(result.data);
-        await models.digiGoldOrderTaxDetail.create({ orderDetailId: orderDetail.id, totalTaxAmount: result.data.result.data.totalTaxAmount, cgst: result.data.result.data.taxes.taxSplit[0].cgst, sgst: result.data.result.data.taxes.taxSplit[0].scgst, isActive: true });
-      })
 
-      await sms.sendMessageForBuy(customerName, customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+        console.log(qs.stringify(data));
+
+        const result = await postBuy(data)
+
+        const customerName = customerDetails.firstName + " " + customerDetails.lastName;
+
+        if (result.isSuccess) {
+
+          // let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.totalAmount);
+          //calculation function
+          let checkBalance = await customerBalance(customerDetails, result.data.result.data.totalAmount)
+          //calculation function
+
+           let newCurrentWalletBalance=checkBalance.currentWalletBalance.toFixed(2);
+
+           let newWalletFreeBalance=checkBalance.walletFreeBalance.toFixed(2);
+
+          await models.customer.update({ currentWalletBalance: Number(newCurrentWalletBalance), walletFreeBalance: Number(newWalletFreeBalance) }, { where: { id: customerId }, transaction: t })
+
+          let orderUniqueId = `dg_buy${Math.floor(1000 + Math.random() * 9000)}`;
+
+          let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.totalAmount, paymentDirection: "debit", description: `${metalType} bought ${quantity} grams`, productTypeId: 4, transactionDate: moment(), walletTempDetailId: tempWalletId, orderTypeId: 1, paymentOrderTypeId: 6, transactionStatus: "completed" }, { transaction: t });
+
+          let orderCreatedDate = moment(moment().utcOffset("+05:30"));
+
+          let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: temporderDetailId, customerId: customerId, orderTypeId: 1, orderId: orderUniqueId, metalType: result.data.result.data.metalType, quantity: quantity, lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, rate: result.data.result.data.rate, quantityBased: quantityBased, modeOfPayment: modeOfPayment, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, orderStatus: "pending", totalAmount: result.data.result.data.totalAmount, walletBalance: Number(newCurrentWalletBalance), walletId: walletData.id, orderCreatedDate: orderCreatedDate }, { transaction: t });
+
+          await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { id: orderId }, transaction: t });
+
+          let CustomerBalanceData = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customerId, isActive: true } })
+          if (CustomerBalanceData) {
+            await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: customerId }, transaction: t });
+          } else {
+            await models.digiGoldCustomerBalance.create({ customerId: customerId, currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { transaction: t });
+          }
+          await models.digiGoldOrderTaxDetail.create({ orderDetailId: orderDetail.id, totalTaxAmount: result.data.result.data.totalTaxAmount, cgst: result.data.result.data.taxes.taxSplit[0].cgst, sgst: result.data.result.data.taxes.taxSplit[0].scgst, isActive: true }, { transaction: t });
+
+          // await sms.sendMessageForBuy(customerName, customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+          await sms.sendMessageForBuy( customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+
+          return result.data;
+
+        } else if (!result.isSuccess) {
+          return { err }
+        }
+
+      } catch (err) {
+        console.log("ggg",err)
+        if (err.response.data.statusCode == 422) {
+          if (err.response.data.errors.userKyc.length) {
+            return err.response.data
+          }
+        }
+      }
     }
-    if (requestFrom == "mobileApp") {
-      return res.status(200).json(result.data);
-    }
-    console.log(result.data.result.data.metalType);
-    res.cookie(`metalObject`, `${JSON.stringify(result.data.result.data.metalType)}`);
-    res.redirect(`${process.env.BASE_URL_CUSTOMER}/digi-gold/order-success/buy/${result.data.result.data.merchantTransactionId}`);
 
-  } catch (err) {
-    console.log(err);
+    let orderBuy = await walletBuy1(customerDetails.id, lockPrice, metalType, blockId, modeOfPayment, quantity, amount, tempOrderData.id, quantityBased, walletData.id, tempOrderData.id);
+    return { orderBuy }
+  })
+  let { orderBuy } = output
+  if (orderBuy && orderBuy.statusCode === 200) {
 
-    let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
+    return res.status(200).json(orderBuy);
+  }
 
-    if (err.response) {
-      return res.status(422).json(err.response.data);
-    } else {
-      console.log('Error', err.message);
-    }
-    // if (err.response) {
-    //   if(err.response.data.errors.userKyc && err.response.data.errors.userKyc.length ){
+  if (orderBuy.errors.userKyc) {
+    return res.status(400).json(orderBuy);
+  } else {
+    return res.status(400).json({ message: "something went wrong" });
 
-    //     res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
-    //     res.redirect(`https://${process.env.DIGITALGOLDAPI}/profile`);
-    //   }else{
-    //     return res.status(422).json(err.response.data);
-    //   }
-    // } else {
-    //   console.log('Error', err.message);
-    // }
-  };
+  }
+
 }
 
 exports.getAllBuyDetails = async (req, res) => {
@@ -281,7 +291,7 @@ exports.generateInvoice = async (req, res) => {
     if (generateInvoice.created) {
 
       res.status(200).json({ invoice: process.env.URL + `/uploads/digitalGoldKyc/pdf/${generateInvoice.fileName}.pdf` });
-
+      res.setHeader('Content-Disposition', `attachment; filename=${enerateInvoice.fileName}.pdf`);
       setTimeout(async function () {
         fs.readFile(`./public/uploads/digitalGoldKyc/pdf/${generateInvoice.fileName}.pdf`, (err, data) => {
 
@@ -339,4 +349,168 @@ exports.getBuyDetailsWithTransId = async (req, res) => {
       console.log('Error', err.message);
     }
   };
+}
+
+
+async function checkBuyLimit(id, totalAmount) {
+
+  totalAmount = totalAmount
+
+  const customerList = await models.digiGoldOrderDetail.findAll({
+    where: { customerId: id, orderTypeId: '1' },
+  });
+
+  const digiGoldKycLimit = await models.digiGoldConfigDetails.findOne({
+    where: { configSettingName: 'digiGoldKycLimit', isActive: "true" },
+  });
+
+  const customer = await models.customer.findOne({
+    where: { id },
+  });
+
+
+  const limit = digiGoldKycLimit.configSettingValue;
+
+
+  if (customerList.length != 0) {
+    let totalAmountOfAll = 0;
+
+    for (let data of customerList) {
+      totalAmountOfAll += Number(data.totalAmount);
+
+    }
+
+    let total = totalAmountOfAll.toFixed(2)
+
+
+
+    if (total > limit && customer.digiKycStatus == 'pending') {
+
+      const panno = customer.panCardNumber
+
+      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+
+        return ({ message: "Your KYC status is pending", success: false });
+
+      } else {
+
+        return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
+
+      }
+
+    } else if (totalAmount > limit && customer.digiKycStatus == 'pending') {
+
+
+
+
+      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+
+        return ({ message: "Your KYC status is pending", success: false });
+
+      } else {
+
+        return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
+
+      }
+
+    } else if (total > limit && customer.digiKycStatus == 'approved') {
+
+      return ({ message: "Your KYC is approved", success: true });
+    } else if (totalAmount >= limit && customer.digiKycStatus == 'approved') {
+
+      return ({ message: "Your KYC is approved", success: true });
+    } else if (total < limit && customer.digiKycStatus == 'approved' || customer.digiKycStatus == 'pending' || customer.digiKycStatus == 'waiting') {
+
+
+
+      if (totalAmount > limit) {
+        if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+
+          return ({ message: "Your KYC status is pending", success: false });
+
+        } else {
+
+          return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
+
+        }
+      } else {
+
+        return ({ message: "No need of KYC", success: true });
+      }
+
+    } else if (total > limit || totalAmount > limit && customer.digiKycStatus == 'rejected') {
+
+      return ({ message: "Your KYC approval is rejected", success: false });
+    } else if (total < limit || totalAmount < limit && customer.digiKycStatus == 'rejected') {
+
+
+      return ({ message: "Your KYC approval is rejected", success: false });
+    } else if (total > limit && customer.digiKycStatus == 'waiting') {
+
+      // if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+
+      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+
+        return ({ message: "Your KYC approval is pending", success: false });
+
+      } else {
+
+        return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
+
+      }
+    } else if (totalAmount >= limit && customer.digiKycStatus == 'waiting') {
+
+      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+
+
+        return ({ message: "Your KYC approval is pending", success: false });
+
+      } else {
+
+        return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
+
+      }
+    }
+
+
+  } else {
+
+    if (totalAmount >= limit && customer.digiKycStatus == 'approved') {
+
+      return ({ message: "Your KYC is approved", success: true });
+    } else if (totalAmount >= limit && customer.digiKycStatus == 'pending') {
+      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+
+        return ({ message: "Your KYC status is pending", success: false });
+      } else {
+
+        return ({ message: "Your KYC status is pending. Please complete KYC first", success: false });
+      }
+    } else if (totalAmount < limit && customer.digiKycStatus == 'approved'
+      || customer.digiKycStatus == 'pending' || customer.digiKycStatus == 'waiting') {
+
+      return ({ message: "No need of KYC", success: true });
+
+    } else if (totalAmount > limit && customer.digiKycStatus == 'rejected') {
+
+
+      return ({ message: "Your KYC approval is rejected", success: false });
+    } else if (totalAmount < limit && customer.digiKycStatus == 'rejected') {
+
+
+      return ({ message: "Your KYC approval is rejected", success: false });
+    } else if (totalAmount >= limit && customer.digiKycStatus == 'waiting') {
+
+      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
+
+        return ({ message: "Your KYC approval is pending", success: false });
+
+      } else {
+
+        return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
+
+      }
+    }
+
+  }
 }

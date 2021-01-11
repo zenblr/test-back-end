@@ -34,7 +34,9 @@ export class InterceptService implements HttpInterceptor {
 		if (this.authService.isLoggedIn()) {
 			request = request.clone({
 				setHeaders: {
-					Authorization: `Bearer ${token}`
+					Authorization: `Bearer ${token}`,
+					'Cache-Control': 'no-cache',
+					Pragma: 'no-cache'
 				}
 			});
 		}

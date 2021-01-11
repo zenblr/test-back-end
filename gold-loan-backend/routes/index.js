@@ -273,7 +273,18 @@ router.use('/migration', migration)
 
 const configDetail = require('./digitalGold/configDetail')
 router.use('/digital-gold/config-detail', configDetail);
+
 const errorLogger = require('./errorLogs');
 router.use('/error-logs', errorLogger)
+
+const karza = require('./karza');
+router.use('/e-kyc', karza)
+
+const wallet = require('./wallet');
+router.use('/wallet', wallet)
+
+const webhook = require('./webHook');
+router.use('/web-hook', webhook);
+
 
 module.exports = router;

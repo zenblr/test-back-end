@@ -3,7 +3,6 @@ module.exports = (sequelize, DataTypes) => {
         masterLoanId: {
             type: DataTypes.INTEGER,
             field: 'master_loan_id',
-            allowNull: false
         },
         razorPayOrderId: {
             type: DataTypes.STRING,
@@ -32,7 +31,6 @@ module.exports = (sequelize, DataTypes) => {
         ornamentId: {
             type: DataTypes.ARRAY(DataTypes.TEXT),
             field: 'ornament_id',
-            defaultValue: null
         },
         transactionUniqueId:{
             type: DataTypes.STRING,

@@ -146,6 +146,18 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: "pending",
             values: ['approved', 'pending', 'rejected']
         },
+        digiKycStatus: {
+            type: DataTypes.ENUM,
+            field: 'digi_kyc_status',
+            defaultValue: "pending",
+            values: ['approved', 'waiting', 'pending', 'rejected']
+        },
+        emiKycStatus: {
+            type: DataTypes.ENUM,
+            field: 'emi_kyc_status',
+            defaultValue: "pending",
+            values: ['approved', 'pending', 'rejected']
+        },
         userType: {
             type: DataTypes.ENUM,
             field: 'user_type',
@@ -171,6 +183,16 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'date_of_birth',
         },
+        currentWalletBalance: {
+            type: DataTypes.FLOAT,
+            field: 'current_wallet_balance',
+            defaultValue: 0
+        },
+        walletFreeBalance: {
+            type: DataTypes.FLOAT,
+            field: 'wallet_free_balance',
+            defaultValue: 0
+        },
         age: {
             type: DataTypes.STRING,
             field: 'age'
@@ -187,6 +209,25 @@ module.exports = (sequelize, DataTypes) => {
         sourceFrom: {
             type: DataTypes.INTEGER,
             field: 'source_from',
+        },
+        suspiciousActivity: {
+            type: DataTypes.BOOLEAN,
+            field: 'suspicious_activity',
+            defaultValue: false
+        },
+        note: {
+            type: DataTypes.TEXT,
+            field: 'note'
+        },
+        currentWalletBalance: {
+            type: DataTypes.FLOAT,
+            field: 'current_wallet_balance',
+            defaultValue: 0
+        },
+        walletFreeBalance: {
+            type: DataTypes.FLOAT,
+            field: 'wallet_free_balance',
+            defaultValue: 0
         }
 
     }, {
@@ -230,7 +271,13 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.belongsTo(models.organizationType, { foreignKey: 'organizationTypeId', as: 'organizationType' });
         Customer.hasOne(models.customerKycOrganizationDetail, { foreignKey: 'customerId', as: 'organizationDetail' });
+        Customer.hasMany(models.walletTransactionDetails, { foreignKey: 'customerId', as: 'walletTransactionDetails' });
 
+        Customer.hasMany(models.customerBankDetails, { foreignKey: 'customerId', as: 'customerBankDetail' });
+
+        Customer.hasMany(models.productRequest, { foreignKey: 'customerId', as: 'productRequest' });
+
+        Customer.hasOne(models.digiKycApplied, { foreignKey: 'customerId', as: 'digiKycApplied' });
     }
 
     // This hook is always run before create.

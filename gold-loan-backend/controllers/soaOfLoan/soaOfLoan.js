@@ -6,7 +6,7 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const _ = require('lodash');
 const moment = require('moment');
-let { getSingleMasterLoanDetail } = require('../../utils/loanFunction');
+let { getSingleMasterLoanDetail, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails } = require('../../utils/loanFunction');
 const xl = require('excel4node');
 
 
@@ -23,13 +23,19 @@ exports.getSoa = async (req, res) => {
             as: 'transaction'
         }]
     });
+
+    let amount = await getCustomerInterestAmount(masterLoanId);
+
+    let loan = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
+
+    let data = await payableAmountForLoan(amount, loan.loan)
     //Excel
-    let wb = new xl.Workbook({dateFormat: 'dd/mm/yyyy',numberFormat: '##.00,##0.00; (#,##0.00); #.00'});
+    let wb = new xl.Workbook({ dateFormat: 'dd/mm/yyyy', numberFormat: '##.00,##0.00; (#,##0.00); #.00' });
     let ws = wb.addWorksheet('report');
     const style = wb.createStyle({
-        alignment: { 
+        alignment: {
             wrapText: true
-        },border: {
+        }, border: {
             left: {
                 style: 'thin',
                 color: 'black',
@@ -47,21 +53,21 @@ exports.getSoa = async (req, res) => {
                 color: 'black',
             },
             outline: false,
-          }
+        }
     });
     const style2 = wb.createStyle({
-        alignment: { 
+        alignment: {
             wrapText: true,
-            horizontal:'center'
+            horizontal: 'center'
         },
         font: {
             bold: true
-          }
+        }
     });
     const customerStyle = wb.createStyle({
-        alignment: { 
+        alignment: {
             wrapText: true,
-            horizontal:'left'
+            horizontal: 'left'
         }
     });
     // Create a reusable style
@@ -91,16 +97,39 @@ Customer Name: ${masterLoan.customer.firstName} ${masterLoan.customer.lastName}
 Mobile: ${masterLoan.customer.mobileNumber}
 Customer ID: ${masterLoan.customer.customerUniqueId}`).style(customerStyle);
 
-ws.cell(7, 2, 7, 5, true).string("Loan No").style(style);
-ws.cell(7, 6, 7, 7, true).string(`${customerLoanIdtoString}`).style(style);
-ws.cell(8, 2, 8, 5, true).string("Tenure").style(style);
-ws.cell(8, 6, 8, 7, true).string(`${masterLoan.tenure}`).style(style);
-ws.cell(9, 2, 9, 5, true).string("Frequency in days").style(style);
-ws.cell(9, 6, 9, 7, true).string(`${masterLoan.customerLoan[0].selectedSlab}`).style(style);
-ws.cell(10, 2, 10, 5, true).string("Loan amount").style(style);
-ws.cell(10, 6, 10, 7, true).string(`${masterLoan.finalLoanAmount}`).style(style);
-ws.cell(11, 2, 11, 5, true).string("Loan outstanding amount").style(style);
-ws.cell(11, 6, 11, 7, true).string(`${masterLoan.outstandingAmount}`).style(style);
+    ws.cell(7, 2, 7, 3, true).string("Loan No").style(style);
+    ws.cell(7, 4, 7, 6, true).string(`${customerLoanIdtoString}`).style(style);
+    ws.cell(8, 2, 8, 3, true).string("Tenure").style(style);
+    ws.cell(8, 4, 8, 6, true).string(`${masterLoan.tenure}`).style(style);
+    ws.cell(9, 2, 9, 3, true).string("Frequency in days").style(style);
+    ws.cell(9, 4, 9, 6, true).string(`${masterLoan.customerLoan[0].selectedSlab}`).style(style);
+    ws.cell(10, 2, 10, 3, true).string("Loan amount").style(style);
+    ws.cell(10, 4, 10, 6, true).string(`${masterLoan.finalLoanAmount}`).style(style);
+    ws.cell(11, 2, 11, 3, true).string("Loan outstanding amount").style(style);
+    ws.cell(11, 4, 11, 6, true).string(`${masterLoan.outstandingAmount}`).style(style);
+    //
+    ws.cell(7, 7, 7, 9, true).string("Disbursal Date").style(style);
+    if (masterLoan.customerLoanDisbursement[0].date) {
+        ws.cell(7, 10, 7, 11, true).date(`${masterLoan.customerLoanDisbursement[0].date}`).style(style);
+    } else {
+        ws.cell(7, 10, 7, 11, true).string(`-`).style(style);
+    }
+    ws.cell(8, 7, 8, 9, true).string("Disbursal ROI").style(style);
+    if (masterLoan.customerLoan.length > 1) {
+        ws.cell(8, 10, 8, 11, true).string(`${masterLoan.customerLoan[0].interestRate} / ${masterLoan.customerLoan[1].interestRate}`).style(style);
+    } else {
+        ws.cell(8, 10, 8, 11, true).string(`${masterLoan.customerLoan[0].interestRate}`).style(style);
+    }
+    ws.cell(9, 7, 9, 9, true).string("Current ROI").style(style);
+    if (masterLoan.customerLoan.length > 1) {
+        ws.cell(9, 10, 9, 11, true).string(`${masterLoan.customerLoan[0].currentInterestRate} / ${masterLoan.customerLoan[1].currentInterestRate}`).style(style);
+    } else {
+        ws.cell(9, 10, 9, 11, true).string(`${masterLoan.customerLoan[0].currentInterestRate}`).style(style);
+    }
+    ws.cell(10, 7, 10, 9, true).string("Due interest amount").style(style);
+    ws.cell(10, 10, 10, 11, true).string(`${data.payableAmount}`).style(style);
+    ws.cell(11, 7, 11, 9, true).string("").style(style);
+    ws.cell(11, 10, 11, 11, true).string("").style(style);
 
     //account opening
     ws.cell(16, 1).string("Transaction Date").style(style);
@@ -133,12 +162,12 @@ ws.cell(11, 6, 11, 7, true).string(`${masterLoan.outstandingAmount}`).style(styl
     ws.cell(17, 14).number(0.00).style(numberStyle).style(style);
     let closingBalance = 0;
     for (let i = 0; account.length > i; i++) {
-        if(account[i].paymentDate){
+        if (account[i].paymentDate) {
             ws.cell(i + 18, 1).date(account[i].paymentDate).style(style);
-        }else{
+        } else {
             ws.cell(i + 18, 1).string('-').style(style);
         }
-        
+
         ws.cell(i + 18, 2).string(account[i].description).style(style);
         ws.cell(i + 18, 3).string(account[i].referenceId).style(style);
         //
@@ -166,6 +195,6 @@ ws.cell(11, 6, 11, 7, true).string(`${masterLoan.outstandingAmount}`).style(styl
         ws.cell(i + 18, 14).number(Math.abs(Number(closingBalance))).style(numberStyle).style(style);
     }
     return wb.write(`${Date.now()}.xlsx`, res);
-    // return res.status(200).json({ message: "Success",masterLoan });
+    // return res.status(200).json({ message: "Success",loan:masterLoan,data});
 }
 

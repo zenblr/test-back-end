@@ -351,6 +351,8 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                         if (signatureVerification == false) {
                             return res.status(422).json({ message: "razorpay payment verification failed" });
                         }
+                    } else{
+                        isAdmin = true
                     }
                     if (isRazorPay) {
                         loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "partRelease", depositDate: moment(depositDate).format("YYYY-MM-DD"), razorPayTransactionId }, { transaction: t });
@@ -480,7 +482,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
             if (isAdmin) {
                 return res.status(200).json({ message: "Success", partRelease });
             } else {
-                res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/loan-details`)
+                res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/thank-you?payemntDone=yes&amount=${tempRazorData.amount}`)
             }
         } else {
             return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
@@ -742,6 +744,7 @@ exports.updateAmountStatus = async (req, res, next) => {
                 return res.status(200).json({ message: "Success" });
             } else if (amountStatus == 'pending') {
                 await sequelize.transaction(async t => {
+                    await models.customerLoanTransaction.update({ depositStatus: "Pending" }, { where: { id: partReleaseData.customerLoanTransactionId }, transaction: t });
                     await models.partRelease.update({ amountStatus: 'pending', modifiedBy }, { where: { id: partReleaseId }, transaction: t });
                     await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_AMOUNT_STATUS_P, createdBy, modifiedBy }, { transaction: t });
                 });
@@ -1257,7 +1260,8 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                     finalNetWeight: oldOrnaments[i]['finalNetWeight'],
                     isReleased: false,
                     currentLtvAmount: currentLtvAmount,
-                    ltvPercent: oldOrnaments[i]['ltvPercent']
+                    ltvPercent: oldOrnaments[i]['ltvPercent'],
+                    remark: oldOrnaments[i]['remark']
                 }
 
                 allOrnmanets.push(ornamentData);
@@ -1278,6 +1282,28 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                 accountHolderName: oldLoanData.loanBankDetail.accountHolderName,
                 passbookProof: oldLoanData.loanBankDetail.passbookProof
             }
+
+            //added customer bank details
+            if (oldLoanData.loanBankDetail.paymentType == 'bank') {
+
+                let checkBankDetailExist = await models.customerBankDetails.findAll({ where: { accountNumber: oldLoanData.loanBankDetail.accountNumber, customerId: customerData.id } })
+
+                if (checkBankDetailExist.length == 0) {
+                    await models.customerBankDetails.create({
+                        moduleId: 1,
+                        customerId: customerData.id,
+                        bankName: oldLoanData.loanBankDetail.bankName,
+                        accountNumber: oldLoanData.loanBankDetail.accountNumber,
+                        ifscCode: oldLoanData.loanBankDetail.ifscCode,
+                        bankBranchName: oldLoanData.loanBankDetail.bankBranchName,
+                        accountHolderName: oldLoanData.loanBankDetail.accountHolderName,
+                        passbookProof: oldLoanData.loanBankDetail.passbookProof,
+                        description: `Added while Creating jewellery release`
+                    }, { transaction: t });
+                }
+            }
+            //added customer bank details
+
             await models.customerLoanBankDetail.create(bankData, { transaction: t });
             return { loan, masterLoan }
         });
@@ -1414,6 +1440,8 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                         if (signatureVerification == false) {
                             return res.status(422).json({ message: "razorpay payment verification failed" });
                         }
+                    }else{
+                        isAdmin = true
                     }
                     if (isRazorPay) {
                         loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "fullRelease", depositDate: moment(depositDate).format("YYYY-MM-DD"), razorPayTransactionId }, { transaction: t });
@@ -1536,9 +1564,10 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                 return addFullRelease
             })
             if (isAdmin) {
-                return res.status(200).json({ message: "Success", partRelease });
+                return res.status(200).json({ message: "Success", fullRelease });
             } else {
-                res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/loan-details`)
+                res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/thank-you?payemntDone=yes&amount=${tempRazorData.amount}`)
+
             }
         } else {
             return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
@@ -1798,6 +1827,7 @@ exports.updateAmountStatusFullRelease = async (req, res, next) => {
                 return res.status(200).json({ message: "Success" });
             } else if (amountStatus == 'pending') {
                 await sequelize.transaction(async t => {
+                    await models.customerLoanTransaction.update({ depositStatus: "Pending" }, { where: { id: fullReleaseData.customerLoanTransactionId }, transaction: t });
                     await models.fullRelease.update({ amountStatus: 'pending', modifiedBy }, { where: { id: fullReleaseId }, transaction: t });
                     await models.fullReleaseHistory.create({ fullReleaseId: fullReleaseId, action: actionFullRelease.FULL_RELEASE_AMOUNT_STATUS_P, createdBy, modifiedBy }, { transaction: t });
                 });

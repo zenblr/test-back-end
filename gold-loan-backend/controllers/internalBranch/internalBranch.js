@@ -30,7 +30,7 @@ exports.addInternalBranch = async (req, res) => {
             }, { transaction: t })
         }
     })
-    return res.status(201).json({ message: "internal branch created" });
+    return res.status(201).json({ message: "Internal branch created" });
 
 }
 

@@ -162,6 +162,11 @@ exports.readMyLoan = async (req, res, next) => {
                         as: 'scheme'
                     },
                     {
+                        model: models.partner,
+                        as: 'partner',
+                        attributes: ['id', 'name']
+                    },
+                    {
                         model: models.customerLoanInterest,
                         as: 'customerLoanInterest',
                         where: { emiStatus: { [Op.notIn]: ['paid'] } },//isExtraDaysInterest: false
@@ -324,4 +329,18 @@ exports.personalInfo = async (req, res, next) => {
     customerInfo.dataValues.kycApproval = kycApproval
 
     return res.status(200).json({ message: 'Success', data: customerInfo })
+}
+
+exports.customerProductRequest = async (req, res, next) => {
+    let { customerId, moduleId, requestFor } = req.body
+
+    let checkExist = await models.productRequest.findAll({ where: { customerId: customerId, requestFor: 'kyc' } })
+
+    if (checkExist.length != 0) {
+        return res.status(422).json({ message: `Thank you` })
+    }
+    await models.productRequest.create({ customerId, moduleId, requestFor })
+
+    return res.status(200).json({ message: `Thank you` })
+
 }

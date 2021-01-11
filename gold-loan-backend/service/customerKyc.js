@@ -115,11 +115,11 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
             let data = await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
 
             await models.customerKycClassification.create({ customerId, customerKycId: customerKycAdd.id, kycStatusFromCce: "pending", cceId: createdBy, createdBy, modifiedBy, createdByCustomer, modifiedByCustomer }, { transaction: t })
-            //for create appraiser Request
-            if (isFromCustomerWebsite) {
-                let appraiserRequest = await models.appraiserRequest.create({ customerId, moduleId, createdBy, modifiedBy }, { transaction: t })
-            }
-            //for create appraiser Request
+            //// for create appraiser Request
+            //// if (isFromCustomerWebsite) {
+            ////     let appraiserRequest = await models.appraiserRequest.create({ customerId, moduleId, createdBy, modifiedBy }, { transaction: t })
+            //// }
+            //// for create appraiser Request
 
             //for approved the status by default
             if (isFromCustomerWebsite && getCustomerInfo.internalBranchId != null) {
@@ -548,7 +548,7 @@ let getKycInfo = async (customerId) => {
         {
             model: models.customerKyc,
             as: 'customerKyc',
-            attributes: ['id', 'currentKycModuleId']
+            attributes: ['id', 'currentKycModuleId', 'isAppliedForKyc']
         },
         {
             model: models.customerKycClassification,
@@ -608,7 +608,7 @@ let updateCompleteKycModule = async (oldCompleteKycPoint, moduleId) => {
 
 let updateCustomerUniqueId = async (checkCustomerUniqueId) => {
     let customerUniqueId = checkCustomerUniqueId
-    if (check.isEmpty(checkUniqueId.customerUniqueId)) {
+    if (check.isEmpty(customerUniqueId)) {
         customerUniqueId = uniqid.time().toUpperCase();
     } else {
         customerUniqueId = customerUniqueId
@@ -1415,11 +1415,11 @@ let kycPersonalDetail = async (req) => {
 
 let digiOrEmiKyc = async (req) => {
     try {
-        const id = req.userData.id;
-        const { panNumber, panAttachment, aadharNumber, aadharAttachment } = req.body;
+        let { customerId } = req.body
+        const { panCardNumber, panAttachment, aadharNumber, aadharAttachment } = req.body;
         const merchantData = await getMerchantData();
         let customerDetails = await models.customer.findOne({
-            where: { id, isActive: true },
+            where: { id: customerId, isActive: true },
         });
         let customerUniqueId = customerDetails.customerUniqueId;
 
@@ -1449,7 +1449,7 @@ let digiOrEmiKyc = async (req) => {
         const panPath = `public/uploads/digitalGoldKyc/pan-${customerUniqueId}.jpeg`;
         fs.writeFileSync(panPath, base64Image, { encoding: 'base64' });
         const data = new FormData();
-        data.append('panNumber', panNumber);
+        data.append('panNumber', panCardNumber);
         data.append('panAttachment', fs.createReadStream(panPath));
 
         const result = await models.axios({
@@ -1482,6 +1482,32 @@ let digiOrEmiKyc = async (req) => {
     };
 }
 
+let applyDigiKyc = async (req) => {
+
+    let { id, customerId, panImage, panCardNumber, panType, dateOfBirth, age } = req.body
+    let checkApplied = await models.digiKycApplied.findOne({ where: { customerId } })
+
+    let checkDigiKycRejected = await models.customer.findOne({ where: { id: customerId, digiKycStatus: "rejected" } })
+
+    if (checkDigiKycRejected !== null) {
+        return { status: 400, success: false, message: `Your digi gold kyc is already rejected.` }
+    }
+
+    await sequelize.transaction(async (t) => {
+
+        if (checkApplied) {
+            await models.digiKycApplied.update({ status: 'waiting' }, { where: { id: id }, transaction: t })
+        } else {
+            await models.digiKycApplied.create({ customerId: customerId, status: 'waiting' })
+        }
+
+        await models.customer.update({ digiKycStatus: 'waiting', panCardNumber, panImage, panType, dateOfBirth, age }, { where: { id: customerId }, transaction: t })
+    })
+
+    // return res.status(200).json({ message: `success` })
+    return { status: 200, success: true, message: `success` }
+}
+
 let allKycCompleteInfo = async (customerInfo) => {
 
     let kycCompletePoint = customerInfo.kycCompletePoint
@@ -1493,29 +1519,45 @@ let allKycCompleteInfo = async (customerInfo) => {
         digiGold: false
     }
 
-    let goldPoint = await models.module.findOne({ where: { id: 1 } })
-    let checkGoldKyc = kycCompletePoint & goldPoint.modulePoint
-    if (checkGoldKyc != 0) {
+    if (customerInfo.kycStatus == "approved") {
         kycApproval.goldLoan = true
     }
 
-    let goldEmi = await models.module.findOne({ where: { id: 2 } })
-    let checkEmiKyc = kycCompletePoint & goldEmi.modulePoint
-    if (checkEmiKyc != 0) {
-        kycApproval.goldEmi = true
+    if (customerInfo.digiKycStatus == "approved") {
+        kycApproval.digiGold = true
     }
 
-    let goldScrap = await models.module.findOne({ where: { id: 3 } })
-    let checkSprapKyc = kycCompletePoint & goldScrap.modulePoint
-    if (checkSprapKyc != 0) {
+    if (customerInfo.scrapKycStatus == "approved") {
         kycApproval.goldScrap = true
     }
 
-    let digiGold = await models.module.findOne({ where: { id: 4 } })
-    let checkDigiGoldKyc = kycCompletePoint & digiGold.modulePoint
-    if (checkDigiGoldKyc != 0) {
-        kycApproval.digiGold = true
+    if (customerInfo.emiKycStatus == "approved") {
+        kycApproval.goldEmi = true
     }
+
+    // let goldPoint = await models.module.findOne({ where: { id: 1 } })
+    // let checkGoldKyc = kycCompletePoint & goldPoint.modulePoint
+    // if (checkGoldKyc != 0) {
+    //     kycApproval.goldLoan = true
+    // }
+
+    // let goldEmi = await models.module.findOne({ where: { id: 2 } })
+    // let checkEmiKyc = kycCompletePoint & goldEmi.modulePoint
+    // if (checkEmiKyc != 0) {
+    //     kycApproval.goldEmi = true
+    // }
+
+    // let goldScrap = await models.module.findOne({ where: { id: 3 } })
+    // let checkSprapKyc = kycCompletePoint & goldScrap.modulePoint
+    // if (checkSprapKyc != 0) {
+    //     kycApproval.goldScrap = true
+    // }
+
+    // let digiGold = await models.module.findOne({ where: { id: 4 } })
+    // let checkDigiGoldKyc = kycCompletePoint & digiGold.modulePoint
+    // if (checkDigiGoldKyc != 0) {
+    //     kycApproval.digiGold = true
+    // }
 
     return kycApproval
 }
@@ -1531,5 +1573,6 @@ module.exports = {
     kycAddressDeatil: kycAddressDeatil,
     kycPersonalDetail: kycPersonalDetail,
     digiOrEmiKyc: digiOrEmiKyc,
+    applyDigiKyc: applyDigiKyc,
     allKycCompleteInfo: allKycCompleteInfo
 }

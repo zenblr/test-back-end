@@ -19,6 +19,9 @@ const getMerchantData = require('../auth/getMerchantData')
 const jwt = require('jsonwebtoken');
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/constant');
 const { ADMIN_PANEL, CUSTOMER_WEBSITE } = require('../../utils/sourceFrom')
+const { getCustomerCityById, getCustomerStateById } = require('../../service/customerAddress')
+const { createCustomer } = require('../../service/digiGold')
+
 
 exports.getOtp = async (req, res, next) => {
   let getOtp = await models.customerOtp.findAll({
@@ -50,7 +53,11 @@ exports.addCustomer = async (req, res, next) => {
     return res.status(404).json({ message: "This Mobile number already Exists" });
   }
 
-  let modulePoint = await models.module.findOne({ where: { id: moduleId } })
+  let getModulePoint = await models.module.findOne({ where: { id: moduleId } })
+
+  let digiGoldModulePoint = await models.module.findOne({ where: { id: 4 } })
+
+  let modulePoint = getModulePoint.modulePoint | digiGoldModulePoint.modulePoint
 
   let getStageId = await models.stage.findOne({ where: { stageName: "lead" } });
   let stageId = getStageId.id;
@@ -58,50 +65,64 @@ exports.addCustomer = async (req, res, next) => {
   let password = `${firstName}@1234`;
 
   let { sourcePoint } = await models.source.findOne({ where: { sourceName: 'ADMIN_PANEL' } })
+  const customerUniqueId = uniqid.time().toUpperCase();
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint.modulePoint, sourceFrom: sourcePoint, form60Image },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint, sourceFrom: sourcePoint, customerUniqueId, form60Image },
       { transaction: t }
     );
 
-    if (moduleId == 1 || moduleId == 3) {
-      await models.appraiserRequest.create({ customerId: customer.id, moduleId, createdBy, modifiedBy }, { transaction: t })
+    // if (moduleId == 1 || moduleId == 3) {
+    //   await models.appraiserRequest.create({ customerId: customer.id, moduleId, createdBy, modifiedBy }, { transaction: t })
+    // }
+
+    const merchantData = await getMerchantData();
+
+
+    let state = await getCustomerStateById(stateId, null);
+    let city = await getCustomerCityById(cityId, null);
+
+    const data = qs.stringify({
+      'mobileNumber': mobileNumber,
+      // 'emailId': email,
+      'uniqueId': customerUniqueId,
+      'userName': firstName + " " + lastName,
+      // 'userAddress': address,
+      'userCity': city.cityUniqueCode,
+      // 'userState': stateId,
+      'userState': state.stateUniqueCode,
+      // 'userPincode': pinCode,
+      // 'dateOfBirth':dateOfBirth,
+      // 'gender':gender,
+      // 'utmSource': utmSource,
+      // 'utmMedium': utmMedium,
+      // 'utmCampaign': utmCampaign
+    })
+
+    // const result = await models.axios({
+    //   method: 'POST',
+    //   url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //     'Authorization': `Bearer ${merchantData.accessToken}`,
+    //   },
+    //   data: data
+    // });
+
+    if (panCardNumber != null && panImage != null) {
+      await models.digiKycApplied.create({ customerId: customer.id, status: 'waiting' })
+
+      await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customer.id }, transaction: t })
     }
 
-    if (moduleId == 4) {
-      const customerUniqueId = uniqid.time().toUpperCase();
-      const merchantData = await getMerchantData();
+    const result = await createCustomer(data)
 
-      await models.customer.update({ customerUniqueId }, { where: { id: customer.id }, transaction: t })
-
-      const data = qs.stringify({
-        'mobileNumber': mobileNumber,
-        // 'emailId': email,
-        'uniqueId': customerUniqueId,
-        'userName': firstName + " " + lastName,
-        // 'userAddress': address,
-        // 'userCity': cityId,
-        'userState': "joXp8X42",
-        // 'userPincode': pinCode,
-        // 'dateOfBirth':dateOfBirth,
-        // 'gender':gender,
-        // 'utmSource': utmSource,
-        // 'utmMedium': utmMedium,
-        // 'utmCampaign': utmCampaign
-      })
-
-      const result = await models.axios({
-        method: 'POST',
-        url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${merchantData.accessToken}`,
-        },
-        data: data
-      });
-
+    if (!result.isSuccess) {
+      t.rollback()
+      return res.status(422).json({ err: result.message });
     }
+
 
   });
   return res.status(200).json({ messgae: `Customer created` });
@@ -217,7 +238,8 @@ exports.sendOtp = async (req, res, next) => {
   if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new") {
     otp = 1234
   } else {
-    otp = Math.floor(1000 + Math.random() * 9000);
+    // otp = Math.floor(1000 + Math.random() * 9000);
+    otp = 1234
   }
   let createdTime = new Date();
   let expiryTime = moment(createdTime).add(10, "m");
@@ -751,7 +773,7 @@ exports.getsingleCustomerManagement = async (req, res) => {
 
 //To register customer by their own
 exports.signUpCustomer = async (req, res) => {
-  let { firstName, lastName, mobileNumber, email, referenceCode, otp, stateId, cityId } = req.body;
+  let { firstName, lastName, mobileNumber, email, referenceCode, otp, stateId, cityId, dateOfBirth, age } = req.body;
   let { sourcePoint } = await models.source.findOne({ where: { sourceName: 'CUSTOMER_WEBSITE' } })
   var todayDateTime = new Date();
   // console.log('abc')
@@ -806,9 +828,11 @@ exports.signUpCustomer = async (req, res) => {
     let modulePoint = await models.module.findOne({ where: { id: 4 }, transaction: t })
 
     let customer = await models.customer.create(
-      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint },
+      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age },
       { transaction: t }
     );
+    let state = await getCustomerStateById(stateId, null);
+    let city = await getCustomerCityById(cityId, null);
 
     const data = qs.stringify({
       'mobileNumber': mobileNumber,
@@ -816,8 +840,9 @@ exports.signUpCustomer = async (req, res) => {
       'uniqueId': customerUniqueId,
       'userName': firstName + " " + lastName,
       // 'userAddress': address,
-      // 'userCity': cityId,
-      'userState': "joXp8X42",
+      'userCity': city.cityUniqueCode,
+      // 'userState': stateId,
+      'userState': state.stateUniqueCode,
       // 'userPincode': pinCode,
       // 'dateOfBirth':dateOfBirth,
       // 'gender':gender,
@@ -825,16 +850,22 @@ exports.signUpCustomer = async (req, res) => {
       // 'utmMedium': utmMedium,
       // 'utmCampaign': utmCampaign
     })
-    const result = await models.axios({
-      method: 'POST',
-      url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Bearer ${merchantData.accessToken}`,
-      },
-      data: data
-    });
+    // const result = await models.axios({
+    //   method: 'POST',
+    //   url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //     'Authorization': `Bearer ${merchantData.accessToken}`,
+    //   },
+    //   data: data
+    // });
 
+    const result = await createCustomer(data)
+
+    if (!result.isSuccess) {
+      t.rollback()
+      return res.status(422).json({ err: result.message });
+    }
 
     Token = jwt.sign({
       id: customer.dataValues.id,
@@ -860,7 +891,7 @@ exports.signUpCustomer = async (req, res) => {
       expiryDate: expiryTime,
       createdDate: createdTime
     }, { transaction: t });
-    return { result, Token }
+    return { Token }
   })
 
   return res.status(200).json({ messgae: `Successfully Logged In`, token: data.Token });
@@ -905,4 +936,53 @@ exports.getAllRegisteredCustomer = async (req, res) => {
   } else {
     return res.status(200).json({ message: 'Success', data: allCustomers, count: count.length });
   }
+}
+
+exports.getProductRequest = async (req, res, next) => {
+
+  const { search, offset, pageSize } = paginationWithFromTo(
+    req.query.search,
+    req.query.from,
+    req.query.to
+  );
+
+  let includeArray = [
+    {
+      model: models.customer,
+      as: 'customer',
+      include: [
+        {
+          model: models.state,
+          as: 'state'
+        },
+        {
+          model: models.city,
+          as: 'city'
+        }
+      ]
+    },
+    {
+      model: models.module,
+      as: 'module'
+    }
+  ]
+
+  let getAllProductRequest = await models.productRequest.findAll({
+    // where: searchQuery,
+    attributes: { exclude: ['createdBy', 'modifiedBy', 'isActive'] },
+    order: [["createdAt", "desc"]],
+    offset: offset,
+    limit: pageSize,
+    include: includeArray,
+  });
+  let getAllProductRequestCount = await models.productRequest.findAll({
+    // where: searchQuery,
+    include: includeArray,
+  });
+
+  if (getAllProductRequest.length == 0) {
+    return res.status(200).json({ data: [] });
+  }
+  return res.status(200).json({ count: getAllProductRequestCount.length, data: getAllProductRequest });
+
 }

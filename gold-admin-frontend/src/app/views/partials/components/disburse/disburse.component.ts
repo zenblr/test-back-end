@@ -129,8 +129,8 @@ export class DisburseComponent implements OnInit {
       finalAmount: [],
       fullAmount: [],
       bankTransferType: [],
-      loanTransferExtraAmount:[],
-      otherAmountTransactionId:[]
+      loanTransferExtraAmount: [],
+      otherAmountTransactionId: []
     })
     this.disableSchemeRelatedField()
   }
@@ -181,27 +181,31 @@ export class DisburseComponent implements OnInit {
         }
         this.disburseForm.patchValue({ loanAmount: res.data.finalLoanAmount })
         this.calcfinalLoanAmount()
-        if (Number(this.globalValue.cashTransactionLimit) < Number(this.disburseForm.controls.loanAmount.value)) {
-          this.disburseForm.controls.paymentMode.patchValue('bank')
-          this.disburseForm.controls.paymentMode.disable()
-          return
-        }
-        this.disburseForm.controls.paymentMode.patchValue(res.data.paymentType)
-        if(this.details.isLoanTransfer){
+        if (this.details.isLoanTransfer) {
           this.controls.unsecuredTransactionId.patchValue(res.data.unsecuredTransactionId)
           this.controls.securedTransactionId.patchValue(res.data.securedTransactionId)
           this.controls.loanTransferExtraAmount.patchValue(res.data.loanTransferExtraAmount)
           this.disburseForm.controls.unsecuredTransactionId.disable()
           this.disburseForm.controls.securedTransactionId.disable()
           this.disburseForm.controls.loanTransferExtraAmount.disable()
-          if(res.data.loanTransferExtraAmount){
+          if (res.data.loanTransferExtraAmount) {
             this.controls.otherAmountTransactionId.setValidators(Validators.required)
-          this.controls.otherAmountTransactionId.updateValueAndValidity()
+            this.controls.otherAmountTransactionId.updateValueAndValidity()
           }
-        }else{
+        } else {
           this.controls.otherAmountTransactionId.clearValidators()
           this.controls.otherAmountTransactionId.updateValueAndValidity()
         }
+        if (Number(this.globalValue.cashTransactionLimit) < Number(this.disburseForm.controls.loanAmount.value)) {
+          this.disburseForm.controls.paymentMode.patchValue('bank')
+          this.disburseForm.controls.paymentMode.disable()
+          this.setBankTransferTypeValidation()
+          return
+        }
+        this.disburseForm.controls.paymentMode.patchValue(res.data.paymentType)
+        this.setBankTransferTypeValidation()
+
+       
       }
     })
   }
@@ -339,9 +343,10 @@ export class DisburseComponent implements OnInit {
       })).subscribe()
   }
 
-  setConditionalValidation(event) {
+  setConditionalValidation() {
     // console.log(event.target.value)
-    let selectedType = event.target.value;
+    // let selectedType = event.target.value;
+    let selectedType = this.controls.paymentMode.value;
     this.patchValue(selectedType)
     // if (selectedType == 'bank') {
     //   this.controls.otp.setValidators(Validators.required);
@@ -350,6 +355,11 @@ export class DisburseComponent implements OnInit {
     // }
     // this.disburseForm.updateValueAndValidity();
 
+    this.setBankTransferTypeValidation()
+  }
+
+  setBankTransferTypeValidation() {
+    let selectedType = this.controls.paymentMode.value;
     if (selectedType === 'bank') {
       this.controls.bankTransferType.setValidators([Validators.required])
       this.controls.bankTransferType.updateValueAndValidity()

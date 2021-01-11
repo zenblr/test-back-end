@@ -8,7 +8,6 @@ exports.getBankList = async(req, res)=>{
         const merchantData = await getMerchantData();
         let {search, pageSize, pageNumber} = pagination.paginationWithPageNumberPageSize(req.query.search, req.query.page, req.query.count);
 
-        console.log(search, pageSize, pageNumber);
         const result = await models.axios({
             method: 'GET',
             url: `${process.env.DIGITALGOLDAPI}/merchant/v1/master/banks?page=${pageNumber}&count=${pageSize}`,

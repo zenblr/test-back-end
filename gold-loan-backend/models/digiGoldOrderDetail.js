@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'wallet_balance',
         },
+        walletId: {
+            type: DataTypes.INTEGER,
+            field: 'wallet_id',
+        },
         metalType: {
             type: DataTypes.STRING,
             field: 'metal_type',
@@ -93,9 +97,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'razorpay_signature'
         },
-        orderSatatus: {
+        orderStatus: {
             type: DataTypes.STRING,
-            field: 'order_satatus',
+            field: 'order_status',
             defaultValue: "pending",
         },
         deliveryShippingCharges: {
@@ -109,6 +113,10 @@ module.exports = (sequelize, DataTypes) => {
         deliveryTotalWeight: {
             type: DataTypes.FLOAT,
             field: 'delivery_total_weight'
+        },
+        orderCreatedDate: {
+            type: DataTypes.DATE,
+            field: 'order_created_date'
         },
         isActive: {
             type: DataTypes.BOOLEAN,
@@ -128,7 +136,7 @@ module.exports = (sequelize, DataTypes) => {
         DigiGoldOrderDetail.hasOne(models.digiGoldOrderTaxDetail, {foreignKey: 'orderDetailId', as: 'orderTaxDetail' });
         DigiGoldOrderDetail.hasMany(models.digiGoldOrderProductDetail, {foreignKey: 'orderDetailId', as: 'orderProductDetail' });
         // DigiGoldOrderDetail.hasOne(models.digiGoldCustomerBankDetail, {foreignKey: 'orderDetailId', as: 'orderDetail' });
-        
+        DigiGoldOrderDetail.belongsTo(models.walletDetails, { foreignKey: 'walletId', as: 'wallet' });
     }
 
 

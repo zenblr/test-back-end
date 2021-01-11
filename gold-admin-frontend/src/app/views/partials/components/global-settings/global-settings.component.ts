@@ -13,7 +13,9 @@ import { Router } from '@angular/router';
 export class GlobalSettingsComponent implements OnInit {
   globalSettingForm: FormGroup;
   url: any;
-  showScrapFlag: boolean;
+  scrapSetting: boolean;
+  digiGoldSetting: boolean;
+  loanSetting: boolean;
   globalValue: any;
 
   constructor(
@@ -22,18 +24,22 @@ export class GlobalSettingsComponent implements OnInit {
     private toastr: ToastrService,
     private router: Router
   ) {
-    this.url = (this.router.url.split("/")[2]);
+    this.url = (this.router.url.split('/')[2]);
     if (this.url == 'scrap-management') {
-      this.showScrapFlag = true;
+      this.scrapSetting = true;
+    } else if (this.url == 'digi-gold') {
+      this.digiGoldSetting = true;
     } else {
-      this.showScrapFlag = false;
+      this.loanSetting = true;
     }
   }
 
   ngOnInit() {
     this.initForm();
-    if (this.showScrapFlag) {
+    if (this.scrapSetting) {
       this.getScrapGlobalSetting();
+    } else if (this.digiGoldSetting) {
+      this.getDigiGoldSetting();
     } else {
       this.getGlobalSetting();
     }
@@ -52,6 +58,7 @@ export class GlobalSettingsComponent implements OnInit {
       processingChargesFixed: [],
       processingChargesInPercent: [],
       partPaymentPercent: [],
+      digiGoldSellableHour: []
     });
     this.validation();
   }
@@ -62,10 +69,19 @@ export class GlobalSettingsComponent implements OnInit {
         this.globalSettingForm.controls.processingChargesFixed.updateValueAndValidity()
       this.globalSettingForm.controls.processingChargesInPercent.setValidators(Validators.required),
         this.globalSettingForm.controls.processingChargesInPercent.updateValueAndValidity()
-        this.globalSettingForm.controls.standardDeductionMin.setValidators([Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]),
+      this.globalSettingForm.controls.standardDeductionMin.setValidators([Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]),
         this.globalSettingForm.controls.standardDeductionMin.updateValueAndValidity()
-        this.globalSettingForm.controls.standardDeductionMax.setValidators([Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]),
+      this.globalSettingForm.controls.standardDeductionMax.setValidators([Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]),
         this.globalSettingForm.controls.standardDeductionMax.updateValueAndValidity()
+    } else if (this.url == 'digi-gold') {
+      this.globalSettingForm.controls.ltvGoldValue.setValidators([]),
+        this.globalSettingForm.controls.ltvGoldValue.updateValueAndValidity()
+      this.globalSettingForm.controls.gst.setValidators([]),
+        this.globalSettingForm.controls.gst.updateValueAndValidity()
+      this.globalSettingForm.controls.cashTransactionLimit.setValidators([]),
+        this.globalSettingForm.controls.cashTransactionLimit.updateValueAndValidity()
+      this.globalSettingForm.controls.digiGoldSellableHour.setValidators([Validators.required]),
+        this.globalSettingForm.controls.digiGoldSellableHour.updateValueAndValidity()
     } else {
       this.globalSettingForm.controls.minimumLoanAmountAllowed.setValidators(Validators.required),
         this.globalSettingForm.controls.minimumLoanAmountAllowed.updateValueAndValidity()
@@ -78,6 +94,10 @@ export class GlobalSettingsComponent implements OnInit {
     }
   }
 
+  get controls() {
+    return this.globalSettingForm.controls;
+  }
+
   getGlobalSetting() {
     if (this.globalSettingService.globalSetting.getValue() != null) {
       this.globalSettingService.globalSetting$.subscribe(res => {
@@ -87,6 +107,27 @@ export class GlobalSettingsComponent implements OnInit {
       this.globalSettingService.getGlobalSetting().pipe(map(res => {
         this.globalSettingService.globalSetting.next(res);
         this.globalSettingForm.patchValue(res);
+      })).subscribe();
+    }
+  }
+
+  getDigiGoldSetting() {
+    if (this.globalSettingService.globalSetting.getValue() != null) {
+      this.globalSettingService.globalSetting$.subscribe(res => {
+        if (res && res.length) {
+          for (const iterator of res) {
+            this.controls[iterator.configSettingName].patchValue(iterator.configSettingValue);
+          }
+        }
+      })
+    } else {
+      this.globalSettingService.getDigiGoldSetting().pipe(map(res => {
+        if (res && res.length) {
+          for (const iterator of res) {
+            this.controls[iterator.configSettingName].patchValue(iterator.configSettingValue);
+          }
+          this.globalSettingService.globalSetting.next(res);
+        }
       })).subscribe();
     }
   }
@@ -111,8 +152,22 @@ export class GlobalSettingsComponent implements OnInit {
       return;
     }
     const formData = this.globalSettingForm.value;
-    if (this.showScrapFlag) {
+    if (this.scrapSetting) {
       this.globalSettingService.setScrapGlobalSetting(formData).pipe(map(res => {
+        if (res) {
+          console.log(res);
+          this.globalSettingService.globalSetting.next(formData);
+          this.toastr.success('Successful!');
+        }
+      })).subscribe();
+    } else if (this.digiGoldSetting) {
+      const digiGoldData = [
+        {
+          configSettingName: 'digiGoldSellableHour',
+          configSettingValue: this.controls.digiGoldSellableHour.value
+        },
+      ]
+      this.globalSettingService.setDigiGoldSetting(digiGoldData).pipe(map(res => {
         if (res) {
           console.log(res);
           this.globalSettingService.globalSetting.next(formData);
@@ -128,9 +183,5 @@ export class GlobalSettingsComponent implements OnInit {
         }
       })).subscribe();
     }
-  }
-
-  get controls() {
-    return this.globalSettingForm.controls;
   }
 }

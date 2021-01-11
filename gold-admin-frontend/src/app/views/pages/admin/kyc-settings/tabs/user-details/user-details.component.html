@@ -30,7 +30,7 @@
 
 						<div class="col-8">
 							<!-- <mat-form-field appearance="outline" class="w-100"> -->
-							<input class="form-control" type="text" formControlName="mobileNumber" numbersOnly
+							<input class="form-control" readonly type="text" formControlName="mobileNumber" numbersOnly
 								autocomplete="off" placeholder="Enter mobile number" margin [class.isError]="
 											controls.mobileNumber.touched &&
 											controls.mobileNumber.invalid
@@ -212,7 +212,11 @@
 								class="text-color font-weight-500">
 							</label>
 							<label *ngIf="controls.panType.value != 'pan'"
-								class="mandatory  text-color font-weight-500">{{ controls.panType.value | uppercase }}
+								class="mandatory  text-color font-weight-500">
+								<span *ngIf="controls.panType.value == 'pan'">
+									{{ controls.panType.value | uppercase }}
+								</span>
+								<span *ngIf="controls.panType.value == 'form60'">FORM 60</span>
 							</label>
 						</div>
 						<div class="col-8">

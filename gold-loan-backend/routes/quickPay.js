@@ -21,6 +21,7 @@ route.post('/confirm-payment', checkAuth, checkRolePermission, wrapper(confirmat
 
 route.post('/razor-pay', checkAuth, wrapper(razorPayCreateOrder));
 
+
 route.get('/transcation-history',checkAuth,wrapper(transcationHistory))
 
 

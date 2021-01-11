@@ -74,6 +74,7 @@ exports.dailyIntrestCalculation = async (date) => {
             if (firstInterestToPay) {
                 var checkDueDateForSlab = moment(date).isAfter(firstInterestToPay.emiDueDate);//check due date to change slab
             }
+            noOfDays += 1;
             if (noOfDays > loan.currentSlab && checkDueDateForSlab) {
                 //scenario 2 slab changed
                 let stepUpSlab = await getStepUpslab(loan.id, noOfDays);

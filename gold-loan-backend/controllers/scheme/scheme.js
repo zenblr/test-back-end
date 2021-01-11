@@ -477,9 +477,11 @@ exports.exportSchemes = async (req, res, next) => {
                 attributes: ['id', 'schemeName', 'schemeType', 'rpg']
             }],
         })
-        if (readSchemeByPartner.schemes.length > 0) {
-            let data = readSchemeByPartner;
-            schemeData.push(data)
+        if(readSchemeByPartner){
+            if (readSchemeByPartner.schemes.length > 0) {
+                let data = readSchemeByPartner;
+                schemeData.push(data)
+            }
         }
 
     }

@@ -5,7 +5,6 @@ const validatiError = require('../middleware/validationError');
 const { wrapper } = require('../utils/errorWrap');
 const customerCheckAuth = require('../middleware/customerCheckAuth');
 
-
 route.post('/', customerCheckAuth, wrapper(digiOrEmiKyc))
 
 route.get('/', customerCheckAuth, wrapper(getDigiOrEmiKyc))
