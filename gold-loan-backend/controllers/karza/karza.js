@@ -149,7 +149,7 @@ exports.kycOcrForAadhaar = async (req, res, next) => {
                 if(ocrData[0].data.extractedData.confidenceValueResult.isNameConfPass || ocrData[1].data.extractedData.confidenceValueResult.isNameConfPass){
                     isNameConfPass = true
                 }
-                if(ocrData[0].data.extractedData.confidenceValueResult.isNameConfPass || ocrData[1].data.extractedData.confidenceValueResult.isNameConfPass){
+                if(ocrData[0].data.extractedData.confidenceValueResult.isDobConfPass || ocrData[1].data.extractedData.confidenceValueResult.isDobConfPass){
                     isDobConfPass = true
                 }
             }
