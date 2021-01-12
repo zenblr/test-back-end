@@ -43,7 +43,6 @@ export class KycDetailsComponent implements OnInit {
   ngOnInit() {
     this.initForm()
 
-    console.log((this.router.url).split('/')[3])
     this.kycStage = (this.router.url).split('/')[3]
     if (this.kycStage == 'apply') {
       this.isEditable = true
@@ -60,28 +59,20 @@ export class KycDetailsComponent implements OnInit {
       this.setEditValidation()
     }
 
-
     this.customerId = this.route.snapshot.paramMap.get("customerId");
     this.id = this.route.snapshot.queryParamMap.get("id");
 
-    // console.log(this.customerId)
     if (this.customerId) {
       this.getKYCDetails()
-      this.setPanAttachmentValidation()
     }
     if (this.modalData.data) {
-      // this.appliedKycService.kycData$.subscribe(res => {
-      // console.log(res)
       this.digiGoldKycForm.patchValue(this.modalData.data)
       this.patchImage(this.modalData.data)
-      // })
     }
-    // this.digiGoldKycForm.controls.status.enable()
   }
 
   getKYCDetails() {
     this.leadService.getLeadById(this.customerId).subscribe(res => {
-      console.log(res.singleCustomer)
       this.digiGoldKycForm.patchValue(res.singleCustomer)
       this.digiGoldKycForm.patchValue({
         moduleId: 4,
@@ -102,7 +93,7 @@ export class KycDetailsComponent implements OnInit {
       moduleId: [4],
       userType: [],
       panType: ['pan'],
-      panImage: [],
+      panImage: [, [Validators.required]],
       dateOfBirth: [, [Validators.required]],
       age: [, [Validators.min(18), Validators.max(100)]],
       customerId: [],
@@ -121,13 +112,13 @@ export class KycDetailsComponent implements OnInit {
   }
 
   setApplyValidation() {
-    this.controls.panAttachment.setValidators([Validators.required])
-    this.controls.panAttachment.updateValueAndValidity()
+    // this.controls.panAttachment.setValidators([Validators.required])
+    // this.controls.panAttachment.updateValueAndValidity()
   }
 
   setEditValidation() {
-    this.controls.panAttachment.setValidators([])
-    this.controls.panAttachment.updateValueAndValidity()
+    // this.controls.panAttachment.setValidators([])
+    // this.controls.panAttachment.updateValueAndValidity()
     this.controls.status.setValidators([Validators.required])
     this.controls.status.updateValueAndValidity()
   }
@@ -228,6 +219,33 @@ export class KycDetailsComponent implements OnInit {
     ).subscribe();
   }
 
+  testUpload(event) {
+    const file = event.target.files[0];
+    if (this.sharedService.fileValidator(event, 'image')) {
+      const params = {
+        reason: 'lead'
+      }
+      this.sharedService.uploadFile(file, params).pipe(
+        map(res => {
+          if (res) {
+            this.controls.panImage.patchValue(res.uploadFile.path);
+            // this.controls.panAttachment.patchValue(res.uploadFile.URL);
+
+            const panObj = { path: res.uploadFile.path, URL: res.uploadFile.URL, fileName: res.uploadFile.originalname }
+            this.images.pan = { ...panObj }
+          }
+        }),
+        finalize(() => {
+          if (this.pan && this.pan.nativeElement.value) this.pan.nativeElement.value = ''
+          event.target.value = ''
+        })
+      ).subscribe();
+    } else {
+      this.toastr.error('Upload Valid File Format');
+    }
+    event.target.value = ''
+  }
+
   removeImage(event) {
     if (event) {
       const emptyPAN = { path: null, URL: null, fileName: null }
@@ -259,13 +277,20 @@ export class KycDetailsComponent implements OnInit {
 
   submit() {
     if (this.digiGoldKycForm.invalid) {
+      console.log(this.digiGoldKycForm.getRawValue())
       return this.digiGoldKycForm.markAllAsTouched()
     }
     if (this.kycStage == 'edit') {
-      this.patchToReason()
+      if (this.controls.reason.value && (this.controls.reason.value).toString().toLowerCase() != "other") {
+        this.patchToReason()
+      }
       // return console.log(this.digiGoldKycForm.getRawValue())
       this.appliedKycService.editDigiGoldKyc(this.digiGoldKycForm.getRawValue())
-      .pipe(finalize(() => this.unpatchToReason()))
+        .pipe(finalize(() => {
+          if (this.controls.reason.value && (this.controls.reason.value).toString().toLowerCase() != "other") {
+            this.unpatchToReason()
+          }
+        }))
         .subscribe(res => {
           this.toastr.success(res.message)
           this.router.navigate(['/admin/applied-kyc-digi-gold'])
@@ -277,7 +302,7 @@ export class KycDetailsComponent implements OnInit {
           this.toastr.success(res.message)
           this.router.navigate(['/admin/lead-management'])
         })
-      console.log(this.digiGoldKycForm.getRawValue())
+      // console.log(this.digiGoldKycForm.getRawValue())
     }
   }
 
@@ -318,6 +343,6 @@ export class KycDetailsComponent implements OnInit {
   }
 
   unpatchToReason() {
-    this.controls.reasonForDigiKyc.patchValue(null)    
+    this.controls.reasonForDigiKyc.patchValue(null)
   }
 }

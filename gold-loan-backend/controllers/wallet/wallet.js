@@ -183,11 +183,13 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
                 await models.customer.update({ currentWalletBalance: Number(newCustomerUpdatedBalance) }, { where: { id: customer.id }, transaction: t });
 
 
-                let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "credit", description: "Amount added to your balance", productTypeId: 4, transactionDate: date, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
+                let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "credit", description: "Money added to Augmont Wallet", productTypeId: 4, transactionDate: date, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
 
                 var updtedRunningBalance = Number(transactionData.runningBalance) + Number(transactionData.transactionAmount)
 
-                await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id, runningBalance: updtedRunningBalance }, { where: { id: transactionData.id }, transaction: t });
+                let newUpdtedRunningBalance = updtedRunningBalance.toFixed(2);
+
+                await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id, runningBalance: Number(newUpdtedRunningBalance) }, { where: { id: transactionData.id }, transaction: t });
 
                 await sms.sendMessageForDepositRequestAccepted(customer.mobileNumber, transactionData.transactionAmount);
 
@@ -202,9 +204,9 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
         });
         return res.status(200).json({ message: "Success", transactionId: transactionData.id });
     } else if (transactionData.orderTypeId == 5) {
-        if (customer.walletFreeBalance < transactionData.transactionAmount) {
-            return res.status(400).json({ message: 'You have insufficient free wallet balance.' });
-        }
+        // if (customer.walletFreeBalance < transactionData.transactionAmount) {
+        //     return res.status(400).json({ message: 'You have insufficient free wallet balance.' });
+        // }
 
         await sequelize.transaction(async (t) => {
 
