@@ -98,10 +98,8 @@ export class AddLeadComponent implements OnInit {
               Validators.required
             ])
           this.controls.panCardNumber.updateValueAndValidity()
-<<<<<<< HEAD
           this.controls.dateOfBirth.updateValueAndValidity()
 
-=======
 
           this.controls.form60Image.reset()
           this.controls.form60Image.setValidators([])
@@ -109,18 +107,15 @@ export class AddLeadComponent implements OnInit {
           this.controls.panImage.reset()
           this.controls.panImage.setValidators(Validators.required)
           this.controls.panImage.updateValueAndValidity()
->>>>>>> gold-master-new-changes
         } else {
           if (this.resetPanOnChange) {
             this.controls.panCardNumber.reset()
           }
           this.controls.panCardNumber.clearValidators()
           this.controls.panCardNumber.updateValueAndValidity()
-<<<<<<< HEAD
           this.controls.dateOfBirth.clearValidators()
           this.controls.dateOfBirth.updateValueAndValidity()
 
-=======
 
           this.controls.form60Image.reset()
           this.controls.panImage.reset()
@@ -128,7 +123,6 @@ export class AddLeadComponent implements OnInit {
           this.controls.panImage.updateValueAndValidity()
           this.controls.form60Image.setValidators(Validators.required)
           this.controls.form60Image.updateValueAndValidity()
->>>>>>> gold-master-new-changes
         }
         // this.controls.panImage.reset()
         // this.controls.panImage.setValidators(Validators.required)
@@ -148,10 +142,8 @@ export class AddLeadComponent implements OnInit {
         this.controls.panImg.clearValidators()
         this.controls.panImg.updateValueAndValidity()
         this.controls.panImg.reset()
-<<<<<<< HEAD
         this.controls.dateOfBirth.clearValidators()
         this.controls.dateOfBirth.updateValueAndValidity()
-=======
 
         this.controls.form60Image.clearValidators()
         this.controls.form60Image.updateValueAndValidity()
@@ -160,7 +152,6 @@ export class AddLeadComponent implements OnInit {
         this.controls.form60Img.clearValidators()
         this.controls.form60Img.updateValueAndValidity()
         this.controls.form60Img.reset()
->>>>>>> gold-master-new-changes
       }
     });
 

@@ -1,10 +1,6 @@
 {
     "/api/*": {
-<<<<<<< HEAD
-        "target": "http://097e6057c73c.ngrok.io/",
-=======
         "target": "http://8bc56eb7cf1e.ngrok.io/",
->>>>>>> gold-master-new-changes
         "secure": false,
         "logLevel": "debug",
         "changeOrigin": true
