@@ -224,4 +224,10 @@ export class LeadManagementComponent implements OnInit {
     });
   }
 
+  goToDigiGoldKyc(lead) {
+    // this.leadService.getLeadById(lead.id).subscribe(res => {
+    this.router.navigate([`/admin/applied-kyc-digi-gold/apply/${lead.id}`]);
+    // })
+  }
+
 }

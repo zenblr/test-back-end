@@ -169,7 +169,7 @@ async function penal(date, penalStartTime) {
 //     }
 // });
 
-// // cron to update merchant token
+// cron to update merchant token
 
 // cron.schedule('0 3 * * *', async () => {
 //     let date = moment();
@@ -188,7 +188,7 @@ async function penal(date, penalStartTime) {
 //     }
 // });
 
-// //cron for customer kyc status
+//cron for customer kyc status
 
 // cron.schedule('0 0 */1 * * *', async () => {
 //     let date = moment()
@@ -208,7 +208,7 @@ async function penal(date, penalStartTime) {
 //     }
 // });
 
-// //cron for withdraw status messsage
+//cron for withdraw status messsage
 
 // cron.schedule('0 */30 * * * *', async () => {
 //     let date = moment()

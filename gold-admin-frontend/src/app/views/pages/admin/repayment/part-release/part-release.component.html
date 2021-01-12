@@ -258,12 +258,10 @@
                             <thead>
                                 <!-- <th class="transparent" style="width: 100px;">Loan ID</th>
                                 <th class="transparent " style="width: 120px;">Loan Amount</th> -->
-                                <th class="transparent "> Interest Payable</th>
-                                <th class="transparent "> Augmont Rebate</th>
                                 <th class="transparent "> Ornament Release Amount</th>
-                                <th class="transparent ">Interest Amount</th>
-                                <th class="transparent ">Penal Interest </th>
-                                <th class="transparent ">Total Payable Amount </th>
+                                <th class="transparent "> Interest payable till date</th>
+                                <th class="transparent ">Penal payable till date </th>
+                                <th class="transparent ">Total Payable </th>
                                 <th class="transparent last">Select Payment Option</th>
                             </thead>
                             <tbody>
@@ -284,24 +282,6 @@
                                         </div>
                                         {{ totalSelectedOrnamentDetails.loanInfo.finalLoanAmount }}
                                     </td> -->
-                                    <td>
-                                        <div class="">
-                                            {{ totalSelectedOrnamentDetails?.interest?.securedTotalInterest }}
-                                        </div>
-                                        <div class=""
-                                            *ngIf="totalSelectedOrnamentDetails?.loanInfo?.loanData?.length > 1">
-                                            {{ totalSelectedOrnamentDetails?.interest?.unsecuredTotalInterest }}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="">
-                                            {{ totalSelectedOrnamentDetails?.interest?.securedRebate }}
-                                        </div>
-                                        <div class=""
-                                            *ngIf="totalSelectedOrnamentDetails?.loanInfo?.loanData?.length > 1">
-                                            {{ totalSelectedOrnamentDetails?.interest?.unsecuredRebate }}
-                                        </div>
-                                    </td>
                                     <td class="">
                                         {{ totalSelectedOrnamentDetails.ornamentWeight.releaseAmount }}</td>
                                     <td>
@@ -325,11 +305,10 @@
                                     <td class="font-weight-500 " style="font-size: 14px;">
                                         {{ totalSelectedOrnamentDetails.loanInfo.totalPayableAmount }}</td>
                                     <td>
-                                        <button *ngIf="!paymentValue" (click)="choosePaymentMethod()"
-                                            class="apply-kyc">Select Payment</button>
-                                        <button *ngIf="paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">
-                                            {{ paymentValue.paymentType | uppercase }}
-                                        </button>
+                                        <kt-select-payment [minDate]="loanDetails?.customerLoan?.loanStartDate"
+                                        [amount]="totalSelectedOrnamentDetails.loanInfo.totalPayableAmount"
+                                        (paymentValueFinal)="payment($event)"
+                                        (paymentData)="paymentData($event)"></kt-select-payment>
                                     </td>
                                 </tr>
                             </tbody>

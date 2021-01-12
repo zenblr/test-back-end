@@ -283,5 +283,8 @@ router.use('/e-kyc', karza)
 const wallet = require('./wallet');
 router.use('/wallet', wallet)
 
+const webhook = require('./webHook');
+router.use('/web-hook', webhook);
+
 
 module.exports = router;

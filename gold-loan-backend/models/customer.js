@@ -136,6 +136,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'pan_image',
         },
+        form60Image: {
+            type: DataTypes.TEXT,
+            field: 'form60_image',
+        },
         scrapKycStatus: {
             type: DataTypes.ENUM,
             field: 'scrap_kyc_status',
@@ -147,6 +151,12 @@ module.exports = (sequelize, DataTypes) => {
             field: 'digi_kyc_status',
             defaultValue: "pending",
             values: ['approved', 'waiting', 'pending', 'rejected']
+        },
+        emiKycStatus: {
+            type: DataTypes.ENUM,
+            field: 'emi_kyc_status',
+            defaultValue: "pending",
+            values: ['approved', 'pending', 'rejected']
         },
         userType: {
             type: DataTypes.ENUM,
@@ -274,6 +284,7 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.hasMany(models.productRequest, { foreignKey: 'customerId', as: 'productRequest' });
 
+        Customer.hasOne(models.digiKycApplied, { foreignKey: 'customerId', as: 'digiKycApplied' });
     }
 
     // This hook is always run before create.
@@ -333,6 +344,9 @@ module.exports = (sequelize, DataTypes) => {
         var values = Object.assign({}, this.get());
         if (values.panImage) {
             values.panImg = process.env.BASE_URL + values.panImage;
+        }
+        if (values.form60Image) {
+            values.form60Img = process.env.BASE_URL + values.form60Image;
         }
         delete values.password;
         return values;
