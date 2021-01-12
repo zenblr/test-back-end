@@ -43,7 +43,7 @@ exports.changeWithdrawStatus = async (req, res) => {
                         await models.digiGoldOrderDetail.update({ orderStatus: ele.status }, { where: { id: orderData.id  }, transaction: t });
 
                         if (ele.status == 'completed') {
-                            // await sms.sendMessageForWithdrawCompleted(getCustomerWithdraw.mobileNumber, getCustomerWithdraw.amount);
+                            await sms.sendMessageForWithdrawalPaymentCompleted(getCustomerWithdraw.mobileNumber, getCustomerWithdraw.amount);
                         } else if (ele.status == 'rejected') {
 
                             const currentBalcnce = await models.axios({
@@ -70,7 +70,7 @@ exports.changeWithdrawStatus = async (req, res) => {
                                 
                             }
 
-                            // await sms.sendMessageForWithdrawReject(getCustomerWithdraw.mobileNumber);
+                            await sms.sendMessageForWithdrawalRejected(getCustomerWithdraw.mobileNumber,getCustomerWithdraw.amount);
                         } else if (ele.status == 'accepted') {
                             // await sms.sendMessageForWithdrawAccept(getCustomerWithdraw.mobileNumber, getCustomerWithdraw.amount);
                         }
