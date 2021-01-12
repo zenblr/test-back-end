@@ -366,7 +366,6 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     const value = this.controls.panType.value
     if (value == 'form60') {
       if (this.resetOnPanChange) {
-        this.controls.panCardNumber.reset()
         this.controls.panCardNumber.patchValue('')
       }
       this.controls.panCardNumber.clearValidators()
@@ -566,10 +565,6 @@ export class UserReviewComponent implements OnInit, OnDestroy {
 
   removeImages(index, type) {
 
-    // if (this.userType == 5) {
-    //   return;
-    // }
-
     if (type == 'identityProof') {
       this.identityImageArray.splice(index, 1)
       this.identityIdArray.splice(index, 1)
@@ -623,17 +618,20 @@ export class UserReviewComponent implements OnInit, OnDestroy {
 
       let panType = this.controls.panType.value
       if (panType) {
-        if (panType === 'pan') {
-          this.reviewForm.controls.form60Image.patchValue(null)
-          this.reviewForm.controls.form60Img.patchValue(null)
+        if (this.resetOnPanChange) {
+
+          if (panType === 'pan') {
+            this.reviewForm.controls.form60Image.patchValue(null)
+            this.reviewForm.controls.form60Img.patchValue(null)
+          }
+          if (panType === 'form60') {
+            this.reviewForm.controls.panImage.patchValue(null)
+            this.reviewForm.controls.panImg.patchValue(null)
+          }
+          // this.reviewForm.controls.panCardNumber.patchValue(null)
+          // this.customerKycPersonal.controls.panCardNumber.patchValue(null)
+          this.reviewForm.controls.form60.patchValue(null)
         }
-        if (panType === 'form60') {
-          this.reviewForm.controls.panImage.patchValue(null)
-          this.reviewForm.controls.panImg.patchValue(null)
-        }
-        this.reviewForm.controls.panCardNumber.patchValue(null)
-        this.customerKycPersonal.controls.panCardNumber.patchValue(null)
-        this.reviewForm.controls.form60.patchValue(null)
       }
     }
     if (type == 'constitutionsDeed') {
