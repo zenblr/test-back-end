@@ -200,7 +200,6 @@ exports.partPayment = async (req, res, next) => {
         if (!['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'upi', 'card', 'netbanking', 'wallet'].includes(paymentType)) {
             return res.status(400).json({ message: "Invalid payment type" })
         }
-        paymentDetails = {}
         let signatureVerification = false;
         let razorPayTransactionId;
         let isRazorPay = false;
@@ -208,6 +207,7 @@ exports.partPayment = async (req, res, next) => {
             let razerpayData
             if (razorpay_order_id) {
                 isAdmin = false
+                paymentDetails = {}
                 transactionDetails = {}
                 razerpayData = await razorpay.instance.orders.fetch(razorpay_order_id);
                 transactionDetails.razorpay_order_id = razorpay_order_id
@@ -244,7 +244,7 @@ exports.partPayment = async (req, res, next) => {
             if (signatureVerification == false) {
                 return res.status(422).json({ message: "razorpay payment verification failed" });
             }
-        }else{
+        } else {
             isAdmin = true
         }
 
