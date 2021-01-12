@@ -21,7 +21,7 @@ services:
       ports:
         - "8300:80"
       links:
-        - web
+        - web 
 volumes:
     gold-loan-public-production:
 
