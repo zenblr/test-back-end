@@ -179,7 +179,7 @@
                             <td class="font-weight-500 table-amount padding-8" style="font-size: 14px;">
                                 {{payableAmt.value}}</td>
                             <td class=" text-left">
-                                <kt-select-payment [minDate]="quickPayinfo?.loanStartDate" [amount]="amount?.value"  (paymentData)="paymentData($event)"></kt-select-payment>
+                                <kt-select-payment [minDate]="quickPayinfo?.loanStartDate" [amount]="payableAmt?.value"  (paymentData)="paymentData($event)"></kt-select-payment>
                                 <!-- <button *ngIf="!paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">Select
                                     Payment</button>
                                 <button *ngIf="paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">
