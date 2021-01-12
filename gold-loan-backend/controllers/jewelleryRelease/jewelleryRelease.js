@@ -163,7 +163,7 @@ async function getOldLoanData(customerLoanId) {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'form60Image', 'mobileNumber'],
                 include: [
                     {
                         model: models.customerKycAddressDetail,
@@ -483,7 +483,6 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                 return res.status(200).json({ message: "Success", partRelease });
             } else {
                 res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/thank-you?payemntDone=yes&amount=${tempRazorData.amount}`)
-
             }
         } else {
             return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
@@ -1122,7 +1121,7 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
     let newLoanAmount = partReleaseData.newLoanAmount;
     let customerData = await models.customer.findOne({
         where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
-        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
+        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage', 'form60Image'],
     })
     let bmRatingId = await models.loanStage.findOne({ where: { name: 'bm rating' } });
     let opsRatingId = await models.loanStage.findOne({ where: { name: 'OPS team rating' } });

@@ -26,9 +26,19 @@
                         </span>
                         <span class="text-danger" *ngIf="role.status == 'rejected'">
                             {{role.status | titlecase}}
+                            <span *ngIf="role?.reasonForDigiKyc" class="material-icons custom-icon" mat-raised-button
+                                matTooltip={{role?.reasonForDigiKyc}} matTooltipPosition="above"
+                                matTooltipClass="custom-tooltip-white">
+                                info
+                            </span>
                         </span>
-                        <span *ngIf="role.status == 'pending'">
+                        <span class="text-warning" *ngIf="role.status == 'pending'">
                             {{role.status | titlecase}}
+                            <span *ngIf="role?.reasonForDigiKyc" class="material-icons custom-icon" mat-raised-button
+                                matTooltip={{role?.reasonForDigiKyc}} matTooltipPosition="above"
+                                matTooltipClass="custom-tooltip-white">
+                                info
+                            </span>
                         </span>
                         <span *ngIf="role.status == 'waiting'">
                             {{role.status | titlecase}}
