@@ -365,8 +365,7 @@ export class UserDetailsComponent implements OnInit {
       this.controls.firstName.patchValue(name.join(" "))
       this.controls.lastName.patchValue(lastName)
       this.controls.panCardNumber.patchValue(res.data.idNumber)
-      this.isPanVerified = true
-      // this.isPanVerified = res.data.isPanVerified
+      this.isPanVerified = res.data.isPanVerified
       this.controls.panCardNumber.disable()
       this.controls.firstName.disable()
       this.controls.lastName.disable()
