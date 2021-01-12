@@ -63,7 +63,7 @@ exports.makePayment = async (req, res) => {
           { amount: sendAmount, currency: "INR", payment_capture: 1 }
         );
 
-        tempWalletDeopsit = await models.walletTempDetails.create({ customerId: id, amount: amount, paymentDirection: "credit", description: "Money added to Augmont Wallet", productTypeId: 4, transactionDate: depositDate }, { transaction: t });
+        tempWalletDeopsit = await models.walletTempDetails.create({ customerId: id, amount: amount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: depositDate }, { transaction: t });
 
         tempOrderDetail = await models.walletTransactionTempDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 4, walletTempId: tempWalletDeopsit.id, transactionUniqueId, razorPayTransactionId: razorPayOrder.id, paymentType, transactionAmount: amount, paymentReceivedDate: depositDate, orderAmount, metalType, qtyAmtType, quantity, type, redirectOn }, { transaction: t });
 
@@ -100,7 +100,7 @@ exports.makePayment = async (req, res) => {
 
       await sequelize.transaction(async (t) => {
 
-        tempWallet = await models.walletTempDetails.create({ customerId: id, amount: amount, paymentDirection: "credit", description: "Money added to Augmont Wallet", productTypeId: 4, transactionDate: moment() }, { transaction: t });
+        tempWallet = await models.walletTempDetails.create({ customerId: id, amount: amount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: moment() }, { transaction: t });
         console.log(tempWallet);
         tempOrderDetail = await models.walletTransactionTempDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 4, walletTempId: tempWallet.id, transactionUniqueId, bankTransactionUniqueId: bankTransactionId, paymentType, transactionAmount: amount, paymentReceivedDate: depositDate, chequeNumber, bankName, branchName }, { transaction: t });
 
@@ -180,7 +180,7 @@ exports.addAmountWallet = async (req, res) => {
         if (!orderData) {
 
 
-          WalletDetail = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "Money added to Augmont Wallet", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
+          WalletDetail = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
 
           let newFreeBalance = customer.walletFreeBalance.toFixed(2);
 
