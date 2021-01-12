@@ -180,7 +180,7 @@ exports.quickPayment = async (req, res, next) => {
         let modifiedBy = null;
         let { paymentDetails, payableAmount, masterLoanId, transactionDetails, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
         const razorpay = await getRazorPayDetails();
-        let isAdmin 
+        let isAdmin
         let transactionUniqueId = uniqid.time().toUpperCase();
         if (razorpay_order_id) {
             var tempRazorData = await models.tempRazorPayDetails.findOne({ where: { razorPayOrderId: razorpay_order_id } })
@@ -202,10 +202,10 @@ exports.quickPayment = async (req, res, next) => {
         let isRazorPay = false;
 
         if (paymentType == 'upi' || paymentType == 'netbanking' || paymentType == 'wallet' || paymentType == 'card') {
-            paymentDetails = {}
 
             let razerpayData
             if (razorpay_order_id) {
+                paymentDetails = {}
                 isAdmin = false
                 transactionDetails = {}
                 razerpayData = await razorpay.instance.orders.fetch(razorpay_order_id);
@@ -243,7 +243,7 @@ exports.quickPayment = async (req, res, next) => {
             if (signatureVerification == false) {
                 return res.status(422).json({ message: "razorpay payment verification failed" });
             }
-        }else{
+        } else {
             isAdmin = true
         }
         // // let { penalInterest } = await payableAmountForLoan(amount, loan)
