@@ -33,12 +33,18 @@ module.exports = async () => {
                     //update complate kyc points
                     kycCompletePoint = await updateCompleteKycModule(kycCompletePoint, 4)
 
-                    await models.customer.update({ kycCompletePoint, digiKycStatus: 'approved' }, { where: { id: ele.id }, transaction: t })
+                    await models.customer.update({ kycCompletePoint, emiKycStatus: 'approved', digiKycStatus: 'approved' }, { where: { id: ele.id }, transaction: t })
+
+                    await models.digiKycApplied.update({ status: 'approved' }, { where: { customerId: ele.id }, transaction: t })
+
                     await sms.sendMessageForKycApproved(ele.mobileNumber, result.data.result.data.accountId);
 
                 } else if (result.data.result.data.status == 'rejected') {
 
-                    await models.customer.update({ digiKycStatus: 'rejected' }, { where: { id: ele.id }, transaction: t })
+                    await models.customer.update({ kycStatus: 'rejected', scrapKycStatus: 'rejected', emiKycStatus: 'rejected', digiKycStatus: 'rejected' }, { where: { id: ele.id }, transaction: t })
+
+                    await models.digiKycApplied.update({ status: 'rejected', reasonForDigiKyc: `rejected from webhook` }, { where: { customerId: ele.id }, transaction: t })
+
                     await sms.sendMessageForKycReject(ele.mobileNumber, result.data.result.data.accountId);
 
                 }
