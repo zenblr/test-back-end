@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'bank_name'
         },
+        bankId: {
+            type: DataTypes.STRING,
+            field: 'bank_id'
+        },
         bankBranchName: {
             type: DataTypes.STRING,
             field: 'bank_branch_name'
@@ -37,6 +41,10 @@ module.exports = (sequelize, DataTypes) => {
         ifscCode: {
             type: DataTypes.STRING,
             field: 'ifsc_code'
+        },
+        userBankId: {
+            type: DataTypes.STRING,
+            field: 'user_bank_id'
         },
         passbookProof: {
             type: DataTypes.ARRAY(DataTypes.TEXT),
