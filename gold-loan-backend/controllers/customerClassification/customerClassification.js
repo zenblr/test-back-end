@@ -322,6 +322,8 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                         await models.customer.update({ kycCompletePoint, customerUniqueId, kycStatus: "approved", scrapKycStatus: "approved", userType: "Individual" }, { where: { id: customerId }, transaction: t })
                     } else {
                         await models.customer.update({ kycCompletePoint, customerUniqueId, digiKycStatus: "approved", emiKycStatus: "approved", kycStatus: "approved", scrapKycStatus: "approved", userType: "Individual" }, { where: { id: customerId }, transaction: t })
+
+                        await models.digiKycApplied.update({ status: kycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
                     }
 
                     await models.customerKyc.update(
@@ -455,6 +457,9 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                     await models.customer.update({ kycCompletePoint, customerUniqueId, scrapKycStatus: "approved" }, { where: { id: customerId }, transaction: t })
                 } else {
                     await models.customer.update({ kycCompletePoint, customerUniqueId, digiKycStatus: "approved", emiKycStatus: "Approved", scrapKycStatus: "approved" }, { where: { id: customerId }, transaction: t })
+
+                    await models.digiKycApplied.update({ status: scrapKycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
+
                 }
 
 
