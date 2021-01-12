@@ -198,7 +198,7 @@ exports.addAmountWallet = async (req, res) => {
             redirectOn: process.env.DIGITALGOLDAPI + tempWalletTransaction.redirectOn
           }
 
-          await sms.sendMessageForDepositRequest(customer.mobileNumber, tempWalletDetail.amount);
+          await sms.sendMessageForDepositRequestAccepted(customer.mobileNumber, tempWalletDetail.amount);
 
           if (tempWalletTransaction.redirectOn) {
             res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);

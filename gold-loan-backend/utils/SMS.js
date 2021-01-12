@@ -350,7 +350,7 @@ exports.sendMessageForDepositRequest = async (mobileNumber, amount) => {
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<amount>", amount)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+           await sms.sendSms(mobileNumber, message,smsFrom);
     }
 }
 
@@ -417,7 +417,7 @@ exports.sendMessageForDispatchedButNotDelivered = async (mobileNumber,customerNa
 }
 
 exports.sendMessageForRto = async (mobileNumber,customerName, orderId,courierCompany,trackingId) => {
-    let messageTemplate = await models.smsAlert.getSmsTemplate('RTO');
+    let messageTemplate = await models.smsAlert.getSmsTemplate('rto');
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<customerName>",customerName).replace("<orderId>", orderId).replace("<courierCompany>", courierCompany).replace("<trackingId>", trackingId)
         let smsFrom = "customer"
@@ -426,7 +426,7 @@ exports.sendMessageForRto = async (mobileNumber,customerName, orderId,courierCom
 }
 
 exports.sendMessageForRedispach = async (mobileNumber,customerName, orderId,courierCompany,trackingId) => {
-    let messageTemplate = await models.smsAlert.getSmsTemplate('Re-Dispatched');
+    let messageTemplate = await models.smsAlert.getSmsTemplate('ReDispatched');
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<customerName>",customerName).replace("<orderId>", orderId).replace("<courierCompany>", courierCompany).replace("<trackingId>", trackingId)
         let smsFrom = "customer"
