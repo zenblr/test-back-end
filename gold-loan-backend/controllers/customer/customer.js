@@ -110,8 +110,8 @@ exports.addCustomer = async (req, res, next) => {
     //   data: data
     // });
 
-    if (panCardNumber != null && panImage != null) {
-      await models.digiKycApplied.create({ customerId: customer.id, status: 'waiting' })
+    if (panCardNumber != null && panImage != null && statusId == 1) {
+      await models.digiKycApplied.create({ customerId: customer.id, status: 'waiting' }, { transaction: t })
 
       await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customer.id }, transaction: t })
     }
@@ -321,6 +321,12 @@ exports.editCustomer = async (req, res, next) => {
       { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy, source, panType, panCardNumber, panImage, leadSourceId, form60Image },
       { where: { id: customerId }, transaction: t }
     );
+
+    if (panCardNumber != null && panImage != null && statusId == 1) {
+      await models.digiKycApplied.create({ customerId: customerId, status: 'waiting' }, { transaction: t })
+
+      await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customerId }, transaction: t })
+    }
   });
   return res.status(200).json({ messgae: `User Updated` });
 };
