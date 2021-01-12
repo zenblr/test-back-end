@@ -42,8 +42,16 @@
                             <label class="font-weight-500 text-color">Deposit Date </label>
                         </div>
                         <div class="col-8">
-                            <input type="text" formControlName="depositDate" class="form-control"
-                                [value]="controls?.depositDate?.value | date: 'MMM d, y, h:mm a'" disabled>
+                            <!-- <input type="text" formControlName="depositDate" class="form-control"
+                                [value]="controls?.depositDate?.value | date: 'MMM d, y, h:mm a'" disabled> -->
+                            <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
+                                formControlName="date" [class.isError]="controls.date.touched && controls.date.invalid"
+                                readonly placeholder="DD/MM/YYYY" [min]="controls?.depositDate?.value"
+                                [max]="maxDate" />
+                            <mat-datepicker #picker></mat-datepicker>
+                            <mat-error *ngIf="controls.date.invalid && controls.date.touched">
+                                Field Required
+                            </mat-error>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">
