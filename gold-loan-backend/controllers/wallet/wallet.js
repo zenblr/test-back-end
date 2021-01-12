@@ -152,7 +152,7 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
 exports.updateDepositWithdrawStatus = async (req, res) => {
 
     let depositWithdrawId = req.params.depositWithdrawId;
-    let { depositStatus } = req.body
+    let { depositStatus, date } = req.body
     let customerUpdatedBalance;
     let currentWalletBalance;
     let transactionData = await models.walletTransactionDetails.findOne({ where: { id: depositWithdrawId } });
@@ -165,7 +165,7 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
     }
     let customer = await models.customer.findOne({ where: { id: transactionData.customerId, isActive: true } });
 
-    let date = moment()
+    // let date = moment()
 
     if (transactionData.orderTypeId == 4) {
 
