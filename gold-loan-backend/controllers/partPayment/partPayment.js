@@ -548,11 +548,11 @@ exports.partPayment = async (req, res, next) => {
                     if (!lastPaidEmi) {
                         loanStartDate = moment(loan.masterLoan.loanStartDate);
                         noOfDays = currentDate.diff(loanStartDate, 'days');
+                        noOfDays += 1;
                     } else {
                         loanStartDate = moment(lastPaidEmi.emiDueDate);
                         noOfDays = currentDate.diff(loanStartDate, 'days');
                     }
-                    noOfDays += 1;
                     //scenario 2 slab changed
                     let getStepUpslab1 = async (loanId, noOfDys) => {
                         let stepUpSlab = await models.customerLoanSlabRate.findOne({
@@ -1315,11 +1315,11 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
                 if (!lastPaidEmi) {
                     loanStartDate = moment(loan.masterLoan.loanStartDate);
                     noOfDays = currentDate.diff(loanStartDate, 'days');
+                    noOfDays += 1;
                 } else {
                     loanStartDate = moment(lastPaidEmi.emiDueDate);
                     noOfDays = currentDate.diff(loanStartDate, 'days');
                 }
-                noOfDays += 1;
                 //scenario 2 slab changed
                 let getStepUpslab1 = async (loanId, noOfDys) => {
                     let stepUpSlab = await models.customerLoanSlabRate.findOne({
