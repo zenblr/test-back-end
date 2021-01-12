@@ -600,17 +600,25 @@ export class UserAddressComponent implements OnInit {
         controls['controls'].stateId.patchValue(stateId[0]['id'])
         await this.getCities(index)
       }
-
-      let city = this.cities0.filter(res => {
-        if (res.name == this.aadharCardUserDetails.city)
-          return res
-      })
+      if (index == 0) {
+        var city = this.cities0.filter(res => {
+          if (res.name == this.aadharCardUserDetails.city)
+            return res
+        })
+      } else {
+        city = this.cities1.filter(res => {
+          if (res.name == this.aadharCardUserDetails.city)
+            return res
+        })
+      }
 
       if (city.length > 0) {
         controls['controls'].cityId.patchValue(city[0]['id'])
       }
       // controls.disable()
-      this.disableAadharField(index)
+      if (this.aadharCardUserDetails.isAahaarVerified) {
+        this.disableAadharField(index)
+      }
     }
   }
 
