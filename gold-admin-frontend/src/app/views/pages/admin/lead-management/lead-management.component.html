@@ -183,25 +183,28 @@
                 <ng-container matColumnDef="menu">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <div *ngxPermissionsOnly="['addNewRequest', 'addBranchCustomer', 'customerKycAdd']">
-                            <button mat-button [matMenuTriggerFor]="menu">
-                                <mat-icon>more_vert</mat-icon>
-                            </button>
-                            <mat-menu #menu="matMenu" xPosition="before">
-                                <ng-container *ngIf="loan.internalBranchId">
-                                    <button *ngxPermissionsOnly="['addNewRequest']" mat-menu-item
-                                        (click)="newRequest(loan)">New Request</button>
-                                </ng-container>
-                                <ng-container *ngIf="!loan.internalBranchId">
-                                    <button *ngxPermissionsOnly="['addBranchCustomer']" mat-menu-item
-                                        (click)="assignBranch(loan)">Assign Branch</button>
-                                </ng-container>
-                                <ng-container *ngIf="loan.module?.id == 4 && !loan.panCardNumber">
-                                    <button *ngxPermissionsOnly="['customerKycAdd']" mat-menu-item
-                                        (click)="goToDigiGoldKyc(loan)">Apply Digi KYC</button>
-                                </ng-container>
-                            </mat-menu>
-                        </div>
+                        <ng-container
+                            *ngIf="!((loan.moduleId == 4 && loan.digiKycStatus == 'rejected') || (loan.moduleId == 1 && loan.kycStatus == 'rejected'))">
+                            <div *ngxPermissionsOnly="['addNewRequest', 'addBranchCustomer', 'customerKycAdd']">
+                                <button mat-button [matMenuTriggerFor]="menu">
+                                    <mat-icon>more_vert</mat-icon>
+                                </button>
+                                <mat-menu #menu="matMenu" xPosition="before">
+                                    <ng-container *ngIf="loan.internalBranchId">
+                                        <button *ngxPermissionsOnly="['addNewRequest']" mat-menu-item
+                                            (click)="newRequest(loan)">New Request</button>
+                                    </ng-container>
+                                    <ng-container *ngIf="!loan.internalBranchId">
+                                        <button *ngxPermissionsOnly="['addBranchCustomer']" mat-menu-item
+                                            (click)="assignBranch(loan)">Assign Branch</button>
+                                    </ng-container>
+                                    <ng-container *ngIf="loan.module?.id == 4 && !loan.panCardNumber">
+                                        <button *ngxPermissionsOnly="['customerKycAdd']" mat-menu-item
+                                            (click)="goToDigiGoldKyc(loan)">Apply Digi KYC</button>
+                                    </ng-container>
+                                </mat-menu>
+                            </div>
+                        </ng-container>
                     </mat-cell>
                 </ng-container>
 
