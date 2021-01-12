@@ -105,7 +105,6 @@ let addBankDetailInAugmontDb = async (customerUniqueId, bankId, bankBranchName, 
             },
             data : data
         })
-        console.log(result.data);
         if (result.data.statusCode === 200) {
             return { isSuccess: true, data: result }
         } else {
