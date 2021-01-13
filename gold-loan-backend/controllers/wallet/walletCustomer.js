@@ -896,7 +896,6 @@ exports.AddCustomerBankDetails = async (req, res) => {
       //     },
       //     data : data
       // })
-      console.log(addBankDetaiils.data.data.result.data.userBankId);
       if(addBankDetaiils.isSuccess){
         customerBankDetails = await models.customerBankDetails.create({ customerId: id, moduleId: 4, description: 'withdraw wallet amount', bankName: bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifscCode, isActive: 'true', bankId: bankId, userBankId: addBankDetaiils.data.data.result.data.userBankId });
 
@@ -927,6 +926,7 @@ exports.getAllBankDetails = async (req, res) => {
   const id = req.userData.id;
   let bankDetails = await models.customerBankDetails.findAll({
     where: { customerId: id, isActive: 'true' },
+    order: [["updatedAt", "DESC"]],
     include: {
       model: models.customer,
       as: "customer",

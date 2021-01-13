@@ -64,8 +64,8 @@ module.exports = (req, res, next) => {
 
 
     ];
-    console.log(req._parsedUrl.pathname)
-    if (includeUrls.includes(req._parsedUrl.pathname)) {
+    let url = req.url;
+    if (includeUrls.includes(req._parsedUrl.pathname) || url.slice(0, 18) == "/api/customer/app/") {
         try {
             const token = req.headers.authorization.split(" ")[1];
             console.log(token)

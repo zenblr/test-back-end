@@ -24,9 +24,7 @@ export class DepositRequestsEditComponent implements OnInit {
 		{ value: 'completed', name: 'Completed' },
 		{ value: 'rejected', name: 'Rejected' },
 	];
-	hiddenFlag = false;
-	showUploadFile = false;
-	showUploadedFile = false;
+	maxDate = new Date();
 	private destroy$ = new Subject();
 	@Output() next: EventEmitter<any> = new EventEmitter<any>();
 	@ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
@@ -63,6 +61,7 @@ export class DepositRequestsEditComponent implements OnInit {
 			depositBranchName: [''],
 			depositDate: [''],
 			depositAmount: [''],
+			date: ['', Validators.required],
 			depositStatus: ['', Validators.required],
 		});
 		this.depositForm.disable()
@@ -92,6 +91,7 @@ export class DepositRequestsEditComponent implements OnInit {
 			this.depositForm.patchValue(data);
 		}
 		else {
+			this.controls.date.enable();
 			this.controls.depositStatus.enable();
 		}
 	}
@@ -104,6 +104,7 @@ export class DepositRequestsEditComponent implements OnInit {
 		if (this.depositId) {
 			const depositData = {
 				depositStatus: this.controls.depositStatus.value,
+				date: this.controls.date.value,
 			};
 			this.depositRequestsService.editDepositStatus(depositData, this.depositId).pipe(
 				map((res) => {

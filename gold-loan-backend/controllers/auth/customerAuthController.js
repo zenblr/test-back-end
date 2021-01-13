@@ -3,7 +3,7 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const jwt = require('jsonwebtoken');
-
+const cache = require('../../utils/cache');
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/constant');
 let check = require('../../lib/checkLib');
 
@@ -34,8 +34,13 @@ exports.customerLogin = async (req, res, next) => {
             where: { id: decoded.id }
         });
 
-        // await models.customerLogger.destroy({ where: { customerId: decoded.id } })
-        
+        let getDestroyToken = await models.customerLogger.findAll({ where: { customerId: decoded.id } })
+
+        for await (const singleDestory of getDestroyToken) {
+            cache(`${singleDestory.token}`);
+        }
+        await models.customerLogger.destroy({ where: { customerId: decoded.id } })
+
         await models.customerLogger.create({
             customerId: decoded.id,
             token: Token,
@@ -96,7 +101,12 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
             where: { id: decoded.id }, transaction: t
         });
 
-        // await models.customerLogger.destroy({ where: { customerId: decoded.id } })
+        let getDestroyToken = await models.customerLogger.findAll({ where: { customerId: decoded.id } })
+
+        for await (const singleDestory of getDestroyToken) {
+            cache(`${singleDestory.token}`);
+        }
+        await models.customerLogger.destroy({ where: { customerId: decoded.id } })
 
         await models.customerLogger.create({
             customerId: decoded.id,
