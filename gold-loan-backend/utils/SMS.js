@@ -301,7 +301,6 @@ exports.sendMessageForKycPending= async (mobileNumber, memberId) => {
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<memberId>", memberId)
         let smsFrom = "customer"
-        console.log("sendMessageForKycPending",message)
         await sms.sendSms(mobileNumber, message,smsFrom);
     }
 }

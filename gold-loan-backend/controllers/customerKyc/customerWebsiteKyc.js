@@ -83,7 +83,12 @@ exports.digiOrEmiKyc = async (req, res, next) => {
     req.body.customerId = req.userData.id
     let data = await applyDigiKyc(req)
 
+    let customer = await models.customer.findOne({ where: { id: req.userData.id} })
+
     if (data.success) {
+        // apply
+        await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
+      
         return res.status(data.status).json({ message: data.message })
     } else {
         return res.status(data.status).json({ message: data.message })
