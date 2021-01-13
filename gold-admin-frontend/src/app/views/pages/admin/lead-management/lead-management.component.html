@@ -104,7 +104,7 @@
                 <ng-container matColumnDef="kyc">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let lead">
-                        <ng-container *ngIf="lead.module?.id == 1">
+                        <ng-container *ngIf="lead.module?.id == 1 && lead.kycStatus != 'rejected'">
                             <ng-container *ngIf="lead.status.id == '1' &&  lead.customerKyc !== null">
                                 <div [ngStyle]="{'display': 'inherit'}" *ngIf="!lead.customerKyc.isKycSubmitted">
                                     <button (click)="goToKyc(lead)" class="apply-kyc"
@@ -119,7 +119,7 @@
                             </ng-container>
                         </ng-container>
 
-                        <ng-container *ngIf="lead.module?.id == 3">
+                        <ng-container *ngIf="lead.module?.id == 3 && lead.scrapKycStatus != 'rejected'">
                             <ng-container *ngIf="lead.status.id == '1' &&  lead.customerKyc !== null">
                                 <div [ngStyle]="{'display': 'inherit'}" *ngIf="!lead.customerKyc.isScrapKycSubmitted">
                                     <button (click)="goToKyc(lead)" class="apply-kyc"
