@@ -329,6 +329,8 @@ exports.editCustomer = async (req, res, next) => {
       await models.digiKycApplied.create({ customerId: customerId, status: 'waiting' }, { transaction: t })
 
       await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customerId }, transaction: t })
+      await sms.sendMessageForKycPending(customerExist.mobileNumber, customerExist.customerUniqueId);
+    
     }
   });
   return res.status(200).json({ messgae: `User Updated` });
