@@ -18,7 +18,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="requestFor">
-                    <mat-header-cell *matHeaderCellDef>Request</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Request Type</mat-header-cell>
                     <mat-cell *matCellDef="let customer">
                         <span *ngIf="customer.requestFor == 'loan'"> {{ customer.requestFor | titlecase }}</span>
                         <span *ngIf="customer.requestFor == 'kyc'"> {{ customer.requestFor | uppercase }}</span>
