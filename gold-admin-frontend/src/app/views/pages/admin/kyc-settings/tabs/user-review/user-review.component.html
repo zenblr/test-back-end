@@ -226,7 +226,7 @@
                                 <label class="mandatory text-color font-weight-500">PAN / FORM 60 </label>
                             </div>
                             <div class="col-8">
-                                <select class="form-control" formControlName="panType"
+                                <select class="form-control" formControlName="panType" [disabled]="isPanVerified"
                                     (change)='removeImages(-1, "panType"); panTypeValidation()'>
                                     <option value=null selected disabled>Select</option>
                                     <option value="pan">PAN</option>
@@ -248,7 +248,7 @@
                                 <div class="row">
                                     <div [ngClass]="viewOnly ? 'col-8': 'col'">
                                         <input class="form-control" formControlName="panCardNumber" autocomplete="off"
-                                            placeholder="PAN"
+                                            placeholder="PAN" [readonly]="isPanVerified"
                                             [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
                                             maxlength="10" style="text-transform: uppercase;" />
                                         <mat-error

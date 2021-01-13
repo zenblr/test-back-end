@@ -614,6 +614,14 @@ export class UserAddressComponent implements OnInit {
 
       if (city.length > 0) {
         controls['controls'].cityId.patchValue(city[0]['id'])
+        controls['controls'].cityId.disable()
+      }else{
+        let data = {
+          stateId:stateId[0]['id'],
+          cityName:this.aadharCardUserDetails.city,
+          cityUniqueId:null
+        }
+        this.sharedService.newCity(data).subscribe()
       }
       // controls.disable()
       if (this.aadharCardUserDetails.isAahaarVerified) {

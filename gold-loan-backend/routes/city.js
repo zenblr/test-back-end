@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const { postCity, getCity } = require('../controllers/city/city')
+const { postCity, getCity,newCity } = require('../controllers/city/city')
 
 const checkAuth = require('../middleware/checkAuth');
 const { wrapper } = require('../utils/errorWrap');
@@ -24,6 +24,7 @@ router.post('/', checkAuth, upload.single('csv'), wrapper(postCity))
 
 router.get('/', wrapper(getCity));
 
+router.post('/new-city', checkAuth, wrapper(newCity))
 
 
 module.exports = router;
