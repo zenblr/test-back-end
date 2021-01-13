@@ -18,7 +18,7 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const moment = require('moment');
 const { walletDelivery, customerBalance, customerNonSellableMetal } = require('../../../service/wallet');
-const { postMerchantOrder, getUserData, postBuy } = require('../../../service/digiGold')
+const { postMerchantOrder, getUserData, postBuy, checkKycStatus } = require('../../../service/digiGold')
 
 
 exports.AddOrder = async (req, res) => {
@@ -33,6 +33,12 @@ exports.AddOrder = async (req, res) => {
     if (check.isEmpty(customerDetails)) {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     }
+
+    let checkCustomerKycStatus = checkKycStatus(id);
+
+    if(checkCustomerKycStatus){
+      return res.status(400).json({ message: "Your KYC status is Rejected" });
+    } 
 
     if (amount > customerDetails.currentWalletBalance || !customerDetails.currentWalletBalance) {
       return res.status(422).json({ message: "Insuffecient wallet balance", walletBal: customerDetails.currentWalletBalance });

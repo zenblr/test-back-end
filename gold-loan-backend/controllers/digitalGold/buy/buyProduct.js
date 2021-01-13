@@ -19,7 +19,7 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const { walletBuy, customerBalance } = require('../../../service/wallet');
-const { postMerchantOrder, getUserData, postBuy } = require('../../../service/digiGold')
+const { postMerchantOrder, getUserData, postBuy, checkKycStatus } = require('../../../service/digiGold')
 
 
 exports.buyProduct = async (req, res) => {
@@ -40,6 +40,11 @@ exports.buyProduct = async (req, res) => {
     return res.status(420).json({ message: "Insuffecient wallet balance", walletBal: customerDetails.currentWalletBalance });
   }
 
+  let checkCustomerKycStatus = checkKycStatus(id);
+
+  if(checkCustomerKycStatus){
+    return res.status(400).json({ message: "Your KYC status is Rejected" });
+  } 
 
   const checkLimit = await checkBuyLimit(id, amount);
   if(!checkLimit.success){
