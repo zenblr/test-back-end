@@ -136,6 +136,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'pan_image',
         },
+        form60Image: {
+            type: DataTypes.TEXT,
+            field: 'form60_image',
+        },
         scrapKycStatus: {
             type: DataTypes.ENUM,
             field: 'scrap_kyc_status',
@@ -333,6 +337,9 @@ module.exports = (sequelize, DataTypes) => {
         var values = Object.assign({}, this.get());
         if (values.panImage) {
             values.panImg = process.env.BASE_URL + values.panImage;
+        }
+        if (values.form60Image) {
+            values.form60Img = process.env.BASE_URL + values.form60Image;
         }
         delete values.password;
         return values;

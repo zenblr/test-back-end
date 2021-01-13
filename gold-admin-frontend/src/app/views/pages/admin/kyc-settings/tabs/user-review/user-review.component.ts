@@ -202,14 +202,16 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       panType: [, Validators.required],
       form60: [],
       panImage: [],
-      panImg: [, Validators.required],
+      panImg: [],
       identityTypeId: [, [Validators.required]],
       identityProof: [, [Validators.required]],
       identityProofFileName: [],
       identityProofNumber: [, [Validators.required, Validators.pattern('[0-9]{12}')]],
       userType: [],
       organizationTypeId: [],
-      dateOfIncorporation: []
+      dateOfIncorporation: [],
+      form60Image: [],
+      form60Img: []
     })
 
     this.reviewForm.patchValue(this.data.customerKycReview)
@@ -367,16 +369,23 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     const value = this.controls.panType.value
     if (value == 'form60') {
       if (this.resetOnPanChange) {
-        this.controls.panCardNumber.reset()
         this.controls.panCardNumber.patchValue('')
       }
       this.controls.panCardNumber.clearValidators()
       this.controls.panCardNumber.updateValueAndValidity()
+      this.controls.panImage.setValidators([])
+      this.controls.panImage.updateValueAndValidity()
+      this.controls.form60Image.setValidators([Validators.required])
+      this.controls.form60Image.updateValueAndValidity()
     }
     if (value == 'pan') {
       this.controls.form60.reset()
       this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
       this.controls.panCardNumber.updateValueAndValidity()
+      this.controls.form60Image.setValidators([])
+      this.controls.form60Image.updateValueAndValidity()
+      this.controls.panImage.setValidators([Validators.required])
+      this.controls.panImage.updateValueAndValidity()
     }
     // });
   }
@@ -561,10 +570,6 @@ export class UserReviewComponent implements OnInit, OnDestroy {
 
   removeImages(index, type) {
 
-    // if (this.userType == 5) {
-    //   return;
-    // }
-
     if (type == 'identityProof') {
       this.identityImageArray.splice(index, 1)
       this.identityIdArray.splice(index, 1)
@@ -598,14 +603,41 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     // this.customerKycBank.patchValue({ passbookProofFileName: '' });
     // }
     else if (type == 'panType') {
-      this.data.customerKycReview.panImage = ''
-      if (this.resetOnPanChange) {
-        this.reviewForm.controls.panCardNumber.patchValue(null)
-        this.customerKycPersonal.controls.panCardNumber.patchValue(null)
+      // this.data.customerKycReview.panImage = ''
+      // this.reviewForm.controls.panCardNumber.patchValue(null)
+      // this.customerKycPersonal.controls.panCardNumber.patchValue(null)
+      // this.reviewForm.controls.form60.patchValue(null)
+      // this.reviewForm.controls.panImage.patchValue(null)
+      // this.reviewForm.controls.panImg.patchValue(null)
+
+      // //changes
+      // this.data.customerKycReview.panImage = ''
+      // if (this.resetOnPanChange) {
+      //   this.reviewForm.controls.panCardNumber.patchValue(null)
+      //   this.customerKycPersonal.controls.panCardNumber.patchValue(null)
+      // }
+      // this.reviewForm.controls.form60.patchValue(null)
+      // this.reviewForm.controls.panImage.patchValue(null)
+      // this.reviewForm.controls.panImg.patchValue(null)
+      // // changes
+
+      let panType = this.controls.panType.value
+      if (panType) {
+        if (this.resetOnPanChange) {
+
+          if (panType === 'pan') {
+            this.reviewForm.controls.form60Image.patchValue(null)
+            this.reviewForm.controls.form60Img.patchValue(null)
+          }
+          if (panType === 'form60') {
+            this.reviewForm.controls.panImage.patchValue(null)
+            this.reviewForm.controls.panImg.patchValue(null)
+          }
+          // this.reviewForm.controls.panCardNumber.patchValue(null)
+          // this.customerKycPersonal.controls.panCardNumber.patchValue(null)
+          this.reviewForm.controls.form60.patchValue(null)
+        }
       }
-      this.reviewForm.controls.form60.patchValue(null)
-      this.reviewForm.controls.panImage.patchValue(null)
-      this.reviewForm.controls.panImg.patchValue(null)
     }
     if (type == 'constitutionsDeed') {
       this.images.constitutionsDeed.splice(index, 1);
@@ -660,8 +692,13 @@ export class UserReviewComponent implements OnInit, OnDestroy {
             this.ref.markForCheck();
           } else if (type == "panType") {
             this.reviewForm.controls.form60.patchValue(event.target.files[0].name)
-            this.reviewForm.controls.panImage.patchValue(res.uploadFile.path)
-            this.reviewForm.controls.panImg.patchValue(res.uploadFile.URL)
+            // this.reviewForm.controls.panImage.patchValue(res.uploadFile.path)
+            // this.reviewForm.controls.panImg.patchValue(res.uploadFile.URL)
+
+            let formControl = this.getFormControlPanForm60()
+            this.controls[formControl.path].patchValue(res.uploadFile.path)
+            this.controls[formControl.URL].patchValue(res.uploadFile.URL)
+
           } else if (type == "constitutionsDeed" && this.images.constitutionsDeed.length < 2) {
             this.images.constitutionsDeed.push({ path: res.uploadFile.path, URL: res.uploadFile.URL })
             this.customerOrganizationDetail.get('constitutionsDeedFileName').patchValue(res.uploadFile.originalname);
@@ -1026,5 +1063,17 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     this.reviewForm.controls.mobileNumber.enable()
     this.reviewForm.controls.panType.enable()
     this.reviewForm.controls.panCardNumber.enable()
+  }
+
+  getFormControlPanForm60() {
+    let panType = this.controls.panType.value
+    if (panType) {
+      if (panType === 'pan') {
+        return { path: 'panImage', URL: 'panImg' }
+      }
+      if (panType === 'form60') {
+        return { path: 'form60Image', URL: 'form60Img' }
+      }
+    }
   }
 }

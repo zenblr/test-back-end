@@ -1397,7 +1397,7 @@ let getSingleLoanDetail = async (loanId, masterLoanId) => {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'form60Image', 'mobileNumber'],
             },
             {
                 model: models.customerLoanDisbursement,
@@ -1766,7 +1766,7 @@ let getSingleMasterLoanDetail = async (masterLoanId) => {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'form60Image', 'mobileNumber'],
             },
             {
                 model: models.customerLoanDisbursement,

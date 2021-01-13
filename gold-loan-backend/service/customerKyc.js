@@ -19,7 +19,7 @@ let sms = require('../utils/SMS');
 
 let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modifiedByCustomer, isFromCustomerWebsite) => {
 
-    let { firstName, lastName, customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address, panCardNumber, panType, panImage, moduleId } = req.body
+    let { firstName, lastName, customerId, profileImage, dateOfBirth, age, alternateMobileNumber, gender, martialStatus, occupationId, spouseName, signatureProof, identityProof, identityTypeId, identityProofNumber, address, panCardNumber, panType, panImage, moduleId, form60Image } = req.body
     var date = dateOfBirth
 
     let status = await models.status.findOne({ where: { statusName: "confirm" } })
@@ -71,7 +71,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
         let kycInfo = await sequelize.transaction(async t => {
 
             await models.customer.update({
-                firstName, lastName, panCardNumber: panCardNumber, panType, panImage, modifiedBy, modifiedByCustomer,
+                firstName, lastName, panCardNumber: panCardNumber, panType, panImage, form60Image, modifiedBy, modifiedByCustomer,
                 //dob changes
                 dateOfBirth: date,
                 gender: gender,
@@ -235,7 +235,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
             }, { transaction: t })
 
 
-            await models.customer.update({ firstName: firstName, lastName: lastName, panCardNumber: panCardNumber, panType: panType, panImage: panImage, organizationTypeId, dateOfIncorporation, userType: userType, moduleId: moduleId, modifiedBy, modifiedByCustomer }, { where: { id: getCustomerInfo.id }, transaction: t })
+            await models.customer.update({ firstName: firstName, lastName: lastName, panCardNumber: panCardNumber, panType: panType, panImage: panImage, form60Image, organizationTypeId, dateOfIncorporation, userType: userType, moduleId: moduleId, modifiedBy, modifiedByCustomer }, { where: { id: getCustomerInfo.id }, transaction: t })
 
             await models.customerKycAddressDetail.bulkCreate(addressArray, { returning: true, transaction: t });
 
@@ -425,8 +425,9 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
             //dob changes
             age: customerKycPersonal.age,
             gender: customerKycPersonal.gender,
-            dateOfBirth: customerKycPersonal.dateOfBirth
+            dateOfBirth: customerKycPersonal.dateOfBirth,
             //dob changes
+            form60Image: customerKycBasicDetails.form60Image
 
         }, { where: { id: customerId }, transaction: t })
 
@@ -453,7 +454,8 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
                     lastName: customerKycBasicDetails.lastName,
                     panCardNumber: customerKycBasicDetails.panCardNumber,
                     panType: customerKycBasicDetails.panType,
-                    panImage: customerKycBasicDetails.panImage
+                    panImage: customerKycBasicDetails.panImage,
+                    form60Image: customerKycBasicDetails.form60Image
                 }
                 , { where: { id: customerId }, transaction: t });
 
@@ -516,7 +518,7 @@ let getKycInfo = async (customerId) => {
     })
     let customerKycReview = await models.customer.findOne({
         where: { id: customerId },
-        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'moduleId', 'userType', 'dateOfIncorporation', 'kycStatus', 'scrapKycStatus', 'gender', 'age', 'dateOfBirth'],
+        attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'form60Image', 'moduleId', 'userType', 'dateOfIncorporation', 'kycStatus', 'scrapKycStatus', 'gender', 'age', 'dateOfBirth'],
         include: [{
             model: models.customerKycPersonalDetail,
             as: 'customerKycPersonal',
@@ -671,7 +673,7 @@ let kycBasicDetails = async (req) => {
 
     let checkStatusCustomer = await models.customer.findOne({
         where: { statusId, id: numberExistInCustomer.id },
-        attributes: ['firstName', 'lastName', 'panCardNumber', 'panType', 'panCardNumber', 'panImage', 'userType', 'moduleId', 'organizationTypeId', 'dateOfIncorporation', 'scrapKycStatus', 'dateOfBirth', 'gender', 'age'],
+        attributes: ['firstName', 'lastName', 'panCardNumber', 'panType', 'panCardNumber', 'panImage', 'form60Image', 'userType', 'moduleId', 'organizationTypeId', 'dateOfIncorporation', 'scrapKycStatus', 'dateOfBirth', 'gender', 'age'],
         include: [{
             model: models.organizationType,
             as: "organizationType",
@@ -741,7 +743,7 @@ let kycBasicDetails = async (req) => {
 }
 
 let submitKycInfo = async (req) => {
-    let { firstName, lastName, mobileNumber, panCardNumber, panType, panImage, moduleId, organizationTypeId, dateOfIncorporation, userType } = req.body;
+    let { firstName, lastName, mobileNumber, panCardNumber, panType, panImage, form60Image, moduleId, organizationTypeId, dateOfIncorporation, userType } = req.body;
 
     console.log(userType);
 
@@ -753,7 +755,7 @@ let submitKycInfo = async (req) => {
     let statusId = status.id
     let getCustomerInfo = await models.customer.findOne({
         where: { mobileNumber: mobileNumber, statusId },
-        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage'],
+        attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage', 'form60Image'],
     })
     if (panCardNumber) {
         let findPanCardNumber = await models.customer.findOne({
@@ -905,7 +907,7 @@ let submitKycInfo = async (req) => {
         } else if (KycStage.customerKycCurrentStage == "4") {
             let customerKycReview = await models.customer.findOne({
                 where: { id: KycStage.customerId },
-                attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'userType', 'organizationTypeId', 'dateOfIncorporation', 'dateOfBirth', 'gender', 'age'],
+                attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'form60Image', 'userType', 'organizationTypeId', 'dateOfIncorporation', 'dateOfBirth', 'gender', 'age'],
                 include: [{
                     model: models.customerKycPersonalDetail,
                     as: 'customerKycPersonal',
@@ -989,7 +991,7 @@ let submitKycInfo = async (req) => {
         let customerKycAdd = await models.customerKyc.create({ isAppliedForKyc: true, customerId: getCustomerInfo.id, createdBy, modifiedBy, customerKycCurrentStage: "2", currentKycModuleId: moduleId }, { transaction: t })
 
 
-        await models.customer.update({ firstName: firstName, lastName: lastName, panCardNumber: panCardNumber, panType: panType, panImage: panImage, organizationTypeId, dateOfIncorporation, userType: userType, moduleId: moduleId }, { where: { id: getCustomerInfo.id }, transaction: t })
+        await models.customer.update({ firstName: firstName, lastName: lastName, panCardNumber: panCardNumber, panType: panType, panImage: panImage, form60Image, organizationTypeId, dateOfIncorporation, userType: userType, moduleId: moduleId }, { where: { id: getCustomerInfo.id }, transaction: t })
         let createCustomerKyc
         let createOrganizationDetail
         if (moduleId == 3) {
@@ -1325,7 +1327,7 @@ let kycPersonalDetail = async (req) => {
     if (moduleId == 1) {
         customerKycReview = await models.customer.findOne({
             where: { id: customerId },
-            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'dateOfBirth', 'gender', 'age'],
+            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'panType', 'panImage', 'form60Image', 'dateOfBirth', 'gender', 'age'],
             include: [{
                 model: models.customerKycPersonalDetail,
                 as: 'customerKycPersonal',
@@ -1363,7 +1365,7 @@ let kycPersonalDetail = async (req) => {
     } else if (moduleId == 3) {
         customerKycReview = await models.customer.findOne({
             where: { id: customerId },
-            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'userType', 'organizationTypeId', 'dateOfIncorporation', 'moduleId', 'panType', 'panImage', 'gender', 'age', 'dateOfBirth'],
+            attributes: ['id', 'firstName', 'lastName', 'panCardNumber', 'mobileNumber', 'userType', 'organizationTypeId', 'dateOfIncorporation', 'moduleId', 'panType', 'panImage', 'form60Image', 'gender', 'age', 'dateOfBirth'],
             include: [
                 {
                     model: models.customerKycPersonalDetail,

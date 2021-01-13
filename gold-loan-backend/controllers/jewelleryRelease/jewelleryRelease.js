@@ -164,7 +164,7 @@ async function getOldLoanData(customerLoanId) {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'form60Image', 'mobileNumber'],
                 include: [
                     {
                         model: models.customerKycAddressDetail,
@@ -352,7 +352,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                         if (signatureVerification == false) {
                             return res.status(422).json({ message: "razorpay payment verification failed" });
                         }
-                    } else{
+                    } else {
                         isAdmin = true
                     }
                     if (isRazorPay) {
@@ -1122,7 +1122,7 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
     let newLoanAmount = partReleaseData.newLoanAmount;
     let customerData = await models.customer.findOne({
         where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
-        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
+        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage', 'form60Image'],
     })
     let bmRatingId = await models.loanStage.findOne({ where: { name: 'bm rating' } });
     let opsRatingId = await models.loanStage.findOne({ where: { name: 'OPS team rating' } });
@@ -1450,7 +1450,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                         if (signatureVerification == false) {
                             return res.status(422).json({ message: "razorpay payment verification failed" });
                         }
-                    }else{
+                    } else {
                         isAdmin = true
                     }
                     if (isRazorPay) {

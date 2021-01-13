@@ -14,6 +14,8 @@ var fs = require('fs');
 let { sendMessageLoanIdGeneration } = require('../../utils/SMS')
 const _ = require('lodash');
 var randomize = require('randomatic');
+const { addBankDetailInAugmontDb } = require('../../service/digiGold')
+
 
 const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT, LOAN_APPLY_FROM_APPRAISER_APP, LOAN_EDIT_FROM_APPRAISER_APP } = require('../../utils/customerLoanHistory');
 const { addBankDetailInAugmontDb } = require('../../service/digiGold')
