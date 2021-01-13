@@ -33,7 +33,9 @@ export class DepositRequestsComponent implements OnInit {
 		from: 1,
 		to: 25,
 		search: '',
-		paymentFor: 'deposit'
+		paymentFor: 'deposit',
+		startDate: '',
+		depositStatus: ''
 	};
 	filteredDataList = {};
 
@@ -79,6 +81,8 @@ export class DepositRequestsComponent implements OnInit {
 		const entitiesSubscription = this.dataSource.entitySubject.pipe(skip(1), distinctUntilChanged())
 			.subscribe((res) => {
 				this.depositDetailsResult = res;
+				// console.log(this.depositDetailsResult);
+				
 			});
 		this.subscriptions.push(entitiesSubscription);
 		this.dataSource.loadDepositRequests(this.depositData);
@@ -108,6 +112,10 @@ export class DepositRequestsComponent implements OnInit {
 	}
 
 	applyFilter(data) {
+		console.log(data);
+		this.depositData.startDate = data.data.startDate;
+		this.depositData.depositStatus = data.data.depositStatus;   
+		this.dataSource.loadDepositRequests(this.depositData);
 		this.filteredDataList = data.list;
 	}
 

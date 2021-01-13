@@ -17,7 +17,7 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const moment = require('moment');
-const { walletDelivery, customerBalance } = require('../../../service/wallet');
+const { walletDelivery, customerBalance, customerNonSellableMetal } = require('../../../service/wallet');
 const { postMerchantOrder, getUserData, postBuy } = require('../../../service/digiGold')
 
 
@@ -42,7 +42,7 @@ exports.AddOrder = async (req, res) => {
     let walletData;
     let output = await sequelize.transaction(async (t) => {
 
-      walletData = await models.walletTempDetails.create({ customerId: id, amount, paymentDirection: "debit", description: "delivery", productTypeId: 4, transactionDate: moment() }, { transaction: t });
+      walletData = await models.walletTempDetails.create({ customerId: id, amount, paymentDirection: "debit", description: "Delivery and Making charges", productTypeId: 4, transactionDate: moment() }, { transaction: t });
 
       let currentTempWalletBal = Number(customerDetails.currentWalletBalance) - Number(amount);
 
@@ -69,19 +69,12 @@ exports.AddOrder = async (req, res) => {
             'modeOfPayment': modeOfPayment
           };
 
-          console.log(data)
-
           for (let [index, ele] of getCartDetails.entries()) {
             data[`product[${index}][sku]`] = ele.productSku;
             data[`product[${index}][quantity]`] = ele.quantity;
           }
 
-          console.log(qs.stringify(data), "data");
-
-
           const result = await postMerchantOrder(data)
-
-          console.log(result.data);
 
           if (result.isSuccess) {
 
@@ -93,7 +86,10 @@ exports.AddOrder = async (req, res) => {
 
             let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.shippingCharges);
 
-            await models.customer.update({ currentWalletBalance: checkBalance.currentWalletBalance, walletFreeBalance: checkBalance.walletFreeBalance }, { where: { id: customerId }, transaction: t });
+            let newCurrentWalletBalance=checkBalance.currentWalletBalance.toFixed(2);
+            let newWalletFreeBalance=checkBalance.walletFreeBalance.toFixed(2);
+
+            await models.customer.update({ currentWalletBalance:Number(newCurrentWalletBalance) , walletFreeBalance:Number(newWalletFreeBalance) }, { where: { id: customerId }, transaction: t });
 
             let customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customerId } });
 
@@ -121,39 +117,48 @@ exports.AddOrder = async (req, res) => {
 
             if (totalGoldWeight) {
 
-              updatedSellableGold = Number(customerBal.sellableGoldBalance) - Number(totalGoldWeight)
-              if (!updatedSellableGold || updatedSellableGold <= 0) {
-                updatedSellableGold = 0;
-              }
-              await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: updatedSellableGold }, { where: { customerId: customerId }, transaction: t });
+              // updatedSellableGold = Number(customerBal.sellableGoldBalance) - Number(totalGoldWeight);
+
+              let checkBalance = await customerNonSellableMetal(result.data.result.data.goldBalance, customerBal.sellableGoldBalance, customerBal.nonSellableGoldBalance, totalGoldWeight);
+
+              // if (!updatedSellableGold || updatedSellableGold <= 0) {
+              //   updatedSellableGold = 0;
+              // }
+              let sellableBal = checkBalance.sellableMetal.toFixed(4);
+              let nonSellableBal = checkBalance.nonSellableMetal.toFixed(4)
+              await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: Number(sellableBal), nonSellableGoldBalance: Number(nonSellableBal) }, { where: { customerId: customerId }, transaction: t });
             }
             // console.log(updatedSellableGold, "updatedSellableGold");
             if (totalSilverWeight) {
-              updatedSellableSilver = Number(customerBal.sellableSilverBalance) - Number(totalSilverWeight);
-              if (!updatedSellableSilver || updatedSellableSilver <= 0) {
-                updatedSellableSilver = 0;
-              }
-              console.log("updatedSellableSilver", updatedSellableSilver);
-              await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilver }, { where: { customerId: customerId }, transaction: t });
+              // updatedSellableSilver = Number(customerBal.sellableSilverBalance) - Number(totalSilverWeight);
+
+              // if (!updatedSellableSilver || updatedSellableSilver <= 0) {
+              //   updatedSellableSilver = 0;
+              // }
+              let checkBalance = await customerNonSellableMetal(result.data.result.data.goldBalance, customerBal.sellableSilverBalance, customerBal.nonSellableSilverBalance, totalSilverWeight);
+
+              let sellableBal = checkBalance.sellableMetal.toFixed(4);
+              let nonSellableBal = checkBalance.nonSellableMetal.toFixed(4);
+
+              await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: Number(sellableBal), nonSellableSilverBalance: Number(nonSellableBal) }, { where: { customerId: customerId }, transaction: t });
             }
 
             // await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: id }, transaction: t });
 
-            let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.shippingCharges, paymentDirection: "debit", description: "Order Delivery", productTypeId: 4, transactionDate: moment(), walletTempDetailId: walletTempId, orderTypeId: 5, paymentOrderTypeId: 6 }, { transaction: t });
-            console.log(walletData, "walletData");
+            let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.shippingCharges, paymentDirection: "debit", description: "Delivery and Making charges", productTypeId: 4, transactionDate: moment(), walletTempDetailId: walletTempId, orderTypeId: 5, paymentOrderTypeId: 6, transactionStatus: "completed" }, { transaction: t });
 
-            let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetailId, customerId: customerId, orderTypeId: 3, orderId: result.data.result.data.orderId, totalAmount: amount, blockId: orderUniqueId, amount: amount, modeOfPayment: modeOfPayment, userAddressId: userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.orderId, orderStatus: "pending", deliveryShippingCharges: result.data.result.data.shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, walletBalance: checkBalance.currentWalletBalance, walletId: walletData.id }, { transaction: t });
-            console.log(orderDetail, "orderDetail");
+          let orderCreatedDate = moment(moment().utcOffset("+05:30"));
+
+            let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetailId, customerId: customerId, orderTypeId: 3, orderId: result.data.result.data.orderId, totalAmount: amount, blockId: orderUniqueId, amount: amount, modeOfPayment: modeOfPayment, userAddressId: userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.orderId, orderStatus: "pending", deliveryShippingCharges: result.data.result.data.shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, walletBalance: Number(newCurrentWalletBalance), walletId: walletData.id, orderCreatedDate: orderCreatedDate  }, { transaction: t });
+
             await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { id: tempOrderDetailId }, transaction: t })
 
             for (let cart of cartData) {
               let productData = await models.digiGoldOrderProductDetail.create({ orderDetailId: orderDetail.id, productSku: cart.productSku, productWeight: cart.productWeight, productName: cart.productName, amount: cart.amount, productImage: cart.productImage, totalAmount: cart.totalProductAmount, metalType: cart.metalType, quantity: cart.quantity, createdBy: 1, modifiedBy: 1 }, { transaction: t });
-              console.log(productData, " productData");
             }
 
             for (let address of orderAddress) {
               await models.digiGoldOrderAddressDetail.create({ orderDetailId: orderDetail.id, customerName: address.customerName, addressType: address.addressType, address: address.address, stateId: address.stateId, cityId: address.cityId, pinCode: address.pinCode }, { transaction: t });
-              console.log(address, "addressaddressaddressaddressaddressaddress");
             }
 
             await sms.sendMessageForOrderPlaced(customerDetails.mobileNumber, result.data.result.data.orderId);
@@ -294,17 +299,18 @@ exports.AddOrderOld = async (req, res) => {
           if (totalGoldWeight) {
 
             updatedSellableGold = Number(customerBal.sellableGoldBalance) - Number(totalGoldWeight)
-
-            await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: updatedSellableGold }, { where: { customerId: id }, transaction: t });
+            let newUpdatedSellableGold = updatedSellableGold.toFixed(4)
+            await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: Number(newUpdatedSellableGold) }, { where: { customerId: id }, transaction: t });
           }
 
           if (totalSilverWeight) {
             updatedSellableSilver = Number(customerBal.sellableSilverBalance) - Number(totalSilverWeight);
-
-            await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilver }, { where: { customerId: id }, transaction: t });
+            let newUpdatedSellableSilver = updatedSellableSilver.toFixed(4)
+            await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: Number(newUpdatedSellableSilver) }, { where: { customerId: id }, transaction: t });
           }
+          let orderCreatedDate = moment(moment().utcOffset("+05:30"));
 
-          let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetail.id, customerId: id, orderTypeId: 3, orderId: tempOrderDetail.blockId, totalAmount: tempOrderDetail.totalAmount, quantity: tempOrderDetail.quantity, blockId: tempOrderDetail.blockId, amount: tempOrderDetail.amount, modeOfPayment: tempOrderDetail.modeOfPayment, userAddressId: tempOrderDetail.userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.orderId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, orderStatus: "pending", deliveryShippingCharges: tempOrderDetail.deliveryShippingCharges, deliveryTotalQuantity: tempOrderDetail.deliveryTotalQuantity, deliveryTotalWeight: tempOrderDetail.deliveryTotalWeight }, { transaction: t });
+          let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetail.id, customerId: id, orderTypeId: 3, orderId: tempOrderDetail.blockId, totalAmount: tempOrderDetail.totalAmount, quantity: tempOrderDetail.quantity, blockId: tempOrderDetail.blockId, amount: tempOrderDetail.amount, modeOfPayment: tempOrderDetail.modeOfPayment, userAddressId: tempOrderDetail.userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.orderId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, orderStatus: "pending", deliveryShippingCharges: tempOrderDetail.deliveryShippingCharges, deliveryTotalQuantity: tempOrderDetail.deliveryTotalQuantity, deliveryTotalWeight: tempOrderDetail.deliveryTotalWeight, orderCreatedDate: orderCreatedDate }, { transaction: t });
 
           await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { id: tempOrderDetail.id }, transaction: t })
 

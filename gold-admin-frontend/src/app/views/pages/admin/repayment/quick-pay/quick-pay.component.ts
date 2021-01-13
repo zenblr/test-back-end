@@ -122,7 +122,10 @@ export class QuickPayComponent implements OnInit {
       }
     })
   }
-
+ 
+  paymentData(event){
+    this.paymentValue = event
+  }
   submit() {
     if (!(this.paymentValue && this.paymentValue.paymentType)) {
       return this.toastr.error('Please select a payment method')

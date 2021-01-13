@@ -14,7 +14,7 @@ exports.panCardNameByPan = async (req, res, next) => {
     if(panData.error == false){
         return res.status(200).json({message: 'Success',data:panData.data })
     }else{
-        if(nameData.status == 504){
+        if(panData.status == 504){
             return res.status(400).json({message: 'Please try again'})
         }
         return res.status(400).json({message: 'Invalid Pan Card number'})

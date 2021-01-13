@@ -40,7 +40,13 @@ module.exports = (sequelize, DataTypes) => {
         walletTempDetailId: {
             type: DataTypes.INTEGER,
             field: 'wallet_temp_detail_id',
-        }
+        },
+        transactionStatus: {
+            type: DataTypes.ENUM,
+            field: 'transaction_status',
+            values: ['pending', 'completed', 'rejected'],
+            defaultValue: 'pending'
+        },
     }, {
         freezeTableName: true,
         tableName: 'wallet_details',

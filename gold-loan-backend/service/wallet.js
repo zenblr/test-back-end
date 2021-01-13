@@ -93,13 +93,16 @@ let walletBuy = async (customerId, lockPrice, metalType, blockId, modeOfPayment,
       await sequelize.transaction(async (t) => {
         let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.totalAmount);
 
-        await models.customer.update({ currentWalletBalance: currentBal }, { where: { id: customerId } })
+        let newCurrentBal=currentBal.toFixed(2);
+
+
+        await models.customer.update({ currentWalletBalance: Number(newCurrentBal) }, { where: { id: customerId } })
 
         let orderUniqueId = `dg_buy${Math.floor(1000 + Math.random() * 9000)}`;
 
         let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.totalAmount, paymentDirection: "debit", description: result.data.message, productTypeId: 4, transactionDate: moment(), walletTempDetailId: tempWalletId }, { transaction: t });
 
-        let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: temporderDetailId, customerId: customerId, orderTypeId: 1, orderId: orderUniqueId, metalType: result.data.result.data.metalType, quantity: quantity, lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, rate: result.data.result.data.rate, quantityBased: quantityBased, modeOfPayment: modeOfPayment, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, orderStatus: "pending", totalAmount: result.data.result.data.totalAmount, walletBalance: currentBal, walletId: walletData.id }, { transaction: t });
+        let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: temporderDetailId, customerId: customerId, orderTypeId: 1, orderId: orderUniqueId, metalType: result.data.result.data.metalType, quantity: quantity, lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, rate: result.data.result.data.rate, quantityBased: quantityBased, modeOfPayment: modeOfPayment, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, orderStatus: "pending", totalAmount: result.data.result.data.totalAmount, walletBalance: Number(newCurrentBal), walletId: walletData.id }, { transaction: t });
 
         await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { id: orderId }, transaction: t });
 
@@ -186,7 +189,9 @@ let walletDelivery = async (customerId, amount, modeOfPayment, orderType, cartDa
 
         let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.shippingCharges);
 
-        await models.customer.update({ currentWalletBalance: currentBal }, { where: { id: customerId }, transaction: t });
+        let newCurrentBalance=currentBal.toFixed(2);
+
+        await models.customer.update({ currentWalletBalance: Number(newCurrentBalance) }, { where: { id: customerId }, transaction: t });
 
         let customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customerId } });
 
@@ -218,7 +223,8 @@ let walletDelivery = async (customerId, amount, modeOfPayment, orderType, cartDa
           if (!updatedSellableGold || updatedSellableGold <= 0) {
             updatedSellableGold = 0;
           }
-          await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: updatedSellableGold }, { where: { customerId: customerId }, transaction: t });
+          let sellableGoldBalance = updatedSellableGold.toFixed(4);
+          await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: Number(sellableGoldBalance) }, { where: { customerId: customerId }, transaction: t });
         }
         // console.log(updatedSellableGold, "updatedSellableGold");
         if (totalSilverWeight) {
@@ -226,8 +232,9 @@ let walletDelivery = async (customerId, amount, modeOfPayment, orderType, cartDa
           if (!updatedSellableSilver || updatedSellableSilver <= 0) {
             updatedSellableSilver = 0;
           }
+          let sellableSilverBalance = updatedSellableSilver.toFixed(4);
           console.log("updatedSellableSilver", updatedSellableSilver);
-          await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: updatedSellableSilver }, { where: { customerId: customerId }, transaction: t });
+          await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: Number(sellableSilverBalance) }, { where: { customerId: customerId }, transaction: t });
         }
 
         // await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: id }, transaction: t });
@@ -235,7 +242,7 @@ let walletDelivery = async (customerId, amount, modeOfPayment, orderType, cartDa
         let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.shippingCharges, paymentDirection: "debit", description: "Order Delivery", productTypeId: 4, transactionDate: moment(), walletTempDetailId: walletTempId }, { transaction: t });
         console.log(walletData, "walletData");
 
-        let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetailId, customerId: customerId, orderTypeId: 3, orderId: result.data.result.data.orderId, totalAmount: amount, blockId: orderUniqueId, amount: amount, modeOfPayment: modeOfPayment, userAddressId: userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.orderId, orderStatus: "pending", deliveryShippingCharges: result.data.result.data.shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, walletBalance: currentBal, walletId: walletData.id }, { transaction: t });
+        let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetailId, customerId: customerId, orderTypeId: 3, orderId: result.data.result.data.orderId, totalAmount: amount, blockId: orderUniqueId, amount: amount, modeOfPayment: modeOfPayment, userAddressId: userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.orderId, orderStatus: "pending", deliveryShippingCharges: result.data.result.data.shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, walletBalance: Number(newCurrentBalance), walletId: walletData.id }, { transaction: t });
         console.log(orderDetail, "orderDetail");
         await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { id: tempOrderDetailId }, transaction: t })
 
@@ -286,11 +293,37 @@ let customerBalance = async (customerData, amount) => {
   }
 }
 
+let customerNonSellableMetal = async (currentMetalWeight, sellableMetal, nonSellableMetal, deliveryMetal) => {
+  currentMetalWeight = currentMetalWeight - deliveryMetal
+
+  checkRemaingBalance = deliveryMetal - nonSellableMetal
+
+  nonSellableMetal = Math.abs(checkRemaingBalance);
+
+  if (checkRemaingBalance > 0) {
+    nonSellableMetal = 0
+    if (sellableMetal > checkRemaingBalance) {
+      sellableMetal = sellableMetal - checkRemaingBalance
+      if(sellableMetal < 0){
+        sellableMetal = 0
+      }
+    } else {
+      sellableMetal = 0
+    }
+  }
+
+  return {
+    sellableMetal,
+    nonSellableMetal,
+    currentMetalWeight
+  }
+}
+
 
 module.exports = {
   walletBuy: walletBuy,
   walletDelivery: walletDelivery,
   customerBalance: customerBalance,
-  walletTransactionDetailById: walletTransactionDetailById
+  walletTransactionDetailById: walletTransactionDetailById,
+  customerNonSellableMetal: customerNonSellableMetal
 }
-

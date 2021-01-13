@@ -163,7 +163,7 @@ async function getOldLoanData(customerLoanId) {
             {
                 model: models.customer,
                 as: 'customer',
-                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'mobileNumber'],
+                attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'panType', 'panImage', 'form60Image', 'mobileNumber'],
                 include: [
                     {
                         model: models.customerKycAddressDetail,
@@ -351,6 +351,8 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                         if (signatureVerification == false) {
                             return res.status(422).json({ message: "razorpay payment verification failed" });
                         }
+                    } else{
+                        isAdmin = true
                     }
                     if (isRazorPay) {
                         loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "partRelease", depositDate: moment(depositDate).format("YYYY-MM-DD"), razorPayTransactionId }, { transaction: t });
@@ -480,7 +482,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
             if (isAdmin) {
                 return res.status(200).json({ message: "Success", partRelease });
             } else {
-                res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/loan-details`)
+                res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/thank-you?payemntDone=yes&amount=${tempRazorData.amount}`)
             }
         } else {
             return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
@@ -1119,7 +1121,7 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
     let newLoanAmount = partReleaseData.newLoanAmount;
     let customerData = await models.customer.findOne({
         where: { customerUniqueId, isActive: true, kycStatus: 'approved' },
-        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
+        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage', 'form60Image'],
     })
     let bmRatingId = await models.loanStage.findOne({ where: { name: 'bm rating' } });
     let opsRatingId = await models.loanStage.findOne({ where: { name: 'OPS team rating' } });
@@ -1438,6 +1440,8 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                         if (signatureVerification == false) {
                             return res.status(422).json({ message: "razorpay payment verification failed" });
                         }
+                    }else{
+                        isAdmin = true
                     }
                     if (isRazorPay) {
                         loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "fullRelease", depositDate: moment(depositDate).format("YYYY-MM-DD"), razorPayTransactionId }, { transaction: t });
@@ -1562,7 +1566,8 @@ exports.ornamentsFullRelease = async (req, res, next) => {
             if (isAdmin) {
                 return res.status(200).json({ message: "Success", fullRelease });
             } else {
-                res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/loan-details`)
+                res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/thank-you?payemntDone=yes&amount=${tempRazorData.amount}`)
+
             }
         } else {
             return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });

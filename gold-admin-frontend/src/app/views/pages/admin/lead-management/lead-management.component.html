@@ -133,6 +133,13 @@
                                 </div>
                             </ng-container>
                         </ng-container>
+
+                        <!-- <ng-container *ngIf="lead.module?.id == 4">
+                            <div [ngStyle]="{'display': 'inherit'}" *ngIf="!lead.panCardNumber">
+                                <button (click)="goToDigiGoldKyc(lead)" class="apply-kyc"
+                                    *ngxPermissionsOnly="['customerKycAdd']">Apply KYC</button>
+                            </div>
+                        </ng-container> -->
                     </mat-cell>
                 </ng-container>
 
@@ -176,7 +183,7 @@
                 <ng-container matColumnDef="menu">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let loan">
-                        <div *ngxPermissionsOnly="['addNewRequest', 'addBranchCustomer']">
+                        <div *ngxPermissionsOnly="['addNewRequest', 'addBranchCustomer', 'customerKycAdd']">
                             <button mat-button [matMenuTriggerFor]="menu">
                                 <mat-icon>more_vert</mat-icon>
                             </button>
@@ -188,6 +195,10 @@
                                 <ng-container *ngIf="!loan.internalBranchId">
                                     <button *ngxPermissionsOnly="['addBranchCustomer']" mat-menu-item
                                         (click)="assignBranch(loan)">Assign Branch</button>
+                                </ng-container>
+                                <ng-container *ngIf="loan.module?.id == 4 && !loan.panCardNumber">
+                                    <button *ngxPermissionsOnly="['customerKycAdd']" mat-menu-item
+                                        (click)="goToDigiGoldKyc(loan)">Apply Digi KYC</button>
                                 </ng-container>
                             </mat-menu>
                         </div>

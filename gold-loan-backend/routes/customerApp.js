@@ -9,6 +9,7 @@ const jewelleryRelease = require('./jewelleryReleaseMobileApp');  //upload Packe
 const partPayment = require('./partPaymentCustomerApp');  //upload Packets List 
 const quickPay = require('./quickPayCustomerApp');  //upload Packets List 
 const customerWebsiteKyc = require('./customerWebsiteKyc') //customer website kyc
+const karzaMbileApp = require('./karzaMbileApp')
 const contactUsEmail = require('./contactUs')
 const walletCustomer = require('./walletCustomer');
 const augmontBankDetails = require('./digitalGold/augmontBankDetail')
@@ -88,5 +89,6 @@ router.use('/kyc', customerWebsiteKyc)
 
 router.post('/razor-pay', wrapper(razorPayCreateOrder));
 
+router.use('/e-kyc', karzaMbileApp);
 
 module.exports = router;
