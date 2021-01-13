@@ -1492,6 +1492,21 @@ let applyDigiKyc = async (req) => {
         return { status: 400, success: false, message: `Your digi gold kyc is already rejected.` }
     }
 
+    if (panCardNumber) {
+        let findPanCardNumber = await models.customer.findOne({
+            where: {
+                id: { [Op.not]: customerId },
+                panCardNumber: { [Op.iLike]: panCardNumber },
+                isActive: true
+            }
+        });
+        if (!check.isEmpty(findPanCardNumber)) {
+            // return res.status(400).json({ message: "Pan Card Number already exists! " })
+            return { status: 404, success: false, message: `Pan Card Number already exists!` }
+        }
+    }
+
+
     await sequelize.transaction(async (t) => {
 
         if (checkApplied) {
