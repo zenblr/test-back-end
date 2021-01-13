@@ -21,6 +21,7 @@ const { sendDisbursalMessage } = require('../../utils/SMS')
 
 const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory');
 var randomize = require('randomatic');
+const { addBankDetailInAugmontDb } = require('../../service/digiGold')
 
 //LOAN DATE CHANGE
 exports.loanDateChange = async (req, res, next) => {
@@ -980,6 +981,7 @@ exports.loanBankDetails = async (req, res, next) => {
     let checkBank = await models.customerLoanBankDetail.findOne({ where: { masterLoanId: masterLoanId } })
 
     let masterLoan = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
+    let getCustomer = await models.customer.findOne({ where: { id: masterLoan.customerId } })
 
     let loanData = await sequelize.transaction(async t => {
 
@@ -989,7 +991,13 @@ exports.loanBankDetails = async (req, res, next) => {
             let checkBankDetailExist = await models.customerBankDetails.findAll({ where: { accountNumber: accountNumber, customerId: masterLoan.customerId } })
 
             if (checkBankDetailExist.length == 0) {
-                await models.customerBankDetails.create({ moduleId: 1, customerId: masterLoan.customerId, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, description: `Added while Creating Loan` }, { transaction: t });
+                let addBankDetaiils = await addBankDetailInAugmontDb(getCustomer.customerUniqueId, null, bankBranchName, accountNumber, accountHolderName, ifscCode)
+                if (addBankDetaiils.isSuccess) {
+                    await models.customerBankDetails.create({ moduleId: 1, customerId: masterLoan.customerId, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, description: `Added while Creating Loan`, bankId: null, userBankId: addBankDetaiils.data.data.result.data.userBankId }, { transaction: t });
+                } else {
+                    t.rollback()
+                    return res.status(400).json({ message: addBankDetaiils.message })
+                }
             }
         }
         //added customer bank details
