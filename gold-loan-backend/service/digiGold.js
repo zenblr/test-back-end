@@ -105,7 +105,6 @@ let addBankDetailInAugmontDb = async (customerUniqueId, bankId, bankBranchName, 
             },
             data : data
         })
-        console.log(result.data);
         if (result.data.statusCode === 200) {
             return { isSuccess: true, data: result }
         } else {
@@ -118,11 +117,25 @@ let addBankDetailInAugmontDb = async (customerUniqueId, bankId, bankBranchName, 
     
 }
 
+let checkKycStatus = async(customerId) =>{
+
+    let customerDetails = await models.customer.findOne({
+        where: { id: customerId, isActive: true },
+      });
+      let customerKycStatus
+      if(customerDetails.digiKycStatus == "rejected"){
+        customerKycStatus = true;
+      }else{
+        customerKycStatus = false;
+      }
+      return customerKycStatus;
+}
 
 module.exports = {
     postMerchantOrder: postMerchantOrder,
     getUserData: getUserData,
     postBuy: postBuy,
     createCustomer: createCustomer,
-    addBankDetailInAugmontDb: addBankDetailInAugmontDb
+    addBankDetailInAugmontDb: addBankDetailInAugmontDb,
+    checkKycStatus: checkKycStatus
 }

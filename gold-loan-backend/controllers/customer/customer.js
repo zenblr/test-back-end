@@ -11,7 +11,7 @@ const CONSTANT = require("../../utils/constant");
 const uniqid = require('uniqid');
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
-let sms = require('../../utils/sendSMS');
+// let sms = require('../../utils/sendSMS');
 let { sendOtpToLeadVerification, sendOtpForLogin, forgetPasswordOtp, sendUpdateLocationCollectMessage, sendUpdateLocationHandoverMessage } = require('../../utils/SMS');
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck');
 const qs = require('qs');
@@ -21,7 +21,7 @@ const { JWT_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/cons
 const { ADMIN_PANEL, CUSTOMER_WEBSITE } = require('../../utils/sourceFrom')
 const { getCustomerCityById, getCustomerStateById } = require('../../service/customerAddress')
 const { createCustomer } = require('../../service/digiGold')
-
+let sms = require('../../utils/SMS')
 
 exports.getOtp = async (req, res, next) => {
   let getOtp = await models.customerOtp.findAll({
@@ -114,6 +114,9 @@ exports.addCustomer = async (req, res, next) => {
       await models.digiKycApplied.create({ customerId: customer.id, status: 'waiting' }, { transaction: t })
 
       await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customer.id }, transaction: t })
+      // applied
+      await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
+      
     }
 
     const result = await createCustomer(data)
@@ -326,6 +329,8 @@ exports.editCustomer = async (req, res, next) => {
       await models.digiKycApplied.create({ customerId: customerId, status: 'waiting' }, { transaction: t })
 
       await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customerId }, transaction: t })
+      await sms.sendMessageForKycPending(customerExist.mobileNumber, customerExist.customerUniqueId);
+    
     }
   });
   return res.status(200).json({ messgae: `User Updated` });

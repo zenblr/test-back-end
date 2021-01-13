@@ -1290,8 +1290,7 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                 let checkBankDetailExist = await models.customerBankDetails.findAll({ where: { accountNumber: oldLoanData.loanBankDetail.accountNumber, customerId: customerData.id } })
 
                 if (checkBankDetailExist.length == 0) {
-
-                    let addBankDetaiils = await addBankDetailInAugmontDb(customerData.customerUniqueId, null, oldLoanData.loanBankDetail.bankBranchName, oldLoanData.loanBankDetail.accountNumber, oldLoanData.loanBankDetail.accountHolderName, oldLoanData.loanBankDetail.ifscCode)
+                     let addBankDetaiils = await addBankDetailInAugmontDb(customerData.customerUniqueId, null, oldLoanData.loanBankDetail.bankBranchName, oldLoanData.loanBankDetail.accountNumber, oldLoanData.loanBankDetail.accountHolderName, oldLoanData.loanBankDetail.ifscCode)
 
                     if (addBankDetaiils.isSuccess) {
                         await models.customerBankDetails.create({

@@ -18,6 +18,7 @@ const { addBankDetailInAugmontDb } = require('../../service/digiGold')
 
 
 const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT, LOAN_APPLY_FROM_APPRAISER_APP, LOAN_EDIT_FROM_APPRAISER_APP } = require('../../utils/customerLoanHistory');
+const { addBankDetailInAugmontDb } = require('../../service/digiGold')
 
 exports.loanRequest = async (req, res, next) => {
 
@@ -344,7 +345,6 @@ exports.loanRequest = async (req, res, next) => {
             let checkBankDetailExist = await models.customerBankDetails.findAll({ where: { accountNumber: accountNumber, customerId: customerId } })
 
             if (checkBankDetailExist.length == 0) {
-
                 let addBankDetaiils = await addBankDetailInAugmontDb(getCustomer.customerUniqueId, null, bankBranchName, accountNumber, accountHolderName, ifscCode)
                 if (addBankDetaiils.isSuccess) {
                     await models.customerBankDetails.create({ moduleId: 1, customerId: customerId, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, description: `Added while Creating Loan from appraiser app`, bankId: null, userBankId: addBankDetaiils.data.data.result.data.userBankId }, { transaction: t });

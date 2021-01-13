@@ -11,12 +11,13 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const moment = require('moment');
+const {addBankDetailInAugmontDb, checkKycStatus } = require('../../../service/digiGold')
 
 
 
 exports.sellProduct = async (req, res) => {
   try {
-    const { metalType, quantity, lockPrice, blockId, userBankId, accountName, bankId, accountNumber, ifscCode, modeOfPayment, branchName, amount } = req.body;
+    let { metalType, quantity, lockPrice, blockId, userBankId, accountName, bankId, accountNumber, ifscCode, modeOfPayment, branchName, amount, customerBankDetailId, bankName } = req.body;
     const id = req.userData.id;
 
     // return;
@@ -30,6 +31,12 @@ exports.sellProduct = async (req, res) => {
     if (check.isEmpty(customerDetails)) {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     }
+
+    let checkCustomerKycStatus = checkKycStatus(id);
+
+    if(checkCustomerKycStatus){
+      return res.status(400).json({ message: "Your KYC status is Rejected" });
+    } 
 
     let getCustomerBalance = await getCustomerBalanceDetail(id);
     console.log(getCustomerBalance);
@@ -65,9 +72,21 @@ exports.sellProduct = async (req, res) => {
     let orderUniqueId = `dg_sell${Math.floor(1000 + Math.random() * 9000)}`;
     let paymentBankType;
     if (modeOfPayment == "bankAccount") {
-      paymentBankType = "userbank";
+      let addBankDetaiils
       const customerUniqueId = customerDetails.customerUniqueId;
       const merchantData = await getMerchantData();
+
+      if(!userBankId){
+        addBankDetaiils = await addBankDetailInAugmontDb(customerUniqueId, bankId, bankName, accountNumber, accountName, ifscCode);
+        console.log(addBankDetaiils.data.data.result.data.userBankId)
+        if(addBankDetaiils.isSuccess){
+          await models.customerBankDetails.update({ userBankId: addBankDetaiils.data.data.result.data.userBankId }, { where: { id: customerBankDetailId }});
+        }
+        userBankId = addBankDetaiils.data.data.result.data.userBankId;
+      }
+
+
+      paymentBankType = "userbank";
       const transactionId = uniqid(merchantData.merchantId, customerUniqueId);
       const data = qs.stringify({
         'lockPrice': lockPrice,
@@ -192,7 +211,7 @@ exports.sellProduct = async (req, res) => {
             await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: Number(newUpdatedSellableSilverBal) }, { where: { customerId: id }, transaction: t });
           }
 
-          walletData = await models.walletDetails.create({ customerId: id, amount: result.data.result.data.totalAmount, paymentDirection: "credit", description: `${result.data.result.data.metalType} sold ${quantity} grams`, productTypeId: 4, transactionDate: moment(), orderTypeId: 2, paymentOrderTypeId: 4, transactionStatus: "completed"  }, { transaction: t })
+          walletData = await models.walletDetails.create({ customerId: id, amount: result.data.result.data.totalAmount, paymentDirection: "credit", description: `Amount added to your Augmont Wallet`, productTypeId: 4, transactionDate: moment(), orderTypeId: 2, paymentOrderTypeId: 4, transactionStatus: "completed"  }, { transaction: t })
 
           let amountOfWallet;
           let currentWalletBalance;
