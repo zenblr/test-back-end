@@ -36,7 +36,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
     let getCustomerInfo = await models.customer.findOne({
         where: { id: customerId, statusId },
         attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage'
-            , 'panCardNumber', 'internalBranchId'],
+            , 'panCardNumber', 'internalBranchId', 'mobileNumber'],
     })
     if (check.isEmpty(getCustomerInfo)) {
         return { status: 404, success: false, message: `Your status is not confirm` }
@@ -63,6 +63,10 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
             return { status: 404, success: false, message: `Identity Proof Number already exists!` }
         }
 
+        if (getCustomerInfo.mobileNumber == alternateMobileNumber) {
+            // return res.status(400).json({ message: "Your alternate Mobile number is same as your previous Mobile number " });
+            return { status: 400, success: false, message: `Your alternate Mobile number is same as your previous Mobile number` }
+        }
 
         let kycInfo = await sequelize.transaction(async t => {
 
@@ -288,7 +292,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
     let getCustomerInfo = await models.customer.findOne({
         where: { id: customerId, statusId: 1 },
         attributes: ['id', 'firstName', 'lastName', 'stateId', 'cityId', 'pinCode', 'panType', 'panImage'
-            , 'panCardNumber', 'internalBranchId'],
+            , 'panCardNumber', 'internalBranchId', 'mobileNumber'],
     })
 
     //change
@@ -312,6 +316,11 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
         let findIdentityNumber = await models.customerKycPersonalDetail.findOne({ where: { customerId: { [Op.not]: customerId }, identityProofNumber: customerKycPersonal.identityProofNumber } });
         if (!check.isEmpty(findIdentityNumber)) {
             return { status: 404, success: false, message: `Identity Proof Number already exists!` }
+        }
+
+        if (getCustomerInfo.mobileNumber == alternateMobileNumber) {
+            // return res.status(400).json({ message: "Your alternate Mobile number is same as your previous Mobile number " });
+            return { status: 400, success: false, message: `Your alternate Mobile number is same as your previous Mobile number` }
         }
     }
 
