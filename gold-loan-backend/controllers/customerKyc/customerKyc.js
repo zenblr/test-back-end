@@ -1228,7 +1228,7 @@ exports.changeDigiKycStatus = async (req, res) => {
         const { id, customerId, status, aadharNumber, aadharAttachment, moduleId, reasonForDigiKyc } = req.body;
         console.log(req.body)
         await sequelize.transaction(async (t) => {
-            if (req.body.status != "rejected") {
+            if (req.body.status == "rejected") {
                 await models.customer.update({ kycStatus: status, scrapKycStatus: status, emiKycStatus: status, digiKycStatus: status }, { where: { id: customerId }, transaction: t })
             } else {
                 await models.customer.update({ emiKycStatus: status, digiKycStatus: status }, { where: { id: customerId }, transaction: t })
