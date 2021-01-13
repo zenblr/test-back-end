@@ -110,7 +110,7 @@ export class MenuConfig {
 								// 	permission: false,
 								// },
 								{
-									title: "Customer Registration List",
+									title: "Customer Request List",
 									page: "/admin/lead-management/registered-customers",
 									// permission: !this.permissionsArr.includes('customerRegistrationView')
 								}

@@ -14,7 +14,7 @@ import { takeUntil, tap } from 'rxjs/operators';
 export class RegisteredCustomerRequestComponent implements OnInit {
 
   dataSource: RegisteredCustomerRequestDatasource;
-  displayedColumns = ['fullName', 'mobileNumber', 'state', 'city'];
+  displayedColumns = ['fullName', 'mobileNumber', 'requestFor', 'state', 'city'];
   results = []
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

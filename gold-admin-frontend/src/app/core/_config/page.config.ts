@@ -158,7 +158,7 @@ export class PageConfig {
 					page: { title: "My Requests", desc: "" },
 				},
 				"registered-customers": {
-					page: { title: "Customer Registration List", desc: "" }
+					page: { title: "Customer Request List", desc: "" }
 				}
 			},
 			"account": {
