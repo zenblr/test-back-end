@@ -358,6 +358,8 @@ exports.operationalTeamKycRating = async (req, res, next) => {
             let bmMobile = getBm.mobileNumber
 
             await sendMessageToOperationsTeam(bmMobile, customerUniqueId)
+            await sms.sendMessageAfterKycApproved(getMobileNumber.mobileNumber, getMobileNumber.customerUniqueId);
+// customer pprove mess
 
             //message for BranchManager
             // request(
@@ -484,6 +486,8 @@ exports.operationalTeamKycRating = async (req, res, next) => {
             request(
                 `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is ${customerUniqueId} Assign appraiser for further process.`
             );
+            // customer pproved mesge
+            await sms.sendMessageAfterKycApproved(cusMobile, getMobileNumber.customerUniqueId);
             return res.status(200).json({ message: 'success' })
         }
     }
