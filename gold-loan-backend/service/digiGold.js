@@ -86,9 +86,42 @@ let createCustomer = async (data) => {
 
 }
 
+let addBankDetailInAugmontDb = async (customerUniqueId, bankId, bankBranchName, accountNumber, accountHolderName, ifscCode) => {
+    try{
+        const merchantData = await getMerchantData();
+        const data = qs.stringify({
+            'bankId':bankId,
+            'bankBranch':bankBranchName,
+            'accountNumber':accountNumber,
+            'accountName':accountHolderName,
+            'ifscCode':ifscCode
+        })
+        const result = await models.axios({
+            method: 'POST',
+            url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/${customerUniqueId}/banks`,
+            headers: { 
+              'Content-Type': 'application/x-www-form-urlencoded', 
+              'Authorization': `Bearer ${merchantData.accessToken}`,
+            },
+            data : data
+        })
+        if (result.data.statusCode === 200) {
+            return { isSuccess: true, data: result }
+        } else {
+            return { isSuccess: false }
+        }
+    }catch(err){
+        console.log(err)
+        return { isSuccess: false, message: err.message }
+    }
+    
+}
+
+
 module.exports = {
     postMerchantOrder: postMerchantOrder,
     getUserData: getUserData,
     postBuy: postBuy,
-    createCustomer: createCustomer
+    createCustomer: createCustomer,
+    addBankDetailInAugmontDb: addBankDetailInAugmontDb
 }

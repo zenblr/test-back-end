@@ -41,6 +41,8 @@ exports.changeKycStatus = async (req, res) => {
                         await sms.sendMessageForKycRejected(customer.mobileNumber, customer.customerUniqueId);
                     }
                 });
+            }else{
+                return res.status(400).json({ message: "Invalid Customer Id" });
             }
         }
 

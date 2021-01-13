@@ -18,7 +18,7 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const walletService = require('../../service/wallet');
 const { walletBuy, walletDelivery, customerBalance, customerNonSellableMetal } = require('../../service/wallet');
-const { postMerchantOrder, getUserData, postBuy } = require('../../service/digiGold')
+const { postMerchantOrder, getUserData, postBuy, addBankDetailInAugmontDb } = require('../../service/digiGold')
 
 const getMerchantData = require('../auth/getMerchantData');
 
@@ -63,7 +63,7 @@ exports.makePayment = async (req, res) => {
           { amount: sendAmount, currency: "INR", payment_capture: 1 }
         );
 
-        tempWalletDeopsit = await models.walletTempDetails.create({ customerId: id, amount: amount, paymentDirection: "credit", description: "Money added to Augmont Wallet", productTypeId: 4, transactionDate: depositDate }, { transaction: t });
+        tempWalletDeopsit = await models.walletTempDetails.create({ customerId: id, amount: amount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: depositDate }, { transaction: t });
 
         tempOrderDetail = await models.walletTransactionTempDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 4, walletTempId: tempWalletDeopsit.id, transactionUniqueId, razorPayTransactionId: razorPayOrder.id, paymentType, transactionAmount: amount, paymentReceivedDate: depositDate, orderAmount, metalType, qtyAmtType, quantity, type, redirectOn }, { transaction: t });
 
@@ -100,7 +100,7 @@ exports.makePayment = async (req, res) => {
 
       await sequelize.transaction(async (t) => {
 
-        tempWallet = await models.walletTempDetails.create({ customerId: id, amount: amount, paymentDirection: "credit", description: "Money added to Augmont Wallet", productTypeId: 4, transactionDate: moment() }, { transaction: t });
+        tempWallet = await models.walletTempDetails.create({ customerId: id, amount: amount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: moment() }, { transaction: t });
         console.log(tempWallet);
         tempOrderDetail = await models.walletTransactionTempDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 4, walletTempId: tempWallet.id, transactionUniqueId, bankTransactionUniqueId: bankTransactionId, paymentType, transactionAmount: amount, paymentReceivedDate: depositDate, chequeNumber, bankName, branchName }, { transaction: t });
 
@@ -180,7 +180,7 @@ exports.addAmountWallet = async (req, res) => {
         if (!orderData) {
 
 
-          WalletDetail = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "Money added to Augmont Wallet", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
+          WalletDetail = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
 
           let newFreeBalance = customer.walletFreeBalance.toFixed(2);
 
@@ -863,19 +863,60 @@ exports.withdrawAmount = async (req, res) => {
 
 
 exports.AddCustomerBankDetails = async (req, res) => {
+  try{
 
-  const { bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifscCode } = req.body;
+    const {bankId, bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifscCode } = req.body;
 
-  const id = req.userData.id;
+    const id = req.userData.id;
+      let customerDetails = await models.customer.findOne({
+        where: { id, isActive:true },
+      });
+      if (check.isEmpty(customerDetails)) {
+        return res.status(404).json({ message: "Customer Does Not Exists" });
+      }
+      
+      const customerUniqueId = customerDetails.customerUniqueId;
 
-  customerBankDetails = await models.customerBankDetails.create({ customerId: id, moduleId: 4, description: 'withdraw wallet amount', bankName: bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifscCode, isActive: 'true' });
+      let addBankDetaiils = await addBankDetailInAugmontDb(customerUniqueId, bankId, bankBranchName, accountNumber, accountHolderName, ifscCode)
 
-  if (customerBankDetails) {
-    return res.status(200).json({ message: 'Success' });
-  } else {
-    return res.status(404).json({ message: `Failed to add bank details.` });
+      // const merchantData = await getMerchantData();
+      // const data = qs.stringify({
+      //     'bankId':bankId,
+      //     'bankBranch':bankBranchName,
+      //     'accountNumber':accountNumber,
+      //     'accountName':accountHolderName,
+      //     'ifscCode':ifscCode
+      // })
+      // const result = await models.axios({
+      //     method: 'POST',
+      //     url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/${customerUniqueId}/banks`,
+      //     headers: { 
+      //       'Content-Type': 'application/x-www-form-urlencoded', 
+      //       'Authorization': `Bearer ${merchantData.accessToken}`,
+      //     },
+      //     data : data
+      // })
+      if(addBankDetaiils.isSuccess){
+        customerBankDetails = await models.customerBankDetails.create({ customerId: id, moduleId: 4, description: 'withdraw wallet amount', bankName: bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifscCode, isActive: 'true', bankId: bankId, userBankId: addBankDetaiils.data.data.result.data.userBankId });
+
+        if (customerBankDetails) {
+          return res.status(200).json({ message: 'Success' });
+        } else {
+          return res.status(404).json({ message: `Failed to add bank details.` });
+        }
+      }
+  
+  }catch(err){
+    console.log(err);
+    let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
+
+    if (err.response) {
+      return res.status(422).json(err.response.data);
+    } else {
+      console.log('Error', err.message);
+    }
   }
-
+  
 
 
 }
@@ -885,6 +926,7 @@ exports.getAllBankDetails = async (req, res) => {
   const id = req.userData.id;
   let bankDetails = await models.customerBankDetails.findAll({
     where: { customerId: id, isActive: 'true' },
+    order: [["updatedAt", "DESC"]],
     include: {
       model: models.customer,
       as: "customer",
