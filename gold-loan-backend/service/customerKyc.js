@@ -50,7 +50,7 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
             }
         });
         if (!check.isEmpty(findPanCardNumber)) {
-            return { status: 404, success: false, message: `Pan Card Number already exists!` }
+            return { status: 404, success: false, message: `PAN Card already exists!` }
 
         }
     }
@@ -64,8 +64,8 @@ let customerKycAdd = async (req, createdBy, createdByCustomer, modifiedBy, modif
         }
 
         if (getCustomerInfo.mobileNumber == alternateMobileNumber) {
-            // return res.status(400).json({ message: "Your alternate Mobile number is same as your previous Mobile number " });
-            return { status: 400, success: false, message: `Your alternate Mobile number is same as your previous Mobile number` }
+            // return res.status(400).json({ message: "Alternate number is same as Mobile Number " });
+            return { status: 400, success: false, message: `Alternate number is same as Mobile Number` }
         }
 
         let kycInfo = await sequelize.transaction(async t => {
@@ -319,8 +319,8 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
         }
 
         if (getCustomerInfo.mobileNumber == customerKycPersonal.alternateMobileNumber) {
-            // return res.status(400).json({ message: "Your alternate Mobile number is same as your previous Mobile number " });
-            return { status: 400, success: false, message: `Your alternate Mobile number is same as your previous Mobile number` }
+            // return res.status(400).json({ message: "Alternate number is same as Mobile Number " });
+            return { status: 400, success: false, message: `Alternate number is same as Mobile Number` }
         }
     }
 
@@ -351,7 +351,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
             }
         });
         if (!check.isEmpty(findPanCardNumber)) {
-            return { status: 404, success: false, message: `Pan Card Number already exists!` }
+            return { status: 404, success: false, message: `PAN Card already exists!` }
         }
     }
     if (customerKycPersonal) {
@@ -766,8 +766,8 @@ let submitKycInfo = async (req) => {
             }
         });
         if (!check.isEmpty(findPanCardNumber)) {
-            // return res.status(400).json({ message: "Pan Card Number already exists! " })
-            return { status: 404, success: false, message: `Pan Card Number already exists!` }
+            // return res.status(400).json({ message: "PAN Card already exists! " })
+            return { status: 404, success: false, message: `PAN Card already exists!` }
 
         }
     }
@@ -1214,8 +1214,8 @@ let kycPersonalDetail = async (req) => {
     if (moduleId == 1) {
 
         if (customer.mobileNumber == alternateMobileNumber) {
-            // return res.status(400).json({ message: "Your alternate Mobile number is same as your previous Mobile number " });
-            return { status: 400, success: false, message: `Your alternate Mobile number is same as your previous Mobile number` }
+            // return res.status(400).json({ message: "Alternate number is same as Mobile Number " });
+            return { status: 400, success: false, message: `Alternate number is same as Mobile Number` }
         }
         let findAlternateNumberExist = await models.customerKycPersonalDetail.findOne({ where: { alternateMobileNumber } })
 
@@ -1512,8 +1512,8 @@ let applyDigiKyc = async (req) => {
             }
         });
         if (!check.isEmpty(findPanCardNumber)) {
-            // return res.status(400).json({ message: "Pan Card Number already exists! " })
-            return { status: 404, success: false, message: `Pan Card Number already exists!` }
+            // return res.status(400).json({ message: "PAN Card already exists! " })
+            return { status: 404, success: false, message: `PAN Card already exists!` }
         }
     }
 

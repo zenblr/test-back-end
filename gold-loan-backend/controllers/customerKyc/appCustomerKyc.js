@@ -157,7 +157,7 @@ exports.editAppKyc = async (req, res, next) => {
             }
         });
         if (!check.isEmpty(findPanCardNumber)) {
-            return res.status(400).json({ message: "Pan Card Number already exists! " })
+            return res.status(400).json({ message: "Pan Card already exists! " })
         }
     }
 
