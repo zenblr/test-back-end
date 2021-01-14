@@ -1441,7 +1441,7 @@ let kycPersonalDetail = async (req) => {
             await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "6" }, { where: { customerId }, transaction: t });
             await models.customerEKycDetails.update({aadharAndPanNameScore},{where:{customerId}});
         }
-        // await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
+        await models.customerKyc.update({ modifiedBy, customerKycCurrentStage: "4" }, { where: { customerId }, transaction: t });
 
     })
 

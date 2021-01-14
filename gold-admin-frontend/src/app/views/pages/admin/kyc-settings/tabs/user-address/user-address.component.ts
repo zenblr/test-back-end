@@ -39,6 +39,7 @@ export class UserAddressComponent implements OnInit {
   aadharCardUserDetails: any;
   index: any;
   type = { aadharIndex: [], voterIndex: [] }
+  isCityEdit: boolean;
   // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456, moduleId: 1, userType: null }
 
   constructor(
@@ -322,6 +323,7 @@ export class UserAddressComponent implements OnInit {
     this.addressControls.at(0)['controls'].addressProofNumber.enable()
 
     const data = this.identityForm.getRawValue();
+    data.isCityEdit = this.isCityEdit
 
     this.userAddressService.addressDetails(data).pipe(
       map(res => {
@@ -485,10 +487,11 @@ export class UserAddressComponent implements OnInit {
   checkForAadhar(index) {
     // console.log(index)
     if (!(this.identityForm.controls.moduleId.value == 3 && this.identityForm.controls.userType.value === 'Individual')) {
-
+      this.isCityEdit = false
 
 
       if (index === 0) {
+
         if (this.addressControls.at(0).value.addressProofTypeId == 2) {
           this.images.permanent = [];
           this.imageId.permanent = [];
@@ -615,6 +618,7 @@ export class UserAddressComponent implements OnInit {
       if (city.length > 0) {
         controls['controls'].cityId.patchValue(city[0]['id'])
         controls['controls'].cityId.disable()
+        this.isCityEdit = false
       }else{
         let data = {
           stateId:stateId[0]['id'],
@@ -622,6 +626,7 @@ export class UserAddressComponent implements OnInit {
           cityUniqueId:null
         }
         this.sharedService.newCity(data).subscribe()
+        this.isCityEdit = true
       }
       // controls.disable()
       if (this.aadharCardUserDetails.isAahaarVerified) {

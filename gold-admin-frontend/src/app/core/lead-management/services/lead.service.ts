@@ -157,7 +157,7 @@ export class LeadService {
   }
 
   getPanDetailsFromKarza(fileUrl, customerId): Observable<any> {
-    // fileUrl = 'https://gold-loan-uat.s3.ap-south-1.amazonaws.com/public/uploads/images/1606826338257.jpeg'
+    fileUrl = 'https://goldapi2.nimapinfotech.com/uploads/lead/1610178535267.jpg'
     return this.http.post<any>(`/api/e-kyc/ocr-pan`, { fileUrl, customerId }).pipe(
       map(res => res),
       catchError(err => {

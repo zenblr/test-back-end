@@ -41,7 +41,7 @@ exports.newCity = async (req, res, next) => {
 
     const { stateId, cityName, cityUniqueId } = req.body
 
-    let cityExits = await models.newCity.findAll(({
+    let cityExits = await models.newCity.findOne(({
         where: { cityName: cityName }
     }))
     if (!cityExits) {

@@ -653,11 +653,10 @@ export class UserReviewComponent implements OnInit, OnDestroy {
 
     if (this.sharedService.fileValidator(event)) {
       this.getImageValidationForKarza(event, type)
-      event.target.value = ''
 
-    } else {
-      event.target.value = ''
-    }
+    } 
+    // event.target.value = ''
+
     // else {
     //   this.toastr.error('Upload Valid File Format');
     // }
@@ -698,13 +697,14 @@ export class UserReviewComponent implements OnInit, OnDestroy {
           this.toastr.error('Image of height and width should be less than 3000px')
           event.target.value = ''
         } else {
-          this.uploadFile(type, event)
+          this.uploadFile(type, details[0])
           event.target.value = ''
 
         }
       }, 1000);
     }
     // return data
+    this.ref.detectChanges()
   }
 
   uploadFile(type, event) {
@@ -719,7 +719,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
         if (type == "identityProof" && this.identityImageArray.length < 2) {
           this.identityImageArray.push(res.uploadFile.URL)
           this.identityIdArray.push(res.uploadFile.path)
-          this.identityFileNameArray.push(event.target.files[0].name)
+          this.identityFileNameArray.push(event.name)
           this.reviewForm.patchValue({ identityProof: this.identityIdArray })
           this.customerKycPersonal.patchValue({ identityProof: this.identityIdArray })
           this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
@@ -730,19 +730,19 @@ export class UserReviewComponent implements OnInit, OnDestroy {
         else if (type == 'permanent' && this.addressImageArray1.length < 2) {
           this.addressImageArray1.push(res.uploadFile.URL)
           this.addressIdArray1.push(res.uploadFile.path)
-          this.addressFileNameArray1.push(event.target.files[0].name)
+          this.addressFileNameArray1.push(event.name)
           this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 })
           this.customerKycAddressOne.patchValue({ addressProofFileName: this.addressFileNameArray1[this.addressFileNameArray1.length - 1] });
         } else if (type == 'residential' && this.addressImageArray2.length < 2) {
           this.addressImageArray2.push(res.uploadFile.URL)
           this.addressIdArray2.push(res.uploadFile.path)
-          this.addressFileNameArray2.push(event.target.files[0].name)
+          this.addressFileNameArray2.push(event.name)
           this.customerKycAddressTwo.patchValue({ addressProof: this.addressIdArray2 })
           this.customerKycAddressTwo.patchValue({ addressProofFileName: this.addressFileNameArray2[this.addressFileNameArray2.length - 1] });
         } else if (type == "signature") {
           this.data.customerKycReview.customerKycPersonal.signatureProofImg = res.uploadFile.URL;
           this.customerKycPersonal.patchValue({ signatureProof: res.uploadFile.path })
-          this.customerKycPersonal.patchValue({ signatureProofFileName: event.target.files[0].name });
+          this.customerKycPersonal.patchValue({ signatureProofFileName: event.name });
           this.ref.markForCheck();
         } else if (type == "profile") {
           this.data.customerKycReview.customerKycPersonal.profileImg = res.uploadFile.URL;
@@ -750,7 +750,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
           this.reviewForm.patchValue({ profileImage: res.uploadFile.path })
           this.ref.markForCheck();
         } else if (type == "panType") {
-          this.reviewForm.controls.form60.patchValue(event.target.files[0].name)
+          this.reviewForm.controls.form60.patchValue(event.name)
           // this.reviewForm.controls.panImage.patchValue(res.uploadFile.path)
           // this.reviewForm.controls.panImg.patchValue(res.uploadFile.URL)
 
@@ -792,17 +792,14 @@ export class UserReviewComponent implements OnInit, OnDestroy {
   }
 
   getAaddharDetails() {
-    // let fileUrls = [
-    //   "https://gold-loan-uat.s3.ap-south-1.amazonaws.com/public/uploads/images/1606826344404.jpeg",
-    //   "https://gold-loan-uat.s3.ap-south-1.amazonaws.com/public/uploads/images/1606826352209.jpeg"
-    // ]
-    this.userAddressService.getAaddharDetails(this.identityImageArray, this.controls.customerId.value).subscribe(res => {
+    
+    this.userAddressService.getAaddharDetails(this.identityImageArray, this.controls.id.value).subscribe(res => {
       this.aadharCardUserDetails = res.data
       this.controls.identityProofNumber.patchValue(res.data.idNumber)
     })
   }
   // getFileInfo(event, type: any) {
-  //   this.file = event.target.files[0];
+  //   this.file = event;
   //   if (this.sharedService.fileValidator(event)) {
   //     const params = {
   //       reason: 'customer',
@@ -1066,10 +1063,13 @@ export class UserReviewComponent implements OnInit, OnDestroy {
   async patchAaddarValue(index) {
     if (this.aadharCardUserDetails) {
       let controls
+      let type
       if (index == 0) {
         controls = this.customerKycAddressOne.controls
+        type = 'permanent'
       } else {
         controls = this.customerKycAddressTwo.controls
+        type = 'residential'
       }
       controls.pinCode.patchValue(this.aadharCardUserDetails.pincode)
       controls.address.patchValue(this.aadharCardUserDetails.address)
@@ -1079,7 +1079,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       })
       if (stateId.length > 0) {
         controls.stateId.patchValue(stateId[0]['id'])
-        await this.getCities(index)
+        await this.getCities(type)
       }
       if (index == 0) {
         var city = this.cities0.filter(res => {
