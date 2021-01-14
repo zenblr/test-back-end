@@ -318,7 +318,7 @@ let customerKycEdit = async (req, createdBy, modifiedBy, createdByCustomer, modi
             return { status: 404, success: false, message: `Identity Proof Number already exists!` }
         }
 
-        if (getCustomerInfo.mobileNumber == alternateMobileNumber) {
+        if (getCustomerInfo.mobileNumber == customerKycPersonal.alternateMobileNumber) {
             // return res.status(400).json({ message: "Your alternate Mobile number is same as your previous Mobile number " });
             return { status: 400, success: false, message: `Your alternate Mobile number is same as your previous Mobile number` }
         }
