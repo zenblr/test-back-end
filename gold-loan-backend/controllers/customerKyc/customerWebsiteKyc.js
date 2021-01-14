@@ -129,7 +129,7 @@ exports.digiOrEmiKyc = async (req, res, next) => {
 }
 
 exports.getDigiOrEmiKyc = async (req, res, next) => {
-
+       
     const id = req.userData.id;
 
     let customerInfo = await models.customer.findOne({
@@ -141,19 +141,6 @@ exports.getDigiOrEmiKyc = async (req, res, next) => {
             }
         ]
     });
-
-    let kycApproval = await allKycCompleteInfo(customerInfo)
-
-    customerInfo.dataValues.kycApproval = kycApproval
-
-    return res.status(200).json({ message: `Success`, data: { kycData: customerInfo } })
-}
-
-exports.getDigiOrEmiKyc = async (req, res, next) => {
-
-    const id = req.userData.id;
-
-    let customerInfo = await models.customer.findOne({ where: { id: id } });
 
     let kycApproval = await allKycCompleteInfo(customerInfo)
 
