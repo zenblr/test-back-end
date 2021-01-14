@@ -72,7 +72,7 @@ exports.customerValidation = [
         }
       }).then(panCardNumber => {
         if (panCardNumber) {
-          return Promise.reject("Pan Card Number already exist !");
+          return Promise.reject("PAN card already exist !");
         }
       })
     }),
@@ -148,7 +148,7 @@ exports.customerUpdateValidation = [
         }
       }).then(panCardNumber => {
         if (panCardNumber) {
-          return Promise.reject("Pan Card Number already exist !");
+          return Promise.reject("PAN card already exist !");
         }
       })
     }),
