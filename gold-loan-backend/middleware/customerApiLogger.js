@@ -8,7 +8,7 @@ const client = redis.createClient(redisConn.PORT, redisConn.HOST);
 module.exports = (req, res, next) => {
 
     const createdDateTime = new Date();
-    const arr = (req._parsedUrl.pathname).split("/");  
+    const arr = (req._parsedUrl.pathname).split("/");
     const getParams1 = arr[arr.length - 1];
     const getParams2 = arr[arr.length - 2];
 
@@ -51,11 +51,11 @@ module.exports = (req, res, next) => {
         "/api/digital-gold/redeem-order",
         "/api/digital-gold/redeem-order/order-info/" + getParams1,
         "/api/digital-gold/redeem-order/invoice/" + getParams1,
-        "/api/digital-gold/redeem-order/invoice-web/"+getParams1,
+        "/api/digital-gold/redeem-order/invoice-web/" + getParams1,
         "/api/digital-gold/buy",
         "/api/digital-gold/buy/buy-info/" + getParams1,
         "/api/digital-gold/buy/generate-invoice/" + getParams1,
-        "/api/digital-gold/buy/generate-invoice-web/"+getParams1,
+        "/api/digital-gold/buy/generate-invoice-web/" + getParams1,
         "/api/digital-gold/sell",
         "/api/digital-gold/sell/sell-info/" + getParams1,
         "/api/digital-gold/payment",
@@ -64,9 +64,22 @@ module.exports = (req, res, next) => {
 
 
     ];
+
+    let skipUrls = [
+        "/api/customer/app/customer-wallet/add-amount",
+        "/api/customer/app/quick-pay/payment",
+        "/api/customer/app/part-payment/payment",
+        "/api/customer/app/jewellery-release/full-release",
+        "/api/customer/app/jewellery-release/part-release"
+    ]
+
     let url = req.url;
     if (includeUrls.includes(req._parsedUrl.pathname) || url.slice(0, 18) == "/api/customer/app/") {
         try {
+            if (skipUrls.includes(req._parsedUrl.pathname)) {
+                next();
+                return
+            }
             const token = req.headers.authorization.split(" ")[1];
             console.log(token)
 
@@ -112,6 +125,7 @@ module.exports = (req, res, next) => {
         next();
 
     }
+
 }
 
 let customerApiLogger = (req, token, createdDateTime) => {

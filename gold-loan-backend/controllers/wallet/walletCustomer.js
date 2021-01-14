@@ -320,7 +320,6 @@ exports.addAmountWallet = async (req, res) => {
             if (orderBuy.message) {
               if (tempWalletTransaction.redirectOn) {
                 // return res.status(200).json({ message: "success", orderBuy });
-                console.log(orderBuy, orderBuy.result.data.metalType);
 
                 res.cookie(`metalObject`, `${JSON.stringify(orderBuy.result.data.metalType)}`);
                 // res.redirect(`http://localhost:4200${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
