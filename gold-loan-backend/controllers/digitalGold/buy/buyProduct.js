@@ -40,10 +40,10 @@ exports.buyProduct = async (req, res) => {
     return res.status(420).json({ message: "Insuffecient wallet balance", walletBal: customerDetails.currentWalletBalance });
   }
 
-  let checkCustomerKycStatus = checkKycStatus(id);
+  let checkCustomerKycStatus = await checkKycStatus(id);
 
   if(checkCustomerKycStatus){
-    return res.status(400).json({ message: "Your KYC status is Rejected" });
+    return res.status(420).json({ message: "Your KYC status is Rejected" });
   } 
 
   const checkLimit = await checkBuyLimit(id, amount);
