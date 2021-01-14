@@ -10,6 +10,7 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 const extend = require('extend')
 const { customerKycAdd, customerKycEdit, getKycInfo, digiOrEmiKyc, applyDigiKyc, updateCompleteKycModule, allKycCompleteInfo } = require('../../service/customerKyc')
 const check = require("../../lib/checkLib");
+let sms = require('../../utils/SMS')
 
 exports.submitApplyKyc = async (req, res, next) => {
     let modifiedByCustomer = req.userData.id;
