@@ -102,7 +102,13 @@ module.exports = async (req, res, next) => {
             "/api/web-hook/generate-api-key",
             "/api/web-hook/change-order-status",
             "/api/web-hook/change-withdraw-status",
-            "/api/web-hook/change-kyc-status"
+            "/api/web-hook/change-kyc-status",
+            "/api/customer/app/customer-wallet/add-amount",
+            "/api/customer/app/quick-pay/payment",
+            "/api/customer/app/part-payment/payment",
+            "/api/customer/app/jewellery-release/full-release",
+            "/api/customer/app/jewellery-release/part-release",
+            "/api/customer/app/contact-us"
         ];
         if (!skipUrls.includes(req._parsedUrl.pathname)) {
             try {

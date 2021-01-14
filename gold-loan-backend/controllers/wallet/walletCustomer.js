@@ -38,10 +38,10 @@ exports.makePayment = async (req, res) => {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     };
 
-  let checkCustomerKycStatus = checkKycStatus(id);
+  let checkCustomerKycStatus = await checkKycStatus(id);
 
   if(checkCustomerKycStatus){
-    return res.status(400).json({ message: "Your KYC status is Rejected" });
+    return res.status(420).json({ message: "Your KYC status is Rejected" });
   } 
     let transactionUniqueId = uniqid.time().toUpperCase();
     let tempWallet;
@@ -221,7 +221,7 @@ exports.addAmountWallet = async (req, res) => {
             let currentTempBal;
             let walletData
 
-            let WalletDetailBuy = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: `${orderData.metalType} bought ${orderData.quantity} grams`, productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 1, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
+            let WalletDetailBuy = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: `Money added to Augmont Wallet`, productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 1, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
 
             let newWalletFreeBalanc = customer.walletFreeBalance.toFixed(2);
             let NewCusUpdatedBalance = customerUpdatedBalance.toFixed(2);
@@ -320,7 +320,6 @@ exports.addAmountWallet = async (req, res) => {
             if (orderBuy.message) {
               if (tempWalletTransaction.redirectOn) {
                 // return res.status(200).json({ message: "success", orderBuy });
-                console.log(orderBuy, orderBuy.result.data.metalType);
 
                 res.cookie(`metalObject`, `${JSON.stringify(orderBuy.result.data.metalType)}`);
                 // res.redirect(`http://localhost:4200${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
@@ -351,7 +350,7 @@ exports.addAmountWallet = async (req, res) => {
             let orderAddress = await models.digiGoldTempOrderAddress.findAll({ where: { tempOrderDetailId: orderData.id } })
 
             //
-            let walletDeatilDelivery = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "Delivery and Making charges", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 3, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
+            let walletDeatilDelivery = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "Money added to Augmont Wallet", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 3, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
 
             let WalletFreeBalanceNew = customer.walletFreeBalance.toFixed(2);
             let customerUpdatedBalanceNew = customerUpdatedBalance.toFixed(2);
@@ -797,7 +796,7 @@ exports.getTransactionDetails = async (req, res) => {
 
     if (check.isEmpty(transactionDetails)) {
       return res.status(200).json({
-        data: [], count: 0
+        transactionDetails: [], count: 0
 
       })
     }
@@ -831,10 +830,10 @@ exports.withdrawAmount = async (req, res) => {
 
   let customerFreeBalance = await models.customer.findOne({ where: { id: id, isActive: true } })
 
-  let checkCustomerKycStatus = checkKycStatus(id);
+  let checkCustomerKycStatus = await checkKycStatus(id);
 
   if(checkCustomerKycStatus){
-    return res.status(400).json({ message: "Your KYC status is Rejected" });
+    return res.status(420).json({ message: "Your KYC status is Rejected" });
   } 
   
   if (customerFreeBalance.walletFreeBalance < withdrawAmount) {
