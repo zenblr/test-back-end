@@ -38,10 +38,10 @@ exports.makePayment = async (req, res) => {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     };
 
-  let checkCustomerKycStatus = checkKycStatus(id);
+  let checkCustomerKycStatus = await checkKycStatus(id);
 
   if(checkCustomerKycStatus){
-    return res.status(400).json({ message: "Your KYC status is Rejected" });
+    return res.status(420).json({ message: "Your KYC status is Rejected" });
   } 
     let transactionUniqueId = uniqid.time().toUpperCase();
     let tempWallet;
@@ -320,7 +320,6 @@ exports.addAmountWallet = async (req, res) => {
             if (orderBuy.message) {
               if (tempWalletTransaction.redirectOn) {
                 // return res.status(200).json({ message: "success", orderBuy });
-                console.log(orderBuy, orderBuy.result.data.metalType);
 
                 res.cookie(`metalObject`, `${JSON.stringify(orderBuy.result.data.metalType)}`);
                 // res.redirect(`http://localhost:4200${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
@@ -797,7 +796,7 @@ exports.getTransactionDetails = async (req, res) => {
 
     if (check.isEmpty(transactionDetails)) {
       return res.status(200).json({
-        data: [], count: 0
+        transactionDetails: [], count: 0
 
       })
     }
@@ -831,10 +830,10 @@ exports.withdrawAmount = async (req, res) => {
 
   let customerFreeBalance = await models.customer.findOne({ where: { id: id, isActive: true } })
 
-  let checkCustomerKycStatus = checkKycStatus(id);
+  let checkCustomerKycStatus = await checkKycStatus(id);
 
   if(checkCustomerKycStatus){
-    return res.status(400).json({ message: "Your KYC status is Rejected" });
+    return res.status(420).json({ message: "Your KYC status is Rejected" });
   } 
   
   if (customerFreeBalance.walletFreeBalance < withdrawAmount) {

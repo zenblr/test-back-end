@@ -122,7 +122,7 @@ let checkKycStatus = async(customerId) =>{
     let customerDetails = await models.customer.findOne({
         where: { id: customerId, isActive: true },
       });
-      let customerKycStatus
+      let customerKycStatus = false;
       if(customerDetails.digiKycStatus == "rejected"){
         customerKycStatus = true;
       }else{

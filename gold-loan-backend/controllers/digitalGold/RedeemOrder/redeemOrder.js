@@ -34,10 +34,10 @@ exports.AddOrder = async (req, res) => {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     }
 
-    let checkCustomerKycStatus = checkKycStatus(id);
+    let checkCustomerKycStatus = await checkKycStatus(id);
 
     if(checkCustomerKycStatus){
-      return res.status(400).json({ message: "Your KYC status is Rejected" });
+      return res.status(420).json({ message: "Your KYC status is Rejected" });
     } 
 
     if (amount > customerDetails.currentWalletBalance || !customerDetails.currentWalletBalance) {
