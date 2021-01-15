@@ -34,12 +34,12 @@ exports.customerLogin = async (req, res, next) => {
             where: { id: decoded.id }
         });
 
-        // let getDestroyToken = await models.customerLogger.findAll({ where: { customerId: decoded.id } })
+        let getDestroyToken = await models.customerLogger.findAll({ where: { customerId: decoded.id } })
 
-        // for await (const singleDestory of getDestroyToken) {
-        //     cache(`${singleDestory.token}`);
-        // }
-        // await models.customerLogger.destroy({ where: { customerId: decoded.id } })
+        for await (const singleDestory of getDestroyToken) {
+            cache(`${singleDestory.token}`);
+        }
+        await models.customerLogger.destroy({ where: { customerId: decoded.id } })
 
         await models.customerLogger.create({
             customerId: decoded.id,
@@ -69,7 +69,7 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyCustomer)) {
-        return res.status(401).json({ message: `INVALID OTP` })
+        return res.status(401).json({ message: `The OTP entered is incorrect` })
     }
 
 
@@ -101,12 +101,12 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
             where: { id: decoded.id }, transaction: t
         });
 
-        // let getDestroyToken = await models.customerLogger.findAll({ where: { customerId: decoded.id } })
+        let getDestroyToken = await models.customerLogger.findAll({ where: { customerId: decoded.id } })
 
-        // for await (const singleDestory of getDestroyToken) {
-        //     cache(`${singleDestory.token}`);
-        // }
-        // await models.customerLogger.destroy({ where: { customerId: decoded.id } })
+        for await (const singleDestory of getDestroyToken) {
+            cache(`${singleDestory.token}`);
+        }
+        await models.customerLogger.destroy({ where: { customerId: decoded.id } })
 
         await models.customerLogger.create({
             customerId: decoded.id,
