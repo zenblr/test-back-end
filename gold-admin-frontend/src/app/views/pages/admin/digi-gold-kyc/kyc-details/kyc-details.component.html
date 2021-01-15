@@ -132,7 +132,7 @@
                                 <select class="form-control" formControlName="status" (change)="setReasonValidation()"
                                     [class.isError]="controls.status.invalid && controls.status.touched">
                                     <option [value]=null disabled>Select Status</option>
-                                    <option value="pending">Pending</option>
+                                    <option value="pending">Re-verification</option>
                                     <option value="approved">Approved</option>
                                     <option value="rejected">Rejected</option>
                                 </select>
