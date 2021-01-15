@@ -322,6 +322,8 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                         await models.customer.update({ kycCompletePoint, customerUniqueId, kycStatus: "approved", scrapKycStatus: "approved", userType: "Individual" }, { where: { id: customerId }, transaction: t })
                     } else {
                         await models.customer.update({ kycCompletePoint, customerUniqueId, digiKycStatus: "approved", emiKycStatus: "approved", kycStatus: "approved", scrapKycStatus: "approved", userType: "Individual" }, { where: { id: customerId }, transaction: t })
+
+                        await models.digiKycApplied.update({ status: kycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
                     }
 
                     await models.customerKyc.update(
@@ -358,6 +360,8 @@ exports.operationalTeamKycRating = async (req, res, next) => {
             let bmMobile = getBm.mobileNumber
 
             await sendMessageToOperationsTeam(bmMobile, customerUniqueId)
+            await sms.sendMessageAfterKycApproved(getMobileNumber.mobileNumber, getMobileNumber.customerUniqueId);
+// customer pprove mess
 
             //message for BranchManager
             // request(
@@ -455,6 +459,9 @@ exports.operationalTeamKycRating = async (req, res, next) => {
                     await models.customer.update({ kycCompletePoint, customerUniqueId, scrapKycStatus: "approved" }, { where: { id: customerId }, transaction: t })
                 } else {
                     await models.customer.update({ kycCompletePoint, customerUniqueId, digiKycStatus: "approved", emiKycStatus: "Approved", scrapKycStatus: "approved" }, { where: { id: customerId }, transaction: t })
+
+                    await models.digiKycApplied.update({ status: scrapKycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
+
                 }
 
 
@@ -484,6 +491,8 @@ exports.operationalTeamKycRating = async (req, res, next) => {
             request(
                 `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is ${customerUniqueId} Assign appraiser for further process.`
             );
+            // customer pproved mesge
+            await sms.sendMessageAfterKycApproved(cusMobile, getMobileNumber.customerUniqueId);
             return res.status(200).json({ message: 'success' })
         }
     }

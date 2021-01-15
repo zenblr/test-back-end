@@ -37,10 +37,8 @@ export class WithdrawalRequestsComponent implements OnInit {
     search: '',
     paymentFor: 'withdraw',
     startDate: "",
-    depositStatus: "",    
+    depositStatus: "",
   };
-
-  
   filteredDataList = {};
 
   constructor(
@@ -113,11 +111,10 @@ export class WithdrawalRequestsComponent implements OnInit {
   applyFilter(data) {
     console.log(data);
     this.withdrawRequestsData.startDate = data.data.startDate;
-		this.withdrawRequestsData.depositStatus = data.data.depositStatus;    
+    this.withdrawRequestsData.depositStatus = data.data.depositStatus;
     this.dataSource.loadWithdrawalRequests(this.withdrawRequestsData);
     this.filteredDataList = data.list;
     console.log(this.filteredDataList);
-    
   }
 
   editWithdrawal(id) {

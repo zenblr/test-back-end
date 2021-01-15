@@ -58,7 +58,8 @@ export class GlobalSettingsComponent implements OnInit {
       processingChargesFixed: [],
       processingChargesInPercent: [],
       partPaymentPercent: [],
-      digiGoldSellableHour: []
+      digiGoldSellableHour: [],
+      digiGoldKycLimit: []
     });
     this.validation();
   }

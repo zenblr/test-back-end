@@ -7,7 +7,6 @@ const check = require("../../lib/checkLib");
 const moment = require('moment')
 const { allKycCompleteInfo } = require('../../service/customerKyc')
 
-
 exports.readBanner = async (req, res, next) => {
     console.log("banner")
     let banner = await models.banner.readBanner()
@@ -334,8 +333,11 @@ exports.personalInfo = async (req, res, next) => {
 
 exports.customerProductRequest = async (req, res, next) => {
     let { customerId, moduleId, requestFor } = req.body
+    let checkExist = []
 
-    let checkExist = await models.productRequest.findAll({ where: { customerId: customerId, requestFor: 'kyc' } })
+    if (requestFor == 'kyc') {
+        checkExist = await models.productRequest.findAll({ where: { customerId: customerId, requestFor: 'kyc' } })
+    }
 
     if (checkExist.length != 0) {
         return res.status(422).json({ message: `Thank you` })

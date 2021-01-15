@@ -4,6 +4,9 @@ const Sequelize = models.Sequelize;
 const op = Sequelize.Op;
 
 exports.addCustomerBankDetails = [
+body('bankId')
+.exists()
+.withMessage('bankId is required'),
 body('bankName')
 .exists()
 .withMessage('bankName is required'),

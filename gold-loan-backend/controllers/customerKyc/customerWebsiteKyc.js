@@ -10,6 +10,7 @@ const { paginationWithFromTo } = require("../../utils/pagination");
 const extend = require('extend')
 const { customerKycAdd, customerKycEdit, getKycInfo, digiOrEmiKyc, applyDigiKyc, updateCompleteKycModule, allKycCompleteInfo } = require('../../service/customerKyc')
 const check = require("../../lib/checkLib");
+let sms = require('../../utils/SMS')
 
 exports.submitApplyKyc = async (req, res, next) => {
     let modifiedByCustomer = req.userData.id;
@@ -83,7 +84,12 @@ exports.digiOrEmiKyc = async (req, res, next) => {
     req.body.customerId = req.userData.id
     let data = await applyDigiKyc(req)
 
+    let customer = await models.customer.findOne({ where: { id: req.userData.id} })
+
     if (data.success) {
+        // apply
+        await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
+      
         return res.status(data.status).json({ message: data.message })
     } else {
         return res.status(data.status).json({ message: data.message })
@@ -123,7 +129,7 @@ exports.digiOrEmiKyc = async (req, res, next) => {
 }
 
 exports.getDigiOrEmiKyc = async (req, res, next) => {
-
+       
     const id = req.userData.id;
 
     let customerInfo = await models.customer.findOne({

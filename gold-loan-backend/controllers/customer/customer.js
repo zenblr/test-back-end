@@ -11,7 +11,7 @@ const CONSTANT = require("../../utils/constant");
 const uniqid = require('uniqid');
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
-let sms = require('../../utils/sendSMS');
+// let sms = require('../../utils/sendSMS');
 let { sendOtpToLeadVerification, sendOtpForLogin, forgetPasswordOtp, sendUpdateLocationCollectMessage, sendUpdateLocationHandoverMessage } = require('../../utils/SMS');
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck');
 const qs = require('qs');
@@ -21,7 +21,7 @@ const { JWT_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/cons
 const { ADMIN_PANEL, CUSTOMER_WEBSITE } = require('../../utils/sourceFrom')
 const { getCustomerCityById, getCustomerStateById } = require('../../service/customerAddress')
 const { createCustomer } = require('../../service/digiGold')
-
+let sms = require('../../utils/SMS')
 
 exports.getOtp = async (req, res, next) => {
   let getOtp = await models.customerOtp.findAll({
@@ -33,7 +33,7 @@ exports.getOtp = async (req, res, next) => {
 }
 
 exports.addCustomer = async (req, res, next) => {
-  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId, source, panType, panImage, leadSourceId, moduleId } = req.body;
+  let { firstName, lastName, referenceCode, panCardNumber, stateId, cityId, statusId, comment, pinCode, internalBranchId, source, panType, panImage, leadSourceId, moduleId, form60Image } = req.body;
   // cheanges needed here
   let createdBy = req.userData.id;
   let modifiedBy = req.userData.id;
@@ -69,7 +69,7 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint, sourceFrom: sourcePoint, customerUniqueId },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint, sourceFrom: sourcePoint, customerUniqueId, form60Image },
       { transaction: t }
     );
 
@@ -110,10 +110,13 @@ exports.addCustomer = async (req, res, next) => {
     //   data: data
     // });
 
-    if (panCardNumber != null && panImage != null) {
+    if (panCardNumber != null && panImage != null && statusId == 1) {
       await models.digiKycApplied.create({ customerId: customer.id, status: 'waiting' }, { transaction: t })
 
       await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customer.id }, transaction: t })
+      // applied
+      await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
+      
     }
 
     const result = await createCustomer(data)
@@ -306,7 +309,7 @@ exports.editCustomer = async (req, res, next) => {
   let modifiedBy = req.userData.id;
   const { customerId } = req.params;
 
-  let { cityId, stateId, pinCode, internalBranchId, statusId, comment, source, panType, panCardNumber, panImage, leadSourceId, moduleId } = req.body;
+  let { cityId, stateId, pinCode, internalBranchId, statusId, comment, source, panType, panCardNumber, panImage, form60Image, leadSourceId, moduleId } = req.body;
   let { id } = await models.status.findOne({ where: { statusName: "confirm" } })
 
   let customerExist = await models.customer.findOne({ where: { id: customerId } });
@@ -318,9 +321,17 @@ exports.editCustomer = async (req, res, next) => {
   }
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.update(
-      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy, source, panType, panCardNumber, panImage, leadSourceId },
+      { cityId, stateId, statusId, comment, pinCode, internalBranchId, modifiedBy, source, panType, panCardNumber, panImage, leadSourceId, form60Image },
       { where: { id: customerId }, transaction: t }
     );
+
+    if (panCardNumber != null && panImage != null && statusId == 1) {
+      await models.digiKycApplied.create({ customerId: customerId, status: 'waiting' }, { transaction: t })
+
+      await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customerId }, transaction: t })
+      await sms.sendMessageForKycPending(customerExist.mobileNumber, customerExist.customerUniqueId);
+    
+    }
   });
   return res.status(200).json({ messgae: `User Updated` });
 };
@@ -674,7 +685,7 @@ exports.getAllCustomerForCustomerManagement = async (req, res) => {
 
   let allCustomers = await models.customer.findAll({
     where: searchQuery,
-    attributes: { exclude: ['mobileNumber', 'createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+    attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
     order: [["id", "DESC"]],
     offset: offset,
     subQuery: false,

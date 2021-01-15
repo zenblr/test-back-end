@@ -9,11 +9,13 @@ import { MatDialog } from '@angular/material';
 import { WebcamDialogComponent } from '../../webcam-dialog/webcam-dialog.component';
 import { ImagePreviewDialogComponent } from '../../../../../partials/components/image-preview-dialog/image-preview-dialog.component';
 import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'kt-user-personal',
   templateUrl: './user-personal.component.html',
-  styleUrls: ['./user-personal.component.scss']
+  styleUrls: ['./user-personal.component.scss'],
+  providers:[DatePipe]
 })
 export class UserPersonalComponent implements OnInit {
 
@@ -37,7 +39,8 @@ export class UserPersonalComponent implements OnInit {
     private userPersonalService: UserPersonalService,
     private sharedService: SharedService, private ref: ChangeDetectorRef,
     private toastr: ToastrService,
-    private dialog: MatDialog) { }
+    private dialog: MatDialog,
+    private datePipe:DatePipe) { }
 
   ngOnInit() {
 
@@ -192,6 +195,7 @@ export class UserPersonalComponent implements OnInit {
     }
 
     this.controls.age.patchValue(age);
+    this.controls.dateOfBirth.patchValue(this.datePipe.transform(this.controls.dateOfBirth.value,'yyyy-MM-dd'))
     // this.ageValidation()
   }
 

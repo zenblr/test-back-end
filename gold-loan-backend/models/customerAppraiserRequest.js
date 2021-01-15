@@ -81,8 +81,11 @@ module.exports = (sequelize, DataTypes) => {
 
     AppraiserRequest.prototype.toJSON = function () {
         var values = Object.assign({}, this.get());
-        if (values.customer) {
+        if (values.customer.panImage) {
             values.customer.panImg = process.env.BASE_URL + values.customer.panImage;
+        }
+        if (values.customer.form60Image) {
+            values.customer.form60Img = process.env.BASE_URL + values.customer.form60Image;
         }
         return values;
     }
