@@ -1077,9 +1077,9 @@ async function checkBuyLimit(id, totalAmount) {
 
     let total = totalAmountOfAll.toFixed(2)
 
+    let newAndOldAmountTotal = Number(total) + Number(totalAmount);
 
-
-    if (total > limit && customer.digiKycStatus == 'pending') {
+    if ((total > limit && customer.digiKycStatus == 'pending') || (newAndOldAmountTotal > limit && customer.digiKycStatus == 'pending')) {
 
       const panno = customer.panCardNumber
 
@@ -1108,14 +1108,13 @@ async function checkBuyLimit(id, totalAmount) {
 
       }
 
-    } else if (total > limit && customer.digiKycStatus == 'approved') {
+    } else if ((total > limit && customer.digiKycStatus == 'approved') || ((newAndOldAmountTotal > limit && customer.digiKycStatus == 'approved')) ) {
 
       return ({ message: "Your KYC is approved", success: true });
     } else if (totalAmount >= limit && customer.digiKycStatus == 'approved') {
 
       return ({ message: "Your KYC is approved", success: true });
-    } else if (total < limit && customer.digiKycStatus == 'approved' || customer.digiKycStatus == 'pending' || customer.digiKycStatus == 'waiting') {
-
+    } else if (total < limit && (customer.digiKycStatus == 'approved' || customer.digiKycStatus == 'pending' || customer.digiKycStatus == 'waiting')) {
 
 
       if (totalAmount > limit) {
@@ -1128,7 +1127,11 @@ async function checkBuyLimit(id, totalAmount) {
           return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
 
         }
-      } else {
+      } else if(newAndOldAmountTotal > limit){
+
+        return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
+        
+      }else {
 
         return ({ message: "No need of KYC", success: true });
       }
