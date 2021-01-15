@@ -1236,7 +1236,7 @@ exports.changeDigiKycStatus = async (req, res) => {
             } else {
                 // prending
                 await models.customer.update({ emiKycStatus: status, digiKycStatus: status }, { where: { id: customerId }, transaction: t })
-                await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
+                // await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
               
             }
             await models.digiKycApplied.update({ status, reasonForDigiKyc }, { where: { id: id }, transaction: t })
