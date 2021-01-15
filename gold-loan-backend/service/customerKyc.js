@@ -1051,7 +1051,7 @@ let submitKycInfo = async (req) => {
 
 let kycAddressDeatil = async (req) => {
 
-    let { customerId, customerKycId, identityProof, identityTypeId, identityProofNumber, address, moduleId, userType } = req.body
+    let { customerId, customerKycId, identityProof, identityTypeId, identityProofNumber, address, moduleId, userType, isCityEdit } = req.body
     let createdBy = req.userData.id;
     let modifiedBy = req.userData.id;
 
@@ -1149,6 +1149,8 @@ let kycAddressDeatil = async (req) => {
     // let name = `${customerDetail.firstName} ${customerDetail.lastName}`;
 
     await sequelize.transaction(async t => {
+        //if city edited
+        await models.customerKyc.update({ isCityEdit }, { where: { customerId }, transaction: t });
         if (moduleId == 1) {
             await models.customerKycPersonalDetail.update({
                 identityProof: identityProof,
@@ -1312,7 +1314,8 @@ let kycPersonalDetail = async (req) => {
         //ekyc atuo approval check
         let checkAddressProof = await models.customerKycAddressDetail.findAll({where:{customerId,addressProofTypeId:{[Op.in]: [1,3,4,5,6]}}});
         let ekycData = await models.customerEKycDetails.findOne({where:{customerId}});
-        if(checkAddressProof.length == 0  && ekycData.isAahaarVerified && ekycData.isPanVerified){
+        let customerKycData = await models.customerKyc.findOne( { where: { customerId } });
+        if(checkAddressProof.length == 0  && ekycData.isAahaarVerified && ekycData.isPanVerified && !customerKycData.isCityEdit){
             let panAndAadhaarNameMatch = false;
             let aadharAndPanNameScore = 0;
             let panAndAadhaarDOBMatch = false;
