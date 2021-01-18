@@ -19,6 +19,8 @@ export class WithdrawalRequestsEditComponent implements OnInit {
 	withdrawForm: FormGroup;
 	withdrawId: number;
 	withdrawInfo: any;
+	formFieldEnableFlag = false;
+	maxDate = new Date()
 	withdrawalStatus = [
 		// { value: 'pending', name: 'Pending' },
 		{ value: 'completed', name: 'Completed' },
@@ -69,6 +71,8 @@ export class WithdrawalRequestsEditComponent implements OnInit {
 			accountHolderName: [''],
 			ifscCode: [''],
 			withdrawalStatus: ['', Validators.required],
+			withdrawDate: [''],
+			utrNumber: [''],
 		});
 		this.withdrawForm.disable()
 		this.withdrawForm.valueChanges.subscribe((val) => console.log(val));
@@ -79,6 +83,18 @@ export class WithdrawalRequestsEditComponent implements OnInit {
 			return this.withdrawForm.controls
 		};
 	}
+
+	fieldEnable (value) {
+		if (value == 'completed'){
+		this.formFieldEnableFlag = true;
+		this.controls.withdrawDate.setValidators([Validators.required])
+		this.controls.withdrawDate.updateValueAndValidity()
+		this.controls.utrNumber.setValidators([Validators.required])
+		this.controls.utrNumber.updateValueAndValidity()	
+		}
+	}
+
+
 
 	editWithdraw() {
 		const data = {
@@ -104,6 +120,8 @@ export class WithdrawalRequestsEditComponent implements OnInit {
 		} 
 		else {
 			this.controls.withdrawalStatus.enable();
+			this.controls.withdrawDate.enable();
+			this.controls.utrNumber.enable();
 		}
 	}
 
