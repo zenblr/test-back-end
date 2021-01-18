@@ -19,7 +19,7 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const { walletBuy, customerBalance } = require('../../../service/wallet');
-const { postMerchantOrder, getUserData, postBuy } = require('../../../service/digiGold')
+const { postMerchantOrder, getUserData, postBuy, checkKycStatus } = require('../../../service/digiGold')
 
 
 exports.buyProduct = async (req, res) => {
@@ -40,6 +40,11 @@ exports.buyProduct = async (req, res) => {
     return res.status(420).json({ message: "Insuffecient wallet balance", walletBal: customerDetails.currentWalletBalance });
   }
 
+  let checkCustomerKycStatus = await checkKycStatus(id);
+
+  if(checkCustomerKycStatus){
+    return res.status(420).json({ message: "Your KYC status is Rejected" });
+  } 
 
   const checkLimit = await checkBuyLimit(id, amount);
   if(!checkLimit.success){
@@ -382,9 +387,9 @@ async function checkBuyLimit(id, totalAmount) {
 
     let total = totalAmountOfAll.toFixed(2)
 
+    let newAndOldAmountTotal = Number(total) + Number(totalAmount);
 
-
-    if (total > limit && customer.digiKycStatus == 'pending') {
+    if ((total > limit && customer.digiKycStatus == 'pending') || (newAndOldAmountTotal >= limit && customer.digiKycStatus == 'pending')) {
 
       const panno = customer.panCardNumber
 
@@ -413,14 +418,13 @@ async function checkBuyLimit(id, totalAmount) {
 
       }
 
-    } else if (total > limit && customer.digiKycStatus == 'approved') {
+    } else if ((total > limit && customer.digiKycStatus == 'approved') || ((newAndOldAmountTotal >= limit && customer.digiKycStatus == 'approved')) ) {
 
       return ({ message: "Your KYC is approved", success: true });
     } else if (totalAmount >= limit && customer.digiKycStatus == 'approved') {
 
       return ({ message: "Your KYC is approved", success: true });
-    } else if (total < limit && customer.digiKycStatus == 'approved' || customer.digiKycStatus == 'pending' || customer.digiKycStatus == 'waiting') {
-
+    } else if (total < limit && (customer.digiKycStatus == 'approved' || customer.digiKycStatus == 'pending' || customer.digiKycStatus == 'waiting')) {
 
 
       if (totalAmount > limit) {
@@ -433,7 +437,11 @@ async function checkBuyLimit(id, totalAmount) {
           return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
 
         }
-      } else {
+      } else if(newAndOldAmountTotal >= limit){
+
+        return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
+        
+      }else {
 
         return ({ message: "No need of KYC", success: true });
       }

@@ -17,6 +17,7 @@ let crypto = require('crypto');
 const qs = require('qs');
 const { BASIC_DETAILS_SUBMIT } = require('../../utils/customerLoanHistory');
 const { sendPartReleaseRequestMessage, sendPartReleaseRequestApprovalMessage, sendMessageAssignedCustomerToAppraiser, sendJewelleryPartReleaseCompletedMessage, sendFullReleaseRequestMessage, sendFullReleaseRequestApprovalMessage, sendFullReleaseAssignAppraiserMessage, sendJewelleryFullReleaseCompletedMessage, sendPartReleaseAssignAppraiserMessage, sendMessageCustomerForAssignAppraiser, } = require('../../utils/SMS')
+const { addBankDetailInAugmontDb } = require('../../service/digiGold')
 
 
 exports.ornamentsDetails = async (req, res, next) => {
@@ -351,7 +352,7 @@ exports.ornamentsPartRelease = async (req, res, next) => {
                         if (signatureVerification == false) {
                             return res.status(422).json({ message: "razorpay payment verification failed" });
                         }
-                    } else{
+                    } else {
                         isAdmin = true
                     }
                     if (isRazorPay) {
@@ -1289,17 +1290,26 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                 let checkBankDetailExist = await models.customerBankDetails.findAll({ where: { accountNumber: oldLoanData.loanBankDetail.accountNumber, customerId: customerData.id } })
 
                 if (checkBankDetailExist.length == 0) {
-                    await models.customerBankDetails.create({
-                        moduleId: 1,
-                        customerId: customerData.id,
-                        bankName: oldLoanData.loanBankDetail.bankName,
-                        accountNumber: oldLoanData.loanBankDetail.accountNumber,
-                        ifscCode: oldLoanData.loanBankDetail.ifscCode,
-                        bankBranchName: oldLoanData.loanBankDetail.bankBranchName,
-                        accountHolderName: oldLoanData.loanBankDetail.accountHolderName,
-                        passbookProof: oldLoanData.loanBankDetail.passbookProof,
-                        description: `Added while Creating jewellery release`
-                    }, { transaction: t });
+                     let addBankDetaiils = await addBankDetailInAugmontDb(customerData.customerUniqueId, null, oldLoanData.loanBankDetail.bankBranchName, oldLoanData.loanBankDetail.accountNumber, oldLoanData.loanBankDetail.accountHolderName, oldLoanData.loanBankDetail.ifscCode)
+
+                    if (addBankDetaiils.isSuccess) {
+                        await models.customerBankDetails.create({
+                            moduleId: 1,
+                            customerId: customerData.id,
+                            bankName: oldLoanData.loanBankDetail.bankName,
+                            accountNumber: oldLoanData.loanBankDetail.accountNumber,
+                            ifscCode: oldLoanData.loanBankDetail.ifscCode,
+                            bankBranchName: oldLoanData.loanBankDetail.bankBranchName,
+                            accountHolderName: oldLoanData.loanBankDetail.accountHolderName,
+                            passbookProof: oldLoanData.loanBankDetail.passbookProof,
+                            bankId: null,
+                            userBankId: addBankDetaiils.data.data.result.data.userBankId,
+                            description: `Added while Creating jewellery release`
+                        }, { transaction: t });
+                    } else {
+                        t.rollback()
+                        return res.status(400).json({ message: addBankDetaiils.message })
+                    }
                 }
             }
             //added customer bank details
@@ -1440,7 +1450,7 @@ exports.ornamentsFullRelease = async (req, res, next) => {
                         if (signatureVerification == false) {
                             return res.status(422).json({ message: "razorpay payment verification failed" });
                         }
-                    }else{
+                    } else {
                         isAdmin = true
                     }
                     if (isRazorPay) {

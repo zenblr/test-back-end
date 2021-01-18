@@ -11,11 +11,13 @@ import { ImagePreviewDialogComponent } from '../../../../../partials/components/
 import { PdfViewerComponent } from '../../../../../partials/components/pdf-viewer/pdf-viewer.component';
 import { ActivatedRoute } from '@angular/router';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'kt-user-review',
   templateUrl: './user-review.component.html',
   styleUrls: ['./user-review.component.scss'],
+  providers:[DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserReviewComponent implements OnInit, OnDestroy {
@@ -82,6 +84,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     private ele: ElementRef,
     private route: ActivatedRoute,
     private ngxPermission: NgxPermissionsService,
+    private datePipe:DatePipe
   ) {
     let res = this.sharedService.getDataFromStorage();
     this.userType = res.userDetails.userTypeId;
@@ -368,7 +371,6 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     const value = this.controls.panType.value
     if (value == 'form60') {
       if (this.resetOnPanChange) {
-        this.controls.panCardNumber.reset()
         this.controls.panCardNumber.patchValue('')
       }
       this.controls.panCardNumber.clearValidators()
@@ -401,6 +403,8 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     }
 
     this.customerKycPersonal.controls.age.patchValue(age)
+    this.customerKycPersonal.controls.dateOfBirth.patchValue(this.datePipe.transform(this.customerKycPersonal.controls.dateOfBirth.value,'yyyy-MM-dd'))
+
   }
 
   ageValidation() {
@@ -568,10 +572,6 @@ export class UserReviewComponent implements OnInit, OnDestroy {
 
   removeImages(index, type) {
 
-    // if (this.userType == 5) {
-    //   return;
-    // }
-
     if (type == 'identityProof') {
       this.identityImageArray.splice(index, 1)
       this.identityIdArray.splice(index, 1)
@@ -625,17 +625,20 @@ export class UserReviewComponent implements OnInit, OnDestroy {
 
       let panType = this.controls.panType.value
       if (panType) {
-        if (panType === 'pan') {
-          this.reviewForm.controls.form60Image.patchValue(null)
-          this.reviewForm.controls.form60Img.patchValue(null)
+        if (this.resetOnPanChange) {
+
+          if (panType === 'pan') {
+            this.reviewForm.controls.form60Image.patchValue(null)
+            this.reviewForm.controls.form60Img.patchValue(null)
+          }
+          if (panType === 'form60') {
+            this.reviewForm.controls.panImage.patchValue(null)
+            this.reviewForm.controls.panImg.patchValue(null)
+          }
+          // this.reviewForm.controls.panCardNumber.patchValue(null)
+          // this.customerKycPersonal.controls.panCardNumber.patchValue(null)
+          this.reviewForm.controls.form60.patchValue(null)
         }
-        if (panType === 'form60') {
-          this.reviewForm.controls.panImage.patchValue(null)
-          this.reviewForm.controls.panImg.patchValue(null)
-        }
-        this.reviewForm.controls.panCardNumber.patchValue(null)
-        this.customerKycPersonal.controls.panCardNumber.patchValue(null)
-        this.reviewForm.controls.form60.patchValue(null)
       }
     }
     if (type == 'constitutionsDeed') {

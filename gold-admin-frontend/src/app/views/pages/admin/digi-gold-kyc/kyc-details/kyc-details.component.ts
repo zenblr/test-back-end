@@ -221,7 +221,7 @@ export class KycDetailsComponent implements OnInit {
 
   testUpload(event) {
     const file = event.target.files[0];
-    if (this.sharedService.fileValidator(event)) {
+    if (this.sharedService.fileValidator(event, 'image')) {
       const params = {
         reason: 'lead'
       }
@@ -281,13 +281,13 @@ export class KycDetailsComponent implements OnInit {
       return this.digiGoldKycForm.markAllAsTouched()
     }
     if (this.kycStage == 'edit') {
-      if ((this.controls.reason.value).toString().toLowerCase() != "other") {
+      if (this.controls.reason.value && (this.controls.reason.value).toString().toLowerCase() != "other") {
         this.patchToReason()
       }
       // return console.log(this.digiGoldKycForm.getRawValue())
       this.appliedKycService.editDigiGoldKyc(this.digiGoldKycForm.getRawValue())
         .pipe(finalize(() => {
-          if ((this.controls.reason.value).toString().toLowerCase() != "other") {
+          if (this.controls.reason.value && (this.controls.reason.value).toString().toLowerCase() != "other") {
             this.unpatchToReason()
           }
         }))

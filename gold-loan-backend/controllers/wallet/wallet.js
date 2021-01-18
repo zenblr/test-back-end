@@ -152,7 +152,7 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
 exports.updateDepositWithdrawStatus = async (req, res) => {
 
     let depositWithdrawId = req.params.depositWithdrawId;
-    let { depositStatus } = req.body
+    let { depositStatus, date } = req.body
     let customerUpdatedBalance;
     let currentWalletBalance;
     let transactionData = await models.walletTransactionDetails.findOne({ where: { id: depositWithdrawId } });
@@ -165,7 +165,7 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
     }
     let customer = await models.customer.findOne({ where: { id: transactionData.customerId, isActive: true } });
 
-    let date = moment()
+    // let date = moment()
 
     if (transactionData.orderTypeId == 4) {
 
@@ -183,11 +183,13 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
                 await models.customer.update({ currentWalletBalance: Number(newCustomerUpdatedBalance) }, { where: { id: customer.id }, transaction: t });
 
 
-                let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "credit", description: "Amount added to your balance", productTypeId: 4, transactionDate: date, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
+                let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: date, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
 
                 var updtedRunningBalance = Number(transactionData.runningBalance) + Number(transactionData.transactionAmount)
 
-                await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id, runningBalance: updtedRunningBalance }, { where: { id: transactionData.id }, transaction: t });
+                let newUpdtedRunningBalance = updtedRunningBalance.toFixed(2);
+
+                await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id, runningBalance: Number(newUpdtedRunningBalance) }, { where: { id: transactionData.id }, transaction: t });
 
                 await sms.sendMessageForDepositRequestAccepted(customer.mobileNumber, transactionData.transactionAmount);
 

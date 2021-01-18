@@ -9,6 +9,16 @@ exports.sendOtpForLogin = async (mobileNumber, firstName, otp, time, smsLink) =>
     // Dear <User name>, Please use OTP <OTP number> valid upto <Time> to log in to your Augmont gold loan account.  Please visit <Web site> to log in
     if (messageTemplate) {
         let message = await messageTemplate.content.replace('<User name>', `${firstName}`).replace("<OTP number>", otp).replace("<Time>", time).replace("<Web site>", smsLink)
+      
+        await sms.sendSms(mobileNumber, message);
+    }
+}
+// customer side otp
+
+exports.sendMessageOtpForLogin = async (mobileNumber, otp) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Login OTP');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace('<OTP number>', otp)
 
         await sms.sendSms(mobileNumber, message);
     }
@@ -30,6 +40,7 @@ exports.sendOtpToLeadVerification = async (mobileNumber, firstName, otp, time) =
     // Dear <Lead name>, We look forward to have you as a customer. OTP is <OTP number>, valid up to <Time>, for mobile verification purposes.  Please merely confirm that you have received the OTP
     if (messageTemplate) {
         let message = await messageTemplate.content.replace('<Lead name>', `${firstName}`).replace("<OTP number>", otp).replace("<Time>", time)
+        console.log("sendOtpToLeadVerification",message)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -301,7 +312,6 @@ exports.sendMessageForKycPending= async (mobileNumber, memberId) => {
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<memberId>", memberId)
         let smsFrom = "customer"
-        console.log("sendMessageForKycPending",message)
         await sms.sendSms(mobileNumber, message,smsFrom);
     }
 }
@@ -324,10 +334,11 @@ if(type=="bankAccount"){
         await sms.sendSms(mobileNumber, message,smsFrom);
     }
 }else if (type=="augmontWallet"){
-    let messageTemplate = await models.smsAlert.getSmsTemplate('sell & wallet ');
+    let messageTemplate = await models.smsAlert.getSmsTemplate('sell & wallet');
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<quantity>", quantity).replace("<metalType>", metalType).replace("<amount>", amount)
         let smsFrom = "customer"
+      
         await sms.sendSms(mobileNumber, message,smsFrom);
     }
 }
@@ -349,7 +360,7 @@ exports.sendMessageForDepositRequest = async (mobileNumber, amount) => {
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<amount>", amount)
         let smsFrom = "customer"
-        await sms.sendSms(mobileNumber, message,smsFrom);
+           await sms.sendSms(mobileNumber, message,smsFrom);
     }
 }
 
@@ -408,6 +419,24 @@ exports.sendMessageForDeliveredToClient = async (mobileNumber, orderId) => {
 
 exports.sendMessageForDispatchedButNotDelivered = async (mobileNumber,customerName, orderId,courierCompany,trackingId) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Dispatched but not Delivered');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<customerName>",customerName).replace("<orderId>", orderId).replace("<courierCompany>", courierCompany).replace("<trackingId>", trackingId)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}
+
+exports.sendMessageForRto = async (mobileNumber,customerName, orderId,courierCompany,trackingId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('rto');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<customerName>",customerName).replace("<orderId>", orderId).replace("<courierCompany>", courierCompany).replace("<trackingId>", trackingId)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}
+
+exports.sendMessageForRedispach = async (mobileNumber,customerName, orderId,courierCompany,trackingId) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('ReDispatched');
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<customerName>",customerName).replace("<orderId>", orderId).replace("<courierCompany>", courierCompany).replace("<trackingId>", trackingId)
         let smsFrom = "customer"

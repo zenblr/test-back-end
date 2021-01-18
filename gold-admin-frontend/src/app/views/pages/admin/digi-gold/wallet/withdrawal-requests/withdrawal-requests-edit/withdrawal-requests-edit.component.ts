@@ -114,7 +114,8 @@ export class WithdrawalRequestsEditComponent implements OnInit {
 		}
 		if (this.withdrawId) {
 			const depositData = {
-				depositStatus: this.controls.withdrawalStatus.value
+				depositStatus: this.controls.withdrawalStatus.value,
+				date: new Date()
 			};
 			this.withdrawalRequestsService.editWithdrawStatus(depositData, this.withdrawId).pipe(
 				map((res) => {
