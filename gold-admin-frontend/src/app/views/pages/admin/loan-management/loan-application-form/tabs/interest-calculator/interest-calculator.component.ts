@@ -509,6 +509,7 @@ export class InterestCalculatorComponent implements OnInit {
         console.log(this.controls.paymentFrequency.value);
         //loan transfer
         if (this.totalAmt <= Number(this.controls.finalLoanAmount.value)) {
+          this.controls.loanTransferExtraAmount.reset()
           this.controls.loanTransferExtraAmount.disable()
         } else {
           this.controls.loanTransferExtraAmount.enable()

@@ -39,6 +39,7 @@ export class UserAddressComponent implements OnInit {
   aadharCardUserDetails: any;
   index: any;
   type = { aadharIndex: [], voterIndex: [] }
+  isCityEdit: boolean;
   // customerDetails = { customerId: 1, customerKycId: 2, stateId: 2, cityId: 5, pinCode: 123456, moduleId: 1, userType: null }
 
   constructor(
@@ -211,7 +212,6 @@ export class UserAddressComponent implements OnInit {
           // identityProofImg
 
           this.identityFileNameArray.push(this.files.name)
-
           this.identityForm.patchValue({ identityProofImg: this.images.identityProof });
           this.identityForm.patchValue({ identityProof: this.imageId.identityProof });
           this.identityForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
@@ -226,7 +226,7 @@ export class UserAddressComponent implements OnInit {
           this.addressControls.controls[1].patchValue({ addressProof: this.imageId.residential });
           this.addressControls.controls[1].patchValue({ addressProofImg: this.images.residential });
           this.addressControls.controls[1].patchValue({ addressProofFileName: this.addressFileNameArray2[this.addressFileNameArray2.length - 1] });
-          this.checkForVoter(1,'residential')
+          this.checkForVoter(1, 'residential')
         } else if (type == 0 && this.images.permanent.length < 2) {
           this.images.permanent.push(res.uploadFile.URL)
           this.imageId.permanent.push(res.uploadFile.path)
@@ -235,7 +235,7 @@ export class UserAddressComponent implements OnInit {
           this.addressControls.controls[0].patchValue({ addressProofImg: this.images.permanent });
           this.addressControls.controls[0].patchValue({ addressProofFileName: this.addressFileNameArray1[this.addressFileNameArray1.length - 1] });
 
-          this.checkForVoter(0,'permanent')
+          this.checkForVoter(0, 'permanent')
         } else {
           this.toastr.error("Cannot upload more than two images")
         }
@@ -323,6 +323,7 @@ export class UserAddressComponent implements OnInit {
     this.addressControls.at(0)['controls'].addressProofNumber.enable()
 
     const data = this.identityForm.getRawValue();
+    data.isCityEdit = this.isCityEdit
 
     this.userAddressService.addressDetails(data).pipe(
       map(res => {
@@ -356,7 +357,7 @@ export class UserAddressComponent implements OnInit {
   }
 
   sameAddress(event: MatCheckbox) {
-    
+
     // this.addressControls.at(0).enable();
     if (event) {
       this.sameAdd = true
@@ -486,10 +487,11 @@ export class UserAddressComponent implements OnInit {
   checkForAadhar(index) {
     // console.log(index)
     if (!(this.identityForm.controls.moduleId.value == 3 && this.identityForm.controls.userType.value === 'Individual')) {
-
+      this.isCityEdit = false
 
 
       if (index === 0) {
+
         if (this.addressControls.at(0).value.addressProofTypeId == 2) {
           this.images.permanent = [];
           this.imageId.permanent = [];
@@ -504,7 +506,6 @@ export class UserAddressComponent implements OnInit {
           }
           this.addressFileNameArray1 = this.identityFileNameArray
           this.patchAaddarValue(0)
-          console.log(this.addressControls.at(0).value, this.aadharCardUserDetails)
         } else {
           this.images.permanent = [];
           this.imageId.permanent = [];
@@ -516,7 +517,7 @@ export class UserAddressComponent implements OnInit {
           this.addressFileNameArray1 = []
           this.enableAadharField(0)
           this.resetAadharFields(0)
-          this.checkForVoter(0,'permanent')
+          this.checkForVoter(0, 'permanent')
         }
       } else {
         if (this.addressControls.at(1).value.addressProofTypeId == 2) {
@@ -545,7 +546,7 @@ export class UserAddressComponent implements OnInit {
           this.addressFileNameArray1 = []
           this.enableAadharField(1)
           this.resetAadharFields(1)
-          this.checkForVoter(1,'residential')
+          this.checkForVoter(1, 'residential')
         }
       }
     } else {
@@ -602,23 +603,47 @@ export class UserAddressComponent implements OnInit {
         controls['controls'].stateId.patchValue(stateId[0]['id'])
         await this.getCities(index)
       }
-
-      let city = this.cities0.filter(res => {
-        if (res.name == this.aadharCardUserDetails.city)
-          return res
-      })
+      if (index == 0) {
+        var city = this.cities0.filter(res => {
+          if (res.name == this.aadharCardUserDetails.city)
+            return res
+        })
+      } else {
+        city = this.cities1.filter(res => {
+          if (res.name == this.aadharCardUserDetails.city)
+            return res
+        })
+      }
 
       if (city.length > 0) {
         controls['controls'].cityId.patchValue(city[0]['id'])
+        controls['controls'].cityId.disable()
+        this.isCityEdit = false
+      }else{
+        let data = {
+          stateId:stateId[0]['id'],
+          cityName:this.aadharCardUserDetails.city,
+          cityUniqueId:null
+        }
+        this.sharedService.newCity(data).subscribe()
+        this.isCityEdit = true
       }
       // controls.disable()
-      this.disableAadharField(index)
+      if (this.aadharCardUserDetails.isAahaarVerified) {
+        this.disableAadharField(index)
+      }
     }
   }
 
   getVoterIdDetails(index) {
-    
-    this.userAddressService.getVoterIdDetails(this.images.permanent, this.controls.customerId.value).subscribe(res => {
+    let images
+    if (index == 0) {
+      images = this.images.permanent
+    } else {
+      images = this.images.residential
+    }
+
+    this.userAddressService.getVoterIdDetails(images, this.controls.customerId.value).subscribe(res => {
       console.log(res)
       this.enableAadharField(index)
       this.resetAadharFields(index)
@@ -631,8 +656,8 @@ export class UserAddressComponent implements OnInit {
   }
 
   disbaleVoterIdFields(index) {
-    if (! this.type.voterIndex.includes(index))
-       this.type.voterIndex.push(index)
+    if (!this.type.voterIndex.includes(index))
+      this.type.voterIndex.push(index)
     let controls = this.addressControls.controls[index]
     controls['controls'].address.disable()
     controls['controls'].addressProofNumber.disable()
@@ -652,17 +677,17 @@ export class UserAddressComponent implements OnInit {
     controls['controls'].addressProofNumber.disable()
     controls['controls'].pinCode.disable()
     controls['controls'].stateId.disable()
-    
+
   }
 
-  resetAadharFields(index){
-      let controls = this.addressControls.controls[index]
-      controls['controls'].address.reset()
-      controls['controls'].addressProofNumber.reset()
-      controls['controls'].pinCode.reset()
-      controls['controls'].stateId.reset()
-      controls['controls'].cityId.reset()
-      controls['controls'].pinCode.reset()
+  resetAadharFields(index) {
+    let controls = this.addressControls.controls[index]
+    controls['controls'].address.reset()
+    controls['controls'].addressProofNumber.reset()
+    controls['controls'].pinCode.reset()
+    controls['controls'].stateId.reset()
+    controls['controls'].cityId.reset()
+    controls['controls'].pinCode.reset()
   }
 
   enableAadharField(index) {
@@ -670,17 +695,17 @@ export class UserAddressComponent implements OnInit {
     let controls = this.addressControls.controls[index]
     controls['controls'].stateId.enable()
     controls['controls'].pinCode.enable()
-    
+
   }
 
-  checkForVoter(index:number,type:string){
+  checkForVoter(index: number, type: string) {
     const controls = this.addressControls.at(index)
     if (this.images[type].length == 2 && controls.get('addressProofTypeId').value == 1) {
       this.getVoterIdDetails(index)
 
     } else {
-      let findIndex =  this.type.voterIndex.indexOf(index)
-       this.type.voterIndex.splice(findIndex, 1)
+      let findIndex = this.type.voterIndex.indexOf(index)
+      this.type.voterIndex.splice(findIndex, 1)
       this.enableVoterIdFields(index)
     }
   }

@@ -20,7 +20,7 @@ export class PageConfig {
 					page: { title: "Show Feedback", desc: "" },
 				},
 			},
-			error:{
+			error: {
 				page: { title: "Error Logs", desc: "" },
 			},
 			masters: {
@@ -150,7 +150,7 @@ export class PageConfig {
 				// }
 			},
 			"lead-management": {
-				page: { title: "All Leads", desc: "" },
+				page: { title: "All Customers", desc: "" },
 				"new-requests": {
 					page: { title: "Appraiser Requests", desc: "" },
 				},
@@ -312,6 +312,19 @@ export class PageConfig {
 			"applied-kyc": {
 				page: { title: "Applied KYC", desc: "" },
 			},
+			"applied-kyc-digi-gold": {
+				page: { title: "Applied KYC - Digi Gold", desc: "" },
+				"edit": {
+					id: {
+						page: { title: "Customer KYC", desc: "" },
+					}
+				},
+				"apply": {
+					id: {
+						page: { title: "Customer KYC", desc: "" },
+					}
+				},
+			},
 			"holidays": {
 				page: { title: "Holidays", desc: "" },
 			},
@@ -447,30 +460,30 @@ export class PageConfig {
 						},
 					},
 
-				       
-					},
+
+				},
 				"global-settings": {
-				        page: { title: "Global Setting", desc: "" },
-					},
-				
-				"sip-management":{
-			
-				    "sip-cycle-date": {
-				        page: { title: "SIP Cycle Date", desc: "" },
+					page: { title: "Global Setting", desc: "" },
+				},
+
+				"sip-management": {
+
+					"sip-cycle-date": {
+						page: { title: "SIP Cycle Date", desc: "" },
 					},
 					"sip-investment-tenure": {
-				        page: { title: "SIP Investment Tenure", desc: "" },
+						page: { title: "SIP Investment Tenure", desc: "" },
 					},
-					
-				    "create-sip": {
-				        page: { title: "Create SIP", desc: "" },
+
+					"create-sip": {
+						page: { title: "Create SIP", desc: "" },
 					},
 					"sip-application": {
-				        page: { title: "SIP Application", desc: "" },
+						page: { title: "SIP Application", desc: "" },
 					},
-					
-				    "sip-trades": {
-				        page: { title: "SIP Trades", desc: "" },
+
+					"sip-trades": {
+						page: { title: "SIP Trades", desc: "" },
 					},
 
 				}

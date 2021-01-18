@@ -10,6 +10,7 @@ const jwt = require('jsonwebtoken');
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../../utils/constant');
 const errorLogger = require('../../../utils/errorLogger');
 const { getCustomerCityById, getCustomerStateById } = require('../../../service/customerAddress')
+const { createCustomer } = require('../../../service/digiGold')
 
 
 exports.getCustomerPassbookDetails = async (req, res) => {
@@ -225,15 +226,19 @@ exports.createCustomerInAugmontDb = async (req, res) => {
       // 'utmMedium': utmMedium,
       // 'utmCampaign': utmCampaign
     })
-    const result = await models.axios({
-      method: 'POST',
-      url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Bearer ${merchantData.accessToken}`,
-      },
-      data: data
-    });
+    // const result = await models.axios({
+    //   method: 'POST',
+    //   url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //     'Authorization': `Bearer ${merchantData.accessToken}`,
+    //   },
+    //   data: data
+    // });
+    const result = await createCustomer(data)
+    if (!result.isSuccess) {
+      return res.status(422).json({ err: result.message });
+    }
 
     return res.status(200).json({ message: "Success" });
 

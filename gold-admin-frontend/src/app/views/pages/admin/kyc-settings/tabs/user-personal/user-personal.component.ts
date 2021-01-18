@@ -387,8 +387,12 @@ export class UserPersonalComponent implements OnInit {
     this.userPersonalService.getUserDetails(this.controls.customerId.value).subscribe(res => {
       if (res.data) {
         this.customerData = res.data
-        let myMoment = moment(res.data.aahaarDOB,"DD/MM/YYYY").format("YYYY-MM-DD");
-        this.controls.dateOfBirth.patchValue(myMoment)
+        if(res.data.aahaarDOB){
+          let myMoment = moment(res.data.aahaarDOB,"DD/MM/YYYY").format("YYYY-MM-DD");
+
+          this.controls.dateOfBirth.patchValue(myMoment)
+          this.personalForm.controls.dateOfBirth.disable()
+        }
         let gender
         if (res.data.gender == 'MALE') {
           gender = 'm'
@@ -402,7 +406,6 @@ export class UserPersonalComponent implements OnInit {
         this.ageValidation()
         // console.log(this.datePipe.transform(res.data.aahaarDOB,'yyyy-MM-dd'))
         // console.log(myMoment)
-        this.personalForm.controls.dateOfBirth.disable()
         this.personalForm.controls.gender.disable()
         this.controls.spouseName.disable()
         this.ref.detectChanges()

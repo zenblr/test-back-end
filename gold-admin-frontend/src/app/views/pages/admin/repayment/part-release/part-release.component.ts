@@ -224,6 +224,11 @@ export class PartReleaseComponent implements OnInit {
     }
   }
 
+  
+  paymentData(event){
+    this.paymentValue = event
+  }
+
   patchUrl(key, url, index) {
     switch (key) {
       case 'withOrnamentWeightData':

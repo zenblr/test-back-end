@@ -113,6 +113,10 @@ export class SharedService {
 		return this.http.get(`/api/city?stateId=${id}`).toPromise();
 	}
 
+	newCity(data):Observable<any>{
+		return this.http.post(`/api/city/new-city`,data);
+	}
+
 	uploadFile(files, data?): Observable<any> {
 		const reqParams: any = {};
 		if (data && data.reason) {

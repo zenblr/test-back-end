@@ -118,7 +118,7 @@ exports.customerDetails = async (req, res, next) => {
 
     let customerData = await models.customer.findOne({
         where: { customerUniqueId: getCustomer.customerUniqueId, isActive: true, kycStatus: 'approved' },
-        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
+        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage', 'form60Image'],
 
     })
     let disbursedPendingId = await models.loanStage.findOne({ where: { name: 'disbursement pending' } })
