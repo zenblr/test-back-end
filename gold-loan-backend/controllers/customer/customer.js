@@ -800,7 +800,7 @@ exports.signUpCustomer = async (req, res) => {
     },
   });
   if (check.isEmpty(verifyUser)) {
-    return res.status(404).json({ message: `INVALID OTP.` });
+    return res.status(404).json({ message: `The OTP entered is incorrect.` });
   }
 
   let verifyFlag = await models.customerOtp.update(

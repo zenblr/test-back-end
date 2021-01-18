@@ -75,7 +75,7 @@ exports.makePayment = async (req, res) => {
 
         if (type == "buy") {
 
-          let walletData = await models.walletTempDetails.create({ customerId: id, amount: orderAmount, paymentDirection: "debit", description: `${metalType} bought ${quantity} grams`, productTypeId: 1, transactionDate: moment() }, { transaction: t });
+          let walletData = await models.walletTempDetails.create({ customerId: id, amount: orderAmount, paymentDirection: "debit", description: `${metalType.charAt(0).toUpperCase() + metalType.slice(1)} Bought ${quantity} grams`, productTypeId: 1, transactionDate: moment() }, { transaction: t });
 
           let currentTempBal = Number(customerDetails.currentWalletBalance) - Number(orderAmount);
 
@@ -300,7 +300,7 @@ exports.addAmountWallet = async (req, res) => {
 
                 let orderUniqueId = `dg_buy${Math.floor(1000 + Math.random() * 9000)}`;
 
-                let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.totalAmount, paymentDirection: "debit", description: `${orderData.metalType} bought ${orderData.quantity} grams`, productTypeId: 4, transactionDate: moment(), walletTempDetailId: tempWalletId, orderTypeId: 1, paymentOrderTypeId: 6, transactionStatus: "completed" }, { transaction: t });
+                let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.totalAmount, paymentDirection: "debit", description: `${orderData.metalType.charAt(0).toUpperCase() + orderData.metalType.slice(1)} Bought ${orderData.quantity} grams`, productTypeId: 4, transactionDate: moment(), walletTempDetailId: tempWalletId, orderTypeId: 1, paymentOrderTypeId: 6, transactionStatus: "completed" }, { transaction: t });
 
                 let orderCreatedDate = moment(moment().utcOffset("+05:30"));
 
