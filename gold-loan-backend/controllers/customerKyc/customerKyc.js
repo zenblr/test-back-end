@@ -1246,8 +1246,8 @@ exports.changeDigiKycStatus = async (req, res) => {
 
     //change
     let url;
-    if (process.env == "production" || process.env == "uat") {
-        url = customer.panImg
+    if (process.env.NODE_ENV == "production" || process.env.NODE_ENV == "uat") {
+        url = process.env.BASE_URL + customer.panImage
     } else {
         url = customer.panImage
     }
