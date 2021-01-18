@@ -20,7 +20,7 @@ export class WithdrawalRequestsComponent implements OnInit {
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   displayedColumns = ['customerId', 'customerFullName', 'mobileNumber', 'withdrawalTransactionID',
     'withdrawalInitiatedDate', 'withdrawalAmount', 'bankName', 'branchName', 'accountNumber',
-    'accountHolderName', 'ifscCode', 'withdrawalPaymentDate', 'bankTransactionID', 'depositmodeofpayment',
+    'accountHolderName', 'ifscCode', 'withdrawalPaymentDate', 'bankTransactionID',
     'withdrawalStatus', 'action',
   ];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

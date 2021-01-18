@@ -82,6 +82,7 @@ export class DepositRequestsEditComponent implements OnInit {
 			depositBranchName: this.depositInfo.transactionData.branchName ? this.depositInfo.transactionData.branchName : 'NA',
 			depositDate: this.depositInfo.transactionData.depositDate,
 			depositAmount: this.depositInfo.transactionData.transactionAmount,
+			date: this.depositInfo.transactionData.depositApprovedDate,
 			depositStatus: '',
 		};
 		this.depositForm.patchValue(data);

@@ -88,14 +88,14 @@
                     </div>
                     <div *ngIf="formFieldEnableFlag" class="row kt-margin-t-15">
                         <div class="col-4 align-self-center">
-                            <label class="font-weight-500 text-color">Withdraw Date </label>
+                            <label class="font-weight-500 text-color">Payment Date</label>
                         </div>
                         <div class="col-8">
                             <!-- <input type="text" formControlName="depositDate" class="form-control"
                                 [value]="controls?.depositDate?.value | withdrawDate: 'MMM d, y, h:mm a'" disabled> -->
                             <input type="text" class="form-control" [matDatepicker]="picker" (click)="picker.open()"
                                 formControlName="withdrawDate" [class.isError]="controls.withdrawDate.touched && controls.withdrawDate.invalid"
-                                readonly placeholder="DD/MM/YYYY"
+                                readonly placeholder="DD/MM/YYYY" [min]="controls?.withdrawalInitiatedDate?.value"
                                 [max]="maxDate" />
                             <mat-datepicker #picker></mat-datepicker>
                             <mat-error *ngIf="controls.withdrawDate.invalid && controls.withdrawDate.touched">
@@ -105,7 +105,7 @@
                     </div>
                     <div *ngIf="formFieldEnableFlag" class="row kt-margin-t-15">
                         <div class="col-4 align-self-center">
-                            <label class="font-weight-500 text-color">UTR No </label>
+                            <label class="font-weight-500 text-color">UTR Number</label>
                         </div>
                         <div class="col-8">
                             <input type="text" formControlName="utrNumber" class="form-control"
