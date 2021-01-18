@@ -1253,7 +1253,7 @@ exports.changeDigiKycStatus = async (req, res) => {
     }
     //change
 
-    let panBase64 = await pathToBase64(customer.panImage)
+    let panBase64 = await pathToBase64(url)
 
     if (!panBase64.success) {
         return res.status(panBase64.status).json({ data: panBase64.message })

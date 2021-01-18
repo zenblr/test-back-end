@@ -248,13 +248,15 @@ exports.base64ConvertorWithPath = async (req, res, next) => {
 
 exports.pathToBase64 = async (req, res, next) => {
 
-    let data = await pathToBase64(req.body.path)
+    return res.status(200).json({ data: 'sucess' })
 
-    if (data.success) {
-        return res.status(data.status).json({ data: data.data })
-    } else {
-        return res.status(data.status).json({ data: data.message })
+    // let data = await pathToBase64(req.body.path)
 
-    }
+    // if (data.success) {
+    //     return res.status(data.status).json({ data: data.data })
+    // } else {
+    //     return res.status(data.status).json({ data: data.message })
+
+    // }
 
 }
