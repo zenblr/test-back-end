@@ -1182,7 +1182,7 @@ async function checkBuyLimit(id, totalAmount) {
         return ({ message: "Your KYC status is pending", success: false });
       } else {
 
-        return ({ message: "Your KYC status is pending. Please complete KYC first", success: false });
+        return ({ message: "Your KYC  is pending. Please complete KYC first", success: false });
       }
     } else if (totalAmount < limit && (customer.digiKycStatus == 'approved'
       || customer.digiKycStatus == 'pending' || customer.digiKycStatus == 'waiting')) {
