@@ -1232,12 +1232,11 @@ exports.changeDigiKycStatus = async (req, res) => {
                 await models.customer.update({ kycStatus: status, scrapKycStatus: status, emiKycStatus: status, digiKycStatus: status }, { where: { id: customerId }, transaction: t })
 
                 await sms.sendMessageForKycRejected(customer.mobileNumber, customer.customerUniqueId);
-            //   if()
+                //   if()
             } else {
                 // prending
                 await models.customer.update({ emiKycStatus: status, digiKycStatus: status }, { where: { id: customerId }, transaction: t })
                 // await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
-              
             }
             await models.digiKycApplied.update({ status, reasonForDigiKyc }, { where: { id: id }, transaction: t })
 
@@ -1245,7 +1244,16 @@ exports.changeDigiKycStatus = async (req, res) => {
         return res.status(200).json({ message: 'success' })
     }
 
-    let panBase64 = await pathToBase64(customer.panImage)
+    //change
+    let url;
+    if (process.env.NODE_ENV == "production" || process.env.NODE_ENV == "uat") {
+        url = process.env.BASE_URL + customer.panImage
+    } else {
+        url = customer.panImage
+    }
+    //change
+
+    let panBase64 = await pathToBase64(url)
 
     if (!panBase64.success) {
         return res.status(panBase64.status).json({ data: panBase64.message })
@@ -1272,7 +1280,7 @@ exports.changeDigiKycStatus = async (req, res) => {
             await models.digiKycApplied.update({ status, reasonForDigiKyc }, { where: { id: id }, transaction: t })
 
             await sms.sendMessageAfterKycApproved(customer.mobileNumber, customer.customerUniqueId);
-           
+
         })
         return res.status(data.status).json({ message: 'success' })
     } else {
@@ -1283,12 +1291,12 @@ exports.changeDigiKycStatus = async (req, res) => {
 
 exports.applyDigiKyc = async (req, res) => {
     let data = await applyDigiKyc(req)
-    let customer = await models.customer.findOne({ where: { id: req.body.customerId} })
+    let customer = await models.customer.findOne({ where: { id: req.body.customerId } })
 
     if (data.success) {
         // apply
         await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
-     
+
         return res.status(data.status).json({ message: data.message })
     } else {
         return res.status(data.status).json({ message: data.message })

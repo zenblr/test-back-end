@@ -147,15 +147,7 @@ exports.addAmountWallet = async (req, res) => {
         return res.status(422).json({ message: "Payment verification failed" });
       }
 
-      await models.axios({
-        method: 'PATCH',
-        url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
-        auth: {
-          username: razorPay.razorPayConfig.key_id,
-          password: razorPay.razorPayConfig.key_secret
-        },
-        data: qs.stringify({ notes: { transactionId: tempWalletTransaction.transactionUniqueId, uniqueId: customer.customerUniqueId } })
-      });
+      
       //if order for buy product
 
       let customerUpdatedBalance
@@ -185,6 +177,15 @@ exports.addAmountWallet = async (req, res) => {
 
         if (!orderData) {
 
+          await models.axios({
+            method: 'PATCH',
+            url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
+            auth: {
+              username: razorPay.razorPayConfig.key_id,
+              password: razorPay.razorPayConfig.key_secret
+            },
+            data: qs.stringify({ notes: { transactionId: tempWalletTransaction.transactionUniqueId, uniqueId: customer.customerUniqueId } })
+          });
 
           WalletDetail = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
 
@@ -270,6 +271,16 @@ exports.addAmountWallet = async (req, res) => {
               const customerName = customerDetails.firstName + " " + customerDetails.lastName;
 
               if (result.isSuccess) {
+
+                await models.axios({
+                  method: 'PATCH',
+                  url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
+                  auth: {
+                    username: razorPay.razorPayConfig.key_id,
+                    password: razorPay.razorPayConfig.key_secret
+                  },
+                  data: qs.stringify({ notes: { transactionId: result.data.result.data.transactionId, uniqueId: customer.customerUniqueId } })
+                });
 
                 //calculation function
                 let checkBalance = await customerBalance(customerDetails, Number(result.data.result.data.totalAmount))
@@ -391,6 +402,18 @@ exports.addAmountWallet = async (req, res) => {
               console.log(result.data);
 
               if (result.isSuccess) {
+
+                await models.axios({
+                  method: 'PATCH',
+                  url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
+                  auth: {
+                    username: razorPay.razorPayConfig.key_id,
+                    password: razorPay.razorPayConfig.key_secret
+                  },
+                  data: qs.stringify({ notes: { transactionId: result.data.result.data.orderId, uniqueId: customer.customerUniqueId } })
+                });
+
+
 
                 await models.digiGoldCart.destroy({ where: { customerId: customerId } });
 
