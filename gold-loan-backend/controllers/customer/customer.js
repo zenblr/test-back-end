@@ -12,7 +12,7 @@ const uniqid = require('uniqid');
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 // let sms = require('../../utils/sendSMS');
-let { sendOtpToLeadVerification, sendOtpForLogin, forgetPasswordOtp, sendUpdateLocationCollectMessage, sendUpdateLocationHandoverMessage } = require('../../utils/SMS');
+let { sendOtpToLeadVerification, sendOtpForLogin, forgetPasswordOtp, sendUpdateLocationCollectMessage, sendUpdateLocationHandoverMessage,sendMessageOtpForLogin } = require('../../utils/SMS');
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck');
 const qs = require('qs');
 const getMerchantData = require('../auth/getMerchantData')
@@ -214,7 +214,8 @@ exports.customerSignUp = async (req, res, next) => {
     await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode });
     expiryTime = moment(moment(expiryTime).utcOffset("+05:30"))
     let smsLink = process.env.BASE_URL_CUSTOMER
-    await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
+    // await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
+    await sendMessageOtpForLogin(customerExist.mobileNumber, otp)
 
     return res.status(200).json({ message: `OTP has been sent to registered mobile number.`, referenceCode, isCustomer: true });
 
@@ -251,6 +252,7 @@ exports.sendOtp = async (req, res, next) => {
 
   if (type == "login") {
     let smsLink = process.env.BASE_URL_CUSTOMER
+    // await sendMessageOtpForLogin(customerExist.mobileNumber, otp)
     await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
   } else if (type == "forget") {
     let smsLink = process.env.BASE_URL_CUSTOMER

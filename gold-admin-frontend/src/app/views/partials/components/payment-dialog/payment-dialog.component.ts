@@ -91,11 +91,12 @@ export class PaymentDialogComponent implements OnInit {
         this.paymentTypeList.splice(4,1)
       }
     }
+    this.setValidation()
   }
 
-  setValidation(event) {
+  setValidation() {
     // console.log(event.target.value)
-    const paymentMode = event.target.value
+    const paymentMode =  this.paymentForm.controls.paymentType.value
     switch (paymentMode) {
       case 'cash':
         for (const key in this.paymentForm.controls) {
