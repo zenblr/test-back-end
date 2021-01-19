@@ -17,7 +17,11 @@ const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetai
     , schemeBasedOnPriceRange, readLoanDetails,
     readFeedBack, addFeedBack } = require('../controllers/customer/customerApp')
 
+const { customerMigration } = require('../controllers/customer/customerMigration')
+
 //customer
+router.post('/customer-migration', checkAuth, customerMigration)
+
 router.get('/get-otp', checkAuth, wrapper(getOtp));
 
 router.post('/sign-up', registerCustomerValidation, validationError, wrapper(signUpCustomer)); //Register customer from customer website
