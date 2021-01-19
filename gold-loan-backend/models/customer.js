@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
         // attributes
         customerUniqueId: {
             type: DataTypes.STRING,
-            field: 'customer_unique_id'
+            field: 'customer_unique_id',
+            unique: true
         },
         internalBranchId: {
             type: DataTypes.INTEGER,
@@ -228,6 +229,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             field: 'wallet_free_balance',
             defaultValue: 0
+        },
+        isAugmontCustomerCreated: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_augmont_customer_created',
+            defaultValue: false
         }
 
     }, {
