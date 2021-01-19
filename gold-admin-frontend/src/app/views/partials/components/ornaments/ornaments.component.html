@@ -721,7 +721,7 @@
     </div>
 
     <div class="row kt-margin-t-10" *ngIf="!(data?.modal || data.scrapModal)">
-        <div class="col-12">
+        <div class="col-12" *ngIf="scrapIds">
             <mat-divider></mat-divider>
         </div>
     </div>
@@ -742,7 +742,7 @@
     </div>
 
     <div class="row" *ngIf="!(data?.modal || data.scrapModal)">
-        <div class="col-12 kt-margin-b-10">
+        <div class="col-12 kt-margin-b-10" *ngIf="scrapIds">
             <mat-divider></mat-divider>
         </div>
     </div>
