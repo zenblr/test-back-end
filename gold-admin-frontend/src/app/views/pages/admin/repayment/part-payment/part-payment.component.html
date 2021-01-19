@@ -118,6 +118,8 @@
                                 <mat-error *ngIf="partAmount.errors?.required && partAmount.touched">
                                     Field Required
                                 </mat-error>
+                                <mat-error *ngIf="partAmount.errors?.valueZero && partAmount.touched">
+                                    Amount should be greater than zero                                </mat-error>
                             </td>
                         </tr>
                     </tbody>
