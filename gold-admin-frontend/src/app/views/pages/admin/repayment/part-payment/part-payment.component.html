@@ -90,7 +90,7 @@
                             </td>
 
                             <td class="table-amount">
-                                <span>{{payableAmount?.totalInterest}}</span><br>
+                                <span>{{payableAmount?.totalInterest  | number:'1.2-2'}}</span><br>
                                 <!-- <span *ngIf="loanDetails?.customerLoan[1]">
                                     {{payableAmount?.unsecuredTotalInterest}}
                                 </span> -->
