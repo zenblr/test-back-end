@@ -19,10 +19,12 @@ exports.sendMessageOtpForLogin = async (mobileNumber, otp) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Login OTP');
     if (messageTemplate) {
         let message = await messageTemplate.content.replace('<OTP number>', otp)
-
-        await sms.sendSms(mobileNumber, message);
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
     }
 }
+
+ 
 
 exports.forgetPasswordOtp = async (mobileNumber, firstName, otp, time, smsLink) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Forgot password');
