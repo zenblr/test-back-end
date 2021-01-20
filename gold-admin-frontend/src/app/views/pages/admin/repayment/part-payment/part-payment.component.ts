@@ -72,7 +72,13 @@ export class PartPaymentComponent implements OnInit {
 
   partAmountContinue() {
     // console.log(this.partAmount)
-    if (this.partAmount.invalid) return this.partAmount.markAsTouched()
+    if (this.partAmount.invalid || this.partAmount.value <= 0) {
+      if (this.partAmount.value <= 0) {
+        this.partAmount.setErrors({ valueZero: true })
+      }
+      this.partAmount.markAllAsTouched()
+      return
+    }
     const data = {
       paidAmount: this.partAmount.value,
       masterLoanId: this.masterLoanId

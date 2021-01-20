@@ -185,7 +185,8 @@
                     <mat-cell *matCellDef="let loan">
                         <ng-container
                             *ngIf="!((loan.moduleId == 4 && loan.digiKycStatus == 'rejected') || (loan.moduleId == 1 && loan.kycStatus == 'rejected'))">
-                            <div *ngxPermissionsOnly="['addNewRequest', 'addBranchCustomer', 'customerKycAdd']">
+                            <div *ngIf="(loan.internalBranchId && permission.addNewRequest) || (!loan.internalBranchId && permission.addBranchCustomer)
+                            || (loan.module?.id == 4 && !loan.panCardNumber && permission.customerKycAdd)">
                                 <button mat-button [matMenuTriggerFor]="menu">
                                     <mat-icon>more_vert</mat-icon>
                                 </button>
