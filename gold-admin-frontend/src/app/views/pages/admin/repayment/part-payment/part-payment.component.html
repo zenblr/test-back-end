@@ -90,7 +90,7 @@
                             </td>
 
                             <td class="table-amount">
-                                <span>{{payableAmount?.totalInterest}}</span><br>
+                                <span>{{payableAmount?.totalInterest  | number:'1.2-2'}}</span><br>
                                 <!-- <span *ngIf="loanDetails?.customerLoan[1]">
                                     {{payableAmount?.unsecuredTotalInterest}}
                                 </span> -->
@@ -118,6 +118,8 @@
                                 <mat-error *ngIf="partAmount.errors?.required && partAmount.touched">
                                     Field Required
                                 </mat-error>
+                                <mat-error *ngIf="partAmount.errors?.valueZero && partAmount.touched">
+                                    Amount should be greater than zero                                </mat-error>
                             </td>
                         </tr>
                     </tbody>

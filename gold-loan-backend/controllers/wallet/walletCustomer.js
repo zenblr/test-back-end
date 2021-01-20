@@ -665,13 +665,7 @@ exports.getAllDepositDetails = async (req, res) => {
 
   let count = await models.walletDetails.findAll({
     where: searchQuery,
-    include: includeArray,
-    order: [
-      ["updatedAt", "DESC"]
-    ],
-    offset: offset,
-    limit: pageSize,
-    subQuery: false,
+    include: includeArray
   });
   return res.status(200).json({ depositDetail: depositDetail, count: count.length });
 
@@ -808,13 +802,7 @@ exports.getTransactionDetails = async (req, res) => {
 
     let count = await models.walletDetails.findAll({
       where: searchQuery,
-      include: includeArray,
-      order: [
-        ["updatedAt", "DESC"]
-      ],
-      offset: offset,
-      limit: pageSize,
-      subQuery: false,
+      include: includeArray
     });
 
     if (check.isEmpty(transactionDetails)) {
