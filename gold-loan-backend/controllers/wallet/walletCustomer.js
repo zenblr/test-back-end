@@ -38,11 +38,11 @@ exports.makePayment = async (req, res) => {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     };
 
-  let checkCustomerKycStatus = await checkKycStatus(id);
+    let checkCustomerKycStatus = await checkKycStatus(id);
 
-  if(checkCustomerKycStatus){
-    return res.status(420).json({ message: "Your KYC status is Rejected" });
-  } 
+    if (checkCustomerKycStatus) {
+      return res.status(420).json({ message: "Your KYC status is Rejected" });
+    }
     let transactionUniqueId = uniqid.time().toUpperCase();
     let tempWallet;
 
@@ -115,6 +115,19 @@ exports.makePayment = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
+    await models.errorLogger.create({
+      message: err.error.description,
+      url: req.url,
+      method: req.method,
+      host: req.hostname,
+      body: req.body,
+      userData: req.userData
+  });
+    if(err.statusCode == 400 && err.error.code){
+      return res.status(400).json({message: err.error.description});
+    }else{
+      return res.status(400).json({err});
+    }
   }
 
 }
@@ -147,7 +160,7 @@ exports.addAmountWallet = async (req, res) => {
         return res.status(422).json({ message: "Payment verification failed" });
       }
 
-      
+
       //if order for buy product
 
       let customerUpdatedBalance
@@ -843,10 +856,10 @@ exports.withdrawAmount = async (req, res) => {
 
   let checkCustomerKycStatus = await checkKycStatus(id);
 
-  if(checkCustomerKycStatus){
+  if (checkCustomerKycStatus) {
     return res.status(420).json({ message: "Your KYC status is Rejected" });
-  } 
-  
+  }
+
   if (customerFreeBalance.walletFreeBalance < withdrawAmount) {
 
     return res.status(400).json({ message: `Insufficient free wallet balance.` });
@@ -947,7 +960,7 @@ exports.updateCustomerBankDetails = async (req, res) => {
   try {
     const customerId = req.userData.id;
     const { customerBankDetailId } = req.params;
-    const { bankId, bankName,  branchName, accountNumber, accountName, ifscCode, userBankId } = req.body;
+    const { bankId, bankName, branchName, accountNumber, accountName, ifscCode, userBankId } = req.body;
     let customerDetails = await models.customer.findOne({
       where: { id: customerId, isActive: true },
     });
@@ -1010,11 +1023,11 @@ exports.updateCustomerBankDetails = async (req, res) => {
           },
           data: data
         })
-  
+
         if (result.data.statusCode === 200) {
-  
-          await models.customerBankDetails.update({ bankName: bankName, bankBranchName: branchName, accountHolderName: accountName, accountNumber, ifscCode, bankId: bankId, userBankId: result.data.result.data.userBankId  }, { where: { id: id }, transaction: t });
-  
+
+          await models.customerBankDetails.update({ bankName: bankName, bankBranchName: branchName, accountHolderName: accountName, accountNumber, ifscCode, bankId: bankId, userBankId: result.data.result.data.userBankId }, { where: { id: id }, transaction: t });
+
           return res.status(200).json({ message: 'Success', data: result.data });
         }
       })
@@ -1038,7 +1051,7 @@ exports.getAllBankDetails = async (req, res) => {
 
   const id = req.userData.id;
   let bankDetails = await models.customerBankDetails.findAll({
-    where: { customerId: id, isActive: 'true', bankId: { [Op.ne]: null}},
+    where: { customerId: id, isActive: 'true', bankId: { [Op.ne]: null } },
     order: [["updatedAt", "DESC"]],
     include: {
       model: models.customer,
@@ -1119,7 +1132,7 @@ async function checkBuyLimit(id, totalAmount) {
 
       }
 
-    } else if ((total > limit && customer.digiKycStatus == 'approved') || ((newAndOldAmountTotal >= limit && customer.digiKycStatus == 'approved')) ) {
+    } else if ((total > limit && customer.digiKycStatus == 'approved') || ((newAndOldAmountTotal >= limit && customer.digiKycStatus == 'approved'))) {
 
       return ({ message: "Your KYC is approved", success: true });
     } else if (totalAmount >= limit && customer.digiKycStatus == 'approved') {
@@ -1138,11 +1151,11 @@ async function checkBuyLimit(id, totalAmount) {
           return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
 
         }
-      } else if(newAndOldAmountTotal >= limit){
+      } else if (newAndOldAmountTotal >= limit) {
 
         return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
-        
-      }else {
+
+      } else {
 
         return ({ message: "No need of KYC", success: true });
       }
@@ -1162,7 +1175,7 @@ async function checkBuyLimit(id, totalAmount) {
 
         return ({ message: "Your KYC approval is pending", success: false });
 
-      }   else {
+      } else {
 
         return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
 
