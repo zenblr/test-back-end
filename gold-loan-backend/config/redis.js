@@ -1,5 +1,5 @@
 module.exports = {
-    PORT: '8479',
+    PORT: '6379',
     // HOST: '127.0.0.1',
 
     HOST: 'redis'
