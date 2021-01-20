@@ -306,6 +306,9 @@ export class PartReleaseComponent implements OnInit {
     if (!(this.paymentValue && this.paymentValue.paymentType)) {
       return this.toastr.error('Please select a payment method')
     }
+    if (this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount <=0) {
+      return this.toastr.error('Amount should be greater than zero')
+    }
 
     let path = this.url.split('/')
     let url = path[path.length - 2]
