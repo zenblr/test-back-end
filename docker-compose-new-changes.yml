@@ -19,7 +19,7 @@ services:
     restart: always
     image: redis:latest
     expose:
-      - "8579"
+      - "8579:6379"
 
   nginx:
     restart: always
