@@ -87,13 +87,23 @@ exports.viewLog = async (req, res, next) => {
     let { loanId, masterLoanId } = req.query;
 
     let logs = await models.customerLoanTransaction.findAll({
-        where: { masterLoanId: masterLoanId, depositStatus: 'Completed', paymentFor: 'partPayment' },
+        where: { masterLoanId: masterLoanId, paymentFor: 'partPayment' },
         order: [
             [
                 [{ model: models.customerTransactionSplitUp, as: 'transactionSplitUp' }, 'loanId', 'asc']
             ]
         ],
         include: [
+            {
+                model: models.customerLoanMaster,
+                as: 'masterLoan',
+                attributes: ['id'],
+                include: [{
+                    model: models.customerLoan,
+                    as: 'customerLoan',
+                    attributes: ['loanUniqueId', 'loanAmount']
+                }]
+            },
             {
                 model: models.customerTransactionSplitUp,
                 as: 'transactionSplitUp',
@@ -1594,6 +1604,6 @@ exports.confirmPartPaymentTranscation = async (req, res, next) => {
         // await penalInterestCalculationForSelectedLoan(moment(), masterLoanId)
 
     }
-    return res.status(200).json({ message: "Success", data: payment });
+    return res.status(200).json({ message: "Success" });
 
 }
