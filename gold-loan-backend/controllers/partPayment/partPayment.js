@@ -95,6 +95,16 @@ exports.viewLog = async (req, res, next) => {
         ],
         include: [
             {
+                model: models.customerLoanMaster,
+                as: 'masterLoan',
+                attributes: ['id'],
+                include: [{
+                    model: models.customerLoan,
+                    as: 'customerLoan',
+                    attributes: ['loanUniqueId', 'loanAmount']
+                }]
+            },
+            {
                 model: models.customerTransactionSplitUp,
                 as: 'transactionSplitUp',
                 include: [
