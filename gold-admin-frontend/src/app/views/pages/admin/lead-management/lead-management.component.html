@@ -199,7 +199,7 @@
                                         <button *ngxPermissionsOnly="['addBranchCustomer']" mat-menu-item
                                             (click)="assignBranch(loan)">Assign Branch</button>
                                     </ng-container>
-                                    <ng-container *ngIf="loan.module?.id == 4 && !loan.panCardNumber">
+                                    <ng-container *ngIf="!loan.panCardNumber">
                                         <button *ngxPermissionsOnly="['customerKycAdd']" mat-menu-item
                                             (click)="goToDigiGoldKyc(loan)">Apply Digi KYC</button>
                                     </ng-container>
