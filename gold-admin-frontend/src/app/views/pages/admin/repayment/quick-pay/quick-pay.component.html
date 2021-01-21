@@ -122,7 +122,9 @@
                                         <small>
                                             Please opt for Part Payment option to pay more amount
                                         </small>
-                                        <small class="text-danger" *ngIf="payableAmt.errors?.valueZero && payableAmt.touched">
+                                    </mat-error>
+                                    <mat-error *ngIf="payableAmt.errors?.valueZero && payableAmt.touched">
+                                        <small class="text-danger" >
                                             Amount should be greater than zero
                                         </small>
                                     </mat-error>
