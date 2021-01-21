@@ -296,4 +296,8 @@ export class SharedService {
 		return this.http.get(`/api/modules`);
 	}
 
+	toISODateFormat(date) {
+		const formattedDate = new Date(date);
+		return new Date(formattedDate.getTime() - formattedDate.getTimezoneOffset() * 60000).toISOString();
+	}
 }
