@@ -181,7 +181,7 @@ let createKyc = async (req) => {
                             responseType: 'arraybuffer'
                         });
                         base64data = Buffer.from(getAwsResp.data, 'binary').toString('base64');
-                        fullBase64Image = `data:image/jpeg;base64,${base64Image}`
+                        fullBase64Image = `data:image/jpeg;base64,${base64data}`
                     } else {
                         url = customer.panImage
 
