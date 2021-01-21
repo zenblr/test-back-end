@@ -18,8 +18,8 @@ services:
     container_name: gold-loan-new-redis-demo
     restart: always
     image: redis:latest
-    expose:
-      - "8579"
+    ports:
+      - "8579:6379"
 
   nginx:
     restart: always

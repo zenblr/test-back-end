@@ -18,8 +18,8 @@ import { SharedService } from '../../../../../../../core/shared/services/shared.
 export class DepositRequestsComponent implements OnInit {
 	dataSource: DepositRequestsDatasource;
 	@ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
-	displayedColumns = ['transactionID', 'bankTransactionID', 'customerID', 'depositDate', 'fullName',
-		'mobileNumber', 'depositmodeofpayment', 'depositBankName', 'depositBranchName', 'depositAmount',
+	displayedColumns = ['transactionID', 'depositAmount', 'bankTransactionID', 'customerID', 'depositDate', 'fullName',
+		'mobileNumber', 'depositmodeofpayment', 'depositBankName', 'depositBranchName',
 		'depositStatus', 'action'];
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 	@ViewChild('sort1', { static: true }) sort: MatSort;

@@ -197,8 +197,9 @@ exports.customerSignUp = async (req, res, next) => {
 
     await models.customerOtp.create({ mobileNumber, otp, createdTime, expiryTime, referenceCode, });
     var expiryTimeToUser = moment(moment(expiryTime).utcOffset("+05:30"))
-    await sendOtpToLeadVerification(mobileNumber, 'customer', otp, expiryTimeToUser)
-
+    // await sendOtpToLeadVerification(mobileNumber, 'customer', otp, expiryTimeToUser)
+    await sendMessageOtpForLogin(mobileNumber, otp)
+   
     return res.status(200).json({ message: `OTP has been sent to registered mobile number.`, referenceCode, isCustomer: false });
   } else {
 
@@ -800,7 +801,7 @@ exports.signUpCustomer = async (req, res) => {
     },
   });
   if (check.isEmpty(verifyUser)) {
-    return res.status(404).json({ message: `INVALID OTP.` });
+    return res.status(404).json({ message: `The OTP entered is incorrect.` });
   }
 
   let verifyFlag = await models.customerOtp.update(

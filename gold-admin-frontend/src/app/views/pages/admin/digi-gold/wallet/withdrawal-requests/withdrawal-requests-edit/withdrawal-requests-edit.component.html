@@ -86,12 +86,46 @@
                             <input type="text" class="form-control" formControlName="ifscCode" disabled>
                         </div>
                     </div>
+                    <div *ngIf="formFieldEnableFlag" class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Payment Date</label>
+                        </div>
+                        <div class="col-8">
+                            <input *ngIf="withdrawInfo?.transactionData?.depositStatus != 'pending'" type="text"
+                                formControlName="withdrawDate" class="form-control"
+                                [value]="controls?.withdrawDate?.value | date: 'MMM d, y, h:mm a'" disabled>
+                            <input *ngIf="withdrawInfo?.transactionData?.depositStatus == 'pending'" type="text"
+                                class="form-control" [matDatepicker]="picker" (click)="picker.open()"
+                                formControlName="withdrawDate"
+                                [class.isError]="controls.withdrawDate.touched && controls.withdrawDate.invalid"
+                                readonly placeholder="DD/MM/YYYY" [min]="controls?.withdrawalInitiatedDate?.value"
+                                [max]="maxDate" />
+                            <mat-datepicker #picker></mat-datepicker>
+                            <mat-error *ngIf="controls.withdrawDate.invalid && controls.withdrawDate.touched">
+                                Field Required
+                            </mat-error>
+                        </div>
+                    </div>
+                    <div *ngIf="formFieldEnableFlag" class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">UTR Number</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="utrNumber" class="form-control"
+                                [value]="controls?.utrNumber?.value"
+                                [class.isError]="controls.withdrawDate.touched && controls.withdrawDate.invalid">
+                            <mat-error *ngIf="controls.utrNumber.invalid && controls.utrNumber.touched">
+                                Field Required
+                            </mat-error>
+                        </div>
+                    </div>
                     <div class="row kt-margin-t-15">
                         <div class="col-4 align-self-center">
                             <label class="font-weight-500 text-color">Withdrawal Status</label>
                         </div>
                         <div class="col-8">
                             <select class="form-control" formControlName="withdrawalStatus"
+                                (change)="fieldEnable($event.target.value)"
                                 [class.isError]="controls.withdrawalStatus.touched && controls.withdrawalStatus.invalid">
                                 <option value="">Select Status</option>
                                 <option [value]="status.value" *ngFor="let status of withdrawalStatus">

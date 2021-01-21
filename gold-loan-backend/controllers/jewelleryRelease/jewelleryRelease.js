@@ -272,7 +272,12 @@ exports.razorPayCreateOrderForOrnament = async (req, res, next) => {
             body: req.body,
             userData: req.userData
         });
-        res.status(500).send({ message: err.message });
+        if (err.statusCode == 400 && err.error.code) {
+            return res.status(400).json({ message: err.error.description });
+        } else {
+            res.status(500).send({ message: "something went wrong" });
+
+        }
     }
 }
 
@@ -497,7 +502,17 @@ exports.ornamentsPartRelease = async (req, res, next) => {
             body: req.body,
             userData: req.userData
         });
-        res.status(500).send({ message: "something went wrong" });
+        if (err.statusCode == 400 && err.error.code) {
+            return res.status(400).json({ message: err.error.description });
+        } else {
+            if (err.statusCode == 400 && err.error.code) {
+            return res.status(400).json({ message: err.error.description });
+        } else {
+            res.status(500).send({ message: "something went wrong" });
+
+        }
+
+        }
     }
 }
 
@@ -1591,7 +1606,12 @@ exports.ornamentsFullRelease = async (req, res, next) => {
             body: req.body,
             userData: req.userData
         });
-        res.status(500).send({ message: "something went wrong" });
+        if (err.statusCode == 400 && err.error.code) {
+            return res.status(400).json({ message: err.error.description });
+        } else {
+            res.status(500).send({ message: "something went wrong" });
+
+        }
     }
 }
 

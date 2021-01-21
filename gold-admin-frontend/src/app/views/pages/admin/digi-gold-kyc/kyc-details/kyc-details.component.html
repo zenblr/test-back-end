@@ -90,7 +90,8 @@
                                             class="input-group-text bg font-weight" id="basic-addon2"
                                             (click)="modalData.action != 'view' && isEditable && pan.click()">Attach</span>
                                     </div>
-                                    <input type="file" class="d-none" accept="image/jpg, image/png, image/jpeg" #pan
+                                    <input type="file" class="d-none"
+                                        accept="image/jpg, image/png, image/jpeg, application/pdf" #pan
                                         (input)="testUpload($event)">
                                 </div>
                                 <mat-error *ngIf="controls.panImage.invalid && controls.panImage.touched">

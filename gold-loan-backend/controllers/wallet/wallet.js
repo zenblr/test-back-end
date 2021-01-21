@@ -152,7 +152,7 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
 exports.updateDepositWithdrawStatus = async (req, res) => {
 
     let depositWithdrawId = req.params.depositWithdrawId;
-    let { depositStatus, date } = req.body
+    let { depositStatus, date, bankTransactionUniqueId } = req.body
     let customerUpdatedBalance;
     let currentWalletBalance;
     let transactionData = await models.walletTransactionDetails.findOne({ where: { id: depositWithdrawId } });
@@ -211,6 +211,9 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
         await sequelize.transaction(async (t) => {
 
             if (depositStatus == "completed") {
+                if (!bankTransactionUniqueId) {
+                    return res.status(400).json({ message: "Transaction UniqueId is required" });
+                }
                 // customerUpdatedFreeBalance = Number(customer.walletFreeBalance) - Number(transactionData.transactionAmount);
                 // currentWalletBalance = Number(customer.currentWalletBalance) - Number(transactionData.transactionAmount);
 
@@ -218,7 +221,7 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
 
                 // let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "debit", description: "withdraw amount", productTypeId: 4, transactionDate: date, orderTypeId: 5, paymentOrderTypeId: 5 }, { transaction: t });
 
-                await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, }, { where: { id: transactionData.id }, transaction: t });
+                await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, bankTransactionUniqueId }, { where: { id: transactionData.id }, transaction: t });
 
                 await models.walletDetails.update({ transactionStatus: "completed" }, { where: { id: transactionData.walletId } });
 

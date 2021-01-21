@@ -117,11 +117,9 @@ export class AppliedKycComponent implements OnInit {
     //   })
     // ).subscribe();
 
-    this.leadService.getLeadById(id).subscribe(res => {
-      // console.log(res.singleCustomer)
-      // this.appliedKycService.kycData.next(res.singleCustomer)
+    // this.leadService.getLeadById(customerId).subscribe(res => {
       this.router.navigate([`/admin/applied-kyc-digi-gold/edit/${customerId}`], { queryParams: { id: id } });
-    })
+    // })
   }
 
   viewKYC(id) {

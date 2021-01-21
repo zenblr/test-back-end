@@ -10,7 +10,7 @@
                         <th class="transparent">Scheme Name</th>
                         <th class="transparent">Tenure</th>
                         <th class="transparent">Interest Rate</th>
-                        <th class="transparent"> Interest Rate after  <br>Rebate</th>
+                        <th class="transparent"> Interest Rate after <br>Rebate</th>
                         <th class="transparent">Next Due Date</th>
                         <th class="transparent">Status</th>
                     </thead>
@@ -42,12 +42,14 @@
                                 <br>
                                 <span *ngIf="loanDetails?.customerLoan[1]">
                                     {{loanDetails?.customerLoan[1]?.rebateInterestRate }}%
-                                </span></td>
-                                <td class="">{{loanDetails?.customerLoan[0]?.currentInterestRate }}%
-                                    <br>
-                                    <span *ngIf="loanDetails?.customerLoan[1]">
-                                        {{loanDetails?.customerLoan[1]?.currentInterestRate }}%
-                                    </span></td>
+                                </span>
+                            </td>
+                            <td class="">{{loanDetails?.customerLoan[0]?.currentInterestRate }}%
+                                <br>
+                                <span *ngIf="loanDetails?.customerLoan[1]">
+                                    {{loanDetails?.customerLoan[1]?.currentInterestRate }}%
+                                </span>
+                            </td>
                             <td *ngIf="loanDetails?.nextDueDate else blankTableValue">
                                 {{loanDetails?.nextDueDate | date : 'mediumDate'}}</td>
                             <td class="text-warning"
@@ -86,15 +88,15 @@
                                         {{payableAmount?.unsecuredOutstandingAmount}}
                                     </span> -->
                                 </td>
-                                
+
                                 <td class="table-amount">
-                                    <span>{{payableAmount?.totalInterest}}</span><br>
+                                    <span>{{payableAmount?.totalInterest | number:'1.2-2'}}</span><br>
                                     <!-- <span *ngIf="loanDetails?.customerLoan[1]">
                                         {{payableAmount?.unsecuredTotalInterest}}
                                     </span> -->
                                 </td>
                                 <td class="table-amount">
-                                    <div >{{payAbleInfo?.interest}}</div>
+                                    <div>{{payableAmount?.interest}}</div>
 
                                     <!-- <span>{{payableAmount?.securedInterest}}</span> <br>
                                     <span *ngIf="loanDetails?.customerLoan[1]">
@@ -103,7 +105,7 @@
                                 </td>
 
                                 <td class="table-amount">
-                                    <div>{{payAbleInfo?.penalInterest}}</div>
+                                    <div>{{payableAmount?.penalInterest}}</div>
 
                                     <!-- <span>{{payableAmount?.securedPenalInterest}}</span><br>
                                     <span *ngIf="loanDetails?.customerLoan[1]">
@@ -120,7 +122,11 @@
                                         <small>
                                             Please opt for Part Payment option to pay more amount
                                         </small>
-
+                                    </mat-error>
+                                    <mat-error *ngIf="payableAmt.errors?.valueZero && payableAmt.touched">
+                                        <small class="text-danger" >
+                                            Amount should be greater than zero
+                                        </small>
                                     </mat-error>
                                 </td>
                             </tr>
@@ -183,7 +189,8 @@
                             <td class="font-weight-500 table-amount padding-8" style="font-size: 14px;">
                                 {{payableAmt.value}}</td>
                             <td class=" text-left">
-                                <kt-select-payment [minDate]="quickPayinfo?.loanStartDate" [amount]="payableAmt?.value"  (paymentData)="paymentData($event)"></kt-select-payment>
+                                <kt-select-payment [minDate]="quickPayinfo?.loanStartDate" [amount]="payableAmt?.value"
+                                    (paymentData)="paymentData($event)"></kt-select-payment>
                                 <!-- <button *ngIf="!paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">Select
                                     Payment</button>
                                 <button *ngIf="paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">
@@ -198,7 +205,8 @@
                 <div class="col-6 text-center">
                     <kt-button [value]="'Confirm'" [type]="'button'" (click)="submit()"></kt-button>
                     <span class="kt-padding-5 "></span>
-                    <kt-button [value]="'Cancel'" [type]="'reset'" (click)="paymentDetails = '';payableAmt.enable();paymentValue={}">
+                    <kt-button [value]="'Cancel'" [type]="'reset'"
+                        (click)="paymentDetails = '';payableAmt.enable();paymentValue={}">
                     </kt-button>
                     <div class="kt-padding-t-5"> <i>On clicking confirm you will be redirected to available payment
                             options.</i> </div>
