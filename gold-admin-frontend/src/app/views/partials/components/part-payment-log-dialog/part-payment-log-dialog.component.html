@@ -17,38 +17,41 @@
                     <tr *ngFor="let loanDetail of partPaymentHistory">
                         <td>{{loanDetail.transactionUniqueId | uppercase}}</td>
                         <td>
-                            {{loanDetail.transactionSplitUp[0].customerLoan?.loanUniqueId}}
+                            {{loanDetail?.masterLoan?.customerLoan[0]?.loanUniqueId}}
                             <br>
-                            <span *ngIf="loanDetail.transactionSplitUp.length > 1">
-                                {{loanDetail.transactionSplitUp[1].customerLoan?.loanUniqueId}}
+                            <span *ngIf="loanDetail?.masterLoan?.customerLoan.length > 1">
+                                {{loanDetail?.masterLoan?.customerLoan[1]?.loanUniqueId}}
                             </span>
                         </td>
                         <td class="table-amount">
                             <span class="currency">
-                                {{loanDetail.transactionSplitUp[0].customerLoan?.loanAmount | indianCurrencyFormat}}
+                                {{loanDetail?.masterLoan?.customerLoan[0]?.loanAmount | indianCurrencyFormat}}
                             </span>
                             <br>
-                            <span class="currency" *ngIf="loanDetail.transactionSplitUp.length > 1">
-                                {{loanDetail.transactionSplitUp[1].customerLoan?.loanAmount | indianCurrencyFormat}}
+                            <span class="currency" *ngIf="loanDetail?.masterLoan?.customerLoan.length > 1">
+                                {{loanDetail?.masterLoan?.customerLoan[1]?.loanAmount | indianCurrencyFormat}}
                             </span>
                         </td>
 
                         <td>{{loanDetail.depositDate | date :'mediumDate'}}</td>
 
                         <td class="table-amount">
+                            <span *ngIf="loanDetail?.depositStatus == 'Rejected'">
+                                {{loanDetail?.transactionAmont}}
+                            </span>
                             <span
-                                class="currency">{{loanDetail.transactionSplitUp[0].payableOutstanding | indianCurrencyFormat}}</span>
+                                class="currency">{{loanDetail.transactionSplitUp[0]?.payableOutstanding | indianCurrencyFormat}}</span>
                             <br>
                             <span class="currency" *ngIf="loanDetail.transactionSplitUp.length > 1">
-                                {{loanDetail.transactionSplitUp[1].payableOutstanding | indianCurrencyFormat}}
+                                {{loanDetail.transactionSplitUp[1]?.payableOutstanding | indianCurrencyFormat}}
                             </span>
                         </td>
                         <td class="table-amount">
                             <span
-                                class="currency">{{loanDetail.transactionSplitUp[0].loanOutstanding | indianCurrencyFormat}}</span>
+                                class="currency">{{loanDetail.transactionSplitUp[0]?.loanOutstanding | indianCurrencyFormat}}</span>
                             <br>
                             <span class="currency" *ngIf="loanDetail.transactionSplitUp.length > 1">
-                                {{loanDetail.transactionSplitUp[1].loanOutstanding | indianCurrencyFormat}}
+                                {{loanDetail.transactionSplitUp[1]?.loanOutstanding | indianCurrencyFormat}}
                             </span>
                         </td>
                         <td>
