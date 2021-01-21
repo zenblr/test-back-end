@@ -14,6 +14,21 @@ exports.changeKycStatus = async (req, res) => {
         if (type == "kyc") {
 
             for (let ele of customerKycData) {
+                if(!ele.uniqueId) 
+                {
+                    return res.status(400).json({ message: "uniqueId is required" }); 
+                }
+
+                if(!ele.status)
+                {
+                    return res.status(400).json({ message: "status is required" }); 
+                }
+
+                if(ele.status != 'approved' && ele.status != 'rejected')
+                {
+                    return res.status(400).json({ message: "Invalid status" }); 
+                }
+
                 let customer = await models.customer.findOne({
                     where: { customerUniqueId: ele.uniqueId },
                     attributes: ['id', 'customerUniqueId', 'mobileNumber']
@@ -45,6 +60,7 @@ exports.changeKycStatus = async (req, res) => {
                 } else {
                     return res.status(400).json({ message: "Invalid Customer Id" });
                 }
+              
             }
 
             return res.status(200).json({ message: "Success" });
