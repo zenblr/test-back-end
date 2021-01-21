@@ -75,6 +75,7 @@ exports.refundCron = async (req, res, next) => {
 
         //digiGoldTemp
         for (const temp of digiGoldOrderTemp) {
+            let transactionUniqueId = uniqid.time().toUpperCase();
             let razerpayInfo = await razorpay.instance.orders.fetch(temp.razorpayOrderId);
             if (razerpayInfo) {
                 if (razerpayInfo.status == 'paid') {
@@ -82,7 +83,9 @@ exports.refundCron = async (req, res, next) => {
                     if (customerData) {
                         let amount = Number(customerData.currentWalletBalance) + Number(razerpayInfo.amount_paid / 100);
                         await models.customer.update({ currentWalletBalance: amount }, { where: { id: customerData.id }, transaction: t });
-                        await models.walletDetails.create({ customerId: customerData.id, amount: amount, paymentDirection: 'credit', description: 'Refund', productTypeId: 4, transactionDate: moment() }, { transaction: t });
+                        let digiGoldOrderWallet = await models.walletDetails.create({ customerId: customerData.id, amount: Number(razerpayInfo.amount_paid / 100), paymentDirection: 'credit', description: 'Refund', productTypeId: 4, orderTypeId: 4, paymentOrderTypeId: 4, transactionDate: moment(), transactionStatus: "completed" }, { transaction: t });
+
+                        await models.walletTransactionDetails.create({ customerId: temp.customerId, productTypeId: 4, orderTypeId: 4, walletId: digiGoldOrderWallet.id, transactionUniqueId, paymentType: 'refund', transactionAmount: Number(razerpayInfo.amount_paid / 100), runningBalance: amount, depositDate: moment(), depositApprovedDate: moment(), depositStatus: 'completed', transactionTempDetailId: temp.id })
                     }
                 }
             }
@@ -91,6 +94,7 @@ exports.refundCron = async (req, res, next) => {
 
         //digiGoldTempWallet
         for (const temp of digiGoldWalletTemp) {
+            let transactionUniqueId = uniqid.time().toUpperCase();
             let razerpayInfo = await razorpay.instance.orders.fetch(temp.razorPayTransactionId);
             if (razerpayInfo) {
                 if (razerpayInfo.status == 'paid') {
@@ -98,7 +102,11 @@ exports.refundCron = async (req, res, next) => {
                     if (customerData) {
                         let amount = Number(customerData.currentWalletBalance) + Number(razerpayInfo.amount_paid / 100);
                         await models.customer.update({ currentWalletBalance: amount }, { where: { id: customerData.id }, transaction: t });
-                        await models.walletDetails.create({ customerId: customerData.id, amount: amount, paymentDirection: 'credit', description: 'Refund', productTypeId: 4, transactionDate: moment() }, { transaction: t });
+
+                        let digiGoldWallet = await models.walletDetails.create({ customerId: customerData.id, amount: amount, paymentDirection: 'credit', description: 'Refund', productTypeId: 4, orderTypeId: 4, paymentOrderTypeId: 4, transactionDate: moment(), transactionStatus: "completed" }, { transaction: t });
+
+                        await models.walletTransactionDetails.create({ customerId: temp.customerId, productTypeId: 4, orderTypeId: 4, walletId: digiGoldOrderWallet.id, transactionUniqueId, paymentType: 'refund', transactionAmount: Number(razerpayInfo.amount_paid / 100), runningBalance: amount, depositDate: moment(), depositApprovedDate: moment(), depositStatus: 'completed', transactionTempDetailId: temp.id })
+
                     }
                 }
             }
