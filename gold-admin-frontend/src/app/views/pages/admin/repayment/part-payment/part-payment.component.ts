@@ -150,6 +150,11 @@ export class PartPaymentComponent implements OnInit {
           this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
           this.razorpayPaymentService.razorpayOptions.prefill.method = this.paymentValue.paymentType;
           this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
+        },
+        err => {
+          if (err.error.message)
+            this.toastr.error(err.error.message)
+          throw err
         }
       )
       return

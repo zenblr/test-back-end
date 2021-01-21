@@ -156,6 +156,11 @@ export class PartReleaseComponent implements OnInit {
           this.razorpayPaymentService.razorpayOptions.handler = this.razorPayResponsehandler.bind(this);
           this.razorpayPaymentService.razorpayOptions.prefill.method = this.paymentValue.paymentType;
           this.razorpayPaymentService.initPay(this.razorpayPaymentService.razorpayOptions);
+        },
+        err => {
+          if (err.error.message)
+            this.toastr.error(err.error.message)
+          throw err
         }
       )
 
@@ -224,8 +229,8 @@ export class PartReleaseComponent implements OnInit {
     }
   }
 
-  
-  paymentData(event){
+
+  paymentData(event) {
     this.paymentValue = event
   }
 
@@ -306,7 +311,7 @@ export class PartReleaseComponent implements OnInit {
     if (!(this.paymentValue && this.paymentValue.paymentType)) {
       return this.toastr.error('Please select a payment method')
     }
-    if (this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount <=0) {
+    if (this.totalSelectedOrnamentDetails.loanInfo.totalPayableAmount <= 0) {
       return this.toastr.error('Amount should be greater than zero')
     }
 
