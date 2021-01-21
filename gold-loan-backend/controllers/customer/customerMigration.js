@@ -165,7 +165,7 @@ let createKyc = async (req) => {
             if (singleCustomer.kycStatus == "approved") {
                 if (singleCustomer.panType == 'pan') {
                     //yahape unka kyc applied ka aayega
-                    if (singleCustomer.panImag == null) {
+                    if (singleCustomer.panImage == null) {
                         await models.customer.update({ panImage: 'public/uploads/lead/1595235863488.png' }, { where: { id: singleCustomer.id } })
                     }
                     let customer = await models.customer.findOne({ where: { id: singleCustomer.id } })
