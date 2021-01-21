@@ -286,5 +286,9 @@ router.use('/wallet', wallet)
 const webhook = require('./webHook');
 router.use('/web-hook', webhook);
 
+const dataTransfer = require('./dataTransfer');
+router.use('/data-transfer', dataTransfer);
+
+
 
 module.exports = router;

@@ -24,6 +24,8 @@ const customerKycStatusMessage = require("./utils/customerKycStatusMessage");
 const withDrawStatusMessage = require("./utils/withDrawStatusMessage");
 const changeSellableMetalValue = require("./utils/changeSellableMetalValue")
 const {getErrorForMail} = require('./controllers/errorLogs/errorLogs');
+const depositDataTransfer = require('./utils/depositDataTransfer');
+const withdrawDataTransfer = require('./utils/withdrawDataTransfer');
 
 
 //model
@@ -42,7 +44,7 @@ app.use('/api-doc/loan', swaggerUi.serve, swaggerUi.setup(swagger.swaggerSpec));
 
 // app.use('/scrap/api-docs', swaggerUi.serve, swaggerUi.setup(scrapSwagger.swaggerSpec));
 
-app.use('/digi-gold/api-docs', swaggerUi.serve, swaggerUi.setup(digiGoldSwagger.swaggerSpec));
+// app.use('/digi-gold/api-docs', swaggerUi.serve, swaggerUi.setup(digiGoldSwagger.swaggerSpec));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -169,7 +171,7 @@ cron.schedule(' 0 */30 * * * *', async function () {
 //     }
 // });
 
-// // cron to update merchant token
+// cron to update merchant token
 
 // cron.schedule('0 3 * * *', async () => {
 //     let date = moment();
@@ -245,6 +247,42 @@ cron.schedule(' 0 */30 * * * *', async function () {
 //         await cronLogger("calculate sellable metal", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
 //     }
 // });
+
+cron.schedule('0 1 * * *', async function () {
+  let date = moment()
+  var depositTransferStartTime = moment();
+
+  try {
+    await depositDataTransfer.getDepositData();
+    var depositTransferEndTime = moment();
+    var depositTransferProcessingTime = moment.utc(moment(depositTransferEndTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(depositTransferStartTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+    await cronLogger("deposit data transfer", date, depositTransferStartTime, depositTransferEndTime, depositTransferProcessingTime, "success", "success", null)
+
+  } catch (depositErr) {
+      var depositTransferEndTime = moment();
+      var depositTransferProcessingTime = moment.utc(moment(depositTransferEndTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(depositTransferStartTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+      await cronLogger("deposit data transfer", date, depositTransferStartTime, depositTransferEndTime, depositTransferProcessingTime, "failed", depositErr.message, null)
+
+  }
+})
+
+cron.schedule('0 1 * * *', async function () {
+    let date = moment()
+    var withdrawTransferStartTime = moment();
+  
+    try {
+      await withdrawDataTransfer.getWithdrawData();
+      var withdrawTransferEndTime = moment();
+      var withdrawTransferProcessingTime = moment.utc(moment(withdrawTransferEndTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(withdrawTransferStartTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+      await cronLogger("withdraw data transfer", date, withdrawTransferStartTime, withdrawTransferEndTime, withdrawTransferProcessingTime, "success", "success", null)
+  
+    } catch (withdrawErr) {
+        var withdrawTransferEndTime = moment();
+        var withdrawTransferProcessingTime = moment.utc(moment(withdrawTransferEndTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(withdrawTransferStartTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+        await cronLogger("withdraw data transfer", date, withdrawTransferStartTime, withdrawTransferEndTime, withdrawTransferProcessingTime, "failed", withdrawErr.message, null)
+  
+    }
+  })
 
 async function cronLogger(cronType, date, startTime, endTime, processingTime, status, message, notes) {
     await models.cronLogger.create({ cronType, date, startTime, endTime, processingTime, status, message, notes })
