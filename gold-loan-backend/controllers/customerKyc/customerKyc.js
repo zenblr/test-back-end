@@ -1183,14 +1183,26 @@ exports.getDigiKycList = async (req, res) => {
     let query = {};
 
 
-    const searchQuery = {
+    // const searchQuery = {
         // [Op.and]: [query, {
         //     [Op.or]: {
 
         //     }
         // }],
-    }
-
+    // }
+    let searchQuery = {
+        [Op.and]: [query, {
+          [Op.or]: {
+            
+            "$customer.pan_card_number$": { [Op.iLike]: search + '%' },
+            "$customer.first_name$": { [Op.iLike]: search + '%' },
+            "$customer.last_name$": { [Op.iLike]: search + '%' },
+            "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+           
+          },
+        }],
+    
+      };
     const includeArray = [
         {
             model: models.customer,
