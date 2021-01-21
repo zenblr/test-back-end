@@ -14,6 +14,31 @@ exports.changeWithdrawStatus = async (req, res) => {
             if (type == "withdraw") {
                 for (let ele of data) {
 
+                    if(!ele.uniqueId) 
+                    {
+                        return res.status(400).json({ message: "uniqueId is required" }); 
+                    }
+    
+                    if(!ele.status)
+                    {
+                        return res.status(400).json({ message: "status is required" }); 
+                    }
+
+                    if(!ele.transactionId)
+                    {
+                        return res.status(400).json({ message: "transactionId is required" }); 
+                    }
+
+                    if(!ele.merchantTransactionId)
+                    {
+                        return res.status(400).json({ message: "merchantTransactionId is required" }); 
+                    }
+
+                    if(ele.status != 'completed' && ele.status != 'rejected' && ele.status != 'accepted')
+                    {
+                        return res.status(400).json({ message: "Invalid status" }); 
+                    }
+
                     let customer = await models.customer.findOne({
                         where: { customerUniqueId: ele.uniqueId },
                         attributes: ['id', 'customerUniqueId']
@@ -79,9 +104,12 @@ exports.changeWithdrawStatus = async (req, res) => {
                     } else {
                         return res.status(400).json({ message: "Invaid Customer Id" });
                     }
-                }
-                return res.status(200).json({ message: "Success" });
 
+                    
+                }
+                
+               
+                return res.status(200).json({ message: "Success" });
             } else {
 
                 return res.status(400).json({ message: "Invalid Type" });
