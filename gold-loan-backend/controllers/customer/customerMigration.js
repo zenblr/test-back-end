@@ -6,6 +6,10 @@ const { getCustomerCityById, getCustomerStateById } = require('../../service/cus
 const qs = require('qs');
 const request = require('request');
 const sequelize = models.sequelize;
+const { pathToBase64 } = require('../../service/fileUpload')
+const fs = require('fs');
+const FormData = require('form-data');
+const { ifError } = require('assert');
 
 exports.customerMigration = async (req, res, next) => {
     try {
@@ -14,7 +18,7 @@ exports.customerMigration = async (req, res, next) => {
         }
         let allCustomer
         if (req.body.allCustomer == undefined) {
-            allCustomer = await models.customer.findAll({ where: { merchantId: 1, isActive: true }, order: [['id', 'asc']] })
+            allCustomer = await models.customer.findAll({ where: { isAugmontCustomerCreated: false, merchantId: 1, isActive: true }, order: [['id', 'asc']] })
         } else {
             allCustomer = req.body.allCustomer
         }
@@ -33,74 +37,44 @@ exports.customerMigration = async (req, res, next) => {
             accessToken: getMerchantDetails.digiGoldMerchantDetails.accessToken,
             expiresAt: getMerchantDetails.digiGoldMerchantDetails.expiresAt
         };
-
-        for (let i = 0; i < allCustomer.length; i++) {
-            const singleCustomer = allCustomer[i];
-            let state = await getCustomerStateById(singleCustomer.stateId, null);
-            let city = await getCustomerCityById(singleCustomer.cityId, null);
-
-            if (city == null) {
-                models.customerAugmontCity.create({ customerId: singleCustomer.id, cityId: singleCustomer.cityId })
-                continue;
-            }
-
-            data = {
-                'mobileNumber': singleCustomer.mobileNumber,
-                'uniqueId': singleCustomer.customerUniqueId,
-                'userName': singleCustomer.firstName + " " + singleCustomer.lastName,
-                'userCity': city.cityUniqueCode,
-                'userState': state.stateUniqueCode,
-            }
-            const options = {
-                'method': 'POST',
-                'url': `${process.env.DIGITALGOLDAPI}/merchant/v1/users`,
-                'headers': {
-                    'Authorization': `Bearer ${merchantData.accessToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }
-            const check = await checkCustomer(options);
-            if (check.error) {
-                console.log(singleCustomer.id, "created")
-                models.customer.update({ isAugmontCustomerCreated: true }, { where: { id: singleCustomer.id } })
-            } else {
-                console.log(singleCustomer.id, "newBanaya")
-                models.customer.update({ isAugmontCustomerCreated: true }, { where: { id: singleCustomer.id } })
-            }
-        }
-
-
-
         await sequelize.transaction(async (t) => {
-            let augmontCustomer = await models.customer.findAll({ where: { merchantId: 1, isActive: true, isAugmontCustomerCreated: true }, order: [['id', 'asc']] })
-            for (let i = 0; i < augmontCustomer.length; i++) {
-                const singleCustomer = augmontCustomer[i];
-                if (singleCustomer.kycStatus == "approved") {
-                    if (singleCustomer.panCardNumber != null) {
-                        console.log(i, singleCustomer.id, "approved", singleCustomer.panImage, "pan card h")
-                        //yahape unka kyc applied ka aayega
 
-                        // await models.customer.update({ scrapKycStatus: "approved", emiKycStatus: "approved", digiKycStatus: "approved", kycStatus: "approved" }, { where: { id: singleCustomer.id }, transaction: t })
-                    } else {
-                        console.log(i, singleCustomer.id, "approved", "pan card nahi h")
+            for (let i = 0; i < allCustomer.length; i++) {
+                const singleCustomer = allCustomer[i];
+                let state = await getCustomerStateById(singleCustomer.stateId, null);
+                let city = await getCustomerCityById(singleCustomer.cityId, null);
 
+                if (city == null) {
+                    let checkAva = await models.customerAugmontCity.findOne({ where: { customerId: singleCustomer.id, cityId: singleCustomer.cityId }, transaction: t })
+                    if (checkAva == null) {
+                        await models.customerAugmontCity.create({ customerId: singleCustomer.id, cityId: singleCustomer.cityId }, { transaction: t })
                     }
-                } else if (singleCustomer.kycStatus == "rejected" || singleCustomer.scrapKycStatus == "rejected") {
-                    console.log(i, singleCustomer.id, "rejected")
+                    continue;
+                }
 
-                    // await models.customer.update({ scrapKycStatus: "rejected", emiKycStatus: "rejected", digiKycStatus: "rejected", kycStatus: "rejected" }, { where: { id: singleCustomer.id }, transaction: t })
-
-                } else if (singleCustomer.kycStatus == "pending") {
-
-                    if (singleCustomer.panCardNumber != null) {
-                        console.log(i, singleCustomer.id, "pending", "pan card h")
-                        // await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: singleCustomer.id }, transaction: t })
-                        // await models.digiKycApplied.create({ customerId: singleCustomer.id, status: 'waiting' }, { transaction: t })
-                    } else {
-                        console.log(i, singleCustomer.id, "pending", "pan card nahi h")
-
-                    }
+                data = {
+                    'mobileNumber': singleCustomer.mobileNumber,
+                    'uniqueId': singleCustomer.customerUniqueId,
+                    'userName': singleCustomer.firstName + " " + singleCustomer.lastName,
+                    'userCity': city.cityUniqueCode,
+                    'userState': state.stateUniqueCode,
+                }
+                const options = {
+                    'method': 'POST',
+                    'url': `${process.env.DIGITALGOLDAPI}/merchant/v1/users`,
+                    'headers': {
+                        'Authorization': `Bearer ${merchantData.accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }
+                const check = await checkCustomer(options);
+                if (check.error) {
+                    console.log(singleCustomer.id, "created")
+                    await models.customer.update({ isAugmontCustomerCreated: true }, { where: { id: singleCustomer.id }, transaction: t })
+                } else {
+                    console.log(singleCustomer.id, "newBanaya")
+                    await models.customer.update({ isAugmontCustomerCreated: true }, { where: { id: singleCustomer.id }, transaction: t })
                 }
             }
 
@@ -128,6 +102,153 @@ let checkCustomer = async (options) => {
             } else if (respBody.errors.uniqueId[0].code == 4298) {
                 return resolve({ error: true })
             }
+        })
+    })
+}
+
+
+exports.addKycDetailsInAugmont = async (req, res, next) => {
+
+    try {
+
+        if (req.userData.id != 1) {
+            return res.status(400).json({ message: 'unauthorized' })
+        }
+
+        const getMerchantDetails = await models.merchant.findOne({
+            where: { isActive: true, id: 1 },
+            include: {
+                model: models.digiGoldMerchantDetails,
+                as: 'digiGoldMerchantDetails',
+            }
+        });
+
+        const merchantData = {
+            id: getMerchantDetails.id,
+            merchantId: getMerchantDetails.digiGoldMerchantDetails.augmontMerchantId,
+            accessToken: getMerchantDetails.digiGoldMerchantDetails.accessToken,
+            expiresAt: getMerchantDetails.digiGoldMerchantDetails.expiresAt
+        };
+
+        await sequelize.transaction(async (t) => {
+
+            let augmontCustomer
+            if (req.body.allCustomer == undefined) {
+                augmontCustomer = await models.customer.findAll({ where: { isAugmontCustomerCreated: true, merchantId: 1, isActive: true }, transaction: t, order: [['id', 'asc']] })
+            } else {
+                augmontCustomer = req.body.allCustomer
+            }
+
+            for (let i = 0; i < augmontCustomer.length; i++) {
+                const singleCustomer = augmontCustomer[i];
+                if (singleCustomer.kycStatus == "approved") {
+                    if (singleCustomer.panType == 'pan') {
+                        //yahape unka kyc applied ka aayega
+                        // if (singleCustomer.panImag == null) {
+                        //     await models.customer.update({ panImage: 'uploads/lead/1606552169465.png' }, { where: { id: singleCustomer.id }, transaction: t })
+                        // }
+                        let customer = await models.customer.findOne({ where: { id: singleCustomer.id }, transaction: t })
+                        //change
+                        let url;
+                        let base64data;
+                        let fullBase64Image;
+                        if (process.env.NODE_ENV == "production" || process.env.NODE_ENV == "uat") {
+                            url = process.env.BASE_URL + customer.panImage
+                            const getAwsResp = await models.axios({
+                                method: 'GET',
+                                url: url,
+                                responseType: 'arraybuffer'
+                            });
+                            base64data = Buffer.from(getAwsResp.data, 'binary').toString('base64');
+                            fullBase64Image = `data:image/jpeg;base64,${base64Image}`
+                        } else {
+                            url = customer.panImage
+
+                            buff = fs.readFileSync(`public/${url}`);
+
+                            base64data = buff.toString('base64');
+
+                            fullBase64Image = `data:image/jpeg;base64,${base64data}`
+
+                            base64data = fullBase64Image.split(';base64,').pop();
+
+                        }
+                        //change
+
+                        const panPath = `public/uploads/digitalGoldKyc/pan-${customer.customerUniqueId}.jpeg`;
+                        fs.writeFileSync(panPath, base64data, { encoding: 'base64' });
+                        const data = new FormData();
+                        data.append('panNumber', customer.panCardNumber);
+                        data.append('panAttachment', fs.createReadStream(panPath));
+
+                        const options = {
+                            'method': 'POST',
+                            'url': `${process.env.DIGITALGOLDAPI}/merchant/v1/users/${customer.customerUniqueId}/kyc`,
+                            'headers': {
+                                'Authorization': `Bearer ${merchantData.accessToken}`,
+                                'Content-Type': 'application/json',
+                                ...data.getHeaders(),
+                            },
+                            body: data
+                        }
+                        const check = await createCustomerKyc(options);
+                        fs.unlinkSync(panPath)
+
+                        if (check.error) {
+                            console.log(check.error, "created")
+                        } else {
+                            console.log(check.error, "newBanaya")
+                        }
+
+                        console.log(i, singleCustomer.id, "approved", singleCustomer.panImage, "pan card h")
+
+
+                        await models.customer.update({ scrapKycStatus: "approved", emiKycStatus: "approved", digiKycStatus: "approved", kycStatus: "approved" }, { where: { id: singleCustomer.id }, transaction: t })
+                    } else {
+                        // console.log(i, singleCustomer.id, "approved", "pan card nahi h")
+
+                    }
+                } else if (singleCustomer.kycStatus == "rejected" || singleCustomer.scrapKycStatus == "rejected") {
+                    // console.log(i, singleCustomer.id, "rejected")
+
+                    await models.customer.update({ scrapKycStatus: "rejected", emiKycStatus: "rejected", digiKycStatus: "rejected", kycStatus: "rejected" }, { where: { id: singleCustomer.id }, transaction: t })
+
+                } else if (singleCustomer.kycStatus == "pending") {
+
+                    if (singleCustomer.panType == 'pan') {
+                        // console.log(i, singleCustomer.id, "pending", "pan card h")
+                        await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: singleCustomer.id }, transaction: t })
+                        let checkAva = await models.digiKycApplied.findOne({ where: { customerId: singleCustomer.id }, transaction: t })
+                        if (checkAva == null) {
+                            await models.digiKycApplied.create({ customerId: singleCustomer.id, status: 'waiting' }, { transaction: t })
+                        }
+                    }
+                }
+            }
+
+        })
+
+        return res.status(200).json({ message: "success" })
+    } catch (err) {
+        console.log(err)
+        return res.status(400).json({ message: err })
+    }
+
+}
+
+let createCustomerKyc = async (options) => {
+    return new Promise((resolve, reject) => {
+        request(options, async (err, response, body) => {
+            if (err) {
+                return resolve({ error: true })
+            }
+            const respBody = JSON.parse(body);
+            if (respBody.statusCode === 200) {
+                return resolve({ error: false })
+            } else if (respBody.errors.status[0].code == 4548) {
+                return resolve({ error: true })
+            }
+
         })
     })
 }
