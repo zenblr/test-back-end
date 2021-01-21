@@ -87,7 +87,7 @@ export class MenuConfig {
 								this.userType === 4),
 						},
 						{
-							title: "Lead Management",
+							title: "Customer Management",
 							root: true,
 							bullet: 'dot',
 							src: "assets/media/aside-icons/icons-05.svg",
@@ -202,6 +202,14 @@ export class MenuConfig {
 									page: "/admin/loan-management/transfer-loan-list",
 									bullet: 'dot',
 									permission: !this.permissionsArr.includes('viewLoanTransfer'),
+								},
+								{
+									title: "Customer Management",
+									// root: true,
+									bullet: 'dot',
+									// src: "assets/media/aside-icons/icons-08.svg",
+									page: "/admin/customer-management/customer-list",
+									permission: !this.permissionsArr.includes('customerManagementView'),
 								}
 							],
 						},
@@ -211,13 +219,13 @@ export class MenuConfig {
 						// 	src: "assets/media/aside-icons/icons-08.svg",
 						// 	page: "/admin/global-map",
 						// },
-						{
-							title: "Customer Management",
-							root: true,
-							src: "assets/media/aside-icons/icons-08.svg",
-							page: "/admin/customer-management/customer-list",
-							permission: !this.permissionsArr.includes('customerManagementView'),
-						},
+						// {
+						// 	title: "Customer Management",
+						// 	root: true,
+						// 	src: "assets/media/aside-icons/icons-08.svg",
+						// 	page: "/admin/customer-management/customer-list",
+						// 	permission: !this.permissionsArr.includes('customerManagementView'),
+						// },
 						// {
 						// 	title: "Repayment Structure",
 						// 	root: true,
