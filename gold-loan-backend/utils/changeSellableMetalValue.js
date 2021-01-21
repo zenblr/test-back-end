@@ -25,8 +25,8 @@ module.exports = async () => {
         let date = dateBeforSpcifiedTime.setHours(dateBeforSpcifiedTime.getHours() - Number(duration.configSettingValue));
         // let date = dateBeforSpcifiedTime.setMinutes(dateBeforSpcifiedTime.getMinutes() - Number(6));
 
-        // let newDate = moment(moment(date).utcOffset("+05:30")).format('YYYY-MM-DD HH:mm:ss.SSS');
-        let newDate = moment(date).format('YYYY-MM-DD HH:mm:ss.SSS');
+        let newDate = moment(moment(date).utcOffset("+05:30")).format('YYYY-MM-DD HH:mm:ss.SSS');
+        // let newDate = moment(date).format('YYYY-MM-DD HH:mm:ss.SSS');
 
         console.log("newDate", newDate);     //9.24
         allCustomer = await models.digiGoldOrderDetail.findAll({
@@ -142,7 +142,7 @@ module.exports = async () => {
         }
         console.log("nonRepeatCustomerId", nonRepeatCustomerId);
         // let newDateBeforfifteenMin = moment(newDate).subtract(3, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
-        let newDateBeforfifteenMin = moment(newDate).subtract(15, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
+        let newDateBeforfifteenMin = moment(newDate).subtract(15, 'minutes').utcOffset("+05:30").format('YYYY-MM-DD HH:mm:ss.SSS');
         console.log(newDateBeforfifteenMin);
         // if (nonRepeatCustomerId.length) {
         // allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
