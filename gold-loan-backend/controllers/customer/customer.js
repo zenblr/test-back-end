@@ -12,7 +12,7 @@ const uniqid = require('uniqid');
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 // let sms = require('../../utils/sendSMS');
-let { sendOtpToLeadVerification, sendOtpForLogin, forgetPasswordOtp, sendUpdateLocationCollectMessage, sendUpdateLocationHandoverMessage,sendMessageOtpForLogin } = require('../../utils/SMS');
+let { sendOtpToLeadVerification, sendOtpForLogin, forgetPasswordOtp, sendUpdateLocationCollectMessage, sendUpdateLocationHandoverMessage, sendMessageOtpForLogin } = require('../../utils/SMS');
 const { VIEW_ALL_CUSTOMER } = require('../../utils/permissionCheck');
 const qs = require('qs');
 const getMerchantData = require('../auth/getMerchantData')
@@ -69,7 +69,7 @@ exports.addCustomer = async (req, res, next) => {
 
   await sequelize.transaction(async (t) => {
     const customer = await models.customer.create(
-      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint, sourceFrom: sourcePoint, customerUniqueId, form60Image },
+      { firstName, lastName, password, mobileNumber, email, panCardNumber, stateId, cityId, stageId, pinCode, internalBranchId, statusId, comment, createdBy, modifiedBy, isActive: true, source, panType, moduleId, panImage, leadSourceId, allModulePoint: modulePoint, sourceFrom: sourcePoint, customerUniqueId, form60Image, merchantId: 1 },
       { transaction: t }
     );
 
@@ -116,7 +116,7 @@ exports.addCustomer = async (req, res, next) => {
       await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customer.id }, transaction: t })
       // applied
       await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
-      
+
     }
 
     const result = await createCustomer(data)
@@ -199,7 +199,7 @@ exports.customerSignUp = async (req, res, next) => {
     var expiryTimeToUser = moment(moment(expiryTime).utcOffset("+05:30"))
     // await sendOtpToLeadVerification(mobileNumber, 'customer', otp, expiryTimeToUser)
     await sendMessageOtpForLogin(mobileNumber, otp)
-   
+
     return res.status(200).json({ message: `OTP has been sent to registered mobile number.`, referenceCode, isCustomer: false });
   } else {
 
@@ -333,7 +333,7 @@ exports.editCustomer = async (req, res, next) => {
 
       await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: customerId }, transaction: t })
       await sms.sendMessageForKycPending(customerExist.mobileNumber, customerExist.customerUniqueId);
-    
+
     }
   });
   return res.status(200).json({ messgae: `User Updated` });
@@ -842,7 +842,7 @@ exports.signUpCustomer = async (req, res) => {
     let modulePoint = await models.module.findOne({ where: { id: 4 }, transaction: t })
 
     let customer = await models.customer.create(
-      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age },
+      { customerUniqueId, firstName, lastName, mobileNumber, email, isActive: true, merchantId: merchantData.id, moduleId: 4, stateId, cityId, createdBy, modifiedBy, allModulePoint: modulePoint.modulePoint, statusId: status.id, sourceFrom: sourcePoint, dateOfBirth, age, merchantId: 1 },
       { transaction: t }
     );
     let state = await getCustomerStateById(stateId, null);
