@@ -21,7 +21,7 @@ let pathToBase64 = async (path) => {
             let data = `data:image/jpeg;base64,${base64Image}`
             return { success: true, status: 200, data: data }
         } else {
-            buff = fs.readFileSync(`public/${path}`);
+            buff = fs.readFileSync(`public/${buff}`);
 
             let base64data = buff.toString('base64');
 
