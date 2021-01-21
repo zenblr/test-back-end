@@ -13,6 +13,11 @@
                     <mat-cell *matCellDef="let lead">{{lead?.firstName | titlecase}}&nbsp;{{lead.lastName | titlecase}}
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="customerUniqueId">
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+                    <mat-cell *matCellDef="let lead">{{lead?.customerUniqueId | uppercase }}
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN</mat-header-cell>
                     <mat-cell *matCellDef="let lead">{{lead?.panCardNumber ? lead?.panCardNumber : 'NA' | uppercase }}
