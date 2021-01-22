@@ -21,19 +21,18 @@ module.exports = async () => {
 
         console.log("duration", duration);  //1 hr
         let customerBal;
-        let dateBeforSpcifiedTime = new Date();
-        let dateBeforSpcifiedTimeMoment = moment().utcOffset("+05:30");
+        let dateBeforSpcifiedTime = moment().utcOffset("+05:30");
+        let abcd = new Date()
         console.log(dateBeforSpcifiedTime)
-        console.log(dateBeforSpcifiedTimeMoment)
+        console.log(abcd)
         let date = dateBeforSpcifiedTime.setHours(dateBeforSpcifiedTime.getHours() - Number(duration.configSettingValue));
         // let date = dateBeforSpcifiedTime.setMinutes(dateBeforSpcifiedTime.getMinutes() - Number(6));
-
+        let newDateutcOffset = moment(moment(date).utcOffset("+05:30")).format('YYYY-MM-DD HH:mm:ss.SSS');
         let newDate = moment(moment(date).utcOffset("+05:30")).format('YYYY-MM-DD HH:mm:ss.SSS');
-        let newDatewithoutMoment = moment(date.utcOffset("+05:30")).format('YYYY-MM-DD HH:mm:ss.SSS');
         let newDateWithOut = moment(date).format('YYYY-MM-DD HH:mm:ss.SSS');
         var utcStart = new moment(moment(date), "YYYY-MM-DD HH:mm:ss.SSS").utc();
+        console.log(newDateutcOffset)
         console.log("newDate", newDate);     //9.24
-        console.log(newDatewithoutMoment)
         console.log(newDateWithOut)
         console.log(utcStart)
         allCustomer = await models.digiGoldOrderDetail.findAll({
