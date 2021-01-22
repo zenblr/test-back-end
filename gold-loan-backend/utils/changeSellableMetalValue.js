@@ -22,13 +22,20 @@ module.exports = async () => {
         console.log("duration", duration);  //1 hr
         let customerBal;
         let dateBeforSpcifiedTime = new Date();
+        let dateBeforSpcifiedTimeMoment = moment().utcOffset("+05:30");
+        console.log(dateBeforSpcifiedTime)
+        console.log(dateBeforSpcifiedTimeMoment)
         let date = dateBeforSpcifiedTime.setHours(dateBeforSpcifiedTime.getHours() - Number(duration.configSettingValue));
         // let date = dateBeforSpcifiedTime.setMinutes(dateBeforSpcifiedTime.getMinutes() - Number(6));
 
         let newDate = moment(moment(date).utcOffset("+05:30")).format('YYYY-MM-DD HH:mm:ss.SSS');
-        // let newDate = moment(date).format('YYYY-MM-DD HH:mm:ss.SSS');
-
+        let newDatewithoutMoment = moment(date.utcOffset("+05:30")).format('YYYY-MM-DD HH:mm:ss.SSS');
+        let newDateWithOut = moment(date).format('YYYY-MM-DD HH:mm:ss.SSS');
+        var utcStart = new moment(moment(date), "YYYY-MM-DD HH:mm:ss.SSS").utc();
         console.log("newDate", newDate);     //9.24
+        console.log(newDatewithoutMoment)
+        console.log(newDateWithOut)
+        console.log(utcStart)
         allCustomer = await models.digiGoldOrderDetail.findAll({
             where: {
                 orderCreatedDate: { [Op.gt]: newDate },
@@ -141,9 +148,11 @@ module.exports = async () => {
 
         }
         console.log("nonRepeatCustomerId", nonRepeatCustomerId);
-        // let newDateBeforfifteenMin = moment(newDate).subtract(3, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
-        let newDateBeforfifteenMin = moment(newDate).subtract(15, 'minutes').utcOffset("+05:30").format('YYYY-MM-DD HH:mm:ss.SSS');
-        console.log(newDateBeforfifteenMin);
+        let newDateBeforfifteenMinwithOut = moment(newDate).subtract(5, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
+        let newDateBeforfifteenMin = moment(newDate).subtract(5, 'minutes').utcOffset("+05:30").format('YYYY-MM-DD HH:mm:ss.SSS');
+        console.log(newDateBeforfifteenMinwithOut, 'without offset')
+        console.log(newDateBeforfifteenMin, 'with')
+
         // if (nonRepeatCustomerId.length) {
         // allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
         //     where: {
