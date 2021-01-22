@@ -125,16 +125,24 @@ module.exports = async () => {
                 // } else {
                 //     sellableGoldBalance = customerBal.currentGoldBalance - buyDeliveryDifferenceGold;
                 //     // sellableGoldBalance = customerBal.sellableGoldBalance + (customerBal.currentGoldBalance - buyDeliveryDifferenceGold);
-
                 // }
-                if (totalGoldBoughtInFixDuration > totalGoldDeliveryInFixDuration) {
-                    let buyDeliveryDifferenceGold = totalGoldBoughtInFixDuration - totalGoldDeliveryInFixDuration
-                    sellableGoldBalance = customerBal.currentGoldBalance - buyDeliveryDifferenceGold;
-                    console.log(buyDeliveryDifferenceGold, customerBal.currentGoldBalance, "131")
-                } else {
-                    sellableGoldBalance = customerBal.sellableGoldBalance
-                    console.log("135")
-                }
+
+                // if (totalGoldBoughtInFixDuration > totalGoldDeliveryInFixDuration) {
+                //     let buyDeliveryDifferenceGold = totalGoldBoughtInFixDuration - totalGoldDeliveryInFixDuration 5
+                //     if (customerBal.currentGoldBalance > buyDeliveryDifferenceGold) {
+                //         sellableGoldBalance = customerBal.currentGoldBalance - buyDeliveryDifferenceGold; 
+                //         // sellableGoldBalance = customerBal.sellableGoldBalance + (customerBal.currentGoldBalance - buyDeliveryDifferenceGold);
+                //     } else {
+                //         sellableGoldBalance = 0
+                //     }
+                //     console.log(buyDeliveryDifferenceGold, customerBal.currentGoldBalance, "131")
+                // } else {
+                //     sellableGoldBalance = customerBal.sellableGoldBalance
+                //     console.log("135")
+                // }
+
+                sellableGoldBalance = customerBal.sellableGoldBalance
+
 
                 console.log(sellableGoldBalance)
 
@@ -192,7 +200,7 @@ module.exports = async () => {
                 allCustomerId.push(data.customerId)
             }
             const nonRepeatCustomerNewId = _.uniq(allCustomerId);
-            console.log(nonRepeatCustomerNewId, "191") ;   // 262
+            console.log(nonRepeatCustomerNewId, "191");   // 262
 
             for (let customer of nonRepeatCustomerNewId) {
 
