@@ -969,7 +969,7 @@ export class MenuConfig {
 						},
 						{
 							title: "Applied KYC",
-							page: "/admin/digi-gold/applied-kyc",
+							page: "/admin/digi-gold/applied-kyc-digi-gold",
 							src: "assets/media/aside-icons/icons-06.svg",
 							// permission: !this.permissionsArr.includes('appliedKycView'),
 						},

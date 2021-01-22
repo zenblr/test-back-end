@@ -918,10 +918,10 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "applied-kyc-digi-gold") {
 			this.showInput = true;
 		}
-		if (location.href.includes('/admin/applied-kyc-digi-gold/edit/' && '?id=')) {
+		if (location.href.includes('/admin/digi-gold/applied-kyc-digi-gold/edit/' && '?id=')) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes('/admin/applied-kyc-digi-gold/apply/')) {
+		if (location.href.includes('/admin/digi-gold/applied-kyc-digi-gold/apply/')) {
 			this.showBackButton = true;
 		}
 	}

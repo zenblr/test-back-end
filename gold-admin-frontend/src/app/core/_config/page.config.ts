@@ -474,7 +474,7 @@ export class PageConfig {
 					},
 
 				},
-				"applied-kyc": {
+				"applied-kyc-digi-gold": {
 					page: { title: "Applied KYC - Digi Gold", desc: "" },
 					"edit": {
 						id: {

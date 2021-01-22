@@ -232,7 +232,7 @@ export class LeadManagementComponent implements OnInit {
 
   goToDigiGoldKyc(lead) {
     // this.leadService.getLeadById(lead.id).subscribe(res => {
-    this.router.navigate([`/admin/digi-gold/applied-kyc/apply/${lead.id}`]);
+    this.router.navigate([`/admin/digi-gold/applied-kyc-digi-gold/apply/${lead.id}`]);
     // })
   }
 

@@ -294,7 +294,7 @@ export class KycDetailsComponent implements OnInit {
         }))
         .subscribe(res => {
           this.toastr.success(res.message)
-          this.router.navigate(['/admin/digi-gold/applied-kyc'])
+          this.router.navigate(['/admin/digi-gold/applied-kyc-digi-gold'])
         })
     }
     if (this.kycStage == 'apply') {
