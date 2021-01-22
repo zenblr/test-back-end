@@ -153,12 +153,16 @@ module.exports = async () => {
                 //     sellableSilverBalance = customerBal.currentSilverBalance - buyDeliveryDifferenceSilver;
                 //     // sellableSilverBalance = customerBal.sellableSilverBalance + (customerBal.currentSilverBalance - buyDeliveryDifferenceSilver);
                 // }
-                if (totalSilverBoughtInFixDuration > totalSilverDeliveryInFixDuration) {
-                    let buyDeliveryDifferenceSilver = totalSilverBoughtInFixDuration - totalSilverDeliveryInFixDuration
-                    sellableSilverBalance = customerBal.currentSilverBalance - buyDeliveryDifferenceSilver;
-                } else {
-                    sellableSilverBalance = customerBal.sellableSilverBalance
-                }
+
+                // if (totalSilverBoughtInFixDuration > totalSilverDeliveryInFixDuration) {
+                //     let buyDeliveryDifferenceSilver = totalSilverBoughtInFixDuration - totalSilverDeliveryInFixDuration
+                //     sellableSilverBalance = customerBal.currentSilverBalance - buyDeliveryDifferenceSilver;
+                // } else {
+                //     sellableSilverBalance = customerBal.sellableSilverBalance
+                // }
+
+                sellableSilverBalance = customerBal.sellableSilverBalance
+
 
                 console.log("sellableGoldBalance", sellableGoldBalance, "sellableSilverBalance", sellableSilverBalance);
                 let newSellableGoldBalance = sellableGoldBalance.toFixed(4);
