@@ -20,7 +20,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 export class LeadManagementComponent implements OnInit {
 
   dataSource: LeadManagementDatasource;
-  displayedColumns = ['fullName','customerUniqueId', 'pan', 'internalBranch', 'module', 'state', 'city', 'pincode', 'date', 'status', 'kycStatus', 'kyc', 'actions', 'view', 'menu'];
+  displayedColumns = ['fullName', 'customerUniqueId', 'pan', 'internalBranch', 'module', 'state', 'city', 'pincode', 'date', 'status', 'kycStatus', 'kyc', 'actions', 'view', 'menu'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   queryParamsData = {
@@ -232,7 +232,7 @@ export class LeadManagementComponent implements OnInit {
 
   goToDigiGoldKyc(lead) {
     // this.leadService.getLeadById(lead.id).subscribe(res => {
-    this.router.navigate([`/admin/applied-kyc-digi-gold/apply/${lead.id}`]);
+    this.router.navigate([`/admin/digi-gold/applied-kyc/apply/${lead.id}`]);
     // })
   }
 
