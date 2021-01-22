@@ -119,10 +119,9 @@ module.exports = async () => {
                     }
                 }
                 console.log("gold silver", totalGoldBoughtInFixDuration, totalSilverBoughtInFixDuration);
-
                 let buyDeliveryDifferenceGold = totalGoldBoughtInFixDuration - totalGoldDeliveryInFixDuration
                 if (buyDeliveryDifferenceGold <= 0) {
-                    sellableGoldBalance = customerBal.currentGoldBalance
+                    sellableGoldBalance = customerBal.sellableGoldBalance
                 } else {
                     sellableGoldBalance = customerBal.currentGoldBalance - buyDeliveryDifferenceGold;
                     // sellableGoldBalance = customerBal.sellableGoldBalance + (customerBal.currentGoldBalance - buyDeliveryDifferenceGold);
@@ -130,7 +129,7 @@ module.exports = async () => {
 
                 let buyDeliveryDifferenceSilver = totalSilverBoughtInFixDuration - totalSilverDeliveryInFixDuration
                 if (buyDeliveryDifferenceSilver <= 0) {
-                    sellableSilverBalance = customerBal.currentSilverBalance
+                    sellableSilverBalance = customerBal.sellableSilverBalance
                 } else {
                     sellableSilverBalance = customerBal.currentSilverBalance - buyDeliveryDifferenceSilver;
                     // sellableSilverBalance = customerBal.sellableSilverBalance + (customerBal.currentSilverBalance - buyDeliveryDifferenceSilver);
