@@ -43,7 +43,7 @@
                         </div>
                         <div class="col-8">
                             <input type="text" formControlName="depositDate" class="form-control"
-                                [value]="controls?.depositDate?.value | date: 'MMM d, y, h:mm a'" disabled>
+                                [value]="controls?.depositDate?.value | date: 'MMM d, y'" disabled>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">
@@ -62,7 +62,7 @@
                         <div class="col-8">
                             <input *ngIf="depositInfo?.transactionData?.depositStatus != 'pending'" type="text"
                                 formControlName="approvalDate" class="form-control"
-                                [value]="controls?.approvalDate?.value | date: 'MMM d, y, h:mm a'" disabled>
+                                [value]="controls?.approvalDate?.value | date: 'MMM d, y'" disabled>
                             <input *ngIf="depositInfo?.transactionData?.depositStatus == 'pending'" type="text"
                                 class="form-control" [matDatepicker]="picker" (click)="picker.open()"
                                 formControlName="approvalDate"
