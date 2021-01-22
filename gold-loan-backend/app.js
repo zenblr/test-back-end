@@ -228,7 +228,7 @@ cron.schedule('0 3 * * *', async () => {
 //     }
 // });
 
-cron.schedule('0 */5 * * * *', async () => {
+cron.schedule('0 */15 * * * *', async () => {
     let date = moment()
     let startTime = moment();
 
