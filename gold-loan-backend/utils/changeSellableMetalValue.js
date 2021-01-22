@@ -90,10 +90,10 @@ module.exports = async () => {
                     for (let product of ele.orderProductDetail) {
                         console.log(product);
                         if (product.metalType == "gold") {
-                            totalGoldDeliveryInFixDuration += parseFloat(product.productWeight);
+                            totalGoldDeliveryInFixDuration += parseFloat(product.productWeight * product.quantity);
                         }
                         if (product.metalType == "silver") {
-                            totalSilverDeliveryInFixDuration += parseFloat(product.productWeight)
+                            totalSilverDeliveryInFixDuration += parseFloat(product.productWeight * product.quantity)
                         }
                     }
                 }
