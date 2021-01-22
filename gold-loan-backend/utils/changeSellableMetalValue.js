@@ -118,21 +118,38 @@ module.exports = async () => {
                         totalSilverBoughtInFixDuration += parseFloat(ele.quantity)
                     }
                 }
-                console.log("gold silver", totalGoldBoughtInFixDuration, totalSilverBoughtInFixDuration);
-                let buyDeliveryDifferenceGold = totalGoldBoughtInFixDuration - totalGoldDeliveryInFixDuration
-                if (buyDeliveryDifferenceGold <= 0) {
-                    sellableGoldBalance = customerBal.sellableGoldBalance
-                } else {
+                console.log("gold silver", totalGoldBoughtInFixDuration, totalSilverBoughtInFixDuration)
+                // let buyDeliveryDifferenceGold = totalGoldBoughtInFixDuration - totalGoldDeliveryInFixDuration
+                // if (buyDeliveryDifferenceGold <= 0) {
+                //     sellableGoldBalance = customerBal.sellableGoldBalance
+                // } else {
+                //     sellableGoldBalance = customerBal.currentGoldBalance - buyDeliveryDifferenceGold;
+                //     // sellableGoldBalance = customerBal.sellableGoldBalance + (customerBal.currentGoldBalance - buyDeliveryDifferenceGold);
+
+                // }
+                if (totalGoldBoughtInFixDuration > totalGoldDeliveryInFixDuration) {
+                    let buyDeliveryDifferenceGold = totalGoldBoughtInFixDuration - totalGoldDeliveryInFixDuration
                     sellableGoldBalance = customerBal.currentGoldBalance - buyDeliveryDifferenceGold;
-                    // sellableGoldBalance = customerBal.sellableGoldBalance + (customerBal.currentGoldBalance - buyDeliveryDifferenceGold);
+                    console.log(buyDeliveryDifferenceGold, customerBal.currentGoldBalance, "131")
+                } else {
+                    sellableGoldBalance = customerBal.sellableGoldBalance
+                    console.log("135")
                 }
 
-                let buyDeliveryDifferenceSilver = totalSilverBoughtInFixDuration - totalSilverDeliveryInFixDuration
-                if (buyDeliveryDifferenceSilver <= 0) {
-                    sellableSilverBalance = customerBal.sellableSilverBalance
-                } else {
+                console.log(sellableGoldBalance)
+
+                // let buyDeliveryDifferenceSilver = totalSilverBoughtInFixDuration - totalSilverDeliveryInFixDuration
+                // if (buyDeliveryDifferenceSilver <= 0) {
+                //     sellableSilverBalance = customerBal.sellableSilverBalance
+                // } else {
+                //     sellableSilverBalance = customerBal.currentSilverBalance - buyDeliveryDifferenceSilver;
+                //     // sellableSilverBalance = customerBal.sellableSilverBalance + (customerBal.currentSilverBalance - buyDeliveryDifferenceSilver);
+                // }
+                if (totalSilverBoughtInFixDuration > totalSilverDeliveryInFixDuration) {
+                    let buyDeliveryDifferenceSilver = totalSilverBoughtInFixDuration - totalSilverDeliveryInFixDuration
                     sellableSilverBalance = customerBal.currentSilverBalance - buyDeliveryDifferenceSilver;
-                    // sellableSilverBalance = customerBal.sellableSilverBalance + (customerBal.currentSilverBalance - buyDeliveryDifferenceSilver);
+                } else {
+                    sellableSilverBalance = customerBal.sellableSilverBalance
                 }
 
                 console.log("sellableGoldBalance", sellableGoldBalance, "sellableSilverBalance", sellableSilverBalance);
@@ -175,7 +192,7 @@ module.exports = async () => {
                 allCustomerId.push(data.customerId)
             }
             const nonRepeatCustomerNewId = _.uniq(allCustomerId);
-            console.log(nonRepeatCustomerNewId);   // 262
+            console.log(nonRepeatCustomerNewId, "191") ;   // 262
 
             for (let customer of nonRepeatCustomerNewId) {
 
