@@ -155,6 +155,10 @@ export class PageConfig {
 					page: { title: "Customer Registration List", desc: "" }
 				}
 			},
+			"transaction": {
+					page: { title: "Transaction", desc: "" },				
+				},
+				
 			"account": {
 				"loan-disbursement": {
 					page: { title: "Loan Disbursement", desc: "" },
