@@ -70,6 +70,12 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
                         [Op.iLike]: search + "%",
                     }
                 ),
+                razorpayPaymentId: sequelize.where(
+                    sequelize.cast(sequelize.col("walletTransactionDetails.razorpay_payment_id"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
                 // "$walletTransactionDetails.payment_for$": { [Op.iLike]: search + '%' },
                 "$walletTransactionDetails.bank_name$": { [Op.iLike]: search + '%' },
                 "$walletTransactionDetails.cheque_number$": { [Op.iLike]: search + '%' },
@@ -80,6 +86,8 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
                 "$walletTransactionDetails.transaction_unique_id$": { [Op.iLike]: search + '%' },
                 "$walletTransactionDetails.ifsc_code$": { [Op.iLike]: search + '%' },
                 "$walletTransactionDetails.payment_type$": { [Op.iLike]: search + '%' },
+                // "$walletTransactionDetails.razorpay_payment_id$": { [Op.iLike]: search + '%' },
+                "$customer.mobile_number$": { [Op.iLike]: search + '%' },
 
             },
         }],
