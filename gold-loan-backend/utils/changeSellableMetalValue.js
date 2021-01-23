@@ -69,7 +69,7 @@ module.exports = async () => {
             });
             let orderDetailSilverArray = []
 
-            for (let data of orderDetailGold) {
+            for (let data of orderDetailSilver) {
                 orderDetailSilverArray.push(data.id)
             }
 
