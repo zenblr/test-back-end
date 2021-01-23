@@ -18,7 +18,11 @@ module.exports = async () => {
     let configSettingName = "digiGoldSellableHour"
     let duration = await models.digiGoldConfigDetails.getConfigDetail(configSettingName);
     let dateBeforSpcifiedTime = moment()
-    let date = moment(dateBeforSpcifiedTime).subtract(Number(duration.configSettingValue), 'h').format('YYYY-MM-DD HH:mm:ss.SSS');
+    // let date = moment(dateBeforSpcifiedTime).subtract(Number(duration.configSettingValue), 'h').format('YYYY-MM-DD HH:mm:ss.SSS');
+
+    let date = moment(dateBeforSpcifiedTime).subtract(12, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
+
+
     let newDate = moment(moment(date)).format('YYYY-MM-DD HH:mm:ss.SSS');
 
     await sequelize.transaction(async (t) => {
@@ -27,7 +31,7 @@ module.exports = async () => {
             where: {
                 orderCreatedDate: { [Op.lt]: newDate },
                 orderTypeId: 1,
-                isSellbleGold: false,
+                isSellableGold: false,
             },
             transaction: t
         });
@@ -46,7 +50,7 @@ module.exports = async () => {
                     customerId: customer,
                     orderTypeId: 1,
                     metalType: "gold",
-                    isSellbleGold: false
+                    isSellableGold: false
                 },
                 transaction: t
             });
@@ -62,7 +66,7 @@ module.exports = async () => {
                     customerId: customer,
                     orderTypeId: 1,
                     metalType: "silver",
-                    isSellbleSilver: false
+                    isSellableSilver: false
                 },
                 transaction: t
             });
@@ -111,7 +115,7 @@ module.exports = async () => {
                 },
                 transaction: t
             });
-
+            console.log(sellableGoldBalance, sellableSilverBalance, customer);
             await models.digiGoldCustomerBalance.update({
                 sellableGoldBalance: Number(sellableGoldBalance),
                 sellableSilverBalance: Number(sellableSilverBalance)
