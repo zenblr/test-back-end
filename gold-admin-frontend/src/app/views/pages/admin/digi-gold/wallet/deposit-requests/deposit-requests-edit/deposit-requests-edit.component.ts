@@ -76,7 +76,9 @@ export class DepositRequestsEditComponent implements OnInit {
 
 	editOrder() {
 		const data = {
-			bankTransactionID: this.depositInfo.transactionData.bankTransactionUniqueId ? this.depositInfo.transactionData.bankTransactionUniqueId : 'NA',
+			bankTransactionID: this.depositInfo.transactionData.bankTransactionUniqueId ||
+				this.depositInfo.transactionData.razorpayPaymentId ||
+				this.depositInfo.transactionData.chequeNumber,
 			depositmodeofpayment: this.depositInfo.transactionData.paymentType,
 			depositBankName: this.depositInfo.transactionData.bankName ? this.depositInfo.transactionData.bankName : 'NA',
 			depositBranchName: this.depositInfo.transactionData.branchName ? this.depositInfo.transactionData.branchName : 'NA',
