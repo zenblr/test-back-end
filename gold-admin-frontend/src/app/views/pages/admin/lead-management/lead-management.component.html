@@ -13,6 +13,11 @@
                     <mat-cell *matCellDef="let lead">{{lead?.firstName | titlecase}}&nbsp;{{lead.lastName | titlecase}}
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="customerUniqueId">
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+                    <mat-cell *matCellDef="let lead">{{lead?.customerUniqueId | uppercase }}
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN</mat-header-cell>
                     <mat-cell *matCellDef="let lead">{{lead?.panCardNumber ? lead?.panCardNumber : 'NA' | uppercase }}
@@ -199,7 +204,7 @@
                                         <button *ngxPermissionsOnly="['addBranchCustomer']" mat-menu-item
                                             (click)="assignBranch(loan)">Assign Branch</button>
                                     </ng-container>
-                                    <ng-container *ngIf="loan.module?.id == 4 && !loan.panCardNumber">
+                                    <ng-container *ngIf="!loan.panCardNumber">
                                         <button *ngxPermissionsOnly="['customerKycAdd']" mat-menu-item
                                             (click)="goToDigiGoldKyc(loan)">Apply Digi KYC</button>
                                     </ng-container>

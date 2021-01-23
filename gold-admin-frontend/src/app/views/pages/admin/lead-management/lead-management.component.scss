@@ -5,11 +5,17 @@
     ::ng-deep.mat-row,
     ::ng-deep.mat-header-row{
         // width: 148% !important;
-        width: 125% !important;
+        width: 135% !important;
     }
     .mat-column-fullName{
-        flex: 0 0 11% !important;
+        flex: 0 0 9% !important;
         padding-left: 5px !important;
+    }
+    .mat-column-customerUniqueId{
+        flex: 0 0 6% !important;
+    }
+    .mat-column-module{
+        flex: 0 0 6% !important;
     }
     .mat-column-view{
         flex: 0 0 4% !important;
@@ -30,13 +36,13 @@
         flex: 0 0 6% !important;
     }
     .mat-column-date{
-        flex: 0 0 7% !important;
+        flex: 0 0 6% !important;
     }
     .mat-column-status{
-        flex: 0 0 8% !important;
+        flex: 0 0 7% !important;
     }
     .mat-column-kycStatus{
-        flex: 0 0 7% !important;
+        flex: 0 0 6% !important;
     }
     .mat-column-appraiser{
         flex: 0 0 8% !important;

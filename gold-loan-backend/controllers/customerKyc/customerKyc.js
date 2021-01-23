@@ -1184,11 +1184,11 @@ exports.getDigiKycList = async (req, res) => {
 
 
     // const searchQuery = {
-        // [Op.and]: [query, {
-        //     [Op.or]: {
+    //     // [Op.and]: [query, {
+    //     //     [Op.or]: {
 
-        //     }
-        // }],
+    //     //     }
+    //     // }],
     // }
     let searchQuery = {
         [Op.and]: [query, {
@@ -1203,6 +1203,8 @@ exports.getDigiKycList = async (req, res) => {
         }],
     
       };
+    
+
     const includeArray = [
         {
             model: models.customer,

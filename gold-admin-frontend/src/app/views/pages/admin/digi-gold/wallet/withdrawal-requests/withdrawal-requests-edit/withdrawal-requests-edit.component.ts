@@ -142,10 +142,9 @@ export class WithdrawalRequestsEditComponent implements OnInit {
 		if (this.withdrawId) {
 			let withdrawData;
 			if (this.controls.withdrawalStatus.value == 'completed') {
-				let date = new Date(this.controls.withdrawDate.value);
 				withdrawData = {
 					depositStatus: this.controls.withdrawalStatus.value,
-					date: new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString(),
+					date: this.sharedService.toISODateFormat(this.controls.withdrawDate.value),
 					bankTransactionUniqueId: this.controls.utrNumber.value,
 				};
 			} else {
