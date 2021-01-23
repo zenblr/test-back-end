@@ -36,8 +36,8 @@
                         <td>{{loanDetail.depositDate | date :'mediumDate'}}</td>
 
                         <td class="table-amount">
-                            <span *ngIf="loanDetail?.depositStatus == 'Rejected'">
-                                {{loanDetail?.transactionAmont}}
+                            <span  class="currency" *ngIf="loanDetail?.depositStatus == 'Rejected' || loanDetail?.depositStatus == 'Pending'">
+                                {{loanDetail?.transactionAmont | indianCurrencyFormat}}
                             </span>
                             <span
                                 class="currency">{{loanDetail.transactionSplitUp[0]?.payableOutstanding | indianCurrencyFormat}}</span>

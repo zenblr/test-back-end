@@ -18,7 +18,7 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const walletService = require('../../service/wallet');
 const { walletBuy, walletDelivery, customerBalance, customerNonSellableMetal } = require('../../service/wallet');
-const { postMerchantOrder, getUserData, postBuy, addBankDetailInAugmontDb, checkKycStatus } = require('../../service/digiGold')
+const { postMerchantOrder, getUserData, postBuy, addBankDetailInAugmontDb, checkKycStatus ,checkBuyLimit} = require('../../service/digiGold')
 
 const getMerchantData = require('../auth/getMerchantData');
 
@@ -124,7 +124,7 @@ exports.makePayment = async (req, res) => {
       userData: req.userData
   });
     if(err.statusCode == 400 && err.error.code){
-      return res.status(400).json({message: err.error.description});
+      return res.status(400).json({message:err.error.description});
     }else{
       return res.status(400).json({err});
     }
@@ -132,471 +132,472 @@ exports.makePayment = async (req, res) => {
 
 }
 
+
 exports.addAmountWallet = async (req, res) => {
-  try {
+ try {
 
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, transactionUniqueId } = req.body;
-    let walletTransactionDetails;
-    if (razorpay_order_id && razorpay_payment_id && razorpay_signature) {
+ const { razorpay_order_id, razorpay_payment_id, razorpay_signature, transactionUniqueId } = req.body;
+ let walletTransactionDetails;
+ if (razorpay_order_id && razorpay_payment_id && razorpay_signature) {
 
-      let tempWalletTransaction = await models.walletTransactionTempDetails.getWalletTempTransactionDetails(razorpay_order_id);
+ let tempWalletTransaction = await models.walletTransactionTempDetails.getWalletTempTransactionDetails(razorpay_order_id);
 
-      let tempWalletDetail = await models.walletTempDetails.getTempWalletData(tempWalletTransaction.walletTempId);
+ let tempWalletDetail = await models.walletTempDetails.getTempWalletData(tempWalletTransaction.walletTempId);
 
-      let customer = await models.customer.findOne({ where: { id: tempWalletTransaction.customerId } });
+ let customer = await models.customer.findOne({ where: { id: tempWalletTransaction.customerId } });
 
-      const razorPay = await getRazorPayDetails();
-      const generated_signature = crypto
-        .createHmac(
-          "SHA256",
-          razorPay.razorPayConfig.key_secret
-        )
-        .update(razorpay_order_id + "|" + razorpay_payment_id)
-        .digest("hex");
-      if (generated_signature == razorpay_signature) {
-        signatureVerification = true
-      }
-      if (signatureVerification == false) {
-        return res.status(422).json({ message: "Payment verification failed" });
-      }
+ const razorPay = await getRazorPayDetails();
+ const generated_signature = crypto
+ .createHmac(
+ "SHA256",
+ razorPay.razorPayConfig.key_secret
+ )
+ .update(razorpay_order_id + "|" + razorpay_payment_id)
+ .digest("hex");
+ if (generated_signature == razorpay_signature) {
+ signatureVerification = true
+ }
+ if (signatureVerification == false) {
+ return res.status(422).json({ message: "Payment verification failed" });
+ }
 
 
-      //if order for buy product
+ //if order for buy product
 
-      let customerUpdatedBalance
-      if (customer.currentWalletBalance) {
-        customerUpdatedBalance = Number(customer.currentWalletBalance) + Number(tempWalletTransaction.transactionAmount);
-      } else {
-        customerUpdatedBalance = Number(tempWalletTransaction.transactionAmount);
-      }
-      let WalletDetail;
+ let customerUpdatedBalance
+ if (customer.currentWalletBalance) {
+ customerUpdatedBalance = Number(customer.currentWalletBalance) + Number(tempWalletTransaction.transactionAmount);
+ } else {
+ customerUpdatedBalance = Number(tempWalletTransaction.transactionAmount);
+ }
+ let WalletDetail;
 
-      let newCustomerUpdatedBalance = customerUpdatedBalance.toFixed(2);
+ let newCustomerUpdatedBalance = customerUpdatedBalance.toFixed(2);
 
 
-      let output = await sequelize.transaction(async (t) => {
+ let output = await sequelize.transaction(async (t) => {
 
-        await models.customer.update({ currentWalletBalance: Number(newCustomerUpdatedBalance) }, { where: { id: customer.id }, transaction: t })
+ await models.customer.update({ currentWalletBalance: Number(newCustomerUpdatedBalance) }, { where: { id: customer.id }, transaction: t })
 
-        let getCustomer = await models.customer.findOne({
-          transaction: t,
-          where: { id: tempWalletDetail.customerId },
-          attributes: ['currentWalletBalance', 'walletFreeBalance', 'mobileNumber']
-        })
+ let getCustomer = await models.customer.findOne({
+ transaction: t,
+ where: { id: tempWalletDetail.customerId },
+ attributes: ['currentWalletBalance', 'walletFreeBalance', 'mobileNumber']
+ })
 
-        await models.walletTransactionTempDetails.update({ isOrderPlaced: true }, { where: { id: tempWalletTransaction.id }, transaction: t });
+ await models.walletTransactionTempDetails.update({ isOrderPlaced: true }, { where: { id: tempWalletTransaction.id }, transaction: t });
 
-        let orderData = await models.digiGoldTempOrderDetail.findOne({ where: { razorpayOrderId: razorpay_order_id } });
+ let orderData = await models.digiGoldTempOrderDetail.findOne({ where: { razorpayOrderId: razorpay_order_id } });
 
-        if (!orderData) {
+ if (!orderData) {
 
-          await models.axios({
-            method: 'PATCH',
-            url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
-            auth: {
-              username: razorPay.razorPayConfig.key_id,
-              password: razorPay.razorPayConfig.key_secret
-            },
-            data: qs.stringify({ notes: { transactionId: tempWalletTransaction.transactionUniqueId, uniqueId: customer.customerUniqueId } })
-          });
+ await models.axios({
+ method: 'PATCH',
+ url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
+ auth: {
+ username: razorPay.razorPayConfig.key_id,
+ password: razorPay.razorPayConfig.key_secret
+ },
+ data: qs.stringify({ notes: { transactionId: tempWalletTransaction.transactionUniqueId, uniqueId: customer.customerUniqueId } })
+ });
 
-          WalletDetail = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
+ WalletDetail = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
 
-          let newFreeBalance = customer.walletFreeBalance.toFixed(2);
+ let newFreeBalance = customer.walletFreeBalance.toFixed(2);
 
-          let newCustUpdatedBalance = customerUpdatedBalance.toFixed(2);
+ let newCustUpdatedBalance = customerUpdatedBalance.toFixed(2);
 
-          walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: WalletDetail.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "completed", runningBalance: Number(newCustUpdatedBalance), freeBalance: Number(newFreeBalance) }, { transaction: t })
+ walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: WalletDetail.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "completed", runningBalance: Number(newCustUpdatedBalance), freeBalance: Number(newFreeBalance) }, { transaction: t })
 
 
-          let orderData = {
-            amount: tempWalletTransaction.orderAmount,
-            metalType: tempWalletTransaction.metalType,
-            qtyAmtType: tempWalletTransaction.qtyAmtType,
-            quantity: tempWalletTransaction.quantity,
-            type: tempWalletTransaction.type,
-            redirectOn: process.env.DIGITALGOLDAPI + tempWalletTransaction.redirectOn
-          }
+ let orderData = {
+ amount: tempWalletTransaction.orderAmount,
+ metalType: tempWalletTransaction.metalType,
+ qtyAmtType: tempWalletTransaction.qtyAmtType,
+ quantity: tempWalletTransaction.quantity,
+ type: tempWalletTransaction.type,
+ redirectOn: process.env.DIGITALGOLDAPI + tempWalletTransaction.redirectOn
+ }
 
-          await sms.sendMessageForDepositRequestAccepted(customer.mobileNumber, tempWalletDetail.amount);
+ await sms.sendMessageForDepositRequestAccepted(customer.mobileNumber, tempWalletDetail.amount);
 
-          if (tempWalletTransaction.redirectOn) {
-            res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
+ if (tempWalletTransaction.redirectOn) {
+ res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
 
-          } else {
-            return { isSuccess: true, status: 200, data: { walletTransactionDetails } }
-            // res.status(200).json({ message: "success", walletTransactionDetails });
-          }
+ } else {
+ return { isSuccess: true, status: 200, data: { walletTransactionDetails } }
+ // res.status(200).json({ message: "success", walletTransactionDetails });
+ }
 
-        } else {
-          // if wallet called for buy product
-          if (tempWalletTransaction.type == "buy") {
-            let tempOrderData;
-            let currentTempBal;
-            let walletData
+ } else {
+ // if wallet called for buy product
+ if (tempWalletTransaction.type == "buy") {
+ let tempOrderData;
+ let currentTempBal;
+ let walletData
 
-            let WalletDetailBuy = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: `Amount added to your Augmont Wallet`, productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 1, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
+ let WalletDetailBuy = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: `Amount added to your Augmont Wallet`, productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 1, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
 
-            let newWalletFreeBalanc = customer.walletFreeBalance.toFixed(2);
-            let NewCusUpdatedBalance = customerUpdatedBalance.toFixed(2);
+ let newWalletFreeBalanc = customer.walletFreeBalance.toFixed(2);
+ let NewCusUpdatedBalance = customerUpdatedBalance.toFixed(2);
 
-            let walletTransactionDetailsBuy = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: WalletDetailBuy.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "completed", runningBalance: Number(NewCusUpdatedBalance), freeBalance: Number(newWalletFreeBalanc) }, { transaction: t })
+ let walletTransactionDetailsBuy = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: WalletDetailBuy.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "completed", runningBalance: Number(NewCusUpdatedBalance), freeBalance: Number(newWalletFreeBalanc) }, { transaction: t })
 
 
-            let walletBuy1 = async (customerId, lockPrice, metalType, blockId, modeOfPayment, quantity, orderAmount, orderId, quantityBased, tempWalletId, temporderDetailId) => {
+ let walletBuy1 = async (customerId, lockPrice, metalType, blockId, modeOfPayment, quantity, orderAmount, orderId, quantityBased, tempWalletId, temporderDetailId) => {
 
-              let customerDetails = await models.customer.findOne({ where: { id: customerId }, transaction: t });
+ let customerDetails = await models.customer.findOne({ where: { id: customerId }, transaction: t });
 
-              const customerUniqueId = customerDetails.customerUniqueId;
-              const merchantData = await getMerchantData();
+ const customerUniqueId = customerDetails.customerUniqueId;
+ const merchantData = await getMerchantData();
 
 
-              const getUser = await getUserData(customerUniqueId)
+ const getUser = await getUserData(customerUniqueId)
 
-              const getUserDetails = getUser.data.result.data;
-              const transactionId = uniqid(merchantData.merchantId, customerUniqueId);
+ const getUserDetails = getUser.data.result.data;
+ const transactionId = uniqid(merchantData.merchantId, customerUniqueId);
 
-              const data = {
-                'lockPrice': lockPrice,
-                'emailId': getUserDetails.userEmail,
-                'metalType': metalType,
-                'merchantTransactionId': transactionId,
-                'userName': getUserDetails.userName,
-                'userCity': getUserDetails.userCityId,
-                'userState': getUserDetails.userStateId,
-                'userPincode': null,
-                'uniqueId': customerUniqueId,
-                'blockId': blockId,
-                'modeOfPayment': modeOfPayment,
-                'mobileNumber': customerDetails.mobileNumber
-              };
+ const data = {
+ 'lockPrice': lockPrice,
+ 'emailId': getUserDetails.userEmail,
+ 'metalType': metalType,
+ 'merchantTransactionId': transactionId,
+ 'userName': getUserDetails.userName,
+ 'userCity': getUserDetails.userCityId,
+ 'userState': getUserDetails.userStateId,
+ 'userPincode': null,
+ 'uniqueId': customerUniqueId,
+ 'blockId': blockId,
+ 'modeOfPayment': modeOfPayment,
+ 'mobileNumber': customerDetails.mobileNumber
+ };
 
-              if (quantityBased == true) {
-                data.quantity = quantity;
-              } else {
-                data.amount = orderAmount;
-              }
+ if (quantityBased == true) {
+ data.quantity = quantity;
+ } else {
+ data.amount = orderAmount;
+ }
 
-              console.log(qs.stringify(data));
+ console.log(qs.stringify(data));
 
-              const result = await postBuy(data)
+ const result = await postBuy(data)
 
-              const customerName = customerDetails.firstName + " " + customerDetails.lastName;
+ const customerName = customerDetails.firstName + " " + customerDetails.lastName;
 
-              if (result.isSuccess) {
+ if (result.isSuccess) {
 
-                await models.axios({
-                  method: 'PATCH',
-                  url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
-                  auth: {
-                    username: razorPay.razorPayConfig.key_id,
-                    password: razorPay.razorPayConfig.key_secret
-                  },
-                  data: qs.stringify({ notes: { transactionId: result.data.result.data.transactionId, uniqueId: customer.customerUniqueId } })
-                });
+ await models.axios({
+ method: 'PATCH',
+ url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
+ auth: {
+ username: razorPay.razorPayConfig.key_id,
+ password: razorPay.razorPayConfig.key_secret
+ },
+ data: qs.stringify({ notes: { transactionId: result.data.result.data.transactionId, uniqueId: customer.customerUniqueId } })
+ });
 
-                //calculation function
-                let checkBalance = await customerBalance(customerDetails, Number(result.data.result.data.totalAmount))
-                //calculation function
-                let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.totalAmount);
+ //calculation function
+ let checkBalance = await customerBalance(customerDetails, Number(result.data.result.data.totalAmount))
+ //calculation function
+ let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.totalAmount);
 
-                let newCurrentWalletBal = checkBalance.currentWalletBalance.toFixed(2);
-                let newWalletFreeBalance = checkBalance.walletFreeBalance.toFixed(2);
+ let newCurrentWalletBal = checkBalance.currentWalletBalance.toFixed(2);
+ let newWalletFreeBalance = checkBalance.walletFreeBalance.toFixed(2);
 
-                await models.customer.update({ currentWalletBalance: Number(newCurrentWalletBal), walletFreeBalance: Number(newWalletFreeBalance) }, { where: { id: customerId }, transaction: t })
+ await models.customer.update({ currentWalletBalance: Number(newCurrentWalletBal), walletFreeBalance: Number(newWalletFreeBalance) }, { where: { id: customerId }, transaction: t })
 
-                let getCustomer1 = await models.customer.findOne({
-                  transaction: t,
-                  where: { id: tempWalletDetail.customerId },
-                  attributes: ['currentWalletBalance', 'walletFreeBalance']
-                })
+ let getCustomer1 = await models.customer.findOne({
+ transaction: t,
+ where: { id: tempWalletDetail.customerId },
+ attributes: ['currentWalletBalance', 'walletFreeBalance']
+ })
 
-                let orderUniqueId = `dg_buy${Math.floor(1000 + Math.random() * 9000)}`;
+ let orderUniqueId = `dg_buy${Math.floor(1000 + Math.random() * 9000)}`;
 
-                let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.totalAmount, paymentDirection: "debit", description: `${orderData.metalType.charAt(0).toUpperCase() + orderData.metalType.slice(1)} Bought ${orderData.quantity} grams`, productTypeId: 4, transactionDate: moment(), walletTempDetailId: tempWalletId, orderTypeId: 1, paymentOrderTypeId: 6, transactionStatus: "completed" }, { transaction: t });
+ let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.totalAmount, paymentDirection: "debit", description: `${orderData.metalType.charAt(0).toUpperCase() + orderData.metalType.slice(1)} Bought ${orderData.quantity} grams`, productTypeId: 4, transactionDate: moment(), walletTempDetailId: tempWalletId, orderTypeId: 1, paymentOrderTypeId: 6, transactionStatus: "completed" }, { transaction: t });
 
-                let orderCreatedDate = moment(moment().utcOffset("+05:30"));
+ let orderCreatedDate = moment(moment().utcOffset("+05:30"));
 
-                let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: temporderDetailId, customerId: customerId, orderTypeId: 1, orderId: orderUniqueId, metalType: result.data.result.data.metalType, quantity: quantity, lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, rate: result.data.result.data.rate, quantityBased: quantityBased, modeOfPayment: modeOfPayment, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, orderStatus: "pending", totalAmount: result.data.result.data.totalAmount, walletBalance: Number(newCurrentWalletBal), walletId: walletData.id, orderCreatedDate: orderCreatedDate }, { transaction: t });
+ let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: temporderDetailId, customerId: customerId, orderTypeId: 1, orderId: orderUniqueId, metalType: result.data.result.data.metalType, quantity: quantity, lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, rate: result.data.result.data.rate, quantityBased: quantityBased, modeOfPayment: modeOfPayment, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, orderStatus: "pending", totalAmount: result.data.result.data.totalAmount, walletBalance: Number(newCurrentWalletBal), walletId: walletData.id, orderCreatedDate: orderCreatedDate, isSellableGold: false, isSellableSilver: false }, { transaction: t });
 
-                await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { id: orderId }, transaction: t });
+ await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { id: orderId }, transaction: t });
 
-                let CustomerBalanceData = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customerId, isActive: true } })
-                if (CustomerBalanceData) {
-                  await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: customerId }, transaction: t });
-                } else {
-                  await models.digiGoldCustomerBalance.create({ customerId: customerId, currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { transaction: t });
-                }
-                await models.digiGoldOrderTaxDetail.create({ orderDetailId: orderDetail.id, totalTaxAmount: result.data.result.data.totalTaxAmount, cgst: result.data.result.data.taxes.taxSplit[0].cgst, sgst: result.data.result.data.taxes.taxSplit[0].scgst, isActive: true }, { transaction: t });
+ let CustomerBalanceData = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customerId, isActive: true } })
+ if (CustomerBalanceData) {
+ await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: customerId }, transaction: t });
+ } else {
+ await models.digiGoldCustomerBalance.create({ customerId: customerId, currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { transaction: t });
+ }
+ await models.digiGoldOrderTaxDetail.create({ orderDetailId: orderDetail.id, totalTaxAmount: result.data.result.data.totalTaxAmount, cgst: result.data.result.data.taxes.taxSplit[0].cgst, sgst: result.data.result.data.taxes.taxSplit[0].scgst, isActive: true }, { transaction: t });
 
-                // await sms.sendMessageForBuy(customerName, customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
-                await sms.sendMessageForBuy(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+ // await sms.sendMessageForBuy(customerName, customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+ await sms.sendMessageForBuy(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
 
 
-                return result.data;
+ return result.data;
 
-              } else if (!result.isSuccess) {
-                return { err }
-              }
-            }
+ } else if (!result.isSuccess) {
+ return { err }
+ }
+ }
 
-            let orderBuy = await walletBuy1(walletTransactionDetailsBuy.customerId, orderData.lockPrice, orderData.metalType, orderData.blockId, orderData.modeOfPayment, orderData.quantity, orderData.totalAmount, orderData.id, orderData.quantityBased, orderData.walletTempId, orderData.id);
-            if (orderBuy.message) {
-              if (tempWalletTransaction.redirectOn) {
-                // return res.status(200).json({ message: "success", orderBuy });
+ let orderBuy = await walletBuy1(walletTransactionDetailsBuy.customerId, orderData.lockPrice, orderData.metalType, orderData.blockId, orderData.modeOfPayment, orderData.quantity, orderData.totalAmount, orderData.id, orderData.quantityBased, orderData.walletTempId, orderData.id);
+ if (orderBuy.message) {
+ if (tempWalletTransaction.redirectOn) {
+ // return res.status(200).json({ message: "success", orderBuy });
 
-                res.cookie(`metalObject`, `${JSON.stringify(orderBuy.result.data.metalType)}`);
-                // res.redirect(`http://localhost:4200${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
+ res.cookie(`metalObject`, `${JSON.stringify(orderBuy.result.data.metalType)}`);
+ // res.redirect(`http://localhost:4200${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
 
-                res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
-              } else {
-                // return res.status(200).json({ message: "success", orderBuy });
-                return { isSuccess: true, status: 200, data: { orderBuy } }
+ res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
+ } else {
+ // return res.status(200).json({ message: "success", orderBuy });
+ return { isSuccess: true, status: 200, data: { orderBuy } }
 
-              }
-            } else if (orderBuy.errors.userKyc) {
-              if (tempWalletTransaction.redirectOn) {
-                res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
-                res.redirect(`${process.env.BASE_URL_CUSTOMER}/kyc/digi-gold`);
-              } else {
-                // return res.status(400).json(orderBuy.result.data.metalType);
-                return { isSuccess: false, status: 400, data: { data: err.response.data.errors.userKyc[0] } }
+ }
+ } else if (orderBuy.errors.userKyc) {
+ if (tempWalletTransaction.redirectOn) {
+ res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
+ res.redirect(`${process.env.BASE_URL_CUSTOMER}/kyc/digi-gold`);
+ } else {
+ // return res.status(400).json(orderBuy.result.data.metalType);
+ return { isSuccess: false, status: 400, data: { data: err.response.data.errors.userKyc[0] } }
 
-              }
+ }
 
-            }
+ }
 
-          } else if (tempWalletTransaction.type == "delivery") {
-            // if wallet called for delivery product 
-            console.log(tempWalletTransaction.type);
-            let cartData = await models.digiGoldTempOrderProductDetail.findAll({ where: { tempOrderDetailId: orderData.id } });
+ } else if (tempWalletTransaction.type == "delivery") {
+ // if wallet called for delivery product 
+ console.log(tempWalletTransaction.type);
+ let cartData = await models.digiGoldTempOrderProductDetail.findAll({ where: { tempOrderDetailId: orderData.id } });
 
-            let orderAddress = await models.digiGoldTempOrderAddress.findAll({ where: { tempOrderDetailId: orderData.id } })
+ let orderAddress = await models.digiGoldTempOrderAddress.findAll({ where: { tempOrderDetailId: orderData.id } })
 
-            //
-            let walletDeatilDelivery = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 3, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
+ //
+ let walletDeatilDelivery = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 3, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
 
-            let WalletFreeBalanceNew = customer.walletFreeBalance.toFixed(2);
-            let customerUpdatedBalanceNew = customerUpdatedBalance.toFixed(2);
+ let WalletFreeBalanceNew = customer.walletFreeBalance.toFixed(2);
+ let customerUpdatedBalanceNew = customerUpdatedBalance.toFixed(2);
 
-            let walletTransactionDetailsDelivery = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: walletDeatilDelivery.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "completed", runningBalance: Number(customerUpdatedBalanceNew), freeBalance: Number(WalletFreeBalanceNew) }, { transaction: t })
-            //
+ let walletTransactionDetailsDelivery = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: walletDeatilDelivery.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "completed", runningBalance: Number(customerUpdatedBalanceNew), freeBalance: Number(WalletFreeBalanceNew) }, { transaction: t })
+ //
 
-            let walletDelivery1 = async (customerId, amount, modeOfPayment, orderType, cartData, totalQuantity, totalWeight, orderAddress, userAddressId, walletTempId, tempOrderDetailId, orderUniqueId) => {
+ let walletDelivery1 = async (customerId, amount, modeOfPayment, orderType, cartData, totalQuantity, totalWeight, orderAddress, userAddressId, walletTempId, tempOrderDetailId, orderUniqueId) => {
 
-              let customerDetails = await models.customer.findOne({ where: { id: customerId } });
+ let customerDetails = await models.customer.findOne({ where: { id: customerId } });
 
-              const customerUniqueId = customerDetails.customerUniqueId;
-              const merchantData = await getMerchantData();
-              const transactionId = uniqid(merchantData.merchantId, customerUniqueId);
-              const getCartDetails = await models.digiGoldCart.getCartDetails(customerId);
+ const customerUniqueId = customerDetails.customerUniqueId;
+ const merchantData = await getMerchantData();
+ const transactionId = uniqid(merchantData.merchantId, customerUniqueId);
+ const getCartDetails = await models.digiGoldCart.getCartDetails(customerId);
 
-              let data = {
-                'merchantTransactionId': transactionId,
-                'uniqueId': customerUniqueId,
-                'user[shipping][addressId]': userAddressId,
-                'merchantId': merchantData.merchantId,
-                'mobileNumber': customerDetails.mobileNumber,
-                'modeOfPayment': modeOfPayment
-              };
+ let data = {
+ 'merchantTransactionId': transactionId,
+ 'uniqueId': customerUniqueId,
+ 'user[shipping][addressId]': userAddressId,
+ 'merchantId': merchantData.merchantId,
+ 'mobileNumber': customerDetails.mobileNumber,
+ 'modeOfPayment': modeOfPayment
+ };
 
-              console.log(data)
+ console.log(data)
 
-              for (let [index, ele] of getCartDetails.entries()) {
-                data[`product[${index}][sku]`] = ele.productSku;
-                data[`product[${index}][quantity]`] = ele.quantity;
-              }
+ for (let [index, ele] of getCartDetails.entries()) {
+ data[`product[${index}][sku]`] = ele.productSku;
+ data[`product[${index}][quantity]`] = ele.quantity;
+ }
 
-              console.log(qs.stringify(data), "data");
+ console.log(qs.stringify(data), "data");
 
 
-              const result = await postMerchantOrder(data)
+ const result = await postMerchantOrder(data)
 
-              console.log(result.data);
+ console.log(result.data);
 
-              if (result.isSuccess) {
+ if (result.isSuccess) {
 
-                await models.axios({
-                  method: 'PATCH',
-                  url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
-                  auth: {
-                    username: razorPay.razorPayConfig.key_id,
-                    password: razorPay.razorPayConfig.key_secret
-                  },
-                  data: qs.stringify({ notes: { transactionId: result.data.result.data.orderId, uniqueId: customer.customerUniqueId } })
-                });
+ await models.axios({
+ method: 'PATCH',
+ url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
+ auth: {
+ username: razorPay.razorPayConfig.key_id,
+ password: razorPay.razorPayConfig.key_secret
+ },
+ data: qs.stringify({ notes: { transactionId: result.data.result.data.orderId, uniqueId: customer.customerUniqueId } })
+ });
 
 
 
-                await models.digiGoldCart.destroy({ where: { customerId: customerId } });
+ await models.digiGoldCart.destroy({ where: { customerId: customerId } });
 
-                //calculation function
-                let checkBalance = await customerBalance(customerDetails, Number(result.data.result.data.shippingCharges))
-                //calculation function
-                let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.shippingCharges);
+ //calculation function
+ let checkBalance = await customerBalance(customerDetails, Number(result.data.result.data.shippingCharges))
+ //calculation function
+ let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.shippingCharges);
 
-                let newCurrentWalletBalance = checkBalance.currentWalletBalance.toFixed(2);
-                let newWalletFreBalance = checkBalance.walletFreeBalance.toFixed(2);
+ let newCurrentWalletBalance = checkBalance.currentWalletBalance.toFixed(2);
+ let newWalletFreBalance = checkBalance.walletFreeBalance.toFixed(2);
 
 
 
-                await models.customer.update({ currentWalletBalance: Number(newCurrentWalletBalance), walletFreeBalance: Number(newWalletFreBalance) }, { where: { id: customerId }, transaction: t });
+ await models.customer.update({ currentWalletBalance: Number(newCurrentWalletBalance), walletFreeBalance: Number(newWalletFreBalance) }, { where: { id: customerId }, transaction: t });
 
-                let customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customerId } });
+ let customerBal = await models.digiGoldCustomerBalance.findOne({ where: { customerId: customerId } });
 
-                // let updatedSellableGold = 0;
-                // let updatedSellableSilver = 0;
-                let totalGoldWeight = 0;
-                let totalSilverWeight = 0;
+ // let updatedSellableGold = 0;
+ // let updatedSellableSilver = 0;
+ let totalGoldWeight = 0;
+ let totalSilverWeight = 0;
 
-                for (let cart of cartData) {
-                  if (cart.metalType == "gold") {
-                    if (cart.quantity == 1) {
-                      totalGoldWeight += Number(cart.productWeight);
-                    } else if (cart.quantity > 1) {
-                      totalGoldWeight += Number(cart.productWeight) * Number(cart.quantity);
-                    }
-                  } else if (cart.metalType == "silver") {
-                    if (cart.quantity == 1) {
-                      totalSilverWeight += Number(cart.productWeight);
-                    } else if (cart.quantity > 1) {
-                      totalSilverWeight += Number(cart.productWeight) * Number(cart.quantity);
-                    }
-                  }
-                }
-                console.log(totalSilverWeight, totalGoldWeight)
+ for (let cart of cartData) {
+ if (cart.metalType == "gold") {
+ if (cart.quantity == 1) {
+ totalGoldWeight += Number(cart.productWeight);
+ } else if (cart.quantity > 1) {
+ totalGoldWeight += Number(cart.productWeight) * Number(cart.quantity);
+ }
+ } else if (cart.metalType == "silver") {
+ if (cart.quantity == 1) {
+ totalSilverWeight += Number(cart.productWeight);
+ } else if (cart.quantity > 1) {
+ totalSilverWeight += Number(cart.productWeight) * Number(cart.quantity);
+ }
+ }
+ }
+ console.log(totalSilverWeight, totalGoldWeight)
 
-                if (totalGoldWeight) {
+ if (totalGoldWeight) {
 
-                  // updatedSellableGold = Number(customerBal.sellableGoldBalance) - Number(totalGoldWeight)
-                  // if (!updatedSellableGold || updatedSellableGold <= 0) {
-                  //   updatedSellableGold = 0;
-                  // }
+ // updatedSellableGold = Number(customerBal.sellableGoldBalance) - Number(totalGoldWeight)
+ // if (!updatedSellableGold || updatedSellableGold <= 0) {
+ // updatedSellableGold = 0;
+ // }
 
-                  let checkBalance = await customerNonSellableMetal(result.data.result.data.goldBalance, customerBal.sellableGoldBalance, customerBal.nonSellableGoldBalance, totalGoldWeight);
-                  let newSellableGoldBalance = checkBalance.sellableMetal.toFixed(4);
-                  let newNonSellableGoldBalance = checkBalance.nonSellableMetal.toFixed(4)
-                  await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: Number(newSellableGoldBalance), nonSellableGoldBalance: Number(newNonSellableGoldBalance) }, { where: { customerId: customerId }, transaction: t });
-                }
-                // console.log(updatedSellableGold, "updatedSellableGold");
-                if (totalSilverWeight) {
-                  // updatedSellableSilver = Number(customerBal.sellableSilverBalance) - Number(totalSilverWeight);
-                  // if (!updatedSellableSilver || updatedSellableSilver <= 0) {
-                  //   updatedSellableSilver = 0;
-                  // }
+ let checkBalance = await customerNonSellableMetal(result.data.result.data.goldBalance, customerBal.sellableGoldBalance, customerBal.nonSellableGoldBalance, totalGoldWeight);
+ let newSellableGoldBalance = checkBalance.sellableMetal.toFixed(4);
+ let newNonSellableGoldBalance = checkBalance.nonSellableMetal.toFixed(4)
+ await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableGoldBalance: Number(newSellableGoldBalance), nonSellableGoldBalance: Number(newNonSellableGoldBalance) }, { where: { customerId: customerId }, transaction: t });
+ }
+ // console.log(updatedSellableGold, "updatedSellableGold");
+ if (totalSilverWeight) {
+ // updatedSellableSilver = Number(customerBal.sellableSilverBalance) - Number(totalSilverWeight);
+ // if (!updatedSellableSilver || updatedSellableSilver <= 0) {
+ // updatedSellableSilver = 0;
+ // }
 
-                  let checkBalance = await customerNonSellableMetal(result.data.result.data.goldBalance, customerBal.sellableSilverBalance, customerBal.nonSellableSilverBalance, totalSilverWeight);
-                  let sellableSilverBalance = checkBalance.sellableMetal.toFixed(4);
-                  let nonSellableSilverBalance = checkBalance.nonSellableMetal.toFixed(4);
+ let checkBalance = await customerNonSellableMetal(result.data.result.data.goldBalance, customerBal.sellableSilverBalance, customerBal.nonSellableSilverBalance, totalSilverWeight);
+ let sellableSilverBalance = checkBalance.sellableMetal.toFixed(4);
+ let nonSellableSilverBalance = checkBalance.nonSellableMetal.toFixed(4);
 
-                  await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: Number(sellableSilverBalance), nonSellableSilverBalance: Number(nonSellableSilverBalance) }, { where: { customerId: customerId }, transaction: t });
-                }
+ await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance, sellableSilverBalance: Number(sellableSilverBalance), nonSellableSilverBalance: Number(nonSellableSilverBalance) }, { where: { customerId: customerId }, transaction: t });
+ }
 
-                // await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: id }, transaction: t });
+ // await models.digiGoldCustomerBalance.update({ currentGoldBalance: result.data.result.data.goldBalance, currentSilverBalance: result.data.result.data.silverBalance }, { where: { customerId: id }, transaction: t });
 
-                let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.shippingCharges, paymentDirection: "debit", description: "Delivery and Making charges", productTypeId: 4, transactionDate: moment(), walletTempDetailId: walletTempId, orderTypeId: 3, paymentOrderTypeId: 6, transactionStatus: "completed" }, { transaction: t });
-                console.log(walletData, "walletData");
+ let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.shippingCharges, paymentDirection: "debit", description: "Delivery and Making charges", productTypeId: 4, transactionDate: moment(), walletTempDetailId: walletTempId, orderTypeId: 3, paymentOrderTypeId: 6, transactionStatus: "completed" }, { transaction: t });
+ console.log(walletData, "walletData");
 
-                let orderCreatedDate = moment(moment().utcOffset("+05:30"));
+ let orderCreatedDate = moment(moment().utcOffset("+05:30"));
 
-                let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetailId, customerId: customerId, orderTypeId: 3, orderId: result.data.result.data.orderId, totalAmount: amount, blockId: orderUniqueId, amount: amount, modeOfPayment: modeOfPayment, userAddressId: userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.orderId, orderStatus: "pending", deliveryShippingCharges: result.data.result.data.shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, walletBalance: Number(newCurrentWalletBalance), walletId: walletData.id, orderCreatedDate: orderCreatedDate }, { transaction: t });
+ let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetailId, customerId: customerId, orderTypeId: 3, orderId: result.data.result.data.orderId, totalAmount: amount, blockId: orderUniqueId, amount: amount, modeOfPayment: modeOfPayment, userAddressId: userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.orderId, orderStatus: "pending", deliveryShippingCharges: result.data.result.data.shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, walletBalance: Number(newCurrentWalletBalance), walletId: walletData.id, orderCreatedDate: orderCreatedDate, isSellableGold: true, isSellableSilver: true }, { transaction: t });
 
-                await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { id: tempOrderDetailId }, transaction: t })
+ await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { id: tempOrderDetailId }, transaction: t })
 
-                for (let cart of cartData) {
-                  let productData = await models.digiGoldOrderProductDetail.create({ orderDetailId: orderDetail.id, productSku: cart.productSku, productWeight: cart.productWeight, productName: cart.productName, amount: cart.amount, productImage: cart.productImage, totalAmount: cart.totalProductAmount, metalType: cart.metalType, quantity: cart.quantity, createdBy: 1, modifiedBy: 1 }, { transaction: t });
-                }
+ for (let cart of cartData) {
+ let productData = await models.digiGoldOrderProductDetail.create({ orderDetailId: orderDetail.id, productSku: cart.productSku, productWeight: cart.productWeight, productName: cart.productName, amount: cart.amount, productImage: cart.productImage, totalAmount: cart.totalProductAmount, metalType: cart.metalType, quantity: cart.quantity, createdBy: 1, modifiedBy: 1 }, { transaction: t });
+ }
 
-                for (let address of orderAddress) {
-                  await models.digiGoldOrderAddressDetail.create({ orderDetailId: orderDetail.id, customerName: address.customerName, addressType: address.addressType, address: address.address, stateId: address.stateId, cityId: address.cityId, pinCode: address.pinCode }, { transaction: t });
-                }
+ for (let address of orderAddress) {
+ await models.digiGoldOrderAddressDetail.create({ orderDetailId: orderDetail.id, customerName: address.customerName, addressType: address.addressType, address: address.address, stateId: address.stateId, cityId: address.cityId, pinCode: address.pinCode }, { transaction: t });
+ }
 
-                await sms.sendMessageForOrderPlaced(customerDetails.mobileNumber, result.data.result.data.orderId);
+ await sms.sendMessageForOrderPlaced(customerDetails.mobileNumber, result.data.result.data.orderId);
 
-                return result.data;
-              } else if (!result.isSuccess) {
-                return { err }
-              }
+ return result.data;
+ } else if (!result.isSuccess) {
+ return { err }
+ }
 
-            }
+ }
 
-            let orderDelivery = await walletDelivery1(walletTransactionDetailsDelivery.customerId, orderData.amount, orderData.modeOfPayment, orderData.orderTypeId, cartData, orderData.deliveryTotalQuantity, orderData.deliveryTotalWeight, orderAddress, orderData.userAddressId, orderData.walletTempId, orderData.id, orderData.blockId);
+ let orderDelivery = await walletDelivery1(walletTransactionDetailsDelivery.customerId, orderData.amount, orderData.modeOfPayment, orderData.orderTypeId, cartData, orderData.deliveryTotalQuantity, orderData.deliveryTotalWeight, orderAddress, orderData.userAddressId, orderData.walletTempId, orderData.id, orderData.blockId);
 
-            if (tempWalletTransaction.redirectOn) {
+ if (tempWalletTransaction.redirectOn) {
 
-              res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${orderDelivery.result.data.merchantTransactionId}`);
-            } else {
-              // return res.status(200).json({ message: "success", orderDelivery });
-              return { isSuccess: true, status: 200, data: { orderDelivery } }
+ res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${orderDelivery.result.data.merchantTransactionId}`);
+ } else {
+ // return res.status(200).json({ message: "success", orderDelivery });
+ return { isSuccess: true, status: 200, data: { orderDelivery } }
 
-            }
+ }
 
 
-          }
-        }
-      })
-      if (output != undefined) {
-        if (output.isSuccess) {
-          return res.status(output.status).json({ data: output.data })
-        } else {
-          // return { isSuccess: false, status: 400, data: { data: err.response.data.errors.userKyc[0] } }
-          return res.status(output.status).json({ data: output.data })
-        }
-      }
+ }
+ }
+ })
+ if (output != undefined) {
+ if (output.isSuccess) {
+ return res.status(output.status).json({ data: output.data })
+ } else {
+ // return { isSuccess: false, status: 400, data: { data: err.response.data.errors.userKyc[0] } }
+ return res.status(output.status).json({ data: output.data })
+ }
+ }
 
 
-    } else {
-      if (!transactionUniqueId) {
-        return res.status(404).json({ message: "Transaction Unique Id is required" });
-      }
-      let tempWalletTransaction = await models.walletTransactionTempDetails.findOne({ where: { transactionUniqueId: transactionUniqueId } });
+ } else {
+ if (!transactionUniqueId) {
+ return res.status(404).json({ message: "Transaction Unique Id is required" });
+ }
+ let tempWalletTransaction = await models.walletTransactionTempDetails.findOne({ where: { transactionUniqueId: transactionUniqueId } });
 
-      if (!tempWalletTransaction) {
-        return res.status(404).json({ message: "Order Does Not Exists" });
-      }
-      if (tempWalletTransaction.isOrderPlaced == true) {
-        return res.status(422).json({ message: "Order id already placed for this order ID" });
-      }
+ if (!tempWalletTransaction) {
+ return res.status(404).json({ message: "Order Does Not Exists" });
+ }
+ if (tempWalletTransaction.isOrderPlaced == true) {
+ return res.status(422).json({ message: "Order id already placed for this order ID" });
+ }
 
-      let customer = await models.customer.findOne({ where: { id: tempWalletTransaction.customerId } });
-      let newCusWalletFreeBalance = customer.walletFreeBalance.toFixed(2);
-      let newRunningBalance = customer.currentWalletBalance.toFixed(2);
+ let customer = await models.customer.findOne({ where: { id: tempWalletTransaction.customerId } });
+ let newCusWalletFreeBalance = customer.walletFreeBalance.toFixed(2);
+ let newRunningBalance = customer.currentWalletBalance.toFixed(2);
 
-      await sequelize.transaction(async (t) => {
+ await sequelize.transaction(async (t) => {
 
-        walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, transactionUniqueId, bankTransactionUniqueId: tempWalletTransaction.bankTransactionUniqueId, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, chequeNumber: tempWalletTransaction.chequeNumber, bankName: tempWalletTransaction.bankName, branchName: tempWalletTransaction.branchName, depositStatus: "pending", runningBalance: Number(newRunningBalance), freeBalance: Number(newCusWalletFreeBalance) }, { transaction: t });
+ walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, transactionUniqueId, bankTransactionUniqueId: tempWalletTransaction.bankTransactionUniqueId, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, chequeNumber: tempWalletTransaction.chequeNumber, bankName: tempWalletTransaction.bankName, branchName: tempWalletTransaction.branchName, depositStatus: "pending", runningBalance: Number(newRunningBalance), freeBalance: Number(newCusWalletFreeBalance) }, { transaction: t });
 
-        await models.walletTransactionTempDetails.update({ isOrderPlaced: true }, { where: { id: tempWalletTransaction.id }, transaction: t });
+ await models.walletTransactionTempDetails.update({ isOrderPlaced: true }, { where: { id: tempWalletTransaction.id }, transaction: t });
 
 
-        await sms.sendMessageForDepositRequest(customer.mobileNumber, tempWalletTransaction.transactionAmount);
+ await sms.sendMessageForDepositRequest(customer.mobileNumber, tempWalletTransaction.transactionAmount);
 
-      })
+ })
 
-      return res.status(200).json({ message: "Payment request created Successfully", walletTransactionDetails });
-    }
+ return res.status(200).json({ message: "Payment request created Successfully", walletTransactionDetails });
+ }
 
-  } catch (err) {
-    console.log(err);
-    // let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
+ } catch (err) {
+ console.log(err);
+ // let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
-    // if (err.response) {
-    //   return res.status(422).json(err.response.data);
-    // } else {
-    //   console.log('Error', err.message);
-    // }
-    if (err.response) {
-      if (err.response.data.errors.userKyc && err.response.data.errors.userKyc.length) {
+ // if (err.response) {
+ // return res.status(422).json(err.response.data);
+ // } else {
+ // console.log('Error', err.message);
+ // }
+ if (err.response) {
+ if (err.response.data.errors.userKyc && err.response.data.errors.userKyc.length) {
 
-        res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
-        res.redirect(`${process.env.BASE_URL_CUSTOMER}/kyc/digi-gold`);
-      } else {
-        return res.status(422).json(err.response.data);
-      }
-    } else {
-      console.log('Error', err.message);
-    }
-  }
+ res.cookie(`KYCError`, `${JSON.stringify(err.response.data.errors.userKyc[0].message)}`);
+ res.redirect(`${process.env.BASE_URL_CUSTOMER}/kyc/digi-gold`);
+ } else {
+ return res.status(422).json(err.response.data);
+ }
+ } else {
+ console.log('Error', err.message);
+ }
+ }
 }
 
 exports.getAllDepositDetails = async (req, res) => {
@@ -1070,169 +1071,3 @@ exports.getAllBankDetails = async (req, res) => {
 
 }
 
-
-async function checkBuyLimit(id, totalAmount) {
-
-  totalAmount = totalAmount
-
-  const customerList = await models.digiGoldOrderDetail.findAll({
-    where: { customerId: id, orderTypeId: '1' },
-  });
-
-  const digiGoldKycLimit = await models.digiGoldConfigDetails.findOne({
-    where: { configSettingName: 'digiGoldKycLimit', isActive: "true" },
-  });
-
-  const customer = await models.customer.findOne({
-    where: { id },
-  });
-
-
-  const limit = digiGoldKycLimit.configSettingValue;
-
-
-  if (customerList.length != 0) {
-    let totalAmountOfAll = 0;
-
-    for (let data of customerList) {
-      totalAmountOfAll += Number(data.totalAmount);
-
-    }
-
-    let total = totalAmountOfAll.toFixed(2)
-
-    let newAndOldAmountTotal = Number(total) + Number(totalAmount);
-
-    if ((total > limit && customer.digiKycStatus == 'pending') || (newAndOldAmountTotal >= limit && customer.digiKycStatus == 'pending')) {
-
-      const panno = customer.panCardNumber
-
-      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
-
-        return ({ message: "Your KYC status is pending", success: false });
-
-      } else {
-
-        return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
-
-      }
-
-    } else if (totalAmount > limit && customer.digiKycStatus == 'pending') {
-
-
-
-
-      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
-
-        return ({ message: "Your KYC status is pending", success: false });
-
-      } else {
-
-        return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
-
-      }
-
-    } else if ((total > limit && customer.digiKycStatus == 'approved') || ((newAndOldAmountTotal >= limit && customer.digiKycStatus == 'approved'))) {
-
-      return ({ message: "Your KYC is approved", success: true });
-    } else if (totalAmount >= limit && customer.digiKycStatus == 'approved') {
-
-      return ({ message: "Your KYC is approved", success: true });
-    } else if (total < limit && (customer.digiKycStatus == 'approved' || customer.digiKycStatus == 'pending' || customer.digiKycStatus == 'waiting')) {
-
-
-      if (totalAmount > limit) {
-        if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
-
-          return ({ message: "Your KYC status is pending", success: false });
-
-        } else {
-
-          return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
-
-        }
-      } else if (newAndOldAmountTotal >= limit) {
-
-        return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
-
-      } else {
-
-        return ({ message: "No need of KYC", success: true });
-      }
-
-    } else if (total > limit || totalAmount > limit && customer.digiKycStatus == 'rejected') {
-
-      return ({ message: "Your KYC approval is rejected", success: false });
-    } else if (total < limit || totalAmount < limit && customer.digiKycStatus == 'rejected') {
-
-
-      return ({ message: "Your KYC approval is rejected", success: false });
-    } else if (total > limit && customer.digiKycStatus == 'waiting') {
-
-      // if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
-
-      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
-
-        return ({ message: "Your KYC approval is pending", success: false });
-
-      } else {
-
-        return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
-
-      }
-    } else if (totalAmount >= limit && customer.digiKycStatus == 'waiting') {
-
-      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
-
-
-        return ({ message: "Your KYC approval is pending", success: false });
-
-      } else {
-
-        return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
-
-      }
-    }
-
-
-  } else {
-
-    if (totalAmount >= limit && customer.digiKycStatus == 'approved') {
-
-      return ({ message: "Your KYC is approved", success: true });
-    } else if (totalAmount >= limit && customer.digiKycStatus == 'pending') {
-      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
-
-        return ({ message: "Your KYC status is pending", success: false });
-      } else {
-
-        return ({ message: "Your KYC  is pending. Please complete KYC first", success: false });
-      }
-    } else if (totalAmount < limit && (customer.digiKycStatus == 'approved'
-      || customer.digiKycStatus == 'pending' || customer.digiKycStatus == 'waiting')) {
-
-      return ({ message: "No need of KYC", success: true });
-
-    } else if (totalAmount > limit && customer.digiKycStatus == 'rejected') {
-
-
-      return ({ message: "Your KYC approval is rejected", success: false });
-    } else if (totalAmount < limit && customer.digiKycStatus == 'rejected') {
-
-
-      return ({ message: "Your KYC approval is rejected", success: false });
-    } else if (totalAmount >= limit && customer.digiKycStatus == 'waiting') {
-
-      if ((customer.panType == "pan" && customer.panCardNumber != '' && customer.panCardNumber != null) || customer.panType == "form60") {
-
-        return ({ message: "Your KYC approval is pending", success: false });
-
-      } else {
-
-        return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
-
-      }
-    }
-
-  }
-}
