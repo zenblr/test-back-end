@@ -21,14 +21,27 @@ module.exports = async () => {
 
         console.log("duration", duration);  //1 hr
         let customerBal;
-        let dateBeforSpcifiedTime = new Date();
-        let date = dateBeforSpcifiedTime.setHours(dateBeforSpcifiedTime.getHours() - Number(duration.configSettingValue));
+        let dateBeforSpcifiedTime = moment()
+        // let abcd = new Date()
+        // console.log(dateBeforSpcifiedTime)
+        // console.log(abcd)
+        // let date = dateBeforSpcifiedTime.setHours(dateBeforSpcifiedTime.getHours() - Number(duration.configSettingValue));
+        // let newDate = moment(dateBeforSpcifiedTime).subtract(20, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
+
+        let newDate = moment(dateBeforSpcifiedTime).subtract(Number(duration.configSettingValue), 'h').format('YYYY-MM-DD HH:mm:ss.SSS');
+        let newDateBeforfifteenMin = moment(newDate).subtract(10, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
+
         // let date = dateBeforSpcifiedTime.setMinutes(dateBeforSpcifiedTime.getMinutes() - Number(6));
+        // let newDate = moment(moment(date)).format('YYYY-MM-DD HH:mm:ss.SSS');
 
-        let newDate = moment(moment(date).utcOffset("+05:30")).format('YYYY-MM-DD HH:mm:ss.SSS');
-        // let newDate = moment(date).format('YYYY-MM-DD HH:mm:ss.SSS');
-
+        // let newDateutcOffset = moment(moment(date).utcOffset("+05:30")).format('YYYY-MM-DD HH:mm:ss.SSS');
+        // let newDateWithOut = moment(date).format('YYYY-MM-DD HH:mm:ss.SSS');
+        // var utcStart = new moment(moment(date), "YYYY-MM-DD HH:mm:ss.SSS").utc();
         console.log("newDate", newDate);     //9.24
+
+        // console.log(newDateutcOffset)
+        // console.log(newDateWithOut)
+        // console.log(utcStart)
         allCustomer = await models.digiGoldOrderDetail.findAll({
             where: {
                 orderCreatedDate: { [Op.gt]: newDate },
@@ -46,6 +59,68 @@ module.exports = async () => {
 
         for (let customer of nonRepeatCustomerId) {
 
+            //metal bought befor fix duration
+            let customerBuyBeforeCron = await models.digiGoldOrderDetail.findAll({
+                where: {
+                    orderCreatedDate: { [Op.between]: [newDateBeforfifteenMin, newDate] },
+                    customerId: customer,
+                    orderTypeId: 1
+                }
+            });
+            let totalGoldBuyBeforeCron = 0;
+            let totalSilverBuyBeforeCron = 0;
+            if (customerBuyBeforeCron.length) {
+                for (let ele of customerBuyBeforeCron) {
+                    if (ele.metalType == "gold") {
+                        totalGoldBuyBeforeCron += parseFloat(ele.quantity);
+                    }
+                    if (ele.metalType == "silver") {
+                        totalSilverBuyBeforeCron += parseFloat(ele.quantity)
+                    }
+                }
+            }
+
+            //metal delivery befor fix duration
+            let customerDeliveryBeforeCron = await models.digiGoldOrderDetail.findAll({
+                where: {
+                    orderCreatedDate: { [Op.between]: [newDateBeforfifteenMin, newDate] },
+                    customerId: customer,
+                    orderTypeId: 3,
+                },
+                include: [{
+                    model: models.digiGoldOrderProductDetail,
+                    as: 'orderProductDetail',
+                }]
+            });
+            let totalGoldDeliverBeforeCron = 0
+            let totalSilverDeliverBeforeCron = 0
+            if (customerDeliveryBeforeCron.length) {
+                for (let ele of customerDeliveryBeforeCron) {
+                    for (let product of ele.orderProductDetail) {
+                        console.log(product);
+                        if (product.metalType == "gold") {
+                            totalGoldDeliverBeforeCron += parseFloat(product.productWeight * product.quantity);
+                        }
+                        if (product.metalType == "silver") {
+                            totalSilverDeliverBeforeCron += parseFloat(product.productWeight * product.quantity)
+                        }
+                    }
+                }
+            }
+            if (totalGoldDeliverBeforeCron > 0) {
+                totalGoldBuyBeforeCron = totalGoldBuyBeforeCron - totalGoldDeliverBeforeCron;
+                if (totalGoldBuyBeforeCron < 0) {
+                    totalGoldBuyBeforeCron = 0
+                }
+            }
+            if (totalSilverDeliverBeforeCron > 0) {
+                totalSilverBuyBeforeCron = totalSilverBuyBeforeCron - totalSilverDeliverBeforeCron;
+                if (totalSilverBuyBeforeCron < 0) {
+                    totalSilverBuyBeforeCron = 0
+                }
+            }
+
+            //gold delivery during fix duration
             digiGoldDeliveryOrderDetail = await models.digiGoldOrderDetail.findAll({
                 where:
                 {
@@ -55,16 +130,17 @@ module.exports = async () => {
                     orderTypeId: 3
 
                 },
-                include: {
+                include: [{
                     model: models.digiGoldOrderProductDetail,
                     as: 'orderProductDetail',
-                }
+                }]
             });
 
 
             let totalGoldDeliveryInFixDuration = 0;
             let totalSilverDeliveryInFixDuration = 0;
 
+            //gold buy during fix duration
             digiGoldOrderDetail = await models.digiGoldOrderDetail.findAll({
                 where:
                 {
@@ -81,10 +157,10 @@ module.exports = async () => {
                     for (let product of ele.orderProductDetail) {
                         console.log(product);
                         if (product.metalType == "gold") {
-                            totalGoldDeliveryInFixDuration += parseFloat(product.productWeight);
+                            totalGoldDeliveryInFixDuration += parseFloat(product.productWeight * product.quantity);
                         }
                         if (product.metalType == "silver") {
-                            totalSilverDeliveryInFixDuration += parseFloat(product.productWeight)
+                            totalSilverDeliveryInFixDuration += parseFloat(product.productWeight * product.quantity)
                         }
                     }
                 }
@@ -110,22 +186,36 @@ module.exports = async () => {
                     }
                 }
                 console.log("gold silver", totalGoldBoughtInFixDuration, totalSilverBoughtInFixDuration);
-
+                //5 - 3
                 let buyDeliveryDifferenceGold = totalGoldBoughtInFixDuration - totalGoldDeliveryInFixDuration
                 if (buyDeliveryDifferenceGold <= 0) {
-                    sellableGoldBalance = customerBal.currentGoldBalance
+                    sellableGoldBalance = totalGoldBuyBeforeCron - Math.abs(buyDeliveryDifferenceGold);
+                    if (sellableGoldBalance < 0) {
+                        sellableGoldBalance = 0
+                    }
+
                 } else {
-                    sellableGoldBalance = customerBal.currentGoldBalance - buyDeliveryDifferenceGold;
+                    //1- 2 = 1
+                    sellableGoldBalance = customerBal.sellableGoldBalance - buyDeliveryDifferenceGold;
+                    if (sellableGoldBalance < 0) {
+                        sellableGoldBalance = 0;
+                    }
                     // sellableGoldBalance = customerBal.sellableGoldBalance + (customerBal.currentGoldBalance - buyDeliveryDifferenceGold);
+                    sellableGoldBalance = sellableGoldBalance + totalGoldBuyBeforeCron;
+
                 }
+
+
 
                 let buyDeliveryDifferenceSilver = totalSilverBoughtInFixDuration - totalSilverDeliveryInFixDuration
                 if (buyDeliveryDifferenceSilver <= 0) {
-                    sellableSilverBalance = customerBal.currentSilverBalance
+                    sellableSilverBalance = 0
                 } else {
-                    sellableSilverBalance = customerBal.currentSilverBalance - buyDeliveryDifferenceSilver;
+                    sellableSilverBalance = customerBal.sellableSilverBalance - buyDeliveryDifferenceSilver;
                     // sellableSilverBalance = customerBal.sellableSilverBalance + (customerBal.currentSilverBalance - buyDeliveryDifferenceSilver);
                 }
+
+                sellableSilverBalance = sellableSilverBalance + totalSilverBuyBeforeCron;
 
                 console.log("sellableGoldBalance", sellableGoldBalance, "sellableSilverBalance", sellableSilverBalance);
                 let newSellableGoldBalance = sellableGoldBalance.toFixed(4);
@@ -141,17 +231,8 @@ module.exports = async () => {
 
         }
         console.log("nonRepeatCustomerId", nonRepeatCustomerId);
-        // let newDateBeforfifteenMin = moment(newDate).subtract(3, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
-        let newDateBeforfifteenMin = moment(newDate).subtract(15, 'minutes').utcOffset("+05:30").format('YYYY-MM-DD HH:mm:ss.SSS');
-        console.log(newDateBeforfifteenMin);
-        // if (nonRepeatCustomerId.length) {
-        // allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
-        //     where: {
-        //         orderCreatedDate: { [Op.between]: [newDateBeforfifteenMin, newDate] },
-        //         customerId: { [Op.notIn]: [nonRepeatCustomerId]}
-        //         // orderTypeId: 1
-        //     }
-        // });
+        console.log(newDateBeforfifteenMin, 'with')
+
         allCustomerBeforScheduleTime = await models.digiGoldOrderDetail.findAll({
             where: {
                 orderCreatedDate: { [Op.between]: [newDateBeforfifteenMin, newDate] },
