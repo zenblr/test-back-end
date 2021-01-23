@@ -120,9 +120,13 @@ export class LoanSchemeComponent implements OnInit {
       this.loanSettingService.openModal.next(false);
     });
   }
-  openRpgModal(scheme) {
+  openRpgModal(scheme, action) {
+
     const dialogRef = this.dialog.open(RpgEditComponent, {
-      data:  scheme,
+      data: {
+        scheme: scheme,
+        action: action
+      },
       width: '450px'
     });
     dialogRef.afterClosed().subscribe(res => {
