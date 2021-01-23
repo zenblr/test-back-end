@@ -10,9 +10,9 @@ body('bankId')
 body('bankName')
 .exists()
 .withMessage('bankName is required'),
-body('bankBranchName')
-.exists()
-.withMessage('bankBranchName is required'),
+// body('bankBranchName')
+// .exists()
+// .withMessage('bankBranchName is required'),
 body('accountType')
 .exists()
 .withMessage('accountType is required'),
