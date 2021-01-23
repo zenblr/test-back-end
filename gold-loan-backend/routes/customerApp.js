@@ -13,7 +13,7 @@ const karzaMbileApp = require('./karzaMbileApp')
 const contactUsEmail = require('./contactUs')
 const walletCustomer = require('./walletCustomer');
 const augmontBankDetails = require('./digitalGold/augmontBankDetail')
-
+const newCity = require('../controllers/city/city')
 const { readBanner, readOffer, readLenderBanner, readGoldRate, readPersonalDetailsOfCustomer, readBankDetailsOfCustomer, readNomineeDetailsOfCustomer, readAddressDetailsOfCustomer, readPanCardImageOfCustomer, readAddressImageOfCustomer, readPartnerBranch, readAllScheme, readMyLoan, schemeBasedOnPriceRange, readLoanDetails, readFeedBack, addFeedBack, updatePassword, personalInfo, customerProductRequest } = require('../controllers/customer/customerApp')
 
 const { getSoa } = require('../controllers/soaOfLoan/soaOfLoan');
@@ -70,6 +70,7 @@ router.get('/personal-info', customerCheckAuth, wrapper(personalInfo)) //persona
 
 router.post('/product-request', customerCheckAuth, wrapper(customerProductRequest)) //personal info
 
+router.post('/new-city', customerCheckAuth, wrapper(newCity))
 //customer App
 router.post('/update-password', wrapper(updatePassword));//To change password of customer
 
