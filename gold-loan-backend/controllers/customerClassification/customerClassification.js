@@ -361,7 +361,7 @@ exports.operationalTeamKycRating = async (req, res, next) => {
 
             await sendMessageToOperationsTeam(bmMobile, customerUniqueId)
             await sms.sendMessageAfterKycApproved(getMobileNumber.mobileNumber, getMobileNumber.customerUniqueId);
-// customer pprove mess
+            // customer pprove mess
 
             //message for BranchManager
             // request(
@@ -735,7 +735,7 @@ exports.updateRatingAppraiserOrCce = async (req, res, next) => {
     let { customerId, customerKycId } = req.body;
 
     let customerRating = await models.customerKycClassification.findOne({ where: { customerId } })
-    let customer = await models.customer.findOne({ where: { customerId } })
+    let customer = await models.customer.findOne({ where: { id: customerId } })
 
     if (check.isEmpty(customerRating)) {
         return res.status(400).json({ message: `This customer rating is not available` })
