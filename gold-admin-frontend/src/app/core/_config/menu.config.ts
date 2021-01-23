@@ -948,6 +948,12 @@ export class MenuConfig {
 					],
 					digiGoldItems: [
 						{
+							title: "All Customers",
+							page: "/admin/digi-gold/all-customers",
+							src: "assets/media/aside-icons/icons-05.svg",
+							// permission: !this.permissionsArr.includes('appliedKycView'),
+						},
+						{
 							title: "Wallet",
 							bullet: 'dot',
 							src: "assets/media/aside-icons/wallet.svg",
