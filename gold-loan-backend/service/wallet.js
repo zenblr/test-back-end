@@ -93,7 +93,7 @@ let walletBuy = async (customerId, lockPrice, metalType, blockId, modeOfPayment,
       await sequelize.transaction(async (t) => {
         let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.totalAmount);
 
-        let newCurrentBal=currentBal.toFixed(2);
+        let newCurrentBal = currentBal.toFixed(2);
 
 
         await models.customer.update({ currentWalletBalance: Number(newCurrentBal) }, { where: { id: customerId } })
@@ -189,7 +189,7 @@ let walletDelivery = async (customerId, amount, modeOfPayment, orderType, cartDa
 
         let currentBal = Number(customerDetails.currentWalletBalance) - Number(result.data.result.data.shippingCharges);
 
-        let newCurrentBalance=currentBal.toFixed(2);
+        let newCurrentBalance = currentBal.toFixed(2);
 
         await models.customer.update({ currentWalletBalance: Number(newCurrentBalance) }, { where: { id: customerId }, transaction: t });
 
@@ -292,24 +292,16 @@ let customerBalance = async (customerData, amount) => {
     walletFreeBalance
   }
 }
-
 let customerNonSellableMetal = async (currentMetalWeight, sellableMetal, nonSellableMetal, deliveryMetal) => {
   currentMetalWeight = currentMetalWeight - deliveryMetal
 
   checkRemaingBalance = deliveryMetal - nonSellableMetal
-
+    
   nonSellableMetal = Math.abs(checkRemaingBalance);
-
+  
   if (checkRemaingBalance > 0) {
     nonSellableMetal = 0
-    if (sellableMetal > checkRemaingBalance) {
-      sellableMetal = sellableMetal - checkRemaingBalance
-      if(sellableMetal < 0){
-        sellableMetal = 0
-      }
-    } else {
-      sellableMetal = 0
-    }
+    sellableMetal = sellableMetal - checkRemaingBalance
   }
 
   return {
