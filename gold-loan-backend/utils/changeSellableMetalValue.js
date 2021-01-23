@@ -14,16 +14,16 @@ const _ = require('lodash');
 
 
 module.exports = async () => {
-
     let configSettingName = "digiGoldSellableHour"
     let duration = await models.digiGoldConfigDetails.getConfigDetail(configSettingName);
     let dateBeforSpcifiedTime = moment()
-    // let date = moment(dateBeforSpcifiedTime).subtract(Number(duration.configSettingValue), 'h').format('YYYY-MM-DD HH:mm:ss.SSS');
+    let date = moment(dateBeforSpcifiedTime).subtract(Number(duration.configSettingValue), 'h').format('YYYY-MM-DD HH:mm:ss.SSS');
 
-    let date = moment(dateBeforSpcifiedTime).subtract(12, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
+    // let date = moment(dateBeforSpcifiedTime).subtract(12, 'minutes').format('YYYY-MM-DD HH:mm:ss.SSS');
 
 
     let newDate = moment(moment(date)).format('YYYY-MM-DD HH:mm:ss.SSS');
+    console.log("newDate" ,newDate)
 
     await sequelize.transaction(async (t) => {
 
