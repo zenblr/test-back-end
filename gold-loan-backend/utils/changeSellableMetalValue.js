@@ -27,7 +27,8 @@ module.exports = async () => {
             where: {
                 orderCreatedDate: { [Op.lt]: newDate },
                 orderTypeId: 1,
-                isSellbleGold: false,
+                isSellableGold: false,
+                isSellableSilver: false
             },
             transaction: t
         });
@@ -46,7 +47,7 @@ module.exports = async () => {
                     customerId: customer,
                     orderTypeId: 1,
                     metalType: "gold",
-                    isSellbleGold: false
+                    isSellableGold: false
                 },
                 transaction: t
             });
@@ -62,7 +63,7 @@ module.exports = async () => {
                     customerId: customer,
                     orderTypeId: 1,
                     metalType: "silver",
-                    isSellbleSilver: false
+                    isSellableSilver: false
                 },
                 transaction: t
             });
@@ -92,7 +93,7 @@ module.exports = async () => {
             let sellableSilverBalance = (customerBal.sellableSilverBalance + totalSilverBoughBeforTime).toFixed(4)
 
 
-            await models.digiGoldOrderDetail.update({ isSellbleGold: true }, {
+            await models.digiGoldOrderDetail.update({ isSellableGold: true }, {
                 where: {
                     orderCreatedDate: { [Op.lt]: newDate },
                     customerId: customer,
@@ -102,7 +103,7 @@ module.exports = async () => {
                 transaction: t
             });
 
-            await models.digiGoldOrderDetail.update({ isSellbleSilver: true }, {
+            await models.digiGoldOrderDetail.update({ isSellableSilver: true }, {
                 where: {
                     orderCreatedDate: { [Op.lt]: newDate },
                     customerId: customer,
