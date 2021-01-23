@@ -96,17 +96,21 @@
                                 </span> -->
                             </td>
                             <td class="table-amount">
-                                <span>{{payableAmount?.securedInterest}}</span> <br>
+                                <div class="amount">
+                                    {{payableAmount?.interest}}</div>
+                                <!-- <span>{{payableAmount?.securedInterest}}</span> <br>
                                 <span *ngIf="loanDetails?.loan?.customerLoan[1]">
                                     {{payableAmount?.unsecuredInterest}}
-                                </span>
+                                </span> -->
                             </td>
 
                             <td class="table-amount">
-                                <span>{{payableAmount?.securedPenalInterest}}</span><br>
+                                <div class="amount">
+                                    {{payableAmount?.penalInterest}}</div>
+                                <!-- <span>{{payableAmount?.securedPenalInterest}}</span><br>
                                 <span *ngIf="loanDetails?.loan?.customerLoan[1]">
                                     {{payableAmount?.unsecuredPenalInterest}}
-                                </span>
+                                </span> -->
                             </td>
                             <td class="table-amount table-last">
                                 <input ktWeight [class.isError]="partAmount.touched && partAmount.invalid"

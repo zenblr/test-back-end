@@ -31,7 +31,7 @@
                             <mat-label class="kt-padding-l-10 mandatory">Mode of Payment</mat-label>
                         </div>
                         <div class="col-8">
-                            <select class="form-control" formControlName="paymentType" (change)="setValidation($event)"
+                            <select class="form-control" formControlName="paymentType" (change)="setValidation()"
                                 [class.isError]="controls.paymentType.touched && controls.paymentType.invalid">
                                 <option value="" selected disabled>Select Payment</option>
                                 <!-- <option value="cash">CASH</option>

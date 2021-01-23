@@ -18,7 +18,7 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const walletService = require('../../service/wallet');
 const { walletBuy, walletDelivery, customerBalance, customerNonSellableMetal } = require('../../service/wallet');
-const { postMerchantOrder, getUserData, postBuy } = require('../../service/digiGold')
+const { postMerchantOrder, getUserData, postBuy, addBankDetailInAugmontDb, checkKycStatus } = require('../../service/digiGold')
 
 const getMerchantData = require('../auth/getMerchantData');
 
@@ -37,6 +37,12 @@ exports.makePayment = async (req, res) => {
     if (check.isEmpty(customerDetails)) {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     };
+
+  let checkCustomerKycStatus = await checkKycStatus(id);
+
+  if(checkCustomerKycStatus){
+    return res.status(420).json({ message: "Your KYC status is Rejected" });
+  } 
     let transactionUniqueId = uniqid.time().toUpperCase();
     let tempWallet;
 
@@ -63,7 +69,7 @@ exports.makePayment = async (req, res) => {
           { amount: sendAmount, currency: "INR", payment_capture: 1 }
         );
 
-        tempWalletDeopsit = await models.walletTempDetails.create({ customerId: id, amount: amount, paymentDirection: "credit", description: "Amount added to your balance", productTypeId: 4, transactionDate: depositDate }, { transaction: t });
+        tempWalletDeopsit = await models.walletTempDetails.create({ customerId: id, amount: amount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: depositDate }, { transaction: t });
 
         tempOrderDetail = await models.walletTransactionTempDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 4, walletTempId: tempWalletDeopsit.id, transactionUniqueId, razorPayTransactionId: razorPayOrder.id, paymentType, transactionAmount: amount, paymentReceivedDate: depositDate, orderAmount, metalType, qtyAmtType, quantity, type, redirectOn }, { transaction: t });
 
@@ -100,7 +106,7 @@ exports.makePayment = async (req, res) => {
 
       await sequelize.transaction(async (t) => {
 
-        tempWallet = await models.walletTempDetails.create({ customerId: id, amount: amount, paymentDirection: "credit", description: "Amount added to your balance", productTypeId: 4, transactionDate: moment() }, { transaction: t });
+        tempWallet = await models.walletTempDetails.create({ customerId: id, amount: amount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: moment() }, { transaction: t });
         console.log(tempWallet);
         tempOrderDetail = await models.walletTransactionTempDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 4, walletTempId: tempWallet.id, transactionUniqueId, bankTransactionUniqueId: bankTransactionId, paymentType, transactionAmount: amount, paymentReceivedDate: depositDate, chequeNumber, bankName, branchName }, { transaction: t });
 
@@ -141,15 +147,7 @@ exports.addAmountWallet = async (req, res) => {
         return res.status(422).json({ message: "Payment verification failed" });
       }
 
-      await models.axios({
-        method: 'PATCH',
-        url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
-        auth: {
-          username: razorPay.razorPayConfig.key_id,
-          password: razorPay.razorPayConfig.key_secret
-        },
-        data: qs.stringify({ notes: { transactionId: tempWalletTransaction.transactionUniqueId, uniqueId: customer.customerUniqueId } })
-      });
+      
       //if order for buy product
 
       let customerUpdatedBalance
@@ -179,10 +177,23 @@ exports.addAmountWallet = async (req, res) => {
 
         if (!orderData) {
 
+          await models.axios({
+            method: 'PATCH',
+            url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
+            auth: {
+              username: razorPay.razorPayConfig.key_id,
+              password: razorPay.razorPayConfig.key_secret
+            },
+            data: qs.stringify({ notes: { transactionId: tempWalletTransaction.transactionUniqueId, uniqueId: customer.customerUniqueId } })
+          });
 
-          WalletDetail = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "Amount added to your balance", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
+          WalletDetail = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
 
-          walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: WalletDetail.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "completed", runningBalance: customerUpdatedBalance, freeBalance: customer.walletFreeBalance }, { transaction: t })
+          let newFreeBalance = customer.walletFreeBalance.toFixed(2);
+
+          let newCustUpdatedBalance = customerUpdatedBalance.toFixed(2);
+
+          walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: WalletDetail.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "completed", runningBalance: Number(newCustUpdatedBalance), freeBalance: Number(newFreeBalance) }, { transaction: t })
 
 
           let orderData = {
@@ -194,7 +205,7 @@ exports.addAmountWallet = async (req, res) => {
             redirectOn: process.env.DIGITALGOLDAPI + tempWalletTransaction.redirectOn
           }
 
-          await sms.sendMessageForDepositRequest(customer.mobileNumber, tempWalletDetail.amount);
+          await sms.sendMessageForDepositRequestAccepted(customer.mobileNumber, tempWalletDetail.amount);
 
           if (tempWalletTransaction.redirectOn) {
             res.redirect(`${process.env.BASE_URL_CUSTOMER}${tempWalletTransaction.redirectOn}${walletTransactionDetails.id}`);
@@ -211,9 +222,12 @@ exports.addAmountWallet = async (req, res) => {
             let currentTempBal;
             let walletData
 
-            let WalletDetailBuy = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: `${orderData.metalType} bought ${orderData.quantity} grams`, productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 1, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
+            let WalletDetailBuy = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: `Amount added to your Augmont Wallet`, productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 1, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
 
-            let walletTransactionDetailsBuy = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: WalletDetailBuy.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "completed", runningBalance: customerUpdatedBalance, freeBalance: customer.walletFreeBalance }, { transaction: t })
+            let newWalletFreeBalanc = customer.walletFreeBalance.toFixed(2);
+            let NewCusUpdatedBalance = customerUpdatedBalance.toFixed(2);
+
+            let walletTransactionDetailsBuy = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: WalletDetailBuy.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "completed", runningBalance: Number(NewCusUpdatedBalance), freeBalance: Number(newWalletFreeBalanc) }, { transaction: t })
 
 
             let walletBuy1 = async (customerId, lockPrice, metalType, blockId, modeOfPayment, quantity, orderAmount, orderId, quantityBased, tempWalletId, temporderDetailId) => {
@@ -257,6 +271,16 @@ exports.addAmountWallet = async (req, res) => {
               const customerName = customerDetails.firstName + " " + customerDetails.lastName;
 
               if (result.isSuccess) {
+
+                await models.axios({
+                  method: 'PATCH',
+                  url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
+                  auth: {
+                    username: razorPay.razorPayConfig.key_id,
+                    password: razorPay.razorPayConfig.key_secret
+                  },
+                  data: qs.stringify({ notes: { transactionId: result.data.result.data.transactionId, uniqueId: customer.customerUniqueId } })
+                });
 
                 //calculation function
                 let checkBalance = await customerBalance(customerDetails, Number(result.data.result.data.totalAmount))
@@ -307,7 +331,6 @@ exports.addAmountWallet = async (req, res) => {
             if (orderBuy.message) {
               if (tempWalletTransaction.redirectOn) {
                 // return res.status(200).json({ message: "success", orderBuy });
-                console.log(orderBuy, orderBuy.result.data.metalType);
 
                 res.cookie(`metalObject`, `${JSON.stringify(orderBuy.result.data.metalType)}`);
                 // res.redirect(`http://localhost:4200${tempWalletTransaction.redirectOn}${orderBuy.result.data.merchantTransactionId}`);
@@ -338,9 +361,12 @@ exports.addAmountWallet = async (req, res) => {
             let orderAddress = await models.digiGoldTempOrderAddress.findAll({ where: { tempOrderDetailId: orderData.id } })
 
             //
-            let walletDeatilDelivery = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "Delivery and Making charges", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 3, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
+            let walletDeatilDelivery = await models.walletDetails.create({ customerId: tempWalletDetail.customerId, amount: tempWalletDetail.amount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: tempWalletDetail.transactionDate, walletTempDetailId: tempWalletDetail.id, orderTypeId: 3, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
 
-            let walletTransactionDetailsDelivery = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: walletDeatilDelivery.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "completed", runningBalance: customerUpdatedBalance, freeBalance: customer.walletFreeBalance }, { transaction: t })
+            let WalletFreeBalanceNew = customer.walletFreeBalance.toFixed(2);
+            let customerUpdatedBalanceNew = customerUpdatedBalance.toFixed(2);
+
+            let walletTransactionDetailsDelivery = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, walletId: walletDeatilDelivery.id, transactionUniqueId: tempWalletTransaction.transactionUniqueId, razorpayOrderId: razorpay_order_id, razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, depositApprovedDate: tempWalletTransaction.paymentReceivedDate, depositStatus: "completed", runningBalance: Number(customerUpdatedBalanceNew), freeBalance: Number(WalletFreeBalanceNew) }, { transaction: t })
             //
 
             let walletDelivery1 = async (customerId, amount, modeOfPayment, orderType, cartData, totalQuantity, totalWeight, orderAddress, userAddressId, walletTempId, tempOrderDetailId, orderUniqueId) => {
@@ -376,6 +402,18 @@ exports.addAmountWallet = async (req, res) => {
               console.log(result.data);
 
               if (result.isSuccess) {
+
+                await models.axios({
+                  method: 'PATCH',
+                  url: `https://api.razorpay.com/v1/payments/${razorpay_payment_id}`,
+                  auth: {
+                    username: razorPay.razorPayConfig.key_id,
+                    password: razorPay.razorPayConfig.key_secret
+                  },
+                  data: qs.stringify({ notes: { transactionId: result.data.result.data.orderId, uniqueId: customer.customerUniqueId } })
+                });
+
+
 
                 await models.digiGoldCart.destroy({ where: { customerId: customerId } });
 
@@ -508,10 +546,12 @@ exports.addAmountWallet = async (req, res) => {
       }
 
       let customer = await models.customer.findOne({ where: { id: tempWalletTransaction.customerId } });
+      let newCusWalletFreeBalance = customer.walletFreeBalance.toFixed(2);
+      let newRunningBalance = customer.currentWalletBalance.toFixed(2);
 
       await sequelize.transaction(async (t) => {
 
-        walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, transactionUniqueId, bankTransactionUniqueId: tempWalletTransaction.bankTransactionUniqueId, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, chequeNumber: tempWalletTransaction.chequeNumber, bankName: tempWalletTransaction.bankName, branchName: tempWalletTransaction.branchName, depositStatus: "pending", runningBalance: customer.currentWalletBalance, freeBalance: customer.walletFreeBalance }, { transaction: t });
+        walletTransactionDetails = await models.walletTransactionDetails.create({ customerId: tempWalletTransaction.customerId, productTypeId: 4, orderTypeId: 4, transactionUniqueId, bankTransactionUniqueId: tempWalletTransaction.bankTransactionUniqueId, paymentType: tempWalletTransaction.paymentType, transactionAmount: tempWalletTransaction.transactionAmount, paymentReceivedDate: tempWalletTransaction.paymentReceivedDate, depositDate: tempWalletTransaction.paymentReceivedDate, chequeNumber: tempWalletTransaction.chequeNumber, bankName: tempWalletTransaction.bankName, branchName: tempWalletTransaction.branchName, depositStatus: "pending", runningBalance: Number(newRunningBalance), freeBalance: Number(newCusWalletFreeBalance) }, { transaction: t });
 
         await models.walletTransactionTempDetails.update({ isOrderPlaced: true }, { where: { id: tempWalletTransaction.id }, transaction: t });
 
@@ -595,7 +635,7 @@ exports.getAllDepositDetails = async (req, res) => {
       searchQuery.orderTypeId = { [Op.in]: [4] }
       searchQuery.customerId = id
     } else if (orderTypeId.id == 5) {
-      searchQuery.paymentOrderTypeId = { [Op.in]: [4] }
+      searchQuery.paymentOrderTypeId = { [Op.in]: [5] }
       searchQuery.orderTypeId = { [Op.in]: [5] }
       searchQuery.customerId = id
     }
@@ -779,7 +819,7 @@ exports.getTransactionDetails = async (req, res) => {
 
     if (check.isEmpty(transactionDetails)) {
       return res.status(200).json({
-        data: [], count: 0
+        transactionDetails: [], count: 0
 
       })
     }
@@ -812,6 +852,13 @@ exports.withdrawAmount = async (req, res) => {
   const id = req.userData.id;
 
   let customerFreeBalance = await models.customer.findOne({ where: { id: id, isActive: true } })
+
+  let checkCustomerKycStatus = await checkKycStatus(id);
+
+  if(checkCustomerKycStatus){
+    return res.status(420).json({ message: "Your KYC status is Rejected" });
+  } 
+  
   if (customerFreeBalance.walletFreeBalance < withdrawAmount) {
 
     return res.status(400).json({ message: `Insufficient free wallet balance.` });
@@ -830,8 +877,9 @@ exports.withdrawAmount = async (req, res) => {
 
       customerUpdatedFreeBalance = Number(customerFreeBalance.walletFreeBalance) - Number(withdrawAmount);
       currentWalletBalance = Number(customerFreeBalance.currentWalletBalance) - Number(withdrawAmount);
+      let currentWalletBalanceNew = currentWalletBalance.toFixed(2);
 
-      orderDetail = await models.walletTransactionDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, transactionUniqueId, transactionAmount: withdrawAmount, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, depositStatus: "pending", walletId: walletData.id, paymentReceivedDate: moment(), runningBalance: currentWalletBalance }, { transaction: t });
+      orderDetail = await models.walletTransactionDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, transactionUniqueId, transactionAmount: withdrawAmount, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, depositStatus: "pending", walletId: walletData.id, paymentReceivedDate: moment(), runningBalance: Number(currentWalletBalanceNew) }, { transaction: t });
 
       let newCustomerUpdatedFreeBalance = customerUpdatedFreeBalance.toFixed(2);
 
@@ -850,19 +898,150 @@ exports.withdrawAmount = async (req, res) => {
 
 
 exports.AddCustomerBankDetails = async (req, res) => {
+  try {
 
-  const { bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifscCode } = req.body;
+    const { bankId, bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifscCode, moduleId, description } = req.body;
 
-  const id = req.userData.id;
+    const id = req.userData.id;
+    let customerDetails = await models.customer.findOne({
+      where: { id, isActive: true },
+    });
+    if (check.isEmpty(customerDetails)) {
+      return res.status(404).json({ message: "Customer Does Not Exists" });
+    }
 
-  customerBankDetails = await models.customerBankDetails.create({ customerId: id, moduleId: 4, description: 'withdraw wallet amount', bankName: bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifscCode, isActive: 'true' });
+    const customerUniqueId = customerDetails.customerUniqueId;
 
-  if (customerBankDetails) {
-    return res.status(200).json({ message: 'Success' });
-  } else {
-    return res.status(404).json({ message: `Failed to add bank details.` });
+    let addBankDetaiils = await addBankDetailInAugmontDb(customerUniqueId, bankId, bankBranchName, accountNumber, accountHolderName, ifscCode)
+
+    // const merchantData = await getMerchantData();
+    // const data = qs.stringify({
+    //     'bankId':bankId,
+    //     'bankBranch':bankBranchName,
+    //     'accountNumber':accountNumber,
+    //     'accountName':accountHolderName,
+    //     'ifscCode':ifscCode
+    // })
+    // const result = await models.axios({
+    //     method: 'POST',
+    //     url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/${customerUniqueId}/banks`,
+    //     headers: { 
+    //       'Content-Type': 'application/x-www-form-urlencoded', 
+    //       'Authorization': `Bearer ${merchantData.accessToken}`,
+    //     },
+    //     data : data
+    // })
+    console.log(addBankDetaiils);
+    if (addBankDetaiils.isSuccess) {
+      customerBankDetails = await models.customerBankDetails.create({ customerId: id, moduleId, description, bankName: bankName, bankBranchName, accountType, accountHolderName, accountNumber, ifscCode, bankId: bankId, userBankId: addBankDetaiils.data.data.result.data.userBankId });
+
+      if (customerBankDetails) {
+        return res.status(200).json({ message: 'Success', data: customerBankDetails });
+      } else {
+        return res.status(404).json({ message: `Failed to add bank details.` });
+      }
+    }
+
+  } catch (err) {
+    console.log(err);
+    let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
+
+    if (err.response) {
+      return res.status(422).json(err.response.data);
+    } else {
+      console.log('Error', err.message);
+    }
   }
+}
 
+exports.updateCustomerBankDetails = async (req, res) => {
+
+  try {
+    const customerId = req.userData.id;
+    const { customerBankDetailId } = req.params;
+    const { bankId, bankName,  branchName, accountNumber, accountName, ifscCode, userBankId } = req.body;
+    let customerDetails = await models.customer.findOne({
+      where: { id: customerId, isActive: true },
+    });
+    if (check.isEmpty(customerDetails)) {
+      return res.status(404).json({ message: "Customer Does Not Exists" });
+    }
+
+    let bankDetails = await models.customerBankDetails.findOne({ where: { id: customerBankDetailId } });
+    if (!bankDetails) {
+      return res.status(404).json({ message: "Customer bank details Does Not Exists" });
+    }
+    const customerUniqueId = customerDetails.customerUniqueId;
+    const merchantData = await getMerchantData();
+
+    if (bankDetails.userBankId) {
+
+      let output = await sequelize.transaction(async (t) => {
+        const data = qs.stringify({
+          'bankId': bankId,
+          'bankBranch': bankName,
+          'accountNumber': accountNumber,
+          'accountName': accountName,
+          'ifscCode': ifscCode,
+          'status': 'active'
+        });
+        const result = await models.axios({
+          method: 'PUT',
+          url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/${customerUniqueId}/banks/${userBankId}`,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${merchantData.accessToken}`,
+          },
+          data: data
+        });
+        if (result.data.statusCode === 200) {
+
+          await models.customerBankDetails.update({ bankId, bankName: bankName, bankBranchName: branchName, accountNumber: accountNumber, accountHolderName: accountName, ifscCode, userBankId: result.data.result.data.userBankId }, { where: { id: customerBankDetailId }, transaction: t });
+
+          return res.status(200).json({ message: 'Success', data: result.data });
+
+        }
+      })
+
+    } else {
+      // let addBankDetaiils = await addBankDetailInAugmontDb(customerUniqueId, bankId, branchName, accountNumber, accountName, ifscCode)
+      let output = await sequelize.transaction(async (t) => {
+        const data = qs.stringify({
+          'bankId': bankId,
+          'bankBranch': bankName,
+          'accountNumber': accountNumber,
+          'accountName': accountHolderName,
+          'ifscCode': ifscCode
+        })
+        const result = await models.axios({
+          method: 'POST',
+          url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/${customerUniqueId}/banks`,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${merchantData.accessToken}`,
+          },
+          data: data
+        })
+  
+        if (result.data.statusCode === 200) {
+  
+          await models.customerBankDetails.update({ bankName: bankName, bankBranchName: branchName, accountHolderName: accountName, accountNumber, ifscCode, bankId: bankId, userBankId: result.data.result.data.userBankId  }, { where: { id: id }, transaction: t });
+  
+          return res.status(200).json({ message: 'Success', data: result.data });
+        }
+      })
+    }
+
+  } catch (err) {
+    console.log(err);
+    let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
+
+    if (err.response) {
+      return res.status(422).json(err.response.data);
+    } else {
+      console.log('Error', err.message);
+    }
+  };
 
 
 }
@@ -871,7 +1050,8 @@ exports.getAllBankDetails = async (req, res) => {
 
   const id = req.userData.id;
   let bankDetails = await models.customerBankDetails.findAll({
-    where: { customerId: id, isActive: 'true' },
+    where: { customerId: id, isActive: 'true', bankId: { [Op.ne]: null}},
+    order: [["updatedAt", "DESC"]],
     include: {
       model: models.customer,
       as: "customer",
@@ -920,9 +1100,9 @@ async function checkBuyLimit(id, totalAmount) {
 
     let total = totalAmountOfAll.toFixed(2)
 
+    let newAndOldAmountTotal = Number(total) + Number(totalAmount);
 
-
-    if (total > limit && customer.digiKycStatus == 'pending') {
+    if ((total > limit && customer.digiKycStatus == 'pending') || (newAndOldAmountTotal >= limit && customer.digiKycStatus == 'pending')) {
 
       const panno = customer.panCardNumber
 
@@ -951,14 +1131,13 @@ async function checkBuyLimit(id, totalAmount) {
 
       }
 
-    } else if (total > limit && customer.digiKycStatus == 'approved') {
+    } else if ((total > limit && customer.digiKycStatus == 'approved') || ((newAndOldAmountTotal >= limit && customer.digiKycStatus == 'approved')) ) {
 
       return ({ message: "Your KYC is approved", success: true });
     } else if (totalAmount >= limit && customer.digiKycStatus == 'approved') {
 
       return ({ message: "Your KYC is approved", success: true });
-    } else if (total < limit && customer.digiKycStatus == 'approved' || customer.digiKycStatus == 'pending' || customer.digiKycStatus == 'waiting') {
-
+    } else if (total < limit && (customer.digiKycStatus == 'approved' || customer.digiKycStatus == 'pending' || customer.digiKycStatus == 'waiting')) {
 
 
       if (totalAmount > limit) {
@@ -971,7 +1150,11 @@ async function checkBuyLimit(id, totalAmount) {
           return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
 
         }
-      } else {
+      } else if(newAndOldAmountTotal >= limit){
+
+        return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
+        
+      }else {
 
         return ({ message: "No need of KYC", success: true });
       }
@@ -991,7 +1174,7 @@ async function checkBuyLimit(id, totalAmount) {
 
         return ({ message: "Your KYC approval is pending", success: false });
 
-      } else {
+      }   else {
 
         return ({ message: "Your KYC is pending. Please complete KYC first", success: false });
 
@@ -1024,8 +1207,8 @@ async function checkBuyLimit(id, totalAmount) {
 
         return ({ message: "Your KYC status is pending. Please complete KYC first", success: false });
       }
-    } else if (totalAmount < limit && customer.digiKycStatus == 'approved'
-      || customer.digiKycStatus == 'pending' || customer.digiKycStatus == 'waiting') {
+    } else if (totalAmount < limit && (customer.digiKycStatus == 'approved'
+      || customer.digiKycStatus == 'pending' || customer.digiKycStatus == 'waiting')) {
 
       return ({ message: "No need of KYC", success: true });
 

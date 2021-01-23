@@ -33,7 +33,7 @@
                             </span>
                         </span>
                         <span class="text-warning" *ngIf="role.status == 'pending'">
-                            {{role.status | titlecase}}
+                            Reverification
                             <span *ngIf="role?.reasonForDigiKyc" class="material-icons custom-icon" mat-raised-button
                                 matTooltip={{role?.reasonForDigiKyc}} matTooltipPosition="above"
                                 matTooltipClass="custom-tooltip-white">

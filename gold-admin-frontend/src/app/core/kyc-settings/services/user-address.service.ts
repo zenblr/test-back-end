@@ -44,7 +44,7 @@ export class UserAddressService {
   }
 
   getAaddharDetails(fileUrls, customerId): Observable<any> {
-    fileUrls = ["https://goldapi2.nimapinfotech.com/uploads/customer/638/1610178795034.jpg","https://goldapi2.nimapinfotech.com/uploads/customer/638/1610178782838.jpg"]
+    // fileUrls = ["https://goldapi2.nimapinfotech.com/uploads/customer/638/1610178795034.jpg","https://goldapi2.nimapinfotech.com/uploads/customer/638/1610178782838.jpg"]
     return this.http.post(`/api/e-kyc/ocr-aadhaar`, { fileUrls, customerId }).pipe(
       map(res => res),
       catchError(err => {

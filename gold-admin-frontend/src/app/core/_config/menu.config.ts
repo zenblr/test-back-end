@@ -110,7 +110,7 @@ export class MenuConfig {
 								// 	permission: false,
 								// },
 								{
-									title: "Customer Registration List",
+									title: "Customer Request List",
 									page: "/admin/lead-management/registered-customers",
 									// permission: !this.permissionsArr.includes('customerRegistrationView')
 								}
@@ -359,15 +359,14 @@ export class MenuConfig {
 							root: true,
 							src: "assets/media/aside-icons/icons-39.svg",
 							page: "/admin/scrap-management",
-							// permission: !this.modulesArr.includes(3),
+							permission: !this.modulesArr.includes(3),
 						},
 						{
 							title: "Digi Gold",
 							root: true,
-							src: "assets/media/aside-icons/digi-gold.png",
+							src: "assets/media/aside-icons/digi-gold.svg",
 							page: "/admin/digi-gold/wallet",
-							bullet: 'dot',
-							permission: false,
+							permission: !this.modulesArr.includes(4),
 						},
 						{
 							title: "Broker",
@@ -943,22 +942,21 @@ export class MenuConfig {
 						{
 							title: "Wallet",
 							bullet: 'dot',
-							src: "assets/media/aside-icons/wallet.png",
+							src: "assets/media/aside-icons/wallet.svg",
 							permission: false,
 							submenu: [
 								{
 									title: "Deposit Requests",
 									page: "/admin/digi-gold/wallet/deposit-requests",
 									bullet: 'dot',
-									permission: false,
+									permission: !this.permissionsArr.includes('digiGoldDepositView'),
 								},
 								{
 									title: "Withdrawal Requests",
 									page: "/admin/digi-gold/wallet/withdrawal-requests",
 									bullet: 'dot',
-									permission: false,
+									permission: !this.permissionsArr.includes('digiGoldWithdrawView'),
 								}
-
 							]
 						},
 						// {
@@ -1007,7 +1005,7 @@ export class MenuConfig {
 								{
 									title: "Global Settings",
 									page: "/admin/digi-gold/global-settings",
-									permission: false
+									permission: !this.permissionsArr.includes('digiGoldViewGlobalSetting'),
 								},
 							]
 						},

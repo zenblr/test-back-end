@@ -200,6 +200,7 @@ export class UserPersonalComponent implements OnInit {
     }
 
     this.controls.age.patchValue(age);
+    this.controls.dateOfBirth.patchValue(this.datePipe.transform(this.controls.dateOfBirth.value,'yyyy-MM-dd'))
     // this.ageValidation()
   }
 
