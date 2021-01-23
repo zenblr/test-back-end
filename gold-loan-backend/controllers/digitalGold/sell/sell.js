@@ -233,7 +233,7 @@ exports.sellProduct = async (req, res) => {
 
           let orderDetail = await models.digiGoldOrderDetail.create({
             tempOrderId: tempId.id, customerId: id, orderTypeId: 2, orderId: orderUniqueId, totalAmount: result.data.result.data.totalAmount, metalType: metalType, quantity: quantity, rate: result.data.result.data.rate, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.transactionId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance,
-            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: Number(newCurrentWalletBalance), walletId: walletData.id, orderStatus: "completed", orderCreatedDate: orderCreatedDate
+            lockPrice: lockPrice, blockId: blockId, amount: result.data.result.data.totalAmount, modeOfPayment: modeOfPayment, isActive: true, createdBy, modifiedBy, walletBalance: Number(newCurrentWalletBalance), walletId: walletData.id, orderStatus: "completed", orderCreatedDate: orderCreatedDate, isSellableGold: true, isSellableSilver: true
           }, { transaction: t });
 
           await models.digiGoldTempOrderDetail.update(
