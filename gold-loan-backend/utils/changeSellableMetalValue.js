@@ -102,7 +102,7 @@ module.exports = async () => {
                     orderCreatedDate: { [Op.lt]: newDate },
                     customerId: customer,
                     orderTypeId: 1,
-                    id: { [Op.lt]: orderDetailGoldArray }
+                    id: { [Op.in]: orderDetailGoldArray }
                 },
                 transaction: t
             });
@@ -112,7 +112,7 @@ module.exports = async () => {
                     orderCreatedDate: { [Op.lt]: newDate },
                     customerId: customer,
                     orderTypeId: 1,
-                    id: { [Op.lt]: orderDetailSilverArray }
+                    id: { [Op.in]: orderDetailSilverArray }
                 },
                 transaction: t
             });
