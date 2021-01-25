@@ -10,6 +10,7 @@ import { CoreModule } from '../../core/core.module';
 import { UserManagementModule } from './admin/user-management/user-management.module';
 import { EMIManagementModule } from './admin/emi-management/emi-management.module';
 
+
 @NgModule({
 	declarations: [],
 	exports: [],
@@ -20,7 +21,8 @@ import { EMIManagementModule } from './admin/emi-management/emi-management.modul
 		CoreModule,
 		PartialsModule,
 		UserManagementModule,
-		EMIManagementModule
+		EMIManagementModule,
+		
 	],
 	providers: []
 })
