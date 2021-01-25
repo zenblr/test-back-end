@@ -151,42 +151,42 @@ cron.schedule(' 0 */30 * * * *', async function () {
 //     }
 // }
 
-cron.schedule('0,30 * * * * *', async () => {
-    let date = moment()
-    let startTime = moment();
+// cron.schedule('0,30 * * * * *', async () => {
+//     let date = moment()
+//     let startTime = moment();
 
-    try {
-        await getGoldSilverRate();
-        let endTime = moment();
-        let processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS");
-        // await cronLogger("gold silver rate", date, startTime, endTime, processingTime, "success", "success", null);
+//     try {
+//         await getGoldSilverRate();
+//         let endTime = moment();
+//         let processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS");
+//         // await cronLogger("gold silver rate", date, startTime, endTime, processingTime, "success", "success", null);
 
-    } catch (err) {
-        console.log(err)
-        let endTime = moment();
-        var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
-        // await cronLogger("gold silver rate", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
-    }
-});
+//     } catch (err) {
+//         console.log(err)
+//         let endTime = moment();
+//         var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+//         // await cronLogger("gold silver rate", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
+//     }
+// });
 
 // // cron to update merchant token
 
-cron.schedule('0 3 * * *', async () => {
-    let date = moment();
-    let startTime = moment();
+// cron.schedule('0 3 * * *', async () => {
+//     let date = moment();
+//     let startTime = moment();
 
-    try {
-        await merchantLogin();
-        let endTime = moment();
-        let processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS");
-        await cronLogger("merchant token", date, startTime, endTime, processingTime, "success", "success", null);
+//     try {
+//         await merchantLogin();
+//         let endTime = moment();
+//         let processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS");
+//         await cronLogger("merchant token", date, startTime, endTime, processingTime, "success", "success", null);
 
-    } catch (err) {
-        let endTime = moment();
-        var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
-        await cronLogger("merchant token ", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
-    }
-});
+//     } catch (err) {
+//         let endTime = moment();
+//         var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+//         await cronLogger("merchant token ", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
+//     }
+// });
 
 //cron for customer kyc status
 
@@ -228,23 +228,23 @@ cron.schedule('0 3 * * *', async () => {
 //     }
 // });
 
-cron.schedule('0 */15 * * * *', async () => {
-    let date = moment()
-    let startTime = moment();
+// cron.schedule('0 */15 * * * *', async () => {
+//     let date = moment()
+//     let startTime = moment();
 
-    try {
-        await changeSellableMetalValue();
-        let endTime = moment();
-        let processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS");
-        await cronLogger("calculate sellable metal", date, startTime, endTime, processingTime, "success", "success", null);
+//     try {
+//         await changeSellableMetalValue();
+//         let endTime = moment();
+//         let processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS");
+//         await cronLogger("calculate sellable metal", date, startTime, endTime, processingTime, "success", "success", null);
 
-    } catch (err) {
-        console.log(err)
-        let endTime = moment();
-        var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
-        await cronLogger("calculate sellable metal", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
-    }
-});
+//     } catch (err) {
+//         console.log(err)
+//         let endTime = moment();
+//         var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+//         await cronLogger("calculate sellable metal", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
+//     }
+// });
 
 // cron.schedule(' 0 1 * * * *', async function () {
 //     await refundCron()
