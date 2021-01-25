@@ -97,6 +97,8 @@ export class LeadManagementComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(res => {
       this.leadsResult = res;
+      console.log(this.leadsResult);
+
     });
     this.subscriptions.push(entitiesSubscription);
 
@@ -124,6 +126,7 @@ export class LeadManagementComponent implements OnInit {
 
     this.dataSource.loadLeads(this.queryParamsData);
   }
+
 
   applyFilter(data) {
 
@@ -176,8 +179,12 @@ export class LeadManagementComponent implements OnInit {
     });
   }
 
-  goToKyc(data) {
+  navigateToTransaction(id) {
+    window.open('/admin/transaction/' + id, '_blank');
+    // this.router.navigate(['/admin/transaction/' + id])
+  }
 
+  goToKyc(data) {
     var mobile = '';
     this.leadService.getLeadById(data.id).pipe(
       map(res => {

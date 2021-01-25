@@ -3361,9 +3361,10 @@ let partPaymnetSettlement = async (transactionId, status, paymentReceivedDate, m
         // await penalInterestCalculationForSelectedLoan(moment(), masterLoanId)
 
     }
+    return
 }
 
-async function quickSettlement(transactionId, status, paymentReceivedDate, masterLoanId, depositAmount, modifiedBy) {
+let quickSettlement = async (transactionId, status, paymentReceivedDate, masterLoanId, depositAmount, modifiedBy) => {
     if (status == "Rejected") {
         await models.customerLoanTransaction.update({ depositStatus: status }, { where: { id: transactionId } });
     }
@@ -3683,6 +3684,7 @@ async function quickSettlement(transactionId, status, paymentReceivedDate, maste
         await penalInterestCalculationForSelectedLoan(moment(), masterLoanId)
 
     }
+    return
 }
 
 module.exports = {
