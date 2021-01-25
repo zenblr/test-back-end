@@ -42,7 +42,7 @@
                         </div>
                         <div class="col-8">
                             <input type="text" formControlName="withdrawalInitiatedDate" class="form-control"
-                                [value]="controls?.withdrawalInitiatedDate?.value | date: 'MMM d, y'" disabled>
+                                [value]="controls?.withdrawalInitiatedDate?.value | date:'mediumDate'" disabled>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">
@@ -93,7 +93,7 @@
                         <div class="col-8">
                             <input *ngIf="withdrawInfo?.transactionData?.depositStatus != 'pending'" type="text"
                                 formControlName="withdrawDate" class="form-control"
-                                [value]="controls?.withdrawDate?.value | date: 'MMM d, y'" disabled>
+                                [value]="controls?.withdrawDate?.value | date:'mediumDate'" disabled>
                             <input *ngIf="withdrawInfo?.transactionData?.depositStatus == 'pending'" type="text"
                                 class="form-control" [matDatepicker]="picker" (click)="picker.open()"
                                 formControlName="withdrawDate"

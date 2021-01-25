@@ -27,8 +27,8 @@ export class DepositRequestsService {
     if (data && data.paymentFor) {
       reqParams.paymentFor = data.paymentFor;
     }
-    if (data && data.startDate) {
-			reqParams.startDate = data.startDate;
+    if (data && data.paymentReceivedDate) {
+			reqParams.paymentReceivedDate = data.paymentReceivedDate;
     }
     if (data && data.depositStatus) {
 			reqParams.depositStatus = data.depositStatus;
