@@ -5,7 +5,7 @@
     ::ng-deep.mat-row,
     ::ng-deep.mat-header-row{
         // width: 148% !important;
-        width: 135% !important;
+        width: 145% !important;
     }
     .mat-column-fullName{
         flex: 0 0 9% !important;
@@ -27,15 +27,18 @@
         flex: 0 0 7% !important;
     }
     .mat-column-state{
-        flex: 0 0 9% !important;
+        flex: 0 0 8% !important;
     }
     .mat-column-city{
-        flex: 0 0 10% !important;
+        flex: 0 0 8% !important;
     }
     .mat-column-pincode{
-        flex: 0 0 6% !important;
+        flex: 0 0 5% !important;
     }
     .mat-column-date{
+        flex: 0 0 6% !important;
+    }
+    .mat-column-currentWalletBalance{
         flex: 0 0 6% !important;
     }
     .mat-column-status{

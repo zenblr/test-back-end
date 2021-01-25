@@ -568,7 +568,7 @@ export class AddLeadComponent implements OnInit {
       }
 
       if (this.data.action == 'assignBranch') {
-        console.log({ customerId: this.data.id, ...leadData })
+        // console.log({ customerId: this.data.id, ...leadData })
         this.leadService.assignBranch({ customerId: this.data.id, ...leadData })
           .pipe(
             map(() => {
