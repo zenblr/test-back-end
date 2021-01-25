@@ -34,7 +34,7 @@
                     <mat-cell *matCellDef="let element">
                         <div class="d-block">
                             <div>
-                                {{element?.paymentReceivedDate ? (element?.paymentReceivedDate | date : 'yyyy-MM-dd') :
+                                {{element?.paymentReceivedDate ? (element?.paymentReceivedDate | date:'mediumDate') :
                                 'NA'}}
                             </div>
                         </div>
@@ -76,7 +76,7 @@
                 <ng-container matColumnDef="withdrawalPaymentDate">
                     <mat-header-cell *matHeaderCellDef>Withdrawal Payment Date</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.depositApprovedDate ? (element?.depositApprovedDate | date : 'yyyy-MM-dd') : 'NA'}}
+                        {{element?.depositApprovedDate ? (element?.depositApprovedDate | date:'mediumDate') : 'NA'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="bankTransactionID">

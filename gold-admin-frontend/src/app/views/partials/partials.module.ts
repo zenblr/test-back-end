@@ -113,7 +113,7 @@ import { SelectPaymentComponent } from './components/select-payment/select-payme
 import { LeadManagementComponent } from '../pages/admin/lead-management/lead-management.component';
 import { AddLeadComponent } from '../pages/admin/lead-management/add-lead/add-lead.component';
 import { NewRequestAddComponent } from '../pages/admin/lead-management/new-request-add/new-request-add.component';
-
+import { RpgEditComponent } from "./components/rpg-edit/rpg-edit.component";
 @NgModule({
 	declarations: [
 		ScrollTopComponent,
@@ -188,7 +188,8 @@ import { NewRequestAddComponent } from '../pages/admin/lead-management/new-reque
 		SelectPaymentComponent,
 		LeadManagementComponent,
 		AddLeadComponent,
-		NewRequestAddComponent
+		NewRequestAddComponent,
+		RpgEditComponent
 	],
 	exports: [
 		WidgetModule,
@@ -272,7 +273,8 @@ import { NewRequestAddComponent } from '../pages/admin/lead-management/new-reque
 		SelectPaymentComponent,
 		LeadManagementComponent,
 		AddLeadComponent,
-		NewRequestAddComponent
+		NewRequestAddComponent,
+		RpgEditComponent
 	],
 	imports: [
 		PdfViewerModule,
@@ -311,7 +313,8 @@ import { NewRequestAddComponent } from '../pages/admin/lead-management/new-reque
 		PartPaymentLogDialogComponent,
 		EmiLogsDialogComponent,
 		AddLeadComponent,
-		NewRequestAddComponent
+		NewRequestAddComponent,
+		RpgEditComponent
 	],
 })
 export class PartialsModule {

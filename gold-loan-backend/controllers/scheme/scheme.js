@@ -116,6 +116,9 @@ exports.readScheme = async (req, res, next) => {
                         model: models.scheme,
                         as: 'unsecuredScheme',
                         attributes: ['id', 'schemeName']
+                    },
+                    {
+                        model: models.internalBranch
                     }
                 ]
             },
@@ -163,6 +166,9 @@ exports.readSchemeByPartnerId = async (req, res, next) => {
             include: [{
                 model: models.schemeInterest,
                 as: 'schemeInterest'
+            },
+            {
+                model: models.internalBranch
             }]
         }],
     })
@@ -477,7 +483,7 @@ exports.exportSchemes = async (req, res, next) => {
                 attributes: ['id', 'schemeName', 'schemeType', 'rpg']
             }],
         })
-        if(readSchemeByPartner){
+        if (readSchemeByPartner) {
             if (readSchemeByPartner.schemes.length > 0) {
                 let data = readSchemeByPartner;
                 schemeData.push(data)
@@ -556,9 +562,23 @@ exports.editSchemeThorughExcel = async (req, res, next) => {
 
 
 exports.updateRpg = async (req, res, next) => {
-    let { id, rpg } = req.body
+    let { id, rpg, internalBranchId } = req.body;
     await sequelize.transaction(async t => {
-        await models.scheme.update({ rpg }, { where: { id }, transaction: t })
+        await models.scheme.update({ rpg }, { where: { id }, transaction: t });
+        await models.schemeInternalBranch.destroy(
+            {
+                where: {
+                    schemeId: id
+                },
+                transaction: t
+            }
+        );
+        for (let index = 0; index < internalBranchId.length; index++) {
+            await models.schemeInternalBranch.create({
+                schemeId: id,
+                internalBranchId: internalBranchId[index]
+            }, { transaction: t });
+        }
     });
     return res.status(200).json({ message: "Success" });
 };

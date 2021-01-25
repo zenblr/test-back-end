@@ -414,6 +414,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
         last_name: { [Op.iLike]: search + "%" },
         mobile_number: { [Op.iLike]: search + "%" },
         pan_card_number: { [Op.iLike]: search + "%" },
+        customer_unique_id: { [Op.iLike]: search + "%" },
         pinCode: sequelize.where(
           sequelize.cast(sequelize.col("customer.pin_code"), "varchar"),
           {

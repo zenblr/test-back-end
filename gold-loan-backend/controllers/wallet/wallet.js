@@ -17,6 +17,7 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const walletService = require('../../service/wallet');
+const { transactionDetail } = require('../../service/wallet');
 
 
 
@@ -70,6 +71,12 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
                         [Op.iLike]: search + "%",
                     }
                 ),
+                razorpayPaymentId: sequelize.where(
+                    sequelize.cast(sequelize.col("walletTransactionDetails.razorpay_payment_id"), "varchar"),
+                    {
+                        [Op.iLike]: search + "%",
+                    }
+                ),
                 // "$walletTransactionDetails.payment_for$": { [Op.iLike]: search + '%' },
                 "$walletTransactionDetails.bank_name$": { [Op.iLike]: search + '%' },
                 "$walletTransactionDetails.cheque_number$": { [Op.iLike]: search + '%' },
@@ -80,6 +87,8 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
                 "$walletTransactionDetails.transaction_unique_id$": { [Op.iLike]: search + '%' },
                 "$walletTransactionDetails.ifsc_code$": { [Op.iLike]: search + '%' },
                 "$walletTransactionDetails.payment_type$": { [Op.iLike]: search + '%' },
+                // "$walletTransactionDetails.razorpay_payment_id$": { [Op.iLike]: search + '%' },
+                "$customer.mobile_number$": { [Op.iLike]: search + '%' },
 
             },
         }],
@@ -435,4 +444,18 @@ exports.getwithdrawDetail = async (req, res) => {
     // }
 
 
+}
+
+exports.getTransactionDetails = async (req, res) =>{
+    try {
+        console.log("paymentFor, customerId");
+        const { paymentFor, customerId, search, from, to } = req.query;
+    
+        let transactionData = await transactionDetail(customerId , paymentFor, search, from, to);
+       
+        return res.status(200).json({ transactionDetails: transactionData.transactionDetails, count: transactionData.count.length });
+    
+      } catch (err) {
+        console.log(err);
+      }
 }
