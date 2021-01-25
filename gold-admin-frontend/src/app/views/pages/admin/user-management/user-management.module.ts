@@ -55,7 +55,7 @@ import { AddPartnerBranchUserComponent } from './partner-branch-user/add-partner
 import { PartnerBranchUserListComponent } from './partner-branch-user/partner-branch-user-list/partner-branch-user-list.component';
 import { ConcurrentUserLoginComponent } from './concurrent-user-login/concurrent-user-login.component';
 import { SharedService } from '../../../../core/shared/services/shared.service';
-import { RpgEditComponent} from '../loan-settings/rpg-edit/rpg-edit.component';
+import { RpgEditComponent} from '../../../partials/components/rpg-edit/rpg-edit.component';
 
 let parnter: any = '';
 const routes: Routes = [
@@ -201,8 +201,7 @@ const routes: Routes = [
 		StoreListComponent,
 		CreateStoreComponent,
 		AddPartnerBranchUserComponent,
-		PartnerBranchUserListComponent,
-		RpgEditComponent
+		PartnerBranchUserListComponent
 	]
 })
 export class UserManagementModule {

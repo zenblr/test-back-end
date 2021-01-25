@@ -9,7 +9,7 @@ import { PartnerService } from '../../../../../core/user-management/partner/serv
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { ToastrService } from 'ngx-toastr';
 import { LayoutUtilsService } from '../../../../../core/_base/crud';
-import { RpgEditComponent } from '../rpg-edit/rpg-edit.component';
+import { RpgEditComponent } from '../../../../partials/components/rpg-edit/rpg-edit.component';
 
 @Component({
   selector: 'kt-loan-scheme',

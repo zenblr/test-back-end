@@ -1,10 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { LoanSettingsService } from '../../../../../core/loan-setting';
+import { LoanSettingsService } from '../../../../core/loan-setting';
 import { ToastrService } from 'ngx-toastr';
 import { map } from 'rxjs/operators';
-import { InternalUserBranchService } from '../../../../../core/user-management/internal-user-branch'
+import { InternalUserBranchService } from '../../../../core/user-management/internal-user-branch'
 
 @Component({
   selector: 'kt-rpg-edit',
