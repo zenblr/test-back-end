@@ -28,6 +28,10 @@ const routes: Routes = [
 				path: 'global-settings',
 				component: GlobalSettingsComponent
 			},
+			{
+				path: 'applied-kyc-digi-gold',
+				loadChildren: () => import('../digi-gold-kyc/digi-gold-kyc.module').then(m => m.DigiGoldKycModule)
+			}
 		],
 	},
 ]
@@ -43,7 +47,7 @@ const routes: Routes = [
 	declarations: [
 		DigiGoldComponent,
 		GlobalSettingsComponent,
-	
+
 	]
 })
 export class DigiGoldModule { }
