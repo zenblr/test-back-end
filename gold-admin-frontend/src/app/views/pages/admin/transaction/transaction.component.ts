@@ -4,6 +4,7 @@ import { ToastrComponent } from '../../../partials/components/toastr/toastr.comp
 import { Subscription, merge, Subject } from 'rxjs';
 import { tap, distinctUntilChanged, skip, takeUntil, map } from 'rxjs/operators';
 import { DataTableService } from '../../../../core/shared/services/data-table.service';
+import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { TransactionDatasource } from '../../../../core/transaction/datasources/transaction.datasources';
 import { TransactionService } from '../../../../core/transaction/services/transaction.service';
@@ -16,6 +17,7 @@ import { SharedService } from '../../../../core/shared/services/shared.service';
   styleUrls: ['./transaction.component.scss']
 })
 export class TransactionComponent implements OnInit {
+ customerId:any
   dataSource: TransactionDatasource;
   displayedColumns = ['custName', 'custId', 'mobileNumber', 'date', 'transactionId', 'narration', 'amount', 'updatedBalance'];
   transactionResult = []
@@ -25,6 +27,7 @@ export class TransactionComponent implements OnInit {
     to: 25,
     search: '',
     scheme: '',
+    customerId :'this.customerId'
   }
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   destroy$ = new Subject();
@@ -37,6 +40,7 @@ export class TransactionComponent implements OnInit {
   filteredDataList = {};
 
   constructor(
+    private route: ActivatedRoute,
     public dialog: MatDialog,
     private transactionService: TransactionService,
     private dataTableService: DataTableService,
@@ -53,6 +57,7 @@ export class TransactionComponent implements OnInit {
    }
 
   ngOnInit() {
+    this.customerId= this.route.snapshot.params.id
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
       tap(() => this.loadTransactionPage())
     ).subscribe();

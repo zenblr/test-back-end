@@ -10,7 +10,8 @@ import { MAT_DIALOG_DEFAULT_OPTIONS, MAT_DIALOG_DATA, MAT_SNACK_BAR_DATA, MatDia
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 const routes = [
-  { path: '', component: TransactionComponent, }
+  { path: '', component: TransactionComponent, },
+  { path: '/:id', component: TransactionComponent, }
 ]
 
 @NgModule({
