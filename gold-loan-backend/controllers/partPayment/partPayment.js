@@ -291,8 +291,9 @@ exports.partPayment = async (req, res, next) => {
 
         let data = await sequelize.transaction(async t => {
             let customerLoanTransaction
-            if (razorPayTransactionId) {
-                customerLoanTransaction = await models.customerLoanTransaction.update(paymentDetails, { where:{razorPayTransactionId},transaction: t });
+            if (!isAdmin) {
+                await models.customerLoanTransaction.update(paymentDetails, { where: { razorPayTransactionId }, transaction: t });
+                customerLoanTransaction = await models.customerLoanTransaction.findOne({ where: { razorPayTransactionId }, transaction: t })
             } else {
 
                 customerLoanTransaction = await models.customerLoanTransaction.create(paymentDetails, { transaction: t });

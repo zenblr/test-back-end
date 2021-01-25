@@ -40,7 +40,7 @@
                                 {{loanDetail?.transactionAmont | indianCurrencyFormat}}
                             </span>
                             <span
-                                class="currency">{{loanDetail.transactionSplitUp[0]?.payableOutstanding | indianCurrencyFormat}}</span>
+                                class="currency">{{loanDetail?.transactionSplitUp[0]?.payableOutstanding | indianCurrencyFormat}}</span>
                             <br>
                             <span class="currency" *ngIf="loanDetail.transactionSplitUp.length > 1">
                                 {{loanDetail.transactionSplitUp[1]?.payableOutstanding | indianCurrencyFormat}}
@@ -48,7 +48,7 @@
                         </td>
                         <td class="table-amount">
                             <span
-                                class="currency">{{loanDetail.transactionSplitUp[0]?.loanOutstanding | indianCurrencyFormat}}</span>
+                                class="currency">{{loanDetail?.transactionSplitUp[0]?.loanOutstanding | indianCurrencyFormat}}</span>
                             <br>
                             <span class="currency" *ngIf="loanDetail.transactionSplitUp.length > 1">
                                 {{loanDetail.transactionSplitUp[1]?.loanOutstanding | indianCurrencyFormat}}
