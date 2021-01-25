@@ -10,14 +10,13 @@ import { TransactionDatasource } from '../../../../core/transaction/datasources/
 import { TransactionService } from '../../../../core/transaction/services/transaction.service';
 import { SharedService } from '../../../../core/shared/services/shared.service';
 
-
 @Component({
   selector: 'kt-transaction',
   templateUrl: './transaction.component.html',
   styleUrls: ['./transaction.component.scss']
 })
 export class TransactionComponent implements OnInit {
- customerId:any
+  customerId: any
   dataSource: TransactionDatasource;
   displayedColumns = ['custName', 'custId', 'mobileNumber', 'date', 'transactionId', 'narration', 'amount', 'updatedBalance'];
   transactionResult = []
@@ -27,7 +26,7 @@ export class TransactionComponent implements OnInit {
     to: 25,
     search: '',
     scheme: '',
-    customerId :'this.customerId'
+    customerId: 'this.customerId'
   }
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   destroy$ = new Subject();
@@ -54,10 +53,10 @@ export class TransactionComponent implements OnInit {
           this.applyFilter(res);
         }
       });
-   }
+  }
 
   ngOnInit() {
-    this.customerId= this.route.snapshot.params.id
+    this.customerId = this.route.snapshot.params.id
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
       tap(() => this.loadTransactionPage())
     ).subscribe();
@@ -111,6 +110,4 @@ export class TransactionComponent implements OnInit {
     this.filteredDataList = data.list;
   }
 
-  }
-
-
+}
