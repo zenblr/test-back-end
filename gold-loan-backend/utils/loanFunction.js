@@ -3363,7 +3363,7 @@ let partPaymnetSettlement = async (transactionId, status, paymentReceivedDate, m
     }
 }
 
-async function quickSettlement(transactionId, status, paymentReceivedDate, masterLoanId, depositAmount, modifiedBy) {
+let quickSettlement = async (transactionId, status, paymentReceivedDate, masterLoanId, depositAmount, modifiedBy) => {
     if (status == "Rejected") {
         await models.customerLoanTransaction.update({ depositStatus: status }, { where: { id: transactionId } });
     }
