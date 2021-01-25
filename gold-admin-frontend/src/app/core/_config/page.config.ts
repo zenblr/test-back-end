@@ -487,6 +487,9 @@ export class PageConfig {
 						}
 					},
 				},
+				"all-customers": {
+					page: { title: "All Customers", desc: '' }
+				}
 			},
 
 			"global-map": {
