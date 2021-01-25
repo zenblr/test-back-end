@@ -23,8 +23,8 @@ const merchantLogin = require('./utils/merchantLogin');
 const customerKycStatusMessage = require("./utils/customerKycStatusMessage");
 const withDrawStatusMessage = require("./utils/withDrawStatusMessage");
 const changeSellableMetalValue = require("./utils/changeSellableMetalValue")
-const {getErrorForMail} = require('./controllers/errorLogs/errorLogs');
-
+const { getErrorForMail } = require('./controllers/errorLogs/errorLogs');
+const { refundCron } = require('./controllers/razorpay/razorpay')
 
 //model
 const models = require('./models');
@@ -32,7 +32,7 @@ const moment = require('moment')
 
 
 var useragent = require('express-useragent');
- 
+
 var app = express();
 
 app.use(useragent.express());
@@ -110,7 +110,9 @@ app.use(function (err, req, res, next) {
 cron.schedule(' 0 */30 * * * *', async function () {
     await getErrorForMail();
 })
-
+cron.schedule('*/10 * * * * *', async function () {
+    await refundCron()
+})
 // cron.schedule('0 1 * * *', async function () {
 //     let date = moment()
 //     var interestStartTime = moment();
