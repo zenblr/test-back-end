@@ -32,8 +32,6 @@
  *               type: number
  *             processingChargePercent:
  *               type: number
- *             maximumPercentageAllowed:
- *               type: number
  *             penalInterest:
  *               type: number
  *             schemeType:
@@ -51,7 +49,6 @@
  *           - interestRateOneHundredEightyDaysMonthly
  *           - processingChargeFixed
  *           - processingChargePercent
- *           - maximumPercentageAllowed
  *           - penalInterest
  *           - schemeType
  *           - partnerId
@@ -174,5 +171,18 @@
  *     responses:
  *       200:
  *         description: Success.
+ * /scheme/export-scheme:
+ *   get:
+ *     tags:
+ *       - Scheme
+ *     name: get all Scheme
+ *     summary: To get Scheme in excel
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *       200:
+ *          description: Scheme table
  * 
  */

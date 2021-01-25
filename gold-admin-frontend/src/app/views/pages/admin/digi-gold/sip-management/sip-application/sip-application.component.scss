@@ -1,0 +1,59 @@
+:host {
+    .mat-table__wrapper {
+        height: 79vh !important; //set table height
+    }
+    ::ng-deep.mat-row,
+    ::ng-deep.mat-header-row {
+        width: 135% !important;
+    }
+    .mat-column-sipapplicationdate {
+        flex: 0 0 14% !important;
+        padding-left: 5px !important;
+    }
+    .mat-column-customerId{
+        flex: 0 0 8% !important;
+    }
+    .mat-column-metalType{
+        flex: 0 0 8% !important;
+
+    .mat-column-sipApplicationnumber{
+        flex: 0 0 14% !important;
+    }
+    .mat-column-sipInvestmentAmount{
+        flex: 0 0 18% !important;
+    }
+    .mat-column-sipInvestmentTenure{
+        flex: 0 0 18% !important;
+    }
+    .mat-column-sipStartDate{
+        flex: 0 0 10% !important;
+    }
+    .mat-column-sipEndDate{
+        flex: 0 0 10% !important;
+    }
+    .mat-column-approvalStatus{
+        flex: 0 0 9% !important;
+    }
+    // .fa-eye:before {
+    //     content: "\f06e";
+    //     color: #f7c01bf2;
+    // }
+    // .fa {
+    //     font-size: large;
+    // }
+    // .fa-pencil:before {
+    //     color: #4e85e8;
+    // }
+    // .fa-trash:before {
+    //     color: #f10edf;
+    // }
+    .mat-header-cell {
+        color: black;
+      }
+    
+    .mat-table__bottom {
+        justify-content: flex-start;
+    }
+}
+
+}

@@ -1,0 +1,32 @@
+<div class="kt-portlet">
+    <kt-modal-header [title]="'Edit Rpg'" (action)="action($event)"></kt-modal-header>
+    <div class="kt-portlet__body">
+        <div class="kt-form">
+            <form [formGroup]="rpgEditForm">
+                <div class="row kt-margin-t-15">
+                    <div class="offset-1 col-5 form-label">
+                        <label for="">Scheme Name:</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="text" formControlName="schemeName" readonly class="form-control">
+                    </div>
+                </div>
+                <div class="row kt-margin-t-15">
+                    <div class="offset-1 col-5 form-label " >
+                        <label for="">RPG:</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="text" formControlName="rpg" [class.isError]="rpgEditForm.controls.rpg.touched && rpgEditForm.controls.rpg.invalid" class="form-control">
+                        <mat-error *ngIf="rpgEditForm.controls.rpg.touched && rpgEditForm.controls.rpg.invalid">Field Required</mat-error>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <kt-portlet-footer>
+        <div class="p-4">
+            <kt-modal-footer (action)="action($event)" [value]="'Update'">
+            </kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</div>

@@ -685,7 +685,7 @@ exports.checkOutPacket = async (req, res, next) => {
 
     const referenceCode = await createReferenceCode(5);
     let otp;
-    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new") {
         otp = 1234
     } else {
         otp = Math.floor(1000 + Math.random() * 9000);
@@ -1538,7 +1538,7 @@ exports.submitLoanPacketLocationForHomeIn = async (req, res, next) => {
             if (isFullRelease) {
                 await models.fullRelease.update({ fullReleaseStatus: 'released', modifiedBy, releaseDate, isCustomerReceivedPacket: true }, { where: { id: releaseId }, transaction: t })
 
-                await models.customerLoanMaster.update({ isOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
+                await models.customerLoanMaster.update({ isOrnamentsReleased: true,isFullOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
 
                 let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
 
@@ -1546,7 +1546,7 @@ exports.submitLoanPacketLocationForHomeIn = async (req, res, next) => {
 
             } else {
                 await models.partRelease.update({ partReleaseStatus: 'released', modifiedBy, releaseDate, isCustomerReceivedPacket: true }, { where: { id: releaseId }, transaction: t })
-                await models.customerLoanMaster.update({ isOrnamentsReleased: true, isFullOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
+                await models.customerLoanMaster.update({ isOrnamentsReleased: true, modifiedBy }, { where: { id: masterLoanId }, transaction: t });
 
                 let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
 

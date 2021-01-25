@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ToastrService } from 'ngx-toastr';
 import { KaratDetailsService } from '../../../../../../core/loan-setting/karat-details/services/karat-details.service'
 import { PathLocationStrategy } from '@angular/common';
+import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'kt-add-karat-details',
   templateUrl: './add-karat-details.component.html',
@@ -36,19 +37,23 @@ export class AddKaratDetailsComponent implements OnInit {
   formInitialize() {
     this.karatDetailsForm = this.fb.group({
       id: [''],
-      karat: ['', [Validators.required], []],
+      karat: ['', [Validators.required, Validators.pattern('^\\d{1}$|^[1]{1}\\d{1}$|^[2]{1}[0-4]{1}$')]],
       fromPercentage: ['', [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       toPercentage: ['', [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
-      range: []
+      range: [],
+      hm: [false]
     });
   }
   getKaratDetailsById(id) {
     this.karatDetailsService.getKaratDetailsById(id).subscribe(res => {
       this.karatDetailsForm.patchValue(res.data.readKaratDetailsById);
-      console.log(this.karatDetailsForm);
+      this.karatDetailsForm.patchValue({
+        karat: this.truncateKHM()
+      })
+      console.log(this.karatDetailsForm.value);
     },
       error => {
-        console.log(error.error.message);
+        // console.log(error.error.message);
       })
   }
   get controls() {
@@ -77,13 +82,22 @@ export class AddKaratDetailsComponent implements OnInit {
     }
     this.karatDetailsForm.patchValue({ range: range, fromPercentage: from, toPercentage: to });
     console.log(this.karatDetailsForm.value)
+    let karatData = this.karatDetailsForm.value;
+    karatData.karat = this.appendKHM()
 
-    const karatData = this.karatDetailsForm.value;
     if (this.data.action == 'edit') {
       const id = this.controls.id.value;
-      this.karatDetailsService.updateKaratDetails(id, karatData).subscribe(res => {
+      // this.karatDetailsForm.patchValue({
+      //   karat: this.truncateKHM(),
+      // })
+      // return
+      this.karatDetailsService.updateKaratDetails(id, karatData).pipe(finalize(() => {
+        // this.karatDetailsForm.patchValue({
+        //   karat: this.truncateKHM(),
+        // })
+      })).subscribe(res => {
         if (res) {
-          const msg = ' Karat Details Updated Successfully'
+          const msg = 'Karat Details Updated Successfully'
           this.toast.success(msg);
           this.dialogRef.close(true);
 
@@ -91,9 +105,18 @@ export class AddKaratDetailsComponent implements OnInit {
       });
     }
     else {
-      this.karatDetailsService.addKaratDetails(karatData).subscribe(res => {
+      // this.karatDetailsForm.patchValue({
+      //   karat: this.truncateKHM(),
+      // })
+      // return
+      this.karatDetailsService.addKaratDetails(karatData).pipe(finalize(() => {
+        // this.karatDetailsForm.patchValue({
+        //   karat: this.truncateKHM(),
+        // })
+        console.log(this.karatDetailsForm.value)
+      })).subscribe(res => {
         if (res) {
-          const msg = ' Karat Details added successFully';
+          const msg = 'Karat Details added successFully';
           this.toast.success(msg);
           this.dialogRef.close(true);
         }
@@ -102,7 +125,6 @@ export class AddKaratDetailsComponent implements OnInit {
   }
 
   checkPercent() {
-    // if (this.controls.fromPercentage.invalid || this.controls.toPercentage.invalid) return
 
     if (Number(this.controls.fromPercentage.value) >= Number(this.controls.toPercentage.value)) {
       if (Number(this.controls.toPercentage.value) == 100) {
@@ -111,10 +133,20 @@ export class AddKaratDetailsComponent implements OnInit {
         this.controls.toPercentage.setErrors({ mustBeGreater: true })
       }
     }
-
-    // if (this.controls.fromPercentage.valid && this.controls.toPercentage.valid) {
-    //   this.controls.toPercentage.setErrors(null)
-    // }
   }
 
+  appendKHM() {
+    let karat = this.controls.karat.value
+    let karatString = karat + ' K' + (this.controls.hm.value ? ' HM' : '')
+    console.log(karatString)
+    return karatString
+  }
+
+  truncateKHM() {
+    let karat = this.controls.karat.value
+    let karatValue = karat.toString().split(' ')
+    // if (karatValue.length === 1) return
+    console.log(karatValue[0])
+    return karatValue[0]
+  }
 }

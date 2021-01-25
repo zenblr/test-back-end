@@ -41,6 +41,9 @@ export class AppliedKycService {
     if (data && data.scrapKycStatusFromCce) {
       reqParams.scrapKycStatusFromCce = data.scrapKycStatusFromCce;
     }
+    if (data && data.modulePoint) {
+      reqParams.modulePoint = data.modulePoint
+    }
 
     return this.http.get<any>(`/api/kyc/applied-kyc`, { params: reqParams }).pipe(
       map(res => res),
@@ -65,4 +68,17 @@ export class AppliedKycService {
   // getAllLeads(from, to, search, stageName): Observable<any> {
   //   return this.http.get<any>(`/api/customer?search=${search}&from=${from}&to=${to}&stageName=${stageName}`); // stageName=lead in queryParams
   // }
+
+  changeKYCEditable(data) {
+    return this.http.post<any>(`/api/kyc/allow-to-edit`, data)
+      .pipe(
+        tap((res) => {
+          if (res.message) this.toastr.error(res.message)
+        }),
+        catchError(err => {
+          if (err.error.message) this.toastr.error(err.error.message);
+          throw (err);
+        })
+      );
+  }
 }

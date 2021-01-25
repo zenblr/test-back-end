@@ -6,7 +6,7 @@
         table-layout: fixed;
 
     th,td {
-        width: 120px;
+        // width: 120px;
         // overflow: hidden;
         word-wrap: break-word;
         }
@@ -17,5 +17,17 @@
     }
     .w100 {
         width: 100px !important;
+    }
+    .w200 {
+        width: 200px !important;
+    }
+    .top-up-details {
+        width: 130% !important;
+    }
+    .payment-details {
+        width: 165% !important;
+    }
+    .apply-kyc {
+        width: 165px;
     }
 }

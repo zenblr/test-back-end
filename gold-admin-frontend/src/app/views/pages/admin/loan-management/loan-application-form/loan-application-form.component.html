@@ -23,10 +23,10 @@
                         <div class="mat-tab-body-content ng-trigger ng-trigger-translateTab p-0"
                             style="padding:0px !important">
                             <kt-ornaments [action]="action" (next)="next($event)" [disable]="disabledForm"
-                                [details]="customerDetail" (totalAmt)="total($event)" (fullAmt)="fullAmt($event)"
+                                [details]="customerDetail" (ornamentValue)="ornamentValue($event)" (fullAmt)="fullAmt($event)"
                                 [masterAndLoanIds]="masterAndLoanIds" [ornamentType]="ornamentType"
                                 [showButton]="showButton" (loanTransfer)="loanTransfer($event)"
-                                (partPayment)=partPayment($event) [isPartRelease]="isPartRelease">
+                                (partPayment)=partPayment($event) [isPartRelease]="isPartRelease" (ornamentDetails)="getOrnamentDetailsArray($event)">
                             </kt-ornaments>
                         </div>
                         <!-- </ng-template> -->
@@ -35,8 +35,8 @@
                         <kt-interest-calculator (next)="next($event)" [disable]="disabledForm" [action]="action"
                             (finalLoanAmount)="finalLoanAmount($event)" [totalAmt]="totalAmount"
                             [fullAmount]="fullAmount" [details]="customerDetail" [masterAndLoanIds]="masterAndLoanIds"
-                            [showButton]="showButton" (accountHolderName)="accountHolder($event)"
-                            [loanTransfer]=loanTransferdata [disbursed]="disbursed" [partPaymentdata]="partPaymentdata">
+                            [showButton]="showButton" (accountHolderName)="accountHolder($event)" [ornamentRate]="ornamentRate"
+                            [loanTransfer]=loanTransferdata [disbursed]="disbursed" [ornamentDetails]="ornamentDetailsArray" [partPaymentdata]="partPaymentdata">
                         </kt-interest-calculator>
                     </mat-tab>
                     <mat-tab label="Bank Details" [disabled]="disabled[4]">

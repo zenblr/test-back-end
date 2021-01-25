@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
@@ -13,7 +13,7 @@ export class AppliedScrapService {
   applyFilter$ = this.applyFilter.asObservable();
 
   constructor(
-    private http: HttpClient, private toastr: ToastrService
+    private http: HttpClient, private toastr: ToastrService,
   ) { }
 
   getAppliedScraps(event): Observable<any> {
@@ -80,4 +80,7 @@ export class AppliedScrapService {
         throw (err);
       }))
   }
+
+ 
+
 }

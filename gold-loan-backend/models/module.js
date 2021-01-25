@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'description'
         },
+        modulePoint: {
+            type: DataTypes.INTEGER,
+            field: 'module_point'
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -21,12 +25,13 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'module',
     });
 
-    Module.getAllModule = () => Module.findAll({ where: { isActive: true }, order: [['id', 'ASC']], attributes: ['id', 'moduleName'], });
+    Module.getAllModule = () => Module.findAll({ where: { isActive: true }, order: [['id', 'ASC']], attributes: ['id', 'moduleName', 'modulePoint'], });
 
     Module.associate = function (models) {
         Module.hasMany(models.entity, { foreignKey: 'moduleId', as: 'entity' });
         Module.belongsToMany(models.role, { through: models.roleModule });
         Module.hasMany(models.product, { foreignKey: 'moduleId', as: 'module' });
+        Module.hasMany(models.productRequest, { foreignKey: 'moduleId', as: 'moduproductRequestle' });
 
         Module.hasMany(models.appraiserRequest, { foreignKey: 'moduleId', as: 'appraiserRequest' });
 

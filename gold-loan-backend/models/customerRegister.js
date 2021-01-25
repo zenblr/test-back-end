@@ -32,6 +32,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'is_from_app',
         },
+        city: {
+            type: DataTypes.STRING,
+            field: 'city',
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',
@@ -42,5 +46,12 @@ module.exports = (sequelize, DataTypes) => {
             freezeTableName: true,
             tableName: 'customer_register',
         })
+
+
+    customerRegister.associate = function (models) {
+
+
+    }
+
     return customerRegister
 }

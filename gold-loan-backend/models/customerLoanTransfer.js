@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'transaction_id'
         },
+        bankTransferType: {
+            type: DataTypes.STRING,
+            field:'bank_transfer_type'
+        },
         loanTransferStatusForBM: {
             type: DataTypes.ENUM,
             field: 'loan_transfer_status_for_bm',

@@ -5,7 +5,7 @@ module.exports = {
 
     //global jwt expiration time
     JWT_EXPIRATIONTIME: "24h",
-
+    JWT_EXPIRATIONTIME_CUSTOMER: '365d',
 
 
     //send sms credential
@@ -14,8 +14,8 @@ module.exports = {
     SMSPASSWORD: 'chat123',
     //send sms credential
 
-   // Server Url
-   BASEURL:'http://173.249.49.7:3001',
-   
+    // Server Url
+    BASEURL: 'http://173.249.49.7:3001',
+
 
 }

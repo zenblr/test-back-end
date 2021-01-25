@@ -1,0 +1,51 @@
+<kt-portlet>
+    <kt-portlet-body style="min-height: 79vh;">
+        <div class="row kt-padding-t-20">
+            <div class="col-12 kt-margin-b-20">
+                <label class="font-weight-bold text-color d-flex align-items-center">Upload PDF for Process Note
+                    (SOP)</label>
+                <!-- <label class="font-weight-500 text-gray d-flex align-items-center"> 600px X 300px with .jpg or
+                .png</label> -->
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-3 kt-margin-t-10 kt-margin-b-10" *ngFor="let image of getURLArray();index as idx">
+                <div class="position-relative">
+                    <div class="img-container">
+                        <img class="fetched-image" *ngIf="image && !isPdf(image)" [src]="image"
+                            style="border-radius: 15px;" alt="" (click)="previewImage(image)" />
+                        <img *ngIf="image" src="../../../../../assets/media/icons/cancel.svg" alt=""
+                            class="kt-pointer remove-icon" (click)="removeImage(idx);">
+                        <!-- <img src="../../../../../assets/media/icons/edit.svg" alt="" class="kt-pointer edit-icon"
+                            (click)="edit(idx)" *ngIf="editBanner"> -->
+                        <div class="iframeWrapper" (click)="previewImage(image)">
+                            <iframe [src]="image | safe : 'resourceUrl'" height="250" width="290" scrolling="no"
+                                *ngIf="isPdf(image)"></iframe>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-2 kt-margin-t-10 kt-margin-b-10" *ngIf="!images.length">
+                <div class="div-height kt-pointer">
+                    <input type="file" accept="application/pdf" class="d-none" #file (change)="uploadImages($event)">
+                    <button (click)="file.click();index = null" class="img-add w-100">
+                        <img src="../../../../../assets/media/icons/add.svg" alt="">
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </kt-portlet-body>
+    <kt-portlet-footer *ngxPermissionsOnly="['promotionalBannerAdd']">
+        <div class="row p-3">
+            <div class="col-lg-12 kt-padding-l-15">
+                <kt-button [type]="'button'" [value]="'Save'" (click)="uploadBanners()">
+                </kt-button>
+            </div>
+        </div>
+    </kt-portlet-footer>
+</kt-portlet>

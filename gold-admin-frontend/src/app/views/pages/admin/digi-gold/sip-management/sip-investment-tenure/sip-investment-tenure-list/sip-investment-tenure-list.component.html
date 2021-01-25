@@ -1,0 +1,35 @@
+<kt-portlet>
+    <kt-portlet-body>
+        <div class="mat-table__wrapper">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
+                <ng-container matColumnDef="sipInvestmentTenure">
+                    <mat-header-cell *matHeaderCellDef>Sip Investment Tenure</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.investmentTenure}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="sipInvestmentTenureStatus">
+                    <mat-header-cell *matHeaderCellDef>Sip Investment Tenure Status</mat-header-cell>
+                    <mat-cell *matCellDef="let item">{{item.investmentTenureStatus | titlecase}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+                    <mat-cell *matCellDef="let item">
+                        <div [ngStyle]="{'display': 'inherit'}">
+                            <span class="kt-pointer" (click)="editInvestmentTenure(item)">Edit</span>
+                            <div class="px-2">|</div>
+                            <span class="kt-pointer text-danger" (click)="deleteInvestmentTenure(item)">Delete</span>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+        </div>
+        <div class="mat-table__bottom">
+            <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
+                [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>

@@ -31,8 +31,8 @@ export class PartnerService {
     return this.http.get<any>(`/api/partner?&from=${1}&to=${-1}`);
   }
 
-  getPartnerBySchemeAmount(amount): Observable<any> {
-    return this.http.get<any>(`/api/scheme/partner-scheme-amount/${amount}`).pipe(
+  getPartnerBySchemeAmount(internalBranchId): Observable<any> {
+    return this.http.get<any>(`/api/scheme/partner-scheme-amount/${internalBranchId}`).pipe(
       map(res => res)
     )
   }

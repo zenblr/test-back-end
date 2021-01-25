@@ -52,7 +52,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(10, 2),
             field: 'closing_balance',
             defaultValue: 0
-        }
+        },
+        rebateAmount: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'rebate_amount',
+            defaultValue: 0
+        },
     },
         {
             freezeTableName: true,

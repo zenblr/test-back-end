@@ -14,8 +14,17 @@ exports.readAllModule = async (req, res, next) => {
 }
 
 exports.readAllRequestModule = async (req, res, next) => {
+
+    let { isFor } = req.query
+    let whereCondition
+    if (isFor == 'lead') {
+        whereCondition = { moduleName: { [Op.in]: ['gold loan', 'scrap gold', 'digital gold'] } }
+    } else if (isFor == 'request') {
+        whereCondition = { moduleName: { [Op.in]: ['gold loan', 'scrap gold'] } }
+    }
+
     let readModuleData = await models.module.findAll({
-        where: { moduleName: { [Op.in]: ['gold loan', 'scrap gold'] } },
+        where: whereCondition
     });
     if (!readModuleData) {
         return res.status(404).json({ message: "Data not found" });

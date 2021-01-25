@@ -36,9 +36,9 @@ exports.schemeValidation = [
     .exists()
     .withMessage('processing charge percent is required'),
 
-    body('maximumPercentageAllowed')
-    .exists()
-    .withMessage('maximum percentage allowed is required'),
+    // body('maximumPercentageAllowed')
+    // .exists()
+    // .withMessage('maximum percentage allowed is required'),
 
     body('penalInterest')
     .exists()

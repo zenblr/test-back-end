@@ -27,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(10,2),
             field: 'outstanding_amount'
         },
+        rpg:{
+            type: DataTypes.FLOAT,
+            field: 'rpg'
+        },
         schemeId: {
             type: DataTypes.INTEGER,
             field: 'scheme_id'
@@ -38,6 +42,10 @@ module.exports = (sequelize, DataTypes) => {
         interestRate: {
             type: DataTypes.STRING,
             field: 'interest_rate'
+        },
+        rebateInterestRate: {
+            type: DataTypes.STRING,
+            field: 'rebate_interest_rate'
         },
         selectedSlab: {
             type: DataTypes.STRING,

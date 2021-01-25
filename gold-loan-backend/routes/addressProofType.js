@@ -6,7 +6,7 @@ const { wrapper } = require('../utils/errorWrap');
 
 route.post('/', checkAuth, wrapper(addAddressProofType));// add Identity Type
 
-route.get('/', checkAuth, wrapper(readAddressProofType)); // read Identity Type
+route.get('/', wrapper(readAddressProofType)); // read Identity Type
 
 route.delete('/', checkAuth, wrapper(deactivateAddressProofType)) // deactive  identity Type
 

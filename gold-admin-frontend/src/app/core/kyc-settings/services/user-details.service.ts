@@ -66,7 +66,7 @@ export class UserDetailsService {
   // customer info
   basicDetails(data): Observable<any> {
     return this.http.post<any>(`/api/kyc/customer-info`, data).pipe(
-      tap(res => this.userData = res),
+      tap(res => this.userData = res.data),
       catchError(err => {
         if (err.error.message)
           this._toastr.error(err.error.message);

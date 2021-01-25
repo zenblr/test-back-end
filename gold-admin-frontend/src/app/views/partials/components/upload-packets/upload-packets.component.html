@@ -6,7 +6,7 @@
                 <option value=null [selected]="true">Select Packet</option>
                 <option [value]="packet.id" [disabled]="packet.disabled"
                     *ngFor="let packet of packetsDetails; index as idx">
-                    {{packet.packetUniqueId | uppercase}}</option>
+                    {{packet.packetUniqueId | uppercase}} {{ '(' + packet.barcodeNumber + ')' }}</option>
             </select>
             <mat-error *ngIf="packetInfo.controls.packetId.invalid && packetInfo.controls.packetId.touched">
                 <small>

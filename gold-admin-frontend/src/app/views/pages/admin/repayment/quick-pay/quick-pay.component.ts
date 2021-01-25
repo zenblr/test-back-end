@@ -81,13 +81,16 @@ export class QuickPayComponent implements OnInit {
   viewEmiLogs() {
     const dialogRef = this.dialog.open(EmiLogsDialogComponent, {
       data: { id: this.loanDetails.id },
-      width: '1200px'
+      width: '850px'
     })
   }
 
   payment() {
-    if (this.payableAmt.invalid) {
-      this.payableAmt.markAsTouched()
+    if (this.payableAmt.invalid || this.payableAmt.value <= 0) {
+      if (this.payableAmt.value <= 0) {
+        this.payableAmt.setErrors({ valueZero: true })
+      }
+      this.payableAmt.markAllAsTouched()
       return
     }
     this.quickPayServie.paymentConfirmation(this.masterLoanId, this.payableAmt.value).subscribe(res => {
@@ -123,13 +126,16 @@ export class QuickPayComponent implements OnInit {
     })
   }
 
+  paymentData(event) {
+    this.paymentValue = event
+  }
   submit() {
     if (!(this.paymentValue && this.paymentValue.paymentType)) {
       return this.toastr.error('Please select a payment method')
     }
 
     if (this.paymentValue.paymentType == 'upi' || this.paymentValue.paymentType == 'netbanking' || this.paymentValue.paymentType == 'wallet' || this.paymentValue.paymentType == 'card') {
-      this.sharedService.paymentGateWay(this.payableAmt.value,this.masterLoanId).subscribe(
+      this.sharedService.paymentGateWay(this.payableAmt.value, this.masterLoanId).subscribe(
         res => {
           this.razorpayPaymentService.razorpayOptions.key = res.razerPayConfig;
           this.razorpayPaymentService.razorpayOptions.amount = res.razorPayOrder.amount;

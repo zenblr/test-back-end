@@ -109,6 +109,10 @@ import { PartPaymentLogDialogComponent } from './components/part-payment-log-dia
 import { UpdateLocationComponent } from './components/update-location/update-location.component';
 import { ElapsedTimeComponent } from './components/elapsed-time/elapsed-time.component';
 import { ScrapUpdateLocationComponent } from './components/scrap-update-location/scrap-update-location.component';
+import { SelectPaymentComponent } from './components/select-payment/select-payment.component';
+import { LeadManagementComponent } from '../pages/admin/lead-management/lead-management.component';
+import { AddLeadComponent } from '../pages/admin/lead-management/add-lead/add-lead.component';
+import { NewRequestAddComponent } from '../pages/admin/lead-management/new-request-add/new-request-add.component';
 
 @NgModule({
 	declarations: [
@@ -181,6 +185,10 @@ import { ScrapUpdateLocationComponent } from './components/scrap-update-location
 		UpdateLocationComponent,
 		ElapsedTimeComponent,
 		ScrapUpdateLocationComponent,
+		SelectPaymentComponent,
+		LeadManagementComponent,
+		AddLeadComponent,
+		NewRequestAddComponent
 	],
 	exports: [
 		WidgetModule,
@@ -261,6 +269,10 @@ import { ScrapUpdateLocationComponent } from './components/scrap-update-location
 		UpdateLocationComponent,
 		ElapsedTimeComponent,
 		ScrapUpdateLocationComponent,
+		SelectPaymentComponent,
+		LeadManagementComponent,
+		AddLeadComponent,
+		NewRequestAddComponent
 	],
 	imports: [
 		PdfViewerModule,
@@ -297,7 +309,9 @@ import { ScrapUpdateLocationComponent } from './components/scrap-update-location
 		OrnamentsComponent,
 		WebcamDialogComponent,
 		PartPaymentLogDialogComponent,
-		EmiLogsDialogComponent
+		EmiLogsDialogComponent,
+		AddLeadComponent,
+		NewRequestAddComponent
 	],
 })
 export class PartialsModule {

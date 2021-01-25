@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, OnInit, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { OrnamentsComponent } from '../../../../partials/components/ornaments/ornaments.component';
+import { PaymentDialogComponent } from '../../../../partials/components/payment-dialog/payment-dialog.component';
+import { TopUpService } from '../../../../../core/loan-management/top-up/top-up.service';
 
 @Component({
   selector: 'kt-top-up',
@@ -13,22 +15,30 @@ export class TopUpComponent implements OnInit {
 
   inputEligibleAmount: boolean;
   showPaymentConfirmation: boolean;
-  topUpForm: FormGroup;
+  topUp = new FormControl(null, Validators.required);
+  paymentValue: any;
+  masterLoanId: any;
+  loanDetails: any;
+
   constructor(
     private router: Router,
     private fb: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private ele: ElementRef,
+    private ref: ChangeDetectorRef,
+    private route: ActivatedRoute,
+    private topUpService: TopUpService
   ) { }
 
   ngOnInit() {
-    this.initForm()
+    this.masterLoanId = this.route.snapshot.params.id
+    this.getTopupDetails(this.masterLoanId)
   }
 
-  initForm() {
-    this.topUpForm = this.fb.group({
-      eligbileTopUp: [],
-      processingCharge: [],
-      topUp: [],
+  getTopupDetails(id) {
+    this.topUpService.getTopupDetails(id).subscribe(res => {
+      this.loanDetails = res.data
+      this.ref.detectChanges();
     })
   }
 
@@ -36,20 +46,59 @@ export class TopUpComponent implements OnInit {
     this.inputEligibleAmount = !this.inputEligibleAmount;
   }
 
-  viewOrnaments() {
-    // this.router.navigate([])
-    const dialogRef = this.dialog.open(OrnamentsComponent, {
-      width: 'auto',
-      data: 'view'
-    });
-  }
-
   enterTopUp() {
+    if (this.topUp.invalid) return this.topUp.markAsTouched()
     this.showPaymentConfirmation = !this.showPaymentConfirmation;
+    this.scrollToBottom()
   }
 
   pay() {
 
+  }
+
+  viewOrnaments(item) {
+    // const packetArr = item.map(e => ({ ...e, packetId: e.packets[0].packetUniqueId }))
+
+    this.dialog.open(OrnamentsComponent, {
+      data: {
+        modal: true,
+        // modalData: packetArr,
+        modalData: {},
+        packetView: false
+      },
+      width: '90%'
+    })
+  }
+
+  cancelTopUp() {
+    this.inputEligibleAmount = !this.inputEligibleAmount
+  }
+
+  choosePaymentMethod() {
+    if (this.paymentValue && this.paymentValue.paidAmount) {
+      this.paymentValue.paidAmount = this.topUp.value
+    }
+    const dialogRef = this.dialog.open(PaymentDialogComponent, {
+      data: {
+        value: this.paymentValue ? this.paymentValue : { paidAmount: this.topUp.value },
+        // date: this.loanDetails.loan.loanStartDate
+      },
+      width: '500px'
+    })
+
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.paymentValue = res;
+        this.ref.detectChanges()
+      }
+    })
+  }
+
+  scrollToBottom() {
+    setTimeout(() => {
+      let view = this.ele.nativeElement.querySelector('#container') as HTMLElement
+      view.scrollIntoView({ behavior: "smooth", block: "end" })
+    }, 500)
   }
 
 }

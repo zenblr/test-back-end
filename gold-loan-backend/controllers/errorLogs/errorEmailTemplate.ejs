@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        table.c {
+        table-layout: auto;
+        width: 100%;  
+        border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <table class="c">
+        <tr>
+           <th>id</th><th>Message</th><th>url</th><th>method</th><th>host</th><th>body</th><th>userData</th><th>createdAt</th>
+        </tr>
+     
+        <% for (var i = 0; i < newData.length; i++) { %>
+         <tr>
+           <td><%= newData[i].id %></td>
+           <td><%= newData[i].message %></td>
+           <td><%= newData[i].url %></td>
+           <td><%= newData[i].method %></td>
+           <td><%= newData[i].host %></td>
+           <td><%= newData[i].body%></td>
+           <td><%= newData[i].userData%></td>
+           <td><%= newData[i].createdAt %></td>
+         </tr>    
+        <% } %>
+     </table>
+</body>
+
+</html>

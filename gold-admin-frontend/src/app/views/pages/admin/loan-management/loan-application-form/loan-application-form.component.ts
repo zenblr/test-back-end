@@ -40,6 +40,8 @@ export class LoanApplicationFormComponent implements OnInit {
   disbursed: boolean = false;
   partPaymentdata: any;
   isPartRelease: any;
+  ornamentRate: any;
+  ornamentDetailsArray: any;
 
   constructor(
     public ref: ChangeDetectorRef,
@@ -205,6 +207,14 @@ export class LoanApplicationFormComponent implements OnInit {
     this.totalAmount = event
   }
 
+  ornamentValue(event){
+    this.ornamentRate = event
+  }
+
+  getOrnamentDetailsArray(event){
+    this.ornamentDetailsArray = event
+    console.log(event)
+  }
 
 
   next(event) {

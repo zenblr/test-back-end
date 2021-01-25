@@ -60,7 +60,7 @@ export class AddInternalUserComponent implements OnInit {
   }
 
   getBranch() {
-    this.internalUserBranchService.getInternalBranch('', 1, 50).pipe(
+    this.internalUserBranchService.getInternalBranch('', 1, -1).pipe(
       map(res => {
         this.branch = res['data']
       })

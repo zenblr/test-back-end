@@ -5,6 +5,7 @@ const Op = Sequelize.Op;
 const { getSingleLoanDetail } = require('../../utils/loanFunction')
 const check = require("../../lib/checkLib");
 const moment = require('moment')
+const { allKycCompleteInfo } = require('../../service/customerKyc')
 
 exports.readBanner = async (req, res, next) => {
     console.log("banner")
@@ -161,6 +162,11 @@ exports.readMyLoan = async (req, res, next) => {
                         as: 'scheme'
                     },
                     {
+                        model: models.partner,
+                        as: 'partner',
+                        attributes: ['id', 'name']
+                    },
+                    {
                         model: models.customerLoanInterest,
                         as: 'customerLoanInterest',
                         where: { emiStatus: { [Op.notIn]: ['paid'] } },//isExtraDaysInterest: false
@@ -294,4 +300,50 @@ exports.updatePassword = async (req, res, next) => {
         return res.status(400).json({ message: `Password update failed.` })
     }
     return res.status(200).json({ message: 'Password Updated.' });
+}
+
+exports.personalInfo = async (req, res, next) => {
+
+    let { id } = req.userData
+
+    let customerInfo = await models.customer.findOne({
+        where: { id: id },
+        include: [
+            {
+                model: models.state,
+                as: "state",
+            },
+            {
+                model: models.module,
+                as: "module",
+            },
+            {
+                model: models.city,
+                as: "city",
+            },
+        ]
+    })
+
+    let kycApproval = await allKycCompleteInfo(customerInfo)
+
+    customerInfo.dataValues.kycApproval = kycApproval
+
+    return res.status(200).json({ message: 'Success', data: customerInfo })
+}
+
+exports.customerProductRequest = async (req, res, next) => {
+    let { customerId, moduleId, requestFor } = req.body
+    let checkExist = []
+
+    if (requestFor == 'kyc') {
+        checkExist = await models.productRequest.findAll({ where: { customerId: customerId, requestFor: 'kyc' } })
+    }
+
+    if (checkExist.length != 0) {
+        return res.status(422).json({ message: `Thank you` })
+    }
+    await models.productRequest.create({ customerId, moduleId, requestFor })
+
+    return res.status(200).json({ message: `Thank you` })
+
 }

@@ -175,11 +175,13 @@
                                 <thead>
                                     <th [class.table-padding-start]="fullReleaseScreen" class="transparent">Total Gross
                                         Weight</th>
-                                    <th class="transparent w100">Deduction Weight</th>
+                                    <!-- <th class="transparent w100">Deduction Weight</th> -->
                                     <ng-container *ngIf="!fullReleaseScreen">
-                                        <th class="transparent">Net Weight <br> (Release Ornament)</th>
-                                        <th class="transparent w100">Net Weight <br> (Remaining Ornament)</th>
-                                        <th class="transparent table-amount padding-right">Ornament Release Amount</th>
+                                        <th class="transparent">Net Weight <br> (Released)</th>
+                                        <th class="transparent w100">Net Weight <br> (Pledged)</th>
+                                        <th class="transparent table-amount">Ornament Release Amount</th>
+                                        <th class="transparent table-amount">Loan ID</th>
+                                        <th class="transparent table-amount padding-right">Loan Amount</th>
                                     </ng-container>
                                     <ng-container *ngIf="fullReleaseScreen">
                                         <th class="transparent" style="width: 20%; padding-left: 5%;">Net Weight</th>
@@ -194,15 +196,32 @@
                                     <tr *ngIf="totalSelectedOrnamentDetails">
                                         <td class="table-padding-start">
                                             {{ totalSelectedOrnamentDetails.ornamentWeight.releaseGrossWeight }} gm</td>
-                                        <td>{{ totalSelectedOrnamentDetails.ornamentWeight.releaseDeductionWeight }} gm
-                                        </td>
+                                        <!-- <td>{{ totalSelectedOrnamentDetails.ornamentWeight.releaseDeductionWeight }} gm
+                                        </td> -->
                                         <ng-container *ngIf="!fullReleaseScreen">
                                             <td>{{ totalSelectedOrnamentDetails.ornamentWeight.releaseNetWeight }} gm
                                             </td>
                                             <td>{{ totalSelectedOrnamentDetails.ornamentWeight.remainingNetWeight }} gm
                                             </td>
-                                            <td class="table-amount padding-right">
+                                            <td class="table-amount">
                                                 {{ totalSelectedOrnamentDetails.ornamentWeight.releaseAmount }}</td>
+                                            <td class="table-amount">
+                                                {{ totalSelectedOrnamentDetails.loanInfo.loanData[0].loanUniqueId }}
+                                                <br>
+                                                <span *ngIf="totalSelectedOrnamentDetails.loanInfo.loanData[1]">
+
+                                                    {{ totalSelectedOrnamentDetails.loanInfo.loanData[1].loanUniqueId }}
+                                                </span>
+                                            </td>
+                                          
+                                            <td class="table-amount padding-right">
+                                                {{ totalSelectedOrnamentDetails.loanInfo.loanData[0].loanAmount }}
+                                                <br>
+                                                <span *ngIf="totalSelectedOrnamentDetails.loanInfo.loanData[1]">
+
+                                                    {{ totalSelectedOrnamentDetails.loanInfo.loanData[1].loanAmount }}
+                                                </span>
+                                            </td>
                                         </ng-container>
                                         <ng-container *ngIf="fullReleaseScreen">
                                             <td style="padding-left: 5%;">
@@ -237,60 +256,64 @@
                     <div class="table-div table-responsive kt-padding-t-15">
                         <table class="table outer-border">
                             <thead>
-                                <th class="transparent" style="width: 100px;">Loan ID</th>
-                                <th class="transparent " style="width: 120px;">Loan Amount</th>
+                                <!-- <th class="transparent" style="width: 100px;">Loan ID</th>
+                                <th class="transparent " style="width: 120px;">Loan Amount</th> -->
                                 <th class="transparent "> Ornament Release Amount</th>
-                                <th class="transparent ">Interest Amount</th>
-                                <th class="transparent ">Penal Interest </th>
-                                <th class="transparent ">Total Payable Amount </th>
+                                <th class="transparent "> Interest payable till date</th>
+                                <th class="transparent ">Penal payable till date </th>
+                                <th class="transparent ">Total Payable </th>
                                 <th class="transparent last">Select Payment Option</th>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>
+                                    <!-- <td>
                                         <ng-container
                                             *ngFor="let item of totalSelectedOrnamentDetails.loanInfo.loanData">
                                             <div>{{item.loanUniqueId}}</div>
                                         </ng-container>
                                     </td>
                                     <td>
-                                        <!-- <ng-container
+                                        <ng-container
                                             *ngFor="let item of totalSelectedOrnamentDetails.loanInfo.loanData">
                                             <div>{{item.loanAmount}}</div>
-                                        </ng-container> -->
+                                        </ng-container>
                                         <div class="" *ngFor="let loan of loanDetails.customerLoan.customerLoan">
                                             {{loan.loanAmount}}
                                         </div>
-                                        <!-- {{ totalSelectedOrnamentDetails.loanInfo.finalLoanAmount }} -->
-                                    </td>
+                                        {{ totalSelectedOrnamentDetails.loanInfo.finalLoanAmount }}
+                                    </td> -->
                                     <td class="">
                                         {{ totalSelectedOrnamentDetails.ornamentWeight.releaseAmount }}</td>
                                     <td>
-                                        <div class="">
+                                        <div>
+                                            {{totalSelectedOrnamentDetails?.loanInfo?.interestAmount}}
+                                        </div>
+                                        <!-- <div class="">
                                             {{ totalSelectedOrnamentDetails?.loanInfo?.securedInterest }}
                                         </div>
                                         <div class=""
                                             *ngIf="totalSelectedOrnamentDetails?.loanInfo?.loanData?.length > 1">
                                             {{ totalSelectedOrnamentDetails?.loanInfo?.unsecuredInterest }}
-                                        </div>
+                                        </div> -->
                                     </td>
                                     <td>
-                                        <div class="">
+                                        <div>
+                                            {{totalSelectedOrnamentDetails?.loanInfo?.penalInterest}}
+                                        </div>
+                                        <!-- <div class="">
                                             {{ totalSelectedOrnamentDetails?.loanInfo?.securedPenalInterest }}
                                         </div>
                                         <div class=""
                                             *ngIf="totalSelectedOrnamentDetails?.loanInfo?.loanData?.length > 1">
                                             {{ totalSelectedOrnamentDetails?.loanInfo?.unsecuredPenalInterest }}
-                                        </div>
+                                        </div> -->
                                     </td>
                                     <td class="font-weight-500 " style="font-size: 14px;">
                                         {{ totalSelectedOrnamentDetails.loanInfo.totalPayableAmount }}</td>
                                     <td>
-                                        <button *ngIf="!paymentValue" (click)="choosePaymentMethod()"
-                                            class="apply-kyc">Select Payment</button>
-                                        <button *ngIf="paymentValue" (click)="choosePaymentMethod()" class="apply-kyc">
-                                            {{ paymentValue.paymentType | uppercase }}
-                                        </button>
+                                        <kt-select-payment [minDate]="loanDetails?.customerLoan?.loanStartDate"
+                                        [amount]="totalSelectedOrnamentDetails.loanInfo.totalPayableAmount"
+                                        (paymentData)="paymentData($event)"></kt-select-payment>
                                     </td>
                                 </tr>
                             </tbody>

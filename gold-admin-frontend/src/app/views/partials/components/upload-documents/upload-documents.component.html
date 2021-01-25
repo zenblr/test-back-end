@@ -5,7 +5,7 @@
                 <label class="kt-padding-l-10">Outstanding Loan Amount</label>
             </div>
             <div class="col-4">
-                <input type="text" formControlName="outstandingLoanAmount" class="form-control "
+                <input ktWeight type="text" formControlName="outstandingLoanAmount" class="form-control "
                     [class.isError]="controls.outstandingLoanAmount.touched && controls.outstandingLoanAmount.invalid"
                     placeholder="Outstanding">
                 <mat-error *ngIf="controls.outstandingLoanAmount.touched && controls.outstandingLoanAmount.invalid">

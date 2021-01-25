@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href='{{bootstrapCss}}'>
+    <!-- <link rel="stylesheet" href="./bootstrap.css"> -->
+    <style>
+        html{
+            zoom: 0.75;
+        }
+        hr { 
+            border: none; 
+            height: 2px; 
+            background: black; 
+        }
+        table.table-bordered > thead > tr > th{
+            border:1px solid black !important;
+        }
+        table.table-bordered > tbody > tr > td{
+            border:1px solid black !important;
+        }
+        body{
+            font-family: Helvetica, Arial,sans-serif;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+
+<body>
+    <script src='{{jqueryJs}}'></script>
+    <script src='{{bootstrapJs}}'></script>
+    <div class="container">
+        <div class="row text-right">
+            <div class="col-12">
+                <p>Original for Recipient</p>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-12 m-0">
+                <h1 class="m-0 font-weight-bold">TAX INVOICE</h1>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-12 mt-2">
+                <h3 class="m-0" style="font-family: 'Times New Roman', Times, serif;">AUGMONT GOLDTECH PRIVATE LIMITED</h3>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col font-weight-bold">
+                <h6 class="m-0">Formerly Augmont Precious Metals Private Limited</h6>
+                <h6 class="m-0">(CIN-U51909MH2020PTC337639)(GSTIN : 27AATCA3030A1Z3)</h6>
+                <h6 class="m-0">3rd Floor, Bullion House, 115 Tambakata Lane, Zaveri Bazaar, Mumbai - 400 003</h6>
+                <h6 class="m-0">Landline No : 022 61420000</h6>
+                <h6 class="m-0">Email: help@augmont.in</h6>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-6">
+                <h6 class="font-weight-bold">BUYER DETAILS:</h6>
+                <p class="text-uppercase m-0">{{invoiceData.userInfo.name}}</p>
+                <p class="text-uppercase m-0">{{invoiceData.userInfo.state}}</p>
+            </div>
+            <div class="col-6" style="border-left: 2px solid black;">
+                <h6 class="font-weight-bold">Invoice No: <span style="font-weight: 500 !important;">{{invoiceData.invoiceNumber}}</span></h6>
+                <h6 class="font-weight-bold">Invoice Date: <span style="font-weight: 500 !important;">{{date}}</span></h6>
+                <h6 class="font-weight-bold">PLACE OF SUPPLY:</h6>
+                <p class="m-0" style="font-weight: 500 !important;">Delivered at Sequel's Vault in Mumbai Maharahstra</p>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="font-weight-bold">Srn.</th>
+                        <th scope="col">Description </th>
+                        <th scope="col">HSN CODE</th>
+                        <th scope="col">Grams</th>
+                        <th scope="col">Rate</th>
+                        <th scope="col">Per</th>
+                        <th scope="col">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>1</td>
+                        <td><span class="text-uppercase">{{invoiceData.metalType}}</span> - {{invoiceData.transactionId}} @ {{invoiceData.rate}}</td>
+                        <td class="text-right">{{invoiceData.hsnCode}}</td>
+                        <td class="text-right">{{invoiceData.quantity}}</td>
+                        <td class="text-right">{{invoiceData.rate}}</td>
+                        <td class="text-right">1 GM</td>
+                        <td class="text-right">{{invoiceData.grossAmount}}</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td><h6 class="font-weight-bold">TAXABLE VALUE</h6></td>
+                        <td></td>
+                        <td class="text-right">{{invoiceData.quantity}}</td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right">{{invoiceData.grossAmount}}</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td><h6 class="font-weight-bold">CGST</h6></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right">{{invoiceData.taxes.taxSplit.[0].taxPerc}}%</td>
+                        <td></td>
+                        <td class="text-right">{{invoiceData.taxes.taxSplit.[0].taxAmount}}</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td><h6 class="font-weight-bold">SGST</h6></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right">{{invoiceData.taxes.taxSplit.[1].taxPerc}}%</td>
+                        <td></td>
+                        <td class="text-right">{{invoiceData.taxes.taxSplit.[1].taxAmount}}</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td><h6 class="font-weight-bold">IGST</h6></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right">{{invoiceData.taxes.taxSplit.[2].taxPerc}}%</td>
+                        <td></td>
+                        <td class="text-right">{{invoiceData.taxes.taxSplit.[2].taxAmount}}</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td><h6 class="font-weight-bold">GROSS INVOICE AMOUNT</h6></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right">{{invoiceData.netAmount}}</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td><h6 class="font-weight-bold">DISCOUNT</h6></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right">0.00</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td><h6 class="font-weight-bold">TOTAL NET PAYABLE</h6></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right">{{invoiceData.netAmount}}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="8"><h6 class="font-weight-bold">{{words}}</h6></td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <h6 class="font-weight-bold m-0">E. & O. E.: </h6>
+                <h6 class="font-weight-bold m-0">Delivery: Ex-office/Showroom/As per Customers request</h6>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <p class="m-0">Terms & Conditions :- </p>
+                <ul>
+                    <li>Goods once sold will not be returned.</li>
+                    <li>Any disputes shall be subject to Mumbai jurisdiction.</li>
+                    <li>Our responsibility ceases once the goods are delivered to the customer.</li>
+                    <li>I/We hereby certify that my/our registration certificate under the Central Goods and Services Act, 2017 is in force on the
+                        date on which the sales of goods specified in this tax invoice is made by me/us and that the transaction of sale covered by
+                        this tax invoice has been effected by me/us and it shall be accounted for in the turnover of sales while filing of return and the
+                        due tax, if any, payable on the sale has been paid or shall be paid.
+                    </li>
+                    <li>This is system generated document hence signature is not required.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col">
+                <h6 class="font-weight-bold">For AUGMONT GOLDTECH PRIVATE LIMITED</h6>
+                <h6 class="font-weight-bold mt-3">Authorised Signatory</h6>
+            </div>
+        </div>
+        <hr class="mt-5">
+    </div>
+</body>
+
+</html>

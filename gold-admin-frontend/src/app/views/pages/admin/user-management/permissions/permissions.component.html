@@ -10,19 +10,19 @@
 
                     <div class="kt-padding-10">
                         <div class="row card-border" *ngFor="let entity of permission.entity;index as entityIndex;first as f" [class.kt-margin-t-15]="entityIndex!=f" >
-                            <div class="col-12">
-                                <div class="row line-height">
+                            <div class="col-12 vertical-center">
+                                <div class="row">
                                     <div class="col-2">
                                         <label class="text-color font-weight-bold">{{entity.entityName | titlecase}}</label>
                                     </div>
                                     <div class="col-1">
                                         <mat-slide-toggle [checked]="checkForChecked(moduleIndex,entityIndex,entity)" (change)="toogleChange($event.checked,moduleIndex,entityIndex)"></mat-slide-toggle>
                                     </div>
-                                    <div class="col-2" *ngFor="let action of entity.permission;index as permissionIndex" [class.offset-3]="(permissionIndex+1)%5 == 0">
-                                        <label class="custom-checkbox">
-                                            <span class="label-checkbox">{{action.actionName |titlecase}}</span>
+                                    <div class="col-2" *ngFor="let action of entity.permission;index as permissionIndex" [class.offset-3]="(permissionIndex+1)%5 == 0" [class.kt-margin-t-15]="permissionIndex > 3">
+                                        <label class="custom-checkbox kt-pointer">
+                                            <span class="label-checkbox kt-pointer">{{action.actionName |titlecase}}</span>
                                             <input type="checkbox" [checked]="action.isSelected" (change)="actionChange($event.target.checked,moduleIndex,entityIndex,permissionIndex)">
-                                            <span class="checkmark"></span>
+                                            <span class="checkmark top"></span>
                                         </label>
                                     </div>
                                 </div>

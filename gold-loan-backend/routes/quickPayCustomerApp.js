@@ -15,7 +15,7 @@ route.get('/payable-amount', checkAuth, wrapper(payableAmount));
 
 route.get('/confirm-payment-info', checkAuth, wrapper(payableAmountConfirm))
 
-route.post('/payment', checkAuth, wrapper(quickPayment));
+route.post('/payment', wrapper(quickPayment));
 
 route.post('/razor-pay', checkAuth, wrapper(razorPayCreateOrder));
 

@@ -36,6 +36,7 @@ import { PacketAssignAppraiserComponent } from './packets/packet-assign-appraise
 import { CheckoutComponent } from './packets/checkout/checkout.component';
 import { MyPacketsComponent } from './packets/my-packets/my-packets.component';
 import { ViewPacketDialogComponent } from './packets/view-packet-dialog/view-packet-dialog.component';
+import { PaymentDialogComponent } from '../../../partials/components/payment-dialog/payment-dialog.component';
 const rout: Routes = [
   {
     path: 'loan-calculator',
@@ -74,7 +75,7 @@ const rout: Routes = [
     component: LoanApplicationFormComponent
   },
   {
-    path: 'topup',
+    path: 'topup/:id',
     component: TopUpComponent
   },
   {
@@ -157,7 +158,8 @@ const rout: Routes = [
     ViewPacketLogComponent,
     PacketAssignAppraiserComponent,
     CheckoutComponent,
-    ViewPacketDialogComponent
+    ViewPacketDialogComponent,
+    PaymentDialogComponent
   ]
 })
 export class LoanManagementModule { }

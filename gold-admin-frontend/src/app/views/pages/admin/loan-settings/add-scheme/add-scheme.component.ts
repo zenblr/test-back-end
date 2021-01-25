@@ -1,10 +1,11 @@
-import { Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { PartnerService } from '../../../../../core/user-management/partner/services/partner.service';
 import { map, catchError, finalize } from 'rxjs/operators';
 import { LoanSettingsService } from '../../../../../core/loan-setting';
 import { ToastrService } from 'ngx-toastr';
+import { InternalUserBranchService } from '../../../../../core/user-management/internal-user-branch';
 
 @Component({
   selector: 'kt-add-scheme',
@@ -12,15 +13,18 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./add-scheme.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddSchemeComponent implements OnInit {
+export class AddSchemeComponent implements OnInit, AfterViewInit {
 
   @ViewChild('tabGroup', { static: false }) tabGroup;
 
   csvForm: FormGroup;
   fillingForm: FormGroup;
+  rpgForm: FormGroup;
   partnerData: [] = []
   file: any;
   schemeType = [{ value: 'secured', name: 'secured' }, { value: 'unsecured', name: 'unsecured' }]
+  internalBranches: any;
+  unsecuredSchemes: any[] = [];
 
   constructor(private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddSchemeComponent>,
@@ -28,11 +32,22 @@ export class AddSchemeComponent implements OnInit {
     private partnerService: PartnerService,
     private laonSettingService: LoanSettingsService,
     private _toastr: ToastrService,
-    private ref: ChangeDetectorRef) { }
+    private ref: ChangeDetectorRef,
+    private internalUserBranchService: InternalUserBranchService
+  ) { }
 
   ngOnInit() {
+    this.getInternalBranchList()
     this.initForm()
     this.partner()
+  }
+
+  ngAfterViewInit() {
+    this.fillingForm.controls.multiSelect.valueChanges.subscribe(res => {
+      if (res && res.multiSelect.length == 0) {
+        this.fillingForm.controls.multiSelect.patchValue(null)
+      }
+    })
   }
 
   partner() {
@@ -41,7 +56,6 @@ export class AddSchemeComponent implements OnInit {
       map(res => {
         this.partnerData = res.data;
         this.ref.detectChanges();
-        console.log(this.partnerData)
       }), catchError(err => {
         this._toastr.error('Some thing went wrong')
         this.ref.detectChanges();
@@ -56,30 +70,31 @@ export class AddSchemeComponent implements OnInit {
       schemeName: ['', [Validators.required]],
       schemeAmountStart: ['', [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       schemeAmountEnd: ['', [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
-      // interestRateThirtyDaysMonthly: ['', Validators.required],
-      // interestRateNinetyDaysMonthly: ['', Validators.required],
-      // interestRateOneHundredEightyDaysMonthly: ['', Validators.required],
-      // interestRateThirtyDaysAnnually: [''],
-      // interestRateNinetyDaysAnnually: [''],
-      // interestRateOneHundredEightyDaysAnnually: [''],
       partnerId: ['', Validators.required],
       schemeType: ['', [Validators.required]],
       processingChargeFixed: [, [Validators.required, Validators.min(0)]],
       processingChargePercent: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
-      maximumPercentageAllowed: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
+      // maximumPercentageAllowed: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
       penalInterest: [, [Validators.required, Validators.pattern('(^100(\\.0{1,2})?$)|(^([1-9]([0-9])?|0)(\\.[0-9]{1,2})?$)')]],
-      isDefault: [false],
+      // isDefault: [false],
       isSplitAtBeginning: [false],
-      // numberOfDays1: [, [Validators.required]],
-      // numberOfDays2: [, [Validators.required]],
-      // numberOfDays3: [, [Validators.required]],
+      unsecuredSchemeId: [],
+      rpg: [, [Validators.required]],
+      internalBranchId: [],
+      multiSelect: [],
+      isUnsecuredSchemeMapped: [false],
       isTopUp: [false],
       schemeInterest: this.fb.array([]),
     })
 
     this.csvForm = this.fb.group({
-      partnerId: ['', Validators.required],
+      // partnerId: ['', Validators.required],
       csv: ['', Validators.required]
+    })
+
+
+    this.rpgForm = this.fb.group({
+      rpg: ['', Validators.required]
     })
 
     this.initSlabArray()
@@ -105,13 +120,22 @@ export class AddSchemeComponent implements OnInit {
     }
   }
 
+  downloadRpgUpdateSheet(){
+    this.laonSettingService.downloadRpgUpdateSheet().subscribe()
+  }
+
   submit() {
     if (this.tabGroup.selectedIndex == 0) {
-      // console.log(this.fillingForm.value);
 
       if (this.fillingForm.invalid) {
         this.fillingForm.markAllAsTouched()
         return
+      }
+      if (this.fillingForm.controls.schemeType.value === 'secured') {
+        const internalBranchIdArr = this.fillingForm.controls.multiSelect.value.multiSelect.map(e => e.id)
+        this.fillingForm.controls.internalBranchId.patchValue(internalBranchIdArr)
+      } else {
+        this.fillingForm.controls.internalBranchId.patchValue([])
       }
 
       let fromValue = this.fillingForm.get('schemeAmountStart').value * 100000;
@@ -120,37 +144,14 @@ export class AddSchemeComponent implements OnInit {
       let toValue = this.fillingForm.get('schemeAmountEnd').value * 100000;
       toValue = +(toValue);
       Math.ceil(toValue);
-      // console.log(fromValue, toValue)
       this.fillingForm.patchValue({ schemeAmountStart: fromValue, schemeAmountEnd: toValue });
 
-      // console.log(this.fillingForm.value);
 
       let partnerArray = [];
       partnerArray.push(this.fillingForm.get('partnerId').value);
       this.fillingForm.patchValue({ partnerId: partnerArray });
 
-      // let obj1 = {
-      //   days: this.fillingForm.controls.numberOfDays1.value,
-      //   interestRate: this.fillingForm.controls.interestRateThirtyDaysMonthly.value
-      // }
-      // let obj2 = {
-      //   days: this.fillingForm.controls.numberOfDays2.value,
-      //   interestRate: this.fillingForm.controls.interestRateNinetyDaysMonthly.value
-      // }
-      // let obj3 = {
-      //   days: this.fillingForm.controls.numberOfDays3.value,
-      //   interestRate: this.fillingForm.controls.interestRateOneHundredEightyDaysMonthly.value
-      // }
-
-      // let schemeInterestArr = []
-      // schemeInterestArr.push(obj1, obj2, obj3)
-      // Array.prototype.push.apply(schemeInterestArr, this.schemeInterest.value)
-
-      // Object.assign(this.fillingForm.value, { schemeInterest: schemeInterestArr })
-
-
-      console.log(this.fillingForm.value)
-
+      // return
 
       this.laonSettingService.saveScheme(this.fillingForm.value).pipe(
         map((res) => {
@@ -162,25 +163,48 @@ export class AddSchemeComponent implements OnInit {
         }),
         finalize(() => {
           this.fillingForm.patchValue({ schemeAmountStart: (fromValue / 100000), schemeAmountEnd: (toValue / 100000) });
+          partnerArray = [];
         })).subscribe()
     } else if (this.tabGroup.selectedIndex == 1) {
-      if (this.csvForm.invalid) {
-        this.csvForm.markAllAsTouched()
-        return
-      }
+      // if (this.csvForm.invalid) {
+      //   this.csvForm.markAllAsTouched()
+      //   return
+      // }
+      if (this.rpgForm.invalid) {
+          this.rpgForm.markAllAsTouched()
+          return
+        }
       var fb = new FormData()
-      fb.append('schemecsv', this.file)
-      fb.append('partnerId', this.csvForm.controls.partnerId.value)
-      this.laonSettingService.uplaodCSV(fb).pipe(
+      fb.append('avatar', this.file)
+      // fb.append('partnerId', this.csvForm.controls.partnerId.value)
+      //   this.laonSettingService.uplaodCSV(fb).pipe(
+      //     map((res) => {
+      //       this._toastr.success('Scheme Created Sucessfully');
+      //       this.dialogRef.close(res);
+      //     }), catchError(err => {
+
+      //       this.ref.detectChanges();
+      //       throw (err)
+      //     })).subscribe()
+      // }
+      this.laonSettingService.uploadRpg(fb).pipe(
         map((res) => {
-          this._toastr.success('Scheme Created Sucessfully');
-          this.dialogRef.close(res);
+          this.updateUrl(res.uploadFile.url)
+         
         }), catchError(err => {
 
           this.ref.detectChanges();
           throw (err)
         })).subscribe()
     }
+
+  }
+
+  updateUrl(url){
+    this.laonSettingService.updateRPG(url).subscribe(res=>{
+      this._toastr.success('Scheme Created Sucessfully');
+      this.dialogRef.close(res);
+    })
   }
 
   getFileInfo(event) {
@@ -192,6 +216,18 @@ export class AddSchemeComponent implements OnInit {
       return
     }
     this.csvForm.get('csv').patchValue(event.target.files[0].name);
+
+  }
+
+  getRpgInfo(event) {
+    this.file = event.target.files[0];
+    var ext = event.target.files[0].name.split('.');
+    if (ext[ext.length - 1] != 'xlsx') {
+      this._toastr.error('Please upload csv file');
+      this.rpgForm.controls.rpg.markAsTouched()
+      return
+    }
+    this.rpgForm.get('rpg').patchValue(event.target.files[0].name);
 
   }
 
@@ -264,7 +300,70 @@ export class AddSchemeComponent implements OnInit {
       currentSlabControls.days.setErrors(null)
     }
 
-    console.log(currentSlab, previousSlab)
+  }
+
+  getInternalBranchList() {
+    this.internalUserBranchService.getInternalBranch('', 1, -1).pipe(
+      map(res => {
+        this.internalBranches = res.data
+      }),
+    ).subscribe()
+  }
+
+  getUnsecuredSchemes() {
+    this.setUnsecuredSchemeValidation()
+    this.setInternalBranchValidation()
+
+    const { partnerId, schemeType, schemeInterest, isUnsecuredSchemeMapped } = this.fillingForm.controls
+
+    if (!isUnsecuredSchemeMapped.value) return
+
+    if (schemeType.value == 'unsecured') return isUnsecuredSchemeMapped.patchValue(false)
+
+    if (partnerId.invalid || schemeInterest.invalid) return
+
+    const data = {
+      partnerId: partnerId.value,
+      schemeType: schemeType.value,
+      schemeInterest: schemeInterest.value
+    }
+    this.laonSettingService.getUnsecuredSchemes(data).pipe(
+      map(res => {
+        this.unsecuredSchemes = res.data
+        this.ref.detectChanges()
+      }))
+      .subscribe()
+  }
+
+  displayUnsecuredScheme() {
+    if (!this.fillingForm.controls.isUnsecuredSchemeMapped.value) {
+      this.fillingForm.controls.unsecuredSchemeId.patchValue(null)
+      this.setUnsecuredSchemeValidation()
+    }
+  }
+
+  setUnsecuredSchemeValidation() {
+    const { unsecuredSchemeId, schemeType, isUnsecuredSchemeMapped } = this.fillingForm.controls
+
+    if (schemeType.value === 'secured' && isUnsecuredSchemeMapped.value == true) {
+      unsecuredSchemeId.setValidators([Validators.required])
+      unsecuredSchemeId.updateValueAndValidity()
+    } else {
+      unsecuredSchemeId.setValidators([])
+      unsecuredSchemeId.updateValueAndValidity()
+    }
+  }
+
+  setInternalBranchValidation() {
+    const { multiSelect, schemeType } = this.fillingForm.controls
+
+    if (schemeType.value === 'secured') {
+      multiSelect.setValidators([Validators.required])
+      multiSelect.updateValueAndValidity()
+    } else {
+      multiSelect.setValidators([])
+      multiSelect.updateValueAndValidity()
+    }
   }
 
 }

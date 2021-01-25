@@ -1,6 +1,5 @@
 <kt-portlet>
     <kt-portlet-body>
-        <button (click)="ornamentsDetails()"></button>
         <div class="mat-table__wrapper">
             <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
                 <ng-container matColumnDef="customerId">
@@ -38,11 +37,6 @@
                     <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="depositAmount">
-                    <mat-header-cell *matHeaderCellDef>Deposit Amount</mat-header-cell>
-                    <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
-                </ng-container>
-
                 <ng-container matColumnDef="outstandingLoan">
                     <mat-header-cell *matHeaderCellDef>Outstanding Loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
@@ -51,7 +45,7 @@
                     <mat-header-cell *matHeaderCellDef>Scheme Name</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="grossWeight">
                     <mat-header-cell *matHeaderCellDef>Gross Weight</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
@@ -91,7 +85,7 @@
                     <mat-header-cell *matHeaderCellDef>Penal Interest</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="newLoan">
+                <ng-container matColumnDef="newLoanAmount">
                     <mat-header-cell *matHeaderCellDef>New Loan Amount</mat-header-cell>
                     <mat-cell *matCellDef="let item">{{item.name | titlecase}}</mat-cell>
                 </ng-container>
@@ -112,7 +106,7 @@
                 <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
             </mat-table>
-            <div class="mat-table__message" *ngIf="!dataSource.hasItems" >No records found</div>
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
             <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
         </div>
         <div class="mat-table__bottom d-none">
