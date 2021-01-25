@@ -20,7 +20,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 export class LeadManagementComponent implements OnInit {
 
   dataSource: LeadManagementDatasource;
-  displayedColumns = ['fullName', 'customerUniqueId', 'pan', 'internalBranch', 'module', 'state', 'city', 'pincode', 'date', 'status', 'kycStatus', 'kyc', 'actions', 'view', 'menu'];
+  displayedColumns = ['fullName', 'customerUniqueId', 'pan', 'internalBranch', 'module', 'state', 'city', 'pincode', 'date', 'currentWalletBalance', 'status', 'kycStatus', 'kyc', 'actions', 'view', 'menu'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   queryParamsData = {
