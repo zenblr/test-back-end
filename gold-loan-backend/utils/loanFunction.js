@@ -3361,6 +3361,7 @@ let partPaymnetSettlement = async (transactionId, status, paymentReceivedDate, m
         // await penalInterestCalculationForSelectedLoan(moment(), masterLoanId)
 
     }
+    return
 }
 
 let quickSettlement = async (transactionId, status, paymentReceivedDate, masterLoanId, depositAmount, modifiedBy) => {
@@ -3683,6 +3684,7 @@ let quickSettlement = async (transactionId, status, paymentReceivedDate, masterL
         await penalInterestCalculationForSelectedLoan(moment(), masterLoanId)
 
     }
+    return
 }
 
 module.exports = {
