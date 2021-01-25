@@ -134,11 +134,11 @@ export class MenuConfig {
 									page: "/admin/applied-kyc",
 									permission: !this.permissionsArr.includes('appliedKycView'),
 								},
-								{
-									title: "Applied KYC - Digi Gold",
-									page: "/admin/applied-kyc-digi-gold",
-									// permission: !this.permissionsArr.includes('appliedKycView'),
-								},
+								// {
+								// 	title: "Applied KYC - Digi Gold",
+								// 	page: "/admin/applied-kyc-digi-gold",
+								// 	// permission: !this.permissionsArr.includes('appliedKycView'),
+								// },
 								// {
 								// 	title: "Assigned Customers",
 								// 	page: "/admin/assigned-customers",
@@ -948,6 +948,12 @@ export class MenuConfig {
 					],
 					digiGoldItems: [
 						{
+							title: "All Customers",
+							page: "/admin/digi-gold/all-customers",
+							src: "assets/media/aside-icons/icons-05.svg",
+							// permission: !this.permissionsArr.includes('appliedKycView'),
+						},
+						{
 							title: "Wallet",
 							bullet: 'dot',
 							src: "assets/media/aside-icons/wallet.svg",
@@ -966,6 +972,12 @@ export class MenuConfig {
 									permission: !this.permissionsArr.includes('digiGoldWithdrawView'),
 								}
 							]
+						},
+						{
+							title: "Applied KYC",
+							page: "/admin/digi-gold/applied-kyc-digi-gold",
+							src: "assets/media/aside-icons/icons-06.svg",
+							// permission: !this.permissionsArr.includes('appliedKycView'),
 						},
 						// {
 						// 	title: "SIP Management",

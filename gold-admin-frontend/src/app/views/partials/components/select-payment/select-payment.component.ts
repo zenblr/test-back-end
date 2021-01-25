@@ -17,7 +17,9 @@ export class SelectPaymentComponent implements OnInit {
   paymentTypeList = [{ value: 'netbanking', name: 'Net Banking', image: 'assets/net-banking.png' },
   { value: 'card', name: 'Debit Card', image: 'assets/debit-card.png' },
   { value: 'upi', name: 'UPI', image: 'assets/upi.png' },
-  { value: 'wallet', name: 'Wallet', image: 'assets/wallet.png' }, { value: 'IMPS', name: 'IMPS' }, { value: 'NEFT', name: 'NEFT' }, { value: 'RTGS', name: 'RTGS' }, { value: 'cheque', name: 'cheque' }]
+  { value: 'wallet', name: 'Wallet', image: 'assets/wallet.png' },{value:'cash',name:'Cash'},
+  
+  { value: 'IMPS', name: 'IMPS' }, { value: 'NEFT', name: 'NEFT' }, { value: 'RTGS', name: 'RTGS' }, { value: 'cheque', name: 'cheque' }]
   showPaymentValue: FormControl = new FormControl();
   paymentValue = {
     bankName: null,

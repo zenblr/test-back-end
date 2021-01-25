@@ -44,7 +44,7 @@ export class KycDetailsComponent implements OnInit {
   ngOnInit() {
     this.initForm()
 
-    this.kycStage = (this.router.url).split('/')[3]
+    this.kycStage = (this.router.url).split('/')[4]
     if (this.kycStage == 'apply') {
       this.isEditable = true
       this.controls.status.disable()
@@ -294,7 +294,7 @@ export class KycDetailsComponent implements OnInit {
         }))
         .subscribe(res => {
           this.toastr.success(res.message)
-          this.router.navigate(['/admin/applied-kyc-digi-gold'])
+          this.router.navigate(['/admin/digi-gold/applied-kyc-digi-gold'])
         })
     }
     if (this.kycStage == 'apply') {

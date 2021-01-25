@@ -358,7 +358,7 @@ export class TopbarComponent implements OnInit {
 			this.rightButton = true;
 			this.permissionType = "addUnapprovalReason";
 		}
-		if (this.path == "lead-management") {
+		if (this.path == "lead-management" || this.path == 'all-customers') {
 			this.dataSourceHeader();
 			this.value1 = "Add Customer";
 			this.showfilter = true;
@@ -918,16 +918,16 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "applied-kyc-digi-gold") {
 			this.showInput = true;
 		}
-		if (location.href.includes('/admin/applied-kyc-digi-gold/edit/' && '?id=')) {
+		if (location.href.includes('/admin/digi-gold/applied-kyc-digi-gold/edit/' && '?id=')) {
 			this.showBackButton = true;
 		}
-		if (location.href.includes('/admin/applied-kyc-digi-gold/apply/')) {
+		if (location.href.includes('/admin/digi-gold/applied-kyc-digi-gold/apply/')) {
 			this.showBackButton = true;
 		}
 	}
 
 	action(event: Event) {
-		if (this.path == "lead-management") {
+		if (this.path == "lead-management" || this.path == 'all-customers') {
 			this.leadService.openModal.next(true);
 		}
 		if (this.path == "scheme") {
@@ -1140,7 +1140,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "cancel-order-details") {
 			this.cancelOrderDetailsService.applyFilter.next(data);
 		}
-		if (this.path == "lead-management") {
+		if (this.path == "lead-management" || this.path == 'all-customers') {
 			this.leadService.applyFilter.next(data);
 		}
 		if (this.path == "applied-kyc") {
