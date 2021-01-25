@@ -7,7 +7,7 @@ const moment = require('moment')
 const getRazorPayDetails = require('../../utils/razorpay');
 var uniqid = require('uniqid');
 const { getAllPartAndFullReleaseData } = require('../../utils/loanFunction')
-const { quickSettlement,partPaymnetSettlement } = require('../../utils/loanFunction')
+const { quickSettlement, partPaymnetSettlement } = require('../../utils/loanFunction')
 
 exports.razorPayCreateOrder = async (req, res, next) => {
     try {
@@ -53,7 +53,7 @@ exports.refundCron = async (req, res, next) => {
     await sequelize.transaction(async (t) => {
         let razorpayData = []
         //loan
-        let loanRazorpayTemp = await models.tempRazorPayDetails.findAll({ where: { orderStatus: 'Pending', razorPayOrderId: { [Op.not]: null }, createdAt: { [Op.gte]: moment().subtract(4, 'days').format('YYYY-MM-DD') } }, attributes: ['id', 'razorPayOrderId'], transaction: t });
+        let loanRazorpayTemp = await models.tempRazorPayDetails.findAll({ where: { orderStatus: { [Op.iLike]: 'Pending' }, razorPayOrderId: { [Op.not]: null }, createdAt: { [Op.gte]: moment().subtract(4, 'days').format('YYYY-MM-DD') } }, attributes: ['id', 'razorPayOrderId'], transaction: t });
         console.log(moment().subtract(2, 'days').format('YYYY-MM-DD'))
         //digigold temp order
         // let digiGoldOrderTemp = await models.digiGoldTempOrderDetail.findAll({ where: { isOrderPlaced: false, razorpayOrderId: { [Op.not]: null }, refundCronExecuted: false, createdAt: { [Op.lt]: moment().subtract(2, 'days').format('YYYY-MM-DD') } }, attributes: [ 'id', 'isOrderPlaced', 'razorpayOrderId', 'refundCronExecuted'], transaction: t });
@@ -69,13 +69,13 @@ exports.refundCron = async (req, res, next) => {
                 if (customerTransaction.paymentFor == 'quickPay') {
                     let quickPay = await quickSettlement(customerTransaction.id, razerpayInfo.status, customerTransaction.depositDate, customerTransaction.masterLoanId, customerTransaction.transactionAmont, 1)
                     let transcation = await models.customerLoanTransaction.findOne({ where: { razorPayTransactionId: temp.razorPayOrderId } })
-                    await models.tempRazorPayDetails.update({orderStatus:transcation.depositStatus},{where:{razorPayOrderId:temp.razorPayOrderId}})
+                    await models.tempRazorPayDetails.update({ orderStatus: transcation.depositStatus }, { where: { razorPayOrderId: temp.razorPayOrderId } })
 
                 }
                 if (customerTransaction.paymentFor == 'partPayment') {
                     let partPayment = await partPaymnetSettlement(customerTransaction.id, razerpayInfo.status, customerTransaction.depositDate, customerTransaction.masterLoanId, customerTransaction.transactionAmont, 1)
                     let transcation = await models.customerLoanTransaction.findOne({ where: { razorPayTransactionId: temp.razorPayOrderId } })
-                    await models.tempRazorPayDetails.update({orderStatus:transcation.depositStatus},{where:{razorPayOrderId:temp.razorPayOrderId}})
+                    await models.tempRazorPayDetails.update({ orderStatus: transcation.depositStatus }, { where: { razorPayOrderId: temp.razorPayOrderId } })
                 }
                 // if (customerTransaction.paymentFor == 'jewelleryRelease') {
                 //     let ornaments = await models.customerLoanOrnamentsDetail.findAll({ where: { masterLaonId: customerTransaction.masterLoanId } })
