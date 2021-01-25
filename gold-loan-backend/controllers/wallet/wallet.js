@@ -17,6 +17,7 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const walletService = require('../../service/wallet');
+const { transactionDetail } = require('../../service/wallet');
 
 
 
@@ -435,4 +436,18 @@ exports.getwithdrawDetail = async (req, res) => {
     // }
 
 
+}
+
+exports.getTransactionDetails = async (req, res) =>{
+    try {
+        console.log("paymentFor, customerId");
+        const { paymentFor, customerId, search, from, to } = req.query;
+    
+        let transactionData = await transactionDetail(customerId , paymentFor, search, from, to);
+       
+        return res.status(200).json({ transactionDetails: transactionData.transactionDetails, count: transactionData.count.length });
+    
+      } catch (err) {
+        console.log(err);
+      }
 }
