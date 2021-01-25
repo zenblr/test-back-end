@@ -18,14 +18,14 @@ export class TransactionDatasource extends BaseDataSource {
         super();
     }
 
-    loadTransactions(data) {
+    loadTransactions(data,customerId) {
         this.loadingSubject.next(true);
-        this.transactionService.getTransaction(data)
+        this.transactionService.getTransaction(data,customerId)
             .pipe(
                 map(
                     transaction => {
                         this.paginatorTotalSubject.next(transaction.count);
-                        this.entitySubject.next(transaction.data);
+                        this.entitySubject.next(transaction.transactionDetails);
                     }
                 ),
                 catchError(() => of([])),

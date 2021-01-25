@@ -179,21 +179,12 @@ export class LeadManagementComponent implements OnInit {
     });
   }
 
-  // navigateToTransaction(data){ 
-  //   this.leadService.getLeadById(data.id).pipe(
-  //     map(res => {
-  //       this.router.navigate(['/admin/transaction'])      
-  //     }))
-  //     .subscribe();   
-  // }
-
   navigateToTransaction(id) {
     window.open('/admin/transaction/' + id, '_blank');
     // this.router.navigate(['/admin/transaction/' + id])
   }
 
   goToKyc(data) {
-
     var mobile = '';
     this.leadService.getLeadById(data.id).pipe(
       map(res => {

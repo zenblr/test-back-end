@@ -369,7 +369,7 @@ export class TopbarComponent implements OnInit {
 			this.permissionType = "leadManagmentAdd";
 			this.listType = "state,leadStatus";
 		}
-		if (this.path == "transaction") {
+		if (location.href.includes('/admin/transaction/')) {
 			// this.dataSourceHeader();
 			this.showfilter = true;
 			this.filterName = "transaction";
@@ -1179,7 +1179,7 @@ export class TopbarComponent implements OnInit {
 		if (this.path == "packet-tracking") {
 			this.packetTrackingService.applyFilter.next(data)
 		}
-		if (this.path == "transaction") {
+		if (location.href.includes('/admin/transaction/')) {
 			this.transactionService.applyFilter.next(data);
 		}
 		if (location.href.includes('/scrap-management/packet-tracking')) {

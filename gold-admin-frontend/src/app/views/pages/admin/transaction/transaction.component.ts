@@ -25,8 +25,7 @@ export class TransactionComponent implements OnInit {
     from: 1,
     to: 25,
     search: '',
-    scheme: '',
-    customerId: 'this.customerId'
+    scheme: ''
   }
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   destroy$ = new Subject();
@@ -62,7 +61,6 @@ export class TransactionComponent implements OnInit {
     ).subscribe();
     this.subscriptions.push(paginatorSubscriptions);
 
-
     const searchSubscription = this.dataTableService.searchInput$.pipe(takeUntil(this.unsubscribeSearch$))
       .subscribe(res => {
         this.queryParamsData.search = res;
@@ -75,12 +73,11 @@ export class TransactionComponent implements OnInit {
     const entitiesSubscription = this.dataSource.entitySubject.pipe(
       skip(1),
       distinctUntilChanged()
-    ).subscribe(res => {
-      this.transactionResult = res;
+    ).subscribe(res => {   
+      this.transactionResult = res;     
     });
     this.subscriptions.push(entitiesSubscription);
-
-    this.dataSource.loadTransactions(this.queryParamsData);
+    this.dataSource.loadTransactions(this.queryParamsData,this.customerId);
   }
 
   ngOnDestroy() {
@@ -101,12 +98,13 @@ export class TransactionComponent implements OnInit {
     this.queryParamsData.from = ((this.paginator.pageIndex * this.paginator.pageSize) + 1);
     this.queryParamsData.to = ((this.paginator.pageIndex + 1) * this.paginator.pageSize);
 
-    this.dataSource.loadTransactions(this.queryParamsData);
+    this.dataSource.loadTransactions(this.queryParamsData,this.customerId);
   }
 
   applyFilter(data) {
+    console.log(data);    
     this.queryParamsData.scheme = data.data.scheme;
-    this.dataSource.loadTransactions(this.queryParamsData);
+    this.dataSource.loadTransactions(this.queryParamsData,this.customerId);
     this.filteredDataList = data.list;
   }
 

@@ -13,7 +13,7 @@ export class TransactionService {
   applyFilter$ = this.applyFilter.asObservable();
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
-  getTransaction(data): Observable<any> {
+  getTransaction(data,customerId): Observable<any> {
     const reqParams: any = {};
     if (data && data.from) {
       reqParams.from = data.from;
@@ -23,13 +23,10 @@ export class TransactionService {
     }
     if (data && data.search) {
       reqParams.search = data.search;
-    }
-    if (data && data.customerId) {
-      reqParams.customerId = data.customerId;
-    }
+    }  
     if (data && data.scheme) {
       reqParams.scheme = data.scheme;
     }
-    return this.http.get<any>(`/api/wallet/transaction-detail-admin`, { params: reqParams })
+    return this.http.get<any>(`/api/wallet/transaction-detail-admin?customerId=${customerId}`, { params: reqParams })
   }
 }

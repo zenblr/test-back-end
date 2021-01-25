@@ -2,9 +2,14 @@
     .mat-table__wrapper {
         height: 79vh !important; //set table height
     }
-    ::ng-deep.mat-row,
-    ::ng-deep.mat-header-row{
-        // width: 148% !important;
-        width: 125% !important;
+
+    .mat-column-narration{
+        flex: 0 0 12% !important;
+    }
+    .mat-column-updatedBalance{
+        flex: 0 0 11% !important;
+    }
+    .mat-column-amount{
+        flex: 0 0 7% !important;
     }
 }

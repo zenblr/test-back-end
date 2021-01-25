@@ -162,7 +162,10 @@ export class PageConfig {
 				}
 			},
 			"transaction": {
-					page: { title: "Transaction", desc: "" },				
+					page: { title: "Transaction", desc: "" },
+					id: {
+						page: { title: "Transaction", desc: "" },
+					}				
 				},
 				
 			"account": {
