@@ -183,19 +183,23 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
                 await models.customer.update({ currentWalletBalance: Number(newCustomerUpdatedBalance) }, { where: { id: customer.id }, transaction: t });
 
 
-                let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: date, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
+                // let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: date, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
+
+                await models.walletDetails.update({ transactionStatus: "completed" }, { where: { id: transactionData.walletId } });
 
                 var updtedRunningBalance = Number(transactionData.runningBalance) + Number(transactionData.transactionAmount)
 
                 let newUpdtedRunningBalance = updtedRunningBalance.toFixed(2);
 
-                await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, walletId: walletData.id, runningBalance: Number(newUpdtedRunningBalance) }, { where: { id: transactionData.id }, transaction: t });
+                await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, runningBalance: Number(newUpdtedRunningBalance) }, { where: { id: transactionData.id }, transaction: t });
 
                 await sms.sendMessageForDepositRequestAccepted(customer.mobileNumber, transactionData.transactionAmount);
 
             } else {
 
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date }, { where: { id: transactionData.id }, transaction: t });
+                
+                await models.walletDetails.update({ transactionStatus: "rejected" }, { where: { id: transactionData.walletId }, transaction: t });
 
                 await sms.sendMessageForDepositRequestRejected(customer.mobileNumber, transactionData.transactionAmount);
 
