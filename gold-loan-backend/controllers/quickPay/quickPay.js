@@ -16,7 +16,7 @@ const qs = require('qs');
 const check = require("../../lib/checkLib");
 const { paginationWithFromTo } = require("../../utils/pagination");
 let sms = require('../../utils/sendSMS');
-let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, nextDueDateInterest, getAmountLoanSplitUpData, stepDown, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoanWithOutT, quickSettlement,intrestCalculationForSelectedLoanWithOutT, getCustomerLoanId, customerNameNumberLoanId, interestSplit } = require('../../utils/loanFunction')
+let { mergeInterestTable, getCustomerInterestAmount, payableAmountForLoan, customerLoanDetailsByMasterLoanDetails, allInterestPayment, nextDueDateInterest, getAmountLoanSplitUpData, stepDown, intrestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoan, penalInterestCalculationForSelectedLoanWithOutT, quickSettlement, intrestCalculationForSelectedLoanWithOutT, getCustomerLoanId, customerNameNumberLoanId, interestSplit } = require('../../utils/loanFunction')
 
 let { sendPaymentMessage } = require('../../utils/SMS')
 
@@ -288,8 +288,9 @@ exports.quickPayment = async (req, res, next) => {
 
         await sequelize.transaction(async t => {
             let customerLoanTransaction
-            if (razorPayTransactionId) {
-                customerLoanTransaction = await models.customerLoanTransaction.update(paymentDetails, { where: { razorPayTransactionId }, transaction: t });
+            if (!isAdmin) {
+                await models.customerLoanTransaction.update(paymentDetails, { where: { razorPayTransactionId }, transaction: t });
+                customerLoanTransaction = await models.customerLoanTransaction.findOne({ where: { razorPayTransactionId }, transaction: t })
             } else {
 
                 customerLoanTransaction = await models.customerLoanTransaction.create(paymentDetails, { transaction: t });
