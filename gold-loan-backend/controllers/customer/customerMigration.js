@@ -179,7 +179,7 @@ let createKyc = async (req) => {
                     let url;
                     let base64data;
                     let fullBase64Image;
-                    const panPath;
+                    let panPath;
                     console.log(process.env.NODE_ENV)
                     if (process.env.NODE_ENV == "production" || process.env.NODE_ENV == "uat") {
                         url = process.env.BASE_URL + customer.panImage
