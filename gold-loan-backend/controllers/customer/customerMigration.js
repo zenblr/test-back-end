@@ -10,9 +10,6 @@ const { pathToBase64 } = require('../../service/fileUpload')
 const fs = require('fs');
 const FormData = require('form-data');
 const { ifError } = require('assert');
-const http = require('http');
-
-
 
 exports.customerMigration = async (req, res, next) => {
     // let data = await models.customer.findAll({ where: { isAugmontCustomerCreated: false } })
@@ -182,9 +179,6 @@ let createKyc = async (req) => {
                     let url;
                     let base64data;
                     let fullBase64Image;
-                    let panPath;
-                    let file
-                    console.log(process.env.NODE_ENV)
                     if (process.env.NODE_ENV == "production" || process.env.NODE_ENV == "uat") {
                         url = process.env.BASE_URL + customer.panImage
                         const getAwsResp = await models.axios({
@@ -194,13 +188,6 @@ let createKyc = async (req) => {
                         });
                         base64data = Buffer.from(getAwsResp.data, 'binary').toString('base64');
                         fullBase64Image = `data:image/jpeg;base64,${base64data}`
-                        // panPath = process.env.BASE_URL + customer.panImage
-
-                        file = fs.createWriteStream(`public/uploads/digitalGoldKyc/pan-${customer.customerUniqueId}.jpeg`);
-                        let request = http.get(url, function (response) {
-                            response.pipe(file);
-                        });
-
                     } else {
                         url = customer.panImage
 
@@ -212,15 +199,14 @@ let createKyc = async (req) => {
 
                         base64data = fullBase64Image.split(';base64,').pop();
 
-                        panPath = `public/uploads/digitalGoldKyc/pan-${customer.customerUniqueId}.jpeg`;
-
                     }
                     //change
-                    // fs.writeFileSync(panPath, base64data, { encoding: 'base64' });
+
+                    const panPath = `uploads/digitalGoldKyc/pan-${customer.customerUniqueId}.jpeg`;
+                    fs.writeFileSync(panPath, base64data, { encoding: 'base64' });
                     const data = new FormData();
                     data.append('panNumber', customer.panCardNumber);
-                    // data.append('panAttachment', fs.createReadStream(panPath));
-                    data.append('panAttachment', file);
+                    data.append('panAttachment', fs.createReadStream(panPath));
 
                     const options = {
                         'method': 'POST',
@@ -281,8 +267,7 @@ let createCustomerKyc = async (options) => {
                 return resolve({ error: true })
             }
             const respBody = JSON.parse(body);
-            console.log(respBody.errors.panAttachment[0])
-            console.log(respBody.errors.panAttachment[1])
+            console.log(respBody.errors.panAttachment)
 
             if (respBody.statusCode === 200) {
                 return resolve({ error: false })
