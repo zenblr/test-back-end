@@ -89,7 +89,7 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
                 "$walletTransactionDetails.payment_type$": { [Op.iLike]: search + '%' },
                 // "$walletTransactionDetails.razorpay_payment_id$": { [Op.iLike]: search + '%' },
                 "$customer.mobile_number$": { [Op.iLike]: search + '%' },
-
+                "$walletTransactionDetails.bank_transaction_unique_id$": { [Op.iLike]: search + '%' },
             },
         }],
     };
