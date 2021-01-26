@@ -267,8 +267,6 @@ let createCustomerKyc = async (options) => {
                 return resolve({ error: true })
             }
             const respBody = JSON.parse(body);
-            console.log(respBody.errors.panAttachment)
-
             if (respBody.statusCode === 200) {
                 return resolve({ error: false })
             } else if (respBody.errors.status[0].code == 4548) {
