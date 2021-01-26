@@ -9,22 +9,23 @@
 
                 <ng-container matColumnDef="custName">
                     <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
-                    <mat-cell *matCellDef="let transaction">{{transaction?.walletTransactionDetails?.customer?.firstName
-                        | titlecase}}&nbsp;{{transaction?.walletTransactionDetails?.customer?.lastName | titlecase}}
+                    <mat-cell *matCellDef="let transaction">
+                        {{transaction?.customer?.firstName | titlecase}}
+                        {{transaction?.customer?.lastName | titlecase}}
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="custId">
                     <mat-header-cell *matHeaderCellDef>Customer ID </mat-header-cell>
                     <mat-cell *matCellDef="let transaction">
-                        {{transaction?.walletTransactionDetails?.customer?.customerUniqueId}}
+                        {{transaction?.customer?.customerUniqueId}}
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="mobileNumber">
-                    <mat-header-cell *matHeaderCellDef>Mobile number</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Mobile Number</mat-header-cell>
                     <mat-cell *matCellDef="let transaction">
-                        {{transaction?.walletTransactionDetails?.customer?.mobileNumber}}</mat-cell>
+                        {{transaction?.customer?.mobileNumber}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="date">
