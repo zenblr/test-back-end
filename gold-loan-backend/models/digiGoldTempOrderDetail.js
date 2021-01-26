@@ -76,7 +76,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'modified_by',
         },
-        razorpayOrderId:{
+        razorpayOrderId: {
             type: DataTypes.STRING,
             field: 'razorpay_order_id'
         },
@@ -102,20 +102,24 @@ module.exports = (sequelize, DataTypes) => {
             field: 'is_active',
             defaultValue: true,
         },
-
+        refundCronExecuted: {
+            type: DataTypes.BOOLEAN,
+            field: 'refund_cron_executed',
+            defaultValue: true
+        }
     }, {
         freezeTableName: true,
         allowNull: false,
         tableName: 'digi_gold_temp_order_detail',
     });
 
-    DigiGoldTempOrderDetail.associate = function(models) {
+    DigiGoldTempOrderDetail.associate = function (models) {
         DigiGoldTempOrderDetail.belongsTo(models.customer, { foreignKey: 'customerId', as: 'customer' });
         DigiGoldTempOrderDetail.belongsTo(models.walletTempDetails, { foreignKey: 'walletTempId', as: 'walletTemp' });
 
     }
 
-    DigiGoldTempOrderDetail.getTempOrderDetail = (razorpayOrderId) => DigiGoldTempOrderDetail.findOne({where:{razorpayOrderId}})
+    DigiGoldTempOrderDetail.getTempOrderDetail = (razorpayOrderId) => DigiGoldTempOrderDetail.findOne({ where: { razorpayOrderId } })
 
 
     return DigiGoldTempOrderDetail;
