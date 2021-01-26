@@ -35,6 +35,7 @@ export class UserDetailsComponent implements OnInit {
   maxDate = new Date()
   moduleId: any
   disabled: boolean;
+  resetOnPanChange = true;
 
   constructor(
     public fb: FormBuilder,
@@ -103,20 +104,6 @@ export class UserDetailsComponent implements OnInit {
       // this.verifyPAN()
     });
 
-    this.controls.panType.valueChanges.subscribe(res => {
-      if (res == 'form60') {
-        this.controls.panCardNumber.reset()
-        this.controls.panCardNumber.patchValue('')
-        this.controls.panCardNumber.clearValidators()
-        this.controls.panCardNumber.updateValueAndValidity()
-      }
-      if (res == 'pan') {
-        this.controls.form60.reset()
-        this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
-        this.controls.panCardNumber.updateValueAndValidity()
-      }
-    });
-
     this.controls.otp.valueChanges.subscribe(res => {
       if (this.controls.otp.valid) {
         this.isOpverified = false;
@@ -158,7 +145,7 @@ export class UserDetailsComponent implements OnInit {
       referenceCode: [],
       panType: [, Validators.required],
       form60: [''],
-      panImage: [, Validators.required],
+      panImage: [],
       panImg: [],
       panCardNumber: [''],
       id: [],
@@ -166,6 +153,8 @@ export class UserDetailsComponent implements OnInit {
       moduleId: [null],
       organizationTypeId: [null],
       dateOfIncorporation: [null],
+      form60Image: [],
+      form60Img: []
     })
   }
 
@@ -179,6 +168,9 @@ export class UserDetailsComponent implements OnInit {
         this.refCode = res.referenceCode;
         this.controls.referenceCode.patchValue(this.refCode);
         this.userBasicForm.patchValue(res.customerInfo);
+        if ((res.customerInfo.panType && res.customerInfo.panType == 'pan' && res.customerInfo.panCardNumber) || (res.customerInfo.panType && res.customerInfo.panType == 'form60' && res.customerInfo.form60Image)) {
+          this.resetOnPanChange = false
+        }
         this.userBasicForm.patchValue({ moduleId: this.moduleId })
         if (this.controls.moduleId.value == 1) {
           this.userBasicForm.patchValue({ userType: null })
@@ -247,8 +239,12 @@ export class UserDetailsComponent implements OnInit {
         map(res => {
           if (res) {
             this.controls.form60.patchValue(event.target.files[0].name)
-            this.controls.panImage.patchValue(res.uploadFile.path)
-            this.controls.panImg.patchValue(res.uploadFile.URL)
+            // this.controls.panImage.patchValue(res.uploadFile.path)
+            // this.controls.panImg.patchValue(res.uploadFile.URL)
+
+            let formControl = this.getFormControlPanForm60()
+            this.controls[formControl.path].patchValue(res.uploadFile.path)
+            this.controls[formControl.URL].patchValue(res.uploadFile.URL)
           }
         }),
         catchError(err => {
@@ -311,6 +307,8 @@ export class UserDetailsComponent implements OnInit {
   }
 
   submit() {
+    // console.log(this.userBasicForm.getRawValue())
+    // return
     if (this.userBasicForm.invalid) {
       this.userBasicForm.markAllAsTouched()
       return
@@ -331,7 +329,7 @@ export class UserDetailsComponent implements OnInit {
 
         if (res) {
           // this.next.emit(true);
-          this.next.emit(res.customerKycCurrentStage);
+          this.next.emit(res.data.customerKycCurrentStage);
         }
       }),
       catchError(err => {
@@ -353,10 +351,35 @@ export class UserDetailsComponent implements OnInit {
   }
 
   remove() {
-    this.controls.panCardNumber.patchValue(null)
-    this.controls.form60.patchValue(null)
-    this.controls.panImage.patchValue(null)
-    this.controls.panImg.patchValue(null)
+    // //changes
+    // if (this.resetOnPanChange) {
+    //   this.controls.panCardNumber.patchValue(null)
+    // }
+    // this.controls.form60.patchValue(null)
+    // this.controls.panImage.patchValue(null)
+    // this.controls.panImg.patchValue(null)
+    // //changes
+
+    // this.controls.panCardNumber.patchValue(null)
+    // this.controls.form60.patchValue(null)
+    // this.controls.panImage.patchValue(null)
+    // this.controls.panImg.patchValue(null)
+
+    let panType = this.controls.panType.value
+    if (panType) {
+      if (this.resetOnPanChange) {
+        if (panType === 'pan') {
+          this.controls.form60Image.patchValue(null)
+          this.controls.form60Img.patchValue(null)
+        }
+        if (panType === 'form60') {
+          this.controls.panImage.patchValue(null)
+          this.controls.panImg.patchValue(null)
+        }
+        this.controls.panCardNumber.patchValue(null)
+        this.controls.form60.patchValue(null)
+      }
+    }
   }
 
   isPdf(image: string): boolean {
@@ -423,5 +446,43 @@ export class UserDetailsComponent implements OnInit {
     this.controls.mobileNumber.enable()
     this.controls.panType.enable()
     this.controls.panCardNumber.enable()
+  }
+
+  getFormControlPanForm60() {
+    let panType = this.controls.panType.value
+    if (panType) {
+      if (panType === 'pan') {
+        return { path: 'panImage', URL: 'panImg' }
+      }
+      if (panType === 'form60') {
+        return { path: 'form60Image', URL: 'form60Img' }
+      }
+    }
+  }
+
+  setPanTypeValidation() {
+    const panType = this.controls.panType.value
+    if (panType == 'form60') {
+
+      //current changes
+      // this.controls.panCardNumber.patchValue('')
+      this.controls.form60.reset()
+      this.controls.panImage.setValidators([])
+      this.controls.panImage.updateValueAndValidity()
+      this.controls.panCardNumber.setValidators([])
+      this.controls.panCardNumber.updateValueAndValidity()
+      this.controls.form60Image.setValidators([Validators.required])
+      this.controls.form60Image.updateValueAndValidity()
+    }
+    if (panType == 'pan') {
+
+      this.controls.form60.reset()
+      this.controls.panCardNumber.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')])
+      this.controls.panCardNumber.updateValueAndValidity()
+      this.controls.panImage.setValidators([Validators.required])
+      this.controls.panImage.updateValueAndValidity()
+      this.controls.form60Image.setValidators([])
+      this.controls.form60Image.updateValueAndValidity()
+    }
   }
 }

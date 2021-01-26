@@ -181,15 +181,6 @@ export class DisburseComponent implements OnInit {
         }
         this.disburseForm.patchValue({ loanAmount: res.data.finalLoanAmount })
         this.calcfinalLoanAmount()
-        if (Number(this.globalValue.cashTransactionLimit) < Number(this.disburseForm.controls.loanAmount.value)) {
-          this.disburseForm.controls.paymentMode.patchValue('bank')
-          this.disburseForm.controls.paymentMode.disable()
-          this.setBankTransferTypeValidation()
-          return
-        }
-        this.disburseForm.controls.paymentMode.patchValue(res.data.paymentType)
-        this.setBankTransferTypeValidation()
-
         if (this.details.isLoanTransfer) {
           this.controls.unsecuredTransactionId.patchValue(res.data.unsecuredTransactionId)
           this.controls.securedTransactionId.patchValue(res.data.securedTransactionId)
@@ -205,6 +196,16 @@ export class DisburseComponent implements OnInit {
           this.controls.otherAmountTransactionId.clearValidators()
           this.controls.otherAmountTransactionId.updateValueAndValidity()
         }
+        if (Number(this.globalValue.cashTransactionLimit) < Number(this.disburseForm.controls.loanAmount.value)) {
+          this.disburseForm.controls.paymentMode.patchValue('bank')
+          this.disburseForm.controls.paymentMode.disable()
+          this.setBankTransferTypeValidation()
+          return
+        }
+        this.disburseForm.controls.paymentMode.patchValue(res.data.paymentType)
+        this.setBankTransferTypeValidation()
+
+       
       }
     })
   }

@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     },
         {
             freezeTableName: true,
-            tableName: 'digital_gold_merchant_details',
+            tableName: 'digi_gold_merchant_details',
         })
 
         DigiGoldMerchantDetails.associate = function (models) {

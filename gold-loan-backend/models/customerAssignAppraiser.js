@@ -62,6 +62,9 @@ module.exports = (sequelize, DataTypes) => {
         if (values.customer) {
             values.customer.panImg = baseUrlConfig.BASEURL + values.customer.panImage;
         }
+        if (values.customer) {
+            values.customer.form60Img = baseUrlConfig.BASEURL + values.customer.form60Image;
+        }
         return values;
     }
 

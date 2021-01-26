@@ -20,7 +20,7 @@ export class PageConfig {
 					page: { title: "Show Feedback", desc: "" },
 				},
 			},
-			error:{
+			error: {
 				page: { title: "Error Logs", desc: "" },
 			},
 			masters: {
@@ -150,7 +150,7 @@ export class PageConfig {
 				// }
 			},
 			"lead-management": {
-				page: { title: "All Leads", desc: "" },
+				page: { title: "All Customers", desc: "" },
 				"new-requests": {
 					page: { title: "Appraiser Requests", desc: "" },
 				},
@@ -158,9 +158,16 @@ export class PageConfig {
 					page: { title: "My Requests", desc: "" },
 				},
 				"registered-customers": {
-					page: { title: "Customer Registration List", desc: "" }
+					page: { title: "Customer Request List", desc: "" }
 				}
 			},
+			"transaction": {
+					page: { title: "Transaction", desc: "" },
+					id: {
+						page: { title: "Transaction", desc: "" },
+					}				
+				},
+				
 			"account": {
 				"loan-disbursement": {
 					page: { title: "Loan Disbursement", desc: "" },
@@ -431,6 +438,67 @@ export class PageConfig {
 					page: { title: "Standard deduction", desc: "" },
 				},
 			},
+			"digi-gold": {
+
+				"wallet": {
+					"deposit-requests": {
+						page: { title: "Deposit Requests", desc: "" },
+						id: {
+							page: { title: "Deposit Requests Details", desc: "" },
+						},
+					},
+					"withdrawal-requests": {
+						page: { title: "Withdrawal Requests", desc: "" },
+						id: {
+							page: { title: "Withdrawal Requests Details", desc: "" },
+						},
+					},
+
+
+				},
+				"global-settings": {
+					page: { title: "Global Setting", desc: "" },
+				},
+
+				"sip-management": {
+
+					"sip-cycle-date": {
+						page: { title: "SIP Cycle Date", desc: "" },
+					},
+					"sip-investment-tenure": {
+						page: { title: "SIP Investment Tenure", desc: "" },
+					},
+
+					"create-sip": {
+						page: { title: "Create SIP", desc: "" },
+					},
+					"sip-application": {
+						page: { title: "SIP Application", desc: "" },
+					},
+
+					"sip-trades": {
+						page: { title: "SIP Trades", desc: "" },
+					},
+
+				},
+				"applied-kyc-digi-gold": {
+					page: { title: "Applied KYC - Digi Gold", desc: "" },
+					"edit": {
+						id: {
+							page: { title: "Customer KYC", desc: "" },
+						}
+					},
+					"apply": {
+						id: {
+							page: { title: "Customer KYC", desc: "" },
+						}
+					},
+				},
+				"all-customers": {
+					page: { title: "All Customers", desc: '' }
+				}
+			},
+
 			"global-map": {
 				page: { title: "Global Map", desc: "" },
 			},

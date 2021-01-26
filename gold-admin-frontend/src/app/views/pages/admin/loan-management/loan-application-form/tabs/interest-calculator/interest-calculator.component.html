@@ -268,6 +268,77 @@
                         <label for="" class="text-color font-weight-500">Processing Charges -
                             {{controls.processingCharge.value}}</label>
                     </div>
+                    <div class="table-div" id="print">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class=" text-left kt-padding-25">Date</th>
+                                    <th scope="col" class=" text-center"
+                                        [ngStyle]="{'width':controls.isUnsecuredSchemeApplied.value?'auto':'50%'}">
+                                        {{partnerName | uppercase }} / {{selectedScheme?.schemeName | titlecase}}
+                                        ({{controls.interestRate.value}}%)
+                                    </th>
+                                    <th scope="col" class=" text-left">Secured Total Interest</th>
+                                    <th scope="col" class=" text-left">Secured Rebate Amount</th>
+                                    <th scope="col" class=" text-center"
+                                        *ngIf="controls.isUnsecuredSchemeApplied.value">
+                                        {{partnerName | uppercase }} /
+                                        {{selectedUnsecuredscheme.schemeName | titlecase}}
+                                        ({{controls.unsecuredInterestRate.value}}%)
+                                    </th>
+                                    <th scope="col" class=" text-left" *ngIf="controls.isUnsecuredSchemeApplied.value">Un-Secured Total Interest</th>
+                                    <th scope="col" class=" text-left" *ngIf="controls.isUnsecuredSchemeApplied.value">Un-Secured Rebate Amount</th>
+                                    <th scope="col" class=" text-center"
+                                        *ngIf="controls.isUnsecuredSchemeApplied.value">
+                                        Total Interest Amount
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let data of dateOfPayment;index as idx; last as last">
+                                    <td *ngIf="approved">{{data.emiDueDate | date :'mediumDate'}}</td>
+                                    <td *ngIf="!approved">{{data.month }}</td>
+
+                                    <td class="text-center currency">
+                                        {{data.securedInterestAmount | indianCurrencyFormat}}
+                                    </td>
+                                    <td class="text-center currency">
+                                        {{data.secureHighestInterestAmount | indianCurrencyFormat}}
+                                    </td>
+                                    <td class="text-center currency">
+                                        {{data.securedRebateAmount | indianCurrencyFormat}}
+                                    </td>
+
+                                    <td class="text-center currency" *ngIf="controls.isUnsecuredSchemeApplied.value">
+                                        {{data.unsecuredInterestAmount | indianCurrencyFormat}}
+                                    </td>
+                                    <td class="text-center currency"*ngIf="controls.isUnsecuredSchemeApplied.value">
+                                        {{data.unsecureHighestInterestAmount | indianCurrencyFormat}}
+                                    </td>
+                                    <td class="text-center currency"*ngIf="controls.isUnsecuredSchemeApplied.value">
+                                        {{data.unsecuredRebateAmount | indianCurrencyFormat}}
+                                    </td>
+
+                                    <td class="text-center currency" *ngIf="controls.isUnsecuredSchemeApplied.value">
+                                        {{data.totalAmount.toFixed(2) | indianCurrencyFormat}}
+                                    </td>
+
+                                </tr>
+                            </tbody>
+
+                            <!-- <tfoot>
+                                <tr>
+                                    <td><strong>Total Amount</strong></td>
+                                    <td class="text-center">
+                                        <strong><span class="currency">
+                                                {{totalinterestAmount.toFixed(2) | indianCurrencyFormat}}</span>
+                                        </strong>
+                                    </td>
+
+                            </tfoot> -->
+                        </table>
+                    </div>
+
                     <div class="table-div" *ngIf="controls.isUnsecuredSchemeApplied.value">
                         <table class="table">
                             <thead>
@@ -310,78 +381,6 @@
                             </tfoot> -->
                         </table>
                     </div>
-                    <div class="table-div" id="print">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class=" text-left kt-padding-25">Date</th>
-                                    <th scope="col" class=" text-left">Secured Total Interest</th>
-                                    <th scope="col" class=" text-center"
-                                        [ngStyle]="{'width':controls.isUnsecuredSchemeApplied.value?'auto':'50%'}">
-                                        {{partnerName | uppercase }} / {{selectedScheme?.schemeName | titlecase}}
-                                        ({{controls.interestRate.value}}%)
-                                    </th>
-                                    <th scope="col" class=" text-left">Secured Rebate Amount</th>
-                                    <th scope="col" class=" text-left" *ngIf="controls.isUnsecuredSchemeApplied.value">Un-Secured Total Interest</th>
-                                    <th scope="col" class=" text-center"
-                                        *ngIf="controls.isUnsecuredSchemeApplied.value">
-                                        {{partnerName | uppercase }} /
-                                        {{selectedUnsecuredscheme.schemeName | titlecase}}
-                                        ({{controls.unsecuredInterestRate.value}}%)
-                                    </th>
-                                    <th scope="col" class=" text-left" *ngIf="controls.isUnsecuredSchemeApplied.value">Un-Secured Rebate Amount</th>
-                                    <th scope="col" class=" text-center"
-                                        *ngIf="controls.isUnsecuredSchemeApplied.value">
-                                        Total Interest Amount
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let data of dateOfPayment;index as idx; last as last">
-                                    <td *ngIf="approved">{{data.emiDueDate | date :'mediumDate'}}</td>
-                                    <td *ngIf="!approved">{{data.month }}</td>
-
-                                    <td class="text-center currency">
-                                        {{data.secureHighestInterestAmount | indianCurrencyFormat}}
-                                    </td>
-                                    <td class="text-center currency">
-                                        {{data.securedInterestAmount | indianCurrencyFormat}}
-                                    </td>
-                                    <td class="text-center currency">
-                                        {{data.securedRebateAmount | indianCurrencyFormat}}
-                                    </td>
-                                    <td class="text-center currency"*ngIf="controls.isUnsecuredSchemeApplied.value">
-                                        {{data.unsecureHighestInterestAmount | indianCurrencyFormat}}
-                                    </td>
-                                    
-                                    <td class="text-center currency" *ngIf="controls.isUnsecuredSchemeApplied.value">
-                                        {{data.unsecuredInterestAmount | indianCurrencyFormat}}
-                                    </td>
-                                    <td class="text-center currency"*ngIf="controls.isUnsecuredSchemeApplied.value">
-                                        {{data.unsecuredRebateAmount | indianCurrencyFormat}}
-                                    </td>
-
-                                    <td class="text-center currency" *ngIf="controls.isUnsecuredSchemeApplied.value">
-                                        {{data.totalAmount.toFixed(2) | indianCurrencyFormat}}
-                                    </td>
-
-                                </tr>
-                            </tbody>
-
-                            <!-- <tfoot>
-                                <tr>
-                                    <td><strong>Total Amount</strong></td>
-                                    <td class="text-center">
-                                        <strong><span class="currency">
-                                                {{totalinterestAmount.toFixed(2) | indianCurrencyFormat}}</span>
-                                        </strong>
-                                    </td>
-
-                            </tfoot> -->
-                        </table>
-                    </div>
-
-                   
                 </div>
             </div>
             <div class="row justify-content-center">

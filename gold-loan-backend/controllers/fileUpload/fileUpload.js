@@ -4,7 +4,7 @@ const models = require('../../models'); // importing models.
 const multerS3 = require('multer-s3');
 const fs = require('fs');
 let AWS = require('aws-sdk');
-
+const { pathToBase64 } = require('../../service/fileUpload')
 // File Upload.
 exports.uploadFile =
     async (req, res, next) => {
@@ -48,6 +48,8 @@ exports.uploadFile =
             destination = `public/uploads/scrap/customerDocumentDetails/${scrapId}/`
         } else if (fileFor == "fullRelease") {
             destination = `public/uploads/fullRelease/${fullReleaseId}/`;
+        } else if (fileFor == "ecsForm") {
+            destination = `public/uploads/sip/ecsForm/${customerId}`;
         } else {
             return res.status(422).json({ message: 'Reason not found' });
         }
@@ -242,4 +244,19 @@ exports.base64ConvertorWithPath = async (req, res, next) => {
             imgUrl: `${process.env.BASE_URL}/uploads/images/${fileName}.jpeg`, uploadFile
         })
     }
+}
+
+exports.pathToBase64 = async (req, res, next) => {
+
+    return res.status(200).json({ data: 'sucess' })
+
+    // let data = await pathToBase64(req.body.path)
+
+    // if (data.success) {
+    //     return res.status(data.status).json({ data: data.data })
+    // } else {
+    //     return res.status(data.status).json({ data: data.message })
+
+    // }
+
 }

@@ -63,6 +63,10 @@ module.exports = async (req, res, next) => {
     
             "/api/state",
             "/api/city",
+            "/api/identity-type",
+            "/api/address-proof-type",
+            "/api/occupation",
+            "/api/organization-type",
 
             "/api/digital-gold/rates",
             "/api/digital-gold/bank",
@@ -80,11 +84,12 @@ module.exports = async (req, res, next) => {
             "/api/digital-gold/cart",
             "/api/digital-gold/cart/"+getParams1,
             "/api/digital-gold/cart/"+getParams2+"/"+getParams1,
-            "/api/digital-gold/redeem-order",
+            "/api/digital-gold/redeem-order/delivery",
             "/api/digital-gold/redeem-order/order-info/"+getParams1,
             "/api/digital-gold/redeem-order/invoice/"+getParams1,
             "/api/digital-gold/redeem-order/invoice-web/"+getParams1,
             "/api/digital-gold/buy",
+            "/api/digital-gold/buy/buy-metal",
             "/api/digital-gold/buy/buy-info/"+getParams1,
             "/api/digital-gold/buy/generate-invoice/"+getParams1,
             "/api/digital-gold/buy/generate-invoice-web/"+getParams1,
@@ -93,9 +98,18 @@ module.exports = async (req, res, next) => {
             "/api/digital-gold/payment",
             "/api/digital-gold/withdraw/"+getParams1,
             "/api/digital-gold/contact-us",
-            "/api/digital-gold/customer/create-existent-customer"
+            "/api/digital-gold/customer/create-existent-customer",
+            "/api/web-hook/generate-api-key",
+            "/api/web-hook/change-order-status",
+            "/api/web-hook/change-withdraw-status",
+            "/api/web-hook/change-kyc-status",
+            "/api/customer/app/customer-wallet/add-amount",
+            "/api/customer/app/quick-pay/payment",
+            "/api/customer/app/part-payment/payment",
+            "/api/customer/app/jewellery-release/full-release",
+            "/api/customer/app/jewellery-release/part-release",
+            "/api/customer/app/contact-us"
         ];
-    
         if (!skipUrls.includes(req._parsedUrl.pathname)) {
             try {
                 const token = req.headers.authorization.split(" ")[1];

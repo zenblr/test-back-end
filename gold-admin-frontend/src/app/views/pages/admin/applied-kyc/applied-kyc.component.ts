@@ -20,7 +20,7 @@ export class AppliedKycComponent implements OnInit {
 
   filteredDataList: any = {};
   dataSource: AppliedKycDatasource;
-  displayedColumns = ['fullName', 'pan', 'customerId', 'currentProduct', 'date', 'cceApprovalStatus', 'kycStatus', 'scrapCceApprovalStatus', 'scrapKycStatus', 'action', 'view'];
+  displayedColumns = ['fullName', 'pan', 'customerId', 'currentProduct', 'date', 'cceApprovalStatus', 'kycStatus', 'scrapCceApprovalStatus', 'scrapKycStatus', 'allowToEdit', 'action', 'view'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild('sort1', { static: true }) sort: MatSort;
@@ -37,7 +37,8 @@ export class AppliedKycComponent implements OnInit {
     cceStatus: '',
     kycStatus: '',
     scrapKycStatusFromCce: '',
-    scrapKycStatus: ''
+    scrapKycStatus: '',
+    modulePoint: ''
   }
   permission: any;
 
@@ -112,6 +113,7 @@ export class AppliedKycComponent implements OnInit {
     this.queryParamsData.kycStatus = data.data.kycStatus;
     this.queryParamsData.scrapKycStatusFromCce = data.data.scrapKycStatusFromCce;
     this.queryParamsData.scrapKycStatus = data.data.scrapKycStatus;
+    this.queryParamsData.modulePoint = data.data.modulePoint;
     this.dataSource.loadKyc(this.queryParamsData);
     this.filteredDataList = data.list;
   }
@@ -178,5 +180,9 @@ export class AppliedKycComponent implements OnInit {
 
   applyScrap(scrap) {
     this.router.navigate(['/admin/scrap-management/scrap-buying-application-form/'], { queryParams: { customerID: scrap.customer.customerUniqueId } })
+  }
+
+  allowToEdit(data) {
+    this.appliedKycService.changeKYCEditable(data).subscribe()
   }
 }

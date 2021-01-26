@@ -9,16 +9,40 @@ const uniqid = require('uniqid');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME } = require('../../../utils/constant');
 const errorLogger = require('../../../utils/errorLogger');
+const { getCustomerCityById, getCustomerStateById } = require('../../../service/customerAddress')
+const { createCustomer } = require('../../../service/digiGold')
+
 
 exports.getCustomerPassbookDetails = async (req, res) => {
   try {
     const id = req.userData.id;
+    console.log("id", id)
+
     let customerDetails = await models.customer.findOne({
       where: { id, isActive: true },
     });
+
+    let availableBalance = await models.digiGoldCustomerBalance.findOne({
+      where: { customerId: id, isActive: true },
+    });
+    let currentGoldBalance = 0;
+    let currentSilverBalance = 0;
+    let sellableGoldBalance = 0;
+    let sellableSilverBalance = 0;
+
+    if (availableBalance) {
+      currentGoldBalance = availableBalance.currentGoldBalance ? availableBalance.currentGoldBalance : 0;
+      currentSilverBalance = availableBalance.currentSilverBalance ? availableBalance.currentSilverBalance : 0;
+      sellableGoldBalance = availableBalance.sellableGoldBalance ? availableBalance.sellableGoldBalance : 0;
+      sellableSilverBalance = availableBalance.sellableSilverBalance ? availableBalance.sellableSilverBalance : 0;
+    }
+    // const metalType = [];
+    // metalType.push(currentGoldBalance,currentSilverBalance,sellableGoldBalance,sellableSilverBalance)
+    console.log("availablanavce", availableBalance)
     if (check.isEmpty(customerDetails)) {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     };
+
     const customerUniqueId = customerDetails.customerUniqueId;
     const merchantData = await getMerchantData();
     const result = await models.axios({
@@ -30,8 +54,13 @@ exports.getCustomerPassbookDetails = async (req, res) => {
         'Authorization': `Bearer ${merchantData.accessToken}`,
       },
     });
+    // const resultData = result.data;
+    result.data.result.data.sellableGoldBalance = sellableGoldBalance;
+    result.data.result.data.sellableSilverBalance = sellableSilverBalance;
+
     return res.status(200).json(result.data);
   } catch (err) {
+    console.log(err);
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
     if (err.response) {
@@ -63,12 +92,18 @@ exports.getCustomerDetails = async (req, res) => {
         'Authorization': `Bearer ${merchantData.accessToken}`,
       },
     });
+    let cityId = await getCustomerCityById(null, result.data.result.data.userCityId)
+    let stateId = await getCustomerStateById(null, result.data.result.data.userStateId)
+
     const name = result.data.result.data.userName.split(' ');
     result.data.result.data.firstName = name[0];
     result.data.result.data.lastName = name[1];
     result.data.result.data.mobileNumber = customerDetails.mobileNumber;
+    result.data.result.data.stateId = stateId
+    result.data.result.data.cityId = cityId
     return res.status(200).json(result.data);
   } catch (err) {
+    console.log(err);
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
     if (err.response) {
@@ -90,6 +125,10 @@ exports.updateCustomerDetails = async (req, res) => {
     if (check.isEmpty(customerDetails)) {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     }
+
+    let city = await getCustomerCityById(cityId, null);
+    let state = await getCustomerStateById(stateId, null);
+
     const customerUniqueId = customerDetails.customerUniqueId;
     const merchantData = await getMerchantData();
     const data = qs.stringify({
@@ -97,9 +136,9 @@ exports.updateCustomerDetails = async (req, res) => {
       'emailId': email,
       'userName': firstName + " " + lastName,
       'userAddress': address,
-      'userCity': "1GXDPyX2",
+      'userCity': city.cityUniqueCode,
       // 'userState': stateId,
-      'userState': "ep9kJ7Px",
+      'userState': state.stateUniqueCode,
       'userPincode': pinCode,
       'dateOfBirth': dateOfBirth,
       'gender': gender,
@@ -142,6 +181,7 @@ exports.updateCustomerDetails = async (req, res) => {
     });
     return res.status(200).json(result.data);
   } catch (err) {
+    console.log(err);
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
     if (err.response) {
@@ -153,12 +193,13 @@ exports.updateCustomerDetails = async (req, res) => {
 }
 
 exports.createCustomerInAugmontDb = async (req, res) => {
-  try{
+  try {
     const id = req.userData.id;
     const merchantData = await getMerchantData();
 
     const customer = await models.customer.findOne({ where: { id, isActive: true } });
-  
+    let state = await getCustomerStateById(customer.stateId, null);
+    let city = await getCustomerCityById(customer.cityId, null);
     let customerUniqueId;
     await sequelize.transaction(async (t) => {
       if (!customer.customerUniqueId) {
@@ -168,15 +209,16 @@ exports.createCustomerInAugmontDb = async (req, res) => {
         customerUniqueId = customer.customerUniqueId;
       }
     });
-  
+
     const data = qs.stringify({
       'mobileNumber': customer.mobileNumber,
       // 'emailId': email,
       'uniqueId': customerUniqueId,
       'userName': customer.firstName + " " + customer.lastName,
       // 'userAddress': address,
-      'userCity': "1GXDPyX2",
-      'userState': "ep9kJ7Px",
+      'userCity': city.cityUniqueCode,
+      // 'userState': stateId,
+      'userState': state.stateUniqueCode,
       // 'userPincode': pinCode,
       // 'dateOfBirth':dateOfBirth,
       // 'gender':gender,
@@ -184,26 +226,30 @@ exports.createCustomerInAugmontDb = async (req, res) => {
       // 'utmMedium': utmMedium,
       // 'utmCampaign': utmCampaign
     })
-    const result = await models.axios({
-      method: 'POST',
-      url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Bearer ${merchantData.accessToken}`,
-      },
-      data: data
-    });
-  
+    // const result = await models.axios({
+    //   method: 'POST',
+    //   url: `${process.env.DIGITALGOLDAPI}/merchant/v1/users/`,
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //     'Authorization': `Bearer ${merchantData.accessToken}`,
+    //   },
+    //   data: data
+    // });
+    const result = await createCustomer(data)
+    if (!result.isSuccess) {
+      return res.status(422).json({ err: result.message });
+    }
+
     return res.status(200).json({ message: "Success" });
-  
-  }catch(err){
+
+  } catch (err) {
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
-  
-      if (err.response) {
-        return res.status(422).json(err.response.data);
-      } else {
-        console.log('Error', err.message);
-      }
+
+    if (err.response) {
+      return res.status(422).json(err.response.data);
+    } else {
+      console.log('Error', err.message);
+    }
   }
 
 }

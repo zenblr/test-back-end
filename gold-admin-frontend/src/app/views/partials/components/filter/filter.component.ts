@@ -67,6 +67,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 	cronProductArray: { name: string; value: string; }[];
 	cronStatusArray: { name: string; value: string; }[];
 	cronTypeArray: { name: string; value: string; }[];
+	modules = [];
 
 	constructor(
 		private fb: FormBuilder,
@@ -151,6 +152,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 							break;
 						case 'leadStatus':
 							this.getLeadStatus();
+							this.getModulePoints()
 							break;
 						case 'scrapStatus':
 							this.scrapStatus();
@@ -160,6 +162,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 							this.cronStatus();
 							this.cronType()
 							break
+						case 'modulePoint':
+							this.getModulePoints()
 					}
 				}
 			}
@@ -199,7 +203,9 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			cronType: [''],
 			bmStatus: [''],
 			otStatus: [''],
-			depositStatus: ['']
+			depositStatus: [''],
+			modulePoint: [''],
+			paymentFor: [''],
 		});
 
 		this.filterForm.valueChanges.subscribe((val) => {
@@ -338,6 +344,10 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.otStatus = controls['otStatus'].value.multiSelect.map(e => e.value).toString();
 				this.filterObject.list.otStatus = controls['otStatus'].value.multiSelect;
 			}
+			if (controls['modulePoint'].value && (controls['modulePoint'].value.multiSelect && controls['modulePoint'].value.multiSelect.length)) {
+				this.filterObject.data.modulePoint = controls['modulePoint'].value.multiSelect.map(e => e.modulePoint).toString();
+				this.filterObject.list.modulePoint = controls['modulePoint'].value.multiSelect;
+			}
 			// if (controls['date'].value) {
 			// 	this.filterObject.data.date = controls['date'].value;
 			// 	this.filterObject.list.date = controls['date'].value;
@@ -367,6 +377,11 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 				this.filterObject.data.depositStatus = controls['depositStatus'].value
 				this.filterObject.list.depositStatus = controls['depositStatus'].value;
 			}
+			if (controls['paymentFor'].value) {
+				this.filterObject.data.paymentFor = controls['paymentFor'].value
+				this.filterObject.list.paymentFor = controls['paymentFor'].value;
+			}
+
 			return this.filterObject;
 		}
 	}
@@ -476,6 +491,12 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			case 'otStatus':
 				this.controls['otStatus'].value.multiSelect.splice(index, 1);
 				break;
+			case 'modulePoint':
+				this.controls['modulePoint'].value.multiSelect.splice(index, 1);
+				break;
+			case 'paymentFor':
+				this.controls['paymentFor'].patchValue('');
+				break;
 			default:
 				break;
 		}
@@ -500,6 +521,8 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 			packets: this.filterForm.controls['packets'].value,
 			packetTracking: this.filterForm.controls['packetTracking'].value,
 			depositStatus: this.filterForm.controls['depositStatus'].value,
+			modulePoint: this.filterForm.controls['modulePoint'].value,
+			paymentFor: this.filterForm.controls['paymentFor'].value,
 		});
 		setTimeout(() => {
 			this.applyFilter();
@@ -614,6 +637,12 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		});
 	}
 
+	getModulePoints() {
+		this.sharedService.getModulePoints().subscribe((res) => {
+			this.modules = res;
+		});
+	}
+
 	clearFilterForm() {
 		if (this.filterForm) {
 			this.clearData = true;
@@ -627,6 +656,7 @@ export class FilterComponent implements OnInit, OnChanges, OnDestroy {
 		this.controls.packets.patchValue('')
 		this.controls.packetTrackingLocation.patchValue('')
 		this.controls.packetTracking.patchValue('')
+		this.controls.paymentFor.patchValue('')
 	}
 
 	validations() {

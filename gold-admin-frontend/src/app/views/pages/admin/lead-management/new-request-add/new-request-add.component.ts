@@ -35,7 +35,8 @@ export class NewRequestAddComponent implements OnInit {
   }
 
   getModules() {
-    this.roleService.getAllModuleAppraiser().pipe(map(res => {
+    const data = { isFor: 'request' }
+    this.roleService.getAllModuleAppraiser(data).pipe(map(res => {
       this.modules = res;
     })).subscribe()
   }

@@ -8,7 +8,7 @@ const check = require('../../lib/checkLib');
 const request = require('request');
 const { createReferenceCode } = require('../../utils/referenceCode');
 //for email
-const { sendMail } = require('../../service/emailService')
+const { sendMail } = require('../../utils/emailService')
 const CONSTANT = require('../../utils/constant');
 const moment = require('moment');
 const cache = require('../../utils/cache');

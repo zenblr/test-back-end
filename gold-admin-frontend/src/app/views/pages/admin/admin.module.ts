@@ -47,6 +47,10 @@ import { AdminComponent } from './admin.component';
 						loadChildren: () => import('./scrap-management/scrap-management.module').then(m => m.ScrapManagementModule)
 					},
 					{
+						path: 'digi-gold',
+						loadChildren: () => import('./digi-gold/digi-gold.module').then(m => m.DigiGoldModule)
+					},
+					{
 						path: 'upload-data',
 						loadChildren: () => import('./upload-data/upload-data.module').then(m => m.UploadDataModule),
 					},
@@ -115,6 +119,14 @@ import { AdminComponent } from './admin.component';
 						path: 'roles',
 						loadChildren: () => import('./settings/roles-permissions/roles-permissions.module').then(m => m.RolesPermissionsModule)
 					},
+					{
+						path: 'transaction',
+						loadChildren: () => import('./transaction/transaction.module').then(m => m.TransactionModule)
+					},
+					// {
+					// 	path: 'applied-kyc-digi-gold',
+					// 	loadChildren: () => import('./digi-gold-kyc/digi-gold-kyc.module').then(m => m.DigiGoldKycModule)
+					// },
 					{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 					{ path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
 				]

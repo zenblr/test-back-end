@@ -3,7 +3,7 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const jwt = require('jsonwebtoken');
-
+const cache = require('../../utils/cache');
 const { JWT_SECRETKEY, JWT_EXPIRATIONTIME_CUSTOMER } = require('../../utils/constant');
 let check = require('../../lib/checkLib');
 
@@ -20,7 +20,7 @@ exports.customerLogin = async (req, res, next) => {
             mobile: checkCustomer.dataValues.mobileNumber,
             firstName: checkCustomer.dataValues.firstName,
             lastName: checkCustomer.dataValues.lastName,
-            email:checkCustomer.dataValues.email,
+            email: checkCustomer.dataValues.email,
             userBelongsTo: "CustomerUser"
         },
             JWT_SECRETKEY, {
@@ -33,6 +33,14 @@ exports.customerLogin = async (req, res, next) => {
         await models.customer.update({ lastLogin: createdTime }, {
             where: { id: decoded.id }
         });
+
+        let getDestroyToken = await models.customerLogger.findAll({ where: { customerId: decoded.id } })
+
+        for await (const singleDestory of getDestroyToken) {
+            cache(`${singleDestory.token}`);
+        }
+        await models.customerLogger.destroy({ where: { customerId: decoded.id } })
+
         await models.customerLogger.create({
             customerId: decoded.id,
             token: Token,
@@ -40,7 +48,7 @@ exports.customerLogin = async (req, res, next) => {
             createdDate: createdTime
         });
 
-        return res.status(200).json({ message: 'Login successful', token:Token });
+        return res.status(200).json({ message: 'Login successful', token: Token });
     } else {
         return res.status(401).json({ message: 'Wrong Credentials' });
     }
@@ -61,7 +69,7 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
         }
     })
     if (check.isEmpty(verifyCustomer)) {
-        return res.status(401).json({ message: `INVALID OTP` })
+        return res.status(401).json({ message: `The OTP entered is incorrect` })
     }
 
 
@@ -92,6 +100,14 @@ exports.verifyCustomerLoginOtp = async (req, res, next) => {
         await models.customer.update({ lastLogin: createdTime }, {
             where: { id: decoded.id }, transaction: t
         });
+
+        let getDestroyToken = await models.customerLogger.findAll({ where: { customerId: decoded.id } })
+
+        for await (const singleDestory of getDestroyToken) {
+            cache(`${singleDestory.token}`);
+        }
+        await models.customerLogger.destroy({ where: { customerId: decoded.id } })
+
         await models.customerLogger.create({
             customerId: decoded.id,
             token: Token,

@@ -41,6 +41,9 @@ export class LeadService {
     if (data && data.statusId) {
       reqParams.statusId = data.statusId;
     }
+    if (data && data.modulePoint) {
+      reqParams.modulePoint = data.modulePoint
+    }
     return this.http.get<any>(`/api/customer`, { params: reqParams })
   }
 
@@ -104,8 +107,12 @@ export class LeadService {
     return this.http.post<any>(`/api/customer/verify-pan`, data);
   }
 
-  getInternalBranhces(): Observable<any> {
-    return this.http.get<any>(`api/internal-branch?from=1&to=-1`);
+  getInternalBranhces(data?): Observable<any> {
+    const reqParams: any = {};
+    if (data && data.cityId) {
+      reqParams.cityId = data.cityId;
+    }
+    return this.http.get<any>(`api/internal-branch?from=1&to=-1`, { params: reqParams });
   }
 
   patchStateCityAdmin(id): Observable<any> {
@@ -114,6 +121,17 @@ export class LeadService {
       catchError(err => {
         if (err.error.message)
           this.toastr.error(err.error.message)
+        throw (err)
+      })
+    );
+  }
+
+  assignBranch(data): Observable<any> {
+    // const custData = { ...customerId, internalBranchId: data.internalBranchId }
+    return this.http.post<any>(`/api/customer/add-branch`, data).pipe(
+      map(res => res),
+      catchError(err => {
+        if (err.error.message) this.toastr.error(err.error.message)
         throw (err)
       })
     );

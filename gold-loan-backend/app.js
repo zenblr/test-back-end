@@ -22,7 +22,9 @@ const getGoldSilverRate = require("./utils/digitalGoldSilverRates");
 const merchantLogin = require('./utils/merchantLogin');
 const customerKycStatusMessage = require("./utils/customerKycStatusMessage");
 const withDrawStatusMessage = require("./utils/withDrawStatusMessage");
-const {getErrorForMail} = require('./controllers/errorLogs/errorLogs');
+const changeSellableMetalValue = require("./utils/changeSellableMetalValue")
+const { getErrorForMail } = require('./controllers/errorLogs/errorLogs');
+const { refundCron } = require('./controllers/razorpay/razorpay')
 
 //model
 const models = require('./models');
@@ -30,17 +32,17 @@ const moment = require('moment')
 
 
 var useragent = require('express-useragent');
- 
+
 var app = express();
 
 app.use(useragent.express());
 
 //swagger _setup
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swagger.swaggerSpec));
+app.use('/api-doc/loan', swaggerUi.serve, swaggerUi.setup(swagger.swaggerSpec));
 
 // app.use('/scrap/api-docs', swaggerUi.serve, swaggerUi.setup(scrapSwagger.swaggerSpec));
 
-// app.use('/digi-gold/api-docs', swaggerUi.serve, swaggerUi.setup(digiGoldSwagger.swaggerSpec));
+app.use('/digi-gold/api-docs', swaggerUi.serve, swaggerUi.setup(digiGoldSwagger.swaggerSpec));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -105,9 +107,9 @@ app.use(function (err, req, res, next) {
     res.status(500).send({ message: "something went wrong" });
 });
 
-// cron.schedule(' 0 */30 * * * *', async function () {
-//     await getErrorForMail();
-// })
+cron.schedule(' 0 */30 * * * *', async function () {
+    await getErrorForMail();
+})
 
 // cron.schedule('0 1 * * *', async function () {
 //     let date = moment()
@@ -186,7 +188,7 @@ app.use(function (err, req, res, next) {
 //     }
 // });
 
-// //cron for customer kyc status
+//cron for customer kyc status
 
 // cron.schedule('0 0 */1 * * *', async () => {
 //     let date = moment()
@@ -206,7 +208,7 @@ app.use(function (err, req, res, next) {
 //     }
 // });
 
-// //cron for withdraw status messsage
+//cron for withdraw status messsage
 
 // cron.schedule('0 */30 * * * *', async () => {
 //     let date = moment()
@@ -225,6 +227,42 @@ app.use(function (err, req, res, next) {
 //         await cronLogger("withdraw message", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
 //     }
 // });
+
+// cron.schedule('0 */15 * * * *', async () => {
+//     let date = moment()
+//     let startTime = moment();
+
+//     try {
+//         await changeSellableMetalValue();
+//         let endTime = moment();
+//         let processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS");
+//         await cronLogger("calculate sellable metal", date, startTime, endTime, processingTime, "success", "success", null);
+
+//     } catch (err) {
+//         console.log(err)
+//         let endTime = moment();
+//         var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+//         await cronLogger("calculate sellable metal", date, startTime, endTime, processingTime, "failed", JSON.stringify(err.response.data), null)
+//     }
+// });
+
+// cron.schedule(' 0 1 * * * *', async function () {
+//     await refundCron()
+//     var startTime = moment();
+
+//     try {
+//         await refundCron()
+//         var endTime = moment();
+//         var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+//         await cronLogger("refund cron", date, startTime, endTime, processingTime, "success", "success", null)
+
+//     } catch (err) {
+//         var endTime = moment();
+//         var processingTime = moment.utc(moment(endTime, "DD/MM/YYYY HH:mm:ss.SSS").diff(moment(startTime, "DD/MM/YYYY HH:mm:ss.SSS"))).format("HH:mm:ss.SSS")
+//         await cronLogger("refund cron", date, startTime, endTime, processingTime, "failed", err.message, null)
+
+//     }
+// })
 
 async function cronLogger(cronType, date, startTime, endTime, processingTime, status, message, notes) {
     await models.cronLogger.create({ cronType, date, startTime, endTime, processingTime, status, message, notes })

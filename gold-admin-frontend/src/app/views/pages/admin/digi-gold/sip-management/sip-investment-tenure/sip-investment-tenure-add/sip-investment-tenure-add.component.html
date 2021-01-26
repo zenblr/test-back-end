@@ -1,0 +1,59 @@
+<kt-portlet>
+    <kt-modal-header [title]='title' (action)="action($event)"></kt-modal-header>
+    <kt-portlet-body>
+        <form [formGroup]="SipInvestmentTenureForm">
+            <div class="row ">
+                <div class="col-12">
+                    
+                    <div class="row justify-content-center kt-margin-t-10">
+                        <div class="col-5 form-label">
+                            <label class="kt-padding-l-10 mandatory">SIP Investment Tenure</label>
+                        </div>
+                        <div class="col-12 col-lg-7">
+                            <select formControlName="investmentTenure" class="form-control"
+                                [class.isError]="SipInvestmentTenureForm.controls.investmentTenure.touched && SipInvestmentTenureForm.controls.investmentTenure.invalid">
+                                <option value="">Select Month/Year</option>
+                                <option *ngFor="let tenure of investmentTenureList" [value]="tenure.investmentTenure">
+                            {{tenure?.investmentTenureValue}}
+                        </option>
+                            </select>
+                            <!-- <div
+                        *ngIf="newSipForm.controls.bankId.touched && newSipForm.controls.bankId.invalid">
+                        <mat-error *ngIf="newSipForm.controls.bankId.errors?.required">
+                            Required field
+                        </mat-error>
+                    </div> -->
+                        </div>
+                    </div>
+                    <div class="row justify-content-center kt-margin-t-10">
+                        <div class="col-5 form-label">
+                            <label class="kt-padding-l-10 mandatory">SIP Investment Tenure Status</label>
+                        </div>
+                        <div class="col-12 col-lg-7">
+                            <select formControlName="investmentTenureStatus" class="form-control"
+                                [class.isError]="SipInvestmentTenureForm.controls.investmentTenureStatus.touched && SipInvestmentTenureForm.controls.investmentTenureStatus.invalid">
+                                <option value="">Select Status</option>
+                                <option *ngFor="let status of statusList" [value]="status.value">
+                            {{status?.name}}
+                        </option>
+                            </select>
+                            <!-- <div
+                        *ngIf="newSipForm.controls.bankId.touched && newSipForm.controls.bankId.invalid">
+                        <mat-error *ngIf="newSipForm.controls.bankId.errors?.required">
+                            Required field
+                        </mat-error>
+                    </div> -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </kt-portlet-body>
+    <kt-portlet-footer>
+        <div class="p-3">
+            <kt-modal-footer (action)="action($event)" [value]="data.action == 'add' ? 'Add' : 'Update'">
+            </kt-modal-footer>
+        </div>
+    </kt-portlet-footer>
+</kt-portlet>

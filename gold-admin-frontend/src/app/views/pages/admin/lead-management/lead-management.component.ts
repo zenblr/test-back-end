@@ -11,7 +11,7 @@ import { LeadService } from '../../../../core/lead-management/services/lead.serv
 import { SharedService } from '../../../../core/shared/services/shared.service';
 import { AssignAppraiserComponent } from '../user-management/assign-appraiser/assign-appraiser/assign-appraiser.component';
 import { NewRequestAddComponent } from './new-request-add/new-request-add.component';
-
+import { NgxPermissionsService } from 'ngx-permissions';
 @Component({
   selector: 'kt-lead-management',
   templateUrl: './lead-management.component.html',
@@ -20,7 +20,7 @@ import { NewRequestAddComponent } from './new-request-add/new-request-add.compon
 export class LeadManagementComponent implements OnInit {
 
   dataSource: LeadManagementDatasource;
-  displayedColumns = ['fullName', 'pan', 'internalBranch', 'module', 'state', 'city', 'pincode', 'date', 'status', 'kycStatus', 'kyc', 'actions', 'view', 'menu'];
+  displayedColumns = ['fullName', 'customerUniqueId', 'pan', 'internalBranch', 'module', 'state', 'city', 'pincode', 'date', 'currentWalletBalance', 'status', 'kycStatus', 'kyc', 'actions', 'view', 'menu'];
   leadsResult = []
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   queryParamsData = {
@@ -31,6 +31,7 @@ export class LeadManagementComponent implements OnInit {
     stateId: '',
     cityId: '',
     statusId: '',
+    modulePoint: ''
   }
   @ViewChild(ToastrComponent, { static: true }) toastr: ToastrComponent;
   destroy$ = new Subject();
@@ -43,6 +44,7 @@ export class LeadManagementComponent implements OnInit {
   private unsubscribeSearch$ = new Subject();
   searchValue = '';
   filteredDataList = {};
+  permission: any;
 
   constructor(
     public dialog: MatDialog,
@@ -50,6 +52,7 @@ export class LeadManagementComponent implements OnInit {
     private dataTableService: DataTableService,
     private router: Router,
     private sharedService: SharedService,
+    private ngxPermissionsService: NgxPermissionsService
   ) {
     this.leadService.openModal$.pipe(
       map(res => {
@@ -69,6 +72,10 @@ export class LeadManagementComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.ngxPermissionsService.permissions$.subscribe(res => {
+      this.permission = res;
+    })
 
     const paginatorSubscriptions = merge(this.paginator.page).pipe(
       tap(() => this.loadLeadsPage())
@@ -90,6 +97,8 @@ export class LeadManagementComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(res => {
       this.leadsResult = res;
+      console.log(this.leadsResult);
+
     });
     this.subscriptions.push(entitiesSubscription);
 
@@ -118,11 +127,13 @@ export class LeadManagementComponent implements OnInit {
     this.dataSource.loadLeads(this.queryParamsData);
   }
 
+
   applyFilter(data) {
 
     this.queryParamsData.cityId = data.data.cities;
     this.queryParamsData.stateId = data.data.states;
     this.queryParamsData.statusId = data.data.leadStatus;
+    this.queryParamsData.modulePoint = data.data.modulePoint
     this.dataSource.loadLeads(this.queryParamsData);
     this.filteredDataList = data.list;
   }
@@ -168,8 +179,12 @@ export class LeadManagementComponent implements OnInit {
     });
   }
 
-  goToKyc(data) {
+  navigateToTransaction(id) {
+    window.open('/admin/transaction/' + id, '_blank');
+    // this.router.navigate(['/admin/transaction/' + id])
+  }
 
+  goToKyc(data) {
     var mobile = '';
     this.leadService.getLeadById(data.id).pipe(
       map(res => {
@@ -220,6 +235,12 @@ export class LeadManagementComponent implements OnInit {
         this.loadLeadsPage();
       }
     });
+  }
+
+  goToDigiGoldKyc(lead) {
+    // this.leadService.getLeadById(lead.id).subscribe(res => {
+    this.router.navigate([`/admin/digi-gold/applied-kyc-digi-gold/apply/${lead.id}`]);
+    // })
   }
 
 }

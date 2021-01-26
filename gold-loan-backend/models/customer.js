@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
         // attributes
         customerUniqueId: {
             type: DataTypes.STRING,
-            field: 'customer_unique_id'
+            field: 'customer_unique_id',
+            unique: true
         },
         internalBranchId: {
             type: DataTypes.INTEGER,
@@ -19,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'merchant_id',
         },
-        moduleId:{
+        moduleId: {
             type: DataTypes.INTEGER,
             field: 'module_id',
         },
@@ -102,12 +103,18 @@ module.exports = (sequelize, DataTypes) => {
         createdBy: {
             type: DataTypes.INTEGER,
             field: 'created_by',
-            allowNull: false,
         },
         modifiedBy: {
             type: DataTypes.INTEGER,
             field: 'modified_by',
-            allowNull: false,
+        },
+        createdByCustomer: {
+            type: DataTypes.INTEGER,
+            field: 'created_by_customer',
+        },
+        modifiedByCustomer: {
+            type: DataTypes.INTEGER,
+            field: 'modified_by_customer',
         },
         lastLogin: {
             type: DataTypes.DATE,
@@ -130,9 +137,25 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'pan_image',
         },
+        form60Image: {
+            type: DataTypes.TEXT,
+            field: 'form60_image',
+        },
         scrapKycStatus: {
             type: DataTypes.ENUM,
             field: 'scrap_kyc_status',
+            defaultValue: "pending",
+            values: ['approved', 'pending', 'rejected']
+        },
+        digiKycStatus: {
+            type: DataTypes.ENUM,
+            field: 'digi_kyc_status',
+            defaultValue: "pending",
+            values: ['approved', 'waiting', 'pending', 'rejected']
+        },
+        emiKycStatus: {
+            type: DataTypes.ENUM,
+            field: 'emi_kyc_status',
             defaultValue: "pending",
             values: ['approved', 'pending', 'rejected']
         },
@@ -145,22 +168,74 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'organization_type_id',
         },
-        dateOfIncorporation:{
+        dateOfIncorporation: {
             type: DataTypes.DATE,
             field: 'date_of_incorporation',
         },
-        customerAddress:{
+        customerAddress: {
             type: DataTypes.TEXT,
             field: 'customer_address',
         },
-        gender:{
+        gender: {
             type: DataTypes.STRING,
-            field: 'customer_address',
+            field: 'gender',
         },
-        dateOfBirth:{
+        dateOfBirth: {
             type: DataTypes.DATE,
             field: 'date_of_birth',
+        },
+        currentWalletBalance: {
+            type: DataTypes.FLOAT,
+            field: 'current_wallet_balance',
+            defaultValue: 0
+        },
+        walletFreeBalance: {
+            type: DataTypes.FLOAT,
+            field: 'wallet_free_balance',
+            defaultValue: 0
+        },
+        age: {
+            type: DataTypes.STRING,
+            field: 'age'
+        },
+        allowCustomerEdit: {
+            type: DataTypes.BOOLEAN,
+            field: 'allow_customer_edit',
+            defaultValue: true
+        },
+        kycCompletePoint: {
+            type: DataTypes.INTEGER,
+            field: 'kyc_complete_point',
+        },
+        sourceFrom: {
+            type: DataTypes.INTEGER,
+            field: 'source_from',
+        },
+        suspiciousActivity: {
+            type: DataTypes.BOOLEAN,
+            field: 'suspicious_activity',
+            defaultValue: false
+        },
+        note: {
+            type: DataTypes.TEXT,
+            field: 'note'
+        },
+        currentWalletBalance: {
+            type: DataTypes.FLOAT,
+            field: 'current_wallet_balance',
+            defaultValue: 0
+        },
+        walletFreeBalance: {
+            type: DataTypes.FLOAT,
+            field: 'wallet_free_balance',
+            defaultValue: 0
+        },
+        isAugmontCustomerCreated: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_augmont_customer_created',
+            defaultValue: false
         }
+
     }, {
         freezeTableName: true,
         tableName: 'customer',
@@ -188,6 +263,8 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.belongsTo(models.user, { foreignKey: 'createdBy', as: 'Createdby' });
         Customer.belongsTo(models.user, { foreignKey: 'modifiedBy', as: 'Modifiedby' });
+        Customer.belongsTo(models.customer, { foreignKey: 'createdByCustomer', as: 'CreatedbyCustomer' });
+        Customer.belongsTo(models.customer, { foreignKey: 'createdByCustomer', as: 'ModifiedbyCustomer' });
 
         Customer.belongsTo(models.lead, { foreignKey: 'leadSourceId', as: 'lead' });
 
@@ -200,7 +277,13 @@ module.exports = (sequelize, DataTypes) => {
 
         Customer.belongsTo(models.organizationType, { foreignKey: 'organizationTypeId', as: 'organizationType' });
         Customer.hasOne(models.customerKycOrganizationDetail, { foreignKey: 'customerId', as: 'organizationDetail' });
+        Customer.hasMany(models.walletTransactionDetails, { foreignKey: 'customerId', as: 'walletTransactionDetails' });
 
+        Customer.hasMany(models.customerBankDetails, { foreignKey: 'customerId', as: 'customerBankDetail' });
+
+        Customer.hasMany(models.productRequest, { foreignKey: 'customerId', as: 'productRequest' });
+
+        Customer.hasOne(models.digiKycApplied, { foreignKey: 'customerId', as: 'digiKycApplied' });
     }
 
     // This hook is always run before create.
@@ -260,6 +343,9 @@ module.exports = (sequelize, DataTypes) => {
         var values = Object.assign({}, this.get());
         if (values.panImage) {
             values.panImg = process.env.BASE_URL + values.panImage;
+        }
+        if (values.form60Image) {
+            values.form60Img = process.env.BASE_URL + values.form60Image;
         }
         delete values.password;
         return values;

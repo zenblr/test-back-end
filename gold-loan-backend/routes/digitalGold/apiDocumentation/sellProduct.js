@@ -26,12 +26,25 @@
 *               type: string
 *             userBankId:
 *               type: string
+*             accountName:
+*               type: string
+*             bankId:
+*               type: string
+*             accountNumber:
+*               type: string
+*             ifscCode:
+*               type: string
+*             modeOfPayment:
+*               type: string
+*             amount:
+*               type: number
 *         required:
 *           - metalType
 *           - quantity
 *           - lockPrice
 *           - blockId
 *           - userBankId
+*           - modeOfPayment
 *   get:
 *     tags:
 *       - Sell Gold/Silver

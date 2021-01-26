@@ -293,7 +293,7 @@ export class InterestCalculatorComponent implements OnInit {
     if (!this.transferLoan)
       this.controls.processingCharge.reset()
     this.selectedScheme = ''
-    
+
 
   }
 
@@ -476,13 +476,11 @@ export class InterestCalculatorComponent implements OnInit {
   }
 
   eligibleCheck(amt, data) {
-    if (amt > this.totalAmt) {
-      if (this.transferLoan || this.isNewLoanFromPartRelease) {
-        this.checkForLoanType(data, amt)
-      } else
-        this.controls.finalLoanAmount.setErrors({ eligible: true })
+    if (amt > this.totalAmt && !(this.transferLoan || this.isNewLoanFromPartRelease)) {
+      this.controls.finalLoanAmount.setErrors({ eligible: true })
       return true
-    } else {
+    }
+    else {
       this.controls.finalLoanAmount.setErrors(null)
     }
   }
@@ -509,6 +507,7 @@ export class InterestCalculatorComponent implements OnInit {
         console.log(this.controls.paymentFrequency.value);
         //loan transfer
         if (this.totalAmt <= Number(this.controls.finalLoanAmount.value)) {
+          this.controls.loanTransferExtraAmount.reset()
           this.controls.loanTransferExtraAmount.disable()
         } else {
           this.controls.loanTransferExtraAmount.enable()

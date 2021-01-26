@@ -21,6 +21,7 @@ const { sendDisbursalMessage } = require('../../utils/SMS')
 
 const { LOAN_TRANSFER_APPLY_LOAN, BASIC_DETAILS_SUBMIT, NOMINEE_DETAILS, ORNAMENTES_DETAILS, FINAL_INTEREST_LOAN, BANK_DETAILS, APPRAISER_RATING, BM_RATING, OPERATIONAL_TEAM_RATING, PACKET_IMAGES, LOAN_DOCUMENTS, LOAN_DISBURSEMENT } = require('../../utils/customerLoanHistory');
 var randomize = require('randomatic');
+const { addBankDetailInAugmontDb } = require('../../service/digiGold')
 
 //LOAN DATE CHANGE
 exports.loanDateChange = async (req, res, next) => {
@@ -118,7 +119,7 @@ exports.customerDetails = async (req, res, next) => {
 
     let customerData = await models.customer.findOne({
         where: { customerUniqueId: getCustomer.customerUniqueId, isActive: true, kycStatus: 'approved' },
-        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage'],
+        attributes: ['id', 'customerUniqueId', 'panCardNumber', 'mobileNumber', 'kycStatus', 'panType', 'panImage', 'form60Image'],
 
     })
     let disbursedPendingId = await models.loanStage.findOne({ where: { name: 'disbursement pending' } })
@@ -990,22 +991,39 @@ exports.loanBankDetails = async (req, res, next) => {
 
     let checkBank = await models.customerLoanBankDetail.findOne({ where: { masterLoanId: masterLoanId } })
 
-    if (check.isEmpty(checkBank)) {
-        let loanData = await sequelize.transaction(async t => {
+    let masterLoan = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
+    let getCustomer = await models.customer.findOne({ where: { id: masterLoan.customerId } })
+
+    let loanData = await sequelize.transaction(async t => {
+
+        //added customer bank details
+        if (paymentType == 'bank') {
+
+            let checkBankDetailExist = await models.customerBankDetails.findAll({ where: { accountNumber: accountNumber, customerId: masterLoan.customerId } })
+
+            if (checkBankDetailExist.length == 0) {
+                let addBankDetaiils = await addBankDetailInAugmontDb(getCustomer.customerUniqueId, null, bankBranchName, accountNumber, accountHolderName, ifscCode)
+                if (addBankDetaiils.isSuccess) {
+                    await models.customerBankDetails.create({ moduleId: 1, customerId: masterLoan.customerId, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, description: `Added while Creating Loan`, bankId: null, userBankId: addBankDetaiils.data.data.result.data.userBankId }, { transaction: t });
+                } else {
+                    t.rollback()
+                    return res.status(400).json({ message: addBankDetaiils.message })
+                }
+            }
+        }
+        //added customer bank details
+
+        if (check.isEmpty(checkBank)) {
             await models.customerLoanMaster.update({ customerLoanCurrentStage: '6', modifiedBy }, { where: { id: masterLoanId }, transaction: t })
 
             await models.customerLoanHistory.create({ loanId, masterLoanId, action: BANK_DETAILS, modifiedBy }, { transaction: t });
 
             let loan = await models.customerLoanBankDetail.create({ loanId, masterLoanId, paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { transaction: t });
 
-            return loan
-        })
-        return res.status(200).json({ message: 'Success', loanId, masterLoanId, loanCurrentStage: '6' })
-    } else {
+        } else {
 
-        let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
+            let loanSubmitted = await models.customerLoanMaster.findOne({ where: { id: masterLoanId } })
 
-        let loanData = await sequelize.transaction(async t => {
             // if (loanSubmitted.isLoanSubmitted == false) {
             var a = await models.customerLoanMaster.update({ customerLoanCurrentStage: '6', modifiedBy }, { where: { id: masterLoanId }, transaction: t })
             // }
@@ -1013,10 +1031,10 @@ exports.loanBankDetails = async (req, res, next) => {
             console.log(a)
             let loan = await models.customerLoanBankDetail.update({ paymentType, bankName, accountNumber, ifscCode, bankBranchName, accountHolderName, passbookProof, createdBy, modifiedBy }, { where: { loanId: loanId }, transaction: t });
 
-            return loan
-        })
-        return res.status(200).json({ message: 'Success', loanId, masterLoanId, loanCurrentStage: '6' })
-    }
+        }
+    })
+    return res.status(200).json({ message: 'Success', loanId, masterLoanId, loanCurrentStage: '6' })
+
 
 }
 
@@ -2478,12 +2496,12 @@ exports.getDetailsForPrint = async (req, res, next) => {
         {
             model: models.customer,
             as: 'customer',
-            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber'],
+            attributes: ['id', 'customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'dateOfBirth'],
             include: [
                 {
                     model: models.customerKycPersonalDetail,
                     as: 'customerKycPersonal',
-                    attributes: ['dateOfBirth', 'identityProofNumber']
+                    attributes: ['identityProofNumber']
                 },
                 {
                     model: models.customerKycAddressDetail,
@@ -2557,7 +2575,7 @@ exports.getDetailsForPrint = async (req, res, next) => {
         }
         customerLoanDetail.customerAddress = customerAddress
     }
-    var d = new Date(customerLoanDetail.customer.customerKycPersonal.dateOfBirth)
+    var d = new Date(customerLoanDetail.customer.dateOfBirth)
     dateOfBirth = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
     //console.log(customerLoanDetail.customerLoan[1])
     let customerUnsecureLoanData = [];
