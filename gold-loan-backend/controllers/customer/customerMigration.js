@@ -202,7 +202,7 @@ let createKyc = async (req) => {
                     }
                     //change
 
-                    const panPath = `uploads/digitalGoldKyc/pan-${customer.customerUniqueId}.jpeg`;
+                    const panPath = `public/uploads/pan-${customer.customerUniqueId}.jpeg`;
                     fs.writeFileSync(panPath, base64data, { encoding: 'base64' });
                     const data = new FormData();
                     data.append('panNumber', customer.panCardNumber);
