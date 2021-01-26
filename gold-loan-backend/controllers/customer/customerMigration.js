@@ -211,8 +211,8 @@ let createKyc = async (req) => {
                     // fs.writeFileSync(panPath, base64data, { encoding: 'base64' });
                     const data = new FormData();
                     data.append('panNumber', customer.panCardNumber);
-                    // data.append('panAttachment', fs.createReadStream(panPath));
-                    data.append('panAttachment', panPath);
+                    data.append('panAttachment', fs.createReadStream(panPath));
+                    // data.append('panAttachment', panPath);
 
                     const options = {
                         'method': 'POST',
