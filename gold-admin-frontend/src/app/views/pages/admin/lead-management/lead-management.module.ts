@@ -27,7 +27,10 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    NewRequestListComponent, MyRequestComponent, NewRequestAssignAppraiserComponent, RegisteredCustomerRequestComponent
+    NewRequestListComponent, 
+    MyRequestComponent, 
+    NewRequestAssignAppraiserComponent, 
+    RegisteredCustomerRequestComponent    
   ],
   imports: [
     CommonModule,

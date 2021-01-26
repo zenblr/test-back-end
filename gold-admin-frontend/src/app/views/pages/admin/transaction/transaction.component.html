@@ -1,0 +1,92 @@
+<kt-filtered-data [filteredList]="filteredDataList"></kt-filtered-data>
+
+<kt-portlet>
+
+    <kt-portlet-body>
+
+        <div class="mat-table__wrapper" [ngStyle]="{'overflow-x':'auto'}">
+            <mat-table class="lmat-elevation-z8" #table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="custName">
+                    <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+                    <mat-cell *matCellDef="let transaction">{{transaction?.walletTransactionDetails?.customer?.firstName
+                        | titlecase}}&nbsp;{{transaction?.walletTransactionDetails?.customer?.lastName | titlecase}}
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="custId">
+                    <mat-header-cell *matHeaderCellDef>Customer ID </mat-header-cell>
+                    <mat-cell *matCellDef="let transaction">
+                        {{transaction?.walletTransactionDetails?.customer?.customerUniqueId}}
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="mobileNumber">
+                    <mat-header-cell *matHeaderCellDef>Mobile number</mat-header-cell>
+                    <mat-cell *matCellDef="let transaction">
+                        {{transaction?.walletTransactionDetails?.customer?.mobileNumber}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="date">
+                    <mat-header-cell *matHeaderCellDef>Date & Time</mat-header-cell>
+                    <mat-cell *matCellDef="let transaction">
+                        <div class="d-block">
+                            <div class="d-block">{{transaction?.createdAt | date: 'mediumDate'}}</div>
+                            <div class="d-block">{{transaction?.createdAt | date:'h:mm a'}}</div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="transactionId">
+                    <mat-header-cell *matHeaderCellDef>Transaction ID</mat-header-cell>
+                    <mat-cell *matCellDef="let transaction">
+                        {{transaction?.digiGoldOrderDetail?.transactionId}}
+                        {{transaction?.walletTransactionDetails?.razorpayPaymentId}}
+                        {{transaction?.walletTransactionDetails?.bankTransactionUniqueId}}
+                        {{transaction?.walletTransactionDetails?.chequeNumber}}
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="narration">
+                    <mat-header-cell *matHeaderCellDef>Narration</mat-header-cell>
+                    <mat-cell *matCellDef="let transaction">{{transaction?.description}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="amount">
+                    <mat-header-cell *matHeaderCellDef>Amount(₹)</mat-header-cell>
+                    <mat-cell *matCellDef="let transaction">
+                        <span class="text-success"
+                            *ngIf="transaction.paymentDirection && transaction.paymentDirection == 'credit'">
+                            {{transaction?.amount | number:'1.2-2'}}</span>
+                        <span class="text-danger"
+                            *ngIf="transaction.paymentDirection && transaction.paymentDirection == 'debit'">
+                            {{transaction?.amount | number:'1.2-2'}}</span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="updatedBalance">
+                    <mat-header-cell *matHeaderCellDef>Updated Balance</mat-header-cell>
+                    <mat-cell *matCellDef="let transaction">
+                        {{transaction?.digiGoldOrderDetail?.walletBalance | number:'1.2-2'}}
+                        {{transaction?.walletTransactionDetails?.runningBalance | number:'1.2-2'}}
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+
+            <div class="mat-table__message" *ngIf="!dataSource.hasItems">No records found</div>
+            <!-- Message for empty data  -->
+            <div class="mat-table__message" *ngIf="dataSource.isPreloadTextViewed$ | async">Please wait....</div>
+        </div>
+
+        <!-- start: BOTTOM -->
+        <div class="mat-table__bottom">
+            <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner>
+
+            <mat-paginator [pageSize]="25" [pageSizeOptions]="[25,50,100,150]"
+                [length]="dataSource.paginatorTotal$ | async" [showFirstLastButtons]="true"></mat-paginator>
+        </div>
+    </kt-portlet-body>
+</kt-portlet>
