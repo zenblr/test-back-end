@@ -12,10 +12,6 @@ module.exports = {
       unique: true
     })
 
-    await queryInterface.addColumn('customer', 'is_augmont_customer_created', {
-      type: Sequelize.DataTypes.BOOLEAN,
-      defaultValue: false
-    })
 
   },
 
