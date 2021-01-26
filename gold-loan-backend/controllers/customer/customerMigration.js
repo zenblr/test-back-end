@@ -10,6 +10,9 @@ const { pathToBase64 } = require('../../service/fileUpload')
 const fs = require('fs');
 const FormData = require('form-data');
 const { ifError } = require('assert');
+const http = require('http');
+
+
 
 exports.customerMigration = async (req, res, next) => {
     // let data = await models.customer.findAll({ where: { isAugmontCustomerCreated: false } })
@@ -180,6 +183,7 @@ let createKyc = async (req) => {
                     let base64data;
                     let fullBase64Image;
                     let panPath;
+                    let file
                     console.log(process.env.NODE_ENV)
                     if (process.env.NODE_ENV == "production" || process.env.NODE_ENV == "uat") {
                         url = process.env.BASE_URL + customer.panImage
@@ -190,8 +194,13 @@ let createKyc = async (req) => {
                         });
                         base64data = Buffer.from(getAwsResp.data, 'binary').toString('base64');
                         fullBase64Image = `data:image/jpeg;base64,${base64data}`
-                        panPath = process.env.BASE_URL + customer.panImage
-                        // console.log(base64data)
+                        // panPath = process.env.BASE_URL + customer.panImage
+
+                        file = fs.createWriteStream(`public/uploads/digitalGoldKyc/pan-${customer.customerUniqueId}.jpeg`);
+                        let request = http.get(url, function (response) {
+                            response.pipe(file);
+                        });
+
                     } else {
                         url = customer.panImage
 
@@ -207,12 +216,11 @@ let createKyc = async (req) => {
 
                     }
                     //change
-
                     // fs.writeFileSync(panPath, base64data, { encoding: 'base64' });
                     const data = new FormData();
                     data.append('panNumber', customer.panCardNumber);
-                    data.append('panAttachment', fs.createReadStream(panPath));
-                    // data.append('panAttachment', panPath);
+                    // data.append('panAttachment', fs.createReadStream(panPath));
+                    data.append('panAttachment', file);
 
                     const options = {
                         'method': 'POST',
