@@ -48,6 +48,14 @@ export class DepositRequestsComponent implements OnInit {
 		private sharedService: SharedService,
 		private router: Router,
 	) {
+		this.depositRequestsService.exportExcel$
+		.pipe(takeUntil(this.destroy$))
+		.subscribe((res) => {
+			if (res) {
+				this.downloadReport();
+			}
+		});
+
 		this.depositRequestsService.applyFilter$
 			.pipe(takeUntil(this.destroy$))
 			.subscribe((res) => {
@@ -117,6 +125,11 @@ export class DepositRequestsComponent implements OnInit {
 		this.depositData.depositStatus = data.data.depositStatus;
 		this.dataSource.loadDepositRequests(this.depositData);
 		this.filteredDataList = data.list;
+	}
+
+	downloadReport() {
+		this.depositRequestsService.reportExport(this.depositData).subscribe();
+		this.depositRequestsService.exportExcel.next(false);
 	}
 
 	ngOnDestroy() {

@@ -599,6 +599,8 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "deposit-requests") {
 			this.showInput = true;
+			this.value1 = "Export";
+			this.type1 = "button";
 			this.filterName = "depositRequests";
 			this.filterWidth = "630px";
 			// this.listType = "startDate,depositRequestsStatus";
@@ -614,6 +616,8 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "withdrawal-requests") {
 			this.showInput = true;
+			this.value1 = "Export";
+			this.type1 = "button";
 			this.filterName = "withdrawalRequests";
 			this.filterWidth = "630px";
 			// this.listType = "startDate,withdrawalRequestsStatus";
@@ -1034,6 +1038,12 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == 'other-charges') {
 			this.otherChargesService.openModal.next(true);
+		}
+		if (this.path == "deposit-requests") {
+			this.depositRequestsService.exportExcel.next(true);
+		}
+		if (this.path == "withdrawal-requests") {
+			this.withdrawalRequestsService.exportExcel.next(true);
 		}
 		// if (this.path == 'deposit-requests') {
 		// 	this.sipInvestmentTenureService.openModal.next(true)
