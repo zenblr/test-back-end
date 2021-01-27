@@ -72,7 +72,7 @@ export class WithdrawalRequestsService {
       reqParams.depositStatus = event.depositStatus;
     }
     return this.http
-      .get(API_ENDPOINT + `api/order/order-report`, {
+      .get(`/api/wallet/withdraw-detail-report`, {
         responseType: "arraybuffer", params: reqParams,
       })
       .pipe(
@@ -83,7 +83,7 @@ export class WithdrawalRequestsService {
           (data) => {
             this.excelService.saveAsExcelFile(
               data,
-              "OrderReport_" + Date.now()
+              "OrderWithdrawReport_" + Date.now()
             );
           },
           (error) => console.log(error)
