@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
-import { map, tap, catchError } from "rxjs/operators";
-import { ExcelService, PdfService } from "../../_base/crud";
+import { map, tap, catchError } from 'rxjs/operators';
+import { ExcelService, PdfService } from '../../_base/crud';
 import { API_ENDPOINT } from '../../../app.constant';
 
 @Injectable({
@@ -73,7 +73,7 @@ export class DepositRequestsService {
     }
     return this.http
       .get(`/api/wallet/deposit-detail-report`, {
-        responseType: "arraybuffer", params: reqParams,
+        responseType: 'arraybuffer', params: reqParams,
       })
       .pipe(
         map((res) => {
@@ -83,7 +83,7 @@ export class DepositRequestsService {
           (data) => {
             this.excelService.saveAsExcelFile(
               data,
-              "OrderDepositReport_" + Date.now()
+              'OrderRequestReport_' + Date.now()
             );
           },
           (error) => console.log(error)

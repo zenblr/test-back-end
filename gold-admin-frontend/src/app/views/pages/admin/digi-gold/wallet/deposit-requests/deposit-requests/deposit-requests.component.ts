@@ -49,12 +49,12 @@ export class DepositRequestsComponent implements OnInit {
 		private router: Router,
 	) {
 		this.depositRequestsService.exportExcel$
-		.pipe(takeUntil(this.destroy$))
-		.subscribe((res) => {
-			if (res) {
-				this.downloadReport();
-			}
-		});
+			.pipe(takeUntil(this.destroy$))
+			.subscribe((res) => {
+				if (res) {
+					this.downloadReport();
+				}
+			});
 
 		this.depositRequestsService.applyFilter$
 			.pipe(takeUntil(this.destroy$))

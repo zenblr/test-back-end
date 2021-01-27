@@ -50,15 +50,14 @@ export class WithdrawalRequestsComponent implements OnInit {
     private sharedService: SharedService,
     private router: Router,
   ) {
-
     this.withdrawalRequestsService.exportExcel$
-		.pipe(takeUntil(this.destroy$))
-		.subscribe((res) => {
-			if (res) {
-				this.downloadReport();
-			}
-    });
-    
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res) => {
+        if (res) {
+          this.downloadReport();
+        }
+      });
+
     this.withdrawalRequestsService.applyFilter$.pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
         if (Object.entries(res).length) {
@@ -131,10 +130,10 @@ export class WithdrawalRequestsComponent implements OnInit {
   }
 
   downloadReport() {
-		this.withdrawalRequestsService.reportExport(this.withdrawRequestsData).subscribe();
-		this.withdrawalRequestsService.exportExcel.next(false);
+    this.withdrawalRequestsService.reportExport(this.withdrawRequestsData).subscribe();
+    this.withdrawalRequestsService.exportExcel.next(false);
   }
-  
+
   ngOnDestroy() {
     this.subscriptions.forEach((el) => el.unsubscribe());
     this.destroy$.next();
