@@ -92,10 +92,10 @@
  *     consumes:
  *       - application/json
  *     parameters:
- *     - name: "startDate"
+ *     - name: "paymentReceivedDate"
  *       in: "query"
  *       type: string
- *     - name: "endDate"
+ *     - name: "withdrawalStatus"
  *       in: "query"
  *       type: string
  *     responses:
@@ -114,10 +114,10 @@
  *     consumes:
  *       - application/json
  *     parameters:
- *     - name: "startDate"
+ *     - name: "paymentReceivedDate"
  *       in: "query"
  *       type: string
- *     - name: "endDate"
+ *     - name: "depositStatus"
  *       in: "query"
  *       type: string
  *     responses:
