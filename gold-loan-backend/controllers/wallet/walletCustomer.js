@@ -510,6 +510,10 @@ exports.addAmountWallet = async (req, res) => {
  
   for (let address of orderAddress) {
   await models.digiGoldOrderAddressDetail.create({ orderDetailId: orderDetail.id, customerName: address.customerName, addressType: address.addressType, address: address.address, stateId: address.stateId, cityId: address.cityId, pinCode: address.pinCode }, { transaction: t });
+
+  await models.customerAddress.create({
+    customerId: customerId, address: address.address, landMark: address.address, stateId: address.stateId, cityId: address.cityId, postalCode: address.pinCode, addressType: address.addressType
+  })
   }
  
   await sms.sendMessageForOrderPlaced(customerDetails.mobileNumber, result.data.result.data.orderId);
