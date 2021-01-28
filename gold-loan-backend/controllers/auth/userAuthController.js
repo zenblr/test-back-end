@@ -327,7 +327,7 @@ exports.verifyLoginOtp = async (req, res, next) => {
     if (checkUser.internalBranches.length == 0) {
         return res.status(200).json({
             message: 'login successful',
-            Token,
+            Token: token.Token,
             modules,
             permissions,
             userDetails: {
@@ -337,7 +337,7 @@ exports.verifyLoginOtp = async (req, res, next) => {
     } else {
         return res.status(200).json({
             message: 'login successful',
-            Token,
+            Token: token.Token,
             modules,
             permissions,
             userDetails: {
