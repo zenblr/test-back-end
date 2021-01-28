@@ -340,7 +340,7 @@ let transactionDetail = async (customerId, paymentFor, searchParam, fromParam, t
           }
       ),
       mobileNumber: sequelize.where(
-        sequelize.cast(sequelize.col("walletTransactionDetails.customer.mobile_number"), "varchar"),
+        sequelize.cast(sequelize.col("customer.mobile_number"), "varchar"),
         {
             [Op.iLike]: search + "%",
         }
@@ -353,12 +353,13 @@ let transactionDetail = async (customerId, paymentFor, searchParam, fromParam, t
       "$walletTransactionDetails.payment_type$": { [Op.iLike]: search + '%' },
       "$walletTransactionDetails.bank_transaction_unique_id$": { [Op.iLike]: search + '%' },
       "$walletTransactionDetails.razorpay_payment_id$": { [Op.iLike]: search + '%' },
-      "$walletTransactionDetails.customer.customer_unique_id$": { [Op.iLike]: search + '%' },
-      "$walletTransactionDetails.customer.first_name$": { [Op.iLike]: search + '%' },
-      "$walletTransactionDetails.customer.last_name$": { [Op.iLike]: search + '%' },
+      "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+      "$customer.first_name$": { [Op.iLike]: search + '%' },
+      "$customer.last_name$": { [Op.iLike]: search + '%' },
 
       },
-    }],
+    }
+  ],
     // customerId: id,
     // orderTypeId: { [Op.notIn]: [4] }
   };
@@ -409,6 +410,11 @@ let transactionDetail = async (customerId, paymentFor, searchParam, fromParam, t
         as: "customer",
         attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'email']
       }
+    },
+    {
+      model: models.customer,
+      as: "customer",
+      attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'email']
     }
   ]
 
