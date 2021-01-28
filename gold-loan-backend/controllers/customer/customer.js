@@ -873,12 +873,12 @@ exports.signUpCustomer = async (req, res) => {
     //   data: data
     // });
 
-    const result = await createCustomer(data)
+    // const result = await createCustomer(data)
 
-    if (!result.isSuccess) {
-      t.rollback()
-      return res.status(422).json({ err: result.message });
-    }
+    // if (!result.isSuccess) {
+    //   t.rollback()
+    //   return res.status(422).json({ err: result.message });
+    // }
 
     Token = jwt.sign({
       id: customer.dataValues.id,
