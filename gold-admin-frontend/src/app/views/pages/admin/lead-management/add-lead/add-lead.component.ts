@@ -360,6 +360,12 @@ export class AddLeadComponent implements OnInit {
       this.controls.otp.setErrors({ verifyOTP: true })
       return this.toaster.error('Mobile number not verified!')
     }
+    if (!this.isPanVerified && this.controls.panType.value == 'pan') {
+      this.controls.panCardNumber.setErrors({ verifyPan: true });
+      return this.toaster.error('PAN number not verified!')
+    } else {
+      this.controls.panCardNumber.setErrors(null);
+    }
   }
 
   public ageValidation() {
@@ -499,9 +505,10 @@ export class AddLeadComponent implements OnInit {
   }
   onSubmit() {
     if (this.data.action == 'add') {
-      // console.log(this.leadForm.getRawValue())
+      // console.log(this.leadForm.getRawValue()
       // return
-      if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists) {
+      console.log(this.isPanVerified)
+      if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists || (!this.isPanVerified && this.controls.panType.value == 'pan')) {
         this.checkforVerfication()
         this.leadForm.markAllAsTouched();
         if (this.controls.panImage.invalid) {

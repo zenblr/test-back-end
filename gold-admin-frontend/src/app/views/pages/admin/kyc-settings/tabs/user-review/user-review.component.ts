@@ -17,7 +17,7 @@ import { DatePipe } from '@angular/common';
   selector: 'kt-user-review',
   templateUrl: './user-review.component.html',
   styleUrls: ['./user-review.component.scss'],
-  providers:[DatePipe],
+  providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserReviewComponent implements OnInit, OnDestroy {
@@ -84,7 +84,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     private ele: ElementRef,
     private route: ActivatedRoute,
     private ngxPermission: NgxPermissionsService,
-    private datePipe:DatePipe
+    private datePipe: DatePipe
   ) {
     let res = this.sharedService.getDataFromStorage();
     this.userType = res.userDetails.userTypeId;
@@ -403,7 +403,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     }
 
     this.customerKycPersonal.controls.age.patchValue(age)
-    this.customerKycPersonal.controls.dateOfBirth.patchValue(this.datePipe.transform(this.customerKycPersonal.controls.dateOfBirth.value,'yyyy-MM-dd'))
+    this.customerKycPersonal.controls.dateOfBirth.patchValue(this.datePipe.transform(this.customerKycPersonal.controls.dateOfBirth.value, 'yyyy-MM-dd'))
 
   }
 
@@ -433,11 +433,19 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     if (this.reviewForm.invalid || this.customerKycPersonal && this.customerKycPersonal.invalid || this.customerKycAddressOne.invalid ||
       (this.customerKycAddressTwo && this.customerKycAddressTwo.invalid) || (this.customerOrganizationDetail && this.customerOrganizationDetail.invalid)) {
       if (this.customerKycPersonal && this.customerKycPersonal.invalid) this.customerKycPersonal.markAllAsTouched();
+      if (this.customerKycAddressOne.controls.addressProof.invalid) {
+        this.toastr.error('Upload address proof image')
+      }
       this.customerKycAddressOne.markAllAsTouched();
       // this.customerKycAddressTwo.markAllAsTouched();
       this.reviewForm.markAllAsTouched()
       if (this.customerOrganizationDetail && this.customerOrganizationDetail.invalid) this.customerOrganizationDetail.markAllAsTouched()
-      if (this.customerKycAddressTwo && this.customerKycAddressTwo.invalid) this.customerKycAddressTwo.markAllAsTouched()
+      if (this.customerKycAddressTwo && this.customerKycAddressTwo.invalid) {
+        this.customerKycAddressTwo.markAllAsTouched()
+        if (this.customerKycAddressTwo.controls.addressProof.invalid) {
+          this.toastr.error('Upload address proof image')
+        }
+      }
       return;
     }
 
@@ -469,7 +477,6 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       userType: this.data.userType,
       customerOrganizationDetail: this.customerOrganizationDetail ? this.customerOrganizationDetail.value : null
     }
-
     this.userBankService.kycSubmit(data).pipe(
       map(res => {
         this.next.emit(true);
@@ -657,7 +664,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     if (this.sharedService.fileValidator(event)) {
       this.getImageValidationForKarza(event, type)
 
-    } 
+    }
     // event.target.value = ''
 
     // else {
@@ -795,7 +802,7 @@ export class UserReviewComponent implements OnInit, OnDestroy {
   }
 
   getAaddharDetails() {
-    
+
     this.userAddressService.getAaddharDetails(this.identityImageArray, this.controls.id.value).subscribe(res => {
       this.aadharCardUserDetails = res.data
       this.controls.identityProofNumber.patchValue(res.data.idNumber)
@@ -1099,11 +1106,11 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       if (city.length > 0) {
         controls.cityId.patchValue(city[0]['id'])
         controls.cityId.disable()
-      }else{
+      } else {
         let data = {
-          stateId:stateId[0]['id'],
-          cityName:this.aadharCardUserDetails.city,
-          cityUniqueId:null
+          stateId: stateId[0]['id'],
+          cityName: this.aadharCardUserDetails.city,
+          cityUniqueId: null
         }
         this.sharedService.newCity(data).subscribe()
       }
