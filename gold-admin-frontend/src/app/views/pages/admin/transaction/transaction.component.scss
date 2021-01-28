@@ -1,15 +1,18 @@
 :host {
-    .mat-table__wrapper {
-        height: 79vh !important; //set table height
-    }
+  .mat-table__wrapper {
+    height: 79vh !important; //set table height
+  }
 
-    // .mat-column-narration{
-    //     flex: 0 0 12% !important;
-    // }
-    // .mat-column-updatedBalance{
-    //     flex: 0 0 11% !important;
-    // }
-    // .mat-column-amount{
-    //     flex: 0 0 7% !important;
-    // }
+  .mat-column-date {
+    flex: 0 0 8% !important;
+  }
+  .mat-column-transactionId {
+    flex: 0 0 17% !important;
+  }
+  // .mat-column-updatedBalance{
+  //     flex: 0 0 11% !important;
+  // }
+  // .mat-column-amount{
+  //     flex: 0 0 7% !important;
+  // }
 }
