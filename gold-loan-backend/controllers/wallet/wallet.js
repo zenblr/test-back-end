@@ -309,27 +309,32 @@ exports.getWalletDetailByIdAdmin = async (req, res) => {
 exports.getDepositReuest = async (req, res) => {
 
 
-    let query = { orderTypeId: 4 }
+    let query = {}
+
+
+    let searchQuery = {
+        [Op.and]: [query, {
+
+        }],
+        orderTypeId: 4
+    };
 
     if (req.query.paymentReceivedDate) {
-
-
         let endDateNew = moment(moment(req.query.paymentReceivedDate).utcOffset("+05:30").endOf('day'));
         let startDateNew = moment(moment(req.query.paymentReceivedDate).utcOffset("+05:30").startOf('day'));
         let endDateNewFormat = moment(endDateNew).format('YYYY-MM-DD HH:mm:ss');
-
         let startDateNewFormat = moment(startDateNew).format('YYYY-MM-DD HH:mm:ss');
-
-        query.paymentReceivedDate = { [Op.between]: [startDateNewFormat, endDateNewFormat] }
+        searchQuery.paymentReceivedDate = { [Op.between]: [startDateNewFormat, endDateNewFormat] }
     }
-    //   if (req.query.depositStatus) {
-    //     query["$deposit_status$"] = await req.query.depositStatus.split(',');
-        
-    //   }
+
+    if (req.query.depositStatus) {
+        let depositStatusArray = req.query.depositStatus.split(',');
+        searchQuery.depositStatus = { [Op.in]: depositStatusArray }
+    }
 
 
     let depositDtReport = await models.walletTransactionDetails.findAll({
-        where: query,
+        where: searchQuery,
         subQuery: false,
         order: [
             ["updatedAt", "DESC"]
@@ -345,9 +350,7 @@ exports.getDepositReuest = async (req, res) => {
             attributes: ['firstName', 'lastName', 'customerUniqueId', 'mobileNumber']
         }]
     });
-    console.log("depositData", depositDtReport)
     let finalData = [];
-
     for (const order of depositDtReport) {
 
         let depositReportData = {};
@@ -414,28 +417,37 @@ exports.getDepositReuest = async (req, res) => {
 
 
 exports.getwithdrawDetail = async (req, res) => {
-    let query = { orderTypeId: 5 }
+
+    let query = {}
+
+
+    let searchQuery = {
+        [Op.and]: [query, {
+
+        }],
+        orderTypeId: 5
+    };
 
     if (req.query.paymentReceivedDate) {
         let endDateNew = moment(moment(req.query.paymentReceivedDate).utcOffset("+05:30").endOf('day'));
         let startDateNew = moment(moment(req.query.paymentReceivedDate).utcOffset("+05:30").startOf('day'));
         let endDateNewFormat = moment(endDateNew).format('YYYY-MM-DD HH:mm:ss');
         let startDateNewFormat = moment(startDateNew).format('YYYY-MM-DD HH:mm:ss');
-        query.paymentReceivedDate = { [Op.between]: [startDateNewFormat, endDateNewFormat] }
+        searchQuery.paymentReceivedDate = { [Op.between]: [startDateNewFormat, endDateNewFormat] }
     }
+
     if (req.query.withdrawalStatus) {
-        query["$deposit_status$"] = await req.query.withdrawalStatus.split(',');
+        let withdrawalStatusArray = req.query.withdrawalStatus.split(',');
+        searchQuery.depositStatus = { [Op.in]: withdrawalStatusArray }
     }
-
-
 
     let withdrawData = await models.walletTransactionDetails.findAll({
-        where: query,
+        where: searchQuery,
         subQuery: false,
         order: [
             ["updatedAt", "DESC"]
         ],
-       
+
         include: [{
             model: models.walletDetails,
             as: "wallet",
