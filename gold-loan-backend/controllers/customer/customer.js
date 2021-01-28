@@ -243,8 +243,7 @@ exports.sendOtp = async (req, res, next) => {
   if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new") {
     otp = 1234
   } else {
-    // otp = Math.floor(1000 + Math.random() * 9000);
-    otp = 1234
+    otp = Math.floor(1000 + Math.random() * 9000);
   }
   let createdTime = new Date();
   let expiryTime = moment(createdTime).add(10, "m");
