@@ -408,7 +408,12 @@ export class UserAddressComponent implements OnInit {
       this.imageId.identityProof.splice(index, 1);
       this.identityFileNameArray.splice(index, 1);
       this.identityForm.get('identityProofFileName').patchValue(this.identityFileNameArray);
-      // this.removeImageFromAddress(index)           // remove from permanent address
+      if (this.controls.identityTypeId.value == 5) {
+        this.removeImageFromAddress(index)           // remove from permanent address
+        this.aadharCardUserDetails = null
+        this.controls.identityProofNumber.reset()
+      }
+
     }
     if (type == 'residential' || this.addressControls.at(0).value.addressProofTypeId == 2) {
       this.images.residential.splice(index, 1);
@@ -422,6 +427,8 @@ export class UserAddressComponent implements OnInit {
       this.addressFileNameArray1.splice(index, 1);
       this.addressControls.at(0)['controls'].addressProofFileName.patchValue(this.addressFileNameArray1)
       if (this.sameAdd) {
+        this.images.residential.splice(index, 1);
+        this.imageId.residential.splice(index, 1);
         this.addressFileNameArray2.splice(index, 1);
         this.addressControls.at(1)['controls'].addressProofFileName.patchValue(this.addressFileNameArray2)
 
@@ -436,6 +443,23 @@ export class UserAddressComponent implements OnInit {
       this.imageId.permanent.splice(index, 1);
       this.addressFileNameArray1.splice(index, 1);
       this.addressControls.at(0)['controls'].addressProofFileName.patchValue(this.addressFileNameArray1)
+      addressControlZero['controls'].stateId.reset()
+      addressControlZero['controls'].cityId.reset()
+      addressControlZero['controls'].address.reset()
+      addressControlZero['controls'].pinCode.reset()
+      addressControlZero['controls'].addressProofNumber.reset()
+      if (this.sameAdd) {
+        this.images.residential.splice(index, 1);
+        this.imageId.residential.splice(index, 1);
+        this.addressFileNameArray2.splice(index, 1);
+        this.addressControls.at(1)['controls'].addressProofFileName.patchValue(this.addressFileNameArray2)
+        const addressControlOne = this.addressControls.at(1)
+        addressControlOne['controls'].stateId.reset()
+        addressControlOne['controls'].cityId.reset()
+        addressControlOne['controls'].address.reset()
+        addressControlOne['controls'].pinCode.reset()
+        addressControlOne['controls'].addressProofNumber.reset()
+      }
     }
   }
 
@@ -619,11 +643,11 @@ export class UserAddressComponent implements OnInit {
         controls['controls'].cityId.patchValue(city[0]['id'])
         controls['controls'].cityId.disable()
         this.isCityEdit = false
-      }else{
+      } else {
         let data = {
-          stateId:stateId[0]['id'],
-          cityName:this.aadharCardUserDetails.city,
-          cityUniqueId:null
+          stateId: stateId[0]['id'],
+          cityName: this.aadharCardUserDetails.city,
+          cityUniqueId: null
         }
         this.sharedService.newCity(data).subscribe()
         this.isCityEdit = true

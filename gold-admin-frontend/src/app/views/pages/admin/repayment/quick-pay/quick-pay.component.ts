@@ -9,7 +9,6 @@ import { ToastrService } from 'ngx-toastr';
 import { RazorpayPaymentService } from '../../../../../core/shared/services/razorpay-payment.service';
 import { SharedService } from '../../../../../core/shared/services/shared.service';
 import { QuickPayHistoryComponent } from '../quick-pay-history/quick-pay-history.component';
-import objectPath from 'object-path';
 
 @Component({
   selector: 'kt-quick-pay',
