@@ -292,7 +292,8 @@
                                     class="text-color font-weight-500">
                                 </label>
                                 <label *ngIf="controls.panType.value != ''"
-                                    class="mandatory  text-color font-weight-500">{{ controls.panType.value | uppercase }}
+                                    class="mandatory  text-color font-weight-500">{{ controls.panType.value | uppercase
+                                    }}
                                 </label>
                             </div>
                             <div class="col-8">
@@ -496,7 +497,8 @@
                                 <div class="input-group mb-3" *ngIf="viewOnly">
                                     <input type="text" class="form-control" placeholder="Select File"
                                         formControlName="addressProofFileName" aria-label="Recipient's username"
-                                        aria-describedby="basic-addon2" readonly />
+                                        aria-describedby="basic-addon2" readonly
+                                        [class.isError]="customerKycAddressOne.controls.addressProof.invalid && customerKycAddressOne.controls.addressProof.touched" />
                                     <div class="input-group-append">
                                         <span class="input-group-text bg font-weight" id="basic-addon2"
                                             (click)="permission.customerKycAdd && permanent.click()"
@@ -506,6 +508,9 @@
                                     <input type="file" accept="image/*,application/pdf" class="d-none" #permanent
                                         (input)="getFileInfo($event, 'permanent')">
                                 </div>
+                                <mat-error *ngIf="customerKycAddressOne.controls.addressProof.invalid && customerKycAddressOne.controls.addressProof.touched">
+                                    Upload address proof image
+                                </mat-error>
                             </div>
                         </div>
                     </div>
@@ -669,7 +674,7 @@
                     </div>
                 </div>
 
-                
+
             </form>
 
             <div *ngIf="(data.moduleId == 1 || (data.moduleId == 3 && data.userType == 'Corporate'))">
@@ -898,7 +903,7 @@
                     </div>
                 </div> -->
 
-                    
+
                 </form>
             </div>
 

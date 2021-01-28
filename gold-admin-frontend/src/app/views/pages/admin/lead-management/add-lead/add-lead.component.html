@@ -192,7 +192,7 @@
                                         (click)="remove()">Remove</label>
                                 </div>
                             </div>
-                            <div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan'">
+                            <div class="row kt-padding-t-15" *ngIf="controls.panType.value == 'pan' && data.action != 'view'">
                                 <!-- PAN -->
                                 <div class="col-4 form-label">
                                     <mat-label class="mandatory">D.O.B</mat-label>
@@ -227,7 +227,7 @@
                                     <input class="form-control" formControlName="panCardNumber" autocomplete="off"
                                         placeholder="PAN" maxlength="10"
                                         [class.isError]="controls.panCardNumber.touched && controls.panCardNumber.invalid"
-                                        style="text-transform: uppercase;">
+                                        style="text-transform: uppercase;" readonly>
                                     <mat-error
                                         *ngIf="controls.panCardNumber.errors?.pattern && controls.panCardNumber.touched">
                                         Invalid Input
@@ -235,6 +235,9 @@
                                     <mat-error
                                         *ngIf="controls.panCardNumber.errors?.required && controls.panCardNumber.touched">
                                         Required field
+                                    </mat-error>
+                                    <mat-error *ngIf="controls.panCardNumber.touched && controls.panCardNumber.errors?.verifyPan">
+                                        PAN number not verfied
                                     </mat-error>
                                 </div>
                                 <div class="col" *ngIf="data.action != 'view'">
