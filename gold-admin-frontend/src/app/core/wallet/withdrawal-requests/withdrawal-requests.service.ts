@@ -72,7 +72,7 @@ export class WithdrawalRequestsService {
       reqParams.depositStatus = event.depositStatus;
     }
     return this.http
-      .get(`/api/wallet/withdraw-detail-report`, {
+      .get(`/api/wallet/deposit-detail-report`, {
         responseType: "arraybuffer", params: reqParams,
       })
       .pipe(
