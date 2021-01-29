@@ -62,6 +62,9 @@ export class WithdrawalRequestsService {
 
   reportExport(event?: any): Observable<any> {
     const reqParams: any = {};
+    if (event && event.search) {
+      reqParams.search = event.search;
+    }
     if (event && event.paymentFor) {
       reqParams.paymentFor = event.paymentFor;
     }
@@ -83,7 +86,7 @@ export class WithdrawalRequestsService {
           (data) => {
             this.excelService.saveAsExcelFile(
               data,
-              "OrderWithdrawReport_" + Date.now()
+              "WithdrawalRequestReport_" + Date.now()
             );
           },
           (error) => console.log(error)
