@@ -161,6 +161,13 @@ export class PageConfig {
 					page: { title: "Customer Request List", desc: "" }
 				}
 			},
+			"transaction": {
+					page: { title: "Transaction", desc: "" },
+					id: {
+						page: { title: "Transaction", desc: "" },
+					}				
+				},
+				
 			"account": {
 				"loan-disbursement": {
 					page: { title: "Loan Disbursement", desc: "" },

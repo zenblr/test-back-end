@@ -14,6 +14,8 @@ const { ifError } = require('assert');
 exports.customerMigration = async (req, res, next) => {
     // let data = await models.customer.findAll({ where: { isAugmontCustomerCreated: false } })
     // return res.status(200).json({ length: data.length, message: data })
+    await models.customer.update({ cityId: 5762 }, { where: { cityId: 287 } })
+    await models.customer.update({ userType: 'Individual' }, { where: { kyc_status: 'approved' } })
     customerCreate(req);
     return res.status(200).json({ message: 'success' })
 }
@@ -166,7 +168,11 @@ let createKyc = async (req) => {
                 if (singleCustomer.panType == 'pan') {
                     //yahape unka kyc applied ka aayega
                     if (singleCustomer.panImage == null) {
-                        await models.customer.update({ panImage: 'public/uploads/lead/1595235863488.png' }, { where: { id: singleCustomer.id } })
+                        console.log(singleCustomer.id, "pan Image null")
+                        // await models.customer.update({ panImage: 'uploads/lead/1595235863488.png' }, { where: { id: singleCustomer.id } })
+                    } else {
+                        // await models.customer.update({ panImage: 'uploads/lead/1595235863488.png' }, { where: { id: singleCustomer.id } })
+                        console.log(singleCustomer.id, "pan Image null nahi h")
                     }
                     let customer = await models.customer.findOne({ where: { id: singleCustomer.id } })
                     //change
@@ -196,7 +202,7 @@ let createKyc = async (req) => {
                     }
                     //change
 
-                    const panPath = `public/uploads/digitalGoldKyc/pan-${customer.customerUniqueId}.jpeg`;
+                    const panPath = `public/uploads/pan-${customer.customerUniqueId}.jpeg`;
                     fs.writeFileSync(panPath, base64data, { encoding: 'base64' });
                     const data = new FormData();
                     data.append('panNumber', customer.panCardNumber);
@@ -230,14 +236,13 @@ let createKyc = async (req) => {
 
                 }
             } else if (singleCustomer.kycStatus == "rejected" || singleCustomer.scrapKycStatus == "rejected") {
-                // console.log(i, singleCustomer.id, "rejected")
+                console.log(i, singleCustomer.id, "rejected")
 
                 await models.customer.update({ scrapKycStatus: "rejected", emiKycStatus: "rejected", digiKycStatus: "rejected", kycStatus: "rejected" }, { where: { id: singleCustomer.id } })
 
             } else if (singleCustomer.kycStatus == "pending") {
-
                 if (singleCustomer.panType == 'pan') {
-                    // console.log(i, singleCustomer.id, "pending", "pan card h")
+                    console.log(i, singleCustomer.id, "pending", "pan card h")
                     await models.customer.update({ digiKycStatus: 'waiting' }, { where: { id: singleCustomer.id } })
                     let checkAva = await models.digiKycApplied.findOne({ where: { customerId: singleCustomer.id } })
                     if (checkAva == null) {

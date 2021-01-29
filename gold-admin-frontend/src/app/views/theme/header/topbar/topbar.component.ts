@@ -59,6 +59,7 @@ import { ScrapCustomerManagementService } from '../../../../core/scrap-managemen
 import { PartnerBranchUserService } from '../../../../core/user-management/partner-branch-user/services/partner-branch-user.service'
 import { DepositService } from "../../../../core/funds-approvals/deposit/services/deposit.service";
 import { CronListService } from '../../../../core/cron-list/services/cron-list.service';
+import { TransactionService } from '../../../../core/transaction/services/transaction.service'
 import { SipInvestmentTenureService } from '../../../../core/sip-management';
 import { SipCycleDateService } from '../../../../core/sip-management/sip-cycle-date';
 import { SipTradesService, CreateSipService, SipApplicationService } from '../../../../core/sip-management';
@@ -170,8 +171,9 @@ export class TopbarComponent implements OnInit {
 		private scrapCustomerManagementService: ScrapCustomerManagementService,
 		private partnerBranchUserservice: PartnerBranchUserService,
 		private depositService: DepositService,
-		private sipInvestmentTenureService: SipInvestmentTenureService,
+		private transactionService: TransactionService,
 		private cronService: CronListService,
+		private sipInvestmentTenureService: SipInvestmentTenureService,
 		private sipCycleDateService: SipCycleDateService,
 		private sipTradesService: SipTradesService,
 		private createSipService: CreateSipService,
@@ -366,6 +368,13 @@ export class TopbarComponent implements OnInit {
 			this.filterWidth = "900px";
 			this.permissionType = "leadManagmentAdd";
 			this.listType = "state,leadStatus";
+		}
+		if (location.href.includes('/admin/transaction/')) {
+			// this.dataSourceHeader();
+			this.showfilter = true;
+			this.filterName = "transaction";
+			this.filterWidth = "400px";
+			
 		}
 		if (this.path == "partner") {
 			this.dataSourceHeader();
@@ -590,6 +599,8 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "deposit-requests") {
 			this.showInput = true;
+			this.value1 = "Export";
+			this.type1 = "button";
 			this.filterName = "depositRequests";
 			this.filterWidth = "630px";
 			// this.listType = "startDate,depositRequestsStatus";
@@ -605,6 +616,8 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "withdrawal-requests") {
 			this.showInput = true;
+			this.value1 = "Export";
+			this.type1 = "button";
 			this.filterName = "withdrawalRequests";
 			this.filterWidth = "630px";
 			// this.listType = "startDate,withdrawalRequestsStatus";
@@ -1026,6 +1039,12 @@ export class TopbarComponent implements OnInit {
 		if (this.path == 'other-charges') {
 			this.otherChargesService.openModal.next(true);
 		}
+		if (this.path == "deposit-requests") {
+			this.depositRequestsService.exportExcel.next(true);
+		}
+		if (this.path == "withdrawal-requests") {
+			this.withdrawalRequestsService.exportExcel.next(true);
+		}
 		// if (this.path == 'deposit-requests') {
 		// 	this.sipInvestmentTenureService.openModal.next(true)
 		// }
@@ -1169,6 +1188,9 @@ export class TopbarComponent implements OnInit {
 		}
 		if (this.path == "packet-tracking") {
 			this.packetTrackingService.applyFilter.next(data)
+		}
+		if (location.href.includes('/admin/transaction/')) {
+			this.transactionService.applyFilter.next(data);
 		}
 		if (location.href.includes('/scrap-management/packet-tracking')) {
 			this.scrapPacketTrackingService.applyFilter.next(data)

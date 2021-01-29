@@ -312,11 +312,145 @@ let customerNonSellableMetal = async (currentMetalWeight, sellableMetal, nonSell
   }
 }
 
+let transactionDetail = async (customerId, paymentFor, searchParam, fromParam, toParam) =>{
+
+  if (paymentFor) {
+    orderTypeData = await models.digiGoldOrderType.findOne({ where: { orderType: paymentFor } })
+  }
+
+  let query = {};
+
+  const { search, offset, pageSize } = paginationWithFromTo(
+    searchParam, fromParam, toParam
+  );
+
+  let searchQuery = {
+    [Op.and]: [query, {
+      [Op.or]: {
+      depositStatus: sequelize.where(
+          sequelize.cast(sequelize.col("walletTransactionDetails.deposit_status"), "varchar"),
+          {
+              [Op.iLike]: search + "%",
+          }
+      ),
+      applicationDate: sequelize.where(
+          sequelize.cast(sequelize.col("walletTransactionDetails.deposit_date"), "varchar"),
+          {
+              [Op.iLike]: search + "%",
+          }
+      ),
+      mobileNumber: sequelize.where(
+        sequelize.cast(sequelize.col("customer.mobile_number"), "varchar"),
+        {
+            [Op.iLike]: search + "%",
+        }
+    ),
+      "$walletTransactionDetails.bank_name$": { [Op.iLike]: search + '%' },
+      "$walletTransactionDetails.cheque_number$": { [Op.iLike]: search + '%' },
+      "$walletTransactionDetails.branch_name$": { [Op.iLike]: search + '%' },
+      "$walletTransactionDetails.transaction_unique_id$": { [Op.iLike]: search + '%' },
+      "$walletTransactionDetails.ifsc_code$": { [Op.iLike]: search + '%' },
+      "$walletTransactionDetails.payment_type$": { [Op.iLike]: search + '%' },
+      "$walletTransactionDetails.bank_transaction_unique_id$": { [Op.iLike]: search + '%' },
+      "$walletTransactionDetails.razorpay_payment_id$": { [Op.iLike]: search + '%' },
+      "$customer.customer_unique_id$": { [Op.iLike]: search + '%' },
+      "$customer.first_name$": { [Op.iLike]: search + '%' },
+      "$customer.last_name$": { [Op.iLike]: search + '%' },
+
+      },
+    }
+  ],
+    // customerId: id,
+    // orderTypeId: { [Op.notIn]: [4] }
+  };
+
+  if (!paymentFor) {
+    searchQuery.paymentOrderTypeId = { [Op.in]: [4, 5, 6] }
+    searchQuery.customerId = customerId
+    searchQuery.transactionStatus = "completed"
+    // searchQuery.orderTypeId = { [Op.notIn]: [4] }
+
+  }
+  if (paymentFor) {
+    if (orderTypeData.id == 4) {
+      searchQuery.paymentOrderTypeId = { [Op.in]: [4] }
+      searchQuery.customerId = customerId,
+        searchQuery.transactionStatus = "completed"
+      // searchQuery.orderTypeId = { [Op.notIn]: [4] }
+    }
+    else if (orderTypeData.id == 5) {
+      searchQuery.paymentOrderTypeId = { [Op.in]: [5] }
+      searchQuery.customerId = customerId
+      searchQuery.transactionStatus = "completed"
+      // searchQuery.orderTypeId = { [Op.notIn]: [4] }
+    } else if (orderTypeData.id == 6) {
+      searchQuery.paymentOrderTypeId = { [Op.in]: [6] }
+      searchQuery.customerId = customerId
+      searchQuery.transactionStatus = "completed"
+      // searchQuery.orderTypeId = { [Op.notIn]: [4] }
+    }
+  }
+
+
+  let includeArray = [
+    {
+      model: models.walletTransactionDetails,
+      as: 'walletTransactionDetails',
+      include:{
+        model: models.customer,
+        as: "customer",
+        attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'email']
+      }
+    },
+    {
+      model: models.digiGoldOrderDetail,
+      as: 'digiGoldOrderDetail',
+      include:{
+        model: models.customer,
+        as: "customer",
+        attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'email']
+      }
+    },
+    {
+      model: models.customer,
+      as: "customer",
+      attributes: ['customerUniqueId', 'firstName', 'lastName', 'mobileNumber', 'email']
+    }
+  ]
+
+  let transactionDetails = await models.walletDetails.findAll({
+    where: searchQuery,
+    order: [['updatedAt', 'DESC']],
+    include: includeArray,
+    offset: offset,
+    limit: pageSize,
+    subQuery: false,
+  });
+
+  let count = await models.walletDetails.findAll({
+    where: searchQuery,
+    include: includeArray
+  });
+
+  if (check.isEmpty(transactionDetails)) {
+    return {
+      transactionDetails: [],
+      count: 0
+    }
+  }
+
+  return {
+    transactionDetails,
+    count
+  }
+}
+
 
 module.exports = {
   walletBuy: walletBuy,
   walletDelivery: walletDelivery,
   customerBalance: customerBalance,
   walletTransactionDetailById: walletTransactionDetailById,
-  customerNonSellableMetal: customerNonSellableMetal
+  customerNonSellableMetal: customerNonSellableMetal,
+  transactionDetail: transactionDetail
 }

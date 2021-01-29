@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'postal_code'
         },
+        addressType: {
+            type: DataTypes.STRING,
+            field: 'address_type',
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             field: 'is_active',

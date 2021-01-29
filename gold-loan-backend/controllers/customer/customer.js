@@ -203,6 +203,12 @@ exports.customerSignUp = async (req, res, next) => {
     return res.status(200).json({ message: `OTP has been sent to registered mobile number.`, referenceCode, isCustomer: false });
   } else {
 
+    let checkMerchant = await models.customer.findOne({ where: { mobileNumber: mobileNumber, merchantId: 1 } })
+
+    if (checkMerchant == null) {
+      return res.status(400).json({ message: 'Mobile number is not exist' })
+    }
+
     const referenceCode = await createReferenceCode(5);
     let otp;
     if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new") {
@@ -243,8 +249,7 @@ exports.sendOtp = async (req, res, next) => {
   if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new") {
     otp = 1234
   } else {
-    // otp = Math.floor(1000 + Math.random() * 9000);
-    otp = 1234
+    otp = Math.floor(1000 + Math.random() * 9000);
   }
   let createdTime = new Date();
   let expiryTime = moment(createdTime).add(10, "m");
@@ -254,6 +259,12 @@ exports.sendOtp = async (req, res, next) => {
   if (type == "login") {
     let smsLink = process.env.BASE_URL_CUSTOMER
     // await sendMessageOtpForLogin(customerExist.mobileNumber, otp)
+    let checkMerchant = await models.customer.findOne({ where: { mobileNumber: customerExist.mobileNumber, merchantId: 1 } })
+
+    if (checkMerchant == null) {
+      return res.status(400).json({ message: 'Mobile number is not exist' })
+    }
+
     await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
   } else if (type == "forget") {
     let smsLink = process.env.BASE_URL_CUSTOMER
@@ -414,6 +425,7 @@ exports.getAllCustomersForLead = async (req, res, next) => {
         last_name: { [Op.iLike]: search + "%" },
         mobile_number: { [Op.iLike]: search + "%" },
         pan_card_number: { [Op.iLike]: search + "%" },
+        customer_unique_id: { [Op.iLike]: search + "%" },
         pinCode: sequelize.where(
           sequelize.cast(sequelize.col("customer.pin_code"), "varchar"),
           {

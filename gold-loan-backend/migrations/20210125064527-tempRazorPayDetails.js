@@ -1,18 +1,12 @@
 'use strict';
 
-const models = require('../models')
-const uniqid = require('uniqid');
-let { getUserData, createCustomer } = require('../service/digiGold')
-
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-
-    await queryInterface.changeColumn('customer', 'customer_unique_id', {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.addColumn('razor_temp_details', 'order_status', {
       type: Sequelize.DataTypes.STRING,
-      unique: true
+      allowNull: false,
+      defaultValue: "confirmed"
     })
-
-
   },
 
   down: (queryInterface, Sequelize) => {
