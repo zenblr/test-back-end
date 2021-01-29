@@ -775,21 +775,23 @@ exports.withdrawAmount = async (req, res) => {
 
       
       let customerFullName=customerFreeBalance.firstName + " " + customerFreeBalance.lastName
+   
+       let NewWithdrawAmt = await Math.round(withdrawAmount);
+       let NewWithdrawAt = NewWithdrawAmt.toFixed(2);
 
-
-      tempWallet = await models.walletTempDetails.create({ customerId: id, amount: withdrawAmount, paymentDirection: "debit", description: `Rs ${withdrawAmount} requested to be transferred to bank account`, productTypeId: 4 }, { transaction: t });
+      tempWallet = await models.walletTempDetails.create({ customerId: id, amount: NewWithdrawAt, paymentDirection: "debit", description: `Rs ${NewWithdrawAt} requested to be transferred to bank account`, productTypeId: 4 }, { transaction: t });
 
       let transactionUniqueId = uniqid.time().toUpperCase();
 
-      tempOrderDetail = await models.walletTransactionTempDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, walletTempId: tempWallet.id, transactionUniqueId, transactionAmount: withdrawAmount, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, paymentReceivedDate: moment() }, { transaction: t });
+      tempOrderDetail = await models.walletTransactionTempDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, walletTempId: tempWallet.id, transactionUniqueId, transactionAmount: NewWithdrawAt, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, paymentReceivedDate: moment() }, { transaction: t });
 
-      let walletData = await models.walletDetails.create({ customerId: id, amount: withdrawAmount, paymentDirection: "debit", description: `Rs ${withdrawAmount} requested to be transferred to bank account`, productTypeId: 4, transactionDate: moment(), orderTypeId: 5, paymentOrderTypeId: 5, transactionStatus: "pending" }, { transaction: t });
+      let walletData = await models.walletDetails.create({ customerId: id, amount: NewWithdrawAt, paymentDirection: "debit", description: `Rs ${NewWithdrawAt} requested to be transferred to bank account`, productTypeId: 4, transactionDate: moment(), orderTypeId: 5, paymentOrderTypeId: 5, transactionStatus: "pending" }, { transaction: t });
 
-      customerUpdatedFreeBalance = Number(customerFreeBalance.walletFreeBalance) - Number(withdrawAmount);
-      currentWalletBalance = Number(customerFreeBalance.currentWalletBalance) - Number(withdrawAmount);
+      customerUpdatedFreeBalance = Number(customerFreeBalance.walletFreeBalance) - Number(NewWithdrawAt);
+      currentWalletBalance = Number(customerFreeBalance.currentWalletBalance) - Number(NewWithdrawAt);
       let currentWalletBalanceNew = currentWalletBalance.toFixed(2);
 
-      orderDetail = await models.walletTransactionDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, transactionUniqueId, transactionAmount: withdrawAmount, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, depositStatus: "pending", walletId: walletData.id, paymentReceivedDate: moment(), runningBalance: Number(currentWalletBalanceNew) }, { transaction: t });
+      orderDetail = await models.walletTransactionDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, transactionUniqueId, transactionAmount: NewWithdrawAt, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, depositStatus: "pending", walletId: walletData.id, paymentReceivedDate: moment(), runningBalance: Number(currentWalletBalanceNew) }, { transaction: t });
 
       let newCustomerUpdatedFreeBalance = customerUpdatedFreeBalance.toFixed(2);
 
