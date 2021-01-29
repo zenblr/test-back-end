@@ -773,6 +773,10 @@ exports.withdrawAmount = async (req, res) => {
     let orderDetail
     await sequelize.transaction(async (t) => {
 
+      
+      let customerFullName=customerFreeBalance.firstName + " " + customerFreeBalance.lastName
+
+
       tempWallet = await models.walletTempDetails.create({ customerId: id, amount: withdrawAmount, paymentDirection: "debit", description: `Rs ${withdrawAmount} requested to be transferred to bank account`, productTypeId: 4 }, { transaction: t });
 
       let transactionUniqueId = uniqid.time().toUpperCase();
@@ -794,7 +798,8 @@ exports.withdrawAmount = async (req, res) => {
 
       await models.customer.update({ walletFreeBalance: Number(newCustomerUpdatedFreeBalance), currentWalletBalance: Number(newCurrentWalletBal) }, { where: { id: customerFreeBalance.id }, transaction: t });
 
-
+      await sms.sendMessageForWithdrawalReqPlaced(customerFreeBalance.mobileNumber, customerFullName);
+         
     })
 
     return res.status(200).json({ message: `Success`, orderDetail });

@@ -446,3 +446,22 @@ exports.sendMessageForRedispach = async (mobileNumber,customerName, orderId,cour
     }
 }
 
+//withdraw req placed 
+exports.sendMessageForWithdrawalReqPlaced = async (mobileNumber,customerName) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Withdraw request placed');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<customerName>",customerName)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}
+
+//kyc status kept pending from admin side
+exports.sendMessageForKycPendingFromAdmin = async (mobileNumber,customerName) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('KYC reverification (admin panel)');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<customerName>",customerName)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}
