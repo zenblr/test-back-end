@@ -7,7 +7,8 @@ const request = require("request");
 const { createReferenceCode } = require("../../utils/referenceCode");
 const CONSTANT = require("../../utils/constant");
 const moment = require("moment");
-
+const fs = require('fs');
+const FormData = require('form-data');
 const check = require("../../lib/checkLib");
 var uniqid = require('uniqid');
 let { sendCustomerUniqueId, sendMessageToOperationsTeam, sendKYCApprovalMessage, sendKYCApprovalStatusMessage } = require('../../utils/SMS')
@@ -312,89 +313,67 @@ exports.operationalTeamKycRating = async (req, res, next) => {
             //add complete kyc point
             let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
 
-            var data;
-            if (checkPanCard.panCardNumber != null) {
-                //change
-                let url;
-                if (process.env.NODE_ENV == "production" || process.env.NODE_ENV == "uat") {
-                    url = process.env.BASE_URL + getMobileNumber.panImage
-                } else {
-                    url = getMobileNumber.panImage
-                }
-                //change
 
-                let panBase64 = await pathToBase64(url)
+            await sequelize.transaction(async (t) => {
 
-                if (!panBase64.success) {
-                    return res.status(panBase64.status).json({ data: panBase64.message })
-                }
+                // cust- check - scrap kyc complete
+                // customerKycClassification get data of cce 
+                if (getMobileNumber.scrapKycStatus == "pending") {
+                    let customerKycClassificationData = await models.customerKycClassification.findOne({ where: { customerId: customerId } })
 
-                req.body.panNumber = getMobileNumber.panCardNumber
-                req.body.panAttachment = panBase64.data
-                req.body.panCardNumber = getMobileNumber.panCardNumber
-                data = await digiOrEmiKyc(req)
-            } else {
-                data = {
-                    success: true
-                }
-            }
+                    if (checkPanCard.panCardNumber == null) {
+                        await models.customer.update({ kycCompletePoint, customerUniqueId, kycStatus: "approved", scrapKycStatus: "approved", userType: "Individual" }, { where: { id: customerId }, transaction: t })
+                    } else {
+                        await models.customer.update({ kycCompletePoint, customerUniqueId, digiKycStatus: "approved", emiKycStatus: "approved", kycStatus: "approved", scrapKycStatus: "approved", userType: "Individual" }, { where: { id: customerId }, transaction: t })
 
-            if (data.success) {
-
-                await sequelize.transaction(async (t) => {
-
-                    // cust- check - scrap kyc complete
-                    // customerKycClassification get data of cce 
-                    if (getMobileNumber.scrapKycStatus == "pending") {
-                        let customerKycClassificationData = await models.customerKycClassification.findOne({ where: { customerId: customerId } })
-
-                        if (checkPanCard.panCardNumber == null) {
-                            await models.customer.update({ kycCompletePoint, customerUniqueId, kycStatus: "approved", scrapKycStatus: "approved", userType: "Individual" }, { where: { id: customerId }, transaction: t })
-                        } else {
-                            await models.customer.update({ kycCompletePoint, customerUniqueId, digiKycStatus: "approved", emiKycStatus: "approved", kycStatus: "approved", scrapKycStatus: "approved", userType: "Individual" }, { where: { id: customerId }, transaction: t })
-
-                            await models.digiKycApplied.update({ status: kycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
-                        }
-
-                        await models.customerKyc.update(
-                            { isVerifiedByOperationalTeam: true, operationalTeamVerifiedBy: operationalTeamId },
-                            { where: { customerId: customerId }, transaction: t })
-
-                        await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId, scrapKycRatingFromCce: customerKycClassificationData.kycRatingFromCce, scrapKycStatusFromCce: customerKycClassificationData.kycStatusFromCce, scrapCceId: customerKycClassificationData.cceId, scrapKycStatusFromOperationalTeam: kycStatusFromOperationalTeam, scrapReasonFromOperationalTeam: reasonFromOperationalTeam, scrapOperationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
-                    } else if (getMobileNumber.scrapKycStatus == "approved") {
-
-                        if (checkPanCard.panCardNumber == null) {
-                            await models.customer.update({ kycCompletePoint, customerUniqueId, kycStatus: "approved" }, { where: { id: customerId }, transaction: t })
-                        } else {
-                            await models.customer.update({ kycCompletePoint, customerUniqueId, digiKycStatus: "approved", emiKycStatus: "approved", kycStatus: "approved" }, { where: { id: customerId }, transaction: t })
-                        }
-
-                        await models.customerKyc.update(
-                            { isVerifiedByOperationalTeam: true, operationalTeamVerifiedBy: operationalTeamId },
-                            { where: { customerId: customerId }, transaction: t })
-
-                        await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
+                        await models.digiKycApplied.update({ status: kycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
                     }
-                });
 
-                let cusMobile = getMobileNumber.mobileNumber
+                    await models.customerKyc.update(
+                        { isVerifiedByOperationalTeam: true, operationalTeamVerifiedBy: operationalTeamId },
+                        { where: { customerId: customerId }, transaction: t })
 
-                await sendKYCApprovalStatusMessage(cusMobile, getMobileNumber.firstName, "Gold Loan", kycStatusFromOperationalTeam)
+                    await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId, scrapKycRatingFromCce: customerKycClassificationData.kycRatingFromCce, scrapKycStatusFromCce: customerKycClassificationData.kycStatusFromCce, scrapCceId: customerKycClassificationData.cceId, scrapKycStatusFromOperationalTeam: kycStatusFromOperationalTeam, scrapReasonFromOperationalTeam: reasonFromOperationalTeam, scrapOperationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
+                } else if (getMobileNumber.scrapKycStatus == "approved") {
 
-                await sendCustomerUniqueId(cusMobile, getMobileNumber.firstName, customerUniqueId)
+                    if (checkPanCard.panCardNumber == null) {
+                        await models.customer.update({ kycCompletePoint, customerUniqueId, kycStatus: "approved" }, { where: { id: customerId }, transaction: t })
+                    } else {
+                        await models.customer.update({ kycCompletePoint, customerUniqueId, digiKycStatus: "approved", emiKycStatus: "approved", kycStatus: "approved" }, { where: { id: customerId }, transaction: t })
+                    }
 
-                let getBm = await models.user.findOne({ where: { id: operationalTeamId } });
-                let bmMobile = getBm.mobileNumber
+                    await models.customerKyc.update(
+                        { isVerifiedByOperationalTeam: true, operationalTeamVerifiedBy: operationalTeamId },
+                        { where: { customerId: customerId }, transaction: t })
 
-                await sendMessageToOperationsTeam(bmMobile, customerUniqueId)
-                await sms.sendMessageAfterKycApproved(getMobileNumber.mobileNumber, getMobileNumber.customerUniqueId);
+                    await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
+                }
+                if (checkPanCard.panCardNumber != null & checkPanCard.panImage != null) {
+
+                    let checkKycComplete = await createKyc(checkPanCard)
+
+                    if (!checkKycComplete.success) {
+                        t.rollback()
+                        return res.status(400).json({ message: checkKycComplete.message })
+                    }
+                }
+            });
+
+            let cusMobile = getMobileNumber.mobileNumber
+
+            await sendKYCApprovalStatusMessage(cusMobile, getMobileNumber.firstName, "Gold Loan", kycStatusFromOperationalTeam)
+
+            await sendCustomerUniqueId(cusMobile, getMobileNumber.firstName, customerUniqueId)
+
+            let getBm = await models.user.findOne({ where: { id: operationalTeamId } });
+            let bmMobile = getBm.mobileNumber
+
+            await sendMessageToOperationsTeam(bmMobile, customerUniqueId)
+            await sms.sendMessageAfterKycApproved(getMobileNumber.mobileNumber, getMobileNumber.customerUniqueId);
 
 
-                return res.status(200).json({ message: 'success' })
-            } else {
-                return res.status(data.status).json({ message: data.message })
+            return res.status(200).json({ message: 'success' })
 
-            }
         }
     } else {
 
@@ -480,81 +459,154 @@ exports.operationalTeamKycRating = async (req, res, next) => {
             let kycCompletePoint = await updateCompleteKycModule(checkUniqueId.kycCompletePoint, moduleId)
             //add complete kyc point
 
-            var data;
-            if (checkPanCard.panCardNumber != null) {
-                //change
-                let url;
-                if (process.env.NODE_ENV == "production" || process.env.NODE_ENV == "uat") {
-                    url = process.env.BASE_URL + getMobileNumber.panImage
+
+            await sequelize.transaction(async (t) => {
+
+                if (checkPanCard.panCardNumber == null) {
+                    await models.customer.update({ kycCompletePoint, customerUniqueId, scrapKycStatus: "approved" }, { where: { id: customerId }, transaction: t })
                 } else {
-                    url = getMobileNumber.panImage
-                }
-                //change
+                    await models.customer.update({ kycCompletePoint, customerUniqueId, digiKycStatus: "approved", emiKycStatus: "approved", scrapKycStatus: "approved" }, { where: { id: customerId }, transaction: t })
 
-                let panBase64 = await pathToBase64(url)
+                    await models.digiKycApplied.update({ status: scrapKycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
 
-                if (!panBase64.success) {
-                    return res.status(panBase64.status).json({ data: panBase64.message })
                 }
 
-                req.body.panNumber = getMobileNumber.panCardNumber
-                req.body.panAttachment = panBase64.data
-                req.body.panCardNumber = getMobileNumber.panCardNumber
-                data = await digiOrEmiKyc(req)
-            } else {
-                data = {
-                    success: true
-                }
-            }
+                // await models.customerKyc.update(
+                // { isVerifiedByOperationalTeam: true, operationalTeamVerifiedBy: scrapOperationalTeamId },
+                // { where: { customerId: customerId }, transaction: t })
 
-            if (data.success) {
+                await models.customerKycClassification.update({ customerId, customerKycId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, scrapOperationalTeamId: scrapOperationalTeamId }, { where: { customerId }, transaction: t })
 
+                if (checkPanCard.panCardNumber != null & checkPanCard.panImage != null) {
 
-                await sequelize.transaction(async (t) => {
+                    let checkKycComplete = await createKyc(checkPanCard)
 
-                    if (checkPanCard.panCardNumber == null) {
-                        await models.customer.update({ kycCompletePoint, customerUniqueId, scrapKycStatus: "approved" }, { where: { id: customerId }, transaction: t })
-                    } else {
-                        await models.customer.update({ kycCompletePoint, customerUniqueId, digiKycStatus: "approved", emiKycStatus: "Approved", scrapKycStatus: "approved" }, { where: { id: customerId }, transaction: t })
-
-                        await models.digiKycApplied.update({ status: scrapKycStatusFromOperationalTeam }, { where: { customerId }, transaction: t })
-
+                    if (!checkKycComplete.success) {
+                        t.rollback()
+                        return res.status(400).json({ message: checkKycComplete.message })
                     }
+                }
+            });
+
+            let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
+            let cusMobile = getMobileNumber.mobileNumber
+
+            await sendKYCApprovalStatusMessage(cusMobile, getMobileNumber.firstName, "Gold Scrap", scrapKycStatusFromOperationalTeam)
+            //message for customer
+            request(
+                `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is ${customerUniqueId} `
+            );
+            let getBm = await models.user.findOne({ where: { id: scrapOperationalTeamId } });
+            let bmMobile = getBm.mobileNumber
 
 
-
-                    // await models.customerKyc.update(
-                    // { isVerifiedByOperationalTeam: true, operationalTeamVerifiedBy: scrapOperationalTeamId },
-                    // { where: { customerId: customerId }, transaction: t })
-
-                    await models.customerKycClassification.update({ customerId, customerKycId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, scrapOperationalTeamId: scrapOperationalTeamId }, { where: { customerId }, transaction: t })
-                });
-
-                let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
-                let cusMobile = getMobileNumber.mobileNumber
-
-                await sendKYCApprovalStatusMessage(cusMobile, getMobileNumber.firstName, "Gold Scrap", scrapKycStatusFromOperationalTeam)
-                //message for customer
-                request(
-                    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${cusMobile}&source=nicalc&message= Your unique customer ID for further loan applications is ${customerUniqueId} `
-                );
-                let getBm = await models.user.findOne({ where: { id: scrapOperationalTeamId } });
-                let bmMobile = getBm.mobileNumber
-
-
-                //message for BranchManager
-                request(
-                    `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is ${customerUniqueId} Assign appraiser for further process.`
-                );
-                // customer pproved mesge
-                await sms.sendMessageAfterKycApproved(cusMobile, getMobileNumber.customerUniqueId);
-                return res.status(200).json({ message: 'success' })
-            } else {
-                return res.status(data.status).json({ message: data.message })
-            }
+            //message for BranchManager
+            request(
+                `${CONSTANT.SMSURL}username=${CONSTANT.SMSUSERNAME}&password=${CONSTANT.SMSPASSWORD}&type=0&dlr=1&destination=${bmMobile}&source=nicalc&message= Approved customer unique ID is ${customerUniqueId} Assign appraiser for further process.`
+            );
+            // customer pproved mesge
+            await sms.sendMessageAfterKycApproved(cusMobile, getMobileNumber.customerUniqueId);
+            return res.status(200).json({ message: 'success' })
         }
     }
 
+}
+
+
+let createKyc = async (customer) => {
+
+    const getMerchantDetails = await models.merchant.findOne({
+        where: { isActive: true, id: 1 },
+        include: {
+            model: models.digiGoldMerchantDetails,
+            as: 'digiGoldMerchantDetails',
+        }
+    });
+
+    const merchantData = {
+        id: getMerchantDetails.id,
+        merchantId: getMerchantDetails.digiGoldMerchantDetails.augmontMerchantId,
+        accessToken: getMerchantDetails.digiGoldMerchantDetails.accessToken,
+        expiresAt: getMerchantDetails.digiGoldMerchantDetails.expiresAt
+    };
+
+    let url;
+    let base64data;
+    let fullBase64Image;
+    if (process.env.NODE_ENV == "production" || process.env.NODE_ENV == "uat") {
+        url = process.env.BASE_URL + customer.panImage
+        const getAwsResp = await models.axios({
+            method: 'GET',
+            url: url,
+            responseType: 'arraybuffer'
+        });
+        base64data = Buffer.from(getAwsResp.data, 'binary').toString('base64');
+        fullBase64Image = `data:image/jpeg;base64,${base64data}`
+    } else {
+        url = customer.panImage
+
+        buff = fs.readFileSync(`public/${url}`);
+
+        base64data = buff.toString('base64');
+
+        fullBase64Image = `data:image/jpeg;base64,${base64data}`
+
+        base64data = fullBase64Image.split(';base64,').pop();
+
+    }
+    //change
+
+    const panPath = `public/uploads/pan-${customer.customerUniqueId}.jpeg`;
+    fs.writeFileSync(panPath, base64data, { encoding: 'base64' });
+    const data = new FormData();
+    data.append('panNumber', customer.panCardNumber);
+    data.append('panAttachment', fs.createReadStream(panPath));
+
+    const options = {
+        'method': 'POST',
+        'url': `${process.env.DIGITALGOLDAPI}/merchant/v1/users/${customer.customerUniqueId}/kyc`,
+        'headers': {
+            'Authorization': `Bearer ${merchantData.accessToken}`,
+            'Content-Type': 'application/json',
+            ...data.getHeaders(),
+        },
+        body: data
+    }
+    const check = await createCustomerKyc(options);
+    fs.unlinkSync(panPath)
+
+    if (check.error) {
+        console.log(check.error, "error")
+        return { success: false, message: check.message }
+    } else {
+        console.log(check.error, "newBanaya")
+        return { success: true, message: check.message }
+    }
+
+}
+
+let createCustomerKyc = async (options) => {
+    return new Promise((resolve, reject) => {
+        request(options, async (err, response, body) => {
+            if (err) {
+                return resolve({ error: true })
+            }
+            const respBody = JSON.parse(body);
+            if (respBody.statusCode == 200) {
+                return resolve({ error: false, message: 'success' })
+            } else {
+                if (typeof respBody.errors.status[0].code != "undefined") {
+                    if (respBody.errors.status[0].code == 4548) {
+                        return resolve({ error: false, message: 'success' })
+                    } else {
+                        return resolve({ error: true, message: respBody })
+                    }
+                } else {
+                    return resolve({ error: true, message: respBody })
+                }
+            }
+        })
+    })
 }
 
 exports.updateRating = async (req, res, next) => {
