@@ -66,7 +66,7 @@ export class CheckoutCustomerComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       mobileNumber: ['', [Validators.required, Validators.pattern('^[7-9][0-9]{9}$')]],
-      email: ['', Validators.email],
+      email: [''],
       address: ['', Validators.required],
       landMark: ['', Validators.required],
       postalCode: ['', [Validators.required, Validators.pattern('[1-9][0-9]{5}')]],
@@ -110,19 +110,19 @@ export class CheckoutCustomerComponent implements OnInit {
     const panCardFileIdControl = this.checkoutCustomerForm.get('panCardFileId');
 
     this.checkoutCustomerForm.get('kycRequired').valueChanges.subscribe((val) => {
-      if(val){
+      if (val) {
         panCardNumberControl.setValidators([Validators.required, Validators.pattern('^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$')]);
         nameOnPanCardControl.setValidators([Validators.required]);
         panCardFileIdControl.setValidators([Validators.required]);
-        
-      } else{
+
+      } else {
         panCardNumberControl.setValidators([]);
         nameOnPanCardControl.setValidators([]);
         panCardFileIdControl.setValidators([]);
       }
-        panCardNumberControl.updateValueAndValidity();
-        nameOnPanCardControl.updateValueAndValidity();
-        panCardFileIdControl.updateValueAndValidity();
+      panCardNumberControl.updateValueAndValidity();
+      nameOnPanCardControl.updateValueAndValidity();
+      panCardFileIdControl.updateValueAndValidity();
     });
   }
 
@@ -228,7 +228,9 @@ export class CheckoutCustomerComponent implements OnInit {
           this.checkIfbillingandShippingSameOnLoad();
 
         } else {
-          this.showShippingCustomerFlag = false;
+          if (!res.customerDetails.customeraddress.length) {
+            this.showShippingCustomerFlag = false;
+          }
         }
         this.controls['shippingAddress'].enable();
         this.controls['shippingLandMark'].enable();
@@ -308,11 +310,11 @@ export class CheckoutCustomerComponent implements OnInit {
       }
       this.sharedService.getCities(stateData).subscribe(res => {
 
-        if(this.shippingCityCounter > 1){
+        if (this.shippingCityCounter > 1) {
           this.controls.shippingCityName.patchValue('');
         }
-        this.shippingCityCounter ++
- 
+        this.shippingCityCounter++
+
         this.shippingCityList = res.data;
         this.ref.detectChanges();
       });
@@ -373,23 +375,38 @@ export class CheckoutCustomerComponent implements OnInit {
       generateOTPData.cityName = this.existingCustomerData.customerDetails.customeraddress[0].city.name;
     }
     if (this.showShippingCustomerFlag && this.existingCustomerData.customerDetails.customerOrderAddress.length) {
-      if(this.checkCityStateIfSame()){
-        if(this.isSameAddress){
+      if (this.checkCityStateIfSame()) {
+        if (this.isSameAddress) {
           generateOTPData.shippingStateName = this.existingCustomerData.customerDetails.customeraddress[0].state.name;
           generateOTPData.shippingCityName = this.existingCustomerData.customerDetails.customeraddress[0].city.name;
-        }else{
+        } else {
           generateOTPData.shippingStateName = this.existingCustomerData.customerDetails.customerOrderAddress[0].shippingState.name;
           generateOTPData.shippingCityName = this.existingCustomerData.customerDetails.customerOrderAddress[0].shippingCity.name;
         }
-       
-      }else{
+
+      } else {
         let stateData = this.stateList.find(ele => (ele.id == this.controls.shippingStateName.value));
         let cityData = this.shippingCityList.find(data => (data.id == this.controls.shippingCityName.value));
         console.log(stateData, cityData);
-          generateOTPData.shippingStateName = stateData.name;
-          generateOTPData.shippingCityName = cityData.name;
+        generateOTPData.shippingStateName = stateData.name;
+        generateOTPData.shippingCityName = cityData.name;
       }
-      
+
+    } else {
+      let stateData, cityData;
+      if (this.controls.shippingStateName.value && this.controls.shippingStateName.value.id) {
+        stateData = this.stateList.find(ele => (ele.id == this.controls.shippingStateName.value.id));
+      } else {
+        stateData = this.stateList.find(ele => (ele.id == this.controls.shippingStateName.value));
+      }
+      if (this.controls.shippingCityName.value && this.controls.shippingCityName.value.id) {
+        cityData = this.shippingCityList.find(data => (data.id == this.controls.shippingCityName.value.id));
+      } else {
+        cityData = this.shippingCityList.find(data => (data.id == this.controls.shippingCityName.value));
+      }
+      console.log(stateData, cityData);
+      generateOTPData.shippingStateName = stateData.name;
+      generateOTPData.shippingCityName = cityData.name;
     }
 
     console.log(generateOTPData)
@@ -489,32 +506,31 @@ export class CheckoutCustomerComponent implements OnInit {
   }
 
 
-checkCityStateIfSame() {
+  checkCityStateIfSame() {
+    const stateName = this.controls.stateName.value;
+    const cityName = this.controls.cityName.value;
+    const shippingStateName = this.controls.shippingStateName.value;
+    const shippingCityName = this.controls.shippingCityName.value;
+    if (stateName == shippingStateName && cityName == shippingCityName) {
+      return true
 
-  const stateName = this.controls.stateName.value;
-  const cityName = this.controls.cityName.value;
-  const shippingStateName = this.controls.shippingStateName.value;
-  const shippingCityName = this.controls.shippingCityName.value;
-  if(stateName == shippingStateName && cityName == shippingCityName){
-  return true
-    
-  }else{
-    return false
+    } else {
+      return false
+    }
   }
-}
 
-checkIfbillingandShippingSameOnLoad(){
+  checkIfbillingandShippingSameOnLoad() {
 
-  const stateName = this.controls.stateName.value == this.controls.shippingStateName.value? true: false;
-  const cityName = this.controls.cityName.value == this.controls.shippingCityName.value? true: false;
-  const address = this.controls.address.value == this.controls.shippingAddress.value? true: false;
-  const landMark = this.controls.landMark.value == this.controls.shippingLandMark.value? true: false;
-  const postalCode = this.controls.postalCode.value == this.controls.shippingPostalCode.value? true: false;
+    const stateName = this.controls.stateName.value == this.controls.shippingStateName.value ? true : false;
+    const cityName = this.controls.cityName.value == this.controls.shippingCityName.value ? true : false;
+    const address = this.controls.address.value == this.controls.shippingAddress.value ? true : false;
+    const landMark = this.controls.landMark.value == this.controls.shippingLandMark.value ? true : false;
+    const postalCode = this.controls.postalCode.value == this.controls.shippingPostalCode.value ? true : false;
 
-  if(stateName && cityName && address && landMark && postalCode){
-    this.isSameAddress = true;
-  }else{
-    this.isSameAddress = false;
+    if (stateName && cityName && address && landMark && postalCode) {
+      this.isSameAddress = true;
+    } else {
+      this.isSameAddress = false;
+    }
   }
-}
 }

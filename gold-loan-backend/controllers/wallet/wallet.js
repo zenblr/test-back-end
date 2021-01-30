@@ -40,6 +40,17 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
     if (depositStatus) {
         query.depositStatus = depositStatus.split(",");
     }
+
+    let theDepositList;
+    console.log("sort", req.query.sort)
+    if (req.query.sort == "ListByNew") {
+        theDepositList = [["paymentReceivedDate", "DESC"]]
+    } else if (req.query.sort == "ListByOld") {
+        theDepositList = [["paymentReceivedDate", "ASC"]]
+    } else {
+        theDepositList = [["updatedAt", "DESC"]]
+    }
+    console.log("theDepositList", theDepositList)
     if (paymentReceivedDate) {
         let start = moment(moment(paymentReceivedDate).utcOffset("+05:30").startOf('day'));
         let end = moment(moment(paymentReceivedDate).utcOffset("+05:30").endOf('day'));
@@ -129,22 +140,27 @@ exports.getAllDepositWithdrawDetailsAdmin = async (req, res) => {
     ]
 
     let depositDetail = await models.walletTransactionDetails.findAll({
-
+        order: theDepositList,
         include: includeArray,
         where: searchQuery,
         offset: offset,
         limit: pageSize,
         subQuery: false,
-        order: [
-            ["updatedAt", "DESC"]
-        ],
+
+        // order: [
+        //     ["updatedAt", "DESC"]
+        // ],
+
+        // where: searchQuery,
+
     });
 
     let count = await models.walletTransactionDetails.findAll({
         where: searchQuery,
-        order: [
-            ["updatedAt", "DESC"]
-        ],
+        // order: theDepositList,
+        // order: [
+        //     ["updatedAt", "DESC"]
+        // ],
         include: includeArray
 
     });
@@ -207,7 +223,7 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
             } else {
 
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date }, { where: { id: transactionData.id }, transaction: t });
-                
+
                 await models.walletDetails.update({ transactionStatus: "rejected" }, { where: { id: transactionData.walletId }, transaction: t });
 
                 await sms.sendMessageForDepositRequestRejected(customer.mobileNumber, transactionData.transactionAmount);
@@ -289,173 +305,223 @@ exports.getWalletDetailByIdAdmin = async (req, res) => {
 }
 
 
-
 exports.getDepositReuest = async (req, res) => {
 
-    const { startDate, endDate } = req.query;
-    let endDateNew = moment(moment(endDate).utcOffset("+05:30").endOf('day'));
-    let startDateNew = moment(moment(startDate).utcOffset("+05:30").startOf('day'));
-    let query = {}
+    let { paymentFor } = req.query;
+    if (paymentFor == "deposit") {
+        let query = {}
 
-    let depositData = await models.walletTransactionDetails.findAll({
-        // where: { orderTypeId: 4, [Op.and]: [query] },
-        where: {
-            orderTypeId: 4, depositDate: {
-                [Op.between]: [startDateNew, endDateNew],
+
+        let searchQuery = {
+            [Op.and]: [query, {
+
+            }],
+            orderTypeId: 4
+        };
+
+        if (req.query.paymentReceivedDate) {
+            let endDateNew = moment(moment(req.query.paymentReceivedDate).utcOffset("+05:30").endOf('day'));
+            let startDateNew = moment(moment(req.query.paymentReceivedDate).utcOffset("+05:30").startOf('day'));
+            let endDateNewFormat = moment(endDateNew).format('YYYY-MM-DD HH:mm:ss');
+            let startDateNewFormat = moment(startDateNew).format('YYYY-MM-DD HH:mm:ss');
+            searchQuery.paymentReceivedDate = { [Op.between]: [startDateNewFormat, endDateNewFormat] }
+        }
+
+        if (req.query.depositStatus) {
+            let depositStatusArray = req.query.depositStatus.split(',');
+            searchQuery.depositStatus = { [Op.in]: depositStatusArray }
+        }
+
+
+        let depositDtReport = await models.walletTransactionDetails.findAll({
+            where: searchQuery,
+            subQuery: false,
+            order: [
+                ["updatedAt", "DESC"]
+            ],
+
+            include: [{
+                model: models.walletDetails,
+                as: "wallet",
+                attributes: ['customerId', 'amount', 'payment_direction', 'description', 'productTypeId', 'transactionDate']
+            }, {
+                model: models.customer,
+                as: "customer",
+                attributes: ['firstName', 'lastName', 'customerUniqueId', 'mobileNumber']
+            }]
+        });
+        let finalData = [];
+
+        for (const order of depositDtReport) {
+
+            let depositReportData = {};
+            depositReportData["Transaction Id"] = order.transactionUniqueId;
+            depositReportData["Deposit Amount"] = order.transactionAmount;
+            if (!check.isEmpty(order.razorpayPaymentId)) {
+                depositReportData["Bank Transaction ID"] = order.razorpayPaymentId;
             }
-        },
+            if (!check.isEmpty(order.bankTransactionUniqueId)) {
+                depositReportData["Bank Transaction ID"] = order.bankTransactionUniqueId;
+            }
+            if (!check.isEmpty(order.chequeNumber)) {
+                depositReportData["Bank Transaction ID"] = order.chequeNumber;
+            }
+            depositReportData["Customer Id"] = order.customer.customerUniqueId;
+            if (order.depositDate != null) {
+                year = order.depositDate.split('-')[0];
+                month = order.depositDate.split('-')[1];
+                day = order.depositDate.split('-')[2];
 
-        include: [{
-            model: models.walletDetails,
-            as: "walletDetails",
-            attributes: ['customerId', 'amount', 'payment_direction', 'description', 'productTypeId', 'transactionDate']
-        },
-        {
-            model: models.customer,
-            as: "customer",
-            attributes: ['firstName', 'lastName', 'customerUniqueId', 'mobileNumber']
-        }]
-    });
+                const dateDepositApprovedDate = day + '-' + month + '-' + year;
 
-    let finalData = [];
-
-    for (const order of depositData) {
-
-
-
-        let depositReportData = {};
-        depositReportData["Customer Id"] = order.customer.customerUniqueId;
-        depositReportData["Customer Name"] = order.customer.firstName + " " + order.customer.lastName;
-        depositReportData["Mobile No"] = order.customer.mobileNumber;
-        depositReportData["Transaction Id"] = order.transactionUniqueId;
-        depositReportData["Payment Type"] = order.paymentType;
-        depositReportData["Bank Name"] = order.bankName;
-        depositReportData["Branch Name"] = order.branchName;
-        depositReportData["Withdraw Amount"] = order.transactionAmount;
-        depositReportData["Payment Received Date"] = order.paymentReceivedDate;
-        depositReportData["Deposit Status"] = order.depositStatus;
+                // depositReportData["Deposit Date"] = order.depositDate;
+                depositReportData["Deposit Date"] = dateDepositApprovedDate;
+            } else {
+                depositReportData["Deposit Date"] = '';
+            }
+            depositReportData["Customer Name"] = order.customer.firstName + " " + order.customer.lastName;
+            depositReportData["Mobile Number"] = order.customer.mobileNumber;
+            depositReportData["Deposit Mode Of Payment"] = order.paymentType;
+            depositReportData["Deposit Bank Name"] = order.bankName;
+            depositReportData["Deposit Branch Name"] = order.branchName;
 
 
-        finalData.push(depositReportData);
+            if (order.depositApprovedDate != null) {
+                mnth = ("0" + (order.depositApprovedDate.getMonth() + 1)).slice(-2),
+                    day = ("0" + order.depositApprovedDate.getDate()).slice(-2);
+                const dateDepositApprovedDate = [day, mnth, order.depositApprovedDate.getFullYear()].join("-");
+
+                depositReportData["Approval Date"] = dateDepositApprovedDate;
+            } else {
+                depositReportData["Approval Date"] = '';
+            }
+            depositReportData["Deposit Status"] = order.depositStatus;
+
+
+            finalData.push(depositReportData);
+
+        }
+        if (!check.isEmpty(finalData)) {
+            const date = Date.now();
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader("Content-Disposition", "attachment; filename=" + `orderReport${date}.xlsx`);
+            await res.xls(`depositReport${date}.xlsx`, finalData);
+            res.end();
+        } else {
+            return res.status(200).json({ message: "Data Not Found" });
+        }
     }
-    if (!check.isEmpty(finalData)) {
-        const date = Date.now();
-        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader("Content-Disposition", "attachment; filename=" + `orderReport${date}.xlsx`);
-        await res.xls(`depositReport${date}.xlsx`, finalData);
-        res.end();
-    } else {
-        return res.status(200).json({ message: "Data Not Found" });
+    else if (paymentFor == "withdraw") {
+        let query = {}
+
+
+        let searchQuery = {
+            [Op.and]: [query, {
+
+            }],
+            orderTypeId: 5
+        };
+
+        if (req.query.paymentReceivedDate) {
+            let endDateNew = moment(moment(req.query.paymentReceivedDate).utcOffset("+05:30").endOf('day'));
+            let startDateNew = moment(moment(req.query.paymentReceivedDate).utcOffset("+05:30").startOf('day'));
+            let endDateNewFormat = moment(endDateNew).format('YYYY-MM-DD HH:mm:ss');
+            let startDateNewFormat = moment(startDateNew).format('YYYY-MM-DD HH:mm:ss');
+            searchQuery.paymentReceivedDate = { [Op.between]: [startDateNewFormat, endDateNewFormat] }
+        }
+
+        if (req.query.depositStatus) {
+            let depositStatusArray = req.query.depositStatus.split(',');
+            searchQuery.depositStatus = { [Op.in]: depositStatusArray }
+        }
+
+        let withdrawData = await models.walletTransactionDetails.findAll({
+            where: searchQuery,
+            subQuery: false,
+            order: [
+                ["updatedAt", "DESC"]
+            ],
+
+            include: [{
+                model: models.walletDetails,
+                as: "wallet",
+                attributes: ['customerId', 'amount', 'payment_direction', 'description', 'productTypeId', 'transactionDate']
+            }, {
+                model: models.customer,
+                as: "customer",
+                attributes: ['firstName', 'lastName', 'customerUniqueId', 'mobileNumber']
+            }]
+        });
+
+        let finalData = [];
+
+        for (const order of withdrawData) {
+
+            let withdrawReportData = {};
+            withdrawReportData["Customer Id"] = order.customer.customerUniqueId;
+            withdrawReportData["Customer Name"] = order.customer.firstName + " " + order.customer.lastName;
+            withdrawReportData["Mobile Number"] = order.customer.mobileNumber;
+            withdrawReportData["Withdrawal Transaction Id"] = order.transactionUniqueId;
+            // withdrawReportData["Withdrawal Initiated Date"] = order.paymentReceivedDate;
+
+            if (order.paymentReceivedDate != null) {
+                mnth = ("0" + (order.paymentReceivedDate.getMonth() + 1)).slice(-2),
+                    day = ("0" + order.paymentReceivedDate.getDate()).slice(-2);
+                const datePaymentReceivedDate = [day, mnth, order.paymentReceivedDate.getFullYear()].join("-");
+
+                withdrawReportData["Withdrawal Initiated Date"] = datePaymentReceivedDate;
+            } else {
+                withdrawReportData["Withdrawal Initiated Date"] = '';
+            }
+            withdrawReportData["Withdrawal Amount"] = order.transactionAmount;
+            withdrawReportData["Bank Name"] = order.bankName;
+            withdrawReportData["Branch Name"] = order.branchName;
+            withdrawReportData["Account Number"] = order.accountNumber;
+            withdrawReportData["Account Holder Namer"] = order.accountHolderName;
+            withdrawReportData["IFSC Code"] = order.ifscCode;
+            if (order.depositApprovedDate != null) {
+                mnth = ("0" + (order.depositApprovedDate.getMonth() + 1)).slice(-2),
+                    day = ("0" + order.depositApprovedDate.getDate()).slice(-2);
+                const dateDepositApprovedDateWithdrw = [day, mnth, order.depositApprovedDate.getFullYear()].join("-");
+
+                withdrawReportData["Withdrawal Payment Date"] = dateDepositApprovedDateWithdrw;
+            } else {
+                withdrawReportData["Withdrawal Payment Date"] = '';
+            }
+
+            // withdrawReportData["Withdrawal Payment Date"] = order.depositApprovedDate;
+            withdrawReportData["Bank Transaction ID"] = order.bankTransactionUniqueId;
+            withdrawReportData["Withdrawal Status"] = order.depositStatus;
+
+            finalData.push(withdrawReportData);
+        }
+        if (!check.isEmpty(finalData)) {
+            const date = Date.now();
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader("Content-Disposition", "attachment; filename=" + `orderReport${date}.xlsx`);
+            await res.xls(`withdrawReport${date}.xlsx`, finalData);
+            res.end();
+        } else {
+            return res.status(200).json({ message: "Data Not Found" });
+        }
     }
-
-
-    // let depositDetail = await models.walletTransactionDetails.findAll({
-    //     where: { orderTypeId:4 ,depositStatus:'completed'},
-    //     include: [{
-    //         model: models.walletDetails,
-    //         as: "walletDetails",
-    //         attributes: ['customerId', 'amount', 'payment_direction','description','productTypeId','transactionDate']
-    //     }]
-    // })
-
-    // if (check.isEmpty(depositDetail) ){
-    //     return res.status(404).json({ message: 'Data not found' });
-    // } else {
-    //     return res.status(200).json({ depositDetail });
-    // }
-
 
 }
 
-exports.getwithdrawDetail = async (req, res) => {
-
-    const { startDate, endDate } = req.query;
-
-    let query = {}
-
-    let endDateNew = moment(moment(endDate).utcOffset("+05:30").endOf('day'));
-    let startDateNew = moment(moment(startDate).utcOffset("+05:30").startOf('day'));
-    console.log("enddate1", endDateNew)
-    console.log("startdate", startDateNew)
-    let withdrawData = await models.walletTransactionDetails.findAll({
-        where: {
-            orderTypeId: 5, depositDate: {
-                [Op.between]: [startDateNew, endDateNew],
-            }
-        },
-
-        include: [{
-            model: models.walletDetails,
-            as: "walletDetails",
-            attributes: ['customerId', 'amount', 'payment_direction', 'description', 'productTypeId', 'transactionDate']
-        }, {
-            model: models.customer,
-            as: "customer",
-            attributes: ['firstName', 'lastName', 'customerUniqueId', 'mobileNumber']
-        }]
-    });
-
-    let finalData = [];
-
-    for (const order of withdrawData) {
 
 
 
-        let withdrawReportData = {};
-        withdrawReportData["Customer Id"] = order.customer.customerUniqueId;
-        withdrawReportData["Customer Name"] = order.customer.firstName + " " + order.customer.lastName;
-        withdrawReportData["Mobile No"] = order.customer.mobileNumber;
-        withdrawReportData["Transaction Id"] = order.transactionUniqueId;
-        withdrawReportData["Payment Type"] = order.paymentType;
-        withdrawReportData["Bank Name"] = order.bankName;
-        withdrawReportData["Branch Name"] = order.branchName;
-        withdrawReportData["Withdraw Amount"] = order.transactionAmount;
-        withdrawReportData["Payment Received Date"] = order.paymentReceivedDate;
-        withdrawReportData["Deposit Status"] = order.depositStatus;
 
-        finalData.push(withdrawReportData);
-    }
-    if (!check.isEmpty(finalData)) {
-        const date = Date.now();
-        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader("Content-Disposition", "attachment; filename=" + `orderReport${date}.xlsx`);
-        await res.xls(`withdrawReport${date}.xlsx`, finalData);
-        res.end();
-    } else {
-        return res.status(200).json({ message: "Data Not Found" });
-    }
-
-    // }
-    //    return
-
-    // let withdrawDetailData = await models.walletTransactionDetails.findAll({
-    //     where: { orderTypeId:5 ,depositStatus:'completed'},
-    //     include: [{
-    //         model: models.walletDetails,
-    //         as: "walletDetails",
-    //         attributes: ['customerId', 'amount', 'payment_direction','description','productTypeId','transactionDate']
-    //     }]
-    // })
-
-    // if (check.isEmpty(withdrawDetailData) ){
-    //     return res.status(404).json({ message: 'Data not found' });
-    // } else {
-    //     return res.status(200).json({ withdrawDetailData });
-    // }
-
-
-}
-
-exports.getTransactionDetails = async (req, res) =>{
+exports.getTransactionDetails = async (req, res) => {
     try {
         console.log("paymentFor, customerId");
         const { paymentFor, customerId, search, from, to } = req.query;
-    
-        let transactionData = await transactionDetail(customerId , paymentFor, search, from, to);
-       
+
+        let transactionData = await transactionDetail(customerId, paymentFor, search, from, to);
+
         return res.status(200).json({ transactionDetails: transactionData.transactionDetails, count: transactionData.count.length });
-    
-      } catch (err) {
+
+    } catch (err) {
         console.log(err);
-      }
+    }
 }
