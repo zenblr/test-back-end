@@ -368,14 +368,12 @@ exports.getDepositReuest = async (req, res) => {
             }
             depositReportData["Customer Id"] = order.customer.customerUniqueId;
             if (order.depositDate != null) {
-                year = order.depositDate.split('-')[0];
-                month = order.depositDate.split('-')[1];
-                day = order.depositDate.split('-')[2];
-
-                const dateDepositApprovedDate = day + '-' + month + '-' + year;
+                
+                depositReportData["Deposit Date"] = moment(moment(order.depositDate).utcOffset("+05:30")).format("DD-MM-YYYY");
+                // const dateDepositApprovedDate = day + '-' + month + '-' + year;
 
                 // depositReportData["Deposit Date"] = order.depositDate;
-                depositReportData["Deposit Date"] = dateDepositApprovedDate;
+                // depositReportData["Deposit Date"] = dateDep/ositApprovedDate;
             } else {
                 depositReportData["Deposit Date"] = '';
             }
@@ -395,11 +393,10 @@ exports.getDepositReuest = async (req, res) => {
             }
 
             if (order.depositApprovedDate != null) {
-                mnth = ("0" + (order.depositApprovedDate.getMonth() + 1)).slice(-2),
-                    day = ("0" + order.depositApprovedDate.getDate()).slice(-2);
-                const dateDepositApprovedDate = [day, mnth, order.depositApprovedDate.getFullYear()].join("-");
 
-                depositReportData["Approval Date"] = dateDepositApprovedDate;
+                depositReportData["Approval Date"] = moment(moment(order.depositApprovedDate).utcOffset("+05:30")).format("DD-MM-YYYY");
+            
+                // depositReportData["Approval Date"] = dateDepositApprovedDate;
             } else {
                 depositReportData["Approval Date"] = '';
             }
@@ -473,11 +470,10 @@ exports.getDepositReuest = async (req, res) => {
             // withdrawReportData["Withdrawal Initiated Date"] = order.paymentReceivedDate;
 
             if (order.paymentReceivedDate != null) {
-                mnth = ("0" + (order.paymentReceivedDate.getMonth() + 1)).slice(-2),
-                    day = ("0" + order.paymentReceivedDate.getDate()).slice(-2);
-                const datePaymentReceivedDate = [day, mnth, order.paymentReceivedDate.getFullYear()].join("-");
+              
 
-                withdrawReportData["Withdrawal Initiated Date"] = datePaymentReceivedDate;
+                withdrawReportData["Withdrawal Initiated Date"] = moment(moment(order.paymentReceivedDate).utcOffset("+05:30")).format("DD-MM-YYYY");
+                // withdrawReportData["Withdrawal Initiated Date"] = datePaymentReceivedDate;
             } else {
                 withdrawReportData["Withdrawal Initiated Date"] = '';
             }
@@ -488,11 +484,9 @@ exports.getDepositReuest = async (req, res) => {
             withdrawReportData["Account Holder Namer"] = order.accountHolderName;
             withdrawReportData["IFSC Code"] = order.ifscCode;
             if (order.depositApprovedDate != null) {
-                mnth = ("0" + (order.depositApprovedDate.getMonth() + 1)).slice(-2),
-                    day = ("0" + order.depositApprovedDate.getDate()).slice(-2);
-                const dateDepositApprovedDateWithdrw = [day, mnth, order.depositApprovedDate.getFullYear()].join("-");
-
-                withdrawReportData["Withdrawal Payment Date"] = dateDepositApprovedDateWithdrw;
+              
+                withdrawReportData["Withdrawal Payment Date"] = moment(moment(order.depositApprovedDate).utcOffset("+05:30")).format("DD-MM-YYYY");
+                // withdrawReportData["Withdrawal Payment Date"] = dateDepositApprovedDateWithdrw;
             } else {
                 withdrawReportData["Withdrawal Payment Date"] = 'NA';
             }
