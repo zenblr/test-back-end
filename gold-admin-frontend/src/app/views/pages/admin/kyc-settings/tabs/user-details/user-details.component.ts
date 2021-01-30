@@ -339,7 +339,6 @@ export class UserDetailsComponent implements OnInit {
   }
 
   getPanDetails() {
-    this.controls.id.patchValue(656)
     this.leadService.getPanDetailsFromKarza(this.controls.panImg.value, this.controls.id.value).subscribe(res => {
 
       let name = res.data.name.split(" ")
