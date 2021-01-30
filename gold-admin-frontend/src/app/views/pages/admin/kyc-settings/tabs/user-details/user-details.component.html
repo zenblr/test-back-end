@@ -115,7 +115,7 @@
 								ktTrimControl class="form-control" formControlName="firstName" [class.isError]="
 									controls.firstName.touched &&
 									controls.firstName.invalid
-								" />
+								" readonly/>
 							<!-- [readOnly]="true" style="text-transform: capitalize;" -->
 							<mat-error *ngIf="
 									controls.firstName.errors?.required &&
@@ -129,7 +129,7 @@
 								class="form-control" formControlName="lastName" [class.isError]="
 									controls.lastName.touched &&
 									controls.lastName.invalid
-								" />
+								" readonly/>
 							<!-- [readOnly]="true" style="text-transform: capitalize;" -->
 							<mat-error *ngIf="
 									controls.lastName.errors?.required &&

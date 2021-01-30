@@ -215,9 +215,18 @@ export class UserAddressComponent implements OnInit {
           this.identityForm.patchValue({ identityProofImg: this.images.identityProof });
           this.identityForm.patchValue({ identityProof: this.imageId.identityProof });
           this.identityForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
-          if (this.images.identityProof.length == 2) {
-            this.getAaddharDetails()
+          if(this.controls.address.value[0].addressProofTypeId == 2){
+            this.images.permanent.push(res.uploadFile.URL)
+            this.imageId.permanent.push(res.uploadFile.path)
+            this.addressFileNameArray1.push(this.files.name)
+            this.addressControls.controls[0].patchValue({ addressProof: this.imageId.permanent });
+            this.addressControls.controls[0].patchValue({ addressProofImg: this.images.permanent });
+            this.addressControls.controls[0].patchValue({ addressProofFileName: this.addressFileNameArray1[this.addressFileNameArray1.length - 1] });
           }
+          
+          // if (this.images.identityProof.length == 2) {
+            this.getAaddharDetails()
+          // }
 
         } else if (type == 1 && this.images.residential.length < 2) {
           this.imageId.residential.push(res.uploadFile.path)
@@ -259,6 +268,7 @@ export class UserAddressComponent implements OnInit {
     //   "https://gold-loan-uat.s3.ap-south-1.amazonaws.com/public/uploads/images/1606826344404.jpeg",
     //   "https://gold-loan-uat.s3.ap-south-1.amazonaws.com/public/uploads/images/1606826352209.jpeg"
     // ]
+    this.controls.identityProofNumber.reset()
     this.userAddressService.getAaddharDetails(this.images.identityProof, this.controls.customerId.value).subscribe(res => {
       this.aadharCardUserDetails = res.data
       this.controls.identityProofNumber.patchValue(res.data.idNumber)
@@ -408,11 +418,11 @@ export class UserAddressComponent implements OnInit {
       this.imageId.identityProof.splice(index, 1);
       this.identityFileNameArray.splice(index, 1);
       this.identityForm.get('identityProofFileName').patchValue(this.identityFileNameArray);
-      if (this.controls.identityTypeId.value == 5) {
+      // if (this.controls.identityTypeId.value == 5) {
         this.removeImageFromAddress(index)           // remove from permanent address
         this.aadharCardUserDetails = null
         this.controls.identityProofNumber.reset()
-      }
+      // }
 
     }
     if (type == 'residential' || this.addressControls.at(0).value.addressProofTypeId == 2) {

@@ -339,7 +339,8 @@ export class UserDetailsComponent implements OnInit {
   }
 
   getPanDetails() {
-    this.controls.id.patchValue(656)
+    this.controls.panCardNumber.reset()
+    this.isPanVerified = false
     this.leadService.getPanDetailsFromKarza(this.controls.panImg.value, this.controls.id.value).subscribe(res => {
 
       let name = res.data.name.split(" ")
@@ -348,6 +349,7 @@ export class UserDetailsComponent implements OnInit {
       this.controls.firstName.patchValue(name.join(" "))
       this.controls.lastName.patchValue(lastName)
       this.controls.panCardNumber.patchValue(res.data.idNumber)
+      this.controls.dateOfBirth.patchValue(res.dob)
       this.isPanVerified = res.data.isPanVerified
       this.controls.panCardNumber.disable()
       this.controls.firstName.disable()
@@ -357,15 +359,15 @@ export class UserDetailsComponent implements OnInit {
 
 
   verifyPAN() {
-    const panCardNumber = this.controls.panCardNumber.value;
-    const dateOfBirth = this.controls.dateOfBirth.value
-    this.leadService.panDetails({ panCardNumber }).subscribe(res => {
-      if (res) {
-        this.getVerified(panCardNumber, dateOfBirth, res.data.name)
-        console.log(res)
-        // this.isPanVerified = true;
-      }
-    });
+    // const panCardNumber = this.controls.panCardNumber.value;
+    // const dateOfBirth = this.controls.dateOfBirth.value
+    // this.leadService.panDetails({ panCardNumber }).subscribe(res => {
+    //   if (res) {
+    //     this.getVerified(panCardNumber, dateOfBirth, res.data.name)
+    //     console.log(res)
+        this.isPanVerified = true;
+      // }
+    // });
   }
 
   getVerified(panCardNumber, dateOfBirth, fullName) {

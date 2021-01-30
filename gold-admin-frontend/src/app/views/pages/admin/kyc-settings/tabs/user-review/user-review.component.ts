@@ -585,6 +585,11 @@ export class UserReviewComponent implements OnInit, OnDestroy {
       this.identityFileNameArray.splice(index, 1)
       this.reviewForm.patchValue({ identityProof: this.identityIdArray });
       this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray });
+      this.reviewForm.controls.identityProofNumber.reset()
+      this.aadharCardUserDetails = null
+      this.removeImageFromAddress(index)           // remove from permanent address
+
+
     } else if (type == 'residential') {
       this.addressImageArray2.splice(index, 1)
       this.addressIdArray2.splice(index, 1)
@@ -655,6 +660,35 @@ export class UserReviewComponent implements OnInit, OnDestroy {
     if (type == 'gstCertificate') {
       this.images.gstCertificate.splice(index, 1);
       this.customerOrganizationDetail.get('gstCertificate').patchValue(this.getPathArray('gstCertificate'));
+    }
+  }
+
+  removeImageFromAddress(index) {
+    const addressControlZero = this.customerKycAddressOne
+    if (addressControlZero.get('addressProofTypeId').value == 2) {
+      this.addressImageArray1.splice(index, 1)
+      this.addressIdArray1.splice(index, 1)
+      this.addressFileNameArray1.splice(index, 1)
+      this.reviewForm.patchValue({ identityProof: this.identityIdArray });
+      this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray });
+      addressControlZero['controls'].stateId.reset()
+      addressControlZero['controls'].cityId.reset()
+      addressControlZero['controls'].address.reset()
+      addressControlZero['controls'].pinCode.reset()
+      addressControlZero['controls'].addressProofNumber.reset()
+      if (this.isAddressSame) {
+        this.addressImageArray2.splice(index, 1)
+        this.addressIdArray2.splice(index, 1)
+        this.addressFileNameArray2.splice(index, 1)
+        this.customerKycAddressTwo.patchValue({ addressProof: this.addressIdArray2 });
+        this.customerKycAddressTwo.patchValue({ addressProofFileName: this.addressFileNameArray2 });
+        const addressControlOne = this.customerKycAddressTwo
+        addressControlOne['controls'].stateId.reset()
+        addressControlOne['controls'].cityId.reset()
+        addressControlOne['controls'].address.reset()
+        addressControlOne['controls'].pinCode.reset()
+        addressControlOne['controls'].addressProofNumber.reset()
+      }
     }
   }
 
@@ -733,9 +767,16 @@ export class UserReviewComponent implements OnInit, OnDestroy {
           this.reviewForm.patchValue({ identityProof: this.identityIdArray })
           this.customerKycPersonal.patchValue({ identityProof: this.identityIdArray })
           this.reviewForm.patchValue({ identityProofFileName: this.identityFileNameArray[this.identityFileNameArray.length - 1] });
-          if (this.identityImageArray.length == 2) {
-            this.getAaddharDetails()
+          if (this.customerKycAddressOne.controls.addressProofTypeId.value == 2) {
+            this.addressImageArray1.push(res.uploadFile.URL)
+            this.addressIdArray1.push(res.uploadFile.path)
+            this.addressFileNameArray1.push(event.name)
+            this.customerKycAddressOne.patchValue({ addressProof: this.addressIdArray1 })
+            this.customerKycAddressOne.patchValue({ addressProofFileName: this.addressFileNameArray1[this.addressFileNameArray1.length - 1] });
           }
+          // if (this.identityImageArray.length == 2) {
+          this.getAaddharDetails()
+          // }
         }
         else if (type == 'permanent' && this.addressImageArray1.length < 2) {
           this.addressImageArray1.push(res.uploadFile.URL)
