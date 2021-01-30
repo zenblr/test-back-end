@@ -381,10 +381,18 @@ exports.getDepositReuest = async (req, res) => {
             }
             depositReportData["Customer Name"] = order.customer.firstName + " " + order.customer.lastName;
             depositReportData["Mobile Number"] = order.customer.mobileNumber;
-            depositReportData["Deposit Mode Of Payment"] = order.paymentType;
-            depositReportData["Deposit Bank Name"] = order.bankName;
-            depositReportData["Deposit Branch Name"] = order.branchName;
+            depositReportData["Deposit Mode Of Payment"] = order.paymentType.toUpperCase();
 
+            if(order.bankName){
+                depositReportData["Deposit Bank Name"] = order.bankName;
+            }else{
+                depositReportData["Deposit Bank Name"] = 'NA';
+            }
+            if(order.branchName){
+                depositReportData["Deposit Branch Name"] = order.branchName;
+            }else{
+                depositReportData["Deposit Branch Name"] = 'NA';
+            }
 
             if (order.depositApprovedDate != null) {
                 mnth = ("0" + (order.depositApprovedDate.getMonth() + 1)).slice(-2),
@@ -486,11 +494,15 @@ exports.getDepositReuest = async (req, res) => {
 
                 withdrawReportData["Withdrawal Payment Date"] = dateDepositApprovedDateWithdrw;
             } else {
-                withdrawReportData["Withdrawal Payment Date"] = '';
+                withdrawReportData["Withdrawal Payment Date"] = 'NA';
             }
 
             // withdrawReportData["Withdrawal Payment Date"] = order.depositApprovedDate;
-            withdrawReportData["Bank Transaction ID"] = order.bankTransactionUniqueId;
+            if(order.bankTransactionUniqueId){
+                withdrawReportData["Bank Transaction ID"] = order.bankTransactionUniqueId;
+            }else{
+                withdrawReportData["Bank Transaction ID"] = "NA";
+            }
             withdrawReportData["Withdrawal Status"] = order.depositStatus;
 
             finalData.push(withdrawReportData);
