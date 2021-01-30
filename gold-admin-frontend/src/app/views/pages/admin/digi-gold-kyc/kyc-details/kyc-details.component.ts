@@ -221,17 +221,16 @@ export class KycDetailsComponent implements OnInit {
 
   getPanDetails() {
     this.leadService.getPanDetailsFromKarza(this.controls.panAttachment.value, this.customerId).subscribe(res => {
-
-      // let name = res.data.name.split(" ")
-      // let lastName = name[name.length - 1]
-      // name.splice(name.length - 1, 1)
-      // this.controls.firstName.patchValue(name.join(" "))
-      // this.controls.lastName.patchValue(lastName)
       this.controls.panCardNumber.patchValue(res.data.idNumber)
       this.isPanVerified = res.data.isPanVerified
+      if (res.data.dob) {
+        let dateString = res.data.dob;
+        let dateParts = dateString.split("/");
+        let dateObject = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+        this.controls.dateOfBirth.patchValue(dateObject);
+      }
       this.controls.panCardNumber.disable()
-      // this.controls.firstName.disable()
-      // this.controls.lastName.disable()
+      this.controls.dateOfBirth.disable()
     })
   }
   uploadPanImg(file) {
