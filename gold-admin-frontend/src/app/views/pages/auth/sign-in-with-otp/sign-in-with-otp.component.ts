@@ -148,11 +148,12 @@ export class SignInWithOtpComponent implements OnInit {
             localStorage.removeItem('reference')
             localStorage.setItem('UserDetails', JSON.stringify(user));
             // debugger
-            if (this.returnUrl === '/') {
-              this.router.navigate(['/admin/dashboard']);
-            } else {
-              this.router.navigateByUrl(this.returnUrl); // Main page
-            }
+            this.router.navigate(['/']);
+            // if (this.returnUrl === '/') {
+            //   this.router.navigate(['/admin/dashboard']);
+            // } else {
+            //   this.router.navigateByUrl(this.returnUrl); // Main page
+            // }
             // this.router.navigateByUrl(this.returnUrl); // Main page
           }
           const msg = 'Successfully Logged In';

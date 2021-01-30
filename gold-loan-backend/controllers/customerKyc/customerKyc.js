@@ -1238,6 +1238,8 @@ exports.changeDigiKycStatus = async (req, res) => {
 
     let customer = await models.customer.findOne({ where: { id: customerDigi.customerId } })
 
+    let customerFullName=customer.firstName + " " + customer.lastName
+
     if (req.body.status != "approved") {
         const { id, customerId, status, aadharNumber, aadharAttachment, moduleId, reasonForDigiKyc } = req.body;
         console.log(req.body)
@@ -1250,7 +1252,7 @@ exports.changeDigiKycStatus = async (req, res) => {
             } else {
                 // prending
                 await models.customer.update({ emiKycStatus: status, digiKycStatus: status }, { where: { id: customerId }, transaction: t })
-                // await sms.sendMessageForKycPending(customer.mobileNumber, customer.customerUniqueId);
+                await sms.sendMessageForKycPendingFromAdmin(customer.mobileNumber, customerFullName);
             }
             await models.digiKycApplied.update({ status, reasonForDigiKyc }, { where: { id: id }, transaction: t })
 

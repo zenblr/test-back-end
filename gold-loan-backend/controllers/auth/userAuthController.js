@@ -223,20 +223,54 @@ exports.verifyLoginOtp = async (req, res, next) => {
         let roleId = await checkUser.roles.map((data) => data.id);
         let roleName = await checkUser.roles.map((data) => data.roleName)
 
-        Token = jwt.sign({
-            id: checkUser.dataValues.id,
-            mobile: checkUser.dataValues.mobileNumber,
-            firstName: checkUser.dataValues.firstName,
-            lastName: checkUser.dataValues.lastName,
-            roleId: roleId,
-            roleName: roleName,
-            userTypeId: checkUser.userTypeId,
-            internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId,
-            userBelongsTo: "InternalUser"
-        },
-            JWT_SECRETKEY, {
-            expiresIn: JWT_EXPIRATIONTIME
-        });
+        // Token = jwt.sign({
+        //     id: checkUser.dataValues.id,
+        //     mobile: checkUser.dataValues.mobileNumber,
+        //     firstName: checkUser.dataValues.firstName,
+        //     lastName: checkUser.dataValues.lastName,
+        //     roleId: roleId,
+        //     roleName: roleName,
+        //     userTypeId: checkUser.userTypeId,
+        //     internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId,
+        //     userBelongsTo: "InternalUser"
+        // },
+        //     JWT_SECRETKEY, {
+        //     expiresIn: JWT_EXPIRATIONTIME
+        // });
+
+        let Token;
+        if (checkUser.internalBranches.length != 0) {
+            Token = jwt.sign({
+                id: checkUser.dataValues.id,
+                mobile: checkUser.dataValues.mobileNumber,
+                firstName: checkUser.dataValues.firstName,
+                lastName: checkUser.dataValues.lastName,
+                roleId: roleId,
+                roleName: roleName,
+                userTypeId: checkUser.userTypeId,
+                internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId,
+                userBelongsTo: "InternalUser"
+            },
+                JWT_SECRETKEY, {
+                expiresIn: JWT_EXPIRATIONTIME
+            });
+        } else {
+            Token = jwt.sign({
+                id: checkUser.dataValues.id,
+                mobile: checkUser.dataValues.mobileNumber,
+                firstName: checkUser.dataValues.firstName,
+                lastName: checkUser.dataValues.lastName,
+                roleId: roleId,
+                roleName: roleName,
+                userTypeId: checkUser.userTypeId,
+                internalBranchId: null,
+                userBelongsTo: "InternalUser"
+            },
+                JWT_SECRETKEY, {
+                expiresIn: JWT_EXPIRATIONTIME
+            });
+        }
+
 
         const decoded = jwt.verify(Token, JWT_SECRETKEY);
         const createdTime = new Date(decoded.iat * 1000).toGMTString();
@@ -277,17 +311,43 @@ exports.verifyLoginOtp = async (req, res, next) => {
         where: { isActive: true, id: { [Op.in]: permissionId } }
     },
     )
-    return res.status(200).json({
-        message: 'login successful',
-        Token: token.Token,
-        modules, permissions,
-        userDetails: {
-            userTypeId: checkUser.userTypeId,
-            stateId: checkUser.internalBranches[0].stateId,
-            cityId: checkUser.internalBranches[0].cityId,
-            internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId
-        },
-        key: token.code
-    });
+    // return res.status(200).json({
+    //     message: 'login successful',
+    //     Token: token.Token,
+    //     modules, permissions,
+    //     userDetails: {
+    //         userTypeId: checkUser.userTypeId,
+    //         stateId: checkUser.internalBranches[0].stateId,
+    //         cityId: checkUser.internalBranches[0].cityId,
+    //         internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId
+    //     },
+    //     key: token.code
+    // });
+
+    if (checkUser.internalBranches.length == 0) {
+        return res.status(200).json({
+            message: 'login successful',
+            Token: token.Token,
+            modules,
+            permissions,
+            userDetails: {
+                userTypeId: checkUser.userTypeId
+            }
+        });
+    } else {
+        return res.status(200).json({
+            message: 'login successful',
+            Token: token.Token,
+            modules,
+            permissions,
+            userDetails: {
+                userTypeId: checkUser.userTypeId,
+                stateId: checkUser.internalBranches[0].stateId,
+                cityId: checkUser.internalBranches[0].cityId,
+                internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId,
+            },
+            key: code
+        });
+    }
 
 }

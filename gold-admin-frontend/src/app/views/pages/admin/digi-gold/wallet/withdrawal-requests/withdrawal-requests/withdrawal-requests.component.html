@@ -13,7 +13,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="customerFullName">
-                    <mat-header-cell *matHeaderCellDef>Customer Full Name</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         {{element?.customer?.firstName || element?.customer?.lastName ? (element?.customer?.firstName +
                         ' ' + element?.customer?.lastName | titlecase) : 'NA'}}
