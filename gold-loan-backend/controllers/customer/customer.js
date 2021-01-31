@@ -203,6 +203,12 @@ exports.customerSignUp = async (req, res, next) => {
     return res.status(200).json({ message: `OTP has been sent to registered mobile number.`, referenceCode, isCustomer: false });
   } else {
 
+    let checkMerchant = await models.customer.findOne({ where: { mobileNumber: mobileNumber, merchantId: 1 } })
+
+    if (checkMerchant == null) {
+      return res.status(400).json({ message: 'Mobile number is not exist' })
+    }
+
     const referenceCode = await createReferenceCode(5);
     let otp;
     if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test" || process.env.NODE_ENV == "new") {
@@ -253,6 +259,12 @@ exports.sendOtp = async (req, res, next) => {
   if (type == "login") {
     let smsLink = process.env.BASE_URL_CUSTOMER
     // await sendMessageOtpForLogin(customerExist.mobileNumber, otp)
+    let checkMerchant = await models.customer.findOne({ where: { mobileNumber: customerExist.mobileNumber, merchantId: 1 } })
+
+    if (checkMerchant == null) {
+      return res.status(400).json({ message: 'Mobile number is not exist' })
+    }
+
     await sendOtpForLogin(customerExist.mobileNumber, customerExist.firstName, otp, expiryTime, smsLink)
   } else if (type == "forget") {
     let smsLink = process.env.BASE_URL_CUSTOMER

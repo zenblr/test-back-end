@@ -9,7 +9,8 @@ let check = require('../../lib/checkLib');
 
 exports.customerLogin = async (req, res, next) => {
     const { mobileNumber, password } = req.body;
-    let checkCustomer = await models.customer.findOne({ where: { mobileNumber: mobileNumber } });
+    let checkCustomer = await models.customer.findOne({ where: { mobileNumber: mobileNumber, merchantId: 1 } });
+
     if (!checkCustomer) {
         return res.status(404).json({ message: 'Wrong Credentials' })
     }

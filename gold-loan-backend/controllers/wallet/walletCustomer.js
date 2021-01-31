@@ -314,7 +314,7 @@ exports.addAmountWallet = async (req, res) => {
  
   let orderUniqueId = `dg_buy${Math.floor(1000 + Math.random() * 9000)}`;
  
-  let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.totalAmount, paymentDirection: "debit", description: `${orderData.metalType.charAt(0).toUpperCase() + orderData.metalType.slice(1)} Bought ${orderData.quantity} grams`, productTypeId: 4, transactionDate: moment(), walletTempDetailId: tempWalletId, orderTypeId: 1, paymentOrderTypeId: 6, transactionStatus: "completed" }, { transaction: t });
+  let walletData = await models.walletDetails.create({ customerId: customerId, amount: result.data.result.data.totalAmount, paymentDirection: "debit", description: `${orderData.metalType.charAt(0).toUpperCase() + orderData.metalType.slice(1)} Bought ${orderData.quantity.toFixed(4)} grams`, productTypeId: 4, transactionDate: moment(), walletTempDetailId: tempWalletId, orderTypeId: 1, paymentOrderTypeId: 6, transactionStatus: "completed" }, { transaction: t });
  
   let orderCreatedDate = moment(moment().utcOffset("+05:30"));
  
@@ -510,6 +510,10 @@ exports.addAmountWallet = async (req, res) => {
  
   for (let address of orderAddress) {
   await models.digiGoldOrderAddressDetail.create({ orderDetailId: orderDetail.id, customerName: address.customerName, addressType: address.addressType, address: address.address, stateId: address.stateId, cityId: address.cityId, pinCode: address.pinCode }, { transaction: t });
+
+  await models.customerAddress.create({
+    customerId: customerId, address: address.address, landMark: address.address, stateId: address.stateId, cityId: address.cityId, postalCode: address.pinCode, addressType: address.addressType
+  })
   }
  
   await sms.sendMessageForOrderPlaced(customerDetails.mobileNumber, result.data.result.data.orderId);
@@ -769,19 +773,25 @@ exports.withdrawAmount = async (req, res) => {
     let orderDetail
     await sequelize.transaction(async (t) => {
 
-      tempWallet = await models.walletTempDetails.create({ customerId: id, amount: withdrawAmount, paymentDirection: "debit", description: `Rs ${withdrawAmount} requested to be transferred to bank account`, productTypeId: 4 }, { transaction: t });
+      
+      let customerFullName=customerFreeBalance.firstName + " " + customerFreeBalance.lastName
+   
+       let NewWithdrawAmt = await Math.round(withdrawAmount);
+       let NewWithdrawAt = NewWithdrawAmt.toFixed(2);
+
+      tempWallet = await models.walletTempDetails.create({ customerId: id, amount: NewWithdrawAt, paymentDirection: "debit", description: `Rs ${NewWithdrawAt} requested to be transferred to bank account`, productTypeId: 4 }, { transaction: t });
 
       let transactionUniqueId = uniqid.time().toUpperCase();
 
-      tempOrderDetail = await models.walletTransactionTempDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, walletTempId: tempWallet.id, transactionUniqueId, transactionAmount: withdrawAmount, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, paymentReceivedDate: moment() }, { transaction: t });
+      tempOrderDetail = await models.walletTransactionTempDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, walletTempId: tempWallet.id, transactionUniqueId, transactionAmount: NewWithdrawAt, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, paymentReceivedDate: moment() }, { transaction: t });
 
-      let walletData = await models.walletDetails.create({ customerId: id, amount: withdrawAmount, paymentDirection: "debit", description: `Rs ${withdrawAmount} requested to be transferred to bank account`, productTypeId: 4, transactionDate: moment(), orderTypeId: 5, paymentOrderTypeId: 5, transactionStatus: "pending" }, { transaction: t });
+      let walletData = await models.walletDetails.create({ customerId: id, amount: NewWithdrawAt, paymentDirection: "debit", description: `Rs ${NewWithdrawAt} requested to be transferred to bank account`, productTypeId: 4, transactionDate: moment(), orderTypeId: 5, paymentOrderTypeId: 5, transactionStatus: "pending" }, { transaction: t });
 
-      customerUpdatedFreeBalance = Number(customerFreeBalance.walletFreeBalance) - Number(withdrawAmount);
-      currentWalletBalance = Number(customerFreeBalance.currentWalletBalance) - Number(withdrawAmount);
+      customerUpdatedFreeBalance = Number(customerFreeBalance.walletFreeBalance) - Number(NewWithdrawAt);
+      currentWalletBalance = Number(customerFreeBalance.currentWalletBalance) - Number(NewWithdrawAt);
       let currentWalletBalanceNew = currentWalletBalance.toFixed(2);
 
-      orderDetail = await models.walletTransactionDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, transactionUniqueId, transactionAmount: withdrawAmount, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, depositStatus: "pending", walletId: walletData.id, paymentReceivedDate: moment(), runningBalance: Number(currentWalletBalanceNew) }, { transaction: t });
+      orderDetail = await models.walletTransactionDetails.create({ customerId: id, productTypeId: 4, orderTypeId: 5, transactionUniqueId, transactionAmount: NewWithdrawAt, bankName: bankName, branchName: branchName, accountHolderName: accountHolderName, accountNumber: accountNumber, ifscCode: ifscCode, depositStatus: "pending", walletId: walletData.id, paymentReceivedDate: moment(), runningBalance: Number(currentWalletBalanceNew) }, { transaction: t });
 
       let newCustomerUpdatedFreeBalance = customerUpdatedFreeBalance.toFixed(2);
 
@@ -790,7 +800,8 @@ exports.withdrawAmount = async (req, res) => {
 
       await models.customer.update({ walletFreeBalance: Number(newCustomerUpdatedFreeBalance), currentWalletBalance: Number(newCurrentWalletBal) }, { where: { id: customerFreeBalance.id }, transaction: t });
 
-
+      await sms.sendMessageForWithdrawalReqPlaced(customerFreeBalance.mobileNumber, customerFullName);
+         
     })
 
     return res.status(200).json({ message: `Success`, orderDetail });
