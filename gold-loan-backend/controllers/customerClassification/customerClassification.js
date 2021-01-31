@@ -348,15 +348,15 @@ exports.operationalTeamKycRating = async (req, res, next) => {
 
                     await models.customerKycClassification.update({ customerId, customerKycId, kycStatusFromOperationalTeam, reasonFromOperationalTeam, operationalTeamId: operationalTeamId }, { where: { customerId }, transaction: t })
                 }
-                if (checkPanCard.panCardNumber != null & checkPanCard.panImage != null) {
+                // if (checkPanCard.panCardNumber != null & checkPanCard.panImage != null) {
 
-                    let checkKycComplete = await createKyc(checkPanCard)
+                //     let checkKycComplete = await createKyc(checkPanCard)
 
-                    if (!checkKycComplete.success) {
-                        t.rollback()
-                        return res.status(400).json({ message: checkKycComplete.message })
-                    }
-                }
+                //     if (!checkKycComplete.success) {
+                //         t.rollback()
+                //         return res.status(400).json({ message: checkKycComplete.message })
+                //     }
+                // }
             });
 
             let cusMobile = getMobileNumber.mobileNumber
@@ -477,15 +477,15 @@ exports.operationalTeamKycRating = async (req, res, next) => {
 
                 await models.customerKycClassification.update({ customerId, customerKycId, scrapKycStatusFromOperationalTeam, scrapReasonFromOperationalTeam, scrapOperationalTeamId: scrapOperationalTeamId }, { where: { customerId }, transaction: t })
 
-                if (checkPanCard.panCardNumber != null & checkPanCard.panImage != null) {
+                // if (checkPanCard.panCardNumber != null & checkPanCard.panImage != null) {
 
-                    let checkKycComplete = await createKyc(checkPanCard)
+                //     let checkKycComplete = await createKyc(checkPanCard)
 
-                    if (!checkKycComplete.success) {
-                        t.rollback()
-                        return res.status(400).json({ message: checkKycComplete.message })
-                    }
-                }
+                //     if (!checkKycComplete.success) {
+                //         t.rollback()
+                //         return res.status(400).json({ message: checkKycComplete.message })
+                //     }
+                // }
             });
 
             let getMobileNumber = await models.customer.findOne({ where: { id: customerId } })
