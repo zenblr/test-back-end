@@ -303,7 +303,7 @@ exports.addPanImage = async (req, res) => {
         let checkKycComplete = addPanImage(element, merchantData.accessToken)
     }
 
-    return res.status(200).json({ message: success })
+    return res.status(200).json({ message: "success" })
 
 }
 
