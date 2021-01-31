@@ -278,7 +278,7 @@ let createCustomerKyc = async (options) => {
 }
 
 
-exports.addPanImage = async (req) => {
+exports.addPanImage = async (req, res) => {
 
     let allCustomer = await models.customer.findAll({ where: { merchantId: 1, kycStatus: 'approved' } })
 
