@@ -375,6 +375,7 @@ let createPanCustomerKyc = async (options) => {
             if (respBody.statusCode == 200) {
                 return resolve({ error: false, message: 'success' })
             } else {
+                console.log(respBody)
                 if (typeof respBody.errors.status[0].code != "undefined") {
                     if (respBody.errors.status[0].code == 4548) {
                         return resolve({ error: false, message: 'success' })
