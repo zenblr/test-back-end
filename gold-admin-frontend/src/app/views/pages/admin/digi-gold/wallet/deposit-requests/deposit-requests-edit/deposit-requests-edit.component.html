@@ -74,14 +74,14 @@
                                 Field Required
                             </mat-error>
                         </div>
-                    </div>              
+                    </div>
                     <div class="row kt-margin-t-15">
                         <div class="col-4 align-self-center">
                             <label class="font-weight-500 text-color">Deposit Status</label>
                         </div>
                         <div class="col-8">
                             <select class="form-control" formControlName="depositStatus"
-                            (change)="fieldEnable($event.target.value)"
+                                (change)="fieldEnable($event.target.value)"
                                 [class.isError]="controls.depositStatus.touched && controls.depositStatus.invalid">
                                 <option value="">Select Status</option>
                                 <option [value]="status.value" *ngFor="let status of depositStatus">

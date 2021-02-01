@@ -125,10 +125,18 @@ export class DepositRequestsEditComponent implements OnInit {
 			return;
 		}
 		if (this.depositId) {
-			const depositData = {
-				depositStatus: this.controls.depositStatus.value,
-				date: this.sharedService.toISODateFormat(this.controls.approvalDate.value),
-			};
+			let depositData;
+			if (this.controls.depositStatus.value == 'completed') {
+				depositData = {
+					depositStatus: this.controls.depositStatus.value,
+					date: this.sharedService.toISODateFormat(this.controls.approvalDate.value),
+				};
+			} else {
+				depositData = {
+					depositStatus: this.controls.depositStatus.value,
+					date: new Date()
+				};
+			}
 			this.depositRequestsService.editDepositStatus(depositData, this.depositId).pipe(
 				map((res) => {
 					this.toastr.successToastr('Deposit Status Updated Sucessfully');
