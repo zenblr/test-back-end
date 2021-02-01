@@ -9,61 +9,89 @@ const { result } = require('lodash');
 exports.changeOrderDeliveryStatus = async (req, res) => {
     try {
         const { data, type } = req.body;
+        if (req.data.scope == "order") {
+            if (type == "order") {
+                let merchantData = await getMerchantData();
+                for (let ele of data) {
 
-        if (type == "order") {
-            let merchantData = await getMerchantData();
-            for (let ele of data) {
-                let customer = await models.customer.findOne({
-                    where: { customerUniqueId: ele.uniqueId },
-                    attributes: ['id', 'customerUniqueId', 'mobileNumber', 'firstName', 'lastName'],
-                });
-
-              
-         
-                if (!check.isEmpty(customer)) {
-
-                    const result = await models.axios({
-                        method: 'GET',
-                        url: `${process.env.DIGITALGOLDAPI}/merchant/v1/order/${ele.merchantTransactionId}/${ele.uniqueId}`,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'Authorization': `Bearer ${merchantData.accessToken}`,
-                        },
-                    });
+                    if(!ele.uniqueId) 
+                    {
+                        return res.status(400).json({ message: "uniqueId is required" }); 
+                    }
     
-                    const getCustomerOrderStatusData = result.data.result.data
-
-                    let orderData = await models.digiGoldOrderDetail.findOne({where: { transactionId: ele.transactionId }});
-                    if(!orderData){
-                        return res.status(400).json({ message: "Invaid Transaction Id" });
+                    if(!ele.status)
+                    {
+                        return res.status(400).json({ message: "status is required" }); 
                     }
 
-                    const customerName = customer.firstName + ' ' + customer.lastName 
-                    let orderStatus = await sequelize.transaction(async (t) => {
+                    if(!ele.transactionId)
+                    {
+                        return res.status(400).json({ message: "transactionId is required" }); 
+                    }
 
-                        await models.digiGoldOrderDetail.update({ orderStatus: ele.status }, { where: { id: orderData.id  }, transaction: t });
+                    if(!ele.merchantTransactionId)
+                    {
+                        return res.status(400).json({ message: "merchantTransactionId is required" }); 
+                    }
 
-                        if (ele.status == "delivered_to_client") {
-                            await sms.sendMessageForDeliveredToClient(customer.mobileNumber,  ele.transactionId);
-                        } else if (ele.status == "dispatched_but_not_delivered") {
-                            await sms.sendMessageForDispatchedButNotDelivered(customer.mobileNumber, customerName, ele.transactionId, getCustomerOrderStatusData.logisticName, getCustomerOrderStatusData.awbNo);
-                        } else if (ele.status == 're-dispatched') {
-                            await sms.sendMessageForRedispach(customer.mobileNumber, customerName,ele.transactionId, getCustomerOrderStatusData.logisticName,getCustomerOrderStatusData.awbNo  );
-                        } else if (ele.status == 'rto') {
-                            await sms.sendMessageForRto(customer.mobileNumber, customerName, ele.transactionId);
+                    if(ele.status != 'delivered_to_client' && ele.status != 'dispatched_but_not_delivered' && ele.status != 're-dispatched' && ele.status != 'rto')
+                    {
+                        return res.status(400).json({ message: "Invalid status" }); 
+                    }
+
+                    let customer = await models.customer.findOne({
+                        where: { customerUniqueId: ele.uniqueId },
+                        attributes: ['id', 'customerUniqueId', 'mobileNumber', 'firstName', 'lastName'],
+                    });
+
+
+
+                    if (!check.isEmpty(customer)) {
+
+                        const result = await models.axios({
+                            method: 'GET',
+                            url: `${process.env.DIGITALGOLDAPI}/merchant/v1/order/${ele.merchantTransactionId}/${ele.uniqueId}`,
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'Authorization': `Bearer ${merchantData.accessToken}`,
+                            },
+                        });
+
+                        const getCustomerOrderStatusData = result.data.result.data
+
+                        let orderData = await models.digiGoldOrderDetail.findOne({ where: { transactionId: ele.transactionId } });
+                        if (!orderData) {
+                            return res.status(400).json({ message: "Invaid Transaction Id" });
                         }
-                    })
-                }else{
-                    return res.status(400).json({ message: "Invalid Customer Id" });
+
+                        const customerName = customer.firstName + ' ' + customer.lastName
+                        let orderStatus = await sequelize.transaction(async (t) => {
+
+                            await models.digiGoldOrderDetail.update({ orderStatus: ele.status }, { where: { id: orderData.id }, transaction: t });
+
+                            if (ele.status == "delivered_to_client") {
+                                await sms.sendMessageForDeliveredToClient(customer.mobileNumber, ele.transactionId);
+                            } else if (ele.status == "dispatched_but_not_delivered") {
+                                await sms.sendMessageForDispatchedButNotDelivered(customer.mobileNumber, customerName, ele.transactionId, getCustomerOrderStatusData.logisticName, getCustomerOrderStatusData.awbNo);
+                            } else if (ele.status == 're-dispatched') {
+                                await sms.sendMessageForRedispach(customer.mobileNumber, customerName, ele.transactionId, getCustomerOrderStatusData.logisticName, getCustomerOrderStatusData.awbNo);
+                            } else if (ele.status == 'rto') {
+                                await sms.sendMessageForRto(customer.mobileNumber, customerName, ele.transactionId);
+                            }
+                        })
+                    } else {
+                        return res.status(400).json({ message: "Invalid Customer Id" });
+                    }
                 }
+                return res.status(200).json({ message: "Success" });
+            } else {
+                return res.status(400).json({ message: "Invalid Type" });
             }
-            return res.status(200).json({ message: "Success" });
+
         } else {
-            return res.status(400).json({ message: "Invalid Type" });
+            return res.status(401).json({ message: "auth failed" });
         }
-
-
 
 
     } catch (err) {

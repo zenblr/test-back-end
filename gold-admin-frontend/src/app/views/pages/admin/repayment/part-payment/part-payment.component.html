@@ -41,7 +41,7 @@
 
                             </td>
                             <td class="">
-                                <span>{{loanDetails?.loan?.tenure}}</span>
+                                <span>{{loanDetails?.loan?.tenure}} Months</span>
                             </td>
                             <td class="">
                                 <span>{{loanDetails?.loan?.customerLoan[0]?.rebateInterestRate}} %</span>
@@ -90,23 +90,27 @@
                             </td>
 
                             <td class="table-amount">
-                                <span>{{payableAmount?.totalInterest}}</span><br>
+                                <span>{{payableAmount?.totalInterest  | number:'1.2-2'}}</span><br>
                                 <!-- <span *ngIf="loanDetails?.customerLoan[1]">
                                     {{payableAmount?.unsecuredTotalInterest}}
                                 </span> -->
                             </td>
                             <td class="table-amount">
-                                <span>{{payableAmount?.securedInterest}}</span> <br>
+                                <div class="amount">
+                                    {{payableAmount?.interest}}</div>
+                                <!-- <span>{{payableAmount?.securedInterest}}</span> <br>
                                 <span *ngIf="loanDetails?.loan?.customerLoan[1]">
                                     {{payableAmount?.unsecuredInterest}}
-                                </span>
+                                </span> -->
                             </td>
 
                             <td class="table-amount">
-                                <span>{{payableAmount?.securedPenalInterest}}</span><br>
+                                <div class="amount">
+                                    {{payableAmount?.penalInterest}}</div>
+                                <!-- <span>{{payableAmount?.securedPenalInterest}}</span><br>
                                 <span *ngIf="loanDetails?.loan?.customerLoan[1]">
                                     {{payableAmount?.unsecuredPenalInterest}}
-                                </span>
+                                </span> -->
                             </td>
                             <td class="table-amount table-last">
                                 <input ktWeight [class.isError]="partAmount.touched && partAmount.invalid"
@@ -114,6 +118,8 @@
                                 <mat-error *ngIf="partAmount.errors?.required && partAmount.touched">
                                     Field Required
                                 </mat-error>
+                                <mat-error *ngIf="partAmount.errors?.valueZero && partAmount.touched">
+                                    Amount should be greater than zero                                </mat-error>
                             </td>
                         </tr>
                     </tbody>

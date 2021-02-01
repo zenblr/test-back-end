@@ -1,5 +1,5 @@
 <kt-toastr #toastr></kt-toastr>
-<kt-filtered-data [filteredList]="filteredDataList" [filterName]="'deposit'"></kt-filtered-data>
+<kt-filtered-data [filteredList]="filteredDataList" [filterName]="'withdraw-request'"></kt-filtered-data>
 <kt-portlet>
     <kt-portlet-body>
         <div class="kt-form kt-margin-b-10"></div>
@@ -13,9 +13,10 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="customerFullName">
-                    <mat-header-cell *matHeaderCellDef>Customer Full Name</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.customer?.firstName || element?.customer?.lastName ? (element?.customer?.firstName + ' ' + element?.customer?.lastName | titlecase) : 'NA'}}
+                        {{element?.customer?.firstName || element?.customer?.lastName ? (element?.customer?.firstName +
+                        ' ' + element?.customer?.lastName | titlecase) : 'NA'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="mobileNumber">
@@ -25,20 +26,24 @@
                 </ng-container>
                 <ng-container matColumnDef="withdrawalTransactionID">
                     <mat-header-cell *matHeaderCellDef>Withdrawal Transaction ID</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.transactionUniqueId ? element?.transactionUniqueId : 'NA'}}</mat-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{element?.transactionUniqueId ? element?.transactionUniqueId : 'NA'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="withdrawalInitiatedDate">
                     <mat-header-cell *matHeaderCellDef>Withdrawal Initiated Date</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div class="d-block">
-                            <div>{{element?.paymentReceivedDate ? (element?.paymentReceivedDate | date : 'yyyy-MM-dd') : 'NA'}}</div>
+                            <div>
+                                {{element?.paymentReceivedDate ? (element?.paymentReceivedDate | date:'mediumDate') :
+                                'NA'}}
+                            </div>
                         </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="withdrawalAmount">
                     <mat-header-cell *matHeaderCellDef>Withdrawal Amount </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.transactionAmount ? (element?.transactionAmount| number:'1.1-2') : 'NA'}}</mat-cell>
+                        {{element?.transactionAmount ? (element?.transactionAmount| number:'1.2-2') : 'NA'}}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="bankName">
                     <mat-header-cell *matHeaderCellDef class="align-right">Bank Name </mat-header-cell>
@@ -71,7 +76,8 @@
                 <ng-container matColumnDef="withdrawalPaymentDate">
                     <mat-header-cell *matHeaderCellDef>Withdrawal Payment Date</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.depositApprovedDate ? (element?.depositApprovedDate | date : 'yyyy-MM-dd') : 'NA'}}</mat-cell>
+                        {{element?.depositApprovedDate ? (element?.depositApprovedDate | date:'mediumDate') : 'NA'}}
+                    </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="bankTransactionID">
                     <mat-header-cell *matHeaderCellDef>Bank Transaction ID</mat-header-cell>
@@ -79,12 +85,12 @@
                         {{element?.bankTransactionUniqueId ? element?.bankTransactionUniqueId : 'NA'}}
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="depositmodeofpayment">
+                <!-- <ng-container matColumnDef="depositmodeofpayment">
                     <mat-header-cell *matHeaderCellDef>Deposit Mode Of Payment </mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         {{element?.paymentType ? (element?.paymentType | uppercase) : 'NA'}}
                     </mat-cell>
-                </ng-container>
+                </ng-container> -->
                 <ng-container matColumnDef="withdrawalStatus">
                     <mat-header-cell *matHeaderCellDef>Withdrawal Status</mat-header-cell>
                     <mat-cell *matCellDef="let element" [ngClass]="{'text-orange' : element?.depositStatus == 'pending',
@@ -97,7 +103,8 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="editWithdrawal(element?.id)" class="kt-pointer view-link">Edit</div>
+                            <div *ngxPermissionsOnly="['digiGoldWithdrawEdit']" (click)="editWithdrawal(element?.id)"
+                                class="kt-pointer view-link">Edit</div>
                         </div>
                     </mat-cell>
                 </ng-container>

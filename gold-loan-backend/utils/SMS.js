@@ -9,10 +9,22 @@ exports.sendOtpForLogin = async (mobileNumber, firstName, otp, time, smsLink) =>
     // Dear <User name>, Please use OTP <OTP number> valid upto <Time> to log in to your Augmont gold loan account.  Please visit <Web site> to log in
     if (messageTemplate) {
         let message = await messageTemplate.content.replace('<User name>', `${firstName}`).replace("<OTP number>", otp).replace("<Time>", time).replace("<Web site>", smsLink)
-
+      
         await sms.sendSms(mobileNumber, message);
     }
 }
+// customer side otp
+
+exports.sendMessageOtpForLogin = async (mobileNumber, otp) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Login OTP');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace('<OTP number>', otp)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}
+
+ 
 
 exports.forgetPasswordOtp = async (mobileNumber, firstName, otp, time, smsLink) => {
     let messageTemplate = await models.smsAlert.getSmsTemplate('Forgot password');
@@ -30,6 +42,7 @@ exports.sendOtpToLeadVerification = async (mobileNumber, firstName, otp, time) =
     // Dear <Lead name>, We look forward to have you as a customer. OTP is <OTP number>, valid up to <Time>, for mobile verification purposes.  Please merely confirm that you have received the OTP
     if (messageTemplate) {
         let message = await messageTemplate.content.replace('<Lead name>', `${firstName}`).replace("<OTP number>", otp).replace("<Time>", time)
+        console.log("sendOtpToLeadVerification",message)
         await sms.sendSms(mobileNumber, message);
     }
 }
@@ -301,7 +314,6 @@ exports.sendMessageForKycPending= async (mobileNumber, memberId) => {
     if (messageTemplate) {
         let message = await messageTemplate.content.replace("<memberId>", memberId)
         let smsFrom = "customer"
-        console.log("sendMessageForKycPending",message)
         await sms.sendSms(mobileNumber, message,smsFrom);
     }
 }
@@ -434,3 +446,22 @@ exports.sendMessageForRedispach = async (mobileNumber,customerName, orderId,cour
     }
 }
 
+//withdraw req placed 
+exports.sendMessageForWithdrawalReqPlaced = async (mobileNumber,customerName) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('Withdraw request placed');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<customerName>",customerName)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}
+
+//kyc status kept pending from admin side
+exports.sendMessageForKycPendingFromAdmin = async (mobileNumber,customerName) => {
+    let messageTemplate = await models.smsAlert.getSmsTemplate('KYC reverification (admin panel)');
+    if (messageTemplate) {
+        let message = await messageTemplate.content.replace("<customerName>",customerName)
+        let smsFrom = "customer"
+        await sms.sendSms(mobileNumber, message,smsFrom);
+    }
+}

@@ -10,6 +10,11 @@ module.exports = {
       type: Sequelize.DataTypes.TEXT,
     })
 
+    await queryInterface.addColumn('customer', 'is_augmont_customer_created', {
+      type: Sequelize.DataTypes.BOOLEAN,
+      defaultValue: false
+    })
+
 
     const customerDetails = await models.customer.findAll()
 

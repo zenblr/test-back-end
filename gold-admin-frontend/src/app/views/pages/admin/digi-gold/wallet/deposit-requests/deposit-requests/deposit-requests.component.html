@@ -1,5 +1,5 @@
 <kt-toastr #toastr></kt-toastr>
-<kt-filtered-data [filteredList]="filteredDataList" [filterName]="'deposit'"></kt-filtered-data>
+<kt-filtered-data [filteredList]="filteredDataList" [filterName]="'deposit-request'"></kt-filtered-data>
 <kt-portlet>
     <kt-portlet-body>
         <div class="kt-form kt-margin-b-10">
@@ -16,7 +16,9 @@
                 <ng-container matColumnDef="bankTransactionID">
                     <mat-header-cell *matHeaderCellDef>Bank Transaction ID</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        {{element?.bankTransactionUniqueId ? element?.bankTransactionUniqueId: 'NA'}}
+                        {{element?.bankTransactionUniqueId}}
+                        {{element?.razorpayPaymentId}}
+                        {{element?.chequeNumber}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="customerID">
@@ -26,7 +28,7 @@
                 </ng-container>
                 <ng-container matColumnDef="depositDate">
                     <mat-header-cell *matHeaderCellDef>Deposit Date </mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element?.depositDate ? element?.depositDate : 'NA'}}
+                    <mat-cell *matCellDef="let element">{{element?.depositDate ? (element?.depositDate | date:'mediumDate') : 'NA'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="fullName">
@@ -34,7 +36,8 @@
                     <mat-cell *matCellDef="let element">
                         <div class="d-block">
                             <div>
-                                {{element?.customer?.firstName || element?.customer?.lastName ? (element?.customer?.firstName + ' ' + element?.customer?.lastName | titlecase) : 'NA'}}
+                                {{element?.customer?.firstName || element?.customer?.lastName ?
+                                (element?.customer?.firstName + ' ' + element?.customer?.lastName | titlecase) : 'NA'}}
                             </div>
                         </div>
                     </mat-cell>
@@ -63,7 +66,12 @@
                 <ng-container matColumnDef="depositAmount">
                     <mat-header-cell *matHeaderCellDef class="align-right">Deposit Amount</mat-header-cell>
                     <mat-cell *matCellDef="let element" class="align-right">
-                        {{element?.transactionAmount ? (element?.transactionAmount | number:'1.1-2') : 'NA'}}
+                        {{element?.transactionAmount ? (element?.transactionAmount | number:'1.2-2') : 'NA'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="depositApprovedDate">
+                    <mat-header-cell *matHeaderCellDef>Approval Date</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element?.depositApprovedDate ? (element?.depositApprovedDate | date:'mediumDate') : 'NA'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="depositStatus">
@@ -77,7 +85,8 @@
                     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div [ngStyle]="{'display': 'inherit'}">
-                            <div (click)="editDeposit(element?.id)" class="kt-pointer view-link">Edit</div>
+                            <div *ngxPermissionsOnly="['digiGoldDepositEdit']" (click)="editDeposit(element?.id)"
+                                class="kt-pointer view-link">Edit</div>
                         </div>
                     </mat-cell>
                 </ng-container>

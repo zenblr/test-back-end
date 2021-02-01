@@ -43,7 +43,7 @@
                         </div>
                         <div class="col-8">
                             <input type="text" formControlName="depositDate" class="form-control"
-                                [value]="controls?.depositDate?.value | date: 'MMM d, y, h:mm a'" disabled>
+                                [value]="controls?.depositDate?.value | date:'mediumDate'" disabled>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">
@@ -52,7 +52,27 @@
                         </div>
                         <div class="col-8">
                             <input type="text" formControlName="depositAmount" class="form-control"
-                                [value]="controls?.depositAmount?.value | number:'1.1-2'" disabled>
+                                [value]="controls?.depositAmount?.value | number:'1.2-2'" disabled>
+                        </div>
+                    </div>
+                    <div class="row kt-margin-t-15">
+                        <div class="col-4 align-self-center">
+                            <label class="font-weight-500 text-color">Approval Date </label>
+                        </div>
+                        <div class="col-8">
+                            <input *ngIf="depositInfo?.transactionData?.depositStatus != 'pending'" type="text"
+                                formControlName="approvalDate" class="form-control"
+                                [value]="controls?.approvalDate?.value | date:'mediumDate'" disabled>
+                            <input *ngIf="depositInfo?.transactionData?.depositStatus == 'pending'" type="text"
+                                class="form-control" [matDatepicker]="picker" (click)="picker.open()"
+                                formControlName="approvalDate"
+                                [class.isError]="controls.approvalDate.touched && controls.approvalDate.invalid"
+                                readonly placeholder="DD/MM/YYYY" [min]="controls?.depositDate?.value"
+                                [max]="maxDate" />
+                            <mat-datepicker #picker></mat-datepicker>
+                            <mat-error *ngIf="controls.approvalDate.invalid && controls.approvalDate.touched">
+                                Field Required
+                            </mat-error>
                         </div>
                     </div>
                     <div class="row kt-margin-t-15">

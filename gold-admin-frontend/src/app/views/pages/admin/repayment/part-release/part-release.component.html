@@ -285,29 +285,34 @@
                                     <td class="">
                                         {{ totalSelectedOrnamentDetails.ornamentWeight.releaseAmount }}</td>
                                     <td>
-                                        <div class="">
+                                        <div>
+                                            {{totalSelectedOrnamentDetails?.loanInfo?.interestAmount}}
+                                        </div>
+                                        <!-- <div class="">
                                             {{ totalSelectedOrnamentDetails?.loanInfo?.securedInterest }}
                                         </div>
                                         <div class=""
                                             *ngIf="totalSelectedOrnamentDetails?.loanInfo?.loanData?.length > 1">
                                             {{ totalSelectedOrnamentDetails?.loanInfo?.unsecuredInterest }}
-                                        </div>
+                                        </div> -->
                                     </td>
                                     <td>
-                                        <div class="">
+                                        <div>
+                                            {{totalSelectedOrnamentDetails?.loanInfo?.penalInterest}}
+                                        </div>
+                                        <!-- <div class="">
                                             {{ totalSelectedOrnamentDetails?.loanInfo?.securedPenalInterest }}
                                         </div>
                                         <div class=""
                                             *ngIf="totalSelectedOrnamentDetails?.loanInfo?.loanData?.length > 1">
                                             {{ totalSelectedOrnamentDetails?.loanInfo?.unsecuredPenalInterest }}
-                                        </div>
+                                        </div> -->
                                     </td>
                                     <td class="font-weight-500 " style="font-size: 14px;">
                                         {{ totalSelectedOrnamentDetails.loanInfo.totalPayableAmount }}</td>
                                     <td>
                                         <kt-select-payment [minDate]="loanDetails?.customerLoan?.loanStartDate"
                                         [amount]="totalSelectedOrnamentDetails.loanInfo.totalPayableAmount"
-                                        (paymentValueFinal)="payment($event)"
                                         (paymentData)="paymentData($event)"></kt-select-payment>
                                     </td>
                                 </tr>

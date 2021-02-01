@@ -90,7 +90,8 @@
                                             class="input-group-text bg font-weight" id="basic-addon2"
                                             (click)="modalData.action != 'view' && isEditable && pan.click()">Attach</span>
                                     </div>
-                                    <input type="file" class="d-none" accept="image/jpg, image/png, image/jpeg" #pan
+                                    <input type="file" class="d-none"
+                                        accept="image/jpg, image/png, image/jpeg, application/pdf" #pan
                                         (input)="testUpload($event)">
                                 </div>
                                 <mat-error *ngIf="controls.panImage.invalid && controls.panImage.touched">
@@ -119,6 +120,9 @@
                                     scrolling="no"></iframe>
                             </div>
                         </div>
+                        <div class="kt-margin-t-20 text-color font-11">
+                            (Click to view the attachment)
+                        </div>
                     </div>
                 </div>
 
@@ -132,7 +136,7 @@
                                 <select class="form-control" formControlName="status" (change)="setReasonValidation()"
                                     [class.isError]="controls.status.invalid && controls.status.touched">
                                     <option [value]=null disabled>Select Status</option>
-                                    <option value="pending">Pending</option>
+                                    <option value="pending">Reverification</option>
                                     <option value="approved">Approved</option>
                                     <option value="rejected">Rejected</option>
                                 </select>

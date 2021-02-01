@@ -53,7 +53,8 @@ let sendSms = async (mobileNumber, message, smsFrom) => {
         url: getSmsCredential.url,
         method: 'POST',
         headers: headers,
-        body: dataString
+        body: dataString,
+        rejectUnauthorized: false
     };
 
     let response = await request(options);

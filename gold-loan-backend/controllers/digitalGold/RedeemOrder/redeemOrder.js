@@ -18,7 +18,7 @@ const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const moment = require('moment');
 const { walletDelivery, customerBalance, customerNonSellableMetal } = require('../../../service/wallet');
-const { postMerchantOrder, getUserData, postBuy } = require('../../../service/digiGold')
+const { postMerchantOrder, getUserData, postBuy, checkKycStatus } = require('../../../service/digiGold')
 
 
 exports.AddOrder = async (req, res) => {
@@ -33,6 +33,12 @@ exports.AddOrder = async (req, res) => {
     if (check.isEmpty(customerDetails)) {
       return res.status(404).json({ message: "Customer Does Not Exists" });
     }
+
+    let checkCustomerKycStatus = await checkKycStatus(id);
+
+    if(checkCustomerKycStatus){
+      return res.status(420).json({ message: "Your KYC status is Rejected" });
+    } 
 
     if (amount > customerDetails.currentWalletBalance || !customerDetails.currentWalletBalance) {
       return res.status(422).json({ message: "Insuffecient wallet balance", walletBal: customerDetails.currentWalletBalance });
@@ -149,7 +155,7 @@ exports.AddOrder = async (req, res) => {
 
           let orderCreatedDate = moment(moment().utcOffset("+05:30"));
 
-            let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetailId, customerId: customerId, orderTypeId: 3, orderId: result.data.result.data.orderId, totalAmount: amount, blockId: orderUniqueId, amount: amount, modeOfPayment: modeOfPayment, userAddressId: userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.orderId, orderStatus: "pending", deliveryShippingCharges: result.data.result.data.shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, walletBalance: Number(newCurrentWalletBalance), walletId: walletData.id, orderCreatedDate: orderCreatedDate  }, { transaction: t });
+            let orderDetail = await models.digiGoldOrderDetail.create({ tempOrderId: tempOrderDetailId, customerId: customerId, orderTypeId: 3, orderId: result.data.result.data.orderId, totalAmount: amount, blockId: orderUniqueId, amount: amount, modeOfPayment: modeOfPayment, userAddressId: userAddressId, goldBalance: result.data.result.data.goldBalance, silverBalance: result.data.result.data.silverBalance, merchantTransactionId: result.data.result.data.merchantTransactionId, transactionId: result.data.result.data.orderId, orderStatus: "pending", deliveryShippingCharges: result.data.result.data.shippingCharges, deliveryTotalQuantity: totalQuantity, deliveryTotalWeight: totalWeight, walletBalance: Number(newCurrentWalletBalance), walletId: walletData.id, orderCreatedDate: orderCreatedDate, isSellableGold: true, isSellableSilver: true  }, { transaction: t });
 
             await models.digiGoldTempOrderDetail.update({ isOrderPlaced: true }, { where: { id: tempOrderDetailId }, transaction: t })
 
@@ -159,6 +165,11 @@ exports.AddOrder = async (req, res) => {
 
             for (let address of orderAddress) {
               await models.digiGoldOrderAddressDetail.create({ orderDetailId: orderDetail.id, customerName: address.customerName, addressType: address.addressType, address: address.address, stateId: address.stateId, cityId: address.cityId, pinCode: address.pinCode }, { transaction: t });
+
+              await models.customerAddress.create({
+                customerId: customerId, address: address.address, landMark: address.address, stateId: address.stateId, cityId: address.cityId, postalCode: address.pinCode, addressType: address.addressType
+              })
+
             }
 
             await sms.sendMessageForOrderPlaced(customerDetails.mobileNumber, result.data.result.data.orderId);

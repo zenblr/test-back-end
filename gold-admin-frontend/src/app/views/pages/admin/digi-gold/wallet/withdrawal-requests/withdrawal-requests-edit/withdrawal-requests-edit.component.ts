@@ -19,6 +19,8 @@ export class WithdrawalRequestsEditComponent implements OnInit {
 	withdrawForm: FormGroup;
 	withdrawId: number;
 	withdrawInfo: any;
+	formFieldEnableFlag = false;
+	maxDate = new Date();
 	withdrawalStatus = [
 		// { value: 'pending', name: 'Pending' },
 		{ value: 'completed', name: 'Completed' },
@@ -69,6 +71,8 @@ export class WithdrawalRequestsEditComponent implements OnInit {
 			accountHolderName: [''],
 			ifscCode: [''],
 			withdrawalStatus: ['', Validators.required],
+			withdrawDate: [''],
+			utrNumber: [''],
 		});
 		this.withdrawForm.disable()
 		this.withdrawForm.valueChanges.subscribe((val) => console.log(val));
@@ -80,19 +84,37 @@ export class WithdrawalRequestsEditComponent implements OnInit {
 		};
 	}
 
+	fieldEnable(value) {
+		if (value == 'completed') {
+			this.formFieldEnableFlag = true;
+			this.controls.withdrawDate.setValidators([Validators.required])
+			this.controls.withdrawDate.updateValueAndValidity()
+			this.controls.utrNumber.setValidators([Validators.required])
+			this.controls.utrNumber.updateValueAndValidity()
+		} else {
+			this.formFieldEnableFlag = false;
+			this.controls.withdrawDate.setValidators([])
+			this.controls.withdrawDate.updateValueAndValidity()
+			this.controls.utrNumber.setValidators([])
+			this.controls.utrNumber.updateValueAndValidity()
+		}
+	}
+
 	editWithdraw() {
 		const data = {
 			customerId: this.withdrawInfo.transactionData.customer.customerUniqueId,
 			customerFullName: this.withdrawInfo.transactionData.customer.firstName + ' ' + this.withdrawInfo.transactionData.customer.lastName,
 			mobileNumber: this.withdrawInfo.transactionData.customer.mobileNumber,
 			transactionUniqueId: this.withdrawInfo.transactionData.transactionUniqueId,
-			withdrawalInitiatedDate: this.withdrawInfo.transactionData.createdAt,
+			withdrawalInitiatedDate: this.withdrawInfo.transactionData.paymentReceivedDate,
 			withdrawalAmount: this.withdrawInfo.transactionData.transactionAmount,
 			bankName: this.withdrawInfo.transactionData.bankName ? this.withdrawInfo.transactionData.bankName : 'NA',
 			branchName: this.withdrawInfo.transactionData.branchName ? this.withdrawInfo.transactionData.branchName : 'NA',
 			accountNumber: this.withdrawInfo.transactionData.accountNumber,
 			accountHolderName: this.withdrawInfo.transactionData.accountHolderName,
 			ifscCode: this.withdrawInfo.transactionData.ifscCode,
+			withdrawDate: this.withdrawInfo.transactionData.depositApprovedDate,
+			utrNumber: this.withdrawInfo.transactionData.bankTransactionUniqueId,
 			withdrawalStatus: '',
 		};
 		this.withdrawForm.patchValue(data);
@@ -100,10 +122,15 @@ export class WithdrawalRequestsEditComponent implements OnInit {
 		if (!(this.withdrawInfo.transactionData.depositStatus == 'pending')) {
 			data.withdrawalStatus = this.withdrawInfo.transactionData.depositStatus;
 			this.withdrawForm.patchValue(data);
-			// this.controls.withdrawalStatus.disable();
-		} 
+
+			if (this.withdrawInfo.transactionData.depositStatus == 'completed') {
+				this.formFieldEnableFlag = true;
+			}
+		}
 		else {
 			this.controls.withdrawalStatus.enable();
+			this.controls.withdrawDate.enable();
+			this.controls.utrNumber.enable();
 		}
 	}
 
@@ -113,10 +140,20 @@ export class WithdrawalRequestsEditComponent implements OnInit {
 			return;
 		}
 		if (this.withdrawId) {
-			const depositData = {
-				depositStatus: this.controls.withdrawalStatus.value
-			};
-			this.withdrawalRequestsService.editWithdrawStatus(depositData, this.withdrawId).pipe(
+			let withdrawData;
+			if (this.controls.withdrawalStatus.value == 'completed') {
+				withdrawData = {
+					depositStatus: this.controls.withdrawalStatus.value,
+					date: this.sharedService.toISODateFormat(this.controls.withdrawDate.value),
+					bankTransactionUniqueId: this.controls.utrNumber.value,
+				};
+			} else {
+				withdrawData = {
+					depositStatus: this.controls.withdrawalStatus.value,
+					date: new Date()
+				};
+			}
+			this.withdrawalRequestsService.editWithdrawStatus(withdrawData, this.withdrawId).pipe(
 				map((res) => {
 					this.toastr.successToastr('Withdrawal Status Updated Sucessfully');
 					this.router.navigate(['/admin/digi-gold/wallet/withdrawal-requests']);

@@ -272,235 +272,419 @@ exports.razorPayCreateOrderForOrnament = async (req, res, next) => {
             body: req.body,
             userData: req.userData
         });
-        res.status(500).send({ message: err.message });
+        if (err.statusCode == 400 && err.error.code) {
+            return res.status(400).json({ message: err.error.description });
+        } else {
+            res.status(500).send({ message: "something went wrong" });
+
+        }
     }
 }
 
-exports.ornamentsPartRelease = async (req, res, next) => {
-    try {
-        let { paymentType, paidAmount, bankName, chequeNumber, ornamentId, depositDate, transactionDetails, branchName, transactionId, masterLoanId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-        let createdBy = null;
-        let modifiedBy = null;
-        let isAdmin
 
-
-        if (razorpay_order_id) {
-            var tempRazorData = await models.tempRazorPayDetails.findOne({ where: { razorPayOrderId: razorpay_order_id } })
-            depositDate = tempRazorData.depositDate
-            masterLoanId = tempRazorData.masterLoanId
-            paymentType = tempRazorData.paymentType
-            paidAmount = tempRazorData.amount
-            transactionId = tempRazorData.transactionUniqueId
-            ornamentId = tempRazorData.ornamentId
-        }
-        let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
-            where: { isReleased: true, masterLoanId: masterLoanId }
-        });
-        let releaseData = await getAllPartAndFullReleaseData(masterLoanId, ornamentId);
-        let ornamentData = releaseData.ornamentWeight;
-        let loanInfo = releaseData.loanInfo;
-        let amount = await getCustomerInterestAmount(masterLoanId);
-        let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
-        const razorpay = await getRazorPayDetails();
-        let { isUnsecuredSchemeApplied, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest, securedLoanId, unsecuredLoanId } = await getAmountLoanSplitUpData(loan, amount, ornamentData.releaseAmount);
-        if (checkOrnament.length == 0) {
-            let addPartRelease;
-            let partRelease = await sequelize.transaction(async t => {
-                if (['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'upi', 'card', 'netbanking', 'wallet'].includes(paymentType)) {
-                    let transactionUniqueId = uniqid.time().toUpperCase();
-                    let loanTransaction;
-                    let signatureVerification = false;
-                    let isRazorPay = false;
-                    let razorPayTransactionId;
-                    if (paymentType == 'upi' || paymentType == 'netbanking' || paymentType == 'wallet' || paymentType == 'card') {
-                        let razerpayData
-                        if (razorpay_order_id) {
-                            isAdmin = false
-                            transactionDetails = {}
-                            razerpayData = await razorpay.instance.orders.fetch(razorpay_order_id);
-                            transactionDetails.razorpay_order_id = razorpay_order_id
-                            transactionDetails.razorpay_payment_id = razorpay_payment_id
-                            transactionDetails.razorpay_signature = razorpay_signature
-
+    exports.ornamentsPartRelease = async (req, res, next) => {
+        try {
+            let { paymentType, paidAmount, bankName, chequeNumber, ornamentId, depositDate, transactionDetails, branchName, transactionId, masterLoanId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+            let createdBy = null;
+            let modifiedBy = null;
+            let isAdmin
+    
+    
+            if (razorpay_order_id) {
+                var tempRazorData = await models.tempRazorPayDetails.findOne({ where: { razorPayOrderId: razorpay_order_id } })
+                depositDate = tempRazorData.depositDate
+                masterLoanId = tempRazorData.masterLoanId
+                paymentType = tempRazorData.paymentType
+                paidAmount = tempRazorData.amount
+                transactionId = tempRazorData.transactionUniqueId
+                ornamentId = tempRazorData.ornamentId
+            }
+            let checkOrnament = await models.customerLoanOrnamentsDetail.findAll({
+                where: { isReleased: true, masterLoanId: masterLoanId }
+            });
+            let releaseData = await getAllPartAndFullReleaseData(masterLoanId, ornamentId);
+            let ornamentData = releaseData.ornamentWeight;
+            let loanInfo = releaseData.loanInfo;
+            let amount = await getCustomerInterestAmount(masterLoanId);
+            let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
+            const razorpay = await getRazorPayDetails();
+            let { isUnsecuredSchemeApplied, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest, securedLoanId, unsecuredLoanId } = await getAmountLoanSplitUpData(loan, amount, ornamentData.releaseAmount);
+            if (checkOrnament.length == 0) {
+                let addPartRelease;
+                let partRelease = await sequelize.transaction(async t => {
+                    if (['cash', 'IMPS', 'NEFT', 'RTGS', 'cheque', 'upi', 'card', 'netbanking', 'wallet'].includes(paymentType)) {
+                        let transactionUniqueId = uniqid.time().toUpperCase();
+                        let loanTransaction;
+                        let signatureVerification = false;
+                        let isRazorPay = false;
+                        let razorPayTransactionId;
+                        if (paymentType == 'upi' || paymentType == 'netbanking' || paymentType == 'wallet' || paymentType == 'card') {
+                            let razerpayData
+                            if (razorpay_order_id) {
+                                isAdmin = false
+                                transactionDetails = {}
+                                razerpayData = await razorpay.instance.orders.fetch(razorpay_order_id);
+                                transactionDetails.razorpay_order_id = razorpay_order_id
+                                transactionDetails.razorpay_payment_id = razorpay_payment_id
+                                transactionDetails.razorpay_signature = razorpay_signature
+    
+                            } else {
+                                isAdmin = true
+                                razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
+                            }
+                            transactionUniqueId = razerpayData.receipt;
+                            const generated_signature = crypto
+                                .createHmac(
+                                    "SHA256",
+                                    razorpay.razorPayConfig.key_secret
+                                )
+                                .update(transactionDetails.razorpay_order_id + "|" + transactionDetails.razorpay_payment_id)
+                                .digest("hex");
+                            if (generated_signature == transactionDetails.razorpay_signature) {
+                                let loanData = await models.customerLoan.findOne({ where: { masterLoanId: masterLoanId }, order: [['id', 'asc']] });
+                                await models.axios({
+                                    method: 'PATCH',
+                                    url: `https://api.razorpay.com/v1/payments/${transactionDetails.razorpay_payment_id}`,
+                                    auth: {
+                                        username: razorpay.razorPayConfig.key_id,
+                                        password: razorpay.razorPayConfig.key_secret
+                                    },
+                                    data: qs.stringify({ notes: { transactionId: transactionUniqueId, product: "LOAN", loanId: loanData.loanUniqueId } })
+                                })
+                                signatureVerification = true;
+                                isRazorPay = true;
+                                razorPayTransactionId = transactionDetails.razorpay_order_id;
+                            }
+                            if (signatureVerification == false) {
+                                return res.status(422).json({ message: "razorpay payment verification failed" });
+                            }
                         } else {
                             isAdmin = true
-                            razerpayData = await razorpay.instance.orders.fetch(transactionDetails.razorpay_order_id);
                         }
-                        transactionUniqueId = razerpayData.receipt;
-                        const generated_signature = crypto
-                            .createHmac(
-                                "SHA256",
-                                razorpay.razorPayConfig.key_secret
-                            )
-                            .update(transactionDetails.razorpay_order_id + "|" + transactionDetails.razorpay_payment_id)
-                            .digest("hex");
-                        if (generated_signature == transactionDetails.razorpay_signature) {
-                            let loanData = await models.customerLoan.findOne({ where: { masterLoanId: masterLoanId }, order: [['id', 'asc']] });
-                            await models.axios({
-                                method: 'PATCH',
-                                url: `https://api.razorpay.com/v1/payments/${transactionDetails.razorpay_payment_id}`,
-                                auth: {
-                                    username: razorpay.razorPayConfig.key_id,
-                                    password: razorpay.razorPayConfig.key_secret
-                                },
-                                data: qs.stringify({ notes: { transactionId: transactionUniqueId, product: "LOAN", loanId: loanData.loanUniqueId } })
-                            })
-                            signatureVerification = true;
-                            isRazorPay = true;
-                            razorPayTransactionId = transactionDetails.razorpay_order_id;
+                        if (isRazorPay) {
+                            loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "partRelease", depositDate: moment(depositDate).format("YYYY-MM-DD"), razorPayTransactionId }, { transaction: t });
+                        } else {
+                            loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "partRelease", depositDate: moment(depositDate).format("YYYY-MM-DD") }, { transaction: t });
                         }
-                        if (signatureVerification == false) {
-                            return res.status(422).json({ message: "razorpay payment verification failed" });
+                        let newTransactionSplitUp = [];
+                        let securedTransactionSplit;
+                        let unsecuredTransactionSplit;
+                        securedTransactionSplit = await models.customerTransactionSplitUp.create({ customerLoanTransactionId: loanTransaction.id, loanId: securedLoanId, masterLoanId, payableOutstanding: securedRatio, penal: securedPenalInterest, interest: securedInterest, loanOutstanding: newSecuredOutstandingAmount }, { transaction: t });
+                        newTransactionSplitUp.push(securedTransactionSplit)
+                        if (isUnsecuredSchemeApplied == true) {
+                            unsecuredTransactionSplit = await models.customerTransactionSplitUp.create({ customerLoanTransactionId: loanTransaction.id, loanId: unsecuredLoanId, masterLoanId, payableOutstanding: unsecuredRatio, penal: unsecuredPenalInterest, interest: unsecuredInterest, loanOutstanding: newUnsecuredOutstandingAmount, isSecured: false }, { transaction: t });
+                            newTransactionSplitUp.push(unsecuredTransactionSplit)
                         }
-                    } else {
-                        isAdmin = true
-                    }
-                    if (isRazorPay) {
-                        loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "partRelease", depositDate: moment(depositDate).format("YYYY-MM-DD"), razorPayTransactionId }, { transaction: t });
-                    } else {
-                        loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "partRelease", depositDate: moment(depositDate).format("YYYY-MM-DD") }, { transaction: t });
-                    }
-                    let newTransactionSplitUp = [];
-                    let securedTransactionSplit;
-                    let unsecuredTransactionSplit;
-                    securedTransactionSplit = await models.customerTransactionSplitUp.create({ customerLoanTransactionId: loanTransaction.id, loanId: securedLoanId, masterLoanId, payableOutstanding: securedRatio, penal: securedPenalInterest, interest: securedInterest, loanOutstanding: newSecuredOutstandingAmount }, { transaction: t });
-                    newTransactionSplitUp.push(securedTransactionSplit)
-                    if (isUnsecuredSchemeApplied == true) {
-                        unsecuredTransactionSplit = await models.customerTransactionSplitUp.create({ customerLoanTransactionId: loanTransaction.id, loanId: unsecuredLoanId, masterLoanId, payableOutstanding: unsecuredRatio, penal: unsecuredPenalInterest, interest: unsecuredInterest, loanOutstanding: newUnsecuredOutstandingAmount, isSecured: false }, { transaction: t });
-                        newTransactionSplitUp.push(unsecuredTransactionSplit)
-                    }
-                    addPartRelease = await models.partRelease.create({ customerLoanTransactionId: loanTransaction.id, currentOutstandingAmount: ornamentData.currentOutstandingAmount, paidAmount, masterLoanId, releaseAmount: ornamentData.releaseAmount, interestAmount: loanInfo.interestAmount, penalInterest: loanInfo.penalInterest, payableAmount: loanInfo.totalPayableAmount, releaseGrossWeight: ornamentData.releaseGrossWeight, releaseDeductionWeight: ornamentData.releaseDeductionWeight, releaseNetWeight: ornamentData.releaseNetWeight, remainingGrossWeight: ornamentData.remainingGrossWeight, remainingDeductionWeight: ornamentData.remainingDeductionWeight, remainingNetWeight: ornamentData.remainingNetWeight, currentLtv: ornamentData.currentLtv, remainingOrnamentAmount: ornamentData.remainingOrnamentAmount, newLoanAmount: ornamentData.newLoanAmount }, { transaction: t });
-                    //status auto complete if razorpay 
-                    if (isRazorPay) {
-                        let amountStatus = "completed";
-                        let partReleaseId = addPartRelease.id;
-                        //
-                        let payment = await allInterestPayment(loanTransaction.id, newTransactionSplitUp);
-                        let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(loanTransaction.id, securedTransactionSplit, unsecuredTransactionSplit);
-
-                        //update in interest table
-                        if (payment.securedLoanDetails) {
-                            for (const interest of payment.securedLoanDetails) {
-                                await models.customerLoanInterest.update({ paidAmount: interest.paidAmount, interestAccrual: interest.interestAccrual, outstandingInterest: interest.outstandingInterest, emiReceivedDate: moment(depositDate).format("YYYY-MM-DD"), penalAccrual: interest.penalAccrual, penalOutstanding: interest.penalOutstanding, penalPaid: interest.penalPaid, modifiedBy, emiStatus: interest.emiStatus }, { where: { id: interest.id }, transaction: t });
+                        addPartRelease = await models.partRelease.create({ customerLoanTransactionId: loanTransaction.id, currentOutstandingAmount: ornamentData.currentOutstandingAmount, paidAmount, masterLoanId, releaseAmount: ornamentData.releaseAmount, interestAmount: loanInfo.interestAmount, penalInterest: loanInfo.penalInterest, payableAmount: loanInfo.totalPayableAmount, releaseGrossWeight: ornamentData.releaseGrossWeight, releaseDeductionWeight: ornamentData.releaseDeductionWeight, releaseNetWeight: ornamentData.releaseNetWeight, remainingGrossWeight: ornamentData.remainingGrossWeight, remainingDeductionWeight: ornamentData.remainingDeductionWeight, remainingNetWeight: ornamentData.remainingNetWeight, currentLtv: ornamentData.currentLtv, remainingOrnamentAmount: ornamentData.remainingOrnamentAmount, newLoanAmount: ornamentData.newLoanAmount }, { transaction: t });
+                        //status auto complete if razorpay 
+                        if (isRazorPay) {
+                            let amountStatus = "completed";
+                            let partReleaseId = addPartRelease.id;
+                            //
+                            let payment = await allInterestPayment(loanTransaction.id, newTransactionSplitUp);
+                            let { securedPayableOutstanding, unSecuredPayableOutstanding, transactionDataSecured, transactionDataUnSecured, securedOutstandingAmount, unSecuredOutstandingAmount, outstandingAmount, securedLoanUniqueId, unSecuredLoanUniqueId } = await getTransactionPrincipalAmount(loanTransaction.id, securedTransactionSplit, unsecuredTransactionSplit);
+    
+                            //update in interest table
+                            if (payment.securedLoanDetails) {
+                                for (const interest of payment.securedLoanDetails) {
+                                    await models.customerLoanInterest.update({ paidAmount: interest.paidAmount, interestAccrual: interest.interestAccrual, outstandingInterest: interest.outstandingInterest, emiReceivedDate: moment(depositDate).format("YYYY-MM-DD"), penalAccrual: interest.penalAccrual, penalOutstanding: interest.penalOutstanding, penalPaid: interest.penalPaid, modifiedBy, emiStatus: interest.emiStatus }, { where: { id: interest.id }, transaction: t });
+                                }
                             }
-                        }
-                        if (payment.unsecuredLoanDetails) {
-                            for (const interest of payment.unsecuredLoanDetails) {
-                                await models.customerLoanInterest.update({ paidAmount: interest.paidAmount, interestAccrual: interest.interestAccrual, outstandingInterest: interest.outstandingInterest, emiReceivedDate: moment(depositDate).format("YYYY-MM-DD"), penalAccrual: interest.penalAccrual, penalOutstanding: interest.penalOutstanding, penalPaid: interest.penalPaid, modifiedBy, emiStatus: interest.emiStatus }, { where: { id: interest.id }, transaction: t });
+                            if (payment.unsecuredLoanDetails) {
+                                for (const interest of payment.unsecuredLoanDetails) {
+                                    await models.customerLoanInterest.update({ paidAmount: interest.paidAmount, interestAccrual: interest.interestAccrual, outstandingInterest: interest.outstandingInterest, emiReceivedDate: moment(depositDate).format("YYYY-MM-DD"), penalAccrual: interest.penalAccrual, penalOutstanding: interest.penalOutstanding, penalPaid: interest.penalPaid, modifiedBy, emiStatus: interest.emiStatus }, { where: { id: interest.id }, transaction: t });
+                                }
                             }
-                        }
-                        //update in transaction
-                        if (payment.transactionDetails) {
-                            for (const amount of payment.transactionDetails) {
-                                if (amount.isPenalInterest) {
-                                    //debit
-                                    let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true, credit: 0.00 } });
-                                    if (checkDebitEntry.length == 0) {
-                                        let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true, debit: amount.penalInterest, description: `Penal interest`, paymentDate: moment(depositDate).format("YYYY-MM-DD") }, { transaction: t });
-                                        await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
-                                    } else {
-                                        let debitedAmount = await checkDebitEntry.map((data) => Number(data.debit));
-                                        let totalDebitedAmount = _.sum(debitedAmount);
-                                        let newDebitAmount = amount.penalInterest - totalDebitedAmount;
-                                        if (newDebitAmount > 0) {
-                                            let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true, debit: newDebitAmount, description: `Penal interest`, paymentDate: moment(depositDate).format("YYYY-MM-DD") }, { transaction: t });
-                                            await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
-                                        }
-                                    }
-                                    //credit
-                                    // let description = "penal interest Received"
-                                    // let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: partReleaseData.customerLoanTransactionId, masterLoanId: amount.masterLoanId, loanId: amount.loanId, isPenalInterest: amount.isPenalInterest, credit: amount.credit, description: description, paymentDate: moment() }, { transaction: t });
-                                    // await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
-                                } else {
-                                    if (amount.isExtraDaysInterest) {
+                            //update in transaction
+                            if (payment.transactionDetails) {
+                                for (const amount of payment.transactionDetails) {
+                                    if (amount.isPenalInterest) {
                                         //debit
-                                        let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: false, credit: 0.00 } });
+                                        let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true, credit: 0.00 } });
                                         if (checkDebitEntry.length == 0) {
-                                            let rebateAmount = amount.highestInterestAmount - amount.interestAmount;
-                                            let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: amount.interestAmount, description: `Extra days interest`, paymentDate: moment(), rebateAmount }, { transaction: t });
+                                            let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true, debit: amount.penalInterest, description: `Penal interest`, paymentDate: moment(depositDate).format("YYYY-MM-DD") }, { transaction: t });
                                             await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                                         } else {
                                             let debitedAmount = await checkDebitEntry.map((data) => Number(data.debit));
                                             let totalDebitedAmount = _.sum(debitedAmount);
-                                            let newDebitAmount = amount.interestAmount - totalDebitedAmount;
+                                            let newDebitAmount = amount.penalInterest - totalDebitedAmount;
                                             if (newDebitAmount > 0) {
-                                                let rebateAmount = -Math.abs(newDebitAmount)
-                                                let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: newDebitAmount, description: `Extra days interest`, paymentDate: moment(), rebateAmount }, { transaction: t });
+                                                let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: true, debit: newDebitAmount, description: `Penal interest`, paymentDate: moment(depositDate).format("YYYY-MM-DD") }, { transaction: t });
                                                 await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
                                             }
                                         }
                                         //credit
-                                        // let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: partReleaseData.customerLoanTransactionId, masterLoanId: amount.masterLoanId, loanId: amount.loanId, credit: amount.credit, description: `Extra days interest received`, paymentDate: moment(), }, { transaction: t });
+                                        // let description = "penal interest Received"
+                                        // let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: partReleaseData.customerLoanTransactionId, masterLoanId: amount.masterLoanId, loanId: amount.loanId, isPenalInterest: amount.isPenalInterest, credit: amount.credit, description: description, paymentDate: moment() }, { transaction: t });
                                         // await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
                                     } else {
-                                        // let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: partReleaseData.customerLoanTransactionId, masterLoanId: amount.masterLoanId, loanId: amount.loanId, credit: amount.credit, description: `interest received ${amount.emiDueDate}`, paymentDate: moment(), }, { transaction: t });
-                                        // await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
+                                        if (amount.isExtraDaysInterest) {
+                                            //debit
+                                            let checkDebitEntry = await models.customerTransactionDetail.findAll({ where: { masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, isPenalInterest: false, credit: 0.00 } });
+                                            if (checkDebitEntry.length == 0) {
+                                                let rebateAmount = amount.highestInterestAmount - amount.interestAmount;
+                                                let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: amount.interestAmount, description: `Extra days interest`, paymentDate: moment(), rebateAmount }, { transaction: t });
+                                                await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
+                                            } else {
+                                                let debitedAmount = await checkDebitEntry.map((data) => Number(data.debit));
+                                                let totalDebitedAmount = _.sum(debitedAmount);
+                                                let newDebitAmount = amount.interestAmount - totalDebitedAmount;
+                                                if (newDebitAmount > 0) {
+                                                    let rebateAmount = -Math.abs(newDebitAmount)
+                                                    let debit = await models.customerTransactionDetail.create({ masterLoanId: amount.masterLoanId, loanId: amount.loanId, loanInterestId: amount.loanInterestId, debit: newDebitAmount, description: `Extra days interest`, paymentDate: moment(), rebateAmount }, { transaction: t });
+                                                    await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${debit.id}` }, { where: { id: debit.id }, transaction: t });
+                                                }
+                                            }
+                                            //credit
+                                            // let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: partReleaseData.customerLoanTransactionId, masterLoanId: amount.masterLoanId, loanId: amount.loanId, credit: amount.credit, description: `Extra days interest received`, paymentDate: moment(), }, { transaction: t });
+                                            // await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
+                                        } else {
+                                            // let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: partReleaseData.customerLoanTransactionId, masterLoanId: amount.masterLoanId, loanId: amount.loanId, credit: amount.credit, description: `interest received ${amount.emiDueDate}`, paymentDate: moment(), }, { transaction: t });
+                                            // await models.customerTransactionDetail.update({ referenceId: `${amount.loanUniqueId}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
+                                        }
+    
                                     }
-
                                 }
                             }
+    
+    
+                            //credit part release ornament amount
+                            // let securedTransaction = await models.customerTransactionDetail.create({ masterLoanId: partReleaseData.masterLoanId, customerLoanTransactionId: partReleaseData.customerLoanTransactionId, loanId: transactionDataSecured.loanId, credit: securedPayableOutstanding, paymentDate: moment(), description: "part release ornament amount" }, { transaction: t });
+                            // await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${securedTransaction.id}` }, { where: { id: securedTransaction.id }, transaction: t })
+                            // if (transactionDataUnSecured) {
+                            //     let unSecuredTransaction = await models.customerTransactionDetail.create({ masterLoanId: partReleaseData.masterLoanId, customerLoanTransactionId: partReleaseData.customerLoanTransactionId, loanId: transactionDataUnSecured.loanId, credit: unSecuredPayableOutstanding, paymentDate: moment(), description: "part release ornament amount" }, { transaction: t });
+                            //     await models.customerTransactionDetail.update({ referenceId: `${unSecuredLoanUniqueId}-${unSecuredTransaction.id}` }, { where: { id: unSecuredTransaction.id }, transaction: t })
+                            // }
+    
+                            //credit all amount
+                            // let transactionData = await models.customerLoanTransaction.findOne({where:{id:loanTransaction.id}, transaction: t });
+                            let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: loanTransaction.id, masterLoanId: masterLoanId, credit: paidAmount, description: `Part release amount received`, paymentDate: moment(depositDate).format("YYYY-MM-DD") }, { transaction: t });
+                            await models.customerTransactionDetail.update({ referenceId: `${uniqid.time().toUpperCase()}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
+    
+    
+                            await models.customerLoanTransaction.update({ depositStatus: "Completed", paymentReceivedDate: moment(depositDate).format("YYYY-MM-DD") }, { where: { id: loanTransaction.id }, transaction: t });
+                            await models.customerLoan.update({ outstandingAmount: securedOutstandingAmount }, { where: { id: transactionDataSecured.loanId }, transaction: t });
+                            if (transactionDataUnSecured) {
+                                await models.customerLoan.update({ outstandingAmount: unSecuredOutstandingAmount }, { where: { id: transactionDataUnSecured.loanId }, transaction: t });
+                            }
+                            await models.customerLoanMaster.update({ outstandingAmount: outstandingAmount }, { where: { id: masterLoanId }, transaction: t });
+                            await models.partRelease.update({ amountStatus: 'completed', modifiedBy }, { where: { id: partReleaseId }, transaction: t });
+                            await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_AMOUNT_STATUS_C, createdBy, modifiedBy }, { transaction: t });
+                            //
                         }
-
-
-                        //credit part release ornament amount
-                        // let securedTransaction = await models.customerTransactionDetail.create({ masterLoanId: partReleaseData.masterLoanId, customerLoanTransactionId: partReleaseData.customerLoanTransactionId, loanId: transactionDataSecured.loanId, credit: securedPayableOutstanding, paymentDate: moment(), description: "part release ornament amount" }, { transaction: t });
-                        // await models.customerTransactionDetail.update({ referenceId: `${securedLoanUniqueId}-${securedTransaction.id}` }, { where: { id: securedTransaction.id }, transaction: t })
-                        // if (transactionDataUnSecured) {
-                        //     let unSecuredTransaction = await models.customerTransactionDetail.create({ masterLoanId: partReleaseData.masterLoanId, customerLoanTransactionId: partReleaseData.customerLoanTransactionId, loanId: transactionDataUnSecured.loanId, credit: unSecuredPayableOutstanding, paymentDate: moment(), description: "part release ornament amount" }, { transaction: t });
-                        //     await models.customerTransactionDetail.update({ referenceId: `${unSecuredLoanUniqueId}-${unSecuredTransaction.id}` }, { where: { id: unSecuredTransaction.id }, transaction: t })
-                        // }
-
-                        //credit all amount
-                        // let transactionData = await models.customerLoanTransaction.findOne({where:{id:loanTransaction.id}, transaction: t });
-                        let paid = await models.customerTransactionDetail.create({ customerLoanTransactionId: loanTransaction.id, masterLoanId: masterLoanId, credit: paidAmount, description: `Part release amount received`, paymentDate: moment(depositDate).format("YYYY-MM-DD") }, { transaction: t });
-                        await models.customerTransactionDetail.update({ referenceId: `${uniqid.time().toUpperCase()}-${paid.id}` }, { where: { id: paid.id }, transaction: t });
-
-
-                        await models.customerLoanTransaction.update({ depositStatus: "Completed", paymentReceivedDate: moment(depositDate).format("YYYY-MM-DD") }, { where: { id: loanTransaction.id }, transaction: t });
-                        await models.customerLoan.update({ outstandingAmount: securedOutstandingAmount }, { where: { id: transactionDataSecured.loanId }, transaction: t });
-                        if (transactionDataUnSecured) {
-                            await models.customerLoan.update({ outstandingAmount: unSecuredOutstandingAmount }, { where: { id: transactionDataUnSecured.loanId }, transaction: t });
-                        }
-                        await models.customerLoanMaster.update({ outstandingAmount: outstandingAmount }, { where: { id: masterLoanId }, transaction: t });
-                        await models.partRelease.update({ amountStatus: 'completed', modifiedBy }, { where: { id: partReleaseId }, transaction: t });
-                        await models.partReleaseHistory.create({ partReleaseId: partReleaseId, action: action.PART_RELEASE_AMOUNT_STATUS_C, createdBy, modifiedBy }, { transaction: t });
-                        //
+    
+                        let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
+    
+                        await sendPartReleaseRequestMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+                    } else {
+                        return res.status(400).json({ message: 'invalid paymentType' });
                     }
-
-                    let sendLoanMessage = await customerNameNumberLoanId(masterLoanId)
-
-                    await sendPartReleaseRequestMessage(sendLoanMessage.mobileNumber, sendLoanMessage.customerName, sendLoanMessage.sendLoanUniqueId)
+                    for (const ornament of ornamentId) {
+                        await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
+                        await models.partReleaseOrnaments.create({ partReleaseId: addPartRelease.id, ornamentId: ornament }, { transaction: t });
+                    }
+                    await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_APPLIED }, { transaction: t });
+                    return addPartRelease
+                });
+                if (isAdmin) {
+                    return res.status(200).json({ message: "Success", partRelease });
                 } else {
-                    return res.status(400).json({ message: 'invalid paymentType' });
+                    res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/thank-you?payemntDone=yes&amount=${tempRazorData.amount}`)
                 }
-                for (const ornament of ornamentId) {
-                    await models.customerLoanOrnamentsDetail.update({ isReleased: true }, { where: { id: ornament }, transaction: t })
-                    await models.partReleaseOrnaments.create({ partReleaseId: addPartRelease.id, ornamentId: ornament }, { transaction: t });
-                }
-                await models.partReleaseHistory.create({ partReleaseId: addPartRelease.id, action: action.PART_RELEASE_APPLIED }, { transaction: t });
-                return addPartRelease
-            });
-            if (isAdmin) {
-                return res.status(200).json({ message: "Success", partRelease });
             } else {
-                res.redirect(`${process.env.BASE_URL_CUSTOMER}/gold-loan/thank-you?payemntDone=yes&amount=${tempRazorData.amount}`)
+                return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
             }
-        } else {
-            return res.status(400).json({ message: "can't proceed further as you have already applied for part released or full release" });
+        } catch (err) {
+            await models.errorLogger.create({
+                message: err.message,
+                url: req.url,
+                method: req.method,
+                host: req.hostname,
+                body: req.body,
+                userData: req.userData
+            });
+            if (err.statusCode == 400 && err.error.code) {
+                return res.status(400).json({ message: err.error.description });
+            } else {
+                if (err.statusCode == 400 && err.error.code) {
+                return res.status(400).json({ message: err.error.description });
+            } else {
+                res.status(500).send({ message: "something went wrong" });
+    
+            }
+    
+            }
         }
-    } catch (err) {
-        await models.errorLogger.create({
-            message: err.message,
-            url: req.url,
-            method: req.method,
-            host: req.hostname,
-            body: req.body,
-            userData: req.userData
-        });
-        res.status(500).send({ message: "something went wrong" });
     }
-}
+    
+    
 
+
+
+// exports.partReleaseRazorCron = async (razorPayOrderId) => {
+
+//     if (razorPayOrderId) {
+//         var tempRazorData = await models.tempRazorPayDetails.findOne({ where: { razorPayOrderId: razorPayOrderId } })
+//         var depositDate = tempRazorData.depositDate
+//         var masterLoanId = tempRazorData.masterLoanId
+//         var paymentType = tempRazorData.paymentType
+//         var paidAmount = tempRazorData.amount
+//         var transactionId = tempRazorData.transactionUniqueId
+//         var ornamentId = tempRazorData.ornamentId
+//     }
+//     let partRelease = await sequelize.transaction(async t => {
+//     let releaseData = await getAllPartAndFullReleaseData(masterLoanId, ornamentId);
+//     let ornamentData = releaseData.ornamentWeight;
+//     let { loan } = await customerLoanDetailsByMasterLoanDetails(masterLoanId);
+
+//     if (receivedDate != todaysDate) {
+//         var a = moment(receivedDate);
+//         var b = moment(todaysDate);
+//         let difference = a.diff(b, 'days')
+//         if (difference != 0) {
+//             var { newEmiTable, currentSlabRate, securedInterest, unsecuredInterest } = await stepDown(receivedDate, loan, difference)
+//             if (newEmiTable.length > 0) {
+//                 for (let stepDownIndex = 0; stepDownIndex < newEmiTable.length; stepDownIndex++) {
+//                     const element = newEmiTable[stepDownIndex];
+//                     await models.customerLoanInterest.update({ interestRate: element.interestRate }, { where: { id: element.id }, transaction: t })
+//                 }
+//             }
+//             if (currentSlabRate) {
+//                 await models.customerLoan.update({ currentSlab: currentSlabRate, currentInterestRate: securedInterest }, { where: { id: loan.customerLoan[0].id }, transaction: t })
+
+//                 if (loan.customerLoan.length > 1) {
+//                     await models.customerLoan.update({ currentSlab: currentSlabRate, currentInterestRate: unsecuredInterest }, { where: { id: loan.customerLoan[1].id }, transaction: t })
+//                 }
+//             }
+//             let interestCal = await intrestCalculationForSelectedLoanWithOutT(receivedDate, loan.id, securedInterest, unsecuredInterest, currentSlabRate)
+
+//             for (let i = 0; i < interestCal.transactionData.length; i++) {
+//                 let element = interestCal.transactionData[i]
+//                 let transactionNew = await models.customerTransactionDetail.create(element, { transaction: t })
+//                 await models.customerTransactionDetail.update({ referenceId: `${element.loanUniqueId}-${transactionNew.id}` }, { where: { id: transactionNew.id }, transaction: t });
+//             }
+
+//             let interestAccrualId = []
+//             for (let i = 0; i < interestCal.interestDataObject.length; i++) {
+//                 const element = interestCal.interestDataObject[i]
+//                 if (element.id) {
+//                     if (element.interestAccrual) {
+//                         interestAccrualId.push(element.id)
+//                     }
+//                     let z = await models.customerLoanInterest.update(element, { where: { id: element.id }, transaction: t })
+//                     console.log(z)
+//                 } else {
+//                     await models.customerLoanInterest.create(element, { transaction: t })
+//                 }
+//             }
+
+//             await models.customerLoanInterest.update({ interestAccrual: 0.00, totalInterestAccural: 0.00 }, { where: { masterLoanId: masterLoanId, id: { [Op.notIn]: interestAccrualId }, emiStatus: 'pending' }, transaction: t })
+
+
+//             //removed
+//             // for (let i = 0; i < interestCal.customerLoanData.length; i++) {
+//             //     let element = interestCal.customerLoanData[i]
+//             //     await models.customerLoan.update(element, { where: { id: element.id }, transaction: t })
+//             // }
+
+//             let penalCal = await penalInterestCalculationForSelectedLoanWithOutT(receivedDate, loan.id)
+//             if (penalCal.penalData.length == 0) {
+
+//                 let j = await models.customerLoanInterest.update({ penalInterest: 0, penalAccrual: 0, penalOutstanding: 0 }, { where: { masterLoanId: masterLoanId, emiStatus: { [Op.not]: ['paid'] } }, transaction: t })
+
+//             } else {
+//                 for (let i = 0; i < penalCal.penalData.length; i++) {
+//                     console.log(penalCal)
+//                     //penal calculation pending
+//                     const element = penalCal.penalData[i]
+//                     await models.customerLoanInterest.update({ penalInterest: element.penalInterest, penalAccrual: element.penalAccrual, penalOutstanding: element.penalOutstanding }, { where: { id: element.id }, transaction: t })
+//                 }
+//             }
+//         }
+//     }
+
+//     // for (let i = 0; i < penalCal.transactionPenal.length; i++) {
+//     //     let element = penalCal.transactionPenal[i]
+//     //     let transactionNew = await models.customerTransactionDetail.create(element, { transaction: t })
+//     //     await models.customerTransactionDetail.update({ referenceId: `${element.loanUniqueId}-${transactionNew.id}` }, { where: { id: transactionNew.id }, transaction: t });
+//     // }
+
+
+//     let loanDataNew = await models.customerLoanMaster.findOne({
+//         where: { id: masterLoanId },
+//         transaction: t,
+//         order: [
+//             [models.customerLoan, 'id', 'asc'],
+//         ],
+//         include: [{
+//             model: models.customerLoan,
+//             as: 'customerLoan',
+//             attributes: ['id', 'loanType'],
+//             where: { isActive: true },
+//         }]
+//     });
+//     let dataLoan = {}
+//     await loanDataNew.customerLoan.map((data) => {
+//         if (data.loanType == "secured") {
+//             dataLoan.secured = data.id;
+//         } else {
+//             dataLoan.unsecured = data.id
+//         }
+//     });
+//     let amount = {};
+//     if (dataLoan.secured) {
+//         let totalAmount = {
+//             interest: 0,
+//             penalInterest: 0
+//         }
+
+//         let interest = await models.customerLoanInterest.findAll({ where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: dataLoan.secured }, transaction: t });
+//         let interestAmount = await interest.map((data) => Number(data.interestAccrual));
+//         let penalInterest = await interest.map((data) => Number(data.penalOutstanding));
+//         totalAmount.interest = Number((_.sum(interestAmount)).toFixed(2));
+//         totalAmount.penalInterest = Number((_.sum(penalInterest)).toFixed(2));
+//         amount.secured = totalAmount
+//     }
+//     if (dataLoan.unsecured) {
+//         let totalAmount = {
+//             interest: 0,
+//             penalInterest: 0
+//         }
+//         let interest = await models.customerLoanInterest.findAll({ where: { emiStatus: { [Op.notIn]: ["paid"] }, loanId: dataLoan.unsecured }, transaction: t });
+//         let interestAmount = await interest.map((data) => Number(data.interestAccrual));
+//         let penalInterest = await interest.map((data) => Number(data.penalOutstanding));
+//         totalAmount.interest = Number((_.sum(interestAmount)).toFixed(2));
+//         totalAmount.penalInterest = Number((_.sum(penalInterest)).toFixed(2));
+
+//         amount.unsecured = totalAmount
+//     }
+
+//     //new loan
+//     let newLoan = await models.customerLoanMaster.findOne({
+//         where: { isActive: true, id: masterLoanId },
+//         transaction: t,
+//         order: [
+//             [models.customerLoan, 'id', 'asc']
+//         ],
+//         include: [{
+//             model: models.customerLoan,
+//             as: 'customerLoan',
+//             where: { isActive: true },
+//             include: [
+//                 {
+//                     model: models.scheme,
+//                     as: 'scheme',
+//                     attributes: { exclude: ['createdAt', 'updatedAt', 'createdBy', 'modifiedBy', 'isActive'] },
+//                 }
+//             ]
+//         }]
+//     });
+
+//     let { isUnsecuredSchemeApplied, securedRatio, unsecuredRatio, newSecuredOutstandingAmount, newUnsecuredOutstandingAmount, securedPenalInterest, unsecuredPenalInterest, securedInterest, unsecuredInterest, securedLoanId, unsecuredLoanId } = await getAmountLoanSplitUpData(newLoan, amount, ornamentData.releaseAmount);
+
+//     loanTransaction = await models.customerLoanTransaction.create({ masterLoanId, transactionUniqueId: transactionUniqueId, bankTransactionUniqueId: transactionId, paymentType, transactionAmont: paidAmount, chequeNumber, bankName, branchName, paymentFor: "partRelease", depositDate: moment(depositDate).format("YYYY-MM-DD"), razorPayTransactionId: razorPayOrderId }, { transaction: t });
+//     })
+// }
 
 exports.getPartReleaseList = async (req, res, next) => {
     const { search, offset, pageSize } = paginationWithFromTo(
@@ -1290,7 +1474,6 @@ exports.partReleaseApplyLoan = async (req, res, next) => {
                 let checkBankDetailExist = await models.customerBankDetails.findAll({ where: { accountNumber: oldLoanData.loanBankDetail.accountNumber, customerId: customerData.id } })
 
                 if (checkBankDetailExist.length == 0) {
-
                     let addBankDetaiils = await addBankDetailInAugmontDb(customerData.customerUniqueId, null, oldLoanData.loanBankDetail.bankBranchName, oldLoanData.loanBankDetail.accountNumber, oldLoanData.loanBankDetail.accountHolderName, oldLoanData.loanBankDetail.ifscCode)
 
                     if (addBankDetaiils.isSuccess) {
@@ -1592,9 +1775,16 @@ exports.ornamentsFullRelease = async (req, res, next) => {
             body: req.body,
             userData: req.userData
         });
-        res.status(500).send({ message: "something went wrong" });
+        if (err.statusCode == 400 && err.error.code) {
+            return res.status(400).json({ message: err.error.description });
+        } else {
+            res.status(500).send({ message: "something went wrong" });
+
+        }
     }
 }
+
+
 
 exports.getFullReleaseList = async (req, res, next) => {
     const { search, offset, pageSize } = paginationWithFromTo(

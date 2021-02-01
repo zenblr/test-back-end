@@ -13,6 +13,12 @@
                     <mat-cell *matCellDef="let lead">{{lead?.firstName | titlecase}}&nbsp;{{lead.lastName | titlecase}}
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="customerUniqueId">
+                    <mat-header-cell *matHeaderCellDef>Customer ID</mat-header-cell>
+                    <mat-cell *matCellDef="let lead">{{lead?.customerUniqueId | uppercase }}
+
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="pan">
                     <mat-header-cell *matHeaderCellDef>PAN</mat-header-cell>
                     <mat-cell *matCellDef="let lead">{{lead?.panCardNumber ? lead?.panCardNumber : 'NA' | uppercase }}
@@ -51,6 +57,16 @@
                             <div class="d-block">{{lead?.createdAt | date:'mediumDate'}}</div>
                             <div class="d-block">{{lead?.createdAt | date:'shortTime'}}</div>
                         </div>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="currentWalletBalance">
+                    <mat-header-cell [ngClass]="'w-200'" *matHeaderCellDef>Wallet Balance</mat-header-cell>
+                    <mat-cell *matCellDef="let lead" [ngClass]="'w-200'">
+                        <span class="kt-pointer kt-link kt-link--brand"
+                            (click)="navigateToTransaction(lead?.id)">{{lead?.currentWalletBalance}} </span>
+                        <!-- <a target="_blank" [routerLink]="['/admin/transaction/' + lead?.id]"
+                            routerLinkActive="router-link-active">{{lead?.currentWalletBalance }}</a> -->
                     </mat-cell>
                 </ng-container>
 
@@ -104,7 +120,7 @@
                 <ng-container matColumnDef="kyc">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let lead">
-                        <ng-container *ngIf="lead.module?.id == 1">
+                        <ng-container *ngIf="lead.module?.id == 1 && lead.kycStatus != 'rejected'">
                             <ng-container *ngIf="lead.status.id == '1' &&  lead.customerKyc !== null">
                                 <div [ngStyle]="{'display': 'inherit'}" *ngIf="!lead.customerKyc.isKycSubmitted">
                                     <button (click)="goToKyc(lead)" class="apply-kyc"
@@ -119,7 +135,7 @@
                             </ng-container>
                         </ng-container>
 
-                        <ng-container *ngIf="lead.module?.id == 3">
+                        <ng-container *ngIf="lead.module?.id == 3 && lead.scrapKycStatus != 'rejected'">
                             <ng-container *ngIf="lead.status.id == '1' &&  lead.customerKyc !== null">
                                 <div [ngStyle]="{'display': 'inherit'}" *ngIf="!lead.customerKyc.isScrapKycSubmitted">
                                     <button (click)="goToKyc(lead)" class="apply-kyc"
@@ -185,7 +201,8 @@
                     <mat-cell *matCellDef="let loan">
                         <ng-container
                             *ngIf="!((loan.moduleId == 4 && loan.digiKycStatus == 'rejected') || (loan.moduleId == 1 && loan.kycStatus == 'rejected'))">
-                            <div *ngxPermissionsOnly="['addNewRequest', 'addBranchCustomer', 'customerKycAdd']">
+                            <div *ngIf="(loan.internalBranchId && permission.addNewRequest) || (!loan.internalBranchId && permission.addBranchCustomer)
+                            || (loan.module?.id == 4 && !loan.panCardNumber && permission.customerKycAdd)">
                                 <button mat-button [matMenuTriggerFor]="menu">
                                     <mat-icon>more_vert</mat-icon>
                                 </button>
@@ -198,7 +215,7 @@
                                         <button *ngxPermissionsOnly="['addBranchCustomer']" mat-menu-item
                                             (click)="assignBranch(loan)">Assign Branch</button>
                                     </ng-container>
-                                    <ng-container *ngIf="loan.module?.id == 4 && !loan.panCardNumber">
+                                    <ng-container *ngIf="!loan.panCardNumber">
                                         <button *ngxPermissionsOnly="['customerKycAdd']" mat-menu-item
                                             (click)="goToDigiGoldKyc(loan)">Apply Digi KYC</button>
                                     </ng-container>

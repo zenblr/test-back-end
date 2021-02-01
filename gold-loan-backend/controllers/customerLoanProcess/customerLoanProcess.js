@@ -516,9 +516,17 @@ exports.generateInterestTable = async (req, res, next) => {
     console.log(length)
     for (let index = 0; index < Number(length); index++) {
         // let date = new Date("2020/03/08")
-        let date = new Date()
+        let date;
+        let newFrequency;
+        if (index == 0) {
+            date = new Date()
+            newFrequency = paymentFrequency - 1
+        } else {
+            date = new Date(interestTable[index - 1].emiDueDate)
+            newFrequency = paymentFrequency
+        }
         let data = {
-            emiDueDate: moment(new Date(date.setDate(date.getDate() + (paymentFrequency * (index + 1)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
+            emiDueDate: moment(new Date(date.setDate(date.getDate() + (Number(newFrequency)))), "DD-MM-YYYY").format('YYYY-MM-DD'),
             month: "Month " + ((paymentFrequency / 30) * (index + 1)).toString(),
             paymentType: paymentFrequency,
             securedInterestAmount: securedInterestAmount,
@@ -533,19 +541,22 @@ exports.generateInterestTable = async (req, res, next) => {
     }
 
     if (!Number.isInteger(length)) {
-        let date = new Date()
+
 
         const noOfMonths = (((tenure * 30) - ((interestTable.length - 1) * paymentFrequency)) / 30)
         const lastElementOfTable = interestTable[interestTable.length - 1]
+        const secondLast = interestTable[interestTable.length - 2]
+        let date = new Date(secondLast.emiDueDate)
         const oneMonthSecured = securedInterestAmount / (paymentFrequency / 30)
         const oneMonthRebate = secureHighestInterestAmount / (paymentFrequency / 30)
         let secure = (oneMonthSecured * noOfMonths).toFixed(2)
         let secureRebate = (oneMonthRebate * noOfMonths).toFixed(2)
         lastElementOfTable.securedInterestAmount = secure;
         lastElementOfTable.secureHighestInterestAmount = secureRebate;
-        lastElementOfTable.securedRebateAmount = (secureRebate - secure),
-            lastElementOfTable.month = "Month " + tenure;
-        lastElementOfTable.emiDueDate = moment(new Date(date.setDate(date.getDate() + (30 * tenure))), "DD-MM-YYYY").format('YYYY-MM-DD')
+        lastElementOfTable.securedRebateAmount = (secureRebate - secure);
+        lastElementOfTable.month = "Month " + tenure;
+        let r = (tenure * 30) - (paymentFrequency * (interestTable.length - 1))
+        lastElementOfTable.emiDueDate = moment(new Date(date.setDate(date.getDate() + (r))), "DD-MM-YYYY").format('YYYY-MM-DD')
 
         if (isUnsecuredSchemeApplied) {
             const oneMonthUnsecured = unsecuredInterestAmount / (paymentFrequency / 30)
@@ -1920,8 +1931,16 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
     })
 
     for (let i = 0; i < interestTable.length; i++) {
-        let date = new Date();
-        let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(Loan.paymentFrequency) * (i + 1))))
+         let date;
+         let newFrequency;
+        if (i == 0) {
+            date = new Date()
+            newFrequency = Loan.paymentFrequency - 1;
+        } else {
+            date = new Date(interestTable[i - 1].emiDueDate)
+            newFrequency = Loan.paymentFrequency;
+        }
+        let newEmiDueDate = new Date(date.setDate(date.getDate() + (Number(newFrequency))))
         interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
         interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
 
@@ -1937,26 +1956,26 @@ async function getInterestTable(masterLoanId, loanId, Loan) {
 
         if (i == interestTable.length - 1) {
             let newDate = new Date()
-            newEmiDueDate = new Date(newDate.setDate(newDate.getDate() + (30 * (Loan.tenure))))
+            newEmiDueDate = new Date(newDate.setDate(newDate.getDate() + (30 * Loan.tenure)-1))
             interestTable[i].emiDueDate = moment(newEmiDueDate).format("YYYY-MM-DD")
             interestTable[i].emiEndDate = moment(newEmiDueDate).format("YYYY-MM-DD")
         }
         let x = interestTable.map(ele => ele.emiDueDate)
         console.log(x)
 
-        for (let j = 0; j < holidayDate.length; j++) {
-            let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
-            let sunday = moment(momentDate, 'YYYY-MM-DD').weekday();
-            let newDate = new Date(newEmiDueDate);
-            if (momentDate == holidayDate[j].holidayDate || sunday == 0) {
-                let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
-                interestTable[i].emiDueDate = moment(holidayEmiDueDate).format('YYYY-MM-DD')
+        // for (let j = 0; j < holidayDate.length; j++) {
+        //     let momentDate = moment(newEmiDueDate, "DD-MM-YYYY").format('YYYY-MM-DD')
+        //     let sunday = moment(momentDate, 'YYYY-MM-DD').weekday();
+        //     let newDate = new Date(newEmiDueDate);
+        //     if (momentDate == holidayDate[j].holidayDate || sunday == 0) {
+        //         let holidayEmiDueDate = new Date(newDate.setDate(newDate.getDate() + 1))
+        //         interestTable[i].emiDueDate = moment(holidayEmiDueDate).format('YYYY-MM-DD')
 
-                newEmiDueDate = holidayEmiDueDate
-                j = 0
-            }
+        //         newEmiDueDate = holidayEmiDueDate
+        //         j = 0
+        //     }
 
-        }
+        // }
 
         interestTable.loanId = loanId
         interestTable.masterLoanId = masterLoanId

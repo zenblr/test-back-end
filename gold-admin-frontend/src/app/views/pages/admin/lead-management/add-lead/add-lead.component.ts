@@ -467,7 +467,7 @@ export class AddLeadComponent implements OnInit {
       if (this.leadForm.invalid || !this.isMobileVerified || this.mobileAlreadyExists) {
         this.checkforVerfication()
         this.leadForm.markAllAsTouched();
-        if (this.controls.panImage.invalid) {
+        if (this.controls.panImage.invalid || this.controls.form60Image.invalid) {
           if (this.controls.panType.value == 'pan') {
             this.toastr.errorToastr('Upload PAN Image')
           } else if (this.controls.panType.value == 'form60') {
@@ -568,7 +568,7 @@ export class AddLeadComponent implements OnInit {
       }
 
       if (this.data.action == 'assignBranch') {
-        console.log({ customerId: this.data.id, ...leadData })
+        // console.log({ customerId: this.data.id, ...leadData })
         this.leadService.assignBranch({ customerId: this.data.id, ...leadData })
           .pipe(
             map(() => {
