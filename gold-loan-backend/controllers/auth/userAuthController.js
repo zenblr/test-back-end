@@ -346,7 +346,7 @@ exports.verifyLoginOtp = async (req, res, next) => {
                 cityId: checkUser.internalBranches[0].cityId,
                 internalBranchId: checkUser.internalBranches[0].userInternalBranch.internalBranchId,
             },
-            key: code
+            key: token.code
         });
     }
 
