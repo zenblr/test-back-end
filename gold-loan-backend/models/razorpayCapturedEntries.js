@@ -1,5 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
     const razorpayCapturedEntries = sequelize.define('razorpayCapturedEntries', {
+        customerId: {
+            type: DataTypes.INTEGER,
+            field: 'customer_id'
+        },
         walletTransactionTempDetailId: {
             type: DataTypes.INTEGER,
             field: 'wallet_transaction_temp_detail_id'
