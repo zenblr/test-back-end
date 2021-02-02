@@ -16,6 +16,7 @@ import { Subject } from 'rxjs';
 })
 export class DepositRequestsEditComponent implements OnInit {
 	viewLoading = false;
+	formFieldEnableFlag = false;
 	depositForm: FormGroup;
 	depositId: number;
 	depositInfo: any;
@@ -61,7 +62,7 @@ export class DepositRequestsEditComponent implements OnInit {
 			depositBranchName: [''],
 			depositDate: [''],
 			depositAmount: [''],
-			approvalDate: ['', Validators.required],
+			approvalDate: [''],
 			depositStatus: ['', Validators.required],
 		});
 		this.depositForm.disable()
@@ -71,6 +72,20 @@ export class DepositRequestsEditComponent implements OnInit {
 	get controls() {
 		if (this.depositForm) {
 			return this.depositForm.controls;
+		}
+	}
+
+	fieldEnable(value) {
+		if (value == 'completed') {
+			this.formFieldEnableFlag = true;
+			this.controls.approvalDate.setValidators([Validators.required])
+			this.controls.approvalDate.updateValueAndValidity()
+
+		} else {
+			this.formFieldEnableFlag = false;
+			this.controls.approvalDate.setValidators([])
+			this.controls.approvalDate.updateValueAndValidity()
+
 		}
 	}
 
@@ -93,6 +108,11 @@ export class DepositRequestsEditComponent implements OnInit {
 			data.depositStatus = this.depositInfo.transactionData.depositStatus;
 			this.depositForm.patchValue(data);
 		}
+
+		if (this.depositInfo.transactionData.depositStatus == 'completed') {
+			this.formFieldEnableFlag = true;
+		}
+
 		else {
 			this.controls.approvalDate.enable();
 			this.controls.depositStatus.enable();
@@ -105,10 +125,18 @@ export class DepositRequestsEditComponent implements OnInit {
 			return;
 		}
 		if (this.depositId) {
-			const depositData = {
-				depositStatus: this.controls.depositStatus.value,
-				date: this.sharedService.toISODateFormat(this.controls.approvalDate.value),
-			};
+			let depositData;
+			if (this.controls.depositStatus.value == 'completed') {
+				depositData = {
+					depositStatus: this.controls.depositStatus.value,
+					date: this.sharedService.toISODateFormat(this.controls.approvalDate.value),
+				};
+			} else {
+				depositData = {
+					depositStatus: this.controls.depositStatus.value,
+					date: new Date()
+				};
+			}
 			this.depositRequestsService.editDepositStatus(depositData, this.depositId).pipe(
 				map((res) => {
 					this.toastr.successToastr('Deposit Status Updated Sucessfully');

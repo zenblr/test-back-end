@@ -210,9 +210,11 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
 
                 // let walletData = await models.walletDetails.create({ customerId: transactionData.customerId, amount: transactionData.transactionAmount, paymentDirection: "credit", description: "Amount added to your Augmont Wallet", productTypeId: 4, transactionDate: date, orderTypeId: 4, paymentOrderTypeId: 4, transactionStatus: "completed" }, { transaction: t });
 
-                await models.walletDetails.update({ transactionStatus: "completed" }, { where: { id: transactionData.walletId } });
+                await models.walletDetails.update({ transactionStatus: "completed" ,amount: transactionData.transactionAmount}, { where: { id: transactionData.walletId } });
 
-                var updtedRunningBalance = Number(transactionData.runningBalance) + Number(transactionData.transactionAmount)
+                // var updtedRunningBalance = Number(transactionData.runningBalance) + Number(transactionData.transactionAmount)
+
+                var updtedRunningBalance = Number(customer.currentWalletBalance) + Number(transactionData.transactionAmount)
 
                 let newUpdtedRunningBalance = updtedRunningBalance.toFixed(2);
 
@@ -252,7 +254,7 @@ exports.updateDepositWithdrawStatus = async (req, res) => {
 
                 await models.walletTransactionDetails.update({ depositStatus: depositStatus, depositApprovedDate: date, bankTransactionUniqueId }, { where: { id: transactionData.id }, transaction: t });
 
-                await models.walletDetails.update({ transactionStatus: "completed" }, { where: { id: transactionData.walletId } });
+                await models.walletDetails.update({ transactionStatus: "completed",amount: transactionData.transactionAmount }, { where: { id: transactionData.walletId } });
 
                 await sms.sendMessageForWithdrawalPaymentCompleted(customer.mobileNumber, transactionData.transactionAmount);
             } else if (depositStatus == "rejected") {
@@ -386,11 +388,11 @@ exports.getDepositReuest = async (req, res) => {
             }else{
                 depositReportData["Deposit Bank Name"] = 'NA';
             }
-            if(order.branchName){
-                depositReportData["Deposit Branch Name"] = order.branchName;
-            }else{
-                depositReportData["Deposit Branch Name"] = 'NA';
-            }
+            // if(order.branchName){
+            //     depositReportData["Deposit Branch Name"] = order.branchName;
+            // }else{
+            //     depositReportData["Deposit Branch Name"] = 'NA';
+            // }
 
             if (order.depositApprovedDate != null) {
 
@@ -479,7 +481,7 @@ exports.getDepositReuest = async (req, res) => {
             }
             withdrawReportData["Withdrawal Amount"] = order.transactionAmount;
             withdrawReportData["Bank Name"] = order.bankName;
-            withdrawReportData["Branch Name"] = order.branchName;
+            // withdrawReportData["Branch Name"] = order.branchName;
             withdrawReportData["Account Number"] = order.accountNumber;
             withdrawReportData["Account Holder Namer"] = order.accountHolderName;
             withdrawReportData["IFSC Code"] = order.ifscCode;
