@@ -365,8 +365,9 @@ export class UserDetailsComponent implements OnInit {
     //   if (res) {
     //     this.getVerified(panCardNumber, dateOfBirth, res.data.name)
     //     console.log(res)
-        this.isPanVerified = true;
-      // }
+    if (this.controls.panCardNumber.valid) {
+      this.isPanVerified = true;
+    }
     // });
   }
 
