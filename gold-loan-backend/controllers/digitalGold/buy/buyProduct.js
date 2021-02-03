@@ -19,8 +19,8 @@ const sequelize = models.sequelize;
 const Sequelize = models.Sequelize;
 const Op = Sequelize.Op;
 const { walletBuy, customerBalance } = require('../../../service/wallet');
-const { postMerchantOrder, getUserData, postBuy, checkKycStatus,checkBuyLimit } = require('../../../service/digiGold')
-
+const { postMerchantOrder, getUserData, postBuy, checkKycStatus, checkBuyLimit } = require('../../../service/digiGold')
+let AWS = require('aws-sdk');
 
 exports.buyProduct = async (req, res) => {
   // try {
@@ -42,12 +42,12 @@ exports.buyProduct = async (req, res) => {
 
   let checkCustomerKycStatus = await checkKycStatus(id);
 
-  if(checkCustomerKycStatus){
+  if (checkCustomerKycStatus) {
     return res.status(420).json({ message: "Your KYC status is Rejected" });
-  } 
+  }
 
   const checkLimit = await checkBuyLimit(id, amount);
-  if(!checkLimit.success){
+  if (!checkLimit.success) {
     return res.status(422).json({ message: checkLimit.message });
   }
 
@@ -110,9 +110,9 @@ exports.buyProduct = async (req, res) => {
           let checkBalance = await customerBalance(customerDetails, result.data.result.data.totalAmount)
           //calculation function
 
-           let newCurrentWalletBalance=checkBalance.currentWalletBalance.toFixed(2);
+          let newCurrentWalletBalance = checkBalance.currentWalletBalance.toFixed(2);
 
-           let newWalletFreeBalance=checkBalance.walletFreeBalance.toFixed(2);
+          let newWalletFreeBalance = checkBalance.walletFreeBalance.toFixed(2);
 
           await models.customer.update({ currentWalletBalance: Number(newCurrentWalletBalance), walletFreeBalance: Number(newWalletFreeBalance) }, { where: { id: customerId }, transaction: t })
 
@@ -135,7 +135,7 @@ exports.buyProduct = async (req, res) => {
           await models.digiGoldOrderTaxDetail.create({ orderDetailId: orderDetail.id, totalTaxAmount: result.data.result.data.totalTaxAmount, cgst: result.data.result.data.taxes.taxSplit[0].cgst, sgst: result.data.result.data.taxes.taxSplit[0].scgst, isActive: true }, { transaction: t });
 
           // await sms.sendMessageForBuy(customerName, customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
-          await sms.sendMessageForBuy( customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
+          await sms.sendMessageForBuy(customerDetails.mobileNumber, result.data.result.data.quantity, result.data.result.data.metalType, result.data.result.data.totalAmount);
 
           return result.data;
 
@@ -144,7 +144,7 @@ exports.buyProduct = async (req, res) => {
         }
 
       } catch (err) {
-        console.log("ggg",err)
+        console.log("ggg", err)
         if (err.response.data.statusCode == 422) {
           if (err.response.data.errors.userKyc.length) {
             return err.response.data
@@ -247,18 +247,89 @@ async function generateInvoicedata(transactionId) {
       bootstrapJs: `${process.env.URL}/bootstrap.js`,
       words
     },
-    path: `./public/uploads/digitalGoldKyc/pdf/${fileName}.pdf`
+    path: `./public/uploads/invoice/${fileName}.pdf`
   };
+  let filePath = `public/uploads/invoice/${fileName}.pdf`
   const created = await pdf.create(document, options)
 
-  let data = { created: created, fileName: fileName }
+  let data = { created: created, fileName: fileName, path: filePath }
   return data
 
 }
 
+
+exports.generateInvoice = async (req, res) => {
+  try {
+    const { transactionId } = req.params;
+
+    let generateInvoice = await generateInvoicedata(transactionId);
+    console.log(generateInvoice);
+
+    if (process.env.NODE_ENV == undefined || process.env.NODE_ENV == 'uat' || process.env.NODE_ENV == 'production') {
+      // let data = await saveFileInAws(generateInvoice)
+
+      AWS.config.update({
+        secretAccessKey: `${process.env.Secretkey}`,
+        accessKeyId: `${process.env.Accessid}`,
+        region: process.env.Region,
+      });
+      const s3 = new AWS.S3({ accessKeyId: `${process.env.Accessid}`, secretAccessKey: `${process.env.Secretkey}` });
+      // Read content from the file
+      const fileContent = fs.readFileSync(generateInvoice.path);
+      // Setting up S3 upload parameters
+      const params = {
+        Bucket: process.env.Bucket,
+        Key: `${generateInvoice.path}`, // File name you want to save as in S3
+        Body: fileContent,
+        ACL: 'public-read'
+      };
+
+      // Uploading files to the bucket
+      await s3.upload(params, function (err, data) {
+        if (err) {
+          throw err;
+        }
+        console.log(`File uploaded successfully. ${data.Location}`);
+        if (data) {
+          fs.unlinkSync(generateInvoice.path)
+          res.setHeader('Content-Disposition', `attachment; filename=${generateInvoice.fileName}.pdf`);
+          res.status(200).json({ invoice: data.Location });
+        }
+      });
+
+
+
+    } else {
+
+      if (generateInvoice.created) {
+
+        res.setHeader('Content-Disposition', `attachment; filename=${generateInvoice.fileName}.pdf`);
+
+        res.status(200).json({ invoice: process.env.URL + `/uploads/invoice/${generateInvoice.fileName}.pdf` });
+        setTimeout(async function () {
+          fs.readFile(`/public/uploads/invoice/${generateInvoice.fileName}.pdf`, (err, data) => {
+
+            if (fs.existsSync(`/public/uploads/invoice/${generateInvoice.fileName}.pdf`)) {
+              fs.unlinkSync(`/public/uploads/invoice/${generateInvoice.fileName}.pdf`);
+            }
+          });
+        }, 500000);
+      }
+    }
+  } catch (err) {
+    console.log(err);
+    let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
+
+    if (err.response) {
+      return res.status(422).json(err.response.data);
+    } else {
+      console.log('Error', err.message);
+    }
+  };
+}
+
 exports.generateInvoiceweb = async (req, res) => {
   try {
-
     const { transactionId } = req.params;
 
     let generateInvoice = await generateInvoicedata(transactionId);
@@ -276,38 +347,6 @@ exports.generateInvoiceweb = async (req, res) => {
       });
     }
   } catch (err) {
-    let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
-
-    if (err.response) {
-      return res.status(422).json(err.response.data);
-    } else {
-      console.log('Error', err.message);
-    }
-  };
-}
-
-exports.generateInvoice = async (req, res) => {
-  try {
-    const { transactionId } = req.params;
-    console.log(transactionId);
-
-    let generateInvoice = await generateInvoicedata(transactionId);
-    console.log(generateInvoice);
-    if (generateInvoice.created) {
-
-      res.status(200).json({ invoice: process.env.URL + `/uploads/digitalGoldKyc/pdf/${generateInvoice.fileName}.pdf` });
-      res.setHeader('Content-Disposition', `attachment; filename=${enerateInvoice.fileName}.pdf`);
-      setTimeout(async function () {
-        fs.readFile(`./public/uploads/digitalGoldKyc/pdf/${generateInvoice.fileName}.pdf`, (err, data) => {
-
-          if (fs.existsSync(`./public/uploads/digitalGoldKyc/pdf/${generateInvoice.fileName}.pdf`)) {
-            fs.unlinkSync(`./public/uploads/digitalGoldKyc/pdf/${generateInvoice.fileName}.pdf`);
-          }
-        });
-      }, 500000);
-    }
-  } catch (err) {
-    console.log(err);
     let errorData = errorLogger(JSON.stringify(err), req.url, req.method, req.hostname, req.body);
 
     if (err.response) {
